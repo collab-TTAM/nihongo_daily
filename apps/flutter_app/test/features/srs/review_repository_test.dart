@@ -103,7 +103,7 @@ void main() {
     final extra = successJson()..['private_owner'] = 'PRIVATE SECRET';
     for (final raw in [
       null,
-      [],
+      <Object>[],
       'PRIVATE SECRET',
       missing,
       extra,

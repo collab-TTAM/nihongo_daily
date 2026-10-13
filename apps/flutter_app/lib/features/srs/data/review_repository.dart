@@ -208,8 +208,9 @@ DateTime _timestamp(String value) {
   final zone = match[8]!;
   if (zone != 'Z' &&
       (int.parse(zone.substring(1, 3)) > 23 ||
-          int.parse(zone.substring(4)) > 59))
+          int.parse(zone.substring(4)) > 59)) {
     throw const FormatException();
+  }
   final instant = DateTime.parse(value).toUtc();
   if (instant.year < 1 || instant.year > 9999) throw const FormatException();
   return instant;
