@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/home/presentation/home_screen.dart';
+import '../features/kanji/presentation/kanji_capture_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/study/presentation/study_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
@@ -27,10 +28,6 @@ const previewRoutes = <String, ({String title, String description})>{
   '/listening': (
     title: 'Nghe và đọc',
     description: 'Luyện hiểu tiếng Nhật trong ngữ cảnh.',
-  ),
-  '/kanji': (
-    title: 'Luyện Kanji',
-    description: 'Tìm hiểu cách đọc, viết và thứ tự nét.',
   ),
   '/ai': (
     title: 'Trợ lý AI',
@@ -66,6 +63,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
+          ),
+          GoRoute(
+            path: '/kanji',
+            builder: (context, state) => const KanjiCaptureScreen(),
           ),
           for (final entry in previewRoutes.entries)
             GoRoute(

@@ -53,7 +53,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.draw_outlined));
     await tester.pumpAndSettle();
-    expect(find.text('Tìm hiểu cách đọc, viết và thứ tự nét.'), findsOneWidget);
+    expect(find.byKey(const Key('kanji-canvas')), findsOneWidget);
+    expect(find.textContaining('Chấm điểm: chưa khả dụng'), findsOneWidget);
     expect(
       tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
       2,

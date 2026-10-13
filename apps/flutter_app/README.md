@@ -62,3 +62,6 @@ Tests cover preview/contract allocation parity, route recovery, all placeholders
 study navigation, N4/theme state, injected loading/error/retry/empty results, and
 320/375-pixel layouts at 200% text size. Builds do not establish live auth/RLS,
 multi-device sync, AI availability or curriculum coverage.
+
+Kanji capture prototype: `/kanji` supports local square drawing/undo/clear. It is
+explicitly not real grading or persisted study; see `../../docs/KANJI_CAPTURE.md`.
