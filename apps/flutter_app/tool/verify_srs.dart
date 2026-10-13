@@ -2,8 +2,8 @@
 // Python schema validator. It needs only dart: libraries, no Flutter dependency.
 import 'dart:convert';
 import 'dart:io';
-import '../lib/features/srs/domain/srs_models.dart';
-import '../lib/features/srs/domain/srs_scheduler.dart';
+import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
+import 'package:nihongo_daily/features/srs/domain/srs_scheduler.dart';
 
 void verifyFields(Map<String, Object?> actual, Map<String, dynamic> expected) {
   if (actual.length != expected.length ||
@@ -26,8 +26,9 @@ void main(List<String> arguments) {
   final bundle =
       jsonDecode(File('../../contracts/srs/v1/golden.json').readAsStringSync())
           as Map<String, dynamic>;
-  if (bundle['algorithm'] != SrsScheduler.version)
+  if (bundle['algorithm'] != SrsScheduler.version) {
     throw StateError('Version mismatch');
+  }
   final outputs = <Map<String, Object?>>[];
   for (final raw in bundle['cases'] as List<dynamic>) {
     final c = raw as Map<String, dynamic>;
