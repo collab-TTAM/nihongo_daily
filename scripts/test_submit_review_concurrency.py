@@ -2,6 +2,7 @@
 import json
 import os
 import subprocess
+import time
 
 COMMAND = ["psql", os.environ["TEST_DATABASE_URL"], "-X", "-v", "ON_ERROR_STOP=1", "-At"]
 
@@ -36,10 +37,11 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
     first_call = "select public.submit_review('" + json.dumps(request).replace("'", "''") + "'::jsonb);"
     second_call = "select public.submit_review('" + json.dumps(changed).replace("'", "''") + "'::jsonb);"
     first = subprocess.Popen(COMMAND, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    second = None
     try:
         end = 'rollback' if scenario == 'rollback' else 'commit'
-        first.stdin.write('begin;' + auth + first_call + "select 'RPC_LOCK_HELD';select pg_sleep(2);" + end + ';')
-        first.stdin.close()
+        first.stdin.write('begin;' + auth + first_call + "select 'RPC_LOCK_HELD';\n")
+        first.stdin.flush()
         seen = []
         for line in first.stdout:
             seen.append(line)
@@ -49,9 +51,32 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
             raise AssertionError('First RPC never returned while holding transaction lock')
         first_response = responses(''.join(seen))[0]
         assert 'code' not in first_response, first_response
-        second_response = responses(run('begin;' + auth + second_call + 'commit;'))[0]
+        assert first.poll() is None, 'First transaction already ended before the race'
+        app = f'nd_review_race_{scenario}'
+        second = subprocess.Popen(COMMAND, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE, text=True,
+                                  env={**os.environ, 'PGAPPNAME': app})
+        second.stdin.write('begin;' + auth + second_call + 'commit;\n')
+        second.stdin.close()
+        # Prove actual contention before releasing the first transaction. A
+        # sleep/response alone could accidentally test sequential replay.
+        deadline = time.monotonic() + 15
+        while True:
+            waiting = run("select exists(select 1 from pg_stat_activity "
+                          f"where application_name='{app}' and wait_event_type='Lock' "
+                          "and wait_event='advisory');").strip() == 't'
+            if waiting:
+                break
+            assert second.poll() is None, 'Second request ended without observed lock contention'
+            assert time.monotonic() < deadline, 'Second RPC never waited on the owner lock'
+            time.sleep(0.02)
+        first.stdin.write(end + ';\n')
+        first.stdin.close()
         first.wait(timeout=20)
         assert first.returncode == 0, first.stderr.read()
+        second.wait(timeout=20)
+        assert second.returncode == 0, second.stderr.read()
+        second_response = responses(second.stdout.read())[0]
         stored = responses(run(f"select jsonb_build_object('events',(select count(*) from public.review_events where user_id='{owner}'),"
                                f"'items',(select count(*) from public.user_learning_items where user_id='{owner}'),"
                                f"'reviews',(select sum(review_count) from public.user_learning_items where user_id='{owner}'));"))[0]
@@ -69,3 +94,6 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
         if first.poll() is None:
             first.kill()
             first.wait()
+        if second is not None and second.poll() is None:
+            second.kill()
+            second.wait()

@@ -387,3 +387,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   remain. Resume this draft/review/CI first, then implement typed transport/UI
   without presenting fixtures as live integration. No secrets requested in chat.
   Personal Alpha remains IN_PROGRESS; do not close #22 from SQL fixture success.
+
+- Separate review: native race harness now observes the second backend actually
+  waiting on the advisory lock before releasing the first transaction; no timing
+  guess/sequential replay can count as concurrency. Clarified private invoker vs
+  narrow public definer documentation. Keep draft for remaining full #22 gates.

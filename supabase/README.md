@@ -44,9 +44,11 @@ connection is requested by the tests.
   Adapters select safe columns explicitly; `select *` on this table is rejected.
 - `service_role` is trusted and bypasses RLS. It gets explicit DML grants, not
   TRUNCATE. Keep it backend-only and verify end-user identity before every write.
-- Functions are invoker functions with empty `search_path` and qualified tables;
-  private schema/function access is revoked from clients. The original baseline exposed no security-definer RPC; #22 now adds the narrow
-  caller-bound submit_review function, audited separately in docs/SRS_RPC.md. Trigger functions cannot be called as RPCs.
+- Private helpers are invoker functions with empty `search_path` and qualified
+  tables; private schema/function access is revoked from clients. The original
+  baseline exposed no definer RPC. #22 adds the narrow caller-bound submit_review
+  definer function, audited separately in docs/SRS_RPC.md. Trigger functions cannot
+  be called as RPCs.
 - IDs/owners/parent-message identity are immutable. Review events cannot be edited
   or deleted. Curriculum is retired with `is_active=false`; restrictive FKs retain
   history. Account deletion is not implemented and needs the applicable human gate.

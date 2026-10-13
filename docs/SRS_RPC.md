@@ -90,7 +90,9 @@ The retained bootstrap/RLS/AI suites run first, then review_rpc.sql (62 assertio
 actual private SQL output compared against all 26 frozen Dart policy cases and
 five native-session RPC races: identical, changed input, distinct events,
 same event/different item and first transaction rollback. Races check original
-responses, final event/item counts and scheduling counters. SQL role fixtures are
+responses, final event/item counts and scheduling counters. Each race observes
+the second backend waiting on the advisory lock before releasing the first
+transaction; a delay alone is not counted as contention. SQL role fixtures are
 not expired JWT, gateway, browser or multi-device evidence.
 
 `verify_review_parity.py` compares all state/response fields, exact instants and
