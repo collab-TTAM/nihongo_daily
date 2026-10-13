@@ -1,0 +1,1142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Nihongo Daily shared contracts v0.1",
+  "description": "Definition library. Select a named $defs entry; root alone is not a payload validator.",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "local_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "jlpt_level": {
+      "type": "string",
+      "enum": [
+        "N5",
+        "N4",
+        "N3",
+        "N2",
+        "N1"
+      ]
+    },
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "VOCABULARY",
+        "KANJI",
+        "GRAMMAR"
+      ]
+    },
+    "srs_state": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "LEARNING",
+        "REVIEW",
+        "MASTERED",
+        "RELEARNING"
+      ]
+    },
+    "error_code": {
+      "type": "string",
+      "enum": [
+        "UNAUTHORIZED",
+        "FORBIDDEN",
+        "NOT_FOUND",
+        "VALIDATION_FAILURE",
+        "RATE_LIMITED",
+        "NETWORK_UNAVAILABLE",
+        "PROVIDER_UNAVAILABLE",
+        "SYNC_CONFLICT",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "item_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_type",
+        "item_id"
+      ],
+      "properties": {
+        "item_type": {
+          "$ref": "#/$defs/item_type"
+        },
+        "item_id": {
+          "$ref": "#/$defs/uuid"
+        }
+      }
+    },
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sentence_ja",
+        "reading_ja",
+        "translation_vi"
+      ],
+      "properties": {
+        "sentence_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "reading_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "translation_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "practice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_ja",
+        "answer_ja",
+        "explanation_vi"
+      ],
+      "properties": {
+        "question_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "answer_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "explanation_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "correction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "original_text",
+        "corrected_text",
+        "explanation_vi",
+        "item_refs"
+      ],
+      "properties": {
+        "original_text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "corrected_text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "explanation_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "item_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message_vi",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/error_code"
+        },
+        "message_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "vocabulary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "jlpt_level",
+        "difficulty",
+        "content_version",
+        "is_active",
+        "expression",
+        "reading",
+        "meaning_vi",
+        "part_of_speech",
+        "usage_context_vi",
+        "audio_ref",
+        "tags",
+        "examples"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "jlpt_level": {
+          "$ref": "#/$defs/jlpt_level"
+        },
+        "difficulty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "content_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "expression": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "reading": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "meaning_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "part_of_speech": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "usage_context_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "audio_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/example"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      }
+    },
+    "kanji": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "jlpt_level",
+        "difficulty",
+        "content_version",
+        "is_active",
+        "character",
+        "meaning_vi",
+        "onyomi",
+        "kunyomi",
+        "stroke_count",
+        "radical",
+        "stroke_data_ref"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "jlpt_level": {
+          "$ref": "#/$defs/jlpt_level"
+        },
+        "difficulty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "content_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "character": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+        },
+        "meaning_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "onyomi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "kunyomi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "stroke_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "radical": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stroke_data_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "grammar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "jlpt_level",
+        "difficulty",
+        "content_version",
+        "is_active",
+        "title",
+        "pattern",
+        "meaning_vi",
+        "explanation_vi",
+        "usage_notes_vi",
+        "common_mistakes",
+        "related_grammar_ids",
+        "examples"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "jlpt_level": {
+          "$ref": "#/$defs/jlpt_level"
+        },
+        "difficulty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "content_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "meaning_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "explanation_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "usage_notes_vi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "common_mistakes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "related_grammar_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/example"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      }
+    },
+    "get_daily_plan_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date"
+      ],
+      "properties": {
+        "date": {
+          "$ref": "#/$defs/local_date"
+        }
+      }
+    },
+    "daily_plan_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "planned_minutes",
+        "status",
+        "item_count"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SRS",
+            "VOCABULARY",
+            "KANJI",
+            "GRAMMAR",
+            "LISTENING_READING",
+            "AI_CONVERSATION",
+            "QUIZ_REVIEW"
+          ]
+        },
+        "planned_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "IN_PROGRESS",
+            "DONE",
+            "BLOCKED"
+          ]
+        },
+        "item_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "get_daily_plan_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_date",
+        "target_minutes",
+        "completed_minutes",
+        "blocks"
+      ],
+      "properties": {
+        "plan_date": {
+          "$ref": "#/$defs/local_date"
+        },
+        "target_minutes": {
+          "type": "integer",
+          "minimum": 7,
+          "maximum": 1440
+        },
+        "completed_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/daily_plan_block"
+          },
+          "minItems": 7,
+          "maxItems": 7
+        }
+      }
+    },
+    "submit_review_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "client_event_id",
+        "item_type",
+        "item_id",
+        "rating",
+        "is_correct",
+        "response_ms",
+        "occurred_at"
+      ],
+      "properties": {
+        "client_event_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "item_type": {
+          "$ref": "#/$defs/item_type"
+        },
+        "item_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "rating": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "is_correct": {
+          "type": "boolean"
+        },
+        "response_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3600000
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "rating": {
+                "const": 0
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "is_correct": {
+                "const": false
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "is_correct": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "submit_review_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "srs_state",
+        "next_review_at",
+        "interval_days",
+        "difficulty",
+        "review_count"
+      ],
+      "properties": {
+        "srs_state": {
+          "$ref": "#/$defs/srs_state"
+        },
+        "next_review_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "interval_days": {
+          "type": "number",
+          "minimum": 0
+        },
+        "difficulty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "review_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "stroke_point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y",
+        "t"
+      ],
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3600000
+        }
+      }
+    },
+    "stroke": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "points"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stroke_point"
+          },
+          "minItems": 2,
+          "maxItems": 4096
+        }
+      }
+    },
+    "evaluate_kanji_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kanji_id",
+        "strokes"
+      ],
+      "properties": {
+        "kanji_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "strokes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stroke"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        }
+      }
+    },
+    "evaluate_kanji_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score_total",
+        "score_shape",
+        "score_order",
+        "score_direction",
+        "score_balance",
+        "feedback_vi"
+      ],
+      "properties": {
+        "score_total": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "score_shape": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "score_order": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "score_direction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "score_balance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "feedback_vi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    },
+    "tutor_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recent_grammar_ids",
+        "recent_vocabulary_ids"
+      ],
+      "properties": {
+        "recent_grammar_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "recent_vocabulary_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true
+        }
+      }
+    },
+    "tutor_explain_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jlpt_level",
+        "question_vi",
+        "context"
+      ],
+      "properties": {
+        "jlpt_level": {
+          "$ref": "#/$defs/jlpt_level"
+        },
+        "question_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "context": {
+          "$ref": "#/$defs/tutor_context"
+        }
+      }
+    },
+    "tutor_explain_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer_vi",
+        "examples",
+        "practice"
+      ],
+      "properties": {
+        "answer_vi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/example"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "practice": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/practice"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    },
+    "correct_sentence_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jlpt_level",
+        "sentence_ja"
+      ],
+      "properties": {
+        "jlpt_level": {
+          "$ref": "#/$defs/jlpt_level"
+        },
+        "sentence_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        }
+      }
+    },
+    "correct_sentence_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "corrected_sentence",
+        "natural_sentence",
+        "grammar_errors",
+        "vocabulary_errors"
+      ],
+      "properties": {
+        "corrected_sentence": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "natural_sentence": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "grammar_errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/correction"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "vocabulary_errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/correction"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    },
+    "assistant_message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "text_ja",
+        "text_vi",
+        "audio_ref",
+        "sequence_no"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "role": {
+          "const": "assistant"
+        },
+        "text_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "text_vi": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "audio_ref": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequence_no": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "start_conversation_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scenario_id",
+        "jlpt_level",
+        "client_event_id"
+      ],
+      "properties": {
+        "scenario_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "jlpt_level": {
+          "$ref": "#/$defs/jlpt_level"
+        },
+        "client_event_id": {
+          "$ref": "#/$defs/uuid"
+        }
+      }
+    },
+    "start_conversation_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "assistant_message"
+      ],
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "assistant_message": {
+          "$ref": "#/$defs/assistant_message"
+        }
+      }
+    },
+    "conversation_turn_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "client_event_id",
+        "text_ja"
+      ],
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "client_event_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "text_ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        }
+      }
+    },
+    "conversation_turn_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assistant_message"
+      ],
+      "properties": {
+        "assistant_message": {
+          "$ref": "#/$defs/assistant_message"
+        },
+        "live_feedback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/correction"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    },
+    "finish_conversation_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "client_event_id"
+      ],
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "client_event_id": {
+          "$ref": "#/$defs/uuid"
+        }
+      }
+    },
+    "conversation_scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grammar",
+        "vocabulary",
+        "fluency"
+      ],
+      "properties": {
+        "grammar": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "vocabulary": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fluency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "finish_conversation_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scores",
+        "errors",
+        "strengths_vi",
+        "focus_next_vi",
+        "srs_recommendations"
+      ],
+      "properties": {
+        "scores": {
+          "$ref": "#/$defs/conversation_scores"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/correction"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "strengths_vi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "focus_next_vi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "srs_recommendations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item_ref"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    }
+  }
+}

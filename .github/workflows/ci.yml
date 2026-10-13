@@ -57,6 +57,12 @@ jobs:
                   json.load(source)
           print(f'Validated {len(paths)} JSON files')
           PY
+      - name: Install contract validator
+        run: python3 -m pip install -r contracts/requirements.txt
+      - name: Validate frozen contracts and regression cases
+        run: |
+          python3 contracts/validate.py
+          python3 -m unittest discover -s contracts -p 'test_*.py' -v
 
   flutter:
     needs: repo-sanity
