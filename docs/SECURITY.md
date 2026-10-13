@@ -8,3 +8,7 @@ Priorities:
 5. Model output never authorizes arbitrary writes.
 
 Use Supabase Auth, RLS on user-owned tables, secure token storage, safe logs, input-size limits, timeouts and structured validation. Test forged user_id, expired/missing token, malformed JSON, duplicate events, stale offline writes and repeated rapid AI requests.
+
+Executable baseline coverage, ranked assurance gaps and unresolved integration
+release gates are maintained in `../qa/matrix.json` and `QA_SECURITY_MATRIX.md`.
+Fixture auth/memory-provider tests do not prove live JWT/Edge/multi-device security.

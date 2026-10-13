@@ -1,0 +1,500 @@
+{
+  "version": 1,
+  "repository": "collab-TTAM/nihongo_daily",
+  "ci_gates": {
+    "repo-sanity": [
+      "Check forbidden secret-like files",
+      "Validate project manifest and content JSON",
+      "Validate authored curriculum exports",
+      "Validate frozen contracts and regression cases",
+      "Validate QA inventory and evidence regressions"
+    ],
+    "database": [
+      "Migration, grants, RLS, replay and concurrent uniqueness"
+    ],
+    "flutter": [
+      "Run flutter pub get --enforce-lockfile",
+      "Run dart format --output=none --set-exit-if-changed .",
+      "Run flutter analyze",
+      "Run flutter test",
+      "Verify pure SRS golden cases and emit actual wire payloads",
+      "Validate actual Dart SRS output against frozen wire contracts",
+      "Verify actual Kanji capture wire payloads",
+      "Validate actual Dart Kanji output against frozen contracts",
+      "Run flutter build web --release",
+      "Run actions/upload-artifact@v4"
+    ],
+    "windows": [
+      "Run flutter pub get --enforce-lockfile",
+      "Run flutter build windows --release",
+      "Run actions/upload-artifact@v4"
+    ],
+    "ai-boundary": [
+      "Run npm ci --ignore-scripts --no-audit --no-fund",
+      "Run npm audit --omit=dev --audit-level=moderate",
+      "Run npm run format:check",
+      "Run npm run check",
+      "Run npm test",
+      "Verify schema-generated TypeScript projections"
+    ]
+  },
+  "cases": [
+    {
+      "id": "wire-validation",
+      "status": "automated-baseline",
+      "scope": "Unknown owner/fields, rating correctness, finite numbers, dates and bounded outputs",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "contracts/test_contracts.py",
+          "contains": "test_forged_ownership_is_rejected"
+        }
+      ],
+      "issues": [
+        1
+      ],
+      "reproduce": "python3 -m pip install -r contracts/requirements.txt; python3 contracts/validate.py; python3 -m unittest discover -s contracts -p test_*.py -v",
+      "limitation": "Schema tests do not verify JWT or RLS."
+    },
+    {
+      "id": "content-integrity",
+      "status": "automated-baseline",
+      "scope": "Counts, unique IDs/text, references, Japanese readings and absent assets",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "contracts/test_content.py",
+          "contains": "test_scope_assets_and_levels_cannot_be_fabricated"
+        }
+      ],
+      "issues": [
+        5,
+        14,
+        26
+      ],
+      "reproduce": "python3 -m contracts.validate_content; python3 -m pip install -r contracts/requirements.txt; python3 contracts/validate.py; python3 -m unittest discover -s contracts -p test_*.py -v",
+      "limitation": "Small original N5 seed only; no N4/audio/reference stroke corpus or independent teacher review."
+    },
+    {
+      "id": "rls-isolation",
+      "status": "automated-baseline",
+      "scope": "Actual SQL roles A/B, parent message reads, forbidden writes, private functions",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/baseline.sql",
+          "contains": "User 2 isolation: review_events"
+        }
+      ],
+      "issues": [
+        3,
+        20
+      ],
+      "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
+      "limitation": "Native SQL fixture auth.uid() is not verified GoTrue/JWT/PostgREST integration."
+    },
+    {
+      "id": "review-storage",
+      "status": "automated-baseline",
+      "scope": "Immutable original result replay, changed-input conflict and native two-session uniqueness",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "scripts/test_review_concurrency.py",
+          "contains": "subprocess.Popen"
+        }
+      ],
+      "issues": [
+        3,
+        22
+      ],
+      "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
+      "limitation": "Storage helper race is not an atomic submit_review endpoint or updated scheduler counters."
+    },
+    {
+      "id": "ai-sql-receipts",
+      "status": "automated-baseline",
+      "scope": "Private token ownership, scoped claim/completion, privileges and rollback",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_receipts.sql",
+          "contains": "rolled-back claim has no orphan token"
+        }
+      ],
+      "issues": [
+        7,
+        31
+      ],
+      "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
+      "limitation": "Helpers do not persist conversation messages/session in a real adapter transaction."
+    },
+    {
+      "id": "ai-claim-race",
+      "status": "automated-baseline",
+      "scope": "Two native sessions grant exactly one dispatch owner",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "scripts/test_ai_claim_concurrency.py",
+          "contains": "subprocess.Popen"
+        }
+      ],
+      "issues": [
+        7,
+        31
+      ],
+      "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
+      "limitation": "SQL claims do not prove upstream delivery, recovery or two distinct session events."
+    },
+    {
+      "id": "srs-policy",
+      "status": "automated-baseline",
+      "scope": "Versioned 26 policy pairs, offsets, stale events and actual Dart wire output",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_scheduler_test.dart",
+          "contains": "same instant in different offsets produces identical schedules"
+        }
+      ],
+      "issues": [
+        4,
+        22
+      ],
+      "reproduce": "In apps/flutter_app with Flutter 3.35.4: flutter pub get --enforce-lockfile; flutter analyze; flutter test; dart run tool/verify_srs.dart build/srs-wire-output.json; from root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-wire-output.json",
+      "limitation": "Pure scheduler; no authenticated persistence, queue or integrated review UI."
+    },
+    {
+      "id": "kanji-capture",
+      "status": "automated-baseline",
+      "scope": "Bounded capture/time/multiple pointers, undo/clear and synthetic scoring",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/kanji/kanji_domain_test.dart",
+          "contains": "stationary events still enforce monotonic event time"
+        }
+      ],
+      "issues": [
+        6,
+        16
+      ],
+      "reproduce": "In apps/flutter_app with Flutter 3.35.4: flutter pub get --enforce-lockfile; flutter analyze; flutter test; dart run tool/verify_kanji.dart build/kanji-wire-output.json; from root: python3 -m contracts.validate_kanji_wire apps/flutter_app/build/kanji-wire-output.json",
+      "limitation": "Synthetic fixtures never establish canonical stroke order, recognition or learner grades."
+    },
+    {
+      "id": "preview-ui",
+      "status": "automated-baseline",
+      "scope": "Navigation, recovery, loading/error/retry/empty and large text layouts",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/app_test.dart",
+          "contains": "failure is safe and retry reloads the repository"
+        }
+      ],
+      "issues": [
+        2,
+        12,
+        18
+      ],
+      "reproduce": "In apps/flutter_app with Flutter 3.35.4: flutter pub get --enforce-lockfile; flutter analyze; flutter test",
+      "limitation": "Widget tests exercise a labeled demo; no interactive web/Windows or account/study flow evidence."
+    },
+    {
+      "id": "ai-boundary-faults",
+      "status": "automated-baseline",
+      "scope": "Missing/expired/forged identity, limits, provider malformed output/timeout and safe errors",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/service.test.ts",
+          "contains": "missing/expired/forged identity never dispatches or allocates receipt"
+        }
+      ],
+      "issues": [
+        7,
+        17,
+        31
+      ],
+      "reproduce": "In backend/ai on Node 24: npm ci --ignore-scripts --no-audit --no-fund; npm audit --omit=dev --audit-level=moderate; npm run format:check; npm run check; npm test",
+      "limitation": "Auth/limiter/provider ports are test fixtures, not JWT verification or distributed rate limiting."
+    },
+    {
+      "id": "ai-retry-recovery",
+      "status": "automated-baseline",
+      "scope": "Duplicate concurrent requests, changed input, pending recovery, commit failure and immutable results",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/service.test.ts",
+          "contains": "pending recovery validates existing result without another dispatch"
+        }
+      ],
+      "issues": [
+        7,
+        31
+      ],
+      "reproduce": "In backend/ai on Node 24: npm ci --ignore-scripts --no-audit --no-fund; npm audit --omit=dev --audit-level=moderate; npm run format:check; npm run check; npm test",
+      "limitation": "Memory test store and lookup fixture are not durable process restart or provider reconciliation."
+    },
+    {
+      "id": "dependency-audit",
+      "status": "automated-baseline",
+      "scope": "Pinned patched Ajv, production audit and unchanged generated schema projections",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/src/contracts.ts",
+          "contains": "$data: false"
+        }
+      ],
+      "issues": [
+        7,
+        8
+      ],
+      "reproduce": "In backend/ai on Node 24: npm ci --ignore-scripts --no-audit --no-fund; npm audit --omit=dev --audit-level=moderate; npm run format:check; npm run check; npm test; from root: python3 backend/ai/generate_types.py; from backend/ai: npm run format; git diff --exit-code -- src/wire.ts",
+      "limitation": "Production npm audit snapshot alone does not establish security of Flutter/native/dev dependencies or application."
+    },
+    {
+      "id": "qa-evidence",
+      "status": "automated-baseline",
+      "scope": "Reject missing/skipped/pending/stale-head/mixed-attempt CI evidence",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "qa/test_verify_qa.py",
+          "contains": "test_rejects_stale_head"
+        }
+      ],
+      "issues": [
+        8,
+        18
+      ],
+      "reproduce": "python3 scripts/verify_qa.py; python3 -m unittest discover -s qa -p test_*.py -v",
+      "limitation": "Checks saved Actions metadata, not test execution/authenticity or integration completion."
+    },
+    {
+      "id": "auth-live",
+      "status": "pending-integration",
+      "scope": "Login/logout, expiry, restart and two actual user accounts",
+      "issues": [
+        20,
+        18
+      ],
+      "reproduce": "Non-production Supabase: login A/B, verify issuer/signature/expiry, provision profiles from trusted identity, restart/restore, sign out/switch and inspect caches. Record exact commit/environment and redacted assertions.",
+      "limitation": "No configured real Auth/account session adapter or end-to-end evidence."
+    },
+    {
+      "id": "review-rpc",
+      "status": "pending-integration",
+      "scope": "Authoritative atomic review scheduling/replay/rollback",
+      "issues": [
+        22,
+        18
+      ],
+      "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
+      "limitation": "Only pure Dart and storage helper tests currently exist."
+    },
+    {
+      "id": "daily-plan",
+      "status": "pending-integration",
+      "scope": "Profile-local dates and persistent session aggregation",
+      "issues": [
+        11,
+        18
+      ],
+      "reproduce": "At local midnight and timezone changes: generate/retry existing plan, record duplicate sessions, exceed target, restart; verify progress preserved and unavailable AI BLOCKED.",
+      "limitation": "Home shows a process-local preview allocation; no get_daily_plan/session write service."
+    },
+    {
+      "id": "study-flows",
+      "status": "pending-integration",
+      "scope": "Vocabulary/grammar and listening/reading learner screens",
+      "issues": [
+        12,
+        34,
+        18
+      ],
+      "reproduce": "Select actual N5/N4 items, display readings/examples/meaning, load/error/empty/offline, complete validated study session; verify no simulated audio/completion.",
+      "limitation": "Curriculum exports are not yet integrated; listening/reading needs its own implementation coverage."
+    },
+    {
+      "id": "n5-coverage",
+      "status": "pending-integration",
+      "scope": "Explicit Personal Alpha N5 target/editorial coverage",
+      "issues": [
+        26,
+        18
+      ],
+      "reproduce": "Check reviewed count/topic/grammar-skill target against versioned exports and real study/quiz/listening flows; record linguistic review and asset gaps.",
+      "limitation": "24 words/8 Kanji/10 grammar/44 examples are a seed, not complete N5."
+    },
+    {
+      "id": "n4-coverage",
+      "status": "pending-integration",
+      "scope": "Original N4 target and curriculum",
+      "issues": [
+        14,
+        18
+      ],
+      "reproduce": "Validate N4 exports/references/version/counts, review Japanese/Vietnamese examples and exercise actual N4 study screens.",
+      "limitation": "No N4 exports are currently supplied."
+    },
+    {
+      "id": "kanji-real",
+      "status": "pending-integration",
+      "scope": "Licensed canonical assets, tracing and real persisted grading",
+      "issues": [
+        16,
+        18
+      ],
+      "reproduce": "Reproduce pinned licensed import, validate counts/lookup/order/coordinates; draw correct/wrong/missing references, verify honest feedback, record persisted attempt through trusted service.",
+      "limitation": "Capture/synthetic scores cannot be counted as real grading or tracing."
+    },
+    {
+      "id": "ai-runtime",
+      "status": "pending-integration",
+      "scope": "Trusted Edge/Deno/SQL transactions and distributed limits",
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "On verified runtime with A/B: two distinct and same session events, sequence/ownership, crash before/after dispatch/commit, pending reconciliation; verify JWT and global limiter.",
+      "limitation": "Node tests and private SQL functions are not the complete transaction/session runtime."
+    },
+    {
+      "id": "ai-live",
+      "status": "pending-integration",
+      "scope": "Configured real tutor/correction/text conversation",
+      "issues": [
+        17,
+        31,
+        18
+      ],
+      "reproduce": "Call approved backend provider through verified user session; validate outputs, rate/size/deadline failures, original retry result and provider correlation without duplicate billing.",
+      "limitation": "No provider configured or real call evidence; materially higher spend remains an approval gate."
+    },
+    {
+      "id": "voice-live",
+      "status": "pending-integration",
+      "scope": "Actual capture/playback, permissions and retention",
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "Review audio contract/retention/permissions; record/upload or stream and play a real conversation on supported devices; test denial/disconnect and approved retention.",
+      "limitation": "No audio contract or integration; expanded data collection remains an approval gate."
+    },
+    {
+      "id": "offline-sync",
+      "status": "pending-integration",
+      "scope": "Durable restart/reconnect/two-device/account-isolated events",
+      "issues": [
+        15,
+        20,
+        22,
+        18
+      ],
+      "reproduce": "Run two clients A/B, go offline, queue immutable event IDs/times, restart, reconnect/resend, provoke stale/two-device conflict and account switch; inspect retained authoritative state.",
+      "limitation": "No durable local queue/cache, multi-device integration or restart tests."
+    },
+    {
+      "id": "quiz-progress",
+      "status": "pending-integration",
+      "scope": "Validated quiz scoring, mastery and weak points",
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "Submit correct/wrong/repeated/duplicate attempts; verify owner history/counters, empty state and recommendations referencing curriculum; inspect dashboard.",
+      "limitation": "No quiz/mastery/progress service; reserved MASTERED cannot substitute for mastery evidence."
+    },
+    {
+      "id": "browser-windows-smoke",
+      "status": "pending-integration",
+      "scope": "Actual web and Windows launch/navigation",
+      "issues": [
+        18
+      ],
+      "reproduce": "Serve exact web artifact; launch exe with DLL/data directory on Windows 2022-compatible toolchain; inspect 320/375/desktop/200% text, navigation, refresh/deep-link and console; record OS/browser/build SHA.",
+      "limitation": "Build/widget pass is not an observed interactive app launch; iOS build is not claimed."
+    },
+    {
+      "id": "learner-journey",
+      "status": "pending-integration",
+      "scope": "Complete Personal Alpha learner path and recovery",
+      "issues": [
+        18
+      ],
+      "reproduce": "Exact tested commit: login -> plan -> study -> review -> quiz -> Kanji -> conversation/voice -> progress; restart/two-device sync, no critical defects; preserve rollback/recovery and evidence.",
+      "limitation": "Eight starter issues closing is not a release. Production/App Store gates remain separate."
+    }
+  ],
+  "findings": [
+    {
+      "id": "SEC-01",
+      "severity": "high",
+      "kind": "coverage-gap",
+      "cases": [
+        "auth-live",
+        "offline-sync"
+      ],
+      "description": "Real identity verification, session lifecycle and cross-account cache isolation remain unverified. This is missing release assurance, not a proven exploit.",
+      "action": "Complete #20/#15; run actual A/B, expiry/restart/sign-out cases before enabling personal data flows."
+    },
+    {
+      "id": "SEC-02",
+      "severity": "high",
+      "kind": "coverage-gap",
+      "cases": [
+        "ai-runtime",
+        "ai-live"
+      ],
+      "description": "Distributed limits, trusted message/session transactions and upstream reconciliation are not bound in the runtime. Fixture success cannot authorize real provider calls.",
+      "action": "Complete #31/#17 with durable commit-before-dispatch and correlated lookup-only recovery; retain safe pending state."
+    },
+    {
+      "id": "SEC-03",
+      "severity": "high",
+      "kind": "coverage-gap",
+      "cases": [
+        "review-rpc",
+        "offline-sync"
+      ],
+      "description": "Authoritative review endpoint and durable retry queue are missing; storage uniqueness alone does not protect scheduling counters.",
+      "action": "Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts."
+    },
+    {
+      "id": "SEC-04",
+      "severity": "medium",
+      "kind": "coverage-gap",
+      "cases": [
+        "voice-live"
+      ],
+      "description": "Audio contract, permissions and retention assurance is missing. No audio collection should be inferred from text schemas.",
+      "action": "Review #17 audio design and applicable user gates before activation; test denial/disconnect/retention."
+    },
+    {
+      "id": "SEC-05",
+      "severity": "medium",
+      "kind": "coverage-gap",
+      "cases": [
+        "browser-windows-smoke"
+      ],
+      "description": "No observed interactive browser/native launch evidence; CI builds and widget tests do not cover artifact launch failures.",
+      "action": "Run exact artifact smoke on supported browser/Windows in #18 and preserve redacted environment/assertions."
+    },
+    {
+      "id": "DEP-01",
+      "severity": "medium",
+      "kind": "remediated-dependency",
+      "cases": [
+        "dependency-audit"
+      ],
+      "description": "PR #32 remediated Ajv GHSA-2g4f-4pwh-qvx6 with 8.20.0 and disabled $data; production audit passed at reviewed head e3200bc6.",
+      "action": "Retain moderate production audit and monitor new findings; do not disable tests or generalize this snapshot to overall security."
+    }
+  ]
+}
