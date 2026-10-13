@@ -63,7 +63,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Base: main 9383339 (PR #19 merged). Main CI 38409499736 succeeded.
   #2 is closed; the earlier #2 handoff above is historical.
-- Branch: automation/issue-3-schema-rls. Initial additive migration with 23 public
+- Branch: automation/issue-3-schema-rls. Initial additive migration with 22 public
   tables, ownership/parent-message RLS, explicit column/table grants, immutable
   review receipts, typed curriculum FKs, normalized relationship FKs and indexes.
 - Only own-profile allowlisted settings are client-writable. Curriculum, events,
@@ -95,3 +95,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Review also caught inherited service-role TRUNCATE grants under older platform
   defaults. Revoke those explicitly before granting DML; an SQL catalog regression
   proves no project table retains service-role TRUNCATE. Current-head CI is required.
+
+- Native PostgreSQL 17 reports 23503 for the restrictive-FK delete, while the local
+  PostgreSQL 18/PGlite reports 23001. The regression now requires one of those two
+  referential-integrity rejection codes plus unchanged curriculum and learning
+  history rows. Successful deletion or unrelated errors still fail the test.
+- Contract validator (20 fixtures) and all 15 contract tests passed locally using
+  the installed contract environment. No Flutter source changed in this PR.

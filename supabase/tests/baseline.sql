@@ -295,7 +295,17 @@ select test_support.expect_error($s$insert into public.review_events(user_id,lea
 select test_support.expect_error($s$insert into public.review_events select * from public.review_events limit 1$s$,'23505','duplicate immutable event');
 select test_support.expect_error($s$update public.review_events set rating=3$s$,'23514','even trusted event mutation denied');
 select test_support.expect_error($s$delete from public.review_events$s$,'23514','even trusted event deletion denied');
-select test_support.expect_error($s$delete from public.vocabulary where is_active$s$,'23001','curriculum history cannot be deleted');
+-- Native PG17 reports foreign_key_violation; local PG18/PGlite reports
+-- restrict_violation. Require a referential rejection AND unchanged referenced data.
+do $$
+declare observed text;
+begin
+  begin delete from public.vocabulary where is_active;
+  exception when others then get stacked diagnostics observed = returned_sqlstate; end;
+  perform test_support.assert_true(observed in ('23001','23503'),'curriculum deletion has a referential-integrity rejection');
+  perform test_support.assert_true((select count(*)=2 from public.vocabulary),'failed deletion preserves curriculum rows');
+  perform test_support.assert_true((select count(*)=2 from public.user_learning_items),'failed deletion preserves learning history');
+end $$;
 select test_support.expect_error($s$update public.user_learning_items set user_id='10000000-0000-4000-8000-000000000002' where user_id='10000000-0000-4000-8000-000000000001'$s$,'23514','trusted owner change denied');
 select test_support.expect_error($s$update public.user_learning_items set difficulty='NaN'$s$,'23514','NaN difficulty rejected');
 select test_support.expect_error($s$update public.user_learning_items set stability='Infinity'$s$,'23514','infinite stability rejected');
