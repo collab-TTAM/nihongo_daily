@@ -91,3 +91,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Asia/Ho_Chi_Minh fixes actual plan conversion; invalid zones remain rejected.
   Regression checks cover default/settings alias and Vietnam UTC+7 conversion.
   Await CI on the corrected head before integration.
+
+- Review also caught inherited service-role TRUNCATE grants under older platform
+  defaults. Revoke those explicitly before granting DML; an SQL catalog regression
+  proves no project table retains service-role TRUNCATE. Current-head CI is required.

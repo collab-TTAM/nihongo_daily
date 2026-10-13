@@ -376,7 +376,7 @@ create trigger receipts_no_delete before delete on public.operation_receipts
 for each row execute function private.reject_event_mutation();
 
 alter table public.profiles enable row level security;
-revoke all on table public.profiles from public, anon, authenticated;
+revoke all on table public.profiles from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.profiles to service_role;
 
 grant select on table public.profiles to authenticated;
@@ -384,7 +384,7 @@ grant select on table public.profiles to authenticated;
 create policy profiles_read on public.profiles for select to authenticated using ((select auth.uid()) = id);
 
 alter table public.devices enable row level security;
-revoke all on table public.devices from public, anon, authenticated;
+revoke all on table public.devices from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.devices to service_role;
 
 grant select on table public.devices to authenticated;
@@ -392,7 +392,7 @@ grant select on table public.devices to authenticated;
 create policy devices_read on public.devices for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.user_learning_items enable row level security;
-revoke all on table public.user_learning_items from public, anon, authenticated;
+revoke all on table public.user_learning_items from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.user_learning_items to service_role;
 
 grant select on table public.user_learning_items to authenticated;
@@ -400,7 +400,7 @@ grant select on table public.user_learning_items to authenticated;
 create policy user_learning_items_read on public.user_learning_items for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.review_events enable row level security;
-revoke all on table public.review_events from public, anon, authenticated;
+revoke all on table public.review_events from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.review_events to service_role;
 
 grant select on table public.review_events to authenticated;
@@ -408,7 +408,7 @@ grant select on table public.review_events to authenticated;
 create policy review_events_read on public.review_events for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.study_sessions enable row level security;
-revoke all on table public.study_sessions from public, anon, authenticated;
+revoke all on table public.study_sessions from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.study_sessions to service_role;
 
 grant select on table public.study_sessions to authenticated;
@@ -416,7 +416,7 @@ grant select on table public.study_sessions to authenticated;
 create policy study_sessions_read on public.study_sessions for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.daily_plans enable row level security;
-revoke all on table public.daily_plans from public, anon, authenticated;
+revoke all on table public.daily_plans from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.daily_plans to service_role;
 
 grant select on table public.daily_plans to authenticated;
@@ -424,7 +424,7 @@ grant select on table public.daily_plans to authenticated;
 create policy daily_plans_read on public.daily_plans for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.quiz_attempts enable row level security;
-revoke all on table public.quiz_attempts from public, anon, authenticated;
+revoke all on table public.quiz_attempts from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.quiz_attempts to service_role;
 
 grant select on table public.quiz_attempts to authenticated;
@@ -432,7 +432,7 @@ grant select on table public.quiz_attempts to authenticated;
 create policy quiz_attempts_read on public.quiz_attempts for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.kanji_attempts enable row level security;
-revoke all on table public.kanji_attempts from public, anon, authenticated;
+revoke all on table public.kanji_attempts from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.kanji_attempts to service_role;
 
 grant select on table public.kanji_attempts to authenticated;
@@ -440,7 +440,7 @@ grant select on table public.kanji_attempts to authenticated;
 create policy kanji_attempts_read on public.kanji_attempts for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.conversation_sessions enable row level security;
-revoke all on table public.conversation_sessions from public, anon, authenticated;
+revoke all on table public.conversation_sessions from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.conversation_sessions to service_role;
 
 grant select on table public.conversation_sessions to authenticated;
@@ -448,7 +448,7 @@ grant select on table public.conversation_sessions to authenticated;
 create policy conversation_sessions_read on public.conversation_sessions for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.learning_errors enable row level security;
-revoke all on table public.learning_errors from public, anon, authenticated;
+revoke all on table public.learning_errors from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.learning_errors to service_role;
 
 grant select on table public.learning_errors to authenticated;
@@ -456,7 +456,7 @@ grant select on table public.learning_errors to authenticated;
 create policy learning_errors_read on public.learning_errors for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.user_progress_snapshots enable row level security;
-revoke all on table public.user_progress_snapshots from public, anon, authenticated;
+revoke all on table public.user_progress_snapshots from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.user_progress_snapshots to service_role;
 
 grant select on table public.user_progress_snapshots to authenticated;
@@ -464,7 +464,7 @@ grant select on table public.user_progress_snapshots to authenticated;
 create policy user_progress_snapshots_read on public.user_progress_snapshots for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.operation_receipts enable row level security;
-revoke all on table public.operation_receipts from public, anon, authenticated;
+revoke all on table public.operation_receipts from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.operation_receipts to service_role;
 
 grant select on table public.operation_receipts to authenticated;
@@ -472,7 +472,7 @@ grant select on table public.operation_receipts to authenticated;
 create policy operation_receipts_read on public.operation_receipts for select to authenticated using ((select auth.uid()) = user_id);
 
 alter table public.conversation_messages enable row level security;
-revoke all on table public.conversation_messages from public, anon, authenticated;
+revoke all on table public.conversation_messages from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.conversation_messages to service_role;
 
 grant select on table public.conversation_messages to authenticated;
@@ -480,7 +480,7 @@ grant select on table public.conversation_messages to authenticated;
 create policy conversation_messages_read on public.conversation_messages for select to authenticated using (exists (select 1 from public.conversation_sessions s where s.id = conversation_session_id and s.user_id = (select auth.uid())));
 
 alter table public.vocabulary enable row level security;
-revoke all on table public.vocabulary from public, anon, authenticated;
+revoke all on table public.vocabulary from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.vocabulary to service_role;
 
 grant select on table public.vocabulary to authenticated;
@@ -488,7 +488,7 @@ grant select on table public.vocabulary to authenticated;
 create policy vocabulary_read on public.vocabulary for select to authenticated using (is_active);
 
 alter table public.kanji enable row level security;
-revoke all on table public.kanji from public, anon, authenticated;
+revoke all on table public.kanji from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.kanji to service_role;
 
 grant select on table public.kanji to authenticated;
@@ -496,7 +496,7 @@ grant select on table public.kanji to authenticated;
 create policy kanji_read on public.kanji for select to authenticated using (is_active);
 
 alter table public.grammar enable row level security;
-revoke all on table public.grammar from public, anon, authenticated;
+revoke all on table public.grammar from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.grammar to service_role;
 
 grant select on table public.grammar to authenticated;
@@ -504,7 +504,7 @@ grant select on table public.grammar to authenticated;
 create policy grammar_read on public.grammar for select to authenticated using (is_active);
 
 alter table public.conversation_scenarios enable row level security;
-revoke all on table public.conversation_scenarios from public, anon, authenticated;
+revoke all on table public.conversation_scenarios from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.conversation_scenarios to service_role;
 
 grant select (id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi) on public.conversation_scenarios to authenticated;
@@ -512,7 +512,7 @@ grant select (id,jlpt_level,difficulty,content_version,is_active,title_vi,title_
 create policy conversation_scenarios_read on public.conversation_scenarios for select to authenticated using (is_active);
 
 alter table public.vocabulary_examples enable row level security;
-revoke all on table public.vocabulary_examples from public, anon, authenticated;
+revoke all on table public.vocabulary_examples from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.vocabulary_examples to service_role;
 
 grant select on table public.vocabulary_examples to authenticated;
@@ -520,7 +520,7 @@ grant select on table public.vocabulary_examples to authenticated;
 create policy vocabulary_examples_read on public.vocabulary_examples for select to authenticated using (exists (select 1 from public.vocabulary v where v.id = vocabulary_id and v.is_active));
 
 alter table public.grammar_examples enable row level security;
-revoke all on table public.grammar_examples from public, anon, authenticated;
+revoke all on table public.grammar_examples from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.grammar_examples to service_role;
 
 grant select on table public.grammar_examples to authenticated;
@@ -528,7 +528,7 @@ grant select on table public.grammar_examples to authenticated;
 create policy grammar_examples_read on public.grammar_examples for select to authenticated using (exists (select 1 from public.grammar g where g.id = grammar_id and g.is_active));
 
 alter table public.grammar_relations enable row level security;
-revoke all on table public.grammar_relations from public, anon, authenticated;
+revoke all on table public.grammar_relations from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.grammar_relations to service_role;
 
 grant select on table public.grammar_relations to authenticated;
@@ -536,7 +536,7 @@ grant select on table public.grammar_relations to authenticated;
 create policy grammar_relations_read on public.grammar_relations for select to authenticated using (exists (select 1 from public.grammar g where g.id = grammar_id and g.is_active) and exists (select 1 from public.grammar g where g.id = related_grammar_id and g.is_active));
 
 alter table public.scenario_grammar enable row level security;
-revoke all on table public.scenario_grammar from public, anon, authenticated;
+revoke all on table public.scenario_grammar from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.scenario_grammar to service_role;
 
 grant select on table public.scenario_grammar to authenticated;
@@ -544,7 +544,7 @@ grant select on table public.scenario_grammar to authenticated;
 create policy scenario_grammar_read on public.scenario_grammar for select to authenticated using (exists (select 1 from public.conversation_scenarios s where s.id = scenario_id and s.is_active) and exists (select 1 from public.grammar g where g.id = grammar_id and g.is_active));
 
 alter table public.scenario_vocabulary enable row level security;
-revoke all on table public.scenario_vocabulary from public, anon, authenticated;
+revoke all on table public.scenario_vocabulary from public, anon, authenticated, service_role;
 grant select, insert, update, delete on table public.scenario_vocabulary to service_role;
 
 grant select on table public.scenario_vocabulary to authenticated;

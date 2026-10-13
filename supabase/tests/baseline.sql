@@ -303,12 +303,29 @@ select test_support.expect_error($s$update public.kanji_attempts set score_total
 select test_support.expect_error($s$insert into public.conversation_messages(conversation_session_id,role,text_ja,sequence_no) values ('70000000-0000-4000-8000-000000000001','assistant','x',0)$s$,'23505','message sequence unique');
 select test_support.expect_error($s$update public.profiles set timezone='missing'$s$,'23514','timezone checked for trusted writes');
 select test_support.expect_error($s$update public.operation_receipts set status='COMPLETED'$s$,'23514','completed receipt requires result');
+-- Broad platform defaults must not silently retain trusted TRUNCATE privileges.
+select test_support.assert_true(not exists (select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and has_table_privilege('service_role',c.oid,'TRUNCATE')),'service role cannot truncate project tables');
+-- Relation visibility must check both active parent and active target.
+insert into public.scenario_grammar(scenario_id,grammar_id) values ('50000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001');
+insert into public.scenario_vocabulary(scenario_id,vocabulary_id) select '50000000-0000-4000-8000-000000000001',id from public.vocabulary;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+select test_support.assert_true((select count(*)=1 from public.scenario_grammar),'active scenario grammar visible');
+select test_support.assert_true((select count(*)=1 from public.scenario_vocabulary),'inactive scenario vocabulary hidden');
+reset role;
+update public.conversation_scenarios set is_active=false;
+set local role authenticated;
+select test_support.assert_true((select count(*)=0 from public.scenario_grammar),'retired scenario hides grammar targets');
+select test_support.assert_true((select count(*)=0 from public.scenario_vocabulary),'retired scenario hides vocabulary targets');
+reset role;
 -- Replay identical request returns the original result, changed request conflicts.
 set local role service_role;
 select test_support.assert_true(private.review_replay('10000000-0000-4000-8000-000000000001',
  '{"client_event_id":"80000000-0000-4000-8000-000000000001","rating":2}') = '{"original":true,"owner":1}'::jsonb,'original review response replay');
 select test_support.expect_error($s$select private.review_replay('10000000-0000-4000-8000-000000000001',
  '{"client_event_id":"80000000-0000-4000-8000-000000000001","rating":1}')$s$,'P0001','changed replay conflicts');
+select test_support.assert_true(private.review_replay('10000000-0000-4000-8000-000000000002',
+ '{"client_event_id":"80000000-0000-4000-8000-000000000001","rating":2}') = '{"original":true,"owner":2}'::jsonb,'replay response is scoped to second owner');
 select test_support.assert_true(private.review_replay('10000000-0000-4000-8000-000000000001',
  '{"client_event_id":"80000000-0000-4000-8000-000000000002"}') is null,'unknown receipt returns no replay');
 reset role;
