@@ -16,15 +16,19 @@ class KanjiCaptureScreen extends ConsumerWidget {
     return PageBody(
       children: [
         Text('Luyện Kanji', style: Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height: 8),
         const Text('BẢN XEM TRƯỚC · NHẬP NÉT THỬ NGHIỆM'),
+        const SizedBox(height: 12),
         const Text(
           'Dùng chuột, bút hoặc ngón tay để vẽ trong ô vuông. '
           'Nét chỉ giữ trong màn này; chưa lưu tiến độ.',
         ),
+        const SizedBox(height: 8),
         const Text(
           'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
           'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
         ),
+        const SizedBox(height: 20),
         Align(
           alignment: Alignment.center,
           child: ConstrainedBox(
@@ -91,11 +95,13 @@ class KanjiCaptureScreen extends ConsumerWidget {
             ),
           ),
         ),
+        const SizedBox(height: 12),
         Text(
           'Đã nhập ${state.strokes.length} nét / 64',
           key: const Key('kanji-count'),
           semanticsLabel: 'Số nét đã nhập: ${state.strokes.length}',
         ),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 12,
           runSpacing: 8,
@@ -116,6 +122,7 @@ class KanjiCaptureScreen extends ConsumerWidget {
             ),
           ],
         ),
+        const SizedBox(height: 12),
         if (state.messageVi != null)
           Text(
             state.messageVi!,

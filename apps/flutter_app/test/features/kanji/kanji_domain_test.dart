@@ -74,6 +74,14 @@ void main() {
     });
   });
   group('capture', () {
+    test('stationary events still enforce monotonic event time', () {
+      final c = StrokeCapture();
+      c.begin(1, 20, 50, 100, 100);
+      c.move(1, 20, 50, 100, 200);
+      expect(c.end(1, 80, 50, 100, 150), isFalse);
+      expect(c.active, isEmpty);
+      expect(c.strokes, isEmpty);
+    });
     test('square normalization, boundary clamp and relative time', () {
       final c = StrokeCapture();
       c.begin(1, 20, 50, 100, 1000);

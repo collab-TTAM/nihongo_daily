@@ -185,3 +185,6 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Resume this PR and CI first; after integration next worker task is #7 validated
   AI interfaces. #16 still gates real stroke assets/grading. Personal Alpha remains
   IN_PROGRESS; no hosted/backend/recognition/real-grade claim.
+
+- Separate review fix: enforce event-time monotonicity even for coalesced stationary
+  samples; added targeted regression. Added spacing for readable canvas guidance.

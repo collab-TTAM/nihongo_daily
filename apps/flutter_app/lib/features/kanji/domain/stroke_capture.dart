@@ -7,6 +7,7 @@ class StrokeCapture {
   List<StrokePoint> _active = [];
   int? _pointer;
   int _startedAt = 0;
+  int _lastEventAt = 0;
   double _side = 0;
   String? messageVi;
 
@@ -34,6 +35,7 @@ class StrokeCapture {
     }
     _pointer = pointer;
     _startedAt = timestampMs;
+    _lastEventAt = timestampMs;
     _side = side;
     _active = [StrokePoint(x / side, y / side, 0)];
     return true;
@@ -45,7 +47,7 @@ class StrokeCapture {
     if (side != _side ||
         !x.isFinite ||
         !y.isFinite ||
-        elapsed < _active.last.t ||
+        timestampMs < _lastEventAt ||
         elapsed > 3600000) {
       cancel(pointer);
       messageVi = 'Nét bị hủy do kích thước hoặc thời gian không hợp lệ.';
@@ -53,6 +55,7 @@ class StrokeCapture {
     }
     final px = (x / side).clamp(0.0, 1.0);
     final py = (y / side).clamp(0.0, 1.0);
+    _lastEventAt = timestampMs;
     // Stationary events add no geometry; retain the final elapsed time on end.
     if (_active.last.x == px && _active.last.y == py) return true;
     if (_active.length >= 4096) {
