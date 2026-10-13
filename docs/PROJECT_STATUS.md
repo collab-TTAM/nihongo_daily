@@ -11,7 +11,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
 | Kanji writing engine | READY for synthetic primitives; real assets #16 | #6 Kanji |
 | AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
-| N5/N4 content pipeline | READY for #5; mapping merged; N4 follow-up #14 | #5 Content |
+| N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
 | QA/security baseline | READY to start against implementation PR #19 | #8 QA |
 
 ## Historical handoff — Issue #1, 2026-10-13
@@ -141,3 +141,29 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Separate review fix: reject duplicate JSON object members and fullwidth romaji
   readings; two mutation regressions added. No validation/security gate weakened.
+
+## Integrated handoff — Issue #5 / PR #27, 2026-10-13 UTC
+
+- Merged PR #27 as d5afac06f129f1c9ae899bd3827b24dfc89ae8d6; #5 completed.
+  Separately reviewed exact head d1756a389895e7910d0fe6ff20b8d684006558fb.
+- Original seed: 24 vocabulary, 8 Kanji, 10 grammar and 44 embedded examples with
+  kana readings/Vietnamese text; stable IDs and honest scope/count/asset manifest.
+  Pinned metadata provenance and linguistic notes are in data/README.md.
+- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38443120630
+  completed successfully; repo-sanity, database, flutter and windows all passed.
+  repo-sanity validates the exports, 20 baseline fixtures and 34 Python regressions.
+  Flutter retained format/analyze/full tests, 26 SRS policy cases and actual-wire
+  schema checks/web release build; Windows release and SQL/RLS/native race passed.
+- Local checks: 34 Python tests, content/contracts, Python compile, manifest schema,
+  forbidden-file and whitespace checks. Local Flutter/native PostgreSQL unavailable;
+  their evidence is CI, not local execution. Remote uploaded tree matched reviewed
+  local files. No interactive browser/native or hosted service validation claimed.
+- Review fixes: duplicate JSON object members and fullwidth romaji are rejected.
+  No frozen wire schema, RLS, migration, Flutter or provider change.
+- Limits: small editorial seed, not complete N5/N4 support. No audio/stroke geometry,
+  importer or content UI integration; independent teacher review not observed.
+  #26 tracks N5 scope/expansion, #14 N4, #12 study and #16 real reference assets.
+- Next: #6 Kanji capture/normalization and synthetic scoring primitives, with #2
+  and #1 already merged. No external credential blocks this work. Resume any open
+  evidence PR first. Personal Alpha remains IN_PROGRESS with live integration,
+  broader curriculum, offline/sync and release acceptance still outstanding.
