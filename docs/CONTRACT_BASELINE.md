@@ -34,6 +34,21 @@ READY titles do not prove prerequisites. One worker resumes its current PR first
 
 Independent pure models can continue while external credentials block another task. Follow-up issues must cover Daily Plan/UI, N4 content, quiz/mastery/weak points, offline/sync and live voice before Personal Alpha is complete.
 
+## Personal Alpha follow-up queue
+
+| Issue | Scope |
+| --- | --- |
+| #11 | Daily Plan and study-session progress |
+| #12 | Vocabulary/grammar study flows |
+| #13 | Quiz, mastery and weak-point dashboard |
+| #14 | Original N4 content and explicit N5/N4 coverage |
+| #15 | Offline queue and multi-device sync |
+| #16 | Licensed/vetted Kanji reference assets for real grading |
+| #17 | Live tutor and voice integration |
+| #18 | Integrated Personal Alpha validation/release evidence |
+
+Each issue has prerequisites and acceptance criteria. #6 can deliver synthetic capture/scoring primitives before #16; real grading must wait for validated assets. External configuration does not block #2.
+
 ## Validation and compatibility
 
 The repo-sanity job runs schema/fixture checks and regression tests. Tests cover formats, bounds, contradictory correctness, unknown ownership fields, plan totals/uniqueness, stroke normalization/timing, malformed AI output and non-finite JSON. Auth/RLS/provider integration require separate backend tests.

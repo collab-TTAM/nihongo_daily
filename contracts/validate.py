@@ -116,6 +116,12 @@ def validate_baseline(root=ROOT):
     }, schema)
     if plan["target_minutes"] != 120:
         raise ContractError("Default daily target must remain 120 minutes")
+    expected_minutes = {
+        "SRS": 20, "VOCABULARY": 15, "KANJI": 20, "GRAMMAR": 15,
+        "LISTENING_READING": 15, "AI_CONVERSATION": 25, "QUIZ_REVIEW": 10,
+    }
+    if {block["type"]: block["planned_minutes"] for block in plan["blocks"]} != expected_minutes:
+        raise ContractError("Default block durations differ from PROJECT_SPEC")
     return len(fixtures)
 
 

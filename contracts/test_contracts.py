@@ -1,6 +1,7 @@
 """Regression cases for client/server disagreements and malformed payloads."""
 
 import copy
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -73,6 +74,18 @@ class ContractTests(unittest.TestCase):
         payload = self.fixture("get_daily_plan_response")
         payload["completed_minutes"] = 150
         validate_payload("get_daily_plan_response", payload)
+
+    def test_default_plan_cannot_silently_redistribute_minutes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ("models.schema.json", "fixtures.json", "contract.json"):
+                (root / name).write_text((ROOT / name).read_text())
+            config = load_json(root / "contract.json")
+            config["default_daily_plan"]["blocks"][0]["planned_minutes"] -= 5
+            config["default_daily_plan"]["blocks"][1]["planned_minutes"] += 5
+            (root / "contract.json").write_text(json.dumps(config))
+            with self.assertRaises(ContractError):
+                validate_baseline(root)
 
     def test_kanji_points_indices_and_time(self):
         payload = self.fixture("evaluate_kanji_request")
