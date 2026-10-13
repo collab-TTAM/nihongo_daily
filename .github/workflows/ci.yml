@@ -59,6 +59,8 @@ jobs:
           PY
       - name: Install contract validator
         run: python3 -m pip install -r contracts/requirements.txt
+      - name: Validate authored curriculum exports
+        run: python3 -m contracts.validate_content
       - name: Validate frozen contracts and regression cases
         run: |
           python3 contracts/validate.py

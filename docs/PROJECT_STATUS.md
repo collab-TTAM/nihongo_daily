@@ -118,3 +118,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   satisfied. Live configuration does not block original content work.
 - Personal Alpha remains IN_PROGRESS with curriculum, study screens, real auth,
   sync, Kanji, AI/voice and integrated release evidence still outstanding.
+
+## Development handoff — Issue #5, 2026-10-13 UTC
+
+- Branch automation/issue-5-n5-seed, base main 73c1dc8. Original editorial N5
+  seed: 24 vocabulary, 8 Kanji, 10 grammar and 44 embedded example entries.
+  Stable IDs, version/count/scope manifest, Vietnamese explanations and readings.
+- Added strict offline export gate and 17 mutation/regression tests; CI runs the
+  gate and all existing tests. Wire models, Flutter source and database unchanged.
+- Local: content/schema/count/reference validation passed; 20 baseline fixtures
+  and all 34 Python tests passed; Python compile/whitespace passed. Eight stroke
+  counts cross-checked against pinned KanjiVG metadata; assets not redistributed.
+- Flutter SDK/native PostgreSQL are absent locally. Existing full Flutter format,
+  analyze/tests/SRS output validation, web/Windows builds and SQL/race checks must
+  pass in CI for the PR's exact head before integration; no such result claimed yet.
+- Not full N5/N4 curriculum; no audio, reference strokes, importer, hosted service
+  or UI integration. Linguistic correspondence manually reviewed by the worker;
+  independent teacher review is not observed. Details/provenance in data/README.md.
+- Resume this PR first, then #6 Kanji capture/synthetic primitives. #26 tracks N5 expansion; #14 can extend
+  the content gate with N4; #12 consumes original exports; #16 provides real assets.
+  Personal Alpha remains IN_PROGRESS; no new user action is needed for #6.
+
+- Separate review fix: reject duplicate JSON object members and fullwidth romaji
+  readings; two mutation regressions added. No validation/security gate weakened.
