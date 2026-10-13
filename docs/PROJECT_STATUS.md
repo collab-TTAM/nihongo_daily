@@ -8,7 +8,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
-| SRS engine | READY after #2 merge; usable Dart package implemented | #4 Learning |
+| SRS engine | IMPLEMENTED pure nd-srs-1; review/CI pending; RPC #22 | #4 Learning |
 | Kanji writing engine | READY for synthetic primitives; real assets #16 | #6 Kanji |
 | AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
 | N5/N4 content pipeline | READY for #5; mapping merged; N4 follow-up #14 | #5 Content |
@@ -89,3 +89,23 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next task: #4 deterministic pure Dart SRS on automation/issue-4-srs-core, then
   #5 original N5 content according to dependency order. #4 needs no live secrets.
   Main stays IN_PROGRESS toward Personal Alpha; no release completion claimed.
+
+## Latest handoff — Issue #4, 2026-10-13
+
+- Base main a9fb12b; branch automation/issue-4-srs-core. #1/#2/#3 integrated.
+- Implemented: immutable pure Dart card/request types and nd-srs-1 scheduler;
+  0/1/2/3 ratings, short learning/relearning intervals, bounded early/overdue credit,
+  capped review intervals, counter/difficulty checks and UTC duration arithmetic.
+- Scope: typed request/response encoding; no raw JSON decoder, auth, live RPC,
+  persistence, UI review flow or memory-model/stability prediction. #22 remains
+  the authoritative transaction/integration task, #15 durable offline retries.
+- Evidence observed locally: all 26 shared policy cases executed by the pure Dart
+  CLI; actual encoded requests/responses passed Python frozen-schema/parity
+  validation. Domain/tool analysis passed, formatting and contract regression
+  checks ran. Flutter package resolution is unavailable locally; full Flutter
+  analyze/unit tests/web build and Windows build await exact-head CI.
+- Shared contract fields/enums are unchanged. SRS_ALGORITHM documents the selected
+  versioned heuristic and backend port/rollback/replay requirements. The app still
+  displays a labeled preview for real review. No live service/release claim.
+- Next: exact-head CI and separate diff review, integrate #4 only if acceptance
+  passes, then #5 original N5 content. Live credentials do not block either.

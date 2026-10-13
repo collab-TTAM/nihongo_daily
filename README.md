@@ -19,3 +19,6 @@ python3 -m unittest discover -s contracts -p 'test_*.py' -v
 
 Database migrations and reproducible role/RLS tests are in `supabase/`;
 see `supabase/README.md`. No live Supabase integration is claimed.
+
+The pure versioned SRS core and backend parity handoff are documented in
+`docs/SRS_ALGORITHM.md`; authoritative review persistence is still #22.
