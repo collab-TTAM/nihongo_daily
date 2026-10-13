@@ -1,17 +1,17 @@
 # PROJECT STATUS
 
 Current release target: Personal Alpha
-Overall status: IN_PROGRESS — shared contracts and Flutter preview merged; database/RLS baseline in review.
+Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS baseline merged; live integrations remain outstanding.
 
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
-| Supabase schema/auth | IMPLEMENTED storage; review/CI pending; live auth unverified | #3 Backend |
+| Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
 | SRS engine | READY after #2 merge; usable Dart package implemented | #4 Learning |
-| Kanji writing engine | BLOCKED on #2/reference data | #6 Kanji |
-| AI tutor | BLOCKED on #3 | #7 AI |
-| N5/N4 content pipeline | N5 ready after #3 mapping; N4 tracked in #14 | #5 Content |
+| Kanji writing engine | READY for synthetic primitives; real assets #16 | #6 Kanji |
+| AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
+| N5/N4 content pipeline | READY for #5; mapping merged; N4 follow-up #14 | #5 Content |
 | QA/security baseline | READY to start against implementation PR #19 | #8 QA |
 
 ## Historical handoff — Issue #1, 2026-10-13
@@ -59,46 +59,33 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Blockers: none requiring user input. Native Windows launch, iOS runner,
   signing and device validation remain later work.
 
-## Latest handoff — Issue #3, 2026-10-13
+## Integrated handoff — Issue #3 / PR #21, 2026-10-13
 
-- Base: main 9383339 (PR #19 merged). Main CI 38409499736 succeeded.
-  #2 is closed; the earlier #2 handoff above is historical.
-- Branch: automation/issue-3-schema-rls. Initial additive migration with 22 public
-  tables, ownership/parent-message RLS, explicit column/table grants, immutable
-  review receipts, typed curriculum FKs, normalized relationship FKs and indexes.
-- Only own-profile allowlisted settings are client-writable. Curriculum, events,
-  scores, schedules, plans and conversation writes remain backend-only.
-- Original-result replay helper and PENDING/COMPLETED receipt storage implemented;
-  public submit_review/atomic state-update integration is #22 after scheduler #4.
-- Local checks: migration plus SQL role/grant/isolation/integrity/replay assertions
-  passed on PostgreSQL 18.6 via PGlite 0.5.9; bash syntax and Python compilation
-  passed. Native PostgreSQL 17 and two-session race await the new database CI job.
-  Existing Flutter/web/Windows checks are retained and must pass on current head.
-- Not run locally: native PostgreSQL concurrency, hosted Supabase/PostgREST/Auth,
-  live Flutter integration, or deployment. No production changes or auth strategy
-  changes. External configuration remains required for live integration.
-- Review/dependencies: read supabase/README.md for storage/export normalization,
-  full contract validation boundaries and RPC concurrency handoff. No weakened
-  tests/RLS. Issue #5 can use this mapping after integration.
-- Next: complete exact-head CI/review for #3, then #4 pure deterministic SRS.
-
-- Separate review follow-ups: #20 tracks real Auth/session lifecycle; #22 tracks
-  authenticated submit_review/atomic scheduler integration after #4. Neither is
-  supplied by this storage baseline. Review strengthened curriculum locking to
-  FOR SHARE so publication retirement cannot race an active-content check.
-- Initial native database CI 38420903307 failed at profile provisioning because
-  its tzdata omitted the Asia/Saigon alias. Canonicalizing the accepted alias to
-  Asia/Ho_Chi_Minh fixes actual plan conversion; invalid zones remain rejected.
-  Regression checks cover default/settings alias and Vietnam UTC+7 conversion.
-  Await CI on the corrected head before integration.
-
-- Review also caught inherited service-role TRUNCATE grants under older platform
-  defaults. Revoke those explicitly before granting DML; an SQL catalog regression
-  proves no project table retains service-role TRUNCATE. Current-head CI is required.
-
-- Native PostgreSQL 17 reports 23503 for the restrictive-FK delete, while the local
-  PostgreSQL 18/PGlite reports 23001. The regression now requires one of those two
-  referential-integrity rejection codes plus unchanged curriculum and learning
-  history rows. Successful deletion or unrelated errors still fail the test.
-- Contract validator (20 fixtures) and all 15 contract tests passed locally using
-  the installed contract environment. No Flutter source changed in this PR.
+- Merged: PR #21 (https://github.com/collab-TTAM/nihongo_daily/pull/21) as
+  4dd5e134ec2bfdc93bac97ed796ba882c9e98af6; #3 completed. Shared contracts #1 and
+  Flutter preview #2 are also integrated; earlier handoffs above are historical.
+- Delivered: additive 22-table migration; owner/parent-message RLS; explicit
+  table/column grants; allowlisted own-profile settings; backend-only scenario
+  context; immutable review requests/original responses; typed curriculum FKs;
+  normalized relationship FKs, indexes and checked receipt state.
+- Evidence: separately reviewed head 240ef15190dbaa3ffc191cf212dba7a8c262e686.
+  CI https://github.com/collab-TTAM/nihongo_daily/actions/runs/38421789675 succeeded:
+  repo-sanity (20 contract fixtures, 15 tests), database (250 SQL assertions plus
+  two native concurrent sessions committing exactly one event), flutter
+  (format/analyze/22 tests/web release build), windows (release build).
+- Local checks: the migration/SQL suite passed on PostgreSQL 18.6 via PGlite 0.5.9;
+  contract fixtures/tests, bash syntax, Python compilation and whitespace passed.
+  Native PostgreSQL 17 evidence comes from CI, not this local environment.
+- Review fixes: canonicalize Asia/Saigon to Asia/Ho_Chi_Minh with UTC+7 conversion
+  checks; use FOR SHARE for active-content validation; revoke inherited service-role
+  TRUNCATE; verify restrictive FK rejection and unchanged curriculum/history across
+  observed native PG17/local PG18 error codes. No security/test gates removed.
+- Not delivered: hosted Supabase/PostgREST/Auth, public submit_review, account
+  lifecycle, real providers, offline sync or production deployment. Storage replay
+  is not a functioning review endpoint, and the UI remains a labeled demo.
+- Follow-ups: #20 real Auth/session lifecycle; #22 authenticated atomic review RPC
+  after #4 pure scheduler; #7 provider-neutral validated interfaces; #17 live
+  AI/voice. Read supabase/README.md for storage/export mapping and safe test setup.
+- Next task: #4 deterministic pure Dart SRS on automation/issue-4-srs-core, then
+  #5 original N5 content according to dependency order. #4 needs no live secrets.
+  Main stays IN_PROGRESS toward Personal Alpha; no release completion claimed.
