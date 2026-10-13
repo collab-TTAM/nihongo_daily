@@ -1,13 +1,13 @@
 # PROJECT STATUS
 
 Current release target: Personal Alpha
-Overall status: IN_PROGRESS — shared contracts merged; Flutter demo shell implemented.
+Overall status: IN_PROGRESS — shared contracts and Flutter preview merged; database/RLS baseline in review.
 
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
-| Flutter skeleton | IMPLEMENTED; integration and CI tracked in PR #19 | #2 Flutter |
-| Supabase schema/auth | READY after #1 merge | #3 Backend |
+| Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
+| Supabase schema/auth | IMPLEMENTED storage; review/CI pending; live auth unverified | #3 Backend |
 | SRS engine | READY after #2 merge; usable Dart package implemented | #4 Learning |
 | Kanji writing engine | BLOCKED on #2/reference data | #6 Kanji |
 | AI tutor | BLOCKED on #3 | #7 AI |
@@ -58,3 +58,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Supabase schema/RLS. #4 can use the Dart package after #2 merge.
 - Blockers: none requiring user input. Native Windows launch, iOS runner,
   signing and device validation remain later work.
+
+## Latest handoff — Issue #3, 2026-10-13
+
+- Base: main 9383339 (PR #19 merged). Main CI 38409499736 succeeded.
+  #2 is closed; the earlier #2 handoff above is historical.
+- Branch: automation/issue-3-schema-rls. Initial additive migration with 23 public
+  tables, ownership/parent-message RLS, explicit column/table grants, immutable
+  review receipts, typed curriculum FKs, normalized relationship FKs and indexes.
+- Only own-profile allowlisted settings are client-writable. Curriculum, events,
+  scores, schedules, plans and conversation writes remain backend-only.
+- Original-result replay helper and PENDING/COMPLETED receipt storage implemented;
+  public submit_review and scheduler/atomic state-update integration remain #4.
+- Local checks: migration plus SQL role/grant/isolation/integrity/replay assertions
+  passed on PostgreSQL 18.6 via PGlite 0.5.9; bash syntax and Python compilation
+  passed. Native PostgreSQL 17 and two-session race await the new database CI job.
+  Existing Flutter/web/Windows checks are retained and must pass on current head.
+- Not run locally: native PostgreSQL concurrency, hosted Supabase/PostgREST/Auth,
+  live Flutter integration, or deployment. No production changes or auth strategy
+  changes. External configuration remains required for live integration.
+- Review/dependencies: read supabase/README.md for storage/export normalization,
+  full contract validation boundaries and RPC concurrency handoff. No weakened
+  tests/RLS. Issue #5 can use this mapping after integration.
+- Next: complete exact-head CI/review for #3, then #4 pure deterministic SRS.

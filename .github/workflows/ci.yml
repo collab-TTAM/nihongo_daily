@@ -113,3 +113,30 @@ jobs:
           name: flutter-windows-preview
           path: apps/flutter_app/build/windows/x64/runner/Release
           if-no-files-found: error
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nihongo_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d nihongo_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Disposable CI-only database; never a hosted/project credential.
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/nihongo_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Migration, grants, RLS, replay and concurrent uniqueness
+        run: bash scripts/test_database.sh
