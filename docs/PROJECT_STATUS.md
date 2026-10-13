@@ -246,3 +246,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Separate review fixes: reject empty/oversized dispatch tokens before provider
   calls, freeze validated outputs/recovered context before asynchronous persistence,
   with two targeted regressions. No security/test gate weakened.
+
+- Dependency audit found moderate Ajv advisory GHSA-2g4f-4pwh-qvx6; $data is
+  disabled, and Ajv was upgraded from 8.17.1 to pinned 8.20.0 before integration.
+  Added production dependency audit gate; current-head CI must rerun.

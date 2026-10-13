@@ -14,7 +14,7 @@ Five operations preserve v0.1 requests/responses: tutor_explain, correct_sentenc
 start_conversation, conversation_turn, finish_conversation. `src/wire.ts` is
 regenerated from all named frozen schema definitions by `generate_types.py`;
 CI verifies the projection. Ajv 2020 validates the original shared schema with
-formats, strict finite numbers and no coercion, defaults or unknown-field removal.
+formats, disabled dynamic $data schemas, strict finite numbers and no coercion, defaults or unknown-field removal.
 Required nullable fields and assistant-only role remain mandatory. No new fields
 are added to public wire schemas. An invalid model answer is never a success.
 
@@ -124,3 +124,10 @@ Primary references reviewed 2026-10-13:
 - https://ajv.js.org/strict-mode.html (no coercion/removal as a validation shortcut)
 - https://supabase.com/docs/guides/functions/auth (user verification stays enabled)
 - https://supabase.com/docs/guides/database/functions (invoker/privilege boundaries)
+
+Dependency review: initial Ajv 8.17.1 audit reported GHSA-2g4f-4pwh-qvx6,
+a ReDoS advisory when $data is enabled. This boundary does not enable $data;
+nonetheless the pinned production dependency is updated to 8.20.0. CI retains
+a production-only npm audit at moderate severity. Advisory reference:
+https://github.com/advisories/GHSA-2g4f-4pwh-qvx6 . An audit snapshot is not proof
+of overall application security; integrated regression work remains #8/#18.

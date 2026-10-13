@@ -44,6 +44,7 @@ export class Contracts {
   constructor(schema: AnySchemaObject) {
     const ajv = new Ajv2020({
       strict: true,
+      $data: false,
       allErrors: false,
       coerceTypes: false,
       useDefaults: false,
