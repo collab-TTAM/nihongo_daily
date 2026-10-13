@@ -9,7 +9,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
 | SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
-| Kanji writing engine | IN_PROGRESS #6 capture prototype; real assets #16 | #6 Kanji |
+| Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
 | AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
 | QA/security baseline | READY to start against implementation PR #19 | #8 QA |
@@ -188,3 +188,33 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Separate review fix: enforce event-time monotonicity even for coalesced stationary
   samples; added targeted regression. Added spacing for readable canvas guidance.
+
+
+## Integrated handoff — Issue #6 / PR #29, 2026-10-13 UTC
+
+- Merged PR #29 as 9d66f36123e5a2a958cf4a1c1b2177bbf5a46494; #6 completed.
+  Separately reviewed/tested head 2743ed2e0388d2aaa69f2bf4282c6931a00c58f9.
+- Delivered immutable finite/bounded square-coordinate models; single-pointer
+  capture with relative monotonic time, boundary clamp, cancel/tap/limit handling,
+  undo/clear; local Riverpod prototype on /kanji for mouse/touch/stylus.
+  Pure nd-kanji-synthetic-1 primitives compare shape/order/direction/balance.
+- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38446275479
+  succeeded with all four jobs. Flutter format/analyze (no issues), 91 tests
+  (21 new domain/6 widget tests), 26 SRS wire cases, 2 actual Kanji capture encodings
+  validated against frozen schema, web release build; Windows release and retained
+  database/RLS/native concurrent uniqueness passed. No required job skipped.
+- Local evidence: raw Dart identity/reversal verifier, actual request schema,
+  authored content/20 baseline fixtures/34 Python regressions, formatting/Python
+  compilation/whitespace. Flutter dependency bootstrap unavailable locally; full
+  Flutter/native PostgreSQL evidence comes from CI. All 15 uploaded files matched
+  reviewed local hashes. No interactive browser/native device launch observed.
+- Review fix: decreasing time after stationary/coalesced input cancels the stroke,
+  with regression. Documentation distinguishes pure engines from integrated flows.
+  No auth/RLS/dependency/provider/frozen-schema changes or weakened gates.
+- Limits: no persisted Kanji attempts, curriculum selection, tracing/animation,
+  canonical reference assets or real grade. evaluateReal explicitly reports
+  reference absence; synthetic scores never appear as learner grades. #16 retains
+  vetted assets/real grading work; docs/KANJI_CAPTURE.md records heuristic limits.
+- Next sequential worker task: #7 provider-neutral validated AI interfaces after
+  any open evidence PR. No secret/configuration needed for pure adapter tests;
+  #17 still owns live services/voice. Personal Alpha remains IN_PROGRESS.
