@@ -10,7 +10,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
 | SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
 | Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
-| AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
+| AI tutor | IN_PROGRESS #7 validated library/claims; live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
 | QA/security baseline | READY to start against implementation PR #19 | #8 QA |
 
@@ -218,3 +218,39 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next sequential worker task: #7 provider-neutral validated AI interfaces after
   any open evidence PR. No secret/configuration needed for pure adapter tests;
   #17 still owns live services/voice. Personal Alpha remains IN_PROGRESS.
+
+
+## Development handoff — Issue #7, 2026-10-13 UTC
+
+- Branch automation/issue-7-ai-boundary; fresh main 59506e2, no open PR on claim.
+- Added server-only provider-neutral TypeScript contracts/ports, strict original
+  JSON Schema validation, immutable bounded requests/context, auth/rate guard,
+  safe Vietnamese errors and deadline/abort handling. No live provider configured.
+- Added private durable SQL receipt lookup/claim/token-completion, permission tests
+  and native two-session claim race. Pending uncertainty never renews dispatch;
+  lookup-only recovery must validate/correlate an existing result.
+- Local: TypeScript check/format and 38 Node tests passed, original 34 Python tests,
+  20 contract fixtures/content checks, Python compile/bash syntax/whitespace passed.
+  Native PostgreSQL/full Flutter/web/Windows checks require exact-head CI; no such
+  result claimed until observed. Existing CI gates retained; ai-boundary job added.
+- Limits: injected test Auth/limiter/context/provider/memory store only; no deployed
+  Edge/Deno compatibility, distributed runtime limiter, complete conversation
+  transaction adapter, live provider, Flutter AI UI or voice. Follow-up runtime
+  binding #31 must prove ownership/sequence/restart/reconciliation; #17 live/voice.
+- Resume PR/CI/review first. After #7 merge next sequential task #8 QA matrix.
+  Personal Alpha remains IN_PROGRESS; no external configuration needed for #8.
+
+- Local additive migration, retained SQL/RLS suite and new AI receipt/security
+  assertions passed on PGlite 0.5.9; native multi-session concurrency still needs CI.
+
+- Separate review fixes: reject empty/oversized dispatch tokens before provider
+  calls, freeze validated outputs/recovered context before asynchronous persistence,
+  with two targeted regressions. No security/test gate weakened.
+
+- Dependency audit found moderate Ajv advisory GHSA-2g4f-4pwh-qvx6; $data is
+  disabled, and Ajv was upgraded from 8.17.1 to pinned 8.20.0 before integration.
+  Added production dependency audit gate; current-head CI must rerun.
+
+- UUID compatibility review: prepared-session binding compares logical UUIDs
+  case-insensitively, while receipt comparison keeps immutable request fields.
+  Added an uppercase client UUID regression; no auth/ownership check weakened.
