@@ -22,3 +22,7 @@ see `supabase/README.md`. No live Supabase integration is claimed.
 
 The pure versioned SRS core and backend parity handoff are documented in
 `docs/SRS_ALGORITHM.md`; authoritative review persistence is still #22.
+
+Original N5 seed exports are in `data/`; see `data/README.md` for exact coverage,
+linguistic notes and unavailable assets. Validate with
+`python3 -m contracts.validate_content`. This seed is not a complete curriculum.
