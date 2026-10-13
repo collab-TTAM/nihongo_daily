@@ -5,32 +5,64 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   repo-sanity:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      has_flutter: ${{ steps.detect.outputs.has_flutter }}
     steps:
       - uses: actions/checkout@v4
+      - name: Detect Flutter project after checkout
+        id: detect
+        shell: bash
+        run: |
+          if [ -f apps/flutter_app/pubspec.yaml ]; then
+            echo "has_flutter=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_flutter=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Check forbidden secret-like files
         shell: bash
         run: |
-          set -e
-          forbidden=$(find . -type f \( -name ".env" -o -name "*.pem" -o -name "*.key" -o -name "service-account*.json" \) -not -path "./.git/*" | head -n 1)
-          if [ -n "$forbidden" ]; then echo "Forbidden secret-like file found: $forbidden"; exit 1; fi
-      - name: Validate project manifest
-        run: python3 -m json.tool project_manifest.json >/dev/null
-      - name: Validate JSON content files
+          python3 - <<'PY'
+          from pathlib import Path
+          import fnmatch
+          patterns = ('.env', '*.pem', '*.key', 'service-account*.json')
+          forbidden = [str(p) for p in Path('.').rglob('*')
+                       if p.is_file() and '.git' not in p.parts
+                       and any(fnmatch.fnmatch(p.name, pattern) for pattern in patterns)]
+          if forbidden:
+              raise SystemExit('Forbidden secret-like files: ' + ', '.join(forbidden))
+          PY
+      - name: Validate project manifest and content JSON
         shell: bash
         run: |
-          set -e
-          find data -type f -name '*.json' -print0 2>/dev/null | while IFS= read -r -d '' f; do python3 -m json.tool "$f" >/dev/null; done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          paths = [Path('project_manifest.json')]
+          paths.extend(sorted(Path('data').rglob('*.json')))
+          for path in paths:
+              with path.open(encoding='utf-8') as source:
+                  json.load(source)
+          print(f'Validated {len(paths)} JSON files')
+          PY
 
   flutter:
-    if: ${{ hashFiles('apps/flutter_app/pubspec.yaml') != '' }}
+    needs: repo-sanity
+    if: needs.repo-sanity.outputs.has_flutter == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: apps/flutter_app
@@ -44,3 +76,4 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - run: flutter build web --release
