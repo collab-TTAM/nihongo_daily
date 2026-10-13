@@ -45,8 +45,8 @@ connection is requested by the tests.
 - `service_role` is trusted and bypasses RLS. It gets explicit DML grants, not
   TRUNCATE. Keep it backend-only and verify end-user identity before every write.
 - Functions are invoker functions with empty `search_path` and qualified tables;
-  private schema/function access is revoked from clients. No security-definer RPC
-  is exposed in this baseline. Trigger functions cannot be called as RPCs.
+  private schema/function access is revoked from clients. The original baseline exposed no security-definer RPC; #22 now adds the narrow
+  caller-bound submit_review function, audited separately in docs/SRS_RPC.md. Trigger functions cannot be called as RPCs.
 - IDs/owners/parent-message identity are immutable. Review events cannot be edited
   or deleted. Curriculum is retired with `is_active=false`; restrictive FKs retain
   history. Account deletion is not implemented and needs the applicable human gate.
@@ -78,7 +78,8 @@ returns NULL for an unseen ID and raises `SYNC_CONFLICT` for changed input. It i
 only callable by trusted SQL/backend code; never accept an arbitrary client user
 ID. Canonicalize validated timestamps/fields before storing/comparing request JSON.
 
-**This is storage support, not a working submit_review API.** Issue #22's integration after scheduler #4
+**The original helper is storage support.** #22 now supplies a local SQL transaction
+increment (docs/SRS_RPC.md), without hosted or typed UI integration. Full #22 acceptance
 must authenticate, reject unknown fields, lock the user's learning item, replay
 before stale-time checks, validate rating/time skew/content, schedule on the server,
 and atomically append event/update state. Race losers must re-read the committed
@@ -106,3 +107,9 @@ normalization and actual timestamp conversion. Use the stored timezone for plans
 Issue #7 adds private AI receipt lookup/dispatch-claim/token-completion helpers and
 native claim-race/security tests. No deployed conversation/AI runtime is implied;
 see `../docs/AI_BOUNDARY.md` for required validation/transaction/recovery binding.
+
+Issue #22 verification also runs supabase/tests/review_rpc.sql, compares actual
+private SQL outputs against all 26 frozen Dart policy cases and executes five
+native submit_review race scenarios. Install contracts/requirements.txt first.
+The SQL-only Auth fixture cannot verify real JWT expiration, GoTrue/PostgREST
+or Flutter end-to-end behavior; #22 remains open for those acceptance gates.

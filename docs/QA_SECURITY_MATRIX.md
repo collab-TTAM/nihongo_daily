@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-27 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+28 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -48,6 +48,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `content-integrity` | repo-sanity | Counts, unique IDs/text, references, Japanese readings and absent assets. Small original N5 seed only; no N4/audio/reference stroke corpus or independent teacher review. |
 | `rls-isolation` | database | Actual SQL roles A/B, parent message reads, forbidden writes, private functions. Native SQL fixture auth.uid() is not verified GoTrue/JWT/PostgREST integration. |
 | `review-storage` | database | Immutable original result replay, changed-input conflict and native two-session uniqueness. Storage helper race is not an atomic submit_review endpoint or updated scheduler counters. |
+| `review-transaction` | database | Authenticated SQL RPC validation/replay/rollback, 26 SQL/Dart cases and five native races. SQL auth fixtures do not establish JWT/PostgREST/Flutter/UI integration. |
 | `ai-sql-receipts` | database | Private token ownership, scoped claim/completion, privileges and rollback. Helpers do not persist conversation messages/session in a real adapter transaction. |
 | `ai-claim-race` | database | Two native sessions grant exactly one dispatch owner. SQL claims do not prove upstream delivery, recovery or two distinct session events. |
 | `srs-policy` | flutter | Versioned 26 policy pairs, offsets, stale events and actual Dart wire output. Pure scheduler; no authenticated persistence, queue or integrated review UI. |
@@ -111,7 +112,7 @@ application security review. No runtime activation or security weakening is incl
 | --- | --- | --- |
 | SEC-01 | high / coverage-gap | Real identity verification, session lifecycle and cross-account cache isolation remain unverified. This is missing release assurance, not a proven exploit. Complete #20/#15; run actual A/B, expiry/restart/sign-out cases before enabling personal data flows. |
 | SEC-02 | high / coverage-gap | Distributed limits, trusted message/session transactions and upstream reconciliation are not bound in the runtime. Fixture success cannot authorize real provider calls. Complete #31/#17 with durable commit-before-dispatch and correlated lookup-only recovery; retain safe pending state. |
-| SEC-03 | high / coverage-gap | Authoritative review endpoint and durable retry queue are missing; storage uniqueness alone does not protect scheduling counters. Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts. |
+| SEC-03 | high / coverage-gap | Local atomic SQL RPC is tested, but real identity/transport, integrated review UI and durable retry queue remain unverified. SQL fixture success alone does not establish an end-to-end review flow. Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts. |
 | SEC-04 | medium / coverage-gap | Audio contract, permissions and retention assurance is missing. No audio collection should be inferred from text schemas. Review #17 audio design and applicable user gates before activation; test denial/disconnect/retention. |
 | SEC-05 | medium / coverage-gap | No observed interactive browser/native launch evidence; CI builds and widget tests do not cover artifact launch failures. Run exact artifact smoke on supported browser/Windows in #18 and preserve redacted environment/assertions. |
 | DEP-01 | medium / remediated-dependency | PR #32 remediated Ajv GHSA-2g4f-4pwh-qvx6 with 8.20.0 and disabled $data; production audit passed at reviewed head e3200bc6. Retain moderate production audit and monitor new findings; do not disable tests or generalize this snapshot to overall security. |

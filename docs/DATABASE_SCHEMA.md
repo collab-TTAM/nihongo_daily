@@ -74,3 +74,13 @@ Local SQL/PGlite evidence is not evidence of a deployed Supabase instance.
 Timezone alias compatibility: Asia/Saigon is accepted at provisioning/settings
 writes and stored as Asia/Ho_Chi_Minh. Both denote Vietnam UTC+7; canonical storage
 avoids backward-link omissions in native tzdata. No wire endpoint changed.
+
+## Local review transaction increment — Issue #22
+
+Migration 20261013200000_submit_review.sql adds private timestamp/request/scheduler
+helpers and the narrowly authenticated public.submit_review(jsonb) definer RPC.
+No table grants or RLS policies are weakened; owner comes only from auth.uid().
+Per-user transaction advisory lock, content FOR SHARE and learning-item FOR UPDATE
+protect original event replay plus atomic state/event persistence. nd-srs-1 and
+exact canonical event epoch/review count are recorded in immutable event metadata.
+See SRS_RPC.md; real JWT/PostgREST and typed Flutter/UI integration remain unverified.

@@ -10,6 +10,7 @@
       "Validate QA inventory and evidence regressions"
     ],
     "database": [
+      "Install review parity validator",
       "Migration, grants, RLS, replay and concurrent uniqueness"
     ],
     "flutter": [
@@ -110,6 +111,33 @@
       ],
       "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
       "limitation": "Storage helper race is not an atomic submit_review endpoint or updated scheduler counters."
+    },
+    {
+      "id": "review-transaction",
+      "status": "automated-baseline",
+      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; five native race scenarios",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/review_rpc.sql",
+          "contains": "first authenticated review schedules"
+        },
+        {
+          "path": "scripts/verify_review_parity.py",
+          "contains": "actual SQL scheduler matches"
+        },
+        {
+          "path": "scripts/test_submit_review_concurrency.py",
+          "contains": "different_item"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        18
+      ],
+      "reproduce": "On a new empty disposable PostgreSQL 17 database: install contracts/requirements.txt; bash scripts/test_database.sh",
+      "limitation": "SQL role/auth.uid fixtures are not real Supabase JWT/PostgREST or typed Flutter/UI evidence; full #22 remains open."
     },
     {
       "id": "ai-sql-receipts",
@@ -295,7 +323,7 @@
         18
       ],
       "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
-      "limitation": "Only pure Dart and storage helper tests currently exist."
+      "limitation": "Local atomic SQL RPC has executable tests; real JWT/PostgREST, typed Flutter adapter and integrated SRS UI evidence remain pending."
     },
     {
       "id": "daily-plan",
@@ -463,7 +491,7 @@
         "review-rpc",
         "offline-sync"
       ],
-      "description": "Authoritative review endpoint and durable retry queue are missing; storage uniqueness alone does not protect scheduling counters.",
+      "description": "Local atomic SQL RPC is tested, but real identity/transport, integrated review UI and durable retry queue remain unverified. SQL fixture success alone does not establish an end-to-end review flow.",
       "action": "Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts."
     },
     {

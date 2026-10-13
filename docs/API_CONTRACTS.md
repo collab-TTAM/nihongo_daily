@@ -38,7 +38,7 @@ The default 120-minute plan has seven unique blocks: SRS 20, VOCABULARY 15, KANJ
 
 Reject inconsistent rating/is_correct. response_ms is an integer 0–3,600,000. Difficulty/retrievability use [0,1]; stability and interval_days use days. interval_days may be fractional for sub-day learning. Scheduling uses elapsed time from the valid event instant, not local date rounding. The pure nd-srs-1 scheduler is specified in docs/SRS_ALGORITHM.md and implemented in the Dart SRS domain. Authenticated transaction/replay integration remains #22; this is not a deployed endpoint.
 
-`(user_id, client_event_id)` identifies a review. Verify item_type/item_id in the selected active curriculum table, bind/create the user's unique learning item, then atomically append the event and update scheduling state. Replay identical fields returns the stored original response without incrementing counters; changed fields under the same ID return SYNC_CONFLICT. Retain the event instant on retry. New events older than last_review_at return SYNC_CONFLICT; future events beyond five minutes from server time return VALIDATION_FAILURE. Check duplicates before stale-time rejection. These remain backend acceptance criteria for #22; storage/RLS is delivered by #3 and the pure scheduler by #4. They are not implemented transactions yet.
+`(user_id, client_event_id)` identifies a review. Verify item_type/item_id in the selected active curriculum table, bind/create the user's unique learning item, then atomically append the event and update scheduling state. Replay identical fields returns the stored original response without incrementing counters; changed fields under the same ID return SYNC_CONFLICT. Retain the event instant on retry. New events older than last_review_at return SYNC_CONFLICT; future events beyond five minutes from server time return VALIDATION_FAILURE. Check duplicates before stale-time rejection. These remain backend acceptance criteria for #22; storage/RLS is delivered by #3 and the pure scheduler by #4. The local SQL transaction increment is specified in docs/SRS_RPC.md; hosted/typed UI integration is still unverified.
 
 SRS states remain NEW, LEARNING, REVIEW, MASTERED, RELEARNING. MASTERED is reserved and not emitted by the initial scheduler; mastery is derived separately for progress. Reviewed responses have next_review_at and review_count >= 1. NEW items may have null database review dates.
 
@@ -55,3 +55,13 @@ Provider selection, audio upload/streaming, billing and credentials are not froz
 ## Validation and limits
 
 Run the commands in README. JSON Schema formats are asserted explicitly by the validator; cross-field plan totals/types and stroke indices/times are checked separately. Select a named definition; the root schema alone is only a definition library. Backend tests must still verify auth, RLS, scoped idempotency, curriculum existence, skew, ownership and provider limits. Fixture validation is not evidence of deployed security.
+
+## Local submit_review transaction increment — Issue #22
+
+Migration 20261013200000_submit_review.sql defines public.submit_review(p_request jsonb).
+A future typed repository calls rpc('submit_review', params: {'p_request':
+review.toJson()}); the inner seven-field wire request and five-field response
+are unchanged. Strict request/canonical replay/server scheduling is implemented
+locally; no hosted endpoint, JWT/PostgREST or Flutter review integration is claimed.
+See SRS_RPC.md for safe error objects, exact fractional retry identity, UTC
+microsecond policy, resource limits and the still-open #22 acceptance.

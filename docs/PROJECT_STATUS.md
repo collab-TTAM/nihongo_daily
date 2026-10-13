@@ -8,7 +8,7 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
-| SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
+| SRS engine | Pure nd-srs-1 MERGED via PR #24; #22 SQL transaction IN_REVIEW, full UI/Auth still pending | #4 / #22 |
 | Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
 | AI tutor | MERGED via PR #32; runtime bridge #31 / live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
@@ -359,3 +359,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   without waiting for live secrets; do not close #22 without its full acceptance.
   Then #31 runtime binding and #11 plan/session work by dependency. #18 remains
   blocked by integrated Personal Alpha evidence; independent development continues.
+
+
+## Development handoff — Issue #22 server transaction increment, 2026-10-13 UTC
+
+- Fresh main 78a44faf; no open PR on claim. Single sequential worker on
+  automation/issue-22-atomic-review; #3/#4 schema/policy dependencies are merged.
+- Added strict seven-field request/canonical instant/response helpers, private
+  nd-srs-1 SQL port and narrow authenticated caller-bound submit_review(jsonb).
+  No direct table grants/RLS weakening or auth strategy/provider/deployment change.
+- Owner mutex + content share lock/item row lock provide replay-before-stale,
+  active-content/five-minute skew validation and atomic event/state/counter writes.
+  Exact raw fractional identity/chronology survives microsecond scheduling;
+  reserved memory fields remain unchanged. Corrupt stored responses fail closed.
+- Local observed: migration/retained baseline/AI and 62 new RPC SQL assertions
+  passed on PostgreSQL via PGlite 0.5.9; actual private SQL outputs matched all
+  26 frozen Dart policy cases. 40 Python regressions, 17 QA tests and inventory
+  passed. Six Python parity-validator regressions are TEST ONLY fixtures.
+- Five native race scenarios authored; native PostgreSQL and full Node/Flutter/
+  web/Windows CI remain current-head acceptance checks until observed. Local
+  PGlite cannot certify two-session/native concurrency or real JWT/PostgREST.
+- docs/SRS_RPC.md records transport wrapper, normalization/resource limits,
+  permissions, serialization/rollback policy and evidence limits. QA matrix now
+  has 28 groups; review-rpc remains a pending integration release case.
+- This is a complete SQL increment within an incomplete #22. Keep issue/PR open:
+  typed Flutter adapter, integrated SRS UI and real Auth/PostgREST acceptance
+  remain. Resume this draft/review/CI first, then implement typed transport/UI
+  without presenting fixtures as live integration. No secrets requested in chat.
+  Personal Alpha remains IN_PROGRESS; do not close #22 from SQL fixture success.
