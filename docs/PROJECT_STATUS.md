@@ -1,14 +1,14 @@
 # PROJECT STATUS
 
 Current release target: Personal Alpha
-Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS baseline merged; live integrations remain outstanding.
+Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS baseline and pure SRS merged; live integrations remain outstanding.
 
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
-| SRS engine | IMPLEMENTED pure nd-srs-1; review/CI pending; RPC #22 | #4 Learning |
+| SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
 | Kanji writing engine | READY for synthetic primitives; real assets #16 | #6 Kanji |
 | AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
 | N5/N4 content pipeline | READY for #5; mapping merged; N4 follow-up #14 | #5 Content |
@@ -90,22 +90,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   #5 original N5 content according to dependency order. #4 needs no live secrets.
   Main stays IN_PROGRESS toward Personal Alpha; no release completion claimed.
 
-## Latest handoff — Issue #4, 2026-10-13
+## Integrated handoff — Issue #4 / PR #24, 2026-10-13
 
-- Base main a9fb12b; branch automation/issue-4-srs-core. #1/#2/#3 integrated.
-- Implemented: immutable pure Dart card/request types and nd-srs-1 scheduler;
-  0/1/2/3 ratings, short learning/relearning intervals, bounded early/overdue credit,
-  capped review intervals, counter/difficulty checks and UTC duration arithmetic.
-- Scope: typed request/response encoding; no raw JSON decoder, auth, live RPC,
-  persistence, UI review flow or memory-model/stability prediction. #22 remains
-  the authoritative transaction/integration task, #15 durable offline retries.
-- Evidence observed locally: all 26 shared policy cases executed by the pure Dart
-  CLI; actual encoded requests/responses passed Python frozen-schema/parity
-  validation. Domain/tool analysis passed, formatting and contract regression
-  checks ran. Flutter package resolution is unavailable locally; full Flutter
-  analyze/unit tests/web build and Windows build await exact-head CI.
-- Shared contract fields/enums are unchanged. SRS_ALGORITHM documents the selected
-  versioned heuristic and backend port/rollback/replay requirements. The app still
-  displays a labeled preview for real review. No live service/release claim.
-- Next: exact-head CI and separate diff review, integrate #4 only if acceptance
-  passes, then #5 original N5 content. Live credentials do not block either.
+- Merged: https://github.com/collab-TTAM/nihongo_daily/pull/24 as
+  d4ed337dc8a5bcce46bc830e0e10528b8bd04e56; #4 completed as a pure scheduler.
+- Delivered: immutable Dart card/request projections, nd-srs-1 rating/transition
+  rules, bounded learning/relearning/early/overdue intervals, capped review growth,
+  validated counters/difficulty and deterministic UTC duration arithmetic.
+- Evidence: reviewed head 7e656d445bbca00216f601fc203f14f923068b03; all jobs succeeded at
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38426443750:
+  repo-sanity (20 baseline fixtures/17 regression tests), database (retained SQL/RLS
+  and native race), Flutter (format/analyze without issues, full unit suite,
+  26 policy cases and actual Dart output/schema validation, web release build),
+  Windows (release build). Separate source and verifier lint-fix reviews recorded.
+- Local evidence: raw pure-Dart execution and actual-output validation of all 26
+  cases, domain/tool analysis, formatting, 17 Python tests and whitespace/syntax.
+  Full Flutter package resolution was unavailable locally; full unit/build evidence
+  comes from CI. No browser/native interactive smoke or hosted integration claim.
+- Shared fields/enums are unchanged. docs/SRS_ALGORITHM.md specifies the heuristic,
+  rounding and #22 backend parity/auth/locking/replay requirements. Versioned
+  golden cases are contracts/srs/v1/golden.json. No calibrated memory prediction.
+- Not integrated: SRS UI study flow, public submit_review, stored receipt replay,
+  auth or durable offline persistence. #22/#15/#20 retain these responsibilities.
+  MASTERED remains reserved; memory stability/retrievability are not estimated.
+- Next task: #5 original schema-valid N5 seed content. #22 can now port the pure
+  scheduler with authoritative transaction tests; #11's #2/#3/#4 dependencies are
+  satisfied. Live configuration does not block original content work.
+- Personal Alpha remains IN_PROGRESS with curriculum, study screens, real auth,
+  sync, Kanji, AI/voice and integrated release evidence still outstanding.
