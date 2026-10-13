@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  repo-sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check forbidden secret-like files
+        shell: bash
+        run: |
+          set -e
+          forbidden=$(find . -type f \( -name ".env" -o -name "*.pem" -o -name "*.key" -o -name "service-account*.json" \) -not -path "./.git/*" | head -n 1)
+          if [ -n "$forbidden" ]; then echo "Forbidden secret-like file found: $forbidden"; exit 1; fi
+      - name: Validate project manifest
+        run: python3 -m json.tool project_manifest.json >/dev/null
+      - name: Validate JSON content files
+        shell: bash
+        run: |
+          set -e
+          find data -type f -name '*.json' -print0 2>/dev/null | while IFS= read -r -d '' f; do python3 -m json.tool "$f" >/dev/null; done
+
+  flutter:
+    if: ${{ hashFiles('apps/flutter_app/pubspec.yaml') != '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/flutter_app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test
