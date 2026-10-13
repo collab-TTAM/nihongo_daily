@@ -12,7 +12,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
 | AI tutor | MERGED via PR #32; runtime bridge #31 / live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
-| QA/security baseline | READY to start against implementation PR #19 | #8 QA |
+| QA/security baseline | IN_REVIEW: executable inventory / exact-head evidence guard | #8 QA; integrated release #18 |
 
 ## Historical handoff — Issue #1, 2026-10-13
 
@@ -290,3 +290,32 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   any open evidence PR. No external configuration needed for that inventory.
   #31's library dependency is resolved; real hosted/provider evidence remains
   pending configuration. Personal Alpha stays IN_PROGRESS beyond starter tasks.
+
+
+## Development handoff — Issue #8, 2026-10-13 UTC
+
+- Fresh main 98397e72; no open PR on claim. Single sequential worker on
+  automation/issue-8-qa-matrix. #1–#7 implementation/evidence already merged.
+- Added 27-case machine-readable QA matrix: 13 executable baseline groups with
+  concrete test anchors, reproduction/scope limits; 14 pending integrated release
+  cases. Six ranked findings distinguish missing assurance from a proven exploit
+  and the remediated Ajv advisory. Created #34 for unassigned Listening/Reading.
+- Added standard-library inventory and exact-head Actions evidence verifier:
+  explicit repository/workflow/head/run/attempt, all five jobs/critical steps,
+  complete pagination, no missing/skipped/pending/mixed results. CLI never executes
+  matrix commands or certifies metadata authenticity. Synthetic test data is TEST ONLY.
+- Local: 17 QA negative regressions, original 34 Python tests, 20 frozen fixtures
+  and content export checks passed. Prior-main CI 38453557158 passed all five jobs;
+  this is historical, not the #8 head. Full current-head Node/SQL/Flutter/web/Windows
+  CI must be observed before integration. No new runtime/provider/migration change.
+- QA_SECURITY_MATRIX documents reproduction, evidence retrieval, ranked findings
+  and the unchecked release checklist. Baseline green cannot pass --release while
+  live Auth/RPC/plan/study/content/assets/Edge/AI/voice/sync/progress/smoke/journey
+  evidence remains pending; no Personal Alpha completion claim.
+- Resume #8 PR/CI and separate review first; next priority #22 authenticated atomic
+  review transaction, then #31 runtime bridge and #11 plan/session work by dependency.
+  Local implementation can proceed without secrets; hosted evidence remains pending.
+
+- Separate review hardening: verify command/step anchors within their actual CI
+  job, so moving an audit elsewhere cannot preserve coverage; reject removed
+  ranked findings and out-of-repository test anchors. Three regressions added.

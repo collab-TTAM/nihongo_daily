@@ -29,3 +29,8 @@ linguistic notes and unavailable assets. Validate with
 
 Provider-neutral server AI interfaces and receipt-claim helpers are in `backend/ai`;
 see `docs/AI_BOUNDARY.md` for tests, limits and unconfigured integration boundaries.
+
+QA/security and Personal Alpha release gates are maintained in `qa/matrix.json`
+and `docs/QA_SECURITY_MATRIX.md`. Run `python3 scripts/verify_qa.py` and
+`python3 -m unittest discover -s qa -p 'test_*.py' -v`; inventory success is not
+a release claim. Saved exact-head Actions evidence can be checked separately.
