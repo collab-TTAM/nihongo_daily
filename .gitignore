@@ -3,6 +3,10 @@ __pycache__/
 .venv/
 .dart_tool/
 build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+*.iml
 .env
 .env.*
 !.env.example
