@@ -554,3 +554,36 @@ test("wrong prepared session identity is rejected before any dispatch", async ()
   assert.equal(store.completions, 0);
   assert.equal(store.rows.size, 0);
 });
+
+test("invalid dispatch claim token fails before provider invocation", async () => {
+  const { deps, calls } = setup();
+  deps.receipts.claim = async () => ({ kind: "acquired", token: "" });
+  assert.equal(
+    errorCode(
+      await new AiService(contracts, deps).execute(
+        "start_conversation",
+        "valid-A",
+        body("start_conversation"),
+      ),
+    ),
+    "INTERNAL_ERROR",
+  );
+  assert.equal(calls.length, 0);
+});
+test("semantic validator cannot mutate schema-validated output before persistence", async () => {
+  const { deps, store } = setup();
+  deps.context.validateResult = async (_u, _o, _r, response) => {
+    (response as unknown as Record<string, unknown>).user_id = "forged";
+  };
+  assert.equal(
+    errorCode(
+      await new AiService(contracts, deps).execute(
+        "start_conversation",
+        "valid-A",
+        body("start_conversation"),
+      ),
+    ),
+    "INTERNAL_ERROR",
+  );
+  assert.equal(store.completions, 0);
+});

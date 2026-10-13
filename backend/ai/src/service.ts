@@ -140,6 +140,8 @@ export class AiService {
       this.alive(signal);
       if (claim.kind !== "acquired")
         return this.replay(op, request, key, claim, signal);
+      if (!claim.token || claim.token.length > 128)
+        throw new BoundaryError("INTERNAL_ERROR");
       token = claim.token;
     }
     let raw: string;
@@ -167,9 +169,11 @@ export class AiService {
       throw new BoundaryError("PROVIDER_UNAVAILABLE");
     }
     this.alive(signal);
-    const response = this.contracts.response(
-      op,
-      parseBounded(raw, 1048576, "PROVIDER_UNAVAILABLE"),
+    const response = deepFreeze(
+      this.contracts.response(
+        op,
+        parseBounded(raw, 1048576, "PROVIDER_UNAVAILABLE"),
+      ),
     );
     await this.validate(op, userId, request, response, context, signal);
     if (key && token) {
@@ -192,28 +196,26 @@ export class AiService {
     signal: AbortSignal,
   ): Promise<Responses[O]> {
     if (found.kind === "completed")
-      return this.contracts.response(op, found.response);
+      return deepFreeze(
+        this.contracts.response(op, structuredClone(found.response)),
+      );
     if (!this.deps.recovery) throw new BoundaryError("PROVIDER_UNAVAILABLE");
     const recovered = await this.deps.recovery.lookup(key, signal);
     this.alive(signal);
     if (!recovered) throw new BoundaryError("PROVIDER_UNAVAILABLE");
     this.checkContext(op, recovered.context, request);
-    const response = this.contracts.response(
-      op,
-      parseBounded(recovered.response, 1048576, "PROVIDER_UNAVAILABLE"),
+    const context = deepFreeze(structuredClone(recovered.context));
+    const response = deepFreeze(
+      this.contracts.response(
+        op,
+        parseBounded(recovered.response, 1048576, "PROVIDER_UNAVAILABLE"),
+      ),
     );
-    await this.validate(
-      op,
-      key.userId,
-      request,
-      response,
-      recovered.context,
-      signal,
-    );
+    await this.validate(op, key.userId, request, response, context, signal);
     await this.deps.receipts.reconcile(
       key,
       response as Responses[Mutation],
-      recovered.context,
+      context,
       signal,
     );
     this.alive(signal);

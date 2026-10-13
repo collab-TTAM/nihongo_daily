@@ -49,7 +49,8 @@ signal. Adapters must impose network/body read limits before constructing string
 and abort database transactions/network calls when possible. An ambiguous commit
 may have succeeded; retry must consult durable receipts, not redispatch.
 
-The verified request and trusted prepared context are frozen snapshots. The provider
+The verified request, trusted prepared/recovered context and validated result are
+frozen snapshots. Empty/oversized dispatch tokens fail before provider invocation. The provider
 receives stable system instructions plus separate request/context data. This is
 not a promise that prompt injection is impossible; authority stays outside model
 output. No provider receives a bearer token or private app credential in prompts.

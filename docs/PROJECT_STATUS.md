@@ -229,7 +229,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added private durable SQL receipt lookup/claim/token-completion, permission tests
   and native two-session claim race. Pending uncertainty never renews dispatch;
   lookup-only recovery must validate/correlate an existing result.
-- Local: TypeScript check/format and 35 Node tests passed, original 34 Python tests,
+- Local: TypeScript check/format and 37 Node tests passed, original 34 Python tests,
   20 contract fixtures/content checks, Python compile/bash syntax/whitespace passed.
   Native PostgreSQL/full Flutter/web/Windows checks require exact-head CI; no such
   result claimed until observed. Existing CI gates retained; ai-boundary job added.
@@ -242,3 +242,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Local additive migration, retained SQL/RLS suite and new AI receipt/security
   assertions passed on PGlite 0.5.9; native multi-session concurrency still needs CI.
+
+- Separate review fixes: reject empty/oversized dispatch tokens before provider
+  calls, freeze validated outputs/recovered context before asynchronous persistence,
+  with two targeted regressions. No security/test gate weakened.
