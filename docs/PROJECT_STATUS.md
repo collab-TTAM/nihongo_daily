@@ -10,7 +10,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
 | SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
 | Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
-| AI tutor | IN_PROGRESS #7 validated library/claims; live providers #17 | #7 AI |
+| AI tutor | MERGED via PR #32; runtime bridge #31 / live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
 | QA/security baseline | READY to start against implementation PR #19 | #8 QA |
 
@@ -254,3 +254,39 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - UUID compatibility review: prepared-session binding compares logical UUIDs
   case-insensitively, while receipt comparison keeps immutable request fields.
   Added an uppercase client UUID regression; no auth/ownership check weakened.
+
+
+## Integrated handoff — Issue #7 / PR #32, 2026-10-13 UTC
+
+- Merged PR #32 as edb6465ed07af54ee2495be706afc2712382efb1; #7 completed.
+  Separately reviewed/tested head e3200bc60c58e175d3d0414621f06c6d0b887467.
+- Delivered provider-neutral server TypeScript interfaces for five frozen AI
+  operations, original-schema validation/generated types, bounded immutable
+  request/context/result, required verified-auth/rate/context ports, server identity
+  and curriculum-ref checks, safe Vietnamese errors and deadline/abort handling.
+  Private invoker receipt lookup/claim/token-completion helpers preserve ownership,
+  original replay and pending uncertainty; recovery never dispatches a new call.
+- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38452125458
+  succeeded with all five jobs: repo-sanity, ai-boundary, database, flutter, windows.
+  AI format/strict TypeScript/generated-type checks and all 38 Node tests passed;
+  production dependency audit reported zero findings. Native PostgreSQL passed
+  28 added AI SQL/security assertions and two-session dispatch claim race, retaining
+  existing SQL/RLS/review uniqueness tests. Flutter retained 91 tests, analyze with
+  no issues, SRS/Kanji actual-wire gates and web release; Windows release passed.
+- Local: Node checks/tests, 34 Python regressions, 20 baseline fixtures/content,
+  PGlite 0.5.9 migrations/SQL/RLS/AI assertions, Python compilation/bash syntax and
+  whitespace. Native concurrency/full Flutter build evidence is CI, not local.
+  Uploaded initial/patched trees matched 21 reviewed local files; no secrets.
+- Review fixes: frozen output/recovery context, invalid dispatch token, equivalent
+  UUID capitalization; Ajv moderate GHSA-2g4f-4pwh-qvx6 audited/patched to 8.20.0
+  ($data disabled), production audit gate added. No test/security gate weakened.
+- Limits: no deployed Edge/Deno proof, real Supabase Auth verification, distributed
+  runtime limiter, actual conversation session/message transaction adapter,
+  real provider, Flutter AI UI or voice. Test ports are explicit fixtures and do
+  not count as integrations. #31 tracks trusted runtime/transaction/reconciliation
+  binding; #17 live provider/voice, #20 account lifecycle, #18 integrated evidence.
+  docs/AI_BOUNDARY.md details scope and safe pending recovery requirements.
+- Next sequential worker task: #8 reproducible QA/security regression matrix after
+  any open evidence PR. No external configuration needed for that inventory.
+  #31's library dependency is resolved; real hosted/provider evidence remains
+  pending configuration. Personal Alpha stays IN_PROGRESS beyond starter tasks.
