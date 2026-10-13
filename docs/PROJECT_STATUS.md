@@ -1,12 +1,12 @@
 # PROJECT STATUS
 
 Current release target: Personal Alpha
-Overall status: IN_PROGRESS — shared contracts implemented; no app build yet.
+Overall status: IN_PROGRESS — shared contracts merged; Flutter demo shell in development.
 
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
-| Architecture baseline | IMPLEMENTED; integration tracked in #1 | Lead |
-| Flutter skeleton | READY after #1 merge | #2 Flutter |
+| Architecture baseline | MERGED via PR #10; #1 completed | Lead |
+| Flutter skeleton | IN_PROGRESS; build/CI evidence pending | #2 Flutter |
 | Supabase schema/auth | READY after #1 merge | #3 Backend |
 | SRS engine | BLOCKED on usable Dart package from #2 | #4 Learning |
 | Kanji writing engine | BLOCKED on #2/reference data | #6 Kanji |
@@ -27,3 +27,24 @@ Overall status: IN_PROGRESS — shared contracts implemented; no app build yet.
 - Blockers/decisions: none for #2; live Supabase/AI/voice configuration is addressed when integration is implemented.
 
 Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. Issue #16 provides real Kanji reference assets, while #6 can start synthetic primitives after #2.
+
+## Current worker — Issue #2, 2026-10-13
+
+- Branch: automation/issue-2-flutter-shell; base main 33f31a8 (PR #10).
+- Implemented: Vietnamese Material 3 adaptive shell, GoRouter module discovery and
+  unavailable pages, Riverpod-injected typed demo repository, session-only N5/N4
+  and theme settings, loading/error/retry/empty handling, regression tests.
+- Changed files: apps/flutter_app, README, CI workflow, .gitignore, this status.
+- API/database changes: none; demo allocation does not implement get_daily_plan.
+- Checks: contract validator passed 20 fixtures; 15 contract regression tests passed.
+  Flutter format and analyze passed (no issues); 22 Flutter tests passed, including
+  200% text on 320/375px layouts after fixing the theme dropdown overflow. Web
+  release build succeeded locally; a missing optional Cupertino icon font was
+  then supplied, so the final dependency lock awaits current-head CI/build.
+  Windows build and PR CI remain pending. Direct browser smoke was not observed:
+  the local headless Chrome process crashed before the app could load.
+- Known limitations: real content, auth, storage, sync, SRS, scoring, progress,
+  providers and voice remain unimplemented; preview routes state this explicitly.
+- Next: complete Flutter checks and review/CI, integrate #2, then select #3.
+- Blockers: none requiring user input. Windows build needs Windows CI; iOS runner,
+  signing and device validation remain later work.
