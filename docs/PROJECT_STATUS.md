@@ -9,7 +9,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
 | SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
-| Kanji writing engine | READY for synthetic primitives; real assets #16 | #6 Kanji |
+| Kanji writing engine | IN_PROGRESS #6 capture prototype; real assets #16 | #6 Kanji |
 | AI tutor | READY for validated interfaces; live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
 | QA/security baseline | READY to start against implementation PR #19 | #8 QA |
@@ -167,3 +167,24 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   and #1 already merged. No external credential blocks this work. Resume any open
   evidence PR first. Personal Alpha remains IN_PROGRESS with live integration,
   broader curriculum, offline/sync and release acceptance still outstanding.
+
+
+## Development handoff — Issue #6, 2026-10-13 UTC
+
+- Fresh main 8559956 includes merged #5 evidence PR #28; no open PR on claim.
+  Branch automation/issue-6-kanji-capture, one sequential worker.
+- Added pure immutable normalized models, bounded single-pointer capture, undo/
+  clear, square mouse/touch/stylus prototype and synthetic-only geometric scores.
+  Real grading is explicitly unavailable; no canonical assets or persisted progress.
+- Local SDK exists but Flutter dependency bootstrap cannot complete in this
+  environment. Raw Dart capture/scorer verifier passed and emitted two actual
+  schema-valid requests; full Flutter analyze/tests/build and database/Windows
+  checks require observed exact-head CI before integration.
+- Added domain/widget regressions and actual-wire CI gate; no dependencies or
+  frozen contracts/auth/RLS changed. docs/KANJI_CAPTURE.md records heuristic/limits.
+- Resume this PR and CI first; after integration next worker task is #7 validated
+  AI interfaces. #16 still gates real stroke assets/grading. Personal Alpha remains
+  IN_PROGRESS; no hosted/backend/recognition/real-grade claim.
+
+- Separate review fix: enforce event-time monotonicity even for coalesced stationary
+  samples; added targeted regression. Added spacing for readable canvas guidance.
