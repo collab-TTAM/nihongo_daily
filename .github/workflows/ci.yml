@@ -93,7 +93,8 @@ jobs:
   windows:
     needs: repo-sanity
     if: needs.repo-sanity.outputs.has_flutter == 'true'
-    runs-on: windows-latest
+    # Flutter 3.35 supports VS 2022; windows-latest now selects VS 2026.
+    runs-on: windows-2022
     timeout-minutes: 30
     defaults:
       run:

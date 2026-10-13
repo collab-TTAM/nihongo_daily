@@ -46,6 +46,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   https://github.com/collab-TTAM/nihongo_daily/pull/19/checks; repo-sanity, flutter
   (format/analyze/22 tests/web build), and windows (release build) must all pass
   before integration. Artifacts: flutter-web-preview and flutter-windows-preview.
+  CI run 38407859810 passed repo-sanity and all Flutter checks, but Windows failed
+  because windows-latest supplied VS 2026 and Flutter 3.35 selected the fallback
+  VS 2019 CMake generator. The Windows job is now pinned to windows-2022 / VS 2022;
+  no checks were removed. Current-head rerun remains the integration gate.
   Direct browser smoke was not observed:
   the local headless Chrome process crashed before the app could load.
 - Known limitations: real content, auth, storage, sync, SRS, scoring, progress,

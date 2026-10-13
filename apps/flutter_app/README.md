@@ -19,7 +19,8 @@ flutter run -d chrome
 flutter build web --release
 ```
 
-On Windows with Visual Studio's Desktop development with C++ workload:
+On Windows with Visual Studio **2022** and its Desktop development with C++ workload
+(matching the pinned CI image; Flutter 3.35 does not recognize VS 2026):
 
 ```bash
 flutter run -d windows
