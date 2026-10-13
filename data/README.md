@@ -79,7 +79,7 @@ Validation is offline after installing the existing dependencies. It asserts
 frozen item schemas, required nullable fields, bounded arrays/types, NFC/trimmed
 text, kana readings, CJK characters, global UUID uniqueness, normalized natural
 keys/tags, example uniqueness, typed grammar links, level/version/asset flags,
-actual coverage counts and no undeclared JSON files. It does not call providers,
+actual coverage counts, duplicate JSON member rejection and no undeclared JSON files. It does not call providers,
 change RLS, deploy, or fetch remote schemas. All existing CI jobs remain required.
 
 A future importer maps examples to normalized `vocabulary_examples` /

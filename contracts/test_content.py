@@ -110,6 +110,15 @@ class ContentTests(unittest.TestCase):
         (self.root / 'n5/vocabulary.json').write_text('{}')
         self.fails()
 
+    def test_duplicate_json_members_are_rejected(self):
+        file = self.root / 'n5/vocabulary.json'
+        file.write_text(file.read_text().replace('"difficulty": 0.2', '"difficulty": 0.2, "difficulty": 0.3', 1))
+        self.fails()
+
+    def test_fullwidth_romaji_cannot_bypass_reading_check(self):
+        self.change('n5/vocabulary.json', lambda v: v[0].update(reading='わたしＡ'))
+        self.fails()
+
     def test_nonfinite_numbers_are_rejected(self):
         file = self.root / 'n5/vocabulary.json'
         file.write_text(file.read_text().replace('0.2', 'NaN', 1))

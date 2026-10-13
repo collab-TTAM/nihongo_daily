@@ -39,14 +39,33 @@ def _key(value):
 
 
 def _reading(value):
-    if not KANA.search(value) or KANJI.search(value) or re.search(r'[A-Za-z]', value):
+    normalized = unicodedata.normalize('NFKC', value)
+    if not KANA.search(normalized) or KANJI.search(normalized) or re.search(r'[A-Za-z]', normalized):
         raise ContractError('Reading must use kana, without Kanji or romaji')
+
+
+def _load_export(path):
+    """Reject ambiguous duplicate object members instead of silently overwriting."""
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ContractError(f'Duplicate JSON member: {key}')
+            result[key] = value
+        return result
+
+    def invalid_constant(value):
+        raise ContractError(f'Non-finite JSON value: {value}')
+
+    with Path(path).open(encoding='utf-8') as source:
+        return json.load(source, object_pairs_hook=unique_object,
+                         parse_constant=invalid_constant)
 
 
 def validate_content(root=CONTENT_ROOT):
     """Validate every declared level bundle, rejecting undeclared JSON exports."""
     root = Path(root)
-    manifest = load_json(root / 'manifest.json')
+    manifest = _load_export(root / 'manifest.json')
     manifest_schema = load_json(Path(__file__).with_name('content_manifest.schema.json'))
     errors = list(Draft202012Validator(manifest_schema).iter_errors(manifest))
     if errors:
@@ -59,12 +78,11 @@ def validate_content(root=CONTENT_ROOT):
     total = {model: 0 for model in MODELS}
     total['examples'] = 0
     for level in manifest['levels']:
-        bundle = root / level.lower()
         rows = {}
         for model in MODELS:
             relative = Path(level.lower()) / f'{model}.json'
             expected.add(relative)
-            items = load_json(root / relative)
+            items = _load_export(root / relative)
             if not isinstance(items, list) or not items:
                 raise ContractError(f'{relative}: expected a nonempty array')
             rows[model] = items

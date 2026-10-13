@@ -124,10 +124,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Branch automation/issue-5-n5-seed, base main 73c1dc8. Original editorial N5
   seed: 24 vocabulary, 8 Kanji, 10 grammar and 44 embedded example entries.
   Stable IDs, version/count/scope manifest, Vietnamese explanations and readings.
-- Added strict offline export gate and 15 mutation/regression tests; CI runs the
+- Added strict offline export gate and 17 mutation/regression tests; CI runs the
   gate and all existing tests. Wire models, Flutter source and database unchanged.
 - Local: content/schema/count/reference validation passed; 20 baseline fixtures
-  and all 32 Python tests passed; Python compile/whitespace passed. Eight stroke
+  and all 34 Python tests passed; Python compile/whitespace passed. Eight stroke
   counts cross-checked against pinned KanjiVG metadata; assets not redistributed.
 - Flutter SDK/native PostgreSQL are absent locally. Existing full Flutter format,
   analyze/tests/SRS output validation, web/Windows builds and SQL/race checks must
@@ -138,3 +138,6 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Resume this PR first, then #6 Kanji capture/synthetic primitives. #26 tracks N5 expansion; #14 can extend
   the content gate with N4; #12 consumes original exports; #16 provides real assets.
   Personal Alpha remains IN_PROGRESS; no new user action is needed for #6.
+
+- Separate review fix: reject duplicate JSON object members and fullwidth romaji
+  readings; two mutation regressions added. No validation/security gate weakened.
