@@ -26,3 +26,6 @@ The pure versioned SRS core and backend parity handoff are documented in
 Original N5 seed exports are in `data/`; see `data/README.md` for exact coverage,
 linguistic notes and unavailable assets. Validate with
 `python3 -m contracts.validate_content`. This seed is not a complete curriculum.
+
+Provider-neutral server AI interfaces and receipt-claim helpers are in `backend/ai`;
+see `docs/AI_BOUNDARY.md` for tests, limits and unconfigured integration boundaries.

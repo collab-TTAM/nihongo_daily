@@ -102,3 +102,7 @@ to canonical Asia/Ho_Chi_Minh before storage. Some native tzdata builds omit the
 backward alias; converting stored canonical names keeps the Vietnam UTC+7 plan
 semantics available. Invalid zones still fail. Tests cover default/settings alias
 normalization and actual timestamp conversion. Use the stored timezone for plans.
+
+Issue #7 adds private AI receipt lookup/dispatch-claim/token-completion helpers and
+native claim-race/security tests. No deployed conversation/AI runtime is implied;
+see `../docs/AI_BOUNDARY.md` for required validation/transaction/recovery binding.

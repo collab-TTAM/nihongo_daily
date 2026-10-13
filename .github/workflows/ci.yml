@@ -156,3 +156,28 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
       - name: Migration, grants, RLS, replay and concurrent uniqueness
         run: bash scripts/test_database.sh
+
+  ai-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: backend/ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/ai/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run format:check
+      - run: npm run check
+      - run: npm test
+      - name: Verify schema-generated TypeScript projections
+        working-directory: .
+        run: |
+          python3 backend/ai/generate_types.py
+          cd backend/ai
+          npm run format
+          git diff --exit-code -- src/wire.ts
