@@ -78,7 +78,7 @@ returns NULL for an unseen ID and raises `SYNC_CONFLICT` for changed input. It i
 only callable by trusted SQL/backend code; never accept an arbitrary client user
 ID. Canonicalize validated timestamps/fields before storing/comparing request JSON.
 
-**This is storage support, not a working submit_review API.** Issue #4's integration
+**This is storage support, not a working submit_review API.** Issue #22's integration after scheduler #4
 must authenticate, reject unknown fields, lock the user's learning item, replay
 before stale-time checks, validate rating/time skew/content, schedule on the server,
 and atomically append event/update state. Race losers must re-read the committed
@@ -96,3 +96,9 @@ Reference design sources (checked 2026-10-13):
 - https://supabase.com/docs/guides/database/postgres/column-level-security
 - https://supabase.com/docs/guides/database/functions
 - https://www.postgresql.org/docs/17/ddl-rowsecurity.html
+
+Timezone compatibility: accept the documented Asia/Saigon alias and normalize it
+to canonical Asia/Ho_Chi_Minh before storage. Some native tzdata builds omit the
+backward alias; converting stored canonical names keeps the Vietnam UTC+7 plan
+semantics available. Invalid zones still fail. Tests cover default/settings alias
+normalization and actual timestamp conversion. Use the stored timezone for plans.

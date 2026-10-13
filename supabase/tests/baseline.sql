@@ -18,6 +18,8 @@ grant usage on schema test_support to anon, authenticated, service_role;
 grant execute on all functions in schema test_support to anon, authenticated, service_role;
 insert into auth.users values ('10000000-0000-4000-8000-000000000001'), ('10000000-0000-4000-8000-000000000002');
 insert into public.profiles(id) select id from auth.users;
+select test_support.assert_true((select bool_and(timezone = 'Asia/Ho_Chi_Minh') from public.profiles),'Vietnam default normalized to canonical IANA zone');
+select test_support.assert_true(timezone('Asia/Ho_Chi_Minh', '2026-10-13T12:00:00Z'::timestamptz) = '2026-10-13 19:00:00'::timestamp,'Vietnam timezone conversion');
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
 values ('20000000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','đồ uống'),
        ('20000000-0000-4000-8000-000000000002','N4',0.2,1,false,'森','もり','rừng','noun','thiên nhiên');
@@ -143,6 +145,8 @@ select test_support.expect_error('update public.scenario_vocabulary set id = id 
 update public.profiles set display_name='User 1',preferred_jlpt='N4',daily_target_minutes=90,timezone='Asia/Tokyo' where id='10000000-0000-4000-8000-000000000001';
 select test_support.assert_true((select display_name <> '' from public.profiles),'allowlisted settings update');
 select test_support.expect_error('update public.profiles set id = gen_random_uuid()','42501','profile owner immutable to client');
+update public.profiles set timezone='Asia/Saigon';
+select test_support.assert_true((select timezone='Asia/Ho_Chi_Minh' from public.profiles),'Vietnam settings alias normalized');
 select test_support.expect_error($s$update public.profiles set timezone = 'fake/timezone'$s$,'23514','invalid timezone rejected');
 select test_support.expect_error('update public.profiles set daily_target_minutes = 6','23514','target range rejected');
 select test_support.expect_error($s$select private.review_replay(null,'{}')$s$,'42501','internal function cannot be called');
@@ -235,6 +239,8 @@ select test_support.expect_error('update public.scenario_vocabulary set id = id 
 update public.profiles set display_name='User 2',preferred_jlpt='N4',daily_target_minutes=90,timezone='Asia/Tokyo' where id='10000000-0000-4000-8000-000000000002';
 select test_support.assert_true((select display_name <> '' from public.profiles),'allowlisted settings update');
 select test_support.expect_error('update public.profiles set id = gen_random_uuid()','42501','profile owner immutable to client');
+update public.profiles set timezone='Asia/Saigon';
+select test_support.assert_true((select timezone='Asia/Ho_Chi_Minh' from public.profiles),'Vietnam settings alias normalized');
 select test_support.expect_error($s$update public.profiles set timezone = 'fake/timezone'$s$,'23514','invalid timezone rejected');
 select test_support.expect_error('update public.profiles set daily_target_minutes = 6','23514','target range rejected');
 select test_support.expect_error($s$select private.review_replay(null,'{}')$s$,'42501','internal function cannot be called');

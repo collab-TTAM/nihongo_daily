@@ -69,7 +69,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Only own-profile allowlisted settings are client-writable. Curriculum, events,
   scores, schedules, plans and conversation writes remain backend-only.
 - Original-result replay helper and PENDING/COMPLETED receipt storage implemented;
-  public submit_review and scheduler/atomic state-update integration remain #4.
+  public submit_review/atomic state-update integration is #22 after scheduler #4.
 - Local checks: migration plus SQL role/grant/isolation/integrity/replay assertions
   passed on PostgreSQL 18.6 via PGlite 0.5.9; bash syntax and Python compilation
   passed. Native PostgreSQL 17 and two-session race await the new database CI job.
@@ -81,3 +81,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   full contract validation boundaries and RPC concurrency handoff. No weakened
   tests/RLS. Issue #5 can use this mapping after integration.
 - Next: complete exact-head CI/review for #3, then #4 pure deterministic SRS.
+
+- Separate review follow-ups: #20 tracks real Auth/session lifecycle; #22 tracks
+  authenticated submit_review/atomic scheduler integration after #4. Neither is
+  supplied by this storage baseline. Review strengthened curriculum locking to
+  FOR SHARE so publication retirement cannot race an active-content check.
+- Initial native database CI 38420903307 failed at profile provisioning because
+  its tzdata omitted the Asia/Saigon alias. Canonicalizing the accepted alias to
+  Asia/Ho_Chi_Minh fixes actual plan conversion; invalid zones remain rejected.
+  Regression checks cover default/settings alias and Vietnam UTC+7 conversion.
+  Await CI on the corrected head before integration.

@@ -1,5 +1,5 @@
 -- Initial additive storage baseline. Apply once through Supabase migrations.
--- No client write grants for events/derived state. Public RPCs arrive in #4/#11/#7.
+-- No client write grants for events/derived state. Public RPCs arrive in #22/#11/#7 (scheduler #4).
 begin;
 create schema if not exists private;
 revoke all on schema private from public, anon, authenticated;
@@ -258,6 +258,8 @@ create table public.operation_receipts (
 create function private.validate_timezone() returns trigger
 language plpgsql set search_path = '' as $$
 begin
+  -- Some tzdata packages omit backward links; retain the accepted Vietnam alias.
+  if new.timezone = 'Asia/Saigon' then new.timezone := 'Asia/Ho_Chi_Minh'; end if;
   if not exists (select 1 from pg_catalog.pg_timezone_names where name = new.timezone) then
     raise exception 'Invalid IANA timezone' using errcode = '23514';
   end if;
@@ -293,9 +295,9 @@ language plpgsql set search_path = '' as $$
 declare active boolean;
 begin
   case new.item_type
-    when 'VOCABULARY' then select is_active into active from public.vocabulary where id = new.item_id for key share;
-    when 'KANJI' then select is_active into active from public.kanji where id = new.item_id for key share;
-    when 'GRAMMAR' then select is_active into active from public.grammar where id = new.item_id for key share;
+    when 'VOCABULARY' then select is_active into active from public.vocabulary where id = new.item_id for share;
+    when 'KANJI' then select is_active into active from public.kanji where id = new.item_id for share;
+    when 'GRAMMAR' then select is_active into active from public.grammar where id = new.item_id for share;
   end case;
   if active is distinct from true then
     raise exception 'Missing or inactive curriculum' using errcode = '23514';

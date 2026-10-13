@@ -1,6 +1,6 @@
 """Exercise the storage uniqueness boundary using two native PostgreSQL sessions.
 
-This is not submit_review integration: the scheduler transaction is delivered in #4.
+This is not submit_review integration: the scheduler transaction is delivered in #22 after scheduler #4.
 Only an empty disposable CI database is supported; no production connection is used.
 """
 import os

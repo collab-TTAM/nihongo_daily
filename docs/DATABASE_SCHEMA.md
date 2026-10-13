@@ -68,5 +68,9 @@ system_context is excluded from authenticated column grants.
 
 Storage constraints/replay are implemented; submit_review scheduling/atomic state
 updates, get_daily_plan, provider receipts and full payload validation remain in
-#4/#11/#7. Read supabase/README.md before applying or adapting the migration.
+#22/#11/#7 (scheduler #4). Read supabase/README.md before applying or adapting the migration.
 Local SQL/PGlite evidence is not evidence of a deployed Supabase instance.
+
+Timezone alias compatibility: Asia/Saigon is accepted at provisioning/settings
+writes and stored as Asia/Ho_Chi_Minh. Both denote Vietnam UTC+7; canonical storage
+avoids backward-link omissions in native tzdata. No wire endpoint changed.
