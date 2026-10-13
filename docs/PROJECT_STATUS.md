@@ -392,3 +392,33 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   waiting on the advisory lock before releasing the first transaction; no timing
   guess/sequential replay can count as concurrency. Clarified private invoker vs
   narrow public definer documentation. Keep draft for remaining full #22 gates.
+
+
+## Sequential resume — Issue #22 typed repository, 2026-10-13 23:04 UTC
+
+- Resumed existing draft PR #37 / automation/issue-22-atomic-review after its
+  unchanged head 7018a339 and no newer worker activity for three hours. Fresh
+  main remains 78a44faf; no other open PR. No parallel worker/agent.
+- Observed all five jobs successful for SQL head 7018a339 at
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38459542474, including
+  native PostgreSQL/RLS/62 RPC assertions, 26 SQL/Dart cases and five lock-observed
+  concurrency scenarios, retained Flutter/web/Windows and AI gates. That run is
+  historical SQL-head evidence, not evidence for this new Dart increment.
+- Added typed ReviewRepository/RpcReviewRepository using injected Auth/RPC ports,
+  immutable session-bound events, strict five-field success/three-field errors,
+  safe fixed Vietnamese messages, timeout uncertainty and old-session isolation.
+  No scheduler/client-derived writes, automatic retry or direct table calls.
+- Added 21 Flutter regressions plus a raw-Dart verifier: actual encoder/decoder
+  outputs for 26 original server-response fixtures, invalid data, timeout/immutable
+  retry and session replacement. Fixture ports/responses are TEST ONLY and cannot
+  count as SQL-to-Flutter, live Auth, actual retry-after-later-reviews or UI evidence.
+- Local raw-Dart verifier and 26 encoded schema pairs passed; 40 Python tests,
+  17 QA tests and inventory passed before final docs/CI changes. SDK dependency
+  bootstrap cannot complete here, so full Flutter analyze/tests/web/Windows and
+  all final-head gates require observed GitHub Actions before any success claim.
+- QA now tracks 29 cases; new fixture adapter group and CI steps are explicit.
+  All 14 integration release cases stay pending. No frozen contract/dependency,
+  Auth strategy/RLS, data collection/provider, production or release change.
+- Keep #22 open and PR #37 draft. Next worker resumes final-head CI/review, then
+  concrete SDK/Auth binding and SRS UI/queue acceptance with #20/#15; independent
+  implementation still needs no secrets in chat. Personal Alpha IN_PROGRESS.

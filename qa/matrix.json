@@ -20,6 +20,8 @@
       "Run flutter test",
       "Verify pure SRS golden cases and emit actual wire payloads",
       "Validate actual Dart SRS output against frozen wire contracts",
+      "Verify typed review adapter using explicit fixture ports",
+      "Validate typed review adapter wire encodings",
       "Verify actual Kanji capture wire payloads",
       "Validate actual Dart Kanji output against frozen contracts",
       "Run flutter build web --release",
@@ -138,6 +140,30 @@
       ],
       "reproduce": "On a new empty disposable PostgreSQL 17 database: install contracts/requirements.txt; bash scripts/test_database.sh",
       "limitation": "SQL role/auth.uid fixtures are not real Supabase JWT/PostgREST or typed Flutter/UI evidence; full #22 remains open."
+    },
+    {
+      "id": "review-adapter",
+      "status": "automated-baseline",
+      "scope": "Typed Dart strict response/error decoding, immutable event retries, timeout uncertainty and session lifecycle isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/review_repository_test.dart",
+          "contains": "in-flight old-user success is discarded after account switch"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_review_adapter.dart",
+          "contains": "TEST ONLY transport/Auth fixtures"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "From apps/flutter_app: flutter test test/features/srs/review_repository_test.dart; dart run tool/verify_review_adapter.dart build/review-adapter-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json",
+      "limitation": "Injected Auth/transport and server responses are TEST ONLY; no concrete Supabase SDK, verified JWT/PostgREST, UI, SQL-to-Dart transaction or durable queue integration."
     },
     {
       "id": "ai-sql-receipts",
@@ -323,7 +349,7 @@
         18
       ],
       "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
-      "limitation": "Local atomic SQL RPC has executable tests; real JWT/PostgREST, typed Flutter adapter and integrated SRS UI evidence remain pending."
+      "limitation": "Local atomic SQL RPC and typed Dart repository have executable tests; real JWT/PostgREST, concrete SDK/Auth binding, integrated SRS UI and durable retries remain pending."
     },
     {
       "id": "daily-plan",

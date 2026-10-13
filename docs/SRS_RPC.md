@@ -1,14 +1,14 @@
 # Local atomic review transaction — Issue #22
 
-This is an additive **local SQL implementation increment**, not a deployed
+This is an additive **local SQL and typed Dart repository increment**, not a deployed
 Supabase endpoint or an integrated Flutter review feature. Issue #22 remains open
-for typed transport/UI and real JWT/PostgREST acceptance. No production migration,
+for SDK/Auth binding, UI and real JWT/PostgREST acceptance. No production migration,
 Auth strategy change, new provider, paid request or secret is included.
 
 ## Wire and identity boundary
 
 `public.submit_review(p_request jsonb)` accepts the frozen seven-field
-`submit_review_request`. A future typed repository wraps `SrsReview.toJson()` in
+`submit_review_request`. The typed RpcReviewRepository wraps `SrsReview.toJson()` in
 `{'p_request': ...}` for Supabase RPC transport. The inner request and five-field
 success response are unchanged; errors are the three-field frozen error object.
 
@@ -103,7 +103,7 @@ A PGlite run can exercise the migration/assertions/parity but cannot establish
 native two-session contention. CI supplies native PostgreSQL 17 evidence only
 when its actual current-head jobs are observed successful.
 
-Remaining #22 acceptance: typed RPC adapter/error decoding, complete SRS UI flow,
+Remaining #22 acceptance: concrete SDK/Auth transport binding, complete SRS UI flow,
 missing/expired real Auth/PostgREST requests, authenticated non-production learner
 journey and retry/restart integration with #15/#20. Keep the PR draft/issue open
 until its declared acceptance is actually observed; baseline green is not release.
@@ -112,3 +112,55 @@ Primary design references checked 2026-10-13:
 - https://www.postgresql.org/docs/17/sql-createfunction.html (definer/search_path/grants)
 - https://supabase.com/docs/guides/database/functions (caller-bound definer boundary)
 - https://supabase.com/docs/guides/database/postgres/row-level-security (auth.uid/RLS)
+
+## Typed Dart repository increment
+
+`apps/flutter_app/lib/features/srs/data/review_repository.dart` adds ReviewRepository
+and RpcReviewRepository with injected ReviewAuth/ReviewRpcTransport ports. It is
+not connected to the router or a real SDK. The transport must use the captured
+authenticated session/client and recheck before dispatch; it must never select a
+different account's current credentials implicitly. ReviewSession is a local
+identity/lifecycle hint, not a JWT validator. #20 retains real token verification,
+refresh and secure storage responsibility.
+
+prepare() captures a session and immutable seven-field event. submit() sends only
+`submit_review` with `{'p_request': ...}`. Reusing the prepared event keeps its ID,
+timestamp, rating and duration. Logout/account changes replace ReviewSession,
+including A -> B -> A; stale events do not dispatch, and an in-flight old-session
+result cannot become success for the new session. Server authorization still
+comes from auth.uid(). Same-user token refresh may retain the object only inside
+the same authenticated lifecycle.
+
+Strict decoded-object validation accepts only the five-field server response or
+three-field frozen error. Invalid types, calendar/time/offsets, non-finite numbers,
+reserved NEW/MASTERED state and extra/missing/mixed fields fail closed. Success
+retains the exact wire due timestamp alongside a UTC microsecond display value.
+It does not run a local scheduler or construct/update a stored card. Original
+replay results must not overwrite newer cached scheduling state; authoritative
+state refresh and durable receipts/queue integration remain #15/#22 work.
+
+Errors expose fixed Vietnamese messages by allowlisted code, never arbitrary
+backend/SDK messages, tokens, SQL or headers. A concrete SDK binding must translate
+recognized failures to ReviewTransportFailure; unknown exceptions are INTERNAL_ERROR.
+Only transient network/provider failures and explicit retryable rate limits allow
+retry. Timeout means **unknown outcome**: it does not cancel the server transaction,
+generate a new event, redispatch or mark a review saved. Late success is ignored;
+manual retry uses the same prepared event.
+
+Reproduce from apps/flutter_app:
+`flutter test test/features/srs/review_repository_test.dart` and
+`dart run tool/verify_review_adapter.dart build/review-adapter-output.json`.
+Then run `python3 -m contracts.validate_srs_wire
+apps/flutter_app/build/review-adapter-output.json` at repo root. The tool passes
+26 original response fixtures through the real repository/encoder/decoder, tests
+strict invalid data, timeout/retry and session replacement, then emits actual
+wire encodings. Ports/server responses are TEST ONLY fixtures: this is not a
+SQL-to-Flutter, expired JWT, hosted transaction, durable restart or UI test.
+Full Flutter regressions also cover all error codes, immutability/account changes.
+QA's review-rpc, auth-live and offline-sync release gates remain pending.
+
+Primary Dart references checked 2026-10-13:
+- https://api.dart.dev/dart-core/DateTime/parse.html (normalizes invalid components;
+  explicit calendar validation is required before parsing)
+- https://api.flutter.dev/flutter/dart-async/Future/timeout.html (source may finish
+  after timeout; timeout does not prove server rollback)

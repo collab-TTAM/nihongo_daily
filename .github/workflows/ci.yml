@@ -99,6 +99,11 @@ jobs:
         run: |
           python3 -m pip install -r contracts/requirements.txt
           python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-wire-output.json
+      - name: Verify typed review adapter using explicit fixture ports
+        run: dart run tool/verify_review_adapter.dart build/review-adapter-output.json
+      - name: Validate typed review adapter wire encodings
+        working-directory: .
+        run: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json
       - name: Verify actual Kanji capture wire payloads
         run: dart run tool/verify_kanji.dart build/kanji-wire-output.json
       - name: Validate actual Dart Kanji output against frozen contracts

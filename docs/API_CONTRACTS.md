@@ -59,9 +59,11 @@ Run the commands in README. JSON Schema formats are asserted explicitly by the v
 ## Local submit_review transaction increment — Issue #22
 
 Migration 20261013200000_submit_review.sql defines public.submit_review(p_request jsonb).
-A future typed repository calls rpc('submit_review', params: {'p_request':
+RpcReviewRepository's injected transport calls rpc('submit_review', params: {'p_request':
 review.toJson()}); the inner seven-field wire request and five-field response
 are unchanged. Strict request/canonical replay/server scheduling is implemented
-locally; no hosted endpoint, JWT/PostgREST or Flutter review integration is claimed.
+locally; typed Dart response/error decoding and immutable session-bound retries
+are also implemented. No concrete SDK binding, hosted endpoint, JWT/PostgREST or
+Flutter review screen integration is claimed.
 See SRS_RPC.md for safe error objects, exact fractional retry identity, UTC
 microsecond policy, resource limits and the still-open #22 acceptance.
