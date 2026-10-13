@@ -1,7 +1,7 @@
 # Nihongo Daily Flutter shell
 
 This is an explicitly labeled UI preview, not Personal Alpha. No login, real
-curriculum, SRS scheduling, grading, progress persistence, network adapter or live
+curriculum study flow, integrated SRS review, real grading, progress persistence, network adapter or live
 AI/voice is implemented. N5/N4 selections and theme preferences last only for the
 current process. The seven-block allocation previews the frozen 120-minute
 default; every block is shown as unavailable and cannot record study completion.
@@ -47,6 +47,8 @@ claimed by this shell.
   preview repository does not implement or change the get_daily_plan contract.
 - `features/settings/`: process-local preview preferences; no Supabase writes.
 - `features/study/`: discovery of planned modules.
+- `features/srs/`: pure versioned scheduler; not integrated into review UI.
+- `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
 
 The home domain/repository interface does not import Flutter. Riverpod injects
