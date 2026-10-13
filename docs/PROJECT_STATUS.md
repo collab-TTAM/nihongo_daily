@@ -1,7 +1,7 @@
 # PROJECT STATUS
 
 Current release target: Personal Alpha
-Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS baseline and pure SRS merged; live integrations remain outstanding.
+Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ Overall status: IN_PROGRESS — contracts, Flutter preview and database/RLS base
 | Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
 | AI tutor | MERGED via PR #32; runtime bridge #31 / live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
-| QA/security baseline | IN_REVIEW: executable inventory / exact-head evidence guard | #8 QA; integrated release #18 |
+| QA/security baseline | MERGED via PR #35; #8 inventory completed | #18 integrated release still pending |
 
 ## Historical handoff — Issue #1, 2026-10-13
 
@@ -319,3 +319,43 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Separate review hardening: verify command/step anchors within their actual CI
   job, so moving an audit elsewhere cannot preserve coverage; reject removed
   ranked findings and out-of-repository test anchors. Three regressions added.
+
+## Integrated handoff — Issue #8 / PR #35, 2026-10-13 UTC
+
+- Merged https://github.com/collab-TTAM/nihongo_daily/pull/35 as
+  250cc1ff2c21da876ce7a8e9004b77c0bb6145ef; #8 completed as QA inventory/evidence tooling.
+  Separately reviewed/tested head 7ee60f0f54297231147e1dd7ac1e1fe4662ea6fd.
+- Delivered qa/matrix.json: 27 assurance cases (13 executable baseline groups,
+  14 pending integrations), exact file/statement anchors, reproduction commands,
+  issue owners and limits; six severity-ranked findings distinguish five missing
+  assurance gaps from the already patched dependency advisory. docs/QA_SECURITY_MATRIX.md
+  maintains the reproduction/evidence instructions and unchecked release checklist.
+- Standard-library verifier rejects stale head/repo/workflow, mixed run/attempt,
+  incomplete pagination, missing/duplicate/unreviewed jobs or steps and non-success
+  states. It never executes matrix commands or authenticates saved metadata.
+  CI now validates inventory and all 17 QA regressions, retaining every prior gate.
+- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38455196645
+  succeeded with all five jobs: repo-sanity (17 QA, 34 existing Python tests,
+  20 frozen fixtures/content), ai-boundary (38 Node tests/format/type/generated
+  checks, zero production audit findings), database (retained SQL/RLS and both
+  native concurrency races), flutter (analyze without issues/tests/SRS/Kanji
+  actual-wire checks/web release), windows (release build/artifact).
+- Fetched unmodified workflow run and complete latest-attempt jobs via connected
+  GitHub; verifier accepted exact-head evidence. Prior-main CI was rejected for
+  missing the new QA step. With the real successful CI snapshot, --release
+  intentionally returned nonzero because 14 integration cases remain pending.
+  No release completion, interactive device/browser or hosted-service claim.
+- Local: 17 QA regressions, 34 Python tests, contract/content checks, compilation
+  and whitespace passed. Remote uploaded tree c462f344 matched reviewed local
+  files. Full Node/native SQL/Flutter/Windows results came from current-head CI.
+- Review hardening: scope step anchors to their actual job, reject test paths
+  outside the repository and removal of ranked findings. No wire/auth/RLS,
+  runtime/provider/migration changes or weakened checks.
+- Follow-up #34 covers the previously unassigned Listening/Reading module with
+  honest audio availability and valid-session/retry requirements. Existing issues
+  retain all auth, RPC, plan/study, N5/N4, real Kanji, AI/voice, sync and progress gaps.
+- Next sequential task: #22 authenticated atomic submit_review, whose schema/SRS
+  dependencies are merged. Implement local SQL/typed adapter/transaction evidence
+  without waiting for live secrets; do not close #22 without its full acceptance.
+  Then #31 runtime binding and #11 plan/session work by dependency. #18 remains
+  blocked by integrated Personal Alpha evidence; independent development continues.
