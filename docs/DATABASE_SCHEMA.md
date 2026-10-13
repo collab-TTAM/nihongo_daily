@@ -27,7 +27,7 @@ learning_item_type: VOCABULARY | KANJI | GRAMMAR
 
 ## Frozen integrity and storage rules
 
-This is a migration specification, not a deployed database. Shared wire models are in contracts/v0.1. Content exports embed examples; database tables normalize them and repository adapters map the two forms. Required nullable fields remain explicit.
+The initial storage migration is supabase/migrations/20261013151000_initial_schema.sql; it is not deployed. See supabase/README.md for SQL verification and adapter mapping. Shared wire models are in contracts/v0.1. Content exports embed examples; database tables normalize them and repository adapters map the two forms. Required nullable fields remain explicit.
 
 - UUID primary keys; user references point to auth.users.id; instants use timestamptz and plan/snapshot dates use date. Profile timezone is a valid IANA name, default Asia/Saigon; target minutes are 7–1440, default 120.
 - Content version is a positive integer; difficulty/retrievability [0,1]; stability/interval_days in days; counts/durations nonnegative; Kanji/conversation scores [0,100]. JSON and array fields follow the named schemas in API_CONTRACTS.
@@ -54,3 +54,23 @@ Owner isolation is necessary but does not permit editing server-derived fields:
 Use USING/WITH CHECK and column grants/validated functions for write restrictions. Messages inherit session ownership; they have no user_id column. Service-role paths verify the end-user before acting; credentials never enter Flutter. RPC privileges/search_path and elevated functions need audit in #3. No blanket client grants on append-only events or derived metrics.
 
 Acceptance tests must cover User A/User B reads and writes, forged ownership, parent-message access, concurrent/duplicate reviews, rollback and retry results. The schema fixture suite does not execute RLS.
+
+## Implemented baseline mapping — Issue #3
+
+Array references use normalized grammar_relations, scenario_grammar and
+scenario_vocabulary with restrictive foreign keys. Adapters reconstruct the
+specified arrays; wire contracts are unchanged. Learning/quiz item_type + item_id
+map to generated typed FK columns. review_events also persists request_json for
+original-result replay. operation_receipts adds PENDING/COMPLETED state and checked
+completion response shape. Every project table has RLS and explicit grants;
+profiles alone permits allowlisted client settings updates. Scenario
+system_context is excluded from authenticated column grants.
+
+Storage constraints/replay are implemented; submit_review scheduling/atomic state
+updates, get_daily_plan, provider receipts and full payload validation remain in
+#22/#11/#7 (scheduler #4). Read supabase/README.md before applying or adapting the migration.
+Local SQL/PGlite evidence is not evidence of a deployed Supabase instance.
+
+Timezone alias compatibility: Asia/Saigon is accepted at provisioning/settings
+writes and stored as Asia/Ho_Chi_Minh. Both denote Vietnam UTC+7; canonical storage
+avoids backward-link omissions in native tzdata. No wire endpoint changed.

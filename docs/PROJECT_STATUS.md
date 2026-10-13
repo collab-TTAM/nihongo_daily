@@ -1,13 +1,13 @@
 # PROJECT STATUS
 
 Current release target: Personal Alpha
-Overall status: IN_PROGRESS — shared contracts merged; Flutter demo shell implemented.
+Overall status: IN_PROGRESS — shared contracts and Flutter preview merged; database/RLS baseline in review.
 
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
-| Flutter skeleton | IMPLEMENTED; integration and CI tracked in PR #19 | #2 Flutter |
-| Supabase schema/auth | READY after #1 merge | #3 Backend |
+| Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
+| Supabase schema/auth | IMPLEMENTED storage; review/CI pending; live auth unverified | #3 Backend |
 | SRS engine | READY after #2 merge; usable Dart package implemented | #4 Learning |
 | Kanji writing engine | BLOCKED on #2/reference data | #6 Kanji |
 | AI tutor | BLOCKED on #3 | #7 AI |
@@ -58,3 +58,47 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Supabase schema/RLS. #4 can use the Dart package after #2 merge.
 - Blockers: none requiring user input. Native Windows launch, iOS runner,
   signing and device validation remain later work.
+
+## Latest handoff — Issue #3, 2026-10-13
+
+- Base: main 9383339 (PR #19 merged). Main CI 38409499736 succeeded.
+  #2 is closed; the earlier #2 handoff above is historical.
+- Branch: automation/issue-3-schema-rls. Initial additive migration with 22 public
+  tables, ownership/parent-message RLS, explicit column/table grants, immutable
+  review receipts, typed curriculum FKs, normalized relationship FKs and indexes.
+- Only own-profile allowlisted settings are client-writable. Curriculum, events,
+  scores, schedules, plans and conversation writes remain backend-only.
+- Original-result replay helper and PENDING/COMPLETED receipt storage implemented;
+  public submit_review/atomic state-update integration is #22 after scheduler #4.
+- Local checks: migration plus SQL role/grant/isolation/integrity/replay assertions
+  passed on PostgreSQL 18.6 via PGlite 0.5.9; bash syntax and Python compilation
+  passed. Native PostgreSQL 17 and two-session race await the new database CI job.
+  Existing Flutter/web/Windows checks are retained and must pass on current head.
+- Not run locally: native PostgreSQL concurrency, hosted Supabase/PostgREST/Auth,
+  live Flutter integration, or deployment. No production changes or auth strategy
+  changes. External configuration remains required for live integration.
+- Review/dependencies: read supabase/README.md for storage/export normalization,
+  full contract validation boundaries and RPC concurrency handoff. No weakened
+  tests/RLS. Issue #5 can use this mapping after integration.
+- Next: complete exact-head CI/review for #3, then #4 pure deterministic SRS.
+
+- Separate review follow-ups: #20 tracks real Auth/session lifecycle; #22 tracks
+  authenticated submit_review/atomic scheduler integration after #4. Neither is
+  supplied by this storage baseline. Review strengthened curriculum locking to
+  FOR SHARE so publication retirement cannot race an active-content check.
+- Initial native database CI 38420903307 failed at profile provisioning because
+  its tzdata omitted the Asia/Saigon alias. Canonicalizing the accepted alias to
+  Asia/Ho_Chi_Minh fixes actual plan conversion; invalid zones remain rejected.
+  Regression checks cover default/settings alias and Vietnam UTC+7 conversion.
+  Await CI on the corrected head before integration.
+
+- Review also caught inherited service-role TRUNCATE grants under older platform
+  defaults. Revoke those explicitly before granting DML; an SQL catalog regression
+  proves no project table retains service-role TRUNCATE. Current-head CI is required.
+
+- Native PostgreSQL 17 reports 23503 for the restrictive-FK delete, while the local
+  PostgreSQL 18/PGlite reports 23001. The regression now requires one of those two
+  referential-integrity rejection codes plus unchanged curriculum and learning
+  history rows. Successful deletion or unrelated errors still fail the test.
+- Contract validator (20 fixtures) and all 15 contract tests passed locally using
+  the installed contract environment. No Flutter source changed in this PR.
