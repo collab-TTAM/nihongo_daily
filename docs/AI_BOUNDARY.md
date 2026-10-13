@@ -16,7 +16,8 @@ regenerated from all named frozen schema definitions by `generate_types.py`;
 CI verifies the projection. Ajv 2020 validates the original shared schema with
 formats, disabled dynamic $data schemas, strict finite numbers and no coercion, defaults or unknown-field removal.
 Required nullable fields and assistant-only role remain mandatory. No new fields
-are added to public wire schemas. An invalid model answer is never a success.
+are added to public wire schemas. Prepared-session UUID binding is case-insensitive;
+receipt requests still compare all immutable supplied fields structurally. An invalid model answer is never a success.
 
 The library accepts bounded JSON strings, not arbitrary executable model output.
 JSON.parse uses its standard last-member semantics for duplicate JSON keys; the

@@ -229,7 +229,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added private durable SQL receipt lookup/claim/token-completion, permission tests
   and native two-session claim race. Pending uncertainty never renews dispatch;
   lookup-only recovery must validate/correlate an existing result.
-- Local: TypeScript check/format and 37 Node tests passed, original 34 Python tests,
+- Local: TypeScript check/format and 38 Node tests passed, original 34 Python tests,
   20 contract fixtures/content checks, Python compile/bash syntax/whitespace passed.
   Native PostgreSQL/full Flutter/web/Windows checks require exact-head CI; no such
   result claimed until observed. Existing CI gates retained; ai-boundary job added.
@@ -250,3 +250,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Dependency audit found moderate Ajv advisory GHSA-2g4f-4pwh-qvx6; $data is
   disabled, and Ajv was upgraded from 8.17.1 to pinned 8.20.0 before integration.
   Added production dependency audit gate; current-head CI must rerun.
+
+- UUID compatibility review: prepared-session binding compares logical UUIDs
+  case-insensitively, while receipt comparison keeps immutable request fields.
+  Added an uppercase client UUID regression; no auth/ownership check weakened.

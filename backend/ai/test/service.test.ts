@@ -587,3 +587,24 @@ test("semantic validator cannot mutate schema-validated output before persistenc
   );
   assert.equal(store.completions, 0);
 });
+
+test("valid uppercase client UUID binds to the same canonical session", async () => {
+  const { deps, calls } = setup();
+  const prepare = deps.context.prepare;
+  const session = "aaaaaaab-1111-4111-8111-111111111111";
+  deps.context.prepare = async (...args) => ({
+    ...(await prepare(...args)),
+    sessionId: session,
+  });
+  const request = {
+    ...(fixtures.conversation_turn_request as object),
+    session_id: session.toUpperCase(),
+  };
+  const result = await new AiService(contracts, deps).execute(
+    "conversation_turn",
+    "valid-A",
+    JSON.stringify(request),
+  );
+  assert.equal(result.ok, true);
+  assert.equal(calls.length, 1);
+});

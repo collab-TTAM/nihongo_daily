@@ -243,8 +243,8 @@ export class AiService {
     }
     if (
       (op === "conversation_turn" || op === "finish_conversation") &&
-      context.sessionId !==
-        (request as Requests["conversation_turn"]).session_id
+      context.sessionId?.toLowerCase() !==
+        (request as Requests["conversation_turn"]).session_id.toLowerCase()
     ) {
       throw new BoundaryError("INTERNAL_ERROR");
     }
