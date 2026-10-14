@@ -1102,3 +1102,23 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   This increment verifies vault bridge only; persistent SDK runtime restart,
   refresh scheduling/startup UI and all 14 live integrations remain pending.
   Keep #37 draft; no deployment, migration, dependency/Auth-provider or N4 change.
+
+### Observed bridge evidence and released handoff
+
+- Source 92250a67629c5fd2d73090c249075478847a59dd passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38584671877 .
+  Actual Flutter runner bridge build/execution passed; logs confirmed the fixed
+  cross-process success marker. Normal learner entrypoint rebuilt afterward;
+  Windows/web artifact uploads and all retained test/SQL/browser/native/security
+  steps succeeded. Raw run/latest-attempt metadata passed exact-source-head and
+  every-required-step QA. Existing 49 Python contracts and 17 QA passed locally
+  using saved jsonschema packages; no dependency installed or gate weakened.
+- All 235 uploaded source blobs matched local files; base tree preserved in full.
+  Review kept fixed fixture values, bounded process calls, GUID-only test scope,
+  fail-visible finally cleanup and normal artifact rebuild. No live learner or
+  Supabase-to-OS restore claim. QA43/all 14 live integration groups remain pending.
+- Core worker RELEASED. Resume actual head; following evidence-only docs commit
+  has its own CI and does not inherit current-head success. Next: persistent SDK
+  runtime using actual Windows bridge across processes, caller startup/error UI,
+  explicit refresh scheduling, then hosted configured learner A/B/expiry/two-client
+  acceptance. Keep #37 draft and #20/#22/#15 open; Pro #38/N4 untouched.

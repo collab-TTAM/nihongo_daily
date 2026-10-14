@@ -121,7 +121,7 @@ assertions. Child mode also rejects non-PID CI targets before any write. Results
 are historical for later commits and do not establish hosted Auth/restoration,
 interactive platform bridge execution, OS logoff/relogin or power-loss recovery.
 
-## Dart/native cross-process bridge probe (pending CI)
+## Dart/native cross-process bridge probe
 
 The TEST ONLY `tool/windows_vault_bridge.dart` entrypoint runs in the production
 Flutter Windows runner and calls the production Dart vault/MethodChannel/native
@@ -138,3 +138,12 @@ or default runtime activation. This narrows the method-channel evidence gap when
 it passes, but does not invoke the Supabase runtime or establish hosted login,
 SDK-to-OS restore, OS logoff/power-loss, concurrent writer safety or learner UI
 acceptance. Existing pure/native/SQL/security gates stay mandatory.
+
+Verified source `92250a67629c5fd2d73090c249075478847a59dd` passed all five jobs
+in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38584671877 .
+The bridge build and actual cross-process execution both passed; Windows logs
+contain the fixed cross-process success marker. The normal preview was rebuilt
+afterward and both Windows/web artifacts passed upload. All retained pure/native/
+SQL/Chrome/security gates passed; exact-head/every-required-step QA accepted raw
+run/latest-attempt metadata. These results are historical for later commits.
+No hosted Auth or SDK-to-OS restart acceptance is claimed.
