@@ -14,15 +14,14 @@ final class NativeReviewJournal implements DurableReviewStore {
   NativeReviewJournal._(this._directory, this._lease, this._file);
   static const maxBytes = 1024 * 1024;
   static const maxEvents = 512;
-  static const formatVersion =
-      2; // Read v1 history; v2 adds terminal rejection.
+  static const formatVersion = 3; // Read v1/v2; v3 adds settled snapshots.
   // Worst-case validated response (4096-character timestamp plus bounded
   // scalar/owner/event fields). Reserve one slot for every unresolved event.
   static const maxReceiptBytes = 8192;
   static final _owners = <String>{};
   final String _directory;
   final RandomAccessFile _lease;
-  final RandomAccessFile _file;
+  RandomAccessFile _file;
   final _records = <String, StoredReview>{};
   Future<void> _tail = Future.value();
   bool _closed = false;
@@ -101,14 +100,17 @@ final class NativeReviewJournal implements DurableReviewStore {
     final kind = raw['kind'];
     final expected = kind == 'pending'
         ? const {'version', 'kind', 'user_id', 'request'}
+        : kind == 'settled'
+        ? const {'version', 'kind', 'user_id', 'request', 'outcome'}
         : kind == 'rejection'
         ? const {'version', 'kind', 'user_id', 'event_id', 'rejection'}
         : const {'version', 'kind', 'user_id', 'event_id', 'receipt'};
     if (raw.length != expected.length ||
         !expected.every(raw.containsKey) ||
         raw['version'] is! int ||
-        (raw['version'] != 1 && raw['version'] != formatVersion) ||
-        (kind == 'rejection' && raw['version'] != formatVersion) ||
+        !const {1, 2, formatVersion}.contains(raw['version']) ||
+        (kind == 'rejection' && raw['version'] == 1) ||
+        (kind == 'settled' && raw['version'] != formatVersion) ||
         raw['user_id'] is! String) {
       throw const ReviewStorageFailure();
     }
@@ -116,8 +118,26 @@ final class NativeReviewJournal implements DurableReviewStore {
     if (ReviewSession(userId: user).userId != user) {
       throw const ReviewStorageFailure();
     }
-    if (kind == 'pending') {
-      final record = StoredReview(userId: user, request: raw['request']);
+    if (kind == 'pending' || kind == 'settled') {
+      ReviewSuccess? receipt;
+      ReviewFailure? rejection;
+      if (kind == 'settled') {
+        final outcome = decodeReviewOutcome(raw['outcome']);
+        if (outcome is ReviewSuccess) {
+          receipt = outcome;
+        } else if (outcome is ReviewFailure &&
+            isDefinitiveReviewRejection(outcome)) {
+          rejection = outcome;
+        } else {
+          throw const ReviewStorageFailure();
+        }
+      }
+      final record = StoredReview(
+        userId: user,
+        request: raw['request'],
+        receipt: receipt,
+        rejection: rejection,
+      );
       final key = _key(user, record.eventId);
       if (_records.containsKey(key) || _records.length >= maxEvents) {
         throw const ReviewStorageFailure();
@@ -206,6 +226,54 @@ final class NativeReviewJournal implements DurableReviewStore {
     return List<StoredReview>.unmodifiable(
       _records.values.where((record) => record.userId == owner),
     );
+  });
+
+  /// Explicit lossless maintenance under the existing writer lease. Retains
+  /// every owner/event and original outcome; no retention, dispatch or deletion.
+  /// A flushed sibling replaces the old path; interruption before rename leaves
+  /// the original authoritative. Hardware power-loss durability is not claimed.
+  /// Returns reclaimed bytes; event-count capacity is intentionally unchanged.
+  Future<int> compact() => _serial(() async {
+    final data = File(
+      '$_directory${Platform.pathSeparator}review-journal.ndjson',
+    );
+    final temporary = File('${data.path}.compact');
+    if (await FileSystemEntity.isLink(temporary.path) ||
+        await FileSystemEntity.isLink(data.path)) {
+      throw const ReviewStorageFailure();
+    }
+    final bytes = utf8.encode(
+      [
+        for (final record in _records.values)
+          jsonEncode({
+            'version': formatVersion,
+            'kind': record.isPending ? 'pending' : 'settled',
+            'user_id': record.userId,
+            'request': record.request,
+            if (!record.isPending)
+              'outcome': record.receipt?.toJson() ?? record.rejection!.toJson(),
+          }),
+      ].map((line) => '$line\n').join(),
+    );
+    final oldLength = await _file.length();
+    final reserved =
+        _records.values.where((r) => r.isPending).length * maxReceiptBytes;
+    if (bytes.length > oldLength || bytes.length + reserved > maxBytes) {
+      throw const ReviewStorageFailure();
+    }
+    if (bytes.length == oldLength) return 0;
+    // Until replacement begins, a failed temporary write leaves this instance
+    // usable. Never truncate the authoritative file to make room.
+    await temporary.writeAsBytes(bytes, flush: true);
+    try {
+      await _file.close();
+      await temporary.rename(data.path);
+      _file = await data.open(mode: FileMode.append);
+    } on Object {
+      _broken = true; // Close/reopen before any further operation.
+      throw const ReviewStorageFailure();
+    }
+    return oldLength - bytes.length;
   });
 
   @override

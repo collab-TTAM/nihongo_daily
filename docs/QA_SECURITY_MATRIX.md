@@ -156,3 +156,10 @@ or App Store release, auth strategy, expanded collection, material AI spend,
 production deletion and security reduction. No deployment/release is performed.
 Next sequential implementation priority: #22 atomic authoritative review path;
 #31 runtime binding and #11 plan/session integration remain queued independently.
+
+## Native lossless compaction baseline
+
+`native-journal-compaction` adds actual-file/subprocess replacement/reopen,
+legacy preservation, immutable replay/conflict, write-failure and full-cap
+checks. See JOURNAL_COMPACTION.md. CLI is mandatory on Linux/Windows. QA now
+has 37 groups with all 14 release integrations pending; no hosted acceptance.

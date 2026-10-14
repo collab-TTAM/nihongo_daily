@@ -90,6 +90,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify lossless native journal compaction
+        run: dart run tool/verify_journal_compaction.dart
       - name: Verify native durable review restart
         run: dart run tool/verify_durable_review.dart
       - name: Verify durable study recovery with real disk
@@ -157,6 +159,8 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - run: flutter build windows --release
+      - name: Verify lossless native journal compaction
+        run: dart run tool/verify_journal_compaction.dart
       - name: Verify native durable review restart
         run: dart run tool/verify_durable_review.dart
       - name: Verify durable study recovery with real disk

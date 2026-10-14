@@ -34,8 +34,8 @@ The configured Auth/RPC binding and server retain those responsibilities.
 
 ## File safety and limits
 
-The journal is canonical newline-delimited JSON. Version-2 writes add immutable
-terminal rejections while reading version-1 pending/receipt history. Only pending,
+The journal is canonical newline-delimited JSON. Version-3 writes support explicit settled snapshots; version-2 added immutable
+terminal rejections. Readers accept version-1/2 pending/terminal history. Only pending,
 validated receipt and checked rejection records are allowed, with exact keys, bounds and immutable
 identities. Canonical encoding also rejects duplicate JSON keys on restore.
 Records contain no token/refresh token/headers or raw errors. Storage failures
@@ -54,13 +54,13 @@ Only an incomplete EOF tail is truncated under the lease. An incomplete pending
 write was never eligible for dispatch; an incomplete receipt leaves the already
 flushed pending event for original replay. A failed append poisons that open
 instance: close/reopen before further recovery. Events/receipts are not silently
-discarded, expired, rewritten or compacted.
+discarded or expired. Explicit lossless compaction is in JOURNAL_COMPACTION.md.
 
 Hard limits: 1 MiB file, 512 retained events across owners. Each unresolved event
 reserves 8192 bytes for the largest supported receipt, so staging may stop
 earlier. Acknowledgment releases the unused reservation. Capacity exhaustion
-fails before dispatch. Compaction/encryption/retention and migration need later
-implementation; this bounded journal is not a long-term production data store.
+fails before dispatch. Lossless compaction is explicit; encryption/retention and downgrade migration
+need later implementation; this bounded journal is not a long-term production data store.
 flush plus separate process restart is tested; sudden hardware power loss,
 filesystem durability, concurrent isolates and hostile local tampering are not
 certified. Filesystem locks are advisory/cooperative where the OS defines them.

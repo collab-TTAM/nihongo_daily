@@ -19,6 +19,7 @@
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify lossless native journal compaction",
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
       "Verify captured-connection lifecycle with explicit fixture dispatch",
@@ -39,6 +40,7 @@
     "windows": [
       "Run flutter pub get --enforce-lockfile",
       "Run flutter build windows --release",
+      "Verify lossless native journal compaction",
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
       "Run actions/upload-artifact@v4"
@@ -53,6 +55,28 @@
     ]
   },
   "cases": [
+    {
+      "id": "native-journal-compaction",
+      "status": "automated-baseline",
+      "scope": "Explicit lossless flushed-sibling replacement, exact owner-scoped pending/receipt/rejection, legacy read, serialized writes and safe temporary failure",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/journal_compaction_test.dart",
+          "contains": "lossless journal compaction"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_journal_compaction.dart",
+          "contains": "compaction lost immutable event conflict"
+        }
+      ],
+      "issues": [
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/journal_compaction_test.dart && dart run tool/verify_journal_compaction.dart; required on Linux and Windows",
+      "limitation": "Actual disposable native files/processes; no hosted Auth/RPC, automatic retention, history deletion, increased event cap, web store or hardware-power-loss proof."
+    },
     {
       "id": "durable-study-recovery",
       "status": "automated-baseline",

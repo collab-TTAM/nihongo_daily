@@ -689,3 +689,20 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   remains immediate. Defer stream close during notification and add synchronous
   disposal regression. No old-data/new-dispatch protection weakened.
 
+
+## Lossless native compaction resume — 2026-10-14 UTC
+
+- Resume released draft #37 from verified source dccd9b70, one worker. Add
+  explicit serialized lossless compact(): flushed sibling/rename/reopen under
+  stable lease, v3 settled snapshots with v1/v2 read compatibility. Preserve
+  every owner, exact pending event and original outcome; no automatic deletion
+  or increase to 512-event capacity. Default runtime remains null.
+- Local actual-file/subprocess verifier passed six scenarios plus child compact/
+  exit/parent reopen, temporary-write failure and full history retention. Six
+  Flutter cases authored; full lint/test/web/Windows require current-head CI.
+- Retain all gates; add mandatory CLI verifier to Linux and Windows, QA37 groups
+  with all 14 Personal Alpha releases pending. Separate compatibility/impact/
+  reproduction in JOURNAL_COMPACTION.md. No API/RLS/Auth/provider/dependency/
+  production changes. Keep #37 draft/#15/#20/#22 open. Worker awaiting CI.
+- Next: browser transactional store and reviewed terminal retention; configured
+  login/profile/secure sessions and actual hosted two-client learner validation.
