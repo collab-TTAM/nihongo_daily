@@ -2838,6 +2838,96 @@
         "translation_vi": "Để đi bộ an toàn hãy tuân thủ đèn tín hiệu."
       }
     ]
+  },
+  {
+    "id": "8aecccdf-40e5-5c85-8615-edc2399d863d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vているうちに",
+    "pattern": "Vているうちに",
+    "meaning_vi": "trong khi đang V; trước khi trạng thái thay đổi",
+    "explanation_vi": "Diễn tả một việc xảy ra trong lúc đang làm việc khác hoặc trước khi cơ hội mất đi.",
+    "usage_notes_vi": [
+      "Dùng dạng ている của động từ trước うちに."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nの間に khi chủ thể hoặc trạng thái thay đổi trong quá trình."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語を勉強しているうちに、漢字が好きになりました。",
+        "reading_ja": "にほんごをべんきょうしているうちに、かんじがすきになりました。",
+        "translation_vi": "Trong khi học tiếng Nhật, tôi dần thích Kanji."
+      },
+      {
+        "sentence_ja": "忘れないうちに、メモしてください。",
+        "reading_ja": "わすれないうちに、めもしてください。",
+        "translation_vi": "Hãy ghi chú trước khi quên."
+      }
+    ]
+  },
+  {
+    "id": "d3068997-4da2-5b1c-aebf-c5995afa9176",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに比べて",
+    "pattern": "Nに比べて",
+    "meaning_vi": "so với N",
+    "explanation_vi": "So sánh một người hoặc vật với N về đặc điểm hay mức độ.",
+    "usage_notes_vi": [
+      "Đặt danh từ làm chuẩn so sánh trước に比べて."
+    ],
+    "common_mistakes": [
+      "Không dùng に比べて như một trợ từ chỉ địa điểm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "去年に比べて、今年は暖かいです。",
+        "reading_ja": "きょねんにくらべて、ことしはあたたかいです。",
+        "translation_vi": "So với năm ngoái, năm nay ấm hơn."
+      },
+      {
+        "sentence_ja": "電車はバスに比べて速いです。",
+        "reading_ja": "でんしゃはばすにくらべてはやいです。",
+        "translation_vi": "Tàu điện nhanh hơn xe buýt."
+      }
+    ]
+  },
+  {
+    "id": "3c30c009-697b-58c0-8c34-535735a5d6df",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたままにする",
+    "pattern": "Vたままにする",
+    "meaning_vi": "để nguyên trạng thái đã V",
+    "explanation_vi": "Nói rằng giữ nguyên một trạng thái sau khi đã thực hiện hành động.",
+    "usage_notes_vi": [
+      "Dùng thể た trước ままにする."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trước ままにする khi muốn nói trạng thái đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "ドアを開けたままにしないでください。",
+        "reading_ja": "どあをあけたままにしないでください。",
+        "translation_vi": "Xin đừng để cửa mở nguyên như vậy."
+      },
+      {
+        "sentence_ja": "電気をつけたままにしました。",
+        "reading_ja": "でんきをつけたままにしました。",
+        "translation_vi": "Tôi đã để đèn bật nguyên."
+      }
+    ]
   }
 ]
 
