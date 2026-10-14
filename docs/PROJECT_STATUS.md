@@ -844,3 +844,25 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   limits may still exhaust storage. Next configured Auth/profile/login/secure
   session restoration and actual hosted A/B/expired JWT/two-client acceptance.
   No server/production history deletion, API/RLS/Auth/provider/dependency change.
+
+## Caller-bound profile bootstrap resume — 2026-10-14 UTC
+
+- Resume released draft #37 at 3471b92c after all five CI38525874034 jobs passed.
+  Verified all local tracked blobs against remote head; one sequential worker.
+- Add additive nd-own-profile-1/ensure_profile accepting empty request only,
+  auth.uid plus existing auth.users identity, idempotent own default insert and
+  settings-preserving read. No direct INSERT/DELETE grants or changed RLS/table
+  schema; narrow authenticated definer with fixed empty search_path. Exceptions
+  roll back and return existing safe errors. No Auth provider/strategy change.
+- Typed Dart bootstrap uses captured Auth/RPC, strict own response projection,
+  timeout/no automatic retry and old-session rejection. Registry allowlist only
+  adds empty ensure_profile envelope. Default runtime null; no login/token store.
+- Seven pure scenarios/source-tool analysis/format passed locally. Nine Flutter
+  cases (seven unit/two SDK HTTP) and native SQL/rollback/observed-lock race/five
+  actual SQL response projection tests authored; success requires exact-head CI.
+  Native PostgreSQL is absent locally; no local SQL/full SDK/build claim.
+- Add database export/concurrency/artifact and same-run Flutter decoder gates;
+  retain every prior gate. QA40 groups/all 14 releases pending. Separate contract/
+  scope/privilege/impact review in OWN_PROFILE_BOOTSTRAP.md. Worker active pending
+  CI; keep #37 draft/#20/#22/#15 open. Next login/profile readiness coordination,
+  secure session persistence and actual configured hosted learner evidence.

@@ -190,6 +190,7 @@ Map<String, Object> _boundedEnvelope(
       'occurred_at',
     },
     'get_review_queue' => const {'jlpt_level', 'limit'},
+    'ensure_profile' => const <String>{},
     _ => throw const ReviewTransportFailure(ReviewErrorCode.validationFailure),
   };
   final request = params['p_request'];

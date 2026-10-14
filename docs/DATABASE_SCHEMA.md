@@ -88,3 +88,7 @@ Per-user transaction advisory lock, content FOR SHARE and learning-item FOR UPDA
 protect original event replay plus atomic state/event persistence. nd-srs-1 and
 exact canonical event epoch/review count are recorded in immutable event metadata.
 See SRS_RPC.md; real JWT/PostgREST and typed Flutter/UI integration remain unverified.
+
+Additive caller-bound own-profile initialization is in OWN_PROFILE_BOOTSTRAP.md.
+The undeployed ensure_profile RPC has a narrow authenticated execution grant;
+existing RLS, direct client table privileges and frozen v0.1 fields are unchanged.

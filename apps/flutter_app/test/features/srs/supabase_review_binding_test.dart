@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
+import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
@@ -126,6 +127,57 @@ void main() {
     binding.dispose();
     await sdk.dispose();
     network.close();
+  });
+
+  test('profile bootstrap uses captured SDK token and empty request', () async {
+    rpc = (_) async => http.Response(
+      jsonEncode({
+        'id': a,
+        'display_name': '',
+        'preferred_jlpt': 'N5',
+        'daily_target_minutes': 120,
+        'timezone': 'Asia/Ho_Chi_Minh',
+      }),
+      200,
+      headers: {'content-type': 'application/json'},
+    );
+    await login();
+    final result = await RpcOwnProfileRepository(
+      auth: binding,
+      transport: binding,
+    ).ensure();
+    expect(result.id, a);
+    expect(requests.single.url.path, '/rest/v1/rpc/ensure_profile');
+    expect(jsonDecode(requests.single.body), {'p_request': <String, Object>{}});
+    expect(
+      requests.single.headers['authorization'],
+      'Bearer ${token(a, sid1, now)}',
+    );
+  });
+
+  test('profile SDK response cannot return another owner', () async {
+    rpc = (_) async => http.Response(
+      jsonEncode({
+        'id': b,
+        'display_name': '',
+        'preferred_jlpt': 'N5',
+        'daily_target_minutes': 120,
+        'timezone': 'Asia/Ho_Chi_Minh',
+      }),
+      200,
+      headers: {'content-type': 'application/json'},
+    );
+    await login();
+    await expectLater(
+      RpcOwnProfileRepository(auth: binding, transport: binding).ensure(),
+      throwsA(
+        isA<ReviewTransportFailure>().having(
+          (e) => e.code,
+          'code',
+          ReviewErrorCode.internalError,
+        ),
+      ),
+    );
   });
 
   test('unconfigured signed-out SDK cannot dispatch', () async {

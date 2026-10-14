@@ -179,3 +179,11 @@ all pending/rejected/other-owner records, original server-fixture replay, 600
 reviews, failure rollback and native process reopen/actual IndexedDB contention.
 QA39 groups, all 14 releases pending; see RECEIPT_CACHE_RETENTION.md. Default
 policy disabled. Hosted receipt retention and signed-in learner proof outstanding.
+
+## Own-profile bootstrap baseline
+
+`own-profile-bootstrap` tracks narrow caller-derived bootstrap, preserved
+settings, rollback/A-B isolation/observed native concurrency, same-run native
+SQL-to-Dart projection and two captured SDK/HTTP fixture cases. See
+OWN_PROFILE_BOOTSTRAP.md. QA40 groups, all 14 release cases pending; no actual
+login, JWT signature verification, secure token restore or hosted acceptance.

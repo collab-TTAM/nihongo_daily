@@ -107,6 +107,13 @@ jobs:
         run: dart run tool/verify_study_recovery.dart
       - name: Verify captured-connection lifecycle with explicit fixture dispatch
         run: dart run tool/verify_review_connection.dart
+      - name: Download same-run native profile bootstrap projections
+        uses: actions/download-artifact@v4
+        with:
+          name: profile-bootstrap-sql
+          path: apps/flutter_app/build/profile-native-input
+      - name: Decode native profile projections with captured-session Dart adapter
+        run: dart run tool/verify_own_profile.dart build/profile-native-input/profile-bootstrap-sql.json
       - name: Download same-run native SQL queue projections
         uses: actions/download-artifact@v4
         with:
@@ -210,6 +217,16 @@ jobs:
         run: python3 -m pip install -r contracts/requirements.txt
       - name: Migration, grants, RLS, replay and concurrent uniqueness
         run: bash scripts/test_database.sh
+      - name: Validate profile bootstrap and observed concurrent creation
+        run: |
+          python3 scripts/export_profiles.py build/profile-bootstrap-sql.json
+          python3 scripts/test_profile_concurrency.py
+      - name: Publish actual native SQL profile projections
+        uses: actions/upload-artifact@v4
+        with:
+          name: profile-bootstrap-sql
+          path: build/profile-bootstrap-sql.json
+          if-no-files-found: error
       - name: Publish actual native SQL queue projections
         uses: actions/upload-artifact@v4
         with:

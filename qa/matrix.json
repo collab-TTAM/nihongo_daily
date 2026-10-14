@@ -12,6 +12,8 @@
     "database": [
       "Install review parity validator",
       "Migration, grants, RLS, replay and concurrent uniqueness",
+      "Validate profile bootstrap and observed concurrent creation",
+      "Publish actual native SQL profile projections",
       "Publish actual native SQL queue projections"
     ],
     "flutter": [
@@ -26,6 +28,8 @@
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
       "Verify captured-connection lifecycle with explicit fixture dispatch",
+      "Download same-run native profile bootstrap projections",
+      "Decode native profile projections with captured-session Dart adapter",
       "Download same-run native SQL queue projections",
       "Decode native SQL queue projections with Dart adapter",
       "Validate decoded native queue wire output",
@@ -59,6 +63,32 @@
     ]
   },
   "cases": [
+    {
+      "id": "own-profile-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Additive caller-derived idempotent own-profile bootstrap, preserved settings, unchanged grants/RLS, rollback/observed concurrent uniqueness and same-run actual SQL to captured-session Dart projection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/own_profile_repository_test.dart",
+          "contains": "own profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "profile bootstrap uses captured SDK token"
+        },
+        {
+          "path": "scripts/test_profile_concurrency.py",
+          "contains": "observed native bootstrap lock wait"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "python3 scripts/export_profiles.py build/profile-bootstrap-sql.json && python3 scripts/test_profile_concurrency.py with disposable TEST_DATABASE_URL; flutter test; dart run tool/verify_own_profile.dart build/profile-native-input/profile-bootstrap-sql.json",
+      "limitation": "Auth SQL-role and unsigned SDK HTTP fixtures; not hosted JWT/login/profile restoration proof. Default runtime null; no login/token persistence/provider choice/deployment. Frozen v0.1 operations untouched; new scoped bootstrap documented separately."
+    },
     {
       "id": "receipt-cache-retention",
       "status": "automated-baseline",
