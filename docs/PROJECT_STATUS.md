@@ -1043,3 +1043,44 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   pending-event preservation across rotation/logout/relogin (seventh SDK test).
   Existing nonpersistent factories retain their optional store. Fixed Japanese
   HTTP fixture JSON content type; assertions and lint/build gates retained.
+
+
+## Verified owned session lifecycle handoff — 2026-10-14 UTC
+
+- Source 021c36bf7a5572dcc0111161d093a0fc7b3377f8 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38575156585 .
+  Format/analyze without issues, 312 Flutter tests (22 pure lifecycle/seven
+  pinned-SDK HTTP cases), five actual Chrome tests, mandatory lifecycle verifier,
+  all retained wire/native/same-run SQL-to-Dart checks and web release passed.
+  Windows release/artifact, actual Credential Manager/process probe and all four
+  file/process verifiers passed. Native SQL/RLS/profile races, repo/49 Python/
+  17 QA/AI audit retained. Unmodified run/latest-attempt metadata passed exact-head
+  and every required step in scripts/verify_qa.py. QA43/all 14 live groups pending.
+- All 233 local source blobs matched GitHub. Separate review retained persist-
+  before-profile, exclusive private SDK mutation port, logout/clear ordering,
+  late cleanup ownership, failed-state retry cancellation and default-null scope.
+  Required caller review store prevents losing uncertain events when rotation
+  replaces a runtime; actual native-disk test retains the exact original event
+  across rotation/logout/relogin and never auto-dispatches it. Pro #38 untouched.
+- First lint annotation and Japanese HTTP fixture content-type errors fixed
+  without removing checks/assertions. Local 22 pure lifecycle/ten retained account
+  cases, pure source analysis/format/49 contracts/17 QA passed. Full Flutter/SDK/
+  browser/build/native SQL/Windows results are observed CI, not local/hosted proof.
+- Bounded HTTP timeout is per attempt. Pinned gotrue 2.27.3 internally retries
+  refresh transport/5xx failures even with SDK auto-refresh disabled; observed
+  timeout fixture takes about 12 seconds. Whole Auth operation can exceed the
+  15-second attempt bound. Controller/persistence adds no retry loop or timer.
+  Updated scope docs rather than claiming absent SDK retries or changing policy.
+- Explicit SDK/vault assembly only, matching vault + caller-owned review store
+  required, no default startup configuration or automatic refresh scheduler.
+  Web is rejected before SDK construction; Windows store is the implemented
+  native backend. No hosted login/JWT, actual Dart-to-Windows restart or two-
+  device learner proof. Single-isolate owner lease is not interprocess CAS.
+- Core worker RELEASED after verified source and durable handoff; resume latest
+  draft head and its checks. Following documentation commit preserves source and
+  has separate CI; source success is historical for later heads. Keep #37 draft
+  and #20/#22/#15 open. Next actual Dart-to-Windows bridge/runtime restart, caller
+  startup/error/explicit-refresh scheduling, then configured hosted learner A/B/
+  expiry/restart/two-client acceptance. Missing service configuration does not
+  block independent testable work. No dependencies/schema/RLS/API/Auth-provider,
+  production deployment/deletion or N4 changes; schedule remains requested.

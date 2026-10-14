@@ -27,7 +27,7 @@ ReviewSession is exposed. The existing own-profile barrier then grants study
 access. Secret strings remain private internal operational data; public phases
 and account state contain no credentials. SDK logs are disabled before client
 creation. Auth HTTP accepts only same-origin Auth/REST paths, disables redirects,
-limits responses to 1MiB and bounds the full headers/body attempt to 15 seconds.
+limits responses to 1MiB and bounds each full headers/body HTTP attempt to 15 seconds. The pinned SDK internally retries refresh transport/5xx failures under its existing retry policy, even with auto-refresh disabled; a full Auth operation can exceed 15 seconds. The persistence/controller layer adds no retry loop or timer.
 Timeout/oversize/transport failures are fixed safe errors. A late timed-out
 response cannot reach the SDK; the late response stream is cancelled.
 
@@ -97,3 +97,32 @@ Pinned SDK source inspected locally: supabase 2.16.5/gotrue 2.27.3 setSession,
 refreshSession/session-version guards, signOut and callback/logging behavior.
 Tests do not prove hosted JWT signatures, account/device isolation, real token
 expiry/rotation windows, native interactive launch or production safety.
+
+
+## Verified source evidence
+
+Source `021c36bf7a5572dcc0111161d093a0fc7b3377f8` passed all five jobs in
+[CI38575156585](https://github.com/collab-TTAM/nihongo_daily/actions/runs/38575156585).
+Observed Flutter format/analyze without issues, 312 tests including 22 pure
+lifecycle/seven pinned-SDK HTTP cases, five real Chrome cases, the mandatory
+lifecycle verifier, retained wire/native/same-run SQL gates and web/Windows builds.
+The Windows credential API/process probe and all four file/process verifiers
+passed. Exact-head/all-critical-step QA accepted unmodified run/latest-attempt
+metadata. All 233 local source blobs matched GitHub; N4 PR #38 stayed separate.
+
+Review corrections preserved every gate/assertion: inherited-stream @override,
+operation ownership through late cleanup, cancellation during failed-state retry,
+private SDK mutation port, Japanese JSON fixture encoding and required review
+store to preserve uncertain events when rotation replaces the study runtime.
+The SDK timeout test's observed ~12-second completion led to checking its refresh
+retry implementation: bounds apply per HTTP attempt, not a 15-second whole-Auth
+promise. No retry-policy/provider/security change or claim of no SDK retries.
+
+Local evidence: 22 pure lifecycle and ten retained account cases, source analysis/
+format, 49 Python contract and 17 QA tests. Full SDK/Flutter/Chrome/build/native SQL
+and Windows evidence came from CI, not local execution. Auth/OS lifecycle ports
+are still TEST ONLY; the seventh SDK case uses actual disposable review files.
+No hosted login/JWT signatures or interactive Dart-to-Credential-Manager startup
+restoration evidence. Default runtime remains null and explicit refresh scheduling
+is still caller work. All 14 live release groups remain pending; keep #37 draft.
+Source evidence is historical for subsequent documentation/source commits.
