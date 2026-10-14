@@ -88,6 +88,7 @@ final class DurableReviewRepository
 
   /// Reads only the currently authenticated owner's journal. Old lifecycle
   /// results are rejected, including A -> B -> A and same-user fresh sign-in.
+  @override
   Future<List<PreparedReview>> recoverPending() async {
     final session = auth.currentSession;
     if (session == null) {
