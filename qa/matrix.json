@@ -19,6 +19,8 @@
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify real IndexedDB transactions in Chrome",
+      "Verify browser review page reload",
       "Verify lossless native journal compaction",
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
@@ -55,6 +57,33 @@
     ]
   },
   "cases": [
+    {
+      "id": "browser-transactional-review",
+      "status": "automated-baseline",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, immutable original outcomes and page reload/second-tab persistence",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/transactional_review_store_test.dart",
+          "contains": "transactional ledger"
+        },
+        {
+          "path": "apps/flutter_app/tool/browser_review_store_check.dart",
+          "contains": "two connections serialize"
+        },
+        {
+          "path": "scripts/verify_browser_review_restart.py",
+          "contains": "await_status(\"RECEIPT_COMMITTED\")"
+        }
+      ],
+      "issues": [
+        15,
+        22,
+        20
+      ],
+      "reproduce": "flutter test test/features/srs/transactional_review_store_test.dart; flutter test --platform chrome tool/browser_review_store_check.dart; dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js; python3 ../../scripts/verify_browser_review_restart.py build/browser-restart (from apps/flutter_app, ChromeDriver required)",
+      "limitation": "Actual Chrome IndexedDB/reloads with TEST ONLY Auth/RPC. Not hosted learner acceptance, real browser power-loss/quota/eviction, secure token persistence, other browsers or terminal retention. Default runtime null."
+    },
     {
       "id": "native-journal-compaction",
       "status": "automated-baseline",

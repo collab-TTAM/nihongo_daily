@@ -35,5 +35,6 @@ are specified in DURABLE_REVIEW_JOURNAL.md. They preserve the existing RPC/auth
 boundaries and server-authoritative schedule. This is a transient equivalent
 local store (no dependencies), not the full SQLite/browser cache/sync layer;
 Opt-in UI recovery and lossless native compaction are documented in
-STUDY_RECOVERY.md and JOURNAL_COMPACTION.md. Secure session storage, browser
-transactions, terminal retention and hosted acceptance remain pending.
+STUDY_RECOVERY.md and JOURNAL_COMPACTION.md. Opt-in browser transactions are
+specified in BROWSER_REVIEW_STORE.md; the default runtime remains unconfigured.
+Secure session storage, terminal retention and hosted acceptance remain pending.

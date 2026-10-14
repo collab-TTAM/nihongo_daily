@@ -732,3 +732,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   PR head first, then browser transactional store and reviewed terminal retention,
   configured Auth/profile/secure sessions and hosted learner acceptance. No API/
   RLS/Auth/provider/dependency/production changes or secrets requested.
+
+## Browser transactional store resume — 2026-10-14 UTC
+
+- Resume released draft #37 at dc7994a0 after all five prior documentation-head
+  jobs succeeded in CI38521325597. Verified every tracked local blob against
+  current remote head; one sequential worker, same branch.
+- Add opt-in canonical TransactionalReviewStore with actual IndexedDB transaction
+  transport using dart:js_interop. Commit before success; synchronous mutation
+  under readwrite scope, exact event/outcome and owner projections, corruption/
+  bounded 1MiB/512 events with pending-outcome reservations and safe failures.
+  Native unsupported stub never supplies false in-memory persistence.
+- Seven pure-ledger fixtures passed locally; JS reload verifier compiles locally.
+  Seven Flutter unit/four real Chrome tests plus actual page-refresh/second-tab
+  verifier authored; full lint/Chrome/build success requires current-head CI.
+  Chrome is absent locally, so no local browser runtime claim.
+- Add two mandatory browser gates in Linux Flutter; retain every prior gate.
+  QA38 groups, all 14 release integrations pending. Separate protocol/impact/
+  migration/persistence/security limits in BROWSER_REVIEW_STORE.md.
+- Default runtime null. No secure token/login/profile, automatic retention or
+  eviction/power-loss/hosted two-device acceptance. No dependencies/frozen API/
+  RLS/Auth/provider/production changes. Keep #37 draft/#15/#20/#22 open. Worker
+  active awaiting exact-head CI. Next reviewed terminal retention and configured
+  Auth/profile/secure sessions, followed by hosted learner acceptance.

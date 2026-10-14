@@ -4,7 +4,8 @@ The controller, notifier and screen support a DurableReviewRepository supplied
 by the runtime owner. Both runtime factories accept an optional DurableReviewStore;
 the owner configures and owns its lifetime/private directory. The app's default
 runtime remains null. No login, credential restoration or disk path is activated
-automatically, and no browser storage implementation is supplied.
+automatically. Browser storage is now opt-in through openBrowserReviewStore();
+see BROWSER_REVIEW_STORE.md for persistence/activation limits.
 
 Before reading new due cards, load checks all pending events for the captured
 account, including events outside the selected level. Reading never dispatches:
@@ -35,17 +36,18 @@ remaining events before reading fresh due cards. No failed event is counted save
 
 ## Journal compatibility and limits
 
-New records use format version 2, adding the rejection record kind. The reader
-accepts version-1 pending/receipt history and version-2 records together, preserving
-existing data. Version-1 rejection records and unsupported versions fail closed.
-Old binaries cannot read v2 records; downgrading requires a reviewed migration,
+Native records use version 3 with optional settled snapshots; the reader accepts
+version-1 pending/receipt and version-2 terminal history. See JOURNAL_COMPACTION.md.
+Browser snapshots have independent schema version 1 and no native import.
+Old binaries cannot read newer records; downgrading requires a reviewed migration,
 not truncating history. The release is still draft/unactivated.
 
 Receipts and rejections both consume the reserved terminal-result slot and release
 unused reservation. Neither result may replace the other, change identity or be
 rewritten. NETWORK_UNAVAILABLE/INTERNAL_ERROR/UNAUTHORIZED/transient outcomes
 cannot be archived as terminal rejections. All journal size/event/lease/corruption
-limits remain; no compaction/encryption/retention or hardware-power-loss proof.
+limits remain; native lossless compaction is explicit. No encryption, terminal
+retention or hardware-power-loss proof.
 
 ## Evidence and remaining work
 
@@ -60,6 +62,6 @@ learner journey. Twenty-one controller/widget tests are authored; current-head C
 must confirm them. The widget cases include account clearing, storage errors,
 original rating/manual action and 320px at 200% text.
 
-Next: browser transactional store/retention, configured #20 login/profile and
+Next: reviewed terminal retention, configured #20 login/profile and
 secure session restoration, actual hosted A/B/expired JWT and two-client #15/#22
 acceptance. Keep #37 draft and all 14 Personal Alpha release cases pending.

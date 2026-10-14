@@ -90,6 +90,13 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify real IndexedDB transactions in Chrome
+        run: flutter test --platform chrome tool/browser_review_store_check.dart
+      - name: Verify browser review page reload
+        run: |
+          mkdir -p build/browser-restart
+          dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js
+          python3 ../../scripts/verify_browser_review_restart.py build/browser-restart
       - name: Verify lossless native journal compaction
         run: dart run tool/verify_journal_compaction.dart
       - name: Verify native durable review restart
