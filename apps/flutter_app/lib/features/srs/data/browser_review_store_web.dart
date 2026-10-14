@@ -3,6 +3,7 @@ import 'dart:js_interop';
 
 import 'durable_review_repository.dart';
 import 'review_repository.dart';
+import 'review_receipt_retention.dart';
 import 'transactional_review_store.dart';
 
 @JS('indexedDB')
@@ -48,6 +49,7 @@ extension type _ObjectStore(JSObject _) implements JSObject {
 
 Future<TransactionalReviewStore> openBrowserReviewStore({
   String databaseName = 'nihongo-daily-review-v1',
+  ReviewReceiptRetention? receiptRetention,
 }) async {
   if (!RegExp(r'^[a-z0-9-]{1,80}$').hasMatch(databaseName)) {
     throw const ReviewStorageFailure();
@@ -95,7 +97,10 @@ Future<TransactionalReviewStore> openBrowserReviewStore({
       }
     }).toJS;
     final database = await completer.future;
-    return TransactionalReviewStore(_IndexedDbTransactions(database));
+    return TransactionalReviewStore(
+      _IndexedDbTransactions(database),
+      receiptRetention: receiptRetention,
+    );
   } on Object {
     throw const ReviewStorageFailure();
   }

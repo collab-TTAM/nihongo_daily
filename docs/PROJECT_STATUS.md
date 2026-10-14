@@ -792,3 +792,25 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   followed by actual hosted A/B/expired JWT/two-client SRS evidence. Source-head
   CI is historical for later documentation/source commits; inspect their checks.
   No dependencies/API/RLS/Auth/provider/production changes or secrets requested.
+
+## Opt-in receipt-cache retention resume — 2026-10-14 UTC
+
+- Resume released ff76a2cd after all five CI38523872062 jobs succeeded. Verified
+  every local tracked blob against GitHub; one worker on the same draft branch.
+- Add explicit ReviewReceiptRetention (default disabled, limit1..256) to native/
+  browser stores. Before new stage, remove only current-owner oldest staged
+  successful receipt cache entries. Preserve pending/rejected/other-owner history;
+  explicit prune applies strict limit. Keep+1 possible after a fresh receipt.
+- Server event history untouched; pruned replay stages original immutable event
+  then revalidates RPC, never synthesizes local success/progress. Shared policy,
+  native flushed replacement/lease and browser atomic transaction preserve all
+  existing formats/security bounds. See RECEIPT_CACHE_RETENTION.md for review.
+- Local four pure scenarios plus actual native 600-review/process-restart/temp
+  failure verifier passed. Four new Flutter cases and one actual Chrome retention
+  case authored; current-head full lint/browser/web/Windows CI still required.
+  Add mandatory CLI on Linux/Windows, retain all previous gates. QA39 groups;
+  all 14 Personal Alpha integration cases pending. Default app runtime null.
+- Keep #37 draft/#15/#20/#22 open. Worker active awaiting CI; next configured
+  login/profile/secure token persistence and actual hosted A/B/expired JWT/
+  two-client learner acceptance. No production history deletion, dependencies,
+  frozen API, RLS, Auth strategy/provider changes or secrets requested.

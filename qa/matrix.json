@@ -21,6 +21,7 @@
       "Run flutter test",
       "Verify real IndexedDB transactions in Chrome",
       "Verify browser review page reload",
+      "Verify native receipt cache retention",
       "Verify lossless native journal compaction",
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
@@ -42,6 +43,7 @@
     "windows": [
       "Run flutter pub get --enforce-lockfile",
       "Run flutter build windows --release",
+      "Verify native receipt cache retention",
       "Verify lossless native journal compaction",
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
@@ -57,6 +59,33 @@
     ]
   },
   "cases": [
+    {
+      "id": "receipt-cache-retention",
+      "status": "automated-baseline",
+      "scope": "Opt-in owner-scoped confirmed-success cache trim with pending/rejection/other-owner preservation, original RPC replay, >512 reviews, atomic failure and native restart/actual IndexedDB concurrency",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/receipt_retention_test.dart",
+          "contains": "receipt retention"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_receipt_retention.dart",
+          "contains": "failed replacement deleted authoritative cache"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "receipt retention preserves pending"
+        }
+      ],
+      "issues": [
+        15,
+        22,
+        20
+      ],
+      "reproduce": "flutter test test/features/srs/receipt_retention_test.dart && dart run tool/verify_receipt_retention.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart",
+      "limitation": "Explicit opt-in cache policy; default disabled/runtime null. Replay Auth/server is TEST ONLY, no hosted receipt-retention/learner proof. Real file/process/IndexedDB checks do not certify power-loss/eviction; global pending/rejected/multi-account cap remains."
+    },
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",

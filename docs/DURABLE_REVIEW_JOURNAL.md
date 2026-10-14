@@ -92,3 +92,7 @@ Next: browser transactional
 storage, configured login/profile/secure session restoration (#20), bounded
 terminal retention and actual two-client/hosted acceptance (#15/#22).
 All 14 Personal Alpha release integration cases remain pending; keep #37 draft.
+
+Optional owner-scoped confirmed-success cache retention is now documented in
+RECEIPT_CACHE_RETENTION.md. It is disabled by default and never removes pending,
+rejected or other-owner records; server history and all resource limits remain.

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'durable_review_repository.dart';
 import 'review_repository.dart';
+import 'review_receipt_retention.dart';
 
 /// The callback is synchronous inside one transaction. A replacement commits
 /// atomically before the future resolves; a thrown callback must roll back.
@@ -18,8 +19,9 @@ abstract interface class ReviewLedgerTransactions {
 /// isolation only; the existing captured Auth/RPC ports authorize server work.
 /// No tokens/content, automatic dispatch, eviction or derived-state mutation.
 final class TransactionalReviewStore implements DurableReviewStore {
-  TransactionalReviewStore(this.transactions);
+  TransactionalReviewStore(this.transactions, {this.receiptRetention});
   final ReviewLedgerTransactions transactions;
+  final ReviewReceiptRetention? receiptRetention;
   static const maxBytes = 1024 * 1024;
   static const maxEvents = 512;
   static const reservedOutcomeBytes = 8192;
@@ -155,9 +157,30 @@ final class TransactionalReviewStore implements DurableReviewStore {
           }
           return previous;
         }
+        _retain(records, candidate.userId);
         records.add(candidate);
         save();
         return candidate;
+      });
+
+  int _retain(List<StoredReview> records, String userId) {
+    final retained = receiptRetention?.retain(records, userId);
+    if (retained == null) return 0;
+    final removed = records.length - retained.length;
+    records
+      ..clear()
+      ..addAll(retained);
+    return removed;
+  }
+
+  /// Explicit maintenance, serialized with stage/settle across browser tabs.
+  /// No policy means no deletion. Only local confirmed successes are eligible.
+  Future<int> pruneReceipts(String userId) =>
+      _transaction(true, (records, save) {
+        final owner = ReviewSession(userId: userId).userId;
+        final removed = _retain(records, owner);
+        if (removed > 0) save();
+        return removed;
       });
 
   Future<void> _settle(

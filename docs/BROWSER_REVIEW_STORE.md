@@ -95,3 +95,7 @@ compiled-Dart page reload/second tab passed, together with web/Windows builds
 and retained native/SQL/AI/QA gates. Exact-head unmodified metadata was accepted
 by scripts/verify_qa.py. This does not activate the default runtime or establish
 hosted learner acceptance; later commits require their own relevant checks.
+
+Optional owner-scoped confirmed-success cache retention is now documented in
+RECEIPT_CACHE_RETENTION.md. It is disabled by default and never removes pending,
+rejected or other-owner records; server history and all resource limits remain.

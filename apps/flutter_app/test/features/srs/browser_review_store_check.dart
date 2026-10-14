@@ -3,9 +3,11 @@ import 'package:nihongo_daily/features/srs/data/browser_review_store.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/transactional_review_store.dart';
+import 'package:nihongo_daily/features/srs/data/review_receipt_retention.dart';
 import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
 
 import 'transactional_review_fixtures.dart' as fixture;
+import 'receipt_retention_fixtures.dart' as retention;
 
 // Actual browser IndexedDB; Auth/RPC responses below are TEST ONLY.
 final class _Auth implements ReviewAuth {
@@ -40,6 +42,58 @@ void main() {
   var sequence = 0;
   String name() =>
       'nd-browser-test-${DateTime.now().microsecondsSinceEpoch}-${sequence++}';
+
+  test(
+    'real IndexedDB receipt retention preserves pending and original server replay',
+    () async {
+      final database = name();
+      final a = await openBrowserReviewStore(
+        databaseName: database,
+        receiptRetention: ReviewReceiptRetention(keepCount: 2),
+      );
+      final b = await openBrowserReviewStore(
+        databaseName: database,
+        receiptRetention: ReviewReceiptRetention(keepCount: 2),
+      );
+      try {
+        await retention.verifyRetentionStore(
+          a,
+          () => a.pruneReceipts(fixture.owner),
+        );
+        await Future.wait([
+          a.pruneReceipts(fixture.owner),
+          b.stage(fixture.owner, fixture.request(700)),
+        ]);
+        expect(
+          (await b.list(fixture.owner)).where((r) => r.receipt != null).length,
+          2,
+        );
+        expect(
+          (await b.list(fixture.owner)).where((r) => r.isPending).length,
+          2,
+        );
+        expect((await b.list(fixture.other)).single.receipt, isNotNull);
+      } finally {
+        await a.close();
+        await b.close();
+      }
+      final restored = await openBrowserReviewStore(databaseName: database);
+      try {
+        expect(
+          (await restored.list(fixture.owner)).where((r) => r.isPending).length,
+          2,
+        );
+        expect(
+          (await restored.list(
+            fixture.owner,
+          )).where((r) => r.rejection != null).length,
+          1,
+        );
+      } finally {
+        await restored.close();
+      }
+    },
+  );
 
   test(
     'real IndexedDB reopen preserves exact pending and account isolation',

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'durable_review_repository.dart';
 import 'review_repository.dart';
+import 'review_receipt_retention.dart';
 
 /// Opt-in native append journal. The application owns its private data directory
 /// and its lifetime; no tokens or display content are written here. Not web.
@@ -11,7 +12,13 @@ import 'review_repository.dart';
 /// The owner must not open this directory from multiple isolates in one process.
 /// flush() covers process restart; hardware/filesystem power-loss is not proven.
 final class NativeReviewJournal implements DurableReviewStore {
-  NativeReviewJournal._(this._directory, this._lease, this._file);
+  NativeReviewJournal._(
+    this._directory,
+    this._lease,
+    this._file,
+    this.receiptRetention,
+  );
+  final ReviewReceiptRetention? receiptRetention;
   static const maxBytes = 1024 * 1024;
   static const maxEvents = 512;
   static const formatVersion = 3; // Read v1/v2; v3 adds settled snapshots.
@@ -27,7 +34,10 @@ final class NativeReviewJournal implements DurableReviewStore {
   bool _closed = false;
   bool _broken = false;
 
-  static Future<NativeReviewJournal> open(Directory directory) async {
+  static Future<NativeReviewJournal> open(
+    Directory directory, {
+    ReviewReceiptRetention? receiptRetention,
+  }) async {
     String? path;
     RandomAccessFile? lease;
     RandomAccessFile? file;
@@ -46,7 +56,12 @@ final class NativeReviewJournal implements DurableReviewStore {
       lease = await File(lockPath).open(mode: FileMode.append);
       await lease.lock(FileLock.exclusive);
       file = await File(dataPath).open(mode: FileMode.append);
-      final journal = NativeReviewJournal._(path, lease, file);
+      final journal = NativeReviewJournal._(
+        path,
+        lease,
+        file,
+        receiptRetention,
+      );
       await journal._restore();
       return journal;
     } on Object {
@@ -233,7 +248,9 @@ final class NativeReviewJournal implements DurableReviewStore {
   /// A flushed sibling replaces the old path; interruption before rename leaves
   /// the original authoritative. Hardware power-loss durability is not claimed.
   /// Returns reclaimed bytes; event-count capacity is intentionally unchanged.
-  Future<int> compact() => _serial(() async {
+  Future<int> compact() => _serial(() => _rewrite(_records.values.toList()));
+
+  Future<int> _rewrite(List<StoredReview> records) async {
     final data = File(
       '$_directory${Platform.pathSeparator}review-journal.ndjson',
     );
@@ -244,7 +261,7 @@ final class NativeReviewJournal implements DurableReviewStore {
     }
     final bytes = utf8.encode(
       [
-        for (final record in _records.values)
+        for (final record in records)
           jsonEncode({
             'version': formatVersion,
             'kind': record.isPending ? 'pending' : 'settled',
@@ -256,8 +273,7 @@ final class NativeReviewJournal implements DurableReviewStore {
       ].map((line) => '$line\n').join(),
     );
     final oldLength = await _file.length();
-    final reserved =
-        _records.values.where((r) => r.isPending).length * maxReceiptBytes;
+    final reserved = records.where((r) => r.isPending).length * maxReceiptBytes;
     if (bytes.length > oldLength || bytes.length + reserved > maxBytes) {
       throw const ReviewStorageFailure();
     }
@@ -269,11 +285,30 @@ final class NativeReviewJournal implements DurableReviewStore {
       await _file.close();
       await temporary.rename(data.path);
       _file = await data.open(mode: FileMode.append);
+      _records
+        ..clear()
+        ..addEntries(
+          records.map((r) => MapEntry(_key(r.userId, r.eventId), r)),
+        );
     } on Object {
       _broken = true; // Close/reopen before any further operation.
       throw const ReviewStorageFailure();
     }
     return oldLength - bytes.length;
+  }
+
+  Future<int> _prune(String userId) async {
+    final retained = receiptRetention?.retain(_records.values.toList(), userId);
+    if (retained == null) return 0;
+    final removed = _records.length - retained.length;
+    if (removed > 0) await _rewrite(retained);
+    return removed;
+  }
+
+  /// Explicit opt-in cache maintenance. Pending/rejected/other owners retained.
+  Future<int> pruneReceipts(String userId) => _serial(() async {
+    final owner = ReviewSession(userId: userId).userId;
+    return _prune(owner);
   });
 
   @override
@@ -287,6 +322,7 @@ final class NativeReviewJournal implements DurableReviewStore {
           }
           return previous;
         }
+        await _prune(candidate.userId);
         if (_records.length >= maxEvents) throw const ReviewStorageFailure();
         await _append({
           'version': formatVersion,

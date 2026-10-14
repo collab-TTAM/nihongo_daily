@@ -171,3 +171,11 @@ IndexedDB connection contention/reopen and compiled-Dart real page refresh/
 second-tab preservation. See BROWSER_REVIEW_STORE.md. QA38 groups, all 14
 release gates pending. Fixture Auth/RPC, modeled quota/rollback and a localhost
 probe do not prove configured live learning or eviction/power-loss survival.
+
+## Receipt-cache retention baseline
+
+`receipt-cache-retention` covers explicit successful-receipt trimming, preserving
+all pending/rejected/other-owner records, original server-fixture replay, 600
+reviews, failure rollback and native process reopen/actual IndexedDB contention.
+QA39 groups, all 14 releases pending; see RECEIPT_CACHE_RETENTION.md. Default
+policy disabled. Hosted receipt retention and signed-in learner proof outstanding.
