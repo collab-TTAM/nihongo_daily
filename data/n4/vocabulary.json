@@ -7116,6 +7116,238 @@
         "translation_vi": "Tôi tắt đèn điện rồi mới ngủ."
       }
     ]
+  },
+  {
+    "id": "9d1b5ff4-8b4a-545c-8827-09b6d396dfab",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "日程",
+    "reading": "にってい",
+    "meaning_vi": "lịch trình; lịch ngày",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Lịch được sắp xếp theo ngày và thời gian.",
+    "audio_ref": null,
+    "tags": [
+      "planning",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "旅行の日程を決めました。",
+        "reading_ja": "りょこうのにっていをきめました。",
+        "translation_vi": "Tôi đã quyết định lịch trình chuyến đi."
+      },
+      {
+        "sentence_ja": "日程をメールで知らせてください。",
+        "reading_ja": "にっていをめーるでしらせてください。",
+        "translation_vi": "Hãy báo lịch trình qua email."
+      }
+    ]
+  },
+  {
+    "id": "59223524-37d5-545d-841b-234499b6db5a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "発表",
+    "reading": "はっぴょう",
+    "meaning_vi": "phát biểu; công bố",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Nói hoặc công bố nội dung cho nhiều người biết.",
+    "audio_ref": null,
+    "tags": [
+      "study",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来週、研究の発表があります。",
+        "reading_ja": "らいしゅう、けんきゅうのはっぴょうがあります。",
+        "translation_vi": "Tuần sau có buổi phát biểu nghiên cứu."
+      },
+      {
+        "sentence_ja": "結果は午後に発表します。",
+        "reading_ja": "けっかはごごにはっぴょうします。",
+        "translation_vi": "Kết quả sẽ được công bố vào buổi chiều."
+      }
+    ]
+  },
+  {
+    "id": "cd7918e0-6767-5a97-ac84-97f7b82425d8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "提出",
+    "reading": "ていしゅつ",
+    "meaning_vi": "nộp; sự nộp",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Đưa bài tập hoặc tài liệu cho nơi cần nhận.",
+    "audio_ref": null,
+    "tags": [
+      "study",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "レポートを先生に提出しました。",
+        "reading_ja": "れぽーとをせんせいにていしゅつしました。",
+        "translation_vi": "Tôi đã nộp báo cáo cho giáo viên."
+      },
+      {
+        "sentence_ja": "書類は金曜日までに提出してください。",
+        "reading_ja": "しょるいはきんようびまでにていしゅつしてください。",
+        "translation_vi": "Hãy nộp tài liệu trước thứ Sáu."
+      }
+    ]
+  },
+  {
+    "id": "d59d715f-c5e5-50b3-8766-7ec0f8b0d6e0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "締め切り",
+    "reading": "しめきり",
+    "meaning_vi": "hạn chót",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thời hạn cuối để nộp hoặc đăng ký.",
+    "audio_ref": null,
+    "tags": [
+      "planning",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "申し込みの締め切りは明日です。",
+        "reading_ja": "もうしこみのしめきりはあしたです。",
+        "translation_vi": "Hạn chót đăng ký là ngày mai."
+      },
+      {
+        "sentence_ja": "締め切りを忘れないでください。",
+        "reading_ja": "しめきりをわすれないでください。",
+        "translation_vi": "Xin đừng quên hạn chót."
+      }
+    ]
+  },
+  {
+    "id": "4b153e51-2efa-5491-800d-b325a26de454",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "配る",
+    "reading": "くばる",
+    "meaning_vi": "phân phát; phát cho",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa từng phần cho nhiều người.",
+    "audio_ref": null,
+    "tags": [
+      "community",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "先生がプリントを配りました。",
+        "reading_ja": "せんせいがぷりんとをくばりました。",
+        "translation_vi": "Giáo viên đã phát tài liệu."
+      },
+      {
+        "sentence_ja": "参加者に水を配ります。",
+        "reading_ja": "さんかしゃにみずをくばります。",
+        "translation_vi": "Tôi sẽ phát nước cho người tham gia."
+      }
+    ]
+  },
+  {
+    "id": "75efe0e6-6e56-5e94-91c4-b6fdeba5c623",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "集まる",
+    "reading": "あつまる",
+    "meaning_vi": "tập hợp; tụ họp",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nhiều người hoặc vật tập trung lại một chỗ.",
+    "audio_ref": null,
+    "tags": [
+      "community",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅の前に学生が集まりました。",
+        "reading_ja": "えきのまえにがくせいがあつまりました。",
+        "translation_vi": "Học sinh đã tập trung trước nhà ga."
+      },
+      {
+        "sentence_ja": "六時に入口へ集まってください。",
+        "reading_ja": "ろくじにいりぐちへあつまってください。",
+        "translation_vi": "Hãy tập trung ở lối vào lúc sáu giờ."
+      }
+    ]
+  },
+  {
+    "id": "b90b263c-b949-521f-a8d5-62a376bf97d8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "呼び出す",
+    "reading": "よびだす",
+    "meaning_vi": "gọi ra; triệu tập",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Gọi ai đó đến một nơi hoặc gọi tên để họ xuất hiện.",
+    "audio_ref": null,
+    "tags": [
+      "communication",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "受付が田中さんを呼び出しました。",
+        "reading_ja": "うけつけがたなかさんをよびだしました。",
+        "translation_vi": "Quầy lễ tân đã gọi anh Tanaka."
+      },
+      {
+        "sentence_ja": "先生に教室へ呼び出されました。",
+        "reading_ja": "せんせいにきょうしつへよびだされました。",
+        "translation_vi": "Tôi được giáo viên gọi đến lớp."
+      }
+    ]
+  },
+  {
+    "id": "25604069-2385-5320-91b6-c762d6b12b33",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "参加者",
+    "reading": "さんかしゃ",
+    "meaning_vi": "người tham gia",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người tham dự một hoạt động hoặc sự kiện.",
+    "audio_ref": null,
+    "tags": [
+      "community",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "参加者に名札を渡します。",
+        "reading_ja": "さんかしゃになふだをわたします。",
+        "translation_vi": "Tôi đưa thẻ tên cho người tham gia."
+      },
+      {
+        "sentence_ja": "参加者は全部で二十人でした。",
+        "reading_ja": "さんかしゃはぜんぶでにじゅうにんでした。",
+        "translation_vi": "Tổng cộng có hai mươi người tham gia."
+      }
+    ]
   }
 ]
 
