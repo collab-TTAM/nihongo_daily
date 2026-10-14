@@ -14,6 +14,9 @@ final class NativeReviewJournal implements DurableReviewStore {
   NativeReviewJournal._(this._directory, this._lease, this._file);
   static const maxBytes = 1024 * 1024;
   static const maxEvents = 512;
+  // Worst-case validated response (4096-character timestamp plus bounded
+  // scalar/owner/event fields). Reserve one slot for every unresolved event.
+  static const maxReceiptBytes = 8192;
   static final _owners = <String>{};
   final String _directory;
   final RandomAccessFile _lease;
@@ -154,7 +157,12 @@ final class NativeReviewJournal implements DurableReviewStore {
   Future<void> _append(Map<String, Object> record) async {
     final bytes = utf8.encode('${jsonEncode(record)}\n');
     final length = await _file.length();
-    if (length + bytes.length > maxBytes) {
+    final isReceipt = record['kind'] == 'receipt';
+    final unresolved =
+        _records.values.where((r) => r.receipt == null).length +
+        (isReceipt ? -1 : 1);
+    if ((isReceipt && bytes.length > maxReceiptBytes) ||
+        length + bytes.length + unresolved * maxReceiptBytes > maxBytes) {
       throw const ReviewStorageFailure();
     }
     try {

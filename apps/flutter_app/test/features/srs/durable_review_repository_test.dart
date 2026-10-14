@@ -392,11 +392,11 @@ void main() {
       'event capacity blocks new writes without losing pending history',
       () async {
         for (var i = 0; i < NativeReviewJournal.maxEvents; i++) {
-          await journal!.stage(a, {
-            ...request(),
-            'client_event_id':
-                'b2000000-0000-4000-8000-${i.toString().padLeft(12, '0')}',
-          });
+          final id = 'b2000000-0000-4000-8000-${i.toString().padLeft(12, '0')}';
+          await journal!.stage(a, {...request(), 'client_event_id': id});
+          if (i < NativeReviewJournal.maxEvents - 1) {
+            await journal!.acknowledge(a, id, receipt());
+          }
         }
         final length = await file().length();
         await expectLater(
@@ -406,6 +406,43 @@ void main() {
         expect(await file().length(), length);
         expect((await journal!.list(a)).length, NativeReviewJournal.maxEvents);
         expect(await journal!.list(b), isEmpty);
+      },
+    );
+    test(
+      'pending capacity reserves receipt space and acknowledgment frees reservation',
+      () async {
+        var blocked = false;
+        var count = 0;
+        for (var i = 0; i < NativeReviewJournal.maxEvents; i++) {
+          final length = await file().length();
+          try {
+            await journal!.stage(a, {
+              ...request(),
+              'client_event_id':
+                  'b2000000-0000-4000-8000-${i.toString().padLeft(12, '0')}',
+            });
+            count++;
+          } on ReviewStorageFailure {
+            expect(await file().length(), length);
+            blocked = true;
+            break;
+          }
+        }
+        expect(blocked, isTrue);
+        expect(count, greaterThan(1));
+        expect(count, lessThan(NativeReviewJournal.maxEvents));
+        await journal!.acknowledge(
+          a,
+          'b2000000-0000-4000-8000-000000000000',
+          receipt(),
+        );
+        await journal!.acknowledge(
+          a,
+          'b2000000-0000-4000-8000-000000000001',
+          receipt(),
+        );
+        await journal!.stage(b, request());
+        expect((await journal!.list(b)).single.receipt, isNull);
       },
     );
     test(

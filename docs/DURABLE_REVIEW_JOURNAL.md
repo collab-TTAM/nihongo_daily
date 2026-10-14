@@ -55,7 +55,9 @@ flushed pending event for original replay. A failed append poisons that open
 instance: close/reopen before further recovery. Events/receipts are not silently
 discarded, expired, rewritten or compacted.
 
-Hard limits: 1 MiB file, 512 retained events across owners. Capacity exhaustion
+Hard limits: 1 MiB file, 512 retained events across owners. Each unresolved event
+reserves 8192 bytes for the largest supported receipt, so staging may stop
+earlier. Acknowledgment releases the unused reservation. Capacity exhaustion
 fails before dispatch. Compaction/encryption/retention and migration need later
 implementation; this bounded journal is not a long-term production data store.
 flush plus separate process restart is tested; sudden hardware power loss,

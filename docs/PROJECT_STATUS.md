@@ -633,7 +633,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Auth/RPC responses are TEST ONLY; no hosted/two-device learner proof.
   Pure source/tool analyzer and formatting passed. Local QA inventory/17 QA
   regressions passed; full Flutter lint/test/web and Windows require current-head
-  CI. Nineteen Flutter cases authored, not yet claimed passed locally.
+  CI. Twenty Flutter cases authored, not yet claimed passed locally.
 - Add required real-disk subprocess verifier to Linux Flutter and Windows CI,
   retaining all existing gates. QA 35 groups, all 14 integration releases remain
   pending. No dependencies, frozen RPC, RLS, Auth strategy or deployment change.
@@ -646,4 +646,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   that recovers pending before allowing new events, browser transactional store,
   #20 configured login/profile/secure session restoration, bounded retention
   and real non-production missing/expired JWT/two-client SRS acceptance.
+
+- Separate follow-up review reserves worst-case receipt bytes before dispatch,
+  preventing disk-capacity exhaustion caused by staging too many unresolved
+  events. Add reservation-exhaustion/freeing regression; retain the global
+  event cap test with acknowledged history plus a final pending event.
 
