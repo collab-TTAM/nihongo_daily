@@ -755,3 +755,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   RLS/Auth/provider/production changes. Keep #37 draft/#15/#20/#22 open. Worker
   active awaiting exact-head CI. Next reviewed terminal retention and configured
   Auth/profile/secure sessions, followed by hosted learner acceptance.
+
+- First CI38522933955 passed format/analyze and 238 Flutter tests; Chrome
+  frontend-server could not load a direct tool/ test entrypoint. Move the same
+  browser cases into test/features/srs (non-default *_test name) and share pure
+  fixtures under test/. Retain every assertion and both mandatory browser gates;
+  skipped Chrome/reload/web steps do not count as passing evidence.

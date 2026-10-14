@@ -5,7 +5,7 @@ import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/transactional_review_store.dart';
 import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
 
-import 'verify_transactional_review.dart' as fixture;
+import 'transactional_review_fixtures.dart' as fixture;
 
 // Actual browser IndexedDB; Auth/RPC responses below are TEST ONLY.
 final class _Auth implements ReviewAuth {

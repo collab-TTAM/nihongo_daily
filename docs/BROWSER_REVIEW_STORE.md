@@ -58,7 +58,7 @@ From apps/flutter_app:
 
 ```bash
 flutter test test/features/srs/transactional_review_store_test.dart
-flutter test --platform chrome tool/browser_review_store_check.dart
+flutter test --platform chrome test/features/srs/browser_review_store_check.dart
 mkdir -p build/browser-restart
 dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js
 python3 ../../scripts/verify_browser_review_restart.py build/browser-restart

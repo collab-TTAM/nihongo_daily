@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../../../tool/verify_transactional_review.dart' as verifier;
+import 'transactional_review_fixtures.dart' as verifier;
 
 void main() {
   for (final scenario in verifier.scenarios) {

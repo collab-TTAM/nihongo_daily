@@ -68,7 +68,7 @@
           "contains": "transactional ledger"
         },
         {
-          "path": "apps/flutter_app/tool/browser_review_store_check.dart",
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
           "contains": "two connections serialize"
         },
         {
@@ -81,7 +81,7 @@
         22,
         20
       ],
-      "reproduce": "flutter test test/features/srs/transactional_review_store_test.dart; flutter test --platform chrome tool/browser_review_store_check.dart; dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js; python3 ../../scripts/verify_browser_review_restart.py build/browser-restart (from apps/flutter_app, ChromeDriver required)",
+      "reproduce": "flutter test test/features/srs/transactional_review_store_test.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart; dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js; python3 ../../scripts/verify_browser_review_restart.py build/browser-restart (from apps/flutter_app, ChromeDriver required)",
       "limitation": "Actual Chrome IndexedDB/reloads with TEST ONLY Auth/RPC. Not hosted learner acceptance, real browser power-loss/quota/eviction, secure token persistence, other browsers or terminal retention. Default runtime null."
     },
     {
