@@ -1085,6 +1085,40 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "d0f3b995-2ba1-518e-b441-9c3fb1472d4f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "機",
+    "meaning_vi": "máy; cơ hội",
+    "onyomi": [
+      "キ"
+    ],
+    "kunyomi": [
+      "はた"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "61f5ba19-af82-532f-9e40-7024f2652e10",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "械",
+    "meaning_vi": "máy móc; dụng cụ",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
