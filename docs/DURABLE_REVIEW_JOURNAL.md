@@ -34,8 +34,9 @@ The configured Auth/RPC binding and server retain those responsibilities.
 
 ## File safety and limits
 
-The journal is canonical newline-delimited JSON. Version-3 writes support explicit settled snapshots; version-2 added immutable
-terminal rejections. Readers accept version-1/2 pending/terminal history. Only pending,
+The journal is canonical newline-delimited JSON. Version-3 supports explicit
+settled snapshots; version-2 added immutable terminal rejections. Readers accept
+version-1/2 pending/terminal history. Only pending,
 validated receipt and checked rejection records are allowed, with exact keys, bounds and immutable
 identities. Canonical encoding also rejects duplicate JSON keys on restore.
 Records contain no token/refresh token/headers or raw errors. Storage failures
@@ -89,5 +90,5 @@ be observed before claiming those Flutter tests or Windows checks pass.
 Opt-in controller recovery/reconciliation UI now exists; see STUDY_RECOVERY.md.
 Next: browser transactional
 storage, configured login/profile/secure session restoration (#20), bounded
-retention/compaction and actual two-client/hosted acceptance (#15/#22).
+terminal retention and actual two-client/hosted acceptance (#15/#22).
 All 14 Personal Alpha release integration cases remain pending; keep #37 draft.

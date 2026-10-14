@@ -56,3 +56,10 @@ long-term storage gap. Next: reviewed bounded terminal retention with server
 replay guarantees, browser transactional store, configured login/profile/secure
 session restoration and hosted two-client acceptance. Keep #37 draft and
 #15/#20/#22 open. Personal Alpha remains incomplete.
+
+Observed source evidence: 580954f8539f790cc27a5f3fe6addea4e687ce64 passed
+all five jobs at https://github.com/collab-TTAM/nihongo_daily/actions/runs/38520798851 ,
+including 231 Flutter tests (six compaction), web/Windows release/artifacts and
+all three native file/process verifiers on Linux and Windows. Exact-head QA
+metadata verification accepted every required step. This is source-build
+evidence, not live learner acceptance or evidence for later source changes.

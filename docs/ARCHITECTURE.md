@@ -34,4 +34,6 @@ The opt-in bounded native append journal and write-before-dispatch repository
 are specified in DURABLE_REVIEW_JOURNAL.md. They preserve the existing RPC/auth
 boundaries and server-authoritative schedule. This is a transient equivalent
 local store (no dependencies), not the full SQLite/browser cache/sync layer;
-UI recovery, session storage, compaction and hosted acceptance remain pending.
+Opt-in UI recovery and lossless native compaction are documented in
+STUDY_RECOVERY.md and JOURNAL_COMPACTION.md. Secure session storage, browser
+transactions, terminal retention and hosted acceptance remain pending.

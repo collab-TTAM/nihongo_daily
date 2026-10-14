@@ -703,6 +703,32 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Retain all gates; add mandatory CLI verifier to Linux and Windows, QA37 groups
   with all 14 Personal Alpha releases pending. Separate compatibility/impact/
   reproduction in JOURNAL_COMPACTION.md. No API/RLS/Auth/provider/dependency/
-  production changes. Keep #37 draft/#15/#20/#22 open. Worker awaiting CI.
+  production changes. Keep #37 draft/#15/#20/#22 open. Verified handoff below.
 - Next: browser transactional store and reviewed terminal retention; configured
   login/profile/secure sessions and actual hosted two-client learner validation.
+
+## Verified lossless native compaction handoff — 2026-10-14 UTC
+
+- Source head 580954f8539f790cc27a5f3fe6addea4e687ce64 passed all five jobs
+  at https://github.com/collab-TTAM/nihongo_daily/actions/runs/38520798851 .
+  Flutter format/analyze (no issues), 231 tests including six compaction cases,
+  all native disk/controller/wire gates and web release/artifact passed. Windows
+  release/artifact and all three real-file process verifiers passed. Native SQL/
+  RLS/parity/observed-lock races, repo/49 Python/17 QA and AI/audit gates retained.
+- Unmodified run/all latest-attempt jobs passed scripts/verify_qa.py for exact
+  source head and all critical steps. QA37 groups, all 14 release gates pending.
+  Source CI is historical for later documentation commits; no merge attempted.
+- Separate review added interrupted-sibling bootstrap and second-process writer
+  rejection after replacement. All original assertions/gates retained. Local
+  six actual-file cases and child compact/exit/parent reopen, retained disk and
+  controller verifiers, pure analysis/format/49 Python/17 QA passed. Full Flutter,
+  Windows/web/native database results are CI, not local execution.
+- Explicit lossless compact retains every event/outcome and reserved pending
+  receipt capacity; v3 reads v1/v2 history, old-binary downgrade needs migration.
+  No automatic retention/history deletion or higher 512-event cap. Default
+  runtime null; no web store, live login/profile/secure token persistence,
+  power-loss or hosted/two-device learner evidence. #37 draft/#15/#20/#22 open.
+- Sequential bounded worker released after evidence persistence. Resume current
+  PR head first, then browser transactional store and reviewed terminal retention,
+  configured Auth/profile/secure sessions and hosted learner acceptance. No API/
+  RLS/Auth/provider/dependency/production changes or secrets requested.
