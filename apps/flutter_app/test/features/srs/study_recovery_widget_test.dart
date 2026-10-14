@@ -72,8 +72,9 @@ void main() {
             SrsStudyPhase.empty,
             SrsStudyPhase.complete,
           }.contains(state.phase) &&
-          !finished.isCompleted)
+          !finished.isCompleted) {
         finished.complete();
+      }
     });
     try {
       await tester.runAsync(() async {
