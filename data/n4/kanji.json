@@ -1231,6 +1231,43 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "110acd3f-a670-54c0-8b97-3f070720461a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "配",
+    "meaning_vi": "phân phát; phân phối",
+    "onyomi": [
+      "ハイ"
+    ],
+    "kunyomi": [
+      "くば"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "dc6bcbe9-f91d-5b80-a7d1-2e228d9865d9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "集",
+    "meaning_vi": "tập hợp; thu thập",
+    "onyomi": [
+      "シュウ"
+    ],
+    "kunyomi": [
+      "あつ",
+      "つど"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
