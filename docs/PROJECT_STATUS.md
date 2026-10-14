@@ -810,7 +810,37 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   case authored; current-head full lint/browser/web/Windows CI still required.
   Add mandatory CLI on Linux/Windows, retain all previous gates. QA39 groups;
   all 14 Personal Alpha integration cases pending. Default app runtime null.
-- Keep #37 draft/#15/#20/#22 open. Worker active awaiting CI; next configured
+- Keep #37 draft/#15/#20/#22 open. Worker released after verified evidence below; next configured
   login/profile/secure token persistence and actual hosted A/B/expired JWT/
   two-client learner acceptance. No production history deletion, dependencies,
   frozen API, RLS, Auth strategy/provider changes or secrets requested.
+
+## Verified receipt-cache retention handoff — 2026-10-14 UTC
+
+- Source 1a857891c068a9c96a170743e7ff7b2062c8488b passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38525221671 .
+  Flutter format/analyze (no issues), 242 unit/widget tests including four new
+  retention cases, five actual Chrome tests including concurrent retention/reopen,
+  real page reload/second-tab, all wire/native checks and web release/artifact
+  passed. Windows build/nihongo_daily.exe/artifact plus four native file/process
+  verifiers passed, including 600-review retention/child prune-exit-parent reopen/
+  pending preservation/blocked temporary write. SQL/RLS/parity/races/repo/49
+  Python/17 QA/AI audit retained and passed. Unmodified run/all latest-attempt
+  jobs accepted by scripts/verify_qa.py at exact head/every required step. QA39
+  groups; all 14 Personal Alpha integration release cases still pending.
+- Separate source review checked default-disabled/own successful receipts only,
+  no pending/rejection/other-owner deletion, immutable existing replay/conflict
+  before maintenance, atomic browser rollback and native replacement-memory
+  ordering. Native formats v1/v2/v3 and browser schema1 unchanged. Server replay
+  remains authoritative; injected retention server is TEST ONLY. No live receipt
+  retention policy/JWT/login/profile/secure tokens/two-device learner proof.
+- Local four pure scenarios/native 600-review/process/temp-write verifier, retained
+  compaction CLI/source analysis/format/JS compilation/49 Python/17 QA passed.
+  Full Flutter/Chrome/web/Windows/native SQL results are CI, not local execution.
+- Bounded worker released after evidence persistence; resume latest draft head
+  first and inspect its CI. Keep #37 draft/#15/#20/#22 open, no merge/deployment.
+  Source-head success is historical for subsequent documentation/source changes.
+  Default retention disabled/runtime null; pending/rejected/shared-owner/quota
+  limits may still exhaust storage. Next configured Auth/profile/login/secure
+  session restoration and actual hosted A/B/expired JWT/two-client acceptance.
+  No server/production history deletion, API/RLS/Auth/provider/dependency change.

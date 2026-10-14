@@ -77,3 +77,11 @@ These checks do not prove live server signatures, secure session restoration or
 a two-device learner flow. Keep #37 draft/#15/#20/#22 open; next configured
 Auth/profile/login/session persistence and actual hosted learner acceptance.
 Observe exact-head CI before claiming full Flutter/Chrome/Windows results.
+
+Observed source evidence: 1a857891c068a9c96a170743e7ff7b2062c8488b passed all
+five jobs in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38525221671 :
+242 Flutter tests (four new retention), five Chrome tests (one new actual
+retention case), Linux/Windows 600-review/process-restart/failure checks and
+web/Windows release artifacts. Exact-head unmodified CI metadata accepted every
+required step. This does not enable the default runtime/retention or establish
+hosted server retention and learner acceptance; later commits need own checks.
