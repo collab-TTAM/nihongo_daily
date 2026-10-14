@@ -127,7 +127,7 @@ restoration evidence. Default runtime remains null and explicit refresh scheduli
 is still caller work. All 14 live release groups remain pending; keep #37 draft.
 Source evidence is historical for subsequent documentation/source commits.
 
-## Actual Windows runtime restart probe (pending CI)
+## Actual Windows runtime restart probe
 
 The separate TEST ONLY Flutter runner now invokes `PersistentSupabaseRuntime`
 with the real production Windows vault/MethodChannel/Credential Manager and
@@ -148,3 +148,18 @@ before artifact upload. These checks narrow SDK-to-OS process-restart evidence
 only when observed passing. They do not establish hosted JWT/Auth, two-client
 identity isolation, OS-logoff/power-loss, concurrent process writers or actual
 learner UI. No default activation, provider, dependency or contract changes.
+
+Verified source `e39d6fee1ac554f8e9802294b09ef54d5ed17b63` passed all five jobs
+in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38590916038 .
+Observed 312 Flutter tests, five actual Chrome tests, analysis/format, all ten
+Dart vault/runtime process phases with real Credential Manager/journal, native
+credential/process probe, retained SQL/native/wire/security gates and normal
+web/Windows preview builds/uploads. Windows logs explicitly confirm both bridge
+and persistent SDK runtime cross-process success. Raw run/latest-attempt metadata
+passed exact-source-head/every-required-step QA. Auth HTTP and JWT signatures
+remain simulated; this is sequential OS-backed process restoration, not hosted
+identity/device/logoff/power-loss proof. One fixture lint block and one retained
+SDK test's fixed event-turn readiness heuristic were corrected without changing
+production logic or original ready/non-null expectations. Source evidence is
+historical for later documentation commits; next startup/error UI and explicit
+refresh scheduling, then configured hosted learner acceptance.

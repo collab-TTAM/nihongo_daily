@@ -1153,3 +1153,27 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   observation; ready/profile-error/sign-in-error/unavailable are terminal, and
   ready plus original nonnull runtime assertions remain mandatory. Production
   logic and timeout/assertion/security/CI gates are unchanged. New source needs CI.
+
+### Verified Windows runtime process handoff
+
+- Source e39d6fee1ac554f8e9802294b09ef54d5ed17b63 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38590916038 .
+  Observed 312 Flutter tests/five Chrome tests, no analyze/format issues, actual
+  Flutter vault and runtime cross-process markers, native credential/process
+  probe and retained native/SQL/wire/security/build gates. Normal web/Windows
+  artifacts uploaded; TEST ONLY entrypoint rebuilt to learner entrypoint first.
+  Raw run/latest-attempt metadata passed exact-source/every-required-step QA.
+- Ten process phases use real Windows credential vault and journal. Runtime
+  phases retain the original pending event, server-refresh the saved secret,
+  save rotation before profile, preserve confirmed secret on close, fence logout,
+  remain signed-out after restart and recover explicitly from rejected secret.
+  Pinned SDK uses mock HTTP/unsigned JWTs: no hosted identity or two-client proof.
+- Full source tree preserved; 236 blobs matched after upload. Separate review
+  kept original ready/non-null SDK assertion while replacing fixed event turns
+  with bounded terminal-state observation. No assertion/lint/security/CI weakening
+  or production auth logic change. All 14 live release gates remain pending.
+- Core worker RELEASED after evidence saved. Resume actual head/checks; evidence
+  successor only updates handoff/QA documentation and has separate CI. Next
+  caller startup/error UI and explicit refresh scheduling, then configured hosted
+  A/B/restart/expiry/two-client acceptance. Keep #37 draft; #20/#22/#15 open.
+  Pro #38/N4 unaffected; no dependency/provider/schema/deployment changes.

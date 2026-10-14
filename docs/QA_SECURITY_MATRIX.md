@@ -207,3 +207,13 @@ interactive bridge-to-OS/hosted Auth claim. Other platforms fail unavailable.
 
 Owned persistent SDK/vault lifecycle is an additional fixture baseline in
 PERSISTENT_SESSION_LIFECYCLE.md. It retains all live release gaps and existing gates.
+
+## Windows process restoration evidence — 2026-10-14
+
+Source e39d6fee CI38590916038 executed actual Flutter runner vault/runtime
+probes with production Credential Manager/native journal across separate
+processes, including rotation-before-profile and original pending-event retention.
+312 Flutter/five Chrome and all retained five-job gates passed; raw exact-head
+metadata checked. QA baseline anchors now include these probes. Auth HTTP/JWT
+signatures remain simulated; all 14 hosted release integrations remain pending.
+No release status/security gate is relaxed.

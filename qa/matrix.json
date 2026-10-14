@@ -82,6 +82,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "SDK startup server refresh persists rotation before own profile"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
+          "contains": "verifyWindowsRuntimePhase"
         }
       ],
       "issues": [
@@ -90,7 +94,7 @@
         15
       ],
       "reproduce": "In apps/flutter_app: dart run tool/verify_session_lifecycle.dart; flutter test",
-      "limitation": "Pure SDK/OS fixtures and actual pinned SDK with mock HTTP, not hosted JWT/login or Dart-to-Windows restoration. Explicit assembly/default runtime null. No automatic refresh scheduler; caller must explicitly refresh before expiry. Windows vault only; web assembly rejected before SDK construction. Single-isolate ownership is not an interprocess lock."
+      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof."
     },
     {
       "id": "windows-session-vault",
@@ -109,6 +113,10 @@
         {
           "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
           "contains": "actual Windows Credential Manager"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "runtime-restore"
         }
       ],
       "issues": [
@@ -116,7 +124,7 @@
         22
       ],
       "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe",
-      "limitation": "Actual Windows credential API uses isolated TEST ONLY tokens. Dart platform bridge uses mock messages; native bridge is built, not interactive end-to-end proof. Explicit factory only; owned lifecycle assembly tested separately with simulated SDK/OS ports; no hosted or interactive restoration proof. Same-OS-user processes can access generic credentials; single isolate queue is not interprocess CAS. Web/mobile/non-Windows unsupported."
+      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-OS-user processes can access generic credentials. Single-isolate queue is not interprocess CAS; non-Windows/web unsupported."
     },
     {
       "id": "account-profile-readiness",
