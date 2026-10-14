@@ -1,5 +1,9 @@
 # Local atomic review transaction — Issue #22
 
+Process-local captured-connection expiry/refresh/dispatch readiness and explicit
+runtime assembly are documented in REVIEW_CONNECTION_LIFECYCLE.md. This is not
+a concrete SDK/Auth implementation; default runtime remains unconfigured.
+
 The additive authenticated due-queue SQL read and Dart bridge are specified in
 REVIEW_QUEUE.md. Default runtime remains null; real SDK/Auth/durable integration
 is not enabled by this read or its SQL-to-Dart fixture artifact checks.

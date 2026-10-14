@@ -90,6 +90,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify captured-connection lifecycle with explicit fixture dispatch
+        run: dart run tool/verify_review_connection.dart
       - name: Download same-run native SQL queue projections
         uses: actions/download-artifact@v4
         with:

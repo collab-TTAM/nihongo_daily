@@ -1,5 +1,8 @@
 # Additive due-queue read contract — nd-review-queue-1
 
+REVIEW_CONNECTION_LIFECYCLE.md documents explicit captured-connection runtime
+assembly and local expiry/refresh guards; no SDK/Auth/HTTP is enabled by it.
+
 Decision/impact review, 2026-10-14, refs #22/#20/#15: the /srs controller previously
 had only an abstract queue port. Add `get_review_queue(p_request jsonb)` and the
 versioned schema in `contracts/review_queue/v1/schema.json`. This is a bounded

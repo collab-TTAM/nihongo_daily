@@ -508,3 +508,37 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   response exports passing, plus repo/AI gates. Flutter analyze found three
   multiline if blocks without braces; fixed without relaxing lint. Its skipped
   test/SQL-to-Dart/build steps are not yet counted; wait for final-head rerun.
+
+## Verified prior due-queue handoff — PR #37, 2026-10-14 UTC
+
+- Head 7273e62d4c13d04e5a8566d9b6932090de72a70b passed all five jobs at
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38495696580:
+  Flutter analyze/no issues, 149 tests/web, Windows release/artifact, 36 native
+  queue assertions/seven actual same-run SQL -> Dart projections, retained
+  SQL/RLS/parity/races/AI/repo gates. Exact-head metadata verifier accepted all
+  critical steps. Separate diff reviews and worker release are saved on GitHub.
+  This is historical evidence, not proof for the next source increment.
+
+## Sequential resume — Issue #22 lifecycle readiness, 2026-10-14 02:05 UTC
+
+- Fresh main remains 78a44faf; only open draft #37 unchanged at verified prior
+  head 7273e62d after worker release. Resume the same branch with one worker.
+- Flutter dependency bootstrap was blocked by runtime policy after attempted
+  access to unrelated cloud metadata; no retry/workaround. Continue independent
+  dependency-free lifecycle source and fixture tests; concrete SDK resolution,
+  Auth event listener/profile/storage and real HTTP remain unimplemented.
+- Added ReviewConnectionRegistry: fresh lifecycle vs same-user refresh, expiry
+  timer/access guard, synchronous clearing, closure snapshot/old-result rejection,
+  bounded immutable ownerless request, redacted failure and explicit disposal.
+  Added explicit runtime factory wiring the existing typed queue/repository to
+  that same registry. Default app runtime remains null; no network is activated.
+- Tests/tool use TEST ONLY captured connection closures; closure credentials/JWT
+  cannot be authenticated by this registry. Source/format/raw verifier can run
+  locally; full Flutter tests/analyze/native SQL/web/Windows require observed
+  current-head CI. No full build/SDK/learner success is claimed locally.
+- QA inventory adds a lifecycle group (33 total); all 14 integration release
+  cases remain pending. No dependencies, frozen API/SQL/RLS, Auth strategy,
+  production/data collection/provider/cost changes. Keep PR draft/#22 open.
+- Next: approved SDK dependency resolution and concrete captured-token/Auth
+  events with #20/profile provisioning, then #15 durable recovery/reconciliation
+  and real non-production A/B/expired JWT/learner evidence. No secrets in chat.

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/preview_level.dart';
+import '../data/review_connection_registry.dart';
 import '../data/review_repository.dart';
+import '../data/rpc_srs_study_queue.dart';
 import '../domain/srs_models.dart';
 import 'srs_study_controller.dart';
 
@@ -23,6 +25,18 @@ final class SrsStudyRuntime {
 }
 
 final srsStudyRuntimeProvider = Provider<SrsStudyRuntime?>((ref) => null);
+
+/// Explicit assembly only. The caller owns the registry and its trusted Auth
+/// binding/disposal; the app does not install one by default. A fixture closure
+/// here is not a real Supabase connection or signed-in learner journey.
+SrsStudyRuntime createSessionBoundStudyRuntime(
+  ReviewConnectionRegistry registry,
+) => SrsStudyRuntime(
+  auth: registry,
+  reviews: RpcReviewRepository(auth: registry, transport: registry),
+  queue: RpcSrsStudyQueue(auth: registry, transport: registry),
+  sessionChanges: registry.sessionChanges,
+);
 
 // Not autoDispose: uncertain same-event retries survive navigation, not restart.
 // Runtime replacement invalidates the old provider/session; #15 owns durability.

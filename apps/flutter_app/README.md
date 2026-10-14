@@ -51,6 +51,8 @@ claimed by this shell.
   application controller/screen. The route is unconfigured by default; no real
   Auth/queue/RPC binding or durable queue is present. Fixture UI flows exist only
   in tests; see ../../docs/SRS_RPC.md for the integration limits.
+  Process-local captured-connection lifecycle/runtime assembly is described in
+  ../../docs/REVIEW_CONNECTION_LIFECYCLE.md; it is not a concrete SDK/Auth binding.
 - `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
 

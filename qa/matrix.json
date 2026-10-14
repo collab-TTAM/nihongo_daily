@@ -19,6 +19,7 @@
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify captured-connection lifecycle with explicit fixture dispatch",
       "Download same-run native SQL queue projections",
       "Decode native SQL queue projections with Dart adapter",
       "Validate decoded native queue wire output",
@@ -48,6 +49,25 @@
     ]
   },
   "cases": [
+    {
+      "id": "review-connection-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Synchronous captured-connection lifecycle, same-user refresh, expiry, logout/A-B-A, immutable ownerless dispatch and old-result rejection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/review_connection_registry_test.dart",
+          "contains": "old success and failure are suppressed after logout or A B A"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_review_connection.dart",
+          "contains": "captured-connection lifecycle/refresh/expiry/immutable envelope/revoked-result checks"
+        }
+      ],
+      "issues": [22, 20, 15],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/review_connection_registry_test.dart; dart run tool/verify_review_connection.dart",
+      "limitation": "TEST ONLY captured dispatch closures. No concrete SDK/JWT/HTTP, sign-in/profile provisioning, credential storage or durable restart evidence. Default runtime remains null."
+    },
     {
       "id": "wire-validation",
       "status": "automated-baseline",
