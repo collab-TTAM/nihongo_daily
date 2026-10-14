@@ -116,7 +116,11 @@ void main() {
       expect(runtime.account.state.phase, AccountPhase.loadingProfile);
       expect(runtime.account.readyRuntime, isNull);
       profileWait!.complete(
-        http.Response(jsonEncode(profile.profile(wire.a)), 200),
+        http.Response(
+          jsonEncode(profile.profile(wire.a)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
       );
       await fixture.flush();
       expect(runtime.account.state.phase, AccountPhase.ready);
