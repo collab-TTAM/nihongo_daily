@@ -1047,6 +1047,44 @@
     "stroke_count": 15,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "ed621e06-911b-572d-a46c-4b02ec16d0e1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "品",
+    "meaning_vi": "sản phẩm; phẩm chất",
+    "onyomi": [
+      "ヒン"
+    ],
+    "kunyomi": [
+      "しな"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "1b05f187-4b89-5d07-bcd6-15bebf9c1485",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "割",
+    "meaning_vi": "chia; giảm giá",
+    "onyomi": [
+      "カツ"
+    ],
+    "kunyomi": [
+      "わ",
+      "わり",
+      "さ"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
