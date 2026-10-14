@@ -1193,6 +1193,44 @@
     "stroke_count": 9,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "d1def842-54eb-545c-a80b-b04c06732a8f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "開",
+    "meaning_vi": "mở; khai",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あ",
+      "ひら"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "aa7fcf23-8f2d-55f6-8638-7c0157ff5e72",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "着",
+    "meaning_vi": "mặc; đến nơi",
+    "onyomi": [
+      "チャク"
+    ],
+    "kunyomi": [
+      "き",
+      "つ"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
