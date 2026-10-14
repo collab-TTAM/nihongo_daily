@@ -2182,5 +2182,229 @@
         "translation_vi": "Xong việc tôi sẽ quay lại ngay."
       }
     ]
+  },
+  {
+    "id": "c7043d10-aecc-5380-a012-e0b887223595",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "乗り換える",
+    "reading": "のりかえる",
+    "meaning_vi": "đổi tàu; chuyển phương tiện",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đổi sang tàu hoặc phương tiện khác trong hành trình.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "東京駅で電車を乗り換えます。",
+        "reading_ja": "とうきょうえきででんしゃをのりかえます。",
+        "translation_vi": "Tôi sẽ đổi tàu ở ga Tokyo."
+      },
+      {
+        "sentence_ja": "次の駅で地下鉄に乗り換えました。",
+        "reading_ja": "つぎのえきでちかてつにのりかえました。",
+        "translation_vi": "Tôi đã chuyển sang tàu điện ngầm ở ga tiếp theo."
+      }
+    ]
+  },
+  {
+    "id": "792bcf12-6d81-5e0b-bab4-aae49b9788d7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "受け付ける",
+    "reading": "うけつける",
+    "meaning_vi": "tiếp nhận; nhận đăng ký",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Nhận đơn, yêu cầu hoặc đăng ký tại quầy dịch vụ.",
+    "audio_ref": null,
+    "tags": [
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "申し込みは五時まで受け付けます。",
+        "reading_ja": "もうしこみはごじまでうけつけます。",
+        "translation_vi": "Việc đăng ký được tiếp nhận đến năm giờ."
+      },
+      {
+        "sentence_ja": "受付で質問を受け付けています。",
+        "reading_ja": "うけつけでしつもんをうけつけています。",
+        "translation_vi": "Quầy lễ tân đang tiếp nhận câu hỏi."
+      }
+    ]
+  },
+  {
+    "id": "04b3ee51-9d00-5bbd-8d37-e93bdadcac05",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "なくす",
+    "reading": "なくす",
+    "meaning_vi": "làm mất",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Không còn giữ được đồ vật do để quên hoặc đánh rơi.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "電車の中で財布をなくしました。",
+        "reading_ja": "でんしゃのなかでさいふをなくしました。",
+        "translation_vi": "Tôi đã làm mất ví trên tàu."
+      },
+      {
+        "sentence_ja": "大切な書類をなくさないでください。",
+        "reading_ja": "たいせつなしょるいをなくさないでください。",
+        "translation_vi": "Đừng làm mất giấy tờ quan trọng."
+      }
+    ]
+  },
+  {
+    "id": "3a108349-c2c9-5d2c-82bd-e2c608a7e48b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "拾う",
+    "reading": "ひろう",
+    "meaning_vi": "nhặt;拾 được",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nhặt đồ vật đang ở dưới đất hoặc nơi công cộng.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "道で鍵を拾いました。",
+        "reading_ja": "みちでかぎをひろいました。",
+        "translation_vi": "Tôi đã nhặt được chìa khóa trên đường."
+      },
+      {
+        "sentence_ja": "落とし物を拾ったら、駅員に渡してください。",
+        "reading_ja": "おとしものをひろったら、えきいんにわたしてください。",
+        "translation_vi": "Nếu nhặt được đồ thất lạc hãy giao cho nhân viên ga."
+      }
+    ]
+  },
+  {
+    "id": "541a7aa5-9407-546f-b4f0-d68921b08b06",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "確かめる",
+    "reading": "たしかめる",
+    "meaning_vi": "xác nhận; kiểm tra lại",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Kiểm tra để chắc chắn thông tin hoặc tình trạng.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "出発時間をもう一度確かめます。",
+        "reading_ja": "しゅっぱつじかんをもういちどたしかめます。",
+        "translation_vi": "Tôi sẽ kiểm tra lại giờ xuất phát một lần nữa."
+      },
+      {
+        "sentence_ja": "名前を確かめてから申し込みました。",
+        "reading_ja": "なまえをたしかめてからもうしこみました。",
+        "translation_vi": "Tôi kiểm tra tên rồi mới đăng ký."
+      }
+    ]
+  },
+  {
+    "id": "37f8caf5-ea56-5081-937e-8dcefa8536ab",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "似る",
+    "reading": "にる",
+    "meaning_vi": "giống; tương tự",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Có đặc điểm hoặc hình dáng giống người hay vật khác.",
+    "audio_ref": null,
+    "tags": [
+      "descriptions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "姉と私は顔がよく似ています。",
+        "reading_ja": "あねとわたしはかおがよくにています。",
+        "translation_vi": "Chị gái và tôi có khuôn mặt rất giống nhau."
+      },
+      {
+        "sentence_ja": "この二つの言葉は意味が似ています。",
+        "reading_ja": "このふたつのことばはいみがにています。",
+        "translation_vi": "Hai từ này có nghĩa tương tự nhau."
+      }
+    ]
+  },
+  {
+    "id": "00b1372c-fa82-5c9b-873e-c94ee8c49c4d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "残る",
+    "reading": "のこる",
+    "meaning_vi": "còn lại; sót lại",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Vẫn còn tồn tại sau khi một phần đã được dùng hoặc kết thúc.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昼ご飯が少し残っています。",
+        "reading_ja": "ひるごはんがすこしのこっています。",
+        "translation_vi": "Bữa trưa còn lại một ít."
+      },
+      {
+        "sentence_ja": "仕事が残っているので、もう少し働きます。",
+        "reading_ja": "しごとがのこっているので、もうすこしはたらきます。",
+        "translation_vi": "Vì còn việc nên tôi làm thêm một chút."
+      }
+    ]
+  },
+  {
+    "id": "a6c80a44-7aab-5aee-becf-1e0c35f422e9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "戻す",
+    "reading": "もどす",
+    "meaning_vi": "đưa trở lại; trả về chỗ cũ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa người hoặc vật về vị trí, trạng thái ban đầu.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "本を棚に戻してください。",
+        "reading_ja": "ほんをたなにもどしてください。",
+        "translation_vi": "Hãy trả sách về kệ."
+      },
+      {
+        "sentence_ja": "使った道具を元の場所に戻しました。",
+        "reading_ja": "つかったどうぐをもとのばしょにもどしました。",
+        "translation_vi": "Tôi đã trả dụng cụ đã dùng về chỗ cũ."
+      }
+    ]
   }
 ]

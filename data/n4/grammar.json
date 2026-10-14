@@ -948,5 +948,95 @@
         "translation_vi": "Ở cửa hàng này chỉ dùng được tiền mặt."
       }
     ]
+  },
+  {
+    "id": "f24cb609-78cd-598d-adc6-42866d41ca04",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる前に",
+    "pattern": "Vる前に",
+    "meaning_vi": "trước khi V",
+    "explanation_vi": "Nêu một hành động xảy ra trước hành động khác.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước 前に."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu hành động phía sau chưa xảy ra."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "寝る前に歯を磨きます。",
+        "reading_ja": "ねるまえにはをみがきます。",
+        "translation_vi": "Tôi đánh răng trước khi ngủ."
+      },
+      {
+        "sentence_ja": "出かける前に鍵を確かめました。",
+        "reading_ja": "でかけるまえにかぎをたしかめました。",
+        "translation_vi": "Tôi đã kiểm tra chìa khóa trước khi ra ngoài."
+      }
+    ]
+  },
+  {
+    "id": "4dbae303-dd6c-56b4-96e7-8f287620e57c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vた後で",
+    "pattern": "Vた後で",
+    "meaning_vi": "sau khi V",
+    "explanation_vi": "Nêu một hành động xảy ra sau khi hành động khác kết thúc.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước 後で."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển khi muốn nói hành động đã hoàn tất trước đó."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "仕事が終わった後で友達に会います。",
+        "reading_ja": "しごとがおわったあとでともだちにあいます。",
+        "translation_vi": "Tôi sẽ gặp bạn sau khi xong việc."
+      },
+      {
+        "sentence_ja": "薬を飲んだ後で休みました。",
+        "reading_ja": "くすりをのんだあとでやすみました。",
+        "translation_vi": "Tôi đã nghỉ sau khi uống thuốc."
+      }
+    ]
+  },
+  {
+    "id": "f0b993d7-6a5e-573e-be32-b3a6b1be8fae",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nについて",
+    "pattern": "Nについて",
+    "meaning_vi": "về N; liên quan đến N",
+    "explanation_vi": "Nêu chủ đề được nói, hỏi hoặc tìm hiểu.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước について."
+    ],
+    "common_mistakes": [
+      "Không thêm の giữa danh từ và について."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本の文化について調べています。",
+        "reading_ja": "にほんのぶんかについてしらべています。",
+        "translation_vi": "Tôi đang tìm hiểu về văn hóa Nhật."
+      },
+      {
+        "sentence_ja": "試験について先生に質問しました。",
+        "reading_ja": "しけんについてせんせいにしつもんしました。",
+        "translation_vi": "Tôi đã hỏi giáo viên về kỳ thi."
+      }
+    ]
   }
 ]

@@ -419,5 +419,42 @@
     "stroke_count": 14,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "e591fc1b-0498-532c-a263-4eb59ae30312",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "乗",
+    "meaning_vi": "lên; cưỡi;乘",
+    "onyomi": [
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "の"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "bd90fa65-0f7b-51c3-8983-30dfc909b758",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "残",
+    "meaning_vi": "còn lại; để lại",
+    "onyomi": [
+      "ザン"
+    ],
+    "kunyomi": [
+      "のこ",
+      "のこ-"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
