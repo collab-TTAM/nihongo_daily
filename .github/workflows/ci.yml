@@ -90,6 +90,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify owned persistent session lifecycle
+        run: dart run tool/verify_session_lifecycle.dart
       - name: Verify credential vault validation and ordering
         run: dart run tool/verify_session_vault.dart
       - name: Verify account profile readiness

@@ -14,6 +14,9 @@ import 'review_repository.dart';
 /// Credential methods require an explicitly configured client and caller.
 /// The server verifies JWTs; decoded claims below are only fail-closed local hints.
 final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
+  static String validateProjectUrl(String value) => _projectUrl(value);
+  static String validatePublicKey(String value) => _publicKey(value);
+
   SupabaseReviewBinding({
     required SupabaseClient client,
     required String projectUrl,

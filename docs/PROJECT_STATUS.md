@@ -1006,3 +1006,28 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   captured/generation-guarded token rotation, clear/logout ordering, startup refresh
   before own-profile readiness, storage/revocation/late-response tests. Then actual
   configured hosted A/B/expired JWT/restart/two-client learner acceptance.
+
+
+## Owned persistent session lifecycle resume — 2026-10-14 UTC
+
+- Resume d3fc8ad7 after latest CI38559195851 succeeded. All 226 baseline blobs
+  matched GitHub; one isolated core checkout/writer. Pro N4 PR #38 stays separate.
+- Add explicit exclusively owned Supabase runtime with disabled SDK auto-refresh,
+  no Session JSON storage, Windows vault scope validation, single-isolate owner
+  lease, server refresh-only startup and persist-before-own-profile readiness.
+  App default runtime remains null; browser assembly rejected before SDK creation.
+- Generation/captured-secret guards discard stale events, fence logout before awaits,
+  serialize writes/clear and clean up late Auth success. Storage errors fail closed;
+  explicit login cleans failed state before retry. Close preserves saved credentials
+  but waits for interrupted Auth cleanup; caller must await close. Explicit refresh
+  only, no automatic refresh scheduler. Auth HTTP is same-origin/no redirects,
+  bounded to one 15-second attempt and 1MiB; no raw errors or secrets in state/logs.
+- Twenty pure fixture cases pass locally. Six actual SDK/mock-HTTP cases authored;
+  full Flutter, SDK, browser, native/build evidence requires current-source CI.
+  New mandatory lifecycle verifier retains every prior gate. QA43/all 14 live
+  release integrations pending. Separate review: PERSISTENT_SESSION_LIFECYCLE.md.
+- No dependencies, schema/RLS/API, Auth provider/strategy, N4 data or deployment
+  changes. Keep #37 draft/#20/#22/#15 open. Worker active until verified handoff.
+  Next actual Windows Dart-to-OS/runtime restart and configured hosted learner
+  A/B/expired JWT/two-client evidence; then opt-in startup UI/configuration and
+  refresh scheduling. Source implementation is not real login acceptance.

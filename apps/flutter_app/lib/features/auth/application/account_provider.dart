@@ -14,11 +14,15 @@ import 'account_controller.dart';
 AccountController<SrsStudyRuntime> createSupabaseAccountRuntime(
   SupabaseReviewBinding binding, {
   DurableReviewStore? store,
+  AccountAccess? access,
 }) {
-  final access = SupabaseAccountAccess(binding);
-  final profiles = RpcOwnProfileRepository(auth: binding, transport: binding);
+  final accountAccess = access ?? SupabaseAccountAccess(binding);
+  final profiles = RpcOwnProfileRepository(
+    auth: accountAccess,
+    transport: binding,
+  );
   return AccountController<SrsStudyRuntime>(
-    access: access,
+    access: accountAccess,
     ensureProfile: profiles.ensure,
     buildStudyRuntime: (auth, changes) {
       final delegate = RpcReviewRepository(auth: auth, transport: binding);

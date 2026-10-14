@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-42 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+43 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -204,3 +204,6 @@ project-isolation/corruption/bounds/clear checks. Native bridge compiles in the
 Windows app. See WINDOWS_SESSION_VAULT.md. QA42 groups, all 14 live integrations
 pending. Explicit component only; no SDK persistence/rotation/restoration or
 interactive bridge-to-OS/hosted Auth claim. Other platforms fail unavailable.
+
+Owned persistent SDK/vault lifecycle is an additional fixture baseline in
+PERSISTENT_SESSION_LIFECYCLE.md. It retains all live release gaps and existing gates.
