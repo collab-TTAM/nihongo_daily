@@ -7580,6 +7580,233 @@
         "translation_vi": "Bộ quần áo này không có nhãn giá."
       }
     ]
+  },
+  {
+    "id": "2905352a-2893-52e7-bdc9-200de07c0082",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "体調",
+    "reading": "たいちょう",
+    "meaning_vi": "tình trạng sức khỏe",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tình trạng khỏe hoặc mệt của cơ thể.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昨日から体調がよくありません。",
+        "reading_ja": "きのうからたいちょうがよくありません。",
+        "translation_vi": "Từ hôm qua tôi thấy trong người không khỏe."
+      },
+      {
+        "sentence_ja": "体調が戻ったら、仕事に行きます。",
+        "reading_ja": "たいちょうがもどったら、しごとにいきます。",
+        "translation_vi": "Khi sức khỏe hồi phục, tôi sẽ đi làm."
+      }
+    ]
+  },
+  {
+    "id": "b34cde31-de5e-54fa-85c6-30a72b8a7abb",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "看護師",
+    "reading": "かんごし",
+    "meaning_vi": "y tá",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người chăm sóc và hỗ trợ bệnh nhân trong bệnh viện.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "看護師が薬の飲み方を説明しました。",
+        "reading_ja": "かんごしがくすりののみかたをせつめいしました。",
+        "translation_vi": "Y tá đã giải thích cách uống thuốc."
+      },
+      {
+        "sentence_ja": "困ったとき、看護師に相談してください。",
+        "reading_ja": "こまったとき、かんごしにそうだんしてください。",
+        "translation_vi": "Khi gặp khó khăn, hãy hỏi y tá."
+      }
+    ]
+  },
+  {
+    "id": "0a85a62f-c43a-5480-9654-b44575733f64",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "歯医者",
+    "reading": "はいしゃ",
+    "meaning_vi": "nha sĩ; phòng khám răng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bác sĩ hoặc phòng khám chuyên về răng.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来週、歯医者を予約しました。",
+        "reading_ja": "らいしゅう、はいしゃをよやくしました。",
+        "translation_vi": "Tuần sau tôi đã đặt lịch nha sĩ."
+      },
+      {
+        "sentence_ja": "歯医者で歯を見てもらいます。",
+        "reading_ja": "はいしゃではをみてもらいます。",
+        "translation_vi": "Tôi sẽ nhờ nha sĩ kiểm tra răng."
+      }
+    ]
+  },
+  {
+    "id": "95336a27-d1df-5017-a9de-6b31d7a62f21",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "交通費",
+    "reading": "こうつうひ",
+    "meaning_vi": "chi phí đi lại",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khoản tiền dùng cho việc di chuyển.",
+    "audio_ref": null,
+    "tags": [
+      "travel",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "会社が交通費を払います。",
+        "reading_ja": "かいしゃがこうつうひをはらいます。",
+        "translation_vi": "Công ty trả chi phí đi lại."
+      },
+      {
+        "sentence_ja": "交通費はいくらかかりましたか。",
+        "reading_ja": "こうつうひはいくらかかりましたか。",
+        "translation_vi": "Chi phí đi lại hết bao nhiêu vậy?"
+      }
+    ]
+  },
+  {
+    "id": "dc1f8591-fe50-5cda-8bbd-5d4ef2b3ff5a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "片道",
+    "reading": "かたみち",
+    "meaning_vi": "một chiều",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Một hướng đi, không bao gồm lượt về.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅まで片道三十分かかります。",
+        "reading_ja": "えきまでかたみちさんじゅっぷんかかります。",
+        "translation_vi": "Đi một chiều đến ga mất ba mươi phút."
+      },
+      {
+        "sentence_ja": "片道の切符を買いました。",
+        "reading_ja": "かたみちのきっぷをかいました。",
+        "translation_vi": "Tôi đã mua vé một chiều."
+      }
+    ]
+  },
+  {
+    "id": "61dcadb8-4f7b-590e-8782-e6162dd353ee",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "往復",
+    "reading": "おうふく",
+    "meaning_vi": "khứ hồi",
+    "part_of_speech": "danh từ・する",
+    "usage_context_vi": "Việc đi và trở về; vé hai chiều.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "東京まで往復の切符を買います。",
+        "reading_ja": "とうきょうまでおうふくのきっぷをかいます。",
+        "translation_vi": "Tôi sẽ mua vé khứ hồi đến Tokyo."
+      },
+      {
+        "sentence_ja": "往復でいくらですか。",
+        "reading_ja": "おうふくでいくらですか。",
+        "translation_vi": "Vé khứ hồi giá bao nhiêu?"
+      }
+    ]
+  },
+  {
+    "id": "a4119057-2286-5ed6-8d09-f07d12e49932",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "案内所",
+    "reading": "あんないじょ",
+    "meaning_vi": "quầy thông tin",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi cung cấp bản đồ và hướng dẫn cho khách.",
+    "audio_ref": null,
+    "tags": [
+      "travel",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅の案内所で地図をもらいました。",
+        "reading_ja": "えきのあんないじょでちずをもらいました。",
+        "translation_vi": "Tôi đã nhận bản đồ ở quầy thông tin của nhà ga."
+      },
+      {
+        "sentence_ja": "観光案内所はどこにありますか。",
+        "reading_ja": "かんこうあんないじょはどこにありますか。",
+        "translation_vi": "Quầy thông tin du lịch ở đâu vậy?"
+      }
+    ]
+  },
+  {
+    "id": "5c2822a6-b859-5e25-9a0a-9ba8e16931bd",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "改札",
+    "reading": "かいさつ",
+    "meaning_vi": "cổng soát vé",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực kiểm tra vé ở ga tàu.",
+    "audio_ref": null,
+    "tags": [
+      "travel",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "改札の前で友達を待ちます。",
+        "reading_ja": "かいさつのまえでともだちをまちます。",
+        "translation_vi": "Tôi sẽ đợi bạn trước cổng soát vé."
+      },
+      {
+        "sentence_ja": "切符を改札に入れてください。",
+        "reading_ja": "きっぷをかいさつにいれてください。",
+        "translation_vi": "Hãy cho vé vào cổng soát vé."
+      }
+    ]
   }
 ]
 
