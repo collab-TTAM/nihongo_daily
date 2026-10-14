@@ -503,3 +503,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   no validation/RLS trigger weakened. Exporter now prints disposable-fixture SQL
   diagnostics and exits safely without an artifact on failure; no connection URL
   is included in its failure message. Final-head native/Flutter checks must rerun.
+
+- CI 38495371143 observed all 36 native queue assertions and seven actual SQL
+  response exports passing, plus repo/AI gates. Flutter analyze found three
+  multiline if blocks without braces; fixed without relaxing lint. Its skipped
+  test/SQL-to-Dart/build steps are not yet counted; wait for final-head rerun.

@@ -51,8 +51,9 @@ final class ReviewQueueSnapshot {
       final serverWire = _text(raw['server_time']);
       final server = _queueInstant(serverWire);
       final rows = raw['items'];
-      if (rows is! List<Object?> || rows.length > limit)
+      if (rows is! List<Object?> || rows.length > limit) {
         throw const FormatException();
+      }
       final items = <ReviewQueueEntry>[];
       final keys = <String>{};
       DateTime? previousDue;

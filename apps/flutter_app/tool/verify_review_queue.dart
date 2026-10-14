@@ -43,12 +43,14 @@ final class InputTransport implements ReviewRpcTransport {
 }
 
 Future<void> main(List<String> args) async {
-  if (args.length != 2)
+  if (args.length != 2) {
     throw ArgumentError('Provide input and output JSON paths');
+  }
   final bundle =
       jsonDecode(File(args[0]).readAsStringSync()) as Map<String, dynamic>;
-  if (bundle['version'] != 'nd-review-queue-1')
+  if (bundle['version'] != 'nd-review-queue-1') {
     throw StateError('Wrong version');
+  }
   final outputs = <Map<String, Object?>>[];
   for (final raw in bundle['cases'] as List<dynamic>) {
     final c = raw as Map<String, dynamic>;
