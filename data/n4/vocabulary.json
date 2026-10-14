@@ -7348,6 +7348,238 @@
         "translation_vi": "Tổng cộng có hai mươi người tham gia."
       }
     ]
+  },
+  {
+    "id": "ed18ee94-9760-5649-a165-3461607d5831",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "注文",
+    "reading": "ちゅうもん",
+    "meaning_vi": "gọi món; đặt hàng",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Yêu cầu món ăn hoặc hàng hóa muốn mua.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "店員に料理を注文しました。",
+        "reading_ja": "てんいんにりょうりをちゅうもんしました。",
+        "translation_vi": "Tôi đã gọi món với nhân viên."
+      },
+      {
+        "sentence_ja": "電話で本を注文できます。",
+        "reading_ja": "でんわでほんをちゅうもんできます。",
+        "translation_vi": "Có thể đặt sách qua điện thoại."
+      }
+    ]
+  },
+  {
+    "id": "7b5d7e7b-8468-5ec0-b98d-2cc7cc053b6f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "お客さん",
+    "reading": "おきゃくさん",
+    "meaning_vi": "khách hàng; khách",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người đến mua hàng hoặc sử dụng dịch vụ.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "お客さんが店に入ってきました。",
+        "reading_ja": "おきゃくさんがみせにはいってきました。",
+        "translation_vi": "Một vị khách đã bước vào cửa hàng."
+      },
+      {
+        "sentence_ja": "お客さんに丁寧に説明します。",
+        "reading_ja": "おきゃくさんにていねいにせつめいします。",
+        "translation_vi": "Tôi giải thích cẩn thận cho khách hàng."
+      }
+    ]
+  },
+  {
+    "id": "b1dede1f-ebde-5056-bf5f-a10284a1f95e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "店長",
+    "reading": "てんちょう",
+    "meaning_vi": "quản lý cửa hàng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người quản lý một cửa hàng.",
+    "audio_ref": null,
+    "tags": [
+      "work",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "店長に休みの日を相談しました。",
+        "reading_ja": "てんちょうにやすみのひをそうだんしました。",
+        "translation_vi": "Tôi đã trao đổi với quản lý cửa hàng về ngày nghỉ."
+      },
+      {
+        "sentence_ja": "店長は毎朝店を開けます。",
+        "reading_ja": "てんちょうはまいあさみせをあけます。",
+        "translation_vi": "Quản lý cửa hàng mở cửa hàng mỗi sáng."
+      }
+    ]
+  },
+  {
+    "id": "8df43130-941c-5f5c-93d8-d4af7ac122b5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "売り場",
+    "reading": "うりば",
+    "meaning_vi": "khu bán hàng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực trưng bày và bán một loại hàng trong cửa hàng.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "靴の売り場は二階です。",
+        "reading_ja": "くつのうりばはにかいです。",
+        "translation_vi": "Khu bán giày ở tầng hai."
+      },
+      {
+        "sentence_ja": "売り場で店員にサイズを聞きました。",
+        "reading_ja": "うりばでてんいんにさいずをききました。",
+        "translation_vi": "Tôi đã hỏi nhân viên kích cỡ ở khu bán hàng."
+      }
+    ]
+  },
+  {
+    "id": "b82193cd-fc23-5ba5-a583-f4b35b449f00",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "品切れ",
+    "reading": "しなぎれ",
+    "meaning_vi": "hết hàng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tình trạng một sản phẩm không còn để bán.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "人気の商品は品切れでした。",
+        "reading_ja": "にんきのしょうひんはしなぎれでした。",
+        "translation_vi": "Sản phẩm được ưa chuộng đã hết hàng."
+      },
+      {
+        "sentence_ja": "品切れになる前に予約しました。",
+        "reading_ja": "しなぎれになるまえによやくしました。",
+        "translation_vi": "Tôi đã đặt trước trước khi hàng hết."
+      }
+    ]
+  },
+  {
+    "id": "187c1620-2f7f-5e21-be29-12e291f4b560",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "開店",
+    "reading": "かいてん",
+    "meaning_vi": "mở cửa hàng",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc bắt đầu mở cửa kinh doanh trong ngày.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "開店は朝十時です。",
+        "reading_ja": "かいてんはあさじゅうじです。",
+        "translation_vi": "Cửa hàng mở cửa lúc mười giờ sáng."
+      },
+      {
+        "sentence_ja": "開店したばかりの店へ行きました。",
+        "reading_ja": "かいてんしたばかりのみせへいきました。",
+        "translation_vi": "Tôi đã đến cửa hàng vừa mới mở."
+      }
+    ]
+  },
+  {
+    "id": "8923aa61-f1ae-5282-a8dd-10cdbd488a27",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "閉店",
+    "reading": "へいてん",
+    "meaning_vi": "đóng cửa hàng",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc kết thúc mở cửa kinh doanh trong ngày.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この店は午後九時に閉店します。",
+        "reading_ja": "このみせはごごくじにへいてんします。",
+        "translation_vi": "Cửa hàng này đóng cửa lúc chín giờ tối."
+      },
+      {
+        "sentence_ja": "閉店前に急いで買い物をしました。",
+        "reading_ja": "へいてんまえにいそいでかいものをしました。",
+        "translation_vi": "Tôi vội mua sắm trước khi cửa hàng đóng cửa."
+      }
+    ]
+  },
+  {
+    "id": "ecee3618-74e7-5f33-bd75-97e42ba58183",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "値札",
+    "reading": "ねふだ",
+    "meaning_vi": "nhãn giá",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tờ hoặc mảnh giấy ghi giá của sản phẩm.",
+    "audio_ref": null,
+    "tags": [
+      "shopping",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "値札を見てから、買うかどうか決めます。",
+        "reading_ja": "ねふだをみてから、かうかどうかきめます。",
+        "translation_vi": "Tôi xem nhãn giá rồi mới quyết định có mua hay không."
+      },
+      {
+        "sentence_ja": "この服には値札が付いていません。",
+        "reading_ja": "このふくにはねふだがついていません。",
+        "translation_vi": "Bộ quần áo này không có nhãn giá."
+      }
+    ]
   }
 ]
 
