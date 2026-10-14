@@ -5548,6 +5548,230 @@
         "translation_vi": "Tôi đã lưu thông tin liên lạc của công ty vào điện thoại."
       }
     ]
+  },
+  {
+    "id": "0317d3e2-1e2a-54fd-86ff-6a073571cf60",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "病院",
+    "reading": "びょういん",
+    "meaning_vi": "bệnh viện",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cơ sở khám và điều trị bệnh.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "具合が悪いので病院へ行きます。",
+        "reading_ja": "ぐあいがわるいのでびょういんへいきます。",
+        "translation_vi": "Vì thấy không khỏe nên tôi đi bệnh viện."
+      },
+      {
+        "sentence_ja": "病院で友達のお見舞いをしました。",
+        "reading_ja": "びょういんでともだちのおみまいをしました。",
+        "translation_vi": "Tôi đã đến bệnh viện thăm bạn."
+      }
+    ]
+  },
+  {
+    "id": "b7e4df9a-caa7-5009-8240-b6a0bc81e64f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "医者",
+    "reading": "いしゃ",
+    "meaning_vi": "bác sĩ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người khám và điều trị bệnh cho bệnh nhân.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "医者に薬の飲み方を聞きました。",
+        "reading_ja": "いしゃにくすりののみかたをききました。",
+        "translation_vi": "Tôi đã hỏi bác sĩ cách uống thuốc."
+      },
+      {
+        "sentence_ja": "医者はよく休むように言いました。",
+        "reading_ja": "いしゃはよくやすむようにいいました。",
+        "translation_vi": "Bác sĩ đã dặn tôi nghỉ ngơi đầy đủ."
+      }
+    ]
+  },
+  {
+    "id": "83e60632-cb0a-51a0-b73a-819d998cb73e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "患者",
+    "reading": "かんじゃ",
+    "meaning_vi": "bệnh nhân",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người đang được khám hoặc điều trị.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "患者は静かに順番を待っています。",
+        "reading_ja": "かんじゃはしずかにじゅんばんをまっています。",
+        "translation_vi": "Bệnh nhân đang yên lặng chờ đến lượt."
+      },
+      {
+        "sentence_ja": "看護師が患者を案内しました。",
+        "reading_ja": "かんごしがかんじゃをあんないしました。",
+        "translation_vi": "Y tá đã hướng dẫn bệnh nhân."
+      }
+    ]
+  },
+  {
+    "id": "1c1a554e-6332-53b6-b6b2-7b4c173f3896",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "症状",
+    "reading": "しょうじょう",
+    "meaning_vi": "triệu chứng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Biểu hiện của một bệnh hoặc tình trạng sức khỏe.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "症状を医者に詳しく話しました。",
+        "reading_ja": "しょうじょうをいしゃにくわしくはなしました。",
+        "translation_vi": "Tôi đã nói chi tiết triệu chứng với bác sĩ."
+      },
+      {
+        "sentence_ja": "症状が少しよくなりました。",
+        "reading_ja": "しょうじょうがすこしよくなりました。",
+        "translation_vi": "Triệu chứng đã đỡ hơn một chút."
+      }
+    ]
+  },
+  {
+    "id": "85b1a88c-05bb-5024-aad1-f4211dd07dac",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "診察",
+    "reading": "しんさつ",
+    "meaning_vi": "khám bệnh",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc bác sĩ kiểm tra tình trạng sức khỏe.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "午前中に診察を受けました。",
+        "reading_ja": "ごぜんちゅうにしんさつをうけました。",
+        "translation_vi": "Tôi đã được khám bệnh vào buổi sáng."
+      },
+      {
+        "sentence_ja": "診察の前に名前を書いてください。",
+        "reading_ja": "しんさつのまえになまえをかいてください。",
+        "translation_vi": "Hãy viết tên trước khi khám."
+      }
+    ]
+  },
+  {
+    "id": "051d30a2-a6e9-5346-8032-ee40a511a346",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "治療",
+    "reading": "ちりょう",
+    "meaning_vi": "điều trị",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc chữa bệnh hoặc phục hồi sức khỏe.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "病院で治療を続けています。",
+        "reading_ja": "びょういんでちりょうをつづけています。",
+        "translation_vi": "Tôi đang tiếp tục điều trị tại bệnh viện."
+      },
+      {
+        "sentence_ja": "治療には時間がかかります。",
+        "reading_ja": "ちりょうにはじかんがかかります。",
+        "translation_vi": "Điều trị cần có thời gian."
+      }
+    ]
+  },
+  {
+    "id": "3521ee61-3388-5c79-bf7a-af39dace0112",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "熱心",
+    "reading": "ねっしん",
+    "meaning_vi": "nhiệt tình; chăm chỉ",
+    "part_of_speech": "tính từ な",
+    "usage_context_vi": "Tập trung và tích cực làm một việc.",
+    "audio_ref": null,
+    "tags": [
+      "people"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "学生たちは熱心に勉強しています。",
+        "reading_ja": "がくせいたちはねっしんにべんきょうしています。",
+        "translation_vi": "Các học sinh đang chăm chỉ học tập."
+      },
+      {
+        "sentence_ja": "先生は熱心な人です。",
+        "reading_ja": "せんせいはねっしんなひとです。",
+        "translation_vi": "Giáo viên là người nhiệt tình."
+      }
+    ]
+  },
+  {
+    "id": "a0bd6b5c-0ea5-52bf-ac18-ea10749b6b4c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "お見舞い",
+    "reading": "おみまい",
+    "meaning_vi": "thăm người bệnh",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc đến thăm người đang nằm viện hoặc bị ốm.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "週末に祖母のお見舞いに行きます。",
+        "reading_ja": "しゅうまつにそぼのおみまいにいきます。",
+        "translation_vi": "Cuối tuần tôi đi thăm bà."
+      },
+      {
+        "sentence_ja": "お見舞いに花を持って行きました。",
+        "reading_ja": "おみまいにはなをもっていきました。",
+        "translation_vi": "Tôi đã mang hoa đi thăm người bệnh."
+      }
+    ]
   }
 ]
 
