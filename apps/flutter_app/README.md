@@ -1,5 +1,9 @@
 # Nihongo Daily Flutter shell
 
+Opt-in native write-before-dispatch/restart library:
+../../docs/DURABLE_REVIEW_JOURNAL.md. It does not activate offline mode or wire
+recovery into the shipped controller; default runtime remains unconfigured.
+
 This is an explicitly labeled UI preview, not Personal Alpha. No login, real
 curriculum study flow, integrated SRS review, real grading, progress persistence, default network activation or live
 AI/voice is implemented. N5/N4 selections and theme preferences last only for the

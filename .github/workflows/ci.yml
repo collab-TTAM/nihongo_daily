@@ -90,6 +90,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify native durable review restart
+        run: dart run tool/verify_durable_review.dart
       - name: Verify captured-connection lifecycle with explicit fixture dispatch
         run: dart run tool/verify_review_connection.dart
       - name: Download same-run native SQL queue projections
@@ -153,6 +155,8 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - run: flutter build windows --release
+      - name: Verify native durable review restart
+        run: dart run tool/verify_durable_review.dart
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-windows-preview

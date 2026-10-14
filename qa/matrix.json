@@ -19,6 +19,7 @@
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify native durable review restart",
       "Verify captured-connection lifecycle with explicit fixture dispatch",
       "Download same-run native SQL queue projections",
       "Decode native SQL queue projections with Dart adapter",
@@ -37,6 +38,7 @@
     "windows": [
       "Run flutter pub get --enforce-lockfile",
       "Run flutter build windows --release",
+      "Verify native durable review restart",
       "Run actions/upload-artifact@v4"
     ],
     "ai-boundary": [
@@ -49,6 +51,22 @@
     ]
   },
   "cases": [
+    {
+      "id": "native-durable-review",
+      "status": "automated-baseline",
+      "scope": "Real native disk/subprocess restart, single-isolate/process writer lease, immutable account-scoped pending and original receipt, write-before-dispatch, corrupt-tail and late-account rejection",
+      "ci_job": "flutter",
+      "anchors": [{
+        "path": "apps/flutter_app/test/features/srs/durable_review_repository_test.dart",
+        "contains": "receipt write failure retains exact pending event for manual replay"
+      }, {
+        "path": "apps/flutter_app/tool/verify_durable_review.dart",
+        "contains": "process restart lost pending"
+      }],
+      "issues": [22, 15, 20],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/durable_review_repository_test.dart && dart run tool/verify_durable_review.dart; verifier required on Linux and Windows CI",
+      "limitation": "Native opt-in library with real disposable files/processes but TEST ONLY Auth/RPC. Default runtime remains null; controller/UI restore, secure session storage, web journal, compaction, power-loss/multi-isolate and hosted/two-client sync not certified."
+    },
     {
       "id": "supabase-sdk-binding",
       "status": "automated-baseline",

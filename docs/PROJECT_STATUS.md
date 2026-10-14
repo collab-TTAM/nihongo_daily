@@ -619,3 +619,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   supported service configuration; never request secrets in chat. Independent
   source/tests can continue without configuration. No RLS, provider, production,
   data collection or paid-cost changes.
+
+## Native durable-review resume — 2026-10-14 UTC
+
+- Resume unchanged draft #37 at 3f9fc78a with one worker after the released SDK
+  handoff. Add opt-in native bounded append journal and DurableReviewRepository:
+  flush pending before dispatch, immutable original-receipt persistence/replay,
+  strict exact timestamp restore, explicit manual pending recovery under fresh
+  same-owner Auth and late lifecycle rejection. Default runtime remains null.
+- Actual raw-Dart subprocess/disk verifier passed locally: exit without close,
+  reopen/exact pending recovery, reject second-process writer, original manual
+  replay/durable receipt and interrupted tail versus complete corrupt record.
+  Auth/RPC responses are TEST ONLY; no hosted/two-device learner proof.
+  Pure source/tool analyzer and formatting passed. Local QA inventory/17 QA
+  regressions passed; full Flutter lint/test/web and Windows require current-head
+  CI. Nineteen Flutter cases authored, not yet claimed passed locally.
+- Add required real-disk subprocess verifier to Linux Flutter and Windows CI,
+  retaining all existing gates. QA 35 groups, all 14 integration releases remain
+  pending. No dependencies, frozen RPC, RLS, Auth strategy or deployment change.
+- Limits/risks: native-only, single owner isolate, 1 MiB/512 retained events,
+  fail-closed capacity/corruption, no compaction/encryption or hardware power-loss
+  certification. This is an opt-in storage/repository library; no automatic send,
+  token storage, runtime installation or UI restart flow is implemented.
+  Separate architecture/security impact is recorded in DURABLE_REVIEW_JOURNAL.
+- Keep #37 draft/#22/#15 open. Next: controller reconciliation/storage-error UI
+  that recovers pending before allowing new events, browser transactional store,
+  #20 configured login/profile/secure session restoration, bounded retention
+  and real non-production missing/expired JWT/two-client SRS acceptance.
+

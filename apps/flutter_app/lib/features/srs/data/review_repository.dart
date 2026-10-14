@@ -226,8 +226,66 @@ DateTime parseSrsWireInstant(String value) => _timestamp(value);
 final class PreparedReview {
   PreparedReview._(this.session, SrsReview review)
     : request = Map<String, Object>.unmodifiable(review.toJson());
+
+  /// Restore only under a fresh, currently authenticated session for the same
+  /// local owner. This validates payload shape; it never authenticates its owner.
+  PreparedReview.restore(this.session, Object? stored)
+    : request = decodeStoredReviewRequest(stored);
   final ReviewSession session;
   final Map<String, Object> request;
+}
+
+/// Strict immutable seven-field restore boundary, retaining the exact timestamp
+/// string rather than re-encoding a microsecond DateTime projection on retry.
+Map<String, Object> decodeStoredReviewRequest(Object? stored) {
+  if (stored is! Map<String, Object?>) throw const FormatException();
+  _keys(stored, const {
+    'client_event_id',
+    'item_type',
+    'item_id',
+    'rating',
+    'is_correct',
+    'response_ms',
+    'occurred_at',
+  });
+  final event = stored['client_event_id'];
+  final item = stored['item_id'];
+  final rating = stored['rating'];
+  final correct = stored['is_correct'];
+  final duration = stored['response_ms'];
+  final time = stored['occurred_at'];
+  if (event is! String ||
+      item is! String ||
+      rating is! int ||
+      correct is! bool ||
+      duration is! int ||
+      time is! String) {
+    throw const FormatException();
+  }
+  final type = LearningItemType.values.firstWhere(
+    (value) => value.wireName == stored['item_type'],
+  );
+  final validated = SrsReview(
+    clientEventId: event,
+    itemType: type,
+    itemId: item,
+    rating: ReviewRating.fromWire(rating),
+    isCorrect: correct,
+    responseMs: duration,
+    occurredAt: parseSrsWireInstant(time),
+  );
+  if (event != validated.clientEventId || item != validated.itemId) {
+    throw const FormatException();
+  }
+  return Map<String, Object>.unmodifiable({
+    'client_event_id': event,
+    'item_type': type.wireName,
+    'item_id': item,
+    'rating': rating,
+    'is_correct': correct,
+    'response_ms': duration,
+    'occurred_at': time,
+  });
 }
 
 abstract interface class ReviewRepository {

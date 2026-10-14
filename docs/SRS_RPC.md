@@ -1,5 +1,10 @@
 # Local atomic review transaction — Issue #22
 
+The opt-in native write-before-dispatch journal and manual restart repository
+are documented in DURABLE_REVIEW_JOURNAL.md. They preserve the seven-field RPC
+request and historical original response; controller recovery and hosted
+Auth/sync acceptance remain pending.
+
 See SUPABASE_REVIEW_BINDING.md for concrete opt-in SDK Auth/RPC binding. Default
 app activation, profile/storage/durable queue and live acceptance remain missing;
 earlier readiness descriptions below are historical boundaries, not activation.
