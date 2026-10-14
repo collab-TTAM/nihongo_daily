@@ -427,3 +427,34 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   analyze found one missing if block and one untyped empty test list. Both were
   fixed without relaxing lint/tests; all final-head checks must rerun. Flutter
   tests/builds skipped after failed analysis are not counted as success.
+
+## Sequential resume — Issue #22 SRS screen readiness, 2026-10-13 23:55 UTC
+
+- Fresh main 78a44faf; only open PR is existing draft #37 at b0375f67. Prior worker
+  released. All five jobs at CI 38483096635 succeeded for the typed repository,
+  including 112 Flutter tests/web/Windows and native SQL/RLS/parity/races. This is
+  prior-head evidence, not evidence for this new UI increment.
+- SDK/Auth/real due queue are not configured. Continue independent application/UI
+  work on the same branch, not a new issue/PR: pure SRS controller, typed queue
+  projection, Riverpod lifecycle binding and /srs load/reveal/rate/save/retry flow.
+  Default runtime is null; no fake due content, account, confirmation or progress.
+- One immutable prepared event; controls lock during save; uncertain retry keeps
+  original rating/ID/time/duration. No reload discards an uncertain event; explicit
+  definitive conflict/rejection permits reload. Only validated receipt advances
+  local acknowledged count. No Daily Plan/mastery/server-state overwrite.
+- Session callbacks clear old visible curriculum/receipt and invalidate asynchronous
+  replies by generation; route navigation retains in-memory pending state, not
+  app restart. Closed lifecycle stream disables runtime. No credentials or disk
+  storage added. Real SDK/Auth/cache/queue/reconciliation are #20/#15/#22 work.
+- Local raw-Dart controller/repository verifier passed 26 TEST ONLY fixture pairs,
+  reveal-before-rating, uncertain immutable retry and session-change suppression;
+  emitted request/response schema check passed. Pure source/tool analysis passed;
+  40 Python and 17 QA tests passed before final CI/documentation changes.
+- Flutter dependency bootstrap is unavailable locally; full format/analyze/unit/
+  widget/web/Windows and retained database/AI gates must be observed in current-head
+  CI. New tests include accessible 320/375px UI at 200% text and controller failure/
+  duplicate/disposal/deadline bounds. 30 QA groups, all 14 integration gates pending.
+- No dependency/schema/Auth strategy/RLS/deployment/cost/data collection change.
+  Review diff separately; resume PR #37 CI first. Keep #22 open/PR draft; next
+  increment is concrete SDK/Auth/queue binding and durable event integration with
+  non-production evidence. Independent work continues; no secrets requested.

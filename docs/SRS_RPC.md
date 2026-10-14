@@ -2,7 +2,7 @@
 
 This is an additive **local SQL and typed Dart repository increment**, not a deployed
 Supabase endpoint or an integrated Flutter review feature. Issue #22 remains open
-for SDK/Auth binding, UI and real JWT/PostgREST acceptance. No production migration,
+for SDK/Auth/queue binding and real JWT/PostgREST/UI acceptance. No production migration,
 Auth strategy change, new provider, paid request or secret is included.
 
 ## Wire and identity boundary
@@ -117,7 +117,8 @@ Primary design references checked 2026-10-13:
 
 `apps/flutter_app/lib/features/srs/data/review_repository.dart` adds ReviewRepository
 and RpcReviewRepository with injected ReviewAuth/ReviewRpcTransport ports. It is
-not connected to the router or a real SDK. The transport must use the captured
+connected to the new study controller via injected runtime ports, not a real SDK.
+The default runtime is null and does not call it. The transport must use the captured
 authenticated session/client and recheck before dispatch; it must never select a
 different account's current credentials implicitly. ReviewSession is a local
 identity/lifecycle hint, not a JWT validator. #20 retains real token verification,
@@ -164,3 +165,58 @@ Primary Dart references checked 2026-10-13:
   explicit calendar validation is required before parsing)
 - https://api.flutter.dev/flutter/dart-async/Future/timeout.html (source may finish
   after timeout; timeout does not prove server rollback)
+
+## SRS study controller/screen increment
+
+The `/srs` route now uses SrsStudyScreen, a Riverpod notifier and the pure Dart
+SrsStudyController. `srsStudyRuntimeProvider` is **null by default**: the default
+app displays missing Supabase configuration and has no queue/rating/fake success.
+Tests alone inject fixture Auth, due queue and RPC replies. This is UI readiness,
+not a hosted/persisted learner flow or a Supabase SDK/Auth implementation.
+
+SrsStudyItem is an application-only projection of due curriculum content, not a
+new server endpoint or learning state. Future SrsStudyQueue must read an
+authenticated owner's due queue/content for the captured session/selected level.
+The controller rejects wrong-level, duplicate and >100-item results. #12/#20/#22
+still need real content/query and Auth bindings; no new wire contract is claimed.
+
+Load is bounded and generation/session-checked. Prompt is shown before answer;
+only after revealing can the user select AGAIN/HARD/GOOD/EASY. Event ID is random
+UUID v4, occurred_at is captured once at the first rating, and response_ms uses
+bounded monotonic elapsed time. Clock/ID/ticks are injectable only for tests.
+Save locks controls immediately: repeated taps or reload cannot send another
+event. Only a validated ReviewSuccess increments the local acknowledged count
+and advances the snapshot. This is not Daily Plan time, mastery or persisted
+progress; no derived schedule/card update or local scheduler is invoked.
+
+Unknown network/timeout outcomes retain the same prepared event and original
+rating/time/ID; manual retry cannot regenerate them. Unknown/malformed/internal
+responses never become success or permit discarding an uncertain event. Only
+explicit definitive rejection (validation/not-found/forbidden/conflict) permits
+an explicit rejected-event reload. Late post-timeout results are ignored. Real
+receipt reconciliation for nonretryable uncertainty remains #15/#22 work.
+
+Notifier is not autoDispose, so pending retries survive navigation within the
+same process. No disk persistence, restart recovery or multi-device evidence is
+claimed. Session changes must be emitted synchronously by the future Auth binding:
+visible old-user item/answer/receipt and pending references are cleared, and a
+generation guard rejects old in-flight load/save results even on A/B/A. A closed
+lifecycle stream disables the runtime. Actual token/storage isolation and durable
+per-account pending records remain #20/#15; client hints never authorize writes.
+
+Widget tests cover the unconfigured default, reveal/rating/acknowledgment, loading/
+empty/safe failures, conflict, route-retained retry, session clearing and 320/375px
+at 200% text. Controller tests cover deadline, duplicates, exact retry payloads,
+late session/disposal replies, malformed data and UUID/timing bounds. The raw-Dart
+tool `verify_srs_study.dart` passes 26 original server-response fixtures through
+actual controller/repository encoding with reveal-before-rating, uncertain retry
+and old-session suppression, then schema-validates emitted wire pairs in CI.
+These fixture responses are **TEST ONLY**, not SQL-to-UI or hosted evidence.
+
+Next: concrete Supabase SDK/Auth/due queue integration, durable event recovery and
+real missing/expired JWT/PostgREST and non-production SRS learner evidence. Keep
+PR #37 draft and #22/#20/#15 open; Personal Alpha release gates remain pending.
+
+Riverpod 2 lifecycle references checked 2026-10-14:
+- https://docs-v2.riverpod.dev/docs/concepts/provider_lifecycles
+- https://docs-v2.riverpod.dev/docs/concepts/modifiers/auto_dispose

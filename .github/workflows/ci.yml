@@ -104,6 +104,11 @@ jobs:
       - name: Validate typed review adapter wire encodings
         working-directory: .
         run: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json
+      - name: Verify SRS study controller using explicit fixture ports
+        run: dart run tool/verify_srs_study.dart build/srs-study-output.json
+      - name: Validate SRS study controller wire encodings
+        working-directory: .
+        run: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-study-output.json
       - name: Verify actual Kanji capture wire payloads
         run: dart run tool/verify_kanji.dart build/kanji-wire-output.json
       - name: Validate actual Dart Kanji output against frozen contracts

@@ -47,7 +47,10 @@ claimed by this shell.
   preview repository does not implement or change the get_daily_plan contract.
 - `features/settings/`: process-local preview preferences; no Supabase writes.
 - `features/study/`: discovery of planned modules.
-- `features/srs/`: pure versioned scheduler; not integrated into review UI.
+- `features/srs/`: pure versioned scheduler, typed RPC repository and /srs
+  application controller/screen. The route is unconfigured by default; no real
+  Auth/queue/RPC binding or durable queue is present. Fixture UI flows exist only
+  in tests; see ../../docs/SRS_RPC.md for the integration limits.
 - `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
 
@@ -67,3 +70,9 @@ multi-device sync, AI availability or curriculum coverage.
 
 Kanji capture prototype: `/kanji` supports local square drawing/undo/clear. It is
 explicitly not real grading or persisted study; see `../../docs/KANJI_CAPTURE.md`.
+
+SRS `/srs` has reveal/rating/save/retry/conflict/load/error/empty controls behind
+injected runtime ports. There is no default demo success or fake due queue.
+The default page states missing Supabase integration and cannot record progress.
+An in-memory pending event survives route navigation, not process restart;
+server-authenticated queue/Auth transport and durable recovery remain #20/#22/#15.

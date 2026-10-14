@@ -22,6 +22,8 @@
       "Validate actual Dart SRS output against frozen wire contracts",
       "Verify typed review adapter using explicit fixture ports",
       "Validate typed review adapter wire encodings",
+      "Verify SRS study controller using explicit fixture ports",
+      "Validate SRS study controller wire encodings",
       "Verify actual Kanji capture wire payloads",
       "Validate actual Dart Kanji output against frozen contracts",
       "Run flutter build web --release",
@@ -164,6 +166,29 @@
       ],
       "reproduce": "From apps/flutter_app: flutter test test/features/srs/review_repository_test.dart; dart run tool/verify_review_adapter.dart build/review-adapter-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json",
       "limitation": "Injected Auth/transport and server responses are TEST ONLY; no concrete Supabase SDK, verified JWT/PostgREST, UI, SQL-to-Dart transaction or durable queue integration."
+    },
+    {
+      "id": "srs-study-ui",
+      "status": "automated-baseline",
+      "scope": "Unconfigured default, reveal/rating, receipt-only advancement, uncertain immutable retry, route retention and session clearing",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_study_widget_test.dart",
+          "contains": "default SRS route is unconfigured and cannot fabricate a saved review"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_study_controller_test.dart",
+          "contains": "uncertain network retry retains exact timestamp rating duration and ID"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_srs_study.dart",
+          "contains": "TEST ONLY queue/Auth/server-response fixtures"
+        }
+      ],
+      "issues": [22, 20, 15, 18],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/srs_study_controller_test.dart test/features/srs/srs_study_widget_test.dart; dart run tool/verify_srs_study.dart build/srs-study-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-study-output.json",
+      "limitation": "Fixture queue/Auth/RPC replies are TEST ONLY. No real SDK/due queue/JWT/PostgREST, persisted learner journey, disk queue, restart or multi-device evidence. Default app runtime remains null."
     },
     {
       "id": "ai-sql-receipts",
@@ -349,7 +374,7 @@
         18
       ],
       "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
-      "limitation": "Local atomic SQL RPC and typed Dart repository have executable tests; real JWT/PostgREST, concrete SDK/Auth binding, integrated SRS UI and durable retries remain pending."
+      "limitation": "Local atomic SQL RPC, typed Dart repository and SRS controller/screen have executable fixture tests; real JWT/PostgREST, concrete SDK/Auth/due queue, persisted learner UI journey and durable retries remain pending."
     },
     {
       "id": "daily-plan",

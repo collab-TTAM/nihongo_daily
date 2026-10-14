@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/kanji/presentation/kanji_capture_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
+import '../features/srs/presentation/srs_study_screen.dart';
 import '../features/study/presentation/study_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
@@ -16,10 +17,6 @@ const previewRoutes = <String, ({String title, String description})>{
   '/grammar': (
     title: 'Ngữ pháp',
     description: 'Mẫu câu, cách dùng và ví dụ tiếng Nhật.',
-  ),
-  '/srs': (
-    title: 'Ôn tập SRS',
-    description: 'Ôn đúng thời điểm để ghi nhớ lâu hơn.',
   ),
   '/quiz': (
     title: 'Kiểm tra nhanh',
@@ -68,6 +65,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/kanji',
             builder: (context, state) => const KanjiCaptureScreen(),
           ),
+          GoRoute(path: '/srs', builder: (context, state) => const SrsStudyScreen()),
           for (final entry in previewRoutes.entries)
             GoRoute(
               path: entry.key,
