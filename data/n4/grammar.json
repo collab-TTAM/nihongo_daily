@@ -2658,6 +2658,96 @@
         "translation_vi": "Trong lúc kiểm tra, hãy dừng máy."
       }
     ]
+  },
+  {
+    "id": "edfb0be1-c873-5ade-af40-8325b5fd7833",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nがします",
+    "pattern": "Nがします",
+    "meaning_vi": "có mùi/vị/âm thanh là N",
+    "explanation_vi": "Dùng để mô tả cảm giác được nhận biết bằng giác quan.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ cảm giác trước がします."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "台所からいい匂いがします。",
+        "reading_ja": "だいどころからいいにおいがします。",
+        "translation_vi": "Từ bếp có mùi thơm."
+      },
+      {
+        "sentence_ja": "この料理は辛い味がします。",
+        "reading_ja": "このりょうりはからいあじがします。",
+        "translation_vi": "Món ăn này có vị cay."
+      }
+    ]
+  },
+  {
+    "id": "9f6b9807-0e2a-5170-8c62-ae47d54aeaec",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのが上手です",
+    "pattern": "Vるのが上手です",
+    "meaning_vi": "giỏi V",
+    "explanation_vi": "Dùng để nói ai đó giỏi thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Danh từ hóa động từ bằng の rồi dùng với 上手です."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "母は魚を焼くのが上手です。",
+        "reading_ja": "はははさかなをやくのがじょうずです。",
+        "translation_vi": "Mẹ tôi giỏi nướng cá."
+      },
+      {
+        "sentence_ja": "妹は料理を作るのが上手になりました。",
+        "reading_ja": "いもうとはりょうりをつくるのがじょうずになりました。",
+        "translation_vi": "Em gái tôi đã trở nên giỏi nấu ăn."
+      }
+    ]
+  },
+  {
+    "id": "3c9475d2-4f35-5b69-8bcd-c901c549d2da",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもいいですか",
+    "pattern": "Vてもいいですか",
+    "meaning_vi": "tôi có thể V không?",
+    "explanation_vi": "Dùng để hỏi xin phép thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Đặt động từ thể て trước もいいですか."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この塩を使ってもいいですか。",
+        "reading_ja": "このしおをつかってもいいですか。",
+        "translation_vi": "Tôi dùng muối này được không?"
+      },
+      {
+        "sentence_ja": "冷蔵庫を開けてもいいですか。",
+        "reading_ja": "れいぞうこをあけてもいいですか。",
+        "translation_vi": "Tôi mở tủ lạnh được không?"
+      }
+    ]
   }
 ]
 
