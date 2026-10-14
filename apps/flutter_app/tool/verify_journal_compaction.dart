@@ -183,6 +183,13 @@ Future<void> verifyCompaction(String scenario) async {
       final size = await data.length();
       // A stale interrupted sibling is never authoritative or promoted.
       await File('${data.path}.compact').writeAsString('{partial', flush: true);
+      await journal.close();
+      journal = await NativeReviewJournal.open(directory);
+      check(
+        fingerprint(await journal.list(owner)) == beforeA &&
+            fingerprint(await journal.list(other)) == beforeB,
+        'bootstrap promoted interrupted sibling',
+      );
       final reclaimed = await journal.compact();
       check(
         reclaimed > 0 && size - await data.length() == reclaimed,
@@ -247,7 +254,17 @@ const scenarios = [
 
 Future<void> main(List<String> args) async {
   if (args.length == 2) {
-    final journal = await NativeReviewJournal.open(Directory(args[1]));
+    NativeReviewJournal journal;
+    try {
+      journal = await NativeReviewJournal.open(Directory(args[1]));
+    } on ReviewStorageFailure {
+      if (args[0] == 'lock-probe') exit(0);
+      rethrow;
+    }
+    if (args[0] == 'lock-probe') {
+      await journal.close();
+      exit(2);
+    }
     await journal.compact();
     exit(0); // Flush/rename completed, but no graceful close.
   }
@@ -300,6 +317,14 @@ Future<void> main(List<String> args) async {
       'process exit after compact lost history',
     );
     await journal.stage(owner, request(3));
+    final blocked = await Process.run(Platform.resolvedExecutable, [
+      if (Platform.packageConfig != null)
+        '--packages=${Platform.packageConfig}',
+      Platform.script.toFilePath(),
+      'lock-probe',
+      directory.path,
+    ]);
+    check(blocked.exitCode == 0, 'replacement lost independent writer lease');
   } finally {
     await journal?.close();
     await directory.delete(recursive: true);
