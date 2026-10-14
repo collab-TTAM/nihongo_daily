@@ -1377,6 +1377,41 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "8712c199-0394-5d94-89a7-83200deea927",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "成",
+    "meaning_vi": "thành; đạt được",
+    "onyomi": [
+      "セイ",
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "な"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "182665cb-6d99-5764-a003-be01ff6b91da",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "洪",
+    "meaning_vi": "lũ lụt",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
