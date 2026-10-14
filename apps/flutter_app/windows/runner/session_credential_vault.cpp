@@ -46,6 +46,8 @@ struct CredentialRelease {
 };
 }  // namespace
 
+bool IsCredentialTargetValid(const std::string& target) { return ValidTarget(target); }
+
 VaultRead ReadRefreshCredential(const std::string& target) {
   if (!ValidTarget(target)) return {VaultStatus::invalid_input, {}};
   const std::wstring name(target.begin(), target.end());

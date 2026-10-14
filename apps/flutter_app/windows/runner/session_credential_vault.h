@@ -12,6 +12,7 @@ struct VaultRead {
 
 // No Flutter/SDK dependency; the same implementation is exercised by CI's
 // actual Windows credential/process probe. Never print arguments or OS errors.
+bool IsCredentialTargetValid(const std::string& target);
 VaultRead ReadRefreshCredential(const std::string& target);
 VaultStatus WriteRefreshCredential(const std::string& target,
                                   const std::string& token);

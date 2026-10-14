@@ -1312,3 +1312,27 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   learner A/B/expiry/restart/two-client acceptance and evidence-linked remaining
   product flows. Keep #37 draft/#20/#22/#15 open. Default main/provider unchanged;
   Pro #38/N4 untouched; no dependencies/schema/API/Auth provider/deployment changes.
+
+## Explicit Windows staging bootstrap — 2026-10-14 UTC
+
+- Resumed actual #37 head cfa60116, one core writer; Pro #38/N4 not changed.
+  #20 still requires configured non-production Supabase/actual A/B evidence,
+  and neither issue/repo supplied those values. Continue independent assembly.
+- Ordinary main now selects preview by default or explicit validated staging
+  build configuration. Configured Windows opens a project-scoped LocalAppData
+  journal/process lease before the SDK/token writer, owns runtime + journal and
+  installs existing startup/notice/refresh/account/profile/study paths.
+  Invalid/missing/unsupported selected staging fails before resources/without
+  silent preview or other-project fallback. Public key/URL only; no secrets/logs.
+- Added read-only native known-folder/SHA256 path channel, shared unchanged target
+  validation and strict Dart path/platform checks. Native root failures have fixed
+  errors; no cwd/temp/network fallback. Nine Dart tests/three process phases plus
+  configured TEST ONLY Windows main build added; normal preview rebuilt before
+  upload. Local format/49 contracts/17 QA passed; full new-source CI pending.
+- Separate review: COM already initialized by runner, known-folder memory/provider
+  handles released, Unicode conversion checked; no filesystem create/delete in
+  native resolver. GUID-scoped disposable probes, caller journal ownership
+  transferred explicitly, no user-history deletion. No dependency/provider/
+  Auth strategy/RLS/schema/API/production deployment or N4 changes.
+- Scope: docs/STAGING_BOOTSTRAP.md. Hosted login/expiry/two-client/GUI acceptance
+  and all 14 live release groups remain pending. Keep #37/#20/#22/#15 open.

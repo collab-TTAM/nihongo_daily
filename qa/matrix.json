@@ -51,6 +51,7 @@
       "Run flutter pub get --enforce-lockfile",
       "Build TEST ONLY Dart-to-Windows vault bridge",
       "Verify actual Dart-to-Windows vault bridge across processes",
+      "Build configured staging Windows entrypoint with TEST ONLY settings",
       "Run flutter build windows --release",
       "Verify actual Windows credential store across processes",
       "Verify native receipt cache retention",

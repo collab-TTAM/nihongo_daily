@@ -19,6 +19,10 @@ function Invoke-Bridge([string] $phase) {
 }
 
 try {
+    Invoke-Bridge 'directory-write'
+    Invoke-Bridge 'directory-reopen'
+    Invoke-Bridge 'directory-clear'
+    Write-Output 'Windows project app-data and staging factory verification passed'
     Invoke-Bridge 'write'
     # Each call starts a fresh Flutter runner, Dart isolate and native channel.
     Invoke-Bridge 'reopen'

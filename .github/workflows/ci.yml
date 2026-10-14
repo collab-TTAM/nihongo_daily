@@ -185,7 +185,9 @@ jobs:
       - name: Verify actual Dart-to-Windows vault bridge across processes
         shell: pwsh
         run: ./tool/verify_windows_vault_bridge.ps1
-      # Rebuild the normal entrypoint; never publish the synthetic probe.
+      - name: Build configured staging Windows entrypoint with TEST ONLY settings
+        run: flutter build windows --release --dart-define=ND_MODE=staging --dart-define=ND_SUPABASE_URL=https://example.supabase.invalid --dart-define=ND_SUPABASE_PUBLIC_KEY=sb_publishable_TEST_ONLY_1234567890
+      # Rebuild preview without defines; never publish synthetic/staging settings.
       - run: flutter build windows --release
       - name: Verify actual Windows credential store across processes
         shell: pwsh

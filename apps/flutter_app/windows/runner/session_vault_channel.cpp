@@ -2,6 +2,7 @@
 
 #include <flutter/standard_method_codec.h>
 #include "session_credential_vault.h"
+#include "review_data_directory.h"
 
 namespace {
 void Fail(flutter::MethodResult<flutter::EncodableValue>* result) {
@@ -19,7 +20,7 @@ RegisterSessionVaultChannel(flutter::BinaryMessenger* messenger) {
       const flutter::MethodCall<flutter::EncodableValue>& call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
     const auto& method = call.method_name();
-    if (method != "read" && method != "write" && method != "clear") {
+    if (method != "read" && method != "write" && method != "clear" && method != "reviewDirectory") {
       result->NotImplemented();
       return;
     }
@@ -38,7 +39,14 @@ RegisterSessionVaultChannel(flutter::BinaryMessenger* messenger) {
       Fail(result.get());
       return;
     }
-    if (method == "read") {
+    if (method == "reviewDirectory") {
+      std::string path;
+      if (ResolveReviewDataDirectory(*target, &path)) {
+        result->Success(flutter::EncodableValue(path));
+      } else {
+        Fail(result.get());
+      }
+    } else if (method == "read") {
       const auto read = nihongo::ReadRefreshCredential(*target);
       if (read.status == nihongo::VaultStatus::not_found) {
         result->Success(flutter::EncodableValue());
