@@ -720,5 +720,46 @@
     "stroke_count": 16,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "5dea7c2a-a07e-5cbf-9d68-c0262ef7c33c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "都",
+    "meaning_vi": "đô thị; thủ đô",
+    "onyomi": [
+      "ト",
+      "ツ"
+    ],
+    "kunyomi": [
+      "みやこ"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "0cd97fc9-a2b7-5a6a-b6e2-b4cc4fbc6f2c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "合",
+    "meaning_vi": "hợp; phù hợp",
+    "onyomi": [
+      "ゴウ",
+      "ガッ",
+      "カッ"
+    ],
+    "kunyomi": [
+      "あ",
+      "あわ"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
+
