@@ -904,6 +904,43 @@
     "stroke_count": 7,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "a3ecb5a6-840b-5ea7-821f-d28e7fd5f71e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "空",
+    "meaning_vi": "bầu trời; trống",
+    "onyomi": [
+      "クウ"
+    ],
+    "kunyomi": [
+      "そら",
+      "あ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "057cf9b5-74a5-5902-9d95-b04fb51fdb53",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "港",
+    "meaning_vi": "cảng",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "みなと"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
