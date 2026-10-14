@@ -1758,6 +1758,96 @@
         "translation_vi": "Hình như đây là món ăn truyền thống Nhật Bản."
       }
     ]
+  },
+  {
+    "id": "70981462-021e-5351-add1-17d9880fa2cb",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに対して",
+    "pattern": "Nに対して",
+    "meaning_vi": "đối với N; đối lại với N",
+    "explanation_vi": "Nêu đối tượng hoặc phương diện mà hành động, thái độ hướng tới.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước に対して."
+    ],
+    "common_mistakes": [
+      "Không dùng に対して thay cho に khi chỉ địa điểm hoặc hướng di chuyển."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "お客様に対して、丁寧に説明します。",
+        "reading_ja": "おきゃくさまにたいして、ていねいにせつめいします。",
+        "translation_vi": "Tôi sẽ giải thích lịch sự với khách hàng."
+      },
+      {
+        "sentence_ja": "兄は私に対して親切です。",
+        "reading_ja": "あにはわたしにたいしてしんせつです。",
+        "translation_vi": "Anh trai đối xử tốt với tôi."
+      }
+    ]
+  },
+  {
+    "id": "8ab0f3cd-dd8c-5489-bc63-440582048a13",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないことにします",
+    "pattern": "Vないことにします",
+    "meaning_vi": "quyết định không V",
+    "explanation_vi": "Diễn tả quyết định của người nói là không thực hiện hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước ことにします."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển nếu muốn nói quyết định không làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今日は車を使わないことにします。",
+        "reading_ja": "きょうはくるまをつかわないことにします。",
+        "translation_vi": "Hôm nay tôi quyết định không dùng ô tô."
+      },
+      {
+        "sentence_ja": "夜は甘い物を食べないことにしました。",
+        "reading_ja": "よるはあまいものをたべないことにしました。",
+        "translation_vi": "Tôi đã quyết định buổi tối không ăn đồ ngọt."
+      }
+    ]
+  },
+  {
+    "id": "8b3185d9-f8f5-52dd-bd0c-0b90bda310e5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによると",
+    "pattern": "Nによると",
+    "meaning_vi": "theo N; dựa theo N",
+    "explanation_vi": "Dẫn nguồn của thông tin được truyền đạt.",
+    "usage_notes_vi": [
+      "Đặt tên nguồn thông tin trước によると và thường kết hợp với そうです hoặc ということです."
+    ],
+    "common_mistakes": [
+      "Không dùng によると khi chỉ người nhận hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "天気予報によると、明日は雨だそうです。",
+        "reading_ja": "てんきよほうによると、あしたはあめだそうです。",
+        "translation_vi": "Theo dự báo thời tiết, nghe nói ngày mai sẽ mưa."
+      },
+      {
+        "sentence_ja": "先生によると、試験は来週です。",
+        "reading_ja": "せんせいによると、しけんはらいしゅうです。",
+        "translation_vi": "Theo giáo viên, kỳ thi là vào tuần sau."
+      }
+    ]
   }
 ]
 
