@@ -753,7 +753,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Default runtime null. No secure token/login/profile, automatic retention or
   eviction/power-loss/hosted two-device acceptance. No dependencies/frozen API/
   RLS/Auth/provider/production changes. Keep #37 draft/#15/#20/#22 open. Worker
-  active awaiting exact-head CI. Next reviewed terminal retention and configured
+  released after verified evidence below. Next reviewed terminal retention and configured
   Auth/profile/secure sessions, followed by hosted learner acceptance.
 
 - First CI38522933955 passed format/analyze and 238 Flutter tests; Chrome
@@ -761,3 +761,34 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   browser cases into test/features/srs (non-default *_test name) and share pure
   fixtures under test/. Retain every assertion and both mandatory browser gates;
   skipped Chrome/reload/web steps do not count as passing evidence.
+
+## Verified opt-in IndexedDB handoff — 2026-10-14 UTC
+
+- Source a1c54ffd3a767302a6623cac77c6b1336bb88f90 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38523331817 .
+  Flutter format/analyze (no issues), 238 unit/widget tests including seven
+  ledger scenarios, four real Chrome IndexedDB tests, actual compiled-Dart page
+  refresh twice/second-tab persistence, all existing verifiers and web build/
+  artifact passed. Windows build/nihongo_daily.exe/artifact plus all three native
+  disk/process verifiers passed. SQL/RLS/parity/races/repo/49 Python/17 QA/AI
+  audit gates retained and passed. Unmodified run/all latest-attempt jobs passed
+  scripts/verify_qa.py for exact source head and every required step.
+- Source and follow-up separately reviewed: complete-before-success, synchronous
+  mutation/rollback, cross-connection serialization, exact immutable outcomes,
+  owner/canonical/reservation/capacity validation, no fallback data reset. First
+  Chrome entrypoint path failed; relocated unchanged tests/shared pure fixtures
+  to test/ without weakening assertions or browser gates. Corrected source passed.
+- Local seven pure ledger fixtures/source-tool analysis/format/JS compilation/
+  49 Python/17 QA passed. Actual Chrome/reloads/full Flutter/web/Windows/native
+  SQL are CI evidence, not local execution. Quota/commit failure is modeled by
+  the injected atomic port; no real quota/eviction or hardware-power-loss proof.
+- Browser store is opt-in and accepted by existing runtime/recovery factories.
+  Default runtime remains null; no hosted JWT/login/profile/secure sessions,
+  other-browser or two-device learner acceptance. 512 history cap remains; no
+  automatic eviction/terminal retention. QA38 groups, all 14 releases pending.
+- Sequential worker released after evidence persistence; resume latest draft
+  head first. Keep #37 draft/#15/#20/#22 open, no merge/deployment. Next reviewed
+  terminal retention and configured Auth/profile/secure session restoration,
+  followed by actual hosted A/B/expired JWT/two-client SRS evidence. Source-head
+  CI is historical for later documentation/source commits; inspect their checks.
+  No dependencies/API/RLS/Auth/provider/production changes or secrets requested.

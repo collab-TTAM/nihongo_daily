@@ -85,3 +85,9 @@ injected runtime ports. There is no default demo success or fake due queue.
 The default page states missing Supabase integration and cannot record progress.
 An in-memory pending event survives route navigation, not process restart;
 server-authenticated queue/Auth transport and durable recovery remain #20/#22/#15.
+
+Opt-in web review persistence uses IndexedDB transactions and is documented in
+[Browser review store](../../docs/BROWSER_REVIEW_STORE.md). Both explicit SRS
+runtime factories accept it as their supplied store. Real Chrome connection,
+page-refresh and second-tab tests are mandatory in CI; default runtime remains
+null until Auth/profile/session configuration is supplied.

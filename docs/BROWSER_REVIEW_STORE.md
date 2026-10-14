@@ -87,3 +87,11 @@ observe exact-head CI before claiming Chrome/build results. Other browsers,
 mobile/private modes, power-loss, real quota/eviction, hosted two-device learning
 and long-term retention remain unverified. Keep #37 draft/#15/#20/#22 open and
 all 14 Personal Alpha integration cases pending.
+
+Observed source evidence: a1c54ffd3a767302a6623cac77c6b1336bb88f90 passed all
+five jobs in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38523331817 .
+238 Flutter tests (seven ledger cases), four actual Chrome IndexedDB tests and
+compiled-Dart page reload/second tab passed, together with web/Windows builds
+and retained native/SQL/AI/QA gates. Exact-head unmodified metadata was accepted
+by scripts/verify_qa.py. This does not activate the default runtime or establish
+hosted learner acceptance; later commits require their own relevant checks.
