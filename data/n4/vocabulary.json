@@ -5324,6 +5324,230 @@
         "translation_vi": "Đây là nơi được du khách yêu thích."
       }
     ]
+  },
+  {
+    "id": "1507ec79-d490-5934-a77c-7b92204f4464",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "応募",
+    "reading": "おうぼ",
+    "meaning_vi": "ứng tuyển; đăng ký tham gia",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc đăng ký để được xem xét cho công việc hoặc chương trình.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "会社の仕事に応募しました。",
+        "reading_ja": "かいしゃのしごとにおうぼしました。",
+        "translation_vi": "Tôi đã ứng tuyển công việc ở công ty."
+      },
+      {
+        "sentence_ja": "応募する前に条件を確認してください。",
+        "reading_ja": "おうぼするまえにじょうけんをかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra điều kiện trước khi ứng tuyển."
+      }
+    ]
+  },
+  {
+    "id": "c353c496-dde2-57bb-801b-9c9456f6a84b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "面接",
+    "reading": "めんせつ",
+    "meaning_vi": "phỏng vấn",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Buổi gặp để hỏi và trao đổi trước khi tuyển dụng hoặc nhập học.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来週、会社の面接があります。",
+        "reading_ja": "らいしゅう、かいしゃのめんせつがあります。",
+        "translation_vi": "Tuần sau tôi có buổi phỏng vấn của công ty."
+      },
+      {
+        "sentence_ja": "面接で自分の経験を話しました。",
+        "reading_ja": "めんせつでじぶんのけいけんをはなしました。",
+        "translation_vi": "Tôi đã nói về kinh nghiệm của mình trong buổi phỏng vấn."
+      }
+    ]
+  },
+  {
+    "id": "25c0495f-ae3c-5d94-9990-e543d5fafbf4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "給料",
+    "reading": "きゅうりょう",
+    "meaning_vi": "tiền lương",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khoản tiền nhận được từ công việc.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "給料は毎月二十五日に振り込まれます。",
+        "reading_ja": "きゅうりょうはまいげつにじゅうごにちにふりこまれます。",
+        "translation_vi": "Tiền lương được chuyển vào ngày 25 mỗi tháng."
+      },
+      {
+        "sentence_ja": "給料の使い方を考えています。",
+        "reading_ja": "きゅうりょうのつかいかたをかんがえています。",
+        "translation_vi": "Tôi đang suy nghĩ cách sử dụng tiền lương."
+      }
+    ]
+  },
+  {
+    "id": "0a00289a-b23b-558b-87e3-613ae68d3bc3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "卒業",
+    "reading": "そつぎょう",
+    "meaning_vi": "tốt nghiệp",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Hoàn thành chương trình học tại trường.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "姉は来年大学を卒業します。",
+        "reading_ja": "あねはらいねんだいがくをそつぎょうします。",
+        "translation_vi": "Chị tôi sẽ tốt nghiệp đại học năm sau."
+      },
+      {
+        "sentence_ja": "卒業のお祝いをしました。",
+        "reading_ja": "そつぎょうのおいわいをしました。",
+        "translation_vi": "Tôi đã tổ chức chúc mừng tốt nghiệp."
+      }
+    ]
+  },
+  {
+    "id": "ff753d64-c8c9-5cfa-b584-c369f96fa3e2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "入学",
+    "reading": "にゅうがく",
+    "meaning_vi": "nhập học",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Bắt đầu học tại một trường hoặc cơ sở giáo dục.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "四月に高校へ入学しました。",
+        "reading_ja": "しがつにこうこうへにゅうがくしました。",
+        "translation_vi": "Tôi đã nhập học trung học vào tháng tư."
+      },
+      {
+        "sentence_ja": "入学の書類を準備しています。",
+        "reading_ja": "にゅうがくのしょるいをじゅんびしています。",
+        "translation_vi": "Tôi đang chuẩn bị giấy tờ nhập học."
+      }
+    ]
+  },
+  {
+    "id": "7e96bbcb-363a-57df-a3de-fe69cf608978",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "授業",
+    "reading": "じゅぎょう",
+    "meaning_vi": "giờ học; tiết học",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hoạt động dạy và học trong lớp.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "授業は九時に始まります。",
+        "reading_ja": "じゅぎょうはくじにはじまります。",
+        "translation_vi": "Tiết học bắt đầu lúc chín giờ."
+      },
+      {
+        "sentence_ja": "授業で新しい文法を習いました。",
+        "reading_ja": "じゅぎょうであたらしいぶんぽうをならいました。",
+        "translation_vi": "Tôi đã học ngữ pháp mới trong giờ học."
+      }
+    ]
+  },
+  {
+    "id": "42970112-8125-5ffd-88f8-e758be2a0d31",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "合格",
+    "reading": "ごうかく",
+    "meaning_vi": "đỗ; đạt",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Đạt yêu cầu trong kỳ thi hoặc tuyển chọn.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "日本語の試験に合格しました。",
+        "reading_ja": "にほんごのしけんにごうかくしました。",
+        "translation_vi": "Tôi đã đỗ kỳ thi tiếng Nhật."
+      },
+      {
+        "sentence_ja": "合格するために毎日勉強しています。",
+        "reading_ja": "ごうかくするためにまいにちべんきょうしています。",
+        "translation_vi": "Tôi học mỗi ngày để đỗ."
+      }
+    ]
+  },
+  {
+    "id": "e5156963-4b0d-5cb6-b08a-f5b49be62d60",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "連絡先",
+    "reading": "れんらくさき",
+    "meaning_vi": "thông tin liên lạc",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Địa chỉ hoặc số dùng để liên hệ với một người.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "連絡先を紙に書いてください。",
+        "reading_ja": "れんらくさきをかみにかいてください。",
+        "translation_vi": "Hãy viết thông tin liên lạc ra giấy."
+      },
+      {
+        "sentence_ja": "会社の連絡先をスマートフォンに登録しました。",
+        "reading_ja": "かいしゃのれんらくさきをすまーとふぉんにとうろくしました。",
+        "translation_vi": "Tôi đã lưu thông tin liên lạc của công ty vào điện thoại."
+      }
+    ]
   }
 ]
 
