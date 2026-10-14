@@ -1488,6 +1488,95 @@
         "translation_vi": "Hãy giữ ấm để không bị cảm."
       }
     ]
+  },
+  {
+    "id": "5fee5c3a-130c-5894-8be5-89c2a7391e87",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてから",
+    "pattern": "Vてから",
+    "meaning_vi": "sau khi V rồi",
+    "explanation_vi": "Diễn tả một hành động xảy ra sau khi hành động trước đã hoàn tất.",
+    "usage_notes_vi": [
+      "Dùng động từ thể て trước から."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước から trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "仕事が終わってから、買い物に行きます。",
+        "reading_ja": "しごとがおわってから、かいものにいきます。",
+        "translation_vi": "Sau khi tan làm, tôi sẽ đi mua sắm."
+      },
+      {
+        "sentence_ja": "説明を読んでから、始めてください。",
+        "reading_ja": "せつめいをよんでから、はじめてください。",
+        "translation_vi": "Hãy đọc hướng dẫn rồi mới bắt đầu."
+      }
+    ]
+  },
+  {
+    "id": "de4097a2-57a7-5622-9728-295fb5eb0fb2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vても",
+    "pattern": "Vても",
+    "meaning_vi": "dù V; cho dù V",
+    "explanation_vi": "Diễn tả kết quả hoặc hành động vẫn xảy ra dù điều kiện được nêu có xảy ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể て trước も."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước も trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "雨が降っても、試合を続けます。",
+        "reading_ja": "あめがふっても、しあいをつづけます。",
+        "translation_vi": "Dù trời mưa, trận đấu vẫn tiếp tục."
+      },
+      {
+        "sentence_ja": "分からなくても、質問してください。",
+        "reading_ja": "わからなくても、しつもんしてください。",
+        "translation_vi": "Dù không hiểu, hãy cứ hỏi."
+      }
+    ]
+  },
+  {
+    "id": "6cdfd43a-6f99-518b-81cf-f635515ebee5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nなら",
+    "pattern": "Nなら",
+    "meaning_vi": "nếu là N; nếu nói về N",
+    "explanation_vi": "Đưa lời khuyên hoặc thông tin dựa trên danh từ hay chủ đề được nêu.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước なら."
+    ],
+    "common_mistakes": [
+      "Không nhầm Nなら với Vるなら, vốn đứng sau động từ thể từ điển."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "京都なら、秋がおすすめです。",
+        "reading_ja": "きょうとなら、あきがおすすめです。",
+        "translation_vi": "Nếu là Kyoto thì mùa thu rất đáng được giới thiệu."
+      },
+      {
+        "sentence_ja": "電子メールなら、すぐ返事できます。",
+        "reading_ja": "でんしめーるなら、すぐへんじできます。",
+        "translation_vi": "Nếu là email thì tôi có thể trả lời ngay."
+      }
+    ]
   }
 ]
-

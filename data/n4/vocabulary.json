@@ -3526,5 +3526,229 @@
         "translation_vi": "Tôi muốn tăng thời gian trò chuyện với gia đình."
       }
     ]
+  },
+  {
+    "id": "9f263229-d2ee-5ccb-8eb2-98116ed943c4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "誘う",
+    "reading": "さそう",
+    "meaning_vi": "rủ; mời",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Mời hoặc rủ ai đó cùng làm một việc.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "友達を映画に誘いました。",
+        "reading_ja": "ともだちをえいがにさそいました。",
+        "translation_vi": "Tôi đã rủ bạn đi xem phim."
+      },
+      {
+        "sentence_ja": "兄が私を食事に誘ってくれました。",
+        "reading_ja": "あにがわたしをしょくじにさそってくれました。",
+        "translation_vi": "Anh trai đã rủ tôi đi ăn."
+      }
+    ]
+  },
+  {
+    "id": "d5179944-fbed-5f16-a566-9e12db4160bf",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "招待する",
+    "reading": "しょうたいする",
+    "meaning_vi": "mời; mời tham dự",
+    "part_of_speech": "động từ nhóm 3",
+    "usage_context_vi": "Mời ai đó đến một sự kiện hoặc địa điểm.",
+    "audio_ref": null,
+    "tags": [
+      "events"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来週のパーティーに友達を招待します。",
+        "reading_ja": "らいしゅうのぱーてぃーにともだちをしょうたいします。",
+        "translation_vi": "Tôi sẽ mời bạn đến bữa tiệc tuần sau."
+      },
+      {
+        "sentence_ja": "先生を結婚式に招待しました。",
+        "reading_ja": "せんせいをけっこんしきにしょうたいしました。",
+        "translation_vi": "Tôi đã mời giáo viên đến lễ cưới."
+      }
+    ]
+  },
+  {
+    "id": "f3129ca1-30d5-5912-8a0a-f88037766772",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "断る",
+    "reading": "ことわる",
+    "meaning_vi": "từ chối",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nói rằng không thể hoặc không muốn nhận lời đề nghị.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "忙しかったので、誘いを断りました。",
+        "reading_ja": "いそがしかったので、さそいをことわりました。",
+        "translation_vi": "Vì bận nên tôi đã từ chối lời mời."
+      },
+      {
+        "sentence_ja": "無理なお願いは、丁寧に断ってください。",
+        "reading_ja": "むりなおねがいは、ていねいにことわってください。",
+        "translation_vi": "Nếu là yêu cầu quá sức, hãy lịch sự từ chối."
+      }
+    ]
+  },
+  {
+    "id": "333bba4a-e25a-59d6-ab57-5464590b4d88",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "受け取る",
+    "reading": "うけとる",
+    "meaning_vi": "nhận; nhận lấy",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nhận đồ vật, tài liệu hoặc bưu phẩm từ người khác.",
+    "audio_ref": null,
+    "tags": [
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "受付で資料を受け取りました。",
+        "reading_ja": "うけつけでしりょうをうけとりました。",
+        "translation_vi": "Tôi đã nhận tài liệu ở quầy tiếp tân."
+      },
+      {
+        "sentence_ja": "宅配便を家族が受け取りました。",
+        "reading_ja": "たくはいびんをかぞくがうけとりました。",
+        "translation_vi": "Gia đình tôi đã nhận bưu phẩm."
+      }
+    ]
+  },
+  {
+    "id": "5278a5db-9a68-570e-a115-aec713fbffff",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "返事する",
+    "reading": "へんじする",
+    "meaning_vi": "trả lời; hồi âm",
+    "part_of_speech": "động từ nhóm 3",
+    "usage_context_vi": "Trả lời câu hỏi, tin nhắn hoặc lời mời.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "メールを読んだら、早く返事してください。",
+        "reading_ja": "めーるをよんだら、はやくへんじしてください。",
+        "translation_vi": "Đọc email xong thì hãy trả lời sớm."
+      },
+      {
+        "sentence_ja": "質問に日本語で返事しました。",
+        "reading_ja": "しつもんににほんごでへんじしました。",
+        "translation_vi": "Tôi đã trả lời câu hỏi bằng tiếng Nhật."
+      }
+    ]
+  },
+  {
+    "id": "08865fd3-b689-58f7-a3bf-23afe440cc68",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "伝わる",
+    "reading": "つたわる",
+    "meaning_vi": "được truyền đạt; được hiểu",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Thông tin hoặc cảm xúc được truyền từ người này sang người khác.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この説明で意味が伝わりますか。",
+        "reading_ja": "このせつめいでいみがつたわりますか。",
+        "translation_vi": "Với lời giải thích này, ý nghĩa có được truyền đạt không?"
+      },
+      {
+        "sentence_ja": "気持ちがうまく伝わりませんでした。",
+        "reading_ja": "きもちがうまくつたわりませんでした。",
+        "translation_vi": "Cảm xúc đã không được truyền đạt tốt."
+      }
+    ]
+  },
+  {
+    "id": "6cfd5626-fd31-5661-ba10-c91cf1958e00",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "紹介する",
+    "reading": "しょうかいする",
+    "meaning_vi": "giới thiệu",
+    "part_of_speech": "động từ nhóm 3",
+    "usage_context_vi": "Nói hoặc cho người khác biết về một người, nơi chốn hay sự vật.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "友達に新しい店を紹介しました。",
+        "reading_ja": "ともだちにあたらしいみせをしょうかいしました。",
+        "translation_vi": "Tôi đã giới thiệu cửa hàng mới cho bạn."
+      },
+      {
+        "sentence_ja": "会議で自己紹介をします。",
+        "reading_ja": "かいぎでじこしょうかいをします。",
+        "translation_vi": "Tôi sẽ tự giới thiệu trong cuộc họp."
+      }
+    ]
+  },
+  {
+    "id": "b7469110-2314-54b6-8795-f933663ae4b7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "見送る",
+    "reading": "みおくる",
+    "meaning_vi": "tiễn; hoãn lại",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Tiễn ai đó hoặc quyết định chưa thực hiện một việc.",
+    "audio_ref": null,
+    "tags": [
+      "events"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅で友達を見送りました。",
+        "reading_ja": "えきでともだちをみおくりました。",
+        "translation_vi": "Tôi đã tiễn bạn ở ga."
+      },
+      {
+        "sentence_ja": "雨が強いので、旅行を見送ります。",
+        "reading_ja": "あめがつよいので、りょこうをみおくります。",
+        "translation_vi": "Vì mưa to nên chúng tôi sẽ hoãn chuyến du lịch."
+      }
+    ]
   }
 ]
