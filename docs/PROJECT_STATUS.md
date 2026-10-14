@@ -1389,3 +1389,15 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   A/B/restart/rotation/logoff/power-loss and all 14 release groups remain pending.
   Scope: docs/ACCOUNT_STARTUP.md. No dependency/provider/schema/RLS/API/default
   preview/N4/production changes. Keep #37 draft and #20/#22/#15 open.
+
+- Early source ea1c7079 CI38608189714 failed analysis on missing explicit
+  dart:ui AppExitResponse import. Source 001cb178 CI38608551307 passed analysis/
+  359 cases but the new pending-drain UI assertion needed a rendered frame after
+  async observer dispatch. Original no-fields/owned-drain assertions retained.
+- With that frame rendered, f07ffb2f CI38609111254 exposed a lifecycle defect:
+  replacing the active router disposes AppLifecycleListener while the binding's
+  copied observer list is awaiting our drain. Preserve the router subtree, revoke
+  the account provider override and cover routes offstage with focus/tickers
+  blocked until exit. Test additionally asserts same router identity, null
+  account publication and focus exclusion. No swallowed framework assertion or
+  test/security/build gate relaxation; corrected source needs full fresh CI.

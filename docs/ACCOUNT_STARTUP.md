@@ -62,7 +62,10 @@ assembly/build evidence. Default remains preview; no hosted learner proof.
 The owned host observes didRequestAppExit and awaits controller.close before
 returning exit. Publication is revoked immediately; while factory/start/cleanup
 is pending, only a fixed Vietnamese closing screen is shown. Concurrent close
-requests share one drain. Cleanup failure returns cancel and a fixed redacted
+requests share one drain. The router stays mounted while the binding awaits
+its exit-observer snapshot; the account override becomes null and routes are
+offstage with focus/tickers blocked. This prevents disposal of another pending
+framework lifecycle listener during the drain. No hidden route can grant study. Cleanup failure returns cancel and a fixed redacted
 message; login/startup retry stay unavailable. A later explicit window-close
 request can attempt the same retained owner's cleanup again, never a replacement
 SDK or a new login. A failing underlying owner is not assumed repaired.

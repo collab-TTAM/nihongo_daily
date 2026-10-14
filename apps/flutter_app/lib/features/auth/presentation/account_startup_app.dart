@@ -33,6 +33,7 @@ class _AccountStartupAppState extends State<AccountStartupApp>
   Future<AppExitResponse>? _exitRequest;
   bool _exitStarted = false;
   bool _exitFailed = false;
+  bool _publishedApp = false;
   @override
   void initState() {
     super.initState();
@@ -89,7 +90,8 @@ class _AccountStartupAppState extends State<AccountStartupApp>
   @override
   Widget build(BuildContext context) {
     final account = _controller.account;
-    if (account != null && !_exitStarted) {
+    if (account != null) _publishedApp = true;
+    if (account != null || (_publishedApp && _exitStarted)) {
       return ProviderScope(
         overrides: [
           accountRuntimeProvider.overrideWithValue(account),
@@ -97,71 +99,76 @@ class _AccountStartupAppState extends State<AccountStartupApp>
             _controller.noticeSource,
           ),
         ],
-        child: const _StartedApp(),
+        child: _StartedApp(
+          blockingScreen: _exitStarted ? _statusScreen() : null,
+        ),
       );
     }
-    final phase = _controller.phase;
-    final loading = _exitStarted
-        ? !_exitFailed
-        : phase == AccountStartupPhase.loading ||
-              phase == AccountStartupPhase.idle;
     return MaterialApp(
       title: 'Nihongo Daily',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(Brightness.light),
       darkTheme: buildAppTheme(Brightness.dark),
-      home: Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 480),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
+      home: _statusScreen(),
+    );
+  }
+
+  Widget _statusScreen() {
+    final phase = _controller.phase;
+    final loading = _exitStarted
+        ? !_exitFailed
+        : phase == AccountStartupPhase.loading ||
+              phase == AccountStartupPhase.idle;
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Nihongo Daily',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 24),
+                  if (loading) ...[
+                    const LinearProgressIndicator(),
+                    const SizedBox(height: 16),
                     Text(
-                      'Nihongo Daily',
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      _exitStarted
+                          ? 'Đang đóng phiên an toàn…'
+                          : 'Đang khôi phục phiên đăng nhập…',
                     ),
-                    const SizedBox(height: 24),
-                    if (loading) ...[
-                      const LinearProgressIndicator(),
-                      const SizedBox(height: 16),
-                      Text(
-                        _exitStarted
-                            ? 'Đang đóng phiên an toàn…'
-                            : 'Đang khôi phục phiên đăng nhập…',
+                  ] else ...[
+                    Text(
+                      _exitFailed
+                          ? 'Chưa thể đóng phiên an toàn. Bạn có thể thử đóng cửa sổ lại.'
+                          : switch (phase) {
+                              AccountStartupPhase.restoreError =>
+                                'Không thể khôi phục phiên đăng nhập. Bạn có thể đăng nhập lại hoặc thử khởi động lại.',
+                              AccountStartupPhase.cleanupError =>
+                                'Chưa thể đóng phiên trước. Hãy thử lại trước khi tiếp tục.',
+                              AccountStartupPhase.closed => 'Phiên đã đóng.',
+                              _ => 'Chưa thể khởi động tài khoản. Hãy thử lại.',
+                            },
+                    ),
+                    const SizedBox(height: 20),
+                    if (!_exitStarted && _controller.canOfferLogin)
+                      FilledButton(
+                        onPressed: _controller.offerLogin,
+                        child: const Text('Đăng nhập lại'),
                       ),
-                    ] else ...[
-                      Text(
-                        _exitFailed
-                            ? 'Chưa thể đóng phiên an toàn. Bạn có thể thử đóng cửa sổ lại.'
-                            : switch (phase) {
-                                AccountStartupPhase.restoreError =>
-                                  'Không thể khôi phục phiên đăng nhập. Bạn có thể đăng nhập lại hoặc thử khởi động lại.',
-                                AccountStartupPhase.cleanupError =>
-                                  'Chưa thể đóng phiên trước. Hãy thử lại trước khi tiếp tục.',
-                                AccountStartupPhase.closed => 'Phiên đã đóng.',
-                                _ =>
-                                  'Chưa thể khởi động tài khoản. Hãy thử lại.',
-                              },
+                    if (!_exitStarted && phase != AccountStartupPhase.closed)
+                      OutlinedButton(
+                        onPressed: () => unawaited(_controller.retry()),
+                        child: const Text('Thử khởi động lại'),
                       ),
-                      const SizedBox(height: 20),
-                      if (!_exitStarted && _controller.canOfferLogin)
-                        FilledButton(
-                          onPressed: _controller.offerLogin,
-                          child: const Text('Đăng nhập lại'),
-                        ),
-                      if (!_exitStarted && phase != AccountStartupPhase.closed)
-                        OutlinedButton(
-                          onPressed: () => unawaited(_controller.retry()),
-                          child: const Text('Thử khởi động lại'),
-                        ),
-                    ],
                   ],
-                ),
+                ],
               ),
             ),
           ),
@@ -172,7 +179,8 @@ class _AccountStartupAppState extends State<AccountStartupApp>
 }
 
 class _StartedApp extends ConsumerStatefulWidget {
-  const _StartedApp();
+  const _StartedApp({this.blockingScreen});
+  final Widget? blockingScreen;
   @override
   ConsumerState<_StartedApp> createState() => _StartedAppState();
 }
@@ -185,5 +193,25 @@ class _StartedAppState extends ConsumerState<_StartedApp> {
   }
 
   @override
-  Widget build(BuildContext context) => const NihongoDailyApp();
+  Widget build(BuildContext context) => NihongoDailyApp(
+    // Keep the router and its lifecycle observers mounted while the binding's
+    // exit-observer snapshot is awaiting our drain. Revoke the account override,
+    // hide routes and block focus/tickers; never dispose another pending observer.
+    builder: (context, child) => Stack(
+      fit: StackFit.expand,
+      children: [
+        Offstage(
+          offstage: widget.blockingScreen != null,
+          child: ExcludeFocus(
+            excluding: widget.blockingScreen != null,
+            child: TickerMode(
+              enabled: widget.blockingScreen == null,
+              child: child ?? const SizedBox(),
+            ),
+          ),
+        ),
+        if (widget.blockingScreen != null) widget.blockingScreen!,
+      ],
+    ),
+  );
 }
