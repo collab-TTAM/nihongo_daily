@@ -71,8 +71,9 @@ final class AccountStartupController<T> {
           AccountStartupPhase.openError,
           AccountStartupPhase.restoreError,
           AccountStartupPhase.cleanupError,
-        }.contains(_phase))
+        }.contains(_phase)) {
       return Future.value();
+    }
     return _begin();
   }
 
