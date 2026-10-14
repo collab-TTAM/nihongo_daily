@@ -10,7 +10,8 @@ import 'review_connection_registry.dart';
 import 'review_repository.dart';
 
 /// Concrete Supabase Auth/PostgREST bridge, explicitly constructed by the owner.
-/// Does not initialize/login/deploy, provision profiles or persist credentials.
+/// Does not initialize/deploy, provision profiles or persist credentials.
+/// Credential methods require an explicitly configured client and caller.
 /// The server verifies JWTs; decoded claims below are only fail-closed local hints.
 final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
   SupabaseReviewBinding({

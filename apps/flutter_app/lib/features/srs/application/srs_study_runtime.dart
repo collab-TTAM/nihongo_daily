@@ -4,6 +4,7 @@ import '../data/review_connection_registry.dart';
 import '../data/review_repository.dart';
 import '../data/rpc_srs_study_queue.dart';
 import '../data/supabase_review_binding.dart';
+import 'srs_study_controller.dart';
 
 /// No default fixture/demo runtime. Future #20/#22 binding must supply real
 /// authenticated queue/review ports and immediate lifecycle notifications.

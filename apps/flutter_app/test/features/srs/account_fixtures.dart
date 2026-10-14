@@ -202,8 +202,9 @@ Future<void> verifyAccount(String scenario) async {
       );
     } else if (scenario == 'reentrant-revoke') {
       final sub = controller.changes.listen((state) {
-        if (state.phase == AccountPhase.loadingProfile)
+        if (state.phase == AccountPhase.loadingProfile) {
           unawaited(controller.signOut());
+        }
       });
       access.change(owner);
       await flush();
