@@ -1140,3 +1140,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   remains simulated, so all 14 hosted Personal Alpha groups remain pending.
   Keep #37 draft and #20/#22/#15 open. Next caller startup/error UI and refresh
   scheduling, then configured hosted learner/restart/two-client acceptance.
+
+- First source e31fd57e CI 38589704536 passed repo/SQL/AI but Flutter analysis
+  found one missing block in fixture `_check`. Added braces without changing
+  assertions or suppressing lint. Skipped test/build steps are not passes;
+  corrected source requires a fresh full CI run.

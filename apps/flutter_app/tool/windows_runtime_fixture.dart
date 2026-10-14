@@ -35,8 +35,9 @@ const _pending = <String, Object>{
 };
 
 void _check(bool value) {
-  if (!value)
+  if (!value) {
     throw const FormatException('Runtime fixture verification failed');
+  }
 }
 
 Directory runtimeFixtureDirectory(String scope) {
