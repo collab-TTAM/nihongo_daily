@@ -1371,3 +1371,21 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   or independent remaining product flows while service configuration is absent.
   All 14 live release groups remain pending. Keep #37 draft/#20/#22/#15 open;
   Pro #38/N4 intact. No dependencies/Auth strategy/API/RLS/production changes.
+
+## Awaited cancelable Windows window close — 2026-10-14 UTC
+
+- Resumed #37 head 84bd5c16; sequential core worker ACTIVE, Pro #38/N4 untouched.
+  Pinned engine source confirms final-window WM_CLOSE asks the framework before
+  closing; owned host previously had no awaited exit observer.
+- Added awaited owned controller close, immediate account-route fencing, fixed
+  closing/failure UI, concurrent request coalescing and cancellation on failure.
+  Explicit later native close retries retained cleanup; no automatic reopening,
+  timeout pretending drain complete, raw exception or learner-history deletion.
+- Four framework/widget cases and two actual Windows OS-close fixture phases
+  added. Real empty-vault staging owner closes and journal lease reopens before
+  natural process exit; external GUID test markers keep fixture drain observable.
+  Cancellation fixture fails before delegating owner close, then explicitly retries.
+- Format/local contracts/QA and new-source full CI pending. Hosted Auth/learner
+  A/B/restart/rotation/logoff/power-loss and all 14 release groups remain pending.
+  Scope: docs/ACCOUNT_STARTUP.md. No dependency/provider/schema/RLS/API/default
+  preview/N4/production changes. Keep #37 draft and #20/#22/#15 open.

@@ -56,3 +56,35 @@ The ordinary application entrypoint can now select the owned host through truste
 Windows staging build settings. STAGING_BOOTSTRAP.md documents configuration,
 project-scoped OS app-data journal ownership and observed empty-vault native
 assembly/build evidence. Default remains preview; no hosted learner proof.
+
+## Cancelable window close
+
+The owned host observes didRequestAppExit and awaits controller.close before
+returning exit. Publication is revoked immediately; while factory/start/cleanup
+is pending, only a fixed Vietnamese closing screen is shown. Concurrent close
+requests share one drain. Cleanup failure returns cancel and a fixed redacted
+message; login/startup retry stay unavailable. A later explicit window-close
+request can attempt the same retained owner's cleanup again, never a replacement
+SDK or a new login. A failing underlying owner is not assumed repaired.
+
+The pinned Flutter 3.35.4 Windows engine routes WM_CLOSE for the final process
+window through RequestApplicationQuit. The unchanged runner forwards window
+messages to that engine. No custom native close bypass, extra dependency, timer
+retry, forced-exit timeout or deletion of learner history is added. Disposal
+continues to start async cleanup but is not treated as awaited shutdown evidence.
+
+Four additional widget tests dispatch framework exit requests and cover a delayed
+drain/concurrent requests, redacted cancellation/explicit retry with accessible
+layout, late factory and late restoration. Windows TEST ONLY phases launch the
+actual runner with an empty-vault staging owner. PowerShell sends CloseMainWindow,
+checks the process stays alive until an external test marker releases cleanup,
+and checks successful owned close plus journal-lease reopen before natural exit.
+A synthetic one-shot close failure must cancel the first actual window request;
+a later explicit close finishes. GUID .invalid scopes and finally cleanup remain.
+These new-source checks are pending CI; they do not prove hosted Auth or saved
+learner sessions. Uncancelable termination, Task Manager kill, power loss and OS
+logoff can bypass the hook. Durable write-before-dispatch remains essential and
+is unchanged; no hook is a substitute for event/credential persistence.
+
+Framework reference: https://api.flutter.dev/flutter/widgets/WidgetsBindingObserver/didRequestAppExit.html
+Pinned engine source: engine/src/flutter/shell/platform/windows/windows_lifecycle_manager.cc

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'windows_runtime_fixture.dart';
+import 'windows_exit_fixture.dart';
 import 'package:nihongo_daily/features/auth/data/windows_review_directory.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -36,8 +37,13 @@ Future<void> main(List<String> arguments) async {
             'directory-reopen',
             'directory-clear',
           }.contains(phase) ||
-          runtimePhases.contains(phase),
+          runtimePhases.contains(phase) ||
+          exitPhases.contains(phase),
     );
+    if (exitPhases.contains(phase)) {
+      await startWindowsExitFixture(phase, scope);
+      return; // OS/framework close decides exit; no dart:io exit shortcut.
+    }
     final vault = createWindowsSessionCredentialVault('https://$scope.invalid');
     final other = createWindowsSessionCredentialVault(
       'https://$scope-other.invalid',
@@ -118,6 +124,10 @@ Future<void> main(List<String> arguments) async {
           'https://$scope.invalid',
         );
         if (await local.exists()) await local.delete(recursive: true);
+        final exitLocal = await resolveWindowsReviewDirectory(
+          'https://$scope-exit.invalid',
+        );
+        if (await exitLocal.exists()) await exitLocal.delete(recursive: true);
       case 'absent':
         require(await vault.readRefreshToken() == null);
         require(await other.readRefreshToken() == null);

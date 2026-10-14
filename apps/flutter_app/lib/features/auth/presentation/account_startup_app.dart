@@ -29,6 +29,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
     with WidgetsBindingObserver {
   late final _controller = widget.controller;
   StreamSubscription<AccountStartupPhase>? _subscription;
+  Future<AppExitResponse>? _exitRequest;
+  bool _exitStarted = false;
+  bool _exitFailed = false;
   @override
   void initState() {
     super.initState();
@@ -42,6 +45,31 @@ class _AccountStartupAppState extends State<AccountStartupApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) _controller.resume();
+  }
+
+  /// A cancelable OS close must await the same owned drain as explicit cleanup.
+  /// Forced termination still relies on write-before-dispatch, never this hook.
+  @override
+  Future<AppExitResponse> didRequestAppExit() {
+    return _exitRequest ??= _drainForExit();
+  }
+
+  Future<AppExitResponse> _drainForExit() async {
+    if (mounted) {
+      setState(() {
+        _exitStarted = true;
+        _exitFailed = false;
+      });
+    }
+    try {
+      await _controller.close();
+      return AppExitResponse.exit;
+    } on Object {
+      if (mounted) setState(() => _exitFailed = true);
+      return AppExitResponse.cancel;
+    } finally {
+      _exitRequest = null;
+    }
   }
 
   @override
@@ -60,7 +88,7 @@ class _AccountStartupAppState extends State<AccountStartupApp>
   @override
   Widget build(BuildContext context) {
     final account = _controller.account;
-    if (account != null) {
+    if (account != null && !_exitStarted) {
       return ProviderScope(
         overrides: [
           accountRuntimeProvider.overrideWithValue(account),
@@ -72,9 +100,10 @@ class _AccountStartupAppState extends State<AccountStartupApp>
       );
     }
     final phase = _controller.phase;
-    final loading =
-        phase == AccountStartupPhase.loading ||
-        phase == AccountStartupPhase.idle;
+    final loading = _exitStarted
+        ? !_exitFailed
+        : phase == AccountStartupPhase.loading ||
+              phase == AccountStartupPhase.idle;
     return MaterialApp(
       title: 'Nihongo Daily',
       debugShowCheckedModeBanner: false,
@@ -99,23 +128,32 @@ class _AccountStartupAppState extends State<AccountStartupApp>
                     if (loading) ...[
                       const LinearProgressIndicator(),
                       const SizedBox(height: 16),
-                      const Text('Đang khôi phục phiên đăng nhập…'),
+                      Text(
+                        _exitStarted
+                            ? 'Đang đóng phiên an toàn…'
+                            : 'Đang khôi phục phiên đăng nhập…',
+                      ),
                     ] else ...[
-                      Text(switch (phase) {
-                        AccountStartupPhase.restoreError =>
-                          'Không thể khôi phục phiên đăng nhập. Bạn có thể đăng nhập lại hoặc thử khởi động lại.',
-                        AccountStartupPhase.cleanupError =>
-                          'Chưa thể đóng phiên trước. Hãy thử lại trước khi tiếp tục.',
-                        AccountStartupPhase.closed => 'Phiên đã đóng.',
-                        _ => 'Chưa thể khởi động tài khoản. Hãy thử lại.',
-                      }),
+                      Text(
+                        _exitFailed
+                            ? 'Chưa thể đóng phiên an toàn. Bạn có thể thử đóng cửa sổ lại.'
+                            : switch (phase) {
+                                AccountStartupPhase.restoreError =>
+                                  'Không thể khôi phục phiên đăng nhập. Bạn có thể đăng nhập lại hoặc thử khởi động lại.',
+                                AccountStartupPhase.cleanupError =>
+                                  'Chưa thể đóng phiên trước. Hãy thử lại trước khi tiếp tục.',
+                                AccountStartupPhase.closed => 'Phiên đã đóng.',
+                                _ =>
+                                  'Chưa thể khởi động tài khoản. Hãy thử lại.',
+                              },
+                      ),
                       const SizedBox(height: 20),
-                      if (_controller.canOfferLogin)
+                      if (!_exitStarted && _controller.canOfferLogin)
                         FilledButton(
                           onPressed: _controller.offerLogin,
                           child: const Text('Đăng nhập lại'),
                         ),
-                      if (phase != AccountStartupPhase.closed)
+                      if (!_exitStarted && phase != AccountStartupPhase.closed)
                         OutlinedButton(
                           onPressed: () => unawaited(_controller.retry()),
                           child: const Text('Thử khởi động lại'),
