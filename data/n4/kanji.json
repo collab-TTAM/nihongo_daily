@@ -760,6 +760,42 @@
     "stroke_count": 6,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "eaff1f25-bd49-53d9-bedb-264a384bbf58",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "所",
+    "meaning_vi": "nơi; chỗ",
+    "onyomi": [
+      "ショ"
+    ],
+    "kunyomi": [
+      "ところ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "89e12425-3a1c-553a-a730-917da4ece1db",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "設",
+    "meaning_vi": "thiết lập; xây dựng",
+    "onyomi": [
+      "セツ"
+    ],
+    "kunyomi": [
+      "もう"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
