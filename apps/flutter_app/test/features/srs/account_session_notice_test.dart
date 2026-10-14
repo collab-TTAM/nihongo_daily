@@ -197,7 +197,17 @@ void main() {
     await tester.pumpWidget(AccountStartupApp(controller: controller));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('account-email')), findsOneWidget);
+    expect(controller.noticeSource, same(owner));
+    final scoped = ProviderScope.containerOf(
+      tester.element(find.byKey(const Key('account-email'))),
+    );
+    expect(scoped.read(accountSessionNoticeSourceProvider), same(owner));
     notices.emit(AccountSessionNotice.checking);
+    await tester.pump();
+    expect(
+      scoped.read(accountSessionNoticeProvider),
+      AccountSessionNotice.checking,
+    );
     await tester.pump();
     expect(find.byType(TextField), findsNothing);
     notices.emit(AccountSessionNotice.needsLogin);

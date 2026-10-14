@@ -1283,3 +1283,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   journal ownership and no production/schema/API/provider/dependency changes.
   Hosted Auth/learner/two-client/OS suspension and all 14 live groups pending.
   Scope: docs/ACCOUNT_SESSION_NOTICE.md; keep #37/#20/#22/#15 open.
+
+- Source d7816608 CI38598860539 passed analysis and seven notice/SDK direct cases,
+  but configured-host test still found form after a single frame. Preserve the
+  no-fields assertion, add explicit owned-source/scoped-notice assertions and
+  render after stream state propagation. This distinguishes wiring from frame
+  timing; no production/auth/assertion/lint changes. New-source CI required.
