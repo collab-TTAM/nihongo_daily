@@ -2388,6 +2388,96 @@
         "translation_vi": "Tôi đã cười như một đứa trẻ."
       }
     ]
+  },
+  {
+    "id": "a66e9a6c-b725-5c56-b5f5-7a032c775d9a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないようにしています",
+    "pattern": "Vないようにしています",
+    "meaning_vi": "đang cố gắng không V",
+    "explanation_vi": "Diễn tả thói quen hoặc nỗ lực có ý thức để không làm một việc.",
+    "usage_notes_vi": [
+      "Dùng thể phủ định trước ようにしています."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "事故を起こさないようにしています。",
+        "reading_ja": "じこをおこさないようにしています。",
+        "translation_vi": "Tôi luôn cố gắng không gây tai nạn."
+      },
+      {
+        "sentence_ja": "夜は危険な道を歩かないようにしています。",
+        "reading_ja": "よるはきけんなみちをあるかないようにしています。",
+        "translation_vi": "Buổi tối tôi cố gắng không đi trên đường nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "3db36ae5-21a7-5495-926e-25343bd51227",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに気をつけてください",
+    "pattern": "Nに気をつけてください",
+    "meaning_vi": "hãy chú ý/cẩn thận với N",
+    "explanation_vi": "Dùng để nhắc ai đó chú ý đến một điều có thể gây nguy hiểm hoặc sai sót.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ điều cần chú ý trước に気をつけてください."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "車に気をつけてください。",
+        "reading_ja": "くるまにきをつけてください。",
+        "translation_vi": "Hãy cẩn thận với xe cộ."
+      },
+      {
+        "sentence_ja": "火事に気をつけて料理してください。",
+        "reading_ja": "かじにきをつけてりょうりしてください。",
+        "translation_vi": "Hãy nấu ăn cẩn thận để tránh hỏa hoạn."
+      }
+    ]
+  },
+  {
+    "id": "af485bfc-db8b-57ed-b54c-53b387ed3c71",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるといいです",
+    "pattern": "Vるといいです",
+    "meaning_vi": "nên V thì tốt",
+    "explanation_vi": "Đưa ra một lời khuyên nhẹ nhàng về việc nên làm.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển trước といいです để gợi ý hành động."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "地震の前に水を用意するといいです。",
+        "reading_ja": "じしんのまえにみずをよういするといいです。",
+        "translation_vi": "Trước động đất, bạn nên chuẩn bị nước."
+      },
+      {
+        "sentence_ja": "分からないときは交番で聞くといいです。",
+        "reading_ja": "わからないときはこうばんできくといいです。",
+        "translation_vi": "Khi không biết đường, bạn nên hỏi ở đồn cảnh sát."
+      }
+    ]
   }
 ]
 
