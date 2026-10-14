@@ -3294,6 +3294,99 @@
         "translation_vi": "Tôi thu thập thông tin qua Internet."
       }
     ]
+  },
+  {
+    "id": "91e4fe0d-3ede-5f21-b678-7ffbce191515",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vているようです",
+    "pattern": "Vているようです",
+    "meaning_vi": "có vẻ đang V",
+    "explanation_vi": "Suy đoán nhẹ rằng một hành động đang diễn ra dựa trên dấu hiệu quan sát được.",
+    "usage_notes_vi": [
+      "Dùng thể ている trước ようです.",
+      "Có thể thêm ように見えます để diễn đạt vẻ bề ngoài."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vるようにします, nghĩa là cố gắng làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "外で雨が降っているようです。",
+        "reading_ja": "そとであめがふっているようです。",
+        "translation_vi": "Có vẻ bên ngoài đang mưa."
+      },
+      {
+        "sentence_ja": "彼はまだ寝ているようです。",
+        "reading_ja": "かれはまだねているようです。",
+        "translation_vi": "Có vẻ anh ấy vẫn đang ngủ."
+      }
+    ]
+  },
+  {
+    "id": "bbac03c7-0fcd-50e4-b067-d5e32057469a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたらどうでしょうか",
+    "pattern": "Vたらどうでしょうか",
+    "meaning_vi": "hay là V thì sao?",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề nghị một cách mềm mỏng.",
+    "usage_notes_vi": [
+      "Dùng thể た trước らどうでしょうか.",
+      "Cách nói này lịch sự hơn たらどうですか."
+    ],
+    "common_mistakes": [
+      "Không hiểu đây là câu hỏi về điều kiện đơn thuần; trong mẫu này người nói đang khuyên hoặc đề nghị."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日、先生に相談したらどうでしょうか。",
+        "reading_ja": "あした、せんせいにそうだんしたらどうでしょうか。",
+        "translation_vi": "Ngày mai bạn thử trao đổi với giáo viên xem sao?"
+      },
+      {
+        "sentence_ja": "少し休んだらどうでしょうか。",
+        "reading_ja": "すこしやすんだらどうでしょうか。",
+        "translation_vi": "Bạn nghỉ một chút thì sao?"
+      }
+    ]
+  },
+  {
+    "id": "708d8654-da63-52ac-99f9-f45803f45e95",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nほど",
+    "pattern": "Nほど",
+    "meaning_vi": "đến mức như N; không… bằng N",
+    "explanation_vi": "Dùng N làm mốc để nhấn mạnh mức độ hoặc so sánh trong câu phủ định.",
+    "usage_notes_vi": [
+      "Trong câu phủ định, Nほど thường mang nghĩa “không… bằng N”.",
+      "N đứng trước ほど."
+    ],
+    "common_mistakes": [
+      "Không dùng ほど như trợ từ số lượng khi muốn nêu con số ước lượng."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "東京ほど人が多い町はありません。",
+        "reading_ja": "とうきょうほどひとがおおいまちはありません。",
+        "translation_vi": "Không có thành phố nào đông người như Tokyo."
+      },
+      {
+        "sentence_ja": "この問題ほど難しい問題はありません。",
+        "reading_ja": "このもんだいほどむずかしいもんだいはありません。",
+        "translation_vi": "Không có vấn đề nào khó như vấn đề này."
+      }
+    ]
   }
 ]
 
