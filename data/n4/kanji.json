@@ -138,5 +138,79 @@
     "stroke_count": 10,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "7270dab4-f127-5a1f-8474-c3a913bf7820",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "度",
+    "meaning_vi": "lần; mức độ; độ",
+    "onyomi": [
+      "ド",
+      "ト"
+    ],
+    "kunyomi": [
+      "たび"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "43e35f96-cc4e-56ee-bdbb-153a9db2b00c",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "活",
+    "meaning_vi": "sống; hoạt động",
+    "onyomi": [
+      "カツ"
+    ],
+    "kunyomi": [
+      "い",
+      "いける"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "10119cdf-7bef-54b9-aa92-3b955269cd6a",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "送",
+    "meaning_vi": "gửi; tiễn; đưa",
+    "onyomi": [
+      "ソウ"
+    ],
+    "kunyomi": [
+      "おく"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "cb6a8902-578b-5ec4-8df8-dbc745f691bd",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "始",
+    "meaning_vi": "bắt đầu",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "はじ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

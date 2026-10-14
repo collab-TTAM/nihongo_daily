@@ -1,20 +1,22 @@
-# N4 content — first seed batch
+# N4 content — seed batches
 
 ## Scope
 
-Issue #14 adds the first original N4 content batch without claiming a complete
-JLPT curriculum. The published export contains:
+Issue #14 adds original N4 seed batches without claiming a complete JLPT
+curriculum. The published export contains:
 
 | Model | Count | Examples |
 | --- | ---: | ---: |
-| Vocabulary | 24 | 48 |
-| Kanji metadata | 8 | — |
-| Grammar | 10 | 20 |
-| **Total** | **42** | **68** |
+| Vocabulary | 36 | 72 |
+| Kanji metadata | 12 | — |
+| Grammar | 15 | 30 |
+| **Total** | **63** | **102** |
 
 Themes are travel/planning, transport/shopping, work/communication, daily
-habits, descriptions and common actions. The examples pair Japanese sentences
-with kana readings and Vietnamese translations.
+habits, descriptions, common actions, safety and culture. The second batch adds
+confirmation/guidance, service/fees, addresses, advice and change-of-state
+patterns. Examples pair Japanese sentences with kana readings and Vietnamese
+translations.
 
 ## Provenance and editorial limits
 

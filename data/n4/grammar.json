@@ -318,5 +318,155 @@
         "translation_vi": "Không được vừa đi bộ vừa nói chuyện điện thoại."
       }
     ]
+  },
+  {
+    "id": "908421fc-2c13-5be1-9504-e92b94d004b1",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vそうです",
+    "pattern": "Vそうです",
+    "meaning_vi": "có vẻ sắp; có vẻ sẽ làm V",
+    "explanation_vi": "Dự đoán dựa trên vẻ ngoài hoặc dấu hiệu hiện tại.",
+    "usage_notes_vi": [
+      "Động từ dùng dạng bỏ ます rồi thêm そうです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước そうです."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "雨が降りそうです。",
+        "reading_ja": "あめがふりそうです。",
+        "translation_vi": "Có vẻ trời sắp mưa."
+      },
+      {
+        "sentence_ja": "この料理はおいしそうです。",
+        "reading_ja": "このりょうりはおいしそうです。",
+        "translation_vi": "Món ăn này trông có vẻ ngon."
+      }
+    ]
+  },
+  {
+    "id": "bfa50a0a-0cac-5686-bea2-37d710dde965",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vようになります",
+    "pattern": "Vようになります",
+    "meaning_vi": "trở nên có thể làm V; bắt đầu làm V",
+    "explanation_vi": "Diễn tả sự thay đổi về khả năng hoặc thói quen.",
+    "usage_notes_vi": [
+      "Danh từ có thể dùng Nになる."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vことにします là tự quyết định làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語のニュースが少し分かるようになりました。",
+        "reading_ja": "にほんごのにゅーすがすこしわかるようになりました。",
+        "translation_vi": "Tôi đã bắt đầu hiểu một chút tin tức tiếng Nhật."
+      },
+      {
+        "sentence_ja": "毎朝、早く起きるようになりました。",
+        "reading_ja": "まいあさ、はやくおきるようになりました。",
+        "translation_vi": "Tôi đã hình thành thói quen dậy sớm mỗi sáng."
+      }
+    ]
+  },
+  {
+    "id": "4649862e-d961-58ee-848d-055abec48910",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vなくてもいいです",
+    "pattern": "Vなくてもいいです",
+    "meaning_vi": "không cần làm V",
+    "explanation_vi": "Nói rằng một việc không bắt buộc.",
+    "usage_notes_vi": [
+      "Dùng thể ない bỏ い rồi thêm くてもいいです."
+    ],
+    "common_mistakes": [
+      "Không dùng Vないでください nếu muốn nói không bắt buộc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日は学校へ来なくてもいいです。",
+        "reading_ja": "あしたはがっこうへこなくてもいいです。",
+        "translation_vi": "Ngày mai không cần đến trường."
+      },
+      {
+        "sentence_ja": "全部を食べなくてもいいですよ。",
+        "reading_ja": "ぜんぶをたべなくてもいいですよ。",
+        "translation_vi": "Bạn không cần ăn hết đâu."
+      }
+    ]
+  },
+  {
+    "id": "e139777d-c787-56d6-9f9e-a6ab861fe759",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vすぎます",
+    "pattern": "Vすぎます",
+    "meaning_vi": "làm V quá mức",
+    "explanation_vi": "Nói rằng một hành động hoặc mức độ vượt quá mức phù hợp.",
+    "usage_notes_vi": [
+      "Bỏ ます rồi thêm すぎます."
+    ],
+    "common_mistakes": [
+      "Tính từ い bỏ い trước すぎます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "昨日は働きすぎました。",
+        "reading_ja": "きのうははたらきすぎました。",
+        "translation_vi": "Hôm qua tôi đã làm việc quá nhiều."
+      },
+      {
+        "sentence_ja": "このかばんは大きすぎます。",
+        "reading_ja": "このかばんはおおきすぎます。",
+        "translation_vi": "Chiếc túi này quá to."
+      }
+    ]
+  },
+  {
+    "id": "973290de-ebd0-5eab-999d-22ec790a5b38",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたほうがいいです",
+    "pattern": "Vたほうがいいです",
+    "meaning_vi": "nên làm V",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề nghị.",
+    "usage_notes_vi": [
+      "Phủ định dùng Vないほうがいいです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trước ほうがいいです trong lời khuyên cơ bản."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "早く病院へ行ったほうがいいです。",
+        "reading_ja": "はやくびょういんへいったほうがいいです。",
+        "translation_vi": "Bạn nên đi bệnh viện sớm."
+      },
+      {
+        "sentence_ja": "旅行の前に天気を調べたほうがいいです。",
+        "reading_ja": "りょこうのまえにてんきをしらべたほうがいいです。",
+        "translation_vi": "Trước chuyến đi bạn nên xem thời tiết."
+      }
+    ]
   }
 ]

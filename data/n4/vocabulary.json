@@ -670,5 +670,341 @@
         "translation_vi": "Hãy tiếp tục vận động mà không cố quá sức."
       }
     ]
+  },
+  {
+    "id": "375272d6-05db-5026-a702-b79edda9e997",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "確認",
+    "reading": "かくにん",
+    "meaning_vi": "xác nhận; kiểm tra",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Kiểm tra để chắc chắn thông tin hoặc tình trạng.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "予約の時間をもう一度確認しました。",
+        "reading_ja": "よやくのじかんをもういちどかくにんしました。",
+        "translation_vi": "Tôi đã xác nhận lại giờ đặt chỗ một lần nữa."
+      },
+      {
+        "sentence_ja": "出発する前に住所を確認してください。",
+        "reading_ja": "しゅっぱつするまえにじゅうしょをかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra địa chỉ trước khi xuất phát."
+      }
+    ]
+  },
+  {
+    "id": "03eb431e-b231-5a06-8cb1-117292363734",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "案内",
+    "reading": "あんない",
+    "meaning_vi": "hướng dẫn; chỉ dẫn",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Thông tin hoặc hành động chỉ đường, chỉ cách làm.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "係の人が入口まで案内してくれました。",
+        "reading_ja": "かかりのひとがいりぐちまであんないしてくれました。",
+        "translation_vi": "Nhân viên đã dẫn tôi đến cửa vào."
+      },
+      {
+        "sentence_ja": "駅の案内を見て、電車に乗りました。",
+        "reading_ja": "えきのあんないをみて、でんしゃにのりました。",
+        "translation_vi": "Tôi xem hướng dẫn ở ga rồi lên tàu."
+      }
+    ]
+  },
+  {
+    "id": "95ba4c63-af27-51c0-9cfe-f1f6af6ce319",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "交通",
+    "reading": "こうつう",
+    "meaning_vi": "giao thông; phương tiện đi lại",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc đi lại và hệ thống phương tiện, đường sá.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "朝は交通が混んでいます。",
+        "reading_ja": "あさはこうつうがこんでいます。",
+        "translation_vi": "Buổi sáng giao thông đông đúc."
+      },
+      {
+        "sentence_ja": "この町は交通が便利です。",
+        "reading_ja": "このまちはこうつうがべんりです。",
+        "translation_vi": "Giao thông ở thành phố này thuận tiện."
+      }
+    ]
+  },
+  {
+    "id": "16c8508e-7d13-569c-b386-576760eb6bed",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "受付",
+    "reading": "うけつけ",
+    "meaning_vi": "quầy tiếp nhận; tiếp nhận",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Nơi hoặc việc tiếp nhận đăng ký, yêu cầu.",
+    "audio_ref": null,
+    "tags": [
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "受付で名前を書いてください。",
+        "reading_ja": "うけつけでなまえをかいてください。",
+        "translation_vi": "Hãy viết tên ở quầy tiếp nhận."
+      },
+      {
+        "sentence_ja": "イベントの受付は九時からです。",
+        "reading_ja": "いべんとのうけつけはくじからです。",
+        "translation_vi": "Quầy tiếp nhận sự kiện mở từ chín giờ."
+      }
+    ]
+  },
+  {
+    "id": "50d73f1b-f186-5d39-a8fc-bf1c98143161",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "料金",
+    "reading": "りょうきん",
+    "meaning_vi": "chi phí; cước phí",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Số tiền phải trả cho dịch vụ hoặc phương tiện.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "このホテルの料金はいくらですか。",
+        "reading_ja": "このほてるのりょうきんはいくらですか。",
+        "translation_vi": "Chi phí khách sạn này là bao nhiêu?"
+      },
+      {
+        "sentence_ja": "料金は入口で払ってください。",
+        "reading_ja": "りょうきんはいりぐちではらってください。",
+        "translation_vi": "Hãy trả phí ở lối vào."
+      }
+    ]
+  },
+  {
+    "id": "7002e6a2-da28-52eb-b455-10e6c1e0483b",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "自由",
+    "reading": "じゆう",
+    "meaning_vi": "tự do; tùy ý",
+    "part_of_speech": "tính từ な・danh từ",
+    "usage_context_vi": "Không bị giới hạn hoặc được tự chọn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "午後は自由な時間です。",
+        "reading_ja": "ごごはじゆうなじかんです。",
+        "translation_vi": "Buổi chiều là thời gian tự do."
+      },
+      {
+        "sentence_ja": "好きな席に自由に座ってください。",
+        "reading_ja": "すきなせきにじゆうにすわってください。",
+        "translation_vi": "Hãy tự do ngồi vào chỗ bạn thích."
+      }
+    ]
+  },
+  {
+    "id": "452c898d-83ed-5556-8ee3-47a0e21ce88c",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "安全",
+    "reading": "あんぜん",
+    "meaning_vi": "an toàn",
+    "part_of_speech": "tính từ な・danh từ",
+    "usage_context_vi": "Không có nguy hiểm hoặc rủi ro đáng kể.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この道は夜も安全です。",
+        "reading_ja": "このみちはよるもあんぜんです。",
+        "translation_vi": "Con đường này buổi tối cũng an toàn."
+      },
+      {
+        "sentence_ja": "安全のためにヘルメットをかぶります。",
+        "reading_ja": "あんぜんのためにへるめっとをかぶります。",
+        "translation_vi": "Vì an toàn nên tôi đội mũ bảo hiểm."
+      }
+    ]
+  },
+  {
+    "id": "5db3083a-0b27-5e45-be23-11495afc66b4",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "失敗",
+    "reading": "しっぱい",
+    "meaning_vi": "thất bại; sai sót",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Kết quả không như dự định hoặc làm sai.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "料理に塩を入れすぎて失敗しました。",
+        "reading_ja": "りょうりにしおをいれすぎてしっぱいしました。",
+        "translation_vi": "Tôi đã thất bại vì cho quá nhiều muối vào món ăn."
+      },
+      {
+        "sentence_ja": "失敗しても、もう一度やってみましょう。",
+        "reading_ja": "しっぱいしても、もういちどやってみましょう。",
+        "translation_vi": "Dù thất bại, hãy thử lại một lần nữa."
+      }
+    ]
+  },
+  {
+    "id": "29e16c9e-1288-5ce8-97d0-9acd9e3b1c3a",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "成功",
+    "reading": "せいこう",
+    "meaning_vi": "thành công",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Đạt được kết quả tốt như mục tiêu.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "試験に成功して、安心しました。",
+        "reading_ja": "しけんにせいこうして、あんしんしました。",
+        "translation_vi": "Tôi thấy yên tâm vì đã thành công trong kỳ thi."
+      },
+      {
+        "sentence_ja": "計画が成功するように準備します。",
+        "reading_ja": "けいかくがせいこうするようにじゅんびします。",
+        "translation_vi": "Tôi chuẩn bị để kế hoạch thành công."
+      }
+    ]
+  },
+  {
+    "id": "8867977f-b37e-5e76-bfd1-64202cdc45eb",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "文化",
+    "reading": "ぶんか",
+    "meaning_vi": "văn hóa",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Phong tục, lối sống và giá trị của một cộng đồng.",
+    "audio_ref": null,
+    "tags": [
+      "culture"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "日本の文化に興味があります。",
+        "reading_ja": "にほんのぶんかにきょうみがあります。",
+        "translation_vi": "Tôi quan tâm đến văn hóa Nhật Bản."
+      },
+      {
+        "sentence_ja": "旅行でいろいろな文化を知りました。",
+        "reading_ja": "りょこうでいろいろなぶんかをしりました。",
+        "translation_vi": "Qua du lịch tôi đã biết nhiều nền văn hóa."
+      }
+    ]
+  },
+  {
+    "id": "78b12dff-35c8-5d2a-b459-0aebd4766ea6",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "住所",
+    "reading": "じゅうしょ",
+    "meaning_vi": "địa chỉ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thông tin nơi một người hoặc địa điểm ở.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "新しい住所を会社に知らせました。",
+        "reading_ja": "あたらしいじゅうしょをかいしゃにしらせました。",
+        "translation_vi": "Tôi đã báo địa chỉ mới cho công ty."
+      },
+      {
+        "sentence_ja": "住所をここに書いてください。",
+        "reading_ja": "じゅうしょをここにかいてください。",
+        "translation_vi": "Hãy viết địa chỉ vào đây."
+      }
+    ]
+  },
+  {
+    "id": "20d2a873-5367-5aeb-973b-7e70ea9fd7ac",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "連休",
+    "reading": "れんきゅう",
+    "meaning_vi": "kỳ nghỉ dài ngày",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Một chuỗi nhiều ngày nghỉ liên tiếp.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "連休に友達と海へ行く予定です。",
+        "reading_ja": "れんきゅうにともだちとうみへいくよていです。",
+        "translation_vi": "Kỳ nghỉ dài ngày tôi dự định đi biển với bạn."
+      },
+      {
+        "sentence_ja": "連休の前にホテルを予約しました。",
+        "reading_ja": "れんきゅうのまえにほてるをよやくしました。",
+        "translation_vi": "Tôi đã đặt khách sạn trước kỳ nghỉ dài ngày."
+      }
+    ]
   }
 ]
