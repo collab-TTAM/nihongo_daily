@@ -5772,6 +5772,230 @@
         "translation_vi": "Tôi đã mang hoa đi thăm người bệnh."
       }
     ]
+  },
+  {
+    "id": "b3a093f0-e3d0-51e7-9893-a5840813e66e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "火事",
+    "reading": "かじ",
+    "meaning_vi": "đám cháy; hỏa hoạn",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Sự việc nhà hoặc tòa nhà bị cháy.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "近所で火事がありました。",
+        "reading_ja": "きんじょでかじがありました。",
+        "translation_vi": "Có hỏa hoạn xảy ra trong khu phố."
+      },
+      {
+        "sentence_ja": "火事のときはエレベーターを使わないでください。",
+        "reading_ja": "かじのときはえれべーたーをつかわないでください。",
+        "translation_vi": "Khi có hỏa hoạn, không được dùng thang máy."
+      }
+    ]
+  },
+  {
+    "id": "997263c5-db6e-5f46-9f55-be0f39811465",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "地震",
+    "reading": "じしん",
+    "meaning_vi": "động đất",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Sự rung chuyển của mặt đất.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昨夜、小さい地震がありました。",
+        "reading_ja": "さくや、ちいさいじしんがありました。",
+        "translation_vi": "Tối qua có một trận động đất nhỏ."
+      },
+      {
+        "sentence_ja": "地震に備えて水を用意しています。",
+        "reading_ja": "じしんにそなえてみずをよういしています。",
+        "translation_vi": "Tôi chuẩn bị nước để đề phòng động đất."
+      }
+    ]
+  },
+  {
+    "id": "0d614366-75c3-5a5b-8636-8244d6a20b58",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "避難",
+    "reading": "ひなん",
+    "meaning_vi": "sơ tán; lánh nạn",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Di chuyển khỏi nơi nguy hiểm đến nơi an toàn.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "係の人の指示で避難しました。",
+        "reading_ja": "かかりのひとのしじでひなんしました。",
+        "translation_vi": "Tôi đã sơ tán theo chỉ dẫn của nhân viên."
+      },
+      {
+        "sentence_ja": "避難場所を確認しておきます。",
+        "reading_ja": "ひなんばしょをかくにんしておきます。",
+        "translation_vi": "Tôi sẽ kiểm tra trước nơi sơ tán."
+      }
+    ]
+  },
+  {
+    "id": "06355d25-abaf-5459-ab6e-fd086f9c6708",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "警察",
+    "reading": "けいさつ",
+    "meaning_vi": "cảnh sát",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cơ quan giữ gìn an ninh và trật tự.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "道に迷ったので警察に相談しました。",
+        "reading_ja": "みちにまよったのでけいさつにそうだんしました。",
+        "translation_vi": "Vì bị lạc đường nên tôi đã hỏi cảnh sát."
+      },
+      {
+        "sentence_ja": "警察が事故の場所に来ました。",
+        "reading_ja": "けいさつがじこのばしょにきました。",
+        "translation_vi": "Cảnh sát đã đến nơi xảy ra tai nạn."
+      }
+    ]
+  },
+  {
+    "id": "ee62f2e7-ccf8-526a-b671-fc12ab25ed95",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "交番",
+    "reading": "こうばん",
+    "meaning_vi": "đồn cảnh sát nhỏ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Trạm cảnh sát địa phương thường có gần khu dân cư.",
+    "audio_ref": null,
+    "tags": [
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "交番で駅までの道を聞きました。",
+        "reading_ja": "こうばんでえきまでのみちをききました。",
+        "translation_vi": "Tôi đã hỏi đường đến ga ở đồn cảnh sát."
+      },
+      {
+        "sentence_ja": "交番はこの道の角にあります。",
+        "reading_ja": "こうばんはこのみちのかどにあります。",
+        "translation_vi": "Đồn cảnh sát ở góc con đường này."
+      }
+    ]
+  },
+  {
+    "id": "02ffb8a7-a509-517f-a6b8-ceb81fce7da2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "事故",
+    "reading": "じこ",
+    "meaning_vi": "tai nạn; sự cố",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Sự việc gây thiệt hại hoặc làm gián đoạn hoạt động.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "事故で電車が遅れています。",
+        "reading_ja": "じこででんしゃがおくれています。",
+        "translation_vi": "Tàu điện đang bị trễ do tai nạn."
+      },
+      {
+        "sentence_ja": "事故に気をつけて運転してください。",
+        "reading_ja": "じこにきをつけてうんてんしてください。",
+        "translation_vi": "Hãy lái xe cẩn thận để tránh tai nạn."
+      }
+    ]
+  },
+  {
+    "id": "9d3113dd-da57-50a5-b7ed-4e2ac1d57075",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "危険",
+    "reading": "きけん",
+    "meaning_vi": "nguy hiểm",
+    "part_of_speech": "tính từ な・danh từ",
+    "usage_context_vi": "Trạng thái có thể gây hại hoặc rủi ro.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ここは危険なので入らないでください。",
+        "reading_ja": "ここはきけんなのではいらないでください。",
+        "translation_vi": "Chỗ này nguy hiểm nên xin đừng vào."
+      },
+      {
+        "sentence_ja": "危険な場所に近づかないでください。",
+        "reading_ja": "きけんなばしょにちかづかないでください。",
+        "translation_vi": "Xin đừng đến gần nơi nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "5996c5ef-9989-5875-9a67-8e66b593c13b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "防ぐ",
+    "reading": "ふせぐ",
+    "meaning_vi": "ngăn ngừa; phòng tránh",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho điều xấu không xảy ra.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "事故を防ぐためにヘルメットをかぶります。",
+        "reading_ja": "じこをふせぐためにへるめっとをかぶります。",
+        "translation_vi": "Để phòng tai nạn, tôi đội mũ bảo hiểm."
+      },
+      {
+        "sentence_ja": "火事を防ぐ方法を習いました。",
+        "reading_ja": "かじをふせぐほうほうをならいました。",
+        "translation_vi": "Tôi đã học cách phòng hỏa hoạn."
+      }
+    ]
   }
 ]
 
