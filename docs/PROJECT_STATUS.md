@@ -497,3 +497,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Next: concrete SDK/Auth/profile/runtime binding with #20, durable pending/receipt
   reconciliation/restart with #15, and real non-production A/B/expired JWT/SRS UI
   evidence. This read bridge is independent implementation, not release completion.
+
+- First queue CI 38495122637 correctly rejected fixture enrollment into already
+  inactive curriculum. Fixed fixture ordering: enroll while active, then retire;
+  no validation/RLS trigger weakened. Exporter now prints disposable-fixture SQL
+  diagnostics and exits safely without an artifact on failure; no connection URL
+  is included in its failure message. Final-head native/Flutter checks must rerun.

@@ -14,7 +14,7 @@ insert into public.profiles(id) select id from auth.users where id::text like 'd
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
 select ('d3000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,
- 0.1,1,i<>4,case when i=1 then '猫' else '犬' end,
+ 0.1,1,true,case when i=1 then '猫' else '犬' end,
  case when i=1 then 'ねこ' else 'いぬ' end,'nghĩa kiểm thử','noun','TEST ONLY'
 from generate_series(1,6) i;
 insert into public.kanji(id,jlpt_level,difficulty,content_version,is_active,character,meaning_vi,onyomi,kunyomi,stroke_count)
@@ -34,6 +34,8 @@ insert into public.user_learning_items(user_id,item_type,item_id,srs_state,last_
  values('d1000000-0000-4000-8000-000000000001','GRAMMAR','d4000000-0000-4000-8000-000000000001','LEARNING','2010-01-01T00:00:00Z','2020-01-02T00:00:00Z',10,1,1),
  ('d1000000-0000-4000-8000-000000000001','KANJI','d5000000-0000-4000-8000-000000000001','RELEARNING','2010-01-01T00:00:00Z','2020-01-02T00:00:00Z',10,1,1),
  ('d1000000-0000-4000-8000-000000000002','VOCABULARY','d3000000-0000-4000-8000-000000000001','REVIEW','2010-01-01T00:00:00Z','2018-01-01T00:00:00Z',10,1,1);
+-- Enrollment must happen while active. Retirement later preserves history.
+update public.vocabulary set is_active=false where id='d3000000-0000-4000-8000-000000000004';
 select queue_test.ok((select not prosecdef and provolatile='s' and proconfig @> array['search_path=""'] from pg_proc where oid='public.get_review_queue(jsonb)'::regprocedure),'queue is stable invoker with empty search path');
 select queue_test.ok(has_function_privilege('authenticated','public.get_review_queue(jsonb)','EXECUTE') and
  not has_function_privilege('anon','public.get_review_queue(jsonb)','EXECUTE') and

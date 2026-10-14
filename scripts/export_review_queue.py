@@ -17,8 +17,10 @@ def main():
     args = parser.parse_args()
     result = subprocess.run(["psql", os.environ["TEST_DATABASE_URL"], "-X", "-v", "ON_ERROR_STOP=1",
                              "-qAt", "-f", str(ROOT / "supabase/tests/review_queue.sql")],
-                            text=True, capture_output=True, timeout=60, check=True)
+                            text=True, capture_output=True, timeout=60, check=False)
     print(result.stderr, end="")
+    if result.returncode != 0:
+        raise SystemExit("Queue SQL fixture suite failed; no output exported")
     lines = [line.removeprefix("QUEUE_WIRE:") for line in result.stdout.splitlines() if line.startswith("QUEUE_WIRE:")]
     if len(lines) != 1:
         raise ValueError("Expected exactly one actual SQL output bundle")
