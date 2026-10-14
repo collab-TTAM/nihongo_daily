@@ -1303,6 +1303,44 @@
     "stroke_count": 7,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "97cc58ba-dd4a-5917-8e5e-2d2513ccc226",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "体",
+    "meaning_vi": "thân thể; cơ thể",
+    "onyomi": [
+      "タイ"
+    ],
+    "kunyomi": [
+      "からだ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f69fcfbc-5360-534c-aa27-4f102b964305",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "改",
+    "meaning_vi": "sửa đổi; cải thiện",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あらた",
+      "あらためる",
+      "あらたまる"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
