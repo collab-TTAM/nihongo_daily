@@ -56,4 +56,3 @@ The validator checks schema shape, Unicode/text rules, kana readings, CJK
 characters, duplicate IDs/keys/examples, typed grammar links, content versions,
 asset flags, exact manifest counts and undeclared JSON files. Passing these
 checks does not substitute for linguistic review.
-
