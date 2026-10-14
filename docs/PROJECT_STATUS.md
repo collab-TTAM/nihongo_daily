@@ -468,3 +468,32 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   ReviewRating domain import and three multiline if blocks without braces. Fixed
   import/blocks without changing behavior or weakening lint; full test/build
   evidence still requires the next exact-head run.
+
+## Sequential resume — Issue #22 due-queue bridge, 2026-10-14 00:57 UTC
+
+- Fresh main 78a44faf; resume only open draft #37 at 104dcdd8 after previous worker
+  released. All five prior-head jobs at CI 38488768979 passed, with 139 Flutter
+  tests/web/Windows and retained SQL/RLS/races. That is not new-head evidence.
+- Actual due data read was missing behind the SRS UI's abstract queue. Added
+  separately versioned nd-review-queue-1 contract and local get_review_queue RPC:
+  stable invoker, empty search_path, existing RLS plus explicit auth.uid owner,
+  provisioned profile, reviewed/due/active/level/order/bounded-limit read snapshot.
+  No v0.1 operation/field, table/RLS grant, enrollment or derived-state write changed.
+- Added strict RpcSrsStudyQueue/ReviewQueueSnapshot: ownerless captured-session
+  envelope, limits/fields/UTC precision/due/order/duplicates, safe errors/deadline,
+  old-session rejection. Canonical grammar reading is explicitly absent, not an
+  example pronunciation; UI shows that absence instead of fabricated content.
+- Added native SQL read/security/filter/assertions and actual seven-case response
+  export. Flutter now depends on database and consumes the same-run artifact for
+  actual SQL fixture output -> Dart DTO/RPC projection -> schema checks. Original
+  full tests/builds/races retained; missing/skipped/past-head artifacts cannot pass.
+- Local pure Dart DTO/RPC verifier and schema passed seven HAND-AUTHORED TEST ONLY
+  cases; source/tool analysis/formatting and 49 Python tests passed. No native SQL,
+  full Flutter/widget/web/Windows or real JWT/PostgREST success claimed locally.
+  Final-head CI must establish new SQL/SQL-to-Dart/build evidence. QA: 32 groups;
+  all 14 release integrations remain pending. docs/REVIEW_QUEUE records review/impact.
+- Default app runtime stays null. No SDK/Auth binding, credentials, deployment,
+  token persistence, paid call or data collection change. Keep PR draft/#22 open.
+  Next: concrete SDK/Auth/profile/runtime binding with #20, durable pending/receipt
+  reconciliation/restart with #15, and real non-production A/B/expired JWT/SRS UI
+  evidence. This read bridge is independent implementation, not release completion.

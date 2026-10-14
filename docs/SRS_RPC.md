@@ -1,5 +1,9 @@
 # Local atomic review transaction — Issue #22
 
+The additive authenticated due-queue SQL read and Dart bridge are specified in
+REVIEW_QUEUE.md. Default runtime remains null; real SDK/Auth/durable integration
+is not enabled by this read or its SQL-to-Dart fixture artifact checks.
+
 This is an additive **local SQL and typed Dart repository increment**, not a deployed
 Supabase endpoint or an integrated Flutter review feature. Issue #22 remains open
 for SDK/Auth/queue binding and real JWT/PostgREST/UI acceptance. No production migration,

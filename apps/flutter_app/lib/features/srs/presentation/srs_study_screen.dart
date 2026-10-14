@@ -83,7 +83,9 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
                     if (state.answerVisible) ...[
                       const SizedBox(height: 16),
                       Text(
-                        item.reading,
+                        item.reading.trim().isEmpty
+                            ? 'Chưa có cách đọc trong dữ liệu của mục này.'
+                            : item.reading,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),

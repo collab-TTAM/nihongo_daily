@@ -72,7 +72,7 @@ jobs:
           python3 -m unittest discover -s qa -p 'test_*.py' -v
 
   flutter:
-    needs: repo-sanity
+    needs: [repo-sanity, database]
     if: needs.repo-sanity.outputs.has_flutter == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -90,6 +90,18 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Download same-run native SQL queue projections
+        uses: actions/download-artifact@v4
+        with:
+          name: review-queue-sql
+          path: apps/flutter_app/build/queue-native-input
+      - name: Decode native SQL queue projections with Dart adapter
+        run: dart run tool/verify_review_queue.dart build/queue-native-input/review-queue-sql.json build/review-queue-dart.json
+      - name: Validate decoded native queue wire output
+        working-directory: .
+        run: |
+          python3 -m pip install -r contracts/requirements.txt
+          python3 -m contracts.validate_review_queue apps/flutter_app/build/review-queue-dart.json
       - name: Verify pure SRS golden cases and emit actual wire payloads
         run: |
           mkdir -p build
@@ -173,6 +185,12 @@ jobs:
         run: python3 -m pip install -r contracts/requirements.txt
       - name: Migration, grants, RLS, replay and concurrent uniqueness
         run: bash scripts/test_database.sh
+      - name: Publish actual native SQL queue projections
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-queue-sql
+          path: build/review-queue-sql.json
+          if-no-files-found: error
 
   ai-boundary:
     runs-on: ubuntu-latest

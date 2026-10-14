@@ -16,10 +16,15 @@ final class SrsStudyItem {
     required this.reading,
     required this.answerVi,
   }) : itemId = SrsCard(itemType: type, itemId: itemId).itemId {
-    for (final text in [prompt, reading, answerVi]) {
+    for (final text in [prompt, answerVi]) {
       if (text.trim().isEmpty || text.runes.length > 5000) {
         throw ArgumentError('Expected bounded nonempty curriculum text');
       }
+    }
+    if (reading.runes.length > 5000) {
+      throw ArgumentError(
+        'Expected bounded canonical reading or explicit absence',
+      );
     }
   }
   final LearningItemType type;

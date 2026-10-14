@@ -8,6 +8,8 @@ import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_controller.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
+import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
+import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 import 'study_fixtures.dart';
 
@@ -59,6 +61,30 @@ void main() {
   late StudyHarness h;
   setUp(() => h = StudyHarness());
   tearDown(() => h.dispose());
+
+  testWidgets(
+    'absent canonical grammar reading is explicit instead of invented',
+    (tester) async {
+      h.queue.items = [
+        SrsStudyItem(
+          type: LearningItemType.grammar,
+          itemId: fixtureItem().itemId,
+          level: PreviewLevel.n5,
+          prompt: '～です',
+          reading: '',
+          answerVi: 'là',
+        ),
+      ];
+      await mountSrs(tester, fixture: h);
+      await tester.pumpAndSettle();
+      await tapText(tester, 'Xem đáp án');
+      expect(
+        find.text('Chưa có cách đọc trong dữ liệu của mục này.'),
+        findsOneWidget,
+      );
+      expect(find.text('là'), findsOneWidget);
+    },
+  );
 
   testWidgets(
     'default SRS route is unconfigured and cannot fabricate a saved review',

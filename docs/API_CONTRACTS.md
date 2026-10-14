@@ -4,6 +4,11 @@ The machine-readable source is `contracts/v0.1/models.schema.json` (named `$defs
 
 ## Transport, types and ownership
 
+Additive due-queue read bridge nd-review-queue-1 is separately versioned in
+contracts/review_queue/v1/schema.json and docs/REVIEW_QUEUE.md. It does not alter
+the eight frozen v0.1 operations below; get_review_queue remains a local,
+undeployed implementation until concrete SDK/Auth integration is verified.
+
 JSON uses snake_case, UUID strings and real YYYY-MM-DD calendar dates. Instants use the RFC3339 subset YYYY-MM-DDTHH:MM:SS with optional fractional seconds and UTC Z or an explicit offset; uppercase T/Z, seconds 00–59, no local timestamps or leap-second inputs. Database instants use timestamptz; responses normalize to UTC. Unknown payload fields are rejected.
 
 Every endpoint authenticates using Supabase Auth and derives the user from verified identity. Requests never accept user_id or arbitrary message roles. Flutter calls typed repositories, not raw feature tables. RPC adapters map named request fields to parameters and normalize transport failures into the shared error model; Edge Functions accept the same request JSON.

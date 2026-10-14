@@ -11,13 +11,17 @@
     ],
     "database": [
       "Install review parity validator",
-      "Migration, grants, RLS, replay and concurrent uniqueness"
+      "Migration, grants, RLS, replay and concurrent uniqueness",
+      "Publish actual native SQL queue projections"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Download same-run native SQL queue projections",
+      "Decode native SQL queue projections with Dart adapter",
+      "Validate decoded native queue wire output",
       "Verify pure SRS golden cases and emit actual wire payloads",
       "Validate actual Dart SRS output against frozen wire contracts",
       "Verify typed review adapter using explicit fixture ports",
@@ -189,6 +193,29 @@
       "issues": [22, 20, 15, 18],
       "reproduce": "In apps/flutter_app: flutter test test/features/srs/srs_study_controller_test.dart test/features/srs/srs_study_widget_test.dart; dart run tool/verify_srs_study.dart build/srs-study-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-study-output.json",
       "limitation": "Fixture queue/Auth/RPC replies are TEST ONLY. No real SDK/due queue/JWT/PostgREST, persisted learner journey, disk queue, restart or multi-device evidence. Default app runtime remains null."
+    },
+    {
+      "id": "queue-sql-read",
+      "status": "automated-baseline",
+      "scope": "Stable invoker read preserving RLS, provisioned owner, due/active/level/order/limit filters and read-only state",
+      "ci_job": "database",
+      "anchors": [{"path": "supabase/tests/review_queue.sql", "contains": "A receives four active own due N5 items"}],
+      "issues": [22, 20, 18],
+      "reproduce": "On a new empty disposable PostgreSQL 17: bash scripts/test_database.sh; actual SQL responses are exported by scripts/export_review_queue.py",
+      "limitation": "SQL SET ROLE/sub-claim fixtures do not verify JWT/PostgREST or hosted profile provisioning. No new enrollment or write occurs."
+    },
+    {
+      "id": "queue-sql-dart-bridge",
+      "status": "automated-baseline",
+      "scope": "Same-run native SQL artifact -> strict Dart queue DTO/RPC projection -> versioned schema validation",
+      "ci_job": "flutter",
+      "anchors": [
+        {"path": "apps/flutter_app/tool/verify_review_queue.dart", "contains": "CI passes actual native SQL fixture-role output"},
+        {"path": "apps/flutter_app/test/features/srs/rpc_srs_study_queue_test.dart", "contains": "RPC envelope is immutable ownerless and bound to captured session"}
+      ],
+      "issues": [22, 20, 15, 18],
+      "reproduce": "Download current-run review-queue-sql artifact; from apps/flutter_app run dart run tool/verify_review_queue.dart INPUT.json build/review-queue-dart.json; at root python3 -m contracts.validate_review_queue apps/flutter_app/build/review-queue-dart.json",
+      "limitation": "SQL-to-Dart fixture data flow is not a concrete SDK/HTTP call, real Auth/JWT/expired token, persisted UI or durable queue. Hand-authored fixtures.json is TEST ONLY and not SQL evidence."
     },
     {
       "id": "ai-sql-receipts",

@@ -1,6 +1,10 @@
 # DATABASE SCHEMA — v0.1
 
 ## Enums
+
+Additive get_review_queue read projection/security/evidence limits are specified
+in REVIEW_QUEUE.md. It uses caller privileges/RLS and has no enrollment/state write;
+hosted Auth/profile provisioning remains #20. Frozen v0.1 storage fields are unchanged.
 jlpt_level: N5 | N4 | N3 | N2 | N1
 srs_state: NEW | LEARNING | REVIEW | MASTERED | RELEARNING
 learning_item_type: VOCABULARY | KANJI | GRAMMAR

@@ -1,5 +1,9 @@
 # Supabase storage baseline
 
+Additive due-queue read: docs/REVIEW_QUEUE.md defines get_review_queue, its stable
+invoker/RLS boundary and seven actual SQL fixture projections exported by the
+test script. This is not a deployed Auth/SDK/PostgREST or learner-flow claim.
+
 This directory contains an additive PostgreSQL migration, not a deployed service.
 The Flutter app still uses its labeled preview repository. No live credentials,
 production changes, authentication provider changes or AI provider calls are made.

@@ -216,6 +216,10 @@ DateTime _timestamp(String value) {
   return instant;
 }
 
+/// Reusable strict instant projection for additive wire adapters, never identity
+/// or scheduling authority. Retain original wire strings where exact replay matters.
+DateTime parseSrsWireInstant(String value) => _timestamp(value);
+
 /// Session-bound immutable retry token. Reuse it after uncertain timeout/network
 /// failure; do not regenerate the event ID, occurred_at or rating. Durable pending
 /// event storage/restart recovery belongs to #15, not this in-memory token.
