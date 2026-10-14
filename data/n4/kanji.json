@@ -870,6 +870,40 @@
     "stroke_count": 18,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "2a34a88d-4d78-528a-b6cd-a8a8f2055db7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "意",
+    "meaning_vi": "ý; ý định",
+    "onyomi": [
+      "イ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b4131ac1-ea38-5875-aff1-d5da99b995f3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "見",
+    "meaning_vi": "nhìn; thấy",
+    "onyomi": [
+      "ケン"
+    ],
+    "kunyomi": [
+      "み"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
