@@ -4200,6 +4200,234 @@
         "translation_vi": "Tôi muốn chỗ ngồi phía cửa sổ."
       }
     ]
+  },
+  {
+    "id": "82358ebf-2a53-5cb5-b8f4-f2e356a0c732",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "引っ越す",
+    "reading": "ひっこす",
+    "meaning_vi": "chuyển nhà",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Chuyển từ nơi ở này sang nơi ở khác.",
+    "audio_ref": null,
+    "tags": [
+      "housing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来月、新しい町へ引っ越します。",
+        "reading_ja": "らいげつ、あたらしいまちへひっこします。",
+        "translation_vi": "Tháng sau tôi sẽ chuyển đến một thị trấn mới."
+      },
+      {
+        "sentence_ja": "引っ越す前に荷物を整理しました。",
+        "reading_ja": "ひっこすまえににもつをせいりしました。",
+        "translation_vi": "Trước khi chuyển nhà, tôi đã sắp xếp hành lý."
+      }
+    ]
+  },
+  {
+    "id": "9e45935e-816d-55bb-89e5-2706de3d8bb4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "近所",
+    "reading": "きんじょ",
+    "meaning_vi": "khu phố lân cận; hàng xóm",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực ở gần nhà hoặc nơi đang ở.",
+    "audio_ref": null,
+    "tags": [
+      "housing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "近所に新しい店ができました。",
+        "reading_ja": "きんじょにあたらしいみせができました。",
+        "translation_vi": "Có một cửa hàng mới mở ở khu phố gần nhà."
+      },
+      {
+        "sentence_ja": "近所の人にあいさつしました。",
+        "reading_ja": "きんじょのひとにあいさつしました。",
+        "translation_vi": "Tôi đã chào hỏi người hàng xóm."
+      }
+    ]
+  },
+  {
+    "id": "587a9daa-d46e-5034-82b2-232cd52ff5c8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "設備",
+    "reading": "せつび",
+    "meaning_vi": "thiết bị; cơ sở vật chất",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Các thiết bị được lắp đặt để sử dụng trong một tòa nhà hoặc nơi làm việc.",
+    "audio_ref": null,
+    "tags": [
+      "housing",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "このホテルは設備が新しいです。",
+        "reading_ja": "このホテルはせつびがあたらしいです。",
+        "translation_vi": "Thiết bị của khách sạn này còn mới."
+      },
+      {
+        "sentence_ja": "部屋の設備について説明を聞きました。",
+        "reading_ja": "へやのせつびについてせつめいをききました。",
+        "translation_vi": "Tôi đã nghe giải thích về thiết bị trong phòng."
+      }
+    ]
+  },
+  {
+    "id": "0791c637-fbf6-5972-9145-6c9aa4b40d8f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "故障",
+    "reading": "こしょう",
+    "meaning_vi": "hỏng; sự cố",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Tình trạng máy móc hoặc thiết bị không hoạt động bình thường.",
+    "audio_ref": null,
+    "tags": [
+      "housing",
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "洗濯機が故障してしまいました。",
+        "reading_ja": "せんたくきがこしょうしてしまいました。",
+        "translation_vi": "Máy giặt đã bị hỏng."
+      },
+      {
+        "sentence_ja": "故障したエアコンを見てもらいました。",
+        "reading_ja": "こしょうしたエアコンをみてもらいました。",
+        "translation_vi": "Tôi đã nhờ kiểm tra chiếc điều hòa bị hỏng."
+      }
+    ]
+  },
+  {
+    "id": "67a5edaa-0a8e-50f7-acd5-22e499b4980c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "電気",
+    "reading": "でんき",
+    "meaning_vi": "điện; đèn điện",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điện năng hoặc ánh sáng do điện cung cấp.",
+    "audio_ref": null,
+    "tags": [
+      "housing",
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "部屋の電気を消してください。",
+        "reading_ja": "へやのでんきをけしてください。",
+        "translation_vi": "Hãy tắt đèn trong phòng."
+      },
+      {
+        "sentence_ja": "電気がつかないので、管理会社に連絡しました。",
+        "reading_ja": "でんきがつかないので、かんりがいしゃにれんらくしました。",
+        "translation_vi": "Vì điện không bật được nên tôi đã liên lạc với công ty quản lý."
+      }
+    ]
+  },
+  {
+    "id": "17ac6790-1c7d-50c5-b2e4-5bbaf71259c9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "水道",
+    "reading": "すいどう",
+    "meaning_vi": "nước máy; hệ thống cấp nước",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hệ thống cung cấp nước sinh hoạt.",
+    "audio_ref": null,
+    "tags": [
+      "housing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "水道の水が少し濁っています。",
+        "reading_ja": "すいどうのみずがすこしにごっています。",
+        "translation_vi": "Nước máy hơi đục."
+      },
+      {
+        "sentence_ja": "水道の修理は明日の予定です。",
+        "reading_ja": "すいどうのしゅうりはあしたのよていです。",
+        "translation_vi": "Việc sửa đường nước dự kiến vào ngày mai."
+      }
+    ]
+  },
+  {
+    "id": "7e6f2573-d0a8-5e70-8151-453270563749",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "管理",
+    "reading": "かんり",
+    "meaning_vi": "quản lý; quản trị",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Theo dõi và chăm sóc một tòa nhà, đồ vật hoặc công việc.",
+    "audio_ref": null,
+    "tags": [
+      "housing",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この建物は会社が管理しています。",
+        "reading_ja": "このたてものはかいしゃがかんりしています。",
+        "translation_vi": "Công ty đang quản lý tòa nhà này."
+      },
+      {
+        "sentence_ja": "健康を管理するために、毎日歩きます。",
+        "reading_ja": "けんこうをかんりするために、まいにちあるきます。",
+        "translation_vi": "Để quản lý sức khỏe, tôi đi bộ mỗi ngày."
+      }
+    ]
+  },
+  {
+    "id": "d5f6e38f-17e2-556e-8fef-927052578ac9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "利用",
+    "reading": "りよう",
+    "meaning_vi": "sử dụng; việc sử dụng",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Dùng dịch vụ, phương tiện hoặc cơ sở theo mục đích.",
+    "audio_ref": null,
+    "tags": [
+      "services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "図書館を利用する時はカードが必要です。",
+        "reading_ja": "としょかんをりようするときはカードがひつようです。",
+        "translation_vi": "Khi sử dụng thư viện thì cần có thẻ."
+      },
+      {
+        "sentence_ja": "このサービスを無料で利用できます。",
+        "reading_ja": "このサービスをむりょうでりようできます。",
+        "translation_vi": "Bạn có thể sử dụng dịch vụ này miễn phí."
+      }
+    ]
   }
 ]
 
