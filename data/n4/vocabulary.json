@@ -7807,6 +7807,236 @@
         "translation_vi": "Hãy cho vé vào cổng soát vé."
       }
     ]
+  },
+  {
+    "id": "1310a225-c0bf-55d2-8ac4-216786fafcdd",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "許可",
+    "reading": "きょか",
+    "meaning_vi": "sự cho phép",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Sự đồng ý cho phép làm một việc.",
+    "audio_ref": null,
+    "tags": [
+      "procedures"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ここで写真を撮るには許可が必要です。",
+        "reading_ja": "ここでしゃしんをとるにはきょかがひつようです。",
+        "translation_vi": "Muốn chụp ảnh ở đây thì cần được cho phép."
+      },
+      {
+        "sentence_ja": "先生の許可をもらってから使います。",
+        "reading_ja": "せんせいのきょかをもらってからつかいます。",
+        "translation_vi": "Tôi sẽ dùng sau khi được giáo viên cho phép."
+      }
+    ]
+  },
+  {
+    "id": "90ae090c-8367-57b5-ad06-0e7211789bc1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "期限",
+    "reading": "きげん",
+    "meaning_vi": "thời hạn; hạn sử dụng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thời điểm cuối cùng để làm hoặc dùng một việc.",
+    "audio_ref": null,
+    "tags": [
+      "planning",
+      "procedures"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "申込書の期限を確認してください。",
+        "reading_ja": "もうしこみしょのきげんをかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra thời hạn của đơn đăng ký."
+      },
+      {
+        "sentence_ja": "このカードの期限は来月です。",
+        "reading_ja": "このかーどのきげんはらいげつです。",
+        "translation_vi": "Thẻ này có hạn đến tháng sau."
+      }
+    ]
+  },
+  {
+    "id": "d92dc66e-5ba4-5484-8e24-62e5af2bd6e5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "地図",
+    "reading": "ちず",
+    "meaning_vi": "bản đồ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hình vẽ cho biết vị trí và đường đi.",
+    "audio_ref": null,
+    "tags": [
+      "travel",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅で町の地図を買いました。",
+        "reading_ja": "えきでまちのちずをかいました。",
+        "translation_vi": "Tôi đã mua bản đồ thành phố ở nhà ga."
+      },
+      {
+        "sentence_ja": "地図を見ながら会場へ行きました。",
+        "reading_ja": "ちずをみながらかいじょうへいきました。",
+        "translation_vi": "Tôi vừa xem bản đồ vừa đi đến địa điểm tổ chức."
+      }
+    ]
+  },
+  {
+    "id": "1cf736c4-4eea-5746-b514-a5efb6ad61ae",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "会場",
+    "reading": "かいじょう",
+    "meaning_vi": "địa điểm tổ chức",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi diễn ra một sự kiện hoặc buổi họp.",
+    "audio_ref": null,
+    "tags": [
+      "events",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "会場は駅の近くです。",
+        "reading_ja": "かいじょうはえきのちかくです。",
+        "translation_vi": "Địa điểm tổ chức ở gần nhà ga."
+      },
+      {
+        "sentence_ja": "八時までに会場に来てください。",
+        "reading_ja": "はちじまでにかいじょうにきてください。",
+        "translation_vi": "Hãy đến địa điểm tổ chức trước tám giờ."
+      }
+    ]
+  },
+  {
+    "id": "70dcd835-3544-5d07-a122-b7c2dd76a851",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "関係",
+    "reading": "かんけい",
+    "meaning_vi": "mối quan hệ; liên quan",
+    "part_of_speech": "danh từ・する",
+    "usage_context_vi": "Mối liên hệ giữa người, vật hoặc sự việc.",
+    "audio_ref": null,
+    "tags": [
+      "people",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "これは仕事に関係があります。",
+        "reading_ja": "これはしごとにかんけいがあります。",
+        "translation_vi": "Việc này có liên quan đến công việc."
+      },
+      {
+        "sentence_ja": "二つの話には関係がありません。",
+        "reading_ja": "ふたつのはなしにはかんけいがありません。",
+        "translation_vi": "Hai câu chuyện không có liên quan."
+      }
+    ]
+  },
+  {
+    "id": "85771c0c-8bd2-5ebb-8423-758222e25031",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "機会",
+    "reading": "きかい",
+    "meaning_vi": "cơ hội",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Dịp hoặc thời điểm thuận lợi để làm việc gì.",
+    "audio_ref": null,
+    "tags": [
+      "learning",
+      "people"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "日本語を話す機会が増えました。",
+        "reading_ja": "にほんごをはなすきかいがふえました。",
+        "translation_vi": "Cơ hội nói tiếng Nhật đã tăng lên."
+      },
+      {
+        "sentence_ja": "いい機会なので挑戦します。",
+        "reading_ja": "いいきかいなのでちょうせんします。",
+        "translation_vi": "Vì là cơ hội tốt nên tôi sẽ thử sức."
+      }
+    ]
+  },
+  {
+    "id": "78d2e070-835d-5fc0-92de-967684090f74",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "直接",
+    "reading": "ちょくせつ",
+    "meaning_vi": "trực tiếp",
+    "part_of_speech": "phó từ・tính từ な",
+    "usage_context_vi": "Không qua người hoặc bước trung gian.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅員に直接聞きました。",
+        "reading_ja": "えきいんにちょくせつききました。",
+        "translation_vi": "Tôi đã hỏi trực tiếp nhân viên nhà ga."
+      },
+      {
+        "sentence_ja": "彼に直接メールを送りました。",
+        "reading_ja": "かれにちょくせつめーるをおくりました。",
+        "translation_vi": "Tôi đã gửi email trực tiếp cho anh ấy."
+      }
+    ]
+  },
+  {
+    "id": "1e9c0175-5a4b-5eb0-b84b-8f1b6a5b483d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "落とし物",
+    "reading": "おとしもの",
+    "meaning_vi": "đồ đánh rơi",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Đồ vật bị để quên hoặc đánh rơi.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life",
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅で落とし物を届けました。",
+        "reading_ja": "えきでおとしものをとどけました。",
+        "translation_vi": "Tôi đã giao nộp đồ đánh rơi ở nhà ga."
+      },
+      {
+        "sentence_ja": "落とし物センターはどこですか。",
+        "reading_ja": "おとしものせんたーはどこですか。",
+        "translation_vi": "Trung tâm đồ thất lạc ở đâu vậy?"
+      }
+    ]
   }
 ]
 
