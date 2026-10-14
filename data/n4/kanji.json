@@ -1341,6 +1341,42 @@
     "stroke_count": 7,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "2b93bc42-b4fd-5d6a-9380-35916ee217a4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "許",
+    "meaning_vi": "cho phép",
+    "onyomi": [
+      "キョ"
+    ],
+    "kunyomi": [
+      "ゆる"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b43e78d4-74e7-5ba1-a8cc-15bf6efbcaf2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "場",
+    "meaning_vi": "nơi; địa điểm",
+    "onyomi": [
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "ば"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
