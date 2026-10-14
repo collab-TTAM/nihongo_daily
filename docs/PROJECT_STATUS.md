@@ -1336,3 +1336,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Auth strategy/RLS/schema/API/production deployment or N4 changes.
 - Scope: docs/STAGING_BOOTSTRAP.md. Hosted login/expiry/two-client/GUI acceptance
   and all 14 live release groups remain pending. Keep #37/#20/#22/#15 open.
+
+- First bootstrap source ca859a0f CI38603915706 passed analysis/354 Flutter
+  cases, but two widget platform fixtures left debugDefaultTargetPlatformOverride
+  set at Flutter's invariant check. Use framework TargetPlatformVariant rather
+  than late addTearDown reset. Original selection/ownership/no-resource assertions
+  retained; no production behavior, lint/security/CI gate changed. Full corrected
+  source CI required; skipped downstream steps are not successes.

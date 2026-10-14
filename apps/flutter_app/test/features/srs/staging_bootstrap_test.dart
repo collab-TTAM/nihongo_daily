@@ -95,30 +95,28 @@ void main() {
       expect(find.byType(TextField), findsNothing);
     },
   );
-  testWidgets('unsupported platform fails before disk or Auth assembly', (
-    tester,
-  ) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.linux;
-    addTearDown(() => debugDefaultTargetPlatformOverride = null);
-    var opens = 0;
-    await tester.pumpWidget(
-      selectBootstrapApp(
-        configured,
-        open: (_) async {
-          opens++;
-          throw StateError('PRIVATE');
-        },
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(opens, 0);
-    expect(find.textContaining('chỉ hỗ trợ Windows'), findsOneWidget);
-  });
+  testWidgets(
+    'unsupported platform fails before disk or Auth assembly',
+    (tester) async {
+      var opens = 0;
+      await tester.pumpWidget(
+        selectBootstrapApp(
+          configured,
+          open: (_) async {
+            opens++;
+            throw StateError('PRIVATE');
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(opens, 0);
+      expect(find.textContaining('chỉ hỗ trợ Windows'), findsOneWidget);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
   testWidgets(
     'configured Windows selects owned startup and existing account route',
     (tester) async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.windows;
-      addTearDown(() => debugDefaultTargetPlatformOverride = null);
       final harness = Harness();
       final owner = Owner(harness.runtime);
       await tester.pumpWidget(
@@ -142,5 +140,6 @@ void main() {
       expect(owner.closes, 1);
       await harness.close();
     },
+    variant: TargetPlatformVariant.only(TargetPlatform.windows),
   );
 }
