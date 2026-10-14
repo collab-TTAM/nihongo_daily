@@ -9,7 +9,7 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 254 | 67 | 97 | 702 |
+| N4 | 262 | 69 | 100 | 724 |
 
 ## N4 seed batches
 
@@ -156,11 +156,11 @@ quizzes and conversation content are outside this seed.
 
 ## Metadata provenance and absent assets
 
-Ten stroke counts were cross-checked against nonvariant SVG path counts in
+Twelve stroke counts were cross-checked against nonvariant SVG path counts in
 [KanjiVG](https://github.com/KanjiVG/kanjivg), commit
 `70a0b7ae0c18ceb5cb358274b029cce0234a43bc` (checked 2026-10-13 UTC). Source files:
 `kanji/065e5.svg`, `06708.svg`, `06728.svg`, `05c71.svg`, `05ddd.svg`,
-`04eba.svg`, `06c34.svg`, `0706b.svg`, `0958b.svg`, `07740.svg`. Counts respectively: 4, 4, 4, 3, 3, 2, 4, 4, 12, 12.
+`04eba.svg`, `06c34.svg`, `0706b.svg`, `0958b.svg`, `07740.svg`, `0914d.svg`, `096c6.svg`. Counts respectively: 4, 4, 4, 3, 3, 2, 4, 4, 12, 12, 10, 12.
 KanjiVG is copyright Ulrich Apel under CC BY-SA 3.0; this seed only checks factual
 counts and does not redistribute/derive SVG path geometry. Any future importer
 must retain required attribution/license and independently vet reference assets
