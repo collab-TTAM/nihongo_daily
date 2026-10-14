@@ -1,0 +1,158 @@
+{
+  "version": "nd-review-queue-1",
+  "cases": [
+    {
+      "name": "A_N5",
+      "request": {
+        "jlpt_level": "N5",
+        "limit": 100
+      },
+      "response": {
+        "jlpt_level": "N5",
+        "server_time": "2026-10-14T01:00:00.000000Z",
+        "items": [
+          {
+            "item_type": "VOCABULARY",
+            "item_id": "d3000000-0000-4000-8000-000000000001",
+            "prompt_ja": "猫",
+            "reading_ja": "ねこ",
+            "answer_vi": "nghĩa kiểm thử",
+            "next_review_at": "2020-01-01T00:00:00.000000Z"
+          },
+          {
+            "item_type": "GRAMMAR",
+            "item_id": "d4000000-0000-4000-8000-000000000001",
+            "prompt_ja": "～です",
+            "reading_ja": "",
+            "answer_vi": "là",
+            "next_review_at": "2020-01-02T00:00:00.000000Z"
+          },
+          {
+            "item_type": "KANJI",
+            "item_id": "d5000000-0000-4000-8000-000000000001",
+            "prompt_ja": "日",
+            "reading_ja": "ニチ・ひ",
+            "answer_vi": "ngày",
+            "next_review_at": "2020-01-02T00:00:00.000000Z"
+          },
+          {
+            "item_type": "VOCABULARY",
+            "item_id": "d3000000-0000-4000-8000-000000000002",
+            "prompt_ja": "犬",
+            "reading_ja": "いぬ",
+            "answer_vi": "nghĩa kiểm thử",
+            "next_review_at": "2020-01-03T00:00:00.000000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "A_LIMIT2",
+      "request": {
+        "jlpt_level": "N5",
+        "limit": 2
+      },
+      "response": {
+        "jlpt_level": "N5",
+        "server_time": "2026-10-14T01:00:00.000000Z",
+        "items": [
+          {
+            "item_type": "VOCABULARY",
+            "item_id": "d3000000-0000-4000-8000-000000000001",
+            "prompt_ja": "猫",
+            "reading_ja": "ねこ",
+            "answer_vi": "nghĩa kiểm thử",
+            "next_review_at": "2020-01-01T00:00:00.000000Z"
+          },
+          {
+            "item_type": "GRAMMAR",
+            "item_id": "d4000000-0000-4000-8000-000000000001",
+            "prompt_ja": "～です",
+            "reading_ja": "",
+            "answer_vi": "là",
+            "next_review_at": "2020-01-02T00:00:00.000000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "A_N4",
+      "request": {
+        "jlpt_level": "N4",
+        "limit": 100
+      },
+      "response": {
+        "jlpt_level": "N4",
+        "server_time": "2026-10-14T01:00:00.000000Z",
+        "items": [
+          {
+            "item_type": "VOCABULARY",
+            "item_id": "d3000000-0000-4000-8000-000000000003",
+            "prompt_ja": "犬",
+            "reading_ja": "いぬ",
+            "answer_vi": "nghĩa kiểm thử",
+            "next_review_at": "2019-01-01T00:00:00.000000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "B_N5",
+      "request": {
+        "jlpt_level": "N5",
+        "limit": 100
+      },
+      "response": {
+        "jlpt_level": "N5",
+        "server_time": "2026-10-14T01:00:00.000000Z",
+        "items": [
+          {
+            "item_type": "VOCABULARY",
+            "item_id": "d3000000-0000-4000-8000-000000000001",
+            "prompt_ja": "猫",
+            "reading_ja": "ねこ",
+            "answer_vi": "nghĩa kiểm thử",
+            "next_review_at": "2018-01-01T00:00:00.000000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "C_EMPTY",
+      "request": {
+        "jlpt_level": "N5",
+        "limit": 100
+      },
+      "response": {
+        "jlpt_level": "N5",
+        "server_time": "2026-10-14T01:00:00.000000Z",
+        "items": []
+      }
+    },
+    {
+      "name": "NO_AUTH",
+      "request": {
+        "jlpt_level": "N5",
+        "limit": 100
+      },
+      "response": {
+        "code": "UNAUTHORIZED",
+        "message_vi": "Dữ liệu kiểm thử",
+        "retryable": false
+      }
+    },
+    {
+      "name": "FORGED_OWNER",
+      "request": {
+        "jlpt_level": "N5",
+        "limit": 100,
+        "user_id": "d1000000-0000-4000-8000-000000000002"
+      },
+      "response": {
+        "code": "VALIDATION_FAILURE",
+        "message_vi": "Dữ liệu kiểm thử",
+        "retryable": false
+      }
+    }
+  ]
+}
