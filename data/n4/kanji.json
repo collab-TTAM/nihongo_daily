@@ -1268,6 +1268,41 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "f5978433-484f-57bd-b8fc-7e32685d573a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "客",
+    "meaning_vi": "khách; hành khách",
+    "onyomi": [
+      "キャク",
+      "カク"
+    ],
+    "kunyomi": [],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "47774582-5a39-5719-80fd-ea82c5a5001c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "売",
+    "meaning_vi": "bán",
+    "onyomi": [
+      "バイ"
+    ],
+    "kunyomi": [
+      "う"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
