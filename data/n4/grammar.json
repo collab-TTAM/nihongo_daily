@@ -2928,6 +2928,96 @@
         "translation_vi": "Tôi đã để đèn bật nguyên."
       }
     ]
+  },
+  {
+    "id": "f55f0179-162c-53ec-8657-dbaa0c7bd570",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるまでに",
+    "pattern": "Vるまでに",
+    "meaning_vi": "trước khi; trước thời điểm V",
+    "explanation_vi": "Nêu hạn chót mà một việc phải hoàn thành trước thời điểm khác.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước までに."
+    ],
+    "common_mistakes": [
+      "までに chỉ hạn hoàn thành, khác với まで chỉ thời điểm kéo dài."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "六時までに駅へ来てください。",
+        "reading_ja": "ろくじまでにえきへきてください。",
+        "translation_vi": "Hãy đến ga trước sáu giờ."
+      },
+      {
+        "sentence_ja": "寝るまでに宿題を終わらせます。",
+        "reading_ja": "ねるまでにしゅくだいをおわらせます。",
+        "translation_vi": "Tôi sẽ làm xong bài tập trước khi ngủ."
+      }
+    ]
+  },
+  {
+    "id": "aa985f7b-aba4-5737-94d3-c1f178b5f413",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるように言われました",
+    "pattern": "Vるように言われました",
+    "meaning_vi": "được bảo là hãy V",
+    "explanation_vi": "Nói lại lời dặn hoặc yêu cầu mà người khác đã nói với mình.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ように言われました."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vるようにします là tự cố gắng thực hiện."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生に毎日読むように言われました。",
+        "reading_ja": "せんせいにまいにちよむようにいわれました。",
+        "translation_vi": "Tôi được giáo viên bảo hãy đọc mỗi ngày."
+      },
+      {
+        "sentence_ja": "母に早く帰るように言われました。",
+        "reading_ja": "ははにはやくかえるようにいわれました。",
+        "translation_vi": "Tôi được mẹ bảo hãy về sớm."
+      }
+    ]
+  },
+  {
+    "id": "3b688b41-8bef-5463-9b82-eccdb483902b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nだけでなく",
+    "pattern": "Nだけでなく",
+    "meaning_vi": "không chỉ N mà còn",
+    "explanation_vi": "Thêm một đối tượng hoặc đặc điểm ngoài N.",
+    "usage_notes_vi": [
+      "Dùng danh từ trước だけでなく và thường nối với も ở vế sau."
+    ],
+    "common_mistakes": [
+      "Không dùng だけでなく để diễn tả lựa chọn chỉ có một đối tượng."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この店は日本人だけでなく、外国人にも人気があります。",
+        "reading_ja": "このみせはにほんじんだけでなく、がいこくじんにもにんきがあります。",
+        "translation_vi": "Cửa hàng này nổi tiếng không chỉ với người Nhật mà cả người nước ngoài."
+      },
+      {
+        "sentence_ja": "漢字だけでなく、文法も勉強します。",
+        "reading_ja": "かんじだけでなく、ぶんぽうもべんきょうします。",
+        "translation_vi": "Tôi học không chỉ Kanji mà cả ngữ pháp."
+      }
+    ]
   }
 ]
 
