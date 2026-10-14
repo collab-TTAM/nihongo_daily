@@ -1022,7 +1022,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   but waits for interrupted Auth cleanup; caller must await close. Explicit refresh
   only, no automatic refresh scheduler. Auth HTTP is same-origin/no redirects,
   bounded to one 15-second attempt and 1MiB; no raw errors or secrets in state/logs.
-- Twenty pure fixture cases pass locally. Six actual SDK/mock-HTTP cases authored;
+- Twenty-two pure fixture cases pass locally. Six actual SDK/mock-HTTP cases authored;
   full Flutter, SDK, browser, native/build evidence requires current-source CI.
   New mandatory lifecycle verifier retains every prior gate. QA43/all 14 live
   release integrations pending. Separate review: PERSISTENT_SESSION_LIFECYCLE.md.
@@ -1031,3 +1031,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Next actual Windows Dart-to-OS/runtime restart and configured hosted learner
   A/B/expired JWT/two-client evidence; then opt-in startup UI/configuration and
   refresh scheduling. Source implementation is not real login acceptance.
+
+- First CI38573420584 passed repo/database/AI but Flutter lint required the
+  inherited stream's @override annotation. Kept lint gate; correction also holds
+  the Auth operation through late cleanup and cancels failed-state login recovery
+  on logout, with two added regression cases (22 pure). Source CI rerun required.

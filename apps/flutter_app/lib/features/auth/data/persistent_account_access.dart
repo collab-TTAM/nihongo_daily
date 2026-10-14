@@ -36,6 +36,7 @@ final class PersistentAccountAccess implements AccountAccess {
   final RefreshableAccountAccess sdk;
   final SessionCredentialVault vault;
   final _events = StreamController<void>.broadcast();
+  @override
   late final Stream<void> sessionChanges = _events.stream;
   StreamSubscription<void>? _subscription;
   Future<void> _tail = Future<void>.value();
@@ -223,17 +224,20 @@ final class PersistentAccountAccess implements AccountAccess {
       if (_allowed && !_closed) _fail();
       throw _failure();
     } finally {
-      _operation = null;
       _authInFlight = false;
-      if (_closed || _cancelledOperation) {
-        // Logout/disposal during an Auth request: remove any late SDK session
-        // and clear again after that request has actually settled.
-        await _cleanup();
-        if (!_closed && !_failed) {
-          _allowed = true;
-          _phase = SessionPersistencePhase.idle;
-          _notify();
+      try {
+        if (_closed || _cancelledOperation) {
+          // Keep the operation owned until cleanup completes: a new login must
+          // not race the sign-out/clear of this cancelled Auth request.
+          await _cleanup();
+          if (!_closed && !_failed) {
+            _allowed = true;
+            _phase = SessionPersistencePhase.idle;
+            _notify();
+          }
         }
+      } finally {
+        _operation = null;
       }
     }
   }
@@ -251,7 +255,7 @@ final class PersistentAccountAccess implements AccountAccess {
     final result = _run(() async {
       if (_failed) {
         await _cleanup();
-        if (_closed || _logout != null) throw _failure();
+        if (_closed || _logout != null || _cancelledOperation) throw _failure();
         _failed = false;
         _allowed = true;
       }

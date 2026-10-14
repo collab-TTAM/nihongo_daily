@@ -63,6 +63,7 @@ final class MemorySdk implements RefreshableAccountAccess {
   String nextSecret = 'TEST_ONLY_ROTATED_1';
   final events = StreamController<void>.broadcast(sync: true);
   Completer<void>? authWait;
+  Completer<void>? logoutWait;
   bool failAuth = false;
   bool failLogout = false;
   int logouts = 0;
@@ -104,6 +105,7 @@ final class MemorySdk implements RefreshableAccountAccess {
   @override
   Future<void> signOut() async {
     logouts++;
+    await logoutWait?.future;
     if (failLogout) throw StateError('PRIVATE LOGOUT ERROR');
     change(null, null);
   }
@@ -130,6 +132,8 @@ const scenarios = [
   'queued-old-rotation',
   'exclusive-owner',
   'logout-failure-late-login',
+  'login-during-late-cleanup',
+  'logout-during-failed-state-retry',
 ];
 
 Future<void> verifyLifecycle(String scenario) async {
@@ -230,6 +234,40 @@ Future<void> verifyLifecycle(String scenario) async {
       );
       return;
     }
+    if (scenario == 'login-during-late-cleanup') {
+      sdk.authWait = Completer();
+      final error = fails(login());
+      await access.signOut();
+      sdk.logoutWait = Completer();
+      sdk.authWait!.complete();
+      await flush();
+      await fails(login());
+      check(sdk.logins == 1, 'new login raced cancelled operation cleanup');
+      sdk.logoutWait!.complete();
+      await error;
+      check(
+        sdk.session == null && backend.secret == null,
+        'late cleanup retained credentials',
+      );
+      return;
+    }
+    if (scenario == 'logout-during-failed-state-retry') {
+      backend.failWrite = true;
+      await fails(login());
+      backend.failWrite = false;
+      sdk.logoutWait = Completer();
+      final error = fails(login());
+      await flush();
+      final logout = access.signOut();
+      sdk.logoutWait!.complete();
+      await logout;
+      await error;
+      check(
+        sdk.logins == 1 && sdk.session == null && backend.secret == null,
+        'failed-state recovery ignored logout',
+      );
+      return;
+    }
     if (scenario == 'empty-start') {
       check(
         sdk.restores == 0 &&
@@ -313,8 +351,18 @@ Future<void> verifyLifecycle(String scenario) async {
             access.currentSession != null,
         'rotation not saved',
       );
-    } else if (scenario == 'account-switch' ||
-        scenario == 'queued-old-rotation') {
+    } else if (scenario == 'queued-old-rotation') {
+      final writes = backend.writes;
+      sdk.change(owner, 'TEST_ONLY_OLD', sameSession: true);
+      sdk.change(other, 'TEST_ONLY_OTHER');
+      await flush();
+      check(
+        backend.writes == writes + 1 &&
+            backend.secret == 'TEST_ONLY_OTHER' &&
+            access.currentSession?.userId == other,
+        'obsolete queued secret was written',
+      );
+    } else if (scenario == 'account-switch') {
       backend.writeWait = Completer();
       sdk.change(owner, 'TEST_ONLY_OLD', sameSession: true);
       await flush();

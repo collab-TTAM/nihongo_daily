@@ -74,7 +74,7 @@ revocation, OS-logoff/power-loss recovery or protection from same-OS-user proces
 ## Reproduction and separate review
 
 In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
-`flutter test`. Twenty pure cases cover empty/refresh startup, persistence
+`flutter test`. Twenty-two pure cases cover empty/refresh startup, persistence
 barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
 retry, revocation, owner exclusivity, stream closure and disposal. Six pinned-SDK
