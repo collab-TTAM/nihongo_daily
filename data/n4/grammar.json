@@ -3201,6 +3201,99 @@
         "translation_vi": "Tốt hơn là không nên uống cà phê vào khuya."
       }
     ]
+  },
+  {
+    "id": "fab69c2a-bf1e-5455-86c4-c353f6e47dff",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてくれませんか",
+    "pattern": "Vてくれませんか",
+    "meaning_vi": "bạn có thể V giúp tôi không?",
+    "explanation_vi": "Cách nhờ người nghe làm một việc giúp mình một cách lịch sự.",
+    "usage_notes_vi": [
+      "Dùng thể て của động từ trước くれませんか.",
+      "Câu hỏi này mềm hơn mệnh lệnh trực tiếp."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước くれませんか."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "もう一度説明してくれませんか。",
+        "reading_ja": "もういちどせつめいしてくれませんか。",
+        "translation_vi": "Bạn có thể giải thích lại một lần nữa không?"
+      },
+      {
+        "sentence_ja": "窓を開けてくれませんか。",
+        "reading_ja": "まどをあけてくれませんか。",
+        "translation_vi": "Bạn có thể mở cửa sổ giúp tôi không?"
+      }
+    ]
+  },
+  {
+    "id": "e3b62ded-94c4-5b00-81b9-3461160e3591",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることはありません",
+    "pattern": "Vることはありません",
+    "meaning_vi": "không cần phải V; không có chuyện V",
+    "explanation_vi": "Phủ định sự cần thiết hoặc khả năng xảy ra của hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことはありません.",
+      "Ngữ cảnh quyết định nghĩa là không cần hoặc không xảy ra."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないことにします, nghĩa là quyết định không làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "心配することはありません。",
+        "reading_ja": "しんぱいすることはありません。",
+        "translation_vi": "Bạn không cần phải lo lắng."
+      },
+      {
+        "sentence_ja": "急ぐことはありません。",
+        "reading_ja": "いそぐことはありません。",
+        "translation_vi": "Không cần phải vội."
+      }
+    ]
+  },
+  {
+    "id": "c4db813c-d1ea-5f78-bc84-7a22a63a1fc1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nを通して",
+    "pattern": "Nを通して",
+    "meaning_vi": "thông qua N",
+    "explanation_vi": "Nêu phương tiện, người trung gian hoặc khoảng thời gian xuyên suốt mà sự việc diễn ra.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ phương tiện hoặc trung gian trước を通して.",
+      "Có thể dùng cho hoạt động kéo dài qua một khoảng thời gian."
+    ],
+    "common_mistakes": [
+      "Không dùng を通して để chỉ người nhận trực tiếp của hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "友達を通してその人を知りました。",
+        "reading_ja": "ともだちをとおしてそのひとをしりました。",
+        "translation_vi": "Tôi biết người đó thông qua một người bạn."
+      },
+      {
+        "sentence_ja": "インターネットを通して情報を集めます。",
+        "reading_ja": "いんたーねっとをとおしてじょうほうをあつめます。",
+        "translation_vi": "Tôi thu thập thông tin qua Internet."
+      }
+    ]
   }
 ]
 
