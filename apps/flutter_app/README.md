@@ -2,7 +2,8 @@
 
 Opt-in native write-before-dispatch/restart library:
 ../../docs/DURABLE_REVIEW_JOURNAL.md. It does not activate offline mode or wire
-recovery into the shipped controller; default runtime remains unconfigured.
+recovery automatically; default runtime remains unconfigured. Explicit runtime
+storage enables controller recovery as described in ../../docs/STUDY_RECOVERY.md.
 
 This is an explicitly labeled UI preview, not Personal Alpha. No login, real
 curriculum study flow, integrated SRS review, real grading, progress persistence, default network activation or live

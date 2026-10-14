@@ -98,6 +98,21 @@ final class Store implements DurableReviewStore {
       receipt: result,
     );
   }
+
+  @override
+  Future<void> reject(
+    String userId,
+    String eventId,
+    ReviewFailure rejection,
+  ) async {
+    if (failAck) throw StateError('PRIVATE PATH/TOKEN');
+    final key = '$userId/$eventId';
+    records[key] = StoredReview(
+      userId: userId,
+      request: records[key]!.request,
+      rejection: rejection,
+    );
+  }
 }
 
 void main() {

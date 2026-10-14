@@ -652,3 +652,28 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   events. Add reservation-exhaustion/freeing regression; retain the global
   event cap test with acknowledged history plus a final pending event.
 
+## Opt-in study recovery resume — 2026-10-14 UTC
+
+- Resume released draft #37 at unchanged e64133fa; prior CI 38512449413 passed
+  all five jobs/204 Flutter tests/native disk verifiers on Linux and Windows.
+  This is historical evidence, not proof for this new source increment.
+- Controller/notifier/screen now recover all owner-scoped pending before due
+  cards, show immutable original rating/time and explicit replay, reject late
+  sessions/disposal and reload authoritative queue after durable reconciliation.
+  Both explicit runtime factories accept caller-owned storage; default is null.
+- Journal writes v2 terminal rejections with v1 pending/receipt read compatibility.
+  Strict nonretryable definitive codes only, immutable result history, reserved
+  result space and failed-write uncertainty retained. Local storage failure marker
+  permits safe manual retry without altering frozen RPC error JSON or rating.
+- Local actual disk/controller close/reopen verifier, retained native subprocess
+  verifier, pure source/tool analyzer and formatter, QA36 inventory/17 regressions
+  passed. Twenty controller/widget cases authored; full Flutter/widget/web and
+  Windows results require current-head CI. Add required disk/controller verifier
+  to Linux/Windows without removing any previous gate.
+- Separate impact/compatibility and reproduction in STUDY_RECOVERY.md. No new
+  dependencies, Auth provider/strategy, tokens, RLS, frozen RPC, deployment or
+  paid calls. Keep #37 draft/#22/#15 open; no hosted learner acceptance is claimed.
+- Next: browser transactional store/retention, configured #20 login/profile/secure
+  session restoration and actual hosted A/B/expired JWT/two-device validation.
+  All 14 Personal Alpha integration release cases remain pending.
+

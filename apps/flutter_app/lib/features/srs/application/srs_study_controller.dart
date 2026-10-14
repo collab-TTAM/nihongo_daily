@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import '../../../shared/models/preview_level.dart';
+import '../data/durable_review_repository.dart';
 import '../data/review_repository.dart';
 import '../domain/srs_models.dart';
 
@@ -46,6 +47,8 @@ enum SrsStudyPhase {
   unavailable,
   signedOut,
   loading,
+  recovering,
+  recoveryReady,
   ready,
   saving,
   failed,
@@ -63,6 +66,9 @@ final class SrsStudyState {
     this.failure,
     this.receipt,
     this.hasPendingEvent = false,
+    this.recoveryRequest,
+    this.recoveryRemaining = 0,
+    this.durablePending = false,
   });
   final SrsStudyPhase phase;
   final SrsStudyItem? item;
@@ -72,14 +78,22 @@ final class SrsStudyState {
   final ReviewFailure? failure;
   final ReviewSuccess? receipt;
   final bool hasPendingEvent;
+  final Map<String, Object>? recoveryRequest;
+  final int recoveryRemaining;
+  final bool durablePending;
   bool get canRate =>
       phase == SrsStudyPhase.ready && answerVisible && !hasPendingEvent;
   bool get canRetry =>
-      phase == SrsStudyPhase.failed &&
-      hasPendingEvent &&
-      (failure?.retryable ?? false);
+      phase == SrsStudyPhase.recoveryReady ||
+      (phase == SrsStudyPhase.failed &&
+          hasPendingEvent &&
+          ((failure?.retryable ?? false) ||
+              (failure?.isLocalStorage ?? false) ||
+              (durablePending &&
+                  failure?.code == ReviewErrorCode.internalError)));
   bool get canReload =>
       phase != SrsStudyPhase.loading &&
+      phase != SrsStudyPhase.recovering &&
       phase != SrsStudyPhase.saving &&
       (!hasPendingEvent || _definitiveRejection(failure?.code));
 }
@@ -92,8 +106,8 @@ bool _definitiveRejection(ReviewErrorCode? code) => const {
 }.contains(code);
 
 /// Pure controller; injected fixtures never prove a persisted learner journey.
-/// Pending events survive route navigation in the provider, but not app restart.
-/// Durable recovery/authoritative refresh belongs to #15/#20/#22.
+/// Opt-in ReviewRecovery repositories restore disk events before new due cards.
+/// The default preview remains unconfigured; live Auth/journeys stay #20/#22.
 final class SrsStudyController {
   SrsStudyController({
     required this.auth,
@@ -134,6 +148,9 @@ final class SrsStudyController {
   int _shownAt = 0;
   bool _disposed = false;
   PreparedReview? _pending;
+  List<PreparedReview> _recovered = const [];
+  PreviewLevel? _level;
+  bool get _durable => reviews is ReviewRecovery;
   int get _ticks => _elapsedMs?.call() ?? _watch.elapsedMilliseconds;
 
   void _publish(SrsStudyState value) {
@@ -150,6 +167,8 @@ final class SrsStudyController {
     _session = null;
     _items = const [];
     _pending = null;
+    _recovered = const [];
+    _level = null;
     _index = 0;
     _publish(const SrsStudyState(phase: SrsStudyPhase.signedOut));
   }
@@ -168,8 +187,58 @@ final class SrsStudyController {
     sessionChanged();
     if (session == null) return;
     _session = session;
+    _level = level;
     final generation = _generation;
+    if (_durable) {
+      _publish(const SrsStudyState(phase: SrsStudyPhase.recovering));
+      try {
+        final pending = await (reviews as ReviewRecovery)
+            .recoverPending()
+            .timeout(loadTimeout);
+        if (_disposed || generation != _generation || !_sameSession()) return;
+        if (pending.length > 512 ||
+            pending.any((event) => !identical(event.session, session)) ||
+            pending
+                    .map((event) => event.request['client_event_id'])
+                    .toSet()
+                    .length !=
+                pending.length) {
+          throw const ReviewStorageFailure();
+        }
+        _recovered = List<PreparedReview>.unmodifiable(pending);
+        if (_recovered.isNotEmpty) {
+          _pending = _recovered.first;
+          _publish(
+            SrsStudyState(
+              phase: SrsStudyPhase.recoveryReady,
+              hasPendingEvent: true,
+              recoveryRequest: _pending!.request,
+              recoveryRemaining: _recovered.length,
+            ),
+          );
+          return;
+        }
+      } on Object {
+        if (_disposed || generation != _generation || !_sameSession()) return;
+        _publish(
+          SrsStudyState(
+            phase: SrsStudyPhase.failed,
+            failure: ReviewFailure.storage(),
+          ),
+        );
+        return;
+      }
+    }
+    await _loadDue(session, generation, level);
+  }
+
+  Future<void> _loadDue(
+    ReviewSession session,
+    int generation,
+    PreviewLevel level,
+  ) async {
     _publish(const SrsStudyState(phase: SrsStudyPhase.loading));
+    if (_disposed || generation != _generation || !_sameSession()) return;
     try {
       final items = await queue.load(session, level).timeout(loadTimeout);
       if (_disposed || generation != _generation || !_sameSession()) return;
@@ -277,9 +346,13 @@ final class SrsStudyController {
         total: _items.length,
         confirmed: _index,
         hasPendingEvent: true,
+        recoveryRequest: _recovered.isEmpty ? null : pending.request,
+        recoveryRemaining: _recovered.length,
+        durablePending: _durable,
       ),
     );
     ReviewOutcome result;
+    if (_disposed || generation != _generation || !_sameSession()) return;
     try {
       result = await reviews.submit(pending).timeout(saveTimeout);
     } on TimeoutException {
@@ -293,6 +366,29 @@ final class SrsStudyController {
     if (_disposed || generation != _generation || !_sameSession()) return;
     if (result is ReviewSuccess) {
       _pending = null;
+      if (_durable) {
+        final level = _level!;
+        if (_recovered.isNotEmpty) {
+          _recovered = List<PreparedReview>.unmodifiable(_recovered.skip(1));
+          if (_recovered.isNotEmpty) {
+            _pending = _recovered.first;
+            _publish(
+              SrsStudyState(
+                phase: SrsStudyPhase.recoveryReady,
+                hasPendingEvent: true,
+                recoveryRequest: _pending!.request,
+                recoveryRemaining: _recovered.length,
+              ),
+            );
+            return;
+          }
+        }
+        // Historical replay receipts never become a current schedule or a new
+        // session's confirmation counter. Re-read journal then authoritative queue.
+        _publish(const SrsStudyState(phase: SrsStudyPhase.idle));
+        await load(level);
+        return;
+      }
       _index++;
       _shownAt = _ticks;
       _publish(_current(receipt: result));
@@ -306,6 +402,9 @@ final class SrsStudyController {
           confirmed: _index,
           hasPendingEvent: true,
           failure: result as ReviewFailure,
+          recoveryRequest: _recovered.isEmpty ? null : pending.request,
+          recoveryRemaining: _recovered.length,
+          durablePending: _durable,
         ),
       );
     }
@@ -319,6 +418,8 @@ final class SrsStudyController {
     _items = const [];
     _pending = null;
     _watch.stop();
+    _recovered = const [];
+    _level = null;
     unawaited(_changes.close());
   }
 }

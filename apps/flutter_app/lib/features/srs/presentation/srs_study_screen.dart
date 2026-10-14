@@ -6,6 +6,8 @@ import '../../../shared/widgets/page_body.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/srs_study_controller.dart';
 import '../application/srs_study_provider.dart';
+import '../data/durable_review_repository.dart';
+import '../data/review_repository.dart';
 import '../domain/srs_models.dart';
 
 class SrsStudyScreen extends ConsumerStatefulWidget {
@@ -32,6 +34,8 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
     final state = ref.watch(srsStudyProvider);
     final controller = ref.read(srsStudyProvider.notifier);
     final item = state.item;
+    final durable =
+        ref.watch(srsStudyRuntimeProvider)?.reviews is ReviewRecovery;
     void reload() => controller.load(ref.read(previewLevelProvider));
     return PageBody(
       children: [
@@ -57,10 +61,43 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
             onPressed: reload,
             child: const Text('Tải danh sách cho phiên hiện tại'),
           ),
-        ] else if (state.phase == SrsStudyPhase.loading) ...[
+        ] else if (state.phase == SrsStudyPhase.loading ||
+            state.phase == SrsStudyPhase.recovering) ...[
           const Center(child: CircularProgressIndicator()),
-          const Text('Đang tải danh sách ôn tập…'),
+          Text(
+            state.phase == SrsStudyPhase.recovering
+                ? 'Đang kiểm tra lượt ôn trên thiết bị…'
+                : 'Đang tải danh sách ôn tập…',
+          ),
         ] else ...[
+          if (state.recoveryRequest != null) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Còn ${state.recoveryRemaining} lượt ôn đang chờ xác nhận.',
+                    ),
+                    const SizedBox(height: 12),
+                    const Text('Xử lý lượt đã lưu trước khi bắt đầu thẻ mới.'),
+                    Text(
+                      'Đánh giá đã chọn: ${_ratingLabel(ReviewRating.fromWire(state.recoveryRequest!['rating']! as int))}',
+                    ),
+                    Text(
+                      'Thời điểm lượt ôn (giờ thiết bị): ${_recoveryTime(state.recoveryRequest!['occurred_at']! as String)}',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (state.phase == SrsStudyPhase.recoveryReady)
+              FilledButton(
+                onPressed: controller.retry,
+                child: const Text('Gửi lại lượt đã lưu'),
+              ),
+          ],
           if (state.total > 0)
             Text(
               'Đã xác nhận ${state.confirmed} / ${state.total} lượt trong phiên này.',
@@ -133,7 +170,9 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
               OutlinedButton(
                 onPressed: reload,
                 child: Text(
-                  state.hasPendingEvent
+                  durable && state.hasPendingEvent
+                      ? 'Kiểm tra lại các lượt còn chờ'
+                      : state.hasPendingEvent
                       ? 'Bỏ lượt bị từ chối và tải lại'
                       : 'Tải lại danh sách',
                 ),
@@ -161,9 +200,11 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
             ),
         ],
         const SizedBox(height: 24),
-        const Text(
-          'Lượt chưa xác nhận chỉ được giữ trong bộ nhớ khi đổi trang. '
-          'Lưu hàng đợi qua khởi động lại và đồng bộ thiết bị chưa được tích hợp.',
+        Text(
+          durable
+              ? 'Lượt ôn được giữ trên thiết bị. Các lượt còn chờ được kiểm tra trước khi học tiếp. Đồng bộ thiết bị chưa được kiểm chứng.'
+              : 'Lượt chưa xác nhận chỉ được giữ trong bộ nhớ khi đổi trang. '
+                    'Lưu hàng đợi qua khởi động lại và đồng bộ thiết bị chưa được tích hợp.',
         ),
       ],
     );
@@ -181,3 +222,10 @@ String _itemLabel(LearningItemType type) => switch (type) {
   LearningItemType.kanji => 'Kanji',
   LearningItemType.grammar => 'Ngữ pháp',
 };
+
+String _recoveryTime(String wire) {
+  final time = parseSrsWireInstant(wire).toLocal();
+  String two(int value) => value.toString().padLeft(2, '0');
+  return '${two(time.day)}/${two(time.month)}/${time.year} '
+      '${two(time.hour)}:${two(time.minute)}:${two(time.second)}';
+}

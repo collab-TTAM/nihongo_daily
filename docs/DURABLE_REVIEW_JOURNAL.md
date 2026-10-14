@@ -5,7 +5,7 @@ The owner opens NativeReviewJournal in the application's private data directory,
 wraps RpcReviewRepository in DurableReviewRepository, and closes the journal
 when the runtime ends. There is no new dependency, table write, auth provider,
 token serialization or storage of curriculum display text. Default app runtime
-remains null; existing controller/UI does not yet invoke restart recovery.
+remains null. Configured controller/UI recovery is documented in STUDY_RECOVERY.md.
 
 ## Write and recovery protocol
 
@@ -34,8 +34,9 @@ The configured Auth/RPC binding and server retain those responsibilities.
 
 ## File safety and limits
 
-The version-1 journal is canonical newline-delimited JSON. Only pending and
-validated receipt records are allowed, with exact keys, bounds and immutable
+The journal is canonical newline-delimited JSON. Version-2 writes add immutable
+terminal rejections while reading version-1 pending/receipt history. Only pending,
+validated receipt and checked rejection records are allowed, with exact keys, bounds and immutable
 identities. Canonical encoding also rejects duplicate JSON keys on restore.
 Records contain no token/refresh token/headers or raw errors. Storage failures
 have fixed safe messages; the wrapper returns INTERNAL_ERROR until manual
@@ -85,7 +86,8 @@ Flutter tests cover write/ack failures, concurrency/conflicts, account switching
 exact restore, corrupt input and original receipts. Full current-head CI must
 be observed before claiming those Flutter tests or Windows checks pass.
 
-Next: integrate controller recovery/reconciliation UI, browser transactional
+Opt-in controller recovery/reconciliation UI now exists; see STUDY_RECOVERY.md.
+Next: browser transactional
 storage, configured login/profile/secure session restoration (#20), bounded
 retention/compaction and actual two-client/hosted acceptance (#15/#22).
 All 14 Personal Alpha release integration cases remain pending; keep #37 draft.

@@ -20,6 +20,7 @@
       "Run flutter analyze",
       "Run flutter test",
       "Verify native durable review restart",
+      "Verify durable study recovery with real disk",
       "Verify captured-connection lifecycle with explicit fixture dispatch",
       "Download same-run native SQL queue projections",
       "Decode native SQL queue projections with Dart adapter",
@@ -39,6 +40,7 @@
       "Run flutter pub get --enforce-lockfile",
       "Run flutter build windows --release",
       "Verify native durable review restart",
+      "Verify durable study recovery with real disk",
       "Run actions/upload-artifact@v4"
     ],
     "ai-boundary": [
@@ -51,6 +53,25 @@
     ]
   },
   "cases": [
+    {
+      "id": "durable-study-recovery",
+      "status": "automated-baseline",
+      "scope": "Opt-in controller/notifier/UI restore, manual exact-event replay before due cards, durable definitive rejection, safe storage retry, account clearing and authoritative queue reload",
+      "ci_job": "flutter",
+      "anchors": [{
+        "path": "apps/flutter_app/test/features/srs/study_recovery_test.dart",
+        "contains": "pending blocks queue new IDs rating and reload"
+      }, {
+        "path": "apps/flutter_app/test/features/srs/study_recovery_widget_test.dart",
+        "contains": "recovery at 320px and 200 percent text"
+      }, {
+        "path": "apps/flutter_app/tool/verify_study_recovery.dart",
+        "contains": "old receipt replaced authoritative queue/current progress"
+      }],
+      "issues": [22, 15, 20],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/study_recovery_test.dart test/features/srs/study_recovery_widget_test.dart && dart run tool/verify_study_recovery.dart",
+      "limitation": "Real disposable native files with TEST ONLY Auth/RPC/queue; explicit supplied store required, default runtime null. No browser journal, configured Auth/profile/secure sessions, power-loss or hosted/two-client acceptance."
+    },
     {
       "id": "native-durable-review",
       "status": "automated-baseline",

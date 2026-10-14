@@ -5,12 +5,23 @@ import 'review_repository.dart';
 
 /// Local learning data only; owner is an isolation key, never RPC authorization.
 final class StoredReview {
-  StoredReview({required String userId, required Object? request, this.receipt})
-    : userId = ReviewSession(userId: userId).userId,
-      request = decodeStoredReviewRequest(request);
+  StoredReview({
+    required String userId,
+    required Object? request,
+    this.receipt,
+    this.rejection,
+  }) : userId = ReviewSession(userId: userId).userId,
+       request = decodeStoredReviewRequest(request) {
+    if ((receipt != null && rejection != null) ||
+        (rejection != null && !isDefinitiveReviewRejection(rejection!))) {
+      throw const ReviewStorageFailure();
+    }
+  }
   final String userId;
   final Map<String, Object> request;
   final ReviewSuccess? receipt;
+  final ReviewFailure? rejection;
+  bool get isPending => receipt == null && rejection == null;
   String get eventId => request['client_event_id']! as String;
 }
 
@@ -32,6 +43,21 @@ abstract interface class DurableReviewStore {
     String eventId,
     ReviewSuccess receipt,
   );
+  Future<void> reject(String userId, String eventId, ReviewFailure rejection);
+}
+
+bool isDefinitiveReviewRejection(ReviewFailure failure) =>
+    !failure.isLocalStorage &&
+    !failure.retryable &&
+    const {
+      ReviewErrorCode.validationFailure,
+      ReviewErrorCode.notFound,
+      ReviewErrorCode.forbidden,
+      ReviewErrorCode.syncConflict,
+    }.contains(failure.code);
+
+abstract interface class ReviewRecovery {
+  Future<List<PreparedReview>> recoverPending();
 }
 
 bool sameReviewRequest(Map<String, Object> a, Map<String, Object> b) =>
@@ -39,10 +65,11 @@ bool sameReviewRequest(Map<String, Object> a, Map<String, Object> b) =>
     jsonEncode(decodeStoredReviewRequest(b));
 
 /// Write-before-dispatch and durable original-receipt replay. Explicit opt-in;
-/// default app and controller do not perform restart recovery yet.
+/// configured controllers recover through ReviewRecovery; default app is unconfigured.
 /// Call recoverPending under fresh Auth before loading new due cards. Recovered
 /// events need explicit manual submit; never auto-send or mutate server state.
-final class DurableReviewRepository implements ReviewRepository {
+final class DurableReviewRepository
+    implements ReviewRepository, ReviewRecovery {
   DurableReviewRepository({
     required this.auth,
     required this.delegate,
@@ -83,8 +110,7 @@ final class DurableReviewRepository implements ReviewRepository {
     }
     return List<PreparedReview>.unmodifiable([
       for (final record in records)
-        if (record.receipt == null)
-          PreparedReview.restore(session, record.request),
+        if (record.isPending) PreparedReview.restore(session, record.request),
     ]);
   }
 
@@ -114,7 +140,14 @@ final class DurableReviewRepository implements ReviewRepository {
 
   Future<ReviewOutcome> _submit(PreparedReview review) async {
     try {
-      final record = await store.stage(review.session.userId, review.request);
+      StoredReview record;
+      try {
+        record = await store.stage(review.session.userId, review.request);
+      } on ReviewTransportFailure {
+        rethrow;
+      } on Object {
+        throw const ReviewStorageFailure();
+      }
       if (!_current(review.session)) {
         return ReviewFailure(ReviewErrorCode.unauthorized);
       }
@@ -124,14 +157,26 @@ final class DurableReviewRepository implements ReviewRepository {
       }
       // An immutable historical receipt, never current scheduling authority.
       if (record.receipt != null) return record.receipt!;
+      if (record.rejection != null) return record.rejection!;
       final result = await delegate.submit(review);
-      if (result is ReviewSuccess) {
-        await store.acknowledge(record.userId, record.eventId, result);
+      try {
+        if (result is ReviewSuccess) {
+          await store.acknowledge(record.userId, record.eventId, result);
+        } else if (result is ReviewFailure &&
+            isDefinitiveReviewRejection(result)) {
+          await store.reject(record.userId, record.eventId, result);
+        }
+      } on Object {
+        throw const ReviewStorageFailure();
       }
       if (!_current(review.session)) {
         return ReviewFailure(ReviewErrorCode.unauthorized);
       }
       return result;
+    } on ReviewStorageFailure {
+      return _current(review.session)
+          ? ReviewFailure.storage()
+          : ReviewFailure(ReviewErrorCode.unauthorized);
     } on ReviewTransportFailure catch (failure) {
       return ReviewFailure(
         _current(review.session) ? failure.code : ReviewErrorCode.unauthorized,

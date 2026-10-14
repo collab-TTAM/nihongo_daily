@@ -74,10 +74,20 @@ sealed class ReviewOutcome {
 
 final class ReviewFailure extends ReviewOutcome {
   ReviewFailure(this.code, {bool retryable = false})
-    : retryable = retryable && _mayRetry(code);
+    : retryable = retryable && _mayRetry(code),
+      isLocalStorage = false;
+
+  /// Application-only marker; the frozen error JSON still uses INTERNAL_ERROR.
+  ReviewFailure.storage()
+    : code = ReviewErrorCode.internalError,
+      retryable = false,
+      isLocalStorage = true;
   final ReviewErrorCode code;
   final bool retryable;
-  String get messageVi => code.messageVi;
+  final bool isLocalStorage;
+  String get messageVi => isLocalStorage
+      ? 'Không thể xác nhận dữ liệu đã lưu trên thiết bị. Kiểm tra bộ nhớ rồi thử lại.'
+      : code.messageVi;
   Map<String, Object> toJson() => {
     'code': code.wireName,
     'message_vi': messageVi,

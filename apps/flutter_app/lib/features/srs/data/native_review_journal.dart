@@ -14,6 +14,8 @@ final class NativeReviewJournal implements DurableReviewStore {
   NativeReviewJournal._(this._directory, this._lease, this._file);
   static const maxBytes = 1024 * 1024;
   static const maxEvents = 512;
+  static const formatVersion =
+      2; // Read v1 history; v2 adds terminal rejection.
   // Worst-case validated response (4096-character timestamp plus bounded
   // scalar/owner/event fields). Reserve one slot for every unresolved event.
   static const maxReceiptBytes = 8192;
@@ -99,11 +101,14 @@ final class NativeReviewJournal implements DurableReviewStore {
     final kind = raw['kind'];
     final expected = kind == 'pending'
         ? const {'version', 'kind', 'user_id', 'request'}
+        : kind == 'rejection'
+        ? const {'version', 'kind', 'user_id', 'event_id', 'rejection'}
         : const {'version', 'kind', 'user_id', 'event_id', 'receipt'};
     if (raw.length != expected.length ||
         !expected.every(raw.containsKey) ||
         raw['version'] is! int ||
-        raw['version'] != 1 ||
+        (raw['version'] != 1 && raw['version'] != formatVersion) ||
+        (kind == 'rejection' && raw['version'] != formatVersion) ||
         raw['user_id'] is! String) {
       throw const ReviewStorageFailure();
     }
@@ -124,15 +129,30 @@ final class NativeReviewJournal implements DurableReviewStore {
       final key = _key(user, event);
       final record = _records[key];
       final receipt = decodeReviewOutcome(raw['receipt']);
-      if (record == null ||
-          record.receipt != null ||
-          receipt is! ReviewSuccess) {
+      if (record == null || !record.isPending || receipt is! ReviewSuccess) {
         throw const ReviewStorageFailure();
       }
       _records[key] = StoredReview(
         userId: user,
         request: record.request,
         receipt: receipt,
+      );
+    } else if (kind == 'rejection') {
+      final event = raw['event_id'];
+      if (event is! String) throw const ReviewStorageFailure();
+      final key = _key(user, event);
+      final record = _records[key];
+      final outcome = decodeReviewOutcome(raw['rejection']);
+      if (record == null ||
+          !record.isPending ||
+          outcome is! ReviewFailure ||
+          !isDefinitiveReviewRejection(outcome)) {
+        throw const ReviewStorageFailure();
+      }
+      _records[key] = StoredReview(
+        userId: user,
+        request: record.request,
+        rejection: outcome,
       );
     } else {
       throw const ReviewStorageFailure();
@@ -157,10 +177,9 @@ final class NativeReviewJournal implements DurableReviewStore {
   Future<void> _append(Map<String, Object> record) async {
     final bytes = utf8.encode('${jsonEncode(record)}\n');
     final length = await _file.length();
-    final isReceipt = record['kind'] == 'receipt';
+    final isReceipt = record['kind'] != 'pending';
     final unresolved =
-        _records.values.where((r) => r.receipt == null).length +
-        (isReceipt ? -1 : 1);
+        _records.values.where((r) => r.isPending).length + (isReceipt ? -1 : 1);
     if ((isReceipt && bytes.length > maxReceiptBytes) ||
         length + bytes.length + unresolved * maxReceiptBytes > maxBytes) {
       throw const ReviewStorageFailure();
@@ -202,7 +221,7 @@ final class NativeReviewJournal implements DurableReviewStore {
         }
         if (_records.length >= maxEvents) throw const ReviewStorageFailure();
         await _append({
-          'version': 1,
+          'version': formatVersion,
           'kind': 'pending',
           'user_id': candidate.userId,
           'request': candidate.request,
@@ -218,7 +237,9 @@ final class NativeReviewJournal implements DurableReviewStore {
   ) => _serial(() async {
     final owner = ReviewSession(userId: userId).userId;
     final record = _records[_key(owner, eventId)];
-    if (record == null) throw const ReviewStorageFailure();
+    if (record == null || record.rejection != null) {
+      throw const ReviewStorageFailure();
+    }
     if (record.receipt != null) {
       if (jsonEncode(record.receipt!.toJson()) !=
           jsonEncode(receipt.toJson())) {
@@ -227,13 +248,39 @@ final class NativeReviewJournal implements DurableReviewStore {
       return;
     }
     await _append({
-      'version': 1,
+      'version': formatVersion,
       'kind': 'receipt',
       'user_id': owner,
       'event_id': eventId,
       'receipt': receipt.toJson(),
     });
   });
+
+  @override
+  Future<void> reject(String userId, String eventId, ReviewFailure rejection) =>
+      _serial(() async {
+        if (!isDefinitiveReviewRejection(rejection)) {
+          throw const ReviewStorageFailure();
+        }
+        final owner = ReviewSession(userId: userId).userId;
+        final record = _records[_key(owner, eventId)];
+        if (record == null || record.receipt != null) {
+          throw const ReviewStorageFailure();
+        }
+        if (record.rejection != null) {
+          if (record.rejection!.code != rejection.code) {
+            throw const ReviewStorageFailure();
+          }
+          return;
+        }
+        await _append({
+          'version': formatVersion,
+          'kind': 'rejection',
+          'user_id': owner,
+          'event_id': eventId,
+          'rejection': rejection.toJson(),
+        });
+      });
 
   Future<void> close() async {
     if (_closed) return;
