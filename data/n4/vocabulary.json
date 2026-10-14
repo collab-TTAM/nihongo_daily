@@ -4652,6 +4652,230 @@
         "translation_vi": "Để giảm thức ăn thừa, tôi nấu ít hơn."
       }
     ]
+  },
+  {
+    "id": "69afc760-3545-57c7-a2a3-242c066851dc",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "市役所",
+    "reading": "しやくしょ",
+    "meaning_vi": "tòa thị chính",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cơ quan hành chính của thành phố hoặc khu vực.",
+    "audio_ref": null,
+    "tags": [
+      "public-services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "市役所で住所の手続きをしました。",
+        "reading_ja": "しやくしょでじゅうしょのてつづきをしました。",
+        "translation_vi": "Tôi đã làm thủ tục địa chỉ tại tòa thị chính."
+      },
+      {
+        "sentence_ja": "市役所は駅の近くにあります。",
+        "reading_ja": "しやくしょはえきのちかくにあります。",
+        "translation_vi": "Tòa thị chính nằm gần nhà ga."
+      }
+    ]
+  },
+  {
+    "id": "85c0dcb8-2b53-5434-bf82-c6a3780aab84",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "手続き",
+    "reading": "てつづき",
+    "meaning_vi": "thủ tục",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Các bước cần làm để đăng ký hoặc giải quyết một việc.",
+    "audio_ref": null,
+    "tags": [
+      "public-services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "引っ越しの手続きには書類が必要です。",
+        "reading_ja": "ひっこしのてつづきにはしょるいがひつようです。",
+        "translation_vi": "Thủ tục chuyển nhà cần giấy tờ."
+      },
+      {
+        "sentence_ja": "手続きの方法を係の人に聞きました。",
+        "reading_ja": "てつづきのほうほうをかかりのひとにききました。",
+        "translation_vi": "Tôi đã hỏi nhân viên phụ trách cách làm thủ tục."
+      }
+    ]
+  },
+  {
+    "id": "b0af6dba-13b3-546e-9cb7-388a2535a086",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "申請",
+    "reading": "しんせい",
+    "meaning_vi": "đơn xin; việc đăng ký",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc chính thức xin hoặc đăng ký một dịch vụ hay quyền lợi.",
+    "audio_ref": null,
+    "tags": [
+      "public-services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "休みの申請を会社に出しました。",
+        "reading_ja": "やすみのしんせいをかいしゃにだしました。",
+        "translation_vi": "Tôi đã nộp đơn xin nghỉ cho công ty."
+      },
+      {
+        "sentence_ja": "オンラインで申請できます。",
+        "reading_ja": "おんらいんでしんせいできます。",
+        "translation_vi": "Có thể đăng ký trực tuyến."
+      }
+    ]
+  },
+  {
+    "id": "8662234f-77eb-554a-9daa-7e6c348b0086",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "書類",
+    "reading": "しょるい",
+    "meaning_vi": "giấy tờ; tài liệu",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tài liệu cần nộp hoặc dùng trong một thủ tục.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "必要な書類を全部そろえました。",
+        "reading_ja": "ひつようなしょるいをぜんぶそろえました。",
+        "translation_vi": "Tôi đã chuẩn bị đủ tất cả giấy tờ cần thiết."
+      },
+      {
+        "sentence_ja": "書類に名前を書いてください。",
+        "reading_ja": "しょるいになまえをかいてください。",
+        "translation_vi": "Hãy viết tên vào giấy tờ."
+      }
+    ]
+  },
+  {
+    "id": "339b327d-8d3f-5a35-8e4c-c82498a2c8f6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "説明会",
+    "reading": "せつめいかい",
+    "meaning_vi": "buổi hướng dẫn; buổi thuyết minh",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Buổi cung cấp thông tin và giải thích về một chủ đề.",
+    "audio_ref": null,
+    "tags": [
+      "events"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "学校の説明会に参加しました。",
+        "reading_ja": "がっこうのせつめいかいにさんかしました。",
+        "translation_vi": "Tôi đã tham gia buổi hướng dẫn của trường."
+      },
+      {
+        "sentence_ja": "説明会は午後二時から始まります。",
+        "reading_ja": "せつめいかいはごごにじからはじまります。",
+        "translation_vi": "Buổi hướng dẫn bắt đầu từ hai giờ chiều."
+      }
+    ]
+  },
+  {
+    "id": "3ff0e01d-7f17-5604-994c-23c98bec2056",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "通う",
+    "reading": "かよう",
+    "meaning_vi": "đi lại; theo học",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Thường xuyên đi đến một nơi như trường học hoặc nơi làm việc.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎日電車で学校に通っています。",
+        "reading_ja": "まいにちでんしゃでがっこうにかよっています。",
+        "translation_vi": "Mỗi ngày tôi đi tàu điện đến trường."
+      },
+      {
+        "sentence_ja": "姉は病院に通って働いています。",
+        "reading_ja": "あねはびょういんにかよってはたらいています。",
+        "translation_vi": "Chị tôi đi làm thường xuyên tại bệnh viện."
+      }
+    ]
+  },
+  {
+    "id": "cfb79cb7-3c0c-57a6-8588-62ba77535bc6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "選択",
+    "reading": "せんたく",
+    "meaning_vi": "sự lựa chọn; lựa chọn",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc chọn một phương án trong nhiều phương án.",
+    "audio_ref": null,
+    "tags": [
+      "decisions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "画面から言語を選択してください。",
+        "reading_ja": "がめんからげんごをせんたくしてください。",
+        "translation_vi": "Hãy chọn ngôn ngữ trên màn hình."
+      },
+      {
+        "sentence_ja": "いくつかの方法から選択できます。",
+        "reading_ja": "いくつかのほうほうからせんたくできます。",
+        "translation_vi": "Có thể lựa chọn từ một vài phương pháp."
+      }
+    ]
+  },
+  {
+    "id": "72153e89-395e-5191-8a1d-30e94b8c5808",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "返却",
+    "reading": "へんきゃく",
+    "meaning_vi": "việc trả lại",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc trả sách, đồ vật hoặc tài sản về nơi mượn.",
+    "audio_ref": null,
+    "tags": [
+      "services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "図書館の本を今日返却します。",
+        "reading_ja": "としょかんのほんをきょうへんきゃくします。",
+        "translation_vi": "Hôm nay tôi sẽ trả sách thư viện."
+      },
+      {
+        "sentence_ja": "借りた道具は来週までに返却してください。",
+        "reading_ja": "かりたどうぐはらいしゅうまでにへんきゃくしてください。",
+        "translation_vi": "Hãy trả lại dụng cụ đã mượn trước tuần sau."
+      }
+    ]
   }
 ]
 
