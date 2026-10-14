@@ -1668,5 +1668,96 @@
         "translation_vi": "Tôi vừa mới làm xong bài tập."
       }
     ]
+  },
+  {
+    "id": "fa219898-1b19-5b43-b44a-46eb636cbb61",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることにします",
+    "pattern": "Vることにします",
+    "meaning_vi": "quyết định sẽ V",
+    "explanation_vi": "Diễn tả quyết định do người nói tự đưa ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことにします."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu quyết định được đưa ra từ thời điểm nói."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日漢字を勉強することにします。",
+        "reading_ja": "まいにちかんじをべんきょうすることにします。",
+        "translation_vi": "Tôi quyết định học Kanji mỗi ngày."
+      },
+      {
+        "sentence_ja": "週末は家で休むことにしました。",
+        "reading_ja": "しゅうまつはいえでやすむことにしました。",
+        "translation_vi": "Tôi đã quyết định nghỉ ở nhà cuối tuần."
+      }
+    ]
+  },
+  {
+    "id": "de96d3c7-c6ed-56b5-8b3a-fd2e92797cb5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることになりました",
+    "pattern": "Vることになりました",
+    "meaning_vi": "đã được quyết định sẽ V",
+    "explanation_vi": "Diễn tả một quyết định hoặc sắp xếp đã được định ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことになりました."
+    ],
+    "common_mistakes": [
+      "Không dùng mẫu này để nhấn mạnh quyết định cá nhân đơn thuần."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来月から大阪で働くことになりました。",
+        "reading_ja": "らいげつからおおさかではたらくことになりました。",
+        "translation_vi": "Từ tháng sau tôi sẽ làm việc ở Osaka theo quyết định đã định."
+      },
+      {
+        "sentence_ja": "会議は金曜日に行うことになりました。",
+        "reading_ja": "かいぎはきんようびにおこなうことになりました。",
+        "translation_vi": "Cuộc họp đã được quyết định tổ chức vào thứ Sáu."
+      }
+    ]
+  },
+  {
+    "id": "058a7b8d-94d1-516c-9296-e7d557a9381a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nらしいです",
+    "pattern": "Nらしいです",
+    "meaning_vi": "nghe nói là N; có vẻ đúng là N",
+    "explanation_vi": "Diễn tả thông tin nghe được hoặc nhận định dựa trên dấu hiệu.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước らしいです để nêu thông tin chưa trực tiếp xác nhận."
+    ],
+    "common_mistakes": [
+      "Không dùng らしいです khi người nói chắc chắn từ trải nghiệm trực tiếp."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "田中さんは来週休みらしいです。",
+        "reading_ja": "たなかさんはらいしゅうやすみらしいです。",
+        "translation_vi": "Nghe nói anh Tanaka nghỉ tuần sau."
+      },
+      {
+        "sentence_ja": "これは日本の伝統的な料理らしいです。",
+        "reading_ja": "これはにほんのでんとうてきなりょうりらしいです。",
+        "translation_vi": "Hình như đây là món ăn truyền thống Nhật Bản."
+      }
+    ]
   }
 ]
+
