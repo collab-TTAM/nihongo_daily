@@ -1177,3 +1177,21 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   caller startup/error UI and explicit refresh scheduling, then configured hosted
   A/B/restart/expiry/two-client acceptance. Keep #37 draft; #20/#22/#15 open.
   Pro #38/N4 unaffected; no dependency/provider/schema/deployment changes.
+
+## Opt-in account startup/error host — 2026-10-14 UTC
+
+- Resumed actual #37 head 57cd3043 with sequential core ownership; Pro #38/N4
+  lane untouched. Added pure owned startup controller, persistent runtime adapter
+  and configured Flutter host. Default main/provider still unconfigured.
+- Loading withholds account/router publication. Fixed errors allow explicit
+  fenced login or retry, with old-owner close before replacement. Close drains
+  late factory/start and never publishes late results. Cleanup failure blocks
+  replacement; caller awaits close, disposal reports fixed callback. No auto retry.
+- Added eight lifecycle/four widget fixture tests, including 320px/200% text,
+  real account route/form wiring and disposal races. Local formatting done;
+  new-source full Flutter/Windows/web/retained gates pending CI. All 14 live
+  integration groups pending; no hosted Auth/refresh scheduler claim.
+- Separate review retained profile/persistence gating, safe errors, project
+  ownership and mandatory close-before-replacement. Factory owns partial failure
+  cleanup; supplied journal remains caller-owned. No dependencies/provider/API/
+  schema/N4/deployment changes. Scope/reproduction: docs/ACCOUNT_STARTUP.md.
