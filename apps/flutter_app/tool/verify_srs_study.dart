@@ -43,11 +43,12 @@ final class FixtureTransport implements ReviewRpcTransport {
       'wrong envelope',
     );
     requests.add(params['p_request']! as Map<String, Object>);
-    if (fail)
+    if (fail) {
       throw const ReviewTransportFailure(
         ReviewErrorCode.networkUnavailable,
         retryable: true,
       );
+    }
     return pending == null ? response : await pending!.future;
   }
 }

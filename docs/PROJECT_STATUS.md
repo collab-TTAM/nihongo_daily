@@ -463,3 +463,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   difference after full Flutter package resolution. Reproduced with the correct
   local package language version and formatted that route; no format/analyze/test
   gate changed. Skipped later checks are not counted as passes; rerun final head.
+
+- Follow-up CI 38488570435 passed formatting, but analyze found a missing direct
+  ReviewRating domain import and three multiline if blocks without braces. Fixed
+  import/blocks without changing behavior or weakening lint; full test/build
+  evidence still requires the next exact-head run.

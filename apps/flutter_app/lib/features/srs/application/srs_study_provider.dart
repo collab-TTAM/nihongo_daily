@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/preview_level.dart';
 import '../data/review_repository.dart';
+import '../domain/srs_models.dart';
 import 'srs_study_controller.dart';
 
 /// No default fixture/demo runtime. Future #20/#22 binding must supply real

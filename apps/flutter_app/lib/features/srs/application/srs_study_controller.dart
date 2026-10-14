@@ -150,8 +150,9 @@ final class SrsStudyController {
   }
 
   bool _sameSession() {
-    if (_session != null && identical(_session, auth.currentSession))
+    if (_session != null && identical(_session, auth.currentSession)) {
       return true;
+    }
     sessionChanged();
     return false;
   }
@@ -203,8 +204,9 @@ final class SrsStudyController {
   );
 
   void reveal() {
-    if (_disposed || !_sameSession() || state.phase != SrsStudyPhase.ready)
+    if (_disposed || !_sameSession() || state.phase != SrsStudyPhase.ready) {
       return;
+    }
     _publish(
       SrsStudyState(
         phase: state.phase,
