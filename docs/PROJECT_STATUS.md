@@ -542,3 +542,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: approved SDK dependency resolution and concrete captured-token/Auth
   events with #20/profile provisioning, then #15 durable recovery/reconciliation
   and real non-production A/B/expired JWT/learner evidence. No secrets in chat.
+
+- CI 38500368761 passed database/repo-sanity/AI but Flutter analyze found three
+  verifier CLI lint issues (relative lib imports and print). Replaced with package
+  imports and stdout; no lint gate weakened. Skipped Flutter tests/builds are not
+  successes. Full corrected-head CI remains required.

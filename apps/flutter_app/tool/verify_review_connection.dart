@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
-import '../lib/features/srs/data/review_connection_registry.dart';
-import '../lib/features/srs/data/review_repository.dart';
+import 'package:nihongo_daily/features/srs/data/review_connection_registry.dart';
+import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 
 // TEST ONLY captured connections, never SDK/JWT/HTTP/credential evidence.
 void check(bool value, String label) {
@@ -116,7 +117,7 @@ Future<void> main() async {
       registry.currentSession == null && observed.last == null,
       'dispose sync clear',
     );
-    print(
+    stdout.writeln(
       'PASS: captured-connection lifecycle/refresh/expiry/immutable envelope/revoked-result checks; TEST ONLY, no SDK/JWT claim',
     );
   } finally {
