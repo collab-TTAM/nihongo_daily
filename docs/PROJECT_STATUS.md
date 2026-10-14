@@ -1289,3 +1289,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   no-fields assertion, add explicit owned-source/scoped-notice assertions and
   render after stream state propagation. This distinguishes wiring from frame
   timing; no production/auth/assertion/lint changes. New-source CI required.
+
+### Verified session notice handoff
+
+- Source bb6be63deefa307e130c1a840c5aedaa1054a0d2 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38599504856 .
+  Observed 347 Flutter tests (seven notice/provider/widgets + one pinned-SDK),
+  five Chrome tests, format/analyze, retained actual Windows vault/runtime
+  process markers, native/SQL/wire/security gates and normal web/Windows uploads.
+  Raw run/latest-attempt metadata passed exact-head/every-required-step QA.
+- All 249 source blobs matched local upload. Pure port/controller analysis,
+  format/49 contracts/17 QA passed locally. Added owned-source/propagated-state
+  assertions before next-frame no-fields check in host test; original expectation
+  retained, no production/Auth/lint/security/CI relaxation.
+- Display-only notices never grant study; checking clears/hides credentials,
+  fixed failures request explicit login, success/ordinary logout clear notice.
+  Startup installs only the owned source; replacement cancels old events.
+  SDK failure and login recovery are mock HTTP/unsigned JWT fixtures, not hosted
+  learner/UI-to-OS expiry/rotation proof. All 14 live release groups remain pending.
+- Core worker RELEASED after persisted evidence. Resume actual head/checks;
+  following documentation/QA successor has separate CI. Next configured staging
+  learner A/B/expiry/restart/two-client acceptance and evidence-linked remaining
+  product flows. Keep #37 draft/#20/#22/#15 open. Default main/provider unchanged;
+  Pro #38/N4 untouched; no dependencies/schema/API/Auth provider/deployment changes.

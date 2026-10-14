@@ -233,3 +233,12 @@ five-job gates. Twelve scheduler/two pinned-SDK/one foreground widget cases
 cover identity/expiry/rotation/failure/disposal guards. `owned-session-refresh`
 tracks fixture scope; all 14 live groups remain pending. Hosted expiry/rotation,
 background/OS suspension and two-device acceptance are not inferred from CI.
+
+## Safe account notice baseline — 2026-10-14
+
+Source bb6be63d CI38599504856 passed 347 Flutter/five Chrome and all retained
+five-job gates. Seven notice/provider/widget plus one pinned-SDK case prove fixed
+messages, credential clearing, no authorization from display, source ownership
+and explicit login recovery. The configured-host no-fields assertion is retained
+with source/state propagation checks before rendering. `account-session-notice`
+tracks fixture scope; all 14 live release integrations remain pending.

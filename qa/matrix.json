@@ -70,6 +70,33 @@
   },
   "cases": [
     {
+      "id": "account-session-notice",
+      "status": "automated-baseline",
+      "scope": "Display-only checking/failure messages, credential clearing, owned-source wiring/replacement and fixed login recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_session_notice_test.dart",
+          "contains": "clearing display notice never grants study access"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_session_notice_test.dart",
+          "contains": "configured startup forwards only its owned display source"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "explicit login clears failed display notice"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/account_session_notice_test.dart test/features/srs/persistent_supabase_runtime_test.dart",
+      "limitation": "Explicit display/Auth/profile/HTTP fixtures and actual pinned SDK/unsigned JWTs; not hosted learner or UI-to-OS expiry/rotation/suspension proof. Notices do not authorize. Default source/main null; configured owner only. Raw error/token/path data never displayed; all live acceptance remains pending."
+    },
+    {
       "id": "owned-session-refresh",
       "status": "automated-baseline",
       "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed/expired resume fencing and active-owned foreground forwarding",

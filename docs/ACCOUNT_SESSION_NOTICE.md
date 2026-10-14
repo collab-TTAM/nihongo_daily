@@ -25,6 +25,23 @@ form, no manufactured study, 320px/200% layout, redacted stream errors, old-sour
 rejection and actual configured-host source wiring. An additional actual pinned
 SDK/mock-HTTP case checks rejected restore -> explicit login -> ordinary logout;
 retained automatic-refresh cases also assert checking/failure/success notices.
-These are fixture/build checks; full new-source CI is pending. Hosted Auth, real
+These are fixture/build checks; verified source evidence is recorded below. Hosted Auth, real
 learner expiry/two-client/OS suspension proof and 14 live release groups remain
 pending. Keep #37 draft.
+
+## Verified source evidence
+
+Source `bb6be63deefa307e130c1a840c5aedaa1054a0d2` passed all five jobs in
+https://github.com/collab-TTAM/nihongo_daily/actions/runs/38599504856 .
+Observed 347 Flutter tests (seven notice/provider/widget plus one pinned-SDK case
+added), five real Chrome tests, format/analyze, retained actual Windows vault/
+runtime process markers, native/SQL/wire/security gates and normal web/Windows
+artifacts. Raw run/latest-attempt metadata passed exact-head/every-required-step
+QA. Pure port/controller analysis, 49 contracts/17 QA passed locally.
+
+Configured-host test now asserts exact owner/source and propagated notice before
+rendering its stream update; the no-fields expectation stays mandatory. Initial
+single-frame failure was corrected in test synchronization, not production logic
+or assertion/lint/CI weakening. Display/error tests use fixtures; actual learner
+Auth/refresh and UI-to-OS expiry/suspension acceptance remain pending. Source
+evidence is historical for later commits. Default main/source stay unconfigured.
