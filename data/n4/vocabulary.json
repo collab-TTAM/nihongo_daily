@@ -4876,6 +4876,230 @@
         "translation_vi": "Hãy trả lại dụng cụ đã mượn trước tuần sau."
       }
     ]
+  },
+  {
+    "id": "741deab6-c6c6-5fdd-8997-fc2fe897b49d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "目的",
+    "reading": "もくてき",
+    "meaning_vi": "mục đích",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều muốn đạt được khi làm một việc.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "旅行の目的を家族に説明しました。",
+        "reading_ja": "りょこうのもくてきをかぞくにせつめいしました。",
+        "translation_vi": "Tôi đã giải thích mục đích chuyến đi cho gia đình."
+      },
+      {
+        "sentence_ja": "この活動の目的は何ですか。",
+        "reading_ja": "このかつどうのもくてきはなんですか。",
+        "translation_vi": "Mục đích của hoạt động này là gì?"
+      }
+    ]
+  },
+  {
+    "id": "f3b39180-dd78-572a-9ee0-eeda0280b472",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "方法",
+    "reading": "ほうほう",
+    "meaning_vi": "phương pháp; cách thức",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cách làm hoặc cách giải quyết một việc.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "新しい方法で勉強してみます。",
+        "reading_ja": "あたらしいほうほうでべんきょうしてみます。",
+        "translation_vi": "Tôi sẽ thử học bằng phương pháp mới."
+      },
+      {
+        "sentence_ja": "使い方の方法を説明書で確認しました。",
+        "reading_ja": "つかいかたのほうほうをせつめいしょでかくにんしました。",
+        "translation_vi": "Tôi đã kiểm tra cách sử dụng trong sách hướng dẫn."
+      }
+    ]
+  },
+  {
+    "id": "8105def1-a1e3-55a2-88a4-9f62981eb280",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "結果",
+    "reading": "けっか",
+    "meaning_vi": "kết quả",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều xảy ra hoặc đạt được sau một hành động.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "試験の結果は来週発表されます。",
+        "reading_ja": "しけんのけっかはらいしゅうはっぴょうされます。",
+        "translation_vi": "Kết quả kỳ thi sẽ được công bố tuần sau."
+      },
+      {
+        "sentence_ja": "努力した結果、合格できました。",
+        "reading_ja": "どりょくしたけっか、ごうかくできました。",
+        "translation_vi": "Nhờ kết quả của sự nỗ lực, tôi đã đỗ."
+      }
+    ]
+  },
+  {
+    "id": "68eedb22-2395-566c-96ca-993dab0cac59",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "理由",
+    "reading": "りゆう",
+    "meaning_vi": "lý do",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều giải thích vì sao một việc xảy ra hoặc được làm.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "遅れた理由を先生に話しました。",
+        "reading_ja": "おくれたりゆうをせんせいにはなしました。",
+        "translation_vi": "Tôi đã nói lý do đến muộn với giáo viên."
+      },
+      {
+        "sentence_ja": "理由が分かれば安心します。",
+        "reading_ja": "りゆうがわかればあんしんします。",
+        "translation_vi": "Nếu biết lý do thì tôi sẽ yên tâm."
+      }
+    ]
+  },
+  {
+    "id": "d20e983f-c21a-5cff-b1d6-044ad63345dc",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "用意",
+    "reading": "ようい",
+    "meaning_vi": "sự chuẩn bị; chuẩn bị sẵn",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Chuẩn bị sẵn đồ vật hoặc điều kiện cần thiết.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "旅行の荷物を用意しました。",
+        "reading_ja": "りょこうのにもつをよういしました。",
+        "translation_vi": "Tôi đã chuẩn bị hành lý cho chuyến đi."
+      },
+      {
+        "sentence_ja": "会議の資料を用意しておきます。",
+        "reading_ja": "かいぎのしりょうをよういしておきます。",
+        "translation_vi": "Tôi sẽ chuẩn bị sẵn tài liệu cho cuộc họp."
+      }
+    ]
+  },
+  {
+    "id": "fe707570-f8b6-5ce9-9dfa-5991be5e1729",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "意見",
+    "reading": "いけん",
+    "meaning_vi": "ý kiến",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Suy nghĩ hoặc nhận xét của một người về một vấn đề.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "みんなの意見を聞きたいです。",
+        "reading_ja": "みんなのいけんをききたいです。",
+        "translation_vi": "Tôi muốn nghe ý kiến của mọi người."
+      },
+      {
+        "sentence_ja": "自分の意見を発表しました。",
+        "reading_ja": "じぶんのいけんをはっぴょうしました。",
+        "translation_vi": "Tôi đã trình bày ý kiến của mình."
+      }
+    ]
+  },
+  {
+    "id": "76c4cfba-f2ee-5644-be5b-ff31fa0e457e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "活動",
+    "reading": "かつどう",
+    "meaning_vi": "hoạt động",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc làm hoặc chương trình được thực hiện trong một khoảng thời gian.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "地域の活動に参加しています。",
+        "reading_ja": "ちいきのかつどうにさんかしています。",
+        "translation_vi": "Tôi đang tham gia hoạt động của khu vực."
+      },
+      {
+        "sentence_ja": "学校で文化活動をしました。",
+        "reading_ja": "がっこうでぶんかかつどうをしました。",
+        "translation_vi": "Tôi đã thực hiện hoạt động văn hóa ở trường."
+      }
+    ]
+  },
+  {
+    "id": "873373d7-9b86-530a-abb4-dcc7ef722f8e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "連続",
+    "reading": "れんぞく",
+    "meaning_vi": "liên tục; liên tiếp",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc xảy ra không ngắt quãng hoặc nhiều lần liền nhau.",
+    "audio_ref": null,
+    "tags": [
+      "time"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "三日連続で雨が降りました。",
+        "reading_ja": "みっかれんぞくであめがふりました。",
+        "translation_vi": "Trời đã mưa liên tục ba ngày."
+      },
+      {
+        "sentence_ja": "連続して休むときは連絡してください。",
+        "reading_ja": "れんぞくしてやすむときはれんらくしてください。",
+        "translation_vi": "Khi nghỉ liên tiếp hãy liên lạc."
+      }
+    ]
   }
 ]
 
