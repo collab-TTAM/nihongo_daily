@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 262 | 69 | 100 | 724 |
+| N4 | 270 | 71 | 103 | 746 |
 
 ## N4 seed batches
 
-The N4 seed is now twenty-nine original editorial batches for development. It contains
-254 vocabulary items, 67 Kanji metadata records and 97 grammar patterns, with 702
+The N4 seed is now thirty-one original editorial batches for development. It contains
+270 vocabulary items, 71 Kanji metadata records and 103 grammar patterns, with 746
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
@@ -156,11 +156,11 @@ quizzes and conversation content are outside this seed.
 
 ## Metadata provenance and absent assets
 
-Twelve stroke counts were cross-checked against nonvariant SVG path counts in
+Fourteen stroke counts were cross-checked against nonvariant SVG path counts in
 [KanjiVG](https://github.com/KanjiVG/kanjivg), commit
 `70a0b7ae0c18ceb5cb358274b029cce0234a43bc` (checked 2026-10-13 UTC). Source files:
 `kanji/065e5.svg`, `06708.svg`, `06728.svg`, `05c71.svg`, `05ddd.svg`,
-`04eba.svg`, `06c34.svg`, `0706b.svg`, `0958b.svg`, `07740.svg`, `0914d.svg`, `096c6.svg`. Counts respectively: 4, 4, 4, 3, 3, 2, 4, 4, 12, 12, 10, 12.
+`04eba.svg`, `06c34.svg`, `0706b.svg`, `0958b.svg`, `07740.svg`, `0914d.svg`, `096c6.svg`, `05ba2.svg`, `058f2.svg`. Counts respectively: 4, 4, 4, 3, 3, 2, 4, 4, 12, 12, 10, 12, 9, 7.
 KanjiVG is copyright Ulrich Apel under CC BY-SA 3.0; this seed only checks factual
 counts and does not redistribute/derive SVG path geometry. Any future importer
 must retain required attribution/license and independently vet reference assets
