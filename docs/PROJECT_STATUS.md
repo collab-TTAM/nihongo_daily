@@ -913,3 +913,35 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   QA41 groups/all 14 live integration releases pending. Worker active pending CI.
 - Keep #37 draft/#20/#22/#15 open. Next secure session storage/restore and actual
   configured hosted A/B/expired JWT/restart/two-client learner acceptance.
+
+## Verified account/profile readiness handoff — 2026-10-14 UTC
+
+- Source 6a04a2cfb3dc30802da2b9169801475a72b1e63e passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38547379359 .
+  Flutter format/analyze (no issues), 267 tests including ten account-controller,
+  five widget and two SDK HTTP cases (generic auth placeholder replaced by richer
+  dedicated route coverage), five actual Chrome tests, new mandatory readiness
+  verifier and retained native/wire/same-run SQL-to-Dart checks passed. Web and
+  Windows releases/artifacts plus all four Windows native file/process verifiers
+  passed. SQL/RLS/profile observed-lock races, repo/49 Python/17 QA and AI/audit
+  gates retained and successful. Unmodified workflow/all latest-attempt jobs
+  accepted by scripts/verify_qa.py at this exact head/every critical step. QA41
+  groups/all 14 integration release cases pending.
+- Separate source/follow-up review checked profile barrier and caller ownership,
+  immediate study invalidation before awaited logout, late sign-in cleanup,
+  reentrant notification/disposal, transient cleared credential fields and safe
+  errors. Initial extracted queue import/lint failure fixed with original tests
+  and gates preserved. Every one of 213 local blobs matches uploaded source.
+  The earlier documentation-only tree omission was fully restored before this
+  source increment; corrected complete source now has all five CI jobs passing.
+- Local ten pure scenarios/source analysis/format/49 Python/17 QA passed. Full
+  widgets/SDK/Chrome/builds/native SQL evidence is CI, not local or hosted Auth.
+  Existing SDK email/password is caller configured, no server provider change.
+  App default runtime null; no registration/secure token store or restore/live
+  learner acceptance. Login credentials never enter account state or journal.
+- Bounded sequential worker released after evidence persistence. Resume latest
+  draft head first, inspect its CI and do not overlap workers. Source-head success
+  is historical for the following documentation-only handoff commit. Keep #37
+  draft/#20/#22/#15 open; no merge/deployment. Next configured secure session
+  lifecycle/storage/restore, then actual hosted A/B/expired JWT/restart/two-client
+  learner acceptance. Missing credentials do not block independent work.

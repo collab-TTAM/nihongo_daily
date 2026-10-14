@@ -62,3 +62,15 @@ SQL/security gates remain required. QA records the account baseline separately;
 all 14 Personal Alpha integration cases remain pending. Keep PR #37 draft and
 #20/#22/#15 open. Next: explicitly configured secure session lifecycle/restore,
 then hosted A/B, expired JWT, restart and two-client learner acceptance.
+
+## Observed source evidence
+
+Source `6a04a2cfb3dc30802da2b9169801475a72b1e63e` passed all five jobs in
+[CI38547379359](https://github.com/collab-TTAM/nihongo_daily/actions/runs/38547379359).
+Observed 267 Flutter tests, five Chrome tests, mandatory ten-case account verifier,
+retained native/wire/SQL-to-Dart/security checks and web/Windows release artifacts.
+Unmodified run/latest-attempt jobs pass exact-head/every-step QA verification.
+The prior generic auth placeholder test is replaced by the dedicated route cases.
+Initial missing extracted queue import and fixture braces were corrected without
+relaxing assertions or gates. These results are historical for later commits and
+remain fixture/build evidence. No real login or secure token restoration proof.
