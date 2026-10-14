@@ -1241,3 +1241,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   before the resumable-owner check. No lifecycle/expiry/ownership/assertion or
   lint gate changed; skipped downstream tests/build are not passing evidence.
   Corrected source requires fresh full CI.
+
+### Verified refresh scheduler handoff
+
+- Source c65528fbea77313f386666c37ab10a1f58efbae0 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38596070841 .
+  Observed 339 Flutter tests (12 scheduler/two pinned-SDK/one widget added),
+  five Chrome tests, format/analyze, retained actual Windows vault/runtime
+  cross-process markers, native/SQL/wire/security gates and normal artifacts.
+  Raw run/latest-attempt metadata passed exact-head/every-required-step QA.
+- All 245 uploaded source blobs matched. Pure local controller/scheduler analysis,
+  format/49 contracts/17 QA passed. Generic foreground forwarding required both
+  nonnull guard and checked interface cast; kept active-owner/lifecycle/expiry
+  guards and every assertion/lint/CI/security gate. No SDK retry policy change.
+- Opt-in automaticRefresh=false by default; main unconfigured, SDK automatic
+  refresh disabled. New scheduler attempts once per lease, keeps save-before-
+  profile, rejects expired resumes and cancels on logout/close. Short TTLs cannot
+  loop. Failure test fences study with no added resume retry. Fixture Auth/clock/
+  timers are not hosted rotation/background/OS suspension proof. Pro #38/N4 intact.
+- Core worker RELEASED after evidence saved. Resume actual head/checks; following
+  evidence/QA docs commit has separate CI. Next configured non-production hosted
+  learner A/B/expiry/restart/two-client acceptance and startup/refresh error
+  presentation; all 14 live integrations still pending. Keep #37 draft and
+  #20/#22/#15 open. No dependency/provider/schema/API/production changes.

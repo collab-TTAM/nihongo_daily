@@ -33,10 +33,12 @@ response cannot reach the SDK; the late response stream is cancelled.
 
 The SDK and its mutation methods stay private. SDK automatic refresh is disabled;
 `refresh()` is explicit and applies the same persistence barrier. No automatic
-refresh timer or retry loop is installed. Caller must refresh before expiry;
+refresh timer is installed by default. The optional owned scheduler is described
+in SESSION_REFRESH.md; it adds no failure retry loop. Without that opt-in, caller
+must refresh before expiry;
 expiry itself revokes review access and clears the persisted secret via the
-binding event. A long-lived configured app still needs separately tested refresh
-scheduling. SDK rotation signals are observed independently of review lifecycle
+binding event. Opt-in scheduling has fixture/source CI evidence; hosted expiry/rotation and
+OS suspension acceptance remain separate. SDK rotation signals are observed independently of review lifecycle
 signals because the review binding preserves identity on same-session refresh.
 
 One active persistence owner is allowed per canonical project target in this

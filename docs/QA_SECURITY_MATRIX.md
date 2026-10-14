@@ -225,3 +225,11 @@ five-job baseline gate. Added eight controller/four startup widget cases and
 `account-startup-host` QA anchors. Fixtures prove loading/error/login/retry/close
 behavior, including 320px/200% and late owner cleanup; no hosted identity or
 UI-to-OS learner acceptance. All 14 live release groups stay pending.
+
+## Opt-in refresh scheduler baseline — 2026-10-14
+
+Source c65528fb CI38596070841 passed 339 Flutter/five Chrome and all retained
+five-job gates. Twelve scheduler/two pinned-SDK/one foreground widget cases
+cover identity/expiry/rotation/failure/disposal guards. `owned-session-refresh`
+tracks fixture scope; all 14 live groups remain pending. Hosted expiry/rotation,
+background/OS suspension and two-device acceptance are not inferred from CI.

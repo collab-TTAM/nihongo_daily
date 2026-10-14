@@ -34,6 +34,20 @@ identity replacement, valid/expired resume, pending operations, failures, unchan
 expiry/short TTL, long timers/rollback, disposal and invalid hints. Two actual
 pinned-SDK/mock-HTTP tests cover persistence/profile ordering and fenced failure
 without resume retry; one widget test covers forwarding before/after ownership.
-New-source full CI is pending; no hosted rotation/device/OS suspend proof. Existing
+Verified source evidence is recorded below; no hosted rotation/device/OS suspend proof. Existing
 Windows probes, native/SQL/Chrome/security gates and 14 live release integrations
 remain mandatory/pending. Keep #37 draft.
+
+## Verified source evidence
+
+Source `c65528fbea77313f386666c37ab10a1f58efbae0` passed all five jobs in
+https://github.com/collab-TTAM/nihongo_daily/actions/runs/38596070841 .
+Observed 339 Flutter tests (12 scheduler/two pinned-SDK/one widget added), five
+actual Chrome tests, format/analyze, retained actual Windows vault/runtime
+process markers, native/SQL/wire/security gates and normal web/Windows artifacts.
+Raw run/latest-attempt metadata passed exact-source/every-required-step QA.
+Pure scheduler/startup controller type analysis and 49 contracts/17 QA passed
+locally. Resume generic boundary now has explicit nonnull/checked-interface
+forwarding; no ownership/expiry/assertion/lint/security gate was relaxed.
+Scheduler clock/timer/HTTP/lifecycle tests remain fixtures, not hosted Auth or
+OS suspension evidence. Source evidence is historical for later commits.
