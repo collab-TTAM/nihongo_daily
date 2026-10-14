@@ -2028,6 +2028,96 @@
         "translation_vi": "Trong các loại trái cây, tôi thích táo nhất."
       }
     ]
+  },
+  {
+    "id": "5daaafbe-bc58-50db-81f9-92bbf9a40928",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vなくてはいけません",
+    "pattern": "Vなくてはいけません",
+    "meaning_vi": "phải V",
+    "explanation_vi": "Diễn tả nghĩa vụ hoặc việc bắt buộc phải làm.",
+    "usage_notes_vi": [
+      "Dùng dạng phủ định なくてはいけません để diễn đạt nghĩa phải làm."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "車を止めなくてはいけません。",
+        "reading_ja": "くるまをとめなくてはいけません。",
+        "translation_vi": "Phải dừng xe."
+      },
+      {
+        "sentence_ja": "申込書を出さなくてはいけません。",
+        "reading_ja": "もうしこみしょをださなくてはいけません。",
+        "translation_vi": "Phải nộp đơn đăng ký."
+      }
+    ]
+  },
+  {
+    "id": "ec6c33cb-669c-59a0-8b55-5023c5776601",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nという意味です",
+    "pattern": "Nという意味です",
+    "meaning_vi": "có nghĩa là N",
+    "explanation_vi": "Dùng để giải thích ý nghĩa của một từ, ký hiệu hoặc câu nói.",
+    "usage_notes_vi": [
+      "Đặt từ hoặc nội dung được giải thích trước という意味です."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この言葉は「安全」という意味です。",
+        "reading_ja": "このことばは「あんぜん」といういみです。",
+        "translation_vi": "Từ này có nghĩa là “an toàn”."
+      },
+      {
+        "sentence_ja": "その印は「入ってはいけない」という意味です。",
+        "reading_ja": "そのしるしは「はいってはいけない」といういみです。",
+        "translation_vi": "Ký hiệu đó có nghĩa là “không được vào”."
+      }
+    ]
+  },
+  {
+    "id": "71c651b4-4e57-5c0e-95b9-4d0a661c34d1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる必要があります",
+    "pattern": "Vる必要があります",
+    "meaning_vi": "cần phải V",
+    "explanation_vi": "Diễn tả việc cần làm để đạt mục đích hoặc hoàn thành thủ tục.",
+    "usage_notes_vi": [
+      "Đặt động từ thể từ điển trước 必要があります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日までに本を返却する必要があります。",
+        "reading_ja": "あしたまでにほんをへんきゃくするひつようがあります。",
+        "translation_vi": "Cần trả sách trước ngày mai."
+      },
+      {
+        "sentence_ja": "登録するにはメールアドレスを書く必要があります。",
+        "reading_ja": "とうろくするにはめーるあどれすをかくひつようがあります。",
+        "translation_vi": "Để đăng ký cần viết địa chỉ email."
+      }
+    ]
   }
 ]
 
