@@ -941,6 +941,41 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "0882a658-6832-5584-a387-418493149d28",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "卒",
+    "meaning_vi": "tốt nghiệp; binh lính",
+    "onyomi": [
+      "ソツ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "25dd5745-4d0a-508e-b684-c0bd3f3bf3dd",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "業",
+    "meaning_vi": "nghề nghiệp; công việc",
+    "onyomi": [
+      "ギョウ",
+      "ゴウ"
+    ],
+    "kunyomi": [
+      "わざ"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
