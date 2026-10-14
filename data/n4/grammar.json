@@ -1128,5 +1128,95 @@
         "translation_vi": "Năm nay bận hơn năm ngoái."
       }
     ]
+  },
+  {
+    "id": "d499994a-9a67-52e6-9abc-accf2931ec95",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることがあります",
+    "pattern": "Vることがあります",
+    "meaning_vi": "có khi V; đôi khi V",
+    "explanation_vi": "Diễn tả một việc thỉnh thoảng xảy ra hoặc được thực hiện.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことがあります."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vたことがあります là đã từng V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "週末は家で料理することがあります。",
+        "reading_ja": "しゅうまつはいえでりょうりすることがあります。",
+        "translation_vi": "Cuối tuần đôi khi tôi nấu ăn ở nhà."
+      },
+      {
+        "sentence_ja": "仕事の後で友達と食事することがあります。",
+        "reading_ja": "しごとのあとでともだちとしょくじすることがあります。",
+        "translation_vi": "Sau giờ làm đôi khi tôi ăn cùng bạn."
+      }
+    ]
+  },
+  {
+    "id": "ff2d3eff-21c9-5e30-a028-31d0ce235d36",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのような",
+    "pattern": "Nのような",
+    "meaning_vi": "giống như N; chẳng hạn như N",
+    "explanation_vi": "Dùng để mô tả danh từ có đặc điểm giống hoặc thuộc kiểu của N.",
+    "usage_notes_vi": [
+      "Đặt danh từ làm ví dụ trước のような rồi đến danh từ được mô tả."
+    ],
+    "common_mistakes": [
+      "Không dùng のような sau động từ nếu muốn nói trực tiếp cách thức."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "これは春のような暖かい日です。",
+        "reading_ja": "これははるのようなあたたかいひです。",
+        "translation_vi": "Đây là ngày ấm áp như mùa xuân."
+      },
+      {
+        "sentence_ja": "日本のような島国に興味があります。",
+        "reading_ja": "にほんのようなしまぐににきょうみがあります。",
+        "translation_vi": "Tôi quan tâm đến những quốc đảo như Nhật Bản."
+      }
+    ]
+  },
+  {
+    "id": "db8a64fb-d036-5dc7-8141-478cc9d5552b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるはずです",
+    "pattern": "Vるはずです",
+    "meaning_vi": "chắc là V; đáng lẽ V",
+    "explanation_vi": "Dự đoán có căn cứ rằng một việc sẽ xảy ra hoặc đúng.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước はずです."
+    ],
+    "common_mistakes": [
+      "Không dùng はずです để biểu thị mệnh lệnh trực tiếp."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電車はもうすぐ到着するはずです。",
+        "reading_ja": "でんしゃはもうすぐとうちゃくするはずです。",
+        "translation_vi": "Tàu điện chắc sẽ đến ngay thôi."
+      },
+      {
+        "sentence_ja": "田中さんは今日来るはずです。",
+        "reading_ja": "たなかさんはきょうくるはずです。",
+        "translation_vi": "Anh Tanaka chắc hôm nay sẽ đến."
+      }
+    ]
   }
 ]

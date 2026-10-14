@@ -2630,5 +2630,229 @@
         "translation_vi": "Hãy mang đồ bỏ quên đến quầy tiếp nhận."
       }
     ]
+  },
+  {
+    "id": "3bc9448f-daad-5cb9-b021-f1e3c6b242e7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "訪ねる",
+    "reading": "たずねる",
+    "meaning_vi": "thăm; hỏi thăm",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đến thăm một nơi hoặc hỏi một người để biết thông tin.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来週、先生の家を訪ねます。",
+        "reading_ja": "らいしゅう、せんせいのいえをたずねます。",
+        "translation_vi": "Tuần sau tôi sẽ đến thăm nhà giáo viên."
+      },
+      {
+        "sentence_ja": "駅員に道を訪ねました。",
+        "reading_ja": "えきいんにみちをたずねました。",
+        "translation_vi": "Tôi đã hỏi nhân viên ga đường đi."
+      }
+    ]
+  },
+  {
+    "id": "f9e015ee-7271-53a4-8a84-b1e6a4a76418",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "泊まる",
+    "reading": "とまる",
+    "meaning_vi": "ở trọ; nghỉ lại",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Ở lại qua đêm tại khách sạn hoặc nhà ai đó.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "京都のホテルに二泊します。",
+        "reading_ja": "きょうとのほてるににはくします。",
+        "translation_vi": "Tôi sẽ ở khách sạn tại Kyoto hai đêm."
+      },
+      {
+        "sentence_ja": "友達の家に泊まりました。",
+        "reading_ja": "ともだちのいえにとまりました。",
+        "translation_vi": "Tôi đã ngủ lại nhà bạn."
+      }
+    ]
+  },
+  {
+    "id": "16dbf60d-55a3-51a6-a9b3-5d25f0c56132",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "出発する",
+    "reading": "しゅっぱつする",
+    "meaning_vi": "khởi hành",
+    "part_of_speech": "động từ する",
+    "usage_context_vi": "Bắt đầu chuyến đi từ một nơi.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "バスは八時に出発します。",
+        "reading_ja": "ばすははちじにしゅっぱつします。",
+        "translation_vi": "Xe buýt khởi hành lúc tám giờ."
+      },
+      {
+        "sentence_ja": "出発する前に荷物を確認しました。",
+        "reading_ja": "しゅっぱつするまえににもつをかくにんしました。",
+        "translation_vi": "Tôi đã kiểm tra hành lý trước khi khởi hành."
+      }
+    ]
+  },
+  {
+    "id": "1f0809c4-702a-5b12-8b73-00313777f71f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "到着する",
+    "reading": "とうちゃくする",
+    "meaning_vi": "đến nơi; tới nơi",
+    "part_of_speech": "động từ する",
+    "usage_context_vi": "Đến địa điểm cuối của hành trình.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "飛行機は午後三時に到着します。",
+        "reading_ja": "ひこうきはごごさんじにとうちゃくします。",
+        "translation_vi": "Máy bay sẽ đến nơi lúc ba giờ chiều."
+      },
+      {
+        "sentence_ja": "駅に到着したら、連絡してください。",
+        "reading_ja": "えきにとうちゃくしたら、れんらくしてください。",
+        "translation_vi": "Khi đến ga hãy liên lạc nhé."
+      }
+    ]
+  },
+  {
+    "id": "2490f667-9eaa-504e-9149-4b105856d790",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "安心する",
+    "reading": "あんしんする",
+    "meaning_vi": "yên tâm",
+    "part_of_speech": "động từ する",
+    "usage_context_vi": "Cảm thấy nhẹ lòng vì không còn lo lắng.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "家族の声を聞いて安心しました。",
+        "reading_ja": "かぞくのこえをきいてあんしんしました。",
+        "translation_vi": "Nghe giọng gia đình tôi đã yên tâm."
+      },
+      {
+        "sentence_ja": "鍵を見つけたので安心しています。",
+        "reading_ja": "かぎをみつけたのであんしんしています。",
+        "translation_vi": "Vì tìm thấy chìa khóa nên tôi đang yên tâm."
+      }
+    ]
+  },
+  {
+    "id": "bf94e8e2-241e-5281-b877-305f8479167f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "心配する",
+    "reading": "しんぱいする",
+    "meaning_vi": "lo lắng",
+    "part_of_speech": "động từ する",
+    "usage_context_vi": "Cảm thấy bất an về người hoặc việc gì.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "母は私の体を心配しています。",
+        "reading_ja": "はははわたしのからだをしんぱいしています。",
+        "translation_vi": "Mẹ lo lắng cho sức khỏe của tôi."
+      },
+      {
+        "sentence_ja": "遅くなるときは心配しないでください。",
+        "reading_ja": "おそくなるときはしんぱいしないでください。",
+        "translation_vi": "Khi tôi về muộn thì đừng lo."
+      }
+    ]
+  },
+  {
+    "id": "27c13dcb-0fd8-5136-bd47-e13f7ab03b86",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "特に",
+    "reading": "とくに",
+    "meaning_vi": "đặc biệt là",
+    "part_of_speech": "phó từ",
+    "usage_context_vi": "Nhấn mạnh một điều nổi bật hơn những điều khác.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "私は特に春が好きです。",
+        "reading_ja": "わたしはとくにはるがすきです。",
+        "translation_vi": "Tôi đặc biệt thích mùa xuân."
+      },
+      {
+        "sentence_ja": "今日は特に忙しいです。",
+        "reading_ja": "きょうはとくにいそがしいです。",
+        "translation_vi": "Hôm nay đặc biệt bận."
+      }
+    ]
+  },
+  {
+    "id": "0dbfd9cc-7d81-58dc-8430-29d89d2a24df",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "大切",
+    "reading": "たいせつ",
+    "meaning_vi": "quan trọng; quý giá",
+    "part_of_speech": "tính từ な",
+    "usage_context_vi": "Diễn tả điều cần được coi trọng hoặc giữ gìn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "健康はとても大切です。",
+        "reading_ja": "けんこうはとてもたいせつです。",
+        "translation_vi": "Sức khỏe rất quan trọng."
+      },
+      {
+        "sentence_ja": "これは家族からの大切な手紙です。",
+        "reading_ja": "これはかぞくからのたいせつなてがみです。",
+        "translation_vi": "Đây là lá thư quý giá từ gia đình."
+      }
+    ]
   }
 ]

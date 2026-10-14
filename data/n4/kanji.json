@@ -494,5 +494,40 @@
     "stroke_count": 16,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "de52ea74-c8c5-5a86-945c-3969e6a6dae7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "到",
+    "meaning_vi": "đến; tới",
+    "onyomi": [
+      "トウ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "ec25de2b-677b-55d3-9dc1-4bedc4e57aa7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "泊",
+    "meaning_vi": "ở lại; neo đậu",
+    "onyomi": [
+      "ハク"
+    ],
+    "kunyomi": [
+      "と",
+      "とま"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
