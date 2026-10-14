@@ -682,5 +682,43 @@
     "stroke_count": 11,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "9f17e6a8-c086-510c-9753-73a714e4907d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "滑",
+    "meaning_vi": "trượt; trơn",
+    "onyomi": [
+      "カツ",
+      "コツ"
+    ],
+    "kunyomi": [
+      "すべ",
+      "なめ"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f82ab07a-fea9-5235-95e4-d9934980dbca",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "磨",
+    "meaning_vi": "mài; đánh bóng",
+    "onyomi": [
+      "マ"
+    ],
+    "kunyomi": [
+      "みが"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

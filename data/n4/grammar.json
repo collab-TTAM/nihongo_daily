@@ -1578,5 +1578,95 @@
         "translation_vi": "Nếu là email thì tôi có thể trả lời ngay."
       }
     ]
+  },
+  {
+    "id": "2a67ee97-785a-5f5f-af6c-055a01b8eae2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるところです",
+    "pattern": "Vるところです",
+    "meaning_vi": "sắp V",
+    "explanation_vi": "Diễn tả một hành động sắp bắt đầu ngay sau thời điểm nói.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ところです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ている nếu muốn nhấn mạnh hành động chưa bắt đầu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今から出かけるところです。",
+        "reading_ja": "いまからでかけるところです。",
+        "translation_vi": "Bây giờ tôi sắp ra ngoài."
+      },
+      {
+        "sentence_ja": "これから会議を始めるところです。",
+        "reading_ja": "これからかいぎをはじめるところです。",
+        "translation_vi": "Bây giờ chúng tôi sắp bắt đầu cuộc họp."
+      }
+    ]
+  },
+  {
+    "id": "e02f0c00-dd5e-5b44-825d-7012ab0aac41",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vているところです",
+    "pattern": "Vているところです",
+    "meaning_vi": "đang V",
+    "explanation_vi": "Diễn tả một hành động đang diễn ra đúng vào thời điểm nói.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ている trước ところです."
+    ],
+    "common_mistakes": [
+      "Không dùng Vるところです khi hành động đã bắt đầu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今、昼ご飯を食べているところです。",
+        "reading_ja": "いま、ひるごはんをたべているところです。",
+        "translation_vi": "Bây giờ tôi đang ăn trưa."
+      },
+      {
+        "sentence_ja": "担当者に電話しているところです。",
+        "reading_ja": "たんとうしゃにでんわしているところです。",
+        "translation_vi": "Tôi đang gọi điện cho người phụ trách."
+      }
+    ]
+  },
+  {
+    "id": "98d0d1a7-1c3c-5466-846a-e506ed10c446",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたところです",
+    "pattern": "Vたところです",
+    "meaning_vi": "vừa mới V",
+    "explanation_vi": "Diễn tả một hành động vừa hoàn thành gần thời điểm nói.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước ところです."
+    ],
+    "common_mistakes": [
+      "Không dùng Vたところです cho một việc đã xảy ra từ lâu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今、駅に着いたところです。",
+        "reading_ja": "いま、えきについたところです。",
+        "translation_vi": "Tôi vừa mới đến ga."
+      },
+      {
+        "sentence_ja": "さっき宿題を終えたところです。",
+        "reading_ja": "さっきしゅくだいをおえたところです。",
+        "translation_vi": "Tôi vừa mới làm xong bài tập."
+      }
+    ]
   }
 ]

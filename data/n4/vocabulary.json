@@ -3750,5 +3750,229 @@
         "translation_vi": "Vì mưa to nên chúng tôi sẽ hoãn chuyến du lịch."
       }
     ]
+  },
+  {
+    "id": "6e27b03c-d94e-5be0-9aa9-60fbb998f03d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "滑る",
+    "reading": "すべる",
+    "meaning_vi": "trượt; trơn",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Mất thăng bằng vì bề mặt trơn hoặc chuyển động trượt.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "道が凍っていて、滑りやすいです。",
+        "reading_ja": "みちがこおっていて、すべりやすいです。",
+        "translation_vi": "Đường bị đóng băng nên dễ trượt."
+      },
+      {
+        "sentence_ja": "階段で滑らないように気をつけてください。",
+        "reading_ja": "かいだんですべらないようにきをつけてください。",
+        "translation_vi": "Hãy cẩn thận để không trượt ở cầu thang."
+      }
+    ]
+  },
+  {
+    "id": "5d190a44-9dd0-5b08-b15f-9ee8bd5283c4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "転ぶ",
+    "reading": "ころぶ",
+    "meaning_vi": "ngã; té",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Ngã xuống vì mất thăng bằng.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "急いで走って、転びました。",
+        "reading_ja": "いそいではしって、ころびました。",
+        "translation_vi": "Vì chạy vội nên tôi đã bị ngã."
+      },
+      {
+        "sentence_ja": "自転車で転ばないように、ゆっくり走りましょう。",
+        "reading_ja": "じてんしゃでころばないように、ゆっくりはしりましょう。",
+        "translation_vi": "Hãy đi xe chậm để không bị ngã."
+      }
+    ]
+  },
+  {
+    "id": "278274af-424d-5de9-a4a7-c18079167709",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "落とす",
+    "reading": "おとす",
+    "meaning_vi": "làm rơi; đánh rơi",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Vô tình để vật rơi khỏi tay hoặc vị trí của nó.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "財布を道に落としました。",
+        "reading_ja": "さいふをみちにおとしました。",
+        "translation_vi": "Tôi đã đánh rơi ví trên đường."
+      },
+      {
+        "sentence_ja": "大切な皿を落とさないでください。",
+        "reading_ja": "たいせつなさらをおとさないでください。",
+        "translation_vi": "Hãy đừng làm rơi chiếc đĩa quan trọng."
+      }
+    ]
+  },
+  {
+    "id": "94b518ac-52f0-537e-90ae-d57d89c8b8d3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "磨く",
+    "reading": "みがく",
+    "meaning_vi": "đánh; chải; mài",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm sạch hoặc làm bóng bằng cách chà xát.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、歯を磨きます。",
+        "reading_ja": "まいあさ、はをみがきます。",
+        "translation_vi": "Mỗi sáng tôi đánh răng."
+      },
+      {
+        "sentence_ja": "靴を磨いてきれいにしました。",
+        "reading_ja": "くつをみがいてきれいにしました。",
+        "translation_vi": "Tôi đã đánh giày cho sạch đẹp."
+      }
+    ]
+  },
+  {
+    "id": "9501be57-13a7-54e3-9d72-f5e3f0170174",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "触る",
+    "reading": "さわる",
+    "meaning_vi": "chạm; sờ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa tay hoặc một bộ phận tiếp xúc với vật gì đó.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "展示品に触らないでください。",
+        "reading_ja": "てんじひんにさわらないでください。",
+        "translation_vi": "Xin đừng chạm vào hiện vật trưng bày."
+      },
+      {
+        "sentence_ja": "熱い鍋に触ると、やけどします。",
+        "reading_ja": "あついなべにさわると、やけどします。",
+        "translation_vi": "Nếu chạm vào nồi nóng thì sẽ bị bỏng."
+      }
+    ]
+  },
+  {
+    "id": "678408ad-0676-54ae-acb6-4677792b7687",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "汚す",
+    "reading": "よごす",
+    "meaning_vi": "làm bẩn",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho quần áo, đồ vật hoặc nơi chốn trở nên bẩn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "子どもが服を汚しました。",
+        "reading_ja": "こどもがふくをよごしました。",
+        "translation_vi": "Đứa trẻ đã làm bẩn quần áo."
+      },
+      {
+        "sentence_ja": "部屋を汚さないようにしてください。",
+        "reading_ja": "へやをよごさないようにしてください。",
+        "translation_vi": "Hãy cố gắng không làm bẩn căn phòng."
+      }
+    ]
+  },
+  {
+    "id": "2312307b-db00-54f0-804e-74a1f4dbc380",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "取り出す",
+    "reading": "とりだす",
+    "meaning_vi": "lấy ra",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Lấy một vật ra khỏi túi, hộp hoặc nơi cất giữ.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "かばんから本を取り出しました。",
+        "reading_ja": "かばんからほんをとりだしました。",
+        "translation_vi": "Tôi đã lấy sách ra khỏi cặp."
+      },
+      {
+        "sentence_ja": "冷蔵庫から牛乳を取り出してください。",
+        "reading_ja": "れいぞうこからぎゅうにゅうをとりだしてください。",
+        "translation_vi": "Hãy lấy sữa ra khỏi tủ lạnh."
+      }
+    ]
+  },
+  {
+    "id": "f012dae5-e213-5243-aa96-1244f65de4db",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "しまう",
+    "reading": "しまう",
+    "meaning_vi": "cất đi; để vào chỗ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cất đồ vật vào nơi quy định sau khi sử dụng.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "使った道具を箱にしまいました。",
+        "reading_ja": "つかったどうぐをはこにしまいました。",
+        "translation_vi": "Tôi đã cất dụng cụ đã dùng vào hộp."
+      },
+      {
+        "sentence_ja": "冬の服を棚にしまいます。",
+        "reading_ja": "ふゆのふくをたなにしまいます。",
+        "translation_vi": "Tôi cất quần áo mùa đông vào kệ."
+      }
+    ]
   }
 ]
