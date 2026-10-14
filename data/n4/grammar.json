@@ -1308,6 +1308,96 @@
         "translation_vi": "Con đường này ban đêm có lẽ sẽ tối."
       }
     ]
+  },
+  {
+    "id": "d13241ca-7231-5a01-ba59-427593ad1070",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたら",
+    "pattern": "Vたら",
+    "meaning_vi": "khi V; nếu V",
+    "explanation_vi": "Nêu điều kiện hoặc thời điểm để việc ở mệnh đề sau xảy ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước ら."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước ら trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "雨がやんだら、出かけましょう。",
+        "reading_ja": "あめがやんだら、でかけましょう。",
+        "translation_vi": "Khi mưa tạnh, chúng ta hãy ra ngoài."
+      },
+      {
+        "sentence_ja": "駅に着いたら、電話してください。",
+        "reading_ja": "えきについたら、でんわしてください。",
+        "translation_vi": "Khi đến ga, hãy gọi điện cho tôi."
+      }
+    ]
+  },
+  {
+    "id": "b4b9dd6d-99f4-5436-ae66-70f1eb179d94",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないと",
+    "pattern": "Vないと",
+    "meaning_vi": "nếu không V thì; phải V",
+    "explanation_vi": "Diễn tả điều kiện cần thiết, thường dùng trong hội thoại thân mật.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước と."
+    ],
+    "common_mistakes": [
+      "Trong văn viết trang trọng, nên chọn mẫu diễn đạt lịch sự hơn khi cần."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "早く寝ないと、明日起きられません。",
+        "reading_ja": "はやくねないと、あしたおきられません。",
+        "translation_vi": "Nếu không ngủ sớm thì ngày mai sẽ không dậy được."
+      },
+      {
+        "sentence_ja": "傘を持たないと、濡れますよ。",
+        "reading_ja": "かさをもたないと、ぬれますよ。",
+        "translation_vi": "Nếu không mang ô thì sẽ bị ướt đấy."
+      }
+    ]
+  },
+  {
+    "id": "fc93219e-b1c9-588d-9ab7-14646bc9da1a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nの間に",
+    "pattern": "Nの間に",
+    "meaning_vi": "trong lúc N; trong khoảng thời gian N",
+    "explanation_vi": "Nêu một khoảng thời gian mà trong đó một việc khác xảy ra.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ thời gian trước の間に."
+    ],
+    "common_mistakes": [
+      "Không dùng mẫu này để nói hai hành động xảy ra đồng thời bởi cùng một chủ thể; khi đó có thể dùng Vます + ながら."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "夏休みの間に、旅行したいです。",
+        "reading_ja": "なつやすみのあいだに、りょこうしたいです。",
+        "translation_vi": "Trong kỳ nghỉ hè, tôi muốn đi du lịch."
+      },
+      {
+      "sentence_ja": "旅行の間に写真をたくさん撮りました。",
+      "reading_ja": "りょこうのあいだにしゃしんをたくさんとりました。",
+      "translation_vi": "Trong chuyến du lịch, tôi đã chụp rất nhiều ảnh."
+      }
+    ]
   }
 ]
 

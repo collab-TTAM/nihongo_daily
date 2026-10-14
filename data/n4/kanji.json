@@ -566,6 +566,45 @@
     "stroke_count": 9,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "11f5beb3-146c-5a65-a563-bab619962799",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "晴",
+    "meaning_vi": "quang; tạnh",
+    "onyomi": [
+      "セイ"
+    ],
+    "kunyomi": [
+      "は",
+      "は-れる",
+      "は-らす"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b5cd2150-12be-5aca-9a9c-18bd5bd3277d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "曇",
+    "meaning_vi": "mây; nhiều mây",
+    "onyomi": [
+      "ドン"
+    ],
+    "kunyomi": [
+      "くも",
+      "くも-る"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 

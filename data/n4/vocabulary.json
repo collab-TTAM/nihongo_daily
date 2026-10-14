@@ -3078,6 +3078,230 @@
         "translation_vi": "Tôi đã bày món ăn thật đẹp."
       }
     ]
+  },
+  {
+    "id": "91acec2f-4a60-5678-89b9-1a379834da6d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "晴れる",
+    "reading": "はれる",
+    "meaning_vi": "trời quang; tạnh",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Bầu trời trở nên trong và không còn mưa.",
+    "audio_ref": null,
+    "tags": [
+      "weather"
+    ],
+    "examples": [
+      {
+      "sentence_ja": "午後には晴れるでしょう。",
+      "reading_ja": "ごごにははれるでしょう。",
+      "translation_vi": "Đến buổi chiều trời có lẽ sẽ quang."
+      },
+      {
+        "sentence_ja": "晴れたら、公園を散歩しませんか。",
+        "reading_ja": "はれたら、こうえんをさんぽしませんか。",
+        "translation_vi": "Nếu trời tạnh, chúng ta đi dạo công viên nhé?"
+      }
+    ]
+  },
+  {
+    "id": "3d703d7c-12b1-53e0-9a42-2015aba04328",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "曇る",
+    "reading": "くもる",
+    "meaning_vi": "trời nhiều mây; bị mờ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Bầu trời có nhiều mây hoặc bề mặt trở nên mờ.",
+    "audio_ref": null,
+    "tags": [
+      "weather"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "朝は晴れていましたが、午後は曇りました。",
+        "reading_ja": "あさははれていましたが、ごごはくもりました。",
+        "translation_vi": "Buổi sáng trời quang nhưng buổi chiều đã nhiều mây."
+      },
+      {
+        "sentence_ja": "眼鏡が曇って、前が見えません。",
+        "reading_ja": "めがねがくもって、まえがみえません。",
+        "translation_vi": "Kính bị mờ nên tôi không nhìn thấy phía trước."
+      }
+    ]
+  },
+  {
+    "id": "6c650b51-75fd-5593-b57c-901dab6e5684",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "濡れる",
+    "reading": "ぬれる",
+    "meaning_vi": "bị ướt",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Trở nên ướt do nước hoặc mưa.",
+    "audio_ref": null,
+    "tags": [
+      "weather"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "雨で靴が濡れました。",
+        "reading_ja": "あめでくつがぬれました。",
+        "translation_vi": "Giày của tôi bị ướt vì mưa."
+      },
+      {
+        "sentence_ja": "濡れた服を脱いでください。",
+        "reading_ja": "ぬれたふくをぬいでください。",
+        "translation_vi": "Hãy cởi quần áo ướt ra."
+      }
+    ]
+  },
+  {
+    "id": "7473701d-31f8-5bc8-b6fb-770e29d09b86",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "乾く",
+    "reading": "かわく",
+    "meaning_vi": "khô",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nước hoặc hơi ẩm biến mất khỏi vật.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "洗濯物はもう乾きました。",
+        "reading_ja": "せんたくものはもうかわきました。",
+        "translation_vi": "Quần áo giặt đã khô rồi."
+      },
+      {
+        "sentence_ja": "風が強いので、床がすぐ乾きます。",
+        "reading_ja": "かぜがつよいので、ゆかがすぐかわきます。",
+        "translation_vi": "Vì gió mạnh nên sàn nhà khô nhanh."
+      }
+    ]
+  },
+  {
+    "id": "47130ca3-c831-5880-a147-a1f9a8e6d3c6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "乾かす",
+    "reading": "かわかす",
+    "meaning_vi": "làm khô",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho quần áo hoặc vật gì đó hết ẩm.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+      "sentence_ja": "洗った皿を布で拭いて乾かします。",
+      "reading_ja": "あらったさらをぬのでふいてかわかします。",
+        "translation_vi": "Tôi lau khô đĩa đã rửa bằng khăn."
+      },
+      {
+        "sentence_ja": "髪をドライヤーで乾かしました。",
+        "reading_ja": "かみをどらいやーでかわかしました。",
+        "translation_vi": "Tôi đã sấy khô tóc bằng máy sấy."
+      }
+    ]
+  },
+  {
+    "id": "c2943317-4ce4-50f7-a6a9-cad6d6589b0e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "咲く",
+    "reading": "さく",
+    "meaning_vi": "nở",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Hoa mở cánh và bắt đầu nở.",
+    "audio_ref": null,
+    "tags": [
+      "nature"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "春になると、桜が咲きます。",
+        "reading_ja": "はるになると、さくらがさきます。",
+        "translation_vi": "Khi mùa xuân đến, hoa anh đào nở."
+      },
+      {
+        "sentence_ja": "庭の花がきれいに咲きました。",
+        "reading_ja": "にわのはながきれいにさきました。",
+        "translation_vi": "Hoa trong vườn đã nở rất đẹp."
+      }
+    ]
+  },
+  {
+    "id": "d8b37a3a-7bda-5f58-8456-69bd1c553004",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "育てる",
+    "reading": "そだてる",
+    "meaning_vi": "nuôi; trồng; chăm sóc để lớn",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Chăm sóc người, động vật hoặc cây để chúng phát triển.",
+    "audio_ref": null,
+    "tags": [
+      "nature"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ベランダで野菜を育てています。",
+        "reading_ja": "べらんだでやさいをそだてています。",
+        "translation_vi": "Tôi đang trồng rau ở ban công."
+      },
+      {
+        "sentence_ja": "祖父は花を大切に育てました。",
+        "reading_ja": "そふははなをたいせつにそだてました。",
+        "translation_vi": "Ông tôi đã chăm sóc hoa rất cẩn thận."
+      }
+    ]
+  },
+  {
+    "id": "52921323-d96c-5b85-b803-e62f752bd3c1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "冷ます",
+    "reading": "さます",
+    "meaning_vi": "làm nguội",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho thức ăn hoặc đồ uống bớt nóng.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "熱いお茶を少し冷ましてから飲みます。",
+        "reading_ja": "あついおちゃをすこしさましてからのみます。",
+        "translation_vi": "Tôi để trà nóng nguội bớt rồi mới uống."
+      },
+      {
+        "sentence_ja": "料理を冷まさないで、すぐ食べてください。",
+        "reading_ja": "りょうりをさまさないで、すぐたべてください。",
+        "translation_vi": "Đừng để món ăn nguội, hãy ăn ngay."
+      }
+    ]
   }
 ]
 
