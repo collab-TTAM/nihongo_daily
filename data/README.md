@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 278 | 73 | 106 | 768 |
+| N4 | 286 | 75 | 109 | 790 |
 
 ## N4 seed batches
 
-The N4 seed is now thirty-two original editorial batches for development. It contains
-278 vocabulary items, 73 Kanji metadata records and 106 grammar patterns, with 768
+The N4 seed is now thirty-three original editorial batches for development. It contains
+286 vocabulary items, 75 Kanji metadata records and 109 grammar patterns, with 790
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
@@ -107,6 +107,8 @@ The thirtieth batch adds schedules, presentations, submissions, deadlines and pa
 The thirty-first batch adds orders, customers, store areas, stock status and store opening/closing; 客 and 売 metadata; and the patterns Vてからでないと, Nにとって and Vるのではなく. It follows the same authored-content and unavailable-asset rules.
 
 The thirty-second batch adds health condition, nursing, dental visits, travel costs, one-way/round-trip tickets, information desks and ticket gates; 体 and 改 metadata; and the patterns Vてくれます, Vさせてください and Vないほうがいいです. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-third batch adds permissions, deadlines, maps, event venues, relationships, opportunities, direct contact and lost-property service; 許 and 場 metadata; and the patterns Vてくれませんか, Vることはありません and Nを通して. It follows the same authored-content and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo
 Daily. Kanji meanings/readings and stroke counts use common reference metadata;
