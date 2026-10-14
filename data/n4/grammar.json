@@ -1848,6 +1848,96 @@
         "translation_vi": "Theo giáo viên, kỳ thi là vào tuần sau."
       }
     ]
+  },
+  {
+    "id": "522f841b-6904-5735-b0b3-fe4ae1049f4d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるように言います",
+    "pattern": "Vるように言います",
+    "meaning_vi": "nói hoặc nhắc ai làm V",
+    "explanation_vi": "Dùng để truyền đạt lời nhắc hoặc yêu cầu gián tiếp về một hành động.",
+    "usage_notes_vi": [
+      "Sau ように thường là động từ thể từ điển hoặc thể phủ định."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生は宿題をするように言いました。",
+        "reading_ja": "せんせいはしゅくだいをするようにいいました。",
+        "translation_vi": "Giáo viên đã nhắc làm bài tập."
+      },
+      {
+        "sentence_ja": "母は早く寝るように言いました。",
+        "reading_ja": "ははははやくねるようにいいました。",
+        "translation_vi": "Mẹ đã nhắc đi ngủ sớm."
+      }
+    ]
+  },
+  {
+    "id": "bd7dafd8-80df-505c-92ac-6145dd87fee0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vている間に",
+    "pattern": "Vている間に",
+    "meaning_vi": "trong khi đang V",
+    "explanation_vi": "Diễn tả một việc xảy ra trong khoảng thời gian một hành động khác đang tiếp diễn.",
+    "usage_notes_vi": [
+      "Đặt 間に sau mệnh đề chỉ khoảng thời gian; chủ thể hai vế có thể khác nhau."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "私が料理している間に、弟が皿を並べました。",
+        "reading_ja": "わたしがりょうりしているあいだに、おとうとがさらをならべました。",
+        "translation_vi": "Trong khi tôi nấu ăn, em trai đã xếp đĩa."
+      },
+      {
+        "sentence_ja": "電車に乗っている間に、メールを読みました。",
+        "reading_ja": "でんしゃにのっているあいだに、めーるをよみました。",
+        "translation_vi": "Trong khi đi tàu điện, tôi đã đọc email."
+      }
+    ]
+  },
+  {
+    "id": "8b1ba3a1-0a57-5a51-9f9c-59f0be33d424",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによって",
+    "pattern": "Nによって",
+    "meaning_vi": "tùy theo N; do N",
+    "explanation_vi": "Diễn tả sự khác nhau tùy theo người, nơi hoặc điều kiện.",
+    "usage_notes_vi": [
+      "Nによって thường đi với biểu hiện khác nhau như 違います hoặc 変わります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "地域によって祭りの日が違います。",
+        "reading_ja": "ちいきによってまつりのひがちがいます。",
+        "translation_vi": "Ngày lễ hội khác nhau tùy khu vực."
+      },
+      {
+        "sentence_ja": "季節によって食べる物が変わります。",
+        "reading_ja": "きせつによってたべるものがかわります。",
+        "translation_vi": "Thức ăn thay đổi tùy theo mùa."
+      }
+    ]
   }
 ]
 
