@@ -1012,6 +1012,41 @@
     "stroke_count": 10,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "9514fb8a-bb2c-5263-a3ef-e6332b8d857a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "地",
+    "meaning_vi": "đất; địa điểm",
+    "onyomi": [
+      "チ",
+      "ジ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "8c7841af-3aeb-52ce-9a82-82fdb9283af7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "震",
+    "meaning_vi": "rung; chấn động",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "ふる"
+    ],
+    "stroke_count": 15,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
