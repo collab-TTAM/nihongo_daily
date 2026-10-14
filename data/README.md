@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 238 | 63 | 91 | 658 |
+| N4 | 246 | 65 | 94 | 680 |
 
 ## N4 seed batches
 
-The N4 seed is now twenty-seven original editorial batches for development. It contains
-238 vocabulary items, 63 Kanji metadata records and 91 grammar patterns, with 658
+The N4 seed is now twenty-eight original editorial batches for development. It contains
+246 vocabulary items, 65 Kanji metadata records and 94 grammar patterns, with 680
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
@@ -97,6 +97,8 @@ The twenty-fifth batch adds products, prices, discounts, cash, receipts, returns
 The twenty-sixth batch adds repairs, construction, water leaks, power outages, batteries, machines, parts and maintenance; 機 and 械 metadata; and the patterns Vてあります, Nのまま and Vている間. It follows the same authored-content and unavailable-asset rules.
 
 The twenty-seventh batch adds ingredients, taste, salt, sugar, cooking methods, refrigerators, temperature and food dates; 味 and 塩 metadata; and the patterns Nがします, Vるのが上手です and Vてもいいですか. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-eighth batch adds traffic jams, signals, roads, sidewalks, fares, timetables, boarding areas and destinations; 道 and 信 metadata; and the patterns Vるかどうか, Nによっては and Vるためには. It follows the same authored-content and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo
 Daily. Kanji meanings/readings and stroke counts use common reference metadata;
