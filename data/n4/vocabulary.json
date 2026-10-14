@@ -1958,5 +1958,229 @@
         "translation_vi": "Ngày mai đừng đi muộn."
       }
     ]
+  },
+  {
+    "id": "142cca6f-8353-5f20-aa85-cdc4503ba815",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "集める",
+    "reading": "あつめる",
+    "meaning_vi": "thu thập; tập hợp",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Lấy nhiều đồ vật hoặc người về cùng một chỗ.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "旅行の情報を集めています。",
+        "reading_ja": "りょこうのじょうほうをあつめています。",
+        "translation_vi": "Tôi đang thu thập thông tin du lịch."
+      },
+      {
+        "sentence_ja": "みんなから意見を集めました。",
+        "reading_ja": "みんなからいけんをあつめました。",
+        "translation_vi": "Tôi đã tập hợp ý kiến từ mọi người."
+      }
+    ]
+  },
+  {
+    "id": "76bda220-0390-5909-9a25-63b9a5582813",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "間違い",
+    "reading": "まちがい",
+    "meaning_vi": "lỗi; điều sai",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều không đúng hoặc lỗi trong câu trả lời.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "作文の間違いを直してください。",
+        "reading_ja": "さくぶんのまちがいをなおしてください。",
+        "translation_vi": "Hãy sửa lỗi trong bài văn."
+      },
+      {
+        "sentence_ja": "この答えに間違いがあります。",
+        "reading_ja": "このこたえにまちがいがあります。",
+        "translation_vi": "Câu trả lời này có lỗi."
+      }
+    ]
+  },
+  {
+    "id": "95e6e8d4-6c41-53c9-ae90-7e3b91bf864f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "払う",
+    "reading": "はらう",
+    "meaning_vi": "trả tiền; thanh toán",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa tiền để thanh toán hàng hóa hoặc dịch vụ.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "レジで料金を払います。",
+        "reading_ja": "れじでりょうきんをはらいます。",
+        "translation_vi": "Tôi thanh toán phí ở quầy tính tiền."
+      },
+      {
+        "sentence_ja": "カードで払ってもいいですか。",
+        "reading_ja": "かーどではらってもいいですか。",
+        "translation_vi": "Tôi trả bằng thẻ có được không?"
+      }
+    ]
+  },
+  {
+    "id": "71e17bf7-5049-545b-97c6-92fa64da9663",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "下がる",
+    "reading": "さがる",
+    "meaning_vi": "giảm; hạ xuống",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Mức độ, vị trí hoặc giá cả trở nên thấp hơn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "最近、野菜の値段が下がりました。",
+        "reading_ja": "さいきん、やさいのねだんがさがりました。",
+        "translation_vi": "Gần đây giá rau đã giảm."
+      },
+      {
+        "sentence_ja": "熱が下がって安心しました。",
+        "reading_ja": "ねつがさがってあんしんしました。",
+        "translation_vi": "Tôi yên tâm vì đã hạ sốt."
+      }
+    ]
+  },
+  {
+    "id": "35fd7c34-31aa-5f44-83a6-de7953a91234",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "増える",
+    "reading": "ふえる",
+    "meaning_vi": "tăng lên; nhiều thêm",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Số lượng hoặc mức độ trở nên nhiều hơn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "春になると観光客が増えます。",
+        "reading_ja": "はるになるとかんこうきゃくがふえます。",
+        "translation_vi": "Đến mùa xuân khách du lịch tăng lên."
+      },
+      {
+        "sentence_ja": "仕事が増えたので忙しいです。",
+        "reading_ja": "しごとがふえたのでいそがしいです。",
+        "translation_vi": "Vì công việc tăng nên tôi bận."
+      }
+    ]
+  },
+  {
+    "id": "d09a94fe-094a-5791-9c42-3e9db744f2e8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "減る",
+    "reading": "へる",
+    "meaning_vi": "giảm đi; ít đi",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Số lượng hoặc mức độ trở nên ít hơn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "最近、時間が減りました。",
+        "reading_ja": "さいきん、じかんがへりました。",
+        "translation_vi": "Gần đây thời gian đã giảm."
+      },
+      {
+        "sentence_ja": "運動すると体重が減るかもしれません。",
+        "reading_ja": "うんどうするとたいじゅうがへるかもしれません。",
+        "translation_vi": "Tập thể dục có thể cân nặng sẽ giảm."
+      }
+    ]
+  },
+  {
+    "id": "a45161c5-0edf-5204-bf88-c9dce13a430a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "暮らす",
+    "reading": "くらす",
+    "meaning_vi": "sống; sinh sống",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Sinh hoạt và ở trong một nơi.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "家族と一緒に暮らしています。",
+        "reading_ja": "かぞくといっしょにくらしています。",
+        "translation_vi": "Tôi đang sống cùng gia đình."
+      },
+      {
+        "sentence_ja": "将来、海の近くで暮らしたいです。",
+        "reading_ja": "しょうらい、うみのちかくでくらしたいです。",
+        "translation_vi": "Tương lai tôi muốn sống gần biển."
+      }
+    ]
+  },
+  {
+    "id": "81b14fd0-f9b0-5892-9e11-216c5cbf49e0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "戻る",
+    "reading": "もどる",
+    "meaning_vi": "quay lại; trở về",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Trở lại nơi cũ hoặc trạng thái trước đó.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "忘れ物を取りに家へ戻りました。",
+        "reading_ja": "わすれものをとりにいえへもどりました。",
+        "translation_vi": "Tôi đã quay về nhà lấy đồ bỏ quên."
+      },
+      {
+        "sentence_ja": "仕事が終わったらすぐ戻ります。",
+        "reading_ja": "しごとがおわったらすぐもどります。",
+        "translation_vi": "Xong việc tôi sẽ quay lại ngay."
+      }
+    ]
   }
 ]

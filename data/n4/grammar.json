@@ -858,5 +858,95 @@
         "translation_vi": "Tôi sẽ nhờ bạn hướng dẫn đến ga."
       }
     ]
+  },
+  {
+    "id": "40f5cd01-5e94-53ab-9b2d-be0e62b6fcc5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるために",
+    "pattern": "Vるために",
+    "meaning_vi": "để V; nhằm V",
+    "explanation_vi": "Nêu mục đích của hành động bằng động từ thể từ điển.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ために khi chủ thể của hai vế giống nhau."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ない nếu muốn nói mục đích khẳng định."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本で働くために日本語を勉強しています。",
+        "reading_ja": "にほんではたらくためににほんごをべんきょうしています。",
+        "translation_vi": "Tôi học tiếng Nhật để làm việc ở Nhật."
+      },
+      {
+        "sentence_ja": "健康になるために毎日歩きます。",
+        "reading_ja": "けんこうになるためにまいにちあるきます。",
+        "translation_vi": "Tôi đi bộ mỗi ngày để khỏe mạnh."
+      }
+    ]
+  },
+  {
+    "id": "536c402a-cd67-50fd-882f-6f72294b395a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたらどうですか",
+    "pattern": "Vたらどうですか",
+    "meaning_vi": "hay là V; sao không V",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề xuất nhẹ nhàng.",
+    "usage_notes_vi": [
+      "Dùng thể た trước らどうですか."
+    ],
+    "common_mistakes": [
+      "Đây là lời khuyên, không phải câu hỏi về điều kiện đã xảy ra."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "少し休んだらどうですか。",
+        "reading_ja": "すこしやすんだらどうですか。",
+        "translation_vi": "Bạn nghỉ một chút thì sao?"
+      },
+      {
+        "sentence_ja": "先生に相談したらどうですか。",
+        "reading_ja": "せんせいにそうだんしたらどうですか。",
+        "translation_vi": "Bạn thử trao đổi với giáo viên xem sao?"
+      }
+    ]
+  },
+  {
+    "id": "e9e6d1ab-6c52-5da0-9be5-0857269e8e33",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nしか～ません",
+    "pattern": "Nしか～ません",
+    "meaning_vi": "chỉ N; ngoài N ra không",
+    "explanation_vi": "Nhấn mạnh số lượng hoặc lựa chọn duy nhất với câu phủ định.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước しか và dùng vị ngữ phủ định sau đó."
+    ],
+    "common_mistakes": [
+      "Không dùng vị ngữ khẳng định sau しか."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "週末しか休みません。",
+        "reading_ja": "しゅうまつしかやすみません。",
+        "translation_vi": "Tôi chỉ nghỉ vào cuối tuần."
+      },
+      {
+        "sentence_ja": "この店では現金しか使えません。",
+        "reading_ja": "このみせではげんきんしかつかえません。",
+        "translation_vi": "Ở cửa hàng này chỉ dùng được tiền mặt."
+      }
+    ]
   }
 ]

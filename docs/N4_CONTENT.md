@@ -7,10 +7,10 @@ curriculum. The published export contains:
 
 | Model | Count | Examples |
 | --- | ---: | ---: |
-| Vocabulary | 70 | 140 |
-| Kanji metadata | 21 | — |
-| Grammar | 28 | 56 |
-| **Total** | **119** | **196** |
+| Vocabulary | 78 | 156 |
+| Kanji metadata | 23 | — |
+| Grammar | 31 | 62 |
+| **Total** | **132** | **218** |
 
 Themes are travel/planning, transport/shopping, work/communication, daily
 habits, descriptions, common actions, safety, culture, health and study. The
@@ -34,7 +34,7 @@ Examples pair Japanese sentences with kana readings and Vietnamese translations.
   metadata.
 - No audio, canonical stroke-order data, tracing asset or real handwriting grade
   is included. `audio_ref` and `stroke_data_ref` are null for this batch.
-- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. A native-speaker/teacher review and broader coverage review remain outstanding.
+- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. A native-speaker/teacher review and broader coverage review remain outstanding.
 
 ## Versioning and IDs
 

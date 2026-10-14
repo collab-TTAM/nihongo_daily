@@ -382,5 +382,42 @@
     "stroke_count": 8,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "cb9f2b28-8243-5dfb-b9e7-162e3110d2ab",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "払",
+    "meaning_vi": "trả; quét",
+    "onyomi": [
+      "フツ"
+    ],
+    "kunyomi": [
+      "はら"
+    ],
+    "stroke_count": 5,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b9f17e12-b81e-57ae-bcd6-c75ca397be53",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "増",
+    "meaning_vi": "tăng; thêm",
+    "onyomi": [
+      "ゾウ"
+    ],
+    "kunyomi": [
+      "ま",
+      "ふ"
+    ],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
