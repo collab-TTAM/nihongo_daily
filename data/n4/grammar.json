@@ -2568,6 +2568,96 @@
         "translation_vi": "Bạn có thể đổi sản phẩm này giúp tôi không?"
       }
     ]
+  },
+  {
+    "id": "9646c25b-b702-5af9-bb99-87ac83a20f87",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてあります",
+    "pattern": "Vてあります",
+    "meaning_vi": "được V sẵn; đang ở trạng thái đã V",
+    "explanation_vi": "Diễn tả kết quả của hành động được thực hiện có chủ ý và còn giữ nguyên.",
+    "usage_notes_vi": [
+      "Dùng động từ tha động từ ở thể て với あります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "会議の資料が机の上に置いてあります。",
+        "reading_ja": "かいぎのしりょうがつくえのうえにおいてあります。",
+        "translation_vi": "Tài liệu cuộc họp được đặt sẵn trên bàn."
+      },
+      {
+        "sentence_ja": "窓が開けてあります。",
+        "reading_ja": "まどがあけてあります。",
+        "translation_vi": "Cửa sổ được mở sẵn."
+      }
+    ]
+  },
+  {
+    "id": "b76fe63b-5fcd-5195-8739-55393c81c40c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのまま",
+    "pattern": "Nのまま",
+    "meaning_vi": "giữ nguyên N; trong trạng thái N",
+    "explanation_vi": "Diễn tả việc giữ nguyên trạng thái hoặc hình thức của danh từ.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước のまま khi trạng thái không thay đổi."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電気をつけたまま寝てしまいました。",
+        "reading_ja": "でんきをつけたままねてしまいました。",
+        "translation_vi": "Tôi đã lỡ ngủ khi vẫn bật điện."
+      },
+      {
+        "sentence_ja": "靴のまま部屋に入らないでください。",
+        "reading_ja": "くつのままへやにはいらないでください。",
+        "translation_vi": "Xin đừng vào phòng mà vẫn đi giày."
+      }
+    ]
+  },
+  {
+    "id": "cf7ec941-b486-5c7e-a6bd-a2d8f7f8f0cf",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vている間",
+    "pattern": "Vている間",
+    "meaning_vi": "trong lúc đang V",
+    "explanation_vi": "Diễn tả một hành động hoặc trạng thái kéo dài trong một khoảng thời gian.",
+    "usage_notes_vi": [
+      "Đặt 間 sau mệnh đề thể ている để nêu khoảng thời gian."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "工事をしている間、道を使えません。",
+        "reading_ja": "こうじをしているあいだ、みちをつかえません。",
+        "translation_vi": "Trong lúc thi công, không thể sử dụng đường."
+      },
+      {
+        "sentence_ja": "点検している間は機械を止めてください。",
+        "reading_ja": "てんけんしているあいだはきかいをとめてください。",
+        "translation_vi": "Trong lúc kiểm tra, hãy dừng máy."
+      }
+    ]
   }
 ]
 
