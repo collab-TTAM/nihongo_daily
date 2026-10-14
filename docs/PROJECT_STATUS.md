@@ -1084,3 +1084,21 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   expiry/restart/two-client acceptance. Missing service configuration does not
   block independent testable work. No dependencies/schema/RLS/API/Auth-provider,
   production deployment/deletion or N4 changes; schedule remains requested.
+
+## Windows Dart/native bridge increment — 2026-10-14 UTC
+
+- Resumed actual #37 head 0a2aad71; baseline local blobs matched prior source tree
+  except the two known handoff docs. Pro #38/N4 lane remains untouched.
+- Added TEST ONLY Flutter runner entrypoint and bounded PowerShell orchestration
+  to exercise real Dart facade/codec/channel/Credential Manager in five sequential
+  processes, including observing replaced data and absence after deletion.
+  GUID `.invalid` scope; fixed synthetic values only; finally cleanup required.
+- CI requires probe build/execution and then normal preview rebuild. All prior
+  gates retained. Local formatting and 17 QA tests passed; initial contracts run
+  lacked jsonschema in default Python (environment, not test success). Use existing
+  contract-venv. Windows execution/new-head full CI are pending at upload.
+- Separate review: no arbitrary target/token CLI input, bounded processes, fixed
+  safe logs, per-run target cleanup, separate probe target and normal artifact.
+  This increment verifies vault bridge only; persistent SDK runtime restart,
+  refresh scheduling/startup UI and all 14 live integrations remain pending.
+  Keep #37 draft; no deployment, migration, dependency/Auth-provider or N4 change.

@@ -120,3 +120,21 @@ narrowing were corrected without suppressing lint/compiler warnings or weakening
 assertions. Child mode also rejects non-PID CI targets before any write. Results
 are historical for later commits and do not establish hosted Auth/restoration,
 interactive platform bridge execution, OS logoff/relogin or power-loss recovery.
+
+## Dart/native cross-process bridge probe (pending CI)
+
+The TEST ONLY `tool/windows_vault_bridge.dart` entrypoint runs in the production
+Flutter Windows runner and calls the production Dart vault/MethodChannel/native
+helper without mock platform messages. `tool/verify_windows_vault_bridge.ps1`
+starts five separate processes: write, reopen/replace, observe replaced value,
+clear, and observe absence. Each invocation has a GUID-qualified `.invalid`
+project; only fixed synthetic values are accepted. Other-project reads must
+remain absent. Each phase is bounded to 60 seconds; failed/timeout phases and
+failed finally cleanup fail the job. No credential values or raw errors are logged.
+
+CI builds this separate target, executes the probe, then rebuilds the normal
+`lib/main.dart` entrypoint before uploading the learner preview. No new dependency
+or default runtime activation. This narrows the method-channel evidence gap when
+it passes, but does not invoke the Supabase runtime or establish hosted login,
+SDK-to-OS restore, OS logoff/power-loss, concurrent writer safety or learner UI
+acceptance. Existing pure/native/SQL/security gates stay mandatory.
