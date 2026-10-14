@@ -4428,6 +4428,230 @@
         "translation_vi": "Bạn có thể sử dụng dịch vụ này miễn phí."
       }
     ]
+  },
+  {
+    "id": "b0738f8f-26f7-549e-b693-d0bdb24c7b71",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "地域",
+    "reading": "ちいき",
+    "meaning_vi": "khu vực; cộng đồng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực hoặc cộng đồng nơi mọi người sinh sống.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "地域の祭りに参加しました。",
+        "reading_ja": "ちいきのまつりにさんかしました。",
+        "translation_vi": "Tôi đã tham gia lễ hội của khu vực."
+      },
+      {
+        "sentence_ja": "この地域は静かで住みやすいです。",
+        "reading_ja": "このちいきはしずかですみやすいです。",
+        "translation_vi": "Khu vực này yên tĩnh và dễ sống."
+      }
+    ]
+  },
+  {
+    "id": "b5aa6a21-2ebb-5636-ac54-cdef79c039be",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "環境",
+    "reading": "かんきょう",
+    "meaning_vi": "môi trường; hoàn cảnh",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều kiện tự nhiên hoặc hoàn cảnh xung quanh.",
+    "audio_ref": null,
+    "tags": [
+      "nature"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "環境を守るためにごみを分別します。",
+        "reading_ja": "かんきょうをまもるためにごみをぶんべつします。",
+        "translation_vi": "Để bảo vệ môi trường, tôi phân loại rác."
+      },
+      {
+        "sentence_ja": "子どもたちが環境について学びました。",
+        "reading_ja": "こどもたちがかんきょうについてまなびました。",
+        "translation_vi": "Các em nhỏ đã học về môi trường."
+      }
+    ]
+  },
+  {
+    "id": "27800700-11e1-5454-b917-9926609ada6c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "自然",
+    "reading": "しぜん",
+    "meaning_vi": "tự nhiên; thiên nhiên",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cây cối, núi, sông và thế giới tự nhiên.",
+    "audio_ref": null,
+    "tags": [
+      "nature"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "休みの日に自然の中を歩きます。",
+        "reading_ja": "やすみのひにしぜんのなかをあるきます。",
+        "translation_vi": "Ngày nghỉ tôi đi bộ giữa thiên nhiên."
+      },
+      {
+        "sentence_ja": "この町は自然が多いです。",
+        "reading_ja": "このまちはしぜんがおおいです。",
+        "translation_vi": "Thị trấn này có nhiều thiên nhiên."
+      }
+    ]
+  },
+  {
+    "id": "03f1c86b-82bd-5ea8-8226-c9a70d8032b3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "祭り",
+    "reading": "まつり",
+    "meaning_vi": "lễ hội",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Sự kiện truyền thống hoặc cộng đồng có nhiều người tham gia.",
+    "audio_ref": null,
+    "tags": [
+      "culture"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "夏祭りで友達と踊りました。",
+        "reading_ja": "なつまつりでともだちとおどりました。",
+        "translation_vi": "Tôi đã nhảy cùng bạn ở lễ hội mùa hè."
+      },
+      {
+        "sentence_ja": "地域の祭りは来月行われます。",
+        "reading_ja": "ちいきのまつりはらいげつおこなわれます。",
+        "translation_vi": "Lễ hội của khu vực sẽ được tổ chức vào tháng sau."
+      }
+    ]
+  },
+  {
+    "id": "6fe08ff6-ccd8-5056-b32c-63fa74783cee",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "近づく",
+    "reading": "ちかづく",
+    "meaning_vi": "đến gần; tới gần",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Di chuyển đến gần người, vật hoặc thời điểm.",
+    "audio_ref": null,
+    "tags": [
+      "actions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "台風が町に近づいています。",
+        "reading_ja": "たいふうがまちにちかづいています。",
+        "translation_vi": "Bão đang tiến gần thị trấn."
+      },
+      {
+        "sentence_ja": "駅に近づいたら電話してください。",
+        "reading_ja": "えきにちかづいたらでんわしてください。",
+        "translation_vi": "Khi đến gần ga hãy gọi điện."
+      }
+    ]
+  },
+  {
+    "id": "114e08ad-d1a7-5243-baec-472fe241ed13",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "守る",
+    "reading": "まもる",
+    "meaning_vi": "bảo vệ; tuân thủ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Bảo vệ người hoặc vật, hoặc tuân thủ quy tắc và lời hứa.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "交通ルールを守りましょう。",
+        "reading_ja": "こうつうるーるをまもりましょう。",
+        "translation_vi": "Hãy tuân thủ luật giao thông."
+      },
+      {
+        "sentence_ja": "約束を守ることは大切です。",
+        "reading_ja": "やくそくをまもることはたいせつです。",
+        "translation_vi": "Giữ lời hứa là điều quan trọng."
+      }
+    ]
+  },
+  {
+    "id": "0c109c72-dfc7-5f7f-950f-707dea968b98",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "分ける",
+    "reading": "わける",
+    "meaning_vi": "chia; phân loại",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Chia một nhóm hoặc vật thành các phần riêng.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ごみを種類ごとに分けてください。",
+        "reading_ja": "ごみをしゅるいごとにわけてください。",
+        "translation_vi": "Hãy phân loại rác theo từng loại."
+      },
+      {
+        "sentence_ja": "仕事を二つのグループに分けました。",
+        "reading_ja": "しごとをふたつのぐるーぷにわけました。",
+        "translation_vi": "Tôi đã chia công việc thành hai nhóm."
+      }
+    ]
+  },
+  {
+    "id": "cbd1d5da-6c1d-5991-8d5a-525260ddb5dd",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "減らす",
+    "reading": "へらす",
+    "meaning_vi": "giảm; làm giảm",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho số lượng hoặc mức độ ít đi.",
+    "audio_ref": null,
+    "tags": [
+      "environment"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "電気の使用を減らしたいです。",
+        "reading_ja": "でんきのしようをへらしたいです。",
+        "translation_vi": "Tôi muốn giảm việc sử dụng điện."
+      },
+      {
+        "sentence_ja": "食べ残しを減らすために少なく作ります。",
+        "reading_ja": "たべのこしをへらすためにすくなくつくります。",
+        "translation_vi": "Để giảm thức ăn thừa, tôi nấu ít hơn."
+      }
+    ]
   }
 ]
 
