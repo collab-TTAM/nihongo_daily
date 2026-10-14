@@ -578,3 +578,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   No Auth provider/strategy, RLS, frozen API/SQL, production, data collection or
   paid provider/cost change. Keep PR draft/#22 open. Next #20 profile/login/storage,
   #15 durable recovery and actual non-production A/B/expired JWT/SRS journey.
+
+- Separate follow-up review: add explicit whitespace/config bounds, block braces
+  for multiline verifier-facing guards, and chunked-body/malformed-session-ID
+  regressions. Preserve expectations and all checks; final-head CI must rerun.
+
+- CI 38505690541 passed database/repo/AI but SDK Flutter analysis rejected three
+  multiline if blocks and a closure-variable declaration. Use blocks/local
+  function, not disabled lint. Its skipped tests/builds do not prove success.

@@ -380,6 +380,8 @@ void main() {
       }
       for (final bad in [
         'sb_secret_TEST_ONLY',
+        '$key\n',
+        '$key ',
         token(a, sid1, now, role: 'service_role'),
         'not a key',
       ]) {
@@ -392,6 +394,58 @@ void main() {
           throwsArgumentError,
         );
       }
+    },
+  );
+  test(
+    'chunked oversized body without content-length fails before SDK parsing',
+    () async {
+      await login();
+      final chunked = MockClient.streaming(
+        (request, _) async => http.StreamedResponse(
+          Stream.fromIterable([
+            List<int>.filled(1024 * 1024, 120),
+            [120],
+          ]),
+          200,
+        ),
+      );
+      final second = SupabaseReviewBinding(
+        client: sdk,
+        projectUrl: origin,
+        publishableKey: key,
+        httpClient: chunked,
+        now: () => now,
+      );
+      addTearDown(() {
+        second.dispose();
+        chunked.close();
+      });
+      await expectLater(
+        second.invoke(
+          capturedSession: second.currentSession!,
+          function: 'get_review_queue',
+          params: envelope,
+        ),
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (e) => e.code,
+            'bounded',
+            ReviewErrorCode.internalError,
+          ),
+        ),
+      );
+    },
+  );
+  test(
+    'malformed server session id revokes SDK hint rather than dispatching',
+    () async {
+      await login();
+      final session = binding.currentSession!;
+      nextSid = 'not a session UUID';
+      await login();
+      expect(binding.currentSession, isNull);
+      await expectLater(invoke(session), throwsA(unauthorized));
+      expect(requests, isEmpty);
     },
   );
   test(

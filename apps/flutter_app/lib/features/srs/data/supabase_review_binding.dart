@@ -94,7 +94,7 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
           _hint?.sameLifecycle(hint) == true &&
           _registry.currentSession != null;
       _hint = hint;
-      final CapturedReviewRpc rpc = (function, params) =>
+      Future<Object?> rpc(String function, Map<String, Object> params) =>
           _rpc(hint, function, params);
       if (preserve) {
         _registry.refresh(
@@ -240,11 +240,13 @@ final class _SessionHint {
 }
 
 Map<String, Object?> _jwtPayload(String token) {
-  if (token.length > 32768 || token.contains(RegExp(r'\s')))
+  if (token.length > 32768 || token.contains(RegExp(r'\s'))) {
     throw const FormatException();
+  }
   final parts = token.split('.');
-  if (parts.length != 3 || parts.any((part) => part.isEmpty))
+  if (parts.length != 3 || parts.any((part) => part.isEmpty)) {
     throw const FormatException();
+  }
   final value = jsonDecode(
     utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
   );
@@ -254,7 +256,9 @@ Map<String, Object?> _jwtPayload(String token) {
 
 String _projectUrl(String value) {
   final uri = Uri.tryParse(value);
-  if (uri == null ||
+  if (value.length > 2048 ||
+      value != value.trim() ||
+      uri == null ||
       uri.scheme != 'https' ||
       uri.host.isEmpty ||
       uri.userInfo.isNotEmpty ||
@@ -268,8 +272,10 @@ String _projectUrl(String value) {
 
 String _publicKey(String value) {
   try {
-    if (RegExp(r'^sb_publishable_[A-Za-z0-9_-]{10,200}$').hasMatch(value))
+    if (value.contains(RegExp(r'\s'))) throw const FormatException();
+    if (RegExp(r'^sb_publishable_[A-Za-z0-9_-]{10,200}$').hasMatch(value)) {
       return value;
+    }
     if (_jwtPayload(value)['role'] == 'anon') return value;
   } on Object {
     /* No credential detail in errors. */
