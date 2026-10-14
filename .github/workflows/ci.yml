@@ -90,6 +90,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify credential vault validation and ordering
+        run: dart run tool/verify_session_vault.dart
       - name: Verify account profile readiness
         run: dart run tool/verify_account.dart
       - name: Verify real IndexedDB transactions in Chrome
@@ -177,6 +179,15 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - run: flutter build windows --release
+      - name: Verify actual Windows credential store across processes
+        shell: pwsh
+        run: |
+          cmake -S tool/windows_session_vault -B build/session-vault-probe -G "Visual Studio 17 2022" -A x64
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build build/session-vault-probe --config Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./build/session-vault-probe/Release/session_vault_probe.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Verify native receipt cache retention
         run: dart run tool/verify_receipt_retention.dart
       - name: Verify lossless native journal compaction

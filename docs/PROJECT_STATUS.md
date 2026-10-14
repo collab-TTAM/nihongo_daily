@@ -945,3 +945,27 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   draft/#20/#22/#15 open; no merge/deployment. Next configured secure session
   lifecycle/storage/restore, then actual hosted A/B/expired JWT/restart/two-client
   learner acceptance. Missing credentials do not block independent work.
+
+## Windows refresh-secret vault resume — 2026-10-14 UTC
+
+- Resume eae3c63d after all five CI38548119120 jobs passed. All 213 local blobs
+  match remote baseline. One core worker; Pro content lane remains reserved for
+  Issue #14. No data/content/schema/migration/Auth provider changes.
+- Add explicit Windows Credential Manager refresh-secret component, trusted
+  HTTPS-origin namespace, 2048 printable-ASCII byte bound, strict native method
+  envelope, idempotent exact-target clear and safe errors. Serialize same-target
+  operations across facade instances in this Dart isolate; never fall back to
+  files/browser storage. Existing app/account runtime remains unconfigured.
+- Twelve pure scenarios/source analysis/format pass locally. Four platform-channel
+  tests and real native Windows credential/child exit/read/project isolation/
+  corrupt-input/clear probe authored. Native C++ helper is shared by app/probe;
+  Windows runner lifetime registers/unregisters the bridge. Current-head CI
+  required for full Flutter/native API/build claims. All prior gates retained;
+  add pure verifier and mandatory actual Windows probe. QA42/all 14 releases
+  pending; worker active pending CI.
+- Separate source/scope/secret-memory/OS boundary review in WINDOWS_SESSION_VAULT.
+  No dependencies/API/RLS/production/paid-provider changes. This component is not
+  yet connected to SDK token rotation or login/logout/restart restoration. Next
+  bind the vault to an explicitly owned Supabase session lifecycle with profile
+  readiness and late-result guards, then actual configured hosted acceptance.
+  Keep #37 draft/#20/#22/#15 open; no merge/deployment.

@@ -21,6 +21,7 @@
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify credential vault validation and ordering",
       "Verify account profile readiness",
       "Verify real IndexedDB transactions in Chrome",
       "Verify browser review page reload",
@@ -48,6 +49,7 @@
     "windows": [
       "Run flutter pub get --enforce-lockfile",
       "Run flutter build windows --release",
+      "Verify actual Windows credential store across processes",
       "Verify native receipt cache retention",
       "Verify lossless native journal compaction",
       "Verify native durable review restart",
@@ -64,6 +66,32 @@
     ]
   },
   "cases": [
+    {
+      "id": "windows-session-vault",
+      "status": "automated-baseline",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen and explicit unsupported-platform failure",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_credential_vault_test.dart",
+          "contains": "credential vault"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart",
+          "contains": "Windows method channel"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "actual Windows Credential Manager"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe",
+      "limitation": "Actual Windows credential API uses isolated TEST ONLY tokens. Dart platform bridge uses mock messages; native bridge is built, not interactive end-to-end proof. Explicit factory only; no SDK token rotation, login/logout persistence or restoration yet. Same-OS-user processes can access generic credentials; single isolate queue is not interprocess CAS. Web/mobile/non-Windows unsupported."
+    },
     {
       "id": "account-profile-readiness",
       "status": "automated-baseline",

@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-41 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+42 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -195,3 +195,12 @@ HTTP cases, including synchronous logout fencing and late-response rejection.
 See ACCOUNT_READINESS.md. QA41 groups; all 14 live release integrations remain
 pending. Default account runtime null; configured assembly is not hosted login
 or secure token restoration evidence. All previous CI gates remain required.
+
+## Windows session-vault baseline
+
+`windows-session-vault` adds twelve pure input/order/error cases, four mocked
+platform-channel cases and actual Windows Credential Manager process-reopen,
+project-isolation/corruption/bounds/clear checks. Native bridge compiles in the
+Windows app. See WINDOWS_SESSION_VAULT.md. QA42 groups, all 14 live integrations
+pending. Explicit component only; no SDK persistence/rotation/restoration or
+interactive bridge-to-OS/hosted Auth claim. Other platforms fail unavailable.
