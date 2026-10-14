@@ -71,6 +71,33 @@
   },
   "cases": [
     {
+      "id": "cancelable-window-exit",
+      "status": "automated-baseline",
+      "scope": "Owned startup host awaits cancelable framework/Windows window exit cleanup; retained router/form listeners, null account publication, hidden disabled cleared fields, delayed/concurrent drain and redacted explicit same-owner retry",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "cancelable exit awaits owned drain and coalesces requests"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_exit_fixture.dart",
+          "contains": "Normal close must release the actual native journal lease before exit."
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows actual cancelable window close and owned drain verification passed"
+        }
+      ],
+      "issues": [
+        20,
+        15,
+        22
+      ],
+      "reproduce": "flutter test test/features/srs/account_startup_widget_test.dart; on Windows flutter build windows --release --target tool/windows_vault_bridge.dart then ./tool/verify_windows_vault_bridge.ps1",
+      "limitation": "Four framework/widget fixtures with retained router/form identity, null account provider and disabled/empty fields; actual OS CloseMainWindow with an empty-vault staging owner, real app-data journal lease reopen and synthetic delay/one-shot cleanup failure. No hosted Auth or logged-in learner rotation/shutdown proof. Task Manager kill, uncancelable OS logoff and power loss can bypass the hook; persistence remains write-before-dispatch. Cleanup failure never reopens Auth and a retained failing owner is not assumed repaired. Preview/N4/provider/schema/security unchanged."
+    },
+    {
       "id": "windows-staging-bootstrap",
       "status": "automated-baseline",
       "scope": "Trusted build mode/URL/public-key selection, owned Windows runtime plus project-scoped OS app-data journal, configured main build and ordinary preview preservation",

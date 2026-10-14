@@ -1411,3 +1411,32 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   requested before .NET found a main HWND; wait for the real native main window
   after Dart ready marker. Required no-early-exit/cleanup-marker assertions kept.
   No failing/skipped source run counts as verification; fresh full CI required.
+
+### Verified cancelable window close handoff
+
+- Source 2aa94639e99dc38c9af9f5734eba7b47c52a3469 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38611061291 . Observed 360 Flutter tests (four new
+  framework/widget exit cases), five actual Chrome tests, format/analyze, retained
+  native/SQL/wire/security/AI checks and web/Windows preview artifacts.
+- Actual Windows CloseMainWindow tests passed: pending owned drain keeps process
+  alive until externally released; synthetic one-shot close failure cancels the
+  first native request, and a later explicit close finishes the same owner. Real
+  empty-vault staging runtime closes, real app-data journal lease reopens and
+  completion marker precedes natural process exit. Logs contain all four vault/
+  runtime/app-data/window-close success markers. Configured staging main compiled,
+  then normal preview rebuilt. Raw evidence passed exact-head/every-required-step.
+- Retain router + keyed form listeners during the framework observer snapshot;
+  null account override revokes publication, offstage/disabled/focus/ticker guards
+  block input and existing listeners clear fields. Stronger fixture checks verify
+  same router/password-widget identity, empty disabled password and no framework
+  exception. First .NET close needed the native main HWND after Dart frame ready.
+  All assertions/gates retained; no native exit bypass or forced-exit timeout.
+- All 257 source blobs preserved/verified; local format/49 contracts/17 QA passed.
+  Prepared QA48 metadata adds this scoped baseline and preserves all 14 pending
+  integrations. Hosted Auth, logged-in learner expiry/restart/rotation/two-client,
+  uncancelable logoff/kill/power-loss and full acceptance remain unproven.
+- Core worker RELEASED after saving evidence. Following four-file docs/QA
+  successor has separate CI; resume actual head/checks. Next supported staging
+  service configuration + actual learner acceptance, or independent remaining
+  product flows while absent. Pro #38/N4 untouched; keep #37 draft/#20/#22/#15 open.
+  No dependency/provider/Auth strategy/schema/RLS/API/production changes.

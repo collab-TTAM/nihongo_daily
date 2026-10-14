@@ -250,3 +250,18 @@ gate, including configured Windows main build, real LocalAppData project-scope
 marker and empty-vault factory/start/close/journal lease reopening. Normal preview
 rebuilt before upload. windows-staging-bootstrap tracks fixture/native/build scope;
 no hosted login/JWT/learner/full configured GUI proof. All 14 live groups pending.
+
+## Cancelable Windows close baseline
+
+Source `2aa94639e99dc38c9af9f5734eba7b47c52a3469` passed all five jobs in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38611061291 .
+Observed 360 Flutter/five real Chrome tests and retained native/SQL/wire/security
+gates. Four widget exit cases assert delayed/concurrent drain, fixed failure/
+explicit retry, late factory/restore, retained router/form listener identities,
+null account override, hidden/disabled/cleared fields and focus exclusion.
+Two actual native CloseMainWindow phases verify an empty-vault staging owner's
+awaited drain, cancellation/retry, real journal lease release and natural exit.
+Windows fixed close marker, configured staging build and normal preview rebuild
+passed. Raw exact-head/every-critical-step QA passed; following metadata successor
+has separate CI. New cancelable-window-exit case brings inventory to 48.
+All 14 live release groups remain pending; no hosted/logged-in learner or
+uncancelable logoff/power-loss proof. This hook does not replace persistence.

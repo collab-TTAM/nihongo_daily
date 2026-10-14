@@ -88,10 +88,36 @@ checks the process stays alive until an external test marker releases cleanup,
 and checks successful owned close plus journal-lease reopen before natural exit.
 A synthetic one-shot close failure must cancel the first actual window request;
 a later explicit close finishes. GUID .invalid scopes and finally cleanup remain.
-These new-source checks are pending CI; they do not prove hosted Auth or saved
-learner sessions. Uncancelable termination, Task Manager kill, power loss and OS
+Verified source evidence is recorded below; these checks do not prove hosted
+Auth or saved learner sessions. Uncancelable termination, Task Manager kill, power loss and OS
 logoff can bypass the hook. Durable write-before-dispatch remains essential and
 is unchanged; no hook is a substitute for event/credential persistence.
 
 Framework reference: https://api.flutter.dev/flutter/widgets/WidgetsBindingObserver/didRequestAppExit.html
 Pinned engine source: engine/src/flutter/shell/platform/windows/windows_lifecycle_manager.cc
+
+## Verified cancelable-close source evidence
+
+Source `2aa94639e99dc38c9af9f5734eba7b47c52a3469` passed all five jobs in
+https://github.com/collab-TTAM/nihongo_daily/actions/runs/38611061291 . Observed 360 Flutter tests including the four new exit
+cases, five actual Chrome tests, format/analyze, all retained native/SQL/wire/
+security gates and normal web/Windows preview artifacts. Windows log contains
+`Windows actual cancelable window close and owned drain verification passed`.
+Both actual CloseMainWindow phases passed process-alive-before-release or
+cancellation, same-owner explicit retry, drained empty-vault staging runtime,
+reopened real app-data journal lease and natural exit with completion marker.
+Configured staging main and subsequent ordinary preview builds also passed.
+Raw run/latest-attempt evidence passed exact-head/every-required-step QA.
+
+The retained router/keyed form resolve EditableText listener disposal while the
+binding awaits its copied observer list. Test asserts same router/password widget
+identity, null account override, disabled/empty password controller, focus
+exclusion and no visible fields, plus both concurrent exit responses and no
+framework exception. No original assertion, lint or security gate was weakened.
+Local format/49 contracts/17 QA passed; 257 source blobs were preserved/verified.
+
+This is empty-vault actual OS shutdown and explicit UI fixtures, not hosted Auth,
+confirmed logged-in learner rotation/restart, OS logoff or power-loss proof.
+All 14 release groups remain pending. Following evidence/QA documentation
+successor has separate CI; this source-head evidence is historical for later
+commits. Keep #37 draft and #20/#22/#15 open.
