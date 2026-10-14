@@ -9,6 +9,7 @@ import 'package:nihongo_daily/features/srs/application/srs_study_controller.dart
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'recovery_fixtures.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
+import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 void main() {
   late Directory directory;
@@ -40,6 +41,15 @@ void main() {
       ],
     );
     mounted = container;
+    // Bootstrap the native-backed notifier on the real loop before rendering.
+    // The renderer's fake clock cannot drive futures owned by native I/O.
+    expect(
+      await tester.runAsync<bool>(() async {
+        await container.read(srsStudyProvider.notifier).load(PreviewLevel.n5);
+        return true;
+      }),
+      isTrue,
+    );
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       container.dispose();
@@ -60,30 +70,32 @@ void main() {
     await tester.ensureVisible(finder);
     // Native disk work must run on the real event loop, rather than waiting
     // for file I/O while pumpAndSettle repeatedly advances Flutter's fake clock.
-    final finished = Completer<void>();
-    final subscription = mounted.listen<SrsStudyState>(srsStudyProvider, (
-      _,
-      state,
-    ) {
-      if (const {
-            SrsStudyPhase.ready,
-            SrsStudyPhase.recoveryReady,
-            SrsStudyPhase.failed,
-            SrsStudyPhase.empty,
-            SrsStudyPhase.complete,
-          }.contains(state.phase) &&
-          !finished.isCompleted) {
-        finished.complete();
-      }
-    });
-    try {
-      await tester.runAsync(() async {
+    final completed = await tester.runAsync<bool>(() async {
+      final finished = Completer<void>();
+      final subscription = mounted.listen<SrsStudyState>(srsStudyProvider, (
+        _,
+        state,
+      ) {
+        if (const {
+              SrsStudyPhase.ready,
+              SrsStudyPhase.recoveryReady,
+              SrsStudyPhase.failed,
+              SrsStudyPhase.empty,
+              SrsStudyPhase.complete,
+            }.contains(state.phase) &&
+            !finished.isCompleted) {
+          finished.complete();
+        }
+      });
+      try {
         await tester.tap(finder);
         await finished.future.timeout(const Duration(seconds: 10));
-      });
-    } finally {
-      subscription.close();
-    }
+        return true;
+      } finally {
+        subscription.close();
+      }
+    });
+    expect(completed, isTrue);
     await tester.pumpAndSettle();
   }
 
