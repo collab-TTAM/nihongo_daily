@@ -458,3 +458,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Review diff separately; resume PR #37 CI first. Keep #22 open/PR draft; next
   increment is concrete SDK/Auth/queue binding and durable event integration with
   non-production evidence. Independent work continues; no secrets requested.
+
+- First UI CI 38488298013 passed repo/AI/database but found one router format
+  difference after full Flutter package resolution. Reproduced with the correct
+  local package language version and formatted that route; no format/analyze/test
+  gate changed. Skipped later checks are not counted as passes; rerun final head.

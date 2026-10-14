@@ -65,7 +65,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/kanji',
             builder: (context, state) => const KanjiCaptureScreen(),
           ),
-          GoRoute(path: '/srs', builder: (context, state) => const SrsStudyScreen()),
+          GoRoute(
+            path: '/srs',
+            builder: (context, state) => const SrsStudyScreen(),
+          ),
           for (final entry in previewRoutes.entries)
             GoRoute(
               path: entry.key,
