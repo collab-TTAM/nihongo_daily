@@ -2478,6 +2478,96 @@
         "translation_vi": "Khi không biết đường, bạn nên hỏi ở đồn cảnh sát."
       }
     ]
+  },
+  {
+    "id": "371aa30c-1c6f-58ef-ab48-ca277d447a0f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nにします",
+    "pattern": "Nにします",
+    "meaning_vi": "chọn N; quyết định N",
+    "explanation_vi": "Dùng khi chọn một món, phương án hoặc trạng thái cụ thể.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ lựa chọn trước にします."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "昼ご飯はカレーにします。",
+        "reading_ja": "ひるごはんはかれーにします。",
+        "translation_vi": "Bữa trưa tôi chọn cà ri."
+      },
+      {
+        "sentence_ja": "支払いは現金にしました。",
+        "reading_ja": "しはらいはげんきんにしました。",
+        "translation_vi": "Tôi đã chọn thanh toán bằng tiền mặt."
+      }
+    ]
+  },
+  {
+    "id": "8647ce0e-3057-5d3d-83ff-7c13b0b03411",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてみたいです",
+    "pattern": "Vてみたいです",
+    "meaning_vi": "muốn thử V",
+    "explanation_vi": "Diễn tả mong muốn thử làm một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể て trước みたいです."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この店の商品を使ってみたいです。",
+        "reading_ja": "このみせのしょうひんをつかってみたいです。",
+        "translation_vi": "Tôi muốn thử dùng sản phẩm của cửa hàng này."
+      },
+      {
+        "sentence_ja": "日本で買い物をしてみたいです。",
+        "reading_ja": "にほんでかいものをしてみたいです。",
+        "translation_vi": "Tôi muốn thử mua sắm ở Nhật."
+      }
+    ]
+  },
+  {
+    "id": "c3e9d6cd-eb3d-586a-99a7-f7054871a86b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもらえますか",
+    "pattern": "Vてもらえますか",
+    "meaning_vi": "có thể nhờ ai V giúp không?",
+    "explanation_vi": "Dùng để nhờ người khác thực hiện một việc một cách lịch sự.",
+    "usage_notes_vi": [
+      "Đặt động từ thể て trước もらえますか."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "領収書を見せてもらえますか。",
+        "reading_ja": "りょうしゅうしょをみせてもらえますか。",
+        "translation_vi": "Bạn có thể cho tôi xem biên lai được không?"
+      },
+      {
+        "sentence_ja": "この商品を交換してもらえますか。",
+        "reading_ja": "このしょうひんをこうかんしてもらえますか。",
+        "translation_vi": "Bạn có thể đổi sản phẩm này giúp tôi không?"
+      }
+    ]
   }
 ]
 
