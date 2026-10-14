@@ -547,3 +547,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   verifier CLI lint issues (relative lib imports and print). Replaced with package
   imports and stdout; no lint gate weakened. Skipped Flutter tests/builds are not
   successes. Full corrected-head CI remains required.
+
+- CI 38500591480 passed analysis and 165 tests; one runtime assembly test exposed
+  nonidentical stream wrappers from repeated controller.stream access. Cache the
+  registry lifecycle stream so assembled runtime has a stable handle; retain the
+  assertion and add a raw-Dart regression. No test expectation weakened. Native
+  database/repo/AI passed; full final-head Flutter/build evidence must rerun.

@@ -27,11 +27,12 @@ final class ReviewConnectionRegistry implements ReviewAuth, ReviewRpcTransport {
 
   final DateTime Function() _now;
   final _changes = StreamController<void>.broadcast(sync: true);
+  late final Stream<void> _sessionChanges = _changes.stream;
   _Connection? _connection;
   Timer? _expiry;
   bool _disposed = false;
 
-  Stream<void> get sessionChanges => _changes.stream;
+  Stream<void> get sessionChanges => _sessionChanges;
 
   @override
   ReviewSession? get currentSession {

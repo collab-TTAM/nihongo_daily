@@ -14,6 +14,10 @@ Future<void> main() async {
   const b = '22222222-2222-4222-8222-222222222222';
   var now = DateTime.utc(2026, 10, 14);
   final registry = ReviewConnectionRegistry(now: () => now);
+  check(
+    identical(registry.sessionChanges, registry.sessionChanges),
+    'stable lifecycle stream',
+  );
   final observed = <String?>[];
   final subscription = registry.sessionChanges.listen(
     (_) => observed.add(registry.currentSession?.userId),
