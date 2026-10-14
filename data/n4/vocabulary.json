@@ -6668,6 +6668,230 @@
         "translation_vi": "Tôi đã vứt thực phẩm hết hạn dùng."
       }
     ]
+  },
+  {
+    "id": "d97be0e2-8af0-560d-9401-5388bbac2684",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "渋滞",
+    "reading": "じゅうたい",
+    "meaning_vi": "tắc đường",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Tình trạng xe cộ di chuyển chậm vì quá đông.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "事故で道が渋滞しています。",
+        "reading_ja": "じこでみちがじゅうたいしています。",
+        "translation_vi": "Đường đang tắc vì tai nạn."
+      },
+      {
+        "sentence_ja": "渋滞を避けるために早く出ました。",
+        "reading_ja": "じゅうたいをさけるためにはやくでました。",
+        "translation_vi": "Tôi đã xuất phát sớm để tránh tắc đường."
+      }
+    ]
+  },
+  {
+    "id": "6655ee6e-a81a-5b7d-a5ff-7b84ee06efd3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "信号",
+    "reading": "しんごう",
+    "meaning_vi": "đèn tín hiệu",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Đèn báo hiệu giao thông hoặc tín hiệu thông báo.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "信号が青になったら渡ってください。",
+        "reading_ja": "しんごうがあおになったらわたってください。",
+        "translation_vi": "Khi đèn tín hiệu chuyển xanh hãy qua đường."
+      },
+      {
+        "sentence_ja": "信号を守ることが大切です。",
+        "reading_ja": "しんごうをまもることがたいせつです。",
+        "translation_vi": "Tuân thủ đèn tín hiệu là điều quan trọng."
+      }
+    ]
+  },
+  {
+    "id": "5ccaa675-de02-5819-84f8-f282cb3ef4b5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "道路",
+    "reading": "どうろ",
+    "meaning_vi": "đường bộ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Con đường dành cho xe cộ và người đi lại.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この道路は工事中です。",
+        "reading_ja": "このどうろはこうじちゅうです。",
+        "translation_vi": "Con đường này đang thi công."
+      },
+      {
+        "sentence_ja": "道路の右側を歩いてください。",
+        "reading_ja": "どうろのみぎがわをあるいてください。",
+        "translation_vi": "Hãy đi bộ bên phải đường."
+      }
+    ]
+  },
+  {
+    "id": "07e0df37-5e0b-5ed3-98cf-216399fc16a5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "歩道",
+    "reading": "ほどう",
+    "meaning_vi": "vỉa hè",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Phần đường dành riêng cho người đi bộ.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "歩道に自転車を止めないでください。",
+        "reading_ja": "ほどうにじてんしゃをとめないでください。",
+        "translation_vi": "Xin đừng đỗ xe đạp trên vỉa hè."
+      },
+      {
+        "sentence_ja": "子どもと歩道を歩きました。",
+        "reading_ja": "こどもとほどうをあるきました。",
+        "translation_vi": "Tôi đã đi bộ trên vỉa hè cùng trẻ em."
+      }
+    ]
+  },
+  {
+    "id": "e43f207d-ea34-529b-a1f4-5238d70cda6e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "運賃",
+    "reading": "うんちん",
+    "meaning_vi": "cước phí; giá vé",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Số tiền phải trả để đi phương tiện giao thông.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "運賃は現金で払えますか。",
+        "reading_ja": "うんちんはげんきんではらえますか。",
+        "translation_vi": "Có thể trả cước bằng tiền mặt không?"
+      },
+      {
+        "sentence_ja": "駅で運賃を確認しました。",
+        "reading_ja": "えきでうんちんをかくにんしました。",
+        "translation_vi": "Tôi đã kiểm tra giá vé ở nhà ga."
+      }
+    ]
+  },
+  {
+    "id": "481ebbfe-f564-52bd-95d5-af9cee34827c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "時刻表",
+    "reading": "じこくひょう",
+    "meaning_vi": "thời gian biểu; bảng giờ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bảng ghi giờ xuất phát và đến của phương tiện.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "時刻表を見て電車を待ちました。",
+        "reading_ja": "じこくひょうをみてでんしゃをまちました。",
+        "translation_vi": "Tôi xem bảng giờ rồi chờ tàu điện."
+      },
+      {
+        "sentence_ja": "時刻表によると、次のバスは十時です。",
+        "reading_ja": "じこくひょうによると、つぎのばすはじゅうじです。",
+        "translation_vi": "Theo bảng giờ, chuyến xe buýt tiếp theo là mười giờ."
+      }
+    ]
+  },
+  {
+    "id": "81930365-bb2d-59e2-9295-27ef44bb2ca5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "乗り場",
+    "reading": "のりば",
+    "meaning_vi": "nơi lên xe; bến",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Địa điểm lên tàu, xe buýt hoặc phương tiện khác.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "バスの乗り場はどこですか。",
+        "reading_ja": "ばすののりばはどこですか。",
+        "translation_vi": "Bến xe buýt ở đâu?"
+      },
+      {
+        "sentence_ja": "乗り場で友達と会いました。",
+        "reading_ja": "のりばでともだちとあいました。",
+        "translation_vi": "Tôi đã gặp bạn ở nơi lên xe."
+      }
+    ]
+  },
+  {
+    "id": "f3e07181-9ad8-57be-8c83-39e5ac11b7da",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "目的地",
+    "reading": "もくてきち",
+    "meaning_vi": "điểm đến",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi muốn đi tới trong một chuyến đi.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "目的地まであと十分です。",
+        "reading_ja": "もくてきちまであとじゅっぷんです。",
+        "translation_vi": "Còn mười phút nữa đến điểm đến."
+      },
+      {
+        "sentence_ja": "目的地をナビに入力しました。",
+        "reading_ja": "もくてきちをなびににゅうりょくしました。",
+        "translation_vi": "Tôi đã nhập điểm đến vào ứng dụng dẫn đường."
+      }
+    ]
   }
 ]
 
