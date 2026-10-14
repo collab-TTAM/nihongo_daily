@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 118 | 33 | 46 | 328 |
+| N4 | 126 | 35 | 49 | 350 |
 
 ## N4 seed batches
 
-The N4 seed is now twelve original editorial batches for development. It contains
-118 vocabulary items, 33 Kanji metadata records and 46 grammar patterns, with 328
+The N4 seed is now thirteen original editorial batches for development. It contains
+126 vocabulary items, 35 Kanji metadata records and 49 grammar patterns, with 350
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture and advice. This is still an initial seed, not complete JLPT N4
@@ -56,7 +56,10 @@ The eleventh batch adds food preparation, cleaning and queues; 焼 and 洗 metad
 and the patterns Vるなら, Nでも and Vるでしょう.
 
 The twelfth batch adds weather, drying, plants and cooling; 晴 and 曇 metadata;
-and the patterns Vたら, Vないと and Nの間に. It follows the same authored-content
+and the patterns Vたら, Vないと and Nの間に.
+
+The thirteenth batch adds health, rest and careful handling of objects; 疲 and 痛 metadata;
+and the patterns Vるとき, Vたまま and Vないように. It follows the same authored-content
 and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo

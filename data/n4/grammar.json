@@ -1393,9 +1393,99 @@
         "translation_vi": "Trong kỳ nghỉ hè, tôi muốn đi du lịch."
       },
       {
-      "sentence_ja": "旅行の間に写真をたくさん撮りました。",
-      "reading_ja": "りょこうのあいだにしゃしんをたくさんとりました。",
-      "translation_vi": "Trong chuyến du lịch, tôi đã chụp rất nhiều ảnh."
+        "sentence_ja": "旅行の間に写真をたくさん撮りました。",
+        "reading_ja": "りょこうのあいだにしゃしんをたくさんとりました。",
+        "translation_vi": "Trong chuyến du lịch, tôi đã chụp rất nhiều ảnh."
+      }
+    ]
+  },
+  {
+    "id": "eb562e1d-ce12-5fb7-94c9-3de9979a86e0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるとき",
+    "pattern": "Vるとき",
+    "meaning_vi": "khi V; lúc V",
+    "explanation_vi": "Nêu thời điểm thực hiện một hành động hoặc xảy ra một tình huống.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước とき khi nói về việc chưa xảy ra hoặc thường lệ."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu muốn nói hành động xảy ra sau thời điểm được nêu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "寝るとき、電気を消してください。",
+        "reading_ja": "ねるとき、でんきをけしてください。",
+        "translation_vi": "Khi đi ngủ, hãy tắt đèn."
+      },
+      {
+        "sentence_ja": "困ったときは、先生に相談します。",
+        "reading_ja": "こまったときは、せんせいにそうだんします。",
+        "translation_vi": "Khi gặp khó khăn, tôi sẽ hỏi ý kiến giáo viên."
+      }
+    ]
+  },
+  {
+    "id": "a5b04f4a-6152-583a-85f2-d0698773950e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたまま",
+    "pattern": "Vたまま",
+    "meaning_vi": "cứ để nguyên V; trong trạng thái đã V",
+    "explanation_vi": "Diễn tả việc giữ nguyên trạng thái sau một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước まま."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trước まま trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "窓を開けたまま、出かけてしまいました。",
+        "reading_ja": "まどをあけたまま、でかけてしまいました。",
+        "translation_vi": "Tôi đã ra ngoài mà để nguyên cửa sổ mở."
+      },
+      {
+        "sentence_ja": "靴を履いたまま、部屋に入らないでください。",
+        "reading_ja": "くつをはいたまま、へやにはいらないでください。",
+        "translation_vi": "Đừng vào phòng khi vẫn đi giày."
+      }
+    ]
+  },
+  {
+    "id": "3b1b6cbc-c8d3-5c2d-9298-cf3e5f7c6e93",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないように",
+    "pattern": "Vないように",
+    "meaning_vi": "để không V; sao cho không V",
+    "explanation_vi": "Diễn tả mục đích phòng tránh một việc không mong muốn.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước ように."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vるように khi nói mục tiêu thực hiện một việc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "忘れないように、予定をメモしました。",
+        "reading_ja": "わすれないように、よていをめもししました。",
+        "translation_vi": "Tôi đã ghi lịch để không quên."
+      },
+      {
+        "sentence_ja": "風邪をひかないように、暖かくしてください。",
+        "reading_ja": "かぜをひかないように、あたたかくしてください。",
+        "translation_vi": "Hãy giữ ấm để không bị cảm."
       }
     ]
   }

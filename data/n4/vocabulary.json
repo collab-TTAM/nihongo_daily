@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 31092)
+Total output lines: 3531
+
 [
   {
     "id": "d06f83cb-59b3-57b0-a7cf-273d10aaac0d",
@@ -1696,137 +1699,7 @@
     ],
     "examples": [
       {
-        "sentence_ja": "図書館で本を借りました。",
-        "reading_ja": "としょかんでほんをかりました。",
-        "translation_vi": "Tôi đã mượn sách ở thư viện."
-      },
-      {
-        "sentence_ja": "駅で自転車を借りられます。",
-        "reading_ja": "えきでじてんしゃをかりられます。",
-        "translation_vi": "Có thể thuê xe đạp ở nhà ga."
-      }
-    ]
-  },
-  {
-    "id": "73b4923f-ca87-57c0-b040-fcc00766bb88",
-    "jlpt_level": "N4",
-    "difficulty": 0.5,
-    "content_version": 1,
-    "is_active": true,
-    "expression": "返す",
-    "reading": "かえす",
-    "meaning_vi": "trả lại; hoàn trả",
-    "part_of_speech": "động từ nhóm 1",
-    "usage_context_vi": "Đưa lại đồ vật hoặc tiền cho người sở hữu.",
-    "audio_ref": null,
-    "tags": [
-      "daily-life"
-    ],
-    "examples": [
-      {
-        "sentence_ja": "借りた本を返します。",
-        "reading_ja": "かりたほんをかえします。",
-        "translation_vi": "Tôi sẽ trả cuốn sách đã mượn."
-      },
-      {
-        "sentence_ja": "明日までにお金を返してください。",
-        "reading_ja": "あしたまでにおかねをかえしてください。",
-        "translation_vi": "Hãy trả tiền trước ngày mai."
-      }
-    ]
-  },
-  {
-    "id": "753ccbd3-4109-5c7e-8a08-da30af816ea4",
-    "jlpt_level": "N4",
-    "difficulty": 0.5,
-    "content_version": 1,
-    "is_active": true,
-    "expression": "熱",
-    "reading": "ねつ",
-    "meaning_vi": "sốt; nhiệt độ cơ thể",
-    "part_of_speech": "danh từ",
-    "usage_context_vi": "Nhiệt độ cơ thể cao khi bị bệnh.",
-    "audio_ref": null,
-    "tags": [
-      "health"
-    ],
-    "examples": [
-      {
-        "sentence_ja": "熱があるので、今日は休みます。",
-        "reading_ja": "ねつがあるので、きょうはやすみます。",
-        "translation_vi": "Vì bị sốt nên hôm nay tôi nghỉ."
-      },
-      {
-        "sentence_ja": "病院で熱を測りました。",
-        "reading_ja": "びょういんでねつをはかりました。",
-        "translation_vi": "Tôi đã đo nhiệt độ ở bệnh viện."
-      }
-    ]
-  },
-  {
-    "id": "9c637010-a795-51db-b723-4ba849788aab",
-    "jlpt_level": "N4",
-    "difficulty": 0.5,
-    "content_version": 1,
-    "is_active": true,
-    "expression": "薬",
-    "reading": "くすり",
-    "meaning_vi": "thuốc",
-    "part_of_speech": "danh từ",
-    "usage_context_vi": "Thuốc dùng để điều trị hoặc giảm triệu chứng.",
-    "audio_ref": null,
-    "tags": [
-      "health"
-    ],
-    "examples": [
-      {
-        "sentence_ja": "食事の後で薬を飲みます。",
-        "reading_ja": "しょくじのあとでくすりをのみます。",
-        "translation_vi": "Tôi uống thuốc sau bữa ăn."
-      },
-      {
-        "sentence_ja": "この薬は一日三回飲んでください。",
-        "reading_ja": "このくすりはいちにちさんかいのんでください。",
-        "translation_vi": "Hãy uống thuốc này ba lần một ngày."
-      }
-    ]
-  },
-  {
-    "id": "b8e4f1db-3db4-5246-8da9-89fb7729b966",
-    "jlpt_level": "N4",
-    "difficulty": 0.5,
-    "content_version": 1,
-    "is_active": true,
-    "expression": "眠る",
-    "reading": "ねむる",
-    "meaning_vi": "ngủ",
-    "part_of_speech": "động từ nhóm 1",
-    "usage_context_vi": "Nghỉ ngơi trong trạng thái ngủ.",
-    "audio_ref": null,
-    "tags": [
-      "health"
-    ],
-    "examples": [
-      {
-        "sentence_ja": "昨夜はよく眠りました。",
-        "reading_ja": "さくやはよくねむりました。",
-        "translation_vi": "Tối qua tôi đã ngủ ngon."
-      },
-      {
-        "sentence_ja": "疲れたときは早く眠るようにします。",
-        "reading_ja": "つかれたときははやくねむるようにします。",
-        "translation_vi": "Khi mệt tôi sẽ cố gắng ngủ sớm."
-      }
-    ]
-  },
-  {
-    "id": "552c3f68-9316-5c24-bdf9-c218461d3a82",
-    "jlpt_level": "N4",
-    "difficulty": 0.5,
-    "content_version": 1,
-    "is_active": true,
-    "expression": "治る",
-    "reading": "なおる",
+        "sentence_ja": "図書館で本を借りまし…1092 tokens truncated…なおる",
     "meaning_vi": "khỏi; lành bệnh",
     "part_of_speech": "động từ nhóm 1",
     "usage_context_vi": "Tình trạng bệnh hoặc vết thương trở nên tốt hơn.",
@@ -3096,9 +2969,9 @@
     ],
     "examples": [
       {
-      "sentence_ja": "午後には晴れるでしょう。",
-      "reading_ja": "ごごにははれるでしょう。",
-      "translation_vi": "Đến buổi chiều trời có lẽ sẽ quang."
+        "sentence_ja": "午後には晴れるでしょう。",
+        "reading_ja": "ごごにははれるでしょう。",
+        "translation_vi": "Đến buổi chiều trời có lẽ sẽ quang."
       },
       {
         "sentence_ja": "晴れたら、公園を散歩しませんか。",
@@ -3208,8 +3081,8 @@
     ],
     "examples": [
       {
-      "sentence_ja": "洗った皿を布で拭いて乾かします。",
-      "reading_ja": "あらったさらをぬのでふいてかわかします。",
+        "sentence_ja": "洗った皿を布で拭いて乾かします。",
+        "reading_ja": "あらったさらをぬのでふいてかわかします。",
         "translation_vi": "Tôi lau khô đĩa đã rửa bằng khăn."
       },
       {
@@ -3300,6 +3173,230 @@
         "sentence_ja": "料理を冷まさないで、すぐ食べてください。",
         "reading_ja": "りょうりをさまさないで、すぐたべてください。",
         "translation_vi": "Đừng để món ăn nguội, hãy ăn ngay."
+      }
+    ]
+  },
+  {
+    "id": "1880aade-e5ac-5f29-ba24-7101ef4f8ae3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "疲れる",
+    "reading": "つかれる",
+    "meaning_vi": "mệt; mệt mỏi",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Cảm thấy mất sức sau khi làm việc hoặc vận động.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "長い旅行で少し疲れました。",
+        "reading_ja": "ながいりょこうですこしつかれました。",
+        "translation_vi": "Tôi hơi mệt sau chuyến đi dài."
+      },
+      {
+        "sentence_ja": "疲れたときは、少し休みましょう。",
+        "reading_ja": "つかれたときは、すこしやすみましょう。",
+        "translation_vi": "Khi mệt thì hãy nghỉ một chút."
+      }
+    ]
+  },
+  {
+    "id": "7a3e0278-baab-5444-ae8d-312d9db2a266",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "眠い",
+    "reading": "ねむい",
+    "meaning_vi": "buồn ngủ",
+    "part_of_speech": "tính từ đuôi い",
+    "usage_context_vi": "Cảm thấy muốn ngủ.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昨夜あまり寝なかったので、今日は眠いです。",
+        "reading_ja": "さくやあまりねなかったので、きょうはねむいです。",
+        "translation_vi": "Vì tối qua không ngủ nhiều nên hôm nay tôi buồn ngủ."
+      },
+      {
+        "sentence_ja": "眠いときは、顔を洗うと少し元気になります。",
+        "reading_ja": "ねむいときは、かおをあらうとすこしげんきになります。",
+        "translation_vi": "Khi buồn ngủ, rửa mặt sẽ tỉnh táo hơn một chút."
+      }
+    ]
+  },
+  {
+    "id": "99b86a80-1d46-5911-916e-5650f7a1bd40",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "過ごす",
+    "reading": "すごす",
+    "meaning_vi": "trải qua; dành thời gian",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Dành một khoảng thời gian ở đâu đó hoặc theo cách nào đó.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "夏休みを家族と過ごしました。",
+        "reading_ja": "なつやすみをかぞくとすごしました。",
+        "translation_vi": "Tôi đã trải qua kỳ nghỉ hè cùng gia đình."
+      },
+      {
+        "sentence_ja": "週末は静かに過ごしたいです。",
+        "reading_ja": "しゅうまつはしずかにすごしたいです。",
+        "translation_vi": "Cuối tuần tôi muốn dành thời gian yên tĩnh."
+      }
+    ]
+  },
+  {
+    "id": "7d61c9e8-8a39-5768-a1c7-af91c36983b2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "冷やす",
+    "reading": "ひやす",
+    "meaning_vi": "làm lạnh; chườm lạnh",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho đồ vật hoặc một bộ phận cơ thể mát hơn.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "飲み物を冷蔵庫で冷やしています。",
+        "reading_ja": "のみものをれいぞうこでひやしています。",
+        "translation_vi": "Tôi đang làm lạnh đồ uống trong tủ lạnh."
+      },
+      {
+        "sentence_ja": "熱があるので、額を冷やしてください。",
+        "reading_ja": "ねつがあるので、ひたいをひやしてください。",
+        "translation_vi": "Vì bị sốt nên hãy chườm lạnh trán."
+      }
+    ]
+  },
+  {
+    "id": "85ddf4d0-b593-56c4-b889-71bfbc913329",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "温まる",
+    "reading": "あたたまる",
+    "meaning_vi": "ấm lên; được sưởi ấm",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cơ thể hoặc vật trở nên ấm hơn.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "お風呂に入ると、体が温まります。",
+        "reading_ja": "おふろにはいると、からだがあたたまります。",
+        "translation_vi": "Tắm bồn giúp cơ thể ấm lên."
+      },
+      {
+        "sentence_ja": "温かいスープを飲んで、体が温まりました。",
+        "reading_ja": "あたたかいすーぷをのんで、からだがあたたまりました。",
+        "translation_vi": "Tôi uống súp nóng nên cơ thể đã ấm lên."
+      }
+    ]
+  },
+  {
+    "id": "9f012b88-6c93-574d-9eab-41046f6d0111",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "痛む",
+    "reading": "いたむ",
+    "meaning_vi": "đau; nhức",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cảm thấy đau ở một bộ phận cơ thể hoặc một vết thương.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "寒い日は、古い傷が痛みます。",
+        "reading_ja": "さむいひは、ふるいきずがいたみます。",
+        "translation_vi": "Những ngày lạnh, vết thương cũ bị đau."
+      },
+      {
+        "sentence_ja": "歩きすぎて、足が痛みました。",
+        "reading_ja": "あるきすぎて、あしがいたみました。",
+        "translation_vi": "Vì đi bộ quá nhiều nên chân tôi bị đau."
+      }
+    ]
+  },
+  {
+    "id": "bd5d5db4-4303-58fd-8233-34b74a759802",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "壊す",
+    "reading": "こわす",
+    "meaning_vi": "làm hỏng; phá vỡ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho đồ vật không còn hoạt động hoặc bị vỡ.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "子どもがおもちゃを壊してしまいました。",
+        "reading_ja": "こどもがおもちゃをこわしてしまいました。",
+        "translation_vi": "Đứa trẻ đã làm hỏng đồ chơi mất rồi."
+      },
+      {
+        "sentence_ja": "グラスを壊さないように、気をつけてください。",
+        "reading_ja": "ぐらすをこわさないように、きをつけてください。",
+        "translation_vi": "Hãy cẩn thận để không làm vỡ cốc."
+      }
+    ]
+  },
+  {
+    "id": "f9c20686-6c83-5ca6-94ae-8953634ef487",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "増やす",
+    "reading": "ふやす",
+    "meaning_vi": "tăng; làm tăng",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho số lượng hoặc mức độ trở nên nhiều hơn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎日、野菜を増やして食べています。",
+        "reading_ja": "まいにち、やさいをふやしてたべています。",
+        "translation_vi": "Mỗi ngày tôi tăng lượng rau trong bữa ăn."
+      },
+      {
+        "sentence_ja": "家族と話す時間を増やしたいです。",
+        "reading_ja": "かぞくとはなすじかんをふやしたいです。",
+        "translation_vi": "Tôi muốn tăng thời gian trò chuyện với gia đình."
       }
     ]
   }

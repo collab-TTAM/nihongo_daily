@@ -605,6 +605,45 @@
     "stroke_count": 16,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "8092f5e0-ecd0-5acb-bcfa-a36b3733623c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "疲",
+    "meaning_vi": "mệt mỏi",
+    "onyomi": [
+      "ヒ"
+    ],
+    "kunyomi": [
+      "つか",
+      "つか-れる"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "a90fdf40-0394-5741-a7e6-c762a1240e65",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "痛",
+    "meaning_vi": "đau; nhức",
+    "onyomi": [
+      "ツウ"
+    ],
+    "kunyomi": [
+      "いた",
+      "いた-い",
+      "いた-む"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 

@@ -7,10 +7,10 @@ curriculum. The published export contains:
 
 | Model | Count | Examples |
 | --- | ---: | ---: |
-| Vocabulary | 118 | 236 |
-| Kanji metadata | 33 | — |
-| Grammar | 46 | 92 |
-| **Total** | **197** | **328** |
+| Vocabulary | 126 | 252 |
+| Kanji metadata | 35 | — |
+| Grammar | 49 | 98 |
+| **Total** | **210** | **350** |
 
 Themes are travel/planning, transport/shopping, work/communication, daily
 habits, descriptions, common actions, safety, culture, health and study. The
@@ -34,7 +34,7 @@ Examples pair Japanese sentences with kana readings and Vietnamese translations.
   metadata.
 - No audio, canonical stroke-order data, tracing asset or real handwriting grade
   is included. `audio_ref` and `stroke_data_ref` are null for this batch.
-- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. The eighth batch adds transport changes, service desks, lost items and topic descriptions with 乗 and 残 metadata. The ninth batch adds searching, repairs and deliveries with 急 and 壊 metadata. The tenth batch adds lodging, arrivals and certainty with 到 and 泊 metadata. The eleventh batch adds food preparation, cleaning and queues with 焼 and 洗 metadata. The twelfth batch adds weather, drying, plants and cooling with 晴 and 曇 metadata. A native-speaker/teacher review and broader coverage review remain outstanding.
+- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. The eighth batch adds transport changes, service desks, lost items and topic descriptions with 乗 and 残 metadata. The ninth batch adds searching, repairs and deliveries with 急 and 壊 metadata. The tenth batch adds lodging, arrivals and certainty with 到 and 泊 metadata. The eleventh batch adds food preparation, cleaning and queues with 焼 and 洗 metadata. The twelfth batch adds weather, drying, plants and cooling with 晴 and 曇 metadata. The thirteenth batch adds health, rest and careful handling of objects with 疲 and 痛 metadata. A native-speaker/teacher review and broader coverage review remain outstanding.
 
 ## Versioning and IDs
 
