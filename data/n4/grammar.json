@@ -1,0 +1,323 @@
+[
+  {
+    "id": "01ab9879-a8d2-573e-a623-d152a4ac1a00",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "N／普通形 + と思います",
+    "pattern": "N／普通形 + と思います",
+    "meaning_vi": "Tôi nghĩ rằng…",
+    "explanation_vi": "Nói ý kiến hoặc phỏng đoán mềm hơn.",
+    "usage_notes_vi": [
+      "Với danh từ/tính từ な dùng だと思います."
+    ],
+    "common_mistakes": [
+      "Không dùng です sau động từ thể thường trước と."
+    ],
+    "related_grammar_ids": [
+      "d50eb4c1-6662-5084-974d-3816836217ca"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この店は便利だと思います。",
+        "reading_ja": "このみせはべんりだとおもいます。",
+        "translation_vi": "Tôi nghĩ cửa hàng này tiện lợi."
+      },
+      {
+        "sentence_ja": "来月、京都へ行くと思います。",
+        "reading_ja": "らいげつ、きょうとへいくとおもいます。",
+        "translation_vi": "Tôi nghĩ tháng sau mình sẽ đi Kyoto."
+      }
+    ]
+  },
+  {
+    "id": "d50eb4c1-6662-5084-974d-3816836217ca",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるつもりです",
+    "pattern": "Vるつもりです",
+    "meaning_vi": "dự định sẽ làm V",
+    "explanation_vi": "Nói về dự định của người nói.",
+    "usage_notes_vi": [
+      "Phủ định thường dùng Vないつもりです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます trước つもり."
+    ],
+    "related_grammar_ids": [
+      "93bbe1b6-5146-521b-9047-1c97bea689b9"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "夏休みに旅行するつもりです。",
+        "reading_ja": "なつやすみにりょこうするつもりです。",
+        "translation_vi": "Kỳ nghỉ hè tôi dự định đi du lịch."
+      },
+      {
+        "sentence_ja": "今日は早く寝るつもりです。",
+        "reading_ja": "きょうははやくねるつもりです。",
+        "translation_vi": "Hôm nay tôi định ngủ sớm."
+      }
+    ]
+  },
+  {
+    "id": "93bbe1b6-5146-521b-9047-1c97bea689b9",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる予定です",
+    "pattern": "Vる予定です",
+    "meaning_vi": "dự kiến sẽ làm V",
+    "explanation_vi": "Dùng cho lịch trình hoặc kế hoạch đã định.",
+    "usage_notes_vi": [
+      "Nの予定です cũng nói lịch dự kiến."
+    ],
+    "common_mistakes": [
+      "Không dùng cho ý thích nhất thời khi chưa có kế hoạch."
+    ],
+    "related_grammar_ids": [
+      "15b750ca-d647-5b2a-9de9-fd6fafecda28"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "会議は午後三時に始まる予定です。",
+        "reading_ja": "かいぎはごごさんじにはじまるよていです。",
+        "translation_vi": "Cuộc họp dự kiến bắt đầu lúc ba giờ chiều."
+      },
+      {
+        "sentence_ja": "来週、友達が家に来る予定です。",
+        "reading_ja": "らいしゅう、ともだちがいえにくるよていです。",
+        "translation_vi": "Tuần sau bạn tôi dự kiến sẽ đến nhà."
+      }
+    ]
+  },
+  {
+    "id": "15b750ca-d647-5b2a-9de9-fd6fafecda28",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vなければなりません",
+    "pattern": "Vなければなりません",
+    "meaning_vi": "phải làm V",
+    "explanation_vi": "Nêu nghĩa vụ hoặc việc bắt buộc.",
+    "usage_notes_vi": [
+      "Hội thoại có thể rút gọn thành Vなきゃ."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vなくてもいいです là không cần làm V."
+    ],
+    "related_grammar_ids": [
+      "01b43e99-ddbc-56ba-b155-86fea0f1253c"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "明日までに宿題をしなければなりません。",
+        "reading_ja": "あしたまでにしゅくだいをしなければなりません。",
+        "translation_vi": "Tôi phải làm bài tập trước ngày mai."
+      },
+      {
+        "sentence_ja": "旅行の前にホテルを予約しなければなりません。",
+        "reading_ja": "りょこうのまえにほてるをよやくしなければなりません。",
+        "translation_vi": "Trước chuyến đi phải đặt khách sạn."
+      }
+    ]
+  },
+  {
+    "id": "01b43e99-ddbc-56ba-b155-86fea0f1253c",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもいいです",
+    "pattern": "Vてもいいです",
+    "meaning_vi": "được phép làm V",
+    "explanation_vi": "Xin phép hoặc cho phép làm một việc.",
+    "usage_notes_vi": [
+      "Vてもいいですか dùng để xin phép."
+    ],
+    "common_mistakes": [
+      "Không dùng để nói nghĩa vụ."
+    ],
+    "related_grammar_ids": [
+      "324f9d74-65db-5141-bfdb-e33f3d54e89d"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ここで写真を撮ってもいいですか。",
+        "reading_ja": "ここでしゃしんをとってもいいですか。",
+        "translation_vi": "Tôi chụp ảnh ở đây có được không?"
+      },
+      {
+        "sentence_ja": "この本を借りてもいいですよ。",
+        "reading_ja": "このほんをかりてもいいですよ。",
+        "translation_vi": "Bạn có thể mượn cuốn sách này."
+      }
+    ]
+  },
+  {
+    "id": "324f9d74-65db-5141-bfdb-e33f3d54e89d",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてはいけません",
+    "pattern": "Vてはいけません",
+    "meaning_vi": "không được làm V",
+    "explanation_vi": "Nêu điều cấm hoặc quy tắc.",
+    "usage_notes_vi": [
+      "Hội thoại có thể nói Vちゃいけません."
+    ],
+    "common_mistakes": [
+      "Không dùng ないでください nếu muốn diễn đạt quy định chung."
+    ],
+    "related_grammar_ids": [
+      "a06604ed-13b3-54c7-a501-51ca5f1bb73e"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この部屋で食べてはいけません。",
+        "reading_ja": "このへやでたべてはいけません。",
+        "translation_vi": "Không được ăn trong phòng này."
+      },
+      {
+        "sentence_ja": "ここに車を止めてはいけません。",
+        "reading_ja": "ここにくるまをとめてはいけません。",
+        "translation_vi": "Không được đỗ xe ở đây."
+      }
+    ]
+  },
+  {
+    "id": "a06604ed-13b3-54c7-a501-51ca5f1bb73e",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたことがあります",
+    "pattern": "Vたことがあります",
+    "meaning_vi": "đã từng làm V",
+    "explanation_vi": "Nói về kinh nghiệm trong quá khứ.",
+    "usage_notes_vi": [
+      "Thường dùng với trải nghiệm, không phải thời điểm cụ thể."
+    ],
+    "common_mistakes": [
+      "Không dùng Vますことがあります để nói kinh nghiệm."
+    ],
+    "related_grammar_ids": [
+      "be1fe397-1aa0-5f28-89d9-52908c185fe5"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "日本料理を作ったことがあります。",
+        "reading_ja": "にほんりょうりをつくったことがあります。",
+        "translation_vi": "Tôi đã từng nấu món Nhật."
+      },
+      {
+        "sentence_ja": "富士山を見たことがありますか。",
+        "reading_ja": "ふじさんをみたことがありますか。",
+        "translation_vi": "Bạn đã từng nhìn thấy núi Phú Sĩ chưa?"
+      }
+    ]
+  },
+  {
+    "id": "be1fe397-1aa0-5f28-89d9-52908c185fe5",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたり、Vたりします",
+    "pattern": "Vたり、Vたりします",
+    "meaning_vi": "làm những việc như V và V",
+    "explanation_vi": "Liệt kê một số hoạt động tiêu biểu.",
+    "usage_notes_vi": [
+      "Mỗi động từ chuyển sang thể た rồi thêm り."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます trực tiếp trước たり."
+    ],
+    "related_grammar_ids": [
+      "d6f81f10-b5a2-50f3-a967-7f45a38b6bac"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "週末は映画を見たり、本を読んだりします。",
+        "reading_ja": "しゅうまつはえいがをみたり、ほんをよんだりします。",
+        "translation_vi": "Cuối tuần tôi làm những việc như xem phim và đọc sách."
+      },
+      {
+        "sentence_ja": "旅行で写真を撮ったり、料理を食べたりしました。",
+        "reading_ja": "りょこうでしゃしんをとったり、りょうりをたべたりしました。",
+        "translation_vi": "Trong chuyến du lịch tôi đã chụp ảnh, ăn món ăn và làm những việc khác."
+      }
+    ]
+  },
+  {
+    "id": "d6f81f10-b5a2-50f3-a967-7f45a38b6bac",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "普通形 + ので",
+    "pattern": "普通形 + ので",
+    "meaning_vi": "vì; do…",
+    "explanation_vi": "Nêu nguyên nhân với sắc thái mềm và lịch sự.",
+    "usage_notes_vi": [
+      "Danh từ/tính từ な dùng なので."
+    ],
+    "common_mistakes": [
+      "Không bỏ だ trong なので với danh từ/tính từ な."
+    ],
+    "related_grammar_ids": [
+      "d8bf91ea-3a1d-51a7-9dbf-c698cb388caf"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "雨なので、今日は出かけません。",
+        "reading_ja": "あめなので、きょうはでかけません。",
+        "translation_vi": "Vì trời mưa nên hôm nay tôi không ra ngoài."
+      },
+      {
+        "sentence_ja": "時間がないので、タクシーで行きます。",
+        "reading_ja": "じかんがないので、たくしーでいきます。",
+        "translation_vi": "Vì không có thời gian nên tôi sẽ đi taxi."
+      }
+    ]
+  },
+  {
+    "id": "d8bf91ea-3a1d-51a7-9dbf-c698cb388caf",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vます + ながら",
+    "pattern": "Vます + ながら",
+    "meaning_vi": "vừa làm V vừa…",
+    "explanation_vi": "Hai hành động xảy ra đồng thời.",
+    "usage_notes_vi": [
+      "Bỏ ます rồi thêm ながら."
+    ],
+    "common_mistakes": [
+      "Hai vế phải có cùng chủ thể trong cách dùng cơ bản."
+    ],
+    "related_grammar_ids": [
+      "01ab9879-a8d2-573e-a623-d152a4ac1a00"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "音楽を聞きながら勉強します。",
+        "reading_ja": "おんがくをききながらべんきょうします。",
+        "translation_vi": "Tôi vừa nghe nhạc vừa học."
+      },
+      {
+        "sentence_ja": "歩きながら電話で話してはいけません。",
+        "reading_ja": "あるきながらでんわではなしてはいけません。",
+        "translation_vi": "Không được vừa đi bộ vừa nói chuyện điện thoại."
+      }
+    ]
+  }
+]
+

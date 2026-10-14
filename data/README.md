@@ -1,14 +1,41 @@
 # Original curriculum seed — content v1 / wire v0.1
 
-This is a small original editorial N5 seed for development and initial study
-screens, not full JLPT coverage or an officially certified JLPT list. N4 is not
-included yet; #14 must extend coverage explicitly. It is authored content, not a
-provider mock, but it is not loaded into Flutter or a hosted database yet.
+This is a small original editorial N5/N4 seed for development and initial study
+screens, not full JLPT coverage or an officially certified JLPT list. The first
+N4 seed batch is included below; Issue #14 still requires broader coverage. It
+is authored content, not a provider mock, but it is not loaded into Flutter or
+a hosted database yet.
 
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 0 | 0 | 0 | 0 |
+| N4 | 24 | 8 | 10 | 68 |
+
+## N4 first seed batch
+
+The first N4 batch is an original editorial seed for development. It contains
+24 vocabulary items, 8 Kanji metadata records and 10 grammar patterns, with 68
+embedded Japanese–Vietnamese examples. Topics cover travel and planning,
+transport and shopping, work and communication, daily habits, descriptions and
+common actions. This is an initial batch, not complete JLPT N4 coverage.
+
+The Japanese sentences and Vietnamese explanations were authored for Nihongo
+Daily. Kanji meanings/readings and stroke counts use common reference metadata;
+KanjiVG is the stated reference for stroke-count checking, under CC BY-SA 3.0.
+No KanjiVG SVG/path asset is redistributed here. A later editorial/native-speaker
+review is still required before treating this seed as release curriculum.
+
+N4 content uses the same `content_version: 1` as the existing N5 seed because
+this is the first publication of these N4 records. IDs are UUIDv5 values derived
+from the project's fixed namespace and `n4:<model>:<authored key>` names. Existing
+N5 IDs and rows are unchanged.
+
+All `audio_ref`, `stroke_data_ref` and Kanji `radical` fields are currently null.
+The app must continue to show audio, stroke-order assets and real handwriting
+grading as unavailable until a separately reviewed asset issue supplies them.
+
+N4 uses the same wire objects and validation rules as `data/n5/*.json`; the
+level-specific files are kept under `data/n4/` for independent expansion.
 
 `manifest.json` makes scope/counts/assets machine-checkable. `n5/*.json` are arrays
 of the unchanged named vocabulary/kanji/grammar wire objects in
@@ -88,3 +115,4 @@ A future importer maps examples to normalized `vocabulary_examples` /
 importer/migration/deployment in this change. #12 consumes these exports through
 typed repositories; #14 adds N4, #16 reference assets. Personal Alpha remains
 incomplete until study, auth, sync, AI/voice and release evidence are integrated.
+

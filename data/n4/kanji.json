@@ -1,0 +1,143 @@
+[
+  {
+    "id": "b81afcad-a882-574c-80b5-8d1556278833",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "会",
+    "meaning_vi": "gặp; hội; cuộc họp",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あ"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c506426b-3b19-5c18-83be-d9c7b422e359",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "社",
+    "meaning_vi": "công ty; đền thờ",
+    "onyomi": [
+      "シャ"
+    ],
+    "kunyomi": [
+      "やしろ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "a734736c-e168-5f23-b630-873ba36b742d",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "店",
+    "meaning_vi": "cửa hàng",
+    "onyomi": [
+      "テン"
+    ],
+    "kunyomi": [
+      "みせ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "46348dec-b894-5bb3-9ecb-0964de350389",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "駅",
+    "meaning_vi": "nhà ga",
+    "onyomi": [
+      "エキ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "46c55f3e-4d5a-580a-b94c-7427d69acc1a",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "旅",
+    "meaning_vi": "du lịch; chuyến đi",
+    "onyomi": [
+      "リョ"
+    ],
+    "kunyomi": [
+      "たび"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b928e8c6-e475-574e-a257-0106bf3643cb",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "料",
+    "meaning_vi": "liệu; phí; nguyên liệu",
+    "onyomi": [
+      "リョウ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "230eee8a-4b32-574c-97bd-a689122b12f8",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "理",
+    "meaning_vi": "lý do; logic",
+    "onyomi": [
+      "リ"
+    ],
+    "kunyomi": [
+      "ことわり"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "4503e830-2d98-5ad4-bb17-c7a92e11566e",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "勉",
+    "meaning_vi": "cố gắng; nỗ lực",
+    "onyomi": [
+      "ベン"
+    ],
+    "kunyomi": [
+      "つとめる"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  }
+]
+
