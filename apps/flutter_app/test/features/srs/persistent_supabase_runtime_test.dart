@@ -49,6 +49,23 @@ void main() {
     headers: {'content-type': 'application/json'},
   );
 
+  Future<void> waitForReady() async {
+    if (runtime.account.state.phase != AccountPhase.ready) {
+      final state = await runtime.account.changes
+          .firstWhere(
+            (state) => const {
+              AccountPhase.ready,
+              AccountPhase.profileError,
+              AccountPhase.signInError,
+              AccountPhase.unavailable,
+            }.contains(state.phase),
+          )
+          .timeout(const Duration(seconds: 5));
+      expect(state.phase, AccountPhase.ready);
+    }
+    expect(runtime.account.readyRuntime, isNotNull);
+  }
+
   setUp(() async {
     requests.clear();
     backend = fixture.MemoryVault();
@@ -212,7 +229,7 @@ void main() {
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
-      await fixture.flush();
+      await waitForReady();
       expect(runtime.account.readyRuntime, isNotNull);
       expect(backend.secret, secret);
     },

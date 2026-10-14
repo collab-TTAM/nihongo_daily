@@ -1145,3 +1145,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   found one missing block in fixture `_check`. Added braces without changing
   assertions or suppressing lint. Skipped test/build steps are not passes;
   corrected source requires a fresh full CI run.
+
+- Corrected source 1475f19 CI 38590154982 passed analysis and actual Windows
+  runtime probe, but one retained SDK recovery test checked readiness after only
+  eight event turns and observed profile still pending (311 passed/one failed).
+  Replace that timing heuristic in this test with bounded account completion
+  observation; ready/profile-error/sign-in-error/unavailable are terminal, and
+  ready plus original nonnull runtime assertions remain mandatory. Production
+  logic and timeout/assertion/security/CI gates are unchanged. New source needs CI.
