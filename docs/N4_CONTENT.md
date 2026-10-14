@@ -7,10 +7,10 @@ curriculum. The published export contains:
 
 | Model | Count | Examples |
 | --- | ---: | ---: |
-| Vocabulary | 182 | 364 |
-| Kanji metadata | 49 | — |
-| Grammar | 70 | 140 |
-| **Total** | **301** | **504** |
+| Vocabulary | 190 | 380 |
+| Kanji metadata | 51 | — |
+| Grammar | 73 | 146 |
+| **Total** | **314** | **526** |
 
 Themes are travel/planning, transport/shopping, work/communication, daily
 habits, descriptions, common actions, safety, culture, health and study. The
@@ -34,7 +34,7 @@ Examples pair Japanese sentences with kana readings and Vietnamese translations.
   metadata.
 - No audio, canonical stroke-order data, tracing asset or real handwriting grade
   is included. `audio_ref` and `stroke_data_ref` are null for this batch.
-- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. The eighth batch adds transport changes, service desks, lost items and topic descriptions with 乗 and 残 metadata. The ninth batch adds searching, repairs and deliveries with 急 and 壊 metadata. The tenth batch adds lodging, arrivals and certainty with 到 and 泊 metadata. The eleventh batch adds food preparation, cleaning and queues with 焼 and 洗 metadata. The twelfth batch adds weather, drying, plants and cooling with 晴 and 曇 metadata. The thirteenth batch adds health, rest and careful handling of objects with 疲 and 痛 metadata. The fourteenth batch adds invitations, replies and event decisions with 招 and 断 metadata. The fifteenth batch adds safety, cleaning and storage with 滑 and 磨 metadata. The sixteenth batch adds scheduling, attendance and reply vocabulary with 都 and 合 metadata, plus decision and reported-information patterns. The seventeenth batch adds housing, utilities and service-use vocabulary with 所 and 設 metadata, plus audience, decision and source patterns. The eighteenth batch adds community, environment and safety vocabulary with 環 and 境 metadata, plus guidance, interval and variation patterns. The nineteenth batch adds public-service procedures, documents and study attendance with 役 and 類 metadata, plus regulation, endpoint and set-comparison patterns. The twentieth batch adds purposes, methods, results and community activities with 意 and 見 metadata, plus obligation, definition and necessity patterns. A native-speaker/teacher review and broader coverage review remain outstanding.
+- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. The eighth batch adds transport changes, service desks, lost items and topic descriptions with 乗 and 残 metadata. The ninth batch adds searching, repairs and deliveries with 急 and 壊 metadata. The tenth batch adds lodging, arrivals and certainty with 到 and 泊 metadata. The eleventh batch adds food preparation, cleaning and queues with 焼 and 洗 metadata. The twelfth batch adds weather, drying, plants and cooling with 晴 and 曇 metadata. The thirteenth batch adds health, rest and careful handling of objects with 疲 and 痛 metadata. The fourteenth batch adds invitations, replies and event decisions with 招 and 断 metadata. The fifteenth batch adds safety, cleaning and storage with 滑 and 磨 metadata. The sixteenth batch adds scheduling, attendance and reply vocabulary with 都 and 合 metadata, plus decision and reported-information patterns. The seventeenth batch adds housing, utilities and service-use vocabulary with 所 and 設 metadata, plus audience, decision and source patterns. The eighteenth batch adds community, environment and safety vocabulary with 環 and 境 metadata, plus guidance, interval and variation patterns. The nineteenth batch adds public-service procedures, documents and study attendance with 役 and 類 metadata, plus regulation, endpoint and set-comparison patterns. The twentieth batch adds purposes, methods, results and community activities with 意 and 見 metadata, plus obligation, definition and necessity patterns. The twenty-first batch adds airports, scenery, travel and forecasts with 空 and 港 metadata, plus recent completion, interest and importance patterns. A native-speaker/teacher review and broader coverage review remain outstanding.
 
 ## Versioning and IDs
 
