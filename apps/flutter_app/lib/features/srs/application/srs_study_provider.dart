@@ -6,6 +6,7 @@ import '../../../shared/models/preview_level.dart';
 import '../data/review_connection_registry.dart';
 import '../data/review_repository.dart';
 import '../data/rpc_srs_study_queue.dart';
+import '../data/supabase_review_binding.dart';
 import '../domain/srs_models.dart';
 import 'srs_study_controller.dart';
 
@@ -25,6 +26,16 @@ final class SrsStudyRuntime {
 }
 
 final srsStudyRuntimeProvider = Provider<SrsStudyRuntime?>((ref) => null);
+
+/// Owner must explicitly configure Auth/secure storage/profile provisioning and
+/// own this binding. Default preview never creates or installs one automatically.
+SrsStudyRuntime createSupabaseStudyRuntime(SupabaseReviewBinding binding) =>
+    SrsStudyRuntime(
+      auth: binding,
+      reviews: RpcReviewRepository(auth: binding, transport: binding),
+      queue: RpcSrsStudyQueue(auth: binding, transport: binding),
+      sessionChanges: binding.sessionChanges,
+    );
 
 /// Explicit assembly only. The caller owns the registry and its trusted Auth
 /// binding/disposal; the app does not install one by default. A fixture closure

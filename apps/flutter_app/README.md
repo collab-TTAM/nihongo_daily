@@ -1,7 +1,7 @@
 # Nihongo Daily Flutter shell
 
 This is an explicitly labeled UI preview, not Personal Alpha. No login, real
-curriculum study flow, integrated SRS review, real grading, progress persistence, network adapter or live
+curriculum study flow, integrated SRS review, real grading, progress persistence, default network activation or live
 AI/voice is implemented. N5/N4 selections and theme preferences last only for the
 current process. The seven-block allocation previews the frozen 120-minute
 default; every block is shown as unavailable and cannot record study completion.
@@ -53,6 +53,8 @@ claimed by this shell.
   in tests; see ../../docs/SRS_RPC.md for the integration limits.
   Process-local captured-connection lifecycle/runtime assembly is described in
   ../../docs/REVIEW_CONNECTION_LIFECYCLE.md; it is not a concrete SDK/Auth binding.
+  Concrete owner-configured SDK binding is in ../../docs/SUPABASE_REVIEW_BINDING.md;
+  default app still does not install it or supply login/profile/token persistence.
 - `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
 

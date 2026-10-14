@@ -1,5 +1,8 @@
 # Additive due-queue read contract — nd-review-queue-1
 
+SUPABASE_REVIEW_BINDING.md records the concrete opt-in SDK/Auth transport bridge.
+Default app still does not install it; real gateway/learner evidence remains pending.
+
 REVIEW_CONNECTION_LIFECYCLE.md documents explicit captured-connection runtime
 assembly and local expiry/refresh guards; no SDK/Auth/HTTP is enabled by it.
 
@@ -57,7 +60,8 @@ keys, ordering and bounded typed content. Errors are converted to safe codes;
 timeouts are not fake empty success. Account replacement before/during read
 rejects the old result. Empty reading renders explicit absence on /srs.
 
-The real Supabase SDK/Auth transport and runtime binding are **still missing**.
+Concrete opt-in Supabase SDK/Auth transport/runtime assembly now exists (see
+SUPABASE_REVIEW_BINDING.md); default application activation is **still missing**.
 Default srsStudyRuntimeProvider remains null; no secret, token cache, login,
 network connection, enrollment or persistent learner flow is activated here.
 Same-process UI state is not a durable offline queue; #15 retains that work.

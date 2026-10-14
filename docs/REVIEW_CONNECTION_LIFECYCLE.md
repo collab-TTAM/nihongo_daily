@@ -1,5 +1,9 @@
 # Captured-connection lifecycle boundary — Issue #22
 
+Concrete owner-configured SDK binding now exists; see SUPABASE_REVIEW_BINDING.md.
+The sections below describe the registry alone and its historical readiness.
+Default app runtime and hosted/secure-storage/durable integration remain pending.
+
 This is dependency-free **process-local readiness**, not a Supabase SDK/Auth
 implementation. The app's default runtime stays null. No login, credentials,
 profile provisioning, token persistence/refresh, HTTP endpoint or deployment is

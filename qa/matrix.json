@@ -50,6 +50,19 @@
   },
   "cases": [
     {
+      "id": "supabase-sdk-binding",
+      "status": "automated-baseline",
+      "scope": "Concrete SDK Auth events and captured-token PostgREST POST, lifecycle isolation, safe HTTP failures/limits and suppressed unsafe SDK logs",
+      "ci_job": "flutter",
+      "anchors": [{
+        "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+        "contains": "in-flight refresh never changes dispatched Authorization header"
+      }],
+      "issues": [22, 20, 15],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/supabase_review_binding_test.dart",
+      "limitation": "Actual SDK with TEST ONLY unsigned JWTs and mocked Auth/RPC HTTP. No real gateway/JWT signature/RLS, login UI, profile provisioning, secure storage or durable learner journey; default runtime null."
+    },
+    {
       "id": "review-connection-lifecycle",
       "status": "automated-baseline",
       "scope": "Synchronous captured-connection lifecycle, same-user refresh, expiry, logout/A-B-A, immutable ownerless dispatch and old-result rejection",

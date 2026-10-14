@@ -1,5 +1,9 @@
 # Local atomic review transaction — Issue #22
 
+See SUPABASE_REVIEW_BINDING.md for concrete opt-in SDK Auth/RPC binding. Default
+app activation, profile/storage/durable queue and live acceptance remain missing;
+earlier readiness descriptions below are historical boundaries, not activation.
+
 Process-local captured-connection expiry/refresh/dispatch readiness and explicit
 runtime assembly are documented in REVIEW_CONNECTION_LIFECYCLE.md. This is not
 a concrete SDK/Auth implementation; default runtime remains unconfigured.

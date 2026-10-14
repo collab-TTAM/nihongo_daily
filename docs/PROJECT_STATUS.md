@@ -553,3 +553,28 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   registry lifecycle stream so assembled runtime has a stable handle; retain the
   assertion and add a raw-Dart regression. No test expectation weakened. Native
   database/repo/AI passed; full final-head Flutter/build evidence must rerun.
+
+## SDK binding resume — Issue #22, 2026-10-14 03:02 UTC
+
+- Fresh main 78a44faf; resume draft #37 at unchanged 3ff15977 after released
+  worker. CI 38500891063 observed all five jobs successful with 166 Flutter tests,
+  web/Windows and retained native SQL/AI gates. This is prior-head evidence only.
+- Resolve SDK candidate lock in isolated read-only Actions at 5bfa29b4, run
+  38504490159 observed successful. Import its public manifest/lock; already-locked
+  logging becomes direct for security log controls. Remove temporary bootstrap
+  workflow, recoverable in git history. No local blocked dependency retry and no
+  change to original app enforce-lockfile/format/analyze/test/RLS/build gates.
+- Add concrete Supabase Auth event/current-session and captured-token PostgREST
+  bridge with explicit runtime factory. Same server session_id refresh retains
+  identity; new login/A-B-A/expiry/disposal rejects old results. Bounded HTTPS
+  config/public-key guards, no direct table write/automatic RPC refresh/retry,
+  1 MiB HTTP response cap, safe errors and disabled unsafe SDK Auth/RPC logs.
+- SDK/HTTP fixture tests authored; unsigned test tokens cannot authenticate real
+  users or certify hosted JWT/RLS. Local formatting and Python/QA checks only;
+  full SDK/Flutter/build/native SQL must be observed for the current head in CI.
+  QA: 34 groups; all 14 integrated release cases remain pending.
+- Default runtime remains null. No login UI, profile provisioning, secure token
+  storage/restoration, durable pending queue, deployment or live learner evidence.
+  No Auth provider/strategy, RLS, frozen API/SQL, production, data collection or
+  paid provider/cost change. Keep PR draft/#22 open. Next #20 profile/login/storage,
+  #15 durable recovery and actual non-production A/B/expired JWT/SRS journey.
