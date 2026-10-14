@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'account_session_notice.dart';
+import 'account_session_refresh.dart';
 
 enum AccountStartupPhase {
   idle,
@@ -57,6 +58,16 @@ final class AccountStartupController<T> {
       !_closed &&
       _phase == AccountStartupPhase.restoreError &&
       (_runtime?.canOfferLogin ?? false);
+
+  AccountSessionRefreshAction? get refreshAction {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is AccountSessionRefreshAction) {
+      return runtime as AccountSessionRefreshAction;
+    }
+    return null;
+  }
 
   void _set(AccountStartupPhase phase) {
     if (_closed) return;

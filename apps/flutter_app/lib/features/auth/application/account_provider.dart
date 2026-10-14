@@ -8,6 +8,7 @@ import '../../srs/data/supabase_review_binding.dart';
 import '../data/own_profile_repository.dart';
 import '../data/supabase_account_access.dart';
 import 'account_controller.dart';
+import 'account_session_refresh.dart';
 
 /// Caller owns the binding, configured store and this controller's lifetime.
 /// App preview never manufactures Auth/profile/save success or activates one.
@@ -45,6 +46,8 @@ AccountController<SrsStudyRuntime> createSupabaseAccountRuntime(
 final accountRuntimeProvider = Provider<AccountController<SrsStudyRuntime>?>(
   (ref) => null,
 );
+final accountSessionRefreshActionProvider =
+    Provider<AccountSessionRefreshAction?>((ref) => null);
 final accountStateProvider =
     StateNotifierProvider<AccountNotifier, AccountState>(
       (ref) => AccountNotifier(ref.watch(accountRuntimeProvider)),

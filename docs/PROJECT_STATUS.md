@@ -1440,3 +1440,52 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   service configuration + actual learner acceptance, or independent remaining
   product flows while absent. Pro #38/N4 untouched; keep #37 draft/#20/#22/#15 open.
   No dependency/provider/Auth strategy/schema/RLS/API/production changes.
+
+## Explicit owned account refresh action — 2026-10-14 UTC
+
+- Run core-20261014T1952-manual-refresh started/claimed at 2026-10-14T20:00:09Z;
+  base/head 5492475f02cfd59d2f4b64f26161660bb46ff3b2 on #37/core branch.
+  Latest main 78a44faf; prior exact-head CI38612153007 completed successfully
+  with all five latest-attempt jobs. Pro #38/N4 scope remains reserved/untouched.
+- Clone proxy had no credential; fetched all 257 blobs freshly through GitHub
+  at the actual immutable head, decoded binary/text and checked Git blob SHA1.
+  No previous-run source/worktree/SDK was used. Current cloud has no Dart/Flutter
+  and lacks jsonschema; retain all CI gates instead of weakening them.
+- Added credential-free refresh capability/active-owner provider wiring and
+  explicit account “Làm mới phiên” action. Forward to the existing exclusively
+  owned SDK/persistence runtime; no learner URL/key or SDK mutation exposed.
+  Existing exact-secret save-before-profile gate is unchanged/authoritative.
+- Pending UI clears/hides credentials and study/profile, blocks repeated clicks
+  and allows explicit logout. Fixed unexpected-error text is scoped to the same
+  action/controller/session; logout/switch/replacement/unmount discard old errors.
+  No Auth/default activation, automatic retry/timer, secret/log/plaintext fallback.
+- Nine controller/widget fixtures added and two existing actual pinned-SDK
+  rotation/durable-pending cases use the new command interface without changing
+  original assertions. New-source format/analyze/Flutter/Chrome/native/build
+  checks must run on GitHub Actions; none is claimed locally. Stdlib QA pending
+  verification below. All 14 live release groups and #20/#22/#15 remain open.
+- Scope: docs/SESSION_REFRESH.md. Source implementation complete; fresh diff
+  review/checkpoint/CI handoff below. Core marker remains ACTIVE until persisted
+  and released in PR body. Keep #37 draft; no merge/deployment/provider/RLS/API/
+  dependency/N4 changes. Next exact-head CI review/fix, then configured hosted
+  learner acceptance or independent remaining product work while unavailable.
+
+### Manual refresh source checkpoint / CI handoff
+
+- Fresh full-tree diff reviewed independently after writing: 13 scoped paths,
+  nine new tests plus two retained pinned-SDK cases routed through the action.
+  Matched 257 base blobs from GitHub before edits; preserve binary assets and all
+  unrelated files. No protected content/N4/content tests, API, schema, dependency
+  or CI definition changes. Additive code/test files only expand the tree.
+- Stdlib QA inventory passed with 49 cases; all 17 QA regression tests passed.
+  Local Flutter/Dart/format/analyze/build/native and 49 contract tests were not
+  executed because this fresh cloud runtime lacks SDK/jsonschema. New source
+  remains unverified until its exact-head Actions run/latest-attempt gates pass.
+  Parent CI38612153007 success is historical, never substituted for new source.
+- Core run core-20261014T1952-manual-refresh RELEASED at persisted checkpoint;
+  source SHA, current heartbeat and CI URL/status are recorded in #37 body.
+  Only waiting on CI after persistence: next run checks the actual head/complete
+  latest attempt and fixes any format/analysis/test/native/build failure before
+  new implementation. No duplicate worker/code, long keepalive polling, merge,
+  deployment or schedule pause. Hosted config and all 14 acceptance groups still
+  pending; do not request secrets or report Personal Alpha complete.

@@ -10,6 +10,7 @@ import 'package:nihongo_daily/features/auth/application/account_controller.dart'
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/application/session_refresh_scheduler.dart';
 import 'package:nihongo_daily/features/auth/application/account_session_notice.dart';
+import 'package:nihongo_daily/features/auth/application/account_session_refresh.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
@@ -172,7 +173,8 @@ void main() {
       expect(runtime.account.readyRuntime, isNotNull);
       secret = 'TEST_ONLY_ROTATED_SDK_2';
       backend.writeWait = Completer();
-      final rotation = runtime.refresh();
+      final AccountSessionRefreshAction refreshAction = runtime;
+      final rotation = refreshAction.refresh();
       expect(runtime.account.readyRuntime, isNull);
       await fixture.flush();
       expect(runtime.account.readyRuntime, isNull);
@@ -323,7 +325,8 @@ void main() {
       final request = recovery.recoveryRequest();
       await journal.stage(wire.a, request);
       secret = 'TEST_ONLY_ROTATED_SDK_2';
-      await runtime.refresh();
+      final AccountSessionRefreshAction refreshAction = runtime;
+      await refreshAction.refresh();
       await fixture.flush();
       var reviews = runtime.account.readyRuntime!.reviews as ReviewRecovery;
       expect((await reviews.recoverPending()).single.request, request);

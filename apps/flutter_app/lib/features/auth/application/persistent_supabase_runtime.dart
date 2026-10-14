@@ -15,11 +15,13 @@ import 'account_controller.dart';
 import 'account_provider.dart';
 import 'session_refresh_scheduler.dart';
 import 'account_session_notice.dart';
+import 'account_session_refresh.dart';
 
 /// Exclusively owns an SDK client with auto-refresh disabled and no Session JSON
 /// persistence. Caller installs [account] only after [start] settles. The default
 /// application never invokes this assembly or supplies project configuration.
-final class PersistentSupabaseRuntime implements AccountSessionNoticeSource {
+final class PersistentSupabaseRuntime
+    implements AccountSessionNoticeSource, AccountSessionRefreshAction {
   PersistentSupabaseRuntime({
     required String projectUrl,
     required String publishableKey,
@@ -142,6 +144,7 @@ final class PersistentSupabaseRuntime implements AccountSessionNoticeSource {
     _refreshScheduler?.update();
   }
 
+  @override
   Future<void> refresh() => persistence.refresh();
 
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.

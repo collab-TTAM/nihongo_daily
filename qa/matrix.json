@@ -71,6 +71,33 @@
   },
   "cases": [
     {
+      "id": "manual-owned-session-refresh",
+      "status": "automated-baseline",
+      "scope": "Credential-free active-owner refresh capability; explicit account UI, duplicate-click prevention, delayed own-profile readiness and stale error suppression across logout/account/action change/unmount",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/manual_session_refresh_test.dart",
+          "contains": "manual refresh dispatches once and waits for profile readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/manual_session_refresh_test.dart",
+          "contains": "logout during manual refresh rejects late error display"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "final AccountSessionRefreshAction refreshAction = runtime;"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "flutter test test/features/srs/manual_session_refresh_test.dart test/features/srs/persistent_supabase_runtime_test.dart; flutter analyze; full retained CI",
+      "limitation": "New source CI pending. UI/Auth/profile fixtures and pinned SDK/mock HTTP/OS cases do not prove hosted identity or actual learner Windows UI rotation. Default action is null; only an owned configured startup can publish it. Existing persistence/profile gate grants readiness, never the action/UI state. Fixed stale-safe display errors, no automatic retry or timer/provider/schema/dependency/N4 changes. All live acceptance groups remain pending."
+    },
+    {
       "id": "cancelable-window-exit",
       "status": "automated-baseline",
       "scope": "Owned startup host awaits cancelable framework/Windows window exit cleanup; retained router/form listeners, null account publication, hidden disabled cleared fields, delayed/concurrent drain and redacted explicit same-owner retry",

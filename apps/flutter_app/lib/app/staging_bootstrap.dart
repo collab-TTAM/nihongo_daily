@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/application/account_controller.dart';
 import '../features/auth/application/account_startup_controller.dart';
 import '../features/auth/application/account_session_notice.dart';
+import '../features/auth/application/account_session_refresh.dart';
 import '../features/auth/application/persistent_account_startup.dart';
 import '../features/auth/application/persistent_supabase_runtime.dart';
 import '../features/auth/data/windows_review_directory.dart';
@@ -117,7 +118,8 @@ final class _WindowsStagingOwner
     implements
         StagingOwner,
         ResumableAccountStartup,
-        AccountSessionNoticeSource {
+        AccountSessionNoticeSource,
+        AccountSessionRefreshAction {
   _WindowsStagingOwner(this.session, this.journal);
   final PersistentAccountStartup session;
   final NativeReviewJournal journal;
@@ -132,6 +134,8 @@ final class _WindowsStagingOwner
   Stream<AccountSessionNotice> get noticeChanges => session.noticeChanges;
   @override
   void resume() => session.resume();
+  @override
+  Future<void> refresh() => session.refresh();
   @override
   Future<void> start() => session.start();
   @override

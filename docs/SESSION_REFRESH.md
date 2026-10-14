@@ -51,3 +51,34 @@ locally. Resume generic boundary now has explicit nonnull/checked-interface
 forwarding; no ownership/expiry/assertion/lint/security gate was relaxed.
 Scheduler clock/timer/HTTP/lifecycle tests remain fixtures, not hosted Auth or
 OS suspension evidence. Source evidence is historical for later commits.
+
+## Explicit owned account action
+
+AccountSessionRefreshAction is a credential-free command port. Only an active
+owned startup publishes it into accountSessionRefreshActionProvider; preview
+and owners without that capability keep the default null action. The owned
+Supabase runtime, persistent startup adapter and Windows staging owner forward
+it to the existing persistence.refresh operation. No public SDK mutation port
+or learner-selected URL/key is introduced.
+
+The configured account page shows “Làm mới phiên” only with a ready profile and
+that action. It clears input buffers, hides study/profile/login controls while
+the action is pending, prevents duplicate clicks and keeps explicit logout
+available. The port must still save the exact rotated refresh token before
+profile/study readiness; UI state itself grants no authorization. No success
+simulation, automatic dispatch, new timer or failure retry loop is installed.
+
+An unexpected failure that leaves the same valid ready session shows fixed
+Vietnamese text and offers a later explicit click. Actual failed persistence
+uses the existing safe notice/login recovery path. A late error after logout,
+owner/session change, action replacement or unmount cannot add old feedback.
+Form fields remain mounted/offstage/disabled through the existing exit drain.
+
+Nine new action/controller/widget fixtures cover startup capability publication
+and exact owner wiring, absent capability, duplicate clicks/delayed profile,
+redacted explicit retry at 320px/200% text, logout, account switch, same-session new profile generation and unmount.
+Two retained pinned-SDK/mock-HTTP rotation/pending-journal cases now invoke the
+credential-free action interface while preserving every vault/readiness/history
+assertion. These new-source tests are pending CI, not hosted Auth or OS UI
+rotation proof. Existing Windows/native/SQL/Chrome gates and all 14 live release
+groups remain unchanged/pending. No N4/content/dependency/provider/schema changes.

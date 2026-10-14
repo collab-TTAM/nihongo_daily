@@ -16,6 +16,38 @@ class AccountScreen extends ConsumerStatefulWidget {
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
+  bool _refreshing = false;
+  bool _refreshFailed = false;
+
+  Future<void> _refresh() async {
+    final action = ref.read(accountSessionRefreshActionProvider);
+    final runtime = ref.read(accountRuntimeProvider);
+    final session = runtime?.readySession;
+    final acceptedState = runtime?.state;
+    if (_refreshing || action == null || session == null) return;
+    _email.clear();
+    _password.clear();
+    setState(() {
+      _refreshing = true;
+      _refreshFailed = false;
+    });
+    try {
+      await action.refresh();
+    } on Object {
+      if (mounted &&
+          identical(ref.read(accountSessionRefreshActionProvider), action) &&
+          identical(ref.read(accountRuntimeProvider), runtime) &&
+          identical(runtime?.readySession, session) &&
+          identical(runtime?.state, acceptedState)) {
+        _refreshFailed = true;
+      }
+      // The owned persistence/notice path handles failed storage or Auth.
+      // Late/replaced/logout responses cannot add a message to another session.
+    } finally {
+      if (mounted) setState(() => _refreshing = false);
+    }
+  }
+
   void _submit() {
     final email = _email.text;
     final password = _password.text;
@@ -37,7 +69,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(accountStateProvider);
     final notice = ref.watch(accountSessionNoticeProvider);
-    final checking = notice == AccountSessionNotice.checking;
+    final refreshAction = ref.watch(accountSessionRefreshActionProvider);
+    final runtime = ref.watch(accountRuntimeProvider);
+    final checking = notice == AccountSessionNotice.checking || _refreshing;
     ref.listen(accountSessionNoticeProvider, (_, next) {
       if (next != AccountSessionNotice.none) {
         _email.clear();
@@ -45,6 +79,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       }
     });
     ref.listen(accountStateProvider, (_, next) {
+      if (next.phase != AccountPhase.ready) _refreshFailed = false;
       if (!const {
         AccountPhase.signedOut,
         AccountPhase.signInError,
@@ -67,11 +102,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           AccountPhase.loadingProfile,
           AccountPhase.signingOut,
         }.contains(state.phase);
-    final logout = const {
-      AccountPhase.ready,
-      AccountPhase.profileError,
-      AccountPhase.signOutError,
-    }.contains(state.phase);
+    final logout =
+        (_refreshing && runtime != null) ||
+        const {
+          AccountPhase.ready,
+          AccountPhase.profileError,
+          AccountPhase.signOutError,
+        }.contains(state.phase);
     return PageBody(
       children: [
         Align(
@@ -116,6 +153,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                if (_refreshFailed) ...[
+                  const Text(
+                    'Chưa thể làm mới phiên. Bạn có thể thử lại.',
+                    key: Key('account-refresh-error'),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -177,6 +221,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     onPressed: () => context.go('/srs'),
                     child: const Text('Ôn tập'),
                   ),
+                  if (refreshAction != null) ...[
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      key: const Key('account-refresh'),
+                      onPressed: _refresh,
+                      child: const Text('Làm mới phiên'),
+                    ),
+                  ],
                 ],
                 if (state.phase == AccountPhase.profileError)
                   OutlinedButton(
@@ -187,8 +239,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 if (logout) ...[
                   const SizedBox(height: 16),
                   OutlinedButton(
-                    onPressed: () =>
-                        ref.read(accountStateProvider.notifier).signOut(),
+                    onPressed: state.phase == AccountPhase.signingOut
+                        ? null
+                        : () =>
+                              ref.read(accountStateProvider.notifier).signOut(),
                     child: const Text('Đăng xuất'),
                   ),
                 ],

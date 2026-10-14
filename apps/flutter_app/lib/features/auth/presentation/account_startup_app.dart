@@ -95,6 +95,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
       return ProviderScope(
         overrides: [
           accountRuntimeProvider.overrideWithValue(account),
+          accountSessionRefreshActionProvider.overrideWithValue(
+            _controller.refreshAction,
+          ),
           accountSessionNoticeSourceProvider.overrideWithValue(
             _controller.noticeSource,
           ),

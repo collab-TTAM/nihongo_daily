@@ -5,13 +5,15 @@ import 'account_controller.dart';
 import 'account_startup_controller.dart';
 import 'persistent_supabase_runtime.dart';
 import 'account_session_notice.dart';
+import 'account_session_refresh.dart';
 
 /// Transfer exclusive ownership of a newly constructed persistent runtime.
 final class PersistentAccountStartup
     implements
         AccountStartupRuntime<AccountController<SrsStudyRuntime>>,
         ResumableAccountStartup,
-        AccountSessionNoticeSource {
+        AccountSessionNoticeSource,
+        AccountSessionRefreshAction {
   PersistentAccountStartup(this.runtime);
   final PersistentSupabaseRuntime runtime;
   @override
@@ -27,6 +29,8 @@ final class PersistentAccountStartup
       runtime.account.readyRuntime == null;
   @override
   void resume() => runtime.resume();
+  @override
+  Future<void> refresh() => runtime.refresh();
   @override
   Future<void> start() => runtime.start();
   @override
