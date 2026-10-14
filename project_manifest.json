@@ -1,9 +1,0 @@
-{
-  "project": "Nihongo Daily",
-  "subtitle": "Tiếng Nhật Mỗi Ngày",
-  "release_target": "Personal Alpha",
-  "levels": ["N5", "N4"],
-  "daily_target_minutes": 120,
-  "frontend": ["Flutter", "Dart", "Riverpod", "GoRouter"],
-  "backend": ["Supabase", "PostgreSQL", "Auth", "RLS"]
-}

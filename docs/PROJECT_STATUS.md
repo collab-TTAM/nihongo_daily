@@ -866,3 +866,27 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   scope/privilege/impact review in OWN_PROFILE_BOOTSTRAP.md. Worker active pending
   CI; keep #37 draft/#20/#22/#15 open. Next login/profile readiness coordination,
   secure session persistence and actual configured hosted learner evidence.
+
+## Verified own-profile source handoff — 2026-10-14 UTC
+
+- Source fb3a691553869fd0f01ec029c008808323e778cd passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38528310665 .
+  Flutter format/analyze (no issues), 251 tests including seven profile unit/two
+  SDK HTTP cases, five Chrome tests, five actual same-run SQL profile responses
+  decoded through the Dart adapter and web release/artifact passed. Windows
+  release/artifact/all native file verifiers passed. Database includes 25 new
+  profile assertions and observed-lock concurrent creation; existing SQL/RLS/
+  SRS parity/races/repo/49 Python/17 QA/AI gates retained and passed. Unmodified
+  run/all latest-attempt jobs accepted by scripts/verify_qa.py at exact head/
+  every critical step. QA40 groups/all 14 releases still pending.
+- Separate scope/privilege review: authenticated-only caller-ID provisioning,
+  empty request/no metadata, settings-preserving duplicate handling, unchanged
+  direct grants/RLS, fixed-path definer and rollback/redacted errors. Typed
+  adapter rejects malformed/other-owner/old-session results and has no auto
+  retry. No default runtime/login/token persistence/provider change/deployment.
+- Local pure/profile/source-tool/format/Python/QA checks passed; native SQL/full
+  SDK/Flutter/web/Windows evidence is CI, not local execution or hosted JWT proof.
+  Source success is historical for later documentation/source commits.
+- User requested continuing; same sequential worker now proceeds to login/profile
+  readiness UI and runtime coordination. Keep #37 draft/#20/#22/#15 open. Secure
+  token restoration and actual configured hosted learner acceptance still missing.

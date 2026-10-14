@@ -89,3 +89,11 @@ local pure Dart checks are not SQL/hosted proof. Retain every existing gate.
 Keep #37 draft/#20/#22/#15 open and all Personal Alpha integration gates pending.
 Next login/profile readiness UI, supported secure token persistence/restoration
 and configured non-production A/B/expired JWT/two-device learner acceptance.
+
+Observed source: fb3a691553869fd0f01ec029c008808323e778cd passed all five jobs
+in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38528310665 : 251
+Flutter tests (nine new profile/SDK), 25 profile SQL assertions/observed lock race,
+five actual same-run SQL-to-Dart profile projections, retained Chrome/native
+gates and web/Windows release artifacts. Exact-head CI metadata verification
+accepted all required steps. This is not hosted login/signature or token-restore
+evidence; later commits need their own checks.
