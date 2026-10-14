@@ -6,7 +6,9 @@ import 'persistent_supabase_runtime.dart';
 
 /// Transfer exclusive ownership of a newly constructed persistent runtime.
 final class PersistentAccountStartup
-    implements AccountStartupRuntime<AccountController<SrsStudyRuntime>> {
+    implements
+        AccountStartupRuntime<AccountController<SrsStudyRuntime>>,
+        ResumableAccountStartup {
   PersistentAccountStartup(this.runtime);
   final PersistentSupabaseRuntime runtime;
   @override
@@ -16,6 +18,8 @@ final class PersistentAccountStartup
       runtime.persistence.phase == SessionPersistencePhase.failed &&
       runtime.persistence.currentSession == null &&
       runtime.account.readyRuntime == null;
+  @override
+  void resume() => runtime.resume();
   @override
   Future<void> start() => runtime.start();
   @override

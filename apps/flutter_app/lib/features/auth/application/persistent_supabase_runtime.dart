@@ -13,6 +13,7 @@ import '../data/session_credential_vault.dart';
 import '../data/supabase_account_access.dart';
 import 'account_controller.dart';
 import 'account_provider.dart';
+import 'session_refresh_scheduler.dart';
 
 /// Exclusively owns an SDK client with auto-refresh disabled and no Session JSON
 /// persistence. Caller installs [account] only after [start] settles. The default
@@ -25,6 +26,7 @@ final class PersistentSupabaseRuntime {
     required DurableReviewStore store,
     http.Client? httpClient,
     DateTime Function()? now,
+    bool automaticRefresh = false,
     Duration requestTimeout = const Duration(seconds: 15),
   }) {
     if (kIsWeb) {
@@ -75,6 +77,24 @@ final class PersistentSupabaseRuntime {
       store: store,
       access: persistence,
     );
+    if (automaticRefresh) {
+      _refreshScheduler = SessionRefreshScheduler(
+        current: () {
+          final session = persistence.currentSession;
+          final expiry = _binding.currentExpiresAt;
+          return session == null || expiry == null
+              ? null
+              : RefreshLease(session, expiry);
+        },
+        refresh: persistence.refresh,
+        now: now,
+      );
+      _refreshSubscription = persistence.sessionChanges.listen(
+        (_) => _refreshScheduler?.update(),
+        onError: (Object _, StackTrace __) => _refreshScheduler?.dispose(),
+        onDone: () => _refreshScheduler?.dispose(),
+      );
+    }
   }
   late final SupabaseClient _client;
   late final _BoundedSessionHttp _network;
@@ -83,13 +103,23 @@ final class PersistentSupabaseRuntime {
   late final PersistentAccountAccess persistence;
   late final AccountController<SrsStudyRuntime> account;
   Future<void>? _closing;
+  SessionRefreshScheduler? _refreshScheduler;
+  StreamSubscription<void>? _refreshSubscription;
+  SessionRefreshPhase? get refreshPhase => _refreshScheduler?.phase;
+  void resume() => _refreshScheduler?.update();
 
-  Future<void> start() => persistence.start();
+  Future<void> start() async {
+    await persistence.start();
+    _refreshScheduler?.update();
+  }
+
   Future<void> refresh() => persistence.refresh();
 
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.
   Future<void> close() => _closing ??= () async {
     account.dispose();
+    _refreshScheduler?.dispose();
+    await _refreshSubscription?.cancel();
     await persistence.close();
     await _port.close();
     _binding.dispose();

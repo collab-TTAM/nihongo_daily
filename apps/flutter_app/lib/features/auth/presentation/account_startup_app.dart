@@ -24,12 +24,14 @@ class AccountStartupApp extends StatefulWidget {
   State<AccountStartupApp> createState() => _AccountStartupAppState();
 }
 
-class _AccountStartupAppState extends State<AccountStartupApp> {
+class _AccountStartupAppState extends State<AccountStartupApp>
+    with WidgetsBindingObserver {
   late final _controller = widget.controller;
   StreamSubscription<AccountStartupPhase>? _subscription;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _subscription = _controller.changes.listen((_) {
       if (mounted) setState(() {});
     });
@@ -37,7 +39,13 @@ class _AccountStartupAppState extends State<AccountStartupApp> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _controller.resume();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     unawaited(_subscription?.cancel());
     final report = widget.onCleanupFailed;
     unawaited(

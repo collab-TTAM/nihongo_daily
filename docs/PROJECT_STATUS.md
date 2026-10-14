@@ -1216,3 +1216,22 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   scheduling with lifecycle/expiry/resume/logout guards, then configured hosted
   learner A/B/restart/expiry/two-client acceptance. Keep #37 draft/#20/#22/#15 open.
   No dependency/provider/schema/API/deployment change or production data cleanup.
+
+## Opt-in owned refresh scheduling — 2026-10-14 UTC
+
+- Resumed actual #37 head ba506b08 with one core writer, Pro #38/N4 untouched.
+  Added private runtime scheduler selected by automaticRefresh=true; default false
+  and main unconfigured. SDK automatic refresh remains disabled.
+- Accepted identity/expiry only, 60-second lead, 24-hour bounded rearm, 30-second
+  spacing and one attempt per lease. Current gate rechecked before dispatch;
+  logout/close cancel timers, late callbacks cannot dispatch old identities,
+  expired resume never restores; no scheduler failure retry loop.
+- Existing save-before-profile barrier used for every rotation. Startup host
+  forwards foreground resume only for active owned adapters. Twelve timer/clock
+  cases, two pinned-SDK/mock-HTTP cases and one widget forwarding test added.
+  Local format/49 contracts/17 QA passed; new-source CI pending.
+- Separate review retains SDK internal retry policy and per-attempt HTTP bounds,
+  no public credentials, null default activation and caller journal ownership.
+  No dependency/provider/Auth strategy/schema/API/N4/deployment changes.
+  Scope/limits: docs/SESSION_REFRESH.md. Hosted JWT/device/background/OS suspend
+  proof and all 14 live release groups remain pending; keep #37/#20/#22/#15 open.

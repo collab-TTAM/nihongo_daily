@@ -8,7 +8,9 @@ import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
+import 'package:nihongo_daily/features/auth/application/session_refresh_scheduler.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
+import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -336,6 +338,100 @@ void main() {
       expect(
         requests.where((r) => r.url.path.contains('submit_review')),
         isEmpty,
+      );
+    },
+  );
+  test(
+    'opt-in automatic refresh saves rotation before profile and cancels on logout',
+    () async {
+      await runtime.close();
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+        automaticRefresh: true,
+      );
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(runtime.refreshPhase, SessionRefreshPhase.scheduled);
+      secret = 'TEST_ONLY_AUTOMATIC_ROTATION';
+      backend.writeWait = Completer();
+      now = now.add(const Duration(minutes: 59, seconds: 30));
+      final initialProfiles = requests
+          .where((r) => r.url.path.contains('ensure_profile'))
+          .length;
+      runtime.resume();
+      await fixture.flush();
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')).length,
+        initialProfiles,
+      );
+      expect(backend.secret, isNot(secret));
+      backend.writeWait!.complete();
+      await waitForReady();
+      expect(backend.secret, secret);
+      final authCalls = requests
+          .where((r) => r.url.path == '/auth/v1/token')
+          .length;
+      expect(authCalls, 2);
+      await runtime.account.signOut();
+      runtime.resume();
+      await fixture.flush();
+      expect(backend.secret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where((r) => r.url.path == '/auth/v1/token').length,
+        authCalls,
+      );
+    },
+  );
+
+  test(
+    'opt-in automatic refresh failure fences account without resume retry',
+    () async {
+      await runtime.close();
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+        automaticRefresh: true,
+      );
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      authStatus = 401;
+      now = now.add(const Duration(minutes: 59, seconds: 30));
+      runtime.resume();
+      final end = DateTime.now().add(const Duration(seconds: 5));
+      while (runtime.persistence.phase != SessionPersistencePhase.failed &&
+          DateTime.now().isBefore(end)) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      final authCalls = requests
+          .where((r) => r.url.path == '/auth/v1/token')
+          .length;
+      expect(authCalls, 2);
+      runtime.resume();
+      await fixture.flush();
+      expect(
+        requests.where((r) => r.url.path == '/auth/v1/token').length,
+        authCalls,
       );
     },
   );

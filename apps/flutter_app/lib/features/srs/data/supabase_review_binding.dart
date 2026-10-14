@@ -69,6 +69,10 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     return _registry.currentSession;
   }
 
+  /// Validated SDK expiry hint; not signature/server authorization proof.
+  DateTime? get currentExpiresAt =>
+      currentSession == null ? null : _hint?.expiresAt;
+
   void _revoke() {
     _hint = null;
     _registry.end();

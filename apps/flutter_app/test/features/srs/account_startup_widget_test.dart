@@ -6,6 +6,23 @@ import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dar
 import 'account_startup_test.dart' show Owner;
 import 'account_widget_test.dart' show Harness;
 
+final class ResumableOwner<T>
+    implements AccountStartupRuntime<T>, ResumableAccountStartup {
+  ResumableOwner(this.owner);
+  final Owner<T> owner;
+  int resumes = 0;
+  @override
+  T get account => owner.account;
+  @override
+  bool get canOfferLogin => owner.canOfferLogin;
+  @override
+  Future<void> start() => owner.start();
+  @override
+  Future<void> close() => owner.close();
+  @override
+  void resume() => resumes++;
+}
+
 void main() {
   testWidgets(
     'startup loading hides account and late restore enters real account route',
@@ -91,4 +108,29 @@ void main() {
     expect(tester.takeException(), isNull);
     await harness.close();
   });
+  testWidgets(
+    'foreground resume forwards only after startup and never after unmount',
+    (tester) async {
+      final harness = Harness();
+      final owner = Owner(harness.runtime)..startWait = Completer();
+      final resumable = ResumableOwner(owner);
+      final controller = AccountStartupController(() async => resumable);
+      await tester.pumpWidget(AccountStartupApp(controller: controller));
+      await tester.pump();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      expect(resumable.resumes, 0);
+      owner.startWait!.complete();
+      await tester.pumpAndSettle();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      expect(resumable.resumes, 1);
+      await tester.pumpWidget(const SizedBox());
+      await controller.close();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      expect(resumable.resumes, 1);
+      await harness.close();
+    },
+  );
 }

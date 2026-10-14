@@ -18,6 +18,10 @@ abstract interface class AccountStartupRuntime<T> {
   Future<void> close();
 }
 
+abstract interface class ResumableAccountStartup {
+  void resume();
+}
+
 final class AccountStartupCleanupFailure implements Exception {
   const AccountStartupCleanupFailure();
   @override
@@ -109,6 +113,15 @@ final class AccountStartupController<T> {
       }
     } finally {
       _operation = null;
+    }
+  }
+
+  void resume() {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is ResumableAccountStartup) {
+      runtime.resume();
     }
   }
 
