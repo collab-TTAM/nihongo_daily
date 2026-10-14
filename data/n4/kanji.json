@@ -833,6 +833,43 @@
     "stroke_count": 14,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "efd53111-2892-5837-8066-c54d49bcf14f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "役",
+    "meaning_vi": "vai trò; công việc",
+    "onyomi": [
+      "ヤク",
+      "エキ"
+    ],
+    "kunyomi": [
+      "つとめ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "856048cd-5815-52d1-bddb-79fa31711939",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "類",
+    "meaning_vi": "loại; nhóm",
+    "onyomi": [
+      "ルイ"
+    ],
+    "kunyomi": [
+      "たぐい"
+    ],
+    "stroke_count": 18,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
