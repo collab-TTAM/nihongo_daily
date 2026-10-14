@@ -3974,5 +3974,232 @@
         "translation_vi": "Tôi cất quần áo mùa đông vào kệ."
       }
     ]
+  },
+  {
+    "id": "21fe1fbd-ea23-50e4-a082-55e032e3a1e6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "都合",
+    "reading": "つごう",
+    "meaning_vi": "sự thuận tiện; lịch trình phù hợp",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nói về thời gian hoặc điều kiện phù hợp.",
+    "audio_ref": null,
+    "tags": [
+      "appointments"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "都合のいい日に来てください。",
+        "reading_ja": "つごうのいいひにきてください。",
+        "translation_vi": "Hãy đến vào ngày thuận tiện cho bạn."
+      },
+      {
+        "sentence_ja": "明日の都合が悪くなりました。",
+        "reading_ja": "あしたのつごうがわるくなりました。",
+        "translation_vi": "Ngày mai tôi không còn thuận tiện nữa."
+      }
+    ]
+  },
+  {
+    "id": "ac7285a8-d49e-5fa8-a48e-36ad657aeaf7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "集合",
+    "reading": "しゅうごう",
+    "meaning_vi": "tập trung; điểm tập trung",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Tập hợp mọi người tại một địa điểm hoặc thời điểm.",
+    "audio_ref": null,
+    "tags": [
+      "events"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅の前に八時に集合します。",
+        "reading_ja": "えきのまえにはちじにしゅうごうします。",
+        "translation_vi": "Chúng ta tập trung trước ga lúc tám giờ."
+      },
+      {
+        "sentence_ja": "集合場所は学校の門です。",
+        "reading_ja": "しゅうごうばしょはがっこうのもんです。",
+        "translation_vi": "Địa điểm tập trung là cổng trường."
+      }
+    ]
+  },
+  {
+    "id": "654dad47-068f-555f-b0b7-0531e8f9f48b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "延期",
+    "reading": "えんき",
+    "meaning_vi": "hoãn lại",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Dời một sự kiện hoặc kế hoạch sang thời điểm muộn hơn.",
+    "audio_ref": null,
+    "tags": [
+      "events"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "雨のため、試合は延期になりました。",
+        "reading_ja": "あめのため、しあいはえんきになりました。",
+        "translation_vi": "Vì mưa, trận đấu đã bị hoãn."
+      },
+      {
+        "sentence_ja": "会議を来週に延期します。",
+        "reading_ja": "かいぎをらいしゅうにえんきします。",
+        "translation_vi": "Chúng tôi hoãn cuộc họp sang tuần sau."
+      }
+    ]
+  },
+  {
+    "id": "dfc9f89a-6c9b-533e-8956-1be546e052ea",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "欠席",
+    "reading": "けっせき",
+    "meaning_vi": "vắng mặt",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Không có mặt trong lớp học, cuộc họp hoặc sự kiện.",
+    "audio_ref": null,
+    "tags": [
+      "school",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "病気で授業を欠席しました。",
+        "reading_ja": "びょうきでじゅぎょうをけっせきしました。",
+        "translation_vi": "Vì bị ốm, tôi đã vắng tiết học."
+      },
+      {
+        "sentence_ja": "欠席する時は先生に連絡してください。",
+        "reading_ja": "けっせきするときはせんせいにれんらくしてください。",
+        "translation_vi": "Khi vắng mặt, hãy liên lạc với giáo viên."
+      }
+    ]
+  },
+  {
+    "id": "05441653-c33b-5c68-afad-80a222240599",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "出席",
+    "reading": "しゅっせき",
+    "meaning_vi": "tham dự; có mặt",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Có mặt tại lớp học, cuộc họp hoặc sự kiện.",
+    "audio_ref": null,
+    "tags": [
+      "school",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "明日の会議に出席します。",
+        "reading_ja": "あしたのかいぎにしゅっせきします。",
+        "translation_vi": "Tôi sẽ tham dự cuộc họp ngày mai."
+      },
+      {
+        "sentence_ja": "全員が授業に出席しました。",
+        "reading_ja": "ぜんいんがじゅぎょうにしゅっせきしました。",
+        "translation_vi": "Tất cả đã có mặt trong lớp."
+      }
+    ]
+  },
+  {
+    "id": "91dcd5e4-5dcc-5e08-a85e-160cdd7b70de",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "訪問",
+    "reading": "ほうもん",
+    "meaning_vi": "thăm; chuyến thăm",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Đến gặp người hoặc đến một nơi theo kế hoạch.",
+    "audio_ref": null,
+    "tags": [
+      "visits"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来週、祖母を訪問します。",
+        "reading_ja": "らいしゅう、そぼをほうもんします。",
+        "translation_vi": "Tuần sau tôi sẽ thăm bà."
+      },
+      {
+        "sentence_ja": "会社を訪問する前に電話しました。",
+        "reading_ja": "かいしゃをほうもんするまえにでんわしました。",
+        "translation_vi": "Tôi đã gọi trước khi thăm công ty."
+      }
+    ]
+  },
+  {
+    "id": "e4acdd36-ba17-5aa8-a840-972a6b702a8c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "返事",
+    "reading": "へんじ",
+    "meaning_vi": "trả lời; hồi âm",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Câu trả lời cho thư, tin nhắn hoặc lời mời.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "メールの返事を今日中に送ります。",
+        "reading_ja": "メールのへんじをきょうじゅうにおくります。",
+        "translation_vi": "Tôi sẽ gửi hồi âm email trong hôm nay."
+      },
+      {
+        "sentence_ja": "返事がまだ来ていません。",
+        "reading_ja": "へんじがまだきていません。",
+        "translation_vi": "Vẫn chưa nhận được hồi âm."
+      }
+    ]
+  },
+  {
+    "id": "71b3e276-4d28-5a12-8794-7848c650081b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "希望",
+    "reading": "きぼう",
+    "meaning_vi": "nguyện vọng; hy vọng",
+    "part_of_speech": "danh từ・する động từ",
+    "usage_context_vi": "Điều một người mong muốn hoặc đề nghị.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "希望の時間を教えてください。",
+        "reading_ja": "きぼうのじかんをおしえてください。",
+        "translation_vi": "Hãy cho biết thời gian mong muốn."
+      },
+      {
+        "sentence_ja": "私は窓側の席を希望します。",
+        "reading_ja": "わたしはまどがわのせきをきぼうします。",
+        "translation_vi": "Tôi muốn chỗ ngồi phía cửa sổ."
+      }
+    ]
   }
 ]
+
