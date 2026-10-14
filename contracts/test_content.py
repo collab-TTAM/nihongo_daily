@@ -29,6 +29,15 @@ class ContentTests(unittest.TestCase):
     def test_seed_passes_with_observed_counts(self):
         self.assertEqual(validate_content(self.root), dict(vocabulary=110, kanji=33, grammar=44, examples=284))
 
+    def test_n4_vocabulary_and_kanji_meanings_are_localized(self):
+        # Short Vietnamese meanings must not contain accidental Japanese headwords.
+        # Longer usage/explanation fields may intentionally quote Japanese forms.
+        for model in ('vocabulary', 'kanji'):
+            records = json.loads((self.root / f'n4/{model}.json').read_text(encoding='utf-8'))
+            for item in records:
+                with self.subTest(model=model, item_id=item['id']):
+                    self.assertNotRegex(item['meaning_vi'], r'[぀-ヿ㐀-鿿豈-﫿]')
+
     def test_unknown_wire_field(self):
         self.change('n5/vocabulary.json', lambda v: v[0].update(user_id='forged'))
         self.fails()

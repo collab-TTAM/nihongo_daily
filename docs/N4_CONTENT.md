@@ -58,3 +58,14 @@ The validator checks schema shape, Unicode/text rules, kana readings, CJK
 characters, duplicate IDs/keys/examples, typed grammar links, content versions,
 asset flags, exact manifest counts and undeclared JSON files. Passing these
 checks does not substitute for linguistic review.
+
+## Draft editorial correction
+
+The eighth batch had two mixed-script Vietnamese meanings: vocabulary 拾う and
+Kanji 乗. They are corrected to Vietnamese while preserving their IDs and counts.
+A content regression checks that short N4 vocabulary/Kanji meanings do not contain
+accidental Japanese characters; Japanese quotations remain allowed in explanations.
+The draft remains the unpublished first N4 export at content version 1. Publishing
+later corrections requires a version increment. Since the current validator requires
+one manifest version across all levels, a future version change involving N5 must
+be coordinated before editing any N5 file.
