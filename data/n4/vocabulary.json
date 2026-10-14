@@ -6444,6 +6444,230 @@
         "translation_vi": "Buổi sáng không thể sử dụng vì bảo dưỡng."
       }
     ]
+  },
+  {
+    "id": "82837fe9-c13d-5a41-8f27-b807bbc8acfc",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "材料",
+    "reading": "ざいりょう",
+    "meaning_vi": "nguyên liệu; vật liệu",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Những thứ dùng để nấu ăn hoặc làm một sản phẩm.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "料理の材料を買いに行きます。",
+        "reading_ja": "りょうりのざいりょうをかいにいきます。",
+        "translation_vi": "Tôi đi mua nguyên liệu nấu ăn."
+      },
+      {
+        "sentence_ja": "材料を全部切ってください。",
+        "reading_ja": "ざいりょうをぜんぶきってください。",
+        "translation_vi": "Hãy cắt tất cả nguyên liệu."
+      }
+    ]
+  },
+  {
+    "id": "89e72ec5-0efe-5e38-a2b1-f7648ecf9667",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "味",
+    "reading": "あじ",
+    "meaning_vi": "vị; hương vị",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cảm giác của thức ăn hoặc đồ uống khi nếm.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "このスープはいい味がします。",
+        "reading_ja": "このすーぷはいいあじがします。",
+        "translation_vi": "Món súp này có vị ngon."
+      },
+      {
+        "sentence_ja": "味を見て塩を少し入れました。",
+        "reading_ja": "あじをみてしおをすこしいれました。",
+        "translation_vi": "Tôi nếm thử rồi cho thêm một ít muối."
+      }
+    ]
+  },
+  {
+    "id": "cad79964-ff9d-5f79-a25b-c9ad7426a260",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "塩",
+    "reading": "しお",
+    "meaning_vi": "muối",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Gia vị mặn dùng trong nấu ăn.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "塩を入れすぎないでください。",
+        "reading_ja": "しおをいれすぎないでください。",
+        "translation_vi": "Xin đừng cho quá nhiều muối."
+      },
+      {
+        "sentence_ja": "塩はテーブルの上にあります。",
+        "reading_ja": "しおはてーぶるのうえにあります。",
+        "translation_vi": "Muối ở trên bàn."
+      }
+    ]
+  },
+  {
+    "id": "1dcb0109-aead-50de-962f-cb9fb4c216c8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "砂糖",
+    "reading": "さとう",
+    "meaning_vi": "đường",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Chất tạo vị ngọt cho đồ ăn hoặc đồ uống.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "コーヒーに砂糖を入れますか。",
+        "reading_ja": "こーひーにさとうをいれますか。",
+        "translation_vi": "Bạn có cho đường vào cà phê không?"
+      },
+      {
+        "sentence_ja": "砂糖を使わないお菓子を作りました。",
+        "reading_ja": "さとうをつかわないおかしをつくりました。",
+        "translation_vi": "Tôi đã làm bánh không dùng đường."
+      }
+    ]
+  },
+  {
+    "id": "eac5c0af-4293-5e04-8b9e-ac851bf28f0b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "焼き方",
+    "reading": "やきかた",
+    "meaning_vi": "cách nướng; cách chiên",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Phương pháp làm chín thức ăn bằng nhiệt.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "魚の焼き方を教えてください。",
+        "reading_ja": "さかなのやきかたをおしえてください。",
+        "translation_vi": "Hãy chỉ cho tôi cách nướng cá."
+      },
+      {
+        "sentence_ja": "焼き方によって味が変わります。",
+        "reading_ja": "やきかたによってあじがかわります。",
+        "translation_vi": "Hương vị thay đổi tùy cách nướng."
+      }
+    ]
+  },
+  {
+    "id": "70d5871a-2244-5091-8895-da08648944ec",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "冷蔵庫",
+    "reading": "れいぞうこ",
+    "meaning_vi": "tủ lạnh",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thiết bị dùng để giữ lạnh thực phẩm.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "牛乳を冷蔵庫に入れてください。",
+        "reading_ja": "ぎゅうにゅうをれいぞうこにいれてください。",
+        "translation_vi": "Hãy cho sữa vào tủ lạnh."
+      },
+      {
+        "sentence_ja": "冷蔵庫の中に野菜があります。",
+        "reading_ja": "れいぞうこのなかにやさいがあります。",
+        "translation_vi": "Có rau trong tủ lạnh."
+      }
+    ]
+  },
+  {
+    "id": "c5360d40-dfe5-53d6-9895-a25187ef7f30",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "温度",
+    "reading": "おんど",
+    "meaning_vi": "nhiệt độ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Mức nóng hoặc lạnh được đo bằng số.",
+    "audio_ref": null,
+    "tags": [
+      "weather"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "部屋の温度を下げました。",
+        "reading_ja": "へやのおんどをさげました。",
+        "translation_vi": "Tôi đã hạ nhiệt độ phòng."
+      },
+      {
+        "sentence_ja": "お湯の温度を確認してください。",
+        "reading_ja": "おゆのおんどをかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra nhiệt độ nước nóng."
+      }
+    ]
+  },
+  {
+    "id": "821f58e2-2223-5b21-9bf0-78339586669f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "賞味期限",
+    "reading": "しょうみきげん",
+    "meaning_vi": "hạn sử dụng ngon nhất",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thời hạn nên dùng thực phẩm để giữ chất lượng tốt.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "賞味期限を確認してから食べます。",
+        "reading_ja": "しょうみきげんをかくにんしてからたべます。",
+        "translation_vi": "Tôi kiểm tra hạn dùng ngon nhất rồi mới ăn."
+      },
+      {
+        "sentence_ja": "賞味期限が切れた食品は捨てました。",
+        "reading_ja": "しょうみきげんがきれたしょくひんはすてました。",
+        "translation_vi": "Tôi đã vứt thực phẩm hết hạn dùng."
+      }
+    ]
   }
 ]
 
