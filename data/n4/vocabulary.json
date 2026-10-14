@@ -6892,6 +6892,230 @@
         "translation_vi": "Tôi đã nhập điểm đến vào ứng dụng dẫn đường."
       }
     ]
+  },
+  {
+    "id": "0a51185c-55da-5bf5-8b9e-c81dbd9e047d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "開く",
+    "reading": "あく",
+    "meaning_vi": "mở (tự mở)",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cửa hoặc cửa hàng tự ở trạng thái mở.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "店は朝九時に開きます。",
+        "reading_ja": "みせはあさくじにあきます。",
+        "translation_vi": "Cửa hàng mở cửa lúc chín giờ sáng."
+      },
+      {
+        "sentence_ja": "窓が風で開きました。",
+        "reading_ja": "まどがかぜであきました。",
+        "translation_vi": "Cửa sổ đã mở ra vì gió."
+      }
+    ]
+  },
+  {
+    "id": "fe29bda0-7f24-50ad-8ad7-e0e70e127817",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "開ける",
+    "reading": "あける",
+    "meaning_vi": "mở (vật)",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Làm cho cửa, cửa sổ hoặc hộp ở trạng thái mở.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、窓を開けます。",
+        "reading_ja": "まいあさ、まどをあけます。",
+        "translation_vi": "Mỗi sáng tôi mở cửa sổ."
+      },
+      {
+        "sentence_ja": "箱を開けて、中を見ました。",
+        "reading_ja": "はこをあけて、なかをみました。",
+        "translation_vi": "Tôi mở hộp và xem bên trong."
+      }
+    ]
+  },
+  {
+    "id": "5b5afd40-72fa-51c5-9479-c7ebdcb1f4ff",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "閉まる",
+    "reading": "しまる",
+    "meaning_vi": "đóng (tự đóng)",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cửa hoặc cửa hàng tự ở trạng thái đóng.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "店は午後八時に閉まります。",
+        "reading_ja": "みせはごごはちじにしまります。",
+        "translation_vi": "Cửa hàng đóng cửa lúc tám giờ tối."
+      },
+      {
+        "sentence_ja": "強い風でドアが閉まりました。",
+        "reading_ja": "つよいかぜでどあがしまりました。",
+        "translation_vi": "Cửa đã đóng vì gió mạnh."
+      }
+    ]
+  },
+  {
+    "id": "5167284a-2206-5b1c-9134-078f1554ee0b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "閉める",
+    "reading": "しめる",
+    "meaning_vi": "đóng (vật)",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Làm cho cửa, cửa sổ hoặc nắp ở trạng thái đóng.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "出かける前に電気と窓を閉めます。",
+        "reading_ja": "でかけるまえにでんきとまどをしめます。",
+        "translation_vi": "Trước khi ra ngoài tôi tắt điện và đóng cửa sổ."
+      },
+      {
+        "sentence_ja": "寒いので、ドアを閉めてください。",
+        "reading_ja": "さむいので、どあをしめてください。",
+        "translation_vi": "Vì lạnh nên hãy đóng cửa."
+      }
+    ]
+  },
+  {
+    "id": "f28d4510-83b0-59ac-a7cf-176081e14d52",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "着る",
+    "reading": "きる",
+    "meaning_vi": "mặc (quần áo)",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Mặc áo hoặc quần áo lên người.",
+    "audio_ref": null,
+    "tags": [
+      "clothing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "冬は厚いコートを着ます。",
+        "reading_ja": "ふゆはあついこーとをきます。",
+        "translation_vi": "Mùa đông tôi mặc áo khoác dày."
+      },
+      {
+        "sentence_ja": "新しい服を着て、出かけました。",
+        "reading_ja": "あたらしいふくをきて、でかけました。",
+        "translation_vi": "Tôi mặc quần áo mới rồi đi ra ngoài."
+      }
+    ]
+  },
+  {
+    "id": "9aa2fb23-ad13-5d86-9a28-c25ce1f46bb7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "脱ぐ",
+    "reading": "ぬぐ",
+    "meaning_vi": "cởi (quần áo)",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cởi quần áo, giày hoặc vật đang mặc.",
+    "audio_ref": null,
+    "tags": [
+      "clothing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "家に入る前に靴を脱ぎます。",
+        "reading_ja": "いえにはいるまえにくつをぬぎます。",
+        "translation_vi": "Trước khi vào nhà tôi cởi giày."
+      },
+      {
+        "sentence_ja": "暑かったので、上着を脱ぎました。",
+        "reading_ja": "あつかったので、うわぎをぬぎました。",
+        "translation_vi": "Vì nóng nên tôi đã cởi áo khoác ngoài."
+      }
+    ]
+  },
+  {
+    "id": "d4ed30fd-e5f1-5814-95b0-1233e267383f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "服",
+    "reading": "ふく",
+    "meaning_vi": "quần áo",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Đồ mặc trên người.",
+    "audio_ref": null,
+    "tags": [
+      "clothing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この店は安い服が多いです。",
+        "reading_ja": "このみせはやすいふくがおおいです。",
+        "translation_vi": "Cửa hàng này có nhiều quần áo rẻ."
+      },
+      {
+        "sentence_ja": "旅行の服をかばんに入れました。",
+        "reading_ja": "りょこうのふくをかばんにいれました。",
+        "translation_vi": "Tôi đã cho quần áo đi du lịch vào túi."
+      }
+    ]
+  },
+  {
+    "id": "e7e55da1-7018-5c14-b8de-f6b6ea3e740e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "電灯",
+    "reading": "でんとう",
+    "meaning_vi": "đèn điện",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thiết bị phát ánh sáng bằng điện.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "暗くなったので、電灯をつけました。",
+        "reading_ja": "くらくなったので、でんとうをつけました。",
+        "translation_vi": "Vì trời tối nên tôi đã bật đèn điện."
+      },
+      {
+        "sentence_ja": "電灯を消してから、寝ます。",
+        "reading_ja": "でんとうをけしてから、ねます。",
+        "translation_vi": "Tôi tắt đèn điện rồi mới ngủ."
+      }
+    ]
   }
 ]
 
