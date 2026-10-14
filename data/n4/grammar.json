@@ -3108,6 +3108,99 @@
         "translation_vi": "Hãy cùng thảo luận thay vì tự quyết định một mình."
       }
     ]
+  },
+  {
+    "id": "2f6f257a-83a3-544d-8955-c1689a3a9892",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてくれます",
+    "pattern": "Vてくれます",
+    "meaning_vi": "ai đó làm V cho tôi/chúng tôi",
+    "explanation_vi": "Diễn tả người khác làm một việc có lợi hoặc giúp đỡ người nói.",
+    "usage_notes_vi": [
+      "Chủ thể thực hiện hành động đứng trước が hoặc は.",
+      "Dùng thể て của động từ trước くれます."
+    ],
+    "common_mistakes": [
+      "Không dùng もらいます khi muốn nhấn mạnh người thực hiện là người cho sự giúp đỡ."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "友達が駅まで案内してくれます。",
+        "reading_ja": "ともだちがえきまであんないしてくれます。",
+        "translation_vi": "Bạn tôi sẽ hướng dẫn tôi đến ga."
+      },
+      {
+        "sentence_ja": "店員が荷物を運んでくれました。",
+        "reading_ja": "てんいんがにもつをはこんでくれました。",
+        "translation_vi": "Nhân viên cửa hàng đã mang hành lý giúp tôi."
+      }
+    ]
+  },
+  {
+    "id": "8eecfbbf-5100-5699-bd1f-4777c63b8157",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vさせてください",
+    "pattern": "Vさせてください",
+    "meaning_vi": "hãy cho phép tôi làm V",
+    "explanation_vi": "Xin phép người nghe cho mình thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể sai khiến trước てください để nói lời xin phép lịch sự.",
+      "Chủ thể ngầm của V thường là người nói."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước させてください."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生、質問させてください。",
+        "reading_ja": "せんせい、しつもんさせてください。",
+        "translation_vi": "Thưa thầy/cô, hãy cho em hỏi một câu ạ."
+      },
+      {
+        "sentence_ja": "今日は早く帰らせてください。",
+        "reading_ja": "きょうははやくかえらせてください。",
+        "translation_vi": "Hôm nay hãy cho tôi về sớm ạ."
+      }
+    ]
+  },
+  {
+    "id": "c809ec5f-a520-58be-b93d-543aab0dad3a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないほうがいいです",
+    "pattern": "Vないほうがいいです",
+    "meaning_vi": "tốt hơn là không nên V",
+    "explanation_vi": "Đưa ra lời khuyên nên tránh một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể ない trước ほうがいいです.",
+      "Có thể thêm です để lời khuyên lịch sự hơn."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vなくてもいいです, nghĩa là không cần phải làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "熱があるなら、無理をしないほうがいいです。",
+        "reading_ja": "ねつがあるなら、むりをしないほうがいいです。",
+        "translation_vi": "Nếu bị sốt thì tốt hơn là không nên cố sức."
+      },
+      {
+        "sentence_ja": "夜遅くにコーヒーを飲まないほうがいいです。",
+        "reading_ja": "よるおそくにコーヒーをのまないほうがいいです。",
+        "translation_vi": "Tốt hơn là không nên uống cà phê vào khuya."
+      }
+    ]
   }
 ]
 
