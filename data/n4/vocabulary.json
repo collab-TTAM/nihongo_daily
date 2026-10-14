@@ -8266,6 +8266,237 @@
         "translation_vi": "Tôi đã quên trả tiền điện."
       }
     ]
+  },
+  {
+    "id": "3031d45f-ff02-5c4d-b173-4a2dd375c26d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "習字",
+    "reading": "しゅうじ",
+    "meaning_vi": "thư pháp Nhật",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hoạt động luyện viết chữ đẹp bằng bút lông.",
+    "audio_ref": null,
+    "tags": [
+      "culture",
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "週末に習字を習っています。",
+        "reading_ja": "しゅうまつにしゅうじをならっています。",
+        "translation_vi": "Cuối tuần tôi học thư pháp Nhật."
+      },
+      {
+        "sentence_ja": "習字の先生に字をほめられました。",
+        "reading_ja": "しゅうじのせんせいにじをほめられました。",
+        "translation_vi": "Tôi được giáo viên thư pháp khen chữ."
+      }
+    ]
+  },
+  {
+    "id": "c5e27693-6b23-5bbb-aa6e-87a6a312d68e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "公園",
+    "reading": "こうえん",
+    "meaning_vi": "công viên",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực công cộng có cây xanh để nghỉ ngơi hoặc vui chơi.",
+    "audio_ref": null,
+    "tags": [
+      "community",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "朝、公園を散歩します。",
+        "reading_ja": "あさ、こうえんをさんぽします。",
+        "translation_vi": "Buổi sáng tôi đi dạo trong công viên."
+      },
+      {
+        "sentence_ja": "公園で子どもたちが遊んでいます。",
+        "reading_ja": "こうえんでこどもたちがあそんでいます。",
+        "translation_vi": "Trẻ em đang chơi trong công viên."
+      }
+    ]
+  },
+  {
+    "id": "a19009c2-2436-509f-920e-947352321308",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "川辺",
+    "reading": "かわべ",
+    "meaning_vi": "ven sông",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực ở gần bờ sông.",
+    "audio_ref": null,
+    "tags": [
+      "nature",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "川辺で写真を撮りました。",
+        "reading_ja": "かわべでしゃしんをとりました。",
+        "translation_vi": "Tôi đã chụp ảnh bên sông."
+      },
+      {
+        "sentence_ja": "川辺は風が涼しいです。",
+        "reading_ja": "かわべはかぜがすずしいです。",
+        "translation_vi": "Ven sông có gió mát."
+      }
+    ]
+  },
+  {
+    "id": "0f9230f2-f729-5ade-b1df-a27ea3dd4458",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "海岸",
+    "reading": "かいがん",
+    "meaning_vi": "bờ biển",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Dải đất tiếp giáp với biển.",
+    "audio_ref": null,
+    "tags": [
+      "nature",
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "海岸を歩きながら話しました。",
+        "reading_ja": "かいがんをあるきながらはなしました。",
+        "translation_vi": "Chúng tôi vừa đi dọc bờ biển vừa nói chuyện."
+      },
+      {
+        "sentence_ja": "海岸にきれいな貝がありました。",
+        "reading_ja": "かいがんにきれいなかいがありました。",
+        "translation_vi": "Ở bờ biển có những vỏ sò đẹp."
+      }
+    ]
+  },
+  {
+    "id": "0fbffd05-c6d9-549d-8ce4-19d677beebfa",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "森林",
+    "reading": "しんりん",
+    "meaning_vi": "rừng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực rộng có nhiều cây cối mọc tự nhiên.",
+    "audio_ref": null,
+    "tags": [
+      "nature",
+      "environment"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "森林を守る活動に参加しました。",
+        "reading_ja": "しんりんをまもるかつどうにさんかしました。",
+        "translation_vi": "Tôi đã tham gia hoạt động bảo vệ rừng."
+      },
+      {
+        "sentence_ja": "森林の中は空気がきれいです。",
+        "reading_ja": "しんりんのなかはくうきがきれいです。",
+        "translation_vi": "Không khí trong rừng rất trong lành."
+      }
+    ]
+  },
+  {
+    "id": "19a555f2-3563-554a-bda1-9db16ba89bbe",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "農業",
+    "reading": "のうぎょう",
+    "meaning_vi": "nông nghiệp",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hoạt động trồng trọt và chăn nuôi.",
+    "audio_ref": null,
+    "tags": [
+      "work",
+      "environment"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この町では農業が盛んです。",
+        "reading_ja": "このまちではのうぎょうがさかんです。",
+        "translation_vi": "Nông nghiệp phát triển ở thị trấn này."
+      },
+      {
+        "sentence_ja": "農業を学ぶために田舎へ行きました。",
+        "reading_ja": "のうぎょうをまなぶためにいなかへいきました。",
+        "translation_vi": "Tôi đến vùng quê để học về nông nghiệp."
+      }
+    ]
+  },
+  {
+    "id": "018d4e10-b1f6-5e06-8107-0a69b4f81e69",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "工場",
+    "reading": "こうじょう",
+    "meaning_vi": "nhà máy",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi sản xuất hàng hóa bằng máy móc hoặc dây chuyền.",
+    "audio_ref": null,
+    "tags": [
+      "work",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "父は工場で働いています。",
+        "reading_ja": "ちちはこうじょうではたらいています。",
+        "translation_vi": "Bố tôi đang làm việc ở nhà máy."
+      },
+      {
+        "sentence_ja": "工場を見学する機会がありました。",
+        "reading_ja": "こうじょうをけんがくするきかいがありました。",
+        "translation_vi": "Tôi có cơ hội tham quan nhà máy."
+      }
+    ]
+  },
+  {
+    "id": "37a13517-ed43-5d70-a866-f5552938b78a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "住民",
+    "reading": "じゅうみん",
+    "meaning_vi": "cư dân",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Những người sống trong một khu vực.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "住民が町の掃除をしました。",
+        "reading_ja": "じゅうみんがまちのそうじをしました。",
+        "translation_vi": "Cư dân đã dọn vệ sinh thị trấn."
+      },
+      {
+        "sentence_ja": "住民に新しいルールを知らせます。",
+        "reading_ja": "じゅうみんにあたらしいるーるをしらせます。",
+        "translation_vi": "Chúng tôi thông báo quy định mới cho cư dân."
+      }
+    ]
   }
 ]
 
