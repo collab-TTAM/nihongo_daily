@@ -2406,5 +2406,229 @@
         "translation_vi": "Tôi đã trả dụng cụ đã dùng về chỗ cũ."
       }
     ]
+  },
+  {
+    "id": "a8d47eb8-5b33-5b89-a283-db164efc0da0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "探す",
+    "reading": "さがす",
+    "meaning_vi": "tìm kiếm",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Cố gắng tìm người hoặc vật chưa thấy.",
+    "audio_ref": null,
+    "tags": [
+      "actions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅で友達を探しています。",
+        "reading_ja": "えきでともだちをさがしています。",
+        "translation_vi": "Tôi đang tìm bạn ở nhà ga."
+      },
+      {
+        "sentence_ja": "インターネットで安いホテルを探しました。",
+        "reading_ja": "いんたーねっとでやすいほてるをさがしました。",
+        "translation_vi": "Tôi đã tìm khách sạn rẻ trên mạng."
+      }
+    ]
+  },
+  {
+    "id": "a3aa9379-c60f-5f20-9924-00ea026a02c0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "見える",
+    "reading": "みえる",
+    "meaning_vi": "nhìn thấy; có thể thấy",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Một vật hoặc cảnh hiện ra trong tầm mắt.",
+    "audio_ref": null,
+    "tags": [
+      "descriptions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "窓から海が見えます。",
+        "reading_ja": "まどからうみがみえます。",
+        "translation_vi": "Có thể nhìn thấy biển từ cửa sổ."
+      },
+      {
+        "sentence_ja": "この席から舞台がよく見えません。",
+        "reading_ja": "このせきからぶたいがよくみえません。",
+        "translation_vi": "Từ chỗ ngồi này không nhìn rõ sân khấu."
+      }
+    ]
+  },
+  {
+    "id": "4c88c356-dac4-517b-8ab9-c195598b9327",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "聞こえる",
+    "reading": "きこえる",
+    "meaning_vi": "nghe thấy; có thể nghe",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Âm thanh đến tai một cách tự nhiên.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "隣の部屋から音楽が聞こえます。",
+        "reading_ja": "となりのへやからおんがくがきこえます。",
+        "translation_vi": "Có thể nghe thấy nhạc từ phòng bên cạnh."
+      },
+      {
+        "sentence_ja": "駅の案内がよく聞こえません。",
+        "reading_ja": "えきのあんないがよくきこえません。",
+        "translation_vi": "Tôi không nghe rõ thông báo ở ga."
+      }
+    ]
+  },
+  {
+    "id": "be83d110-cb61-5b84-90e1-834290f6ec76",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "急ぐ",
+    "reading": "いそぐ",
+    "meaning_vi": "vội; nhanh lên",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm hoặc di chuyển nhanh vì không còn nhiều thời gian.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "時間がないので、急いでください。",
+        "reading_ja": "じかんがないので、いそいでください。",
+        "translation_vi": "Vì không có thời gian nên hãy nhanh lên."
+      },
+      {
+        "sentence_ja": "急がなくても、電車に間に合います。",
+        "reading_ja": "いそがなくても、でんしゃにまにあいます。",
+        "translation_vi": "Không cần vội vẫn kịp tàu."
+      }
+    ]
+  },
+  {
+    "id": "48bada1d-b3df-5b52-8edc-d1aeb84775e5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "取り替える",
+    "reading": "とりかえる",
+    "meaning_vi": "thay; đổi cái khác",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Thay đồ vật cũ hoặc không phù hợp bằng đồ khác.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "電池を新しいものに取り替えました。",
+        "reading_ja": "でんちをあたらしいものにとりかえました。",
+        "translation_vi": "Tôi đã thay pin mới."
+      },
+      {
+        "sentence_ja": "サイズが合わないので、シャツを取り替えます。",
+        "reading_ja": "さいずがあわないので、しゃつをとりかえます。",
+        "translation_vi": "Vì không vừa kích cỡ nên tôi sẽ đổi áo."
+      }
+    ]
+  },
+  {
+    "id": "2a397cc6-85c6-5389-97f9-1cb19a0dca24",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "壊れる",
+    "reading": "こわれる",
+    "meaning_vi": "bị hỏng; vỡ",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đồ vật không còn hoạt động hoặc nguyên vẹn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "洗濯機が壊れてしまいました。",
+        "reading_ja": "せんたくきがこわれてしまいました。",
+        "translation_vi": "Máy giặt đã bị hỏng mất."
+      },
+      {
+        "sentence_ja": "古い時計は壊れやすいです。",
+        "reading_ja": "ふるいとけいはこわれやすいです。",
+        "translation_vi": "Đồng hồ cũ dễ hỏng."
+      }
+    ]
+  },
+  {
+    "id": "4bfbcb11-173e-5a89-bd74-10197a13502c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "直る",
+    "reading": "なおる",
+    "meaning_vi": "được sửa; hoạt động lại",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đồ vật hoặc lỗi trở lại trạng thái bình thường.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "エアコンがやっと直りました。",
+        "reading_ja": "えあこんがやっとなおりました。",
+        "translation_vi": "Cuối cùng máy điều hòa đã được sửa."
+      },
+      {
+        "sentence_ja": "この時計は明日までに直ります。",
+        "reading_ja": "このとけいはあしたまでになおります。",
+        "translation_vi": "Chiếc đồng hồ này sẽ được sửa trước ngày mai."
+      }
+    ]
+  },
+  {
+    "id": "e82811bd-1da4-5578-a45f-45bc12d1c269",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "届ける",
+    "reading": "とどける",
+    "meaning_vi": "giao; chuyển đến",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đưa đồ vật hoặc giấy tờ đến đúng người hay nơi nhận.",
+    "audio_ref": null,
+    "tags": [
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "書類を会社に届けました。",
+        "reading_ja": "しょるいをかいしゃにとどけました。",
+        "translation_vi": "Tôi đã giao giấy tờ đến công ty."
+      },
+      {
+        "sentence_ja": "忘れ物を受付へ届けてください。",
+        "reading_ja": "わすれものをうけつけへとどけてください。",
+        "translation_vi": "Hãy mang đồ bỏ quên đến quầy tiếp nhận."
+      }
+    ]
   }
 ]

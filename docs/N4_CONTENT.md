@@ -7,10 +7,10 @@ curriculum. The published export contains:
 
 | Model | Count | Examples |
 | --- | ---: | ---: |
-| Vocabulary | 86 | 172 |
-| Kanji metadata | 25 | — |
-| Grammar | 34 | 68 |
-| **Total** | **145** | **240** |
+| Vocabulary | 94 | 188 |
+| Kanji metadata | 27 | — |
+| Grammar | 37 | 74 |
+| **Total** | **158** | **262** |
 
 Themes are travel/planning, transport/shopping, work/communication, daily
 habits, descriptions, common actions, safety, culture, health and study. The
@@ -34,7 +34,7 @@ Examples pair Japanese sentences with kana readings and Vietnamese translations.
   metadata.
 - No audio, canonical stroke-order data, tracing asset or real handwriting grade
   is included. `audio_ref` and `stroke_data_ref` are null for this batch.
-- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. The eighth batch adds transport changes, service desks, lost items and topic descriptions with 乗 and 残 metadata. A native-speaker/teacher review and broader coverage review remain outstanding.
+- The fifth batch adds registration, communication, punctuality and return actions with 伝 and 返 metadata. The sixth batch adds health, notification and assistance actions with 薬 and 知 metadata. The seventh batch adds payment, quantity-change and advice actions with 払 and 増 metadata. The eighth batch adds transport changes, service desks, lost items and topic descriptions with 乗 and 残 metadata. The ninth batch adds searching, repairs and deliveries with 急 and 壊 metadata. A native-speaker/teacher review and broader coverage review remain outstanding.
 
 ## Versioning and IDs
 

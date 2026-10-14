@@ -456,5 +456,43 @@
     "stroke_count": 10,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "c37c21f3-c187-5be5-837f-6ff69373d4e6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "急",
+    "meaning_vi": "gấp; vội; khẩn cấp",
+    "onyomi": [
+      "キュウ"
+    ],
+    "kunyomi": [
+      "いそ",
+      "いそ-"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "08c38bf1-83d5-590b-998f-7186cdf7f288",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "壊",
+    "meaning_vi": "hỏng; phá hỏng",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "こわ",
+      "こわ-"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

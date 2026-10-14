@@ -1038,5 +1038,95 @@
         "translation_vi": "Tôi đã hỏi giáo viên về kỳ thi."
       }
     ]
+  },
+  {
+    "id": "6c5cf987-cf96-5f02-a0f1-7bd38d91bc15",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vると",
+    "pattern": "Vると",
+    "meaning_vi": "hễ V thì; khi V thì",
+    "explanation_vi": "Diễn tả kết quả tự nhiên hoặc điều thường xảy ra sau một điều kiện.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước と."
+    ],
+    "common_mistakes": [
+      "Không dùng mệnh lệnh hoặc ý định trực tiếp trong vế sau của mẫu kết quả tự nhiên."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "春になると、花が咲きます。",
+        "reading_ja": "はるになると、はながさきます。",
+        "translation_vi": "Khi mùa xuân đến thì hoa nở."
+      },
+      {
+        "sentence_ja": "このボタンを押すと、ドアが開きます。",
+        "reading_ja": "このぼたんをおすと、どあがひらきます。",
+        "translation_vi": "Hễ bấm nút này thì cửa mở."
+      }
+    ]
+  },
+  {
+    "id": "9a40f539-b187-5c47-aaeb-dece5d59f558",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないで",
+    "pattern": "Vないで",
+    "meaning_vi": "không V mà; không làm V",
+    "explanation_vi": "Nêu hành động được thực hiện mà không làm một việc khác.",
+    "usage_notes_vi": [
+      "Dùng thể ない bỏ い rồi thêm で."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないでください là lời yêu cầu không làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "朝ご飯を食べないで学校へ行きました。",
+        "reading_ja": "あさごはんをたべないでがっこうへいきました。",
+        "translation_vi": "Tôi đã đến trường mà không ăn sáng."
+      },
+      {
+        "sentence_ja": "辞書を見ないで答えてみてください。",
+        "reading_ja": "じしょをみないでこたえてみてください。",
+        "translation_vi": "Hãy thử trả lời mà không xem từ điển."
+      }
+    ]
+  },
+  {
+    "id": "6f6852eb-5d96-5b22-8796-5558e38cd13a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nより",
+    "pattern": "Nより",
+    "meaning_vi": "hơn N; so với N",
+    "explanation_vi": "Dùng để so sánh một người hoặc vật với N.",
+    "usage_notes_vi": [
+      "Đặt danh từ làm mốc trước より."
+    ],
+    "common_mistakes": [
+      "より không tự mang nghĩa 'hơn' nếu thiếu đối tượng so sánh trong câu phù hợp."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電車はバスより速いです。",
+        "reading_ja": "でんしゃはばすよりはやいです。",
+        "translation_vi": "Tàu điện nhanh hơn xe buýt."
+      },
+      {
+        "sentence_ja": "去年より今年のほうが忙しいです。",
+        "reading_ja": "きょねんよりことしのほうがいそがしいです。",
+        "translation_vi": "Năm nay bận hơn năm ngoái."
+      }
+    ]
   }
 ]
