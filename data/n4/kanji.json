@@ -796,6 +796,43 @@
     "stroke_count": 11,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "2e542082-9669-5d20-b16f-42f7242cf3f3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "環",
+    "meaning_vi": "vòng; môi trường",
+    "onyomi": [
+      "カン"
+    ],
+    "kunyomi": [
+      "わ"
+    ],
+    "stroke_count": 17,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d6dcff8a-3157-5ef5-9069-3ae9a6d802f3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "境",
+    "meaning_vi": "ranh giới; môi trường",
+    "onyomi": [
+      "キョウ",
+      "ケイ"
+    ],
+    "kunyomi": [
+      "さかい"
+    ],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
