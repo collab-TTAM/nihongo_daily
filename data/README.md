@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 270 | 71 | 103 | 746 |
+| N4 | 278 | 73 | 106 | 768 |
 
 ## N4 seed batches
 
-The N4 seed is now thirty-one original editorial batches for development. It contains
-270 vocabulary items, 71 Kanji metadata records and 103 grammar patterns, with 746
+The N4 seed is now thirty-two original editorial batches for development. It contains
+278 vocabulary items, 73 Kanji metadata records and 106 grammar patterns, with 768
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
@@ -99,6 +99,14 @@ The twenty-sixth batch adds repairs, construction, water leaks, power outages, b
 The twenty-seventh batch adds ingredients, taste, salt, sugar, cooking methods, refrigerators, temperature and food dates; 味 and 塩 metadata; and the patterns Nがします, Vるのが上手です and Vてもいいですか. It follows the same authored-content and unavailable-asset rules.
 
 The twenty-eighth batch adds traffic jams, signals, roads, sidewalks, fares, timetables, boarding areas and destinations; 道 and 信 metadata; and the patterns Vるかどうか, Nによっては and Vるためには. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-ninth batch adds doors, lights and clothing; 開 and 着 metadata; and the patterns Vているうちに, Nに比べて and Vたままにする. It follows the same authored-content and unavailable-asset rules.
+
+The thirtieth batch adds schedules, presentations, submissions, deadlines and participants; 配 and 集 metadata; and the patterns Vるまでに, Vるように言われました and Nだけでなく. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-first batch adds orders, customers, store areas, stock status and store opening/closing; 客 and 売 metadata; and the patterns Vてからでないと, Nにとって and Vるのではなく. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-second batch adds health condition, nursing, dental visits, travel costs, one-way/round-trip tickets, information desks and ticket gates; 体 and 改 metadata; and the patterns Vてくれます, Vさせてください and Vないほうがいいです. It follows the same authored-content and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo
 Daily. Kanji meanings/readings and stroke counts use common reference metadata;
