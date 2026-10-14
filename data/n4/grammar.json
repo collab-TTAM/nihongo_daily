@@ -2208,6 +2208,96 @@
         "translation_vi": "Việc tuân thủ luật giao thông là quan trọng."
       }
     ]
+  },
+  {
+    "id": "7b69e7e0-9182-5014-8575-418d8dbf2706",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてほしいです",
+    "pattern": "Vてほしいです",
+    "meaning_vi": "muốn ai đó V",
+    "explanation_vi": "Diễn tả mong muốn người khác thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Chủ thể mong muốn thường được nêu bằng に trước động từ."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生にもう一度説明してほしいです。",
+        "reading_ja": "せんせいにもういちどせつめいしてほしいです。",
+        "translation_vi": "Tôi muốn giáo viên giải thích lại một lần nữa."
+      },
+      {
+        "sentence_ja": "友達に面接の練習をしてほしいです。",
+        "reading_ja": "ともだちにめんせつのれんしゅうをしてほしいです。",
+        "translation_vi": "Tôi muốn bạn luyện phỏng vấn cùng tôi."
+      }
+    ]
+  },
+  {
+    "id": "a065a623-f8fd-5888-b277-4002261e31e7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nについて話します",
+    "pattern": "Nについて話します",
+    "meaning_vi": "nói về N",
+    "explanation_vi": "Dùng để nêu chủ đề của điều được nói hoặc trao đổi.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ chủ đề trước について."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "授業で日本の文化について話しました。",
+        "reading_ja": "じゅぎょうでにほんのぶんかについてはなしました。",
+        "translation_vi": "Trong giờ học tôi đã nói về văn hóa Nhật."
+      },
+      {
+        "sentence_ja": "面接で仕事について質問されました。",
+        "reading_ja": "めんせつでしごとについてしつもんされました。",
+        "translation_vi": "Trong buổi phỏng vấn tôi đã được hỏi về công việc."
+      }
+    ]
+  },
+  {
+    "id": "0304c77e-6b26-5892-ba5f-451ce3a228f4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのに時間がかかります",
+    "pattern": "Vるのに時間がかかります",
+    "meaning_vi": "mất thời gian để V",
+    "explanation_vi": "Diễn tả lượng thời gian cần thiết để thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước のに và đặt khoảng thời gian trước がかかります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "駅まで歩くのに十分かかります。",
+        "reading_ja": "えきまであるくのにじゅっぷんかかります。",
+        "translation_vi": "Đi bộ đến ga mất mười phút."
+      },
+      {
+        "sentence_ja": "書類を準備するのに時間がかかりました。",
+        "reading_ja": "しょるいをじゅんびするのにじかんがかかりました。",
+        "translation_vi": "Việc chuẩn bị giấy tờ đã mất thời gian."
+      }
+    ]
   }
 ]
 
