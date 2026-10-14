@@ -295,4 +295,16 @@ void main() {
     expect(h.controller.state.phase, SrsStudyPhase.signedOut);
     await subscription.cancel();
   });
+  test(
+    'synchronous disposal on loading safely closes notification stream',
+    () async {
+      final subscription = h.controller.changes.listen((state) {
+        if (state.phase == SrsStudyPhase.loading) h.controller.dispose();
+      });
+      await open();
+      expect(h.base.queue.calls, 0);
+      expect(h.controller.state.phase, SrsStudyPhase.unavailable);
+      await subscription.cancel();
+    },
+  );
 }

@@ -667,7 +667,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   permits safe manual retry without altering frozen RPC error JSON or rating.
 - Local actual disk/controller close/reopen verifier, retained native subprocess
   verifier, pure source/tool analyzer and formatter, QA36 inventory/17 regressions
-  passed. Twenty controller/widget cases authored; full Flutter/widget/web and
+  passed. Twenty-one controller/widget cases authored; full Flutter/widget/web and
   Windows results require current-head CI. Add required disk/controller verifier
   to Linux/Windows without removing any previous gate.
 - Separate impact/compatibility and reproduction in STUDY_RECOVERY.md. No new
@@ -682,4 +682,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Follow-up test review uses runAsync with a bounded controller-terminal-state
   future to await native file I/O, then pumps the UI. All UI assertions remain;
   no timeout/expectation/security gate relaxed. Full corrected-head CI required.
+
+- Prior canceled Flutter logs exposed synchronous revocation emitting a nested
+  state notification. Preserve the failing assertion; drain queued notifications
+  synchronously after the current listener returns, while state/session clearing
+  remains immediate. Defer stream close during notification and add synchronous
+  disposal regression. No old-data/new-dispatch protection weakened.
 

@@ -56,7 +56,7 @@ authoritative reload. It is required on Linux and Windows CI. Existing subproces
 lease/restart, frozen wire/SQL/QA/AI/build gates remain.
 
 Fixtures supply Auth/RPC/queue responses, so this is not a hosted JWT or signed-in
-learner journey. Twenty controller/widget tests are authored; current-head CI
+learner journey. Twenty-one controller/widget tests are authored; current-head CI
 must confirm them. The widget cases include account clearing, storage errors,
 original rating/manual action and 320px at 200% text.
 

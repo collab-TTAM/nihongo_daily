@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math';
 
 import '../../../shared/models/preview_level.dart';
@@ -147,6 +148,8 @@ final class SrsStudyController {
   int _generation = 0;
   int _shownAt = 0;
   bool _disposed = false;
+  bool _notifying = false;
+  final _notifications = Queue<SrsStudyState>();
   PreparedReview? _pending;
   List<PreparedReview> _recovered = const [];
   PreviewLevel? _level;
@@ -156,7 +159,20 @@ final class SrsStudyController {
   void _publish(SrsStudyState value) {
     if (_disposed) return;
     _state = value;
-    _changes.add(value);
+    _notifications.add(value);
+    if (_notifying) return;
+    _notifying = true;
+    try {
+      while (!_disposed && _notifications.isNotEmpty) {
+        _changes.add(_notifications.removeFirst());
+      }
+    } finally {
+      _notifying = false;
+      if (_disposed) {
+        _notifications.clear();
+        unawaited(_changes.close());
+      }
+    }
   }
 
   /// Runtime must notify synchronously on logout/switch/re-auth (including A/B/A),
@@ -420,7 +436,8 @@ final class SrsStudyController {
     _watch.stop();
     _recovered = const [];
     _level = null;
-    unawaited(_changes.close());
+    _notifications.clear();
+    if (!_notifying) unawaited(_changes.close());
   }
 }
 
