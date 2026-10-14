@@ -3387,6 +3387,99 @@
         "translation_vi": "Không có vấn đề nào khó như vấn đề này."
       }
     ]
+  },
+  {
+    "id": "73c217b1-2fa6-5cf4-9614-f62d1c5844c4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vようと思います",
+    "pattern": "Vようと思います",
+    "meaning_vi": "tôi định sẽ V",
+    "explanation_vi": "Diễn tả ý định hoặc dự định của người nói.",
+    "usage_notes_vi": [
+      "Dùng thể ý chí trước と思います.",
+      "Thường dùng cho quyết định chưa thực hiện."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます trực tiếp trước と思います khi muốn nói ý định thân mật này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来年、日本へ旅行しようと思います。",
+        "reading_ja": "らいねん、にほんへりょこうしようとおもいます。",
+        "translation_vi": "Tôi định năm sau sẽ đi du lịch Nhật."
+      },
+      {
+        "sentence_ja": "週末は公園を掃除しようと思います。",
+        "reading_ja": "しゅうまつはこうえんをそうじしようとおもいます。",
+        "translation_vi": "Cuối tuần tôi định dọn vệ sinh công viên."
+      }
+    ]
+  },
+  {
+    "id": "0615e158-faaf-5ba7-bc11-3793a5d41521",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nの代わりに",
+    "pattern": "Nの代わりに",
+    "meaning_vi": "thay cho N",
+    "explanation_vi": "Nêu người hoặc vật được dùng thay cho một người hoặc vật khác.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước の代わりに.",
+      "Có thể dùng cho việc thay thế hoặc đại diện."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nのために, nghĩa là vì hoặc cho N."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "兄の代わりに会議へ行きます。",
+        "reading_ja": "あにのかわりにかいぎへいきます。",
+        "translation_vi": "Tôi sẽ đi họp thay cho anh trai."
+      },
+      {
+        "sentence_ja": "砂糖の代わりに蜂蜜を使いました。",
+        "reading_ja": "さとうのかわりにはちみつをつかいました。",
+        "translation_vi": "Tôi đã dùng mật ong thay cho đường."
+      }
+    ]
+  },
+  {
+    "id": "2d550e0b-26f7-5125-9b62-d769e7ea822a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによれば",
+    "pattern": "Nによれば",
+    "meaning_vi": "theo N",
+    "explanation_vi": "Nêu nguồn thông tin hoặc căn cứ cho điều được nói.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ nguồn trước によれば.",
+      "Thường đi với そうです hoặc thông tin được nghe."
+    ],
+    "common_mistakes": [
+      "Không dùng によれば để chỉ phương tiện di chuyển; trường hợp đó dùng によって."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "天気予報によれば、明日は晴れです。",
+        "reading_ja": "てんきよほうによれば、あしたははれです。",
+        "translation_vi": "Theo dự báo thời tiết, ngày mai trời nắng."
+      },
+      {
+        "sentence_ja": "先生によれば、試験は来週です。",
+        "reading_ja": "せんせいによれば、しけんはらいしゅうです。",
+        "translation_vi": "Theo giáo viên, kỳ thi là tuần sau."
+      }
+    ]
   }
 ]
 
