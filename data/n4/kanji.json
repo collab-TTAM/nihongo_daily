@@ -976,6 +976,42 @@
     "stroke_count": 13,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "722c8fe6-3df6-5cfc-bed7-90fff018b4b0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "医",
+    "meaning_vi": "y học; bác sĩ",
+    "onyomi": [
+      "イ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "9cada711-db84-50a0-a1c2-be2bc8c611ec",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "病",
+    "meaning_vi": "bệnh; ốm",
+    "onyomi": [
+      "ビョウ",
+      "ヘイ"
+    ],
+    "kunyomi": [
+      "やまい",
+      "やむ"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
