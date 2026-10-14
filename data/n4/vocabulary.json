@@ -6220,6 +6220,230 @@
         "translation_vi": "Vì hết hàng nên tôi đã đặt hàng."
       }
     ]
+  },
+  {
+    "id": "8508a24a-8ac7-5080-b288-3f2a002a7738",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "修理",
+    "reading": "しゅうり",
+    "meaning_vi": "sửa chữa",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc sửa một vật bị hỏng để dùng lại được.",
+    "audio_ref": null,
+    "tags": [
+      "services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "自転車を修理してもらいました。",
+        "reading_ja": "じてんしゃをしゅうりしてもらいました。",
+        "translation_vi": "Tôi đã nhờ sửa xe đạp."
+      },
+      {
+        "sentence_ja": "修理には三日かかります。",
+        "reading_ja": "しゅうりにはみっかかかります。",
+        "translation_vi": "Việc sửa chữa mất ba ngày."
+      }
+    ]
+  },
+  {
+    "id": "cde990e6-4026-53b0-bb92-ec0d143d5d60",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "工事",
+    "reading": "こうじ",
+    "meaning_vi": "công trình; thi công",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc xây dựng hoặc sửa chữa đường sá, tòa nhà.",
+    "audio_ref": null,
+    "tags": [
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅の前で工事をしています。",
+        "reading_ja": "えきのまえでこうじをしています。",
+        "translation_vi": "Đang thi công trước nhà ga."
+      },
+      {
+        "sentence_ja": "工事のため道が通れません。",
+        "reading_ja": "こうじのためみちがとおれません。",
+        "translation_vi": "Vì thi công nên không thể đi qua đường."
+      }
+    ]
+  },
+  {
+    "id": "d3ead8e2-36e4-57bd-bef1-6794052c2147",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "水漏れ",
+    "reading": "みずもれ",
+    "meaning_vi": "rò rỉ nước",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nước thoát ra ngoài từ ống hoặc thiết bị không đúng chỗ.",
+    "audio_ref": null,
+    "tags": [
+      "housing"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "台所で水漏れがありました。",
+        "reading_ja": "だいどころでみずもれがありました。",
+        "translation_vi": "Đã xảy ra rò rỉ nước trong bếp."
+      },
+      {
+        "sentence_ja": "水漏れを管理会社に連絡しました。",
+        "reading_ja": "みずもれをかんりがいしゃにれんらくしました。",
+        "translation_vi": "Tôi đã báo rò rỉ nước cho công ty quản lý."
+      }
+    ]
+  },
+  {
+    "id": "6e1bf6ef-4815-5b5d-bdd8-295044f63321",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "停電",
+    "reading": "ていでん",
+    "meaning_vi": "mất điện",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc nguồn điện bị ngắt trong một khoảng thời gian.",
+    "audio_ref": null,
+    "tags": [
+      "utilities"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "台風で停電しました。",
+        "reading_ja": "たいふうでていでんしました。",
+        "translation_vi": "Bị mất điện do bão."
+      },
+      {
+        "sentence_ja": "停電のときはろうそくを使います。",
+        "reading_ja": "ていでんのときはろうそくをつかいます。",
+        "translation_vi": "Khi mất điện tôi dùng nến."
+      }
+    ]
+  },
+  {
+    "id": "2b1f496c-0350-5eaf-a07c-6094a7bd105b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "電池",
+    "reading": "でんち",
+    "meaning_vi": "pin; ắc quy",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nguồn điện nhỏ dùng cho thiết bị.",
+    "audio_ref": null,
+    "tags": [
+      "utilities"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "リモコンの電池を交換しました。",
+        "reading_ja": "りもこんのでんちをこうかんしました。",
+        "translation_vi": "Tôi đã thay pin điều khiển."
+      },
+      {
+        "sentence_ja": "電池が切れたので時計が止まりました。",
+        "reading_ja": "でんちがきれたのでとけいがとまりました。",
+        "translation_vi": "Vì hết pin nên đồng hồ đã dừng."
+      }
+    ]
+  },
+  {
+    "id": "0dc9c330-d060-5903-9306-8bf96aa2c00b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "機械",
+    "reading": "きかい",
+    "meaning_vi": "máy móc",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thiết bị dùng để thực hiện công việc.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この機械の使い方を教えてください。",
+        "reading_ja": "このきかいのつかいかたをおしえてください。",
+        "translation_vi": "Hãy chỉ cho tôi cách dùng máy này."
+      },
+      {
+        "sentence_ja": "機械が急に止まりました。",
+        "reading_ja": "きかいがきゅうにとまりました。",
+        "translation_vi": "Máy đột nhiên dừng lại."
+      }
+    ]
+  },
+  {
+    "id": "9e5454d2-62d6-5af1-9f50-5c7d3a6c4f7e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "部品",
+    "reading": "ぶひん",
+    "meaning_vi": "bộ phận; linh kiện",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Một phần cấu tạo nên máy móc hoặc đồ vật.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "壊れた部品を取り替えました。",
+        "reading_ja": "こわれたぶひんをとりかえました。",
+        "translation_vi": "Tôi đã thay linh kiện bị hỏng."
+      },
+      {
+        "sentence_ja": "部品を注文する必要があります。",
+        "reading_ja": "ぶひんをちゅうもんするひつようがあります。",
+        "translation_vi": "Cần phải đặt linh kiện."
+      }
+    ]
+  },
+  {
+    "id": "d6b34e4a-bcbe-525f-93ff-e7366c0f15ba",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "点検",
+    "reading": "てんけん",
+    "meaning_vi": "kiểm tra; bảo dưỡng",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Kiểm tra máy móc hoặc thiết bị để phát hiện vấn đề.",
+    "audio_ref": null,
+    "tags": [
+      "services"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "車を点検してもらいました。",
+        "reading_ja": "くるまをてんけんしてもらいました。",
+        "translation_vi": "Tôi đã nhờ kiểm tra xe."
+      },
+      {
+        "sentence_ja": "点検のため午前中は使えません。",
+        "reading_ja": "てんけんのためごぜんちゅうはつかえません。",
+        "translation_vi": "Buổi sáng không thể sử dụng vì bảo dưỡng."
+      }
+    ]
   }
 ]
 
