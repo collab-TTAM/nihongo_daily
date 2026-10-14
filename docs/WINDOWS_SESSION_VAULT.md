@@ -105,3 +105,18 @@ Primary Microsoft documentation checked 2026-10-14:
 - https://learn.microsoft.com/en-us/windows/win32/api/wincred/nf-wincred-credwritew
 - https://learn.microsoft.com/en-us/windows/win32/api/wincred/nf-wincred-credreadw
 - https://learn.microsoft.com/en-us/windows/win32/api/wincred/nf-wincred-creddeletew
+
+## Observed source evidence
+
+Source `1dd109470369884f7f776888cfab91859f9efc1c` passed all five jobs in
+[CI38558520796](https://github.com/collab-TTAM/nihongo_daily/actions/runs/38558520796).
+Observed 283 Flutter tests (twelve pure vault/four mock platform cases added),
+five Chrome tests, mandatory vault CLI, actual Windows credential/process probe,
+retained security/native/wire/SQL-to-Dart checks and web/Windows release artifacts.
+Native app bridge compiled; the separate probe used real credential APIs with
+TEST ONLY values and cleaned its namespaces. Unmodified workflow/latest-attempt
+jobs passed exact-head/all-critical-step QA verification. CLI lint and probe
+narrowing were corrected without suppressing lint/compiler warnings or weakening
+assertions. Child mode also rejects non-PID CI targets before any write. Results
+are historical for later commits and do not establish hosted Auth/restoration,
+interactive platform bridge execution, OS logoff/relogin or power-loss recovery.

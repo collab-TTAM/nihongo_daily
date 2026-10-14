@@ -8,7 +8,7 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |
 | Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
 | Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
-| SRS engine | Pure nd-srs-1 MERGED via PR #24; #22 SQL transaction IN_REVIEW, full UI/Auth still pending | #4 / #22 |
+| SRS engine | Pure nd-srs-1 MERGED via PR #24; PR #37 draft includes atomic SQL/SDK/UI/durable recovery/profile readiness; live integration pending | #4 / #22 / #20 / #15 |
 | Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
 | AI tutor | MERGED via PR #32; runtime bridge #31 / live providers #17 | #7 AI |
 | N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
@@ -969,3 +969,40 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   bind the vault to an explicitly owned Supabase session lifecycle with profile
   readiness and late-result guards, then actual configured hosted acceptance.
   Keep #37 draft/#20/#22/#15 open; no merge/deployment.
+
+## Verified Windows session-vault handoff — 2026-10-14 UTC
+
+- Source 1dd109470369884f7f776888cfab91859f9efc1c passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38558520796 .
+  Flutter format/analyze (no issues), 283 tests including twelve vault cases/four
+  platform-channel cases, five Chrome tests, new pure vault verifier and retained
+  account/native/wire/same-run SQL-to-Dart checks passed. Web release/artifact,
+  Windows app/bridge release build/artifact and all four prior native file/process
+  verifiers passed. New native /W4 /WX probe used actual Credential Manager for
+  write/read/replacement, child write/exit/parent read, project isolation, invalid
+  write preservation, 2048-byte bounds, foreign target rejection, raw corrupt blob
+  injection/recovery and idempotent deletion. PID-qualified .invalid TEST ONLY
+  credentials cleared before success. SQL/RLS/races/repo/49 Python/17 QA/AI/audit
+  retained and successful. Unmodified run/latest-attempt job payloads passed
+  exact-head/every-critical-step scripts/verify_qa.py. QA42/all 14 releases pending.
+- Initial CLI print lint was fixed with stdout. Native probe wchar narrowing
+  warning was fixed with checked ASCII conversion and stricter CI-only child
+  target scope; /W4 /WX, assertions and every gate remain. Separate follow-up
+  review checked changed paths/no credential output, bounds, OS buffer cleanup,
+  method envelope, channel lifetime and no secret fallback. Before final probe
+  correction all 226 local blobs matched upload; correction preserves every
+  other blob. No data/content/schema/lock/dependency/RLS/Auth/provider changes.
+- Twelve pure cases/format/source analysis/49 Python/17 QA passed locally. Actual
+  Windows credentials, full Flutter/channel mocks/Chrome/builds/native SQL are
+  observed CI, not local execution, interactive Dart-to-OS or hosted Auth proof.
+  Vault remains an explicit component; current account runtime null. No SDK token
+  rotation/login/logout persistence/startup restore/browser/mobile store enabled.
+  Same OS user process access remains outside application isolation; same-isolate
+  queue is not interprocess CAS, and full memory zeroization is not claimed.
+- Bounded core worker released after evidence persistence; Pro #14 remains
+  reserved and untouched. Resume latest draft head/its CI first. Source success
+  is historical for the documentation handoff successor. Keep #37 draft and
+  #20/#22/#15 open; no merge/deployment. Next explicitly owned SDK/vault lifecycle:
+  captured/generation-guarded token rotation, clear/logout ordering, startup refresh
+  before own-profile readiness, storage/revocation/late-response tests. Then actual
+  configured hosted A/B/expired JWT/restart/two-client learner acceptance.
