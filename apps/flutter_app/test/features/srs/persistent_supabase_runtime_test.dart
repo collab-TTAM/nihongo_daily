@@ -9,6 +9,7 @@ import 'package:logging/logging.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/application/session_refresh_scheduler.dart';
+import 'package:nihongo_daily/features/auth/application/account_session_notice.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
@@ -375,9 +376,11 @@ void main() {
         initialProfiles,
       );
       expect(backend.secret, isNot(secret));
+      expect(runtime.notice, AccountSessionNotice.checking);
       backend.writeWait!.complete();
       await waitForReady();
       expect(backend.secret, secret);
+      expect(runtime.notice, AccountSessionNotice.none);
       final authCalls = requests
           .where((r) => r.url.path == '/auth/v1/token')
           .length;
@@ -423,6 +426,7 @@ void main() {
       }
       expect(runtime.persistence.phase, SessionPersistencePhase.failed);
       expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.notice, AccountSessionNotice.needsLogin);
       final authCalls = requests
           .where((r) => r.url.path == '/auth/v1/token')
           .length;
@@ -433,6 +437,29 @@ void main() {
         requests.where((r) => r.url.path == '/auth/v1/token').length,
         authCalls,
       );
+    },
+  );
+  test(
+    'explicit login clears failed display notice and normal logout has no failure',
+    () async {
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      authStatus = 401;
+      await expectLater(
+        runtime.start(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      expect(runtime.notice, AccountSessionNotice.needsLogin);
+      authStatus = 200;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(runtime.notice, AccountSessionNotice.none);
+      await runtime.account.signOut();
+      await fixture.flush();
+      expect(runtime.notice, AccountSessionNotice.none);
+      expect(runtime.account.readyRuntime, isNull);
     },
   );
 }

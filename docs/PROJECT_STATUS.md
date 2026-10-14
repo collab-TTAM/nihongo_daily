@@ -1264,3 +1264,22 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   learner A/B/expiry/restart/two-client acceptance and startup/refresh error
   presentation; all 14 live integrations still pending. Keep #37 draft and
   #20/#22/#15 open. No dependency/provider/schema/API/production changes.
+
+## Safe account session notice UI — 2026-10-14 UTC
+
+- Resumed actual #37 head 8486f440, one core writer; Pro #38/N4 unaffected.
+  Added display-only three-state port from owned persistent runtime, source
+  provider/notifier and active-startup wiring. Account checking hides/clears
+  credentials; fixed failure text offers explicit login. Ordinary logout clears
+  notices; existing profile/account errors keep their messages.
+- No notice can grant/revoke authorization; existing session/profile/persistence
+  gate remains authoritative. Source replacement cancels stale events; fixed
+  enum state only, no raw SDK/error/token/path exposed. Runtime close cancels
+  scheduler first and does not await paused display subscribers before cleanup.
+- Seven notice/provider/widget tests plus one pinned-SDK/mock-HTTP case added;
+  retained automatic-refresh tests now assert saved/failure/checking display.
+  Local format/analysis/contract/QA checks pending below; new-source full CI pending.
+- Separate review retained null default source/main, no retry/autologin, caller
+  journal ownership and no production/schema/API/provider/dependency changes.
+  Hosted Auth/learner/two-client/OS suspension and all 14 live groups pending.
+  Scope: docs/ACCOUNT_SESSION_NOTICE.md; keep #37/#20/#22/#15 open.

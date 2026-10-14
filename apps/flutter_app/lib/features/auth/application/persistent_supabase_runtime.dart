@@ -14,11 +14,12 @@ import '../data/supabase_account_access.dart';
 import 'account_controller.dart';
 import 'account_provider.dart';
 import 'session_refresh_scheduler.dart';
+import 'account_session_notice.dart';
 
 /// Exclusively owns an SDK client with auto-refresh disabled and no Session JSON
 /// persistence. Caller installs [account] only after [start] settles. The default
 /// application never invokes this assembly or supplies project configuration.
-final class PersistentSupabaseRuntime {
+final class PersistentSupabaseRuntime implements AccountSessionNoticeSource {
   PersistentSupabaseRuntime({
     required String projectUrl,
     required String publishableKey,
@@ -77,6 +78,11 @@ final class PersistentSupabaseRuntime {
       store: store,
       access: persistence,
     );
+    _noticeSubscription = persistence.sessionChanges.listen(
+      (_) => _publishNotice(),
+      onError: (Object _, StackTrace __) =>
+          _setNotice(AccountSessionNotice.needsLogin),
+    );
     if (automaticRefresh) {
       _refreshScheduler = SessionRefreshScheduler(
         current: () {
@@ -103,13 +109,36 @@ final class PersistentSupabaseRuntime {
   late final PersistentAccountAccess persistence;
   late final AccountController<SrsStudyRuntime> account;
   Future<void>? _closing;
+  final _noticeEvents = StreamController<AccountSessionNotice>.broadcast();
+  StreamSubscription<void>? _noticeSubscription;
+  AccountSessionNotice _notice = AccountSessionNotice.none;
+  @override
+  AccountSessionNotice get notice => _notice;
+  @override
+  late final Stream<AccountSessionNotice> noticeChanges = _noticeEvents.stream;
+  void _setNotice(AccountSessionNotice value) {
+    if (_closing != null || _noticeEvents.isClosed || value == _notice) return;
+    _notice = value;
+    _noticeEvents.add(value);
+  }
+
+  void _publishNotice() => _setNotice(switch (persistence.phase) {
+    SessionPersistencePhase.restoring ||
+    SessionPersistencePhase.saving => AccountSessionNotice.checking,
+    SessionPersistencePhase.failed => AccountSessionNotice.needsLogin,
+    _ => AccountSessionNotice.none,
+  });
   SessionRefreshScheduler? _refreshScheduler;
   StreamSubscription<void>? _refreshSubscription;
   SessionRefreshPhase? get refreshPhase => _refreshScheduler?.phase;
   void resume() => _refreshScheduler?.update();
 
   Future<void> start() async {
-    await persistence.start();
+    try {
+      await persistence.start();
+    } finally {
+      _publishNotice();
+    }
     _refreshScheduler?.update();
   }
 
@@ -119,6 +148,9 @@ final class PersistentSupabaseRuntime {
   Future<void> close() => _closing ??= () async {
     account.dispose();
     _refreshScheduler?.dispose();
+    await _noticeSubscription?.cancel();
+    _notice = AccountSessionNotice.none;
+    unawaited(_noticeEvents.close());
     await _refreshSubscription?.cancel();
     await persistence.close();
     await _port.close();

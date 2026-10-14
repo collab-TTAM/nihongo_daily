@@ -8,6 +8,7 @@ import '../../srs/application/srs_study_runtime.dart';
 import '../application/account_controller.dart';
 import '../application/account_provider.dart';
 import '../application/account_startup_controller.dart';
+import '../application/account_session_notice_provider.dart';
 
 /// Explicit configured entrypoint. Captures one owner for its entire lifetime.
 /// Caller may await controller.close() before unmount/replacement; disposal also
@@ -61,7 +62,12 @@ class _AccountStartupAppState extends State<AccountStartupApp>
     final account = _controller.account;
     if (account != null) {
       return ProviderScope(
-        overrides: [accountRuntimeProvider.overrideWithValue(account)],
+        overrides: [
+          accountRuntimeProvider.overrideWithValue(account),
+          accountSessionNoticeSourceProvider.overrideWithValue(
+            _controller.noticeSource,
+          ),
+        ],
         child: const _StartedApp(),
       );
     }

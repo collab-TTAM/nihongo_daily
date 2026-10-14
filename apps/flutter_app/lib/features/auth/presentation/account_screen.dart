@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/page_body.dart';
 import '../application/account_controller.dart';
 import '../application/account_provider.dart';
+import '../application/account_session_notice.dart';
+import '../application/account_session_notice_provider.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -34,6 +36,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(accountStateProvider);
+    final notice = ref.watch(accountSessionNoticeProvider);
+    final checking = notice == AccountSessionNotice.checking;
+    ref.listen(accountSessionNoticeProvider, (_, next) {
+      if (next != AccountSessionNotice.none) {
+        _email.clear();
+        _password.clear();
+      }
+    });
     ref.listen(accountStateProvider, (_, next) {
       if (!const {
         AccountPhase.signedOut,
@@ -43,16 +53,20 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         _password.clear();
       }
     });
-    final ready = state.phase == AccountPhase.ready;
-    final login = const {
-      AccountPhase.signedOut,
-      AccountPhase.signInError,
-    }.contains(state.phase);
-    final busy = const {
-      AccountPhase.signingIn,
-      AccountPhase.loadingProfile,
-      AccountPhase.signingOut,
-    }.contains(state.phase);
+    final ready = state.phase == AccountPhase.ready && !checking;
+    final login =
+        const {
+          AccountPhase.signedOut,
+          AccountPhase.signInError,
+        }.contains(state.phase) &&
+        !checking;
+    final busy =
+        checking ||
+        const {
+          AccountPhase.signingIn,
+          AccountPhase.loadingProfile,
+          AccountPhase.signingOut,
+        }.contains(state.phase);
     final logout = const {
       AccountPhase.ready,
       AccountPhase.profileError,
@@ -81,8 +95,19 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     AccountPhase.loadingProfile =>
                       'Đang chuẩn bị hồ sơ học tập…',
                     AccountPhase.signingOut => 'Đang kết thúc phiên đăng nhập…',
-                    _ => 'Đang đăng nhập…',
+                    _ =>
+                      checking
+                          ? 'Đang xác nhận phiên đăng nhập…'
+                          : 'Đang đăng nhập…',
                   }),
+                ],
+                if (notice == AccountSessionNotice.needsLogin &&
+                    state.messageVi == null) ...[
+                  const Text(
+                    'Không thể xác nhận phiên đăng nhập. Vui lòng đăng nhập lại.',
+                    key: Key('account-session-notice'),
+                  ),
+                  const SizedBox(height: 16),
                 ],
                 if (state.messageVi != null) ...[
                   Text(
