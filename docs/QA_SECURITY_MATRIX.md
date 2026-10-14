@@ -217,3 +217,11 @@ processes, including rotation-before-profile and original pending-event retentio
 metadata checked. QA baseline anchors now include these probes. Auth HTTP/JWT
 signatures remain simulated; all 14 hosted release integrations remain pending.
 No release status/security gate is relaxed.
+
+## Configured startup host baseline — 2026-10-14
+
+Source 9388b581 CI38593010698 passed 324 Flutter/five Chrome and every retained
+five-job baseline gate. Added eight controller/four startup widget cases and
+`account-startup-host` QA anchors. Fixtures prove loading/error/login/retry/close
+behavior, including 320px/200% and late owner cleanup; no hosted identity or
+UI-to-OS learner acceptance. All 14 live release groups stay pending.

@@ -35,6 +35,19 @@ Eight controller tests cover publication, explicit fenced login, factory retry,
 close-before-replacement, failed cleanup, late factory/restore and safe close
 retry. Four widget tests cover loading/error/login, actual account route wiring,
 320px/200% text and unmount with late completion. These fixtures are TEST ONLY;
-new-source full CI is pending. Existing OS/SQL/security and all 14 live release
+source evidence is recorded below. Existing OS/SQL/security and all 14 live release
 gates remain; keep #37 draft. Next explicit refresh scheduling and configured
 hosted learner acceptance.
+
+## Verified source evidence
+
+Source `9388b5813d3c3eacf727f8fae7eec5cd388f070a` passed all five jobs in
+https://github.com/collab-TTAM/nihongo_daily/actions/runs/38593010698 .
+Observed 324 Flutter tests (eight controller/four startup widgets added), five
+actual Chrome tests, format/analyze, retained real Windows vault/runtime process
+probes, native journal/SQL/wire/security gates and web/Windows release artifacts.
+Raw run/latest-attempt metadata passed exact-head/every-required-step QA.
+The configured UI tests use explicit fake owners/Auth/profile, not hosted learner
+identity or UI-to-OS restart acceptance. Default main stays unconfigured.
+Follow-up source only enclosed retry's multiline guard in a lint-compliant block,
+without changing conditions/assertions. Evidence is historical for later commits.

@@ -1195,3 +1195,24 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   ownership and mandatory close-before-replacement. Factory owns partial failure
   cleanup; supplied journal remains caller-owned. No dependencies/provider/API/
   schema/N4/deployment changes. Scope/reproduction: docs/ACCOUNT_STARTUP.md.
+
+### Verified startup host handoff
+
+- Source 9388b5813d3c3eacf727f8fae7eec5cd388f070a passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38593010698 .
+  Observed 324 Flutter tests (eight lifecycle/four startup widgets added), five
+  Chrome tests, format/analyze, retained actual Windows vault/runtime process
+  success markers, native/SQL/wire/security gates and normal web/Windows artifacts.
+  Raw run/latest-attempt metadata passed exact-source/every-required-step QA.
+- All 242 uploaded source blobs matched. Review kept one captured owner, no
+  account publication before start, explicit fenced-login action, cleanup before
+  replacement, immediate closed publication and drained late factory/start.
+  Pro #38/N4 unchanged. Multiline retry guard enclosed without logic changes.
+- Startup UI evidence is explicit owner/Auth/profile fixtures, not hosted login,
+  full UI-to-OS integration or release readiness. Default main/provider stays
+  unconfigured; no refresh scheduler added. All 14 live release groups pending.
+- Core worker RELEASED after persisted evidence. Resume actual latest head/checks;
+  following documentation/QA evidence commit has separate CI. Next tested refresh
+  scheduling with lifecycle/expiry/resume/logout guards, then configured hosted
+  learner A/B/restart/expiry/two-client acceptance. Keep #37 draft/#20/#22/#15 open.
+  No dependency/provider/schema/API/deployment change or production data cleanup.
