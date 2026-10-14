@@ -2118,6 +2118,96 @@
         "translation_vi": "Để đăng ký cần viết địa chỉ email."
       }
     ]
+  },
+  {
+    "id": "8144d0ac-b600-5d29-8649-e2082b9c679c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたばかりです",
+    "pattern": "Vたばかりです",
+    "meaning_vi": "vừa mới V",
+    "explanation_vi": "Diễn tả hành động vừa hoàn thành cách đây không lâu.",
+    "usage_notes_vi": [
+      "Dùng thể quá khứ của động từ trước ばかりです; khoảng thời gian thực tế tùy người nói."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "空港に着いたばかりです。",
+        "reading_ja": "くうこうについたばかりです。",
+        "translation_vi": "Tôi vừa mới đến sân bay."
+      },
+      {
+        "sentence_ja": "日本語を勉強し始めたばかりです。",
+        "reading_ja": "にほんごをべんきょうしはじめたばかりです。",
+        "translation_vi": "Tôi vừa mới bắt đầu học tiếng Nhật."
+      }
+    ]
+  },
+  {
+    "id": "bd19553b-4173-5e03-a79f-a148eea16869",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに興味があります",
+    "pattern": "Nに興味があります",
+    "meaning_vi": "có hứng thú với N",
+    "explanation_vi": "Diễn tả sự quan tâm hoặc hứng thú đối với một chủ đề.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ chủ đề trước に興味があります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本の文化に興味があります。",
+        "reading_ja": "にほんのぶんかにきょうみがあります。",
+        "translation_vi": "Tôi có hứng thú với văn hóa Nhật Bản."
+      },
+      {
+        "sentence_ja": "環境問題に興味を持ちました。",
+        "reading_ja": "かんきょうもんだいにきょうみをもちました。",
+        "translation_vi": "Tôi đã bắt đầu quan tâm đến vấn đề môi trường."
+      }
+    ]
+  },
+  {
+    "id": "87aa0040-26c4-567c-a512-ee7df1d58c00",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることが大切です",
+    "pattern": "Vることが大切です",
+    "meaning_vi": "điều quan trọng là V",
+    "explanation_vi": "Nêu rằng một hành động hoặc thói quen là quan trọng.",
+    "usage_notes_vi": [
+      "Danh từ hóa động từ bằng こと rồi dùng với 大切です."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日練習することが大切です。",
+        "reading_ja": "まいにちれんしゅうすることがたいせつです。",
+        "translation_vi": "Việc luyện tập mỗi ngày là quan trọng."
+      },
+      {
+        "sentence_ja": "交通ルールを守ることが大切です。",
+        "reading_ja": "こうつうるーるをまもることがたいせつです。",
+        "translation_vi": "Việc tuân thủ luật giao thông là quan trọng."
+      }
+    ]
   }
 ]
 
