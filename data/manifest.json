@@ -24,7 +24,7 @@
   "stroke_assets_available": false,
   "authorship": "Japanese examples and Vietnamese explanations authored for Nihongo Daily; no textbook passages imported.",
   "metadata_sources": [
-    "KanjiVG 70a0b7ae0c18ceb5cb358274b029cce0234a43bc: eight nonvariant SVG path counts cross-checked; no SVG/path assets distributed. See data/README.md.",
+    "KanjiVG 70a0b7ae0c18ceb5cb358274b029cce0234a43bc: ten nonvariant SVG path counts cross-checked, including 開 and 着; no SVG/path assets distributed. See data/README.md.",
     "N4 scope was cross-checked against the official JLPT level summary and Irodori elementary topic references; no source passages were copied. See docs/N4_CONTENT.md."
   ],
   "limitations_vi": [
