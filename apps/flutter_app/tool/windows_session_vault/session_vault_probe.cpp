@@ -2,6 +2,7 @@
 #include <wincred.h>
 
 #include <iostream>
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -57,7 +58,25 @@ int wmain(int argc, wchar_t* argv[]) {
   using nihongo::VaultStatus;
   if (argc == 3 && std::wstring(argv[1]) == L"--child-write") {
     const std::wstring name(argv[2]);
-    const std::string target(name.begin(), name.end());
+    const std::wstring prefix = L"NihongoDaily.Refresh.v1|https://ci-vault-a-";
+    const std::wstring suffix = L".invalid";
+    if (name.size() <= prefix.size() + suffix.size() || name.size() > 512 ||
+        name.compare(0, prefix.size(), prefix) != 0 ||
+        name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0) {
+      return 1;
+    }
+    const auto pid = name.substr(prefix.size(),
+                                 name.size() - prefix.size() - suffix.size());
+    if (!std::all_of(pid.begin(), pid.end(), [](wchar_t c) {
+          return c >= L'0' && c <= L'9';
+        })) {
+      return 1;
+    }
+    std::string target;
+    for (const wchar_t c : name) {
+      if (c < 0x21 || c > 0x7e) return 1;
+      target.push_back(static_cast<char>(c));
+    }
     return nihongo::WriteRefreshCredential(target, "TEST_ONLY_CHILD_REFRESH") ==
                    VaultStatus::success
                ? 0
