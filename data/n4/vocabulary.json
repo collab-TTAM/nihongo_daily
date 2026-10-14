@@ -1734,5 +1734,229 @@
         "translation_vi": "Hãy trả tiền trước ngày mai."
       }
     ]
+  },
+  {
+    "id": "753ccbd3-4109-5c7e-8a08-da30af816ea4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "熱",
+    "reading": "ねつ",
+    "meaning_vi": "sốt; nhiệt độ cơ thể",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nhiệt độ cơ thể cao khi bị bệnh.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "熱があるので、今日は休みます。",
+        "reading_ja": "ねつがあるので、きょうはやすみます。",
+        "translation_vi": "Vì bị sốt nên hôm nay tôi nghỉ."
+      },
+      {
+        "sentence_ja": "病院で熱を測りました。",
+        "reading_ja": "びょういんでねつをはかりました。",
+        "translation_vi": "Tôi đã đo nhiệt độ ở bệnh viện."
+      }
+    ]
+  },
+  {
+    "id": "9c637010-a795-51db-b723-4ba849788aab",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "薬",
+    "reading": "くすり",
+    "meaning_vi": "thuốc",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thuốc dùng để điều trị hoặc giảm triệu chứng.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "食事の後で薬を飲みます。",
+        "reading_ja": "しょくじのあとでくすりをのみます。",
+        "translation_vi": "Tôi uống thuốc sau bữa ăn."
+      },
+      {
+        "sentence_ja": "この薬は一日三回飲んでください。",
+        "reading_ja": "このくすりはいちにちさんかいのんでください。",
+        "translation_vi": "Hãy uống thuốc này ba lần một ngày."
+      }
+    ]
+  },
+  {
+    "id": "b8e4f1db-3db4-5246-8da9-89fb7729b966",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "眠る",
+    "reading": "ねむる",
+    "meaning_vi": "ngủ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nghỉ ngơi trong trạng thái ngủ.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昨夜はよく眠りました。",
+        "reading_ja": "さくやはよくねむりました。",
+        "translation_vi": "Tối qua tôi đã ngủ ngon."
+      },
+      {
+        "sentence_ja": "疲れたときは早く眠るようにします。",
+        "reading_ja": "つかれたときははやくねむるようにします。",
+        "translation_vi": "Khi mệt tôi sẽ cố gắng ngủ sớm."
+      }
+    ]
+  },
+  {
+    "id": "552c3f68-9316-5c24-bdf9-c218461d3a82",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "治る",
+    "reading": "なおる",
+    "meaning_vi": "khỏi; lành bệnh",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Tình trạng bệnh hoặc vết thương trở nên tốt hơn.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "風邪が治りました。",
+        "reading_ja": "かぜがなおりました。",
+        "translation_vi": "Tôi đã khỏi cảm."
+      },
+      {
+        "sentence_ja": "薬を飲めば、すぐ治ると思います。",
+        "reading_ja": "くすりをのめば、すぐなおるとおもいます。",
+        "translation_vi": "Tôi nghĩ nếu uống thuốc thì sẽ khỏi ngay."
+      }
+    ]
+  },
+  {
+    "id": "dffb5367-23dc-584b-a8d3-4660bfe6a0c7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "間違える",
+    "reading": "まちがえる",
+    "meaning_vi": "nhầm; làm sai",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Làm hoặc chọn không đúng điều cần thiết.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "名前を間違えて書きました。",
+        "reading_ja": "なまえをまちがえてかきました。",
+        "translation_vi": "Tôi đã viết nhầm tên."
+      },
+      {
+        "sentence_ja": "答えを間違えないように確認します。",
+        "reading_ja": "こたえをまちがえないようにかくにんします。",
+        "translation_vi": "Tôi kiểm tra để không trả lời sai."
+      }
+    ]
+  },
+  {
+    "id": "300a678f-9ecf-5682-9efe-744dca230b53",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "知らせる",
+    "reading": "しらせる",
+    "meaning_vi": "báo cho biết; thông báo",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Truyền tin để người khác biết một việc.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "結果が分かったら知らせてください。",
+        "reading_ja": "けっかがわかったらしらせてください。",
+        "translation_vi": "Khi biết kết quả hãy báo cho tôi."
+      },
+      {
+        "sentence_ja": "家族に引っ越しの日を知らせました。",
+        "reading_ja": "かぞくにひっこしのひをしらせました。",
+        "translation_vi": "Tôi đã báo ngày chuyển nhà cho gia đình."
+      }
+    ]
+  },
+  {
+    "id": "b72760da-614f-5327-8e6e-92ba19e8e024",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "迎える",
+    "reading": "むかえる",
+    "meaning_vi": "đón; chào đón",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đến đón người hoặc chào đón một thời điểm.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅まで友達を迎えに行きます。",
+        "reading_ja": "えきまでともだちをむかえにいきます。",
+        "translation_vi": "Tôi sẽ đi đón bạn đến ga."
+      },
+      {
+        "sentence_ja": "家族と新しい年を迎えました。",
+        "reading_ja": "かぞくとあたらしいとしをむかえました。",
+        "translation_vi": "Tôi đã đón năm mới cùng gia đình."
+      }
+    ]
+  },
+  {
+    "id": "11af6156-d781-5672-9d20-eb0c93d003ad",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "遅刻する",
+    "reading": "ちこくする",
+    "meaning_vi": "đi muộn; trễ giờ",
+    "part_of_speech": "động từ する",
+    "usage_context_vi": "Đến sau thời gian bắt đầu đã định.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "電車が止まって、学校に遅刻しました。",
+        "reading_ja": "でんしゃがとまって、がっこうにちこくしました。",
+        "translation_vi": "Tàu dừng nên tôi đã đến trường muộn."
+      },
+      {
+        "sentence_ja": "明日は遅刻しないでください。",
+        "reading_ja": "あしたはちこくしないでください。",
+        "translation_vi": "Ngày mai đừng đi muộn."
+      }
+    ]
   }
 ]

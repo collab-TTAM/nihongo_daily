@@ -345,5 +345,42 @@
     "stroke_count": 7,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "c151c9b1-90f2-5e5c-947c-97ee3f20b109",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "薬",
+    "meaning_vi": "thuốc; dược phẩm",
+    "onyomi": [
+      "ヤク"
+    ],
+    "kunyomi": [
+      "くすり"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5ae0d6c-1a88-5c19-8a0e-b6e3087102b0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "知",
+    "meaning_vi": "biết; hiểu",
+    "onyomi": [
+      "チ"
+    ],
+    "kunyomi": [
+      "し",
+      "しら"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

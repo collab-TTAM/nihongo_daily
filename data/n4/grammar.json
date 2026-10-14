@@ -768,5 +768,95 @@
         "translation_vi": "Có thể dùng thẻ ở đây."
       }
     ]
+  },
+  {
+    "id": "fa2a47f0-4029-57c7-87a4-ba1650f94833",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのが好きです",
+    "pattern": "Vるのが好きです",
+    "meaning_vi": "thích V",
+    "explanation_vi": "Nói về việc thích một hành động hoặc hoạt động.",
+    "usage_notes_vi": [
+      "Đặt động từ thể từ điển trước のが好きです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます ngay trước のが好きです."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語を勉強するのが好きです。",
+        "reading_ja": "にほんごをべんきょうするのがすきです。",
+        "translation_vi": "Tôi thích học tiếng Nhật."
+      },
+      {
+        "sentence_ja": "音楽を聞くのが好きです。",
+        "reading_ja": "おんがくをきくのがすきです。",
+        "translation_vi": "Tôi thích nghe nhạc."
+      }
+    ]
+  },
+  {
+    "id": "9450f1e1-b154-5e08-bd19-a7306b72ee16",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてあげます",
+    "pattern": "Vてあげます",
+    "meaning_vi": "làm V cho ai",
+    "explanation_vi": "Diễn tả người nói hoặc người khác làm một việc có lợi cho người khác.",
+    "usage_notes_vi": [
+      "Dùng thể て của động từ trước あげます."
+    ],
+    "common_mistakes": [
+      "Cần nêu rõ người nhận lợi ích khi ngữ cảnh chưa rõ."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "妹に宿題を教えてあげます。",
+        "reading_ja": "いもうとにしゅくだいをおしえてあげます。",
+        "translation_vi": "Tôi sẽ chỉ bài tập cho em gái."
+      },
+      {
+        "sentence_ja": "友達の荷物を持ってあげました。",
+        "reading_ja": "ともだちのにもつをもってあげました。",
+        "translation_vi": "Tôi đã xách hành lý giúp bạn."
+      }
+    ]
+  },
+  {
+    "id": "c12f7e2b-2bb9-550a-a0fe-099de1289fb1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもらいます",
+    "pattern": "Vてもらいます",
+    "meaning_vi": "được ai làm V cho",
+    "explanation_vi": "Diễn tả người nói nhận được sự giúp đỡ hoặc hành động từ người khác.",
+    "usage_notes_vi": [
+      "Dùng thể て của động từ trước もらいます; người giúp đi với に."
+    ],
+    "common_mistakes": [
+      "Không dùng を cho người thực hiện hành động trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生に作文を直してもらいました。",
+        "reading_ja": "せんせいにさくぶんをなおしてもらいました。",
+        "translation_vi": "Tôi đã nhờ giáo viên sửa bài văn."
+      },
+      {
+        "sentence_ja": "友達に駅まで案内してもらいます。",
+        "reading_ja": "ともだちにえきまであんないしてもらいます。",
+        "translation_vi": "Tôi sẽ nhờ bạn hướng dẫn đến ga."
+      }
+    ]
   }
 ]
