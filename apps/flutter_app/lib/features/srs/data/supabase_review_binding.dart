@@ -28,6 +28,7 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     // Pinned SDK's finest Auth logs interpolate Session including tokens; its
     // PostgREST logs also include headers/raw errors. Never enable these sinks.
     hierarchicalLoggingEnabled = true;
+    Logger('supabase').level = Level.OFF;
     Logger('supabase.auth').level = Level.OFF;
     Logger('supabase.postgrest').level = Level.OFF;
     if (_client.rest.url != '$_url/rest/v1' ||

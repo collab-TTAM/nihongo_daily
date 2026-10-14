@@ -349,11 +349,7 @@ void main() {
           http.Response('TEST ONLY sensitive SQL/token body', 500);
       await expectLater(invoke(), throwsA(isA<ReviewTransportFailure>()));
       expect(
-        records.where(
-          (record) =>
-              record.loggerName.startsWith('supabase.auth') ||
-              record.loggerName.startsWith('supabase.postgrest'),
-        ),
+        records.where((record) => record.loggerName.startsWith('supabase')),
         isEmpty,
       );
     },

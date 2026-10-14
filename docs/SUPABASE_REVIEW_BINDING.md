@@ -44,7 +44,8 @@ Translate 400/401/403/404/409/429/408/5xx and transport failures to fixed safe
 codes. Do not consume/display/log raw HTTP error bodies, URL credentials, headers,
 SQL details or tokens. SDK logging was inspected: pinned Auth finest logs include
 Session.toString with tokens; PostgREST debug logs include headers/raw errors.
-Binding explicitly disables `supabase.auth` and `supabase.postgrest` logging
+Binding explicitly disables the `supabase` SDK logger family, with explicit
+`supabase.auth` and `supabase.postgrest` overrides too, for logging
 app-wide, enabling hierarchical logging for these scoped overrides. It does not
 restore unsafe logging on disposal. The owner must never re-enable these sinks or
 log SDK AuthState/Session/exception objects; configure redacted application logs

@@ -586,3 +586,8 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - CI 38505690541 passed database/repo/AI but SDK Flutter analysis rejected three
   multiline if blocks and a closure-variable declaration. Use blocks/local
   function, not disabled lint. Its skipped tests/builds do not prove success.
+
+- CI 38506024037 observed all five jobs successful at 7c27af43, including new
+  SDK HTTP tests/builds. Follow-up security review extends OFF logging to the
+  whole supabase logger family and strengthens the root-ALL sink test. This
+  prior-head success does not certify that final log-policy change; rerun gates.
