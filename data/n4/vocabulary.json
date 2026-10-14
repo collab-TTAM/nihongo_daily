@@ -5100,6 +5100,230 @@
         "translation_vi": "Khi nghỉ liên tiếp hãy liên lạc."
       }
     ]
+  },
+  {
+    "id": "c06a0d08-3b07-56d1-800b-cf64eada5401",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "景色",
+    "reading": "けしき",
+    "meaning_vi": "phong cảnh",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cảnh vật nhìn thấy ở một nơi.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "山の上からきれいな景色が見えます。",
+        "reading_ja": "やまのうえからきれいなけしきがみえます。",
+        "translation_vi": "Từ trên núi có thể nhìn thấy phong cảnh đẹp."
+      },
+      {
+        "sentence_ja": "景色の写真を撮りました。",
+        "reading_ja": "けしきのしゃしんをとりました。",
+        "translation_vi": "Tôi đã chụp ảnh phong cảnh."
+      }
+    ]
+  },
+  {
+    "id": "9391651d-a90c-5fae-b8dd-797a7390a86d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "空港",
+    "reading": "くうこう",
+    "meaning_vi": "sân bay",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi máy bay cất cánh và hạ cánh.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "空港まで電車で行きます。",
+        "reading_ja": "くうこうまででんしゃでいきます。",
+        "translation_vi": "Tôi đi tàu điện đến sân bay."
+      },
+      {
+        "sentence_ja": "空港で友達を待っています。",
+        "reading_ja": "くうこうでともだちをまっています。",
+        "translation_vi": "Tôi đang chờ bạn ở sân bay."
+      }
+    ]
+  },
+  {
+    "id": "b6b9e080-804c-5fc6-9d56-61c0adbe5152",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "海外",
+    "reading": "かいがい",
+    "meaning_vi": "nước ngoài; hải ngoại",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Các quốc gia hoặc vùng bên ngoài đất nước mình.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "海外で働いた経験があります。",
+        "reading_ja": "かいがいではたらいたけいけんがあります。",
+        "translation_vi": "Tôi từng có kinh nghiệm làm việc ở nước ngoài."
+      },
+      {
+        "sentence_ja": "海外旅行の準備をしています。",
+        "reading_ja": "かいがいりょこうのじゅんびをしています。",
+        "translation_vi": "Tôi đang chuẩn bị cho chuyến du lịch nước ngoài."
+      }
+    ]
+  },
+  {
+    "id": "a727f488-64ff-571e-9d32-b330ff8483d8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "国内",
+    "reading": "こくない",
+    "meaning_vi": "trong nước",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Phạm vi bên trong một quốc gia.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "国内のホテルを予約しました。",
+        "reading_ja": "こくないのほてるをよやくしました。",
+        "translation_vi": "Tôi đã đặt khách sạn trong nước."
+      },
+      {
+        "sentence_ja": "国内線の料金を調べました。",
+        "reading_ja": "こくないせんのりょうきんをしらべました。",
+        "translation_vi": "Tôi đã tra giá vé chuyến bay nội địa."
+      }
+    ]
+  },
+  {
+    "id": "67578108-8db9-51e4-8a00-aac1358e89eb",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "特急",
+    "reading": "とっきゅう",
+    "meaning_vi": "tàu tốc hành đặc biệt",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tàu chạy nhanh và dừng ở ít ga hơn tàu thường.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "特急に乗るには別の切符が必要です。",
+        "reading_ja": "とっきゅうにのるにはべつのきっぷがひつようです。",
+        "translation_vi": "Muốn đi tàu tốc hành đặc biệt cần vé riêng."
+      },
+      {
+        "sentence_ja": "特急で二時間かかります。",
+        "reading_ja": "とっきゅうでにじかんかかります。",
+        "translation_vi": "Đi tàu tốc hành đặc biệt mất hai giờ."
+      }
+    ]
+  },
+  {
+    "id": "dc86455b-b72e-55cc-94a4-cb4777ea7d00",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "乗客",
+    "reading": "じょうきゃく",
+    "meaning_vi": "hành khách",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Người đi trên tàu, xe hoặc máy bay.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "乗客は静かに座っていました。",
+        "reading_ja": "じょうきゃくはしずかにすわっていました。",
+        "translation_vi": "Hành khách đã ngồi yên lặng."
+      },
+      {
+        "sentence_ja": "乗客に駅の案内をしました。",
+        "reading_ja": "じょうきゃくにえきのあんないをしました。",
+        "translation_vi": "Tôi đã hướng dẫn nhà ga cho hành khách."
+      }
+    ]
+  },
+  {
+    "id": "0daf5144-9aeb-510c-9e1e-ec823aa475bb",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "予報",
+    "reading": "よほう",
+    "meaning_vi": "dự báo",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thông tin dự đoán thời tiết hoặc một sự việc.",
+    "audio_ref": null,
+    "tags": [
+      "weather"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "天気予報によると、午後は晴れます。",
+        "reading_ja": "てんきよほうによると、ごごははれます。",
+        "translation_vi": "Theo dự báo thời tiết, chiều nay trời sẽ nắng."
+      },
+      {
+        "sentence_ja": "台風の予報を確認しました。",
+        "reading_ja": "たいふうのよほうをかくにんしました。",
+        "translation_vi": "Tôi đã kiểm tra dự báo bão."
+      }
+    ]
+  },
+  {
+    "id": "1cf92bb4-4279-5237-a5af-c191ded6af1d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "観光",
+    "reading": "かんこう",
+    "meaning_vi": "tham quan; du lịch",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Hoạt động đến thăm và ngắm cảnh ở một nơi.",
+    "audio_ref": null,
+    "tags": [
+      "travel"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "京都で観光をしました。",
+        "reading_ja": "きょうとでかんこうをしました。",
+        "translation_vi": "Tôi đã tham quan ở Kyoto."
+      },
+      {
+        "sentence_ja": "観光客に人気の場所です。",
+        "reading_ja": "かんこうきゃくににんきのばしょです。",
+        "translation_vi": "Đây là nơi được du khách yêu thích."
+      }
+    ]
   }
 ]
 
