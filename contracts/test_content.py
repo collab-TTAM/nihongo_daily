@@ -27,7 +27,7 @@ class ContentTests(unittest.TestCase):
             validate_content(self.root)
 
     def test_seed_passes_with_observed_counts(self):
-        self.assertEqual(validate_content(self.root), dict(vocabulary=198, kanji=55, grammar=77, examples=526))
+        self.assertEqual(validate_content(self.root), dict(vocabulary=206, kanji=57, grammar=80, examples=548))
 
     def test_n4_vocabulary_and_kanji_meanings_are_localized(self):
         # Short Vietnamese meanings must not contain accidental Japanese headwords.
