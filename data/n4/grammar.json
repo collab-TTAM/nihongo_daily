@@ -678,5 +678,95 @@
         "translation_vi": "Tôi lỡ để quên ví trên tàu."
       }
     ]
+  },
+  {
+    "id": "8341c387-2ccc-5971-86f3-54bbbe28a7b4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのために",
+    "pattern": "Nのために",
+    "meaning_vi": "vì; để cho N",
+    "explanation_vi": "Nêu mục đích hoặc đối tượng được hưởng lợi của hành động.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước のために để nói vì ai hoặc vì mục đích gì."
+    ],
+    "common_mistakes": [
+      "Không dùng trực tiếp động từ thể て trước ために trong mẫu danh từ này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "家族のために毎日働いています。",
+        "reading_ja": "かぞくのためにまいにちはたらいています。",
+        "translation_vi": "Tôi làm việc mỗi ngày vì gia đình."
+      },
+      {
+        "sentence_ja": "健康のために運動します。",
+        "reading_ja": "けんこうのためにうんどうします。",
+        "translation_vi": "Tôi tập thể dục vì sức khỏe."
+      }
+    ]
+  },
+  {
+    "id": "f55eceb1-8481-5156-8306-9e287b057a3f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるようにします",
+    "pattern": "Vるようにします",
+    "meaning_vi": "cố gắng để V; tạo thói quen V",
+    "explanation_vi": "Diễn tả nỗ lực có ý thức để một việc trở thành thói quen hoặc đạt mục tiêu.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ようにします khi nói cố gắng làm việc đó."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu muốn nói nỗ lực từ bây giờ trở đi."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、日本語を読むようにします。",
+        "reading_ja": "まいあさ、にほんごをよむようにします。",
+        "translation_vi": "Tôi sẽ cố gắng đọc tiếng Nhật mỗi sáng."
+      },
+      {
+        "sentence_ja": "忘れないようにメモします。",
+        "reading_ja": "わすれないようにメモします。",
+        "translation_vi": "Tôi ghi chú để không quên."
+      }
+    ]
+  },
+  {
+    "id": "ca1b5556-f41a-5c0d-989a-00778a690115",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることができます",
+    "pattern": "Vることができます",
+    "meaning_vi": "có thể V",
+    "explanation_vi": "Diễn tả khả năng hoặc việc được phép thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことができます."
+    ],
+    "common_mistakes": [
+      "Không chia động từ sang thể ます trước ことができます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語で簡単な会話をすることができます。",
+        "reading_ja": "にほんごでかんたんなかいわをすることができます。",
+        "translation_vi": "Tôi có thể hội thoại đơn giản bằng tiếng Nhật."
+      },
+      {
+        "sentence_ja": "ここでカードを使うことができます。",
+        "reading_ja": "ここでカードをつかうことができます。",
+        "translation_vi": "Có thể dùng thẻ ở đây."
+      }
+    ]
   }
 ]

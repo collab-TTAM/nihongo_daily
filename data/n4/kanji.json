@@ -307,5 +307,43 @@
     "stroke_count": 7,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "81e462fe-ca73-5794-abd4-1a2905b3f60c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "伝",
+    "meaning_vi": "truyền đạt; truyền lại",
+    "onyomi": [
+      "デン"
+    ],
+    "kunyomi": [
+      "つた",
+      "つた-"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "1b44d346-b2bd-55f2-8919-43cc0d6a15af",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "返",
+    "meaning_vi": "trả lại; quay lại",
+    "onyomi": [
+      "ヘン"
+    ],
+    "kunyomi": [
+      "かえ",
+      "かえ-"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

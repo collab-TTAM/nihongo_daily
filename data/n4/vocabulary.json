@@ -1510,5 +1510,229 @@
         "translation_vi": "Tôi yên tâm vì đã tìm thấy chìa khóa bị mất."
       }
     ]
+  },
+  {
+    "id": "3ebb9e8e-0242-53f6-9fd5-027ebbedb3c6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "運ぶ",
+    "reading": "はこぶ",
+    "meaning_vi": "mang; vận chuyển",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa đồ vật hoặc hành lý từ nơi này đến nơi khác.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "机を二階へ運びます。",
+        "reading_ja": "つくえをにかいへはこびます。",
+        "translation_vi": "Tôi sẽ mang chiếc bàn lên tầng hai."
+      },
+      {
+        "sentence_ja": "引っ越しの日に箱を運びました。",
+        "reading_ja": "ひっこしのひに はこをはこびました。",
+        "translation_vi": "Ngày chuyển nhà tôi đã vận chuyển các thùng hộp."
+      }
+    ]
+  },
+  {
+    "id": "12f82048-110a-50d7-a874-bb38307a76a3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "飾る",
+    "reading": "かざる",
+    "meaning_vi": "trang trí",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho căn phòng hoặc vật gì đẹp hơn bằng cách trang trí.",
+    "audio_ref": null,
+    "tags": [
+      "culture"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "玄関に花を飾ります。",
+        "reading_ja": "げんかんにはなをかざります。",
+        "translation_vi": "Tôi trang trí hoa ở lối vào."
+      },
+      {
+        "sentence_ja": "誕生日に部屋を飾りました。",
+        "reading_ja": "たんじょうびにへやをかざりました。",
+        "translation_vi": "Tôi đã trang trí phòng vào ngày sinh nhật."
+      }
+    ]
+  },
+  {
+    "id": "e802e258-e896-5315-941b-6ae387cacd20",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "伝える",
+    "reading": "つたえる",
+    "meaning_vi": "truyền đạt; báo cho biết",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Nói hoặc chuyển thông tin, lời nhắn cho người khác.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "大事なことを先生に伝えます。",
+        "reading_ja": "だいじなことをせんせいにつたえます。",
+        "translation_vi": "Tôi sẽ truyền đạt việc quan trọng cho giáo viên."
+      },
+      {
+        "sentence_ja": "変更があったら友達に伝えてください。",
+        "reading_ja": "へんこうがあったらともだちにつたえてください。",
+        "translation_vi": "Nếu có thay đổi hãy báo cho bạn bè."
+      }
+    ]
+  },
+  {
+    "id": "55313eaa-0d3b-5888-8877-603077940dee",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "申し込む",
+    "reading": "もうしこむ",
+    "meaning_vi": "đăng ký; nộp đơn",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Gửi yêu cầu để tham gia khóa học, chuyến đi hoặc dịch vụ.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "市民講座に申し込みました。",
+        "reading_ja": "しみんこうざにもうしこみました。",
+        "translation_vi": "Tôi đã đăng ký lớp học dành cho người dân."
+      },
+      {
+        "sentence_ja": "旅行のツアーをネットで申し込みます。",
+        "reading_ja": "りょこうのツアーをねっとでもうしこみます。",
+        "translation_vi": "Tôi sẽ đăng ký tour du lịch trên mạng."
+      }
+    ]
+  },
+  {
+    "id": "b0208b15-6f8e-5af7-a59b-8966be161899",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "間に合う",
+    "reading": "まにあう",
+    "meaning_vi": "kịp; đúng giờ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đến kịp trước thời hạn hoặc thời điểm cần thiết.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "九時の電車に間に合いました。",
+        "reading_ja": "くじのでんしゃにまにあいました。",
+        "translation_vi": "Tôi đã kịp chuyến tàu lúc chín giờ."
+      },
+      {
+        "sentence_ja": "急げば会議に間に合います。",
+        "reading_ja": "いそげばかいぎにまにあいます。",
+        "translation_vi": "Nếu nhanh lên thì sẽ kịp cuộc họp."
+      }
+    ]
+  },
+  {
+    "id": "37c9f2d0-20da-5404-af0b-c07c60b446e8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "決まる",
+    "reading": "きまる",
+    "meaning_vi": "được quyết định; được định ra",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Một kế hoạch hoặc nội dung được thống nhất.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "試験の日が決まりました。",
+        "reading_ja": "しけんのひがきまりました。",
+        "translation_vi": "Ngày thi đã được quyết định."
+      },
+      {
+        "sentence_ja": "行き先が決まったら教えてください。",
+        "reading_ja": "いきさきがきまったらおしえてください。",
+        "translation_vi": "Khi quyết định xong nơi đến hãy cho tôi biết."
+      }
+    ]
+  },
+  {
+    "id": "b9cb6055-3f6e-562e-a4fe-4f6d016b044c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "借りる",
+    "reading": "かりる",
+    "meaning_vi": "mượn; thuê",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Nhận và dùng tạm đồ vật hoặc dịch vụ rồi trả lại.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "図書館で本を借りました。",
+        "reading_ja": "としょかんでほんをかりました。",
+        "translation_vi": "Tôi đã mượn sách ở thư viện."
+      },
+      {
+        "sentence_ja": "駅で自転車を借りられます。",
+        "reading_ja": "えきでじてんしゃをかりられます。",
+        "translation_vi": "Có thể thuê xe đạp ở nhà ga."
+      }
+    ]
+  },
+  {
+    "id": "73b4923f-ca87-57c0-b040-fcc00766bb88",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "返す",
+    "reading": "かえす",
+    "meaning_vi": "trả lại; hoàn trả",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa lại đồ vật hoặc tiền cho người sở hữu.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "借りた本を返します。",
+        "reading_ja": "かりたほんをかえします。",
+        "translation_vi": "Tôi sẽ trả cuốn sách đã mượn."
+      },
+      {
+        "sentence_ja": "明日までにお金を返してください。",
+        "reading_ja": "あしたまでにおかねをかえしてください。",
+        "translation_vi": "Hãy trả tiền trước ngày mai."
+      }
+    ]
   }
 ]
