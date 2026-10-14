@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
+import 'package:nihongo_daily/features/srs/application/srs_study_controller.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'recovery_fixtures.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -12,6 +14,7 @@ void main() {
   late Directory directory;
   late NativeReviewJournal journal;
   late RecoveryHarness h;
+  late ProviderContainer mounted;
   setUp(() async {
     directory = await Directory.systemTemp.createTemp('nd-recovery-widget-');
     journal = await NativeReviewJournal.open(directory);
@@ -36,6 +39,7 @@ void main() {
         ),
       ],
     );
+    mounted = container;
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       container.dispose();
@@ -54,7 +58,31 @@ void main() {
   Future<void> tap(WidgetTester tester, String text) async {
     final finder = find.text(text);
     await tester.ensureVisible(finder);
-    await tester.tap(finder);
+    // Native disk work must run on the real event loop, rather than waiting
+    // for file I/O while pumpAndSettle repeatedly advances Flutter's fake clock.
+    final finished = Completer<void>();
+    final subscription = mounted.listen<SrsStudyState>(srsStudyProvider, (
+      _,
+      state,
+    ) {
+      if (const {
+            SrsStudyPhase.ready,
+            SrsStudyPhase.recoveryReady,
+            SrsStudyPhase.failed,
+            SrsStudyPhase.empty,
+            SrsStudyPhase.complete,
+          }.contains(state.phase) &&
+          !finished.isCompleted)
+        finished.complete();
+    });
+    try {
+      await tester.runAsync(() async {
+        await tester.tap(finder);
+        await finished.future.timeout(const Duration(seconds: 10));
+      });
+    } finally {
+      subscription.close();
+    }
     await tester.pumpAndSettle();
   }
 

@@ -677,3 +677,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   session restoration and actual hosted A/B/expired JWT/two-device validation.
   All 14 Personal Alpha integration release cases remain pending.
 
+- Windows build and both real-disk verifiers passed at b0d5de6a; Flutter
+  format/analyze passed but widget tests were still running unusually long.
+  Follow-up test review uses runAsync with a bounded controller-terminal-state
+  future to await native file I/O, then pumps the UI. All UI assertions remain;
+  no timeout/expectation/security gate relaxed. Full corrected-head CI required.
+
