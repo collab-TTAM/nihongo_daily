@@ -2298,6 +2298,96 @@
         "translation_vi": "Việc chuẩn bị giấy tờ đã mất thời gian."
       }
     ]
+  },
+  {
+    "id": "1883281d-5783-5baf-b231-dd4a58d58bf0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたらいいですか",
+    "pattern": "Vたらいいですか",
+    "meaning_vi": "nên V thì tốt?; tôi nên V thế nào?",
+    "explanation_vi": "Dùng để hỏi lời khuyên hoặc cách xử lý phù hợp.",
+    "usage_notes_vi": [
+      "Dùng thể quá khứ たら trước いいですか để hỏi nên làm gì."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "熱があるときはどうしたらいいですか。",
+        "reading_ja": "ねつがあるときはどうしたらいいですか。",
+        "translation_vi": "Khi bị sốt thì tôi nên làm gì?"
+      },
+      {
+        "sentence_ja": "この書類はどこに出したらいいですか。",
+        "reading_ja": "このしょるいはどこにだしたらいいですか。",
+        "translation_vi": "Tôi nên nộp giấy tờ này ở đâu?"
+      }
+    ]
+  },
+  {
+    "id": "4d0e579b-6ffc-512e-b69c-555f948d096d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてしまいました",
+    "pattern": "Vてしまいました",
+    "meaning_vi": "đã lỡ V; đã hoàn tất V",
+    "explanation_vi": "Diễn tả việc đã hoàn thành hoặc tiếc nuối vì một hành động ngoài ý muốn.",
+    "usage_notes_vi": [
+      "Dùng thể て trước しまいました để nói về việc đã xảy ra trong quá khứ."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "薬を家に忘れてしまいました。",
+        "reading_ja": "くすりをいえにわすれてしまいました。",
+        "translation_vi": "Tôi đã lỡ quên thuốc ở nhà."
+      },
+      {
+        "sentence_ja": "宿題を全部終えてしまいました。",
+        "reading_ja": "しゅくだいをぜんぶおえてしまいました。",
+        "translation_vi": "Tôi đã làm xong hết bài tập."
+      }
+    ]
+  },
+  {
+    "id": "26c99416-66da-5f84-8d97-629a92e26884",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのように",
+    "pattern": "Nのように",
+    "meaning_vi": "như N; giống như N",
+    "explanation_vi": "Dùng để so sánh cách thức hoặc trạng thái với một danh từ.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước のように khi bổ nghĩa cho động từ hoặc tính từ."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "医者のように詳しく説明できません。",
+        "reading_ja": "いしゃのようにくわしくせつめいできません。",
+        "translation_vi": "Tôi không thể giải thích chi tiết như bác sĩ."
+      },
+      {
+        "sentence_ja": "子どものように笑いました。",
+        "reading_ja": "こどものようにわらいました。",
+        "translation_vi": "Tôi đã cười như một đứa trẻ."
+      }
+    ]
   }
 ]
 
