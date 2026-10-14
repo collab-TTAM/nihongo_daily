@@ -119,31 +119,48 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                if (login) ...[
-                  TextField(
-                    key: const Key('account-email'),
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    textInputAction: TextInputAction.next,
+                // EditableText registers lifecycle listeners. Keep the form
+                // mounted across revocation while an OS exit snapshot drains;
+                // hidden fields are disabled, unfocusable and cleared above.
+                Offstage(
+                  key: const Key('account-login-form'),
+                  offstage: !login,
+                  child: ExcludeFocus(
+                    excluding: !login,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          key: const Key('account-email'),
+                          enabled: login,
+                          controller: _email,
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          textInputAction: TextInputAction.next,
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          key: const Key('account-password'),
+                          enabled: login,
+                          controller: _password,
+                          obscureText: true,
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          decoration: const InputDecoration(
+                            labelText: 'Mật khẩu',
+                          ),
+                          onSubmitted: login ? (_) => _submit() : null,
+                        ),
+                        const SizedBox(height: 20),
+                        FilledButton(
+                          onPressed: login ? _submit : null,
+                          child: const Text('Đăng nhập'),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    key: const Key('account-password'),
-                    controller: _password,
-                    obscureText: true,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    decoration: const InputDecoration(labelText: 'Mật khẩu'),
-                    onSubmitted: (_) => _submit(),
-                  ),
-                  const SizedBox(height: 20),
-                  FilledButton(
-                    onPressed: _submit,
-                    child: const Text('Đăng nhập'),
-                  ),
-                ],
+                ),
                 if (ready) ...[
                   Text(
                     state.profile!.displayName.isEmpty

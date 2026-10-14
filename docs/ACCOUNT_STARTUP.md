@@ -65,7 +65,10 @@ is pending, only a fixed Vietnamese closing screen is shown. Concurrent close
 requests share one drain. The router stays mounted while the binding awaits
 its exit-observer snapshot; the account override becomes null and routes are
 offstage with focus/tickers blocked. This prevents disposal of another pending
-framework lifecycle listener during the drain. No hidden route can grant study. Cleanup failure returns cancel and a fixed redacted
+framework lifecycle listener during the drain. Account form fields also remain
+mounted, offstage/disabled/unfocusable when login is unavailable; state/notice
+listeners still clear their controllers. EditableText owns lifecycle listeners,
+so preserving only the router was insufficient. No hidden route can grant study. Cleanup failure returns cancel and a fixed redacted
 message; login/startup retry stay unavailable. A later explicit window-close
 request can attempt the same retained owner's cleanup again, never a replacement
 SDK or a new login. A failing underlying owner is not assumed repaired.
@@ -79,7 +82,8 @@ continues to start async cleanup but is not treated as awaited shutdown evidence
 Four additional widget tests dispatch framework exit requests and cover a delayed
 drain/concurrent requests, redacted cancellation/explicit retry with accessible
 layout, late factory and late restoration. Windows TEST ONLY phases launch the
-actual runner with an empty-vault staging owner. PowerShell sends CloseMainWindow,
+actual runner with an empty-vault staging owner. PowerShell waits for a native main window after Dart frame completion, sends
+CloseMainWindow,
 checks the process stays alive until an external test marker releases cleanup,
 and checks successful owned close plus journal-lease reopen before natural exit.
 A synthetic one-shot close failure must cancel the first actual window request;

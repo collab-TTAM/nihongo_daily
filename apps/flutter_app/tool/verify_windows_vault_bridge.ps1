@@ -37,7 +37,18 @@ function Invoke-WindowExit([string] $phase) {
     $process = Start-Process -FilePath $exe -ArgumentList @($phase, $scope) -WorkingDirectory (Split-Path $exe) -PassThru
     try {
         Wait-ExitMarker $process (Join-Path $directory ($phase + '-ready'))
-        $process.Refresh()
+        # Dart's end-of-frame can precede native rasterization/window Show().
+        # Wait for an actual visible main HWND before asking .NET to close it.
+        $deadline = [DateTime]::UtcNow.AddSeconds(60)
+        do {
+            $process.Refresh()
+            if ($process.HasExited -or [DateTime]::UtcNow -ge $deadline) {
+                throw 'Windows main window unavailable'
+            }
+            if ($process.MainWindowHandle -eq [IntPtr]::Zero) {
+                Start-Sleep -Milliseconds 25
+            }
+        } while ($process.MainWindowHandle -eq [IntPtr]::Zero)
         if (-not $process.CloseMainWindow()) { throw 'Windows close request failed' }
         Wait-ExitMarker $process (Join-Path $directory ($phase + '-closing'))
         if ($phase -eq 'exit-cancel') {

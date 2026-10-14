@@ -1401,3 +1401,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   blocked until exit. Test additionally asserts same router identity, null
   account publication and focus exclusion. No swallowed framework assertion or
   test/security/build gate relaxation; corrected source needs full fresh CI.
+
+- Source 6878b47e CI38610083054 kept router identity/null override assertions
+  but still exposed EditableText lifecycle listeners disposed when account
+  revocation removed form children. Keep keyed form subtree mounted but offstage,
+  disabled/unfocusable and cleared on the existing state/notice transitions.
+  Test now retains password-widget identity and checks disabled/empty controller.
+  Windows build/native vault/runtime phases passed, but CloseMainWindow was
+  requested before .NET found a main HWND; wait for the real native main window
+  after Dart ready marker. Required no-early-exit/cleanup-marker assertions kept.
+  No failing/skipped source run counts as verification; fresh full CI required.

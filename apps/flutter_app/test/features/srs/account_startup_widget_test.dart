@@ -66,6 +66,9 @@ void main() {
       find.byKey(const Key('account-password')),
       'TEST_ONLY_PASSWORD',
     );
+    final passwordState = tester.state(
+      find.byKey(const Key('account-password')),
+    );
     var completed = 0;
     final first = tester.binding.handleRequestAppExit().then((response) {
       completed++;
@@ -79,6 +82,13 @@ void main() {
     // Binding walks exit observers asynchronously. Render after drain entered.
     await tester.pump();
     expect(find.byType(TextField), findsNothing);
+    final hiddenPassword = find.byKey(
+      const Key('account-password'),
+      skipOffstage: false,
+    );
+    expect(identical(tester.state(hiddenPassword), passwordState), isTrue);
+    expect(tester.widget<TextField>(hiddenPassword).enabled, isFalse);
+    expect(tester.widget<TextField>(hiddenPassword).controller!.text, isEmpty);
     expect(find.text('Đang đóng phiên an toàn…'), findsOneWidget);
     expect(
       identical(
