@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 102 | 29 | 40 | 284 |
+| N4 | 110 | 31 | 43 | 306 |
 
 ## N4 seed batches
 
-The N4 seed is now ten original editorial batches for development. It contains
-102 vocabulary items, 29 Kanji metadata records and 40 grammar patterns, with 284
+The N4 seed is now eleven original editorial batches for development. It contains
+110 vocabulary items, 31 Kanji metadata records and 43 grammar patterns, with 306
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture and advice. This is still an initial seed, not complete JLPT N4
@@ -50,8 +50,11 @@ The ninth batch adds searching, seeing/hearing, repairs and deliveries; 急 and 
 and the patterns Vると, Vないで and Nより.
 
 The tenth batch adds lodging, departures/arrivals, reassurance and concern; 到 and 泊 metadata;
-and the patterns Vることがあります, Nのような and Vるはずです. It follows the
-same authored-content and unavailable-asset rules.
+and the patterns Vることがあります, Nのような and Vるはずです.
+
+The eleventh batch adds food preparation, cleaning and queues; 焼 and 洗 metadata;
+and the patterns Vるなら, Nでも and Vるでしょう. It follows the same authored-content
+and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo
 Daily. Kanji meanings/readings and stroke counts use common reference metadata;
@@ -149,3 +152,4 @@ A future importer maps examples to normalized `vocabulary_examples` /
 importer/migration/deployment in this change. #12 consumes these exports through
 typed repositories; #14 adds N4, #16 reference assets. Personal Alpha remains
 incomplete until study, auth, sync, AI/voice and release evidence are integrated.
+

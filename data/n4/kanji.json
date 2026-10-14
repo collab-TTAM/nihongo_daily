@@ -529,5 +529,43 @@
     "stroke_count": 8,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "d8c40d46-9e72-5afe-91b2-bc15e8fdb9fc",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "焼",
+    "meaning_vi": "nướng; đốt",
+    "onyomi": [
+      "ショウ"
+    ],
+    "kunyomi": [
+      "や",
+      "や-"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c8a4ca6a-2cc9-5d4d-9bfc-199682c23315",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "洗",
+    "meaning_vi": "rửa; giặt",
+    "onyomi": [
+      "セン"
+    ],
+    "kunyomi": [
+      "あら"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
+

@@ -1218,5 +1218,96 @@
         "translation_vi": "Anh Tanaka chắc hôm nay sẽ đến."
       }
     ]
+  },
+  {
+    "id": "bb829395-f7c4-580e-ae90-63933a9cb3c4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるなら",
+    "pattern": "Vるなら",
+    "meaning_vi": "nếu định V; nếu là V thì",
+    "explanation_vi": "Đưa lời khuyên hoặc thông tin dựa trên ý định hay điều kiện được nêu.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước なら."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た khi nói về ý định sắp tới."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "旅行するなら、春がいいです。",
+        "reading_ja": "りょこうするなら、はるがいいです。",
+        "translation_vi": "Nếu đi du lịch thì mùa xuân là phù hợp."
+      },
+      {
+        "sentence_ja": "買うなら、駅の近くの店をおすすめします。",
+        "reading_ja": "かうなら、えきのちかくのみせをおすすめします。",
+        "translation_vi": "Nếu mua thì tôi giới thiệu cửa hàng gần ga."
+      }
+    ]
+  },
+  {
+    "id": "dfd7c9f8-27d0-5689-8df9-f28ee85159af",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nでも",
+    "pattern": "Nでも",
+    "meaning_vi": "ngay cả N; chẳng hạn N",
+    "explanation_vi": "Đưa ra một ví dụ hoặc lựa chọn đại diện, đôi khi với sắc thái 'dù là'.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước でも khi đưa ra lựa chọn gợi ý."
+    ],
+    "common_mistakes": [
+      "Không nhầm でも gợi ý với でも nối hai mệnh đề đối lập."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "週末は映画でも見ませんか。",
+        "reading_ja": "しゅうまつはえいがでもみませんか。",
+        "translation_vi": "Cuối tuần xem phim chẳng hạn nhé?"
+      },
+      {
+        "sentence_ja": "困ったら、電話でもしてください。",
+        "reading_ja": "こまったら、でんわでもしてください。",
+        "translation_vi": "Nếu gặp khó khăn thì hãy gọi điện chẳng hạn."
+      }
+    ]
+  },
+  {
+    "id": "131d6ac5-9019-5e69-81a7-2e8273678caa",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるでしょう",
+    "pattern": "Vるでしょう",
+    "meaning_vi": "chắc là V; có lẽ V",
+    "explanation_vi": "Dự đoán hoặc xác nhận khả năng xảy ra của một việc.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước でしょう."
+    ],
+    "common_mistakes": [
+      "でしょう diễn tả dự đoán, không phải yêu cầu người nghe làm việc đó."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日は晴れるでしょう。",
+        "reading_ja": "あしたははれるでしょう。",
+        "translation_vi": "Ngày mai chắc trời sẽ nắng."
+      },
+      {
+        "sentence_ja": "この道は夜、暗くなるでしょう。",
+        "reading_ja": "このみちはよる、くらくなるでしょう。",
+        "translation_vi": "Con đường này ban đêm có lẽ sẽ tối."
+      }
+    ]
   }
 ]
+

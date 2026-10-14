@@ -2854,5 +2854,230 @@
         "translation_vi": "Đây là lá thư quý giá từ gia đình."
       }
     ]
+  },
+  {
+    "id": "5b7cfeb6-10f7-5744-8623-559345ef00aa",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "冷える",
+    "reading": "ひえる",
+    "meaning_vi": "lạnh đi; nguội đi",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Nhiệt độ của vật hoặc cơ thể trở nên thấp hơn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "夜になると、部屋が冷えます。",
+        "reading_ja": "よるになると、へやがひえます。",
+        "translation_vi": "Đến tối thì căn phòng lạnh đi."
+      },
+      {
+        "sentence_ja": "料理が冷えないうちに食べてください。",
+        "reading_ja": "りょうりがひえないうちにたべてください。",
+        "translation_vi": "Hãy ăn trước khi món ăn nguội."
+      }
+    ]
+  },
+  {
+    "id": "08631286-5e2d-5ce6-9c1e-0bd1a5b7f764",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "温める",
+    "reading": "あたためる",
+    "meaning_vi": "hâm nóng; làm ấm",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Làm cho thức ăn hoặc cơ thể ấm hơn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "電子レンジでスープを温めます。",
+        "reading_ja": "でんしれんじですーぷをあたためます。",
+        "translation_vi": "Tôi hâm nóng súp bằng lò vi sóng."
+      },
+      {
+        "sentence_ja": "冷えた手を温めました。",
+        "reading_ja": "ひえたてをあたためました。",
+        "translation_vi": "Tôi đã làm ấm bàn tay lạnh."
+      }
+    ]
+  },
+  {
+    "id": "ee4867a6-42d6-57cb-a611-74aadb838ac1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "焼く",
+    "reading": "やく",
+    "meaning_vi": "nướng; rán",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nấu thức ăn bằng nhiệt trực tiếp hoặc chảo.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "魚を焼いて夕食を作ります。",
+        "reading_ja": "さかなをやいてゆうしょくをつくります。",
+        "translation_vi": "Tôi nướng cá để làm bữa tối."
+      },
+      {
+        "sentence_ja": "パンを焼くいい匂いがします。",
+        "reading_ja": "ぱんをやくいいにおいがします。",
+        "translation_vi": "Có mùi thơm của bánh mì nướng."
+      }
+    ]
+  },
+  {
+    "id": "81facf8d-e7c5-5688-ae81-0153a59046dc",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "沸かす",
+    "reading": "わかす",
+    "meaning_vi": "đun sôi",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đun chất lỏng đến khi sôi.",
+    "audio_ref": null,
+    "tags": [
+      "food"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "お茶のお湯を沸かしています。",
+        "reading_ja": "おちゃのおゆをわかしています。",
+        "translation_vi": "Tôi đang đun nước nóng để pha trà."
+      },
+      {
+        "sentence_ja": "鍋で水を沸かしました。",
+        "reading_ja": "なべでみずをわかしました。",
+        "translation_vi": "Tôi đã đun sôi nước trong nồi."
+      }
+    ]
+  },
+  {
+    "id": "01a28388-1085-57a0-abe3-c7c614df1e9b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "汚れる",
+    "reading": "よごれる",
+    "meaning_vi": "bị bẩn",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Trở nên không sạch.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "白い靴はすぐ汚れます。",
+        "reading_ja": "しろいくつはすぐよごれます。",
+        "translation_vi": "Giày trắng nhanh bị bẩn."
+      },
+      {
+        "sentence_ja": "服が汚れたので、着替えました。",
+        "reading_ja": "ふくがよごれたので、きがえました。",
+        "translation_vi": "Vì quần áo bị bẩn nên tôi đã thay."
+      }
+    ]
+  },
+  {
+    "id": "60c83bf2-f150-564f-a92d-e4e2120380b7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "洗う",
+    "reading": "あらう",
+    "meaning_vi": "rửa; giặt",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm sạch bằng nước hoặc chất tẩy.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "食事の前に手を洗います。",
+        "reading_ja": "しょくじのまえにてをあらいます。",
+        "translation_vi": "Tôi rửa tay trước bữa ăn."
+      },
+      {
+        "sentence_ja": "週末に車を洗いました。",
+        "reading_ja": "しゅうまつにくるまをあらいました。",
+        "translation_vi": "Cuối tuần tôi đã rửa xe."
+      }
+    ]
+  },
+  {
+    "id": "896f7107-5188-585d-9306-4aa14d2c2993",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "並ぶ",
+    "reading": "ならぶ",
+    "meaning_vi": "xếp hàng; xếp thành hàng",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đứng hoặc nằm thành một hàng.",
+    "audio_ref": null,
+    "tags": [
+      "service"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "店の前に人が並んでいます。",
+        "reading_ja": "みせのまえにひとがならんでいます。",
+        "translation_vi": "Mọi người đang xếp hàng trước cửa hàng."
+      },
+      {
+        "sentence_ja": "駅で切符を買うために並びました。",
+        "reading_ja": "えきできっぷをかうためにならびました。",
+        "translation_vi": "Tôi đã xếp hàng ở ga để mua vé."
+      }
+    ]
+  },
+  {
+    "id": "15bc7f25-a681-5b41-bb98-02f059321aa2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "並べる",
+    "reading": "ならべる",
+    "meaning_vi": "xếp; bày ra",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đặt nhiều đồ vật theo hàng hoặc thứ tự.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "机の上に本を並べます。",
+        "reading_ja": "つくえのうえにほんをならべます。",
+        "translation_vi": "Tôi xếp sách lên bàn."
+      },
+      {
+        "sentence_ja": "料理をきれいに並べました。",
+        "reading_ja": "りょうりをきれいにならべました。",
+        "translation_vi": "Tôi đã bày món ăn thật đẹp."
+      }
+    ]
   }
 ]
+
