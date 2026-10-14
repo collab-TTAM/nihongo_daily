@@ -122,7 +122,7 @@ final class AccountStartupController<T> {
         _phase == AccountStartupPhase.active &&
         runtime != null &&
         runtime is ResumableAccountStartup) {
-      runtime.resume();
+      (runtime as ResumableAccountStartup).resume();
     }
   }
 
