@@ -5996,6 +5996,230 @@
         "translation_vi": "Tôi đã học cách phòng hỏa hoạn."
       }
     ]
+  },
+  {
+    "id": "a870bb28-7379-5a0b-a001-77b5755b60de",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "商品",
+    "reading": "しょうひん",
+    "meaning_vi": "sản phẩm; hàng hóa",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Đồ vật hoặc dịch vụ được bán trong cửa hàng.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この商品は人気があります。",
+        "reading_ja": "このしょうひんはにんきがあります。",
+        "translation_vi": "Sản phẩm này được ưa chuộng."
+      },
+      {
+        "sentence_ja": "商品をよく見てから買いました。",
+        "reading_ja": "しょうひんをよくみてからかいました。",
+        "translation_vi": "Tôi đã xem kỹ sản phẩm rồi mới mua."
+      }
+    ]
+  },
+  {
+    "id": "e77a1bf4-2def-5ef7-9b3b-6de82705bdc5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "値段",
+    "reading": "ねだん",
+    "meaning_vi": "giá tiền",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Số tiền cần trả cho một sản phẩm hoặc dịch vụ.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この靴の値段はいくらですか。",
+        "reading_ja": "このくつのねだんはいくらですか。",
+        "translation_vi": "Đôi giày này giá bao nhiêu?"
+      },
+      {
+        "sentence_ja": "値段が安い店を探しています。",
+        "reading_ja": "ねだんがやすいみせをさがしています。",
+        "translation_vi": "Tôi đang tìm cửa hàng có giá rẻ."
+      }
+    ]
+  },
+  {
+    "id": "c3d0bfa8-d21f-5f55-b982-43fd825bdcf4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "割引",
+    "reading": "わりびき",
+    "meaning_vi": "giảm giá",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc giảm giá bán so với mức bình thường.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "学生は一割引になります。",
+        "reading_ja": "がくせいはいちわりびきになります。",
+        "translation_vi": "Học sinh được giảm giá mười phần trăm."
+      },
+      {
+        "sentence_ja": "割引の期間を確認してください。",
+        "reading_ja": "わりびきのきかんをかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra thời gian giảm giá."
+      }
+    ]
+  },
+  {
+    "id": "8c858413-4012-5034-bb05-547d5f64f2d8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "現金",
+    "reading": "げんきん",
+    "meaning_vi": "tiền mặt",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tiền giấy hoặc tiền xu dùng để thanh toán.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "現金で払うと割引があります。",
+        "reading_ja": "げんきんではらうとわりびきがあります。",
+        "translation_vi": "Nếu trả bằng tiền mặt thì có giảm giá."
+      },
+      {
+        "sentence_ja": "現金を少し持って出かけます。",
+        "reading_ja": "げんきんをすこしもってでかけます。",
+        "translation_vi": "Tôi mang theo một ít tiền mặt rồi ra ngoài."
+      }
+    ]
+  },
+  {
+    "id": "d7d12f57-e421-5075-ac0e-17d1f1e9747b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "領収書",
+    "reading": "りょうしゅうしょ",
+    "meaning_vi": "biên lai; hóa đơn",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Giấy xác nhận đã nhận tiền thanh toán.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "領収書をください。",
+        "reading_ja": "りょうしゅうしょをください。",
+        "translation_vi": "Cho tôi xin biên lai."
+      },
+      {
+        "sentence_ja": "会社に出す領収書を保管しています。",
+        "reading_ja": "かいしゃにだすりょうしゅうしょをほかんしています。",
+        "translation_vi": "Tôi đang giữ biên lai để nộp cho công ty."
+      }
+    ]
+  },
+  {
+    "id": "0d6642ef-ad7b-5458-84c2-6e23eba7473a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "返品",
+    "reading": "へんぴん",
+    "meaning_vi": "trả lại hàng",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc trả sản phẩm đã mua lại cho cửa hàng.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "サイズが違うので返品したいです。",
+        "reading_ja": "さいずがちがうのでへんぴんしたいです。",
+        "translation_vi": "Vì sai kích cỡ nên tôi muốn trả hàng."
+      },
+      {
+        "sentence_ja": "返品の条件を店員に聞きました。",
+        "reading_ja": "へんぴんのじょうけんをてんいんにききました。",
+        "translation_vi": "Tôi đã hỏi nhân viên điều kiện trả hàng."
+      }
+    ]
+  },
+  {
+    "id": "d8f0ca11-9636-5b6a-8314-7567f8a97ef9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "交換",
+    "reading": "こうかん",
+    "meaning_vi": "đổi; trao đổi",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc thay một vật hoặc sản phẩm bằng vật khác.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "壊れた商品を交換してもらいました。",
+        "reading_ja": "こわれたしょうひんをこうかんしてもらいました。",
+        "translation_vi": "Tôi đã được đổi sản phẩm bị hỏng."
+      },
+      {
+        "sentence_ja": "友達と本を交換しました。",
+        "reading_ja": "ともだちとほんをこうかんしました。",
+        "translation_vi": "Tôi đã trao đổi sách với bạn."
+      }
+    ]
+  },
+  {
+    "id": "5f6aa2b8-a46e-5ca3-938b-4301e642cfca",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "在庫",
+    "reading": "ざいこ",
+    "meaning_vi": "hàng tồn; tồn kho",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Số sản phẩm hiện còn trong cửa hàng hoặc kho.",
+    "audio_ref": null,
+    "tags": [
+      "shopping"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この色は在庫がありますか。",
+        "reading_ja": "このいろはざいこがありますか。",
+        "translation_vi": "Màu này còn hàng không?"
+      },
+      {
+        "sentence_ja": "在庫がないので注文しました。",
+        "reading_ja": "ざいこがないのでちゅうもんしました。",
+        "translation_vi": "Vì hết hàng nên tôi đã đặt hàng."
+      }
+    ]
   }
 ]
 
