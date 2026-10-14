@@ -2748,6 +2748,96 @@
         "translation_vi": "Tôi mở tủ lạnh được không?"
       }
     ]
+  },
+  {
+    "id": "3dde2b79-c59f-5a46-8a65-e5307a01b75f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるかどうか",
+    "pattern": "Vるかどうか",
+    "meaning_vi": "có V hay không",
+    "explanation_vi": "Dùng để diễn tả chưa biết hoặc cần xác nhận một hành động có xảy ra hay không.",
+    "usage_notes_vi": [
+      "Đặt động từ thể từ điển trước かどうか."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電車が時間通りに来るかどうか分かりません。",
+        "reading_ja": "でんしゃがじかんどおりにくるかどうかわかりません。",
+        "translation_vi": "Tôi không biết tàu có đến đúng giờ hay không."
+      },
+      {
+        "sentence_ja": "道が安全かどうか確認してください。",
+        "reading_ja": "みちがあんぜんかどうかかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra xem đường có an toàn không."
+      }
+    ]
+  },
+  {
+    "id": "2f70f3ac-4839-5a46-bad2-454f447dd1a2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによっては",
+    "pattern": "Nによっては",
+    "meaning_vi": "tùy N thì; có trường hợp theo N",
+    "explanation_vi": "Diễn tả kết quả khác nhau tùy người, nơi hoặc điều kiện.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ tiêu chí trước によっては."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "季節によっては道路が混みます。",
+        "reading_ja": "きせつによってはどうろがこみます。",
+        "translation_vi": "Tùy mùa mà đường có thể đông."
+      },
+      {
+        "sentence_ja": "場所によっては電波が弱いです。",
+        "reading_ja": "ばしょによってはでんぱがよわいです。",
+        "translation_vi": "Ở một số nơi, sóng điện yếu."
+      }
+    ]
+  },
+  {
+    "id": "cf894c49-7c8e-53b9-a5d2-6520e40562df",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるためには",
+    "pattern": "Vるためには",
+    "meaning_vi": "để V thì; muốn V thì",
+    "explanation_vi": "Nêu điều kiện hoặc việc cần làm để đạt mục đích.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển trước ためには rồi nêu điều cần thiết."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "時間に間に合うためには早く出る必要があります。",
+        "reading_ja": "じかんにまにあうためにははやくでるひつようがあります。",
+        "translation_vi": "Để kịp giờ cần xuất phát sớm."
+      },
+      {
+        "sentence_ja": "安全に歩くためには信号を守ってください。",
+        "reading_ja": "あんぜんにあるくためにはしんごうをまもってください。",
+        "translation_vi": "Để đi bộ an toàn hãy tuân thủ đèn tín hiệu."
+      }
+    ]
   }
 ]
 
