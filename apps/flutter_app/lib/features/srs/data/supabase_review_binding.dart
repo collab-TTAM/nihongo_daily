@@ -59,7 +59,9 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
 
   @override
   ReviewSession? get currentSession {
-    if (!_sameSdkLifecycle(_hint)) _revoke();
+    if (!_sameSdkLifecycle(_hint)) {
+      _revoke();
+    }
     return _registry.currentSession;
   }
 
@@ -69,7 +71,9 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
   }
 
   bool _sameSdkLifecycle(_SessionHint? captured) {
-    if (_disposed || captured == null) return false;
+    if (_disposed || captured == null) {
+      return false;
+    }
     try {
       final current = _SessionHint.from(_client.auth.currentSession, _now());
       return captured.sameLifecycle(current);
@@ -79,7 +83,9 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
   }
 
   void _accept(AuthState state) {
-    if (_disposed) return;
+    if (_disposed) {
+      return;
+    }
     try {
       if (state.event == AuthChangeEvent.signedOut || state.session == null) {
         _revoke();
@@ -142,6 +148,45 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     }
   }
 
+  /// Explicit credential operation for #20. Return no SDK session/token object;
+  /// the existing lifecycle stream is the sole application identity signal.
+  Future<void> authenticateWithPassword(String email, String password) async {
+    if (_disposed) {
+      throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+    }
+    if (email.trim().isEmpty ||
+        email.length > 254 ||
+        password.isEmpty ||
+        password.length > 4096) {
+      throw const ReviewTransportFailure(ReviewErrorCode.validationFailure);
+    }
+    try {
+      await _client.auth.signInWithPassword(
+        email: email.trim(),
+        password: password,
+      );
+      await Future<void>.delayed(
+        Duration.zero,
+      ); // Let queued SDK Auth events bind.
+      if (_disposed) {
+        throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+      }
+    } on Object {
+      throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+    }
+  }
+
+  Future<void> signOutLocally() async {
+    if (_disposed) {
+      throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+    }
+    try {
+      await _client.auth.signOut(scope: SignOutScope.local);
+    } on Object {
+      throw const ReviewTransportFailure(ReviewErrorCode.internalError);
+    }
+  }
+
   Future<Object?> _rpc(
     _SessionHint hint,
     String function,
@@ -194,7 +239,9 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
   }
 
   void dispose() {
-    if (_disposed) return;
+    if (_disposed) {
+      return;
+    }
     _disposed = true;
     _hint = null;
     _registry.dispose();
@@ -235,7 +282,9 @@ final class _SessionHint {
       exp * 1000,
       isUtc: true,
     );
-    if (!expires.isAfter(now.toUtc())) throw const FormatException();
+    if (!expires.isAfter(now.toUtc())) {
+      throw const FormatException();
+    }
     return _SessionHint(id, lifecycle, token, expires);
   }
 }
@@ -251,7 +300,9 @@ Map<String, Object?> _jwtPayload(String token) {
   final value = jsonDecode(
     utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
   );
-  if (value is! Map<String, Object?>) throw const FormatException();
+  if (value is! Map<String, Object?>) {
+    throw const FormatException();
+  }
   return value;
 }
 
@@ -273,11 +324,15 @@ String _projectUrl(String value) {
 
 String _publicKey(String value) {
   try {
-    if (value.contains(RegExp(r'\s'))) throw const FormatException();
+    if (value.contains(RegExp(r'\s'))) {
+      throw const FormatException();
+    }
     if (RegExp(r'^sb_publishable_[A-Za-z0-9_-]{10,200}$').hasMatch(value)) {
       return value;
     }
-    if (_jwtPayload(value)['role'] == 'anon') return value;
+    if (_jwtPayload(value)['role'] == 'anon') {
+      return value;
+    }
   } on Object {
     /* No credential detail in errors. */
   }
@@ -337,6 +392,8 @@ final class _GuardedHttp extends http.BaseClient {
 
   @override
   void close() {
-    if (_owns) _inner.close();
+    if (_owns) {
+      _inner.close();
+    }
   }
 }

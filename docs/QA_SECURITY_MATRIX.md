@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-36 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+41 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -187,3 +187,11 @@ settings, rollback/A-B isolation/observed native concurrency, same-run native
 SQL-to-Dart projection and two captured SDK/HTTP fixture cases. See
 OWN_PROFILE_BOOTSTRAP.md. QA40 groups, all 14 release cases pending; no actual
 login, JWT signature verification, secure token restore or hosted acceptance.
+
+## Account/profile readiness baseline
+
+`account-profile-readiness` tracks ten pure scenarios, five widgets and two SDK
+HTTP cases, including synchronous logout fencing and late-response rejection.
+See ACCOUNT_READINESS.md. QA41 groups; all 14 live release integrations remain
+pending. Default account runtime null; configured assembly is not hosted login
+or secure token restoration evidence. All previous CI gates remain required.

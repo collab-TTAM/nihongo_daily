@@ -890,3 +890,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - User requested continuing; same sequential worker now proceeds to login/profile
   readiness UI and runtime coordination. Keep #37 draft/#20/#22/#15 open. Secure
   token restoration and actual configured hosted learner acceptance still missing.
+
+## Account readiness implementation — 2026-10-14 UTC
+
+- Resume the same sequential worker at restored b5b15c9c. A documentation tree
+  created without its base briefly omitted source at a11492a; fast-forward repair
+  restored every source blob from verified fb3a6915. Full recursive comparison
+  confirmed only the two intended documentation files differed (203 blobs).
+  Nothing merged or deployed. Subsequent trees require explicit nonempty base
+  and full-tree comparison before advancing the ref.
+- Add configured account UI/runtime assembly: transient cleared credential fields,
+  existing SDK email/password/local sign-out, own-profile readiness barrier,
+  owner/session/generation checks and immediate study invalidation on logout,
+  expiry/account changes, stream closure or disposal. SDK logout dispatch waits
+  until an active callback returns; gate is already closed. Late sign-in cleanup
+  remains fenced; safe explicit retry, no credential/token state or automatic
+  controller retry. Default runtime null; no provider/backend setup or deployment.
+- Ten raw-Dart scenarios and pure analysis/format passed locally. Five widget/two
+  actual SDK HTTP cases authored; full tests/builds require source-head CI.
+  Separate scope/lifecycle/credential review and reproduction in
+  ACCOUNT_READINESS.md. New mandatory readiness step retains all prior gates.
+  QA41 groups/all 14 live integration releases pending. Worker active pending CI.
+- Keep #37 draft/#20/#22/#15 open. Next secure session storage/restore and actual
+  configured hosted A/B/expired JWT/restart/two-client learner acceptance.

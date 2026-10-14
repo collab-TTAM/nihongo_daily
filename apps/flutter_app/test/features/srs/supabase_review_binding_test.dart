@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
 import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
+import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/account_provider.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
@@ -180,6 +182,61 @@ void main() {
     );
   });
 
+  test(
+    'SDK account runtime waits for own profile and gates local logout',
+    () async {
+      rpc = (_) async => http.Response(
+        jsonEncode({
+          'id': a,
+          'display_name': '',
+          'preferred_jlpt': 'N5',
+          'daily_target_minutes': 120,
+          'timezone': 'Asia/Ho_Chi_Minh',
+        }),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+      final runtime = createSupabaseAccountRuntime(binding);
+      try {
+        expect(runtime.readyRuntime, isNull);
+        await runtime.signIn(
+          'fixture@example.invalid',
+          'TEST_ONLY_NOT_A_PASSWORD',
+        );
+        for (
+          var i = 0;
+          i < 10 && runtime.state.phase != AccountPhase.ready;
+          i++
+        ) {
+          await Future<void>.delayed(Duration.zero);
+        }
+        expect(runtime.state.phase, AccountPhase.ready);
+        final old = runtime.readyRuntime!;
+        expect(old.auth.currentSession?.userId, a);
+        expect(requests.single.url.path, '/rest/v1/rpc/ensure_profile');
+        final logout = runtime.signOut();
+        expect(old.auth.currentSession, isNull);
+        await logout;
+        expect(runtime.state.phase, AccountPhase.signedOut);
+      } finally {
+        runtime.dispose();
+      }
+    },
+  );
+  test(
+    'disposed account binding rejects credential operations safely',
+    () async {
+      binding.dispose();
+      await expectLater(
+        binding.authenticateWithPassword(
+          'fixture@example.invalid',
+          'TEST_ONLY_NOT_A_PASSWORD',
+        ),
+        throwsA(unauthorized),
+      );
+      expect(sdk.auth.currentSession, isNull);
+    },
+  );
   test('unconfigured signed-out SDK cannot dispatch', () async {
     expect(binding.currentSession, isNull);
     await expectLater(invoke(ReviewSession(userId: a)), throwsA(unauthorized));

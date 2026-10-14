@@ -21,6 +21,7 @@
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify account profile readiness",
       "Verify real IndexedDB transactions in Chrome",
       "Verify browser review page reload",
       "Verify native receipt cache retention",
@@ -63,6 +64,33 @@
     ]
   },
   "cases": [
+    {
+      "id": "account-profile-readiness",
+      "status": "automated-baseline",
+      "scope": "Configured credential UI, own-profile barrier, synchronous study invalidation and late-session/logout recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_controller_test.dart",
+          "contains": "account readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_widget_test.dart",
+          "contains": "credential buffers clear"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "SDK account runtime waits for own profile"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_account.dart; flutter test",
+      "limitation": "TEST ONLY Auth/profile/SDK HTTP fixtures, not hosted login/JWT signatures/secure token restore. Default account runtime null; no provider configuration or production deployment."
+    },
     {
       "id": "own-profile-bootstrap",
       "status": "automated-baseline",

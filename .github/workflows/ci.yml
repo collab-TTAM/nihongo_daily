@@ -90,6 +90,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
+      - name: Verify account profile readiness
+        run: dart run tool/verify_account.dart
       - name: Verify real IndexedDB transactions in Chrome
         run: flutter test --platform chrome test/features/srs/browser_review_store_check.dart
       - name: Verify browser review page reload

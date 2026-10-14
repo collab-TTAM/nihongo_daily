@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/home/presentation/home_screen.dart';
+import '../features/auth/presentation/account_screen.dart';
 import '../features/kanji/presentation/kanji_capture_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/srs/presentation/srs_study_screen.dart';
@@ -38,10 +39,6 @@ const previewRoutes = <String, ({String title, String description})>{
     title: 'Tiến độ học tập',
     description: 'Theo dõi thói quen và điểm cần ôn lại.',
   ),
-  '/auth': (
-    title: 'Tài khoản',
-    description: 'Đăng nhập và đồng bộ sẽ có khi tích hợp Supabase.',
-  ),
 };
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -53,6 +50,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
         routes: [
           GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+          GoRoute(
+            path: '/auth',
+            builder: (context, state) => const AccountScreen(),
+          ),
           GoRoute(
             path: '/study',
             builder: (context, state) => const StudyScreen(),
