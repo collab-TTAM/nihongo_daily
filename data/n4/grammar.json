@@ -3018,6 +3018,96 @@
         "translation_vi": "Tôi học không chỉ Kanji mà cả ngữ pháp."
       }
     ]
+  },
+  {
+    "id": "77e7383e-29a1-5f55-871b-5eb1b4aa73ee",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてからでないと",
+    "pattern": "Vてからでないと",
+    "meaning_vi": "nếu không V trước thì không thể",
+    "explanation_vi": "Nêu điều kiện bắt buộc phải hoàn thành trước khi làm việc khác.",
+    "usage_notes_vi": [
+      "Dùng thể て trước からでないと."
+    ],
+    "common_mistakes": [
+      "Vế sau thường đi với dạng phủ định hoặc biểu thị không thể."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "予約してからでないと、入れません。",
+        "reading_ja": "よやくしてからでないと、はいれません。",
+        "translation_vi": "Nếu không đặt trước thì không thể vào."
+      },
+      {
+        "sentence_ja": "本人に確認してからでないと、変更できません。",
+        "reading_ja": "ほんにんにかくにんしてからでないと、へんこうできません。",
+        "translation_vi": "Nếu không xác nhận với本人 trước thì không thể thay đổi."
+      }
+    ]
+  },
+  {
+    "id": "b2d23285-7e7b-5daf-a301-c6a027e25c75",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nにとって",
+    "pattern": "Nにとって",
+    "meaning_vi": "đối với N; theo quan điểm của N",
+    "explanation_vi": "Nêu đánh giá hoặc ý nghĩa của sự việc đối với một người hay nhóm người.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ người hoặc nhóm làm chuẩn trước にとって."
+    ],
+    "common_mistakes": [
+      "Không dùng にとって để chỉ người nhận trực tiếp của hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "学生にとって、毎日の復習は大切です。",
+        "reading_ja": "がくせいにとって、まいにちのふくしゅうはたいせつです。",
+        "translation_vi": "Đối với học sinh, ôn tập mỗi ngày rất quan trọng."
+      },
+      {
+        "sentence_ja": "この経験は私にとって大切です。",
+        "reading_ja": "このけいけんはわたしにとってたいせつです。",
+        "translation_vi": "Kinh nghiệm này quan trọng đối với tôi."
+      }
+    ]
+  },
+  {
+    "id": "d7578aed-59fa-54ad-922c-9f0e7f4cb261",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのではなく",
+    "pattern": "Vるのではなく",
+    "meaning_vi": "không phải V mà là",
+    "explanation_vi": "Phủ định một lựa chọn hoặc cách làm rồi đưa ra lựa chọn khác.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước のではなく."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないで là không làm V mà làm việc khác trong cùng hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "買うのではなく、借りることにしました。",
+        "reading_ja": "かうのではなく、かりることにしました。",
+        "translation_vi": "Tôi quyết định thuê thay vì mua."
+      },
+      {
+        "sentence_ja": "一人で決めるのではなく、みんなで相談しましょう。",
+        "reading_ja": "ひとりできめるのではなく、みんなでそうだんしましょう。",
+        "translation_vi": "Hãy cùng thảo luận thay vì tự quyết định một mình."
+      }
+    ]
   }
 ]
 
