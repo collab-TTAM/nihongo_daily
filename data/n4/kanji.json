@@ -1412,6 +1412,43 @@
     "stroke_count": 9,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "846bf4f6-209a-5cae-9237-7531c0cbae9b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "祭",
+    "meaning_vi": "lễ hội; cúng lễ",
+    "onyomi": [
+      "サイ"
+    ],
+    "kunyomi": [
+      "まつり",
+      "まつる"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "09760fd5-28e5-5ae1-b320-b8fc8a1c0b01",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "森",
+    "meaning_vi": "rừng",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "もり"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
