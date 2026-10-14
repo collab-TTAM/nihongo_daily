@@ -3,7 +3,7 @@
 `PersistentSupabaseRuntime` explicitly creates and exclusively owns a new pinned
 Supabase SDK client, review binding, persistence access and account controller.
 The caller supplies the trusted project URL/public key and matching credential
-vault, then awaits `start()` before installing `runtime.account` into the existing
+vault and an explicitly supplied DurableReviewStore, then awaits `start()` before installing `runtime.account` into the existing
 account provider. A failed start returns a fixed safe error; caller must show a
 restore failure and offer explicit login, which first cleans failed storage/SDK
 state. Never put secrets in Riverpod state, journals, profile fields or logging.
@@ -67,7 +67,7 @@ Await `runtime.close()` before replacing the assembly. It revokes access, dispos
 the account controller, drains interrupted Auth/credential operations, cancels
 subscriptions and disposes only owned SDK/network resources. A fully saved
 session is preserved for the next startup; interrupted Auth is cleaned. Supplied
-HTTP clients remain caller-owned. The controller/provider's disposal alone does
+HTTP clients and the supplied review store remain caller-owned. The required review store preserves uncertain events while rotation temporarily removes the old study runtime; this assembly never falls back to process-only review storage. The controller/provider's disposal alone does
 not close this assembly. Neither close nor local logout promises all-device
 revocation, OS-logoff/power-loss recovery or protection from same-OS-user processes.
 
@@ -77,9 +77,9 @@ In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
 `flutter test`. Twenty-two pure cases cover empty/refresh startup, persistence
 barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
-retry, revocation, owner exclusivity, stream closure and disposal. Six pinned-SDK
+retry, revocation, owner exclusivity, stream closure and disposal. Seven pinned-SDK
 HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
-late restore, rejected stored token recovery, log/scope checks and timeout.
+late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
 Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof.
 
 The existing actual Windows Credential Manager/process probe remains mandatory,

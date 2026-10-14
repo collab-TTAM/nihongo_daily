@@ -22,7 +22,7 @@ final class PersistentSupabaseRuntime {
     required String projectUrl,
     required String publishableKey,
     required SessionCredentialVault vault,
-    DurableReviewStore? store,
+    required DurableReviewStore store,
     http.Client? httpClient,
     DateTime Function()? now,
     Duration requestTimeout = const Duration(seconds: 15),

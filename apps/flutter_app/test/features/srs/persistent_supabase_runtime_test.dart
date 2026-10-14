@@ -1,6 +1,7 @@
 // TEST ONLY actual pinned SDK plus simulated HTTP/OS, not hosted Auth evidence.
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -9,6 +10,9 @@ import 'package:nihongo_daily/features/auth/application/account_controller.dart'
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
+import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
+import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
+import 'recovery_fixtures.dart' as recovery;
 import 'session_lifecycle_fixtures.dart' as fixture;
 import 'supabase_review_binding_test.dart' as wire;
 import 'own_profile_fixtures.dart' as profile;
@@ -19,6 +23,8 @@ void main() {
   late MockClient network;
   late PersistentSupabaseRuntime runtime;
   late DateTime now;
+  late Directory directory;
+  late NativeReviewJournal journal;
   final requests = <http.Request>[];
   late String secret;
   late int authStatus;
@@ -43,9 +49,11 @@ void main() {
     headers: {'content-type': 'application/json'},
   );
 
-  setUp(() {
+  setUp(() async {
     requests.clear();
     backend = fixture.MemoryVault();
+    directory = await Directory.systemTemp.createTemp('nd-sdk-lifecycle-');
+    journal = await NativeReviewJournal.open(directory);
     now = DateTime.utc(2026, 10, 14, 3);
     secret = 'TEST_ONLY_ROTATED_SDK_1';
     authStatus = 200;
@@ -80,12 +88,15 @@ void main() {
       projectUrl: wire.origin,
       publishableKey: wire.key,
       vault: vault,
+      store: journal,
       httpClient: network,
       now: () => now,
     );
   });
   tearDown(() async {
     await runtime.close();
+    await journal.close();
+    await directory.delete(recursive: true);
     network.close();
   });
 
@@ -230,6 +241,7 @@ void main() {
             projectUrl: 'https://other.supabase.invalid',
             publishableKey: wire.key,
             vault: vault,
+            store: journal,
             httpClient: network,
           ),
           throwsA(isA<SessionVaultFailure>()),
@@ -239,6 +251,7 @@ void main() {
             projectUrl: wire.origin,
             publishableKey: wire.key,
             vault: vault,
+            store: journal,
             httpClient: network,
           ),
           throwsA(isA<SessionVaultFailure>()),
@@ -258,6 +271,7 @@ void main() {
         projectUrl: wire.origin,
         publishableKey: wire.key,
         vault: vault,
+        store: journal,
         httpClient: network,
         now: () => now,
         requestTimeout: const Duration(milliseconds: 30),
@@ -273,6 +287,37 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       expect(
         requests.where((r) => r.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+    },
+  );
+  test(
+    'SDK rotation and logout preserve original pending review on real disk',
+    () async {
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+      final request = recovery.recoveryRequest();
+      await journal.stage(wire.a, request);
+      secret = 'TEST_ONLY_ROTATED_SDK_2';
+      await runtime.refresh();
+      await fixture.flush();
+      var reviews = runtime.account.readyRuntime!.reviews as ReviewRecovery;
+      expect((await reviews.recoverPending()).single.request, request);
+      await runtime.account.signOut();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+      reviews = runtime.account.readyRuntime!.reviews as ReviewRecovery;
+      expect((await reviews.recoverPending()).single.request, request);
+      expect((await journal.list(wire.a)).single.isPending, isTrue);
+      expect(
+        requests.where((r) => r.url.path.contains('submit_review')),
         isEmpty,
       );
     },
