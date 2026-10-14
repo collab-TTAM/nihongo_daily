@@ -1235,3 +1235,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   No dependency/provider/Auth strategy/schema/API/N4/deployment changes.
   Scope/limits: docs/SESSION_REFRESH.md. Hosted JWT/device/background/OS suspend
   proof and all 14 live release groups remain pending; keep #37/#20/#22/#15 open.
+
+- First source a60539e CI38595472805 passed repo/SQL/AI, but analysis found
+  nullable receiver at generic resume forwarding. Add explicit nonnull guard
+  before the resumable-owner check. No lifecycle/expiry/ownership/assertion or
+  lint gate changed; skipped downstream tests/build are not passing evidence.
+  Corrected source requires fresh full CI.

@@ -120,6 +120,7 @@ final class AccountStartupController<T> {
     final runtime = _runtime;
     if (!_closed &&
         _phase == AccountStartupPhase.active &&
+        runtime != null &&
         runtime is ResumableAccountStartup) {
       runtime.resume();
     }
