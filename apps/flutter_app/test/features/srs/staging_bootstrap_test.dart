@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
-import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'account_startup_test.dart' show Owner;
 import 'account_widget_test.dart' show Harness;
