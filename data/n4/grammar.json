@@ -468,5 +468,125 @@
         "translation_vi": "Trước chuyến đi bạn nên xem thời tiết."
       }
     ]
+  },
+  {
+    "id": "100c770f-f0bf-59fd-8cf9-f38634195ed8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vことにします",
+    "pattern": "Vことにします",
+    "meaning_vi": "quyết định làm V",
+    "explanation_vi": "Người nói tự quyết định một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển hoặc thể ない trước ことにします."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vことになります là quyết định do hoàn cảnh hoặc người khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来月から毎日運動することにします。",
+        "reading_ja": "らいげつからまいにちうんどうすることにします。",
+        "translation_vi": "Tôi quyết định từ tháng sau sẽ tập thể dục mỗi ngày."
+      },
+      {
+        "sentence_ja": "今日はタクシーを使わないことにしました。",
+        "reading_ja": "きょうはたくしーをつかわないことにしました。",
+        "translation_vi": "Hôm nay tôi đã quyết định không dùng taxi."
+      }
+    ]
+  },
+  {
+    "id": "e355c997-0c0b-5c30-9c67-ef94a8a7a801",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vことになります",
+    "pattern": "Vことになります",
+    "meaning_vi": "được quyết định là sẽ V",
+    "explanation_vi": "Diễn tả một quyết định hoặc kết quả do hoàn cảnh, tổ chức.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển hoặc thể ない trước ことになります."
+    ],
+    "common_mistakes": [
+      "Không dùng khi chỉ nói quyết định cá nhân của người nói."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来週から新しい先生が来ることになりました。",
+        "reading_ja": "らいしゅうからあたらしいせんせいがくることになりました。",
+        "translation_vi": "Đã quyết định rằng từ tuần sau giáo viên mới sẽ đến."
+      },
+      {
+        "sentence_ja": "会議は午後二時に始まることになっています。",
+        "reading_ja": "かいぎはごごにじにはじまることになっています。",
+        "translation_vi": "Cuộc họp được quy định là bắt đầu lúc hai giờ chiều."
+      }
+    ]
+  },
+  {
+    "id": "81b67904-8668-52ba-afef-ea2cfb5a87f9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "～かもしれません",
+    "pattern": "～かもしれません",
+    "meaning_vi": "có lẽ; có thể",
+    "explanation_vi": "Nói khả năng chưa chắc chắn.",
+    "usage_notes_vi": [
+      "Có thể dùng sau thể thường; danh từ và tính từ な thường bỏ だ."
+    ],
+    "common_mistakes": [
+      "Không dùng です ngay trước かもしれません."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日は雨かもしれません。",
+        "reading_ja": "あしたはあめかもしれません。",
+        "translation_vi": "Ngày mai có thể trời mưa."
+      },
+      {
+        "sentence_ja": "この道は少し危険かもしれません。",
+        "reading_ja": "このみちはすこしきけんかもしれません。",
+        "translation_vi": "Con đường này có lẽ hơi nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "b577a502-af92-5d72-9fd4-78e70b536f72",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないでください",
+    "pattern": "Vないでください",
+    "meaning_vi": "xin đừng làm V",
+    "explanation_vi": "Yêu cầu người nghe không làm một việc.",
+    "usage_notes_vi": [
+      "Dùng thể ない rồi thêm でください."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vなくてもいいです là không cần làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "ここで写真を撮らないでください。",
+        "reading_ja": "ここでしゃしんをとらないでください。",
+        "translation_vi": "Xin đừng chụp ảnh ở đây."
+      },
+      {
+        "sentence_ja": "授業中に電話を使わないでください。",
+        "reading_ja": "じゅぎょうちゅうにでんわをつかわないでください。",
+        "translation_vi": "Xin đừng dùng điện thoại trong giờ học."
+      }
+    ]
   }
 ]

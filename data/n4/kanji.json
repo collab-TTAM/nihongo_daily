@@ -212,5 +212,62 @@
     "stroke_count": 8,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "bb3424ab-a1ac-54b4-802b-54dc0fd5884e",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "character": "動",
+    "meaning_vi": "chuyển động; hoạt động",
+    "onyomi": [
+      "ドウ"
+    ],
+    "kunyomi": [
+      "うご"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "4c860ef3-3a44-5478-899b-9f6be868cddb",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "character": "健",
+    "meaning_vi": "khỏe mạnh",
+    "onyomi": [
+      "ケン"
+    ],
+    "kunyomi": [
+      "すこ"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d817e345-e025-5dfc-80a0-fac04fc24f1b",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "character": "直",
+    "meaning_vi": "thẳng; sửa; trực tiếp",
+    "onyomi": [
+      "チョク",
+      "ジキ"
+    ],
+    "kunyomi": [
+      "ただ",
+      "なお",
+      "すぐ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

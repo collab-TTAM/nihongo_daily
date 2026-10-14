@@ -1006,5 +1006,285 @@
         "translation_vi": "Tôi đã đặt khách sạn trước kỳ nghỉ dài ngày."
       }
     ]
+  },
+  {
+    "id": "d6202b9e-4258-5af8-a003-d0ca49a4601c",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "運動",
+    "reading": "うんどう",
+    "meaning_vi": "vận động; tập thể dục",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Hoạt động cơ thể để rèn luyện sức khỏe.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、三十分運動しています。",
+        "reading_ja": "まいあさ、さんじゅっぷんうんどうしています。",
+        "translation_vi": "Mỗi sáng tôi tập thể dục ba mươi phút."
+      },
+      {
+        "sentence_ja": "運動の後で水を飲みました。",
+        "reading_ja": "うんどうのあとでみずをのみました。",
+        "translation_vi": "Sau khi tập thể dục tôi đã uống nước."
+      }
+    ]
+  },
+  {
+    "id": "520782d6-e9e2-537f-8c20-d8a7f78c5aaf",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "健康",
+    "reading": "けんこう",
+    "meaning_vi": "sức khỏe",
+    "part_of_speech": "tính từ な・danh từ",
+    "usage_context_vi": "Trạng thái khỏe mạnh của cơ thể và tinh thần.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "健康のために野菜を食べます。",
+        "reading_ja": "けんこうのためにやさいをたべます。",
+        "translation_vi": "Vì sức khỏe tôi ăn rau."
+      },
+      {
+        "sentence_ja": "毎年、健康診断を受けています。",
+        "reading_ja": "まいとし、けんこうしんだんをうけています。",
+        "translation_vi": "Mỗi năm tôi đều khám sức khỏe."
+      }
+    ]
+  },
+  {
+    "id": "4846766a-bd3e-5d8a-8001-b6a713999837",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "生活",
+    "reading": "せいかつ",
+    "meaning_vi": "cuộc sống; sinh hoạt",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Cách sinh hoạt và đời sống hằng ngày.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "新しい町の生活に慣れました。",
+        "reading_ja": "あたらしいまちのせいかつになれました。",
+        "translation_vi": "Tôi đã quen với cuộc sống ở thành phố mới."
+      },
+      {
+        "sentence_ja": "規則正しい生活をしたいです。",
+        "reading_ja": "きそくただしいせいかつをしたいです。",
+        "translation_vi": "Tôi muốn có nếp sống điều độ."
+      }
+    ]
+  },
+  {
+    "id": "9adf2000-561c-508d-b6b6-a501ad347d82",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "変更",
+    "reading": "へんこう",
+    "meaning_vi": "thay đổi; điều chỉnh",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Làm cho lịch hoặc nội dung khác đi.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "会議の時間を変更しました。",
+        "reading_ja": "かいぎのじかんをへんこうしました。",
+        "translation_vi": "Tôi đã thay đổi giờ họp."
+      },
+      {
+        "sentence_ja": "変更があれば、すぐ連絡してください。",
+        "reading_ja": "へんこうがあれば、すぐれんらくしてください。",
+        "translation_vi": "Nếu có thay đổi hãy liên lạc ngay."
+      }
+    ]
+  },
+  {
+    "id": "641453dc-c348-5323-ba74-8ade50d3e48c",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "相談",
+    "reading": "そうだん",
+    "meaning_vi": "trao đổi; tư vấn",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Nói chuyện để xin ý kiến hoặc giúp đỡ.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "先生に進路を相談しました。",
+        "reading_ja": "せんせいにしんろをそうだんしました。",
+        "translation_vi": "Tôi đã trao đổi với giáo viên về hướng đi tương lai."
+      },
+      {
+        "sentence_ja": "困ったときは家族に相談します。",
+        "reading_ja": "こまったときはかぞくにそうだんします。",
+        "translation_vi": "Khi gặp khó khăn tôi sẽ trao đổi với gia đình."
+      }
+    ]
+  },
+  {
+    "id": "f6bdca83-2f1f-5c12-883c-3301c6c411e1",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "注意",
+    "reading": "ちゅうい",
+    "meaning_vi": "chú ý; cảnh báo",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Cẩn thận để tránh lỗi hoặc nguy hiểm.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "足元に注意してください。",
+        "reading_ja": "あしもとにちゅういしてください。",
+        "translation_vi": "Hãy chú ý dưới chân."
+      },
+      {
+        "sentence_ja": "先生は車に注意するように言いました。",
+        "reading_ja": "せんせいはくるまにちゅういするようにいいました。",
+        "translation_vi": "Giáo viên dặn phải chú ý xe cộ."
+      }
+    ]
+  },
+  {
+    "id": "5433eb4f-89b6-556f-825d-4fe8a2a42800",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "必ず",
+    "reading": "かならず",
+    "meaning_vi": "nhất định; chắc chắn",
+    "part_of_speech": "phó từ",
+    "usage_context_vi": "Diễn tả việc chắc chắn hoặc bắt buộc sẽ xảy ra.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "明日までに必ず返してください。",
+        "reading_ja": "あしたまでにかならずかえしてください。",
+        "translation_vi": "Nhất định hãy trả lại trước ngày mai."
+      },
+      {
+        "sentence_ja": "旅行の前に必ず天気を確認します。",
+        "reading_ja": "りょこうのまえにかならずてんきをかくにんします。",
+        "translation_vi": "Trước chuyến đi tôi nhất định kiểm tra thời tiết."
+      }
+    ]
+  },
+  {
+    "id": "144467da-2eac-5473-82cf-6d2cc0f96af1",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "例えば",
+    "reading": "たとえば",
+    "meaning_vi": "ví dụ như",
+    "part_of_speech": "phó từ",
+    "usage_context_vi": "Đưa ra một ví dụ cụ thể.",
+    "audio_ref": null,
+    "tags": [
+      "communication"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "例えば、電車やバスで行けます。",
+        "reading_ja": "たとえば、でんしゃやばすでいけます。",
+        "translation_vi": "Ví dụ, có thể đi bằng tàu điện hoặc xe buýt."
+      },
+      {
+        "sentence_ja": "日本の料理、例えばすしが好きです。",
+        "reading_ja": "にほんのりょうり、たとえばすしがすきです。",
+        "translation_vi": "Tôi thích món ăn Nhật, ví dụ như sushi."
+      }
+    ]
+  },
+  {
+    "id": "6687a077-4a3e-5195-aa3e-3f64997f574b",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "遅れる",
+    "reading": "おくれる",
+    "meaning_vi": "trễ; muộn",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Đến hoặc xảy ra sau thời gian dự kiến.",
+    "audio_ref": null,
+    "tags": [
+      "transport"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "電車が遅れて、学校に遅れました。",
+        "reading_ja": "でんしゃがおくれて、がっこうにおくれました。",
+        "translation_vi": "Tàu bị trễ nên tôi đã đến trường muộn."
+      },
+      {
+        "sentence_ja": "遅れるときは電話してください。",
+        "reading_ja": "おくれるときはでんわしてください。",
+        "translation_vi": "Khi bị trễ hãy gọi điện."
+      }
+    ]
+  },
+  {
+    "id": "7e818adc-f208-5d30-a7dc-c9c723223ca6",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "直す",
+    "reading": "なおす",
+    "meaning_vi": "sửa; chỉnh lại",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Làm cho đồ vật hoặc lỗi trở lại đúng.",
+    "audio_ref": null,
+    "tags": [
+      "actions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "壊れた時計を直しました。",
+        "reading_ja": "こわれたとけいをなおしました。",
+        "translation_vi": "Tôi đã sửa chiếc đồng hồ bị hỏng."
+      },
+      {
+        "sentence_ja": "間違いを見つけたら、すぐ直してください。",
+        "reading_ja": "まちがいをみつけたら、すぐなおしてください。",
+        "translation_vi": "Nếu tìm thấy lỗi hãy sửa ngay."
+      }
+    ]
   }
 ]

@@ -27,7 +27,7 @@ class ContentTests(unittest.TestCase):
             validate_content(self.root)
 
     def test_seed_passes_with_observed_counts(self):
-        self.assertEqual(validate_content(self.root), dict(vocabulary=60, kanji=20, grammar=25, examples=146))
+        self.assertEqual(validate_content(self.root), dict(vocabulary=70, kanji=23, grammar=29, examples=174))
 
     def test_unknown_wire_field(self):
         self.change('n5/vocabulary.json', lambda v: v[0].update(user_id='forged'))
