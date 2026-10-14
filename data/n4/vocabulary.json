@@ -8037,6 +8037,235 @@
         "translation_vi": "Trung tâm đồ thất lạc ở đâu vậy?"
       }
     ]
+  },
+  {
+    "id": "37cd1d47-6b5c-5724-9268-23da39fb415d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "成績",
+    "reading": "せいせき",
+    "meaning_vi": "thành tích; điểm số",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Kết quả học tập hoặc đánh giá đạt được.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "今学期の成績が上がりました。",
+        "reading_ja": "こんがっきのせいせきがあがりました。",
+        "translation_vi": "Điểm số học kỳ này của tôi đã tăng."
+      },
+      {
+        "sentence_ja": "成績を先生に見せました。",
+        "reading_ja": "せいせきをせんせいにみせました。",
+        "translation_vi": "Tôi đã cho giáo viên xem thành tích của mình."
+      }
+    ]
+  },
+  {
+    "id": "c8eb4377-7f69-52a1-98e1-636e5da664ed",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "急用",
+    "reading": "きゅうよう",
+    "meaning_vi": "việc gấp",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc cần giải quyết ngay, không thể trì hoãn.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "急用ができたので、先に帰ります。",
+        "reading_ja": "きゅうようができたので、さきにかえります。",
+        "translation_vi": "Vì có việc gấp nên tôi về trước."
+      },
+      {
+        "sentence_ja": "急用のときは電話してください。",
+        "reading_ja": "きゅうようのときはでんわしてください。",
+        "translation_vi": "Khi có việc gấp hãy gọi điện."
+      }
+    ]
+  },
+  {
+    "id": "4523ae5d-6563-5741-b1fc-89d46ebce2c3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "記事",
+    "reading": "きじ",
+    "meaning_vi": "bài báo; bài viết",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bài viết đăng trên báo hoặc trang thông tin.",
+    "audio_ref": null,
+    "tags": [
+      "media"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "新聞の記事を読みました。",
+        "reading_ja": "しんぶんのきじをよみました。",
+        "translation_vi": "Tôi đã đọc bài báo trên báo."
+      },
+      {
+        "sentence_ja": "その記事について話し合いました。",
+        "reading_ja": "そのきじについてはなしあいました。",
+        "translation_vi": "Chúng tôi đã thảo luận về bài viết đó."
+      }
+    ]
+  },
+  {
+    "id": "d381db5e-fb83-5fce-9507-7c6f47c14c8f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "番組",
+    "reading": "ばんぐみ",
+    "meaning_vi": "chương trình truyền hình",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Chương trình phát trên truyền hình hoặc đài phát thanh.",
+    "audio_ref": null,
+    "tags": [
+      "media"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "好きな番組を毎週見ています。",
+        "reading_ja": "すきなばんぐみをまいしゅうみています。",
+        "translation_vi": "Tôi xem chương trình yêu thích mỗi tuần."
+      },
+      {
+        "sentence_ja": "この番組は八時から始まります。",
+        "reading_ja": "このばんぐみははちじからはじまります。",
+        "translation_vi": "Chương trình này bắt đầu từ tám giờ."
+      }
+    ]
+  },
+  {
+    "id": "967aa953-925b-5be2-8fcf-cf87a0057aee",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "洪水",
+    "reading": "こうずい",
+    "meaning_vi": "lũ lụt",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hiện tượng nước dâng và tràn vào khu vực đất.",
+    "audio_ref": null,
+    "tags": [
+      "environment",
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "大雨で川が増えて、洪水になりました。",
+        "reading_ja": "おおあめでかわがふえて、こうずいになりました。",
+        "translation_vi": "Mưa lớn làm nước sông dâng và gây lũ."
+      },
+      {
+        "sentence_ja": "洪水のニュースを見て心配しました。",
+        "reading_ja": "こうずいのにゅーすをみてしんぱいしました。",
+        "translation_vi": "Tôi lo lắng khi xem tin lũ lụt."
+      }
+    ]
+  },
+  {
+    "id": "f5568875-705a-55d5-a141-59a7df8e8f8c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "台風",
+    "reading": "たいふう",
+    "meaning_vi": "bão nhiệt đới",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cơn bão lớn hình thành trên biển và đổ bộ vào đất liền.",
+    "audio_ref": null,
+    "tags": [
+      "weather",
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "台風が来るので、窓を閉めてください。",
+        "reading_ja": "たいふうがくるので、まどをしめてください。",
+        "translation_vi": "Vì bão sắp đến nên hãy đóng cửa sổ."
+      },
+      {
+        "sentence_ja": "台風の後で電車が止まりました。",
+        "reading_ja": "たいふうのあとででんしゃがとまりました。",
+        "translation_vi": "Sau bão, tàu điện đã dừng chạy."
+      }
+    ]
+  },
+  {
+    "id": "cb7dd3ec-acd7-55d9-8db5-b589b01aeb03",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "冷房",
+    "reading": "れいぼう",
+    "meaning_vi": "điều hòa làm mát",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Chức năng hoặc thiết bị làm mát không khí.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "weather"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "暑いので冷房をつけてもいいですか。",
+        "reading_ja": "あついのでれいぼうをつけてもいいですか。",
+        "translation_vi": "Vì nóng nên tôi bật điều hòa được không?"
+      },
+      {
+        "sentence_ja": "冷房が強すぎて寒いです。",
+        "reading_ja": "れいぼうがつよすぎてさむいです。",
+        "translation_vi": "Điều hòa mạnh quá nên tôi thấy lạnh."
+      }
+    ]
+  },
+  {
+    "id": "aa0392c1-c38c-525b-ad6c-03dd82e6e120",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "電気代",
+    "reading": "でんきだい",
+    "meaning_vi": "tiền điện",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Chi phí phải trả cho lượng điện đã sử dụng.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "money"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "今月は電気代が高かったです。",
+        "reading_ja": "こんげつはでんきだいがたかかったです。",
+        "translation_vi": "Tháng này tiền điện cao."
+      },
+      {
+        "sentence_ja": "電気代を払うのを忘れました。",
+        "reading_ja": "でんきだいをはらうのをわすれました。",
+        "translation_vi": "Tôi đã quên trả tiền điện."
+      }
+    ]
   }
 ]
 
