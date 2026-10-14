@@ -1938,6 +1938,96 @@
         "translation_vi": "Thức ăn thay đổi tùy theo mùa."
       }
     ]
+  },
+  {
+    "id": "c8be6bbd-c1eb-5ef5-ad69-d1beae74ba9a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることになっています",
+    "pattern": "Vることになっています",
+    "meaning_vi": "được quy định là; đã được sắp xếp là",
+    "explanation_vi": "Diễn tả quy định hoặc lịch trình đã được quyết định trước.",
+    "usage_notes_vi": [
+      "Dùng với thể từ điển để nói về quy định hoặc quyết định đang có hiệu lực."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この図書館では、靴を脱ぐことになっています。",
+        "reading_ja": "このとしょかんでは、くつをぬぐことになっています。",
+        "translation_vi": "Ở thư viện này có quy định phải cởi giày."
+      },
+      {
+        "sentence_ja": "来週から新しい先生が来ることになっています。",
+        "reading_ja": "らいしゅうからあたらしいせんせいがくることになっています。",
+        "translation_vi": "Đã sắp xếp là giáo viên mới sẽ đến từ tuần sau."
+      }
+    ]
+  },
+  {
+    "id": "d9687467-8ebb-52c5-8384-e6011db3f978",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるまで",
+    "pattern": "Vるまで",
+    "meaning_vi": "cho đến khi V",
+    "explanation_vi": "Diễn tả khoảng thời gian kéo dài đến lúc một hành động hoặc sự việc xảy ra.",
+    "usage_notes_vi": [
+      "Mệnh đề trước まで nêu mốc kết thúc của khoảng thời gian."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "駅に着くまで、音楽を聞いていました。",
+        "reading_ja": "えきにつくまで、おんがくをきいていました。",
+        "translation_vi": "Tôi đã nghe nhạc cho đến khi tới ga."
+      },
+      {
+        "sentence_ja": "宿題が終わるまで、ゲームをしません。",
+        "reading_ja": "しゅくだいがおわるまで、げーむをしません。",
+        "translation_vi": "Tôi không chơi game cho đến khi làm xong bài tập."
+      }
+    ]
+  },
+  {
+    "id": "0afe37db-b6e3-57ff-a885-155e8473d1ed",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nの中で",
+    "pattern": "Nの中で",
+    "meaning_vi": "trong số N; trong N",
+    "explanation_vi": "Dùng để chọn hoặc so sánh một đối tượng trong một nhóm.",
+    "usage_notes_vi": [
+      "Sau Nの中で thường có biểu hiện lựa chọn hoặc so sánh như 一番."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "三つの町の中で、この町が一番静かです。",
+        "reading_ja": "みっつのまちのなかで、このまちがいちばんしずかです。",
+        "translation_vi": "Trong ba thị trấn, thị trấn này yên tĩnh nhất."
+      },
+      {
+        "sentence_ja": "果物の中で、りんごが一番好きです。",
+        "reading_ja": "くだもののなかで、りんごがいちばんすきです。",
+        "translation_vi": "Trong các loại trái cây, tôi thích táo nhất."
+      }
+    ]
   }
 ]
 
