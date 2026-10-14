@@ -1119,6 +1119,43 @@
     "stroke_count": 11,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "e9bd85a6-69dd-512a-b6a5-3fea1e5caa47",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "味",
+    "meaning_vi": "vị; mùi vị",
+    "onyomi": [
+      "ミ"
+    ],
+    "kunyomi": [
+      "あじ",
+      "あじわ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "03e037f7-fabc-598e-ba36-f5bbb7c35c2f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "塩",
+    "meaning_vi": "muối",
+    "onyomi": [
+      "エン"
+    ],
+    "kunyomi": [
+      "しお"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
 
