@@ -269,5 +269,43 @@
     "stroke_count": 8,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "46b27c85-714c-5596-8d30-d5fe270ff493",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "選",
+    "meaning_vi": "chọn; tuyển chọn",
+    "onyomi": [
+      "セン"
+    ],
+    "kunyomi": [
+      "えら"
+    ],
+    "stroke_count": 15,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "3676ec55-2b6e-54ab-98dc-69d95fd24d0d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "決",
+    "meaning_vi": "quyết định; quyết",
+    "onyomi": [
+      "ケツ"
+    ],
+    "kunyomi": [
+      "き",
+      "きま",
+      "きめ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]

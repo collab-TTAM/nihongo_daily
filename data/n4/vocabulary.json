@@ -1286,5 +1286,229 @@
         "translation_vi": "Nếu tìm thấy lỗi hãy sửa ngay."
       }
     ]
+  },
+  {
+    "id": "2e7b3235-2f8b-5c48-a61b-ec3a2d7427fe",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "連れて行く",
+    "reading": "つれていく",
+    "meaning_vi": "dẫn đi; đưa đi",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa ai đó cùng đi đến một nơi.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "週末、弟を公園へ連れて行きます。",
+        "reading_ja": "しゅうまつ、おとうとをこうえんへつれていきます。",
+        "translation_vi": "Cuối tuần tôi sẽ đưa em trai đến công viên."
+      },
+      {
+        "sentence_ja": "旅行に子どもを連れて行きました。",
+        "reading_ja": "りょこうにこどもをつれていきました。",
+        "translation_vi": "Tôi đã đưa con đi du lịch."
+      }
+    ]
+  },
+  {
+    "id": "39e0f0f0-25d0-526c-8e69-e8335a1f71a7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "片付ける",
+    "reading": "かたづける",
+    "meaning_vi": "dọn dẹp; sắp xếp",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Làm cho nơi chốn hoặc đồ vật gọn gàng.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "食事の後でテーブルを片付けます。",
+        "reading_ja": "しょくじのあとでてーぶるをかたづけます。",
+        "translation_vi": "Sau bữa ăn tôi dọn bàn."
+      },
+      {
+        "sentence_ja": "部屋を片付けてから休みました。",
+        "reading_ja": "へやをかたづけてからやすみました。",
+        "translation_vi": "Tôi dọn phòng rồi mới nghỉ."
+      }
+    ]
+  },
+  {
+    "id": "16a6633a-bac8-59bd-ad05-29222810da54",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "決める",
+    "reading": "きめる",
+    "meaning_vi": "quyết định; định ra",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Chọn và xác định một kế hoạch hoặc quy tắc.",
+    "audio_ref": null,
+    "tags": [
+      "planning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "旅行の日を決めました。",
+        "reading_ja": "りょこうのひをきめました。",
+        "translation_vi": "Tôi đã quyết định ngày đi du lịch."
+      },
+      {
+        "sentence_ja": "みんなで場所を決めましょう。",
+        "reading_ja": "みんなでばしょをきめましょう。",
+        "translation_vi": "Mọi người cùng quyết định địa điểm nhé."
+      }
+    ]
+  },
+  {
+    "id": "6c569f5b-e708-5568-a0f0-ca64f88e8087",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "選ぶ",
+    "reading": "えらぶ",
+    "meaning_vi": "chọn lựa",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Chọn một trong nhiều phương án.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "好きな色を選んでください。",
+        "reading_ja": "すきないろをえらんでください。",
+        "translation_vi": "Hãy chọn màu bạn thích."
+      },
+      {
+        "sentence_ja": "旅行のホテルを選びました。",
+        "reading_ja": "りょこうのほてるをえらびました。",
+        "translation_vi": "Tôi đã chọn khách sạn cho chuyến đi."
+      }
+    ]
+  },
+  {
+    "id": "ea6afdf4-1d93-51ad-9412-f48e13d60b7c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "比べる",
+    "reading": "くらべる",
+    "meaning_vi": "so sánh",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Xem xét hai hay nhiều thứ để nhận ra điểm giống khác.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "二つのプランを比べています。",
+        "reading_ja": "ふたつのぷらんをくらべています。",
+        "translation_vi": "Tôi đang so sánh hai kế hoạch."
+      },
+      {
+        "sentence_ja": "値段を比べてから買いました。",
+        "reading_ja": "ねだんをくらべてからかいました。",
+        "translation_vi": "Tôi so sánh giá rồi mới mua."
+      }
+    ]
+  },
+  {
+    "id": "2624cb53-5e3b-5e3e-9223-609d70369ebd",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "受ける",
+    "reading": "うける",
+    "meaning_vi": "nhận; tham gia; thi",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Nhận một dịch vụ hoặc tham gia một kỳ thi/kiểm tra.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来月、日本語の試験を受けます。",
+        "reading_ja": "らいげつ、にほんごのしけんをうけます。",
+        "translation_vi": "Tháng sau tôi sẽ thi tiếng Nhật."
+      },
+      {
+        "sentence_ja": "病院で検査を受けました。",
+        "reading_ja": "びょういんでけんさをうけました。",
+        "translation_vi": "Tôi đã kiểm tra ở bệnh viện."
+      }
+    ]
+  },
+  {
+    "id": "0271c1a9-c27b-5912-b5f6-e9000ff6ae05",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "調べる",
+    "reading": "しらべる",
+    "meaning_vi": "tìm hiểu; tra cứu",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Tìm thông tin để biết rõ hơn.",
+    "audio_ref": null,
+    "tags": [
+      "learning"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "出発の前に天気を調べます。",
+        "reading_ja": "しゅっぱつのまえにてんきをしらべます。",
+        "translation_vi": "Trước khi xuất phát tôi tra thời tiết."
+      },
+      {
+        "sentence_ja": "辞書で意味を調べました。",
+        "reading_ja": "じしょでいみをしらべました。",
+        "translation_vi": "Tôi đã tra nghĩa trong từ điển."
+      }
+    ]
+  },
+  {
+    "id": "c5886c51-6b5d-5d2b-ae14-4dc9c960445c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "見つける",
+    "reading": "みつける",
+    "meaning_vi": "tìm thấy; phát hiện",
+    "part_of_speech": "động từ nhóm 2",
+    "usage_context_vi": "Tìm và nhận ra người hoặc vật cần tìm.",
+    "audio_ref": null,
+    "tags": [
+      "actions"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅の近くでいい店を見つけました。",
+        "reading_ja": "えきのちかくでいいみせをみつけました。",
+        "translation_vi": "Tôi đã tìm thấy một cửa hàng hay gần ga."
+      },
+      {
+        "sentence_ja": "なくした鍵を見つけて安心しました。",
+        "reading_ja": "なくしたかぎをみつけてあんしんしました。",
+        "translation_vi": "Tôi yên tâm vì đã tìm thấy chìa khóa bị mất."
+      }
+    ]
   }
 ]

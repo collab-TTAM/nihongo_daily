@@ -7,16 +7,16 @@ curriculum. The published export contains:
 
 | Model | Count | Examples |
 | --- | ---: | ---: |
-| Vocabulary | 46 | 92 |
-| Kanji metadata | 15 | — |
-| Grammar | 19 | 38 |
-| **Total** | **80** | **130** |
+| Vocabulary | 54 | 108 |
+| Kanji metadata | 17 | — |
+| Grammar | 22 | 44 |
+| **Total** | **93** | **152** |
 
 Themes are travel/planning, transport/shopping, work/communication, daily
-habits, descriptions, common actions, safety, culture and health. The second and
-third batches add confirmation/guidance, service/fees, addresses, advice,
-change-of-state, decision, possibility and prohibition patterns. Examples pair
-Japanese sentences with kana readings and Vietnamese translations.
+habits, descriptions, common actions, safety, culture, health and study. The
+second through fourth batches add confirmation/guidance, service/fees, addresses,
+advice, decision, possibility, prohibition, preparation and completion patterns.
+Examples pair Japanese sentences with kana readings and Vietnamese translations.
 
 ## Provenance and editorial limits
 

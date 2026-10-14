@@ -588,5 +588,95 @@
         "translation_vi": "Xin đừng dùng điện thoại trong giờ học."
       }
     ]
+  },
+  {
+    "id": "7420838d-9b97-5307-9c39-03c7c77972e8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてみます",
+    "pattern": "Vてみます",
+    "meaning_vi": "thử làm V",
+    "explanation_vi": "Nói thử làm một việc để trải nghiệm hoặc kiểm tra.",
+    "usage_notes_vi": [
+      "Dùng thể て trước みます."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước みます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この料理を食べてみます。",
+        "reading_ja": "このりょうりをたべてみます。",
+        "translation_vi": "Tôi sẽ thử ăn món này."
+      },
+      {
+        "sentence_ja": "先生に聞いてみました。",
+        "reading_ja": "せんせいにきいてみました。",
+        "translation_vi": "Tôi đã thử hỏi giáo viên."
+      }
+    ]
+  },
+  {
+    "id": "2039a7d3-f47f-51a4-825f-f4f3c906c8d2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vておきます",
+    "pattern": "Vておきます",
+    "meaning_vi": "làm V trước; làm sẵn V",
+    "explanation_vi": "Làm trước một việc để chuẩn bị cho sau này.",
+    "usage_notes_vi": [
+      "Dùng thể て trước おきます."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vています là đang làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "旅行の前にホテルを予約しておきます。",
+        "reading_ja": "りょこうのまえにほてるをよやくしておきます。",
+        "translation_vi": "Tôi sẽ đặt sẵn khách sạn trước chuyến đi."
+      },
+      {
+        "sentence_ja": "必要な書類をコピーしておきました。",
+        "reading_ja": "ひつようなしょるいをこぴーしておきました。",
+        "translation_vi": "Tôi đã sao sẵn giấy tờ cần thiết."
+      }
+    ]
+  },
+  {
+    "id": "a61d9821-ae10-5de5-b886-36ecca79531a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてしまいます",
+    "pattern": "Vてしまいます",
+    "meaning_vi": "lỡ; hoàn tất V",
+    "explanation_vi": "Diễn tả việc hoàn tất hoặc tiếc vì việc đã xảy ra.",
+    "usage_notes_vi": [
+      "Dùng thể て trước しまいます."
+    ],
+    "common_mistakes": [
+      "Cần dựa vào ngữ cảnh để phân biệt hoàn tất và nuối tiếc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "宿題を全部してしまいました。",
+        "reading_ja": "しゅくだいをぜんぶしてしまいました。",
+        "translation_vi": "Tôi đã làm xong toàn bộ bài tập."
+      },
+      {
+        "sentence_ja": "電車で財布を忘れてしまいました。",
+        "reading_ja": "でんしゃでさいふをわすれてしまいました。",
+        "translation_vi": "Tôi lỡ để quên ví trên tàu."
+      }
+    ]
   }
 ]
