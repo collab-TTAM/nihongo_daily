@@ -591,3 +591,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   SDK HTTP tests/builds. Follow-up security review extends OFF logging to the
   whole supabase logger family and strengthens the root-ALL sink test. This
   prior-head success does not certify that final log-policy change; rerun gates.
+
+## Verified concrete SDK binding handoff — 2026-10-14 UTC
+
+- Source head d7df49b472b3e74ce8bc85546d50e598ee3e0aea passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38506398102 .
+  Observed Flutter format/analyze (no issues), **184 tests including 18 SDK/HTTP
+  cases**, enforce-lockfile, web release/artifact, Windows release/artifact and
+  retained SQL/RLS/parity/observed-lock races/AI/repo gates. The unmodified run
+  and all five latest-attempt jobs passed scripts/verify_qa.py for that exact
+  source head and every critical step. This evidence is historical for later
+  commits; documentation-only successors require their own CI before merging.
+- Concrete pinned Supabase SDK Auth events and captured-token PostgREST binding
+  now have build/test evidence. HTTP/Auth fixtures still use TEST ONLY unsigned
+  JWTs; they do not verify hosted signatures, real Auth/RLS or a learner journey.
+  Unsafe SDK loggers are OFF including the parent family; all assertions remain.
+- Default runtime is null. No login screen, own-profile provisioning, secure
+  token persistence/restoration, durable pending event/restart reconciliation,
+  deployment or hosted JWT evidence is claimed. QA inventory: 34 groups,
+  all 14 Personal Alpha integration cases remain pending. Keep PR #37 draft
+  and #22 open; do not merge this incomplete integration.
+- Bounded sequential SDK worker released after evidence persistence. Next worker
+  must inspect the current PR head first, then implement #20's login/profile and
+  secure session lifecycle using the approved Auth strategy, followed by #15's
+  durable owner-scoped pending/receipt recovery. Actual non-production missing/
+  expired JWT, account A/B isolation and signed-in SRS acceptance still require
+  supported service configuration; never request secrets in chat. Independent
+  source/tests can continue without configuration. No RLS, provider, production,
+  data collection or paid-cost changes.
