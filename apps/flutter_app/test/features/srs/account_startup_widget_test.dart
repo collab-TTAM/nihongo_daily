@@ -66,6 +66,8 @@ void main() {
     expect(completed, 0);
     expect(owner.closes, 1);
     expect(controller.account, isNull);
+    // Binding walks exit observers asynchronously. Render after drain entered.
+    await tester.pump();
     expect(find.byType(TextField), findsNothing);
     expect(find.text('Đang đóng phiên an toàn…'), findsOneWidget);
     owner.closeWait!.complete();
