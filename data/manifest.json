@@ -14,10 +14,10 @@
       "examples": 44
     },
     "N4": {
-      "vocabulary": 238,
-      "kanji": 63,
-      "grammar": 91,
-      "examples": 658
+      "vocabulary": 246,
+      "kanji": 65,
+      "grammar": 94,
+      "examples": 680
     }
   },
   "audio_available": false,
@@ -29,7 +29,7 @@
   ],
   "limitations_vi": [
     "Bộ dữ liệu N5/N4 hiện là các seed tự soạn theo từng đợt, chưa phải toàn bộ chương trình JLPT và không phải danh mục JLPT được chứng nhận.",
-    "Hai mươi bảy đợt N4 hiện có 238 từ vựng, 63 Kanji và 91 mẫu ngữ pháp; còn thiếu độ phủ từ vựng, Kanji, ngữ pháp, bài đọc, bài nghe và bài tập.",
+    "Hai mươi tám đợt N4 hiện có 246 từ vựng, 65 Kanji và 94 mẫu ngữ pháp; còn thiếu độ phủ từ vựng, Kanji, ngữ pháp, bài đọc, bài nghe và bài tập.",
     "Không có audio, nét mẫu hoặc chấm viết thật; radical N4 chưa được cung cấp.",
     "Kiểm tra cấu trúc không xác nhận bản dịch hoặc phát âm; cần duyệt độc lập bởi giáo viên/người bản ngữ trước khi gọi là nội dung phát hành."
   ]
