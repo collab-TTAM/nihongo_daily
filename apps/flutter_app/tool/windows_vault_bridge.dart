@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
+import 'windows_runtime_fixture.dart';
 
 void require(bool value) {
   if (!value) {
@@ -22,7 +23,8 @@ Future<void> main(List<String> arguments) async {
     final scope = arguments[1];
     require(RegExp(r'^bridge-[a-f0-9]{32}$').hasMatch(scope));
     require(
-      const {'write', 'reopen', 'rotated', 'clear', 'absent'}.contains(phase),
+      const {'write', 'reopen', 'rotated', 'clear', 'absent'}.contains(phase) ||
+          runtimePhases.contains(phase),
     );
     final vault = createWindowsSessionCredentialVault('https://$scope.invalid');
     final other = createWindowsSessionCredentialVault(
@@ -31,6 +33,9 @@ Future<void> main(List<String> arguments) async {
     // Fixed synthetic values only. No service or learner credential is accepted.
     const first = 'TEST_ONLY_bridge_first';
     const rotated = 'TEST_ONLY_bridge_rotated';
+    if (runtimePhases.contains(phase)) {
+      await verifyWindowsRuntimePhase(phase, scope);
+    }
     switch (phase) {
       case 'write':
         require(await vault.readRefreshToken() == null);
@@ -52,6 +57,8 @@ Future<void> main(List<String> arguments) async {
         await other.clear();
         require(await vault.readRefreshToken() == null);
         await vault.clear();
+        final directory = runtimeFixtureDirectory(scope);
+        if (await directory.exists()) await directory.delete(recursive: true);
       case 'absent':
         require(await vault.readRefreshToken() == null);
         require(await other.readRefreshToken() == null);

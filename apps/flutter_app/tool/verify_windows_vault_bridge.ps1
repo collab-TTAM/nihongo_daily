@@ -26,6 +26,12 @@ try {
     Invoke-Bridge 'clear'
     Invoke-Bridge 'absent'
     Write-Output 'Windows Dart/native bridge cross-process verification passed'
+    Invoke-Bridge 'runtime-login'
+    Invoke-Bridge 'runtime-restore'
+    Invoke-Bridge 'runtime-logout'
+    Invoke-Bridge 'runtime-signedout'
+    Invoke-Bridge 'runtime-rejected'
+    Write-Output 'Windows persistent SDK runtime cross-process verification passed'
 } finally {
     # Cleanup runs on failure too; cleanup errors fail CI instead of being hidden.
     Invoke-Bridge 'clear'

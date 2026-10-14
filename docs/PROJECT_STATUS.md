@@ -1122,3 +1122,21 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   runtime using actual Windows bridge across processes, caller startup/error UI,
   explicit refresh scheduling, then hosted configured learner A/B/expiry/two-client
   acceptance. Keep #37 draft and #20/#22/#15 open; Pro #38/N4 untouched.
+
+## Windows persistent runtime restart increment — 2026-10-14 UTC
+
+- Resumed actual head 53de3784; its CI passed. Core worker ACTIVE for this
+  sequential increment; Pro #38/N4 lane remains untouched.
+- Added five runtime phases to the already executed real Flutter Windows bridge
+  probe, using pinned SDK/mock HTTP plus actual OS vault and native review disk.
+  Checks refresh-only restore, exact rotation before profile, preserved pending
+  event, close persistence, immediate logout fencing, signed-out restart and
+  rejected stored token with explicit recovery. No submit_review permitted.
+- Local format/49 contracts/17 QA pass. New-head full analysis/Flutter/Windows
+  execution are pending. No historical test result counted for new code.
+- Separate review: fixed .invalid GUID scope/synthetic values; no external HTTP;
+  bounded phases/cleanup of test OS entry and temp journal; production runtime
+  owns SDK; normal entrypoint rebuilt before artifact upload. Fixture Auth/JWT
+  remains simulated, so all 14 hosted Personal Alpha groups remain pending.
+  Keep #37 draft and #20/#22/#15 open. Next caller startup/error UI and refresh
+  scheduling, then configured hosted learner/restart/two-client acceptance.

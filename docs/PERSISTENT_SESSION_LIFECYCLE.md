@@ -126,3 +126,25 @@ No hosted login/JWT signatures or interactive Dart-to-Credential-Manager startup
 restoration evidence. Default runtime remains null and explicit refresh scheduling
 is still caller work. All 14 live release groups remain pending; keep #37 draft.
 Source evidence is historical for subsequent documentation/source commits.
+
+## Actual Windows runtime restart probe (pending CI)
+
+The separate TEST ONLY Flutter runner now invokes `PersistentSupabaseRuntime`
+with the real production Windows vault/MethodChannel/Credential Manager and
+NativeReviewJournal. Five additional fresh-process phases cover explicit login,
+refresh-only restore of the previous secret with rotation, restore/logout with
+synchronous fencing, signed-out restart without any Auth/profile dispatch, and
+401 stored-token rejection followed by explicit login/logout recovery.
+The fixture profile handler reads the actual OS vault before returning: profile
+dispatch must follow saving the exact rotated secret. Runtime close must preserve
+a fully saved secret. Each phase retains the same original uncertain review in
+the real journal; unexpected endpoints (including submit_review) fail the probe.
+
+`tool/windows_runtime_fixture.dart` contains fixed synthetic credentials, unsigned
+JWTs and actual pinned SDK with mock HTTP; no hosted request or live credential
+is accepted. GUID-qualified `.invalid` scope and per-run temp journal are cleaned
+by the bounded PowerShell finally phase. The normal learner entrypoint is rebuilt
+before artifact upload. These checks narrow SDK-to-OS process-restart evidence
+only when observed passing. They do not establish hosted JWT/Auth, two-client
+identity isolation, OS-logoff/power-loss, concurrent process writers or actual
+learner UI. No default activation, provider, dependency or contract changes.
