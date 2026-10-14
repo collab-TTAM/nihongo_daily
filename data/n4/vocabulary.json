@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 31092)
-Total output lines: 3531
-
 [
   {
     "id": "d06f83cb-59b3-57b0-a7cf-273d10aaac0d",
@@ -1699,7 +1696,137 @@ Total output lines: 3531
     ],
     "examples": [
       {
-        "sentence_ja": "図書館で本を借りまし…1092 tokens truncated…なおる",
+        "sentence_ja": "図書館で本を借りました。",
+        "reading_ja": "としょかんでほんをかりました。",
+        "translation_vi": "Tôi đã mượn sách ở thư viện."
+      },
+      {
+        "sentence_ja": "駅で自転車を借りられます。",
+        "reading_ja": "えきでじてんしゃをかりられます。",
+        "translation_vi": "Có thể thuê xe đạp ở nhà ga."
+      }
+    ]
+  },
+  {
+    "id": "73b4923f-ca87-57c0-b040-fcc00766bb88",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "返す",
+    "reading": "かえす",
+    "meaning_vi": "trả lại; hoàn trả",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Đưa lại đồ vật hoặc tiền cho người sở hữu.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "借りた本を返します。",
+        "reading_ja": "かりたほんをかえします。",
+        "translation_vi": "Tôi sẽ trả cuốn sách đã mượn."
+      },
+      {
+        "sentence_ja": "明日までにお金を返してください。",
+        "reading_ja": "あしたまでにおかねをかえしてください。",
+        "translation_vi": "Hãy trả tiền trước ngày mai."
+      }
+    ]
+  },
+  {
+    "id": "753ccbd3-4109-5c7e-8a08-da30af816ea4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "熱",
+    "reading": "ねつ",
+    "meaning_vi": "sốt; nhiệt độ cơ thể",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nhiệt độ cơ thể cao khi bị bệnh.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "熱があるので、今日は休みます。",
+        "reading_ja": "ねつがあるので、きょうはやすみます。",
+        "translation_vi": "Vì bị sốt nên hôm nay tôi nghỉ."
+      },
+      {
+        "sentence_ja": "病院で熱を測りました。",
+        "reading_ja": "びょういんでねつをはかりました。",
+        "translation_vi": "Tôi đã đo nhiệt độ ở bệnh viện."
+      }
+    ]
+  },
+  {
+    "id": "9c637010-a795-51db-b723-4ba849788aab",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "薬",
+    "reading": "くすり",
+    "meaning_vi": "thuốc",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thuốc dùng để điều trị hoặc giảm triệu chứng.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "食事の後で薬を飲みます。",
+        "reading_ja": "しょくじのあとでくすりをのみます。",
+        "translation_vi": "Tôi uống thuốc sau bữa ăn."
+      },
+      {
+        "sentence_ja": "この薬は一日三回飲んでください。",
+        "reading_ja": "このくすりはいちにちさんかいのんでください。",
+        "translation_vi": "Hãy uống thuốc này ba lần một ngày."
+      }
+    ]
+  },
+  {
+    "id": "b8e4f1db-3db4-5246-8da9-89fb7729b966",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "眠る",
+    "reading": "ねむる",
+    "meaning_vi": "ngủ",
+    "part_of_speech": "động từ nhóm 1",
+    "usage_context_vi": "Nghỉ ngơi trong trạng thái ngủ.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昨夜はよく眠りました。",
+        "reading_ja": "さくやはよくねむりました。",
+        "translation_vi": "Tối qua tôi đã ngủ ngon."
+      },
+      {
+        "sentence_ja": "疲れたときは早く眠るようにします。",
+        "reading_ja": "つかれたときははやくねむるようにします。",
+        "translation_vi": "Khi mệt tôi sẽ cố gắng ngủ sớm."
+      }
+    ]
+  },
+  {
+    "id": "552c3f68-9316-5c24-bdf9-c218461d3a82",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "治る",
+    "reading": "なおる",
     "meaning_vi": "khỏi; lành bệnh",
     "part_of_speech": "động từ nhóm 1",
     "usage_context_vi": "Tình trạng bệnh hoặc vết thương trở nên tốt hơn.",
@@ -3401,4 +3528,3 @@ Total output lines: 3531
     ]
   }
 ]
-
