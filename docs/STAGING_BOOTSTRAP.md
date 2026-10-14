@@ -60,7 +60,7 @@ Three new Windows process phases resolve isolated GUID `.invalid` scopes, write/
 reopen a fixed marker, execute the actual empty-vault owned factory/start/close
 and reopen its journal lease. Finally removes only that invocation's test scope.
 CI separately compiles the configured main with fixed TEST ONLY public settings,
-then rebuilds and uploads normal preview. New-source full CI is pending.
+then rebuilds and uploads normal preview. Verified source evidence is recorded below.
 
 Tests do not authenticate with Supabase: no hosted learner/login/signature/
 expiry/device or full configured GUI/OS-shutdown proof. Default CI artifacts remain
@@ -69,3 +69,22 @@ preview. All 14 live Personal Alpha groups remain pending; keep #37 draft.
 Primary Microsoft docs checked 2026-10-14:
 - https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderpath
 - https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcrypthash
+
+## Verified source evidence
+
+Source `5be34663e2c28e182d12c66f0dea894853e05cd9` passed all five jobs in
+https://github.com/collab-TTAM/nihongo_daily/actions/runs/38605205617 .
+Observed 356 Flutter tests (six config/selection + three directory cases added),
+five actual Chrome tests, format/analyze, OS app-data/empty-vault staging factory
+marker and all retained Windows vault/runtime/native/SQL/wire/security gates.
+Configured staging main compiled with TEST ONLY public values; normal Windows
+preview rebuilt afterward and web/Windows preview artifacts passed upload.
+Raw run/latest-attempt metadata passed exact-head/every-required-step QA, including
+the added configured build gate. All 256 source blobs matched. Local 49 contracts/
+17 QA/format passed. Platform fixtures now use framework variants; unused imports
+removed without production/assertion/lint/security gate changes.
+
+No hosted project, login/JWT/learner or full configured GUI/OS-shutdown acceptance
+is inferred. Native factory probe uses a random `.invalid` project with empty
+vault, so it proves assembly/disk/lease close rather than network Auth. All 14
+live release groups remain pending. Source evidence is historical for later docs.

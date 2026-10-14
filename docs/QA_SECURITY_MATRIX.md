@@ -242,3 +242,11 @@ messages, credential clearing, no authorization from display, source ownership
 and explicit login recovery. The configured-host no-fields assertion is retained
 with source/state propagation checks before rendering. `account-session-notice`
 tracks fixture scope; all 14 live release integrations remain pending.
+
+## Explicit Windows staging assembly baseline — 2026-10-14 UTC
+
+Source 5be34663 CI38605205617 passed 356 Flutter/five Chrome and every five-job
+gate, including configured Windows main build, real LocalAppData project-scope
+marker and empty-vault factory/start/close/journal lease reopening. Normal preview
+rebuilt before upload. windows-staging-bootstrap tracks fixture/native/build scope;
+no hosted login/JWT/learner/full configured GUI proof. All 14 live groups pending.

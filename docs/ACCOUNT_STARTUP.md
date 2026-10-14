@@ -51,3 +51,8 @@ The configured UI tests use explicit fake owners/Auth/profile, not hosted learne
 identity or UI-to-OS restart acceptance. Default main stays unconfigured.
 Follow-up source only enclosed retry's multiline guard in a lint-compliant block,
 without changing conditions/assertions. Evidence is historical for later commits.
+
+The ordinary application entrypoint can now select the owned host through trusted
+Windows staging build settings. STAGING_BOOTSTRAP.md documents configuration,
+project-scoped OS app-data journal ownership and observed empty-vault native
+assembly/build evidence. Default remains preview; no hosted learner proof.

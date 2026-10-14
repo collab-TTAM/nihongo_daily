@@ -1343,3 +1343,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   than late addTearDown reset. Original selection/ownership/no-resource assertions
   retained; no production behavior, lint/security/CI gate changed. Full corrected
   source CI required; skipped downstream steps are not successes.
+
+### Verified explicit staging bootstrap handoff
+
+- Source 5be34663e2c28e182d12c66f0dea894853e05cd9 passed all five jobs in
+  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38605205617 .
+  Observed 356 Flutter tests (six config/selection + three directory), five
+  Chrome tests, format/analyze, actual OS project app-data + empty-vault owned
+  factory/start/close/reopened journal marker and retained Windows vault/runtime
+  process markers/native/SQL/wire/security gates. Configured staging main compiled
+  with TEST ONLY settings, then normal preview rebuilt and artifacts uploaded.
+  Raw run/latest-attempt metadata passed exact-source/every-required-step QA,
+  including the newly mandatory configured main build.
+- All 256 source blobs matched. Local format/49 contracts/17 QA passed. Initial
+  widget debug-platform invariant corrected with framework variants; redundant
+  imports removed without any production behavior, expectation or gate weakening.
+  Native API buffers/providers freed, scope is canonical target SHA256 and probe
+  only deletes its GUID `.invalid` journal scope. No user history is deleted.
+- Main now supports trusted explicit Windows staging build assembly; default
+  remains preview. Journal/process lease precedes token writer; invalid/unsupported
+  selected configuration fails before resources. Bootstrap now owns journal +
+  runtime, preserves history and drains runtime before journal release. No secrets
+  supplied through build settings, no hosted project/provider/schema deployment.
+- Core worker RELEASED after persisted evidence. Resume actual head/checks;
+  following handoff/QA successor has separate CI. Next supported non-production
+  service configuration and actual learner A/B/expiry/restart/two-client acceptance,
+  or independent remaining product flows while service configuration is absent.
+  All 14 live release groups remain pending. Keep #37 draft/#20/#22/#15 open;
+  Pro #38/N4 intact. No dependencies/Auth strategy/API/RLS/production changes.
