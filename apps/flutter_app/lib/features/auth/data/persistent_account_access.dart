@@ -16,12 +16,15 @@ enum SessionPersistencePhase { idle, restoring, saving, ready, failed, closed }
 /// Explicit opt-in barrier: SDK identity is visible only after its exact current
 /// refresh secret is persisted. A stored secret alone never grants study access.
 final class PersistentAccountAccess implements AccountAccess {
-  PersistentAccountAccess({required this.sdk, required this.vault}) {
+  PersistentAccountAccess({
+    required RefreshableAccountAccess sdk,
+    required this.vault,
+  }) : _sdk = sdk {
     if (!_owners.add(vault.target)) {
       throw const SessionVaultFailure(SessionVaultError.unavailable);
     }
     try {
-      _subscription = sdk.sessionChanges.listen(
+      _subscription = _sdk.sessionChanges.listen(
         (_) => _changed(),
         onError: (Object _, StackTrace __) => _fail(),
         onDone: _fail,
@@ -33,7 +36,7 @@ final class PersistentAccountAccess implements AccountAccess {
   }
   static final _owners = <String>{};
   static bool isTargetOwned(String target) => _owners.contains(target);
-  final RefreshableAccountAccess sdk;
+  final RefreshableAccountAccess _sdk;
   final SessionCredentialVault vault;
   final _events = StreamController<void>.broadcast();
   @override
@@ -61,8 +64,8 @@ final class PersistentAccountAccess implements AccountAccess {
   ReviewSession? get currentSession {
     if (_closed || _failed || !_allowed || _accepted == null) return null;
     try {
-      return identical(sdk.currentSession, _accepted) &&
-              sdk.currentRefreshToken == _acceptedSecret
+      return identical(_sdk.currentSession, _accepted) &&
+              _sdk.currentRefreshToken == _acceptedSecret
           ? _accepted
           : null;
     } on Object {
@@ -103,8 +106,8 @@ final class PersistentAccountAccess implements AccountAccess {
       return false;
     }
     try {
-      return identical(sdk.currentSession, session) &&
-          sdk.currentRefreshToken == secret;
+      return identical(_sdk.currentSession, session) &&
+          _sdk.currentRefreshToken == secret;
     } on Object {
       return false;
     }
@@ -113,8 +116,8 @@ final class PersistentAccountAccess implements AccountAccess {
   void _changed() {
     if (_closed || _failed || !_allowed || _authInFlight) return;
     try {
-      final session = sdk.currentSession;
-      final secret = sdk.currentRefreshToken;
+      final session = _sdk.currentSession;
+      final secret = _sdk.currentRefreshToken;
       if (session == null) {
         _revoke(SessionPersistencePhase.idle);
         unawaited(
@@ -208,7 +211,7 @@ final class PersistentAccountAccess implements AccountAccess {
         _notify();
         return;
       }
-      await sdk.restore(secret);
+      await _sdk.restore(secret);
       await _settle();
     });
     _operation = result;
@@ -259,7 +262,7 @@ final class PersistentAccountAccess implements AccountAccess {
         _failed = false;
         _allowed = true;
       }
-      await sdk.signIn(email, password);
+      await _sdk.signIn(email, password);
       await _settle();
     });
     _operation = result;
@@ -274,7 +277,7 @@ final class PersistentAccountAccess implements AccountAccess {
     }
     _revoke(SessionPersistencePhase.saving);
     final result = _run(() async {
-      await sdk.refresh();
+      await _sdk.refresh();
       await _settle();
     });
     _operation = result;
@@ -286,7 +289,7 @@ final class PersistentAccountAccess implements AccountAccess {
     // No SDK calls inside a synchronous Auth callback. Gate already revoked.
     await Future<void>.value();
     try {
-      await sdk.signOut();
+      await _sdk.signOut();
     } on Object {
       failed = true;
     }
