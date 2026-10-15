@@ -1,4 +1,4 @@
-# Original curriculum seed — content v1 / wire v0.1
+# Original curriculum seed - content v1 / wire v0.1
 
 This is a small original editorial N5/N4 seed for development and initial study
 screens, not full JLPT coverage or an officially certified JLPT list. The first
@@ -9,110 +9,112 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 302 | 79 | 115 | 834 |
+| N4 | 310 | 81 | 118 | 856 |
 
 ## N4 seed batches
 
-The N4 seed is now thirty-five original editorial batches for development. It contains
-302 vocabulary items, 79 Kanji metadata records and 115 grammar patterns, with 834
-embedded Japanese–Vietnamese examples. Topics cover travel and planning,
+The N4 seed is now thirty-six original editorial batches for development. It contains
+310 vocabulary items, 81 Kanji metadata records and 118 grammar patterns, with 856
+embedded Japanese-Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
 seed, not complete JLPT N4 coverage.
 
 The second batch adds confirmation and guidance, transport/service, fees and
-addresses, safety and culture vocabulary; 度, 活, 送 and 始 metadata; and the
-patterns ～そうです, ～ようになります, ～なくてもいいです, ～すぎます and
-～たほうがいいです. It is authored under the same ID/version rules.
+addresses, safety and culture vocabulary; ?, ?, ? and ? metadata; and the
+patterns ~????, ~???????, ~????????, ~???? and
+~????????. It is authored under the same ID/version rules.
 
-The third batch adds health, daily life, safety and advice vocabulary; 動, 健 and
-直 metadata; and the patterns ～ことにします, ～ことになります,
-～かもしれません and ～ないでください. It remains a seed for review, not
+The third batch adds health, daily life, safety and advice vocabulary; ?, ? and
+? metadata; and the patterns ~??????, ~???????,
+~??????? and ~???????. It remains a seed for review, not
 complete JLPT N4 coverage.
 
-The fourth batch adds daily-life, planning and study actions; 選 and 決 metadata;
-and the patterns ～てみます, ～ておきます and ～てしまいます.
+The fourth batch adds daily-life, planning and study actions; ? and ? metadata;
+and the patterns ~????, ~????? and ~??????.
 
 The fifth batch adds service registration, communication, punctuality and
-returning items; 伝 and 返 metadata; and the patterns Nのために, Vるようにします
-and Vることができます.
+returning items; ? and ? metadata; and the patterns N????, V???????
+and V????????.
 
-The sixth batch adds health, notification and assistance actions; 薬 and 知 metadata;
-and the patterns Vるのが好きです, Vてあげます and Vてもらいます.
+The sixth batch adds health, notification and assistance actions; ? and ? metadata;
+and the patterns V???????, V????? and V??????.
 
-The seventh batch adds payments, changing quantities and advice for study; 払 and 増 metadata;
-and the patterns Vるために, Vたらどうですか and Nしか～ません.
+The seventh batch adds payments, changing quantities and advice for study; ? and ? metadata;
+and the patterns V????, V??????? and N??~???.
 
 The eighth batch adds transport changes, service desks, lost items and topic descriptions;
-乗 and 残 metadata; and the patterns Vる前に, Vた後で and Nについて.
+? and ? metadata; and the patterns V???, V??? and N????.
 
-The ninth batch adds searching, seeing/hearing, repairs and deliveries; 急 and 壊 metadata;
-and the patterns Vると, Vないで and Nより.
+The ninth batch adds searching, seeing/hearing, repairs and deliveries; ? and ? metadata;
+and the patterns V??, V??? and N??.
 
-The tenth batch adds lodging, departures/arrivals, reassurance and concern; 到 and 泊 metadata;
-and the patterns Vることがあります, Nのような and Vるはずです.
+The tenth batch adds lodging, departures/arrivals, reassurance and concern; ? and ? metadata;
+and the patterns V????????, N???? and V?????.
 
-The eleventh batch adds food preparation, cleaning and queues; 焼 and 洗 metadata;
-and the patterns Vるなら, Nでも and Vるでしょう.
+The eleventh batch adds food preparation, cleaning and queues; ? and ? metadata;
+and the patterns V???, N?? and V?????.
 
-The twelfth batch adds weather, drying, plants and cooling; 晴 and 曇 metadata;
-and the patterns Vたら, Vないと and Nの間に.
+The twelfth batch adds weather, drying, plants and cooling; ? and ? metadata;
+and the patterns V??, V??? and N???.
 
-The thirteenth batch adds health, rest and careful handling of objects; 疲 and 痛 metadata;
-and the patterns Vるとき, Vたまま and Vないように.
+The thirteenth batch adds health, rest and careful handling of objects; ? and ? metadata;
+and the patterns V???, V??? and V?????.
 
-The fourteenth batch adds invitations, replies and event decisions; 招 and 断 metadata;
-and the patterns Vてから, Vても and Nなら.
+The fourteenth batch adds invitations, replies and event decisions; ? and ? metadata;
+and the patterns V???, V?? and N??.
 
-The fifteenth batch adds safety, cleaning and storage; 滑 and 磨 metadata;
-and the patterns Vるところです, Vているところです and Vたところです. It follows the
+The fifteenth batch adds safety, cleaning and storage; ? and ? metadata;
+and the patterns V??????, V???????? and V??????. It follows the
 same authored-content and unavailable-asset rules.
 
-The sixteenth batch adds scheduling, attendance and reply vocabulary; 都 and 合 metadata;
-and the patterns Vることにします, Vることになりました and Nらしいです. It follows the
+The sixteenth batch adds scheduling, attendance and reply vocabulary; ? and ? metadata;
+and the patterns V???????, V????????? and N?????. It follows the
 same authored-content and unavailable-asset rules.
 
-The seventeenth batch adds housing, utilities and service-use vocabulary; 所 and 設 metadata;
-and the patterns Nに対して, Vないことにします and Nによると. It follows the same authored-content
+The seventeenth batch adds housing, utilities and service-use vocabulary; ? and ? metadata;
+and the patterns N????, V???????? and N????. It follows the same authored-content
 and unavailable-asset rules.
 
-The eighteenth batch adds community, environment and safety vocabulary; 環 and 境 metadata;
-and the patterns Vるように言います, Vている間に and Nによって. It follows the same
+The eighteenth batch adds community, environment and safety vocabulary; ? and ? metadata;
+and the patterns V????????, V????? and N????. It follows the same
 authored-content and unavailable-asset rules.
 
-The nineteenth batch adds public-service procedures, applications, documents and study attendance; 役 and 類 metadata; and the patterns Vることになっています, Vるまで and Nの中で. It follows the same authored-content and unavailable-asset rules.
+The nineteenth batch adds public-service procedures, applications, documents and study attendance; ? and ? metadata; and the patterns V??????????, V??? and N???. It follows the same authored-content and unavailable-asset rules.
 
-The twentieth batch adds purpose, methods, results, reasons and community activities; 意 and 見 metadata; and the patterns Vなくてはいけません, Nという意味です and Vる必要があります. It follows the same authored-content and unavailable-asset rules.
+The twentieth batch adds purpose, methods, results, reasons and community activities; ? and ? metadata; and the patterns V?????????, N??????? and V????????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-first batch adds airports, scenery, domestic and overseas travel, forecasts and sightseeing; 空 and 港 metadata; and the patterns Vたばかりです, Nに興味があります and Vることが大切です. It follows the same authored-content and unavailable-asset rules.
+The twenty-first batch adds airports, scenery, domestic and overseas travel, forecasts and sightseeing; ? and ? metadata; and the patterns V??????, N???????? and V????????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-second batch adds applications, interviews, salaries, school milestones and contact details; 卒 and 業 metadata; and the patterns Vてほしいです, Nについて話します and Vるのに時間がかかります. It follows the same authored-content and unavailable-asset rules.
+The twenty-second batch adds applications, interviews, salaries, school milestones and contact details; ? and ? metadata; and the patterns V??????, N???????? and V???????????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-third batch adds hospitals, doctors, patients, symptoms, treatment and visiting patients; 医 and 病 metadata; and the patterns Vたらいいですか, Vてしまいました and Nのように. It follows the same authored-content and unavailable-asset rules.
+The twenty-third batch adds hospitals, doctors, patients, symptoms, treatment and visiting patients; ? and ? metadata; and the patterns V???????, V??????? and N????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-fourth batch adds fire, earthquakes, evacuation, police, accidents and prevention; 地 and 震 metadata; and the patterns Vないようにしています, Nに気をつけてください and Vるといいです. It follows the same authored-content and unavailable-asset rules.
+The twenty-fourth batch adds fire, earthquakes, evacuation, police, accidents and prevention; ? and ? metadata; and the patterns V??????????, N?????????? and V??????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-fifth batch adds products, prices, discounts, cash, receipts, returns, exchanges and stock; 品 and 割 metadata; and the patterns Nにします, Vてみたいです and Vてもらえますか. It follows the same authored-content and unavailable-asset rules.
+The twenty-fifth batch adds products, prices, discounts, cash, receipts, returns, exchanges and stock; ? and ? metadata; and the patterns N????, V?????? and V???????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-sixth batch adds repairs, construction, water leaks, power outages, batteries, machines, parts and maintenance; 機 and 械 metadata; and the patterns Vてあります, Nのまま and Vている間. It follows the same authored-content and unavailable-asset rules.
+The twenty-sixth batch adds repairs, construction, water leaks, power outages, batteries, machines, parts and maintenance; ? and ? metadata; and the patterns V?????, N??? and V????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-seventh batch adds ingredients, taste, salt, sugar, cooking methods, refrigerators, temperature and food dates; 味 and 塩 metadata; and the patterns Nがします, Vるのが上手です and Vてもいいですか. It follows the same authored-content and unavailable-asset rules.
+The twenty-seventh batch adds ingredients, taste, salt, sugar, cooking methods, refrigerators, temperature and food dates; ? and ? metadata; and the patterns N????, V??????? and V???????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-eighth batch adds traffic jams, signals, roads, sidewalks, fares, timetables, boarding areas and destinations; 道 and 信 metadata; and the patterns Vるかどうか, Nによっては and Vるためには. It follows the same authored-content and unavailable-asset rules.
+The twenty-eighth batch adds traffic jams, signals, roads, sidewalks, fares, timetables, boarding areas and destinations; ? and ? metadata; and the patterns V?????, N????? and V?????. It follows the same authored-content and unavailable-asset rules.
 
-The twenty-ninth batch adds doors, lights and clothing; 開 and 着 metadata; and the patterns Vているうちに, Nに比べて and Vたままにする. It follows the same authored-content and unavailable-asset rules.
+The twenty-ninth batch adds doors, lights and clothing; ? and ? metadata; and the patterns V??????, N???? and V??????. It follows the same authored-content and unavailable-asset rules.
 
-The thirtieth batch adds schedules, presentations, submissions, deadlines and participants; 配 and 集 metadata; and the patterns Vるまでに, Vるように言われました and Nだけでなく. It follows the same authored-content and unavailable-asset rules.
+The thirtieth batch adds schedules, presentations, submissions, deadlines and participants; ? and ? metadata; and the patterns V????, V?????????? and N?????. It follows the same authored-content and unavailable-asset rules.
 
-The thirty-first batch adds orders, customers, store areas, stock status and store opening/closing; 客 and 売 metadata; and the patterns Vてからでないと, Nにとって and Vるのではなく. It follows the same authored-content and unavailable-asset rules.
+The thirty-first batch adds orders, customers, store areas, stock status and store opening/closing; ? and ? metadata; and the patterns V???????, N???? and V??????. It follows the same authored-content and unavailable-asset rules.
 
-The thirty-second batch adds health condition, nursing, dental visits, travel costs, one-way/round-trip tickets, information desks and ticket gates; 体 and 改 metadata; and the patterns Vてくれます, Vさせてください and Vないほうがいいです. It follows the same authored-content and unavailable-asset rules.
+The thirty-second batch adds health condition, nursing, dental visits, travel costs, one-way/round-trip tickets, information desks and ticket gates; ? and ? metadata; and the patterns V?????, V??????? and V?????????. It follows the same authored-content and unavailable-asset rules.
 
-The thirty-third batch adds permissions, deadlines, maps, event venues, relationships, opportunities, direct contact and lost-property service; 許 and 場 metadata; and the patterns Vてくれませんか, Vることはありません and Nを通して. It follows the same authored-content and unavailable-asset rules.
+The thirty-third batch adds permissions, deadlines, maps, event venues, relationships, opportunities, direct contact and lost-property service; ? and ? metadata; and the patterns V???????, V????????? and N????. It follows the same authored-content and unavailable-asset rules.
 
-The thirty-fourth batch adds grades, urgent matters, articles, programs, floods, typhoons, cooling and electricity costs; 成 and 洪 metadata; and the patterns Vているようです, Vたらどうでしょうか and Nほど. It follows the same authored-content and unavailable-asset rules.
+The thirty-fourth batch adds grades, urgent matters, articles, programs, floods, typhoons, cooling and electricity costs; ? and ? metadata; and the patterns V???????, V????????? and N??. It follows the same authored-content and unavailable-asset rules.
 
-The thirty-fifth batch adds Japanese calligraphy, parks, riversides, coasts, forests, agriculture, factories and residents; 祭 and 森 metadata; and the patterns Vようと思います, Nの代わりに and Nによれば. It follows the same authored-content and unavailable-asset rules.
+The thirty-fifth batch adds Japanese calligraphy, parks, riversides, coasts, forests, agriculture, factories and residents; ? and ? metadata; and the patterns V???????, N????? and N????. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-sixth batch adds power, screens, functions, registration, settings, saving, deletion and data input; ? and ? metadata; and the patterns V????????, N???? and V??????????. It follows the same authored-content and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo
 Daily. Kanji meanings/readings and stroke counts use common reference metadata;
@@ -146,16 +148,16 @@ content_version when publishing changed content; do not silently replace history
 ## Coverage and language notes
 
 Vocabulary topics: people (5), places (3), nature (2), food (2), study (1), time (3),
-actions (5), descriptions (3). Kanji: 日 月 木 山 川 人 水 火. Grammar: nominal
-assertion/negation/question, の, direct object を, action location で, destination
-へ／に, existence に…が, polite verb negation and polite past/negative past.
-Verb headwords use dictionary forms; examples use polite forms. い adjectives
-are distinct from nominal predicates. ご飯 preserves the usual polite spelling.
-今日/明日 are word readings and must not be inferred from single-character lists.
+actions (5), descriptions (3). Kanji: ? ? ? ? ? ? ? ?. Grammar: nominal
+assertion/negation/question, ?, direct object ?, action location ?, destination
+?/?, existence ?.?, polite verb negation and polite past/negative past.
+Verb headwords use dictionary forms; examples use polite forms. ? adjectives
+are distinct from nominal predicates. ?? preserves the usual polite spelling.
+??/?? are word readings and must not be inferred from single-character lists.
 
 `reading_ja` gives kana spelling, retaining katakana loanwords, punctuation and
-orthographic particles は／へ／を. It is not a phonetic transcription: these
-particles are pronounced わ／え／お. It is not positional furigana markup. Kanji
+orthographic particles ?/?/?. It is not a phonetic transcription: these
+particles are pronounced ?/?/?. It is not positional furigana markup. Kanji
 readings are selected common readings, not exhaustive; context, counters and
 sound changes require later entries. Difficulty 0.2 is a seed editorial value,
 not a calibrated mastery or memory estimate. Vietnamese examples/explanations
