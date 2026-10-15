@@ -9853,5 +9853,229 @@
         "translation_vi": "Nếu nộp sai nơi thì hồ sơ sẽ không được nhận."
       }
     ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0031",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "目標",
+    "reading": "もくひょう",
+    "meaning_vi": "mục tiêu",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều muốn đạt được trong học tập hoặc công việc.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "今月の勉強の目標を決めました。",
+        "reading_ja": "こんげつのべんきょうのもくひょうをきめました。",
+        "translation_vi": "Tôi đã đặt mục tiêu học tập cho tháng này."
+      },
+      {
+        "sentence_ja": "目標を紙に書いて机の前に貼ります。",
+        "reading_ja": "もくひょうをかみにかいてつくえのまえにはります。",
+        "translation_vi": "Tôi viết mục tiêu ra giấy và dán trước bàn học."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0032",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "計画表",
+    "reading": "けいかくひょう",
+    "meaning_vi": "bảng kế hoạch",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bảng ghi các việc cần làm theo thời gian.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "計画表を見ながら毎日の勉強を進めます。",
+        "reading_ja": "けいかくひょうをみながらまいにちのべんきょうをすすめます。",
+        "translation_vi": "Tôi học mỗi ngày theo bảng kế hoạch."
+      },
+      {
+        "sentence_ja": "計画表に休む時間も入れてください。",
+        "reading_ja": "けいかくひょうにやすむじかんもいれてください。",
+        "translation_vi": "Hãy đưa cả thời gian nghỉ vào bảng kế hoạch."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0033",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "予定表",
+    "reading": "よていひょう",
+    "meaning_vi": "bảng lịch; thời gian biểu",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bảng ghi lịch trình hoặc thời gian đã dự định.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "授業の予定表を学校でもらいました。",
+        "reading_ja": "じゅぎょうのよていひょうをがっこうでもらいました。",
+        "translation_vi": "Tôi đã nhận thời khóa biểu ở trường."
+      },
+      {
+        "sentence_ja": "予定表が変わったら、すぐ知らせてください。",
+        "reading_ja": "よていひょうがかわったら、すぐしらせてください。",
+        "translation_vi": "Nếu thời gian biểu thay đổi, hãy báo ngay."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0034",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "練習",
+    "reading": "れんしゅう",
+    "meaning_vi": "luyện tập",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc lặp lại một hoạt động để tiến bộ.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎日発音の練習をしています。",
+        "reading_ja": "まいにちはつおんのれんしゅうをしています。",
+        "translation_vi": "Tôi luyện phát âm mỗi ngày."
+      },
+      {
+        "sentence_ja": "練習の後で間違いを直します。",
+        "reading_ja": "れんしゅうのあとでまちがいをなおします。",
+        "translation_vi": "Sau khi luyện tập, tôi sửa lỗi."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0035",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "復習",
+    "reading": "ふくしゅう",
+    "meaning_vi": "ôn tập",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc học lại nội dung đã học để nhớ lâu hơn.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "授業の復習を寝る前にします。",
+        "reading_ja": "じゅぎょうのふくしゅうをねるまえにします。",
+        "translation_vi": "Tôi ôn lại bài trước khi đi ngủ."
+      },
+      {
+        "sentence_ja": "復習すると、新しい言葉をよく覚えられます。",
+        "reading_ja": "ふくしゅうすると、あたらしいことばをよくおぼえられます。",
+        "translation_vi": "Ôn tập giúp nhớ từ mới tốt hơn."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0036",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "予習",
+    "reading": "よしゅう",
+    "meaning_vi": "chuẩn bị bài trước",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc xem trước nội dung trước khi học trên lớp.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "明日の授業の予習をしておきます。",
+        "reading_ja": "あしたのじゅぎょうのよしゅうをしておきます。",
+        "translation_vi": "Tôi sẽ chuẩn bị bài cho tiết học ngày mai."
+      },
+      {
+        "sentence_ja": "予習で分からない言葉を先生に聞きました。",
+        "reading_ja": "よしゅうでわからないことばをせんせいにききました。",
+        "translation_vi": "Tôi đã hỏi giáo viên những từ chưa hiểu khi chuẩn bị bài."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0037",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "発音",
+    "reading": "はつおん",
+    "meaning_vi": "phát âm",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cách đọc và phát ra âm thanh của một từ.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "先生に発音を直してもらいました。",
+        "reading_ja": "せんせいにはつおんをなおしてもらいました。",
+        "translation_vi": "Tôi đã nhờ giáo viên sửa phát âm."
+      },
+      {
+        "sentence_ja": "この言葉は発音が少し難しいです。",
+        "reading_ja": "このことばははつおんがすこしむずかしいです。",
+        "translation_vi": "Từ này có cách phát âm hơi khó."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0038",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "文法",
+    "reading": "ぶんぽう",
+    "meaning_vi": "ngữ pháp",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Các quy tắc kết hợp từ và tạo câu.",
+    "audio_ref": null,
+    "tags": [
+      "study"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "新しい文法を例文で覚えます。",
+        "reading_ja": "あたらしいぶんぽうをれいぶんでおぼえます。",
+        "translation_vi": "Tôi ghi nhớ ngữ pháp mới qua câu ví dụ."
+      },
+      {
+        "sentence_ja": "文法の説明をもう一度読んでください。",
+        "reading_ja": "ぶんぽうのせつめいをもういちどよんでください。",
+        "translation_vi": "Hãy đọc lại phần giải thích ngữ pháp một lần nữa."
+      }
+    ]
   }
 ]
