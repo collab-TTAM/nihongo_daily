@@ -10077,5 +10077,229 @@
         "translation_vi": "Hãy đọc lại phần giải thích ngữ pháp một lần nữa."
       }
     ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0041",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "睡眠",
+    "reading": "すいみん",
+    "meaning_vi": "giấc ngủ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Trạng thái nghỉ ngơi bằng cách ngủ.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "十分な睡眠を取ることが大切です。",
+        "reading_ja": "じゅうぶんなすいみんをとることがたいせつです。",
+        "translation_vi": "Ngủ đủ giấc là điều quan trọng."
+      },
+      {
+        "sentence_ja": "睡眠が足りないと、昼に眠くなります。",
+        "reading_ja": "すいみんがたりないと、ひるにねむくなります。",
+        "translation_vi": "Nếu thiếu ngủ thì ban ngày sẽ buồn ngủ."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0042",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "睡眠時間",
+    "reading": "すいみんじかん",
+    "meaning_vi": "thời gian ngủ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khoảng thời gian dành cho việc ngủ.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "平日の睡眠時間を記録しています。",
+        "reading_ja": "へいじつのすいみんじかんをきろくしています。",
+        "translation_vi": "Tôi ghi lại thời gian ngủ vào các ngày trong tuần."
+      },
+      {
+        "sentence_ja": "睡眠時間を少し長くしたいです。",
+        "reading_ja": "すいみんじかんをすこしながくしたいです。",
+        "translation_vi": "Tôi muốn kéo dài thời gian ngủ thêm một chút."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0043",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "朝食",
+    "reading": "ちょうしょく",
+    "meaning_vi": "bữa sáng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bữa ăn đầu tiên trong ngày.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "朝食に果物とパンを食べました。",
+        "reading_ja": "ちょうしょくにくだものとぱんをたべました。",
+        "translation_vi": "Tôi đã ăn trái cây và bánh mì vào bữa sáng."
+      },
+      {
+        "sentence_ja": "朝食を抜かないようにしてください。",
+        "reading_ja": "ちょうしょくをぬかないようにしてください。",
+        "translation_vi": "Hãy chú ý đừng bỏ bữa sáng."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0044",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "昼食",
+    "reading": "ちゅうしょく",
+    "meaning_vi": "bữa trưa",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bữa ăn vào khoảng giữa ngày.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昼食の後で少し歩きます。",
+        "reading_ja": "ちゅうしょくのあとですこしあるきます。",
+        "translation_vi": "Sau bữa trưa, tôi đi bộ một chút."
+      },
+      {
+        "sentence_ja": "昼食は職場の近くで買いました。",
+        "reading_ja": "ちゅうしょくはしょくばのちかくでかいました。",
+        "translation_vi": "Tôi đã mua bữa trưa gần nơi làm việc."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0045",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "夕食",
+    "reading": "ゆうしょく",
+    "meaning_vi": "bữa tối",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bữa ăn vào buổi tối.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "夕食は野菜を多く食べるようにしています。",
+        "reading_ja": "ゆうしょくはやさいをおおくたべるようにしています。",
+        "translation_vi": "Tôi cố gắng ăn nhiều rau vào bữa tối."
+      },
+      {
+        "sentence_ja": "夕食の時間が遅くなりました。",
+        "reading_ja": "ゆうしょくのじかんがおそくなりました。",
+        "translation_vi": "Giờ ăn tối đã trở nên muộn."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0046",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "水分",
+    "reading": "すいぶん",
+    "meaning_vi": "nước trong cơ thể; lượng nước",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nước cần bổ sung cho cơ thể.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "暑い日は水分をこまめに取ってください。",
+        "reading_ja": "あついひはすいぶんをこまめにとってください。",
+        "translation_vi": "Vào ngày nóng, hãy bổ sung nước thường xuyên."
+      },
+      {
+        "sentence_ja": "運動の後で水分を取りました。",
+        "reading_ja": "うんどうのあとですいぶんをとりました。",
+        "translation_vi": "Tôi đã bổ sung nước sau khi vận động."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0047",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "体温",
+    "reading": "たいおん",
+    "meaning_vi": "thân nhiệt",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nhiệt độ của cơ thể.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、体温を測っています。",
+        "reading_ja": "まいあさ、たいおんをはかっています。",
+        "translation_vi": "Mỗi sáng tôi đo thân nhiệt."
+      },
+      {
+        "sentence_ja": "体温が高いので、今日は休みます。",
+        "reading_ja": "たいおんがたかいので、きょうはやすみます。",
+        "translation_vi": "Vì thân nhiệt cao nên hôm nay tôi sẽ nghỉ."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0048",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "健康管理",
+    "reading": "けんこうかんり",
+    "meaning_vi": "quản lý sức khỏe",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc theo dõi và chăm sóc sức khỏe hằng ngày.",
+    "audio_ref": null,
+    "tags": [
+      "health"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "健康管理のために、毎日歩いています。",
+        "reading_ja": "けんこうかんりのために、まいにちあるいています。",
+        "translation_vi": "Để quản lý sức khỏe, tôi đi bộ mỗi ngày."
+      },
+      {
+        "sentence_ja": "健康管理の記録を家族と共有しました。",
+        "reading_ja": "けんこうかんりのきろくをかぞくときょうゆうしました。",
+        "translation_vi": "Tôi đã chia sẻ hồ sơ quản lý sức khỏe với gia đình."
+      }
+    ]
   }
 ]
