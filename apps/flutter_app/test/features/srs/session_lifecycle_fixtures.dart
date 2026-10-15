@@ -127,6 +127,7 @@ const scenarios = [
   'revocation',
   'dispose-ready',
   'dispose-during-auth',
+  'same-session-event',
   'duplicate-auth',
   'closed-stream',
   'queued-old-rotation',
@@ -274,6 +275,18 @@ Future<void> verifyLifecycle(String scenario) async {
             access.currentSession == null &&
             backend.writes == 0,
         'empty store manufactured session',
+      );
+      return;
+    }
+    if (scenario == 'same-session-event') {
+      await login();
+      await flush();
+      final writes = backend.writes;
+      sdk.change(owner, 'TEST_ONLY_ROTATED_1', sameSession: true);
+      await flush();
+      check(
+        backend.writes == writes && access.currentSession != null,
+        'same-session event rewrote vault or revoked readiness',
       );
       return;
     }
