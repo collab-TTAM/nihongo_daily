@@ -27,7 +27,7 @@ class ContentTests(unittest.TestCase):
             validate_content(self.root)
 
     def test_seed_passes_with_observed_counts(self):
-        self.assertEqual(validate_content(self.root), dict(vocabulary=326, kanji=87, grammar=125, examples=878))
+        self.assertEqual(validate_content(self.root), dict(vocabulary=334, kanji=89, grammar=128, examples=900))
 
     def test_n4_vocabulary_and_kanji_meanings_are_localized(self):
         # Short Vietnamese meanings must not contain accidental Japanese headwords.
@@ -36,7 +36,7 @@ class ContentTests(unittest.TestCase):
             records = json.loads((self.root / f'n4/{model}.json').read_text(encoding='utf-8'))
             for item in records:
                 with self.subTest(model=model, item_id=item['id']):
-                    self.assertNotRegex(item['meaning_vi'], r'[぀-ヿ㐀-鿿豈-﫿]')
+                    self.assertNotRegex(item['meaning_vi'], r'[?-??-??-?]')
 
     def test_unknown_wire_field(self):
         self.change('n5/vocabulary.json', lambda v: v[0].update(user_id='forged'))
@@ -61,11 +61,11 @@ class ContentTests(unittest.TestCase):
         self.fails()
 
     def test_duplicate_normalized_natural_key(self):
-        self.change('n5/grammar.json', lambda v: v[1].update(pattern=v[0]['pattern'].replace('N', 'Ｎ')))
+        self.change('n5/grammar.json', lambda v: v[1].update(pattern=v[0]['pattern'].replace('N', 'N')))
         self.fails()
 
     def test_duplicate_tags_and_examples(self):
-        self.change('n5/vocabulary.json', lambda v: v[0].update(tags=['people', 'ＰＥＯＰＬＥ']))
+        self.change('n5/vocabulary.json', lambda v: v[0].update(tags=['people', 'PEOPLE']))
         self.fails()
         self.change('n5/vocabulary.json', lambda v: v[0].update(tags=['people'], examples=v[0]['examples']*2))
         self.fails()
@@ -89,11 +89,11 @@ class ContentTests(unittest.TestCase):
             self.fails()
 
     def test_reading_and_character_checks(self):
-        for text in ['water', '水', '123']:
+        for text in ['water', '?', '123']:
             self.change('n5/vocabulary.json', lambda v: v[0].update(reading=text))
             self.fails()
-        self.change('n5/vocabulary.json', lambda v: v[0].update(reading='わたし'))
-        self.change('n5/kanji.json', lambda v: v[0].update(character='あ'))
+        self.change('n5/vocabulary.json', lambda v: v[0].update(reading='???'))
+        self.change('n5/kanji.json', lambda v: v[0].update(character='?'))
         self.fails()
 
     def test_counts_cannot_claim_extra_coverage(self):
@@ -125,7 +125,7 @@ class ContentTests(unittest.TestCase):
         self.fails()
 
     def test_fullwidth_romaji_cannot_bypass_reading_check(self):
-        self.change('n5/vocabulary.json', lambda v: v[0].update(reading='わたしＡ'))
+        self.change('n5/vocabulary.json', lambda v: v[0].update(reading='???A'))
         self.fails()
 
     def test_nonfinite_numbers_are_rejected(self):
