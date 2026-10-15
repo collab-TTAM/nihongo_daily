@@ -1626,5 +1626,40 @@
     "stroke_count": 8,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0023",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "指",
+    "meaning_vi": "chỉ; ngón tay",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "ゆび",
+      "さす"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0024",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "順",
+    "meaning_vi": "thứ tự; thuận theo",
+    "onyomi": [
+      "ジュン"
+    ],
+    "kunyomi": [],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
