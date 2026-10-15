@@ -9181,5 +9181,229 @@
         "translation_vi": "Tôi đã cho quần áo không dùng vào hộp cất đồ."
       }
     ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9001",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "案内板",
+    "reading": "あんないばん",
+    "meaning_vi": "bảng hướng dẫn",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bảng ghi thông tin chỉ dẫn về lối đi hoặc địa điểm.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駅の案内板で出口を確認しました。",
+        "reading_ja": "えきのあんないばんででぐちをかくにんしました。",
+        "translation_vi": "Tôi đã kiểm tra lối ra trên bảng hướng dẫn của nhà ga."
+      },
+      {
+        "sentence_ja": "案内板に会場の場所が書いてあります。",
+        "reading_ja": "あんないばんにかいじょうのばしょがかいてあります。",
+        "translation_vi": "Địa điểm hội trường được ghi trên bảng hướng dẫn."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9002",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "掲示板",
+    "reading": "けいじばん",
+    "meaning_vi": "bảng thông báo",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bảng dùng để đăng thông báo cho nhiều người.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "学校の掲示板に試験の日程が出ています。",
+        "reading_ja": "がっこうのけいじばんにしけんのにっていがでています。",
+        "translation_vi": "Lịch thi được đăng trên bảng thông báo của trường."
+      },
+      {
+        "sentence_ja": "掲示板で地域のイベントを知りました。",
+        "reading_ja": "けいじばんでちいきのいべんとをしりました。",
+        "translation_vi": "Tôi biết về sự kiện trong khu vực nhờ bảng thông báo."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9003",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "回覧板",
+    "reading": "かいらんばん",
+    "meaning_vi": "bảng thông tin luân chuyển",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tập thông tin được chuyền lần lượt giữa các gia đình.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "回覧板を読んだら、次の家に回してください。",
+        "reading_ja": "かいらんばんをよんだら、つぎのいえにまわしてください。",
+        "translation_vi": "Đọc xong bảng thông tin luân chuyển thì hãy chuyển cho nhà tiếp theo."
+      },
+      {
+        "sentence_ja": "回覧板に町内会のお知らせがありました。",
+        "reading_ja": "かいらんばんにちょうないかいのおしらせがありました。",
+        "translation_vi": "Trong bảng thông tin luân chuyển có thông báo của hội khu phố."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9004",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "町内会",
+    "reading": "ちょうないかい",
+    "meaning_vi": "hội khu phố",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tổ chức của những người sống trong cùng một khu phố.",
+    "audio_ref": null,
+    "tags": [
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "町内会の集まりに参加しました。",
+        "reading_ja": "ちょうないかいのあつまりにさんかしました。",
+        "translation_vi": "Tôi đã tham gia buổi họp của hội khu phố."
+      },
+      {
+        "sentence_ja": "町内会で祭りの準備をします。",
+        "reading_ja": "ちょうないかいでまつりのじゅんびをします。",
+        "translation_vi": "Hội khu phố sẽ chuẩn bị cho lễ hội."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9005",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "防災訓練",
+    "reading": "ぼうさいくんれん",
+    "meaning_vi": "buổi diễn tập phòng chống thiên tai",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Buổi luyện tập cách ứng phó khi xảy ra thiên tai.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "日曜日に防災訓練があります。",
+        "reading_ja": "にちようびにぼうさいくんれんがあります。",
+        "translation_vi": "Chủ nhật có buổi diễn tập phòng chống thiên tai."
+      },
+      {
+        "sentence_ja": "防災訓練で避難場所を確認しました。",
+        "reading_ja": "ぼうさいくんれんでひなんばしょをかくにんしました。",
+        "translation_vi": "Trong buổi diễn tập, tôi đã xác nhận nơi sơ tán."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9006",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "分別",
+    "reading": "ぶんべつ",
+    "meaning_vi": "việc phân loại",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc chia đồ vật thành các nhóm theo loại.",
+    "audio_ref": null,
+    "tags": [
+      "environment"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ごみは分別して出してください。",
+        "reading_ja": "ごみはぶんべつしてだしてください。",
+        "translation_vi": "Hãy phân loại rác trước khi đem đi đổ."
+      },
+      {
+        "sentence_ja": "分別の方法を掲示板で確認しました。",
+        "reading_ja": "ぶんべつのほうほうをけいじばんでかくにんしました。",
+        "translation_vi": "Tôi đã kiểm tra cách phân loại trên bảng thông báo."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9007",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "ごみ出し",
+    "reading": "ごみだし",
+    "meaning_vi": "việc đem rác đi đổ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Việc mang rác đến nơi thu gom theo lịch.",
+    "audio_ref": null,
+    "tags": [
+      "environment"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "朝のごみ出しを忘れないでください。",
+        "reading_ja": "あさのごみだしをわすれないでください。",
+        "translation_vi": "Xin đừng quên đem rác đi đổ vào buổi sáng."
+      },
+      {
+        "sentence_ja": "ごみ出しの日は地域によって違います。",
+        "reading_ja": "ごみだしのひはちいきによってちがいます。",
+        "translation_vi": "Ngày đem rác đi đổ khác nhau tùy khu vực."
+      }
+    ]
+  },
+  {
+    "id": "b1f4c2e0-6b1a-4f9e-8d31-2a7c1d4e9008",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "資源ごみ",
+    "reading": "しげんごみ",
+    "meaning_vi": "rác tái chế",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Rác có thể thu gom để tái chế như chai lọ và lon.",
+    "audio_ref": null,
+    "tags": [
+      "environment"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "資源ごみはこの袋に入れてください。",
+        "reading_ja": "しげんごみはこのふくろにいれてください。",
+        "translation_vi": "Hãy cho rác tái chế vào chiếc túi này."
+      },
+      {
+        "sentence_ja": "びんと缶は資源ごみの日に出します。",
+        "reading_ja": "びんとかんはしげんごみのひにだします。",
+        "translation_vi": "Chai lọ và lon được đem ra vào ngày thu gom rác tái chế."
+      }
+    ]
   }
 ]
