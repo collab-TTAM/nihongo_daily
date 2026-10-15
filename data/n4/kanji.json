@@ -1555,5 +1555,41 @@
     "stroke_count": 10,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "c2e5d3a1-7f4b-4e91-9c22-1a6b8d5e7001",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "防",
+    "meaning_vi": "phòng ngừa; bảo vệ",
+    "onyomi": [
+      "ボウ"
+    ],
+    "kunyomi": [
+      "ふせぐ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c2e5d3a1-7f4b-4e91-9c22-1a6b8d5e7002",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "訓",
+    "meaning_vi": "lời dạy; huấn luyện",
+    "onyomi": [
+      "クン"
+    ],
+    "kunyomi": [
+      "おしえる"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
