@@ -3759,5 +3759,98 @@
         "translation_vi": "Vừa mở cửa sổ thì gió mát thổi vào."
       }
     ]
+  },
+  {
+    "id": "d3f6e4b2-8a5c-4f02-9d33-2b7c9e6f8001",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに合わせて",
+    "pattern": "Nに合わせて",
+    "meaning_vi": "theo; phù hợp với N",
+    "explanation_vi": "Điều chỉnh hành động hoặc lựa chọn cho phù hợp với N.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ tiêu chuẩn hoặc hoàn cảnh trước に合わせて.",
+      "Dùng khi thay đổi lịch, vật dụng hoặc cách làm cho phù hợp."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nに関して, mẫu chỉ nói về chủ đề."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "予定に合わせて、集合時間を変えます。",
+        "reading_ja": "よていにあわせて、しゅうごうじかんをかえます。",
+        "translation_vi": "Tôi sẽ đổi giờ tập trung cho phù hợp với lịch trình."
+      },
+      {
+        "sentence_ja": "季節に合わせて服を選びます。",
+        "reading_ja": "きせつにあわせてふくをえらびます。",
+        "translation_vi": "Tôi chọn quần áo phù hợp với mùa."
+      }
+    ]
+  },
+  {
+    "id": "d3f6e4b2-8a5c-4f02-9d33-2b7c9e6f8002",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるようにしてください",
+    "pattern": "Vるようにしてください",
+    "meaning_vi": "hãy cố gắng hoặc đảm bảo V",
+    "explanation_vi": "Yêu cầu người nghe thực hiện một việc và chú ý duy trì việc đó.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ようにしてください.",
+      "Mẫu thường dùng trong lời nhắc hoặc hướng dẫn lịch sự."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます ngay trước ようにしてください."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "ごみを分別するようにしてください。",
+        "reading_ja": "ごみをぶんべつするようにしてください。",
+        "translation_vi": "Hãy chú ý phân loại rác."
+      },
+      {
+        "sentence_ja": "避難場所を家族に知らせるようにしてください。",
+        "reading_ja": "ひなんばしょをかぞくにしらせるようにしてください。",
+        "translation_vi": "Hãy nhớ báo cho gia đình biết nơi sơ tán."
+      }
+    ]
+  },
+  {
+    "id": "d3f6e4b2-8a5c-4f02-9d33-2b7c9e6f8003",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないようにしてください",
+    "pattern": "Vないようにしてください",
+    "meaning_vi": "hãy chú ý đừng V",
+    "explanation_vi": "Yêu cầu người nghe tránh một hành động hoặc tình trạng không mong muốn.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước ようにしてください.",
+      "Dùng để nhắc tránh lỗi, nguy hiểm hoặc quên việc."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないでください, lời cấm trực tiếp hơn."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "訓練の時間に遅れないようにしてください。",
+        "reading_ja": "くんれんのじかんにおくれないようにしてください。",
+        "translation_vi": "Hãy chú ý đừng đến muộn giờ diễn tập."
+      },
+      {
+        "sentence_ja": "けがをしないように、急がないでください。",
+        "reading_ja": "けがをしないように、いそがないでください。",
+        "translation_vi": "Đừng vội để không bị thương."
+      }
+    ]
   }
 ]
