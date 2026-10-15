@@ -8725,5 +8725,234 @@
         "translation_vi": "Sau khi nhập mã số, màn hình sẽ mở."
       }
     ]
+  },
+  {
+    "id": "1c37279e-f4ae-5a2c-94e1-bffa58b2fd95",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "改良",
+    "reading": "かいりょう",
+    "meaning_vi": "cải tiến; cải thiện",
+    "part_of_speech": "danh từ・động từ する",
+    "usage_context_vi": "Việc làm cho sản phẩm hoặc cách làm tốt hơn.",
+    "audio_ref": null,
+    "tags": [
+      "work",
+      "technology"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この機械は去年改良されました。",
+        "reading_ja": "このきかいはきょねんかいりょうされました。",
+        "translation_vi": "Máy này đã được cải tiến năm ngoái."
+      },
+      {
+        "sentence_ja": "サービスを改良する必要があります。",
+        "reading_ja": "さーびすをかいりょうするひつようがあります。",
+        "translation_vi": "Cần cải thiện dịch vụ."
+      }
+    ]
+  },
+  {
+    "id": "ef72881f-7981-5708-9ef1-f6aa5caf731b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "工具",
+    "reading": "こうぐ",
+    "meaning_vi": "dụng cụ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Vật dụng dùng để sửa chữa hoặc làm việc.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "工具を使って自転車を直しました。",
+        "reading_ja": "こうぐをつかってじてんしゃをなおしました。",
+        "translation_vi": "Tôi đã dùng dụng cụ để sửa xe đạp."
+      },
+      {
+        "sentence_ja": "工具は棚の中にあります。",
+        "reading_ja": "こうぐはたなのなかにあります。",
+        "translation_vi": "Dụng cụ ở trong tủ."
+      }
+    ]
+  },
+  {
+    "id": "0d95aedc-4467-52f4-acce-e205a58b582b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "部屋",
+    "reading": "へや",
+    "meaning_vi": "căn phòng",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Không gian được ngăn trong một tòa nhà để sử dụng.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "部屋をきれいに掃除しました。",
+        "reading_ja": "へやをきれいにそうじしました。",
+        "translation_vi": "Tôi đã dọn phòng sạch sẽ."
+      },
+      {
+        "sentence_ja": "この部屋には机が二つあります。",
+        "reading_ja": "このへやにはつくえがふたつあります。",
+        "translation_vi": "Phòng này có hai cái bàn."
+      }
+    ]
+  },
+  {
+    "id": "0dafba83-cba9-5cf8-9f3b-1ab679aa4c10",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "家具",
+    "reading": "かぐ",
+    "meaning_vi": "đồ nội thất",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Các vật dụng như bàn ghế dùng trong nhà.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "新しい家具を買いました。",
+        "reading_ja": "あたらしいかぐをかいました。",
+        "translation_vi": "Tôi đã mua đồ nội thất mới."
+      },
+      {
+        "sentence_ja": "家具を動かすのを手伝ってください。",
+        "reading_ja": "かぐをうごかすのをてつだってください。",
+        "translation_vi": "Hãy giúp tôi di chuyển đồ nội thất."
+      }
+    ]
+  },
+  {
+    "id": "2e7701ca-b96a-5414-a1bb-a844c2bcc201",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "玄関",
+    "reading": "げんかん",
+    "meaning_vi": "lối vào nhà",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Khu vực cửa ra vào của một ngôi nhà hoặc tòa nhà.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "玄関で靴を脱いでください。",
+        "reading_ja": "げんかんでくつをぬいでください。",
+        "translation_vi": "Hãy cởi giày ở lối vào."
+      },
+      {
+        "sentence_ja": "玄関に傘を置きました。",
+        "reading_ja": "げんかんにかさをおきました。",
+        "translation_vi": "Tôi đã để ô ở lối vào."
+      }
+    ]
+  },
+  {
+    "id": "a3a0eb66-7c01-5f64-828f-e54a782991a8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "階段",
+    "reading": "かいだん",
+    "meaning_vi": "cầu thang",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Bộ phận dùng để đi lên xuống giữa các tầng.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "places"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "階段を使って二階へ行きます。",
+        "reading_ja": "かいだんをつかってにかいへいきます。",
+        "translation_vi": "Tôi dùng cầu thang để lên tầng hai."
+      },
+      {
+        "sentence_ja": "階段が滑りやすいので注意してください。",
+        "reading_ja": "かいだんがすべりやすいのでちゅういしてください。",
+        "translation_vi": "Cầu thang trơn nên hãy cẩn thận."
+      }
+    ]
+  },
+  {
+    "id": "7beaac1d-cf4a-52ef-830d-21741d8b0649",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "屋根",
+    "reading": "やね",
+    "meaning_vi": "mái nhà",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Phần che phía trên của một ngôi nhà.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "雨で屋根が壊れました。",
+        "reading_ja": "あめでやねがこわれました。",
+        "translation_vi": "Mái nhà bị hỏng vì mưa."
+      },
+      {
+        "sentence_ja": "屋根を修理する人が来ました。",
+        "reading_ja": "やねをしゅうりするひとがきました。",
+        "translation_vi": "Người sửa mái nhà đã đến."
+      }
+    ]
+  },
+  {
+    "id": "13dbdc44-a3fc-5561-ad71-b0619e3407ad",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "壁",
+    "reading": "かべ",
+    "meaning_vi": "bức tường",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Mặt phẳng đứng ngăn hoặc bao quanh một căn phòng.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "壁に写真を掛けました。",
+        "reading_ja": "かべにしゃしんをかけました。",
+        "translation_vi": "Tôi đã treo ảnh lên tường."
+      },
+      {
+        "sentence_ja": "壁の色を白くしたいです。",
+        "reading_ja": "かべのいろをしろくしたいです。",
+        "translation_vi": "Tôi muốn sơn tường màu trắng."
+      }
+    ]
   }
 ]
