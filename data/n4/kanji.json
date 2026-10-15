@@ -1519,5 +1519,41 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "122bb352-af5d-43f4-9ef5-cfdd12668973",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "窓",
+    "meaning_vi": "cửa sổ",
+    "onyomi": [
+      "ソウ"
+    ],
+    "kunyomi": [
+      "まど"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "9737e089-0ab3-4531-9e8a-ad7de6fcb879",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "庭",
+    "meaning_vi": "sân vườn",
+    "onyomi": [
+      "テイ"
+    ],
+    "kunyomi": [
+      "にわ"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
