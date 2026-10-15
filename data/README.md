@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 310 | 81 | 118 | 856 |
+| N4 | 318 | 83 | 121 | 878 |
 
 ## N4 seed batches
 
-The N4 seed is now thirty-six original editorial batches for development. It contains
-310 vocabulary items, 81 Kanji metadata records and 118 grammar patterns, with 856
+The N4 seed is now thirty-seven original editorial batches for development. It contains
+318 vocabulary items, 83 Kanji metadata records and 121 grammar patterns, with 878
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
@@ -115,6 +115,8 @@ The thirty-fourth batch adds grades, urgent matters, articles, programs, floods,
 The thirty-fifth batch adds Japanese calligraphy, parks, riversides, coasts, forests, agriculture, factories and residents; 祭 and 森 metadata; and the patterns Vようと思います, Nの代わりに and Nによれば. It follows the same authored-content and unavailable-asset rules.
 
 The thirty-sixth batch adds power, screens, functions, registration, settings, saving, deletion and data input; 画 and 源 metadata; and the patterns Vることが必要です, Nを中心に and Vるわけではありません. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-seventh batch adds home improvement, tools, rooms, furniture, entrances, stairs, roofs and walls; 玄 and 階 metadata; and the patterns Nに関して, Vている場合 and Vることにしています. It follows the same authored-content and unavailable-asset rules.
 
 The Japanese sentences and Vietnamese explanations were authored for Nihongo
 Daily. Kanji meanings/readings and stroke counts use common reference metadata;
