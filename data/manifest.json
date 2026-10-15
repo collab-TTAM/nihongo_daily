@@ -24,14 +24,13 @@
   "stroke_assets_available": false,
   "authorship": "Japanese examples and Vietnamese explanations authored for Nihongo Daily; no textbook passages imported.",
   "metadata_sources": [
-    "KanjiVG 70a0b7ae0c18ceb5cb358274b029cce0234a43bc: fourteen nonvariant SVG path counts cross-checked, including ?, ?, ?, ?, ? and ?; no SVG/path assets distributed. See data/README.md.",
+    "KanjiVG 70a0b7ae0c18ceb5cb358274b029cce0234a43bc: fourteen nonvariant SVG path counts cross-checked, including 開, 着, 配, 集, 客 and 売; no SVG/path assets distributed. See data/README.md.",
     "N4 scope was cross-checked against the official JLPT level summary and Irodori elementary topic references; no source passages were copied. See docs/N4_CONTENT.md."
   ],
   "limitations_vi": [
-    "B? d? li?u N5/N4 hi?n l� c�c seed t? so?n theo t?ng d?t, chua ph?i to�n b? chuong tr�nh JLPT v� kh�ng ph?i danh m?c JLPT du?c ch?ng nh?n.",
-    "Ba muoi s�u d?t N4 hi?n c� 310 t? v?ng, 81 Kanji v� 118 m?u ng? ph�p; c�n thi?u d? ph? t? v?ng, Kanji, ng? ph�p, b�i d?c, b�i nghe v� b�i t?p.",
-    "Kh�ng c� audio, n�t m?u ho?c ch?m vi?t th?t; radical N4 chua du?c cung c?p.",
-    "Ki?m tra c?u tr�c kh�ng x�c nh?n b?n d?ch ho?c ph�t �m; c?n duy?t d?c l?p b?i gi�o vi�n/ngu?i b?n ng? tru?c khi g?i l� n?i dung ph�t h�nh."
+    "Bộ dữ liệu N5/N4 hiện là các seed tự soạn theo từng đợt, chưa phải toàn bộ chương trình JLPT và không phải danh mục JLPT được chứng nhận.",
+    "Ba mươi sáu đợt N4 hiện có 310 từ vựng, 81 Kanji và 118 mẫu ngữ pháp; còn thiếu độ phủ từ vựng, Kanji, ngữ pháp, bài đọc, bài nghe và bài tập.",
+    "Không có audio, nét mẫu hoặc chấm viết thật; radical N4 chưa được cung cấp.",
+    "Kiểm tra cấu trúc không xác nhận bản dịch hoặc phát âm; cần duyệt độc lập bởi giáo viên/người bản ngữ trước khi gọi là nội dung phát hành."
   ]
 }
-
