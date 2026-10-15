@@ -5,13 +5,13 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "会",
-    "meaning_vi": "gặp; hội; cuộc họp",
+    "character": "?",
+    "meaning_vi": "g?p; h?i; cu?c h?p",
     "onyomi": [
-      "カイ"
+      "??"
     ],
     "kunyomi": [
-      "あ"
+      "?"
     ],
     "stroke_count": 6,
     "radical": null,
@@ -23,13 +23,13 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "社",
-    "meaning_vi": "công ty; đền thờ",
+    "character": "?",
+    "meaning_vi": "c�ng ty; d?n th?",
     "onyomi": [
-      "シャ"
+      "??"
     ],
     "kunyomi": [
-      "やしろ"
+      "???"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -41,13 +41,13 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "店",
-    "meaning_vi": "cửa hàng",
+    "character": "?",
+    "meaning_vi": "c?a h�ng",
     "onyomi": [
-      "テン"
+      "??"
     ],
     "kunyomi": [
-      "みせ"
+      "??"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -59,10 +59,10 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "駅",
-    "meaning_vi": "nhà ga",
+    "character": "?",
+    "meaning_vi": "nh� ga",
     "onyomi": [
-      "エキ"
+      "??"
     ],
     "kunyomi": [],
     "stroke_count": 14,
@@ -75,13 +75,13 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "旅",
-    "meaning_vi": "du lịch; chuyến đi",
+    "character": "?",
+    "meaning_vi": "du l?ch; chuy?n di",
     "onyomi": [
-      "リョ"
+      "??"
     ],
     "kunyomi": [
-      "たび"
+      "??"
     ],
     "stroke_count": 10,
     "radical": null,
@@ -93,10 +93,10 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "料",
-    "meaning_vi": "liệu; phí; nguyên liệu",
+    "character": "?",
+    "meaning_vi": "li?u; ph�; nguy�n li?u",
     "onyomi": [
-      "リョウ"
+      "???"
     ],
     "kunyomi": [],
     "stroke_count": 10,
@@ -109,13 +109,13 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "理",
-    "meaning_vi": "lý do; logic",
+    "character": "?",
+    "meaning_vi": "ly do; logic",
     "onyomi": [
-      "リ"
+      "?"
     ],
     "kunyomi": [
-      "ことわり"
+      "????"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -127,13 +127,13 @@
     "difficulty": 0.35,
     "content_version": 1,
     "is_active": true,
-    "character": "勉",
-    "meaning_vi": "cố gắng; nỗ lực",
+    "character": "?",
+    "meaning_vi": "c? g?ng; n? l?c",
     "onyomi": [
-      "ベン"
+      "??"
     ],
     "kunyomi": [
-      "つとめる"
+      "????"
     ],
     "stroke_count": 10,
     "radical": null,
@@ -145,14 +145,14 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "character": "度",
-    "meaning_vi": "lần; mức độ; độ",
+    "character": "?",
+    "meaning_vi": "l?n; m?c d?; d?",
     "onyomi": [
-      "ド",
-      "ト"
+      "?",
+      "?"
     ],
     "kunyomi": [
-      "たび"
+      "??"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -164,14 +164,14 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "character": "活",
-    "meaning_vi": "sống; hoạt động",
+    "character": "?",
+    "meaning_vi": "s?ng; ho?t d?ng",
     "onyomi": [
-      "カツ"
+      "??"
     ],
     "kunyomi": [
-      "い",
-      "いける"
+      "?",
+      "???"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -183,13 +183,13 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "character": "送",
-    "meaning_vi": "gửi; tiễn; đưa",
+    "character": "?",
+    "meaning_vi": "g?i; ti?n; dua",
     "onyomi": [
-      "ソウ"
+      "??"
     ],
     "kunyomi": [
-      "おく"
+      "??"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -201,13 +201,13 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "character": "始",
-    "meaning_vi": "bắt đầu",
+    "character": "?",
+    "meaning_vi": "b?t d?u",
     "onyomi": [
-      "シ"
+      "?"
     ],
     "kunyomi": [
-      "はじ"
+      "??"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -219,13 +219,13 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "character": "動",
-    "meaning_vi": "chuyển động; hoạt động",
+    "character": "?",
+    "meaning_vi": "chuy?n d?ng; ho?t d?ng",
     "onyomi": [
-      "ドウ"
+      "??"
     ],
     "kunyomi": [
-      "うご"
+      "??"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -237,13 +237,13 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "character": "健",
-    "meaning_vi": "khỏe mạnh",
+    "character": "?",
+    "meaning_vi": "kh?e m?nh",
     "onyomi": [
-      "ケン"
+      "??"
     ],
     "kunyomi": [
-      "すこ"
+      "??"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -255,16 +255,16 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "character": "直",
-    "meaning_vi": "thẳng; sửa; trực tiếp",
+    "character": "?",
+    "meaning_vi": "th?ng; s?a; tr?c ti?p",
     "onyomi": [
-      "チョク",
-      "ジキ"
+      "???",
+      "??"
     ],
     "kunyomi": [
-      "ただ",
-      "なお",
-      "すぐ"
+      "??",
+      "??",
+      "??"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -276,13 +276,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "選",
-    "meaning_vi": "chọn; tuyển chọn",
+    "character": "?",
+    "meaning_vi": "ch?n; tuy?n ch?n",
     "onyomi": [
-      "セン"
+      "??"
     ],
     "kunyomi": [
-      "えら"
+      "??"
     ],
     "stroke_count": 15,
     "radical": null,
@@ -294,15 +294,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "決",
-    "meaning_vi": "quyết định; quyết",
+    "character": "?",
+    "meaning_vi": "quy?t d?nh; quy?t",
     "onyomi": [
-      "ケツ"
+      "??"
     ],
     "kunyomi": [
-      "き",
-      "きま",
-      "きめ"
+      "?",
+      "??",
+      "??"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -314,14 +314,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "伝",
-    "meaning_vi": "truyền đạt; truyền lại",
+    "character": "?",
+    "meaning_vi": "truy?n d?t; truy?n l?i",
     "onyomi": [
-      "デン"
+      "??"
     ],
     "kunyomi": [
-      "つた",
-      "つた-"
+      "??",
+      "??-"
     ],
     "stroke_count": 6,
     "radical": null,
@@ -333,14 +333,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "返",
-    "meaning_vi": "trả lại; quay lại",
+    "character": "?",
+    "meaning_vi": "tr? l?i; quay l?i",
     "onyomi": [
-      "ヘン"
+      "??"
     ],
     "kunyomi": [
-      "かえ",
-      "かえ-"
+      "??",
+      "??-"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -352,13 +352,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "薬",
-    "meaning_vi": "thuốc; dược phẩm",
+    "character": "?",
+    "meaning_vi": "thu?c; du?c ph?m",
     "onyomi": [
-      "ヤク"
+      "??"
     ],
     "kunyomi": [
-      "くすり"
+      "???"
     ],
     "stroke_count": 16,
     "radical": null,
@@ -370,14 +370,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "知",
-    "meaning_vi": "biết; hiểu",
+    "character": "?",
+    "meaning_vi": "bi?t; hi?u",
     "onyomi": [
-      "チ"
+      "?"
     ],
     "kunyomi": [
-      "し",
-      "しら"
+      "?",
+      "??"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -389,13 +389,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "払",
-    "meaning_vi": "trả; quét",
+    "character": "?",
+    "meaning_vi": "tr?; qu�t",
     "onyomi": [
-      "フツ"
+      "??"
     ],
     "kunyomi": [
-      "はら"
+      "??"
     ],
     "stroke_count": 5,
     "radical": null,
@@ -407,14 +407,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "増",
-    "meaning_vi": "tăng; thêm",
+    "character": "?",
+    "meaning_vi": "tang; th�m",
     "onyomi": [
-      "ゾウ"
+      "??"
     ],
     "kunyomi": [
-      "ま",
-      "ふ"
+      "?",
+      "?"
     ],
     "stroke_count": 14,
     "radical": null,
@@ -426,13 +426,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "乗",
-    "meaning_vi": "lên; đi (phương tiện); cưỡi",
+    "character": "?",
+    "meaning_vi": "l�n; di (phuong ti?n); cu?i",
     "onyomi": [
-      "ジョウ"
+      "???"
     ],
     "kunyomi": [
-      "の"
+      "?"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -444,14 +444,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "残",
-    "meaning_vi": "còn lại; để lại",
+    "character": "?",
+    "meaning_vi": "c�n l?i; d? l?i",
     "onyomi": [
-      "ザン"
+      "??"
     ],
     "kunyomi": [
-      "のこ",
-      "のこ-"
+      "??",
+      "??-"
     ],
     "stroke_count": 10,
     "radical": null,
@@ -463,14 +463,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "急",
-    "meaning_vi": "gấp; vội; khẩn cấp",
+    "character": "?",
+    "meaning_vi": "g?p; v?i; kh?n c?p",
     "onyomi": [
-      "キュウ"
+      "???"
     ],
     "kunyomi": [
-      "いそ",
-      "いそ-"
+      "??",
+      "??-"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -482,14 +482,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "壊",
-    "meaning_vi": "hỏng; phá hỏng",
+    "character": "?",
+    "meaning_vi": "h?ng; ph� h?ng",
     "onyomi": [
-      "カイ"
+      "??"
     ],
     "kunyomi": [
-      "こわ",
-      "こわ-"
+      "??",
+      "??-"
     ],
     "stroke_count": 16,
     "radical": null,
@@ -501,10 +501,10 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "到",
-    "meaning_vi": "đến; tới",
+    "character": "?",
+    "meaning_vi": "d?n; t?i",
     "onyomi": [
-      "トウ"
+      "??"
     ],
     "kunyomi": [],
     "stroke_count": 8,
@@ -517,14 +517,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "泊",
-    "meaning_vi": "ở lại; neo đậu",
+    "character": "?",
+    "meaning_vi": "? l?i; neo d?u",
     "onyomi": [
-      "ハク"
+      "??"
     ],
     "kunyomi": [
-      "と",
-      "とま"
+      "?",
+      "??"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -536,14 +536,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "焼",
-    "meaning_vi": "nướng; đốt",
+    "character": "?",
+    "meaning_vi": "nu?ng; d?t",
     "onyomi": [
-      "ショウ"
+      "???"
     ],
     "kunyomi": [
-      "や",
-      "や-"
+      "?",
+      "?-"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -555,13 +555,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "洗",
-    "meaning_vi": "rửa; giặt",
+    "character": "?",
+    "meaning_vi": "r?a; gi?t",
     "onyomi": [
-      "セン"
+      "??"
     ],
     "kunyomi": [
-      "あら"
+      "??"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -573,15 +573,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "晴",
-    "meaning_vi": "quang; tạnh",
+    "character": "?",
+    "meaning_vi": "quang; t?nh",
     "onyomi": [
-      "セイ"
+      "??"
     ],
     "kunyomi": [
-      "は",
-      "は-れる",
-      "は-らす"
+      "?",
+      "?-??",
+      "?-??"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -593,14 +593,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "曇",
-    "meaning_vi": "mây; nhiều mây",
+    "character": "?",
+    "meaning_vi": "m�y; nhi?u m�y",
     "onyomi": [
-      "ドン"
+      "??"
     ],
     "kunyomi": [
-      "くも",
-      "くも-る"
+      "??",
+      "??-?"
     ],
     "stroke_count": 16,
     "radical": null,
@@ -612,14 +612,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "疲",
-    "meaning_vi": "mệt mỏi",
+    "character": "?",
+    "meaning_vi": "m?t m?i",
     "onyomi": [
-      "ヒ"
+      "?"
     ],
     "kunyomi": [
-      "つか",
-      "つか-れる"
+      "??",
+      "??-??"
     ],
     "stroke_count": 10,
     "radical": null,
@@ -631,15 +631,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "痛",
-    "meaning_vi": "đau; nhức",
+    "character": "?",
+    "meaning_vi": "dau; nh?c",
     "onyomi": [
-      "ツウ"
+      "??"
     ],
     "kunyomi": [
-      "いた",
-      "いた-い",
-      "いた-む"
+      "??",
+      "??-?",
+      "??-?"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -651,13 +651,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "招",
-    "meaning_vi": "mời; gọi",
+    "character": "?",
+    "meaning_vi": "m?i; g?i",
     "onyomi": [
-      "ショウ"
+      "???"
     ],
     "kunyomi": [
-      "まね"
+      "??"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -669,15 +669,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "断",
-    "meaning_vi": "đoạn; từ chối",
+    "character": "?",
+    "meaning_vi": "do?n; t? ch?i",
     "onyomi": [
-      "ダン"
+      "??"
     ],
     "kunyomi": [
-      "た",
-      "ことわ",
-      "さだ"
+      "?",
+      "???",
+      "??"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -689,15 +689,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "滑",
-    "meaning_vi": "trượt; trơn",
+    "character": "?",
+    "meaning_vi": "tru?t; tron",
     "onyomi": [
-      "カツ",
-      "コツ"
+      "??",
+      "??"
     ],
     "kunyomi": [
-      "すべ",
-      "なめ"
+      "??",
+      "??"
     ],
     "stroke_count": 13,
     "radical": null,
@@ -709,13 +709,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "磨",
-    "meaning_vi": "mài; đánh bóng",
+    "character": "?",
+    "meaning_vi": "m�i; d�nh b�ng",
     "onyomi": [
-      "マ"
+      "?"
     ],
     "kunyomi": [
-      "みが"
+      "??"
     ],
     "stroke_count": 16,
     "radical": null,
@@ -727,14 +727,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "都",
-    "meaning_vi": "đô thị; thủ đô",
+    "character": "?",
+    "meaning_vi": "d� th?; th? d�",
     "onyomi": [
-      "ト",
-      "ツ"
+      "?",
+      "?"
     ],
     "kunyomi": [
-      "みやこ"
+      "???"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -746,16 +746,16 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "合",
-    "meaning_vi": "hợp; phù hợp",
+    "character": "?",
+    "meaning_vi": "h?p; ph� h?p",
     "onyomi": [
-      "ゴウ",
-      "ガッ",
-      "カッ"
+      "??",
+      "??",
+      "??"
     ],
     "kunyomi": [
-      "あ",
-      "あわ"
+      "?",
+      "??"
     ],
     "stroke_count": 6,
     "radical": null,
@@ -767,13 +767,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "所",
-    "meaning_vi": "nơi; chỗ",
+    "character": "?",
+    "meaning_vi": "noi; ch?",
     "onyomi": [
-      "ショ"
+      "??"
     ],
     "kunyomi": [
-      "ところ"
+      "???"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -785,13 +785,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "設",
-    "meaning_vi": "thiết lập; xây dựng",
+    "character": "?",
+    "meaning_vi": "thi?t l?p; x�y d?ng",
     "onyomi": [
-      "セツ"
+      "??"
     ],
     "kunyomi": [
-      "もう"
+      "??"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -803,13 +803,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "環",
-    "meaning_vi": "vòng; môi trường",
+    "character": "?",
+    "meaning_vi": "v�ng; m�i tru?ng",
     "onyomi": [
-      "カン"
+      "??"
     ],
     "kunyomi": [
-      "わ"
+      "?"
     ],
     "stroke_count": 17,
     "radical": null,
@@ -821,14 +821,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "境",
-    "meaning_vi": "ranh giới; môi trường",
+    "character": "?",
+    "meaning_vi": "ranh gi?i; m�i tru?ng",
     "onyomi": [
-      "キョウ",
-      "ケイ"
+      "???",
+      "??"
     ],
     "kunyomi": [
-      "さかい"
+      "???"
     ],
     "stroke_count": 14,
     "radical": null,
@@ -840,14 +840,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "役",
-    "meaning_vi": "vai trò; công việc",
+    "character": "?",
+    "meaning_vi": "vai tr�; c�ng vi?c",
     "onyomi": [
-      "ヤク",
-      "エキ"
+      "??",
+      "??"
     ],
     "kunyomi": [
-      "つとめ"
+      "???"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -859,13 +859,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "類",
-    "meaning_vi": "loại; nhóm",
+    "character": "?",
+    "meaning_vi": "lo?i; nh�m",
     "onyomi": [
-      "ルイ"
+      "??"
     ],
     "kunyomi": [
-      "たぐい"
+      "???"
     ],
     "stroke_count": 18,
     "radical": null,
@@ -877,10 +877,10 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "意",
-    "meaning_vi": "ý; ý định",
+    "character": "?",
+    "meaning_vi": "y; y d?nh",
     "onyomi": [
-      "イ"
+      "?"
     ],
     "kunyomi": [],
     "stroke_count": 13,
@@ -893,13 +893,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "見",
-    "meaning_vi": "nhìn; thấy",
+    "character": "?",
+    "meaning_vi": "nh�n; th?y",
     "onyomi": [
-      "ケン"
+      "??"
     ],
     "kunyomi": [
-      "み"
+      "?"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -911,14 +911,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "空",
-    "meaning_vi": "bầu trời; trống",
+    "character": "?",
+    "meaning_vi": "b?u tr?i; tr?ng",
     "onyomi": [
-      "クウ"
+      "??"
     ],
     "kunyomi": [
-      "そら",
-      "あ"
+      "??",
+      "?"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -930,13 +930,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "港",
-    "meaning_vi": "cảng",
+    "character": "?",
+    "meaning_vi": "c?ng",
     "onyomi": [
-      "コウ"
+      "??"
     ],
     "kunyomi": [
-      "みなと"
+      "???"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -948,10 +948,10 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "卒",
-    "meaning_vi": "tốt nghiệp; binh lính",
+    "character": "?",
+    "meaning_vi": "t?t nghi?p; binh l�nh",
     "onyomi": [
-      "ソツ"
+      "??"
     ],
     "kunyomi": [],
     "stroke_count": 8,
@@ -964,14 +964,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "業",
-    "meaning_vi": "nghề nghiệp; công việc",
+    "character": "?",
+    "meaning_vi": "ngh? nghi?p; c�ng vi?c",
     "onyomi": [
-      "ギョウ",
-      "ゴウ"
+      "???",
+      "??"
     ],
     "kunyomi": [
-      "わざ"
+      "??"
     ],
     "stroke_count": 13,
     "radical": null,
@@ -983,10 +983,10 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "医",
-    "meaning_vi": "y học; bác sĩ",
+    "character": "?",
+    "meaning_vi": "y h?c; b�c si",
     "onyomi": [
-      "イ"
+      "?"
     ],
     "kunyomi": [],
     "stroke_count": 7,
@@ -999,15 +999,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "病",
-    "meaning_vi": "bệnh; ốm",
+    "character": "?",
+    "meaning_vi": "b?nh; ?m",
     "onyomi": [
-      "ビョウ",
-      "ヘイ"
+      "???",
+      "??"
     ],
     "kunyomi": [
-      "やまい",
-      "やむ"
+      "???",
+      "??"
     ],
     "stroke_count": 10,
     "radical": null,
@@ -1019,11 +1019,11 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "地",
-    "meaning_vi": "đất; địa điểm",
+    "character": "?",
+    "meaning_vi": "d?t; d?a di?m",
     "onyomi": [
-      "チ",
-      "ジ"
+      "?",
+      "?"
     ],
     "kunyomi": [],
     "stroke_count": 6,
@@ -1036,13 +1036,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "震",
-    "meaning_vi": "rung; chấn động",
+    "character": "?",
+    "meaning_vi": "rung; ch?n d?ng",
     "onyomi": [
-      "シン"
+      "??"
     ],
     "kunyomi": [
-      "ふる"
+      "??"
     ],
     "stroke_count": 15,
     "radical": null,
@@ -1054,13 +1054,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "品",
-    "meaning_vi": "sản phẩm; phẩm chất",
+    "character": "?",
+    "meaning_vi": "s?n ph?m; ph?m ch?t",
     "onyomi": [
-      "ヒン"
+      "??"
     ],
     "kunyomi": [
-      "しな"
+      "??"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -1072,15 +1072,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "割",
-    "meaning_vi": "chia; giảm giá",
+    "character": "?",
+    "meaning_vi": "chia; gi?m gi�",
     "onyomi": [
-      "カツ"
+      "??"
     ],
     "kunyomi": [
-      "わ",
-      "わり",
-      "さ"
+      "?",
+      "??",
+      "?"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -1092,13 +1092,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "機",
-    "meaning_vi": "máy; cơ hội",
+    "character": "?",
+    "meaning_vi": "m�y; co h?i",
     "onyomi": [
-      "キ"
+      "?"
     ],
     "kunyomi": [
-      "はた"
+      "??"
     ],
     "stroke_count": 16,
     "radical": null,
@@ -1110,10 +1110,10 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "械",
-    "meaning_vi": "máy móc; dụng cụ",
+    "character": "?",
+    "meaning_vi": "m�y m�c; d?ng c?",
     "onyomi": [
-      "カイ"
+      "??"
     ],
     "kunyomi": [],
     "stroke_count": 11,
@@ -1126,14 +1126,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "味",
-    "meaning_vi": "vị; mùi vị",
+    "character": "?",
+    "meaning_vi": "v?; m�i v?",
     "onyomi": [
-      "ミ"
+      "?"
     ],
     "kunyomi": [
-      "あじ",
-      "あじわ"
+      "??",
+      "???"
     ],
     "stroke_count": 8,
     "radical": null,
@@ -1145,13 +1145,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "塩",
-    "meaning_vi": "muối",
+    "character": "?",
+    "meaning_vi": "mu?i",
     "onyomi": [
-      "エン"
+      "??"
     ],
     "kunyomi": [
-      "しお"
+      "??"
     ],
     "stroke_count": 13,
     "radical": null,
@@ -1163,14 +1163,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "道",
-    "meaning_vi": "đường; đạo",
+    "character": "?",
+    "meaning_vi": "du?ng; d?o",
     "onyomi": [
-      "ドウ",
-      "トウ"
+      "??",
+      "??"
     ],
     "kunyomi": [
-      "みち"
+      "??"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -1182,13 +1182,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "信",
-    "meaning_vi": "tin; tín hiệu",
+    "character": "?",
+    "meaning_vi": "tin; t�n hi?u",
     "onyomi": [
-      "シン"
+      "??"
     ],
     "kunyomi": [
-      "しん"
+      "??"
     ],
     "stroke_count": 9,
     "radical": null,
@@ -1200,14 +1200,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "開",
-    "meaning_vi": "mở; khai",
+    "character": "?",
+    "meaning_vi": "m?; khai",
     "onyomi": [
-      "カイ"
+      "??"
     ],
     "kunyomi": [
-      "あ",
-      "ひら"
+      "?",
+      "??"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -1219,14 +1219,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "着",
-    "meaning_vi": "mặc; đến nơi",
+    "character": "?",
+    "meaning_vi": "m?c; d?n noi",
     "onyomi": [
-      "チャク"
+      "???"
     ],
     "kunyomi": [
-      "き",
-      "つ"
+      "?",
+      "?"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -1238,13 +1238,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "配",
-    "meaning_vi": "phân phát; phân phối",
+    "character": "?",
+    "meaning_vi": "ph�n ph�t; ph�n ph?i",
     "onyomi": [
-      "ハイ"
+      "??"
     ],
     "kunyomi": [
-      "くば"
+      "??"
     ],
     "stroke_count": 10,
     "radical": null,
@@ -1256,14 +1256,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "集",
-    "meaning_vi": "tập hợp; thu thập",
+    "character": "?",
+    "meaning_vi": "t?p h?p; thu th?p",
     "onyomi": [
-      "シュウ"
+      "???"
     ],
     "kunyomi": [
-      "あつ",
-      "つど"
+      "??",
+      "??"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -1275,11 +1275,11 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "客",
-    "meaning_vi": "khách; hành khách",
+    "character": "?",
+    "meaning_vi": "kh�ch; h�nh kh�ch",
     "onyomi": [
-      "キャク",
-      "カク"
+      "???",
+      "??"
     ],
     "kunyomi": [],
     "stroke_count": 9,
@@ -1292,13 +1292,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "売",
-    "meaning_vi": "bán",
+    "character": "?",
+    "meaning_vi": "b�n",
     "onyomi": [
-      "バイ"
+      "??"
     ],
     "kunyomi": [
-      "う"
+      "?"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -1310,13 +1310,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "体",
-    "meaning_vi": "thân thể; cơ thể",
+    "character": "?",
+    "meaning_vi": "th�n th?; co th?",
     "onyomi": [
-      "タイ"
+      "??"
     ],
     "kunyomi": [
-      "からだ"
+      "???"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -1328,15 +1328,15 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "改",
-    "meaning_vi": "sửa đổi; cải thiện",
+    "character": "?",
+    "meaning_vi": "s?a d?i; c?i thi?n",
     "onyomi": [
-      "カイ"
+      "??"
     ],
     "kunyomi": [
-      "あらた",
-      "あらためる",
-      "あらたまる"
+      "???",
+      "?????",
+      "?????"
     ],
     "stroke_count": 7,
     "radical": null,
@@ -1348,13 +1348,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "許",
-    "meaning_vi": "cho phép",
+    "character": "?",
+    "meaning_vi": "cho ph�p",
     "onyomi": [
-      "キョ"
+      "??"
     ],
     "kunyomi": [
-      "ゆる"
+      "??"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -1366,13 +1366,13 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "場",
-    "meaning_vi": "nơi; địa điểm",
+    "character": "?",
+    "meaning_vi": "noi; d?a di?m",
     "onyomi": [
-      "ジョウ"
+      "???"
     ],
     "kunyomi": [
-      "ば"
+      "?"
     ],
     "stroke_count": 12,
     "radical": null,
@@ -1384,14 +1384,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "成",
-    "meaning_vi": "thành; đạt được",
+    "character": "?",
+    "meaning_vi": "th�nh; d?t du?c",
     "onyomi": [
-      "セイ",
-      "ジョウ"
+      "??",
+      "???"
     ],
     "kunyomi": [
-      "な"
+      "?"
     ],
     "stroke_count": 6,
     "radical": null,
@@ -1403,10 +1403,10 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "洪",
-    "meaning_vi": "lũ lụt",
+    "character": "?",
+    "meaning_vi": "lu l?t",
     "onyomi": [
-      "コウ"
+      "??"
     ],
     "kunyomi": [],
     "stroke_count": 9,
@@ -1419,14 +1419,14 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "祭",
-    "meaning_vi": "lễ hội; cúng lễ",
+    "character": "?",
+    "meaning_vi": "l? h?i; c�ng l?",
     "onyomi": [
-      "サイ"
+      "??"
     ],
     "kunyomi": [
-      "まつり",
-      "まつる"
+      "???",
+      "???"
     ],
     "stroke_count": 11,
     "radical": null,
@@ -1438,15 +1438,53 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "character": "森",
-    "meaning_vi": "rừng",
+    "character": "?",
+    "meaning_vi": "r?ng",
     "onyomi": [
-      "シン"
+      "??"
     ],
     "kunyomi": [
-      "もり"
+      "??"
     ],
     "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "3fcad661-3105-5fd1-a921-4074c4828b5e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "?",
+    "meaning_vi": "b?c tranh; h�nh ?nh",
+    "onyomi": [
+      "?",
+      "?"
+    ],
+    "kunyomi": [
+      "?",
+      "??"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "07268c33-f052-5cd9-8e55-77d9adfa4499",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "?",
+    "meaning_vi": "ngu?n; ngu?n g?c",
+    "onyomi": [
+      "??"
+    ],
+    "kunyomi": [
+      "????"
+    ],
+    "stroke_count": 13,
     "radical": null,
     "stroke_data_ref": null
   }
