@@ -5,29 +5,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "N/??? + ?????",
-    "pattern": "N/??? + ?????",
-    "meaning_vi": "T�i nghi r?ng.",
-    "explanation_vi": "N�i y ki?n ho?c ph?ng do�n m?m hon.",
+    "title": "N／普通形 + と思います",
+    "pattern": "N／普通形 + と思います",
+    "meaning_vi": "Tôi nghĩ rằng…",
+    "explanation_vi": "Nói ý kiến hoặc phỏng đoán mềm hơn.",
     "usage_notes_vi": [
-      "V?i danh t?/t�nh t? ? d�ng ??????."
+      "Với danh từ/tính từ な dùng だと思います."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ?? sau d?ng t? th? thu?ng tru?c ?."
+      "Không dùng です sau động từ thể thường trước と."
     ],
     "related_grammar_ids": [
       "d50eb4c1-6662-5084-974d-3816836217ca"
     ],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "T�i nghi c?a h�ng n�y ti?n l?i."
+        "sentence_ja": "この店は便利だと思います。",
+        "reading_ja": "このみせはべんりだとおもいます。",
+        "translation_vi": "Tôi nghĩ cửa hàng này tiện lợi."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i nghi th�ng sau m�nh s? di Kyoto."
+        "sentence_ja": "来月、京都へ行くと思います。",
+        "reading_ja": "らいげつ、きょうとへいくとおもいます。",
+        "translation_vi": "Tôi nghĩ tháng sau mình sẽ đi Kyoto."
       }
     ]
   },
@@ -37,29 +37,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "d? d?nh s? l�m V",
-    "explanation_vi": "N�i v? d? d?nh c?a ngu?i n�i.",
+    "title": "Vるつもりです",
+    "pattern": "Vるつもりです",
+    "meaning_vi": "dự định sẽ làm V",
+    "explanation_vi": "Nói về dự định của người nói.",
     "usage_notes_vi": [
-      "Ph? d?nh thu?ng d�ng V???????."
+      "Phủ định thường dùng Vないつもりです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ?? tru?c ???."
+      "Không dùng thể ます trước つもり."
     ],
     "related_grammar_ids": [
       "93bbe1b6-5146-521b-9047-1c97bea689b9"
     ],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "K? ngh? h� t�i d? d?nh di du l?ch."
+        "sentence_ja": "夏休みに旅行するつもりです。",
+        "reading_ja": "なつやすみにりょこうするつもりです。",
+        "translation_vi": "Kỳ nghỉ hè tôi dự định đi du lịch."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "H�m nay t�i d?nh ng? s?m."
+        "sentence_ja": "今日は早く寝るつもりです。",
+        "reading_ja": "きょうははやくねるつもりです。",
+        "translation_vi": "Hôm nay tôi định ngủ sớm."
       }
     ]
   },
@@ -69,29 +69,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "d? ki?n s? l�m V",
-    "explanation_vi": "D�ng cho l?ch tr�nh ho?c k? ho?ch da d?nh.",
+    "title": "Vる予定です",
+    "pattern": "Vる予定です",
+    "meaning_vi": "dự kiến sẽ làm V",
+    "explanation_vi": "Dùng cho lịch trình hoặc kế hoạch đã định.",
     "usage_notes_vi": [
-      "N????? cung n�i l?ch d? ki?n."
+      "Nの予定です cũng nói lịch dự kiến."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng cho y th�ch nh?t th?i khi chua c� k? ho?ch."
+      "Không dùng cho ý thích nhất thời khi chưa có kế hoạch."
     ],
     "related_grammar_ids": [
       "15b750ca-d647-5b2a-9de9-fd6fafecda28"
     ],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Cu?c h?p d? ki?n b?t d?u l�c ba gi? chi?u."
+        "sentence_ja": "会議は午後三時に始まる予定です。",
+        "reading_ja": "かいぎはごごさんじにはじまるよていです。",
+        "translation_vi": "Cuộc họp dự kiến bắt đầu lúc ba giờ chiều."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Tu?n sau b?n t�i d? ki?n s? d?n nh�."
+        "sentence_ja": "来週、友達が家に来る予定です。",
+        "reading_ja": "らいしゅう、ともだちがいえにくるよていです。",
+        "translation_vi": "Tuần sau bạn tôi dự kiến sẽ đến nhà."
       }
     ]
   },
@@ -101,29 +101,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????????",
-    "pattern": "V?????????",
-    "meaning_vi": "ph?i l�m V",
-    "explanation_vi": "N�u nghia v? ho?c vi?c b?t bu?c.",
+    "title": "Vなければなりません",
+    "pattern": "Vなければなりません",
+    "meaning_vi": "phải làm V",
+    "explanation_vi": "Nêu nghĩa vụ hoặc việc bắt buộc.",
     "usage_notes_vi": [
-      "H?i tho?i c� th? r�t g?n th�nh V???."
+      "Hội thoại có thể rút gọn thành Vなきゃ."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V???????? l� kh�ng c?n l�m V."
+      "Không nhầm với Vなくてもいいです là không cần làm V."
     ],
     "related_grammar_ids": [
       "01b43e99-ddbc-56ba-b155-86fea0f1253c"
     ],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "T�i ph?i l�m b�i t?p tru?c ng�y mai."
+        "sentence_ja": "明日までに宿題をしなければなりません。",
+        "reading_ja": "あしたまでにしゅくだいをしなければなりません。",
+        "translation_vi": "Tôi phải làm bài tập trước ngày mai."
       },
       {
-        "sentence_ja": "??????????????????????",
-        "reading_ja": "??????????????????????????",
-        "translation_vi": "Tru?c chuy?n di ph?i d?t kh�ch s?n."
+        "sentence_ja": "旅行の前にホテルを予約しなければなりません。",
+        "reading_ja": "りょこうのまえにほてるをよやくしなければなりません。",
+        "translation_vi": "Trước chuyến đi phải đặt khách sạn."
       }
     ]
   },
@@ -133,29 +133,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "du?c ph�p l�m V",
-    "explanation_vi": "Xin ph�p ho?c cho ph�p l�m m?t vi?c.",
+    "title": "Vてもいいです",
+    "pattern": "Vてもいいです",
+    "meaning_vi": "được phép làm V",
+    "explanation_vi": "Xin phép hoặc cho phép làm một việc.",
     "usage_notes_vi": [
-      "V??????? d�ng d? xin ph�p."
+      "Vてもいいですか dùng để xin phép."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng d? n�i nghia v?."
+      "Không dùng để nói nghĩa vụ."
     ],
     "related_grammar_ids": [
       "324f9d74-65db-5141-bfdb-e33f3d54e89d"
     ],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i ch?p ?nh ? d�y c� du?c kh�ng?"
+        "sentence_ja": "ここで写真を撮ってもいいですか。",
+        "reading_ja": "ここでしゃしんをとってもいいですか。",
+        "translation_vi": "Tôi chụp ảnh ở đây có được không?"
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "B?n c� th? mu?n cu?n s�ch n�y."
+        "sentence_ja": "この本を借りてもいいですよ。",
+        "reading_ja": "このほんをかりてもいいですよ。",
+        "translation_vi": "Bạn có thể mượn cuốn sách này."
       }
     ]
   },
@@ -165,29 +165,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "kh�ng du?c l�m V",
-    "explanation_vi": "N�u di?u c?m ho?c quy t?c.",
+    "title": "Vてはいけません",
+    "pattern": "Vてはいけません",
+    "meaning_vi": "không được làm V",
+    "explanation_vi": "Nêu điều cấm hoặc quy tắc.",
     "usage_notes_vi": [
-      "H?i tho?i c� th? n�i V???????."
+      "Hội thoại có thể nói Vちゃいけません."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ??????? n?u mu?n di?n d?t quy d?nh chung."
+      "Không dùng ないでください nếu muốn diễn đạt quy định chung."
     ],
     "related_grammar_ids": [
       "a06604ed-13b3-54c7-a501-51ca5f1bb73e"
     ],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "Kh�ng du?c an trong ph�ng n�y."
+        "sentence_ja": "この部屋で食べてはいけません。",
+        "reading_ja": "このへやでたべてはいけません。",
+        "translation_vi": "Không được ăn trong phòng này."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "Kh�ng du?c d? xe ? d�y."
+        "sentence_ja": "ここに車を止めてはいけません。",
+        "reading_ja": "ここにくるまをとめてはいけません。",
+        "translation_vi": "Không được đỗ xe ở đây."
       }
     ]
   },
@@ -197,29 +197,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "da t?ng l�m V",
-    "explanation_vi": "N�i v? kinh nghi?m trong qu� kh?.",
+    "title": "Vたことがあります",
+    "pattern": "Vたことがあります",
+    "meaning_vi": "đã từng làm V",
+    "explanation_vi": "Nói về kinh nghiệm trong quá khứ.",
     "usage_notes_vi": [
-      "Thu?ng d�ng v?i tr?i nghi?m, kh�ng ph?i th?i di?m c? th?."
+      "Thường dùng với trải nghiệm, không phải thời điểm cụ thể."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng V????????? d? n�i kinh nghi?m."
+      "Không dùng Vますことがあります để nói kinh nghiệm."
     ],
     "related_grammar_ids": [
       "be1fe397-1aa0-5f28-89d9-52908c185fe5"
     ],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i da t?ng n?u m�n Nh?t."
+        "sentence_ja": "日本料理を作ったことがあります。",
+        "reading_ja": "にほんりょうりをつくったことがあります。",
+        "translation_vi": "Tôi đã từng nấu món Nhật."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "B?n da t?ng nh�n th?y n�i Ph� Si chua?"
+        "sentence_ja": "富士山を見たことがありますか。",
+        "reading_ja": "ふじさんをみたことがありますか。",
+        "translation_vi": "Bạn đã từng nhìn thấy núi Phú Sĩ chưa?"
       }
     ]
   },
@@ -229,29 +229,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V???V?????",
-    "pattern": "V???V?????",
-    "meaning_vi": "l�m nh?ng vi?c nhu V v� V",
-    "explanation_vi": "Li?t k� m?t s? ho?t d?ng ti�u bi?u.",
+    "title": "Vたり、Vたりします",
+    "pattern": "Vたり、Vたりします",
+    "meaning_vi": "làm những việc như V và V",
+    "explanation_vi": "Liệt kê một số hoạt động tiêu biểu.",
     "usage_notes_vi": [
-      "M?i d?ng t? chuy?n sang th? ? r?i th�m ?."
+      "Mỗi động từ chuyển sang thể た rồi thêm り."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ?? tr?c ti?p tru?c ??."
+      "Không dùng thể ます trực tiếp trước たり."
     ],
     "related_grammar_ids": [
       "d6f81f10-b5a2-50f3-a967-7f45a38b6bac"
     ],
     "examples": [
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "Cu?i tu?n t�i l�m nh?ng vi?c nhu xem phim v� d?c s�ch."
+        "sentence_ja": "週末は映画を見たり、本を読んだりします。",
+        "reading_ja": "しゅうまつはえいがをみたり、ほんをよんだりします。",
+        "translation_vi": "Cuối tuần tôi làm những việc như xem phim và đọc sách."
       },
       {
-        "sentence_ja": "???????????????????????",
-        "reading_ja": "?????????????????????????????",
-        "translation_vi": "Trong chuy?n du l?ch t�i da ch?p ?nh, an m�n an v� l�m nh?ng vi?c kh�c."
+        "sentence_ja": "旅行で写真を撮ったり、料理を食べたりしました。",
+        "reading_ja": "りょこうでしゃしんをとったり、りょうりをたべたりしました。",
+        "translation_vi": "Trong chuyến du lịch tôi đã chụp ảnh, ăn món ăn và làm những việc khác."
       }
     ]
   },
@@ -261,29 +261,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "??? + ??",
-    "pattern": "??? + ??",
-    "meaning_vi": "v�; do.",
-    "explanation_vi": "N�u nguy�n nh�n v?i s?c th�i m?m v� l?ch s?.",
+    "title": "普通形 + ので",
+    "pattern": "普通形 + ので",
+    "meaning_vi": "vì; do…",
+    "explanation_vi": "Nêu nguyên nhân với sắc thái mềm và lịch sự.",
     "usage_notes_vi": [
-      "Danh t?/t�nh t? ? d�ng ???."
+      "Danh từ/tính từ な dùng なので."
     ],
     "common_mistakes": [
-      "Kh�ng b? ? trong ??? v?i danh t?/t�nh t? ?."
+      "Không bỏ だ trong なので với danh từ/tính từ な."
     ],
     "related_grammar_ids": [
       "d8bf91ea-3a1d-51a7-9dbf-c698cb388caf"
     ],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "V� tr?i mua n�n h�m nay t�i kh�ng ra ngo�i."
+        "sentence_ja": "雨なので、今日は出かけません。",
+        "reading_ja": "あめなので、きょうはでかけません。",
+        "translation_vi": "Vì trời mưa nên hôm nay tôi không ra ngoài."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "V� kh�ng c� th?i gian n�n t�i s? di taxi."
+        "sentence_ja": "時間がないので、タクシーで行きます。",
+        "reading_ja": "じかんがないので、たくしーでいきます。",
+        "translation_vi": "Vì không có thời gian nên tôi sẽ đi taxi."
       }
     ]
   },
@@ -293,29 +293,29 @@
     "difficulty": 0.4,
     "content_version": 1,
     "is_active": true,
-    "title": "V?? + ???",
-    "pattern": "V?? + ???",
-    "meaning_vi": "v?a l�m V v?a.",
-    "explanation_vi": "Hai h�nh d?ng x?y ra d?ng th?i.",
+    "title": "Vます + ながら",
+    "pattern": "Vます + ながら",
+    "meaning_vi": "vừa làm V vừa…",
+    "explanation_vi": "Hai hành động xảy ra đồng thời.",
     "usage_notes_vi": [
-      "B? ?? r?i th�m ???."
+      "Bỏ ます rồi thêm ながら."
     ],
     "common_mistakes": [
-      "Hai v? ph?i c� c�ng ch? th? trong c�ch d�ng co b?n."
+      "Hai vế phải có cùng chủ thể trong cách dùng cơ bản."
     ],
     "related_grammar_ids": [
       "01ab9879-a8d2-573e-a623-d152a4ac1a00"
     ],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i v?a nghe nh?c v?a h?c."
+        "sentence_ja": "音楽を聞きながら勉強します。",
+        "reading_ja": "おんがくをききながらべんきょうします。",
+        "translation_vi": "Tôi vừa nghe nhạc vừa học."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Kh�ng du?c v?a di b? v?a n�i chuy?n di?n tho?i."
+        "sentence_ja": "歩きながら電話で話してはいけません。",
+        "reading_ja": "あるきながらでんわではなしてはいけません。",
+        "translation_vi": "Không được vừa đi bộ vừa nói chuyện điện thoại."
       }
     ]
   },
@@ -325,27 +325,27 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "title": "V????",
-    "pattern": "V????",
-    "meaning_vi": "c� v? s?p; c� v? s? l�m V",
-    "explanation_vi": "D? do�n d?a tr�n v? ngo�i ho?c d?u hi?u hi?n t?i.",
+    "title": "Vそうです",
+    "pattern": "Vそうです",
+    "meaning_vi": "có vẻ sắp; có vẻ sẽ làm V",
+    "explanation_vi": "Dự đoán dựa trên vẻ ngoài hoặc dấu hiệu hiện tại.",
     "usage_notes_vi": [
-      "D?ng t? d�ng d?ng b? ?? r?i th�m ????."
+      "Động từ dùng dạng bỏ ます rồi thêm そうです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ????."
+      "Không dùng thể từ điển trực tiếp trước そうです."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????",
-        "reading_ja": "??????????",
-        "translation_vi": "C� v? tr?i s?p mua."
+        "sentence_ja": "雨が降りそうです。",
+        "reading_ja": "あめがふりそうです。",
+        "translation_vi": "Có vẻ trời sắp mưa."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "M�n an n�y tr�ng c� v? ngon."
+        "sentence_ja": "この料理はおいしそうです。",
+        "reading_ja": "このりょうりはおいしそうです。",
+        "translation_vi": "Món ăn này trông có vẻ ngon."
       }
     ]
   },
@@ -355,27 +355,27 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "tr? n�n c� th? l�m V; b?t d?u l�m V",
-    "explanation_vi": "Di?n t? s? thay d?i v? kh? nang ho?c th�i quen.",
+    "title": "Vようになります",
+    "pattern": "Vようになります",
+    "meaning_vi": "trở nên có thể làm V; bắt đầu làm V",
+    "explanation_vi": "Diễn tả sự thay đổi về khả năng hoặc thói quen.",
     "usage_notes_vi": [
-      "Danh t? c� th? d�ng N???."
+      "Danh từ có thể dùng Nになる."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V?????? l� t? quy?t d?nh l�m V."
+      "Không nhầm với Vことにします là tự quyết định làm V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "T�i da b?t d?u hi?u m?t ch�t tin t?c ti?ng Nh?t."
+        "sentence_ja": "日本語のニュースが少し分かるようになりました。",
+        "reading_ja": "にほんごのにゅーすがすこしわかるようになりました。",
+        "translation_vi": "Tôi đã bắt đầu hiểu một chút tin tức tiếng Nhật."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i da h�nh th�nh th�i quen d?y s?m m?i s�ng."
+        "sentence_ja": "毎朝、早く起きるようになりました。",
+        "reading_ja": "まいあさ、はやくおきるようになりました。",
+        "translation_vi": "Tôi đã hình thành thói quen dậy sớm mỗi sáng."
       }
     ]
   },
@@ -385,27 +385,27 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "kh�ng c?n l�m V",
-    "explanation_vi": "N�i r?ng m?t vi?c kh�ng b?t bu?c.",
+    "title": "Vなくてもいいです",
+    "pattern": "Vなくてもいいです",
+    "meaning_vi": "không cần làm V",
+    "explanation_vi": "Nói rằng một việc không bắt buộc.",
     "usage_notes_vi": [
-      "D�ng th? ?? b? ? r?i th�m ???????."
+      "Dùng thể ない bỏ い rồi thêm くてもいいです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng V??????? n?u mu?n n�i kh�ng b?t bu?c."
+      "Không dùng Vないでください nếu muốn nói không bắt buộc."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Ng�y mai kh�ng c?n d?n tru?ng."
+        "sentence_ja": "明日は学校へ来なくてもいいです。",
+        "reading_ja": "あしたはがっこうへこなくてもいいです。",
+        "translation_vi": "Ngày mai không cần đến trường."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "B?n kh�ng c?n an h?t d�u."
+        "sentence_ja": "全部を食べなくてもいいですよ。",
+        "reading_ja": "ぜんぶをたべなくてもいいですよ。",
+        "translation_vi": "Bạn không cần ăn hết đâu."
       }
     ]
   },
@@ -415,27 +415,27 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "title": "V????",
-    "pattern": "V????",
-    "meaning_vi": "l�m V qu� m?c",
-    "explanation_vi": "N�i r?ng m?t h�nh d?ng ho?c m?c d? vu?t qu� m?c ph� h?p.",
+    "title": "Vすぎます",
+    "pattern": "Vすぎます",
+    "meaning_vi": "làm V quá mức",
+    "explanation_vi": "Nói rằng một hành động hoặc mức độ vượt quá mức phù hợp.",
     "usage_notes_vi": [
-      "B? ?? r?i th�m ????."
+      "Bỏ ます rồi thêm すぎます."
     ],
     "common_mistakes": [
-      "T�nh t? ? b? ? tru?c ????."
+      "Tính từ い bỏ い trước すぎます."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "H�m qua t�i da l�m vi?c qu� nhi?u."
+        "sentence_ja": "昨日は働きすぎました。",
+        "reading_ja": "きのうははたらきすぎました。",
+        "translation_vi": "Hôm qua tôi đã làm việc quá nhiều."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "Chi?c t�i n�y qu� to."
+        "sentence_ja": "このかばんは大きすぎます。",
+        "reading_ja": "このかばんはおおきすぎます。",
+        "translation_vi": "Chiếc túi này quá to."
       }
     ]
   },
@@ -445,27 +445,27 @@
     "difficulty": 0.45,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "n�n l�m V",
-    "explanation_vi": "Dua ra l?i khuy�n ho?c d? ngh?.",
+    "title": "Vたほうがいいです",
+    "pattern": "Vたほうがいいです",
+    "meaning_vi": "nên làm V",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề nghị.",
     "usage_notes_vi": [
-      "Ph? d?nh d�ng V?????????."
+      "Phủ định dùng Vないほうがいいです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tru?c ??????? trong l?i khuy�n co b?n."
+      "Không dùng thể từ điển trước ほうがいいです trong lời khuyên cơ bản."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "B?n n�n di b?nh vi?n s?m."
+        "sentence_ja": "早く病院へ行ったほうがいいです。",
+        "reading_ja": "はやくびょういんへいったほうがいいです。",
+        "translation_vi": "Bạn nên đi bệnh viện sớm."
       },
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Tru?c chuy?n di b?n n�n xem th?i ti?t."
+        "sentence_ja": "旅行の前に天気を調べたほうがいいです。",
+        "reading_ja": "りょこうのまえにてんきをしらべたほうがいいです。",
+        "translation_vi": "Trước chuyến đi bạn nên xem thời tiết."
       }
     ]
   },
@@ -475,27 +475,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "quy?t d?nh l�m V",
-    "explanation_vi": "Ngu?i n�i t? quy?t d?nh m?t h�nh d?ng.",
+    "title": "Vことにします",
+    "pattern": "Vことにします",
+    "meaning_vi": "quyết định làm V",
+    "explanation_vi": "Người nói tự quyết định một hành động.",
     "usage_notes_vi": [
-      "D�ng th? t? di?n ho?c th? ?? tru?c ??????."
+      "Dùng thể từ điển hoặc thể ない trước ことにします."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V??????? l� quy?t d?nh do ho�n c?nh ho?c ngu?i kh�c."
+      "Không nhầm với Vことになります là quyết định do hoàn cảnh hoặc người khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "T�i quy?t d?nh t? th�ng sau s? t?p th? d?c m?i ng�y."
+        "sentence_ja": "来月から毎日運動することにします。",
+        "reading_ja": "らいげつからまいにちうんどうすることにします。",
+        "translation_vi": "Tôi quyết định từ tháng sau sẽ tập thể dục mỗi ngày."
       },
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "H�m nay t�i da quy?t d?nh kh�ng d�ng taxi."
+        "sentence_ja": "今日はタクシーを使わないことにしました。",
+        "reading_ja": "きょうはたくしーをつかわないことにしました。",
+        "translation_vi": "Hôm nay tôi đã quyết định không dùng taxi."
       }
     ]
   },
@@ -505,27 +505,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "du?c quy?t d?nh l� s? V",
-    "explanation_vi": "Di?n t? m?t quy?t d?nh ho?c k?t qu? do ho�n c?nh, t? ch?c.",
+    "title": "Vことになります",
+    "pattern": "Vことになります",
+    "meaning_vi": "được quyết định là sẽ V",
+    "explanation_vi": "Diễn tả một quyết định hoặc kết quả do hoàn cảnh, tổ chức.",
     "usage_notes_vi": [
-      "D�ng th? t? di?n ho?c th? ?? tru?c ???????."
+      "Dùng thể từ điển hoặc thể ない trước ことになります."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng khi ch? n�i quy?t d?nh c� nh�n c?a ngu?i n�i."
+      "Không dùng khi chỉ nói quyết định cá nhân của người nói."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "????????????????????????????",
-        "translation_vi": "Da quy?t d?nh r?ng t? tu?n sau gi�o vi�n m?i s? d?n."
+        "sentence_ja": "来週から新しい先生が来ることになりました。",
+        "reading_ja": "らいしゅうからあたらしいせんせいがくることになりました。",
+        "translation_vi": "Đã quyết định rằng từ tuần sau giáo viên mới sẽ đến."
       },
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "Cu?c h?p du?c quy d?nh l� b?t d?u l�c hai gi? chi?u."
+        "sentence_ja": "会議は午後二時に始まることになっています。",
+        "reading_ja": "かいぎはごごにじにはじまることになっています。",
+        "translation_vi": "Cuộc họp được quy định là bắt đầu lúc hai giờ chiều."
       }
     ]
   },
@@ -535,27 +535,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "~???????",
-    "pattern": "~???????",
-    "meaning_vi": "c� l?; c� th?",
-    "explanation_vi": "N�i kh? nang chua ch?c ch?n.",
+    "title": "～かもしれません",
+    "pattern": "～かもしれません",
+    "meaning_vi": "có lẽ; có thể",
+    "explanation_vi": "Nói khả năng chưa chắc chắn.",
     "usage_notes_vi": [
-      "C� th? d�ng sau th? thu?ng; danh t? v� t�nh t? ? thu?ng b? ?."
+      "Có thể dùng sau thể thường; danh từ và tính từ な thường bỏ だ."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ?? ngay tru?c ???????."
+      "Không dùng です ngay trước かもしれません."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "Ng�y mai c� th? tr?i mua."
+        "sentence_ja": "明日は雨かもしれません。",
+        "reading_ja": "あしたはあめかもしれません。",
+        "translation_vi": "Ngày mai có thể trời mưa."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Con du?ng n�y c� l? hoi nguy hi?m."
+        "sentence_ja": "この道は少し危険かもしれません。",
+        "reading_ja": "このみちはすこしきけんかもしれません。",
+        "translation_vi": "Con đường này có lẽ hơi nguy hiểm."
       }
     ]
   },
@@ -565,27 +565,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "xin d?ng l�m V",
-    "explanation_vi": "Y�u c?u ngu?i nghe kh�ng l�m m?t vi?c.",
+    "title": "Vないでください",
+    "pattern": "Vないでください",
+    "meaning_vi": "xin đừng làm V",
+    "explanation_vi": "Yêu cầu người nghe không làm một việc.",
     "usage_notes_vi": [
-      "D�ng th? ?? r?i th�m ?????."
+      "Dùng thể ない rồi thêm でください."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V???????? l� kh�ng c?n l�m V."
+      "Không nhầm với Vなくてもいいです là không cần làm V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "Xin d?ng ch?p ?nh ? d�y."
+        "sentence_ja": "ここで写真を撮らないでください。",
+        "reading_ja": "ここでしゃしんをとらないでください。",
+        "translation_vi": "Xin đừng chụp ảnh ở đây."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Xin d?ng d�ng di?n tho?i trong gi? h?c."
+        "sentence_ja": "授業中に電話を使わないでください。",
+        "reading_ja": "じゅぎょうちゅうにでんわをつかわないでください。",
+        "translation_vi": "Xin đừng dùng điện thoại trong giờ học."
       }
     ]
   },
@@ -595,27 +595,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????",
-    "pattern": "V????",
-    "meaning_vi": "th? l�m V",
-    "explanation_vi": "N�i th? l�m m?t vi?c d? tr?i nghi?m ho?c ki?m tra.",
+    "title": "Vてみます",
+    "pattern": "Vてみます",
+    "meaning_vi": "thử làm V",
+    "explanation_vi": "Nói thử làm một việc để trải nghiệm hoặc kiểm tra.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ???."
+      "Dùng thể て trước みます."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ???."
+      "Không dùng thể từ điển trực tiếp trước みます."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "T�i s? th? an m�n n�y."
+        "sentence_ja": "この料理を食べてみます。",
+        "reading_ja": "このりょうりをたべてみます。",
+        "translation_vi": "Tôi sẽ thử ăn món này."
       },
       {
-        "sentence_ja": "???????????",
-        "reading_ja": "?????????????",
-        "translation_vi": "T�i da th? h?i gi�o vi�n."
+        "sentence_ja": "先生に聞いてみました。",
+        "reading_ja": "せんせいにきいてみました。",
+        "translation_vi": "Tôi đã thử hỏi giáo viên."
       }
     ]
   },
@@ -625,27 +625,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "l�m V tru?c; l�m s?n V",
-    "explanation_vi": "L�m tru?c m?t vi?c d? chu?n b? cho sau n�y.",
+    "title": "Vておきます",
+    "pattern": "Vておきます",
+    "meaning_vi": "làm V trước; làm sẵn V",
+    "explanation_vi": "Làm trước một việc để chuẩn bị cho sau này.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ????."
+      "Dùng thể て trước おきます."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V???? l� dang l�m V."
+      "Không nhầm với Vています là đang làm V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "T�i s? d?t s?n kh�ch s?n tru?c chuy?n di."
+        "sentence_ja": "旅行の前にホテルを予約しておきます。",
+        "reading_ja": "りょこうのまえにほてるをよやくしておきます。",
+        "translation_vi": "Tôi sẽ đặt sẵn khách sạn trước chuyến đi."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da sao s?n gi?y t? c?n thi?t."
+        "sentence_ja": "必要な書類をコピーしておきました。",
+        "reading_ja": "ひつようなしょるいをこぴーしておきました。",
+        "translation_vi": "Tôi đã sao sẵn giấy tờ cần thiết."
       }
     ]
   },
@@ -655,27 +655,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "l?; ho�n t?t V",
-    "explanation_vi": "Di?n t? vi?c ho�n t?t ho?c ti?c v� vi?c da x?y ra.",
+    "title": "Vてしまいます",
+    "pattern": "Vてしまいます",
+    "meaning_vi": "lỡ; hoàn tất V",
+    "explanation_vi": "Diễn tả việc hoàn tất hoặc tiếc vì việc đã xảy ra.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ?????."
+      "Dùng thể て trước しまいます."
     ],
     "common_mistakes": [
-      "C?n d?a v�o ng? c?nh d? ph�n bi?t ho�n t?t v� nu?i ti?c."
+      "Cần dựa vào ngữ cảnh để phân biệt hoàn tất và nuối tiếc."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i da l�m xong to�n b? b�i t?p."
+        "sentence_ja": "宿題を全部してしまいました。",
+        "reading_ja": "しゅくだいをぜんぶしてしまいました。",
+        "translation_vi": "Tôi đã làm xong toàn bộ bài tập."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i l? d? qu�n v� tr�n t�u."
+        "sentence_ja": "電車で財布を忘れてしまいました。",
+        "reading_ja": "でんしゃでさいふをわすれてしまいました。",
+        "translation_vi": "Tôi lỡ để quên ví trên tàu."
       }
     ]
   },
@@ -685,27 +685,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "v�; d? cho N",
-    "explanation_vi": "N�u m?c d�ch ho?c d?i tu?ng du?c hu?ng l?i c?a h�nh d?ng.",
+    "title": "Nのために",
+    "pattern": "Nのために",
+    "meaning_vi": "vì; để cho N",
+    "explanation_vi": "Nêu mục đích hoặc đối tượng được hưởng lợi của hành động.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ???? d? n�i v� ai ho?c v� m?c d�ch g�."
+      "Đặt danh từ trước のために để nói vì ai hoặc vì mục đích gì."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng tr?c ti?p d?ng t? th? ? tru?c ??? trong m?u danh t? n�y."
+      "Không dùng trực tiếp động từ thể て trước ために trong mẫu danh từ này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i l�m vi?c m?i ng�y v� gia d�nh."
+        "sentence_ja": "家族のために毎日働いています。",
+        "reading_ja": "かぞくのためにまいにちはたらいています。",
+        "translation_vi": "Tôi làm việc mỗi ngày vì gia đình."
       },
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "T�i t?p th? d?c v� s?c kh?e."
+        "sentence_ja": "健康のために運動します。",
+        "reading_ja": "けんこうのためにうんどうします。",
+        "translation_vi": "Tôi tập thể dục vì sức khỏe."
       }
     ]
   },
@@ -715,27 +715,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "c? g?ng d? V; t?o th�i quen V",
-    "explanation_vi": "Di?n t? n? l?c c� y th?c d? m?t vi?c tr? th�nh th�i quen ho?c d?t m?c ti�u.",
+    "title": "Vるようにします",
+    "pattern": "Vるようにします",
+    "meaning_vi": "cố gắng để V; tạo thói quen V",
+    "explanation_vi": "Diễn tả nỗ lực có ý thức để một việc trở thành thói quen hoặc đạt mục tiêu.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?????? khi n�i c? g?ng l�m vi?c d�."
+      "Dùng động từ thể từ điển trước ようにします khi nói cố gắng làm việc đó."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ? n?u mu?n n�i n? l?c t? b�y gi? tr? di."
+      "Không dùng thể た nếu muốn nói nỗ lực từ bây giờ trở đi."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i s? c? g?ng d?c ti?ng Nh?t m?i s�ng."
+        "sentence_ja": "毎朝、日本語を読むようにします。",
+        "reading_ja": "まいあさ、にほんごをよむようにします。",
+        "translation_vi": "Tôi sẽ cố gắng đọc tiếng Nhật mỗi sáng."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "T�i ghi ch� d? kh�ng qu�n."
+        "sentence_ja": "忘れないようにメモします。",
+        "reading_ja": "わすれないようにメモします。",
+        "translation_vi": "Tôi ghi chú để không quên."
       }
     ]
   },
@@ -745,27 +745,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "c� th? V",
-    "explanation_vi": "Di?n t? kh? nang ho?c vi?c du?c ph�p th?c hi?n m?t h�nh d?ng.",
+    "title": "Vることができます",
+    "pattern": "Vることができます",
+    "meaning_vi": "có thể V",
+    "explanation_vi": "Diễn tả khả năng hoặc việc được phép thực hiện một hành động.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ???????."
+      "Dùng động từ thể từ điển trước ことができます."
     ],
     "common_mistakes": [
-      "Kh�ng chia d?ng t? sang th? ?? tru?c ???????."
+      "Không chia động từ sang thể ます trước ことができます."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "T�i c� th? h?i tho?i don gi?n b?ng ti?ng Nh?t."
+        "sentence_ja": "日本語で簡単な会話をすることができます。",
+        "reading_ja": "にほんごでかんたんなかいわをすることができます。",
+        "translation_vi": "Tôi có thể hội thoại đơn giản bằng tiếng Nhật."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "C� th? d�ng th? ? d�y."
+        "sentence_ja": "ここでカードを使うことができます。",
+        "reading_ja": "ここでカードをつかうことができます。",
+        "translation_vi": "Có thể dùng thẻ ở đây."
       }
     ]
   },
@@ -775,27 +775,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "th�ch V",
-    "explanation_vi": "N�i v? vi?c th�ch m?t h�nh d?ng ho?c ho?t d?ng.",
+    "title": "Vるのが好きです",
+    "pattern": "Vるのが好きです",
+    "meaning_vi": "thích V",
+    "explanation_vi": "Nói về việc thích một hành động hoặc hoạt động.",
     "usage_notes_vi": [
-      "D?t d?ng t? th? t? di?n tru?c ??????."
+      "Đặt động từ thể từ điển trước のが好きです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ?? ngay tru?c ??????."
+      "Không dùng thể ます ngay trước のが好きです."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i th�ch h?c ti?ng Nh?t."
+        "sentence_ja": "日本語を勉強するのが好きです。",
+        "reading_ja": "にほんごをべんきょうするのがすきです。",
+        "translation_vi": "Tôi thích học tiếng Nhật."
       },
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "T�i th�ch nghe nh?c."
+        "sentence_ja": "音楽を聞くのが好きです。",
+        "reading_ja": "おんがくをきくのがすきです。",
+        "translation_vi": "Tôi thích nghe nhạc."
       }
     ]
   },
@@ -805,27 +805,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "l�m V cho ai",
-    "explanation_vi": "Di?n t? ngu?i n�i ho?c ngu?i kh�c l�m m?t vi?c c� l?i cho ngu?i kh�c.",
+    "title": "Vてあげます",
+    "pattern": "Vてあげます",
+    "meaning_vi": "làm V cho ai",
+    "explanation_vi": "Diễn tả người nói hoặc người khác làm một việc có lợi cho người khác.",
     "usage_notes_vi": [
-      "D�ng th? ? c?a d?ng t? tru?c ????."
+      "Dùng thể て của động từ trước あげます."
     ],
     "common_mistakes": [
-      "C?n n�u ro ngu?i nh?n l?i �ch khi ng? c?nh chua ro."
+      "Cần nêu rõ người nhận lợi ích khi ngữ cảnh chưa rõ."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i s? ch? b�i t?p cho em g�i."
+        "sentence_ja": "妹に宿題を教えてあげます。",
+        "reading_ja": "いもうとにしゅくだいをおしえてあげます。",
+        "translation_vi": "Tôi sẽ chỉ bài tập cho em gái."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i da x�ch h�nh ly gi�p b?n."
+        "sentence_ja": "友達の荷物を持ってあげました。",
+        "reading_ja": "ともだちのにもつをもってあげました。",
+        "translation_vi": "Tôi đã xách hành lý giúp bạn."
       }
     ]
   },
@@ -835,27 +835,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "du?c ai l�m V cho",
-    "explanation_vi": "Di?n t? ngu?i n�i nh?n du?c s? gi�p d? ho?c h�nh d?ng t? ngu?i kh�c.",
+    "title": "Vてもらいます",
+    "pattern": "Vてもらいます",
+    "meaning_vi": "được ai làm V cho",
+    "explanation_vi": "Diễn tả người nói nhận được sự giúp đỡ hoặc hành động từ người khác.",
     "usage_notes_vi": [
-      "D�ng th? ? c?a d?ng t? tru?c ?????; ngu?i gi�p di v?i ?."
+      "Dùng thể て của động từ trước もらいます; người giúp đi với に."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ? cho ngu?i th?c hi?n h�nh d?ng trong m?u n�y."
+      "Không dùng を cho người thực hiện hành động trong mẫu này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da nh? gi�o vi�n s?a b�i van."
+        "sentence_ja": "先生に作文を直してもらいました。",
+        "reading_ja": "せんせいにさくぶんをなおしてもらいました。",
+        "translation_vi": "Tôi đã nhờ giáo viên sửa bài văn."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i s? nh? b?n hu?ng d?n d?n ga."
+        "sentence_ja": "友達に駅まで案内してもらいます。",
+        "reading_ja": "ともだちにえきまであんないしてもらいます。",
+        "translation_vi": "Tôi sẽ nhờ bạn hướng dẫn đến ga."
       }
     ]
   },
@@ -865,27 +865,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????",
-    "pattern": "V????",
-    "meaning_vi": "d? V; nh?m V",
-    "explanation_vi": "N�u m?c d�ch c?a h�nh d?ng b?ng d?ng t? th? t? di?n.",
+    "title": "Vるために",
+    "pattern": "Vるために",
+    "meaning_vi": "để V; nhằm V",
+    "explanation_vi": "Nêu mục đích của hành động bằng động từ thể từ điển.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ??? khi ch? th? c?a hai v? gi?ng nhau."
+      "Dùng động từ thể từ điển trước ために khi chủ thể của hai vế giống nhau."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ?? n?u mu?n n�i m?c d�ch kh?ng d?nh."
+      "Không dùng thể ない nếu muốn nói mục đích khẳng định."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "???????????????????????????",
-        "translation_vi": "T�i h?c ti?ng Nh?t d? l�m vi?c ? Nh?t."
+        "sentence_ja": "日本で働くために日本語を勉強しています。",
+        "reading_ja": "にほんではたらくためににほんごをべんきょうしています。",
+        "translation_vi": "Tôi học tiếng Nhật để làm việc ở Nhật."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i di b? m?i ng�y d? kh?e m?nh."
+        "sentence_ja": "健康になるために毎日歩きます。",
+        "reading_ja": "けんこうになるためにまいにちあるきます。",
+        "translation_vi": "Tôi đi bộ mỗi ngày để khỏe mạnh."
       }
     ]
   },
@@ -895,27 +895,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "hay l� V; sao kh�ng V",
-    "explanation_vi": "Dua ra l?i khuy�n ho?c d? xu?t nh? nh�ng.",
+    "title": "Vたらどうですか",
+    "pattern": "Vたらどうですか",
+    "meaning_vi": "hay là V; sao không V",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề xuất nhẹ nhàng.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ??????."
+      "Dùng thể た trước らどうですか."
     ],
     "common_mistakes": [
-      "D�y l� l?i khuy�n, kh�ng ph?i c�u h?i v? di?u ki?n da x?y ra."
+      "Đây là lời khuyên, không phải câu hỏi về điều kiện đã xảy ra."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "B?n ngh? m?t ch�t th� sao?"
+        "sentence_ja": "少し休んだらどうですか。",
+        "reading_ja": "すこしやすんだらどうですか。",
+        "translation_vi": "Bạn nghỉ một chút thì sao?"
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "B?n th? trao d?i v?i gi�o vi�n xem sao?"
+        "sentence_ja": "先生に相談したらどうですか。",
+        "reading_ja": "せんせいにそうだんしたらどうですか。",
+        "translation_vi": "Bạn thử trao đổi với giáo viên xem sao?"
       }
     ]
   },
@@ -925,27 +925,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N??~???",
-    "pattern": "N??~???",
-    "meaning_vi": "ch? N; ngo�i N ra kh�ng",
-    "explanation_vi": "Nh?n m?nh s? lu?ng ho?c l?a ch?n duy nh?t v?i c�u ph? d?nh.",
+    "title": "Nしか～ません",
+    "pattern": "Nしか～ません",
+    "meaning_vi": "chỉ N; ngoài N ra không",
+    "explanation_vi": "Nhấn mạnh số lượng hoặc lựa chọn duy nhất với câu phủ định.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ?? v� d�ng v? ng? ph? d?nh sau d�."
+      "Đặt danh từ trước しか và dùng vị ngữ phủ định sau đó."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng v? ng? kh?ng d?nh sau ??."
+      "Không dùng vị ngữ khẳng định sau しか."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "T�i ch? ngh? v�o cu?i tu?n."
+        "sentence_ja": "週末しか休みません。",
+        "reading_ja": "しゅうまつしかやすみません。",
+        "translation_vi": "Tôi chỉ nghỉ vào cuối tuần."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "? c?a h�ng n�y ch? d�ng du?c ti?n m?t."
+        "sentence_ja": "この店では現金しか使えません。",
+        "reading_ja": "このみせではげんきんしかつかえません。",
+        "translation_vi": "Ở cửa hàng này chỉ dùng được tiền mặt."
       }
     ]
   },
@@ -955,27 +955,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "tru?c khi V",
-    "explanation_vi": "N�u m?t h�nh d?ng x?y ra tru?c h�nh d?ng kh�c.",
+    "title": "Vる前に",
+    "pattern": "Vる前に",
+    "meaning_vi": "trước khi V",
+    "explanation_vi": "Nêu một hành động xảy ra trước hành động khác.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ??."
+      "Dùng động từ thể từ điển trước 前に."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ? n?u h�nh d?ng ph�a sau chua x?y ra."
+      "Không dùng thể た nếu hành động phía sau chưa xảy ra."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????",
-        "reading_ja": "?????????????",
-        "translation_vi": "T�i d�nh rang tru?c khi ng?."
+        "sentence_ja": "寝る前に歯を磨きます。",
+        "reading_ja": "ねるまえにはをみがきます。",
+        "translation_vi": "Tôi đánh răng trước khi ngủ."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i da ki?m tra ch�a kh�a tru?c khi ra ngo�i."
+        "sentence_ja": "出かける前に鍵を確かめました。",
+        "reading_ja": "でかけるまえにかぎをたしかめました。",
+        "translation_vi": "Tôi đã kiểm tra chìa khóa trước khi ra ngoài."
       }
     ]
   },
@@ -985,27 +985,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
+    "title": "Vた後で",
+    "pattern": "Vた後で",
     "meaning_vi": "sau khi V",
-    "explanation_vi": "N�u m?t h�nh d?ng x?y ra sau khi h�nh d?ng kh�c k?t th�c.",
+    "explanation_vi": "Nêu một hành động xảy ra sau khi hành động khác kết thúc.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ? tru?c ??."
+      "Dùng động từ thể た trước 後で."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n khi mu?n n�i h�nh d?ng da ho�n t?t tru?c d�."
+      "Không dùng thể từ điển khi muốn nói hành động đã hoàn tất trước đó."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i s? g?p b?n sau khi xong vi?c."
+        "sentence_ja": "仕事が終わった後で友達に会います。",
+        "reading_ja": "しごとがおわったあとでともだちにあいます。",
+        "translation_vi": "Tôi sẽ gặp bạn sau khi xong việc."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "T�i da ngh? sau khi u?ng thu?c."
+        "sentence_ja": "薬を飲んだ後で休みました。",
+        "reading_ja": "くすりをのんだあとでやすみました。",
+        "translation_vi": "Tôi đã nghỉ sau khi uống thuốc."
       }
     ]
   },
@@ -1015,27 +1015,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "v? N; li�n quan d?n N",
-    "explanation_vi": "N�u ch? d? du?c n�i, h?i ho?c t�m hi?u.",
+    "title": "Nについて",
+    "pattern": "Nについて",
+    "meaning_vi": "về N; liên quan đến N",
+    "explanation_vi": "Nêu chủ đề được nói, hỏi hoặc tìm hiểu.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ????."
+      "Đặt danh từ trước について."
     ],
     "common_mistakes": [
-      "Kh�ng th�m ? gi?a danh t? v� ????."
+      "Không thêm の giữa danh từ và について."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i dang t�m hi?u v? van h�a Nh?t."
+        "sentence_ja": "日本の文化について調べています。",
+        "reading_ja": "にほんのぶんかについてしらべています。",
+        "translation_vi": "Tôi đang tìm hiểu về văn hóa Nhật."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da h?i gi�o vi�n v? k? thi."
+        "sentence_ja": "試験について先生に質問しました。",
+        "reading_ja": "しけんについてせんせいにしつもんしました。",
+        "translation_vi": "Tôi đã hỏi giáo viên về kỳ thi."
       }
     ]
   },
@@ -1045,27 +1045,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??",
-    "pattern": "V??",
-    "meaning_vi": "h? V th�; khi V th�",
-    "explanation_vi": "Di?n t? k?t qu? t? nhi�n ho?c di?u thu?ng x?y ra sau m?t di?u ki?n.",
+    "title": "Vると",
+    "pattern": "Vると",
+    "meaning_vi": "hễ V thì; khi V thì",
+    "explanation_vi": "Diễn tả kết quả tự nhiên hoặc điều thường xảy ra sau một điều kiện.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?."
+      "Dùng động từ thể từ điển trước と."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng m?nh l?nh ho?c y d?nh tr?c ti?p trong v? sau c?a m?u k?t qu? t? nhi�n."
+      "Không dùng mệnh lệnh hoặc ý định trực tiếp trong vế sau của mẫu kết quả tự nhiên."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "Khi m�a xu�n d?n th� hoa n?."
+        "sentence_ja": "春になると、花が咲きます。",
+        "reading_ja": "はるになると、はながさきます。",
+        "translation_vi": "Khi mùa xuân đến thì hoa nở."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "H? b?m n�t n�y th� c?a m?."
+        "sentence_ja": "このボタンを押すと、ドアが開きます。",
+        "reading_ja": "このぼたんをおすと、どあがひらきます。",
+        "translation_vi": "Hễ bấm nút này thì cửa mở."
       }
     ]
   },
@@ -1075,27 +1075,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "kh�ng V m�; kh�ng l�m V",
-    "explanation_vi": "N�u h�nh d?ng du?c th?c hi?n m� kh�ng l�m m?t vi?c kh�c.",
+    "title": "Vないで",
+    "pattern": "Vないで",
+    "meaning_vi": "không V mà; không làm V",
+    "explanation_vi": "Nêu hành động được thực hiện mà không làm một việc khác.",
     "usage_notes_vi": [
-      "D�ng th? ?? b? ? r?i th�m ?."
+      "Dùng thể ない bỏ い rồi thêm で."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V??????? l� l?i y�u c?u kh�ng l�m."
+      "Không nhầm với Vないでください là lời yêu cầu không làm."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "T�i da d?n tru?ng m� kh�ng an s�ng."
+        "sentence_ja": "朝ご飯を食べないで学校へ行きました。",
+        "reading_ja": "あさごはんをたべないでがっこうへいきました。",
+        "translation_vi": "Tôi đã đến trường mà không ăn sáng."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Hay th? tr? l?i m� kh�ng xem t? di?n."
+        "sentence_ja": "辞書を見ないで答えてみてください。",
+        "reading_ja": "じしょをみないでこたえてみてください。",
+        "translation_vi": "Hãy thử trả lời mà không xem từ điển."
       }
     ]
   },
@@ -1105,27 +1105,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N??",
-    "pattern": "N??",
-    "meaning_vi": "hon N; so v?i N",
-    "explanation_vi": "D�ng d? so s�nh m?t ngu?i ho?c v?t v?i N.",
+    "title": "Nより",
+    "pattern": "Nより",
+    "meaning_vi": "hơn N; so với N",
+    "explanation_vi": "Dùng để so sánh một người hoặc vật với N.",
     "usage_notes_vi": [
-      "D?t danh t? l�m m?c tru?c ??."
+      "Đặt danh từ làm mốc trước より."
     ],
     "common_mistakes": [
-      "?? kh�ng t? mang nghia 'hon' n?u thi?u d?i tu?ng so s�nh trong c�u ph� h?p."
+      "より không tự mang nghĩa 'hơn' nếu thiếu đối tượng so sánh trong câu phù hợp."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "T�u di?n nhanh hon xe buyt."
+        "sentence_ja": "電車はバスより速いです。",
+        "reading_ja": "でんしゃはばすよりはやいです。",
+        "translation_vi": "Tàu điện nhanh hơn xe buýt."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Nam nay b?n hon nam ngo�i."
+        "sentence_ja": "去年より今年のほうが忙しいです。",
+        "reading_ja": "きょねんよりことしのほうがいそがしいです。",
+        "translation_vi": "Năm nay bận hơn năm ngoái."
       }
     ]
   },
@@ -1135,27 +1135,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "c� khi V; d�i khi V",
-    "explanation_vi": "Di?n t? m?t vi?c th?nh tho?ng x?y ra ho?c du?c th?c hi?n.",
+    "title": "Vることがあります",
+    "pattern": "Vることがあります",
+    "meaning_vi": "có khi V; đôi khi V",
+    "explanation_vi": "Diễn tả một việc thỉnh thoảng xảy ra hoặc được thực hiện.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ???????."
+      "Dùng động từ thể từ điển trước ことがあります."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V???????? l� da t?ng V."
+      "Không nhầm với Vたことがあります là đã từng V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "Cu?i tu?n d�i khi t�i n?u an ? nh�."
+        "sentence_ja": "週末は家で料理することがあります。",
+        "reading_ja": "しゅうまつはいえでりょうりすることがあります。",
+        "translation_vi": "Cuối tuần đôi khi tôi nấu ăn ở nhà."
       },
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "??????????????????????????",
-        "translation_vi": "Sau gi? l�m d�i khi t�i an c�ng b?n."
+        "sentence_ja": "仕事の後で友達と食事することがあります。",
+        "reading_ja": "しごとのあとでともだちとしょくじすることがあります。",
+        "translation_vi": "Sau giờ làm đôi khi tôi ăn cùng bạn."
       }
     ]
   },
@@ -1165,27 +1165,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "gi?ng nhu N; ch?ng h?n nhu N",
-    "explanation_vi": "D�ng d? m� t? danh t? c� d?c di?m gi?ng ho?c thu?c ki?u c?a N.",
+    "title": "Nのような",
+    "pattern": "Nのような",
+    "meaning_vi": "giống như N; chẳng hạn như N",
+    "explanation_vi": "Dùng để mô tả danh từ có đặc điểm giống hoặc thuộc kiểu của N.",
     "usage_notes_vi": [
-      "D?t danh t? l�m v� d? tru?c ???? r?i d?n danh t? du?c m� t?."
+      "Đặt danh từ làm ví dụ trước のような rồi đến danh từ được mô tả."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? sau d?ng t? n?u mu?n n�i tr?c ti?p c�ch th?c."
+      "Không dùng のような sau động từ nếu muốn nói trực tiếp cách thức."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "D�y l� ng�y ?m �p nhu m�a xu�n."
+        "sentence_ja": "これは春のような暖かい日です。",
+        "reading_ja": "これははるのようなあたたかいひです。",
+        "translation_vi": "Đây là ngày ấm áp như mùa xuân."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "T�i quan t�m d?n nh?ng qu?c d?o nhu Nh?t B?n."
+        "sentence_ja": "日本のような島国に興味があります。",
+        "reading_ja": "にほんのようなしまぐににきょうみがあります。",
+        "translation_vi": "Tôi quan tâm đến những quốc đảo như Nhật Bản."
       }
     ]
   },
@@ -1195,27 +1195,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "ch?c l� V; d�ng l? V",
-    "explanation_vi": "D? do�n c� can c? r?ng m?t vi?c s? x?y ra ho?c d�ng.",
+    "title": "Vるはずです",
+    "pattern": "Vるはずです",
+    "meaning_vi": "chắc là V; đáng lẽ V",
+    "explanation_vi": "Dự đoán có căn cứ rằng một việc sẽ xảy ra hoặc đúng.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ????."
+      "Dùng động từ thể từ điển trước はずです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? d? bi?u th? m?nh l?nh tr?c ti?p."
+      "Không dùng はずです để biểu thị mệnh lệnh trực tiếp."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�u di?n ch?c s? d?n ngay th�i."
+        "sentence_ja": "電車はもうすぐ到着するはずです。",
+        "reading_ja": "でんしゃはもうすぐとうちゃくするはずです。",
+        "translation_vi": "Tàu điện chắc sẽ đến ngay thôi."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "Anh Tanaka ch?c h�m nay s? d?n."
+        "sentence_ja": "田中さんは今日来るはずです。",
+        "reading_ja": "たなかさんはきょうくるはずです。",
+        "translation_vi": "Anh Tanaka chắc hôm nay sẽ đến."
       }
     ]
   },
@@ -1225,27 +1225,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "n?u d?nh V; n?u l� V th�",
-    "explanation_vi": "Dua l?i khuy�n ho?c th�ng tin d?a tr�n y d?nh hay di?u ki?n du?c n�u.",
+    "title": "Vるなら",
+    "pattern": "Vるなら",
+    "meaning_vi": "nếu định V; nếu là V thì",
+    "explanation_vi": "Đưa lời khuyên hoặc thông tin dựa trên ý định hay điều kiện được nêu.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ??."
+      "Dùng động từ thể từ điển trước なら."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ? khi n�i v? y d?nh s?p t?i."
+      "Không dùng thể た khi nói về ý định sắp tới."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "N?u di du l?ch th� m�a xu�n l� ph� h?p."
+        "sentence_ja": "旅行するなら、春がいいです。",
+        "reading_ja": "りょこうするなら、はるがいいです。",
+        "translation_vi": "Nếu đi du lịch thì mùa xuân là phù hợp."
       },
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "N?u mua th� t�i gi?i thi?u c?a h�ng g?n ga."
+        "sentence_ja": "買うなら、駅の近くの店をおすすめします。",
+        "reading_ja": "かうなら、えきのちかくのみせをおすすめします。",
+        "translation_vi": "Nếu mua thì tôi giới thiệu cửa hàng gần ga."
       }
     ]
   },
@@ -1255,27 +1255,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N??",
-    "pattern": "N??",
-    "meaning_vi": "ngay c? N; ch?ng h?n N",
-    "explanation_vi": "Dua ra m?t v� d? ho?c l?a ch?n d?i di?n, d�i khi v?i s?c th�i 'd� l�'.",
+    "title": "Nでも",
+    "pattern": "Nでも",
+    "meaning_vi": "ngay cả N; chẳng hạn N",
+    "explanation_vi": "Đưa ra một ví dụ hoặc lựa chọn đại diện, đôi khi với sắc thái 'dù là'.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ?? khi dua ra l?a ch?n g?i y."
+      "Đặt danh từ trước でも khi đưa ra lựa chọn gợi ý."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m ?? g?i y v?i ?? n?i hai m?nh d? d?i l?p."
+      "Không nhầm でも gợi ý với でも nối hai mệnh đề đối lập."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "Cu?i tu?n xem phim ch?ng h?n nh�?"
+        "sentence_ja": "週末は映画でも見ませんか。",
+        "reading_ja": "しゅうまつはえいがでもみませんか。",
+        "translation_vi": "Cuối tuần xem phim chẳng hạn nhé?"
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "N?u g?p kh� khan th� hay g?i di?n ch?ng h?n."
+        "sentence_ja": "困ったら、電話でもしてください。",
+        "reading_ja": "こまったら、でんわでもしてください。",
+        "translation_vi": "Nếu gặp khó khăn thì hãy gọi điện chẳng hạn."
       }
     ]
   },
@@ -1285,27 +1285,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "ch?c l� V; c� l? V",
-    "explanation_vi": "D? do�n ho?c x�c nh?n kh? nang x?y ra c?a m?t vi?c.",
+    "title": "Vるでしょう",
+    "pattern": "Vるでしょう",
+    "meaning_vi": "chắc là V; có lẽ V",
+    "explanation_vi": "Dự đoán hoặc xác nhận khả năng xảy ra của một việc.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ????."
+      "Dùng động từ thể từ điển trước でしょう."
     ],
     "common_mistakes": [
-      "???? di?n t? d? do�n, kh�ng ph?i y�u c?u ngu?i nghe l�m vi?c d�."
+      "でしょう diễn tả dự đoán, không phải yêu cầu người nghe làm việc đó."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????",
-        "reading_ja": "????????????",
-        "translation_vi": "Ng�y mai ch?c tr?i s? n?ng."
+        "sentence_ja": "明日は晴れるでしょう。",
+        "reading_ja": "あしたははれるでしょう。",
+        "translation_vi": "Ngày mai chắc trời sẽ nắng."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "Con du?ng n�y ban d�m c� l? s? t?i."
+        "sentence_ja": "この道は夜、暗くなるでしょう。",
+        "reading_ja": "このみちはよる、くらくなるでしょう。",
+        "translation_vi": "Con đường này ban đêm có lẽ sẽ tối."
       }
     ]
   },
@@ -1315,27 +1315,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??",
-    "pattern": "V??",
-    "meaning_vi": "khi V; n?u V",
-    "explanation_vi": "N�u di?u ki?n ho?c th?i di?m d? vi?c ? m?nh d? sau x?y ra.",
+    "title": "Vたら",
+    "pattern": "Vたら",
+    "meaning_vi": "khi V; nếu V",
+    "explanation_vi": "Nêu điều kiện hoặc thời điểm để việc ở mệnh đề sau xảy ra.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ? tru?c ?."
+      "Dùng động từ thể た trước ら."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ? trong m?u n�y."
+      "Không dùng thể từ điển trực tiếp trước ら trong mẫu này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "Khi mua t?nh, ch�ng ta hay ra ngo�i."
+        "sentence_ja": "雨がやんだら、出かけましょう。",
+        "reading_ja": "あめがやんだら、でかけましょう。",
+        "translation_vi": "Khi mưa tạnh, chúng ta hãy ra ngoài."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "Khi d?n ga, hay g?i di?n cho t�i."
+        "sentence_ja": "駅に着いたら、電話してください。",
+        "reading_ja": "えきについたら、でんわしてください。",
+        "translation_vi": "Khi đến ga, hãy gọi điện cho tôi."
       }
     ]
   },
@@ -1345,27 +1345,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "n?u kh�ng V th�; ph?i V",
-    "explanation_vi": "Di?n t? di?u ki?n c?n thi?t, thu?ng d�ng trong h?i tho?i th�n m?t.",
+    "title": "Vないと",
+    "pattern": "Vないと",
+    "meaning_vi": "nếu không V thì; phải V",
+    "explanation_vi": "Diễn tả điều kiện cần thiết, thường dùng trong hội thoại thân mật.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ?? tru?c ?."
+      "Dùng động từ thể ない trước と."
     ],
     "common_mistakes": [
-      "Trong van vi?t trang tr?ng, n�n ch?n m?u di?n d?t l?ch s? hon khi c?n."
+      "Trong văn viết trang trọng, nên chọn mẫu diễn đạt lịch sự hơn khi cần."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "N?u kh�ng ng? s?m th� ng�y mai s? kh�ng d?y du?c."
+        "sentence_ja": "早く寝ないと、明日起きられません。",
+        "reading_ja": "はやくねないと、あしたおきられません。",
+        "translation_vi": "Nếu không ngủ sớm thì ngày mai sẽ không dậy được."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "N?u kh�ng mang � th� s? b? u?t d?y."
+        "sentence_ja": "傘を持たないと、濡れますよ。",
+        "reading_ja": "かさをもたないと、ぬれますよ。",
+        "translation_vi": "Nếu không mang ô thì sẽ bị ướt đấy."
       }
     ]
   },
@@ -1375,27 +1375,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N???",
-    "pattern": "N???",
-    "meaning_vi": "trong l�c N; trong kho?ng th?i gian N",
-    "explanation_vi": "N�u m?t kho?ng th?i gian m� trong d� m?t vi?c kh�c x?y ra.",
+    "title": "Nの間に",
+    "pattern": "Nの間に",
+    "meaning_vi": "trong lúc N; trong khoảng thời gian N",
+    "explanation_vi": "Nêu một khoảng thời gian mà trong đó một việc khác xảy ra.",
     "usage_notes_vi": [
-      "D?t danh t? ch? th?i gian tru?c ???."
+      "Đặt danh từ chỉ thời gian trước の間に."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng m?u n�y d? n�i hai h�nh d?ng x?y ra d?ng th?i b?i c�ng m?t ch? th?; khi d� c� th? d�ng V?? + ???."
+      "Không dùng mẫu này để nói hai hành động xảy ra đồng thời bởi cùng một chủ thể; khi đó có thể dùng Vます + ながら."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Trong k? ngh? h�, t�i mu?n di du l?ch."
+        "sentence_ja": "夏休みの間に、旅行したいです。",
+        "reading_ja": "なつやすみのあいだに、りょこうしたいです。",
+        "translation_vi": "Trong kỳ nghỉ hè, tôi muốn đi du lịch."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Trong chuy?n du l?ch, t�i da ch?p r?t nhi?u ?nh."
+        "sentence_ja": "旅行の間に写真をたくさん撮りました。",
+        "reading_ja": "りょこうのあいだにしゃしんをたくさんとりました。",
+        "translation_vi": "Trong chuyến du lịch, tôi đã chụp rất nhiều ảnh."
       }
     ]
   },
@@ -1405,27 +1405,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "khi V; l�c V",
-    "explanation_vi": "N�u th?i di?m th?c hi?n m?t h�nh d?ng ho?c x?y ra m?t t�nh hu?ng.",
+    "title": "Vるとき",
+    "pattern": "Vるとき",
+    "meaning_vi": "khi V; lúc V",
+    "explanation_vi": "Nêu thời điểm thực hiện một hành động hoặc xảy ra một tình huống.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?? khi n�i v? vi?c chua x?y ra ho?c thu?ng l?."
+      "Dùng động từ thể từ điển trước とき khi nói về việc chưa xảy ra hoặc thường lệ."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ? n?u mu?n n�i h�nh d?ng x?y ra sau th?i di?m du?c n�u."
+      "Không dùng thể た nếu muốn nói hành động xảy ra sau thời điểm được nêu."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "Khi di ng?, hay t?t d�n."
+        "sentence_ja": "寝るとき、電気を消してください。",
+        "reading_ja": "ねるとき、でんきをけしてください。",
+        "translation_vi": "Khi đi ngủ, hãy tắt đèn."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Khi g?p kh� khan, t�i s? h?i y ki?n gi�o vi�n."
+        "sentence_ja": "困ったときは、先生に相談します。",
+        "reading_ja": "こまったときは、せんせいにそうだんします。",
+        "translation_vi": "Khi gặp khó khăn, tôi sẽ hỏi ý kiến giáo viên."
       }
     ]
   },
@@ -1435,27 +1435,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "c? d? nguy�n V; trong tr?ng th�i da V",
-    "explanation_vi": "Di?n t? vi?c gi? nguy�n tr?ng th�i sau m?t h�nh d?ng.",
+    "title": "Vたまま",
+    "pattern": "Vたまま",
+    "meaning_vi": "cứ để nguyên V; trong trạng thái đã V",
+    "explanation_vi": "Diễn tả việc giữ nguyên trạng thái sau một hành động.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ? tru?c ??."
+      "Dùng động từ thể た trước まま."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tru?c ?? trong m?u n�y."
+      "Không dùng thể từ điển trước まま trong mẫu này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i da ra ngo�i m� d? nguy�n c?a s? m?."
+        "sentence_ja": "窓を開けたまま、出かけてしまいました。",
+        "reading_ja": "まどをあけたまま、でかけてしまいました。",
+        "translation_vi": "Tôi đã ra ngoài mà để nguyên cửa sổ mở."
       },
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "D?ng v�o ph�ng khi v?n di gi�y."
+        "sentence_ja": "靴を履いたまま、部屋に入らないでください。",
+        "reading_ja": "くつをはいたまま、へやにはいらないでください。",
+        "translation_vi": "Đừng vào phòng khi vẫn đi giày."
       }
     ]
   },
@@ -1465,27 +1465,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "d? kh�ng V; sao cho kh�ng V",
-    "explanation_vi": "Di?n t? m?c d�ch ph�ng tr�nh m?t vi?c kh�ng mong mu?n.",
+    "title": "Vないように",
+    "pattern": "Vないように",
+    "meaning_vi": "để không V; sao cho không V",
+    "explanation_vi": "Diễn tả mục đích phòng tránh một việc không mong muốn.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ?? tru?c ???."
+      "Dùng động từ thể ない trước ように."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V???? khi n�i m?c ti�u th?c hi?n m?t vi?c."
+      "Không nhầm với Vるように khi nói mục tiêu thực hiện một việc."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da ghi l?ch d? kh�ng qu�n."
+        "sentence_ja": "忘れないように、予定をメモしました。",
+        "reading_ja": "わすれないように、よていをめもししました。",
+        "translation_vi": "Tôi đã ghi lịch để không quên."
       },
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "Hay gi? ?m d? kh�ng b? c?m."
+        "sentence_ja": "風邪をひかないように、暖かくしてください。",
+        "reading_ja": "かぜをひかないように、あたたかくしてください。",
+        "translation_vi": "Hãy giữ ấm để không bị cảm."
       }
     ]
   },
@@ -1495,27 +1495,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "sau khi V r?i",
-    "explanation_vi": "Di?n t? m?t h�nh d?ng x?y ra sau khi h�nh d?ng tru?c da ho�n t?t.",
+    "title": "Vてから",
+    "pattern": "Vてから",
+    "meaning_vi": "sau khi V rồi",
+    "explanation_vi": "Diễn tả một hành động xảy ra sau khi hành động trước đã hoàn tất.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ? tru?c ??."
+      "Dùng động từ thể て trước から."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ?? trong m?u n�y."
+      "Không dùng thể từ điển trực tiếp trước から trong mẫu này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Sau khi tan l�m, t�i s? di mua s?m."
+        "sentence_ja": "仕事が終わってから、買い物に行きます。",
+        "reading_ja": "しごとがおわってから、かいものにいきます。",
+        "translation_vi": "Sau khi tan làm, tôi sẽ đi mua sắm."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Hay d?c hu?ng d?n r?i m?i b?t d?u."
+        "sentence_ja": "説明を読んでから、始めてください。",
+        "reading_ja": "せつめいをよんでから、はじめてください。",
+        "translation_vi": "Hãy đọc hướng dẫn rồi mới bắt đầu."
       }
     ]
   },
@@ -1525,27 +1525,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??",
-    "pattern": "V??",
-    "meaning_vi": "d� V; cho d� V",
-    "explanation_vi": "Di?n t? k?t qu? ho?c h�nh d?ng v?n x?y ra d� di?u ki?n du?c n�u c� x?y ra.",
+    "title": "Vても",
+    "pattern": "Vても",
+    "meaning_vi": "dù V; cho dù V",
+    "explanation_vi": "Diễn tả kết quả hoặc hành động vẫn xảy ra dù điều kiện được nêu có xảy ra.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ? tru?c ?."
+      "Dùng động từ thể て trước も."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ? trong m?u n�y."
+      "Không dùng thể từ điển trực tiếp trước も trong mẫu này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "D� tr?i mua, tr?n d?u v?n ti?p t?c."
+        "sentence_ja": "雨が降っても、試合を続けます。",
+        "reading_ja": "あめがふっても、しあいをつづけます。",
+        "translation_vi": "Dù trời mưa, trận đấu vẫn tiếp tục."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "D� kh�ng hi?u, hay c? h?i."
+        "sentence_ja": "分からなくても、質問してください。",
+        "reading_ja": "わからなくても、しつもんしてください。",
+        "translation_vi": "Dù không hiểu, hãy cứ hỏi."
       }
     ]
   },
@@ -1555,27 +1555,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N??",
-    "pattern": "N??",
-    "meaning_vi": "n?u l� N; n?u n�i v? N",
-    "explanation_vi": "Dua l?i khuy�n ho?c th�ng tin d?a tr�n danh t? hay ch? d? du?c n�u.",
+    "title": "Nなら",
+    "pattern": "Nなら",
+    "meaning_vi": "nếu là N; nếu nói về N",
+    "explanation_vi": "Đưa lời khuyên hoặc thông tin dựa trên danh từ hay chủ đề được nêu.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ??."
+      "Đặt danh từ trước なら."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m N?? v?i V???, v?n d?ng sau d?ng t? th? t? di?n."
+      "Không nhầm Nなら với Vるなら, vốn đứng sau động từ thể từ điển."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "N?u l� Kyoto th� m�a thu r?t d�ng du?c gi?i thi?u."
+        "sentence_ja": "京都なら、秋がおすすめです。",
+        "reading_ja": "きょうとなら、あきがおすすめです。",
+        "translation_vi": "Nếu là Kyoto thì mùa thu rất đáng được giới thiệu."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "N?u l� email th� t�i c� th? tr? l?i ngay."
+        "sentence_ja": "電子メールなら、すぐ返事できます。",
+        "reading_ja": "でんしめーるなら、すぐへんじできます。",
+        "translation_vi": "Nếu là email thì tôi có thể trả lời ngay."
       }
     ]
   },
@@ -1585,27 +1585,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "s?p V",
-    "explanation_vi": "Di?n t? m?t h�nh d?ng s?p b?t d?u ngay sau th?i di?m n�i.",
+    "title": "Vるところです",
+    "pattern": "Vるところです",
+    "meaning_vi": "sắp V",
+    "explanation_vi": "Diễn tả một hành động sắp bắt đầu ngay sau thời điểm nói.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?????."
+      "Dùng động từ thể từ điển trước ところです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ??? n?u mu?n nh?n m?nh h�nh d?ng chua b?t d?u."
+      "Không dùng thể ている nếu muốn nhấn mạnh hành động chưa bắt đầu."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "B�y gi? t�i s?p ra ngo�i."
+        "sentence_ja": "今から出かけるところです。",
+        "reading_ja": "いまからでかけるところです。",
+        "translation_vi": "Bây giờ tôi sắp ra ngoài."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "B�y gi? ch�ng t�i s?p b?t d?u cu?c h?p."
+        "sentence_ja": "これから会議を始めるところです。",
+        "reading_ja": "これからかいぎをはじめるところです。",
+        "translation_vi": "Bây giờ chúng tôi sắp bắt đầu cuộc họp."
       }
     ]
   },
@@ -1615,27 +1615,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "dang V",
-    "explanation_vi": "Di?n t? m?t h�nh d?ng dang di?n ra d�ng v�o th?i di?m n�i.",
+    "title": "Vているところです",
+    "pattern": "Vているところです",
+    "meaning_vi": "đang V",
+    "explanation_vi": "Diễn tả một hành động đang diễn ra đúng vào thời điểm nói.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ??? tru?c ?????."
+      "Dùng động từ thể ている trước ところです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng V?????? khi h�nh d?ng da b?t d?u."
+      "Không dùng Vるところです khi hành động đã bắt đầu."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "B�y gi? t�i dang an trua."
+        "sentence_ja": "今、昼ご飯を食べているところです。",
+        "reading_ja": "いま、ひるごはんをたべているところです。",
+        "translation_vi": "Bây giờ tôi đang ăn trưa."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i dang g?i di?n cho ngu?i ph? tr�ch."
+        "sentence_ja": "担当者に電話しているところです。",
+        "reading_ja": "たんとうしゃにでんわしているところです。",
+        "translation_vi": "Tôi đang gọi điện cho người phụ trách."
       }
     ]
   },
@@ -1645,27 +1645,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "v?a m?i V",
-    "explanation_vi": "Di?n t? m?t h�nh d?ng v?a ho�n th�nh g?n th?i di?m n�i.",
+    "title": "Vたところです",
+    "pattern": "Vたところです",
+    "meaning_vi": "vừa mới V",
+    "explanation_vi": "Diễn tả một hành động vừa hoàn thành gần thời điểm nói.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ? tru?c ?????."
+      "Dùng động từ thể た trước ところです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng V?????? cho m?t vi?c da x?y ra t? l�u."
+      "Không dùng Vたところです cho một việc đã xảy ra từ lâu."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "T�i v?a m?i d?n ga."
+        "sentence_ja": "今、駅に着いたところです。",
+        "reading_ja": "いま、えきについたところです。",
+        "translation_vi": "Tôi vừa mới đến ga."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i v?a m?i l�m xong b�i t?p."
+        "sentence_ja": "さっき宿題を終えたところです。",
+        "reading_ja": "さっきしゅくだいをおえたところです。",
+        "translation_vi": "Tôi vừa mới làm xong bài tập."
       }
     ]
   },
@@ -1675,27 +1675,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "quy?t d?nh s? V",
-    "explanation_vi": "Di?n t? quy?t d?nh do ngu?i n�i t? dua ra.",
+    "title": "Vることにします",
+    "pattern": "Vることにします",
+    "meaning_vi": "quyết định sẽ V",
+    "explanation_vi": "Diễn tả quyết định do người nói tự đưa ra.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ??????."
+      "Dùng động từ thể từ điển trước ことにします."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ? n?u quy?t d?nh du?c dua ra t? th?i di?m n�i."
+      "Không dùng thể た nếu quyết định được đưa ra từ thời điểm nói."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "T�i quy?t d?nh h?c Kanji m?i ng�y."
+        "sentence_ja": "毎日漢字を勉強することにします。",
+        "reading_ja": "まいにちかんじをべんきょうすることにします。",
+        "translation_vi": "Tôi quyết định học Kanji mỗi ngày."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i da quy?t d?nh ngh? ? nh� cu?i tu?n."
+        "sentence_ja": "週末は家で休むことにしました。",
+        "reading_ja": "しゅうまつはいえでやすむことにしました。",
+        "translation_vi": "Tôi đã quyết định nghỉ ở nhà cuối tuần."
       }
     ]
   },
@@ -1705,27 +1705,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????????",
-    "pattern": "V?????????",
-    "meaning_vi": "da du?c quy?t d?nh s? V",
-    "explanation_vi": "Di?n t? m?t quy?t d?nh ho?c s?p x?p da du?c d?nh ra.",
+    "title": "Vることになりました",
+    "pattern": "Vることになりました",
+    "meaning_vi": "đã được quyết định sẽ V",
+    "explanation_vi": "Diễn tả một quyết định hoặc sắp xếp đã được định ra.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ????????."
+      "Dùng động từ thể từ điển trước ことになりました."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng m?u n�y d? nh?n m?nh quy?t d?nh c� nh�n don thu?n."
+      "Không dùng mẫu này để nhấn mạnh quyết định cá nhân đơn thuần."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "T? th�ng sau t�i s? l�m vi?c ? Osaka theo quy?t d?nh da d?nh."
+        "sentence_ja": "来月から大阪で働くことになりました。",
+        "reading_ja": "らいげつからおおさかではたらくことになりました。",
+        "translation_vi": "Từ tháng sau tôi sẽ làm việc ở Osaka theo quyết định đã định."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "Cu?c h?p da du?c quy?t d?nh t? ch?c v�o th? S�u."
+        "sentence_ja": "会議は金曜日に行うことになりました。",
+        "reading_ja": "かいぎはきんようびにおこなうことになりました。",
+        "translation_vi": "Cuộc họp đã được quyết định tổ chức vào thứ Sáu."
       }
     ]
   },
@@ -1735,27 +1735,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N?????",
-    "pattern": "N?????",
-    "meaning_vi": "nghe n�i l� N; c� v? d�ng l� N",
-    "explanation_vi": "Di?n t? th�ng tin nghe du?c ho?c nh?n d?nh d?a tr�n d?u hi?u.",
+    "title": "Nらしいです",
+    "pattern": "Nらしいです",
+    "meaning_vi": "nghe nói là N; có vẻ đúng là N",
+    "explanation_vi": "Diễn tả thông tin nghe được hoặc nhận định dựa trên dấu hiệu.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ????? d? n�u th�ng tin chua tr?c ti?p x�c nh?n."
+      "Đặt danh từ trước らしいです để nêu thông tin chưa trực tiếp xác nhận."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ????? khi ngu?i n�i ch?c ch?n t? tr?i nghi?m tr?c ti?p."
+      "Không dùng らしいです khi người nói chắc chắn từ trải nghiệm trực tiếp."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Nghe n�i anh Tanaka ngh? tu?n sau."
+        "sentence_ja": "田中さんは来週休みらしいです。",
+        "reading_ja": "たなかさんはらいしゅうやすみらしいです。",
+        "translation_vi": "Nghe nói anh Tanaka nghỉ tuần sau."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "H�nh nhu d�y l� m�n an truy?n th?ng Nh?t B?n."
+        "sentence_ja": "これは日本の伝統的な料理らしいです。",
+        "reading_ja": "これはにほんのでんとうてきなりょうりらしいです。",
+        "translation_vi": "Hình như đây là món ăn truyền thống Nhật Bản."
       }
     ]
   },
@@ -1765,27 +1765,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "d?i v?i N; d?i l?i v?i N",
-    "explanation_vi": "N�u d?i tu?ng ho?c phuong di?n m� h�nh d?ng, th�i d? hu?ng t?i.",
+    "title": "Nに対して",
+    "pattern": "Nに対して",
+    "meaning_vi": "đối với N; đối lại với N",
+    "explanation_vi": "Nêu đối tượng hoặc phương diện mà hành động, thái độ hướng tới.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ????."
+      "Đặt danh từ trước に対して."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? thay cho ? khi ch? d?a di?m ho?c hu?ng di chuy?n."
+      "Không dùng に対して thay cho に khi chỉ địa điểm hoặc hướng di chuyển."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "T�i s? gi?i th�ch l?ch s? v?i kh�ch h�ng."
+        "sentence_ja": "お客様に対して、丁寧に説明します。",
+        "reading_ja": "おきゃくさまにたいして、ていねいにせつめいします。",
+        "translation_vi": "Tôi sẽ giải thích lịch sự với khách hàng."
       },
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "Anh trai d?i x? t?t v?i t�i."
+        "sentence_ja": "兄は私に対して親切です。",
+        "reading_ja": "あにはわたしにたいしてしんせつです。",
+        "translation_vi": "Anh trai đối xử tốt với tôi."
       }
     ]
   },
@@ -1795,27 +1795,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "quy?t d?nh kh�ng V",
-    "explanation_vi": "Di?n t? quy?t d?nh c?a ngu?i n�i l� kh�ng th?c hi?n h�nh d?ng.",
+    "title": "Vないことにします",
+    "pattern": "Vないことにします",
+    "meaning_vi": "quyết định không V",
+    "explanation_vi": "Diễn tả quyết định của người nói là không thực hiện hành động.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? ?? tru?c ??????."
+      "Dùng động từ thể ない trước ことにします."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n n?u mu?n n�i quy?t d?nh kh�ng l�m."
+      "Không dùng thể từ điển nếu muốn nói quyết định không làm."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "H�m nay t�i quy?t d?nh kh�ng d�ng � t�."
+        "sentence_ja": "今日は車を使わないことにします。",
+        "reading_ja": "きょうはくるまをつかわないことにします。",
+        "translation_vi": "Hôm nay tôi quyết định không dùng ô tô."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da quy?t d?nh bu?i t?i kh�ng an d? ng?t."
+        "sentence_ja": "夜は甘い物を食べないことにしました。",
+        "reading_ja": "よるはあまいものをたべないことにしました。",
+        "translation_vi": "Tôi đã quyết định buổi tối không ăn đồ ngọt."
       }
     ]
   },
@@ -1825,27 +1825,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "theo N; d?a theo N",
-    "explanation_vi": "D?n ngu?n c?a th�ng tin du?c truy?n d?t.",
+    "title": "Nによると",
+    "pattern": "Nによると",
+    "meaning_vi": "theo N; dựa theo N",
+    "explanation_vi": "Dẫn nguồn của thông tin được truyền đạt.",
     "usage_notes_vi": [
-      "D?t t�n ngu?n th�ng tin tru?c ???? v� thu?ng k?t h?p v?i ???? ho?c ???????."
+      "Đặt tên nguồn thông tin trước によると và thường kết hợp với そうです hoặc ということです."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? khi ch? ngu?i nh?n h�nh d?ng."
+      "Không dùng によると khi chỉ người nhận hành động."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "Theo d? b�o th?i ti?t, nghe n�i ng�y mai s? mua."
+        "sentence_ja": "天気予報によると、明日は雨だそうです。",
+        "reading_ja": "てんきよほうによると、あしたはあめだそうです。",
+        "translation_vi": "Theo dự báo thời tiết, nghe nói ngày mai sẽ mưa."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Theo gi�o vi�n, k? thi l� v�o tu?n sau."
+        "sentence_ja": "先生によると、試験は来週です。",
+        "reading_ja": "せんせいによると、しけんはらいしゅうです。",
+        "translation_vi": "Theo giáo viên, kỳ thi là vào tuần sau."
       }
     ]
   },
@@ -1855,27 +1855,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "n�i ho?c nh?c ai l�m V",
-    "explanation_vi": "D�ng d? truy?n d?t l?i nh?c ho?c y�u c?u gi�n ti?p v? m?t h�nh d?ng.",
+    "title": "Vるように言います",
+    "pattern": "Vるように言います",
+    "meaning_vi": "nói hoặc nhắc ai làm V",
+    "explanation_vi": "Dùng để truyền đạt lời nhắc hoặc yêu cầu gián tiếp về một hành động.",
     "usage_notes_vi": [
-      "Sau ??? thu?ng l� d?ng t? th? t? di?n ho?c th? ph? d?nh."
+      "Sau ように thường là động từ thể từ điển hoặc thể phủ định."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u c� ch?c nang ho?c th?i di?m kh�c."
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Gi�o vi�n da nh?c l�m b�i t?p."
+        "sentence_ja": "先生は宿題をするように言いました。",
+        "reading_ja": "せんせいはしゅくだいをするようにいいました。",
+        "translation_vi": "Giáo viên đã nhắc làm bài tập."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "M? da nh?c di ng? s?m."
+        "sentence_ja": "母は早く寝るように言いました。",
+        "reading_ja": "ははははやくねるようにいいました。",
+        "translation_vi": "Mẹ đã nhắc đi ngủ sớm."
       }
     ]
   },
@@ -1885,27 +1885,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "trong khi dang V",
-    "explanation_vi": "Di?n t? m?t vi?c x?y ra trong kho?ng th?i gian m?t h�nh d?ng kh�c dang ti?p di?n.",
+    "title": "Vている間に",
+    "pattern": "Vている間に",
+    "meaning_vi": "trong khi đang V",
+    "explanation_vi": "Diễn tả một việc xảy ra trong khoảng thời gian một hành động khác đang tiếp diễn.",
     "usage_notes_vi": [
-      "D?t ?? sau m?nh d? ch? kho?ng th?i gian; ch? th? hai v? c� th? kh�c nhau."
+      "Đặt 間に sau mệnh đề chỉ khoảng thời gian; chủ thể hai vế có thể khác nhau."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u c� ch?c nang ho?c th?i di?m kh�c."
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "????????????????????????????????",
-        "translation_vi": "Trong khi t�i n?u an, em trai da x?p dia."
+        "sentence_ja": "私が料理している間に、弟が皿を並べました。",
+        "reading_ja": "わたしがりょうりしているあいだに、おとうとがさらをならべました。",
+        "translation_vi": "Trong khi tôi nấu ăn, em trai đã xếp đĩa."
       },
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "Trong khi di t�u di?n, t�i da d?c email."
+        "sentence_ja": "電車に乗っている間に、メールを読みました。",
+        "reading_ja": "でんしゃにのっているあいだに、めーるをよみました。",
+        "translation_vi": "Trong khi đi tàu điện, tôi đã đọc email."
       }
     ]
   },
@@ -1915,27 +1915,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "t�y theo N; do N",
-    "explanation_vi": "Di?n t? s? kh�c nhau t�y theo ngu?i, noi ho?c di?u ki?n.",
+    "title": "Nによって",
+    "pattern": "Nによって",
+    "meaning_vi": "tùy theo N; do N",
+    "explanation_vi": "Diễn tả sự khác nhau tùy theo người, nơi hoặc điều kiện.",
     "usage_notes_vi": [
-      "N???? thu?ng di v?i bi?u hi?n kh�c nhau nhu ???? ho?c ?????."
+      "Nによって thường đi với biểu hiện khác nhau như 違います hoặc 変わります."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u c� ch?c nang ho?c th?i di?m kh�c."
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Ng�y l? h?i kh�c nhau t�y khu v?c."
+        "sentence_ja": "地域によって祭りの日が違います。",
+        "reading_ja": "ちいきによってまつりのひがちがいます。",
+        "translation_vi": "Ngày lễ hội khác nhau tùy khu vực."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Th?c an thay d?i t�y theo m�a."
+        "sentence_ja": "季節によって食べる物が変わります。",
+        "reading_ja": "きせつによってたべるものがかわります。",
+        "translation_vi": "Thức ăn thay đổi tùy theo mùa."
       }
     ]
   },
@@ -1945,27 +1945,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????????",
-    "pattern": "V??????????",
-    "meaning_vi": "du?c quy d?nh l�; da du?c s?p x?p l�",
-    "explanation_vi": "Di?n t? quy d?nh ho?c l?ch tr�nh da du?c quy?t d?nh tru?c.",
+    "title": "Vることになっています",
+    "pattern": "Vることになっています",
+    "meaning_vi": "được quy định là; đã được sắp xếp là",
+    "explanation_vi": "Diễn tả quy định hoặc lịch trình đã được quyết định trước.",
     "usage_notes_vi": [
-      "D�ng v?i th? t? di?n d? n�i v? quy d?nh ho?c quy?t d?nh dang c� hi?u l?c."
+      "Dùng với thể từ điển để nói về quy định hoặc quyết định đang có hiệu lực."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u c� th?i di?m ho?c ch?c nang kh�c."
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "? thu vi?n n�y c� quy d?nh ph?i c?i gi�y."
+        "sentence_ja": "この図書館では、靴を脱ぐことになっています。",
+        "reading_ja": "このとしょかんでは、くつをぬぐことになっています。",
+        "translation_vi": "Ở thư viện này có quy định phải cởi giày."
       },
       {
-        "sentence_ja": "??????????????????????",
-        "reading_ja": "?????????????????????????????",
-        "translation_vi": "Da s?p x?p l� gi�o vi�n m?i s? d?n t? tu?n sau."
+        "sentence_ja": "来週から新しい先生が来ることになっています。",
+        "reading_ja": "らいしゅうからあたらしいせんせいがくることになっています。",
+        "translation_vi": "Đã sắp xếp là giáo viên mới sẽ đến từ tuần sau."
       }
     ]
   },
@@ -1975,27 +1975,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???",
-    "pattern": "V???",
-    "meaning_vi": "cho d?n khi V",
-    "explanation_vi": "Di?n t? kho?ng th?i gian k�o d�i d?n l�c m?t h�nh d?ng ho?c s? vi?c x?y ra.",
+    "title": "Vるまで",
+    "pattern": "Vるまで",
+    "meaning_vi": "cho đến khi V",
+    "explanation_vi": "Diễn tả khoảng thời gian kéo dài đến lúc một hành động hoặc sự việc xảy ra.",
     "usage_notes_vi": [
-      "M?nh d? tru?c ?? n�u m?c k?t th�c c?a kho?ng th?i gian."
+      "Mệnh đề trước まで nêu mốc kết thúc của khoảng thời gian."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u c� th?i di?m ho?c ch?c nang kh�c."
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da nghe nh?c cho d?n khi t?i ga."
+        "sentence_ja": "駅に着くまで、音楽を聞いていました。",
+        "reading_ja": "えきにつくまで、おんがくをきいていました。",
+        "translation_vi": "Tôi đã nghe nhạc cho đến khi tới ga."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i kh�ng choi game cho d?n khi l�m xong b�i t?p."
+        "sentence_ja": "宿題が終わるまで、ゲームをしません。",
+        "reading_ja": "しゅくだいがおわるまで、げーむをしません。",
+        "translation_vi": "Tôi không chơi game cho đến khi làm xong bài tập."
       }
     ]
   },
@@ -2005,27 +2005,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N???",
-    "pattern": "N???",
-    "meaning_vi": "trong s? N; trong N",
-    "explanation_vi": "D�ng d? ch?n ho?c so s�nh m?t d?i tu?ng trong m?t nh�m.",
+    "title": "Nの中で",
+    "pattern": "Nの中で",
+    "meaning_vi": "trong số N; trong N",
+    "explanation_vi": "Dùng để chọn hoặc so sánh một đối tượng trong một nhóm.",
     "usage_notes_vi": [
-      "Sau N??? thu?ng c� bi?u hi?n l?a ch?n ho?c so s�nh nhu ??."
+      "Sau Nの中で thường có biểu hiện lựa chọn hoặc so sánh như 一番."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u c� th?i di?m ho?c ch?c nang kh�c."
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "??????????????????????????",
-        "translation_vi": "Trong ba th? tr?n, th? tr?n n�y y�n tinh nh?t."
+        "sentence_ja": "三つの町の中で、この町が一番静かです。",
+        "reading_ja": "みっつのまちのなかで、このまちがいちばんしずかです。",
+        "translation_vi": "Trong ba thị trấn, thị trấn này yên tĩnh nhất."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Trong c�c lo?i tr�i c�y, t�i th�ch t�o nh?t."
+        "sentence_ja": "果物の中で、りんごが一番好きです。",
+        "reading_ja": "くだもののなかで、りんごがいちばんすきです。",
+        "translation_vi": "Trong các loại trái cây, tôi thích táo nhất."
       }
     ]
   },
@@ -2035,27 +2035,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????????",
-    "pattern": "V?????????",
-    "meaning_vi": "ph?i V",
-    "explanation_vi": "Di?n t? nghia v? ho?c vi?c b?t bu?c ph?i l�m.",
+    "title": "Vなくてはいけません",
+    "pattern": "Vなくてはいけません",
+    "meaning_vi": "phải V",
+    "explanation_vi": "Diễn tả nghĩa vụ hoặc việc bắt buộc phải làm.",
     "usage_notes_vi": [
-      "D�ng d?ng ph? d?nh ????????? d? di?n d?t nghia ph?i l�m."
+      "Dùng dạng phủ định なくてはいけません để diễn đạt nghĩa phải làm."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u ph? d?nh ho?c th?i di?m kh�c."
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "Ph?i d?ng xe."
+        "sentence_ja": "車を止めなくてはいけません。",
+        "reading_ja": "くるまをとめなくてはいけません。",
+        "translation_vi": "Phải dừng xe."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Ph?i n?p don dang ky."
+        "sentence_ja": "申込書を出さなくてはいけません。",
+        "reading_ja": "もうしこみしょをださなくてはいけません。",
+        "translation_vi": "Phải nộp đơn đăng ký."
       }
     ]
   },
@@ -2065,27 +2065,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N???????",
-    "pattern": "N???????",
-    "meaning_vi": "c� nghia l� N",
-    "explanation_vi": "D�ng d? gi?i th�ch y nghia c?a m?t t?, ky hi?u ho?c c�u n�i.",
+    "title": "Nという意味です",
+    "pattern": "Nという意味です",
+    "meaning_vi": "có nghĩa là N",
+    "explanation_vi": "Dùng để giải thích ý nghĩa của một từ, ký hiệu hoặc câu nói.",
     "usage_notes_vi": [
-      "D?t t? ho?c n?i dung du?c gi?i th�ch tru?c ???????."
+      "Đặt từ hoặc nội dung được giải thích trước という意味です."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u ph? d?nh ho?c th?i di?m kh�c."
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T? n�y c� nghia l� "an to�n"."
+        "sentence_ja": "この言葉は「安全」という意味です。",
+        "reading_ja": "このことばは「あんぜん」といういみです。",
+        "translation_vi": "Từ này có nghĩa là “an toàn”."
       },
       {
-        "sentence_ja": "??????????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "Ky hi?u d� c� nghia l� "kh�ng du?c v�o"."
+        "sentence_ja": "その印は「入ってはいけない」という意味です。",
+        "reading_ja": "そのしるしは「はいってはいけない」といういみです。",
+        "translation_vi": "Ký hiệu đó có nghĩa là “không được vào”."
       }
     ]
   },
@@ -2095,27 +2095,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "c?n ph?i V",
-    "explanation_vi": "Di?n t? vi?c c?n l�m d? d?t m?c d�ch ho?c ho�n th�nh th? t?c.",
+    "title": "Vる必要があります",
+    "pattern": "Vる必要があります",
+    "meaning_vi": "cần phải V",
+    "explanation_vi": "Diễn tả việc cần làm để đạt mục đích hoặc hoàn thành thủ tục.",
     "usage_notes_vi": [
-      "D?t d?ng t? th? t? di?n tru?c ???????."
+      "Đặt động từ thể từ điển trước 必要があります."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u ph? d?nh ho?c th?i di?m kh�c."
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "??????????????????????????",
-        "translation_vi": "C?n tr? s�ch tru?c ng�y mai."
+        "sentence_ja": "明日までに本を返却する必要があります。",
+        "reading_ja": "あしたまでにほんをへんきゃくするひつようがあります。",
+        "translation_vi": "Cần trả sách trước ngày mai."
       },
       {
-        "sentence_ja": "????????????????????????",
-        "reading_ja": "????????????????????????????",
-        "translation_vi": "D? dang ky c?n vi?t d?a ch? email."
+        "sentence_ja": "登録するにはメールアドレスを書く必要があります。",
+        "reading_ja": "とうろくするにはめーるあどれすをかくひつようがあります。",
+        "translation_vi": "Để đăng ký cần viết địa chỉ email."
       }
     ]
   },
@@ -2125,27 +2125,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "v?a m?i V",
-    "explanation_vi": "Di?n t? h�nh d?ng v?a ho�n th�nh c�ch d�y kh�ng l�u.",
+    "title": "Vたばかりです",
+    "pattern": "Vたばかりです",
+    "meaning_vi": "vừa mới V",
+    "explanation_vi": "Diễn tả hành động vừa hoàn thành cách đây không lâu.",
     "usage_notes_vi": [
-      "D�ng th? qu� kh? c?a d?ng t? tru?c ?????; kho?ng th?i gian th?c t? t�y ngu?i n�i."
+      "Dùng thể quá khứ của động từ trước ばかりです; khoảng thời gian thực tế tùy người nói."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u m� t? h�nh d?ng dang di?n ra ho?c da ho�n t?t."
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "T�i v?a m?i d?n s�n bay."
+        "sentence_ja": "空港に着いたばかりです。",
+        "reading_ja": "くうこうについたばかりです。",
+        "translation_vi": "Tôi vừa mới đến sân bay."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i v?a m?i b?t d?u h?c ti?ng Nh?t."
+        "sentence_ja": "日本語を勉強し始めたばかりです。",
+        "reading_ja": "にほんごをべんきょうしはじめたばかりです。",
+        "translation_vi": "Tôi vừa mới bắt đầu học tiếng Nhật."
       }
     ]
   },
@@ -2155,27 +2155,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????????",
-    "pattern": "N????????",
-    "meaning_vi": "c� h?ng th� v?i N",
-    "explanation_vi": "Di?n t? s? quan t�m ho?c h?ng th� d?i v?i m?t ch? d?.",
+    "title": "Nに興味があります",
+    "pattern": "Nに興味があります",
+    "meaning_vi": "có hứng thú với N",
+    "explanation_vi": "Diễn tả sự quan tâm hoặc hứng thú đối với một chủ đề.",
     "usage_notes_vi": [
-      "D?t danh t? ch? ch? d? tru?c ????????."
+      "Đặt danh từ chỉ chủ đề trước に興味があります."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u m� t? h�nh d?ng dang di?n ra ho?c da ho�n t?t."
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i c� h?ng th� v?i van h�a Nh?t B?n."
+        "sentence_ja": "日本の文化に興味があります。",
+        "reading_ja": "にほんのぶんかにきょうみがあります。",
+        "translation_vi": "Tôi có hứng thú với văn hóa Nhật Bản."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i da b?t d?u quan t�m d?n v?n d? m�i tru?ng."
+        "sentence_ja": "環境問題に興味を持ちました。",
+        "reading_ja": "かんきょうもんだいにきょうみをもちました。",
+        "translation_vi": "Tôi đã bắt đầu quan tâm đến vấn đề môi trường."
       }
     ]
   },
@@ -2185,27 +2185,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "di?u quan tr?ng l� V",
-    "explanation_vi": "N�u r?ng m?t h�nh d?ng ho?c th�i quen l� quan tr?ng.",
+    "title": "Vることが大切です",
+    "pattern": "Vることが大切です",
+    "meaning_vi": "điều quan trọng là V",
+    "explanation_vi": "Nêu rằng một hành động hoặc thói quen là quan trọng.",
     "usage_notes_vi": [
-      "Danh t? h�a d?ng t? b?ng ?? r?i d�ng v?i ????."
+      "Danh từ hóa động từ bằng こと rồi dùng với 大切です."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u m� t? h�nh d?ng dang di?n ra ho?c da ho�n t?t."
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Vi?c luy?n t?p m?i ng�y l� quan tr?ng."
+        "sentence_ja": "毎日練習することが大切です。",
+        "reading_ja": "まいにちれんしゅうすることがたいせつです。",
+        "translation_vi": "Việc luyện tập mỗi ngày là quan trọng."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Vi?c tu�n th? lu?t giao th�ng l� quan tr?ng."
+        "sentence_ja": "交通ルールを守ることが大切です。",
+        "reading_ja": "こうつうるーるをまもることがたいせつです。",
+        "translation_vi": "Việc tuân thủ luật giao thông là quan trọng."
       }
     ]
   },
@@ -2215,27 +2215,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "mu?n ai d� V",
-    "explanation_vi": "Di?n t? mong mu?n ngu?i kh�c th?c hi?n m?t h�nh d?ng.",
+    "title": "Vてほしいです",
+    "pattern": "Vてほしいです",
+    "meaning_vi": "muốn ai đó V",
+    "explanation_vi": "Diễn tả mong muốn người khác thực hiện một hành động.",
     "usage_notes_vi": [
-      "Ch? th? mong mu?n thu?ng du?c n�u b?ng ? tru?c d?ng t?."
+      "Chủ thể mong muốn thường được nêu bằng に trước động từ."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i y�u c?u tr?c ti?p ho?c c�ch n�u th?i lu?ng kh�c."
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "T�i mu?n gi�o vi�n gi?i th�ch l?i m?t l?n n?a."
+        "sentence_ja": "先生にもう一度説明してほしいです。",
+        "reading_ja": "せんせいにもういちどせつめいしてほしいです。",
+        "translation_vi": "Tôi muốn giáo viên giải thích lại một lần nữa."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "T�i mu?n b?n luy?n ph?ng v?n c�ng t�i."
+        "sentence_ja": "友達に面接の練習をしてほしいです。",
+        "reading_ja": "ともだちにめんせつのれんしゅうをしてほしいです。",
+        "translation_vi": "Tôi muốn bạn luyện phỏng vấn cùng tôi."
       }
     ]
   },
@@ -2245,27 +2245,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????????",
-    "pattern": "N????????",
-    "meaning_vi": "n�i v? N",
-    "explanation_vi": "D�ng d? n�u ch? d? c?a di?u du?c n�i ho?c trao d?i.",
+    "title": "Nについて話します",
+    "pattern": "Nについて話します",
+    "meaning_vi": "nói về N",
+    "explanation_vi": "Dùng để nêu chủ đề của điều được nói hoặc trao đổi.",
     "usage_notes_vi": [
-      "D?t danh t? ch? ch? d? tru?c ????."
+      "Đặt danh từ chỉ chủ đề trước について."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i y�u c?u tr?c ti?p ho?c c�ch n�u th?i lu?ng kh�c."
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Trong gi? h?c t�i da n�i v? van h�a Nh?t."
+        "sentence_ja": "授業で日本の文化について話しました。",
+        "reading_ja": "じゅぎょうでにほんのぶんかについてはなしました。",
+        "translation_vi": "Trong giờ học tôi đã nói về văn hóa Nhật."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Trong bu?i ph?ng v?n t�i da du?c h?i v? c�ng vi?c."
+        "sentence_ja": "面接で仕事について質問されました。",
+        "reading_ja": "めんせつでしごとについてしつもんされました。",
+        "translation_vi": "Trong buổi phỏng vấn tôi đã được hỏi về công việc."
       }
     ]
   },
@@ -2275,27 +2275,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????????",
-    "pattern": "V???????????",
-    "meaning_vi": "m?t th?i gian d? V",
-    "explanation_vi": "Di?n t? lu?ng th?i gian c?n thi?t d? th?c hi?n m?t h�nh d?ng.",
+    "title": "Vるのに時間がかかります",
+    "pattern": "Vるのに時間がかかります",
+    "meaning_vi": "mất thời gian để V",
+    "explanation_vi": "Diễn tả lượng thời gian cần thiết để thực hiện một hành động.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?? v� d?t kho?ng th?i gian tru?c ??????."
+      "Dùng động từ thể từ điển trước のに và đặt khoảng thời gian trước がかかります."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i y�u c?u tr?c ti?p ho?c c�ch n�u th?i lu?ng kh�c."
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Di b? d?n ga m?t mu?i ph�t."
+        "sentence_ja": "駅まで歩くのに十分かかります。",
+        "reading_ja": "えきまであるくのにじゅっぷんかかります。",
+        "translation_vi": "Đi bộ đến ga mất mười phút."
       },
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Vi?c chu?n b? gi?y t? da m?t th?i gian."
+        "sentence_ja": "書類を準備するのに時間がかかりました。",
+        "reading_ja": "しょるいをじゅんびするのにじかんがかかりました。",
+        "translation_vi": "Việc chuẩn bị giấy tờ đã mất thời gian."
       }
     ]
   },
@@ -2305,27 +2305,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "n�n V th� t?t?; t�i n�n V th? n�o?",
-    "explanation_vi": "D�ng d? h?i l?i khuy�n ho?c c�ch x? ly ph� h?p.",
+    "title": "Vたらいいですか",
+    "pattern": "Vたらいいですか",
+    "meaning_vi": "nên V thì tốt?; tôi nên V thế nào?",
+    "explanation_vi": "Dùng để hỏi lời khuyên hoặc cách xử lý phù hợp.",
     "usage_notes_vi": [
-      "D�ng th? qu� kh? ?? tru?c ????? d? h?i n�n l�m g�."
+      "Dùng thể quá khứ たら trước いいですか để hỏi nên làm gì."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u h?i y ki?n ho?c m� t? tr?ng th�i kh�c."
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Khi b? s?t th� t�i n�n l�m g�?"
+        "sentence_ja": "熱があるときはどうしたらいいですか。",
+        "reading_ja": "ねつがあるときはどうしたらいいですか。",
+        "translation_vi": "Khi bị sốt thì tôi nên làm gì?"
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i n�n n?p gi?y t? n�y ? d�u?"
+        "sentence_ja": "この書類はどこに出したらいいですか。",
+        "reading_ja": "このしょるいはどこにだしたらいいですか。",
+        "translation_vi": "Tôi nên nộp giấy tờ này ở đâu?"
       }
     ]
   },
@@ -2335,27 +2335,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "da l? V; da ho�n t?t V",
-    "explanation_vi": "Di?n t? vi?c da ho�n th�nh ho?c ti?c nu?i v� m?t h�nh d?ng ngo�i y mu?n.",
+    "title": "Vてしまいました",
+    "pattern": "Vてしまいました",
+    "meaning_vi": "đã lỡ V; đã hoàn tất V",
+    "explanation_vi": "Diễn tả việc đã hoàn thành hoặc tiếc nuối vì một hành động ngoài ý muốn.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ?????? d? n�i v? vi?c da x?y ra trong qu� kh?."
+      "Dùng thể て trước しまいました để nói về việc đã xảy ra trong quá khứ."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u h?i y ki?n ho?c m� t? tr?ng th�i kh�c."
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i da l? qu�n thu?c ? nh�."
+        "sentence_ja": "薬を家に忘れてしまいました。",
+        "reading_ja": "くすりをいえにわすれてしまいました。",
+        "translation_vi": "Tôi đã lỡ quên thuốc ở nhà."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i da l�m xong h?t b�i t?p."
+        "sentence_ja": "宿題を全部終えてしまいました。",
+        "reading_ja": "しゅくだいをぜんぶおえてしまいました。",
+        "translation_vi": "Tôi đã làm xong hết bài tập."
       }
     ]
   },
@@ -2365,27 +2365,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "nhu N; gi?ng nhu N",
-    "explanation_vi": "D�ng d? so s�nh c�ch th?c ho?c tr?ng th�i v?i m?t danh t?.",
+    "title": "Nのように",
+    "pattern": "Nのように",
+    "meaning_vi": "như N; giống như N",
+    "explanation_vi": "Dùng để so sánh cách thức hoặc trạng thái với một danh từ.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ???? khi b? nghia cho d?ng t? ho?c t�nh t?."
+      "Đặt danh từ trước のように khi bổ nghĩa cho động từ hoặc tính từ."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u h?i y ki?n ho?c m� t? tr?ng th�i kh�c."
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i kh�ng th? gi?i th�ch chi ti?t nhu b�c si."
+        "sentence_ja": "医者のように詳しく説明できません。",
+        "reading_ja": "いしゃのようにくわしくせつめいできません。",
+        "translation_vi": "Tôi không thể giải thích chi tiết như bác sĩ."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "T�i da cu?i nhu m?t d?a tr?."
+        "sentence_ja": "子どものように笑いました。",
+        "reading_ja": "こどものようにわらいました。",
+        "translation_vi": "Tôi đã cười như một đứa trẻ."
       }
     ]
   },
@@ -2395,27 +2395,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????????",
-    "pattern": "V??????????",
-    "meaning_vi": "dang c? g?ng kh�ng V",
-    "explanation_vi": "Di?n t? th�i quen ho?c n? l?c c� y th?c d? kh�ng l�m m?t vi?c.",
+    "title": "Vないようにしています",
+    "pattern": "Vないようにしています",
+    "meaning_vi": "đang cố gắng không V",
+    "explanation_vi": "Diễn tả thói quen hoặc nỗ lực có ý thức để không làm một việc.",
     "usage_notes_vi": [
-      "D�ng th? ph? d?nh tru?c ????????."
+      "Dùng thể phủ định trước ようにしています."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?nh l?nh tr?c ti?p ho?c l?i khuy�n kh�c."
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "T�i lu�n c? g?ng kh�ng g�y tai n?n."
+        "sentence_ja": "事故を起こさないようにしています。",
+        "reading_ja": "じこをおこさないようにしています。",
+        "translation_vi": "Tôi luôn cố gắng không gây tai nạn."
       },
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Bu?i t?i t�i c? g?ng kh�ng di tr�n du?ng nguy hi?m."
+        "sentence_ja": "夜は危険な道を歩かないようにしています。",
+        "reading_ja": "よるはきけんなみちをあるかないようにしています。",
+        "translation_vi": "Buổi tối tôi cố gắng không đi trên đường nguy hiểm."
       }
     ]
   },
@@ -2425,27 +2425,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N??????????",
-    "pattern": "N??????????",
-    "meaning_vi": "hay ch� y/c?n th?n v?i N",
-    "explanation_vi": "D�ng d? nh?c ai d� ch� y d?n m?t di?u c� th? g�y nguy hi?m ho?c sai s�t.",
+    "title": "Nに気をつけてください",
+    "pattern": "Nに気をつけてください",
+    "meaning_vi": "hãy chú ý/cẩn thận với N",
+    "explanation_vi": "Dùng để nhắc ai đó chú ý đến một điều có thể gây nguy hiểm hoặc sai sót.",
     "usage_notes_vi": [
-      "D?t danh t? ch? di?u c?n ch� y tru?c ??????????."
+      "Đặt danh từ chỉ điều cần chú ý trước に気をつけてください."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?nh l?nh tr?c ti?p ho?c l?i khuy�n kh�c."
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "Hay c?n th?n v?i xe c?."
+        "sentence_ja": "車に気をつけてください。",
+        "reading_ja": "くるまにきをつけてください。",
+        "translation_vi": "Hãy cẩn thận với xe cộ."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Hay n?u an c?n th?n d? tr�nh h?a ho?n."
+        "sentence_ja": "火事に気をつけて料理してください。",
+        "reading_ja": "かじにきをつけてりょうりしてください。",
+        "translation_vi": "Hãy nấu ăn cẩn thận để tránh hỏa hoạn."
       }
     ]
   },
@@ -2455,27 +2455,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "n�n V th� t?t",
-    "explanation_vi": "Dua ra m?t l?i khuy�n nh? nh�ng v? vi?c n�n l�m.",
+    "title": "Vるといいです",
+    "pattern": "Vるといいです",
+    "meaning_vi": "nên V thì tốt",
+    "explanation_vi": "Đưa ra một lời khuyên nhẹ nhàng về việc nên làm.",
     "usage_notes_vi": [
-      "D�ng th? t? di?n tru?c ????? d? g?i y h�nh d?ng."
+      "Dùng thể từ điển trước といいです để gợi ý hành động."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?nh l?nh tr?c ti?p ho?c l?i khuy�n kh�c."
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Tru?c d?ng d?t, b?n n�n chu?n b? nu?c."
+        "sentence_ja": "地震の前に水を用意するといいです。",
+        "reading_ja": "じしんのまえにみずをよういするといいです。",
+        "translation_vi": "Trước động đất, bạn nên chuẩn bị nước."
       },
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Khi kh�ng bi?t du?ng, b?n n�n h?i ? d?n c?nh s�t."
+        "sentence_ja": "分からないときは交番で聞くといいです。",
+        "reading_ja": "わからないときはこうばんできくといいです。",
+        "translation_vi": "Khi không biết đường, bạn nên hỏi ở đồn cảnh sát."
       }
     ]
   },
@@ -2485,27 +2485,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "ch?n N; quy?t d?nh N",
-    "explanation_vi": "D�ng khi ch?n m?t m�n, phuong �n ho?c tr?ng th�i c? th?.",
+    "title": "Nにします",
+    "pattern": "Nにします",
+    "meaning_vi": "chọn N; quyết định N",
+    "explanation_vi": "Dùng khi chọn một món, phương án hoặc trạng thái cụ thể.",
     "usage_notes_vi": [
-      "D?t danh t? ch? l?a ch?n tru?c ????."
+      "Đặt danh từ chỉ lựa chọn trước にします."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u di?n t? y d?nh ho?c nh? v? kh�c."
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "B?a trua t�i ch?n c� ri."
+        "sentence_ja": "昼ご飯はカレーにします。",
+        "reading_ja": "ひるごはんはかれーにします。",
+        "translation_vi": "Bữa trưa tôi chọn cà ri."
       },
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "T�i da ch?n thanh to�n b?ng ti?n m?t."
+        "sentence_ja": "支払いは現金にしました。",
+        "reading_ja": "しはらいはげんきんにしました。",
+        "translation_vi": "Tôi đã chọn thanh toán bằng tiền mặt."
       }
     ]
   },
@@ -2515,27 +2515,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "mu?n th? V",
-    "explanation_vi": "Di?n t? mong mu?n th? l�m m?t h�nh d?ng.",
+    "title": "Vてみたいです",
+    "pattern": "Vてみたいです",
+    "meaning_vi": "muốn thử V",
+    "explanation_vi": "Diễn tả mong muốn thử làm một hành động.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ?????."
+      "Dùng thể て trước みたいです."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u di?n t? y d?nh ho?c nh? v? kh�c."
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i mu?n th? d�ng s?n ph?m c?a c?a h�ng n�y."
+        "sentence_ja": "この店の商品を使ってみたいです。",
+        "reading_ja": "このみせのしょうひんをつかってみたいです。",
+        "translation_vi": "Tôi muốn thử dùng sản phẩm của cửa hàng này."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "T�i mu?n th? mua s?m ? Nh?t."
+        "sentence_ja": "日本で買い物をしてみたいです。",
+        "reading_ja": "にほんでかいものをしてみたいです。",
+        "translation_vi": "Tôi muốn thử mua sắm ở Nhật."
       }
     ]
   },
@@ -2545,27 +2545,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "c� th? nh? ai V gi�p kh�ng?",
-    "explanation_vi": "D�ng d? nh? ngu?i kh�c th?c hi?n m?t vi?c m?t c�ch l?ch s?.",
+    "title": "Vてもらえますか",
+    "pattern": "Vてもらえますか",
+    "meaning_vi": "có thể nhờ ai V giúp không?",
+    "explanation_vi": "Dùng để nhờ người khác thực hiện một việc một cách lịch sự.",
     "usage_notes_vi": [
-      "D?t d?ng t? th? ? tru?c ??????."
+      "Đặt động từ thể て trước もらえますか."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u di?n t? y d?nh ho?c nh? v? kh�c."
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "B?n c� th? cho t�i xem bi�n lai du?c kh�ng?"
+        "sentence_ja": "領収書を見せてもらえますか。",
+        "reading_ja": "りょうしゅうしょをみせてもらえますか。",
+        "translation_vi": "Bạn có thể cho tôi xem biên lai được không?"
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "B?n c� th? d?i s?n ph?m n�y gi�p t�i kh�ng?"
+        "sentence_ja": "この商品を交換してもらえますか。",
+        "reading_ja": "このしょうひんをこうかんしてもらえますか。",
+        "translation_vi": "Bạn có thể đổi sản phẩm này giúp tôi không?"
       }
     ]
   },
@@ -2575,27 +2575,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "du?c V s?n; dang ? tr?ng th�i da V",
-    "explanation_vi": "Di?n t? k?t qu? c?a h�nh d?ng du?c th?c hi?n c� ch? y v� c�n gi? nguy�n.",
+    "title": "Vてあります",
+    "pattern": "Vてあります",
+    "meaning_vi": "được V sẵn; đang ở trạng thái đã V",
+    "explanation_vi": "Diễn tả kết quả của hành động được thực hiện có chủ ý và còn giữ nguyên.",
     "usage_notes_vi": [
-      "D�ng d?ng t? tha d?ng t? ? th? ? v?i ????."
+      "Dùng động từ tha động từ ở thể て với あります."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i tr?ng th�i ho�n t?t ho?c kho?ng th?i gian kh�c."
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "T�i li?u cu?c h?p du?c d?t s?n tr�n b�n."
+        "sentence_ja": "会議の資料が机の上に置いてあります。",
+        "reading_ja": "かいぎのしりょうがつくえのうえにおいてあります。",
+        "translation_vi": "Tài liệu cuộc họp được đặt sẵn trên bàn."
       },
       {
-        "sentence_ja": "??????????",
-        "reading_ja": "???????????",
-        "translation_vi": "C?a s? du?c m? s?n."
+        "sentence_ja": "窓が開けてあります。",
+        "reading_ja": "まどがあけてあります。",
+        "translation_vi": "Cửa sổ được mở sẵn."
       }
     ]
   },
@@ -2605,27 +2605,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N???",
-    "pattern": "N???",
-    "meaning_vi": "gi? nguy�n N; trong tr?ng th�i N",
-    "explanation_vi": "Di?n t? vi?c gi? nguy�n tr?ng th�i ho?c h�nh th?c c?a danh t?.",
+    "title": "Nのまま",
+    "pattern": "Nのまま",
+    "meaning_vi": "giữ nguyên N; trong trạng thái N",
+    "explanation_vi": "Diễn tả việc giữ nguyên trạng thái hoặc hình thức của danh từ.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ??? khi tr?ng th�i kh�ng thay d?i."
+      "Đặt danh từ trước のまま khi trạng thái không thay đổi."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i tr?ng th�i ho�n t?t ho?c kho?ng th?i gian kh�c."
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i da l? ng? khi v?n b?t di?n."
+        "sentence_ja": "電気をつけたまま寝てしまいました。",
+        "reading_ja": "でんきをつけたままねてしまいました。",
+        "translation_vi": "Tôi đã lỡ ngủ khi vẫn bật điện."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Xin d?ng v�o ph�ng m� v?n di gi�y."
+        "sentence_ja": "靴のまま部屋に入らないでください。",
+        "reading_ja": "くつのままへやにはいらないでください。",
+        "translation_vi": "Xin đừng vào phòng mà vẫn đi giày."
       }
     ]
   },
@@ -2635,27 +2635,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????",
-    "pattern": "V????",
-    "meaning_vi": "trong l�c dang V",
-    "explanation_vi": "Di?n t? m?t h�nh d?ng ho?c tr?ng th�i k�o d�i trong m?t kho?ng th?i gian.",
+    "title": "Vている間",
+    "pattern": "Vている間",
+    "meaning_vi": "trong lúc đang V",
+    "explanation_vi": "Diễn tả một hành động hoặc trạng thái kéo dài trong một khoảng thời gian.",
     "usage_notes_vi": [
-      "D?t ? sau m?nh d? th? ??? d? n�u kho?ng th?i gian."
+      "Đặt 間 sau mệnh đề thể ている để nêu khoảng thời gian."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i tr?ng th�i ho�n t?t ho?c kho?ng th?i gian kh�c."
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Trong l�c thi c�ng, kh�ng th? s? d?ng du?ng."
+        "sentence_ja": "工事をしている間、道を使えません。",
+        "reading_ja": "こうじをしているあいだ、みちをつかえません。",
+        "translation_vi": "Trong lúc thi công, không thể sử dụng đường."
       },
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Trong l�c ki?m tra, hay d?ng m�y."
+        "sentence_ja": "点検している間は機械を止めてください。",
+        "reading_ja": "てんけんしているあいだはきかいをとめてください。",
+        "translation_vi": "Trong lúc kiểm tra, hãy dừng máy."
       }
     ]
   },
@@ -2665,27 +2665,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "c� m�i/v?/�m thanh l� N",
-    "explanation_vi": "D�ng d? m� t? c?m gi�c du?c nh?n bi?t b?ng gi�c quan.",
+    "title": "Nがします",
+    "pattern": "Nがします",
+    "meaning_vi": "có mùi/vị/âm thanh là N",
+    "explanation_vi": "Dùng để mô tả cảm giác được nhận biết bằng giác quan.",
     "usage_notes_vi": [
-      "D?t danh t? ch? c?m gi�c tru?c ????."
+      "Đặt danh từ chỉ cảm giác trước がします."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u n�u kh? nang ho?c cho ph�p chung."
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "T? b?p c� m�i thom."
+        "sentence_ja": "台所からいい匂いがします。",
+        "reading_ja": "だいどころからいいにおいがします。",
+        "translation_vi": "Từ bếp có mùi thơm."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "M�n an n�y c� v? cay."
+        "sentence_ja": "この料理は辛い味がします。",
+        "reading_ja": "このりょうりはからいあじがします。",
+        "translation_vi": "Món ăn này có vị cay."
       }
     ]
   },
@@ -2695,27 +2695,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "gi?i V",
-    "explanation_vi": "D�ng d? n�i ai d� gi?i th?c hi?n m?t h�nh d?ng.",
+    "title": "Vるのが上手です",
+    "pattern": "Vるのが上手です",
+    "meaning_vi": "giỏi V",
+    "explanation_vi": "Dùng để nói ai đó giỏi thực hiện một hành động.",
     "usage_notes_vi": [
-      "Danh t? h�a d?ng t? b?ng ? r?i d�ng v?i ????."
+      "Danh từ hóa động từ bằng の rồi dùng với 上手です."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u n�u kh? nang ho?c cho ph�p chung."
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "M? t�i gi?i nu?ng c�."
+        "sentence_ja": "母は魚を焼くのが上手です。",
+        "reading_ja": "はははさかなをやくのがじょうずです。",
+        "translation_vi": "Mẹ tôi giỏi nướng cá."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "??????????????????????????",
-        "translation_vi": "Em g�i t�i da tr? n�n gi?i n?u an."
+        "sentence_ja": "妹は料理を作るのが上手になりました。",
+        "reading_ja": "いもうとはりょうりをつくるのがじょうずになりました。",
+        "translation_vi": "Em gái tôi đã trở nên giỏi nấu ăn."
       }
     ]
   },
@@ -2725,27 +2725,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "t�i c� th? V kh�ng?",
-    "explanation_vi": "D�ng d? h?i xin ph�p th?c hi?n m?t h�nh d?ng.",
+    "title": "Vてもいいですか",
+    "pattern": "Vてもいいですか",
+    "meaning_vi": "tôi có thể V không?",
+    "explanation_vi": "Dùng để hỏi xin phép thực hiện một hành động.",
     "usage_notes_vi": [
-      "D?t d?ng t? th? ? tru?c ??????."
+      "Đặt động từ thể て trước もいいですか."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i m?u n�u kh? nang ho?c cho ph�p chung."
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "T�i d�ng mu?i n�y du?c kh�ng?"
+        "sentence_ja": "この塩を使ってもいいですか。",
+        "reading_ja": "このしおをつかってもいいですか。",
+        "translation_vi": "Tôi dùng muối này được không?"
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "T�i m? t? l?nh du?c kh�ng?"
+        "sentence_ja": "冷蔵庫を開けてもいいですか。",
+        "reading_ja": "れいぞうこをあけてもいいですか。",
+        "translation_vi": "Tôi mở tủ lạnh được không?"
       }
     ]
   },
@@ -2755,27 +2755,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "c� V hay kh�ng",
-    "explanation_vi": "D�ng d? di?n t? chua bi?t ho?c c?n x�c nh?n m?t h�nh d?ng c� x?y ra hay kh�ng.",
+    "title": "Vるかどうか",
+    "pattern": "Vるかどうか",
+    "meaning_vi": "có V hay không",
+    "explanation_vi": "Dùng để diễn tả chưa biết hoặc cần xác nhận một hành động có xảy ra hay không.",
     "usage_notes_vi": [
-      "D?t d?ng t? th? t? di?n tru?c ????."
+      "Đặt động từ thể từ điển trước かどうか."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i c�ch n�u th�ng tin ch?c ch?n ho?c di?u ki?n kh�c."
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "T�i kh�ng bi?t t�u c� d?n d�ng gi? hay kh�ng."
+        "sentence_ja": "電車が時間通りに来るかどうか分かりません。",
+        "reading_ja": "でんしゃがじかんどおりにくるかどうかわかりません。",
+        "translation_vi": "Tôi không biết tàu có đến đúng giờ hay không."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Hay ki?m tra xem du?ng c� an to�n kh�ng."
+        "sentence_ja": "道が安全かどうか確認してください。",
+        "reading_ja": "みちがあんぜんかどうかかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra xem đường có an toàn không."
       }
     ]
   },
@@ -2785,27 +2785,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N?????",
-    "pattern": "N?????",
-    "meaning_vi": "t�y N th�; c� tru?ng h?p theo N",
-    "explanation_vi": "Di?n t? k?t qu? kh�c nhau t�y ngu?i, noi ho?c di?u ki?n.",
+    "title": "Nによっては",
+    "pattern": "Nによっては",
+    "meaning_vi": "tùy N thì; có trường hợp theo N",
+    "explanation_vi": "Diễn tả kết quả khác nhau tùy người, nơi hoặc điều kiện.",
     "usage_notes_vi": [
-      "D?t danh t? ch? ti�u ch� tru?c ?????."
+      "Đặt danh từ chỉ tiêu chí trước によっては."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i c�ch n�u th�ng tin ch?c ch?n ho?c di?u ki?n kh�c."
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "T�y m�a m� du?ng c� th? d�ng."
+        "sentence_ja": "季節によっては道路が混みます。",
+        "reading_ja": "きせつによってはどうろがこみます。",
+        "translation_vi": "Tùy mùa mà đường có thể đông."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "? m?t s? noi, s�ng di?n y?u."
+        "sentence_ja": "場所によっては電波が弱いです。",
+        "reading_ja": "ばしょによってはでんぱがよわいです。",
+        "translation_vi": "Ở một số nơi, sóng điện yếu."
       }
     ]
   },
@@ -2815,27 +2815,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "d? V th�; mu?n V th�",
-    "explanation_vi": "N�u di?u ki?n ho?c vi?c c?n l�m d? d?t m?c d�ch.",
+    "title": "Vるためには",
+    "pattern": "Vるためには",
+    "meaning_vi": "để V thì; muốn V thì",
+    "explanation_vi": "Nêu điều kiện hoặc việc cần làm để đạt mục đích.",
     "usage_notes_vi": [
-      "D�ng th? t? di?n tru?c ???? r?i n�u di?u c?n thi?t."
+      "Dùng thể từ điển trước ためには rồi nêu điều cần thiết."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m m?u n�y v?i c�ch n�u th�ng tin ch?c ch?n ho?c di?u ki?n kh�c."
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????????",
-        "reading_ja": "???????????????????????????",
-        "translation_vi": "D? k?p gi? c?n xu?t ph�t s?m."
+        "sentence_ja": "時間に間に合うためには早く出る必要があります。",
+        "reading_ja": "じかんにまにあうためにははやくでるひつようがあります。",
+        "translation_vi": "Để kịp giờ cần xuất phát sớm."
       },
       {
-        "sentence_ja": "????????????????????",
-        "reading_ja": "??????????????????????????",
-        "translation_vi": "D? di b? an to�n hay tu�n th? d�n t�n hi?u."
+        "sentence_ja": "安全に歩くためには信号を守ってください。",
+        "reading_ja": "あんぜんにあるくためにはしんごうをまもってください。",
+        "translation_vi": "Để đi bộ an toàn hãy tuân thủ đèn tín hiệu."
       }
     ]
   },
@@ -2845,27 +2845,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "trong khi dang V; tru?c khi tr?ng th�i thay d?i",
-    "explanation_vi": "Di?n t? m?t vi?c x?y ra trong l�c dang l�m vi?c kh�c ho?c tru?c khi co h?i m?t di.",
+    "title": "Vているうちに",
+    "pattern": "Vているうちに",
+    "meaning_vi": "trong khi đang V; trước khi trạng thái thay đổi",
+    "explanation_vi": "Diễn tả một việc xảy ra trong lúc đang làm việc khác hoặc trước khi cơ hội mất đi.",
     "usage_notes_vi": [
-      "D�ng d?ng ??? c?a d?ng t? tru?c ???."
+      "Dùng dạng ている của động từ trước うちに."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i N??? khi ch? th? ho?c tr?ng th�i thay d?i trong qu� tr�nh."
+      "Không nhầm với Nの間に khi chủ thể hoặc trạng thái thay đổi trong quá trình."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????????????",
-        "reading_ja": "???????????????????????????????",
-        "translation_vi": "Trong khi h?c ti?ng Nh?t, t�i d?n th�ch Kanji."
+        "sentence_ja": "日本語を勉強しているうちに、漢字が好きになりました。",
+        "reading_ja": "にほんごをべんきょうしているうちに、かんじがすきになりました。",
+        "translation_vi": "Trong khi học tiếng Nhật, tôi dần thích Kanji."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "Hay ghi ch� tru?c khi qu�n."
+        "sentence_ja": "忘れないうちに、メモしてください。",
+        "reading_ja": "わすれないうちに、めもしてください。",
+        "translation_vi": "Hãy ghi chú trước khi quên."
       }
     ]
   },
@@ -2875,27 +2875,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "so v?i N",
-    "explanation_vi": "So s�nh m?t ngu?i ho?c v?t v?i N v? d?c di?m hay m?c d?.",
+    "title": "Nに比べて",
+    "pattern": "Nに比べて",
+    "meaning_vi": "so với N",
+    "explanation_vi": "So sánh một người hoặc vật với N về đặc điểm hay mức độ.",
     "usage_notes_vi": [
-      "D?t danh t? l�m chu?n so s�nh tru?c ????."
+      "Đặt danh từ làm chuẩn so sánh trước に比べて."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? nhu m?t tr? t? ch? d?a di?m."
+      "Không dùng に比べて như một trợ từ chỉ địa điểm."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "So v?i nam ngo�i, nam nay ?m hon."
+        "sentence_ja": "去年に比べて、今年は暖かいです。",
+        "reading_ja": "きょねんにくらべて、ことしはあたたかいです。",
+        "translation_vi": "So với năm ngoái, năm nay ấm hơn."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�u di?n nhanh hon xe buyt."
+        "sentence_ja": "電車はバスに比べて速いです。",
+        "reading_ja": "でんしゃはばすにくらべてはやいです。",
+        "translation_vi": "Tàu điện nhanh hơn xe buýt."
       }
     ]
   },
@@ -2905,27 +2905,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "d? nguy�n tr?ng th�i da V",
-    "explanation_vi": "N�i r?ng gi? nguy�n m?t tr?ng th�i sau khi da th?c hi?n h�nh d?ng.",
+    "title": "Vたままにする",
+    "pattern": "Vたままにする",
+    "meaning_vi": "để nguyên trạng thái đã V",
+    "explanation_vi": "Nói rằng giữ nguyên một trạng thái sau khi đã thực hiện hành động.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ?????."
+      "Dùng thể た trước ままにする."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tru?c ????? khi mu?n n�i tr?ng th�i da ho�n t?t."
+      "Không dùng thể từ điển trước ままにする khi muốn nói trạng thái đã hoàn tất."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "Xin d?ng d? c?a m? nguy�n nhu v?y."
+        "sentence_ja": "ドアを開けたままにしないでください。",
+        "reading_ja": "どあをあけたままにしないでください。",
+        "translation_vi": "Xin đừng để cửa mở nguyên như vậy."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "T�i da d? d�n b?t nguy�n."
+        "sentence_ja": "電気をつけたままにしました。",
+        "reading_ja": "でんきをつけたままにしました。",
+        "translation_vi": "Tôi đã để đèn bật nguyên."
       }
     ]
   },
@@ -2935,27 +2935,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????",
-    "pattern": "V????",
-    "meaning_vi": "tru?c khi; tru?c th?i di?m V",
-    "explanation_vi": "N�u h?n ch�t m� m?t vi?c ph?i ho�n th�nh tru?c th?i di?m kh�c.",
+    "title": "Vるまでに",
+    "pattern": "Vるまでに",
+    "meaning_vi": "trước khi; trước thời điểm V",
+    "explanation_vi": "Nêu hạn chót mà một việc phải hoàn thành trước thời điểm khác.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ???."
+      "Dùng động từ thể từ điển trước までに."
     ],
     "common_mistakes": [
-      "??? ch? h?n ho�n th�nh, kh�c v?i ?? ch? th?i di?m k�o d�i."
+      "までに chỉ hạn hoàn thành, khác với まで chỉ thời điểm kéo dài."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "Hay d?n ga tru?c s�u gi?."
+        "sentence_ja": "六時までに駅へ来てください。",
+        "reading_ja": "ろくじまでにえきへきてください。",
+        "translation_vi": "Hãy đến ga trước sáu giờ."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "T�i s? l�m xong b�i t?p tru?c khi ng?."
+        "sentence_ja": "寝るまでに宿題を終わらせます。",
+        "reading_ja": "ねるまでにしゅくだいをおわらせます。",
+        "translation_vi": "Tôi sẽ làm xong bài tập trước khi ngủ."
       }
     ]
   },
@@ -2965,27 +2965,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????????",
-    "pattern": "V??????????",
-    "meaning_vi": "du?c b?o l� hay V",
-    "explanation_vi": "N�i l?i l?i d?n ho?c y�u c?u m� ngu?i kh�c da n�i v?i m�nh.",
+    "title": "Vるように言われました",
+    "pattern": "Vるように言われました",
+    "meaning_vi": "được bảo là hãy V",
+    "explanation_vi": "Nói lại lời dặn hoặc yêu cầu mà người khác đã nói với mình.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?????????."
+      "Dùng động từ thể từ điển trước ように言われました."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V??????? l� t? c? g?ng th?c hi?n."
+      "Không nhầm với Vるようにします là tự cố gắng thực hiện."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "T�i du?c gi�o vi�n b?o hay d?c m?i ng�y."
+        "sentence_ja": "先生に毎日読むように言われました。",
+        "reading_ja": "せんせいにまいにちよむようにいわれました。",
+        "translation_vi": "Tôi được giáo viên bảo hãy đọc mỗi ngày."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i du?c m? b?o hay v? s?m."
+        "sentence_ja": "母に早く帰るように言われました。",
+        "reading_ja": "ははにはやくかえるようにいわれました。",
+        "translation_vi": "Tôi được mẹ bảo hãy về sớm."
       }
     ]
   },
@@ -2995,27 +2995,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N?????",
-    "pattern": "N?????",
-    "meaning_vi": "kh�ng ch? N m� c�n",
-    "explanation_vi": "Th�m m?t d?i tu?ng ho?c d?c di?m ngo�i N.",
+    "title": "Nだけでなく",
+    "pattern": "Nだけでなく",
+    "meaning_vi": "không chỉ N mà còn",
+    "explanation_vi": "Thêm một đối tượng hoặc đặc điểm ngoài N.",
     "usage_notes_vi": [
-      "D�ng danh t? tru?c ????? v� thu?ng n?i v?i ? ? v? sau."
+      "Dùng danh từ trước だけでなく và thường nối với も ở vế sau."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ????? d? di?n t? l?a ch?n ch? c� m?t d?i tu?ng."
+      "Không dùng だけでなく để diễn tả lựa chọn chỉ có một đối tượng."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????????????",
-        "reading_ja": "?????????????????????????????????",
-        "translation_vi": "C?a h�ng n�y n?i ti?ng kh�ng ch? v?i ngu?i Nh?t m� c? ngu?i nu?c ngo�i."
+        "sentence_ja": "この店は日本人だけでなく、外国人にも人気があります。",
+        "reading_ja": "このみせはにほんじんだけでなく、がいこくじんにもにんきがあります。",
+        "translation_vi": "Cửa hàng này nổi tiếng không chỉ với người Nhật mà cả người nước ngoài."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "T�i h?c kh�ng ch? Kanji m� c? ng? ph�p."
+        "sentence_ja": "漢字だけでなく、文法も勉強します。",
+        "reading_ja": "かんじだけでなく、ぶんぽうもべんきょうします。",
+        "translation_vi": "Tôi học không chỉ Kanji mà cả ngữ pháp."
       }
     ]
   },
@@ -3025,27 +3025,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "n?u kh�ng V tru?c th� kh�ng th?",
-    "explanation_vi": "N�u di?u ki?n b?t bu?c ph?i ho�n th�nh tru?c khi l�m vi?c kh�c.",
+    "title": "Vてからでないと",
+    "pattern": "Vてからでないと",
+    "meaning_vi": "nếu không V trước thì không thể",
+    "explanation_vi": "Nêu điều kiện bắt buộc phải hoàn thành trước khi làm việc khác.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ??????."
+      "Dùng thể て trước からでないと."
     ],
     "common_mistakes": [
-      "V? sau thu?ng di v?i d?ng ph? d?nh ho?c bi?u th? kh�ng th?."
+      "Vế sau thường đi với dạng phủ định hoặc biểu thị không thể."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "N?u kh�ng d?t tru?c th� kh�ng th? v�o."
+        "sentence_ja": "予約してからでないと、入れません。",
+        "reading_ja": "よやくしてからでないと、はいれません。",
+        "translation_vi": "Nếu không đặt trước thì không thể vào."
       },
       {
-        "sentence_ja": "??????????????????????",
-        "reading_ja": "????????????????????????????",
-        "translation_vi": "N?u kh�ng x�c nh?n v?i?? tru?c th� kh�ng th? thay d?i."
+        "sentence_ja": "本人に確認してからでないと、変更できません。",
+        "reading_ja": "ほんにんにかくにんしてからでないと、へんこうできません。",
+        "translation_vi": "Nếu không xác nhận với本人 trước thì không thể thay đổi."
       }
     ]
   },
@@ -3055,27 +3055,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "d?i v?i N; theo quan di?m c?a N",
-    "explanation_vi": "N�u d�nh gi� ho?c y nghia c?a s? vi?c d?i v?i m?t ngu?i hay nh�m ngu?i.",
+    "title": "Nにとって",
+    "pattern": "Nにとって",
+    "meaning_vi": "đối với N; theo quan điểm của N",
+    "explanation_vi": "Nêu đánh giá hoặc ý nghĩa của sự việc đối với một người hay nhóm người.",
     "usage_notes_vi": [
-      "D?t danh t? ch? ngu?i ho?c nh�m l�m chu?n tru?c ????."
+      "Đặt danh từ chỉ người hoặc nhóm làm chuẩn trước にとって."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? d? ch? ngu?i nh?n tr?c ti?p c?a h�nh d?ng."
+      "Không dùng にとって để chỉ người nhận trực tiếp của hành động."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "???????????????????????????",
-        "translation_vi": "D?i v?i h?c sinh, �n t?p m?i ng�y r?t quan tr?ng."
+        "sentence_ja": "学生にとって、毎日の復習は大切です。",
+        "reading_ja": "がくせいにとって、まいにちのふくしゅうはたいせつです。",
+        "translation_vi": "Đối với học sinh, ôn tập mỗi ngày rất quan trọng."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Kinh nghi?m n�y quan tr?ng d?i v?i t�i."
+        "sentence_ja": "この経験は私にとって大切です。",
+        "reading_ja": "このけいけんはわたしにとってたいせつです。",
+        "translation_vi": "Kinh nghiệm này quan trọng đối với tôi."
       }
     ]
   },
@@ -3085,27 +3085,27 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????",
-    "pattern": "V??????",
-    "meaning_vi": "kh�ng ph?i V m� l�",
-    "explanation_vi": "Ph? d?nh m?t l?a ch?n ho?c c�ch l�m r?i dua ra l?a ch?n kh�c.",
+    "title": "Vるのではなく",
+    "pattern": "Vるのではなく",
+    "meaning_vi": "không phải V mà là",
+    "explanation_vi": "Phủ định một lựa chọn hoặc cách làm rồi đưa ra lựa chọn khác.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?????."
+      "Dùng động từ thể từ điển trước のではなく."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V??? l� kh�ng l�m V m� l�m vi?c kh�c trong c�ng h�nh d?ng."
+      "Không nhầm với Vないで là không làm V mà làm việc khác trong cùng hành động."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "T�i quy?t d?nh thu� thay v� mua."
+        "sentence_ja": "買うのではなく、借りることにしました。",
+        "reading_ja": "かうのではなく、かりることにしました。",
+        "translation_vi": "Tôi quyết định thuê thay vì mua."
       },
       {
-        "sentence_ja": "????????????????????????",
-        "reading_ja": "???????????????????????????",
-        "translation_vi": "Hay c�ng th?o lu?n thay v� t? quy?t d?nh m?t m�nh."
+        "sentence_ja": "一人で決めるのではなく、みんなで相談しましょう。",
+        "reading_ja": "ひとりできめるのではなく、みんなでそうだんしましょう。",
+        "translation_vi": "Hãy cùng thảo luận thay vì tự quyết định một mình."
       }
     ]
   },
@@ -3115,28 +3115,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????",
-    "pattern": "V?????",
-    "meaning_vi": "ai d� l�m V cho t�i/ch�ng t�i",
-    "explanation_vi": "Di?n t? ngu?i kh�c l�m m?t vi?c c� l?i ho?c gi�p d? ngu?i n�i.",
+    "title": "Vてくれます",
+    "pattern": "Vてくれます",
+    "meaning_vi": "ai đó làm V cho tôi/chúng tôi",
+    "explanation_vi": "Diễn tả người khác làm một việc có lợi hoặc giúp đỡ người nói.",
     "usage_notes_vi": [
-      "Ch? th? th?c hi?n h�nh d?ng d?ng tru?c ? ho?c ?.",
-      "D�ng th? ? c?a d?ng t? tru?c ????."
+      "Chủ thể thực hiện hành động đứng trước が hoặc は.",
+      "Dùng thể て của động từ trước くれます."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ????? khi mu?n nh?n m?nh ngu?i th?c hi?n l� ngu?i cho s? gi�p d?."
+      "Không dùng もらいます khi muốn nhấn mạnh người thực hiện là người cho sự giúp đỡ."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "B?n t�i s? hu?ng d?n t�i d?n ga."
+        "sentence_ja": "友達が駅まで案内してくれます。",
+        "reading_ja": "ともだちがえきまであんないしてくれます。",
+        "translation_vi": "Bạn tôi sẽ hướng dẫn tôi đến ga."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "???????????????????",
-        "translation_vi": "Nh�n vi�n c?a h�ng da mang h�nh ly gi�p t�i."
+        "sentence_ja": "店員が荷物を運んでくれました。",
+        "reading_ja": "てんいんがにもつをはこんでくれました。",
+        "translation_vi": "Nhân viên cửa hàng đã mang hành lý giúp tôi."
       }
     ]
   },
@@ -3146,28 +3146,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "hay cho ph�p t�i l�m V",
-    "explanation_vi": "Xin ph�p ngu?i nghe cho m�nh th?c hi?n m?t h�nh d?ng.",
+    "title": "Vさせてください",
+    "pattern": "Vさせてください",
+    "meaning_vi": "hãy cho phép tôi làm V",
+    "explanation_vi": "Xin phép người nghe cho mình thực hiện một hành động.",
     "usage_notes_vi": [
-      "D�ng th? sai khi?n tru?c ????? d? n�i l?i xin ph�p l?ch s?.",
-      "Ch? th? ng?m c?a V thu?ng l� ngu?i n�i."
+      "Dùng thể sai khiến trước てください để nói lời xin phép lịch sự.",
+      "Chủ thể ngầm của V thường là người nói."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ???????."
+      "Không dùng thể từ điển trực tiếp trước させてください."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "Thua th?y/c�, hay cho em h?i m?t c�u ?."
+        "sentence_ja": "先生、質問させてください。",
+        "reading_ja": "せんせい、しつもんさせてください。",
+        "translation_vi": "Thưa thầy/cô, hãy cho em hỏi một câu ạ."
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "?????????????????",
-        "translation_vi": "H�m nay hay cho t�i v? s?m ?."
+        "sentence_ja": "今日は早く帰らせてください。",
+        "reading_ja": "きょうははやくかえらせてください。",
+        "translation_vi": "Hôm nay hãy cho tôi về sớm ạ."
       }
     ]
   },
@@ -3177,28 +3177,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????????",
-    "pattern": "V?????????",
-    "meaning_vi": "t?t hon l� kh�ng n�n V",
-    "explanation_vi": "Dua ra l?i khuy�n n�n tr�nh m?t h�nh d?ng.",
+    "title": "Vないほうがいいです",
+    "pattern": "Vないほうがいいです",
+    "meaning_vi": "tốt hơn là không nên V",
+    "explanation_vi": "Đưa ra lời khuyên nên tránh một hành động.",
     "usage_notes_vi": [
-      "D�ng th? ?? tru?c ???????.",
-      "C� th? th�m ?? d? l?i khuy�n l?ch s? hon."
+      "Dùng thể ない trước ほうがいいです.",
+      "Có thể thêm です để lời khuyên lịch sự hơn."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V????????, nghia l� kh�ng c?n ph?i l�m V."
+      "Không nhầm với Vなくてもいいです, nghĩa là không cần phải làm V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "N?u b? s?t th� t?t hon l� kh�ng n�n c? s?c."
+        "sentence_ja": "熱があるなら、無理をしないほうがいいです。",
+        "reading_ja": "ねつがあるなら、むりをしないほうがいいです。",
+        "translation_vi": "Nếu bị sốt thì tốt hơn là không nên cố sức."
       },
       {
-        "sentence_ja": "?????????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "T?t hon l� kh�ng n�n u?ng c� ph� v�o khuya."
+        "sentence_ja": "夜遅くにコーヒーを飲まないほうがいいです。",
+        "reading_ja": "よるおそくにコーヒーをのまないほうがいいです。",
+        "translation_vi": "Tốt hơn là không nên uống cà phê vào khuya."
       }
     ]
   },
@@ -3208,28 +3208,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "b?n c� th? V gi�p t�i kh�ng?",
-    "explanation_vi": "C�ch nh? ngu?i nghe l�m m?t vi?c gi�p m�nh m?t c�ch l?ch s?.",
+    "title": "Vてくれませんか",
+    "pattern": "Vてくれませんか",
+    "meaning_vi": "bạn có thể V giúp tôi không?",
+    "explanation_vi": "Cách nhờ người nghe làm một việc giúp mình một cách lịch sự.",
     "usage_notes_vi": [
-      "D�ng th? ? c?a d?ng t? tru?c ??????.",
-      "C�u h?i n�y m?m hon m?nh l?nh tr?c ti?p."
+      "Dùng thể て của động từ trước くれませんか.",
+      "Câu hỏi này mềm hơn mệnh lệnh trực tiếp."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? t? di?n tr?c ti?p tru?c ??????."
+      "Không dùng thể từ điển trực tiếp trước くれませんか."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "??????????????????",
-        "translation_vi": "B?n c� th? gi?i th�ch l?i m?t l?n n?a kh�ng?"
+        "sentence_ja": "もう一度説明してくれませんか。",
+        "reading_ja": "もういちどせつめいしてくれませんか。",
+        "translation_vi": "Bạn có thể giải thích lại một lần nữa không?"
       },
       {
-        "sentence_ja": "????????????",
-        "reading_ja": "?????????????",
-        "translation_vi": "B?n c� th? m? c?a s? gi�p t�i kh�ng?"
+        "sentence_ja": "窓を開けてくれませんか。",
+        "reading_ja": "まどをあけてくれませんか。",
+        "translation_vi": "Bạn có thể mở cửa sổ giúp tôi không?"
       }
     ]
   },
@@ -3239,28 +3239,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????????",
-    "pattern": "V?????????",
-    "meaning_vi": "kh�ng c?n ph?i V; kh�ng c� chuy?n V",
-    "explanation_vi": "Ph? d?nh s? c?n thi?t ho?c kh? nang x?y ra c?a h�nh d?ng.",
+    "title": "Vることはありません",
+    "pattern": "Vることはありません",
+    "meaning_vi": "không cần phải V; không có chuyện V",
+    "explanation_vi": "Phủ định sự cần thiết hoặc khả năng xảy ra của hành động.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ????????.",
-      "Ng? c?nh quy?t d?nh nghia l� kh�ng c?n ho?c kh�ng x?y ra."
+      "Dùng động từ thể từ điển trước ことはありません.",
+      "Ngữ cảnh quyết định nghĩa là không cần hoặc không xảy ra."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V????????, nghia l� quy?t d?nh kh�ng l�m V."
+      "Không nhầm với Vないことにします, nghĩa là quyết định không làm V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "???????????????",
-        "translation_vi": "B?n kh�ng c?n ph?i lo l?ng."
+        "sentence_ja": "心配することはありません。",
+        "reading_ja": "しんぱいすることはありません。",
+        "translation_vi": "Bạn không cần phải lo lắng."
       },
       {
-        "sentence_ja": "???????????",
-        "reading_ja": "????????????",
-        "translation_vi": "Kh�ng c?n ph?i v?i."
+        "sentence_ja": "急ぐことはありません。",
+        "reading_ja": "いそぐことはありません。",
+        "translation_vi": "Không cần phải vội."
       }
     ]
   },
@@ -3270,28 +3270,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "th�ng qua N",
-    "explanation_vi": "N�u phuong ti?n, ngu?i trung gian ho?c kho?ng th?i gian xuy�n su?t m� s? vi?c di?n ra.",
+    "title": "Nを通して",
+    "pattern": "Nを通して",
+    "meaning_vi": "thông qua N",
+    "explanation_vi": "Nêu phương tiện, người trung gian hoặc khoảng thời gian xuyên suốt mà sự việc diễn ra.",
     "usage_notes_vi": [
-      "D?t danh t? ch? phuong ti?n ho?c trung gian tru?c ????.",
-      "C� th? d�ng cho ho?t d?ng k�o d�i qua m?t kho?ng th?i gian."
+      "Đặt danh từ chỉ phương tiện hoặc trung gian trước を通して.",
+      "Có thể dùng cho hoạt động kéo dài qua một khoảng thời gian."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? d? ch? ngu?i nh?n tr?c ti?p c?a h�nh d?ng."
+      "Không dùng を通して để chỉ người nhận trực tiếp của hành động."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i bi?t ngu?i d� th�ng qua m?t ngu?i b?n."
+        "sentence_ja": "友達を通してその人を知りました。",
+        "reading_ja": "ともだちをとおしてそのひとをしりました。",
+        "translation_vi": "Tôi biết người đó thông qua một người bạn."
       },
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "T�i thu th?p th�ng tin qua Internet."
+        "sentence_ja": "インターネットを通して情報を集めます。",
+        "reading_ja": "いんたーねっとをとおしてじょうほうをあつめます。",
+        "translation_vi": "Tôi thu thập thông tin qua Internet."
       }
     ]
   },
@@ -3301,28 +3301,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "c� v? dang V",
-    "explanation_vi": "Suy do�n nh? r?ng m?t h�nh d?ng dang di?n ra d?a tr�n d?u hi?u quan s�t du?c.",
+    "title": "Vているようです",
+    "pattern": "Vているようです",
+    "meaning_vi": "có vẻ đang V",
+    "explanation_vi": "Suy đoán nhẹ rằng một hành động đang diễn ra dựa trên dấu hiệu quan sát được.",
     "usage_notes_vi": [
-      "D�ng th? ??? tru?c ????.",
-      "C� th? th�m ??????? d? di?n d?t v? b? ngo�i."
+      "Dùng thể ている trước ようです.",
+      "Có thể thêm ように見えます để diễn đạt vẻ bề ngoài."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V???????, nghia l� c? g?ng l�m V."
+      "Không nhầm với Vるようにします, nghĩa là cố gắng làm V."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "C� v? b�n ngo�i dang mua."
+        "sentence_ja": "外で雨が降っているようです。",
+        "reading_ja": "そとであめがふっているようです。",
+        "translation_vi": "Có vẻ bên ngoài đang mưa."
       },
       {
-        "sentence_ja": "?????????????",
-        "reading_ja": "??????????????",
-        "translation_vi": "C� v? anh ?y v?n dang ng?."
+        "sentence_ja": "彼はまだ寝ているようです。",
+        "reading_ja": "かれはまだねているようです。",
+        "translation_vi": "Có vẻ anh ấy vẫn đang ngủ."
       }
     ]
   },
@@ -3332,28 +3332,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V?????????",
-    "pattern": "V?????????",
-    "meaning_vi": "hay l� V th� sao?",
-    "explanation_vi": "Dua ra l?i khuy�n ho?c d? ngh? m?t c�ch m?m m?ng.",
+    "title": "Vたらどうでしょうか",
+    "pattern": "Vたらどうでしょうか",
+    "meaning_vi": "hay là V thì sao?",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề nghị một cách mềm mỏng.",
     "usage_notes_vi": [
-      "D�ng th? ? tru?c ????????.",
-      "C�ch n�i n�y l?ch s? hon ???????."
+      "Dùng thể た trước らどうでしょうか.",
+      "Cách nói này lịch sự hơn たらどうですか."
     ],
     "common_mistakes": [
-      "Kh�ng hi?u d�y l� c�u h?i v? di?u ki?n don thu?n; trong m?u n�y ngu?i n�i dang khuy�n ho?c d? ngh?."
+      "Không hiểu đây là câu hỏi về điều kiện đơn thuần; trong mẫu này người nói đang khuyên hoặc đề nghị."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Ng�y mai b?n th? trao d?i v?i gi�o vi�n xem sao?"
+        "sentence_ja": "明日、先生に相談したらどうでしょうか。",
+        "reading_ja": "あした、せんせいにそうだんしたらどうでしょうか。",
+        "translation_vi": "Ngày mai bạn thử trao đổi với giáo viên xem sao?"
       },
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "B?n ngh? m?t ch�t th� sao?"
+        "sentence_ja": "少し休んだらどうでしょうか。",
+        "reading_ja": "すこしやすんだらどうでしょうか。",
+        "translation_vi": "Bạn nghỉ một chút thì sao?"
       }
     ]
   },
@@ -3363,28 +3363,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N??",
-    "pattern": "N??",
-    "meaning_vi": "d?n m?c nhu N; kh�ng. b?ng N",
-    "explanation_vi": "D�ng N l�m m?c d? nh?n m?nh m?c d? ho?c so s�nh trong c�u ph? d?nh.",
+    "title": "Nほど",
+    "pattern": "Nほど",
+    "meaning_vi": "đến mức như N; không… bằng N",
+    "explanation_vi": "Dùng N làm mốc để nhấn mạnh mức độ hoặc so sánh trong câu phủ định.",
     "usage_notes_vi": [
-      "Trong c�u ph? d?nh, N?? thu?ng mang nghia "kh�ng. b?ng N".",
-      "N d?ng tru?c ??."
+      "Trong câu phủ định, Nほど thường mang nghĩa “không… bằng N”.",
+      "N đứng trước ほど."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ?? nhu tr? t? s? lu?ng khi mu?n n�u con s? u?c lu?ng."
+      "Không dùng ほど như trợ từ số lượng khi muốn nêu con số ước lượng."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Kh�ng c� th�nh ph? n�o d�ng ngu?i nhu Tokyo."
+        "sentence_ja": "東京ほど人が多い町はありません。",
+        "reading_ja": "とうきょうほどひとがおおいまちはありません。",
+        "translation_vi": "Không có thành phố nào đông người như Tokyo."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Kh�ng c� v?n d? n�o kh� nhu v?n d? n�y."
+        "sentence_ja": "この問題ほど難しい問題はありません。",
+        "reading_ja": "このもんだいほどむずかしいもんだいはありません。",
+        "translation_vi": "Không có vấn đề nào khó như vấn đề này."
       }
     ]
   },
@@ -3394,28 +3394,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V???????",
-    "pattern": "V???????",
-    "meaning_vi": "t�i d?nh s? V",
-    "explanation_vi": "Di?n t? y d?nh ho?c d? d?nh c?a ngu?i n�i.",
+    "title": "Vようと思います",
+    "pattern": "Vようと思います",
+    "meaning_vi": "tôi định sẽ V",
+    "explanation_vi": "Diễn tả ý định hoặc dự định của người nói.",
     "usage_notes_vi": [
-      "D�ng th? y ch� tru?c ?????.",
-      "Thu?ng d�ng cho quy?t d?nh chua th?c hi?n."
+      "Dùng thể ý chí trước と思います.",
+      "Thường dùng cho quyết định chưa thực hiện."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng th? ?? tr?c ti?p tru?c ????? khi mu?n n�i y d?nh th�n m?t n�y."
+      "Không dùng thể ます trực tiếp trước と思います khi muốn nói ý định thân mật này."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "T�i d?nh nam sau s? di du l?ch Nh?t."
+        "sentence_ja": "来年、日本へ旅行しようと思います。",
+        "reading_ja": "らいねん、にほんへりょこうしようとおもいます。",
+        "translation_vi": "Tôi định năm sau sẽ đi du lịch Nhật."
       },
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????????",
-        "translation_vi": "Cu?i tu?n t�i d?nh d?n v? sinh c�ng vi�n."
+        "sentence_ja": "週末は公園を掃除しようと思います。",
+        "reading_ja": "しゅうまつはこうえんをそうじしようとおもいます。",
+        "translation_vi": "Cuối tuần tôi định dọn vệ sinh công viên."
       }
     ]
   },
@@ -3425,28 +3425,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N?????",
-    "pattern": "N?????",
+    "title": "Nの代わりに",
+    "pattern": "Nの代わりに",
     "meaning_vi": "thay cho N",
-    "explanation_vi": "N�u ngu?i ho?c v?t du?c d�ng thay cho m?t ngu?i ho?c v?t kh�c.",
+    "explanation_vi": "Nêu người hoặc vật được dùng thay cho một người hoặc vật khác.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ?????.",
-      "C� th? d�ng cho vi?c thay th? ho?c d?i di?n."
+      "Đặt danh từ trước の代わりに.",
+      "Có thể dùng cho việc thay thế hoặc đại diện."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i N????, nghia l� v� ho?c cho N."
+      "Không nhầm với Nのために, nghĩa là vì hoặc cho N."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????",
-        "reading_ja": "????????????????",
-        "translation_vi": "T�i s? di h?p thay cho anh trai."
+        "sentence_ja": "兄の代わりに会議へ行きます。",
+        "reading_ja": "あにのかわりにかいぎへいきます。",
+        "translation_vi": "Tôi sẽ đi họp thay cho anh trai."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "T�i da d�ng m?t ong thay cho du?ng."
+        "sentence_ja": "砂糖の代わりに蜂蜜を使いました。",
+        "reading_ja": "さとうのかわりにはちみつをつかいました。",
+        "translation_vi": "Tôi đã dùng mật ong thay cho đường."
       }
     ]
   },
@@ -3456,28 +3456,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
+    "title": "Nによれば",
+    "pattern": "Nによれば",
     "meaning_vi": "theo N",
-    "explanation_vi": "N�u ngu?n th�ng tin ho?c can c? cho di?u du?c n�i.",
+    "explanation_vi": "Nêu nguồn thông tin hoặc căn cứ cho điều được nói.",
     "usage_notes_vi": [
-      "D?t danh t? ch? ngu?n tru?c ????.",
-      "Thu?ng di v?i ???? ho?c th�ng tin du?c nghe."
+      "Đặt danh từ chỉ nguồn trước によれば.",
+      "Thường đi với そうです hoặc thông tin được nghe."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? d? ch? phuong ti?n di chuy?n; tru?ng h?p d� d�ng ????."
+      "Không dùng によれば để chỉ phương tiện di chuyển; trường hợp đó dùng によって."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "?????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Theo d? b�o th?i ti?t, ng�y mai tr?i n?ng."
+        "sentence_ja": "天気予報によれば、明日は晴れです。",
+        "reading_ja": "てんきよほうによれば、あしたははれです。",
+        "translation_vi": "Theo dự báo thời tiết, ngày mai trời nắng."
       },
       {
-        "sentence_ja": "???????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Theo gi�o vi�n, k? thi l� tu?n sau."
+        "sentence_ja": "先生によれば、試験は来週です。",
+        "reading_ja": "せんせいによれば、しけんはらいしゅうです。",
+        "translation_vi": "Theo giáo viên, kỳ thi là tuần sau."
       }
     ]
   },
@@ -3487,28 +3487,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V????????",
-    "pattern": "V????????",
-    "meaning_vi": "c?n ph?i V",
-    "explanation_vi": "N�u r?ng m?t h�nh d?ng l� c?n thi?t.",
+    "title": "Vることが必要です",
+    "pattern": "Vることが必要です",
+    "meaning_vi": "cần phải V",
+    "explanation_vi": "Nêu rằng một hành động là cần thiết.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ???????.",
-      "C� th? thay ch? th? b?ng danh t? + ?? d? n�u d?i tu?ng."
+      "Dùng động từ thể từ điển trước ことが必要です.",
+      "Có thể thay chủ thể bằng danh từ + には để nêu đối tượng."
     ],
     "common_mistakes": [
-      "Kh�ng nh?m v?i V????????, m?u da c� trong seed, khi c?n gi? c�ch di?n d?t nh?t qu�n."
+      "Không nhầm với Vる必要があります, mẫu đã có trong seed, khi cần giữ cách diễn đạt nhất quán."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "Dang ky th� c?n ph?i vi?t d?a ch?."
+        "sentence_ja": "申し込みには住所を書くことが必要です。",
+        "reading_ja": "もうしこみにはじゅうしょをかくことがひつようです。",
+        "translation_vi": "Đăng ký thì cần phải viết địa chỉ."
       },
       {
-        "sentence_ja": "???????????????????",
-        "reading_ja": "?????????????????????????",
-        "translation_vi": "D? an to�n th� c?n ph?i t?t ngu?n."
+        "sentence_ja": "安全のために電源を切ることが必要です。",
+        "reading_ja": "あんぜんのためにでんげんをきることがひつようです。",
+        "translation_vi": "Để an toàn thì cần phải tắt nguồn."
       }
     ]
   },
@@ -3518,28 +3518,28 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "N????",
-    "pattern": "N????",
-    "meaning_vi": "l?y N l�m trung t�m",
-    "explanation_vi": "M� t? ho?t d?ng ho?c s? s?p x?p t?p trung quanh N.",
+    "title": "Nを中心に",
+    "pattern": "Nを中心に",
+    "meaning_vi": "lấy N làm trung tâm",
+    "explanation_vi": "Mô tả hoạt động hoặc sự sắp xếp tập trung quanh N.",
     "usage_notes_vi": [
-      "D?t danh t? tru?c ????.",
-      "C� th? d�ng v?i d?a di?m, nh�m ngu?i ho?c ch? d?."
+      "Đặt danh từ trước を中心に.",
+      "Có thể dùng với địa điểm, nhóm người hoặc chủ đề."
     ],
     "common_mistakes": [
-      "Kh�ng d�ng ???? d? ch? ngu?i nh?n tr?c ti?p c?a h�nh d?ng."
+      "Không dùng を中心に để chỉ người nhận trực tiếp của hành động."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "???????????????????????",
-        "translation_vi": "C�c c?a h�ng m?i da tang l�n quanh nh� ga."
+        "sentence_ja": "駅を中心に新しい店が増えました。",
+        "reading_ja": "えきをちゅうしんにあたらしいみせがふえました。",
+        "translation_vi": "Các cửa hàng mới đã tăng lên quanh nhà ga."
       },
       {
-        "sentence_ja": "????????????????",
-        "reading_ja": "??????????????????????",
-        "translation_vi": "Ch�ng t�i da th?o lu?n v?i h?c sinh l�m trung t�m."
+        "sentence_ja": "学生を中心に話し合いをしました。",
+        "reading_ja": "がくせいをちゅうしんにはなしあいをしました。",
+        "translation_vi": "Chúng tôi đã thảo luận với học sinh làm trung tâm."
       }
     ]
   },
@@ -3549,30 +3549,29 @@
     "difficulty": 0.5,
     "content_version": 1,
     "is_active": true,
-    "title": "V??????????",
-    "pattern": "V??????????",
-    "meaning_vi": "kh�ng h?n l� V",
-    "explanation_vi": "Ph? d?nh m?t k?t lu?n ho�n to�n ho?c gi?i th�ch r?ng kh�ng ph?i l�c n�o cung V.",
+    "title": "Vるわけではありません",
+    "pattern": "Vるわけではありません",
+    "meaning_vi": "không hẳn là V",
+    "explanation_vi": "Phủ định một kết luận hoàn toàn hoặc giải thích rằng không phải lúc nào cũng V.",
     "usage_notes_vi": [
-      "D�ng d?ng t? th? t? di?n tru?c ?????????.",
-      "C� th? d�ng ? d? t?o s?c th�i d?i chi?u."
+      "Dùng động từ thể từ điển trước わけではありません.",
+      "Có thể dùng は để tạo sắc thái đối chiếu."
     ],
     "common_mistakes": [
-      "Kh�ng hi?u l� ph? d?nh tuy?t d?i m?i tru?ng h?p; m?u n�y thu?ng ph? d?nh m?t suy lu?n chung."
+      "Không hiểu là phủ định tuyệt đối mọi trường hợp; mẫu này thường phủ định một suy luận chung."
     ],
     "related_grammar_ids": [],
     "examples": [
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "????????????????????",
-        "translation_vi": "Kh�ng ph?i l� ng�y n�o t�i cung xem tivi."
+        "sentence_ja": "毎日テレビを見るわけではありません。",
+        "reading_ja": "まいにちてれびをみるわけではありません。",
+        "translation_vi": "Không phải là ngày nào tôi cũng xem tivi."
       },
       {
-        "sentence_ja": "??????????????????",
-        "reading_ja": "?????????????????????",
-        "translation_vi": "Kh�ng h?n l� ch?c nang n�y kh�."
+        "sentence_ja": "この機能が難しいわけではありません。",
+        "reading_ja": "このきのうがむずかしいわけではありません。",
+        "translation_vi": "Không hẳn là chức năng này khó."
       }
     ]
   }
 ]
-
