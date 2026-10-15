@@ -8954,5 +8954,232 @@
         "translation_vi": "Tôi muốn sơn tường màu trắng."
       }
     ]
+  },
+  {
+    "id": "817558f4-5c34-4f5a-960e-1b78428e444c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "駐車場",
+    "reading": "ちゅうしゃじょう",
+    "meaning_vi": "bãi đỗ xe",
+    "part_of_speech": "home;community",
+    "usage_context_vi": "Nơi để xe ô tô hoặc xe máy.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "community"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "駐車場に車を止めました。",
+        "reading_ja": "ちゅうしゃじょうにくるまをとめました。",
+        "translation_vi": "Tôi đã đỗ xe ở bãi đỗ."
+      },
+      {
+        "sentence_ja": "駅の近くに新しい駐車場があります。",
+        "reading_ja": "えきのちかくにあたらしいちゅうしゃじょうがあります。",
+        "translation_vi": "Có một bãi đỗ xe mới gần nhà ga."
+      }
+    ]
+  },
+  {
+    "id": "c57737fc-7fe2-4e82-9fdc-80bf57a1fb8e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "廊下",
+    "reading": "ろうか",
+    "meaning_vi": "hành lang",
+    "part_of_speech": "home",
+    "usage_context_vi": "Lối đi nối các phòng trong một tòa nhà.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "廊下を走ってはいけません。",
+        "reading_ja": "ろうかをはしってはいけません。",
+        "translation_vi": "Không được chạy ở hành lang."
+      },
+      {
+        "sentence_ja": "廊下の電気を消してください。",
+        "reading_ja": "ろうかのでんきをけしてください。",
+        "translation_vi": "Hãy tắt đèn hành lang."
+      }
+    ]
+  },
+  {
+    "id": "658676de-6965-4fe2-a8ce-d88e8715d7aa",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "天井",
+    "reading": "てんじょう",
+    "meaning_vi": "trần nhà",
+    "part_of_speech": "home",
+    "usage_context_vi": "Mặt phía trên của một căn phòng.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "天井から水が落ちています。",
+        "reading_ja": "てんじょうからみずがおちています。",
+        "translation_vi": "Nước đang nhỏ từ trần nhà xuống."
+      },
+      {
+        "sentence_ja": "天井をきれいに拭きました。",
+        "reading_ja": "てんじょうをきれいにふきました。",
+        "translation_vi": "Tôi đã lau sạch trần nhà."
+      }
+    ]
+  },
+  {
+    "id": "a6c053de-a2cd-4021-a4ee-916f5dbdac3e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "庭",
+    "reading": "にわ",
+    "meaning_vi": "sân vườn",
+    "part_of_speech": "home",
+    "usage_context_vi": "Khoảng đất trồng cây hoặc nằm cạnh ngôi nhà.",
+    "audio_ref": null,
+    "tags": [
+      "home",
+      "nature"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "庭に花を植えました。",
+        "reading_ja": "にわにはなをうえました。",
+        "translation_vi": "Tôi đã trồng hoa trong vườn."
+      },
+      {
+        "sentence_ja": "祖父は毎朝庭を掃除します。",
+        "reading_ja": "そふはまいあさにわをそうじします。",
+        "translation_vi": "Ông tôi dọn vườn mỗi sáng."
+      }
+    ]
+  },
+  {
+    "id": "e8b0e9e1-f6fb-443b-8125-3cded556b0b3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "引っ越し",
+    "reading": "ひっこし",
+    "meaning_vi": "việc chuyển nhà",
+    "part_of_speech": "daily-life",
+    "usage_context_vi": "Việc chuyển sang sống ở một nơi khác.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "来月、引っ越しをする予定です。",
+        "reading_ja": "らいげつ、ひっこしをするよていです。",
+        "translation_vi": "Dự định tháng sau tôi sẽ chuyển nhà."
+      },
+      {
+        "sentence_ja": "引っ越しの荷物を箱に入れました。",
+        "reading_ja": "ひっこしのにもつをはこにいれました。",
+        "translation_vi": "Tôi đã cho đồ chuyển nhà vào thùng."
+      }
+    ]
+  },
+  {
+    "id": "692ba947-8928-4197-9599-d505266fa3f4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "片付け",
+    "reading": "かたづけ",
+    "meaning_vi": "việc dọn dẹp; sắp xếp",
+    "part_of_speech": "daily-life",
+    "usage_context_vi": "Việc làm cho đồ đạc gọn gàng, ngăn nắp.",
+    "audio_ref": null,
+    "tags": [
+      "daily-life",
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "食事の後で、テーブルを片付けます。",
+        "reading_ja": "しょくじのあとで、テーブルをかたづけます。",
+        "translation_vi": "Sau bữa ăn, tôi dọn bàn."
+      },
+      {
+        "sentence_ja": "部屋の片付けが終わりました。",
+        "reading_ja": "へやのかたづけがおわりました。",
+        "translation_vi": "Việc dọn phòng đã xong."
+      }
+    ]
+  },
+  {
+    "id": "677cc299-d263-4684-a03e-cd6a5fda84be",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "窓",
+    "reading": "まど",
+    "meaning_vi": "cửa sổ",
+    "part_of_speech": "home",
+    "usage_context_vi": "Khung có kính hoặc cửa để lấy ánh sáng và không khí.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "窓を開けて、空気を入れ替えました。",
+        "reading_ja": "まどをあけて、くうきをいれかえました。",
+        "translation_vi": "Tôi mở cửa sổ để thay không khí."
+      },
+      {
+        "sentence_ja": "窓の外に鳥がいます。",
+        "reading_ja": "まどのそとにとりがいます。",
+        "translation_vi": "Có một con chim ở ngoài cửa sổ."
+      }
+    ]
+  },
+  {
+    "id": "01da3cfd-6280-4f30-b147-a94bbe349c40",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "収納",
+    "reading": "しゅうのう",
+    "meaning_vi": "việc cất giữ; chỗ để đồ",
+    "part_of_speech": "home",
+    "usage_context_vi": "Việc cất đồ vào nơi phù hợp hoặc nơi dùng để cất đồ.",
+    "audio_ref": null,
+    "tags": [
+      "home"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この棚は収納に便利です。",
+        "reading_ja": "このたなはしゅうのうにべんりです。",
+        "translation_vi": "Cái kệ này tiện cho việc cất đồ."
+      },
+      {
+        "sentence_ja": "使わない服を収納箱に入れました。",
+        "reading_ja": "つかわないふくをしゅうのうばこにいれました。",
+        "translation_vi": "Tôi đã cho quần áo không dùng vào hộp cất đồ."
+      }
+    ]
   }
 ]
