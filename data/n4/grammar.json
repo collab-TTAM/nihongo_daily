@@ -4038,5 +4038,98 @@
         "translation_vi": "Tôi đã nhắc nhân viên mới tuân thủ quy trình."
       }
     ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0051",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに役立つ",
+    "pattern": "Nに役立つ",
+    "meaning_vi": "có ích cho N",
+    "explanation_vi": "Diễn tả điều gì đó hữu ích cho một mục đích hoặc hoạt động.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ mục đích hoặc hoạt động trước に役立つ.",
+      "Thường dùng với từ chỉ kỹ năng, thông tin hoặc công cụ."
+    ],
+    "common_mistakes": [
+      "Không nhầm に役立つ với 便利, vốn mô tả sự tiện lợi của đồ vật hoặc cách làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日の練習は発音の上達に役立ちます。",
+        "reading_ja": "まいにちのれんしゅうははつおんのじょうたつにやくだちます。",
+        "translation_vi": "Luyện tập hằng ngày có ích cho việc tiến bộ phát âm."
+      },
+      {
+        "sentence_ja": "計画表は勉強時間の管理に役立ちます。",
+        "reading_ja": "けいかくひょうはべんきょうじかんのかんりにやくだちます。",
+        "translation_vi": "Bảng kế hoạch có ích cho việc quản lý thời gian học."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0052",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに向いています",
+    "pattern": "Nに向いています",
+    "meaning_vi": "phù hợp với N",
+    "explanation_vi": "Diễn tả một người hoặc cách làm phù hợp với một mục đích, hoàn cảnh hoặc đối tượng.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ mục đích hoặc đối tượng trước に向いています.",
+      "Có thể dùng với người, công việc và phương pháp."
+    ],
+    "common_mistakes": [
+      "Không dùng に向いています để nói một đồ vật chỉ đang hướng về một phía."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この教材は初めて勉強する人に向いています。",
+        "reading_ja": "このきょうざいははじめてべんきょうするひとにむいています。",
+        "translation_vi": "Tài liệu này phù hợp với người mới học."
+      },
+      {
+        "sentence_ja": "短い練習は忙しい人に向いています。",
+        "reading_ja": "みじかいれんしゅうはいそがしいひとにむいています。",
+        "translation_vi": "Bài luyện tập ngắn phù hợp với người bận rộn."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0053",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "VるためのN",
+    "pattern": "VるためのN",
+    "meaning_vi": "N để V",
+    "explanation_vi": "Diễn tả danh từ được dùng cho mục đích thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ための rồi đến danh từ.",
+      "Phần sau phải là danh từ chỉ người, vật hoặc kế hoạch."
+    ],
+    "common_mistakes": [
+      "Không dùng động từ thể ます ngay trước ための."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "発音を練習するための時間を作ります。",
+        "reading_ja": "はつおんをれんしゅうするためのじかんをつくります。",
+        "translation_vi": "Tôi tạo thời gian để luyện phát âm."
+      },
+      {
+        "sentence_ja": "復習するためのノートを一冊用意しました。",
+        "reading_ja": "ふくしゅうするためののーとをいっさつよういしました。",
+        "translation_vi": "Tôi đã chuẩn bị một quyển vở để ôn tập."
+      }
+    ]
   }
 ]
