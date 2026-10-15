@@ -4131,5 +4131,98 @@
         "translation_vi": "Tôi đã chuẩn bị một quyển vở để ôn tập."
       }
     ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0061",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに気づきます",
+    "pattern": "Nに気づきます",
+    "meaning_vi": "nhận ra N",
+    "explanation_vi": "Diễn tả việc nhận thấy hoặc nhận ra một sự vật, tình trạng hay điều chưa biết.",
+    "usage_notes_vi": [
+      "Dùng danh từ chỉ điều được nhận ra trước に気づきます.",
+      "Có thể dùng với lỗi, thay đổi hoặc dấu hiệu của cơ thể."
+    ],
+    "common_mistakes": [
+      "Không dùng を sau danh từ trong mẫu này; động từ 気づく đi với に."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "睡眠が足りないことに気づきました。",
+        "reading_ja": "すいみんがたりないことにきづきました。",
+        "translation_vi": "Tôi nhận ra rằng mình ngủ chưa đủ."
+      },
+      {
+        "sentence_ja": "体温の変化に早く気づいてください。",
+        "reading_ja": "たいおんのへんかにはやくきづいてください。",
+        "translation_vi": "Hãy sớm nhận ra sự thay đổi của thân nhiệt."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0062",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないでおきます",
+    "pattern": "Vないでおきます",
+    "meaning_vi": "để không V; quyết định không V",
+    "explanation_vi": "Diễn tả việc chủ động không làm một hành động để giữ nguyên tình trạng hoặc tránh vấn đề.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước でおきます.",
+      "Thường dùng cho quyết định tạm thời hoặc chuẩn bị cho tình huống."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないでください, vốn là lời yêu cầu người khác không làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今夜は遅くまでスマートフォンを見ないでおきます。",
+        "reading_ja": "こんやはおそくまですまーとふぉんをみないでおきます。",
+        "translation_vi": "Tối nay tôi quyết định không xem điện thoại đến khuya."
+      },
+      {
+        "sentence_ja": "体調が悪いので、無理をしないでおきます。",
+        "reading_ja": "たいちょうがわるいので、むりをしないでおきます。",
+        "translation_vi": "Vì sức khỏe không tốt nên tôi sẽ không cố quá sức."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0063",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに必要なN",
+    "pattern": "Nに必要なN",
+    "meaning_vi": "N cần thiết cho N",
+    "explanation_vi": "Diễn tả một danh từ cần thiết cho mục đích, hoạt động hoặc tình huống khác.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ mục đích trước に必要な rồi đến danh từ cần thiết.",
+      "Có thể dùng với thời gian, đồ vật, thông tin hoặc kỹ năng."
+    ],
+    "common_mistakes": [
+      "Không dùng 必要な như động từ; danh từ phía sau phải được nêu rõ."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "健康管理に必要な情報を記録します。",
+        "reading_ja": "けんこうかんりにひつようなじょうほうをきろくします。",
+        "translation_vi": "Tôi ghi lại thông tin cần thiết cho việc quản lý sức khỏe."
+      },
+      {
+        "sentence_ja": "十分な睡眠に必要な時間を考えました。",
+        "reading_ja": "じゅうぶんなすいみんにひつようなじかんをかんがえました。",
+        "translation_vi": "Tôi đã suy nghĩ về khoảng thời gian cần thiết để ngủ đủ."
+      }
+    ]
   }
 ]
