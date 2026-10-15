@@ -3573,5 +3573,98 @@
         "translation_vi": "Không hẳn là chức năng này khó."
       }
     ]
+  },
+  {
+    "id": "9e647458-d9e5-57bb-8f17-6be24e1e834c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに関して",
+    "pattern": "Nに関して",
+    "meaning_vi": "liên quan đến N",
+    "explanation_vi": "Nêu chủ đề hoặc phạm vi mà thông tin, câu hỏi hay thảo luận hướng tới.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước に関して.",
+      "Có thể thay bằng Nについて trong nhiều ngữ cảnh."
+    ],
+    "common_mistakes": [
+      "Không dùng に関して để chỉ nơi chốn diễn ra hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "新しいサービスに関して質問があります。",
+        "reading_ja": "あたらしいさーびすにかんしてしつもんがあります。",
+        "translation_vi": "Tôi có câu hỏi liên quan đến dịch vụ mới."
+      },
+      {
+        "sentence_ja": "家の修理に関して説明を聞きました。",
+        "reading_ja": "いえのしゅうりにかんせついてせつめいをききました。",
+        "translation_vi": "Tôi đã nghe giải thích liên quan đến việc sửa nhà."
+      }
+    ]
+  },
+  {
+    "id": "b9b68dbd-96b4-5486-a886-9e2366778ae0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vている場合",
+    "pattern": "Vている場合",
+    "meaning_vi": "trong trường hợp đang V",
+    "explanation_vi": "Nêu điều kiện hoặc tình huống mà hành động đang diễn ra.",
+    "usage_notes_vi": [
+      "Dùng thể ている trước 場合.",
+      "Có thể dùng với なら để đưa ra hướng xử lý."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển nếu muốn nhấn mạnh trạng thái đang diễn ra."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "困っている場合は、受付に知らせてください。",
+        "reading_ja": "こまっているばあいは、うけつけにしらせてください。",
+        "translation_vi": "Trong trường hợp gặp khó khăn, hãy báo cho quầy tiếp nhận."
+      },
+      {
+        "sentence_ja": "雨が降っている場合は、試合を中止します。",
+        "reading_ja": "あめがふっているばあいは、しあいをちゅうしします。",
+        "translation_vi": "Nếu trời đang mưa thì sẽ hủy trận đấu."
+      }
+    ]
+  },
+  {
+    "id": "03978760-a973-5703-a391-f41eeed6b016",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることにしています",
+    "pattern": "Vることにしています",
+    "meaning_vi": "duy trì việc V theo quyết định/quy tắc",
+    "explanation_vi": "Diễn tả thói quen hoặc quy tắc mà người nói đã quyết định duy trì.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことにしています.",
+      "Dạng phủ định dùng Vないことにしています."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vることになります, nghĩa là được quyết định bởi hoàn cảnh hoặc người khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、部屋を片付けることにしています。",
+        "reading_ja": "まいあさ、へやをかたづけることにしています。",
+        "translation_vi": "Tôi duy trì thói quen dọn phòng mỗi sáng."
+      },
+      {
+        "sentence_ja": "寝る前は電源を切ることにしています。",
+        "reading_ja": "ねるまえはでんげんをきることにしています。",
+        "translation_vi": "Tôi luôn tắt nguồn trước khi đi ngủ."
+      }
+    ]
   }
 ]
