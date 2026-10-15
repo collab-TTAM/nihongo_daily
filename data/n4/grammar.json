@@ -3945,5 +3945,98 @@
         "translation_vi": "Khi vào cửa, tôi báo tên cho người phụ trách."
       }
     ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0041",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに従って",
+    "pattern": "Nに従って",
+    "meaning_vi": "theo; tuân theo N",
+    "explanation_vi": "Diễn tả việc thực hiện theo chỉ dẫn, quy tắc hoặc thứ tự đã có.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ quy tắc, hướng dẫn hoặc thứ tự trước に従って.",
+      "Thường dùng trong hướng dẫn và quy trình."
+    ],
+    "common_mistakes": [
+      "Không dùng に従って khi chỉ muốn nói hai hành động xảy ra cùng lúc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "手順に従って機械を操作してください。",
+        "reading_ja": "てじゅんにしたがってきかいをそうさしてください。",
+        "translation_vi": "Hãy vận hành máy theo quy trình."
+      },
+      {
+        "sentence_ja": "指示に従って書類を提出しました。",
+        "reading_ja": "しじにしたがってしょるいをていしゅつしました。",
+        "translation_vi": "Tôi đã nộp giấy tờ theo hướng dẫn."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0042",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nをもとに",
+    "pattern": "Nをもとに",
+    "meaning_vi": "dựa trên N",
+    "explanation_vi": "Diễn tả việc tạo ra hoặc quyết định điều gì dựa trên thông tin hay tài liệu làm cơ sở.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ thông tin, dữ liệu hoặc tài liệu trước をもとに.",
+      "Thường đi với 作る, 決める hoặc 考える."
+    ],
+    "common_mistakes": [
+      "Không nhầm をもとに với Nについて, vốn chỉ nói về chủ đề."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "確認事項をもとに作業の計画を作ります。",
+        "reading_ja": "かくにんじこうをもとにさぎょうのけいかくをつくります。",
+        "translation_vi": "Tôi lập kế hoạch công việc dựa trên các mục cần xác nhận."
+      },
+      {
+        "sentence_ja": "参加者の意見をもとに手順を直しました。",
+        "reading_ja": "さんかしゃのいけんをもとにてじゅんをなおしました。",
+        "translation_vi": "Tôi đã sửa quy trình dựa trên ý kiến của người tham gia."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0043",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるように伝えます",
+    "pattern": "Vるように伝えます",
+    "meaning_vi": "truyền đạt rằng hãy V",
+    "explanation_vi": "Diễn tả việc truyền đạt yêu cầu hoặc lời nhắc để ai đó thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ように伝えます.",
+      "Có thể dùng Vないように伝えます để truyền đạt việc tránh làm gì."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます ngay trước ように伝えます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "担当者に休憩を取るように伝えます。",
+        "reading_ja": "たんとうしゃにきゅうけいをとるようにつたえます。",
+        "translation_vi": "Tôi sẽ nói với người phụ trách hãy nghỉ giải lao."
+      },
+      {
+        "sentence_ja": "新人に手順を守るように伝えました。",
+        "reading_ja": "しんじんにてじゅんをまもるようにつたえました。",
+        "translation_vi": "Tôi đã nhắc nhân viên mới tuân thủ quy trình."
+      }
+    ]
   }
 ]
