@@ -3852,5 +3852,98 @@
         "translation_vi": "Đừng vội để không bị thương."
       }
     ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0031",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに沿って",
+    "pattern": "Nに沿って",
+    "meaning_vi": "theo; dọc theo N",
+    "explanation_vi": "Diễn tả hành động được thực hiện theo một con đường, hướng dẫn hoặc kế hoạch làm chuẩn.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ đường, hướng dẫn hoặc kế hoạch trước に沿って.",
+      "Thường dùng khi làm theo nội dung đã được quy định."
+    ],
+    "common_mistakes": [
+      "Không dùng に沿って cho một hành động chỉ xảy ra cùng lúc mà không có chuẩn để theo."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "案内板に沿って非常口へ進んでください。",
+        "reading_ja": "あんないばんにそってひじょうぐちへすすんでください。",
+        "translation_vi": "Hãy đi về phía lối thoát hiểm theo bảng hướng dẫn."
+      },
+      {
+        "sentence_ja": "計画に沿って防災訓練を行います。",
+        "reading_ja": "けいかくにそってぼうさいくんれんをおこないます。",
+        "translation_vi": "Chúng tôi tiến hành diễn tập phòng chống thiên tai theo kế hoạch."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0032",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに応じて",
+    "pattern": "Nに応じて",
+    "meaning_vi": "tùy theo; phù hợp với N",
+    "explanation_vi": "Diễn tả việc thay đổi hoặc lựa chọn tùy theo điều kiện, mức độ hoặc nhu cầu.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ điều kiện hoặc mức độ trước に応じて.",
+      "Có thể dùng với cách làm, số lượng hoặc nội dung thay đổi."
+    ],
+    "common_mistakes": [
+      "Không nhầm に応じて với に合わせて khi muốn nhấn mạnh việc khớp với lịch hoặc kế hoạch cụ thể."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "人数に応じて避難所の部屋を分けます。",
+        "reading_ja": "にんずうにおうじてひなんじょのへやをわけます。",
+        "translation_vi": "Chúng tôi chia phòng ở nơi sơ tán tùy theo số người."
+      },
+      {
+        "sentence_ja": "危険の大きさに応じて警報を出します。",
+        "reading_ja": "きけんのおおきさにおうじてけいほうをだします。",
+        "translation_vi": "Chúng tôi phát cảnh báo tùy theo mức độ nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0033",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる際に",
+    "pattern": "Vる際に",
+    "meaning_vi": "khi; vào lúc V",
+    "explanation_vi": "Diễn tả thời điểm hoặc dịp thực hiện một hành động, thường dùng trong hướng dẫn lịch sự.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước 際に.",
+      "Có thể dùng với danh từ bằng cách thêm の, như Nの際に."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た sau 際に khi muốn nói hành động sắp thực hiện."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "避難する際に、エレベーターを使わないでください。",
+        "reading_ja": "ひなんするさいに、えれべーたーをつかわないでください。",
+        "translation_vi": "Khi sơ tán, xin đừng sử dụng thang máy."
+      },
+      {
+        "sentence_ja": "入場する際に、係の人へ名前を伝えます。",
+        "reading_ja": "にゅうじょうするさいに、かかりのひとへなまえをつたえます。",
+        "translation_vi": "Khi vào cửa, tôi báo tên cho người phụ trách."
+      }
+    ]
   }
 ]
