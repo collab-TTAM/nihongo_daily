@@ -256,26 +256,18 @@ void main() {
     final waiting = Completer<void>();
     final action = FixtureRefreshAction(() => waiting.future);
     await mountRefresh(tester, h, action);
-    debugPrint('MR1 mounted');
     final captured = h.access.currentSession;
     await tester.tap(find.byKey(const Key('account-refresh')));
-    debugPrint('MR2 tapped');
     h.access.currentSession = null;
     h.access.events.add(null);
-    debugPrint('MR3 revoked');
     h.access.currentSession = captured;
     h.access.events.add(null);
-    debugPrint('MR4 restored event');
-    await fixture.flush();
+    // A single frame drains the profile restoration microtasks without waiting
+    // on the indeterminate refresh progress animation.
+    await tester.pump();
     expect(identical(h.runtime.readySession, captured), isTrue);
-    debugPrint('MR5 ready');
     waiting.completeError(StateError('PRIVATE PRIOR GENERATION'));
-    debugPrint('MR6 completed error');
     // The refresh future has now completed; drain its async callback explicitly.
-    // A settle loop would wait on the indeterminate progress animation if a
-    // regression leaves the refresh operation open, hiding the real failure.
-    await fixture.flush();
-    debugPrint('MR7 flushed error');
     await tester.pump();
     expect(find.byKey(const Key('account-refresh')), findsOneWidget);
     expect(find.byKey(const Key('account-refresh-error')), findsNothing);
