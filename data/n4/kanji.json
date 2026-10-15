@@ -1591,5 +1591,40 @@
     "stroke_count": 10,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0021",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "消",
+    "meaning_vi": "tiêu; tắt; xóa",
+    "onyomi": [
+      "ショウ"
+    ],
+    "kunyomi": [
+      "きえる",
+      "けす"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0022",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "非",
+    "meaning_vi": "phi; không; trái với",
+    "onyomi": [
+      "ヒ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
