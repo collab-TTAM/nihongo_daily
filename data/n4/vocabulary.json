@@ -9405,5 +9405,229 @@
         "translation_vi": "Chai lọ và lon được đem ra vào ngày thu gom rác tái chế."
       }
     ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0011",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "非常口",
+    "reading": "ひじょうぐち",
+    "meaning_vi": "lối thoát hiểm",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Cửa dùng để thoát ra khi có tình huống khẩn cấp.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "非常口の場所を先に確認しましょう。",
+        "reading_ja": "ひじょうぐちのばしょをさきにかくにんしましょう。",
+        "translation_vi": "Hãy kiểm tra vị trí lối thoát hiểm trước."
+      },
+      {
+        "sentence_ja": "火事のときは非常口から出てください。",
+        "reading_ja": "かじのときはひじょうぐちからでてください。",
+        "translation_vi": "Khi có cháy, hãy đi ra từ lối thoát hiểm."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0012",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "消火器",
+    "reading": "しょうかき",
+    "meaning_vi": "bình chữa cháy",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thiết bị dùng để dập đám cháy nhỏ.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "消火器の使い方を習いました。",
+        "reading_ja": "しょうかきのつかいかたをならいました。",
+        "translation_vi": "Tôi đã học cách sử dụng bình chữa cháy."
+      },
+      {
+        "sentence_ja": "消火器は廊下の角にあります。",
+        "reading_ja": "しょうかきはろうかのかどにあります。",
+        "translation_vi": "Bình chữa cháy ở góc hành lang."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0013",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "避難所",
+    "reading": "ひなんじょ",
+    "meaning_vi": "nơi sơ tán",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi mọi người đến trú ẩn khi cần sơ tán.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "大きな地震の後で避難所へ行きました。",
+        "reading_ja": "おおきなじしんのあとでひなんじょへいきました。",
+        "translation_vi": "Sau trận động đất lớn, tôi đã đến nơi sơ tán."
+      },
+      {
+        "sentence_ja": "避難所の住所を家族と共有します。",
+        "reading_ja": "ひなんじょのじゅうしょをかぞくときょうゆうします。",
+        "translation_vi": "Tôi chia sẻ địa chỉ nơi sơ tán với gia đình."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0014",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "警報",
+    "reading": "けいほう",
+    "meaning_vi": "cảnh báo; báo động",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Tín hiệu hoặc thông tin báo cho biết có nguy hiểm.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "台風の警報が出ています。",
+        "reading_ja": "たいふうのけいほうがでています。",
+        "translation_vi": "Đang có cảnh báo bão."
+      },
+      {
+        "sentence_ja": "警報を聞いたら、窓を閉めてください。",
+        "reading_ja": "けいほうをきいたら、まどをしめてください。",
+        "translation_vi": "Khi nghe báo động, hãy đóng cửa sổ."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0015",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "誘導灯",
+    "reading": "ゆうどうとう",
+    "meaning_vi": "đèn chỉ dẫn lối thoát",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Đèn chỉ đường đến lối ra hoặc nơi an toàn.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "暗い廊下で誘導灯が見えました。",
+        "reading_ja": "くらいろうかでゆうどうとうがみえました。",
+        "translation_vi": "Tôi đã nhìn thấy đèn chỉ dẫn trong hành lang tối."
+      },
+      {
+        "sentence_ja": "誘導灯に沿って出口へ進みます。",
+        "reading_ja": "ゆうどうとうにそってでぐちへすすみます。",
+        "translation_vi": "Tôi đi về phía lối ra theo đèn chỉ dẫn."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0016",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "立入禁止",
+    "reading": "たちいりきんし",
+    "meaning_vi": "cấm vào",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Biển báo cho biết khu vực không được phép đi vào.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "工事中なので、ここは立入禁止です。",
+        "reading_ja": "こうじちゅうなので、ここはたちいりきんしです。",
+        "translation_vi": "Vì đang thi công nên chỗ này cấm vào."
+      },
+      {
+        "sentence_ja": "立入禁止の場所に入らないでください。",
+        "reading_ja": "たちいりきんしのばしょにはいらないでください。",
+        "translation_vi": "Xin đừng vào khu vực cấm."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0017",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "防犯",
+    "reading": "ぼうはん",
+    "meaning_vi": "phòng chống tội phạm",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Hoạt động giúp ngăn ngừa trộm cắp và hành vi phạm pháp.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "町内会で防犯の方法を話し合いました。",
+        "reading_ja": "ちょうないかいでぼうはんのほうほうをはなしあいました。",
+        "translation_vi": "Hội khu phố đã thảo luận cách phòng chống tội phạm."
+      },
+      {
+        "sentence_ja": "防犯のために玄関の明かりをつけます。",
+        "reading_ja": "ぼうはんのためにげんかんのあかりをつけます。",
+        "translation_vi": "Tôi bật đèn ở lối vào để phòng chống tội phạm."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0018",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "点検日",
+    "reading": "てんけんび",
+    "meaning_vi": "ngày kiểm tra",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Ngày thiết bị hoặc cơ sở được kiểm tra định kỳ.",
+    "audio_ref": null,
+    "tags": [
+      "safety"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "エレベーターの点検日は来週です。",
+        "reading_ja": "えれべーたーのてんけんびはらいしゅうです。",
+        "translation_vi": "Ngày kiểm tra thang máy là tuần sau."
+      },
+      {
+        "sentence_ja": "点検日に家にいる必要があります。",
+        "reading_ja": "てんけんびにいえにいるひつようがあります。",
+        "translation_vi": "Vào ngày kiểm tra, cần phải có người ở nhà."
+      }
+    ]
   }
 ]
