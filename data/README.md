@@ -9,12 +9,12 @@ a hosted database yet.
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 334 | 87 | 127 | 922 |
+| N4 | 342 | 89 | 130 | 944 |
 
 ## N4 seed batches
 
-The N4 seed is now thirty-nine original editorial batches for development. It contains
-334 vocabulary items, 87 Kanji metadata records and 127 grammar patterns, with 922
+The N4 seed is now forty original editorial batches for development. It contains
+342 vocabulary items, 89 Kanji metadata records and 130 grammar patterns, with 944
 embedded Japanese–Vietnamese examples. Topics cover travel and planning,
 transport and shopping, work and communication, daily habits, descriptions,
 safety, culture, advice, community and the environment. This is still an initial
@@ -218,3 +218,5 @@ incomplete until study, auth, sync, AI/voice and release evidence are integrated
 The thirty-eighth batch adds parking, corridors, ceilings, gardens, moving, tidying, windows and storage; 窓 and 庭 metadata; and the patterns Vながら, Nまでに and Vたところ. It remains an original seed pending review.
 
 The thirty-ninth batch adds neighborhood notices, waste sorting and disaster-prevention guidance with 防 and 訓 metadata; and the patterns Nに合わせて, Vるようにしてください and Vないようにしてください. It remains an original seed pending review.
+
+The fortieth batch adds public-facility safety and emergency-signage vocabulary with 消 and 非 metadata; and the patterns Nに沿って, Nに応じて and Vる際に. It remains an original seed pending review.
