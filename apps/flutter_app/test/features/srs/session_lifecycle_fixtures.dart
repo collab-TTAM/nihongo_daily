@@ -129,6 +129,7 @@ const scenarios = [
   'dispose-during-auth',
   'same-session-event',
   'same-session-event-during-write',
+  'same-session-secret-rotation-during-write',
   'duplicate-auth',
   'closed-stream',
   'queued-old-rotation',
@@ -310,6 +311,30 @@ Future<void> verifyLifecycle(String scenario) async {
       check(
         access.currentSession != null,
         'original write did not publish readiness',
+      );
+      return;
+    }
+    if (scenario == 'same-session-secret-rotation-during-write') {
+      backend.writeWait = Completer();
+      final pending = login();
+      await flush();
+      check(
+        backend.writes == 1 && access.currentSession == null,
+        'initial persistence did not remain pending',
+      );
+      sdk.change(owner, 'TEST_ONLY_ROTATED_2', sameSession: true);
+      await flush();
+      check(
+        backend.writes == 1 && access.currentSession == null,
+        'secret rotation published before its write',
+      );
+      backend.writeWait!.complete();
+      await pending;
+      check(
+        backend.writes == 2 &&
+            backend.secret == 'TEST_ONLY_ROTATED_2' &&
+            access.currentSession != null,
+        'obsolete secret won over same-session rotation',
       );
       return;
     }
