@@ -265,7 +265,12 @@ void main() {
     await fixture.flush();
     expect(identical(h.runtime.readySession, captured), isTrue);
     waiting.completeError(StateError('PRIVATE PRIOR GENERATION'));
-    await tester.pumpAndSettle();
+    // The refresh future has now completed; drain its async callback explicitly.
+    // A settle loop would wait on the indeterminate progress animation if a
+    // regression leaves the refresh operation open, hiding the real failure.
+    await fixture.flush();
+    await tester.pump();
+    expect(find.byKey(const Key('account-refresh')), findsOneWidget);
     expect(find.byKey(const Key('account-refresh-error')), findsNothing);
     expect(h.runtime.readyRuntime, isNotNull);
     expect(tester.takeException(), isNull);
