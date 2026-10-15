@@ -301,7 +301,10 @@ Future<void> verifyLifecycle(String scenario) async {
       );
       sdk.change(owner, 'TEST_ONLY_ROTATED_1', sameSession: true);
       await flush();
-      check(backend.writes == 1, 'duplicate pending event queued a second write');
+      check(
+        backend.writes == 1,
+        'duplicate pending event queued a second write',
+      );
       backend.writeWait!.complete();
       await pending;
       check(
