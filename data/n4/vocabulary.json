@@ -9629,5 +9629,229 @@
         "translation_vi": "Vào ngày kiểm tra, cần phải có người ở nhà."
       }
     ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0021",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "職場",
+    "reading": "しょくば",
+    "meaning_vi": "nơi làm việc",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi một người làm việc hoặc thực hiện công việc.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "職場の安全ルールを毎朝確認します。",
+        "reading_ja": "しょくばのあんぜんるーるをまいあさかくにんします。",
+        "translation_vi": "Mỗi sáng tôi kiểm tra quy tắc an toàn ở nơi làm việc."
+      },
+      {
+        "sentence_ja": "新しい職場に少しずつ慣れました。",
+        "reading_ja": "あたらしいしょくばにすこしずつなれました。",
+        "translation_vi": "Tôi đã dần quen với nơi làm việc mới."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0022",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "作業",
+    "reading": "さぎょう",
+    "meaning_vi": "công việc; thao tác",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Công việc hoặc thao tác được thực hiện theo một mục đích cụ thể.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "作業の前に道具を並べます。",
+        "reading_ja": "さぎょうのまえにどうぐをならべます。",
+        "translation_vi": "Trước khi làm việc, tôi xếp các dụng cụ ra."
+      },
+      {
+        "sentence_ja": "作業が終わったら、机をきれいにしてください。",
+        "reading_ja": "さぎょうがおわったら、つくえをきれいにしてください。",
+        "translation_vi": "Sau khi làm xong, hãy dọn bàn cho sạch."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0023",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "手順",
+    "reading": "てじゅん",
+    "meaning_vi": "trình tự; quy trình",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Thứ tự các bước cần thực hiện trong một công việc.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "手順を読んでから機械を動かしてください。",
+        "reading_ja": "てじゅんをよんでからきかいをうごかしてください。",
+        "translation_vi": "Hãy đọc quy trình rồi mới vận hành máy."
+      },
+      {
+        "sentence_ja": "この手順なら、初めてでもできます。",
+        "reading_ja": "このてじゅんなら、はじめてでもできます。",
+        "translation_vi": "Theo quy trình này thì người lần đầu cũng làm được."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0024",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "道具",
+    "reading": "どうぐ",
+    "meaning_vi": "dụng cụ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Vật được dùng để thực hiện một công việc.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "使った道具は元の場所に戻してください。",
+        "reading_ja": "つかったどうぐはもとのばしょにもどしてください。",
+        "translation_vi": "Hãy trả dụng cụ đã dùng về chỗ cũ."
+      },
+      {
+        "sentence_ja": "道具が足りないので、店で買います。",
+        "reading_ja": "どうぐがたりないので、みせでかいます。",
+        "translation_vi": "Vì thiếu dụng cụ nên tôi sẽ mua ở cửa hàng."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0025",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "指示",
+    "reading": "しじ",
+    "meaning_vi": "chỉ thị; hướng dẫn",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Điều được người phụ trách yêu cầu phải làm.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "担当者の指示に従ってください。",
+        "reading_ja": "たんとうしゃのしじにしたがってください。",
+        "translation_vi": "Hãy làm theo hướng dẫn của người phụ trách."
+      },
+      {
+        "sentence_ja": "指示が分からないときは、質問してください。",
+        "reading_ja": "しじがわからないときは、しつもんしてください。",
+        "translation_vi": "Khi không hiểu chỉ thị, hãy hỏi."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0026",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "確認事項",
+    "reading": "かくにんじこう",
+    "meaning_vi": "các mục cần xác nhận",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Những điều cần kiểm tra hoặc xác nhận trước khi làm việc.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "確認事項を紙に書いておきます。",
+        "reading_ja": "かくにんじこうをかみにかいておきます。",
+        "translation_vi": "Tôi ghi sẵn các mục cần xác nhận ra giấy."
+      },
+      {
+        "sentence_ja": "確認事項を一つずつ説明します。",
+        "reading_ja": "かくにんじこうをひとつずつせつめいします。",
+        "translation_vi": "Tôi sẽ giải thích từng mục cần xác nhận."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0027",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "休憩室",
+    "reading": "きゅうけいしつ",
+    "meaning_vi": "phòng nghỉ",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Phòng để nhân viên nghỉ trong giờ nghỉ.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "休憩室で十分休んでください。",
+        "reading_ja": "きゅうけいしつでじゅうぶんやすんでください。",
+        "translation_vi": "Hãy nghỉ ngơi đầy đủ trong phòng nghỉ."
+      },
+      {
+        "sentence_ja": "休憩室には冷たい水があります。",
+        "reading_ja": "きゅうけいしつにはつめたいみずがあります。",
+        "translation_vi": "Trong phòng nghỉ có nước lạnh."
+      }
+    ]
+  },
+  {
+    "id": "e4a7c2d1-9b5f-4e83-a621-3d7c9f1b0028",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "expression": "提出先",
+    "reading": "ていしゅつさき",
+    "meaning_vi": "nơi nộp; địa chỉ nộp",
+    "part_of_speech": "danh từ",
+    "usage_context_vi": "Nơi hoặc người nhận tài liệu cần nộp.",
+    "audio_ref": null,
+    "tags": [
+      "work"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "書類の提出先をもう一度確認します。",
+        "reading_ja": "しょるいのていしゅつさきをもういちどかくにんします。",
+        "translation_vi": "Tôi kiểm tra lại nơi nộp giấy tờ một lần nữa."
+      },
+      {
+        "sentence_ja": "提出先が違うと、受け付けてもらえません。",
+        "reading_ja": "ていしゅつさきがちがうとうけつけてもらえません。",
+        "translation_vi": "Nếu nộp sai nơi thì hồ sơ sẽ không được nhận."
+      }
+    ]
   }
 ]
