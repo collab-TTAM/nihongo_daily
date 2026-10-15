@@ -3666,5 +3666,98 @@
         "translation_vi": "Tôi luôn tắt nguồn trước khi đi ngủ."
       }
     ]
+  },
+  {
+    "id": "61ef0b9f-5c90-4e1a-abfc-5bd74ae1b178",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vながら",
+    "pattern": "Vながら",
+    "meaning_vi": "vừa V vừa làm việc khác",
+    "explanation_vi": "Diễn tả hai hành động do cùng một chủ thể thực hiện đồng thời.",
+    "usage_notes_vi": [
+      "Dùng dạng liên dụng của động từ trước ながら.",
+      "Hành động chính thường đứng ở mệnh đề sau."
+    ],
+    "common_mistakes": [
+      "Không dùng ながら khi hai hành động có chủ thể khác nhau."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "音楽を聞きながら、部屋を片付けます。",
+        "reading_ja": "おんがくをききながら、へやをかたづけます。",
+        "translation_vi": "Tôi vừa nghe nhạc vừa dọn phòng."
+      },
+      {
+        "sentence_ja": "テレビを見ながら食事をしないでください。",
+        "reading_ja": "テレビをみながらしょくじをしないでください。",
+        "translation_vi": "Xin đừng vừa xem tivi vừa ăn cơm."
+      }
+    ]
+  },
+  {
+    "id": "6bd4f7af-a618-4067-8e4e-2724be0fcbc2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nまでに",
+    "pattern": "Nまでに",
+    "meaning_vi": "trước thời điểm N",
+    "explanation_vi": "Nêu hạn chót mà một hành động cần được hoàn thành trước đó.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ thời điểm trước までに.",
+      "Thường dùng với hành động có thể hoàn thành."
+    ],
+    "common_mistakes": [
+      "Không dùng までに để diễn tả một hành động kéo dài liên tục đến thời điểm đó."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "金曜日までに、荷物を送ります。",
+        "reading_ja": "きんようびまでに、にもつをおくります。",
+        "translation_vi": "Tôi sẽ gửi hành lý trước thứ Sáu."
+      },
+      {
+        "sentence_ja": "午後五時までに書類を提出してください。",
+        "reading_ja": "ごごごじまでにしょるいをていしゅつしてください。",
+        "translation_vi": "Hãy nộp tài liệu trước năm giờ chiều."
+      }
+    ]
+  },
+  {
+    "id": "7e72ead2-7036-4d19-a868-4bd436dfe362",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたところ",
+    "pattern": "Vたところ",
+    "meaning_vi": "sau khi V thì phát hiện/kết quả là",
+    "explanation_vi": "Diễn tả kết quả hoặc phát hiện ngay sau khi thực hiện hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể quá khứ trước ところ.",
+      "Thường dùng khi kết quả vừa được nhận ra."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nのところ chỉ vị trí hoặc thời điểm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "玄関を見たところ、鍵がありませんでした。",
+        "reading_ja": "げんかんをみたところ、かぎがありませんでした。",
+        "translation_vi": "Sau khi nhìn ở cửa ra vào, tôi phát hiện không có chìa khóa."
+      },
+      {
+        "sentence_ja": "窓を開けたところ、涼しい風が入りました。",
+        "reading_ja": "まどをあけたところ、すずしいかぜがはいりました。",
+        "translation_vi": "Vừa mở cửa sổ thì gió mát thổi vào."
+      }
+    ]
   }
 ]
