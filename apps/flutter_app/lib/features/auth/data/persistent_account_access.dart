@@ -175,13 +175,21 @@ final class PersistentAccountAccess implements AccountAccess {
   static ReviewTransportFailure _failure() =>
       const ReviewTransportFailure(ReviewErrorCode.unauthorized);
 
+  Future<void> _drainTail() async {
+    while (true) {
+      final tail = _tail;
+      await tail;
+      if (identical(tail, _tail)) return;
+    }
+  }
+
   Future<void> _settle() async {
     // SDK Auth streams may be asynchronously queued. Consult current state as
     // well, then drain all writes that those events scheduled.
     await Future<void>.delayed(Duration.zero);
     _authInFlight = false;
     _changed();
-    await _tail;
+    await _drainTail();
     if (_closed || _failed || !_allowed || currentSession == null) {
       throw _failure();
     }
