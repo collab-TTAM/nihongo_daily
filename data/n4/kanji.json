@@ -1661,5 +1661,41 @@
     "stroke_count": 12,
     "radical": null,
     "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0051",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "習",
+    "meaning_vi": "học; luyện tập",
+    "onyomi": [
+      "シュウ"
+    ],
+    "kunyomi": [
+      "ならう"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0052",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "練",
+    "meaning_vi": "luyện; rèn",
+    "onyomi": [
+      "レン"
+    ],
+    "kunyomi": [
+      "ねる"
+    ],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
   }
 ]
