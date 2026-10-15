@@ -295,14 +295,19 @@ Future<void> verifyLifecycle(String scenario) async {
       backend.writeWait = Completer();
       final pending = login();
       await flush();
-      check(backend.writes == 1 && access.currentSession == null,
-          'initial persistence did not remain pending');
+      check(
+        backend.writes == 1 && access.currentSession == null,
+        'initial persistence did not remain pending',
+      );
       sdk.change(owner, 'TEST_ONLY_ROTATED_1', sameSession: true);
       await flush();
       check(backend.writes == 1, 'duplicate pending event queued a second write');
       backend.writeWait!.complete();
       await pending;
-      check(access.currentSession != null, 'original write did not publish readiness');
+      check(
+        access.currentSession != null,
+        'original write did not publish readiness',
+      );
       return;
     }
     if (scenario == 'duplicate-auth' ||
