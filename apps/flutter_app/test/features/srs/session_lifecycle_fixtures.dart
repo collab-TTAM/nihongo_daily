@@ -128,6 +128,7 @@ const scenarios = [
   'dispose-ready',
   'dispose-during-auth',
   'same-session-event',
+  'same-session-event-during-write',
   'duplicate-auth',
   'closed-stream',
   'queued-old-rotation',
@@ -288,6 +289,20 @@ Future<void> verifyLifecycle(String scenario) async {
         backend.writes == writes && access.currentSession != null,
         'same-session event rewrote vault or revoked readiness',
       );
+      return;
+    }
+    if (scenario == 'same-session-event-during-write') {
+      backend.writeWait = Completer();
+      final pending = login();
+      await flush();
+      check(backend.writes == 1 && access.currentSession == null,
+          'initial persistence did not remain pending');
+      sdk.change(owner, 'TEST_ONLY_ROTATED_1', sameSession: true);
+      await flush();
+      check(backend.writes == 1, 'duplicate pending event queued a second write');
+      backend.writeWait!.complete();
+      await pending;
+      check(access.currentSession != null, 'original write did not publish readiness');
       return;
     }
     if (scenario == 'duplicate-auth' ||
