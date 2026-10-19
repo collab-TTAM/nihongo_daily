@@ -34,9 +34,12 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
     final state = ref.watch(srsStudyProvider);
     final controller = ref.read(srsStudyProvider.notifier);
     final item = state.item;
+    final level = controller.selectedLevel;
     final durable =
         ref.watch(srsStudyRuntimeProvider)?.reviews is ReviewRecovery;
-    void reload() => controller.load(ref.read(previewLevelProvider));
+    void reload() => controller.load(
+      controller.selectedLevel ?? ref.read(previewLevelProvider),
+    );
     return PageBody(
       children: [
         const PageHeading(
@@ -44,6 +47,26 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
           subtitle:
               'Luồng giao diện đang phát triển · Chưa kiểm chứng với Supabase thật.',
         ),
+        if (level != null) ...[
+          const Text('Trình độ ôn tập'),
+          DropdownButton<PreviewLevel>(
+            key: const Key('srs-level'),
+            value: level,
+            isExpanded: true,
+            items: [
+              for (final option in PreviewLevel.values)
+                DropdownMenuItem(value: option, child: Text(option.label)),
+            ],
+            onChanged: state.canChangeLevel
+                ? (value) {
+                    if (value != null) controller.changeLevel(value);
+                  }
+                : null,
+          ),
+          if (state.hasPendingEvent)
+            const Text('Hoàn tất lượt ôn còn chờ trước khi đổi trình độ.'),
+          const SizedBox(height: 16),
+        ],
         if (state.phase == SrsStudyPhase.unavailable) ...[
           const Text(
             'Chưa kết nối Supabase. Chưa có danh sách ôn tập hoặc kết quả lưu thật.',

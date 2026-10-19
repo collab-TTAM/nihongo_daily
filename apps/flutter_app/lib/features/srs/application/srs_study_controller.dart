@@ -82,6 +82,14 @@ final class SrsStudyState {
   final Map<String, Object>? recoveryRequest;
   final int recoveryRemaining;
   final bool durablePending;
+  bool get canChangeLevel =>
+      !hasPendingEvent &&
+      const {
+        SrsStudyPhase.ready,
+        SrsStudyPhase.failed,
+        SrsStudyPhase.empty,
+        SrsStudyPhase.complete,
+      }.contains(phase);
   bool get canRate =>
       phase == SrsStudyPhase.ready && answerVisible && !hasPendingEvent;
   bool get canRetry =>
@@ -153,6 +161,7 @@ final class SrsStudyController {
   PreparedReview? _pending;
   List<PreparedReview> _recovered = const [];
   PreviewLevel? _level;
+  PreviewLevel? get selectedLevel => _level;
   bool get _durable => reviews is ReviewRecovery;
   int get _ticks => _elapsedMs?.call() ?? _watch.elapsedMilliseconds;
 
@@ -195,6 +204,13 @@ final class SrsStudyController {
     }
     sessionChanged();
     return false;
+  }
+
+  /// A level change must not discard an unresolved review, even when a
+  /// definitive rejection permits the separate, explicit reload action.
+  Future<void> changeLevel(PreviewLevel level) async {
+    if (_disposed || !state.canChangeLevel || level == _level) return;
+    await load(level);
   }
 
   Future<void> load(PreviewLevel level) async {

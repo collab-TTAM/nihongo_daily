@@ -47,6 +47,9 @@ final class SrsStudyNotifier extends StateNotifier<SrsStudyState> {
   SrsStudyController? _controller;
   StreamSubscription<SrsStudyState>? _stateChanges;
   StreamSubscription<void>? _sessionChanges;
+  PreviewLevel? get selectedLevel => _controller?.selectedLevel;
+  Future<void> changeLevel(PreviewLevel level) async =>
+      _controller?.changeLevel(level);
   Future<void> load(PreviewLevel level) async => _controller?.load(level);
   void reveal() => _controller?.reveal();
   Future<void> rate(ReviewRating rating) async => _controller?.rate(rating);

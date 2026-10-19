@@ -28,10 +28,12 @@ final class FixtureStudyQueue implements SrsStudyQueue {
   Future<List<SrsStudyItem>> Function()? loader;
   int calls = 0;
   ReviewSession? lastSession;
+  PreviewLevel? lastLevel;
   @override
   Future<List<SrsStudyItem>> load(ReviewSession session, PreviewLevel level) {
     calls++;
     lastSession = session;
+    lastLevel = level;
     return loader?.call() ?? Future.value(items);
   }
 }

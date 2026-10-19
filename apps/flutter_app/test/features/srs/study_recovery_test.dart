@@ -34,6 +34,10 @@ void main() {
       expect(h.controller.state.canRate, isFalse);
       expect(h.controller.state.canReload, isFalse);
       expect(h.controller.state.canRetry, isTrue);
+      expect(h.controller.selectedLevel, PreviewLevel.n5);
+      await h.controller.changeLevel(PreviewLevel.n4);
+      expect(h.controller.selectedLevel, PreviewLevel.n5);
+      expect(h.controller.state.recoveryRequest, recoveryRequest());
       h.controller.reveal();
       await h.controller.rate(ReviewRating.easy);
       await open();

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
+import 'package:nihongo_daily/features/settings/application/preview_preferences.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_controller.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
@@ -62,6 +63,110 @@ void main() {
   setUp(() => h = StudyHarness());
   tearDown(() => h.dispose());
 
+  testWidgets('selected N4 survives empty queue navigation and error retry', (
+    tester,
+  ) async {
+    final container = await mountSrs(tester, fixture: h);
+    await tester.pumpAndSettle();
+    h.queue.items = [];
+    final selector = find.byKey(const Key('srs-level'));
+    await tester.ensureVisible(selector);
+    await tester.tap(selector);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('N4').last);
+    await tester.pumpAndSettle();
+    expect(h.queue.lastLevel, PreviewLevel.n4);
+    expect(container.read(previewLevelProvider), PreviewLevel.n5);
+    expect(find.text('猫'), findsNothing);
+    container.read(routerProvider).go('/study');
+    await tester.pumpAndSettle();
+    container.read(routerProvider).go('/srs');
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<DropdownButton<PreviewLevel>>(selector).value,
+      PreviewLevel.n4,
+    );
+    expect(h.queue.calls, 2);
+    h.queue.loader = () => throw StateError('PRIVATE QUEUE');
+    await tapText(tester, 'Tải lại danh sách');
+    expect(h.queue.lastLevel, PreviewLevel.n4);
+    expect(find.textContaining('PRIVATE QUEUE'), findsNothing);
+    h.queue.loader = null;
+    h.queue.items = [fixtureItem(id: 2, level: PreviewLevel.n4)];
+    await tapText(tester, 'Tải lại danh sách');
+    expect(h.queue.lastLevel, PreviewLevel.n4);
+    expect(find.text('犬'), findsOneWidget);
+    expect(find.text('Danh sách N4 • Từ vựng'), findsOneWidget);
+    expect(h.rpc.requests, isEmpty);
+    h.auth.currentSession = null;
+    h.changes.add(null);
+    await tester.pumpAndSettle();
+    expect(selector, findsNothing);
+    expect(find.text('犬'), findsNothing);
+  });
+
+  testWidgets('level selector is disabled while loading the queue', (
+    tester,
+  ) async {
+    final pending = Completer<List<SrsStudyItem>>();
+    h.queue.loader = () => pending.future;
+    await mountSrs(tester, fixture: h);
+    await tester.pump();
+    expect(
+      tester
+          .widget<DropdownButton<PreviewLevel>>(
+            find.byKey(const Key('srs-level')),
+          )
+          .onChanged,
+      isNull,
+    );
+    pending.complete([fixtureItem()]);
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<DropdownButton<PreviewLevel>>(
+            find.byKey(const Key('srs-level')),
+          )
+          .onChanged,
+      isNotNull,
+    );
+    expect(h.queue.calls, 1);
+  });
+
+  for (final code in ['NETWORK_UNAVAILABLE', 'SYNC_CONFLICT']) {
+    testWidgets('level selector cannot discard a $code review', (tester) async {
+      h.rpc.reply = () => Future.value({
+        'code': code,
+        'message_vi': 'PRIVATE SERVER',
+        'retryable': code == 'NETWORK_UNAVAILABLE',
+      });
+      final container = await mountSrs(tester, fixture: h);
+      await tester.pumpAndSettle();
+      await tapText(tester, 'Xem đáp án');
+      await tapText(tester, 'Tốt');
+      expect(
+        tester
+            .widget<DropdownButton<PreviewLevel>>(
+              find.byKey(const Key('srs-level')),
+            )
+            .onChanged,
+        isNull,
+      );
+      await container
+          .read(srsStudyProvider.notifier)
+          .changeLevel(PreviewLevel.n4);
+      await tester.pumpAndSettle();
+      expect(h.queue.calls, 1);
+      expect(h.rpc.requests.length, 1);
+      expect(container.read(srsStudyProvider).hasPendingEvent, isTrue);
+      expect(
+        find.text('Hoàn tất lượt ôn còn chờ trước khi đổi trình độ.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('PRIVATE SERVER'), findsNothing);
+    });
+  }
+
   testWidgets(
     'absent canonical grammar reading is explicit instead of invented',
     (tester) async {
@@ -94,6 +199,7 @@ void main() {
       expect(find.textContaining('Chưa kết nối Supabase.'), findsOneWidget);
       expect(find.text('Xem đáp án'), findsNothing);
       expect(find.text('Tốt'), findsNothing);
+      expect(find.byKey(const Key('srs-level')), findsNothing);
       expect(find.text('Đã nhận phản hồi xác nhận lượt ôn.'), findsNothing);
       await tapText(tester, 'Xem trạng thái tài khoản');
       expect(find.text('Tài khoản'), findsOneWidget);

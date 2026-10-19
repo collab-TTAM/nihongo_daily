@@ -13,6 +13,94 @@ void main() {
   setUp(() => h = StudyHarness());
   tearDown(() => h.dispose());
 
+  test('level change loads a fresh queue and resets revealed content', () async {
+    await h.open();
+    h.controller.reveal();
+    h.queue.items = [fixtureItem(id: 2, level: PreviewLevel.n4)];
+    await h.controller.changeLevel(PreviewLevel.n4);
+    expect(h.controller.selectedLevel, PreviewLevel.n4);
+    expect(h.queue.lastLevel, PreviewLevel.n4);
+    expect(h.controller.state.item!.prompt, '犬');
+    expect(h.controller.state.answerVisible, isFalse);
+    expect(h.controller.state.confirmed, 0);
+    expect(h.rpc.requests, isEmpty);
+    await h.controller.changeLevel(PreviewLevel.n4);
+    expect(h.queue.calls, 2);
+  });
+
+  test('level changes cannot race a queue load', () async {
+    final pending = Completer<List<SrsStudyItem>>();
+    h.queue.loader = () => pending.future;
+    final load = h.open();
+    await h.controller.changeLevel(PreviewLevel.n4);
+    expect(h.controller.selectedLevel, PreviewLevel.n5);
+    expect(h.queue.calls, 1);
+    pending.complete([fixtureItem()]);
+    await load;
+    expect(h.controller.state.item!.level, PreviewLevel.n5);
+  });
+
+  for (final code in ['NETWORK_UNAVAILABLE', 'SYNC_CONFLICT']) {
+    test('level change preserves a pending or rejected $code event', () async {
+      await h.open();
+      h.controller.reveal();
+      final response = Completer<Object?>();
+      h.rpc.reply = () => response.future;
+      final save = h.controller.rate(ReviewRating.good);
+      await h.controller.changeLevel(PreviewLevel.n4);
+      expect(h.controller.selectedLevel, PreviewLevel.n5);
+      expect(h.queue.calls, 1);
+      final original = Map<String, Object>.from(h.rpc.requests.single);
+      response.complete({
+        'code': code,
+        'message_vi': 'TEST ONLY',
+        'retryable': code == 'NETWORK_UNAVAILABLE',
+      });
+      await save;
+      await h.controller.changeLevel(PreviewLevel.n4);
+      expect(h.controller.selectedLevel, PreviewLevel.n5);
+      expect(h.controller.state.hasPendingEvent, isTrue);
+      expect(h.controller.state.confirmed, 0);
+      expect(h.queue.calls, 1);
+      expect(h.rpc.requests.single, original);
+      expect(h.ids, 1);
+      if (code == 'NETWORK_UNAVAILABLE') {
+        h.rpc.reply = null;
+        await h.controller.retry();
+        expect(h.rpc.requests.last, original);
+      } else {
+        // Rejection still requires the existing explicit discard/reload action.
+        expect(h.controller.state.canReload, isTrue);
+        await h.controller.load(PreviewLevel.n5);
+        expect(h.controller.state.hasPendingEvent, isFalse);
+      }
+    });
+  }
+
+  test('failed selected queue stays selected and logout clears it', () async {
+    await h.open();
+    final pending = Completer<List<SrsStudyItem>>();
+    h.queue.loader = () => pending.future;
+    final change = h.controller.changeLevel(PreviewLevel.n4);
+    pending.completeError(StateError('PRIVATE QUEUE'));
+    await change;
+    expect(h.controller.selectedLevel, PreviewLevel.n4);
+    expect(h.controller.state.item, isNull);
+    expect(h.controller.state.failure!.messageVi, isNot(contains('PRIVATE')));
+    h.queue.loader = null;
+    h.queue.items = [fixtureItem(level: PreviewLevel.n4)];
+    await h.controller.load(h.controller.selectedLevel!);
+    expect(h.queue.lastLevel, PreviewLevel.n4);
+    expect(h.controller.state.item!.level, PreviewLevel.n4);
+    h.auth.currentSession = null;
+    h.controller.sessionChanged();
+    expect(h.controller.selectedLevel, isNull);
+    expect(h.controller.state.item, isNull);
+    await h.controller.changeLevel(PreviewLevel.n5);
+    expect(h.queue.calls, 3);
+    expect(h.controller.state.phase, SrsStudyPhase.signedOut);
+  });
+
   test('no account cannot load curriculum or submit a review', () async {
     h.auth.currentSession = null;
     await h.open();

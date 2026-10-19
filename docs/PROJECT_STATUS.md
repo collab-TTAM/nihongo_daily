@@ -1521,3 +1521,29 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Fixed the owned persistence barrier in `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`: `_settle()` now drains until the queued write tail is stable, so a newer same-session rotation queued during the first write is persisted before readiness is evaluated. No retry loop, token logging, Auth strategy, schema or CI gate changed.
 - Source commit `312327ec1de5e73d87dc8df7c2ef4acf5489c856`; exact-head CI run [38684718287](https://github.com/collab-TTAM/nihongo_daily/actions/runs/38684718287) passed on its latest attempt: ai-boundary, repo-sanity, database, flutter (format/analyze/full tests and downstream checks) and windows. Flutter observed 371 tests with the new scenario; the first Windows attempt hit the known exit-marker fixture flake and rerunning only that failed job passed all Windows checks. No required job was skipped.
 - This is fixture and local persistence evidence only; hosted Auth signatures, learner A/B, expiry/restart/two-client behavior and remaining Personal Alpha gates still require supported staging configuration. Keep PR #37 draft and continue without touching Pro N4 scope.
+
+## Guarded SRS due-queue level selection — 2026-10-19 UTC
+
+- Run core-20261019T1332-srs-level-selection resumed released PR #37 at
+  92744739be619d78c2df809bc30b051f69033bf3; main 78a44faf unchanged. All five
+  latest-attempt exact-head jobs in CI38685894607 passed. Fresh cloud clone
+  matches GitHub; no prior temporary source/SDK was used. Pro #14/#38/N4 untouched.
+- Added explicit N5/N4 due-queue selection on configured SRS, guarded controller/
+  notifier commands and retained level on navigation/empty/error reload. Session
+  revocation clears selection. No preview preference/curriculum state is written.
+- Controller/UI prevent level changes while loading/recovering/saving or any
+  immutable pending/rejected event remains. Explicit rejected-event reload stays.
+  Changing level hides revealed content and loads a fresh captured-session queue.
+- Five controller and four widget cases added; native recovery test strengthened
+  to preserve original request/selected level before exact retry. Existing mobile
+  320/375px at 200% cases retained. No N4/content tests/data, dependencies,
+  workflow/security/Auth strategy/schema/API/default activation changes.
+- Local 17 stdlib QA tests passed; git diff --check passed. Contract tests could
+  not import because jsonschema is unavailable. Flutter/Dart SDK is absent, so
+  format/analyze/Flutter/Chrome/native/web/Windows checks require exact-head CI.
+  Source diff/full-tree preservation reviewed before checkpoint.
+- Keep #37 draft and #20/#22/#15 open. All 14 live acceptance groups remain
+  pending; no hosted config, learner A/B/restart/two-client or Alpha claim.
+  Next: exact-source CI/fix failures, then supported hosted acceptance or the
+  next independent increment. Run ACTIVE until source/CI handoff is persisted
+  and the PR marker is RELEASED.

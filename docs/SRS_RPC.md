@@ -237,3 +237,24 @@ PR #37 draft and #22/#20/#15 open; Personal Alpha release gates remain pending.
 Riverpod 2 lifecycle references checked 2026-10-14:
 - https://docs-v2.riverpod.dev/docs/concepts/provider_lifecycles
 - https://docs-v2.riverpod.dev/docs/concepts/modifiers/auto_dispose
+
+## Explicit due-queue level selection
+
+The configured SRS screen offers N5/N4 selection for the authenticated due queue.
+This does not enroll new curriculum, fabricate due items or record study progress.
+The controller retains the loaded level across route navigation, empty results,
+queue errors and explicit reload instead of reverting to preview settings.
+Session revocation clears the selection together with old visible curriculum.
+
+Level changes hide the revealed answer and load a fresh session-bound queue.
+Both controller and UI reject changes during load/recovery/save and whenever a
+review is pending, including a definitive rejection. The existing explicit
+rejected-event reload remains the discard/reconcile action. Durable recovered
+events must resolve before switching; their original ID/rating/time stay intact.
+
+Five controller and four widget cases cover selected-level queue loading,
+no duplicate reload, request preservation, loading locks, empty/error retry,
+navigation and logout. Native recovery and existing 320/375px at 200% widget
+checks are retained/strengthened. These use TEST ONLY ports; exact-source CI
+must pass. No N4 exports/content tests, Auth/default activation, API/schema or
+security gates changed. All 14 hosted learner/integration groups remain open.
