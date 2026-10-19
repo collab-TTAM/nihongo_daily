@@ -60,8 +60,12 @@ abstract interface class DailyPlanStudySessionGateway
   Future<Object?> submitStudySession(Map<String, Object> parameters);
 }
 
+/// Borrowed factory, published only by an active owned startup runtime.
+abstract interface class DailyPlanRepositorySource {
+  DailyPlanRepository? createDailyPlanRepository();
+}
+
 /// Account-scoped repository; no cache, local completion or automatic retry.
-/// Not installed in the preview app until the owned Auth runtime is integrated.
 final class DailyPlanRepository {
   const DailyPlanRepository(this._session);
   final DailyPlanSessionGateway _session;

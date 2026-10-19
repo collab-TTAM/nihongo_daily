@@ -61,7 +61,8 @@ QA inventory49 and all17 QA regressions passed. Full Flutter/analyze/SDK fixture
 combined SQL/wire/races and Windows/browser builds remain unverified until the
 new exact-head CI; local Flutter/jsonschema/PostgreSQL dependencies are absent.
 
-The factory is not installed into the app's routes/providers in this increment.
+The initial SDK increment did not install this factory into routes/providers.
+The subsequent read-only UI composition is documented in DAILY_PLAN_UI.md.
 No durable pending-study queue, timer/save UI, automatic device-local date guess,
 live Supabase configuration or actual learner save/restart/two-device evidence
 is provided. Existing durable SRS storage is preserved and does not yet journal

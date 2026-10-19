@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../daily_plan/data/daily_plan_repository.dart';
 import 'account_session_notice.dart';
 import 'account_session_refresh.dart';
 
@@ -44,6 +45,16 @@ final class AccountStartupController<T> {
   bool _closed = false;
   T? get account =>
       _phase == AccountStartupPhase.active ? _runtime?.account : null;
+  DailyPlanRepositorySource? get dailyPlanSource {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is DailyPlanRepositorySource) {
+      return runtime as DailyPlanRepositorySource;
+    }
+    return null;
+  }
+
   AccountSessionNoticeSource? get noticeSource {
     final runtime = _runtime;
     if (!_closed &&

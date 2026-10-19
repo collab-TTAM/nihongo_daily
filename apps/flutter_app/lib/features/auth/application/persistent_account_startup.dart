@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../data/persistent_account_access.dart';
 import 'account_controller.dart';
@@ -13,9 +14,13 @@ final class PersistentAccountStartup
         AccountStartupRuntime<AccountController<SrsStudyRuntime>>,
         ResumableAccountStartup,
         AccountSessionNoticeSource,
-        AccountSessionRefreshAction {
+        AccountSessionRefreshAction,
+        DailyPlanRepositorySource {
   PersistentAccountStartup(this.runtime);
   final PersistentSupabaseRuntime runtime;
+  @override
+  DailyPlanRepository? createDailyPlanRepository() =>
+      runtime.createDailyPlanRepository();
   @override
   AccountSessionNotice get notice => runtime.notice;
   @override

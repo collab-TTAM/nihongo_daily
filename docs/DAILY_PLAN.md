@@ -3,7 +3,7 @@
 The additive migrations implement `get_daily_plan` and an internal trusted
 study-session/progress helper described in STUDY_SESSIONS.md. The separately
 versioned submit RPC is reviewed in STUDY_SESSION_API.md and the explicit owned
-SDK factory in DAILY_PLAN_SDK.md. No learner UI save path, deployed service or
+SDK factory in DAILY_PLAN_SDK.md. Read-only owned UI composition is documented in DAILY_PLAN_UI.md. No learner UI save path, deployed service or
 authenticated learner acceptance is established.
 The main Flutter home remains an explicitly labeled preview; no fake save or
 completion is installed. Separate Auth/SRS #37 and reader #39 remain independent.
@@ -133,8 +133,9 @@ Unknown transport failures are not incorrectly called offline. An adapter can
 signal a known network failure using the safe typed exception.
 
 The explicit owned runtime factory/gateway is described in DAILY_PLAN_SDK.md.
-No gateway is installed in the default app, no route/preview readiness changes,
-and no account or study save is simulated. Authenticated
+The unconfigured default app remains preview. An explicit owned startup now
+publishes the read-only /plan route as documented in DAILY_PLAN_UI.md; no account
+or study save is simulated. Authenticated
 UI loading/error/offline/restart handling, real JWT/account isolation and hosted
 learner acceptance remain to be integrated. Internal session ingestion is
 documented in STUDY_SESSIONS.md; it is not an installed app save service.

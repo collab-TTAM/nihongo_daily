@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/page_body.dart';
+import '../../daily_plan/application/daily_plan_provider.dart';
 import '../application/account_controller.dart';
 import '../application/account_provider.dart';
 import '../application/account_session_notice.dart';
@@ -71,6 +72,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final notice = ref.watch(accountSessionNoticeProvider);
     final refreshAction = ref.watch(accountSessionRefreshActionProvider);
     final runtime = ref.watch(accountRuntimeProvider);
+    final plan = ref.watch(dailyPlanRepositoryProvider);
     final checking = notice == AccountSessionNotice.checking || _refreshing;
     ref.listen(accountSessionNoticeProvider, (_, next) {
       if (next != AccountSessionNotice.none) {
@@ -217,6 +219,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     'Trình độ ${state.profile!.level} · ${state.profile!.dailyTargetMinutes} phút/ngày',
                   ),
                   const SizedBox(height: 20),
+                  if (plan != null) ...[
+                    FilledButton.tonal(
+                      onPressed: () => context.go('/plan'),
+                      child: const Text('Kế hoạch học'),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   FilledButton(
                     onPressed: () => context.go('/srs'),
                     child: const Text('Ôn tập'),

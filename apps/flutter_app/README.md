@@ -69,7 +69,7 @@ backend. Domain/transport adapters added later must preserve `contracts/v0.1`.
 Screens call application providers, never raw database tables. Placeholder
 routes are replaced by feature modules as their dependency issues are merged.
 
-Routes: `/`, `/study`, `/settings`, `/auth`, `/vocabulary`, `/grammar`, `/srs`,
+Routes: `/`, `/plan`, `/study`, `/settings`, `/auth`, `/vocabulary`, `/grammar`, `/srs`,
 `/quiz`, `/listening`, `/kanji`, `/ai`, `/conversation`, `/progress`.
 
 Tests cover preview/contract allocation parity, route recovery, all placeholders,
@@ -91,3 +91,13 @@ Opt-in web review persistence uses IndexedDB transactions and is documented in
 runtime factories accept it as their supplied store. Real Chrome connection,
 page-refresh and second-tab tests are mandatory in CI; default runtime remains
 null until Auth/profile/session configuration is supplied.
+
+
+Owned Daily Plan read UI: configured staging startup publishes an account-gated
+`/plan` route via **Kế hoạch học** after login/profile readiness. Enter an explicit
+YYYY-MM-DD under the displayed profile timezone and load the authoritative plan;
+loading, safe errors/offline retry, blocked areas and over-target time are shown.
+Default preview has no plan source or fabricated progress. This read-only route
+does not yet time/save study sessions or provide a durable study-event queue.
+See [Daily Plan UI](../../docs/DAILY_PLAN_UI.md) and
+[Staging bootstrap](../../docs/STAGING_BOOTSTRAP.md) for configuration/limits.

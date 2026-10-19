@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/app.dart';
 import '../../../app/router.dart';
 import '../../../app/theme.dart';
+import '../../daily_plan/application/daily_plan_provider.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../application/account_controller.dart';
 import '../application/account_provider.dart';
@@ -94,6 +95,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
     if (account != null || (_publishedApp && _exitStarted)) {
       return ProviderScope(
         overrides: [
+          dailyPlanSourceProvider.overrideWithValue(
+            _controller.dailyPlanSource,
+          ),
           accountRuntimeProvider.overrideWithValue(account),
           accountSessionRefreshActionProvider.overrideWithValue(
             _controller.refreshAction,

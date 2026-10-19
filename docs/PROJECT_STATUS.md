@@ -1637,3 +1637,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Authored six registry/gateway and four actual pinned-SDK/mock-HTTP/vault cases covering persistence/profile/factory order, exact RPC HTTP body/headers, stale/late calls, same-user relogin, refresh vault fence, safe HTTP failure/timeout/expiry/close. TEST ONLY unsigned JWT/memory OS fixtures are not hosted identity, real OS vault or learner proof. Old SQL/race/Dart/Chrome/Windows/security tests retained.
 - Local Dart format, pure gateway/registry analysis, actual registry/envelope/typed read-write/revocation standalone smoke, shell syntax, whitespace and QA49 inventory/all17 regressions passed. Full local Flutter/SDK/jsonschema/PostgreSQL unavailable: combined current-head tests/native/wire/build must run through Actions. No new-source full pass claimed; parent evidence is historical only.
 - Docs/DAILY_PLAN_SDK.md records integration review/policy/limits. Keep all14 hosted release gates and #11 open; new integration PR stays draft. No source PR merge, deployment, paid/provider/Auth strategy/security reduction or schedule change. Next inspect exact new head/latest-attempt CI and fix failures preserving assertions; after green bind the factory to owned startup/providers, durable study-event queue and actual plan/study/save UI. Receipt replay remains older snapshot; load latest plan after acknowledgment.
+
+
+## Owned Daily Plan read UI — core-20261019T1942-plan-ui
+
+Continue integration #41 from4461fd9 / tree99a50317. Verified CI39311989226
+allfive jobs/every required step successful; completed Flutter logs confirm six
+captured gateway and four actual-SDK cases passed. Both source drafts unchanged.
+
+Publish the borrowed plan source only through active owned startup, with current
+profile/runtime gated Riverpod composition and explicit /plan account action.
+Read-only UI requires an explicit valid date under displayed profile timezone;
+server-only seven blocks/statuses/over-target progress, loading/redacted failure/
+offline explicit reload, account replacement/late result fences. A keyed mounted
+but cleared/disabled/hidden date form preserves the existing awaited-exit observer
+invariant. No activity/save/durable queue success is manufactured. Ten widget
+cases authored incl startup publication, owner changes, layout and real binding
+exit request; full current-head execution requires independent exact-head CI.
+
+Separate composition/lifecycle/test review and local checks precede persistence;
+see DAILY_PLAN_UI.md for scope and limitations. No core source draft/main/Pro N4/
+reader, API/schema/dependencies/security/provider/release/schedule changes. Keep
+#11 open/#41 draft/all14 live acceptance groups pending. After new-head CI,
+continue durable completed-study event recovery and actual timer/save composition.
