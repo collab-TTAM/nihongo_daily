@@ -5,13 +5,18 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
+import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/daily_plan/data/daily_plan_repository.dart';
 import 'package:nihongo_daily/features/daily_plan/domain/completed_study_session.dart';
 import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
+import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
+import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import '../srs/session_lifecycle_fixtures.dart' as fixture;
 import '../srs/own_profile_fixtures.dart' as profile;
 import '../srs/supabase_review_binding_test.dart' as wire;
@@ -174,6 +179,70 @@ void main() {
     await directory.delete(recursive: true);
     network.close();
   });
+
+  test(
+    'production Windows owner forwards ready plan source and drains SDK before journal release',
+    () async {
+      final owner = WindowsStagingOwner(
+        PersistentAccountStartup(runtime),
+        journal,
+      );
+      final controller = AccountStartupController(() async => owner);
+      addTearDown(() async {
+        final wait = backend.writeWait;
+        if (wait != null && !wait.isCompleted) wait.complete();
+        await controller.close();
+      });
+      expect(controller.dailyPlanSource, isNull);
+      expect(owner.createDailyPlanRepository(), isNull);
+      await controller.start();
+      expect(identical(controller.dailyPlanSource, owner), isTrue);
+      expect(controller.dailyPlanSource!.createDailyPlanRepository(), isNull);
+      await login();
+      final repository = controller.dailyPlanSource!
+          .createDailyPlanRepository()!;
+      expect((await repository.load(date)).completedMinutes, 0);
+      expect(
+        requests.where((r) => r.url.path.endsWith('/get_daily_plan')).length,
+        1,
+      );
+      secret = 'TEST_ONLY_WINDOWS_PLAN_ROTATED_2';
+      backend.writeWait = Completer<void>();
+      final writes = backend.writes;
+      final rotation = expectLater(
+        runtime.refresh(),
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (e) => e.code,
+            'code',
+            ReviewErrorCode.unauthorized,
+          ),
+        ),
+      );
+      expect(owner.createDailyPlanRepository(), isNull);
+      await fixture.flush();
+      expect(backend.writes, writes + 1);
+      var closed = false;
+      final closing = controller.close().then((_) => closed = true);
+      expect(controller.dailyPlanSource, isNull);
+      expect(owner.createDailyPlanRepository(), isNull);
+      await fixture.flush();
+      expect(closed, isFalse);
+      await expectLater(
+        NativeReviewJournal.open(directory),
+        throwsA(isA<ReviewStorageFailure>()),
+      );
+      backend.writeWait!.complete();
+      await rotation;
+      await closing;
+      expect(closed, isTrue);
+      // Existing Auth policy cancels/cleans an interrupted refresh on close.
+      expect(backend.secret, isNull);
+      await expectLater(repository.load(date), throwsA(unauthorized));
+      final reopened = await NativeReviewJournal.open(directory);
+      await reopened.close();
+    },
+  );
 
   test(
     'owned factory waits for persisted rotation/profile and dispatches captured SDK HTTP',

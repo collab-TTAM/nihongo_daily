@@ -1660,3 +1660,21 @@ see DAILY_PLAN_UI.md for scope and limitations. No core source draft/main/Pro N4
 reader, API/schema/dependencies/security/provider/release/schedule changes. Keep
 #11 open/#41 draft/all14 live acceptance groups pending. After new-head CI,
 continue durable completed-study event recovery and actual timer/save composition.
+
+
+## Windows plan-source forwarding — core-20261019T1950-plan-windows-source
+
+Resume #41 at a12d95d, treee8c3e2f. CI39313830624 observed repo-sanity/database/
+ai-boundary/Flutter successful (format/analyze/full tests/all downstream/Web);
+Windows native checks still running at inspection. Actual source review found
+the production Windows owner did not forward the new source interface, unlike
+the inner session/test owner. Forward the borrowed source through that exact
+outer owner, returning null once close starts; preserve existing resource/drain
+order. Public constructor permits the same production assembly to be tested
+with actual SDK/mock HTTP/native journal and startup controller. One additional
+regression covers ready/read/refresh/close/lease/reopen and unchanged interrupted
+refresh cleanup; prior ten widget/ten SDK-gateway cases remain. No timer/queue/
+save completion claim. Separate composition/lifecycle/test review and local
+format/QA/whitespace precede persistence; exact new-head checks still mandatory.
+Keep #41 draft/#11 open/all14 live gates pending, source drafts/main/Pro/reader/
+API/schema/dependencies/Auth strategy/security/deployment/schedule unchanged.

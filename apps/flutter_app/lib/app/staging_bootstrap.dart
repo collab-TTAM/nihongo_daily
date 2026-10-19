@@ -11,6 +11,7 @@ import '../features/auth/application/persistent_supabase_runtime.dart';
 import '../features/auth/data/windows_review_directory.dart';
 import '../features/auth/data/windows_session_credential_vault.dart';
 import '../features/auth/presentation/account_startup_app.dart';
+import '../features/daily_plan/data/daily_plan_repository.dart';
 import '../features/srs/application/srs_study_runtime.dart';
 import '../features/srs/data/native_review_journal.dart';
 import '../features/srs/data/supabase_review_binding.dart';
@@ -105,7 +106,7 @@ Future<StagingOwner> openWindowsStagingOwner(
       store: journal,
       automaticRefresh: config.automaticRefresh,
     );
-    return _WindowsStagingOwner(PersistentAccountStartup(runtime), journal);
+    return WindowsStagingOwner(PersistentAccountStartup(runtime), journal);
   } on Object {
     await journal.close();
     rethrow; // Startup controller replaces raw details with its fixed UI state.
@@ -113,17 +114,23 @@ Future<StagingOwner> openWindowsStagingOwner(
 }
 
 /// The process journal lease is acquired before any SDK/token writer is created.
-/// Own both lifetimes; no history is deleted by logout/shutdown.
-final class _WindowsStagingOwner
+/// Transfer exclusive ownership of both lifetimes. Public assembly permits the
+/// same production wrapper to be exercised with actual SDK/local-store fixtures.
+/// No history is deleted by logout/shutdown.
+final class WindowsStagingOwner
     implements
         StagingOwner,
         ResumableAccountStartup,
         AccountSessionNoticeSource,
-        AccountSessionRefreshAction {
-  _WindowsStagingOwner(this.session, this.journal);
+        AccountSessionRefreshAction,
+        DailyPlanRepositorySource {
+  WindowsStagingOwner(this.session, this.journal);
   final PersistentAccountStartup session;
   final NativeReviewJournal journal;
   Future<void>? _closing;
+  @override
+  DailyPlanRepository? createDailyPlanRepository() =>
+      _closing == null ? session.createDailyPlanRepository() : null;
   @override
   AccountController<SrsStudyRuntime> get account => session.account;
   @override

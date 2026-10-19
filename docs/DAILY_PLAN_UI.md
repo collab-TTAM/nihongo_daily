@@ -7,8 +7,10 @@ UI head; its complete retained checks must run independently.
 
 ## Publication and read flow
 
-The active PersistentAccountStartup implements a borrowed DailyPlanRepositorySource
-and delegates to its existing owned SDK factory. AccountStartupController only
+The production WindowsStagingOwner forwards DailyPlanRepositorySource through
+PersistentAccountStartup to the existing owned SDK factory. It returns no new
+repository after close begins. The outer wrapper must expose this capability;
+implementing it on the inner session alone does not publish it to startup. AccountStartupController only
 publishes this capability while active and revokes it immediately at close,
 before asynchronous draining. The startup host overrides an otherwise-null
 Riverpod source. The repository provider additionally requires the current
@@ -71,3 +73,24 @@ UI, automatic profile-local today and hosted JWT/A-B/two-device validation remai
 All14 hosted Personal Alpha acceptance gates and #11 stay open; keep the PR draft.
 No provider/Auth strategy, schema/RLS, dependency, Pro/reader content, deployment,
 release, merge or schedule change.
+
+
+## Windows production-wrapper correction
+
+The initial UI source a12d95d passed Flutter analysis/full tests/Web, but its
+fixture startup owner bypassed the production outer Windows wrapper. Inspection
+found that wrapper did not expose the new source capability, so configured
+Windows would show no plan action. WindowsStagingOwner now forwards the exact
+capability and remains responsible for the unchanged runtime-before-journal
+close order. The public constructor exposes the same assembly used by the
+default Windows factory for direct fixture verification; it creates no resource
+or additional owner and changes no build option.
+
+An additional actual-SDK/mock-HTTP/native-journal regression runs through this
+production wrapper and AccountStartupController: no source before startup, no
+repository before profile readiness, fixed plan read after login, immediate
+revocation during refresh/close, journal lease held while vault write drains,
+existing interrupted-refresh cleanup, old repository rejection and disk reopen
+after owned close. It retains the prior ten widget and ten gateway/SDK cases.
+The vault/JWT/HTTP remain TEST ONLY; no hosted/OS acceptance is inferred.
+Current-source execution still requires independent exact-head Actions.
