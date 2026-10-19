@@ -14,6 +14,13 @@ grant usage on schema plan_test to authenticated, anon, service_role;
 grant execute on all functions in schema plan_test to authenticated, anon, service_role;
 create temp table results(label text primary key, payload jsonb);
 grant select, insert on results to authenticated;
+-- Earlier native suites intentionally commit their own curriculum fixtures.
+-- A plan counts all active published content, not just this test's rows.
+create temp table expected_counts as select
+  (select count(*) from public.vocabulary where is_active and jlpt_level='N5') as vocabulary_n5,
+  (select count(*) from public.vocabulary where is_active and jlpt_level='N4') as vocabulary_n4,
+  (select count(*) from public.grammar where is_active and jlpt_level='N5') as grammar_n5;
+grant select on expected_counts to authenticated;
 
 select plan_test.assert_true(private.daily_plan_minutes(120) = array[20,15,20,15,15,25,10], 'exact default allocation');
 select plan_test.assert_true(bool_and((select sum(m)=target and min(m)>=1 and max(m)<=1440
@@ -64,25 +71,31 @@ select plan_test.assert_true(plan_test.denied('select private.daily_plan_minutes
 select plan_test.assert_true(plan_test.denied('update public.daily_plans set completed_minutes=999'), 'client cannot overwrite derived minutes');
 insert into results values ('initial',public.get_daily_plan('{"date":"2026-10-19"}'));
 select plan_test.assert_true((select payload->>'target_minutes'='120' and payload->>'completed_minutes'='0'
-  and payload#>>'{blocks,0,item_count}'='2' and payload#>>'{blocks,1,item_count}'='3'
-  and payload#>>'{blocks,3,item_count}'='1' from results where label='initial'), 'Vietnam local midnight exclusive cutoff and active level counts');
+  and payload#>>'{blocks,0,item_count}'='2'
+  and (payload#>>'{blocks,1,item_count}')::bigint=(select vocabulary_n5+3 from expected_counts)
+  and (payload#>>'{blocks,3,item_count}')::bigint=(select grammar_n5+1 from expected_counts)
+  from results where label='initial'), 'Vietnam local midnight exclusive cutoff and active level counts; observed=' || (select payload::text from results where label='initial'));
 select plan_test.assert_true((select bool_and(b->>'status'='BLOCKED')
   from results r, lateral jsonb_array_elements(r.payload->'blocks') b
   where label='initial' and b->>'type' in ('KANJI','LISTENING_READING','AI_CONVERSATION','QUIZ_REVIEW')), 'unverified resources/services never fabricated as ready');
 select plan_test.assert_true((select public.get_daily_plan('{"date":"2026-10-19"}')=payload from results where label='initial'), 'duplicate read identical');
 reset role;
-create temp table original_row as select * from public.daily_plans;
+create temp table original_row as select * from public.daily_plans
+where user_id='d1100000-0000-4000-8000-000000000001' and plan_date='2026-10-19';
 update public.profiles set preferred_jlpt='N4',daily_target_minutes=7 where id='d1100000-0000-4000-8000-000000000001';
 update public.vocabulary set is_active=false where id='d1200000-0000-4000-8000-000000000001';
 update public.daily_plans set completed_minutes=145,
-  plan_json=jsonb_set(plan_json,'{blocks,0,status}','"IN_PROGRESS"');
+  plan_json=jsonb_set(plan_json,'{blocks,0,status}','"IN_PROGRESS"')
+where user_id='d1100000-0000-4000-8000-000000000001' and plan_date='2026-10-19';
 set local role authenticated;
 insert into results values ('started',public.get_daily_plan('{"date":"2026-10-19"}'));
 select plan_test.assert_true((select payload->>'target_minutes'='120' and payload->>'completed_minutes'='145'
-  and payload#>>'{blocks,0,status}'='IN_PROGRESS' and payload#>>'{blocks,1,item_count}'='3'
+  and payload#>>'{blocks,0,status}'='IN_PROGRESS'
+  and (payload#>>'{blocks,1,item_count}')::bigint=(select vocabulary_n5+3 from expected_counts)
   from results where label='started'), 'settings/content changes and retries preserve started snapshot and over-target progress');
 insert into results values ('minimum',public.get_daily_plan('{"date":"2026-10-20"}'));
-select plan_test.assert_true((select payload->>'target_minutes'='7' and payload#>>'{blocks,1,item_count}'='1'
+select plan_test.assert_true((select payload->>'target_minutes'='7'
+  and (payload#>>'{blocks,1,item_count}')::bigint=(select vocabulary_n4+1 from expected_counts)
   and (select bool_and(b->>'planned_minutes'='1') from jsonb_array_elements(payload->'blocks') b)
   from results where label='minimum'), 'new date gets new settings, minimum target and N4 counts');
 select set_config('request.jwt.claim.sub','d1100000-0000-4000-8000-000000000002',true);
@@ -129,6 +142,7 @@ set local role authenticated;
 insert into results values ('failure',public.get_daily_plan('{"date":"2026-12-02"}'));
 select plan_test.assert_true((select payload->>'code'='INTERNAL_ERROR' and payload::text not like '%TEST ONLY%' from results where label='failure'), 'internal failure redacted');
 reset role;
-select plan_test.assert_true(not exists(select 1 from public.daily_plans where plan_date='2026-12-02'), 'failed generation rolls back');
+select plan_test.assert_true(not exists(select 1 from public.daily_plans
+  where user_id='d1100000-0000-4000-8000-000000000001' and plan_date='2026-12-02'), 'failed generation rolls back');
 select 'WIRE:' || jsonb_build_object('label',label,'payload',payload)::text from results order by label;
 rollback;

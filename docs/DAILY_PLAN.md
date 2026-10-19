@@ -76,6 +76,13 @@ executes native SQL role tests, validates seven actual SQL success payloads and
 one redacted failure against frozen named contracts, and races two native
 connections while the first insert is uncommitted, then reopens a third.
 
+The SQL suite captures preexisting active N5/N4 content counts before adding its
+own fixtures and requires exact baseline-plus-fixture totals. The earlier native
+review race intentionally commits a published N5 row; it belongs in a generated
+plan's global curriculum count. No prior fixture is deleted/retired to force an
+empty database. Progress writes/identity and rollback probes target only this
+suite's own user/date, and assertion failures include the fixed test plan payload.
+
 SQL assertions cover all target allocations, default/min/max, anonymous/private
 ACLs, missing identity/profile, strict requests, two owners/same date, active
 level counts, Vietnam midnight, spring/fall DST cutoffs, leap dates/DateStyle,
