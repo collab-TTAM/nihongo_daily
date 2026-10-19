@@ -4,6 +4,13 @@ This directory contains an additive PostgreSQL migration, not a deployed service
 The Flutter app still uses its labeled preview repository. No live credentials,
 production changes, authentication provider changes or AI provider calls are made.
 
+Issue #11 adds a narrowly scoped authenticated Daily Plan snapshot RPC in
+`20261019150000_daily_plan.sql`. It preserves existing user/date plans and derived
+progress and keeps unavailable services blocked. This is an additive local/CI
+migration, not deployment or study-session integration. See
+[`docs/DAILY_PLAN.md`](../docs/DAILY_PLAN.md) for the definer boundary, frozen
+payload mapping, allocation policy and native role/wire/concurrency checks.
+
 ## Reproduce verification
 
 Use an **empty disposable PostgreSQL 17 database**, owned by the migration user:
@@ -20,6 +27,10 @@ real `SET ROLE`, and starts two native PostgreSQL sessions for the duplicate-key
 race. `bootstrap.sql` must never run against Supabase or an existing database.
 The script is deliberately not repeatable on an already initialized database.
 Create a fresh test database for each run.
+
+Daily Plan's actual SQL wire validation also requires the existing pinned
+`python3 -m pip install -r contracts/requirements.txt`; the database CI job
+installs it before running the retained SQL tests and new plan checks.
 
 CI's `database` job uses a PostgreSQL 17 service and runs this same script. The SQL
 baseline was also executed locally with PostgreSQL 18.6 through PGlite 0.5.9;
@@ -106,3 +117,24 @@ normalization and actual timestamp conversion. Use the stored timezone for plans
 Issue #7 adds private AI receipt lookup/dispatch-claim/token-completion helpers and
 native claim-race/security tests. No deployed conversation/AI runtime is implied;
 see `../docs/AI_BOUNDARY.md` for required validation/transaction/recovery binding.
+# Internal study-session progress
+
+The additive `20261019185500_study_session_progress.sql` provides a private,
+service-only completed-session transaction; it is not a public/client endpoint.
+Caller must verify identity/activity and derive owner. Session, immutable receipt
+and plan progress commit together; retries replay and overlapping intervals
+conflict. No hosted migration or UI integration has been performed.
+Policy, boundary/limits and native role/wire/concurrency reproduction:
+`../docs/STUDY_SESSIONS.md`. The existing database runner retains all prior gates
+and appends `scripts/test_study_sessions.py`. No service key belongs in Flutter.
+
+# Authenticated completed-session report v1
+
+`20261019191000_submit_study_session.sql` adds the separately versioned
+`submit_study_session(p_request)` RPC, EXECUTE only authenticated and owner derived
+from auth.uid. No owner/service credential or derived minutes enter the client
+request. This records self-reported elapsed time, never attention/mastery/scores.
+Existing private ledger ACLs/RLS and frozen v0.1 remain unchanged. Review and
+request/response/retry/UI limits: `../docs/STUDY_SESSION_API.md` and
+`../contracts/study/v1`. Native role/wire checks run after the retained session
+races through `scripts/test_study_submit.py`. No hosted deployment is applied.

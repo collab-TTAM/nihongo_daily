@@ -159,6 +159,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install PostgreSQL client
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Install frozen wire validator for actual Daily Plan SQL output
+        run: python3 -m pip install -r contracts/requirements.txt
       - name: Migration, grants, RLS, replay and concurrent uniqueness
         run: bash scripts/test_database.sh
 
