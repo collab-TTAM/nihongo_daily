@@ -1,9 +1,10 @@
 # SRS interval policy — nd-srs-1
 
 Issue #4 supplies an immutable, deterministic **pure Dart core** for Personal
-Alpha. The app still shows its preview page. No authenticated review endpoint,
-persistence, idempotent transaction, offline queue or real study integration is
-implemented here; those belong to #22/#15 and the study flows.
+Alpha. The app still shows its preview page. The private SQL port and local
+authenticated transaction increment in #22 are
+documented in SRS_RPC.md. No hosted review endpoint, real Auth, offline queue or
+real study integration is claimed; #22/#15 and the study flows retain those gates.
 
 This is a conservative explicit interval heuristic, not an FSRS implementation,
 SM-2 compatibility claim or calibrated prediction of human memory. It requires no
