@@ -398,3 +398,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Package unchanged N5 exports inside app assets instead of parent-relative keys;
   actual rootBundle-to-canonical equality remains mandatory in repository tests.
   Canonical data/N4 files remain untouched; new-source build/test proof pending.
+
+- CI39267476608 at 3aecbbcfbe1b3f3eef1bcdbcdeb6c811c9fc2e2a exposed the exact
+  pinned-SDK diff while correctly failing format. Applied that four-file diff
+  unchanged after git apply --check; test cases/assertions/behavior retained.
+  This resolves formatting only; corrected-source analyze/tests/native/build
+  acceptance remains pending until its own complete exact-head CI is observed.

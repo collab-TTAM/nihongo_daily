@@ -90,11 +90,26 @@ void main() {
   test('duplicate IDs malformed fields and examples fail closed', () {
     for (final rows in [
       [vocabulary, vocabulary],
-      [{...vocabulary, 'content_version': 0}],
-      [{...vocabulary, 'is_active': 'true'}],
-      [{...vocabulary, 'reading': ''}],
-      [{...vocabulary, 'jlpt_level': 'unknown'}],
-      [{...vocabulary, 'examples': [{'sentence_ja': '秘密'}]}],
+      [
+        {...vocabulary, 'content_version': 0},
+      ],
+      [
+        {...vocabulary, 'is_active': 'true'},
+      ],
+      [
+        {...vocabulary, 'reading': ''},
+      ],
+      [
+        {...vocabulary, 'jlpt_level': 'unknown'},
+      ],
+      [
+        {
+          ...vocabulary,
+          'examples': [
+            {'sentence_ja': '秘密'},
+          ],
+        },
+      ],
     ]) {
       expect(
         () => decodeCurriculum(

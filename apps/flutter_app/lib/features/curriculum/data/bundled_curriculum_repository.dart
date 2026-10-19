@@ -117,5 +117,7 @@ List<String> _texts(Map<String, dynamic> row, String key) {
   if (value is! List<Object?> || value.length > 100) {
     throw const FormatException('Invalid curriculum notes');
   }
-  return [for (final text in value) _text({'text': text}, 'text')];
+  return [
+    for (final text in value) _text({'text': text}, 'text'),
+  ];
 }

@@ -26,8 +26,7 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
       children: [
         PageHeading(
           title: widget.kind.label,
-          subtitle:
-              'Nội dung gốc ban đầu · Chỉ đọc, chưa ghi tiến độ học tập.',
+          subtitle: 'Nội dung gốc ban đầu · Chỉ đọc, chưa ghi tiến độ học tập.',
         ),
         DropdownButton<PreviewLevel>(
           key: const Key('curriculum-level'),

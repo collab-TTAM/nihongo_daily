@@ -13,16 +13,12 @@ import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 class FixtureCurriculumRepository implements CurriculumRepository {
   FixtureCurriculumRepository(this.loader);
-  final Future<List<CurriculumEntry>> Function(
-    CurriculumKind,
-    PreviewLevel,
-  ) loader;
+  final Future<List<CurriculumEntry>> Function(CurriculumKind, PreviewLevel)
+  loader;
 
   @override
-  Future<List<CurriculumEntry>> load(
-    CurriculumKind kind,
-    PreviewLevel level,
-  ) => loader(kind, level);
+  Future<List<CurriculumEntry>> load(CurriculumKind kind, PreviewLevel level) =>
+      loader(kind, level);
 }
 
 Future<ProviderContainer> mountCurriculum(
@@ -36,9 +32,7 @@ Future<ProviderContainer> mountCurriculum(
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   final container = ProviderContainer(
-    overrides: [
-      curriculumRepositoryProvider.overrideWithValue(repository),
-    ],
+    overrides: [curriculumRepositoryProvider.overrideWithValue(repository)],
   );
   addTearDown(() async {
     await tester.pumpWidget(const SizedBox.shrink());
