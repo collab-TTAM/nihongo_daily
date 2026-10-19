@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
+import '../../daily_plan/data/captured_daily_plan_gateway.dart';
+import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../../srs/data/durable_review_repository.dart';
 import '../../srs/data/review_repository.dart';
@@ -142,6 +144,31 @@ final class PersistentSupabaseRuntime
       _publishNotice();
     }
     _refreshScheduler?.update();
+  }
+
+  /// Explicit owner assembly, after exact rotated-secret persistence and profile
+  /// readiness. Each repository is tied to this precise ready-runtime instance;
+  /// replacement/logout/close permanently invalidates the old lease. This does
+  /// not install a UI, durable session queue or another SDK/token writer.
+  DailyPlanRepository? createDailyPlanRepository() {
+    if (_closing != null) return null;
+    final ready = account.readyRuntime;
+    final session = account.readySession;
+    if (ready == null || session == null) return null;
+    try {
+      return DailyPlanRepository(
+        CapturedDailyPlanGateway(
+          auth: ready.auth,
+          transport: _binding,
+          isReady: () =>
+              _closing == null &&
+              identical(account.readyRuntime, ready) &&
+              identical(account.readySession, session),
+        ),
+      );
+    } on DailyPlanFailure {
+      return null;
+    }
   }
 
   @override

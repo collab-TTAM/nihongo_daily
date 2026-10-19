@@ -1,0 +1,11 @@
+{
+  "version": "study-submit-v1",
+  "operation": "submit_study_session",
+  "transport": "Supabase RPC",
+  "parameter": "p_request",
+  "request_schema": "request.schema.json",
+  "response_definition": "contracts/v0.1/models.schema.json#/$defs/get_daily_plan_response",
+  "error_definition": "contracts/v0.1/models.schema.json#/$defs/error",
+  "authority": "Supabase gateway-verified JWT via auth.uid; no request owner",
+  "meaning": "Authenticated self-reported elapsed study time; not proof of attention or mastery"
+}

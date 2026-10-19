@@ -191,6 +191,14 @@ Map<String, Object> _boundedEnvelope(
     },
     'get_review_queue' => const {'jlpt_level', 'limit'},
     'ensure_profile' => const <String>{},
+    'get_daily_plan' => const {'date'},
+    'submit_study_session' => const {
+      'client_event_id',
+      'plan_date',
+      'session_type',
+      'started_at',
+      'ended_at',
+    },
     _ => throw const ReviewTransportFailure(ReviewErrorCode.validationFailure),
   };
   final request = params['p_request'];
