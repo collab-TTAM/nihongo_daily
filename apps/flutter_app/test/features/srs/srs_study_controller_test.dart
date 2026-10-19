@@ -13,7 +13,7 @@ void main() {
   setUp(() => h = StudyHarness());
   tearDown(() => h.dispose());
 
-  test('level change loads a fresh queue and resets revealed content', () async {
+  test('level change reloads queue and resets revealed content', () async {
     await h.open();
     h.controller.reveal();
     h.queue.items = [fixtureItem(id: 2, level: PreviewLevel.n4)];

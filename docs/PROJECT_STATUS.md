@@ -1547,3 +1547,19 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Next: exact-source CI/fix failures, then supported hosted acceptance or the
   next independent increment. Run ACTIVE until source/CI handoff is persisted
   and the PR marker is RELEASED.
+
+### Formatting correction / automatic continuation — 2026-10-19 UTC
+
+- CI39262147940 at fab49332074367204a08303a310f5ac74323fc5c stopped Flutter
+  at dart format: one controller-test file changed. Other required checks and
+  Flutter downstream steps are not counted as passing on that source.
+- Shortened one test description to fit the formatter line width; all assertions,
+  nine new cases, behavior and CI/security gates remain unchanged. Corrected
+  source still needs exact-head format/analyze/test/native/web/Windows CI.
+- User explicitly requested automatic continuation. Existing hourly cloud task
+  6ace2a9c236c819189637e49f38182d7 was resumed, enabled=true, in Asia/Saigon;
+  no duplicate schedule or cadence/guard changes. Read actual PR/head/CI first.
+- Core run core-20261019T1343-srs-format uses fresh GitHub source, expected-head
+  update and full-tree verification. Pro #14/#38/N4 unchanged. Keep #37 draft;
+  all 14 live release groups remain pending. Final release/CI checkpoint is in
+  PR #37 body; next scheduled run fixes any remaining CI failure before new work.
