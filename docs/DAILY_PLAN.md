@@ -97,3 +97,51 @@ trusted idempotent session events/aggregation, typed account-scoped app adapter,
 loading/error/offline/restart UI and hosted learner evidence remain outstanding.
 All14 live Personal Alpha gates remain pending. No migration/deployment is
 applied to a hosted database and no draft is merged by this increment.
+
+## Typed client boundary — core-20261019T1513-plan-client
+
+`features/daily_plan` now provides immutable `DailyPlanDate`, `DailyPlan`, seven
+block areas/statuses and a read-only `DailyPlanRepository`. A real profile-local
+calendar date must be supplied explicitly; no device-local date, timezone guess
+or client allocation/progress write is introduced. The decoder enforces exact
+fields, real Gregorian dates, seven distinct known areas, positive block minutes
+summing to target, valid statuses and nonnegative integer counts. Counts outside
+the exact VM/web integer range fail closed instead of rounding. Integer-valued
+JSON numbers are accepted. Server over-target progress is preserved unchanged.
+
+The repository sends only `{"p_request":{"date":"YYYY-MM-DD"}}` to its captured
+session gateway. The gateway contract requires the existing owned Auth runtime
+to bind a verified session/generation and a fixed `get_daily_plan` RPC, enforce
+transport/size/deadline controls, and permanently revoke that lease on logout,
+account/session replacement or disposal. An obsolete same-user login must not
+reactivate an old gateway. The repository checks this lease before dispatch and
+after both success and failure; late old-account data cannot be returned. It
+keeps no cache, performs no background/automatic retries and accepts no user ID,
+credentials, URL or arbitrary operation name.
+
+Success and the frozen named error are decoded separately; malformed/unknown
+fields, codes, types or mismatched response dates yield a fixed internal failure.
+Raw server/transport messages are discarded. Only network/provider/limit errors
+can carry retryable advice; retry always needs an explicit caller action.
+Unknown transport failures are not incorrectly called offline. An adapter can
+signal a known network failure using the safe typed exception.
+
+This is an integration boundary, **not a concrete Supabase transport**. No gateway
+is assembled/installed in the default app, no route/preview readiness changes,
+and no account or study save is simulated. Composition with #37, authenticated
+UI loading/error/offline/restart handling, real JWT/account isolation and hosted
+learner acceptance remain to be integrated. Session ingestion/aggregation is
+still absent. A supplied gateway must uphold its documented lease guarantees;
+the repository cannot verify Auth signatures itself.
+
+Sixteen authored Flutter unit cases cover the canonical frozen fixture, JSON and
+immutable snapshots, calendar/bounds/precision/fields/unique blocks, exact request
+and fresh reload, revoked-before-dispatch, account replacement/late success,
+logout/late transport failures, all safe error codes/retry policy, malformed
+responses/date mismatch, explicit offline recovery and redaction. Local Dart
+format and pure-source analysis passed; a standalone Dart smoke using the actual
+frozen fixture/date/request/stale-session/over-target paths and all17 QA tests
+passed. Full Flutter tests/analyze/build require new-head Actions: local Flutter
+startup/dependency setup did not complete. Historical server head fdd5858 passed
+allfive CI39275287778 jobs including native SQL/wire/concurrency/Web/Windows;
+that result is not a test/build claim for this new client source.
