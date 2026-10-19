@@ -27,6 +27,12 @@ contracts.validate_content, a new schema or linguistic certification.
 
 From study, open vocabulary/grammar, select a level, open a real exported item,
 read its examples and return to the list/study. Level changes remove old details.
+Details provide Bài trước/Bài tiếp in original export order. The first/last item
+disables the corresponding action; a single item disables both. The position
+label is the current item's index, not completion, mastery or saved progress.
+Opening or changing an item starts at the top. Returning to the list restores
+the in-screen list position; changing levels clears that position. These scroll
+positions last only while this screen is mounted and are not account storage.
 Loading/empty/safe error and explicit retry states are visible. Audio absence is
 explicit; an audio reference alone never starts playback or external navigation.
 No completion button, mastery counter or fake saved study result is installed.
@@ -41,6 +47,11 @@ Japanese examples. Widget cases exercise vocabulary/grammar details/navigation,
 missing N4 without old content, loading/redacted errors/manual retry and both
 screens at 320px/200% text. The existing home-to-study CTA test now opens the real
 default asset-backed vocabulary route instead of asserting a placeholder.
+
+Four additional widget cases cover adjacent navigation for both content kinds,
+single-item boundaries and actual scroll restoration after reading another item.
+Both existing 320px/200% cases also navigate to the next original entry, and the
+unavailable-N4 case verifies navigation removal and scroll reset.
 
 Source requires exact-head format/analyze/Flutter/web/Windows CI; no local SDK
 execution is claimed when the runtime has no Dart/Flutter. Main-based QA metadata

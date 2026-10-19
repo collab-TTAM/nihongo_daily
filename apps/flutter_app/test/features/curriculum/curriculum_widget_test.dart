@@ -10,6 +10,7 @@ import 'package:nihongo_daily/features/curriculum/application/curriculum_provide
 import 'package:nihongo_daily/features/curriculum/data/bundled_curriculum_repository.dart';
 import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/shared/models/preview_level.dart';
+import 'package:nihongo_daily/shared/widgets/page_body.dart';
 
 class FixtureCurriculumRepository implements CurriculumRepository {
   FixtureCurriculumRepository(this.loader);
@@ -103,6 +104,12 @@ void main() {
     expect(find.text('Chưa có nội dung N4 trong bản này.'), findsOneWidget);
     expect(find.text('私'), findsNothing);
     expect(find.text('わたし'), findsNothing);
+    expect(find.byKey(const Key('curriculum-previous')), findsNothing);
+    expect(find.byKey(const Key('curriculum-next')), findsNothing);
+    expect(
+      tester.widget<PageBody>(find.byType(PageBody)).scrollController!.offset,
+      0,
+    );
   });
 
   testWidgets('loading safe error and explicit retry work', (tester) async {
@@ -129,6 +136,101 @@ void main() {
   });
 
   for (final kind in CurriculumKind.values) {
+    testWidgets('${kind.name} reads adjacent entries without wrapping', (
+      tester,
+    ) async {
+      final entries = original[kind]!.take(2).toList();
+      await mountCurriculum(
+        tester,
+        FixtureCurriculumRepository((_, _) async => entries),
+        '/${kind.name}',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(ValueKey(entries.first.id)));
+      await tester.pumpAndSettle();
+      final previous = find.byKey(const Key('curriculum-previous'));
+      final next = find.byKey(const Key('curriculum-next'));
+      expect(find.text('Mục 1 / 2'), findsOneWidget);
+      expect(tester.widget<OutlinedButton>(previous).onPressed, isNull);
+      expect(tester.widget<OutlinedButton>(next).onPressed, isNotNull);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(find.text('Mục 2 / 2'), findsOneWidget);
+      expect(find.text(entries.last.explanationVi), findsOneWidget);
+      expect(find.text(entries.first.explanationVi), findsNothing);
+      expect(tester.widget<OutlinedButton>(next).onPressed, isNull);
+      expect(tester.widget<OutlinedButton>(previous).onPressed, isNotNull);
+      await tester.tap(previous);
+      await tester.pumpAndSettle();
+      expect(find.text('Mục 1 / 2'), findsOneWidget);
+      expect(find.text(entries.first.explanationVi), findsOneWidget);
+      expect(find.text(entries.last.explanationVi), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('single entry disables both adjacent actions', (tester) async {
+    final entry = original[CurriculumKind.vocabulary]!.first;
+    await mountCurriculum(
+      tester,
+      FixtureCurriculumRepository((_, _) async => [entry]),
+      '/vocabulary',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(ValueKey(entry.id)));
+    await tester.pumpAndSettle();
+    expect(find.text('Mục 1 / 1'), findsOneWidget);
+    for (final key in ['curriculum-previous', 'curriculum-next']) {
+      expect(
+        tester.widget<OutlinedButton>(find.byKey(Key(key))).onPressed,
+        isNull,
+      );
+    }
+    expect(find.text(entry.explanationVi), findsOneWidget);
+  });
+
+  testWidgets('new details start at top and list return restores position', (
+    tester,
+  ) async {
+    await mountCurriculum(
+      tester,
+      realSeedReader(),
+      '/vocabulary',
+      size: const Size(375, 812),
+    );
+    await tester.pumpAndSettle();
+    final controller = tester
+        .widget<PageBody>(find.byType(PageBody))
+        .scrollController!;
+    final entry = original[CurriculumKind.vocabulary]![10];
+    final tile = find.byKey(ValueKey(entry.id));
+    await tester.ensureVisible(tile);
+    await tester.pumpAndSettle();
+    final listOffset = controller.offset;
+    expect(listOffset, greaterThan(0));
+    expect(tile.hitTestable(), findsOneWidget);
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+    expect(controller.offset, 0);
+    expect(find.text(entry.explanationVi), findsOneWidget);
+    controller.jumpTo(controller.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('curriculum-next')));
+    await tester.tap(find.byKey(const Key('curriculum-next')));
+    await tester.pumpAndSettle();
+    expect(controller.offset, 0);
+    expect(
+      find.text(original[CurriculumKind.vocabulary]![11].explanationVi),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Về danh sách'));
+    await tester.pumpAndSettle();
+    expect(controller.offset, closeTo(listOffset, 0.01));
+    expect(tile.hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final kind in CurriculumKind.values) {
     testWidgets('${kind.name} at 320px 200 percent has no overflow', (
       tester,
     ) async {
@@ -152,6 +254,15 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text(entry.explanationVi), findsOneWidget);
       expect(find.text(entry.examples.first.japanese), findsOneWidget);
+      final next = find.byKey(const Key('curriculum-next'));
+      await tester.ensureVisible(next);
+      await tester.pumpAndSettle();
+      expect(next.hitTestable(), findsOneWidget);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(find.text(original[kind]![1].explanationVi), findsOneWidget);
+      expect(find.text(entry.explanationVi), findsNothing);
+      expect(tester.takeException(), isNull);
       await tester.ensureVisible(find.text('Về danh sách'));
       await tester.tap(find.text('Về danh sách'));
       await tester.pumpAndSettle();

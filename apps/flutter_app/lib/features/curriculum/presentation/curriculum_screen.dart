@@ -16,13 +16,47 @@ class CurriculumScreen extends ConsumerStatefulWidget {
 }
 
 class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
+  final _scrollController = ScrollController(keepScrollOffset: false);
   String? _selectedId;
+  double _listOffset = 0;
+  int _scrollRevision = 0;
+
+  void _navigateTo(String? id, {bool resetList = false}) {
+    if (_selectedId == null && id != null && _scrollController.hasClients) {
+      _listOffset = _scrollController.offset;
+    }
+    if (resetList) _listOffset = 0;
+    setState(() => _selectedId = id);
+    final offset = id == null ? _listOffset : 0.0;
+    final revision = ++_scrollRevision;
+    // Layout must finish before restoring a list that is longer than details.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          revision != _scrollRevision ||
+          !_scrollController.hasClients) {
+        return;
+      }
+      final position = _scrollController.position;
+      _scrollController.jumpTo(
+        offset
+            .clamp(position.minScrollExtent, position.maxScrollExtent)
+            .toDouble(),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final level = ref.watch(previewLevelProvider);
     final content = ref.watch(curriculumProvider(widget.kind));
     return PageBody(
+      scrollController: _scrollController,
       children: [
         PageHeading(
           title: widget.kind.label,
@@ -38,7 +72,7 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
           ],
           onChanged: (value) {
             if (value == null || value == level) return;
-            setState(() => _selectedId = null);
+            _navigateTo(null, resetList: true);
             ref.read(previewLevelProvider.notifier).state = value;
           },
         ),
@@ -56,17 +90,38 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
             ),
           ],
           data: (entries) {
-            final selected = [
-              for (final entry in entries)
-                if (entry.id == _selectedId) entry,
-            ];
-            if (selected.isNotEmpty) {
+            final selectedIndex = entries.indexWhere(
+              (entry) => entry.id == _selectedId,
+            );
+            if (selectedIndex >= 0) {
               return [
                 OutlinedButton(
-                  onPressed: () => setState(() => _selectedId = null),
+                  onPressed: () => _navigateTo(null),
                   child: const Text('Về danh sách'),
                 ),
-                ..._details(selected.single),
+                Text('Mục ${selectedIndex + 1} / ${entries.length}'),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton(
+                      key: const Key('curriculum-previous'),
+                      onPressed: selectedIndex > 0
+                          ? () => _navigateTo(entries[selectedIndex - 1].id)
+                          : null,
+                      child: const Text('Bài trước'),
+                    ),
+                    OutlinedButton(
+                      key: const Key('curriculum-next'),
+                      onPressed: selectedIndex + 1 < entries.length
+                          ? () => _navigateTo(entries[selectedIndex + 1].id)
+                          : null,
+                      child: const Text('Bài tiếp'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                ..._details(entries[selectedIndex]),
               ];
             }
             if (entries.isEmpty) {
@@ -81,7 +136,7 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
                     title: Text(entry.heading),
                     subtitle: Text(entry.reading ?? entry.caption),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => setState(() => _selectedId = entry.id),
+                    onTap: () => _navigateTo(entry.id),
                   ),
                 ),
             ];
