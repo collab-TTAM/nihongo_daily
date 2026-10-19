@@ -117,3 +117,13 @@ normalization and actual timestamp conversion. Use the stored timezone for plans
 Issue #7 adds private AI receipt lookup/dispatch-claim/token-completion helpers and
 native claim-race/security tests. No deployed conversation/AI runtime is implied;
 see `../docs/AI_BOUNDARY.md` for required validation/transaction/recovery binding.
+# Internal study-session progress
+
+The additive `20261019185500_study_session_progress.sql` provides a private,
+service-only completed-session transaction; it is not a public/client endpoint.
+Caller must verify identity/activity and derive owner. Session, immutable receipt
+and plan progress commit together; retries replay and overlapping intervals
+conflict. No hosted migration or UI integration has been performed.
+Policy, boundary/limits and native role/wire/concurrency reproduction:
+`../docs/STUDY_SESSIONS.md`. The existing database runner retains all prior gates
+and appends `scripts/test_study_sessions.py`. No service key belongs in Flutter.

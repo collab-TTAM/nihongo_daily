@@ -1,7 +1,8 @@
 # Daily Plan server snapshot — Issue #11
 
-This additive migration implements `get_daily_plan`, not study-session ingestion,
-progress aggregation, a deployed service or authenticated learner acceptance.
+The additive migrations implement `get_daily_plan` and an internal trusted
+study-session/progress helper described in STUDY_SESSIONS.md. There is no public
+session-write transport, deployed service or authenticated learner acceptance.
 The main Flutter home remains an explicitly labeled preview; no fake save or
 completion is installed. Separate Auth/SRS #37 and reader #39 remain independent.
 
@@ -58,7 +59,8 @@ concurrent call re-reads the committed winner. Repeated reads, changed settings,
 retired/new content, a new connection and progressed/over-target plans never
 rewrite an existing snapshot, row identity or generation time. Reads do not
 derive progress from unvalidated study_sessions rows. Progress event ingestion,
-deduplication and aggregation are still required under #11.
+deduplication and aggregation now have the internal boundary described below;
+the authenticated end-user mutation/runtime remains required under #11.
 
 Stored block shape/types/uniqueness/positive-minute totals are checked before
 publishing success. Corrupt trusted snapshots fail closed. Unexpected failures
@@ -93,7 +95,7 @@ SQL to prove preservation; it is not proof of validated session aggregation.
 No local PostgreSQL is available in the authoring runtime. Native SQL, actual
 wire output and race execution require exact-head CI before claiming success.
 Do not reuse #37/#39's CI as evidence for this main-based branch. Keep #11 open:
-trusted idempotent session events/aggregation, typed account-scoped app adapter,
+authenticated session mutation/runtime, typed account-scoped app composition,
 loading/error/offline/restart UI and hosted learner evidence remain outstanding.
 All14 live Personal Alpha gates remain pending. No migration/deployment is
 applied to a hosted database and no draft is merged by this increment.
@@ -130,8 +132,9 @@ This is an integration boundary, **not a concrete Supabase transport**. No gatew
 is assembled/installed in the default app, no route/preview readiness changes,
 and no account or study save is simulated. Composition with #37, authenticated
 UI loading/error/offline/restart handling, real JWT/account isolation and hosted
-learner acceptance remain to be integrated. Session ingestion/aggregation is
-still absent. A supplied gateway must uphold its documented lease guarantees;
+learner acceptance remain to be integrated. Internal session ingestion is
+documented in STUDY_SESSIONS.md; it is not an installed app save service.
+A supplied gateway must uphold its documented lease guarantees;
 the repository cannot verify Auth signatures itself.
 
 Sixteen authored Flutter unit cases cover the canonical frozen fixture, JSON and
@@ -145,3 +148,11 @@ passed. Full Flutter tests/analyze/build require new-head Actions: local Flutter
 startup/dependency setup did not complete. Historical server head fdd5858 passed
 allfive CI39275287778 jobs including native SQL/wire/concurrency/Web/Windows;
 that result is not a test/build claim for this new client source.
+
+## Internal progress ingestion
+
+See STUDY_SESSIONS.md for the narrow service-only command, nd-study-1 time/credit
+policy, atomic session/receipt/plan writes, replay/overlap handling, native tests
+and the remaining authenticated runtime gate. It adds no public v0.1 endpoint or
+client authority. A UI must not announce saved progress before that actual
+verified backend path is integrated and returns an authoritative receipt.
