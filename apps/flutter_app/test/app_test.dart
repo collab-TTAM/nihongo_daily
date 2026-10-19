@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
@@ -76,9 +77,12 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('home CTA and study card open the vocabulary placeholder', (
+  testWidgets('home CTA opens original vocabulary and returns to study', (
     tester,
   ) async {
+    await tester.runAsync(() async {
+      await rootBundle.loadString('../../data/n5/vocabulary.json');
+    });
     await mountApp(tester);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Khám phá các phần học'));
@@ -86,7 +90,12 @@ void main() {
     expect(find.text('Không gian học tập'), findsOneWidget);
     await tester.tap(find.text('Từ vựng'));
     await tester.pumpAndSettle();
-    expect(find.text('Đang xây dựng'), findsOneWidget);
+    expect(find.text('私'), findsOneWidget);
+    await tester.tap(find.text('私'));
+    await tester.pumpAndSettle();
+    expect(find.text('わたし'), findsOneWidget);
+    expect(find.text('Chưa có âm thanh cho mục này.'), findsOneWidget);
+    await tester.ensureVisible(find.text('Về các phần học'));
     await tester.tap(find.text('Về các phần học'));
     await tester.pumpAndSettle();
     expect(find.text('Không gian học tập'), findsOneWidget);

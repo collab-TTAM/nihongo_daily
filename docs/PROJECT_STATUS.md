@@ -359,3 +359,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   without waiting for live secrets; do not close #22 without its full acceptance.
   Then #31 runtime binding and #11 plan/session work by dependency. #18 remains
   blocked by integrated Personal Alpha evidence; independent development continues.
+
+## Original curriculum browser — 2026-10-19 UTC
+
+- Single core run core-20261019T1358-curriculum-browser, main-based branch
+  automation/issue-12-curriculum-browser from 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+  #2/#3/#5 closed and original N5 exports present; #12 permits independent reader
+  work before Daily Plan/study-event linking. Full #12 acceptance stays open.
+- Resumed/reviewed #37 first: exact source afa572a27f050048990ad4feb07fd6f01758e7e2
+  passed all five jobs in CI39263961507, 381 Flutter + five Chrome tests and all
+  downstream/native/SQL/build gates. That source is still an unmerged draft, not
+  hosted learner proof or current main. Its Auth/SRS files are not copied here.
+- Added typed/version-preserving vocabulary/grammar projection and repository,
+  actual canonical N5 assets (24 vocabulary/10 grammar), list/detail navigation,
+  level filtering, Japanese readings/Vietnamese usage/notes/mistakes/examples,
+  safe loading/error/empty/manual retry and explicit missing N4/audio/progress.
+  N4 returns unavailable/empty without substituting N5 or fixture content.
+- Five repository/asset/decoder and six widget cases authored; existing default
+  home/study CTA opens actual vocabulary content. New widgets include both
+  screens at 320px/200% text. No content/data/manifest/Pro N4 paths or content
+  validators/tests, dependencies/API/schema/Auth/RLS/CI changes. No study writes.
+- Local QA17 regressions, main-based inventory27 and git diff --check passed;
+  original-export spot-check confirms required display fields/24+10 rows. No
+  local Dart/Flutter/format/analyze/build/contract-validator pass claimed (SDK/
+  jsonschema unavailable). Exact-source Actions still required before pass.
+- Keep focused PR draft and #12 open: validated study events/progress, full
+  coverage/curation/audio/hosted learner acceptance still missing. Pro #14/#38
+  remains independent and untouched. All 14 live release groups remain pending.
+  Coordination heartbeat/release and exact source/CI are persisted in PR bodies.
