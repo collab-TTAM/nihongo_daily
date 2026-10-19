@@ -8,6 +8,10 @@ The Flutter UI preview is in `apps/flutter_app`; see its README for running on
 web/Windows, routes, tests and explicit integration limitations. This is a demo
 shell; real study, auth, sync and AI remain tracked in GitHub issues.
 
+Vocabulary and grammar now browse the original N5 seed with readings, Vietnamese
+explanations and examples. This read-only preview does not save study progress;
+N4/audio remain unavailable in this build. See docs/CURRICULUM_BROWSER.md.
+
 Frozen models/API are in `contracts/v0.1/`; see `docs/CONTRACT_BASELINE.md` for decisions/dependencies and `docs/PROJECT_STATUS.md` for the handoff.
 
 Contract checks:
