@@ -148,7 +148,7 @@ void main() {
     }
     for (final input in [
       null,
-      [],
+      <Object?>[],
       {'data': planJson()},
       'plan',
     ]) {
