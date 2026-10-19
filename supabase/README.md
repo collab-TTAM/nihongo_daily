@@ -4,6 +4,13 @@ This directory contains an additive PostgreSQL migration, not a deployed service
 The Flutter app still uses its labeled preview repository. No live credentials,
 production changes, authentication provider changes or AI provider calls are made.
 
+Issue #11 adds a narrowly scoped authenticated Daily Plan snapshot RPC in
+`20261019150000_daily_plan.sql`. It preserves existing user/date plans and derived
+progress and keeps unavailable services blocked. This is an additive local/CI
+migration, not deployment or study-session integration. See
+[`docs/DAILY_PLAN.md`](../docs/DAILY_PLAN.md) for the definer boundary, frozen
+payload mapping, allocation policy and native role/wire/concurrency checks.
+
 ## Reproduce verification
 
 Use an **empty disposable PostgreSQL 17 database**, owned by the migration user:
@@ -20,6 +27,10 @@ real `SET ROLE`, and starts two native PostgreSQL sessions for the duplicate-key
 race. `bootstrap.sql` must never run against Supabase or an existing database.
 The script is deliberately not repeatable on an already initialized database.
 Create a fresh test database for each run.
+
+Daily Plan's actual SQL wire validation also requires the existing pinned
+`python3 -m pip install -r contracts/requirements.txt`; the database CI job
+installs it before running the retained SQL tests and new plan checks.
 
 CI's `database` job uses a PostgreSQL 17 service and runs this same script. The SQL
 baseline was also executed locally with PostgreSQL 18.6 through PGlite 0.5.9;

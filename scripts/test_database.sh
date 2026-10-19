@@ -12,3 +12,5 @@ python3 "$repo_root/scripts/test_review_concurrency.py"
 
 psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f "$repo_root/supabase/tests/ai_receipts.sql"
 python3 "$repo_root/scripts/test_ai_claim_concurrency.py"
+
+python3 "$repo_root/scripts/test_daily_plan.py"
