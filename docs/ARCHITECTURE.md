@@ -38,3 +38,8 @@ Opt-in UI recovery and lossless native compaction are documented in
 STUDY_RECOVERY.md and JOURNAL_COMPACTION.md. Opt-in browser transactions are
 specified in BROWSER_REVIEW_STORE.md; the default runtime remains unconfigured.
 Secure session storage, terminal retention and hosted acceptance remain pending.
+
+The separate opt-in completed-study report journal and write-before-dispatch/
+fresh-plan reconciliation library are documented in DURABLE_STUDY_SESSIONS.md.
+It preserves the captured Auth/RPC boundary and does not share the SRS journal
+format or activate storage/save/recovery UI in the default or configured app.

@@ -30,6 +30,41 @@ final class CompletedStudySession {
     }
   }
 
+  /// Restore only our canonical immutable storage encoding, never raw UI input.
+  factory CompletedStudySession.fromJson(Object? raw) {
+    if (raw is! Map<String, Object?> ||
+        raw.length != 5 ||
+        !const {
+          'client_event_id',
+          'plan_date',
+          'session_type',
+          'started_at',
+          'ended_at',
+        }.every((key) => raw[key] is String)) {
+      throw const FormatException('Invalid stored study event');
+    }
+    try {
+      final area = DailyPlanArea.values.singleWhere(
+        (area) => area.wireName == raw['session_type'],
+      );
+      final event = CompletedStudySession(
+        clientEventId: raw['client_event_id']! as String,
+        date: DailyPlanDate(raw['plan_date']! as String),
+        area: area,
+        startedAt: DateTime.parse(raw['started_at']! as String),
+        endedAt: DateTime.parse(raw['ended_at']! as String),
+      );
+      if (!event.toJson().entries.every(
+        (entry) => raw[entry.key] == entry.value,
+      )) {
+        throw const FormatException();
+      }
+      return event;
+    } on Object {
+      throw const FormatException('Invalid stored study event');
+    }
+  }
+
   final String clientEventId;
   final DailyPlanDate date;
   final DailyPlanArea area;

@@ -69,6 +69,13 @@ abstract interface class DailyPlanRepositorySource {
 final class DailyPlanRepository {
   const DailyPlanRepository(this._session);
   final DailyPlanSessionGateway _session;
+  bool get isCurrent {
+    try {
+      return _session.isCurrent;
+    } on Object {
+      return false;
+    }
+  }
 
   Future<DailyPlan> load(DailyPlanDate date) => _execute(
     date,
@@ -118,7 +125,7 @@ final class DailyPlanRepository {
   }
 
   void _requireCurrent() {
-    if (!_session.isCurrent) {
+    if (!isCurrent) {
       throw const DailyPlanFailure(DailyPlanErrorCode.unauthorized);
     }
   }

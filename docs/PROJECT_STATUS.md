@@ -1678,3 +1678,33 @@ save completion claim. Separate composition/lifecycle/test review and local
 format/QA/whitespace precede persistence; exact new-head checks still mandatory.
 Keep #41 draft/#11 open/all14 live gates pending, source drafts/main/Pro/reader/
 API/schema/dependencies/Auth strategy/security/deployment/schedule unchanged.
+
+
+## Opt-in completed-study durability — core-20261019T1956-durable-study
+
+Resume #41 from21de4608/tree daf2221d. CI39314626994 now verified allfive
+jobs/every required step successful, including the production Windows wrapper
+SDK/vault/journal-close regression and all10 prior UI cases. Source drafts/main
+and Pro/reader lanes remain unchanged.
+
+Added strict canonical stored-report decoding; owner/session/delegate-ready
+scoped durable submission/recovery; flushed immutable staging before RPC;
+uncertain commit retention, definitive-code rejection, durable acknowledgment
+then fresh-plan read with distinct confirmed/reload-failed result. Old same-owner
+wrappers cannot revive after readiness/identity loss. No cached derived progress.
+Separate bounded native append log keeps pending/terminal history, protects its
+lease, reserves terminal capacity, repairs only partial EOF and fails closed on
+complete corruption; close shares/drains ownership. It does not touch SRS files.
+
+Six reusable real-disk scenarios and an actual abrupt child-process exit/exclusive
+lease/reopen verifier passed locally with pinned Dart, along with pure-source
+analysis/format. Six Flutter cases authored; the verifier is appended to both
+Linux and Windows CI jobs, keeping every earlier gate. Full Flutter/current-head
+SDK/browser/native/Web/Windows checks remain unverified until new exact-head CI.
+See DURABLE_STUDY_SESSIONS.md for protocol, hard limits and evidence boundaries.
+
+The library is not installed into owned startup/service/UI yet. Next after green:
+open/close the separate store under the owned project lifetime, publish the
+captured durable service, expose explicit recovery then real timer/save UI. Keep
+#11 open/#41 draft/all14 hosted gates pending. No API/schema/RLS/dependency/Auth
+strategy/security/release/deployment/source-PR merge/Pro content/schedule change.

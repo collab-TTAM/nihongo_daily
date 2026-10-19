@@ -98,6 +98,7 @@ Owned Daily Plan read UI: configured staging startup publishes an account-gated
 YYYY-MM-DD under the displayed profile timezone and load the authoritative plan;
 loading, safe errors/offline retry, blocked areas and over-target time are shown.
 Default preview has no plan source or fabricated progress. This read-only route
-does not yet time/save study sessions or provide a durable study-event queue.
+does not yet time/save study sessions or install the opt-in durable study-event
+library described in [Completed-study durability](../../docs/DURABLE_STUDY_SESSIONS.md).
 See [Daily Plan UI](../../docs/DAILY_PLAN_UI.md) and
 [Staging bootstrap](../../docs/STAGING_BOOTSTRAP.md) for configuration/limits.

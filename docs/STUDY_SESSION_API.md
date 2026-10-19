@@ -52,8 +52,10 @@ response/date/error validation is retained for reads and writes. Missing writer
 fails explicitly; there is no local success, caching or automatic replay loop.
 
 The concrete borrowed-SDK gateway and explicit ready-state owner factory are
-reviewed in DAILY_PLAN_SDK.md. No durable pending-session queue, timer/completion
-UI or configured route is installed. These remain mandatory before
+reviewed in DAILY_PLAN_SDK.md. The owned read route is in DAILY_PLAN_UI.md and
+the opt-in completed-study durability library in DURABLE_STUDY_SESSIONS.md. The
+durable store/service, pending-event recovery and timer/completion UI are not
+installed into the configured app yet. These remain mandatory before
 claiming saves work through the learner app, restart/offline recovery or sync.
 The owned gateway retains bounded transport/body/deadline controls and uses
 only the learner session, never service credentials or an arbitrary RPC name.

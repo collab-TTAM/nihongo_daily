@@ -111,6 +111,8 @@ jobs:
         run: dart run tool/verify_durable_review.dart
       - name: Verify durable study recovery with real disk
         run: dart run tool/verify_study_recovery.dart
+      - name: Verify completed-study events across process restart
+        run: dart run tool/verify_study_session_recovery.dart
       - name: Verify captured-connection lifecycle with explicit fixture dispatch
         run: dart run tool/verify_review_connection.dart
       - name: Download same-run native profile bootstrap projections
@@ -206,6 +208,8 @@ jobs:
         run: dart run tool/verify_durable_review.dart
       - name: Verify durable study recovery with real disk
         run: dart run tool/verify_study_recovery.dart
+      - name: Verify completed-study events across process restart
+        run: dart run tool/verify_study_session_recovery.dart
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-windows-preview
