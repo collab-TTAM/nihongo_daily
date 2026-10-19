@@ -81,7 +81,7 @@ void main() {
     tester,
   ) async {
     await tester.runAsync(() async {
-      await rootBundle.loadString('../../data/n5/vocabulary.json');
+      await rootBundle.loadString('assets/curriculum/n5/vocabulary.json');
     });
     await mountApp(tester);
     await tester.pumpAndSettle();

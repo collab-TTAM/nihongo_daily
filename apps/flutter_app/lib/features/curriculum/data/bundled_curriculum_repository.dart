@@ -18,7 +18,7 @@ final class BundledCurriculumRepository implements CurriculumRepository {
   ) async {
     // N4 is not bundled on main yet. Never substitute N5 or test data for it.
     if (level == PreviewLevel.n4) return const [];
-    final source = await _read('../../data/n5/${kind.name}.json');
+    final source = await _read('assets/curriculum/n5/${kind.name}.json');
     return decodeCurriculum(source, kind, level);
   }
 }

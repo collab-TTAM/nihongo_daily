@@ -378,7 +378,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Five repository/asset/decoder and six widget cases authored; existing default
   home/study CTA opens actual vocabulary content. New widgets include both
   screens at 320px/200% text. No content/data/manifest/Pro N4 paths or content
-  validators/tests, dependencies/API/schema/Auth/RLS/CI changes. No study writes.
+  validators/tests or dependencies/API/schema/Auth/RLS changes. No study writes.
 - Local QA17 regressions, main-based inventory27 and git diff --check passed;
   original-export spot-check confirms required display fields/24+10 rows. No
   local Dart/Flutter/format/analyze/build/contract-validator pass claimed (SDK/
@@ -387,3 +387,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   coverage/curation/audio/hosted learner acceptance still missing. Pro #14/#38
   remains independent and untouched. All 14 live release groups remain pending.
   Coordination heartbeat/release and exact source/CI are persisted in PR bodies.
+
+- First reader source 9781260cc2dde6d04aa7de891a4467f5a21813a7 / CI39266546355
+  stopped at formatting in four new files. Preserve the required format step
+  name and strict failure; on failure only, print the SDK-formatted Dart diff
+  from the disposable runner so a cloud worker without SDK can apply the exact
+  correction. No automatic commit, test skip or success fallback; format still
+  exits 1 on a mismatch. Fresh corrected-source full CI is required.
+- Reviewed pinned Flutter 3.35.4 asset copying: output paths join the asset key.
+  Package unchanged N5 exports inside app assets instead of parent-relative keys;
+  actual rootBundle-to-canonical equality remains mandatory in repository tests.
+  Canonical data/N4 files remain untouched; new-source build/test proof pending.

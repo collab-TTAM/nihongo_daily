@@ -22,7 +22,8 @@ void main() {
     for (final kind in CurriculumKind.values) {
       final path = '../../data/n5/${kind.name}.json';
       final source = await File(path).readAsString();
-      expect(await rootBundle.loadString(path), source);
+      final asset = 'assets/curriculum/n5/${kind.name}.json';
+      expect(await rootBundle.loadString(asset), source);
       final rows = jsonDecode(source) as List<dynamic>;
       final first = rows.first as Map<String, dynamic>;
       final entries = await repository.load(kind, PreviewLevel.n5);

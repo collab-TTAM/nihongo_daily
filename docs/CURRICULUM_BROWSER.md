@@ -7,10 +7,12 @@ The separate #37 SRS/Auth draft is not merged or copied into this branch.
 
 ## Data and ownership
 
-Flutter bundles ../../data/n5/vocabulary.json and grammar.json directly from the
-existing canonical exports; there is no second copied dataset. No data files,
-content manifest, content validators/tests or Pro-owned N4 documentation changed.
-BundledCurriculumRepository reads only those fixed paths and typed kinds.
+App assets under assets/curriculum/n5 are unchanged packaged copies of the
+canonical data/n5 vocabulary.json and grammar.json. Repository tests require
+exact text equality with the original exports so updates cannot silently drift.
+Paths stay inside the Flutter asset directory on Web/Windows. No authored data,
+manifest, content validators/tests or Pro-owned N4 documentation changed.
+BundledCurriculumRepository reads only those fixed asset paths and typed kinds.
 N4 is explicitly empty/unavailable in this build until its separate content lane
 is reviewed/integrated; it never substitutes N5 or TEST ONLY fixtures.
 
@@ -46,3 +48,8 @@ is separate from #37's newer unmerged inventory/evidence. All live learner gates
 remain open. Issue #12 stays open/draft: validated study-event/progress integration,
 complete N5/N4 coverage/curation/audio and configured learner acceptance are still
 missing. Integrating #37/#38 later needs coordinator conflict review and fresh CI.
+
+The required format step retains its name and fails on mismatches. It additionally
+formats only the disposable CI checkout and prints the Dart diff on failure,
+allowing an SDK-less cloud worker to apply the actual pinned SDK output. It never
+commits fixes or lets a formatting failure continue as success.
