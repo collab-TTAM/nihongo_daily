@@ -6,6 +6,7 @@ import '../../../shared/widgets/page_body.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/curriculum_provider.dart';
 import '../domain/curriculum.dart';
+import '../domain/curriculum_search.dart';
 
 class CurriculumScreen extends ConsumerStatefulWidget {
   const CurriculumScreen({super.key, required this.kind});
@@ -17,11 +18,14 @@ class CurriculumScreen extends ConsumerStatefulWidget {
 
 class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
   final _scrollController = ScrollController(keepScrollOffset: false);
+  final _searchController = TextEditingController();
+  String _query = '';
   String? _selectedId;
   double _listOffset = 0;
   int _scrollRevision = 0;
 
   void _navigateTo(String? id, {bool resetList = false}) {
+    if (id != null) FocusScope.of(context).unfocus();
     if (_selectedId == null && id != null && _scrollController.hasClients) {
       _listOffset = _scrollController.offset;
     }
@@ -48,6 +52,7 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -77,6 +82,28 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
           },
         ),
         const SizedBox(height: 16),
+        TextField(
+          key: const Key('curriculum-search'),
+          controller: _searchController,
+          maxLength: 128,
+          decoration: InputDecoration(
+            labelText: 'Tìm bài',
+            hintText: 'Chữ Nhật, cách đọc, nghĩa Việt',
+            counterText: '',
+            suffixIcon: _query.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: 'Xóa tìm kiếm',
+                    onPressed: () {
+                      _searchController.clear();
+                      _changeQuery('');
+                    },
+                    icon: const Icon(Icons.clear),
+                  ),
+          ),
+          onChanged: _changeQuery,
+        ),
+        const SizedBox(height: 16),
         ...content.when(
           loading: () => [
             const Center(child: CircularProgressIndicator()),
@@ -89,7 +116,11 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
               child: const Text('Thử tải lại'),
             ),
           ],
-          data: (entries) {
+          data: (sourceEntries) {
+            if (sourceEntries.isEmpty) {
+              return [Text('Chưa có nội dung ${level.label} trong bản này.')];
+            }
+            final entries = searchCurriculum(sourceEntries, _query);
             final selectedIndex = entries.indexWhere(
               (entry) => entry.id == _selectedId,
             );
@@ -125,7 +156,11 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
               ];
             }
             if (entries.isEmpty) {
-              return [Text('Chưa có nội dung ${level.label} trong bản này.')];
+              return [
+                const Text(
+                  'Không tìm thấy bài phù hợp. Hãy đổi hoặc xóa tìm kiếm.',
+                ),
+              ];
             }
             return [
               Text('${entries.length} mục ${level.label} · Chọn để xem bài'),
@@ -153,6 +188,12 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
         ),
       ],
     );
+  }
+
+  void _changeQuery(String value) {
+    if (value == _query) return;
+    _query = value;
+    _navigateTo(null, resetList: true);
   }
 
   List<Widget> _details(CurriculumEntry entry) => [

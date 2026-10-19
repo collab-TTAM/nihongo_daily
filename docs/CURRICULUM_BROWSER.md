@@ -33,6 +33,14 @@ label is the current item's index, not completion, mastery or saved progress.
 Opening or changing an item starts at the top. Returning to the list restores
 the in-screen list position; changing levels clears that position. These scroll
 positions last only while this screen is mounted and are not account storage.
+Search filters the current level's original entries by expression/pattern,
+reading, Vietnamese meaning or title. Vietnamese matching ignores case and
+diacritics (including combining accents); displayed text, IDs, versions and
+export order stay unchanged. Queries are bounded to 128 characters in the UI,
+remain local to this mounted screen and are never sent or saved to an account.
+Changing the query clears detail/scroll selection; opening/returning from detail
+keeps the query and previous/next use the filtered order. Clear restores all
+entries. No matches has a distinct message from unavailable N4 content.
 Loading/empty/safe error and explicit retry states are visible. Audio absence is
 explicit; an audio reference alone never starts playback or external navigation.
 No completion button, mastery counter or fake saved study result is installed.
@@ -52,6 +60,10 @@ Four additional widget cases cover adjacent navigation for both content kinds,
 single-item boundaries and actual scroll restoration after reading another item.
 Both existing 320px/200% cases also navigate to the next original entry, and the
 unavailable-N4 case verifies navigation removal and scroll reset.
+Three search unit cases check actual original Japanese/readings/Vietnamese,
+combining accents, grammar titles/order, literal/no-match and immutable results.
+Three widget cases cover search/clear, filtered detail navigation and editing a
+detail query before unavailable N4. Both 320px/200% cases search and clear too.
 
 Source requires exact-head format/analyze/Flutter/web/Windows CI; no local SDK
 execution is claimed when the runtime has no Dart/Flutter. Main-based QA metadata

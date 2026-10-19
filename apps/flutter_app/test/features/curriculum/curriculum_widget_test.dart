@@ -189,6 +189,88 @@ void main() {
     expect(find.text(entry.explanationVi), findsOneWidget);
   });
 
+  testWidgets('search reads original matches and clear restores the list', (
+    tester,
+  ) async {
+    await mountCurriculum(tester, realSeedReader(), '/vocabulary');
+    await tester.pumpAndSettle();
+    final search = find.byKey(const Key('curriculum-search'));
+    await tester.enterText(search, 'がくせい');
+    await tester.pumpAndSettle();
+    expect(find.text('学生'), findsOneWidget);
+    expect(find.text('私'), findsNothing);
+    expect(find.text('1 mục N5 · Chọn để xem bài'), findsOneWidget);
+    await tester.enterText(search, 'GIAO VIEN');
+    await tester.pumpAndSettle();
+    expect(find.text('先生'), findsOneWidget);
+    expect(find.text('学生'), findsNothing);
+    await tester.enterText(search, 'not-in-the-original-export');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Không tìm thấy bài phù hợp.'), findsOneWidget);
+    expect(find.textContaining('Chưa có nội dung N5'), findsNothing);
+    await tester.tap(find.byTooltip('Xóa tìm kiếm'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(search).controller!.text, isEmpty);
+    expect(find.text('24 mục N5 · Chọn để xem bài'), findsOneWidget);
+    expect(find.text('私'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('filtered grammar order and query survive detail navigation', (
+    tester,
+  ) async {
+    await mountCurriculum(tester, realSeedReader(), '/grammar');
+    await tester.pumpAndSettle();
+    final search = find.byKey(const Key('curriculum-search'));
+    await tester.enterText(search, 'N1 は');
+    await tester.pumpAndSettle();
+    final entries = original[CurriculumKind.grammar]!;
+    expect(find.text('3 mục N5 · Chọn để xem bài'), findsOneWidget);
+    await tester.tap(find.byKey(ValueKey(entries.first.id)));
+    await tester.pumpAndSettle();
+    expect(find.text('Mục 1 / 3'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('curriculum-next')));
+    await tester.pumpAndSettle();
+    expect(find.text('Mục 2 / 3'), findsOneWidget);
+    expect(find.text(entries[1].explanationVi), findsOneWidget);
+    await tester.tap(find.text('Về danh sách'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(search).controller!.text, 'N1 は');
+    expect(find.text('3 mục N5 · Chọn để xem bài'), findsOneWidget);
+    expect(find.byKey(ValueKey(entries[3].id)), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'editing a detail query clears selection and N4 stays unavailable',
+    (tester) async {
+      await mountCurriculum(tester, realSeedReader(), '/vocabulary');
+      await tester.pumpAndSettle();
+      final entries = original[CurriculumKind.vocabulary]!;
+      await tester.tap(find.byKey(ValueKey(entries.first.id)));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('curriculum-search')),
+        'HOC SINH',
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(entries.first.explanationVi), findsNothing);
+      expect(find.byKey(const Key('curriculum-next')), findsNothing);
+      expect(find.text('学生'), findsOneWidget);
+      await tester.tap(find.byKey(ValueKey(entries[1].id)));
+      await tester.pumpAndSettle();
+      expect(find.text(entries[1].explanationVi), findsOneWidget);
+      await tester.tap(find.byKey(const Key('curriculum-level')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('N4').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Chưa có nội dung N4 trong bản này.'), findsOneWidget);
+      expect(find.textContaining('Không tìm thấy bài phù hợp.'), findsNothing);
+      expect(find.text('学生'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('new details start at top and list return restores position', (
     tester,
   ) async {
@@ -269,6 +351,20 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(tile, findsOneWidget);
       expect(find.text(entry.explanationVi), findsNothing);
+      final search = find.byKey(const Key('curriculum-search'));
+      await tester.ensureVisible(search);
+      await tester.enterText(search, 'not-in-the-original-export');
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Không tìm thấy bài phù hợp.'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.byTooltip('Xóa tìm kiếm'));
+      await tester.tap(find.byTooltip('Xóa tìm kiếm'));
+      await tester.pumpAndSettle();
+      expect(tile, findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   }
 }

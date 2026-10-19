@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/curriculum/data/bundled_curriculum_repository.dart';
 import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
+import 'package:nihongo_daily/features/curriculum/domain/curriculum_search.dart';
 import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 void main() {
@@ -58,6 +59,62 @@ void main() {
     );
     expect(reads, 0);
   });
+
+  test(
+    'original vocabulary searches Japanese readings and Vietnamese',
+    () async {
+      final entries = decodeCurriculum(
+        await File('../../data/n5/vocabulary.json').readAsString(),
+        CurriculumKind.vocabulary,
+        PreviewLevel.n5,
+      );
+      for (final query in ['学生', 'がくせい', ' HOC SINH ', 'ho\u0323c sinh']) {
+        final result = searchCurriculum(entries, query);
+        expect(result.map((entry) => entry.heading), ['学生']);
+        expect(identical(result.single, entries[1]), isTrue);
+        expect(result.single.meaningVi, 'học sinh; sinh viên');
+      }
+      expect(searchCurriculum(entries, 'ĐỌC').single.heading, '読む');
+      expect(searchCurriculum(entries, 'GIAO VIEN').single.heading, '先生');
+    },
+  );
+
+  test(
+    'original grammar searches pattern and accentless title in order',
+    () async {
+      final entries = decodeCurriculum(
+        await File('../../data/n5/grammar.json').readAsString(),
+        CurriculumKind.grammar,
+        PreviewLevel.n5,
+      );
+      expect(
+        searchCurriculum(entries, 'N1 は').map((entry) => entry.id),
+        entries.take(3).map((entry) => entry.id),
+      );
+      expect(
+        searchCurriculum(entries, 'PHU DINH').map((entry) => entry.heading),
+        ['N1 は N2 ではありません', 'Vません'],
+      );
+    },
+  );
+
+  test(
+    'blank literal and absent searches preserve immutable original data',
+    () async {
+      final entries = decodeCurriculum(
+        await File('../../data/n5/vocabulary.json').readAsString(),
+        CurriculumKind.vocabulary,
+        PreviewLevel.n5,
+      );
+      final ids = entries.map((entry) => entry.id).toList();
+      final all = searchCurriculum(entries, '  ');
+      expect(all.map((entry) => entry.id), ids);
+      expect(() => all.clear(), throwsUnsupportedError);
+      expect(searchCurriculum(entries, '.*'), isEmpty);
+      expect(searchCurriculum(entries, 'not-in-the-original-export'), isEmpty);
+      expect(entries.map((entry) => entry.id), ids);
+    },
+  );
 
   test('reader filters level and inactive rows and retains version', () {
     // TEST ONLY metadata variants of one N5 row, not authored N4 content.
