@@ -1563,3 +1563,17 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   update and full-tree verification. Pro #14/#38/N4 unchanged. Keep #37 draft;
   all 14 live release groups remain pending. Final release/CI checkpoint is in
   PR #37 body; next scheduled run fixes any remaining CI failure before new work.
+
+### Analyzer correction — 2026-10-19 UTC
+
+- Exact-head CI39262893248 at c303af4493998a2c33c5167fa2d70333d9848285 passed
+  format and four complete jobs (repo-sanity/database/ai-boundary/windows), but
+  Flutter analyze stopped on unnecessary_import in srs_study_widget_test.dart.
+- Removed the direct PreviewLevel import already exported by preview_preferences.
+  No lint suppression, assertion/test removal, production behavior or CI change.
+  All nine new level-selection cases still require execution on corrected source.
+- Core run core-20261019T1351-srs-analyze resumed released source with a fresh
+  GitHub clone, full-tree/expected-head checks and separate diff review. Pro N4
+  scope unchanged. Hourly continuation remains enabled; keep PR #37 draft and
+  all hosted learner/release gates pending. Exact-source CI and final RELEASED
+  checkpoint are recorded in PR #37; next run checks CI before new development.

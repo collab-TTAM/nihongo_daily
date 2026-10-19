@@ -10,7 +10,6 @@ import 'package:nihongo_daily/features/srs/application/srs_study_controller.dart
 import 'package:nihongo_daily/features/srs/application/srs_study_provider.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
-import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 import 'study_fixtures.dart';
 
