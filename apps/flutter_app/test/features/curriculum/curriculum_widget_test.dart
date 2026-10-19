@@ -142,13 +142,22 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      await tester.tap(find.byKey(ValueKey(original[kind]!.first.id)));
+      final entry = original[kind]!.first;
+      final tile = find.byKey(ValueKey(entry.id));
+      await tester.ensureVisible(tile);
+      await tester.pumpAndSettle();
+      expect(tile.hitTestable(), findsOneWidget);
+      await tester.tap(tile);
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      expect(find.text(entry.explanationVi), findsOneWidget);
+      expect(find.text(entry.examples.first.japanese), findsOneWidget);
       await tester.ensureVisible(find.text('Về danh sách'));
       await tester.tap(find.text('Về danh sách'));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      expect(tile, findsOneWidget);
+      expect(find.text(entry.explanationVi), findsNothing);
     });
   }
 }

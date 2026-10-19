@@ -404,3 +404,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   unchanged after git apply --check; test cases/assertions/behavior retained.
   This resolves formatting only; corrected-source analyze/tests/native/build
   acceptance remains pending until its own complete exact-head CI is observed.
+
+## Curriculum CI correction — 2026-10-19, core-20261019T1425-curriculum-ci
+
+- Fresh clone matches PR #39 source `a5e2a8689e5a2239e2fc13cd7eacd364a2cc18af`; main remains `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. Previous core marker released; this run owns only the focused reader CI correction. Pro #14/#38/N4 unchanged.
+- Exact-source CI39268039284 completed: repo-sanity, database, ai-boundary and Windows build passed. Flutter format/analyze passed; tests had 97 passes/3 failures, so downstream wire checks/Web build were skipped and are not passes.
+- Both 320px/200% widget failures tapped off-screen tiles. Tests now scroll the actual tile into view, assert hit-testability, open detail, check original explanation/example and return to the list. Original no-overflow assertions remain. No production layout, viewport, text scale, content or timeout changed.
+- The default home-to-vocabulary test timed out at pumpAndSettle while waiting for real asset-backed provider work under its fake clock. It now observes and awaits the actual default provider in tester.runAsync, keeps that provider alive through route navigation and releases its listener at teardown. No repository override, fixture substitution or removed navigation/content assertion.
+- Local pinned Dart 3.9.2 format check passed for both changed tests (0 changed); SDK package include resolution warns because flutter_lints is unavailable. Offline dependency resolution explicitly fails on missing flutter_lints 5.0.0; Flutter analyze/test/build therefore require exact-new-head CI. No local Flutter test/build pass claimed. QA inventory27 and all 17 QA regression tests passed; separate diff review and git diff --check passed.
+- Changed only app_test.dart, curriculum_widget_test.dart and this handoff. Keep #39 draft/#12 open; original exports/assets/11 cases and strict CI gates retained. All 14 live Personal Alpha groups remain pending.
+- Next: verify every required latest-attempt job/step for the correction head. Fix any actual failure without increasing timeout or dropping assertions; if only CI pending, persist/release rather than duplicate work. No merge/deployment/Auth/security/provider/spend/schedule change.

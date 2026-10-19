@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
+import 'package:nihongo_daily/features/curriculum/application/curriculum_provider.dart';
+import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/features/home/application/study_preview_provider.dart';
 import 'package:nihongo_daily/features/home/data/demo_study_preview_repository.dart';
 import 'package:nihongo_daily/features/home/domain/study_preview.dart';
@@ -80,10 +81,22 @@ void main() {
   testWidgets('home CTA opens original vocabulary and returns to study', (
     tester,
   ) async {
-    await tester.runAsync(() async {
-      await rootBundle.loadString('assets/curriculum/n5/vocabulary.json');
+    final container = await mountApp(tester);
+    // Run the actual asset-backed provider in the real async zone. A cached
+    // rootBundle future alone does not drain its provider's async work under
+    // the widget test's fake clock. Keep it observed until route navigation.
+    final content = curriculumProvider(CurriculumKind.vocabulary);
+    final subscription = await tester.runAsync(() async {
+      final listener = container.listen(content, (_, _) {});
+      try {
+        await container.read(content.future);
+        return listener;
+      } catch (_) {
+        listener.close();
+        rethrow;
+      }
     });
-    await mountApp(tester);
+    addTearDown(() => subscription?.close());
     await tester.pumpAndSettle();
     await tester.tap(find.text('Khám phá các phần học'));
     await tester.pumpAndSettle();
