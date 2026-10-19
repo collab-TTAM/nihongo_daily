@@ -127,3 +127,14 @@ conflict. No hosted migration or UI integration has been performed.
 Policy, boundary/limits and native role/wire/concurrency reproduction:
 `../docs/STUDY_SESSIONS.md`. The existing database runner retains all prior gates
 and appends `scripts/test_study_sessions.py`. No service key belongs in Flutter.
+
+# Authenticated completed-session report v1
+
+`20261019191000_submit_study_session.sql` adds the separately versioned
+`submit_study_session(p_request)` RPC, EXECUTE only authenticated and owner derived
+from auth.uid. No owner/service credential or derived minutes enter the client
+request. This records self-reported elapsed time, never attention/mastery/scores.
+Existing private ledger ACLs/RLS and frozen v0.1 remain unchanged. Review and
+request/response/retry/UI limits: `../docs/STUDY_SESSION_API.md` and
+`../contracts/study/v1`. Native role/wire checks run after the retained session
+races through `scripts/test_study_submit.py`. No hosted deployment is applied.

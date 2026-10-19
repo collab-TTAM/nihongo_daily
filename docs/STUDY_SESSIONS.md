@@ -1,6 +1,7 @@
 # Trusted study-session progress — Issue #11
 
-This is an additive **internal backend** boundary, not a new public API, a
+This page describes the additive **internal backend** boundary. The separately
+versioned public wrapper is reviewed in STUDY_SESSION_API.md; neither is a
 deployed service or a completed learner flow. Existing frozen v0.1 definitions,
 client grants/RLS and `get_daily_plan` request/response remain unchanged.
 
@@ -11,14 +12,17 @@ Only the trusted `service_role` can execute
 uses an empty search_path and qualified tables. Anonymous/authenticated callers
 cannot execute it, read/write its private receipts or directly update progress.
 The service cannot directly access the receipt table either. A private parser
-has no client/service execution grant. There is no exposed public wrapper.
+has no client/service execution grant. Only the separate authenticated wrapper
+derives an end-user owner without exposing this private owner parameter.
 
 The future authenticated backend must verify the user's JWT/session, derive
 `p_owner` from that identity, authorize/validate genuine study activity, apply
 bounded transport/rate/deadline controls and retain the immutable event for retry.
 No service credential goes into Flutter. **The helper itself does not verify
 JWTs or prove that a learner was actively studying.** Receiving times from a UI
-alone is insufficient activity evidence. The table's historical broad trusted
+alone is not independent activity evidence. The public wrapper explicitly treats
+duration as authenticated self-report; it never authorizes mastery/scores.
+The table's historical broad trusted
 service maintenance rights remain unchanged; this is not hardening against a
 compromised service account. Receipt authority is inaccessible through ordinary
 service table writes.
@@ -75,8 +79,8 @@ the tested concurrency target; stronger isolation can require a new transaction.
 
 Success is exactly the existing frozen `get_daily_plan_response`; failure is the
 existing named `error`. This internal operation is deliberately absent from the
-frozen client endpoint registry. Adding an authenticated client mutation transport
-requires its own versioned contract/review and runtime integration. It must not
+frozen client endpoint registry. The authenticated mutation wrapper has its own
+versioned contract/review in STUDY_SESSION_API.md; runtime integration must not
 expose `p_owner` or service credentials as learner-controlled authority.
 
 ## Verification and remaining work

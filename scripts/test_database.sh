@@ -15,3 +15,4 @@ python3 "$repo_root/scripts/test_ai_claim_concurrency.py"
 
 python3 "$repo_root/scripts/test_daily_plan.py"
 python3 "$repo_root/scripts/test_study_sessions.py"
+python3 "$repo_root/scripts/test_study_submit.py"

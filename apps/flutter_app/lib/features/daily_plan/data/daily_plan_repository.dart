@@ -1,3 +1,4 @@
+import '../domain/completed_study_session.dart';
 import '../domain/daily_plan.dart';
 
 enum DailyPlanErrorCode {
@@ -23,15 +24,16 @@ final class DailyPlanFailure implements Exception {
 
   String get messageVi => switch (code) {
     DailyPlanErrorCode.unauthorized => 'Vui lòng đăng nhập lại.',
-    DailyPlanErrorCode.forbidden => 'Bạn không có quyền tải kế hoạch này.',
-    DailyPlanErrorCode.notFound => 'Chưa tìm thấy hồ sơ học tập.',
-    DailyPlanErrorCode.validationFailure => 'Ngày học không hợp lệ.',
+    DailyPlanErrorCode.forbidden =>
+      'Bạn không có quyền thực hiện thao tác này.',
+    DailyPlanErrorCode.notFound => 'Chưa tìm thấy dữ liệu học tập.',
+    DailyPlanErrorCode.validationFailure => 'Dữ liệu học tập không hợp lệ.',
     DailyPlanErrorCode.rateLimited => 'Vui lòng thử lại sau.',
     DailyPlanErrorCode.networkUnavailable => 'Không có kết nối mạng.',
     DailyPlanErrorCode.providerUnavailable => 'Dịch vụ tạm thời chưa sẵn sàng.',
     DailyPlanErrorCode.syncConflict => 'Dữ liệu đã thay đổi. Vui lòng tải lại.',
     DailyPlanErrorCode.internalError =>
-      'Chưa thể tải kế hoạch. Vui lòng thử lại.',
+      'Chưa thể xử lý dữ liệu học tập. Vui lòng thử lại.',
   };
 
   @override
@@ -51,17 +53,44 @@ abstract interface class DailyPlanSessionGateway {
   Future<Object?> getDailyPlan(Map<String, Object> parameters);
 }
 
-/// Read-only, account-scoped repository; has no cache, writes or automatic retry.
+/// Optional fixed submit_study_session RPC on the same captured session lease.
+/// Implementations must never accept an owner or use service-role authority.
+abstract interface class DailyPlanStudySessionGateway
+    implements DailyPlanSessionGateway {
+  Future<Object?> submitStudySession(Map<String, Object> parameters);
+}
+
+/// Account-scoped repository; no cache, local completion or automatic retry.
 /// Not installed in the preview app until the owned Auth runtime is integrated.
 final class DailyPlanRepository {
   const DailyPlanRepository(this._session);
   final DailyPlanSessionGateway _session;
 
-  Future<DailyPlan> load(DailyPlanDate date) async {
+  Future<DailyPlan> load(DailyPlanDate date) => _execute(
+    date,
+    () => _session.getDailyPlan({'p_request': date.toRequestJson()}),
+  );
+
+  Future<DailyPlan> submit(CompletedStudySession event) async {
+    _requireCurrent();
+    final session = _session;
+    if (session is! DailyPlanStudySessionGateway) {
+      throw const DailyPlanFailure(DailyPlanErrorCode.providerUnavailable);
+    }
+    return _execute(
+      event.date,
+      () => session.submitStudySession({'p_request': event.toJson()}),
+    );
+  }
+
+  Future<DailyPlan> _execute(
+    DailyPlanDate date,
+    Future<Object?> Function() request,
+  ) async {
     _requireCurrent();
     Object? value;
     try {
-      value = await _session.getDailyPlan({'p_request': date.toRequestJson()});
+      value = await request();
     } on DailyPlanFailure catch (failure) {
       _requireCurrent();
       // A gateway cannot make a permanent failure advertise an automatic retry.

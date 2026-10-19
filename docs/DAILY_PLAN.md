@@ -1,8 +1,9 @@
 # Daily Plan server snapshot — Issue #11
 
 The additive migrations implement `get_daily_plan` and an internal trusted
-study-session/progress helper described in STUDY_SESSIONS.md. There is no public
-session-write transport, deployed service or authenticated learner acceptance.
+study-session/progress helper described in STUDY_SESSIONS.md. The separately
+versioned submit RPC is reviewed in STUDY_SESSION_API.md; no owned SDK/UI save
+transport, deployed service or authenticated learner acceptance is established.
 The main Flutter home remains an explicitly labeled preview; no fake save or
 completion is installed. Separate Auth/SRS #37 and reader #39 remain independent.
 
@@ -102,8 +103,10 @@ applied to a hosted database and no draft is merged by this increment.
 
 ## Typed client boundary — core-20261019T1513-plan-client
 
-`features/daily_plan` now provides immutable `DailyPlanDate`, `DailyPlan`, seven
-block areas/statuses and a read-only `DailyPlanRepository`. A real profile-local
+`features/daily_plan` provides immutable `DailyPlanDate`, `DailyPlan`, seven
+block areas/statuses and an account-scoped `DailyPlanRepository`. Read-only
+gateways remain supported; the optional submit capability is separately reviewed
+in STUDY_SESSION_API.md. A real profile-local
 calendar date must be supplied explicitly; no device-local date, timezone guess
 or client allocation/progress write is introduced. The decoder enforces exact
 fields, real Gregorian dates, seven distinct known areas, positive block minutes
@@ -111,7 +114,7 @@ summing to target, valid statuses and nonnegative integer counts. Counts outside
 the exact VM/web integer range fail closed instead of rounding. Integer-valued
 JSON numbers are accepted. Server over-target progress is preserved unchanged.
 
-The repository sends only `{"p_request":{"date":"YYYY-MM-DD"}}` to its captured
+For reads, the repository sends only `{"p_request":{"date":"YYYY-MM-DD"}}` to its captured
 session gateway. The gateway contract requires the existing owned Auth runtime
 to bind a verified session/generation and a fixed `get_daily_plan` RPC, enforce
 transport/size/deadline controls, and permanently revoke that lease on logout,
