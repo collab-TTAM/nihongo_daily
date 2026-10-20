@@ -1745,3 +1745,37 @@ creation and correct profile-local day selection; browser storage and all14
 hosted JWT/A-B/restart/two-device acceptance groups remain pending. Keep #11 open,
 #41 draft/default preview. No merge/deployment/Auth strategy/provider/spend or
 schedule change.
+
+
+## Recovery widget clock correction — core-20261020T0318-study-widget
+
+Resume #41 dd9d926; CI39363253639 latest attempt: repo-sanity/database/ai-boundary/
+Windows succeeded. Flutter format and analysis passed, then437 tests passed/7
+failed. All seven actual-SDK cases (both new study lifetime cases included),
+all seven real-disk Flutter scenarios and all ten original plan widgets passed.
+Seven recovery widget failures occur before dispatch: six missing check actions,
+one startup/profile loading timeout. Downstream Flutter gates were skipped,
+not passing. Keep #41 draft and all14 hosted gates pending.
+
+Root cause: shared setUp constructs the account Harness and its Auth stream
+listener outside testWidgets fake-clock zone. Immediate profile Future.value
+completion escapes pump's microtask queue; the delayed completer case created
+inside that zone passes. A pinned Dart diagnostic with actual account controller/
+Auth fixture proves the outside-pending/inside-ready behavior. Move fixture
+construction into each of all nine widget bodies, retain cleanup/held-write
+release and every original assertion, add ready/service/publication checks.
+No production behavior, test count, assertion, lint/security gate or workflow
+was weakened. No new timer/report UI is included in this bounded correction.
+
+Local targeted Dart analysis reports no issues; pinned format0changes, standalone
+zone diagnostic, all17 QA regressions and whitespace passed. Packages are present,
+but Flutter test --no-pub itself was blocked by automatic review because it
+accessed instance metadata. No bypass/retry through indirect execution, no full
+local widget result claimed. Corrected source needs new exact-head Actions.
+
+Next inspect actual #41 head/latest-attempt complete CI, fix actual failures and
+only after green continue real activity timer/new-report creation/profile-local
+day. Only pending CI means save/release rather than duplicate changes/long poll.
+Main/source drafts #37/#40, Pro #14/#38/N4, reader #39, contracts/schema/RLS/
+dependencies/production Auth policy unchanged. No merge/deployment/provider/spend
+or schedule change. See docs/OWNED_STUDY_RECOVERY.md.

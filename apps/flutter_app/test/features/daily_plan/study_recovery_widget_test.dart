@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/auth/application/account_provider.dart';
+import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'package:nihongo_daily/features/daily_plan/application/daily_plan_provider.dart';
@@ -121,6 +122,10 @@ Future<ProviderContainer> mountRecovery(
   harness?.access.change(account.owner);
   container.read(routerProvider).go('/study-recovery');
   await tester.pumpAndSettle();
+  if (harness != null && harness.delayed == null) {
+    expect(harness.runtime.state.phase, AccountPhase.ready);
+    expect(container.read(durableStudyRepositoryProvider), isNotNull);
+  }
   return container;
 }
 
@@ -146,23 +151,27 @@ void main() {
   late StudyFaultStore store;
   late StudyServer server;
   late RecoverySource source;
-  setUp(() async {
+  // Construct the Auth stream listener inside each testWidgets fake-clock zone.
+  // setUp runs outside that zone: an immediate Future.value profile completion
+  // would then escape pump's microtask queue and leave the UI profile-pending.
+  Future<void> prepareRecovery() async {
     h = Harness();
     memory = RecoveryMemoryStore();
     store = StudyFaultStore(memory);
     server = StudyServer();
     source = RecoverySource(h, store, server);
     await memory.stage(account.owner, studyEvent());
-  });
-  tearDown(() async {
-    final wait = server.writeWait;
-    if (wait != null && !wait.isCompleted) wait.complete();
-    await h.close();
-  });
+    addTearDown(() async {
+      final wait = server.writeWait;
+      if (wait != null && !wait.isCompleted) wait.complete();
+      await h.close();
+    });
+  }
 
   testWidgets('unconfigured recovery has no fabricated empty result', (
     tester,
   ) async {
+    await prepareRecovery();
     await mountRecovery(tester);
     expect(find.text('Mở tài khoản'), findsOneWidget);
     expect(find.text('Không có buổi học chờ đồng bộ.'), findsNothing);
@@ -173,6 +182,7 @@ void main() {
   testWidgets('profile gates service; local check never dispatches RPC', (
     tester,
   ) async {
+    await prepareRecovery();
     h.delayed = Completer();
     final container = await mountRecovery(tester, harness: h, source: source);
     expect(container.read(durableStudyRepositoryProvider), isNull);
@@ -190,6 +200,7 @@ void main() {
   testWidgets(
     'explicit send disables duplicates and shows fresh plan after durable ack',
     (tester) async {
+      await prepareRecovery();
       await mountRecovery(tester, harness: h, source: source);
       await checkPending(tester);
       server.writeWait = Completer();
@@ -229,6 +240,7 @@ void main() {
   testWidgets('uncertain commit remains pending with exact manual retry only', (
     tester,
   ) async {
+    await prepareRecovery();
     server.writeFailure = const DailyPlanFailure(
       DailyPlanErrorCode.networkUnavailable,
       retryable: true,
@@ -254,6 +266,7 @@ void main() {
   testWidgets('failed plan reload preserves confirmed acknowledgment', (
     tester,
   ) async {
+    await prepareRecovery();
     server.readFailure = const DailyPlanFailure(
       DailyPlanErrorCode.networkUnavailable,
     );
@@ -273,6 +286,7 @@ void main() {
   testWidgets(
     'storage errors are redacted and failed ack never claims confirmed',
     (tester) async {
+      await prepareRecovery();
       store.failList = true;
       await mountRecovery(tester, harness: h, source: source);
       await checkPending(tester);
@@ -293,6 +307,7 @@ void main() {
   testWidgets(
     'late old owner completion stays hidden; other owner cannot recover it',
     (tester) async {
+      await prepareRecovery();
       final container = await mountRecovery(tester, harness: h, source: source);
       await checkPending(tester);
       server.writeWait = Completer();
@@ -323,6 +338,7 @@ void main() {
   testWidgets(
     'narrow layout and large text preserve pending and confirmation',
     (tester) async {
+      await prepareRecovery();
       tester.view.physicalSize = const Size(320, 1100);
       tester.view.devicePixelRatio = 1;
       tester.platformDispatcher.textScaleFactorTestValue = 2;
@@ -342,6 +358,7 @@ void main() {
   testWidgets(
     'actual startup host publishes capability and account navigation',
     (tester) async {
+      await prepareRecovery();
       final owner = RecoveryOwner(h.runtime, source);
       final controller = AccountStartupController(() async => owner);
       addTearDown(() async {
@@ -352,6 +369,8 @@ void main() {
       await tester.pumpAndSettle();
       h.access.change(account.owner);
       await tester.pumpAndSettle();
+      expect(h.runtime.state.phase, AccountPhase.ready);
+      expect(identical(controller.durableStudySource, owner), isTrue);
       final button = find.byKey(const Key('study-recovery-open'));
       await tester.ensureVisible(button);
       await tester.tap(button);

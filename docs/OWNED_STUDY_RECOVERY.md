@@ -65,8 +65,9 @@ Auth rotation. All prior tests and CI steps remain; workflow is unchanged.
 
 Local pinned Dart format, pure-source analysis, seven-scenario native/process
 verifier, QA inventory49/17 regressions and whitespace results are recorded in
-PROJECT_STATUS. Flutter packages are unavailable locally: full new-head widget,
-SDK, browser, analysis and Web/Windows checks require exact-head Actions.
+PROJECT_STATUS. Local Flutter CLI execution is blocked by automatic review of
+instance-metadata access; no workaround is used. Full new-head widget, SDK,
+browser and Web/Windows execution requires exact-head Actions.
 Parent ac8cbd9 CI39316750394 passed all five jobs/every required step; this is
 historical evidence, not execution of the changed source.
 
@@ -75,3 +76,28 @@ browser study storage remain outstanding. The ordinary app remains preview.
 No hosted login/JWT/restart/two-device proof: all14 live acceptance groups remain
 pending; #11 open and #41 draft. No merge/deploy/schema/RLS/Auth strategy/provider/
 dependency/Pro or reader content/schedule change.
+
+## Widget fixture clock correction — 2026-10-20
+
+At dd9d926 CI39363253639 passed format/analyze and all seven actual-SDK cases,
+including both newly added study/reopen/concurrent Auth-close cases. Database,
+repo-sanity, AI boundary and Windows jobs passed. Flutter tests reported437 pass/
+7 fail: six recovery cases could not find the check action while their profile
+was pending; startup navigation timed out on the same pending profile. The two
+other recovery widgets and every prior plan widget passed. Downstream Flutter
+steps were skipped and do not establish browser/Web/new-head full success.
+
+Recovery Harness/its synchronous Auth stream listener was constructed in setUp,
+outside testWidgets' fake-clock zone. An immediate profile Future.value thus
+scheduled completion outside pump's microtask queue. The delayed-profile case
+used a completer created inside the widget zone and passed. A standalone pinned
+Dart diagnostic using the actual account controller/fixture reproduced outside
+listener/pending-after-fake-pump versus inside-listener/ready-after-fake-pump.
+
+All nine widgets now construct their fixture inside their testWidgets body.
+Cleanup remains awaited and releases held writes. Added explicit ready/service
+and actual startup publication assertions; none of the original assertions were
+removed. Production code, timers, Auth lifecycle and all CI gates are unchanged.
+Targeted Dart analysis, pinned formatter, diagnostic, QA17 and whitespace passed.
+The local Flutter test command was rejected by automatic review after metadata
+access; full corrected-source execution is pending new exact-head CI.
