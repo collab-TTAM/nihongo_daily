@@ -59,7 +59,7 @@ final class StudyServer {
 final class StudyGateway implements DailyPlanStudySessionGateway {
   StudyGateway(this.auth, this.server, this.store)
     : session = auth.currentSession!;
-  final StudyAuth auth;
+  final ReviewAuth auth;
   final StudyServer server;
   final StudySessionStore store;
   final ReviewSession session;
@@ -94,12 +94,17 @@ final class StudyGateway implements DailyPlanStudySessionGateway {
 final class StudyFaultStore implements StudySessionStore {
   StudyFaultStore(this.base);
   final StudySessionStore base;
+  bool failList = false;
   bool failStage = false;
   bool failAck = false;
   Completer<void>? stageWait;
   Completer<void>? staged;
   @override
-  Future<List<StoredStudySession>> list(String userId) => base.list(userId);
+  Future<List<StoredStudySession>> list(String userId) async {
+    if (failList) throw StateError('PRIVATE DISK PATH');
+    return base.list(userId);
+  }
+
   @override
   Future<StoredStudySession> stage(
     String userId,
@@ -126,9 +131,11 @@ final class StudyFaultStore implements StudySessionStore {
 DurableStudySessionRepository studyRepository(
   StudyAuth auth,
   StudyServer server,
-  StudySessionStore store,
-) => DurableStudySessionRepository(
+  StudySessionStore store, {
+  StudySessionOperationDrain? operations,
+}) => DurableStudySessionRepository(
   auth: auth,
+  operations: operations,
   store: store,
   delegate: DailyPlanRepository(StudyGateway(auth, server, store)),
 );
@@ -159,6 +166,7 @@ const studyRecoveryScenarios = [
   'rejections',
   'integrity',
   'capacity',
+  'shutdown',
 ];
 Future<void> verifyStudyRecovery(String scenario) async {
   final directory = await Directory.systemTemp.createTemp('nd-study-recovery-');
@@ -433,6 +441,37 @@ Future<void> verifyStudyRecovery(String scenario) async {
         }
         checkStudy(rejected, 'Noncanonical storage event accepted');
       }
+    } else if (scenario == 'shutdown') {
+      final operations = StudySessionOperationDrain();
+      repository = studyRepository(auth, server, fault, operations: operations);
+      waiting = Completer<void>();
+      server.writeWait = waiting;
+      server.entered = Completer<void>();
+      final sending = studyFailure(
+        repository.submit(event),
+        code: DailyPlanErrorCode.unauthorized,
+      );
+      await server.entered!.future;
+      var closed = false;
+      final closing = operations.revokeAndDrain().then((_) => closed = true);
+      checkStudy(operations.isClosing, 'Close did not revoke immediately');
+      await studyFailure(
+        repository.submit(studyEvent(2)),
+        code: DailyPlanErrorCode.unauthorized,
+      );
+      await Future<void>.delayed(Duration.zero);
+      checkStudy(!closed, 'Close released held dispatch');
+      checkStudy(
+        (await journal.list(studyOwner)).length == 1,
+        'Revoked service staged new event',
+      );
+      waiting.complete();
+      await sending;
+      await closing;
+      checkStudy(
+        closed && (await journal.list(studyOwner)).single.isPending,
+        'Close lost uncertain event',
+      );
     } else if (scenario == 'capacity') {
       await studyFailure(
         NativeStudySessionJournal.open(directory),

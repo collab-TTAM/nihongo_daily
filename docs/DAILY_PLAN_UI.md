@@ -68,9 +68,10 @@ QA checks are recorded in the current checkpoint. Full new-head Flutter analysis
 widget execution, native checks and Web/Windows builds require exact-head CI;
 no passing parent result is reused as new-head evidence.
 
-The opt-in durability library is documented in DURABLE_STUDY_SESSIONS.md. Installing
-its owned journal/service and explicit recovery/timer/save UI, automatic profile-local
-today and hosted JWT/A-B/two-device validation remain.
+The durability library is documented in DURABLE_STUDY_SESSIONS.md. Its owned
+journal/service and explicit recovery are installed in configured Windows
+startup; see OWNED_STUDY_RECOVERY.md. Actual activity timer/new-report UI,
+automatic profile-local today and hosted JWT/A-B/two-device validation remain.
 All14 hosted Personal Alpha acceptance gates and #11 stay open; keep the PR draft.
 No provider/Auth strategy, schema/RLS, dependency, Pro/reader content, deployment,
 release, merge or schedule change.

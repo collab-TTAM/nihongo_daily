@@ -1708,3 +1708,40 @@ open/close the separate store under the owned project lifetime, publish the
 captured durable service, expose explicit recovery then real timer/save UI. Keep
 #11 open/#41 draft/all14 hosted gates pending. No API/schema/RLS/dependency/Auth
 strategy/security/release/deployment/source-PR merge/Pro content/schedule change.
+
+## Owned completed-study recovery — core-20261019T2016-owned-study-recovery
+
+Resumed 2026-10-20 on integration #41 at ac8cbd9, source #37/#40 and main
+unchanged. Parent CI39316750394 was freshly inspected: all five jobs/every
+required step succeeded, including native completed-study Linux/Windows gates.
+This historical result does not establish new-source success.
+
+Configured Windows now acquires its separate study journal before SDK creation,
+publishes a captured durable service through the actual startup owner only after
+account/profile readiness, and exposes manual /study-recovery from account/plan.
+Check lists only own pending reports without RPC; explicit send retains exact
+reports on uncertainty, durably acknowledges before confirmation, then reads
+fresh progress. Failed progress reload remains confirmed with an explicit notice.
+Account changes clear visible state and fence late results; errors are redacted.
+Runtime-scoped unfinished-operation drain runs concurrently with immediate
+existing Auth close and precedes SDK disposal and release of both journal leases.
+
+Seven real-disk scenarios plus abrupt child exit/restart/process lease/reopen
+passed locally with pinned Dart3.9.2. Pure-source analysis found no issues;
+format0changes after normalization, QA inventory49/17 regressions and diff
+whitespace checks passed. Nine new widget cases and two actual-SDK/mock-HTTP/
+native-journal cases authored; every prior assertion/gate retained. Full Flutter
+packages are unavailable locally. A local Flutter dependency attempt was blocked
+by automatic approval review because it contacted instance metadata; no bypass
+or local full-Flutter success is claimed. Exact-head Actions is required for
+new widget/SDK/browser/native/platform tests, analysis and Web/Windows builds.
+The workflow, frozen contracts, schema/RLS, dependencies, Pro/N4 and reader
+content are unchanged. See OWNED_STUDY_RECOVERY.md for flow and ownership review.
+
+Next inspect #41 current head/latest-attempt CI and fix actual failures before
+new implementation. Only pending CI means save/release, not duplicate work or
+long polling. After green, implement actual activity timer/new completed-report
+creation and correct profile-local day selection; browser storage and all14
+hosted JWT/A-B/restart/two-device acceptance groups remain pending. Keep #11 open,
+#41 draft/default preview. No merge/deployment/Auth strategy/provider/spend or
+schedule change.

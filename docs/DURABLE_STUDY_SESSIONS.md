@@ -1,7 +1,8 @@
 # Completed-study durability — Issue #11
 
-This is an opt-in pure Dart/native library. It is not installed into the owned
-Windows runtime, a timer, completion button or recovery screen yet. The default
+The pure Dart/native library is now installed into configured owned Windows
+startup with explicit recovery, as documented in OWNED_STUDY_RECOVERY.md.
+Actual activity timer/new-report creation remains outstanding. The default
 app remains preview; /plan remains a read-only authoritative view. Existing
 review storage, credentials and journal formats are unchanged.
 
@@ -77,14 +78,14 @@ dart run tool/verify_study_session_recovery.dart
 flutter test test/features/daily_plan/study_session_recovery_test.dart
 ```
 
-Six fixture scenarios execute real disposable disk for uncertain commit/replay
+Seven fixture scenarios execute real disposable disk for uncertain commit/replay
 and fresh totals, stage/ack/reload faults and duplicate dispatch, owner changes/
 late commit/irreversible readiness, all rejection policies, partial-tail repair/
 complete corruption/strict codec and512-event reserved terminal capacity. A child
 process flushes and exits without graceful close; a fresh parent recovers the
 exact report. A second process cannot acquire the active lease, then can reopen
 after close. Auth/RPC are explicit TEST ONLY fixtures, not hosted identity or OS
-vault acceptance. Six Flutter cases reuse these scenarios; native verification
+vault acceptance. Seven Flutter cases reuse these scenarios; native verification
 is added to both existing Linux and Windows CI jobs with every former gate kept.
 
 Local pinned Dart source analysis/formatting and the complete native verifier
@@ -93,10 +94,9 @@ checks and Web/Windows builds still require exact-head Actions. Historical21de46
 CI39314626994 passed allfive jobs, including the Windows source/close regression;
 that does not verify this new module.
 
-Next install the separate journal under the owned project lifecycle, acquire its
-lease before SDK construction and drain SDK work before both journals close.
-Publish a captured durable-study service only after saved-token/profile readiness;
-then add explicit pending-event recovery and actual timer/save UI. Do not mark an
+The owned journal/service and explicit pending recovery are installed; see
+OWNED_STUDY_RECOVERY.md for resource ownership and new validation. Next add
+actual activity timer/save UI after current-head checks pass. Do not mark an
 event saved until durable backend acknowledgment. Automatic profile-local today,
 real JWT/A-B/restart/two-device acceptance and all14 live release gates remain.
 Keep #41 draft and #11 open. No deployment, schema/RLS, dependencies, main/source

@@ -11,6 +11,9 @@ import 'package:nihongo_daily/features/auth/application/account_startup_controll
 import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
+import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/daily_plan/data/durable_study_session_repository.dart';
+import 'package:nihongo_daily/features/daily_plan/data/native_study_session_journal.dart';
 import 'package:nihongo_daily/features/daily_plan/data/daily_plan_repository.dart';
 import 'package:nihongo_daily/features/daily_plan/domain/completed_study_session.dart';
 import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
@@ -26,6 +29,7 @@ void main() {
   late MockClient network;
   late PersistentSupabaseRuntime runtime;
   late NativeReviewJournal journal;
+  late NativeStudySessionJournal studyJournal;
   late Directory directory;
   late DateTime now;
   late String secret;
@@ -101,6 +105,7 @@ void main() {
     backend = fixture.MemoryVault();
     directory = await Directory.systemTemp.createTemp('nd-plan-sdk-');
     journal = await NativeReviewJournal.open(directory);
+    studyJournal = await NativeStudySessionJournal.open(directory);
     network = MockClient((request) async {
       requests.add(request);
       if (request.url.path == '/auth/v1/token') {
@@ -155,6 +160,7 @@ void main() {
       publishableKey: wire.key,
       vault: SessionCredentialVault(projectUrl: wire.origin, backend: backend),
       store: journal,
+      studyStore: studyJournal,
       httpClient: network,
       now: () => now,
     );
@@ -175,10 +181,146 @@ void main() {
       );
     }
     await runtime.close();
+    await studyJournal.close();
     await journal.close();
     await directory.delete(recursive: true);
     network.close();
   });
+
+  test(
+    'owned study source recovers actual disk and acknowledges through captured SDK',
+    () async {
+      final owner = WindowsStagingOwner(
+        PersistentAccountStartup(runtime),
+        journal,
+        studyJournal: studyJournal,
+      );
+      final controller = AccountStartupController(() async => owner);
+      addTearDown(controller.close);
+      expect(controller.durableStudySource, isNull);
+      await controller.start();
+      expect(identical(controller.durableStudySource, owner), isTrue);
+      expect(owner.createDurableStudySessionRepository(), isNull);
+      await login();
+      await studyJournal.stage(wire.a, report());
+      final service = controller.durableStudySource!
+          .createDurableStudySessionRepository()!;
+      final before = requests.length;
+      expect(
+        (await service.recoverPending()).single.toJson(),
+        report().toJson(),
+      );
+      expect(requests.length, before);
+      final acknowledged = await service.submit(report());
+      expect(acknowledged.latestPlan!.completedMinutes, 15);
+      expect(acknowledged.reloadFailure, isNull);
+      expect((await studyJournal.list(wire.a)).single.acknowledged, isTrue);
+      final write = requests.singleWhere(
+        (r) => r.url.path.endsWith('/submit_study_session'),
+      );
+      expect(jsonDecode(write.body), {'p_request': report().toJson()});
+      await service.submit(report());
+      expect(
+        requests
+            .where((r) => r.url.path.endsWith('/submit_study_session'))
+            .length,
+        1,
+      );
+      expect(
+        requests.where((r) => r.url.path.endsWith('/get_daily_plan')).length,
+        2,
+      );
+      await controller.close();
+      expect(controller.durableStudySource, isNull);
+      expect(owner.createDurableStudySessionRepository(), isNull);
+      await expectLater(service.recoverPending(), throwsA(unauthorized));
+      final reopened = await NativeStudySessionJournal.open(directory);
+      expect((await reopened.list(wire.a)).single.acknowledged, isTrue);
+      await reopened.close();
+    },
+  );
+
+  test(
+    'owned close drains study dispatch and concurrent Auth before releasing both leases',
+    () async {
+      final owner = WindowsStagingOwner(
+        PersistentAccountStartup(runtime),
+        journal,
+        studyJournal: studyJournal,
+      );
+      final controller = AccountStartupController(() async => owner);
+      addTearDown(() async {
+        final waitingWrite = backend.writeWait;
+        if (waitingWrite != null && !waitingWrite.isCompleted) {
+          waitingWrite.complete();
+        }
+        if (rpcWait != null && !rpcWait!.isCompleted) {
+          rpcWait!.complete(http.Response(jsonEncode(plan(15)), 200));
+        }
+        await controller.close();
+      });
+      await controller.start();
+      await login();
+      final service = owner.createDurableStudySessionRepository()!;
+      rpcWait = Completer<http.Response>();
+      rpcEntered = Completer<void>();
+      final sending = expectLater(
+        service.submit(report()),
+        throwsA(unauthorized),
+      );
+      await rpcEntered!.future.timeout(const Duration(seconds: 5));
+      secret = 'TEST_ONLY_CLOSING_STUDY_ROTATION';
+      backend.writeWait = Completer<void>();
+      final rotation = expectLater(
+        runtime.refresh(),
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (e) => e.code,
+            'code',
+            ReviewErrorCode.unauthorized,
+          ),
+        ),
+      );
+      await fixture.flush();
+      var closed = false;
+      final closing = controller.close().then((_) => closed = true);
+      expect(controller.durableStudySource, isNull);
+      expect(owner.createDurableStudySessionRepository(), isNull);
+      await fixture.flush();
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(closed, isFalse);
+      await expectLater(
+        NativeReviewJournal.open(directory),
+        throwsA(isA<ReviewStorageFailure>()),
+      );
+      await expectLater(
+        NativeStudySessionJournal.open(directory),
+        throwsA(isA<StudySessionStorageFailure>()),
+      );
+      backend.writeWait!.complete();
+      await rotation;
+      expect(backend.secret, isNull);
+      expect(closed, isFalse);
+      rpcWait!.complete(
+        http.Response(
+          jsonEncode(plan(15)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await sending;
+      await closing;
+      final reopened = await NativeStudySessionJournal.open(directory);
+      expect((await reopened.list(wire.a)).single.isPending, isTrue);
+      expect(
+        (await reopened.list(wire.a)).single.event.toJson(),
+        report().toJson(),
+      );
+      await reopened.close();
+      final reviewReopened = await NativeReviewJournal.open(directory);
+      await reviewReopened.close();
+    },
+  );
 
   test(
     'production Windows owner forwards ready plan source and drains SDK before journal release',

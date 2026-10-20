@@ -42,4 +42,6 @@ Secure session storage, terminal retention and hosted acceptance remain pending.
 The separate opt-in completed-study report journal and write-before-dispatch/
 fresh-plan reconciliation library are documented in DURABLE_STUDY_SESSIONS.md.
 It preserves the captured Auth/RPC boundary and does not share the SRS journal
-format or activate storage/save/recovery UI in the default or configured app.
+format. Configured Windows ownership, captured service, explicit recovery UI
+and parallel Auth/study operation drain before SDK/store close are documented
+in OWNED_STUDY_RECOVERY.md. Default preview remains unconfigured.

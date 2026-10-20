@@ -12,6 +12,8 @@ import '../features/auth/data/windows_review_directory.dart';
 import '../features/auth/data/windows_session_credential_vault.dart';
 import '../features/auth/presentation/account_startup_app.dart';
 import '../features/daily_plan/data/daily_plan_repository.dart';
+import '../features/daily_plan/data/durable_study_session_repository.dart';
+import '../features/daily_plan/data/native_study_session_journal.dart';
 import '../features/srs/application/srs_study_runtime.dart';
 import '../features/srs/data/native_review_journal.dart';
 import '../features/srs/data/supabase_review_binding.dart';
@@ -98,17 +100,28 @@ Future<StagingOwner> openWindowsStagingOwner(
 ) async {
   final directory = await resolveWindowsReviewDirectory(config.projectUrl);
   final journal = await NativeReviewJournal.open(directory);
+  NativeStudySessionJournal? studyJournal;
   try {
+    studyJournal = await NativeStudySessionJournal.open(directory);
     final runtime = PersistentSupabaseRuntime(
       projectUrl: config.projectUrl,
       publishableKey: config.publicKey,
       vault: createWindowsSessionCredentialVault(config.projectUrl),
       store: journal,
+      studyStore: studyJournal,
       automaticRefresh: config.automaticRefresh,
     );
-    return WindowsStagingOwner(PersistentAccountStartup(runtime), journal);
+    return WindowsStagingOwner(
+      PersistentAccountStartup(runtime),
+      journal,
+      studyJournal: studyJournal,
+    );
   } on Object {
-    await journal.close();
+    try {
+      await studyJournal?.close();
+    } finally {
+      await journal.close();
+    }
     rethrow; // Startup controller replaces raw details with its fixed UI state.
   }
 }
@@ -123,14 +136,19 @@ final class WindowsStagingOwner
         ResumableAccountStartup,
         AccountSessionNoticeSource,
         AccountSessionRefreshAction,
-        DailyPlanRepositorySource {
-  WindowsStagingOwner(this.session, this.journal);
+        DailyPlanRepositorySource,
+        DurableStudySessionSource {
+  WindowsStagingOwner(this.session, this.journal, {this.studyJournal});
+  final NativeStudySessionJournal? studyJournal;
   final PersistentAccountStartup session;
   final NativeReviewJournal journal;
   Future<void>? _closing;
   @override
   DailyPlanRepository? createDailyPlanRepository() =>
       _closing == null ? session.createDailyPlanRepository() : null;
+  @override
+  DurableStudySessionRepository? createDurableStudySessionRepository() =>
+      _closing == null ? session.createDurableStudySessionRepository() : null;
   @override
   AccountController<SrsStudyRuntime> get account => session.account;
   @override
@@ -148,7 +166,11 @@ final class WindowsStagingOwner
   @override
   Future<void> close() => _closing ??= () async {
     await session.close();
-    await journal.close();
+    try {
+      await studyJournal?.close();
+    } finally {
+      await journal.close();
+    }
   }();
 }
 

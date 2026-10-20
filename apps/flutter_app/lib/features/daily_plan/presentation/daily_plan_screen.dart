@@ -7,6 +7,7 @@ import '../../auth/application/account_provider.dart';
 import '../application/daily_plan_provider.dart';
 import '../data/daily_plan_repository.dart';
 import '../domain/daily_plan.dart';
+import 'daily_plan_labels.dart';
 
 class DailyPlanScreen extends ConsumerStatefulWidget {
   const DailyPlanScreen({super.key});
@@ -69,6 +70,7 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
   @override
   Widget build(BuildContext context) {
     final repository = ref.watch(dailyPlanRepositoryProvider);
+    final study = ref.watch(durableStudyRepositoryProvider);
     final profile = ref.watch(accountStateProvider).profile;
     final ready = repository != null && profile != null;
     ref.listen(dailyPlanRepositoryProvider, (_, next) {
@@ -131,6 +133,11 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
             ),
           ),
         ),
+        if (ready && study != null)
+          OutlinedButton(
+            onPressed: () => context.go('/study-recovery'),
+            child: const Text('Buổi học chờ đồng bộ'),
+          ),
         const SizedBox(height: 20),
         if (ready && _loading) ...[
           const LinearProgressIndicator(),
@@ -164,10 +171,10 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_areaLabel(block.area)),
+                    Text(dailyPlanAreaLabel(block.area)),
                     const SizedBox(height: 8),
                     Text(
-                      '${block.plannedMinutes} phút · ${_statusLabel(block.status)}',
+                      '${block.plannedMinutes} phút · ${dailyPlanStatusLabel(block.status)}',
                     ),
                     Text('${block.itemCount} mục trong kế hoạch'),
                   ],
@@ -179,20 +186,3 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
     );
   }
 }
-
-String _areaLabel(DailyPlanArea area) => switch (area) {
-  DailyPlanArea.srs => 'Ôn tập SRS',
-  DailyPlanArea.vocabulary => 'Từ vựng',
-  DailyPlanArea.kanji => 'Hán tự',
-  DailyPlanArea.grammar => 'Ngữ pháp',
-  DailyPlanArea.listeningReading => 'Nghe và đọc',
-  DailyPlanArea.aiConversation => 'Hội thoại AI',
-  DailyPlanArea.quizReview => 'Kiểm tra và ôn lại',
-};
-
-String _statusLabel(DailyPlanStatus status) => switch (status) {
-  DailyPlanStatus.ready => 'Sẵn sàng',
-  DailyPlanStatus.inProgress => 'Đang học',
-  DailyPlanStatus.done => 'Hoàn thành',
-  DailyPlanStatus.blocked => 'Chưa khả dụng',
-};

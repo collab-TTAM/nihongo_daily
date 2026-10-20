@@ -98,6 +98,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
           dailyPlanSourceProvider.overrideWithValue(
             _controller.dailyPlanSource,
           ),
+          durableStudySourceProvider.overrideWithValue(
+            _controller.durableStudySource,
+          ),
           accountRuntimeProvider.overrideWithValue(account),
           accountSessionRefreshActionProvider.overrideWithValue(
             _controller.refreshAction,

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/home/presentation/home_screen.dart';
 import '../features/daily_plan/presentation/daily_plan_screen.dart';
+import '../features/daily_plan/presentation/study_recovery_screen.dart';
 import '../features/auth/presentation/account_screen.dart';
 import '../features/kanji/presentation/kanji_capture_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
@@ -54,6 +55,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/plan',
             builder: (context, state) => const DailyPlanScreen(),
+          ),
+          GoRoute(
+            path: '/study-recovery',
+            builder: (context, state) => const StudyRecoveryScreen(),
           ),
           GoRoute(
             path: '/auth',

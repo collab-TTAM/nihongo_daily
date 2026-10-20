@@ -102,3 +102,8 @@ does not yet time/save study sessions or install the opt-in durable study-event
 library described in [Completed-study durability](../../docs/DURABLE_STUDY_SESSIONS.md).
 See [Daily Plan UI](../../docs/DAILY_PLAN_UI.md) and
 [Staging bootstrap](../../docs/STAGING_BOOTSTRAP.md) for configuration/limits.
+
+Configured Windows now installs completed-study storage and explicit
+/study-recovery from account/plan pages. See docs/OWNED_STUDY_RECOVERY.md for
+manual reconciliation and lifecycle ownership. Actual activity timer/new-report
+creation and hosted acceptance remain pending; default app stays preview.

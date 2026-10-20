@@ -73,6 +73,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final refreshAction = ref.watch(accountSessionRefreshActionProvider);
     final runtime = ref.watch(accountRuntimeProvider);
     final plan = ref.watch(dailyPlanRepositoryProvider);
+    final study = ref.watch(durableStudyRepositoryProvider);
     final checking = notice == AccountSessionNotice.checking || _refreshing;
     ref.listen(accountSessionNoticeProvider, (_, next) {
       if (next != AccountSessionNotice.none) {
@@ -223,6 +224,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     FilledButton.tonal(
                       onPressed: () => context.go('/plan'),
                       child: const Text('Kế hoạch học'),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (study != null) ...[
+                    OutlinedButton(
+                      key: const Key('study-recovery-open'),
+                      onPressed: () => context.go('/study-recovery'),
+                      child: const Text('Buổi học chờ đồng bộ'),
                     ),
                     const SizedBox(height: 12),
                   ],

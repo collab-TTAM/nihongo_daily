@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
+import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../../srs/data/durable_review_repository.dart';
 import '../../srs/data/review_repository.dart';
@@ -29,11 +30,12 @@ final class PersistentSupabaseRuntime
     required String publishableKey,
     required SessionCredentialVault vault,
     required DurableReviewStore store,
+    StudySessionStore? studyStore,
     http.Client? httpClient,
     DateTime Function()? now,
     bool automaticRefresh = false,
     Duration requestTimeout = const Duration(seconds: 15),
-  }) {
+  }) : _studyStore = studyStore {
     if (kIsWeb) {
       // The pinned SDK broadcasts Auth session objects between browser tabs.
       // No browser token persistence/restore is authorized by this assembly.
@@ -106,6 +108,8 @@ final class PersistentSupabaseRuntime
       );
     }
   }
+  final StudySessionStore? _studyStore;
+  final _studyOperations = StudySessionOperationDrain();
   late final SupabaseClient _client;
   late final _BoundedSessionHttp _network;
   late final SupabaseReviewBinding _binding;
@@ -171,6 +175,29 @@ final class PersistentSupabaseRuntime
     }
   }
 
+  DurableStudySessionRepository? createDurableStudySessionRepository() {
+    final store = _studyStore;
+    if (_closing != null || store == null || _studyOperations.isClosing) {
+      return null;
+    }
+    final ready = account.readyRuntime;
+    if (ready == null) return null;
+    final delegate = createDailyPlanRepository();
+    if (delegate == null || !identical(account.readyRuntime, ready)) {
+      return null;
+    }
+    try {
+      return DurableStudySessionRepository(
+        auth: ready.auth,
+        delegate: delegate,
+        store: store,
+        operations: _studyOperations,
+      );
+    } on DailyPlanFailure {
+      return null;
+    }
+  }
+
   @override
   Future<void> refresh() => persistence.refresh();
 
@@ -182,7 +209,8 @@ final class PersistentSupabaseRuntime
     _notice = AccountSessionNotice.none;
     unawaited(_noticeEvents.close());
     await _refreshSubscription?.cancel();
-    await persistence.close();
+    // Preserve immediate Auth-close policy even while a study RPC is held.
+    await Future.wait([persistence.close(), _studyOperations.revokeAndDrain()]);
     await _port.close();
     _binding.dispose();
     await _client.dispose();
