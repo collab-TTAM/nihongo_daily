@@ -2749,3 +2749,28 @@ is verified. Public /quiz still stores no history; no mastery or credit.
 Keep #41 draft/#13 open/default preview/QA51/all14 hosted groups pending.
 No CI/dependency/security/Auth/schema/API/main/source/Pro/content/merge/deployment/
 release/schedule change.
+
+
+## Native quiz test import correction — core-20261021-quiz-store-import
+
+Exact13bb2821 CI39483670336 latest attempt1 passed repo-sanity/database/AI/Windows
+every required step. Flutter strict formatter passed185 files/zero changes;
+analysis reported only unnecessary_import for dart:async at native quiz journal
+test1:8. flutter_test already exports all the async elements used by this test.
+All new13 store tests/full Flutter/Chrome/Web downstream steps were skipped.
+
+Remove exactly that first import line. Remaining test bytes, all13 scenarios
+and64 expect/expectLater calls are identical; production store/model/UI and all
+strict analysis/format/test/security gates unchanged. Separate source/diagnostic/
+assertion review is not executable testing. Execution environment remains
+unavailable; no local SDK/format/analyze/test/QA/build or prior review bypass.
+
+New exact-head Actions must verify the corrected test and all retained gates.
+Historical43094ac2 all five/621 Flutter/five Chrome remains model-parent evidence.
+Next inspect actual latest-attempt all five required jobs/every step and fix real
+failures preserving assertions; pending-only release without duplicate commits/
+long polling. After store green implement captured-ready-session repository and
+explicit save/history UI. Public /quiz still saves no history; no mastery/credit.
+Keep #41 draft/#13 open/default preview/QA51/all14 hosted groups pending.
+No production/API/schema/Auth/RLS/dependency/CI/security/main/source/Pro/content/
+provider/spend/merge/deployment/release/schedule change.
