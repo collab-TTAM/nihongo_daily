@@ -42,11 +42,11 @@ keep the Kanji navigation destination. Search EditableText remains mounted and
 unfocusable beneath the existing owned host's awaited exit blocker; no new Auth,
 SDK/store owner or close path is introduced.
 
-This is practice from displayed metadata, not tracing/stroke animation/recognized
-handwriting or mastery. The UI retains explicit unavailable real grading. #16
-still owns vetted/licensed geometry, reproducible import/versioning/coverage and
-real evaluation. No stroke asset, synthetic production grade or attention/progress
-claim is added; server KANJI availability and study recorder area support unchanged.
+The eight N5 seed characters now offer an optional attributed KanjiVG step guide
+(N5_STROKE_GUIDE.md); N4 still has no reference geometry. This is not tracing,
+recognized handwriting, real grading or mastery. #16 remains open for broader
+coverage, pedagogical validation and a real evaluator. Canonical stroke_data_ref,
+server KANJI availability and study recorder area support are unchanged.
 
 ## Verification and remaining gates
 

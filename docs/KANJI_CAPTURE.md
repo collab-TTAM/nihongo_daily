@@ -8,8 +8,9 @@ canvas; gestures beginning inside are reserved for drawing. No data is uploaded,
 persisted or counted as learning progress. The original free canvas stays available;
 selected-character practice now displays original metadata (KANJI_CATALOG.md).
 
-The public metadata loader does not load reference strokes. No backend or deployed
-evaluator is installed. The UI explicitly displays unavailable real grading. Issue #16 owns vetted/licensed
+The public metadata loader does not load reference strokes. Selected N5 practice
+now separately offers an explicit optional KanjiVG step guide (N5_STROKE_GUIDE.md).
+No backend or deployed evaluator is installed; real grading remains unavailable. Issue #16 owns vetted/licensed
 reference assets; tracing, stroke animation and real feedback require those assets
 and a later integration. Lack of a provider/account does not block this prototype.
 

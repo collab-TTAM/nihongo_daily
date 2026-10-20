@@ -7,6 +7,7 @@ import '../../../shared/widgets/page_body.dart';
 import '../application/kanji_capture_provider.dart';
 import '../domain/kanji_models.dart';
 import '../domain/kanji_catalog.dart';
+import 'kanji_stroke_guide_panel.dart';
 import '../../../shared/models/preview_level.dart';
 
 class KanjiCaptureScreen extends ConsumerWidget {
@@ -49,10 +50,13 @@ class KanjiCaptureScreen extends ConsumerWidget {
           'Nét chỉ giữ trong màn này; chưa lưu tiến độ.',
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
-          'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
+        Text(
+          entry?.level == PreviewLevel.n5
+              ? 'Có thể xem từng nét mẫu N5. Bộ đánh giá chữ viết chưa được kiểm chứng.'
+              : 'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
+                    'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
         ),
+        if (entry case final selected?) KanjiStrokeGuidePanel(entry: selected),
         OutlinedButton(
           key: const Key('kanji-open-catalog'),
           onPressed: () => context.go(
@@ -162,9 +166,11 @@ class KanjiCaptureScreen extends ConsumerWidget {
             state.messageVi!,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
-        const Text(
-          'Chấm điểm: chưa khả dụng — thiếu dữ liệu nét mẫu. '
-          'Không có điểm số hoặc kết quả học được lưu.',
+        Text(
+          entry?.level == PreviewLevel.n5
+              ? 'Chấm điểm: chưa khả dụng — bộ đánh giá chữ viết chưa được kiểm chứng. Không có điểm số hoặc kết quả học được lưu.'
+              : 'Chấm điểm: chưa khả dụng — thiếu dữ liệu nét mẫu. '
+                    'Không có điểm số hoặc kết quả học được lưu.',
         ),
       ],
     );

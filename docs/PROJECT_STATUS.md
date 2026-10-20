@@ -2224,3 +2224,48 @@ failures preserving assertions before new work. Pending-only means persist/
 release/handoff without duplicate source or long polling. Keep #41 draft/#16 open/
 default preview/all14 hosted gates pending; no merge/deployment/release/provider/
 spend/schedule change. See KANJI_CATALOG.md and current PR handoff.
+
+
+## Eight-seed N5 stroke guide — core-20261020T1052-n5-stroke-guide
+
+Resumed #41 cf00d0817721a5147fd28aba765ac780021fcbed; CI39410222982 verified
+allfive jobs/every required step. Completed logs553 Flutter/five Chrome, all30
+Kanji catalog cases and retained SQL/SDK/native/process/Web/Windows. Prior scoped
+search finder now verified. Main/source/Pro canonical records unchanged.
+
+Bounded #16 reference increment imports eight unchanged pinned KanjiVG N5 SVGs
+with original notices/COPYING, source/metadata SHA locks, versioned manifest and
+CC BY-SA attribution/modification notices in repo/generated asset/UI. Reproducible
+stdlib importer validates109 canvas/glyph/ordered IDs/count/no transforms, accepts
+only observed M/C/c/S/s commands, adaptively flattens bounded curves, preserves
+placement/order/direction and normalizes without fitting/clamping. Optional
+explicit Xem nét mẫu offers step prefixes/highlight/start dots/end arrows/full
+view in selected practice. Free drawing unchanged; N4 references absent. Unknown
+or mismatched ID/glyph/version/count cannot fallback; safe error/retry/late-route/
+hide behavior. No synthetic/real grade, attempt storage, timer or study credit;
+canonical stroke_data_ref and server availability unchanged.
+
+Eight Python importer tests passed (25 total QA), deterministic --check, actual
+Dart eight-guide projection smoke, pure-domain analysis, pinned format/whitespace
+and visual actual-glyph contact sheet review passed. Ten codec/repository/six
+widget cases authored, including actual bundle, N4 zero reads, mismatch rejection,
+explicit step/attribution/no grade, safe missing/retry/late result,320px/200-
+percent controls and retained expanded attribution EditableText through owned exit. All prior tests/assertions unchanged. Full new Flutter/widgets/
+SDK/platform needs exact-head Actions; prior metadata automatic-review rejection
+not retried/bypassed. No independent pedagogical quality or real grading claim.
+
+Next inspect published exact #41 head/latest-attempt every required job/step and
+fix actual failures preserving assertions. Pending-only means persist/release/
+handoff without duplicate source/docs-only commit or long polling. After green,
+continue reference coverage and reviewed real evaluation/remaining activities.
+Keep #41 draft/#16 open/default preview/all14 hosted groups pending. No canonical
+content/Pro/source/main/API/Auth/SDK/storage/dependency/schema/RLS/CI/security/
+provider/spend/merge/deployment/release/schedule change; one asset-only pubspec
+declaration. See N5_STROKE_GUIDE.md and current PR handoff.
+
+Reference source/metadata/output checkout bytes are preserved for cross-platform
+digest checks; importer text I/O uses explicit UTF-8 and LF.
+
+The upstream COPYING file is preserved byte-for-byte, including its blank EOF
+line. Full whitespace review reports that one upstream-only notice; authored-file
+whitespace check passes. Its exact license digest is also locked by the importer.

@@ -33,3 +33,4 @@ flutter:
     - assets/curriculum/n4/grammar.json
     - assets/curriculum/n5/kanji.json
     - assets/curriculum/n4/kanji.json
+    - assets/kanji_references/n5.json

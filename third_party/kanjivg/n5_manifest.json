@@ -1,0 +1,79 @@
+{
+  "format_version": 1,
+  "reference_version": "kanjivg-70a0b7ae-n5-1",
+  "source_commit": "70a0b7ae0c18ceb5cb358274b029cce0234a43bc",
+  "source_url": "https://github.com/KanjiVG/kanjivg",
+  "author": "Ulrich Apel and KanjiVG contributors",
+  "license": "CC-BY-SA-3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "copyright": "Copyright (C) 2009/2010/2011 Ulrich Apel. Original SVG notices retained.",
+  "changes": "Cubic curves flattened with 0.15 source-pixel tolerance; coordinates divided by 109 and rounded to 8 decimals. No glyph fitting or stroke reordering.",
+  "metadata_sha256": "af72d11e675b515ec77efcfbeeaa210629b15c42af979f89e25be08b0d02e5e1",
+  "sources": [
+    {
+      "kanji_id": "61a835f4-ad41-59be-a714-3476285759d7",
+      "character": "日",
+      "content_version": 1,
+      "stroke_count": 4,
+      "source_file": "065e5.svg",
+      "sha256": "e2b461dad3b8c2a7bb1a5b9318e83d90f44d9f62d903d4a27e5992e6469773b1"
+    },
+    {
+      "kanji_id": "7cf0ab55-aeb5-55f5-9169-5b6ac037ce28",
+      "character": "月",
+      "content_version": 1,
+      "stroke_count": 4,
+      "source_file": "06708.svg",
+      "sha256": "c577d9e0fb74f01e63ebfa111c1f29834808d375391e32c2a7e0ee8592ae5524"
+    },
+    {
+      "kanji_id": "f80648ba-e358-5cac-b042-d4f6dc68ef62",
+      "character": "木",
+      "content_version": 1,
+      "stroke_count": 4,
+      "source_file": "06728.svg",
+      "sha256": "8ad9a1fa18fe9d0910db9686e7b05f11784650b46aec4795ac67696cc5197acd"
+    },
+    {
+      "kanji_id": "7bd1d39c-8f41-572a-97e0-fe7b0bf36a76",
+      "character": "山",
+      "content_version": 1,
+      "stroke_count": 3,
+      "source_file": "05c71.svg",
+      "sha256": "c6ad6253f1fcea28fd991af0e23c2ffe95858d073a03ea46354dc39516ad7aa7"
+    },
+    {
+      "kanji_id": "8ce47023-8a69-5ff1-9dd4-d5eaa5ed4aa4",
+      "character": "川",
+      "content_version": 1,
+      "stroke_count": 3,
+      "source_file": "05ddd.svg",
+      "sha256": "316788cc05f0516017c55e9bfa1d61b20e3fd5689f9e48e1f372cba212ae4bc5"
+    },
+    {
+      "kanji_id": "66394c6e-2e8b-55d0-a4dd-44300cc84230",
+      "character": "人",
+      "content_version": 1,
+      "stroke_count": 2,
+      "source_file": "04eba.svg",
+      "sha256": "0022556d593c1edf00e707f9c0bca1f1b6a531cf0a3a95ccade8931c31b4148d"
+    },
+    {
+      "kanji_id": "19f7d112-4872-5a40-a3e9-06ec4668e43c",
+      "character": "水",
+      "content_version": 1,
+      "stroke_count": 4,
+      "source_file": "06c34.svg",
+      "sha256": "17025cc265555ea3172b361fee740e58f178c7ed61fb7d1c7124175358f2d41e"
+    },
+    {
+      "kanji_id": "c340d51e-f692-5876-bf17-afb0d4a5b300",
+      "character": "火",
+      "content_version": 1,
+      "stroke_count": 4,
+      "source_file": "0706b.svg",
+      "sha256": "ad5412383753877b4428557883ccc19b6c70b1128a06168d49ad20e31ed645a2"
+    }
+  ],
+  "license_sha256": "d255e07978fd16ddfec38bc59dc9d857b885dd44ddbf4e79baf207d30746bdcc"
+}
