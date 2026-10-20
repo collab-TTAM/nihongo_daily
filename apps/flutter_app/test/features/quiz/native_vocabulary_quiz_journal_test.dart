@@ -195,10 +195,9 @@ void main() {
     final good = await file.readAsString();
     final raw = jsonDecode(good.trim()) as Map<String, Object?>;
     final report = raw['attempt']! as Map<String, Object?>;
-    final duplicated = jsonEncode(raw).replaceFirst(
-      '"version":1',
-      '"version":1,"version":1',
-    );
+    final duplicated = jsonEncode(
+      raw,
+    ).replaceFirst('"version":1', '"version":1,"version":1');
     final invalid = <String>[
       '{"version":1,"version":1}\n',
       '${jsonEncode({...raw, 'version': 2})}\n',
@@ -206,7 +205,10 @@ void main() {
       '${jsonEncode({...raw, 'owner_id': 'PRIVATE OWNER'})}\n',
       '${jsonEncode({...raw, 'extra': true})}\n',
       '${jsonEncode({...raw}..remove('owner_id'))}\n',
-      '${jsonEncode({...raw, 'attempt': {...report, 'score': 99}})}\n',
+      '${jsonEncode({
+        ...raw,
+        'attempt': {...report, 'score': 99},
+      })}\n',
       '${jsonEncode({...raw, 'attempt': null})}\n',
       '$duplicated\n',
       ' ${good.trim()}\n',
@@ -359,18 +361,24 @@ void main() {
     }
   });
 
-  test('separate processes retain flushed data and enforce active lease',
-      () async {
-    await quizProbe('stage', directory);
-    final store = await open();
-    final records = await store.list(quizOwner);
-    expect(records.single.attempt.eventId, quizReport(1).eventId);
-    await quizProbe('locked', directory);
-    await store.append(quizOwner, quizReport(2));
-    await store.close();
-    await quizProbe('stage', directory); // Exact restart replay does not append.
-    final restored = await open();
-    expect(await restored.list(quizOwner), hasLength(2));
-    expect(await quizData(directory).readAsLines(), hasLength(2));
-  }, timeout: const Timeout(Duration(minutes: 2)));
+  test(
+    'separate processes retain flushed data and enforce active lease',
+    () async {
+      await quizProbe('stage', directory);
+      final store = await open();
+      final records = await store.list(quizOwner);
+      expect(records.single.attempt.eventId, quizReport(1).eventId);
+      await quizProbe('locked', directory);
+      await store.append(quizOwner, quizReport(2));
+      await store.close();
+      await quizProbe(
+        'stage',
+        directory,
+      ); // Exact restart replay does not append.
+      final restored = await open();
+      expect(await restored.list(quizOwner), hasLength(2));
+      expect(await quizData(directory).readAsLines(), hasLength(2));
+    },
+    timeout: const Timeout(Duration(minutes: 2)),
+  );
 }

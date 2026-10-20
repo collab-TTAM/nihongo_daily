@@ -186,7 +186,8 @@ final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
   Future<void> close() => _closing ??= _close();
 
   Future<void> _close() async {
-    _accepting = false; // Drain accepted operations; reject new ones immediately.
+    _accepting =
+        false; // Drain accepted operations; reject new ones immediately.
     await _tail;
     try {
       try {

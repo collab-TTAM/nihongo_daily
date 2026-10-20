@@ -2719,3 +2719,33 @@ Public /quiz still saves no history; no mastery/credit or issue completion.
 Keep #13 open/#41 draft/default preview/QA51/all14 hosted groups pending.
 No main/source/Pro/content/Auth strategy/API/schema/RLS/dependency/CI/security/
 provider/spend/merge/deployment/release/schedule change.
+
+
+## Exact native-quiz SDK formatting — core-20261021-quiz-store-format
+
+Parent6a966917 CI39482718818 attempt1 passed repo-sanity/database/AI every required
+step. Flutter stopped at the unchanged strict formatter:185 files/two changed,
+native_vocabulary_quiz_journal.dart and its test. Analysis/new13 tests/Chrome/Web
+were skipped and never passed. Windows configured build succeeded; standard
+release/native checks were still running at the initial observation.
+
+The existing pinned Dart diagnostic emitted exactly four hunks, applied with
+checked original context/counts. Independent UTF-8 Git SHA1 verification matches
+both SDK target blobs:26d53e667cc172c77dbe716031ea7892bfa8c828 and
+694b727b3d65b90da747acf4079aaad62f1f6ccd. SHA routine self-tested on abc and both
+original GitHub blobs. All non-whitespace/non-comma text, all13 test scenarios
+and64 expect/expectLater calls are retained; no production behavior or gate
+change. This is patch/source verification, not executable Dart testing.
+
+No usable local execution environment, local format/analyze/test/QA/build or
+prior automatic-review bypass. New exact-head CI must verify format/analyze,
+all new and retained tests and Web/Windows builds. Existing43094ac2 all five/
+621 Flutter/five Chrome evidence remains parent-model evidence only.
+
+Next inspect actual new-head/latest-attempt all five jobs/every required step,
+fix real failures preserving assertions; pending-only release without duplicate
+commits/long polling. Then captured-ready-session save/history UI, after the store
+is verified. Public /quiz still stores no history; no mastery or credit.
+Keep #41 draft/#13 open/default preview/QA51/all14 hosted groups pending.
+No CI/dependency/security/Auth/schema/API/main/source/Pro/content/merge/deployment/
+release/schedule change.
