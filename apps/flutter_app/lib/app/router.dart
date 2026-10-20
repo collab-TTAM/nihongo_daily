@@ -14,14 +14,11 @@ import '../shared/models/preview_level.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/srs/presentation/srs_study_screen.dart';
 import '../features/study/presentation/study_screen.dart';
+import '../features/quiz/presentation/vocabulary_quiz_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
 
 const previewRoutes = <String, ({String title, String description})>{
-  '/quiz': (
-    title: 'Kiểm tra nhanh',
-    description: 'Củng cố kiến thức qua các câu hỏi ngắn.',
-  ),
   '/listening': (
     title: 'Nghe và đọc',
     description: 'Luyện hiểu tiếng Nhật trong ngữ cảnh.',
@@ -114,6 +111,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                       entryId: state.pathParameters['id']!,
                     );
             },
+          ),
+          GoRoute(
+            path: '/quiz',
+            builder: (context, state) => const VocabularyQuizScreen(),
           ),
           GoRoute(
             path: '/srs',

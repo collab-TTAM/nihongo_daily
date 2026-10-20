@@ -998,7 +998,7 @@
         18
       ],
       "reproduce": "Submit correct/wrong/repeated/duplicate attempts; verify owner history/counters, empty state and recommendations referencing curriculum; inspect dashboard.",
-      "limitation": "No quiz/mastery/progress service; reserved MASTERED cannot substitute for mastery evidence."
+      "limitation": "Public route-local reading practice does not implement owned attempt persistence, mastery or progress; reserved MASTERED cannot substitute for evidence."
     },
     {
       "id": "browser-windows-smoke",
@@ -1019,6 +1019,28 @@
       ],
       "reproduce": "Exact tested commit: login -> plan -> study -> review -> quiz -> Kanji -> conversation/voice -> progress; restart/two-device sync, no critical defects; preserve rollback/recovery and evidence.",
       "limitation": "Eight starter issues closing is not a release. Production/App Store gates remain separate."
+    },
+    {
+      "id": "vocabulary-quiz-local",
+      "status": "automated-baseline",
+      "scope": "Deterministic original N5/N4 reading choices, first-answer dedup and route-local results",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_test.dart",
+          "contains": "duplicate first answer and stale next"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_widget_test.dart",
+          "contains": "actual bundled quiz retains owned exit"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz",
+      "limitation": "Authored tests require exact-head CI. Public process-local practice only; no saved attempts, mastery, progress, attention or study credit."
     }
   ],
   "findings": [

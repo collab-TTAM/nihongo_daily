@@ -2427,3 +2427,46 @@ its placeholder; no inferred mastery or server credit. Keep #41 draft/#16 open/
 all14 hosted groups pending. No source/geometry/manifest/canonical/Pro/main/source
 branch/capture/Auth/SDK/storage/dependency/schema/RLS/CI/security/provider/spend/
 merge/deployment/release/schedule change. See N5_STROKE_GUIDE.md and PR handoff.
+
+
+## Public reading-choice quiz — core-20261020T1755-vocabulary-quiz
+
+Resumed exact #41 0c7644ebe9432626b4aa085852af55e662510200. CI39422900350,
+latest attempt, completed allfive/every required step; completed Flutter logs587
+tests/five actual Chrome. Both trace refresh/320px200-percent fixes passed; all
+retained SQL/SDK/native/process/Web/Windows builds/artifacts passed.
+
+Reviewed bounded #13 scoring/identity/mastery boundary recorded before code.
+Replace only /quiz placeholder with deterministic original-vocabulary reading
+choices at selected N5/N4. Same-level canonical objects/versions, unique prompt/
+reading rules, rotating answer slots, max10 question round, first-answer wins,
+stale next/answer/batch no-op, explicit result/wrong-word review/restart/next batch.
+No attempt storage, mastery, progress dashboard, recorder/timer/server credit.
+Source refresh/level/route discards local panel; late old callbacks fenced.
+Loading/redacted manual retry/insufficient/narrow states and owned host retained.
+
+Original source inventory via JavaScript:24 N5 eligible prompts/24 rows;364 N4
+Kanji prompts/366 rows,362 distinct N4 readings. This is not Dart test execution
+or independent linguistic approval; no content or Pro changes.
+
+Authored domain/widget regressions cover actual canonical both levels, immutable/
+deterministic choices, duplicate prompt/reading/answer, source/kind/level/version/
+bounds rejection, empty/short pools, wrong answers/local reset and stale next.
+UI includes correct/incorrect/result/restart/next batch dedup, level/late source/
+refresh/disposed action/route isolation, safe error/retry/insufficient, both-level
+320px/200-percent strict interaction and actual bundled awaited owned exit.
+QA inventory adds baseline case50, existing14 hosted groups remain pending.
+No original test/assertion removed; /quiz no longer iterates the unavailable
+placeholder loop and now has dedicated functional route tests.
+
+Execution environment unavailable. No new local format/analyze/Dart/Flutter/
+Python QA/Chrome/render/build executed. Pinned-source/full-base-tree review and
+separate rule/callback/bounds review completed through GitHub; existing Actions
+must verify published exact head. No retry/bypass of prior metadata rejection.
+Next inspect exact-head/latest-attempt all required jobs/steps, fix actual failures
+preserving assertions. Pending-only means save/release/handoff, no duplicate
+source/docs-only commit or long polling. After green, continue reviewed owned quiz
+events/mastery/progress boundaries or next unblocked learning activity.
+Keep #41 draft/#13 open/default preview/all14 hosted groups pending; no main/
+source/Pro/canonical/Auth/API/storage/dependency/schema/RLS/CI/security/provider/
+spend/merge/deployment/release/schedule change. See VOCABULARY_QUIZ.md.

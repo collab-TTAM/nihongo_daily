@@ -28,6 +28,14 @@ startup does not activate a network service or login. Hosted learner acceptance,
 full multi-device sync, real Kanji grading and live AI/voice remain outstanding.
 The home still shows the clearly labeled seven-block 120-minute sample plan.
 
+
+Public **/quiz** now offers deterministic N5/N4 vocabulary reading questions
+from the unchanged original exports. Each round has up to10 questions, one first
+answer per question, Vietnamese feedback and a local list of wrong items to review.
+Restart/next batch are explicit. Results disappear on exit/reload/level change;
+no attempt is saved, mastery inferred or study credit granted. See
+../../docs/VOCABULARY_QUIZ.md. New full-suite verification requires exact-head CI.
+
 ## Run and verify
 
 Use Flutter **3.35.4** / its bundled Dart **3.9.2**, matching CI. From this folder:
