@@ -118,3 +118,10 @@ Other activity timers and hosted acceptance remain pending; default stays previe
 Configured plan/SRS date fields offer **Chọn hôm nay theo hồ sơ** using the
 server statement clock and own profile timezone. This fills the date only;
 loading/starting/saving remain explicit. See docs/PROFILE_STUDY_DAY.md.
+
+
+The shared completed-study recorder core is documented in
+../../docs/SHARED_STUDY_RECORDER.md. The legacy SRS provider aliases one shared
+current-owner slot, preserving even not-yet-staged immutable reports. Existing
+SRS controls remain; reader timer UI/readiness are not installed yet and
+production non-SRS starts fail closed. Reading/search does not record progress.

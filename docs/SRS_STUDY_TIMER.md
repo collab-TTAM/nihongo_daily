@@ -123,3 +123,16 @@ viewport enlargement or CI/lint/security change. Local pinned formatting/QA/
 whitespace and separate diff review passed; current-head widget execution requires
 independent CI. Local Flutter CLI remains blocked by prior metadata-endpoint
 approval review; no retry/bypass is attempted by this correction.
+
+
+## Shared core extraction — 2026-10-20
+
+StudySessionRecorder now owns the common foreground/frozen-report logic. The
+SrsSessionRecorder compatibility constructor and all existing SRS fixtures/UI
+remain. The legacy provider aliases the one shared provider, with the same
+account/durable-service lifetime and current SRS-only production readiness gate.
+State includes the report area; interruption can be restricted to the host area
+without canceling another area's newer timing or an accepted immutable save.
+Six cross-area native cases plus a provider-consumer regression protect this
+prerequisite. Reader controls remain uninstalled. See SHARED_STUDY_RECORDER.md;
+current-head full CI is required before claiming combined verification.

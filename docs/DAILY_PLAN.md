@@ -164,3 +164,10 @@ policy, atomic session/receipt/plan writes, replay/overlap handling, native test
 and the remaining authenticated runtime gate. It adds no public v0.1 endpoint or
 client authority. A UI must not announce saved progress before that actual
 verified backend path is integrated and returns an authoritative receipt.
+
+
+SHARED_STUDY_RECORDER.md describes the single current-owner foreground/frozen
+report slot extracted for SRS/vocabulary/grammar. Existing SRS controls remain
+installed; vocabulary/grammar controls still await real loaded-content/profile
+readiness wiring. Neither packaged reading nor the new core records time by
+itself. Plan/RPC/durable acknowledgment semantics are unchanged.

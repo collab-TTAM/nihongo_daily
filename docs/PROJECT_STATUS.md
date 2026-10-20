@@ -1990,3 +1990,53 @@ Keep #11/#12/#14 open/#41 draft/default preview/all14 hosted groups pending. Mai
 Pro #38 and source #37/#39/#40 branches remain unchanged; no authored-record edits,
 dependency/Auth policy/schema/RLS/security/provider/spend/merge/deployment or
 schedule change. CURRICULUM_BROWSER.md records the composition and limits.
+
+
+## Shared foreground/frozen slot — core-20261020T0525-shared-study-recorder
+
+Resumed #41 at621e515 after exact CI39374191185 allfive jobs/every required latest
+step success,499 Flutter/five Chrome/SDK/native/Web/Windows. Completed logs show
+both N4 assets and both320px/200-percent N4 reader flows passed. N4 source verified;
+that success is historical for this common-recorder refactor.
+
+Extract StudySessionRecorder supporting SRS/vocabulary/grammar with one captured
+owner/slot and area-aware state/readiness/server-block selection. Preserve all
+existing pending-before-read, duration/clock, immutable freeze, stage/submit/ack/
+fresh-plan, explicit retry, definitive rejection and resource-drain behavior.
+Checking/running/saving/uncertain prevent cross-area replacement, including stage
+failure before a journal entry exists. Scoped interruption and generation fencing
+prevent an old route/preflight canceling a newer area's timing; accepted saves
+remain uncanceled. Revocation clears the area and suppresses old-owner results.
+
+Legacy SrsSessionRecorder constructor/clock/state exports remain through a wrapper.
+The old SRS provider aliases exactly one shared provider/notifier. Configured
+readiness remains SRS-only; reader UI/profile-content guards are deliberately not
+installed by this prerequisite. Existing SRS panel/keys/retained field/level/clock
+behavior stays intact. No new fake learning credit, runtime/token/storage owner,
+retry, RPC, content/API/schema/RLS/dependency/CI/provider/schedule change.
+
+Six cross-area scenarios with actual native files passed: all three areas,
+unstaged frozen exclusion, uncertain commit/exact retry, correct-area availability/
+readiness recheck, scoped interruption/late preflight and held-save replacement
+owner. Retained all7 recovery/all8 original SRS/all6 captured-day scenarios; the
+expanded native tool passed27 scenarios plus abrupt child/process lease/reopen.
+These comprise21 real-disk plus6 captured-RPC cases. Six Flutter wrappers and one
+actual Riverpod/native legacy/shared-consumer regression authored. Full provider/
+widgets/SDK/platform checks require exact-head CI, not the local pure verifier.
+
+Local pinned formatting/core+fixture analysis, native verifier, QA17/inventory49
+and whitespace passed; source/provider/test compatibility diff separately reviewed.
+Initial new-fixture enum/import diagnostics were corrected before successful
+analysis/execution; no case/assertion removed. Local full Flutter remains unavailable
+after prior metadata-endpoint approval rejection; no retry/bypass attempted.
+
+Next inspect actual new #41 head/latest-attempt every required CI job/step and fix
+failures preserving assertions. Only pending CI means release/handoff without
+duplicate work/long polling. After green wire vocabulary/grammar UI to this same
+provider with actual loaded same-profile-level content, same-area server plan,
+visible immutable report area, explicit start/finish/retry and area-scoped route/
+background/level/account interruption. Keep date fields mounted/cleared/hidden/
+unfocusable for awaited exit. No independent activity recorder or silent credit.
+Keep #11/#12 open/#41 draft/default preview/all14 hosted groups pending; main/Pro/
+source drafts and content unchanged. No merge/deployment/Auth policy/security/
+provider/spend/schedule changes. See docs/SHARED_STUDY_RECORDER.md.

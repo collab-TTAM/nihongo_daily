@@ -6,7 +6,7 @@ import '../../srs/application/srs_study_controller.dart';
 import '../../srs/application/srs_study_provider.dart';
 import '../domain/daily_plan.dart';
 import 'daily_plan_provider.dart';
-import 'srs_session_recorder.dart';
+import 'study_session_recorder.dart';
 
 final studyRecorderClockProvider = Provider<StudyRecorderClock>(
   (ref) => SystemStudyRecorderClock(),
@@ -24,23 +24,31 @@ final canStartSrsRecorderProvider = Provider<bool>((ref) {
 
 // Retain a frozen uncertain report when navigating away. Only unfinished timing
 // is canceled by the panel. Account/ready-service replacement disposes the lease.
-final srsSessionRecorderProvider =
-    StateNotifierProvider<SrsRecorderNotifier, StudyRecorderState>((ref) {
+final studySessionRecorderProvider =
+    StateNotifierProvider<StudyRecorderNotifier, StudyRecorderState>((ref) {
       final service = ref.watch(durableStudyRepositoryProvider);
       final clock = ref.watch(studyRecorderClockProvider);
-      return SrsRecorderNotifier(
+      return StudyRecorderNotifier(
         service == null
             ? null
-            : SrsSessionRecorder(
+            : StudySessionRecorder(
                 service: service,
                 clock: clock,
-                canStudy: () => ref.read(canStartSrsRecorderProvider),
+                // Reader controls are not installed yet. Fail closed for other areas.
+                canStudyArea: (area) =>
+                    area == DailyPlanArea.srs &&
+                    ref.read(canStartSrsRecorderProvider),
               ),
       );
     });
 
-final class SrsRecorderNotifier extends StateNotifier<StudyRecorderState> {
-  SrsRecorderNotifier(this.controller)
+// Compatibility names resolve to the exact same provider/controller, never a
+// second activity recorder. New reader hosts will use the shared name.
+final srsSessionRecorderProvider = studySessionRecorderProvider;
+typedef SrsRecorderNotifier = StudyRecorderNotifier;
+
+final class StudyRecorderNotifier extends StateNotifier<StudyRecorderState> {
+  StudyRecorderNotifier(this.controller)
     : super(
         controller?.state ??
             const StudyRecorderState(StudyRecorderPhase.unavailable),
@@ -49,13 +57,17 @@ final class SrsRecorderNotifier extends StateNotifier<StudyRecorderState> {
       state = controller!.state;
     });
   }
-  final SrsSessionRecorder? controller;
+  final StudySessionRecorder? controller;
   StreamSubscription<StudyRecorderState>? _subscription;
   Duration get elapsed => controller?.elapsed ?? Duration.zero;
-  Future<void> start(DailyPlanDate date) async => controller?.start(date);
+  Future<void> start(
+    DailyPlanDate date, {
+    DailyPlanArea area = DailyPlanArea.srs,
+  }) async => controller?.start(date, area: area);
   Future<void> finish() async => controller?.finish();
   Future<void> retry() async => controller?.retry();
-  void interrupt() => controller?.interrupt();
+  void interrupt({DailyPlanArea area = DailyPlanArea.srs}) =>
+      controller?.interrupt(area: area);
   @override
   void dispose() {
     unawaited(_subscription?.cancel());

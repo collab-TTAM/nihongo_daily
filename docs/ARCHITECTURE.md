@@ -59,3 +59,10 @@ N5/N4 vocabulary/grammar exports, retains IDs/versions, and has no account or le
 Public preview-level browsing never changes the authenticated profile or SRS
 level. Owned startup/plan/recovery/SRS routes and shutdown ownership remain under
 the same existing host; no extra SDK, token writer or persistence owner is added.
+
+
+The completed-study recorder now has one account-scoped slot shared across the
+SRS/vocabulary/grammar core, including frozen events before successful local
+staging. SHARED_STUDY_RECORDER.md specifies area guards, exact retry, scoped
+interruption and legacy-provider aliasing. Production continues to enable only
+SRS until reader readiness/UI is installed; no additional report route is active.

@@ -140,3 +140,9 @@ N5-detail to N4 selection, actual search/reading/examples, clear/next and return
 to N5 at320px/200-percent text using original content and real hit-testable taps.
 All prior owned-host exit/account/plan/SRS cases remain. Full new-head results
 require exact-head Actions; source-head green evidence is historical only.
+
+
+The next elapsed-report prerequisite is now implemented in the common core
+(SHARED_STUDY_RECORDER.md). The configured reader still has no timer/start/finish
+controls or learning-write capability. Production rejects non-SRS starts until
+reader readiness and scoped lifecycle UI are explicitly installed and verified.
