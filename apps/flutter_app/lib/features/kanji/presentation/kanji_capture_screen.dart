@@ -51,8 +51,8 @@ class KanjiCaptureScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          entry?.level == PreviewLevel.n5
-              ? 'Có thể xem từng nét mẫu N5. Bộ đánh giá chữ viết chưa được kiểm chứng.'
+          entry != null
+              ? 'Có thể xem từng nét mẫu ${entry!.level.label}. Bộ đánh giá chữ viết chưa được kiểm chứng.'
               : 'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
                     'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
         ),
@@ -167,7 +167,7 @@ class KanjiCaptureScreen extends ConsumerWidget {
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         Text(
-          entry?.level == PreviewLevel.n5
+          entry != null
               ? 'Chấm điểm: chưa khả dụng — bộ đánh giá chữ viết chưa được kiểm chứng. Không có điểm số hoặc kết quả học được lưu.'
               : 'Chấm điểm: chưa khả dụng — thiếu dữ liệu nét mẫu. '
                     'Không có điểm số hoặc kết quả học được lưu.',

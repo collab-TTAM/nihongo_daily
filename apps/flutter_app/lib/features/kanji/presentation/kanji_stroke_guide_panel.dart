@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../shared/models/preview_level.dart';
 import '../application/kanji_stroke_guide_provider.dart';
 import '../domain/kanji_catalog.dart';
 import '../domain/kanji_stroke_guide.dart';
@@ -19,12 +18,6 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
   int _stroke = 0;
   @override
   Widget build(BuildContext context) {
-    if (widget.entry.level != PreviewLevel.n5) {
-      return const Text(
-        'Chưa có nét mẫu N4 cho chữ này.',
-        key: Key('kanji-guide-missing'),
-      );
-    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -58,7 +51,7 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
             ],
           ),
           data: (guide) {
-            if (guide == null) {
+            if (guide == null || !guide.matches(widget.entry)) {
               return const Text(
                 'Chưa có nét mẫu phù hợp cho chữ này.',
                 key: Key('kanji-guide-missing'),

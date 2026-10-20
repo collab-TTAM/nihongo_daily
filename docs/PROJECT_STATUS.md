@@ -2306,3 +2306,47 @@ asset installed in this fix. Keep #41 draft/#16/#20/#22 open/default preview/all
 hosted groups pending. No app/Auth/SDK/vault/journal/content/Pro/main/source/API/
 provider/dependency/schema/RLS/CI/security/timeout/spend/merge/deployment/release/
 schedule change. See ACCOUNT_STARTUP.md and current PR handoff.
+
+
+## Original95 N4 stroke guides — core-20261020T1124-n4-stroke-guides
+
+Resumed #41 060187ee9aa2e78c3640d0faf69a001e2978f1b3 after CI39413895560,
+latest attempt, verified allfive jobs/every required step successful. Completed
+logs573 Flutter/five actual Chrome, all four marker regressions, actual Windows
+cancelable close/owned drain and configured/normal builds/artifacts; retained
+SDK/native/process/SQL/Web gates. The Windows publication fix is now verified.
+
+Bounded #16 increment adds95 unchanged original nonvariant KanjiVG N4 sources,
+separate hash-locked manifest/version and deterministic generated asset from the
+same pinned70a0b7ae source. Closed per-level importer configuration fixes paths/
+coverage8/95/version/provenance and preserves all original N5 output/manifest,
+upstream license and both canonical metadata files byte-for-byte. N4 has977
+ordered strokes/7782 normalized points; no unsupported parser commands added.
+
+Expected-level Flutter decoder rejects foreign version/coverage/provenance;
+repository uses fixed separate assets and model/panel require exact level/ID/
+glyph/content-version/count. Selected N4 now offers explicit Xem nét mẫu with
+existing step/start/end/attribution controls and independent drawing. N5 behavior,
+missing/redacted retry/late selection/owned exit retained. No real evaluation,
+attempt save, score, recorder, timer credit or canonical stroke_data_ref change.
+
+Four new Python N4 cases passed (29 total QA), both-level deterministic --check,
+actual103-guide direct pinned Dart smoke, pure-domain analysis/format/inventory49/
+whitespace and separate bounded diff/source review passed. Four intermediate
+sheets of all95 normalized glyphs were visually reviewed; not independent teacher
+quality or calibrated scoring. Expanded24 Flutter guide cases authored, including
+all95 N4 mappings/fixed path/cross-level rejection, explicit N4 steps/drawing,
+foreign result/late cross-level route and both-level missing/retry/narrow/actual
+bundled expanded-attribution owned exit. Original N5 assertions retained; obsolete
+N4 unavailable cases replaced with strict level-specific loading/identity checks.
+Full new Flutter/widget/platform execution needs exact-head Actions; no local
+Flutter metadata automatic-review rejection retry/bypass/full local Flutter claim.
+
+Next inspect published exact head/latest-attempt all required jobs/steps and fix
+actual failures preserving assertions. Pending-only means persist/release/handoff,
+no duplicate source/docs-only commit or long polling. After complete green,
+continue reviewed real evaluation/remaining learning activities and hosted gates.
+Keep #41 draft/#16 open/default preview/all14 hosted groups pending. No main/
+source/Pro/canonical content/Auth strategy/SDK/storage/schema/RLS/dependency/CI/
+security/provider/spend/merge/deployment/release/schedule change. One asset-only
+pubspec declaration. See N5_STROKE_GUIDE.md and current PR handoff.

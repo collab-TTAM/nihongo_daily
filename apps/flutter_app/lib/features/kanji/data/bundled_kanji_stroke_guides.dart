@@ -9,17 +9,16 @@ final class BundledKanjiStrokeGuides implements KanjiStrokeGuideRepository {
   final Future<String> Function(String) _read;
   @override
   Future<KanjiStrokeGuide?> load(KanjiCatalogEntry entry) async {
-    if (entry.level != PreviewLevel.n5) {
-      return null;
-    }
+    final path = switch (entry.level) {
+      PreviewLevel.n5 => 'assets/kanji_references/n5.json',
+      PreviewLevel.n4 => 'assets/kanji_references/n4.json',
+    };
     final guides = decodeKanjiStrokeGuides(
-      await _read('assets/kanji_references/n5.json'),
+      await _read(path),
+      level: entry.level,
     );
     for (final guide in guides) {
-      if (guide.kanjiId == entry.id &&
-          guide.character == entry.character &&
-          guide.contentVersion == entry.contentVersion &&
-          guide.strokes.length == entry.strokeCount) {
+      if (guide.matches(entry)) {
         return guide;
       }
     }

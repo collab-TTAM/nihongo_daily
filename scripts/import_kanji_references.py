@@ -1,4 +1,4 @@
-"""Hash-locked KanjiVG N5 subset -> deterministic CC BY-SA normalized guide.
+"""Hash-locked KanjiVG N5/N4 subsets -> deterministic CC BY-SA normalized guide.
 
 Only the M/C/S commands actually present in the pinned subset are accepted.
 Never infer an unsupported command, reorder strokes or fit a glyph to its bounds.
@@ -17,6 +17,11 @@ COMMIT = '70a0b7ae0c18ceb5cb358274b029cce0234a43bc'
 VERSION = 'kanjivg-70a0b7ae-n5-1'
 TOKEN = re.compile(r'[MmCcSs]|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?')
 OUTPUT = Path('apps/flutter_app/assets/kanji_references/n5.json')
+# Explicit reviewed coverage; never infer the level/version from input rows.
+LEVELS = {
+    'n5': (8, VERSION, OUTPUT),
+    'n4': (95, 'kanjivg-70a0b7ae-n4-1', Path('apps/flutter_app/assets/kanji_references/n4.json')),
+}
 
 
 def require(value, message):
@@ -111,23 +116,27 @@ def parse_svg(source, character, count):
     return [normalize_path(p.get('d')) for p in paths]
 
 
-def generate(root):
+def generate(root, level='n5'):
+    require(level in LEVELS, 'Unreviewed reference level')
+    coverage, version, _ = LEVELS[level]
     folder = root/'third_party/kanjivg'
-    manifest = json.loads((folder/'n5_manifest.json').read_text(encoding='utf-8'))
-    require(manifest['source_commit'] == COMMIT and manifest['reference_version'] == VERSION, 'Unreviewed source version')
-    require(manifest['license'] == 'CC-BY-SA-3.0', 'License metadata mismatch')
+    manifest = json.loads((folder/f'{level}_manifest.json').read_text(encoding='utf-8'))
+    require(manifest['source_commit'] == COMMIT and manifest['reference_version'] == version, 'Unreviewed source version')
+    require(manifest['format_version'] == 1, 'Unknown format version')
+    require(manifest['source_url'] == 'https://github.com/KanjiVG/kanjivg', 'Unknown source URL')
+    require(manifest['license'] == 'CC-BY-SA-3.0' and manifest['license_url'] == 'https://creativecommons.org/licenses/by-sa/3.0/', 'License metadata mismatch')
     require(hashlib.sha256((folder/'COPYING').read_bytes()).hexdigest() == manifest['license_sha256'], 'License digest mismatch')
-    metadata = (root/'data/n5/kanji.json').read_bytes()
+    metadata = (root/f'data/{level}/kanji.json').read_bytes()
     require(hashlib.sha256(metadata).hexdigest() == manifest['metadata_sha256'], 'Metadata digest mismatch')
     rows = json.loads(metadata)
-    require(len(rows) == len(manifest['sources']) == 8, 'Coverage mismatch')
+    require(len(rows) == len(manifest['sources']) == coverage, 'Coverage mismatch')
     entries = []
     for row, entry in zip(rows, manifest['sources']):
         require(row['id'] == entry['kanji_id'] and row['character'] == entry['character'], 'Original ID mapping mismatch')
         require(row['content_version'] == entry['content_version'] and row['stroke_count'] == entry['stroke_count'], 'Original version/count mismatch')
-        require(row['jlpt_level'] == 'N5' and row['is_active'] is True, 'Inactive/foreign metadata')
+        require(row['jlpt_level'] == level.upper() and row['is_active'] is True, 'Inactive/foreign metadata')
         require(entry['source_file'] == f"{ord(row['character']):05x}.svg", 'Unsafe source path')
-        source = (folder/'n5_source'/entry['source_file']).read_bytes()
+        source = (folder/f'{level}_source'/entry['source_file']).read_bytes()
         require(hashlib.sha256(source).hexdigest() == entry['sha256'], 'Source digest mismatch')
         strokes = parse_svg(source, row['character'], row['stroke_count'])
         entries.append({
@@ -143,16 +152,20 @@ def generate(root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--level', choices=['all', *LEVELS], default='all')
     options = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    generated = generate(root)
-    target = root/OUTPUT
-    if options.check:
-        require(target.read_bytes() == generated.encode('utf-8'), 'Generated reference drift')
-    else:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(generated, encoding='utf-8', newline='\n')
-    print('PASS: 8 pinned original N5 mappings, ordered bounded curves and deterministic reference output')
+    for level in LEVELS if options.level == 'all' else [options.level]:
+        generated = generate(root, level)
+        coverage, _, output = LEVELS[level]
+        target = root/output
+        if options.check:
+            require(target.read_bytes() == generated.encode('utf-8'), 'Generated reference drift')
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(generated, encoding='utf-8', newline='\n')
+        print(f'PASS: {coverage} pinned original {level.upper()} mappings, ordered bounded curves and deterministic reference output')
+
 
 
 if __name__ == '__main__':

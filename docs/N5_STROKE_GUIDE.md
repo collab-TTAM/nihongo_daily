@@ -1,95 +1,90 @@
-# Optional original-seed N5 stroke guide — Issue #16
+# Optional original N5/N4 stroke guides — Issue #16
 
-Selected practice offers **Xem nét mẫu** for the eight original N5 seed characters:
-日/月/木/山/川/人/水/火. It loads only after the learner clicks. Nét trước/Nét tiếp
-show original ordered prefixes; Xem toàn bộ shows all strokes. The current stroke
-is highlighted, starts have dots/numbers and endpoint arrows show final direction.
-A separate existing blank canvas keeps normal draw/undo/clear behavior. Showing,
-hiding or stepping the guide never creates learner strokes, score or progress.
+Selected practice offers **Xem nét mẫu** for the eight original N5 seed characters
+(日/月/木/山/川/人/水) and95 original N4 records. These are the existing catalog's
+records, not a claim of complete JLPT coverage. Loading remains explicit.
+Nét trước/Nét tiếp show ordered prefixes; Xem toàn bộ shows all strokes. Current
+stroke highlight, numbered start dots and endpoint arrows display order/direction.
+The independent blank canvas retains draw/undo/clear. Guide controls never create
+learner strokes, a score, progress or study credit.
 
-N4 explicitly has no guide in this increment. Missing/incompatible N5 identity,
-version, glyph or count cannot substitute a foreign reference. Loading/error is
-safe and retry explicit. Late results cannot enter another character; hidden
-unobserved guides cannot publish into the next selection. No new SDK, token,
-store, recorder, wire endpoint, dependencies or canonical metadata mutation.
+## Source, license and reproducibility
 
-## Attribution and source reproducibility
-
-Eight unchanged nonvariant SVGs are retained under third_party/kanjivg/n5_source,
-from KanjiVG commit70a0b7ae0c18ceb5cb358274b029cce0234a43bc. Their copyright/license
-notices and upstream COPYING are preserved. NOTICE.md identifies Ulrich Apel and
-KanjiVG contributors, source/project URLs, CC BY-SA 3.0 and the normalization
-changes. The generated guide is an adaptation distributed under CC BY-SA 3.0;
-license/source/modification notice is also displayed beside the guide in the app.
+103 unchanged nonvariant SVGs under third_party/kanjivg/n5_source (8) and n4_source
+(95) come from KanjiVG70a0b7ae0c18ceb5cb358274b029cce0234a43bc. Original source
+copyright/license notices and upstream COPYING are preserved byte-for-byte.
+NOTICE.md identifies Ulrich Apel and KanjiVG contributors, project/source/license
+URLs and geometry adaptations. Generated n5.json/n4.json adaptations are CC BY-SA
+3.0; source/license/change attribution remains visible beside the guide in app.
+No endorsement or unrelated application-code relicensing is claimed.
 Source: https://github.com/KanjiVG/kanjivg
 License: https://creativecommons.org/licenses/by-sa/3.0/
-No third-party endorsement or unrelated application-code relicensing is claimed.
 
-Reproduce from repo root without downloads/SDK:
+Reproduce both levels without downloads, provider keys or SDK:
 
     python3 scripts/import_kanji_references.py --check
     python3 -m unittest discover -s qa -p 'test_*.py' -v
 
-Regenerate reviewed output by omitting --check. The committed manifest locks the
-source commit/version, exact canonical N5 metadata digest, original ID/glyph/
-content-version/count mapping and each raw SVG SHA256. Source file names must be
-the expected Unicode codepoint only. Source hash/metadata drift rejects before
-XML/geometry publication. No network XML source or automatic upstream update.
-Changing coverage/source requires a separately reviewed version/manifest update.
+Use --level n5 or --level n4 for an explicit single level. Omit --check only to
+regenerate reviewed output. Closed configuration fixes each manifest/source/
+metadata/output path, version and exact coverage (8/95). Separate n5_manifest.json
+and n4_manifest.json lock source commit, license digest, canonical metadata SHA256,
+original ID/glyph/content-version/count and each SVG SHA256. Names must be the
+expected Unicode codepoint. Source/metadata/version/coverage/path drift rejects;
+no automatic upstream update, guessed source or N5 fallback for N4. Original N5
+output/manifest/license and both canonical metadata exports remain byte-identical.
+Checkout attributes preserve raw source/metadata/generated digest bytes; text
+output uses explicit UTF-8/LF. COPYING retains its original blank EOF line.
 
-## Geometry and display projection
+## Geometry and display boundary
 
-Validate original109-by109 viewBox, KanjiVG root glyph identity, transform absence,
-consecutive ordered path IDs and metadata stroke count. Only the pinned subset's
-initial M and cubic C/c/S/s commands are accepted, including implicit repeated
-segments, relative offsets and reflected smooth controls. Unsupported commands,
-truncation/nonfinite/outside/degenerate strokes fail; nothing is guessed/clamped.
-De Casteljau subdivision stops at0.15 source-pixel control-to-chord-segment error,
-with depth12 and4096-point bounds. Divide coordinates by109 and round to eight
-decimals; deduplicate adjacent points only. No glyph fitting, translation, stroke
-reordering/direction reversal or invented timing. This guide format is separate
-from frozen learner attempt contracts and the synthetic scoring primitive.
+Validate109-by109 viewBox, root glyph identity, absence of transforms, consecutive
+ordered path IDs and canonical stroke count. Only the pinned sources' initial M
+and cubic C/c/S/s commands are accepted, including repeated/relative/smooth curves.
+Reject unsupported/truncated/nonfinite/outside/degenerate paths. De Casteljau
+flattening uses0.15-source-pixel tolerance, depth12 and4096-point bounds; normalize
+by109, round to eight decimals, deduplicate adjacent points. No fitting, clipping,
+translation, reordering, reversal or invented timing. N4 has977 ordered strokes/
+7782 normalized points. Display geometry is separate from frozen learner attempt
+contracts and the synthetic scorer.
 
-The Flutter decoder checks provenance/version/license, bounded immutable original
-identity/glyph/version/source-file/hash/count/stroke/point/finite [0,1] projections.
-The repository uses one fixed asset path and matches canonical ID/glyph/content
-version/count; N4 causes no asset read. Raw canonical stroke_data_ref stays null.
+Flutter requires the expected level's exact version, coverage and provenance,
+then immutable bounded finite [0,1] geometry. Repository chooses only that level's
+fixed asset. Guide model and panel require matching level/ID/glyph/content-version/
+count, including results from an injected repository. Missing/error/manual retry,
+hidden/late selection fencing, narrow layouts and awaited owned exit are retained.
+Canonical stroke_data_ref/server availability remains unchanged. No real evaluator
+is installed: evaluateReal still reports unavailable; no attempt storage or grade.
 
-## Observed verification and limits
+## Observed checks and remaining work
 
-Parentcf00d081 CI39410222982 verified allfive jobs/every step,553 Flutter/five
-Chrome plus SDK/native/process/SQL/Web/Windows and all30 Kanji catalog cases.
-These are parent results, not execution of the new guide widgets.
+Parent060187ee CI39413895560 passed allfive jobs/every required step:573 Flutter
+and five actual Chrome tests, retained SDK/native/process/SQL/Web/Windows builds/
+artifacts. Completed Windows log confirms actual cancelable close and owned drain;
+the prior marker publication fix and all four new real-file regressions passed.
+These are parent results, not execution of the new N4 widgets.
 
-Eight new Python importer tests (25 total QA regressions) passed locally, including
-actual deterministic output/immutable source hashes/notices, analytic synthetic
-absolute/relative/smooth curves/direction, malformed/bounds and original glyph/
-count/order/canvas/transform rejection, source/metadata tamper and version/path/ID
-locks. Import --check and direct pinned Dart guide decode/identity/version/count/
-bounds/immutability/provenance smoke passed; pure-domain analysis, format and
-whitespace passed. A rendered contact sheet of all eight normalized actual glyphs
-was visually checked for shape/placement/order continuity. This is engineering
-validation, not independent teacher/native-speaker handwriting-quality review.
+Local checks passed: deterministic output for both levels,29 Python QA regressions
+(including four new N4 actual mapping/notices/tamper/level-lock cases), inventory49,
+pinned Dart format/pure-domain analysis and actual103-guide projection smoke with
+identity/version/count/bounds/immutability and foreign-level/coverage rejection.
+Four intermediate sheets of all95 normalized glyphs were visually reviewed for
+shape/placement/order continuity. This is engineering review, not independent
+teacher/native-speaker quality assessment or calibrated handwriting evaluation.
 
-Ten repository/codec and six widget tests are authored for actual bundle parity,
-eight canonical matches, N4 no reads, incompatible identities/versions/counts,
-malformed provenance/geometry, explicit step bounds/attribution/no grade, missing/
-redacted retry, hidden late route result,320px/200-percent controls and actual bundled owned
-exit with the expanded attribution EditableText retained. Existing
-capture/catalog/reader/owned assertions are unchanged. Full new Flutter/provider/
-widget/SDK/platform execution requires exact-head Actions. Prior local Flutter
-metadata automatic-review rejection is not retried/bypassed.
+The expanded Flutter guide suite authors24 cases: all original8 N5/all95 N4
+mappings, immutable geometry, fixed path separation, swapped level/version/coverage
+rejection and identity mismatches; N4 explicit step/draw independence and foreign
+result rejection; missing/redacted retry and320px/200-percent controls for both
+levels; late same-level/cross-level results; expanded attribution EditableText
+retained through awaited owned exit for both actual bundles. Retained N5/other
+flow assertions remain. Obsolete N4-unavailable expectations are replaced by
+N4's fixed-asset and explicit-loading contract, not relaxed coverage assertions.
+Full new Flutter/widgets/platform execution requires exact-head Actions. The
+prior local Flutter metadata automatic-review rejection is not retried/bypassed.
 
-No real evaluator is installed: evaluateReal remains unavailable. Showing a
-reference/count match is not a calibrated grade, recognized handwriting, mastery
-or attention/progress evidence. Independent pedagogy/geometry quality, broader
-N5/N4 references and real evaluation remain open in #16; all14 hosted acceptance
-groups remain pending. Keep #41 draft/#16 open/default preview; no merge,
-deployment, Auth strategy/schema/RLS/security/provider/spend/schedule change.
-
-Reference source/metadata/output checkout bytes are preserved for cross-platform
-digest checks; importer text I/O uses explicit UTF-8 and LF.
-
-The upstream COPYING file is preserved byte-for-byte, including its blank EOF
-line. Full whitespace review reports that one upstream-only notice; authored-file
-whitespace check passes. Its exact license digest is also locked by the importer.
+Keep #41 draft/#16 open/default preview/all14 hosted acceptance groups pending.
+No real recognition/grading/mastery/attention or saved Kanji progress claim.
+Independent pedagogical quality, reviewed real evaluation and wider curriculum
+remain open. No Auth strategy/storage/schema/RLS/dependency/CI/security/provider/
+spend/merge/deployment/release/schedule change; one asset-only pubspec declaration.

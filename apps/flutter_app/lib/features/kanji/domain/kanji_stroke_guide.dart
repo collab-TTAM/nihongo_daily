@@ -1,7 +1,9 @@
 import 'dart:convert';
+import '../../../shared/models/preview_level.dart';
 import 'kanji_catalog.dart';
 
 const kanjiGuideVersion = 'kanjivg-70a0b7ae-n5-1';
+const kanjiN4GuideVersion = 'kanjivg-70a0b7ae-n4-1';
 const kanjiGuideCommit = '70a0b7ae0c18ceb5cb358274b029cce0234a43bc';
 
 final class GuidePoint {
@@ -12,6 +14,7 @@ final class GuidePoint {
 
 final class KanjiStrokeGuide {
   KanjiStrokeGuide({
+    required this.level,
     required this.kanjiId,
     required this.character,
     required this.contentVersion,
@@ -19,10 +22,18 @@ final class KanjiStrokeGuide {
   }) : strokes = List.unmodifiable(
          strokes.map((stroke) => List<GuidePoint>.unmodifiable(stroke)),
        );
+  final PreviewLevel level;
   final String kanjiId;
   final String character;
   final int contentVersion;
   final List<List<GuidePoint>> strokes;
+
+  bool matches(KanjiCatalogEntry entry) =>
+      level == entry.level &&
+      kanjiId == entry.id &&
+      character == entry.character &&
+      contentVersion == entry.contentVersion &&
+      strokes.length == entry.strokeCount;
 }
 
 abstract interface class KanjiStrokeGuideRepository {
@@ -30,13 +41,20 @@ abstract interface class KanjiStrokeGuideRepository {
 }
 
 /// Display-only normalized geometry, never an attempt, real score or progress.
-List<KanjiStrokeGuide> decodeKanjiStrokeGuides(String source) {
+List<KanjiStrokeGuide> decodeKanjiStrokeGuides(
+  String source, {
+  PreviewLevel level = PreviewLevel.n5,
+}) {
+  final (version, coverage) = switch (level) {
+    PreviewLevel.n5 => (kanjiGuideVersion, 8),
+    PreviewLevel.n4 => (kanjiN4GuideVersion, 95),
+  };
   if (source.length > 1024 * 1024) {
     throw const FormatException('Guide size');
   }
   final root = _object(jsonDecode(source));
   if (root['format_version'] != 1 ||
-      root['reference_version'] != kanjiGuideVersion ||
+      root['reference_version'] != version ||
       root['source_commit'] != kanjiGuideCommit ||
       root['license'] != 'CC-BY-SA-3.0' ||
       root['source_url'] != 'https://github.com/KanjiVG/kanjivg' ||
@@ -48,7 +66,7 @@ List<KanjiStrokeGuide> decodeKanjiStrokeGuides(String source) {
     _text(root[key], 2000);
   }
   final rows = root['entries'];
-  if (rows is! List<Object?> || rows.length != 8) {
+  if (rows is! List<Object?> || rows.length != coverage) {
     throw const FormatException('Guide coverage');
   }
   final ids = <String>{};
@@ -99,6 +117,7 @@ List<KanjiStrokeGuide> decodeKanjiStrokeGuides(String source) {
     }
     result.add(
       KanjiStrokeGuide(
+        level: level,
         kanjiId: id,
         character: character,
         contentVersion: version,
