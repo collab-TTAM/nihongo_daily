@@ -6,6 +6,8 @@ import '../../auth/application/account_provider.dart';
 import '../../srs/application/srs_study_controller.dart';
 import '../../srs/application/srs_study_provider.dart';
 import '../application/srs_session_recorder.dart';
+import '../application/daily_plan_provider.dart';
+import 'study_day_button.dart';
 import '../application/srs_session_recorder_provider.dart';
 import '../domain/daily_plan.dart';
 
@@ -133,6 +135,20 @@ class _SrsSessionTimerPanelState extends ConsumerState<SrsSessionTimerPanel>
                   decoration: const InputDecoration(
                     labelText: 'Ngày học (YYYY-MM-DD)',
                   ),
+                ),
+                StudyDayButton(
+                  key: const Key('srs-timer-today'),
+                  currentDate: () => _date.text,
+                  repository: ref
+                      .watch(durableStudyRepositoryProvider)
+                      ?.delegate,
+                  timezone: profile?.timezone,
+                  enabled: visible && state.canStart,
+                  onDate: (date) {
+                    if (ref.read(srsSessionRecorderProvider).canStart) {
+                      _date.text = date.value;
+                    }
+                  },
                 ),
                 if (_validation != null)
                   Text(_validation!, key: const Key('srs-timer-validation')),

@@ -1,5 +1,6 @@
 import '../domain/completed_study_session.dart';
 import '../domain/daily_plan.dart';
+import '../domain/study_day.dart';
 
 enum DailyPlanErrorCode {
   unauthorized('UNAUTHORIZED'),
@@ -60,6 +61,13 @@ abstract interface class DailyPlanStudySessionGateway
   Future<Object?> submitStudySession(Map<String, Object> parameters);
 }
 
+/// Optional fixed get_study_day RPC with a literal empty request. Server owns
+/// clock/timezone selection; this interface accepts no caller clock or identity.
+abstract interface class DailyPlanStudyDayGateway
+    implements DailyPlanSessionGateway {
+  Future<Object?> getStudyDay(Map<String, Object> parameters);
+}
+
 /// Borrowed factory, published only by an active owned startup runtime.
 abstract interface class DailyPlanRepositorySource {
   DailyPlanRepository? createDailyPlanRepository();
@@ -75,6 +83,42 @@ final class DailyPlanRepository {
     } on Object {
       return false;
     }
+  }
+
+  bool get supportsStudyDay => _session is DailyPlanStudyDayGateway;
+
+  Future<StudyDay> loadStudyDay(String expectedTimezone) async {
+    _requireCurrent();
+    if (!StudyDay.validZone(expectedTimezone)) {
+      throw const DailyPlanFailure(DailyPlanErrorCode.validationFailure);
+    }
+    final session = _session;
+    if (session is! DailyPlanStudyDayGateway) {
+      throw const DailyPlanFailure(DailyPlanErrorCode.providerUnavailable);
+    }
+    Object? value;
+    try {
+      value = await session.getStudyDay({'p_request': <String, Object>{}});
+    } on DailyPlanFailure catch (failure) {
+      _requireCurrent();
+      throw _safeFailure(failure.code, failure.retryable);
+    } on Object {
+      _requireCurrent();
+      throw const DailyPlanFailure(DailyPlanErrorCode.internalError);
+    }
+    _requireCurrent();
+    final failure = _error(value);
+    if (failure != null) throw failure;
+    final StudyDay day;
+    try {
+      day = StudyDay.fromJson(value);
+    } on FormatException {
+      throw const DailyPlanFailure(DailyPlanErrorCode.internalError);
+    }
+    if (day.timezone != expectedTimezone) {
+      throw const DailyPlanFailure(DailyPlanErrorCode.syncConflict);
+    }
+    return day;
   }
 
   Future<DailyPlan> load(DailyPlanDate date) => _execute(

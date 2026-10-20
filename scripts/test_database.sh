@@ -21,3 +21,5 @@ python3 "$repo_root/scripts/export_review_queue.py" "$repo_root/build/review-que
 python3 "$repo_root/scripts/test_daily_plan.py"
 python3 "$repo_root/scripts/test_study_sessions.py"
 python3 "$repo_root/scripts/test_study_submit.py"
+
+python3 "$repo_root/scripts/test_study_day.py"

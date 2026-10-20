@@ -22,8 +22,9 @@ loop. A failed identity/readiness check permanently revokes that lease. Checks
 run before dispatch and after success/failure, using the ready-runtime identity
 as well as session identity. Construction/unknown transport errors are redacted.
 
-The existing registry allowlist gains exactly `get_daily_plan` (date) and
-`submit_study_session` (the five versioned event fields); arbitrary functions,
+The existing registry allowlist retains `get_daily_plan` (date) and
+`submit_study_session` (the five versioned event fields). PROFILE_STUDY_DAY.md
+adds separately versioned `get_study_day` with a literal empty request. Arbitrary functions,
 owner/derived overrides, invalid envelopes and oversized scalar values remain
 rejected before dispatch. The unchanged Supabase binding uses the captured
 immutable Bearer token and PostgREST serializer, disables implicit RPC retry and
@@ -65,7 +66,8 @@ The initial SDK increment did not install this factory into routes/providers.
 The subsequent read-only UI composition is documented in DAILY_PLAN_UI.md.
 The configured separate study journal/recovery is in OWNED_STUDY_RECOVERY.md
 and foreground SRS elapsed reports in SRS_STUDY_TIMER.md. Existing SRS review
-storage remains separate. Automatic profile-local date selection, live Supabase
-configuration and actual learner save/restart/two-device acceptance remain. Default main/CI artifacts remain explicit preview.
+storage remains separate. Explicit server-derived today selection is in
+PROFILE_STUDY_DAY.md. Live Supabase configuration and actual learner
+save/restart/two-device acceptance remain. Default main/CI artifacts remain explicit preview.
 Keep all14 hosted Personal Alpha release groups and #11 open; integration is
 draft, with no deployment/provider/security/schedule change.

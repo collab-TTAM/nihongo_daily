@@ -22,7 +22,8 @@ After configured startup and sign-in/profile readiness, the account page exposes
 **Kế hoạch học**, opening /plan. The learner explicitly enters YYYY-MM-DD according
 to the displayed profile timezone and presses **Tải kế hoạch**. No device date or
 UTC-offset approximation selects a profile day; no timezone dependency or wire
-change is introduced. Automatic profile-local today remains future work.
+change is introduced. Configured users can explicitly fill today from the
+server/profile clock using PROFILE_STUDY_DAY.md; no automatic plan read/write.
 Unconfigured/unsupported/signed-out/profile-pending states show an account link
 and dispatch no plan request. The ordinary home remains clearly marked preview.
 
@@ -71,8 +72,8 @@ no passing parent result is reused as new-head evidence.
 The durability library is documented in DURABLE_STUDY_SESSIONS.md. Its owned
 journal/service and explicit recovery are installed in configured Windows
 startup; see OWNED_STUDY_RECOVERY.md. Foreground SRS timer/new-report UI is in
-SRS_STUDY_TIMER.md. Other activities, automatic profile-local today and hosted
-JWT/A-B/two-device validation remain.
+SRS_STUDY_TIMER.md. Other activities and hosted JWT/A-B/two-device validation remain. Server-derived
+today lookup is documented in PROFILE_STUDY_DAY.md.
 All14 hosted Personal Alpha acceptance gates and #11 stay open; keep the PR draft.
 No provider/Auth strategy, schema/RLS, dependency, Pro/reader content, deployment,
 release, merge or schedule change.

@@ -1850,3 +1850,46 @@ save/release, no duplicate work/long polling. Keep #11 open/#41 draft/default
 preview/all14 hosted gates pending. Source drafts/main/Pro/reader/contracts/
 schema/RLS/dependencies/Auth policy unchanged; no merge/deployment/provider/spend/
 security/schedule change. See docs/SRS_STUDY_TIMER.md.
+
+
+## Server profile-local today — core-20261020T0441-profile-study-day
+
+Resumed after #41 ebf09bc CI39370830597 verified allfive jobs/every required step
+success,461 Flutter/five Chrome and retained SDK/native/Web/Windows gates. The
+retry hit-target correction is verified; parent evidence is historical only for
+this new source. Read-only continuation review in #41 selected a server-owned
+calendar projection instead of device-date guesses or a client timezone database.
+
+Additive contracts/calendar/v1 and get_study_day now accept only an empty request,
+derive auth.uid owner, read the current validated profile timezone and one server
+statement instant, and return exact date/timezone. No profile/bootstrap/learning
+write. Definer path/ACL/private converter and role/calendar/no-write review/test
+boundaries preserve frozen v0.1/study payloads/RLS/table grants/Auth policy.
+Captured SDK/registry adds one fixed empty envelope and reuses existing transport/
+readiness/late-result fences. Typed decoding rejects malformed days/zones and
+profile timezone mismatch; safe UI tells the learner to refresh their account.
+
+Configured /plan and /srs offer explicit today buttons that only fill existing
+date fields. Manual entry, load/start/finish remain separate. Duplicate lookup
+is disabled; newer manual edits, disabled action, logout/profile/source change
+and disposal reject old results. Frozen uncertain reports cannot be retargeted.
+No auto-fetch/write/retry or midnight subscription. Existing retained keyed
+fields preserve account revocation/awaited exit ownership. See PROFILE_STUDY_DAY.md.
+
+Six pure captured-day scenarios passed locally, together with all15 existing
+real-disk recorder/recovery cases and actual abrupt child/process-lease/reopen.
+Six Flutter day cases/six widgets/one actual-SDK case/three contract cases plus
+native role/calendar/actual-four-wire tests authored. Database runner/native tool
+append coverage; workflow and all prior steps/assertions retained. Pinned Dart
+format/pure-source analysis, Python compilation, JSON parse, shell syntax, QA17/
+inventory49 and whitespace passed. Full jsonschema/PostgreSQL/Flutter widget/
+SDK/browser/Web/Windows requires exact-head CI; dependencies are absent locally.
+No retry/bypass of prior Flutter CLI metadata-endpoint approval rejection.
+
+Next inspect actual #41 exact head/latest attempt/every required step, fix actual
+failures preserving assertions, then continue remaining real activity/hosted
+learner acceptance. Only pending CI means save/release without duplicate work or
+long polling. Keep #11 open/#41 draft/default preview/all14 hosted groups pending.
+No source drafts/main/Pro/reader/dependencies/Auth strategy/provider/spend/security
+reduction/hosted deployment/merge/schedule change. Existing immutable report dates,
+server overlap/day/minute validation and pending recovery remain authoritative.

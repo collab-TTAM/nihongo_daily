@@ -8,6 +8,7 @@ import '../application/daily_plan_provider.dart';
 import '../data/daily_plan_repository.dart';
 import '../domain/daily_plan.dart';
 import 'daily_plan_labels.dart';
+import 'study_day_button.dart';
 
 class DailyPlanScreen extends ConsumerStatefulWidget {
   const DailyPlanScreen({super.key});
@@ -119,6 +120,16 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
                   onSubmitted: ready && !_loading
                       ? (_) => unawaited(_load())
                       : null,
+                ),
+                StudyDayButton(
+                  key: const Key('plan-today'),
+                  currentDate: () => _date.text,
+                  repository: repository,
+                  timezone: profile?.timezone,
+                  enabled: ready && !_loading,
+                  onDate: (date) {
+                    if (ready && !_loading) _date.text = date.value;
+                  },
                 ),
                 const SizedBox(height: 12),
                 FilledButton.icon(

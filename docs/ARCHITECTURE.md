@@ -45,3 +45,9 @@ It preserves the captured Auth/RPC boundary and does not share the SRS journal
 format. Configured Windows ownership, captured service, explicit recovery UI
 and parallel Auth/study operation drain before SDK/store close are documented
 in OWNED_STUDY_RECOVERY.md. Default preview remains unconfigured.
+
+The additive authenticated server/profile current-day projection, optional captured
+read capability and explicit date-fill UI are reviewed in PROFILE_STUDY_DAY.md.
+The database timezone catalog owns calendar conversion; no device-date/UTC-offset
+guess or client timezone package is introduced. Existing plan/report contracts
+and server-authoritative progress remain unchanged.

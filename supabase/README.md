@@ -152,3 +152,8 @@ Existing private ledger ACLs/RLS and frozen v0.1 remain unchanged. Review and
 request/response/retry/UI limits: `../docs/STUDY_SESSION_API.md` and
 `../contracts/study/v1`. Native role/wire checks run after the retained session
 races through `scripts/test_study_submit.py`. No hosted deployment is applied.
+
+Additive profile-study-day-v1 get_study_day read and calendar/ACL/no-write/actual
+wire checks: docs/PROFILE_STUDY_DAY.md, supabase/tests/study_day.sql and
+scripts/test_study_day.py. The database runner retains prior suites and appends
+this one. No hosted migration or JWT/learner acceptance is claimed.

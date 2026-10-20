@@ -5,7 +5,8 @@ import 'daily_plan_repository.dart';
 
 /// Borrows the existing captured SDK transport; owns no client, token or store.
 /// Readiness must include the owned vault/profile/runtime barrier, not only Auth.
-final class CapturedDailyPlanGateway implements DailyPlanStudySessionGateway {
+final class CapturedDailyPlanGateway
+    implements DailyPlanStudySessionGateway, DailyPlanStudyDayGateway {
   CapturedDailyPlanGateway({
     required ReviewAuth auth,
     required ReviewRpcTransport transport,
@@ -46,6 +47,10 @@ final class CapturedDailyPlanGateway implements DailyPlanStudySessionGateway {
   @override
   Future<Object?> getDailyPlan(Map<String, Object> parameters) =>
       _invoke('get_daily_plan', parameters);
+
+  @override
+  Future<Object?> getStudyDay(Map<String, Object> parameters) =>
+      _invoke('get_study_day', parameters);
 
   @override
   Future<Object?> submitStudySession(Map<String, Object> parameters) =>

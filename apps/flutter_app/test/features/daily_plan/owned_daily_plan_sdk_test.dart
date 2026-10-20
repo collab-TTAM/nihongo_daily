@@ -34,6 +34,7 @@ void main() {
   late DateTime now;
   late String secret;
   Completer<http.Response>? profileWait;
+  Completer<http.Response>? dayWait;
   Completer<http.Response>? rpcWait;
   Completer<void>? rpcEntered;
   late int rpcStatus;
@@ -100,6 +101,7 @@ void main() {
     serverMinutes = 0;
     requests.clear();
     profileWait = null;
+    dayWait = null;
     rpcWait = null;
     rpcEntered = null;
     backend = fixture.MemoryVault();
@@ -131,6 +133,16 @@ void main() {
       if (request.url.path == '/auth/v1/logout') return http.Response('', 204);
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
         return profileWait?.future ?? Future.value(profileResponse());
+      }
+      if (request.url.path == '/rest/v1/rpc/get_study_day') {
+        return dayWait?.future ??
+            Future.value(
+              http.Response(
+                jsonEncode({'date': '2026-10-15', 'timezone': 'Asia/Tokyo'}),
+                200,
+                headers: {'content-type': 'application/json'},
+              ),
+            );
       }
       if (request.url.path == '/rest/v1/rpc/get_daily_plan' ||
           request.url.path == '/rest/v1/rpc/submit_study_session') {
@@ -180,12 +192,57 @@ void main() {
         ),
       );
     }
+    if (dayWait != null && !dayWait!.isCompleted) {
+      dayWait!.complete(
+        http.Response(
+          jsonEncode({'date': '2026-10-15', 'timezone': 'Asia/Tokyo'}),
+          200,
+        ),
+      );
+    }
     await runtime.close();
     await studyJournal.close();
     await journal.close();
     await directory.delete(recursive: true);
     network.close();
   });
+
+  test(
+    'owned study day uses captured SDK empty request and fences late logout result',
+    () async {
+      await runtime.start();
+      expect(runtime.createDailyPlanRepository(), isNull);
+      await login();
+      final repository = runtime.createDailyPlanRepository()!;
+      final day = await repository.loadStudyDay('Asia/Tokyo');
+      expect(day.date.value, '2026-10-15');
+      final request = requests.singleWhere(
+        (r) => r.url.path.endsWith('/get_study_day'),
+      );
+      expect(jsonDecode(request.body), {'p_request': <String, Object>{}});
+      expect(request.headers['apikey'], wire.key);
+      expect(
+        request.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+      expect(request.followRedirects, isFalse);
+      dayWait = Completer<http.Response>();
+      final stale = expectLater(
+        repository.loadStudyDay('Asia/Tokyo'),
+        throwsA(unauthorized),
+      );
+      await fixture.flush();
+      await runtime.account.signOut();
+      dayWait!.complete(
+        http.Response(
+          jsonEncode({'date': '2026-10-15', 'timezone': 'Asia/Tokyo'}),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await stale;
+    },
+  );
 
   test(
     'owned study source recovers actual disk and acknowledges through captured SDK',

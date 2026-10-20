@@ -37,7 +37,7 @@ is the separately reviewed, narrowly scoped authenticated transaction boundary.
 
 An explicit request date denotes the stored profile's local calendar day, not the
 database connection's date/timezone. The caller must obtain its profile-local
-date; automatic client date selection is not integrated yet. SRS candidates are
+date; explicit server-derived today selection is documented in PROFILE_STUDY_DAY.md. SRS candidates are
 own active, matching-level items due before the *exclusive* next local midnight,
 including overdue/unscheduled items. DST days may have23 or25 hours; no24-hour
 UTC arithmetic substitutes for calendar conversion. Content counts are captured

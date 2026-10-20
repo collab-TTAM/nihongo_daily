@@ -11,8 +11,8 @@ authenticated self-reported elapsed time (STUDY_SESSION_API.md).
 A ready current-account SRS card, no unresolved review and selected SRS level
 matching the current profile are required to start. The learner enters a real
 YYYY-MM-DD under the displayed profile timezone. No device timezone guess or
-new timezone dependency selects a day. Automatic profile-local today remains
-outstanding. Starting explicitly checks current-owner pending completed reports
+new timezone dependency selects a day. PROFILE_STUDY_DAY.md adds an explicit
+server-derived today lookup that only fills this field. Starting explicitly checks current-owner pending completed reports
 first: any pending report blocks the new interval and offers /study-recovery,
 without a plan read or submit. Otherwise load the authoritative plan and require
 an available nonempty SRS block, then recheck current card/lease before timing.
@@ -96,7 +96,7 @@ SDK/browser/platform execution requires exact-head CI. Parent b28684c CI39363924
 was verified allfive jobs/every required step success,444 Flutter/five Chrome
 and all nine recovery widgets. Historical success does not verify this increment.
 
-Other activity timers, automatic profile-local day, browser study persistence,
+Other activity timers, browser study persistence,
 active-interval crash recovery/clock synchronization and all14 hosted JWT/A-B/
 restart/two-device acceptance groups remain outstanding. Keep #11 open/#41 draft;
 no source draft/main merge, deployment, schema/RLS/Auth strategy/provider,

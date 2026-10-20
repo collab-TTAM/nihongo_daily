@@ -108,3 +108,7 @@ Configured Windows now installs completed-study storage and explicit
 manual reconciliation and lifecycle ownership. Configured /srs now has a
 foreground elapsed timer and explicit durable finish; see docs/SRS_STUDY_TIMER.md.
 Other activity timers and hosted acceptance remain pending; default stays preview.
+
+Configured plan/SRS date fields offer **Chọn hôm nay theo hồ sơ** using the
+server statement clock and own profile timezone. This fills the date only;
+loading/starting/saving remain explicit. See docs/PROFILE_STUDY_DAY.md.
