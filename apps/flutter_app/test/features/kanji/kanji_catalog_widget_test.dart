@@ -171,7 +171,15 @@ void main() {
         await tester.enterText(search, query);
         await tester.pumpAndSettle();
         expect(find.text('1 chữ N5'), findsOneWidget);
-        expect(find.text('日'), findsOneWidget);
+        final result = find.byKey(
+          ValueKey('kanji-${originals[PreviewLevel.n5]!.first.id}'),
+        );
+        expect(result, findsOneWidget);
+        expect(
+          find.descendant(of: result, matching: find.text('日')),
+          findsOneWidget,
+        );
+        expect(tester.widget<TextField>(search).controller!.text, query);
       }
       await tester.enterText(search, '[');
       await tester.pumpAndSettle();

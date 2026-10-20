@@ -2199,3 +2199,28 @@ handoff without duplicate implementation/documentation-only source commit or
 long polling. Keep #41 draft/#16 open/default preview/all14 hosted gates pending;
 no production/main/source/Pro/API/Auth strategy/schema/RLS/dependency/CI/security/
 provider/spend/merge/deployment/release/schedule change. See KANJI_CATALOG.md.
+
+
+## Kanji search finder scope — core-20261020T1044-kanji-search-finder
+
+Resumed #41 a041fc9a68a697561887accf45e6ca656346f8e1. Actual CI39409601599
+format/analyze passed;552 tests passed/one failed. All18 Kanji repository/11 other
+new Kanji widgets passed, including real original both levels, local capture
+isolation/refresh,320px/200-percent and actual bundled owned exit. Database/
+repo/AI succeeded, Windows running at review; downstream Flutter/browser/Web
+skipped, never passed.
+
+The global text finder for 日 matched both the search input's EditableText and
+result Text. Scope the glyph expectation to the canonical-ID ListTile; assert
+exactly one such result and the unchanged query, retain count/query/clear/level
+checks and all30 cases. Only test+two docs change, all production/content/source/
+Pro/Auth/SDK/ownership/security/lint/CI/dependency/schema/RLS unchanged.
+
+Pinned local format,QA17/inventory49,whitespace and separate bounded diff/assertion
+review passed. Corrected full Flutter/widget/build needs exact-head Actions; no
+local metadata automatic-review retry/bypass or full local Flutter claim. Next
+inspect complete actual head/latest-attempt all required jobs/steps and fix actual
+failures preserving assertions before new work. Pending-only means persist/
+release/handoff without duplicate source or long polling. Keep #41 draft/#16 open/
+default preview/all14 hosted gates pending; no merge/deployment/release/provider/
+spend/schedule change. See KANJI_CATALOG.md and current PR handoff.

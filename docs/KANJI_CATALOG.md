@@ -92,3 +92,26 @@ separate one-line source diff review passed. Corrected full Flutter/widget/build
 execution requires new exact-head Actions; prior local Flutter metadata automatic
 review rejection is not retried/bypassed. Keep #41 draft/#16 open/all14 hosted
 gates pending and inspect complete latest-attempt CI before further development.
+
+
+## Search result finder correction — 2026-10-20
+
+Exact a041fc9 CI39409601599 Flutter format/analyze passed; full suite reported
+552 passed/one failed. All18 Kanji repository and11 other new Kanji widget cases
+passed, including both selected levels, source/identity isolation,320px/200-percent
+capture and actual bundled owned exit. Database/repo/AI passed; Windows still
+running at review. Downstream Flutter/browser/Web skipped, not successful.
+
+The search test's global find.text(日) also matched the active search EditableText
+when the query itself was 日. The correct result already existed alongside the
+input. Scope the glyph assertion to its original-ID keyed ListTile, additionally
+require exactly one such tile and preserve the exact entered query. Keep the
+one-result count, all query variants, clear/level behavior and all30 cases. No
+production/finder warning suppression or weaker findsWidgets expectation.
+
+Local pinned format/QA17/inventory49/whitespace and separate exact diff review
+passed. Full corrected widget/platform results need new exact-head Actions.
+Prior local Flutter metadata automatic-review rejection remains, no retry/bypass.
+Next inspect complete same-head/latest-attempt CI before new implementation;
+pending-only means release/handoff, no duplicate work/long polling. All14 hosted
+gates remain pending, #16 open/#41 draft.
