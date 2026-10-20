@@ -79,6 +79,16 @@ Future<void> finishTimer(WidgetTester tester) async {
   await tester.pump();
 }
 
+Future<void> retryTimer(WidgetTester tester) async {
+  final button = find.byKey(const Key('srs-timer-retry'));
+  // Navigation and error text change the scroll position. Use a real visible
+  // hit target; never suppress tap warnings or invoke onPressed directly.
+  await tester.ensureVisible(button);
+  await tester.pumpAndSettle();
+  expect(button.hitTestable(), findsOneWidget);
+  await tester.tap(button);
+}
+
 void main() {
   testWidgets('preview has no active timer or invented save', (tester) async {
     final f = await mountTimer(tester, configured: false);
@@ -210,9 +220,10 @@ void main() {
       );
       f.server.commitBeforeFailure = true;
       f.clock.advance(const Duration(minutes: 5));
-      await tester.tap(find.byKey(const Key('srs-timer-retry')));
+      await retryTimer(tester);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('srs-timer-start')), findsNothing);
+      expect(f.server.writes, 1);
       expect(
         (await f.memory.list(account.owner)).single.event.endedAt,
         originalEnd,
@@ -220,9 +231,10 @@ void main() {
       await tester.pump(const Duration(seconds: 30));
       expect(f.server.writes, 1);
       f.server.writeFailure = null;
-      await tester.tap(find.byKey(const Key('srs-timer-retry')));
+      await retryTimer(tester);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('srs-timer-confirmed')), findsOneWidget);
+      expect(f.server.writes, 2);
       expect(f.server.committed.length, 1);
       expect(f.clock.ids, 1);
     },

@@ -101,3 +101,25 @@ active-interval crash recovery/clock synchronization and all14 hosted JWT/A-B/
 restart/two-device acceptance groups remain outstanding. Keep #11 open/#41 draft;
 no source draft/main merge, deployment, schema/RLS/Auth strategy/provider,
 dependency, Pro/reader content, spend or schedule change.
+
+
+## Retry viewport regression — 2026-10-20
+
+Source575716dd CI39365344329 passed repo-sanity, database, AI and Windows,
+including the expanded15-scenario native/process verifier. Flutter format/analyze
+passed; full tests460 passed/1 failed. All8 recorder scenarios, the8 other timer
+widgets and prior SDK/recovery tests passed. The remaining navigation/retry
+widget tapped its retry button at y556 while the bottom navigation received the
+pointer. The report was therefore never staged, and the subsequent list.single
+assertion failed. Flutter's real hit-test warning identifies the missed tap.
+Downstream Flutter/browser/Web checks were skipped, not passing.
+
+The fixture now scrolls to and settles each retry target, explicitly asserts it
+is hit-testable, then performs a normal tap. Both retries use this helper, and
+exact1/2 dispatch counts are additionally checked before the original immutable
+interval/unique receipt assertions. All9 cases and original assertions remain;
+no warning suppression, direct callback invocation, production behavior, test
+viewport enlargement or CI/lint/security change. Local pinned formatting/QA/
+whitespace and separate diff review passed; current-head widget execution requires
+independent CI. Local Flutter CLI remains blocked by prior metadata-endpoint
+approval review; no retry/bypass is attempted by this correction.

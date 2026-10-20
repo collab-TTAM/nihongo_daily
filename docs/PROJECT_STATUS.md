@@ -1821,3 +1821,32 @@ JWT/A-B/restart/two-device acceptance groups remain pending. Keep #11 open/#41
 draft/default preview. No source draft/main/Pro/reader content/contract/schema/
 RLS/dependency/Auth strategy/provider/spend/deployment/merge/schedule change.
 Details and limitations: docs/SRS_STUDY_TIMER.md.
+
+
+## Timer retry hit-target correction — core-20261020T0437-timer-hit-test
+
+Resume #41 at575716dd after reading actual source/global RELEASED marker.
+CI39365344329 latest attempt completed: repo-sanity/AI/database/Windows pass,
+including15 native recorder/recovery scenarios and actual process leases.
+Flutter format/analyze pass,460 tests pass/1 fail. All8 pure recorder scenarios,
+8 other timer widgets and prior SDK/recovery cases passed. The retry-navigation
+widget tapped an offscreen/covered button (y556 hit bottom navigation), then
+list.single found no staged event. This is an observed hit-target fixture fault;
+full Flutter downstream browser/Web checks were skipped, never counted as pass.
+
+Both retry actions now use a helper that scrolls to the button, settles layout,
+asserts a hit-testable target and taps normally. Added exact1/2 RPC dispatch
+assertions. Preserve all9 widget cases/original assertions, exact frozen report,
+single committed receipt and one event ID. No warning suppression or direct
+callback shortcut; no production behavior/viewport/CI gate change.
+
+Local pinned format, all17 QA/inventory49, whitespace and separate diff/assertion
+review passed. Full corrected-source Flutter/SDK/native/browser/Web/Windows
+requires exact-head Actions. Previous local Flutter CLI metadata-endpoint
+approval rejection remains; no retry/workaround/indirect execution attempted.
+Next inspect new exact-head/latest-attempt complete CI, fix actual failures,
+then profile-local today/additional real activity flows. Only pending CI means
+save/release, no duplicate work/long polling. Keep #11 open/#41 draft/default
+preview/all14 hosted gates pending. Source drafts/main/Pro/reader/contracts/
+schema/RLS/dependencies/Auth policy unchanged; no merge/deployment/provider/spend/
+security/schedule change. See docs/SRS_STUDY_TIMER.md.
