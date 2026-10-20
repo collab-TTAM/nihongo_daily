@@ -77,6 +77,7 @@ final class QuizRound {
       throw const FormatException('Invalid quiz round');
     }
   }
+
   final List<QuizQuestion> questions;
   final _answers = <String, String>{};
   int _index = 0;
@@ -89,6 +90,7 @@ final class QuizRound {
   int get score {
     return questions.where((q) => _answers[q.id] == q.target.id).length;
   }
+
   List<CurriculumEntry> get incorrect => List.unmodifiable([
     for (final q in questions)
       if (_answers.containsKey(q.id) && _answers[q.id] != q.target.id) q.target,

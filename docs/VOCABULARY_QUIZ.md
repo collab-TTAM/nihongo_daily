@@ -76,3 +76,16 @@ unavailable behavior with dedicated real-route tests; other placeholders stay.
 
 Keep #41 draft/#13 open/default preview. No main/source/Pro/canonical curriculum/
 Auth/API/schema/RLS/storage/provider/spend/merge/deployment/release/schedule change.
+
+### First quiz CI and formatting correction
+
+Exact1a3d0ae CI39472889990 attempt1 passed repo-sanity/database/AI/Windows and
+every required step in those four jobs, including Windows builds/artifact.
+Flutter stopped at formatting in the domain, screen and widget-test files;
+analysis, full tests, Chrome and Web were skipped. These are not quiz test passes.
+
+The correction changes only whitespace and optional trailing commas in those
+three Dart files, retaining literal text, logic, scenarios and assertions.
+No formatter/dependency/workflow configuration change. Manual source comparison
+is not formatter execution; the execution environment remains unavailable.
+The next exact-head Actions run must verify all required steps.

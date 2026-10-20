@@ -2470,3 +2470,33 @@ events/mastery/progress boundaries or next unblocked learning activity.
 Keep #41 draft/#13 open/default preview/all14 hosted groups pending; no main/
 source/Pro/canonical/Auth/API/storage/dependency/schema/RLS/CI/security/provider/
 spend/merge/deployment/release/schedule change. See VOCABULARY_QUIZ.md.
+
+
+## Quiz formatting correction — core-20261020T1816-quiz-format
+
+Resumed exact #41 1a3d0ae8ea7b370565d7d8996e507e8a1dd4488d. CI39472889990,
+latest attempt1, completed repo-sanity/database/ai-boundary/windows with every
+required step successful. Windows configured staging and preview release builds,
+native process/close checks and artifact upload passed. Flutter job118801709143
+failed dart format: vocabulary_quiz.dart, vocabulary_quiz_screen.dart and
+vocabulary_quiz_widget_test.dart changed. Analyze/full tests/Chrome/Web and other
+downstream Flutter checks were skipped; no quiz test success is claimed.
+
+Correct member spacing and collapse fitting Text/function invocations; remove
+the extra trailing blank line in the widget test. Only whitespace and optional
+trailing commas change in these three Dart files. Separate pinned-source review
+confirmed every string literal and non-whitespace/non-comma character sequence
+unchanged, including test assertions. No quiz behavior, scoring, source data,
+test case, assertion, formatter setting, dependency or workflow change.
+
+Execution environment remains unavailable. These edits were reviewed manually
+against the formatter's member-spacing fixture, not executed by a local formatter.
+Existing exact-head Actions must verify formatting, analysis, full tests and
+platform builds. No retry/bypass of prior Flutter metadata review rejection.
+Persist a complete base tree, verify original paths/modes/SHAs and read back each
+changed blob before advancing the branch. Next inspect exact-head/latest-attempt
+required jobs and steps; fix actual failures. Pending-only means release/handoff
+without duplicate source/docs-only commits or long polling.
+Keep #41 draft/#13 open/default preview/all14 hosted groups pending; no main/
+source/Pro/canonical/Auth/API/storage/schema/RLS/security/provider/spend/merge/
+deployment/release/schedule change. See VOCABULARY_QUIZ.md and PR handoff.

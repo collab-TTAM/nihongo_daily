@@ -40,9 +40,8 @@ void main() {
     }
   });
 
-  FixtureCurriculumRepository repository() => FixtureCurriculumRepository(
-    (_, level) async => originals[level]!,
-  );
+  FixtureCurriculumRepository repository() =>
+      FixtureCurriculumRepository((_, level) async => originals[level]!);
 
   for (final level in PreviewLevel.values) {
     testWidgets('${level.name} answer result restart', (tester) async {
@@ -104,10 +103,7 @@ void main() {
       final choice = i == 0
           ? q.choices.firstWhere((e) => e.id != q.target.id)
           : q.target;
-      await tapQuiz(
-        tester,
-        find.byKey(ValueKey('quiz-choice-${choice.id}')),
-      );
+      await tapQuiz(tester, find.byKey(ValueKey('quiz-choice-${choice.id}')));
       if (i == 0) {
         expect(find.text('Chưa đúng theo bài gốc.'), findsOneWidget);
         expect(find.text(q.target.meaningVi), findsOneWidget);
@@ -299,5 +295,4 @@ void main() {
     expect(await closing, AppExitResponse.exit);
     expect(tester.takeException(), isNull);
   });
-
 }

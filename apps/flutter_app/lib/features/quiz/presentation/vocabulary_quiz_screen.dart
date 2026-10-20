@@ -48,9 +48,7 @@ class VocabularyQuizScreen extends ConsumerWidget {
           ],
           data: (questions) => [
             if (questions.isEmpty)
-              const Text(
-                'Chưa đủ từ có cách đọc khác nhau để tạo bộ câu hỏi.',
-              )
+              const Text('Chưa đủ từ có cách đọc khác nhau để tạo bộ câu hỏi.')
             else
               _QuizPanel(key: ObjectKey(questions), questions: questions),
           ],
