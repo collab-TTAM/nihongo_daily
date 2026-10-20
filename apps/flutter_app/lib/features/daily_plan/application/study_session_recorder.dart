@@ -88,6 +88,8 @@ class StudySessionRecorder {
   DailyPlanDate? _date;
   DailyPlanArea? _area;
   CompletedStudySession? _event;
+  // Immutable display projection of the one frozen report, including failed stage.
+  CompletedStudySession? get pendingEvent => _event;
   Future<void>? _saving;
   Duration get elapsed {
     try {

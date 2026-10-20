@@ -136,3 +136,14 @@ without canceling another area's newer timing or an accepted immutable save.
 Six cross-area native cases plus a provider-consumer regression protect this
 prerequisite. Reader controls remain uninstalled. See SHARED_STUDY_RECORDER.md;
 current-head full CI is required before claiming combined verification.
+
+
+## Reader panel installation — 2026-10-20
+
+The SRS host now delegates to the common StudySessionTimerPanel. Original SRS
+keys/messages, own-card readiness, last-card finishing, provider alias identity
+and retained date field remain. Configured vocabulary/grammar hosts use the same
+provider, immutable report and area-scoped lifecycle behavior; their stronger
+settled-content/profile guards never replace SRS readiness. Other-area frozen
+reports are labeled and explicitly retryable without changing their identity.
+See CURRICULUM_STUDY_TIMER.md. Prior extraction evidence above is historical.

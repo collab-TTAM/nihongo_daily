@@ -1,10 +1,11 @@
 # Shared foreground completed-study recorder — Issue #11
 
 The account-scoped recorder core now supports SRS, vocabulary and grammar with
-one active/preflight/frozen-report slot. The configured app still exposes only
-the existing SRS controls. Reader controls and their loaded-content/profile-level
-readiness publication are a later increment; the production callback explicitly
-rejects non-SRS starts today. No vocabulary/grammar study credit is fabricated.
+one active/preflight/frozen-report slot. Configured SRS, vocabulary and grammar
+now use one area-aware panel/provider. Reader starts require settled nonempty
+original content at the authenticated profile's level and a matching available
+server-plan block. Default browsing remains public and does not record time.
+See CURRICULUM_STUDY_TIMER.md for the installed reader flow and verification limits.
 
 ## One captured owner and one report
 
@@ -53,12 +54,13 @@ not independent slots. Provider recreation/disposal still follows the same
 captured durable service/account/profile barrier. No preview configuration,
 credentials, extra runtime, automatic retry or new network operation is added.
 
-The current SRS panel, keys, readiness, level controls, messages and retained
-hidden/cleared/unfocusable date field stay intact. Reader UIs must next adopt the
-same provider, actual loaded same-profile-level content guard, area-aware labels
-and scoped lifecycle interruption. Frozen pending reports from any other area
-must remain explicitly identifiable/retryable without retargeting. Keep fields
-mounted through awaited app exit. Do not enable a family of independent recorders.
+SrsSessionTimerPanel delegates to StudySessionTimerPanel with the original SRS
+keys, readiness, level controls and messages. Reader hosts use the same panel with
+their explicit area. All date fields stay mounted, hidden/cleared/unfocusable on
+revocation and awaited app exit. Frozen reports display their original area/date/
+UTC interval and remain retryable across these routes, including failed staging.
+No family of independent recorders is installed. The immutable pendingEvent getter
+is a display projection; it does not grant mutation or a second save path.
 
 ## Verification and limits
 

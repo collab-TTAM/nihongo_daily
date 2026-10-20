@@ -5,8 +5,9 @@ study-session/progress helper described in STUDY_SESSIONS.md. The separately
 versioned submit RPC is reviewed in STUDY_SESSION_API.md and the explicit owned
 SDK factory in DAILY_PLAN_SDK.md. Read UI composition is in DAILY_PLAN_UI.md;
 configured Windows completed-report recovery is in OWNED_STUDY_RECOVERY.md.
-Foreground SRS timer/report creation is in SRS_STUDY_TIMER.md. Other activity
-timers, deployed service and authenticated learner acceptance remain outstanding.
+Foreground SRS timer/report creation is in SRS_STUDY_TIMER.md; configured
+vocabulary/grammar controls are in CURRICULUM_STUDY_TIMER.md. Remaining activities,
+deployed service and authenticated learner acceptance are still outstanding.
 The main Flutter home remains an explicitly labeled preview; no fake save or
 completion is installed. The #41 integration combines reviewed Auth/SRS #37 and
 read-only N5 reader/search #39; their source branches remain unchanged.
@@ -167,7 +168,7 @@ verified backend path is integrated and returns an authoritative receipt.
 
 
 SHARED_STUDY_RECORDER.md describes the single current-owner foreground/frozen
-report slot extracted for SRS/vocabulary/grammar. Existing SRS controls remain
-installed; vocabulary/grammar controls still await real loaded-content/profile
-readiness wiring. Neither packaged reading nor the new core records time by
-itself. Plan/RPC/durable acknowledgment semantics are unchanged.
+report slot for SRS/vocabulary/grammar. All three configured hosts use the same
+provider and area-aware panel; readers require settled actual same-profile-level
+content. Packaged reading never records time by itself. Plan/RPC/durable
+acknowledgment semantics are unchanged.

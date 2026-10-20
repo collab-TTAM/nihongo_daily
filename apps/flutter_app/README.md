@@ -8,12 +8,13 @@ storage enables controller recovery as described in ../../docs/STUDY_RECOVERY.md
 Default startup is an explicitly labeled, unconfigured preview, not Personal Alpha.
 The vocabulary/grammar routes read and search packaged original exports: N5 (24 words/10 patterns) and N4 (366 words/139
 patterns), with readings, Vietnamese explanations/examples and adjacent
-navigation. This is read-only; it adds no learning completion or account progress.
+navigation. Public browsing is read-only; it adds no completion or account progress.
+Configured Windows also offers explicit elapsed-study controls, described below.
 Audio/full JLPT coverage and independent linguistic review are not included. Preview level/theme choices
 last only for this process and do not alter the authenticated profile.
 
 Explicit Windows staging can install the owned Auth/profile/SRS runtime, Daily
-Plan, completed-study recovery and foreground SRS elapsed reports. See
+Plan, completed-study recovery and SRS/vocabulary/grammar elapsed reports. See
 ../../docs/STAGING_BOOTSTRAP.md and ../../docs/OWNED_STUDY_RECOVERY.md. Default
 startup does not activate a network service or login. Hosted learner acceptance,
 full multi-device sync, real Kanji grading and live AI/voice remain outstanding.
@@ -113,7 +114,9 @@ Configured Windows now installs completed-study storage and explicit
 /study-recovery from account/plan pages. See docs/OWNED_STUDY_RECOVERY.md for
 manual reconciliation and lifecycle ownership. Configured /srs now has a
 foreground elapsed timer and explicit durable finish; see docs/SRS_STUDY_TIMER.md.
-Other activity timers and hosted acceptance remain pending; default stays preview.
+Configured vocabulary/grammar now share that recorder with real settled content/
+profile-level guards; see ../../docs/CURRICULUM_STUDY_TIMER.md. Remaining activity
+timers and hosted acceptance are pending; default stays preview.
 
 Configured plan/SRS date fields offer **Chọn hôm nay theo hồ sơ** using the
 server statement clock and own profile timezone. This fills the date only;
@@ -123,5 +126,7 @@ loading/starting/saving remain explicit. See docs/PROFILE_STUDY_DAY.md.
 The shared completed-study recorder core is documented in
 ../../docs/SHARED_STUDY_RECORDER.md. The legacy SRS provider aliases one shared
 current-owner slot, preserving even not-yet-staged immutable reports. Existing
-SRS controls remain; reader timer UI/readiness are not installed yet and
-production non-SRS starts fail closed. Reading/search does not record progress.
+SRS and configured reader controls use one area-aware panel. Pending reports show
+the original area/date/interval across routes; retry preserves the frozen event.
+Reading/search does not record progress. Reader dates also offer the explicit
+server/profile today-fill action, which never starts or saves a session.

@@ -94,6 +94,7 @@ Future<void> verifySharedRecorder(String scenario) async {
             server.writes == 0,
         'Failed stage lost frozen state or fabricated durable success',
       );
+      final frozen = recorder.pendingEvent!;
       final reads = server.reads;
       for (final area in [DailyPlanArea.grammar, DailyPlanArea.srs]) {
         await recorder.start(DailyPlanDate('2026-10-21'), area: area);
@@ -107,6 +108,10 @@ Future<void> verifySharedRecorder(String scenario) async {
             server.writes == 0,
         'Another area replaced a frozen event before successful local stage',
       );
+      checkStudy(
+        identical(recorder.pendingEvent, frozen),
+        'Display projection replaced the frozen event',
+      );
       store.failStage = false;
       await recorder.retry();
       final event = (await journal.list(studyOwner)).single.event;
@@ -119,6 +124,10 @@ Future<void> verifySharedRecorder(String scenario) async {
             server.writes == 1 &&
             recorder.state.phase == StudyRecorderPhase.confirmed,
         'Retry changed frozen area/date/interval/identity',
+      );
+      checkStudy(
+        recorder.pendingEvent == null,
+        'Confirmed event remains exposed as pending',
       );
       await recorder.start(date, area: DailyPlanArea.grammar);
       checkStudy(

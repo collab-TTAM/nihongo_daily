@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
+import '../../daily_plan/application/daily_plan_provider.dart';
+import '../../daily_plan/application/srs_session_recorder_provider.dart';
+import '../../daily_plan/domain/daily_plan.dart';
+import '../../daily_plan/presentation/study_session_timer_panel.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/curriculum_provider.dart';
 import '../domain/curriculum.dart';
@@ -60,12 +64,24 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
   Widget build(BuildContext context) {
     final level = ref.watch(previewLevelProvider);
     final content = ref.watch(curriculumProvider(widget.kind));
+    final area = widget.kind == CurriculumKind.vocabulary
+        ? DailyPlanArea.vocabulary
+        : DailyPlanArea.grammar;
+    final sourceEntries = content.asData?.value;
+    final hasVisibleContent =
+        !content.isLoading &&
+        !content.hasError &&
+        sourceEntries != null &&
+        searchCurriculum(sourceEntries, _query).isNotEmpty;
+    final configured = ref.watch(durableStudyRepositoryProvider) != null;
     return PageBody(
       scrollController: _scrollController,
       children: [
         PageHeading(
           title: widget.kind.label,
-          subtitle: 'Nội dung gốc ban đầu · Chỉ đọc, chưa ghi tiến độ học tập.',
+          subtitle: configured
+              ? 'Nội dung gốc ban đầu · Chỉ ghi thời gian khi bạn bắt đầu và kết thúc buổi học.'
+              : 'Nội dung gốc ban đầu · Chỉ đọc, chưa ghi tiến độ học tập.',
         ),
         DropdownButton<PreviewLevel>(
           key: const Key('curriculum-level'),
@@ -77,6 +93,9 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
           ],
           onChanged: (value) {
             if (value == null || value == level) return;
+            ref
+                .read(studySessionRecorderProvider.notifier)
+                .interrupt(area: area);
             _navigateTo(null, resetList: true);
             ref.read(previewLevelProvider.notifier).state = value;
           },
@@ -104,6 +123,11 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
           onChanged: _changeQuery,
         ),
         const SizedBox(height: 16),
+        StudySessionTimerPanel(
+          key: ValueKey(widget.kind),
+          area: area,
+          contentVisible: hasVisibleContent,
+        ),
         ...content.when(
           loading: () => [
             const Center(child: CircularProgressIndicator()),
@@ -178,9 +202,12 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
           },
         ),
         const SizedBox(height: 24),
-        const Text(
-          'Nội dung chưa bao phủ toàn bộ JLPT và cần duyệt ngôn ngữ. '
-          'Chưa có buổi học, điểm số hoặc kết quả lưu vào tài khoản.',
+        Text(
+          configured
+              ? 'Nội dung chưa bao phủ toàn bộ JLPT và cần duyệt ngôn ngữ. '
+                    'Đọc hoặc tìm bài không tự ghi tiến độ. Thời gian học không chứng minh mức ghi nhớ.'
+              : 'Nội dung chưa bao phủ toàn bộ JLPT và cần duyệt ngôn ngữ. '
+                    'Chưa có buổi học, điểm số hoặc kết quả lưu vào tài khoản.',
         ),
         OutlinedButton(
           onPressed: () => context.go('/study'),
@@ -192,6 +219,16 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
 
   void _changeQuery(String value) {
     if (value == _query) return;
+    final entries = ref.read(curriculumProvider(widget.kind)).asData?.value;
+    if (entries == null || searchCurriculum(entries, value).isEmpty) {
+      ref
+          .read(studySessionRecorderProvider.notifier)
+          .interrupt(
+            area: widget.kind == CurriculumKind.vocabulary
+                ? DailyPlanArea.vocabulary
+                : DailyPlanArea.grammar,
+          );
+    }
     _query = value;
     _navigateTo(null, resetList: true);
   }

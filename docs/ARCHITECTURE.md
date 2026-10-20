@@ -64,5 +64,8 @@ the same existing host; no extra SDK, token writer or persistence owner is added
 The completed-study recorder now has one account-scoped slot shared across the
 SRS/vocabulary/grammar core, including frozen events before successful local
 staging. SHARED_STUDY_RECORDER.md specifies area guards, exact retry, scoped
-interruption and legacy-provider aliasing. Production continues to enable only
-SRS until reader readiness/UI is installed; no additional report route is active.
+interruption and legacy-provider aliasing. SRS and configured vocabulary/grammar
+now share StudySessionTimerPanel. Reader readiness requires settled original
+content at the authenticated profile's level; the existing durable service alone
+stages/submits explicit finished reports. Curriculum asset loading remains public
+and has no write capability. See CURRICULUM_STUDY_TIMER.md.

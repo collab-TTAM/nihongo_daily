@@ -1,8 +1,11 @@
 # Original curriculum browser — Issue #12
 
 The /vocabulary and /grammar routes now browse the original N5 and reviewed
-structural N4 seed exports in integration #41. This is a read-only preview, not a completed study session or
-progress integration. No Auth/network/table/enrollment/write endpoint is added.
+structural N4 seed exports in integration #41. Public preview browsing is read-only.
+Configured Windows can additionally offer explicit elapsed-session controls through
+the existing captured durable service; see CURRICULUM_STUDY_TIMER.md. Reading,
+searching and navigation alone never create a study report or mastery result.
+No Auth/network/table/enrollment/write endpoint is added.
 Integration #41 now combines this public reader with the reviewed #37 Auth/SRS
 and #40 Daily Plan code. The original source drafts remain unchanged; main has
 not been merged or deployed.
@@ -142,7 +145,9 @@ All prior owned-host exit/account/plan/SRS cases remain. Full new-head results
 require exact-head Actions; source-head green evidence is historical only.
 
 
-The next elapsed-report prerequisite is now implemented in the common core
-(SHARED_STUDY_RECORDER.md). The configured reader still has no timer/start/finish
-controls or learning-write capability. Production rejects non-SRS starts until
-reader readiness and scoped lifecycle UI are explicitly installed and verified.
+Configured vocabulary/grammar now share the SRS recorder, with real settled
+content/profile-level guards, explicit start/finish and exact frozen-report retry.
+Changing level, losing loaded content, no-match search, route/background loss or
+owner revocation cancels unfinished timing without a report. Ordinary available
+reading/detail navigation can continue the same interval. Current verification
+and remaining hosted gates are in CURRICULUM_STUDY_TIMER.md.

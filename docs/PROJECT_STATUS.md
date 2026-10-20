@@ -2067,3 +2067,40 @@ CI means save/release without duplicate code/long polling. Keep #11/#12 open/#41
 draft/default preview/all14 hosted groups pending. Main/source/Pro/content/deps/
 Auth/schema/RLS/CI/security/provider/spend/merge/deployment/schedule unchanged.
 See docs/SHARED_STUDY_RECORDER.md and current #41 handoff.
+
+
+## Configured reader elapsed sessions — core-20261020T0800-reader-study-ui
+
+Resumed #41 e674e60b3bf388b3ccd8d9899fe1e993588807c3. CI39376257044 latest attempt
+verified allfive jobs/every required step success:506 Flutter/five Chrome plus
+SDK/native/process/SQL/Web/Windows, explicitly including shared-provider frozen
+failed-stage regression. Main/source drafts/Pro canonical content unchanged.
+
+Configured vocabulary/grammar now share the existing one recorder and common
+area-aware panel with SRS. Real settled nonempty original content and matching
+profile level gate starts before/after pending-before-plan preflight; matching
+server blocks must be available. Retained AsyncData during refresh is rejected.
+Explicit date/today-fill/start/finish/retry, original frozen area/date/UTC interval,
+scoped source/search/level/route/background cancellation and retained hidden/
+cleared/unfocusable date fields preserve owned exit/drain and exact uncertain
+retry. Public browsing never records time. SRS keys/readiness/last-card behavior
+remain; immutable pendingEvent is display-only. No extra recorder/Auth/SDK/store
+owner, API/schema/RLS/content/dependency/CI/security/provider/spend change.
+
+Seventeen reader widget cases authored, including failed-stage grammar retry from
+vocabulary after SRS navigation, ambiguous commit, retained-data refresh, late
+preflight/logout,320px/200-percent confirmed reload failure and actual owned-host
+exit retention. Original fixture exports are used; hosted Auth/RPC/clock/storage
+are TEST ONLY. Prior SRS/reader/owned assertions retained. Strengthened native
+frozen-slot projection assertions; pinned direct Dart format/pure targeted analyze,
+all27 native scenarios plus actual abrupt child/lease/reopen,QA17/inventory49 and
+whitespace passed. New full Flutter/widget/provider/SDK/platform execution needs
+exact-head CI. Prior local Flutter metadata review rejection is not bypassed.
+
+Next inspect the published exact #41 head/latest-attempt complete required jobs/
+steps; fix actual failures without weakening assertions. Only pending CI means
+persist/release and handoff, no duplicate work or long polling. After green,
+continue remaining actual activity flows and outstanding hosted/browser gates.
+Keep #41 draft/#11/#12 open/default preview/all14 hosted groups pending; no
+main/source draft change, merge, deployment, release or schedule action.
+See CURRICULUM_STUDY_TIMER.md and current #41 handoff.
