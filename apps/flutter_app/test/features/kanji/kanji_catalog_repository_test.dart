@@ -120,7 +120,7 @@ void main() {
     for (final source in [
       jsonEncode([first, first]),
       '{}',
-      jsonEncode([{}]),
+      jsonEncode([<String, Object?>{}]),
       jsonEncode(List.filled(5001, first)),
       ' ' * (8 * 1024 * 1024 + 1),
     ]) {

@@ -2176,3 +2176,26 @@ Keep #41 draft/#16 open/default preview/all14 hosted gates pending; no canonical
 content/Pro/source/main/API/Auth strategy/SDK/storage/schema/RLS/dependency/CI/
 security/provider/spend/merge/deployment/release/schedule change. Two asset-only
 pubspec declarations added. Details: docs/KANJI_CATALOG.md and current handoff.
+
+
+## Kanji malformed-fixture typing — core-20261020T1039-kanji-test-type
+
+Resumed #41 ba7b06f158a1c15af244b41693e083f829cb98a6. Actual CI39408920908
+repo-sanity/database/AI success; Flutter format passed, analyze failed only on
+Kanji repository test line123 uninferred empty Map. Full tests/Chrome/downstream
+Web skipped, not passing. Windows still running after configured staging success.
+
+Change only the malformed empty-map fixture to explicit Map<String,Object?>; its
+JSON remains [{}]. All18 repository/12 widget cases and original assertions,
+production, canonical/Pro content, routes/ownership and CI/lint/security untouched.
+Local pinned format, pure-domain analyze,QA17/inventory49,whitespace and separate
+exact diff/encoded-fixture parity review passed. Full corrected Flutter/widget/
+platform execution needs exact-head Actions. No prior metadata automatic-review
+rejection retry/bypass or local full Flutter pass claimed.
+
+Next inspect published actual head/latest-attempt every required job/step and fix
+actual failures retaining assertions. Only CI pending means persist/release and
+handoff without duplicate implementation/documentation-only source commit or
+long polling. Keep #41 draft/#16 open/default preview/all14 hosted gates pending;
+no production/main/source/Pro/API/Auth strategy/schema/RLS/dependency/CI/security/
+provider/spend/merge/deployment/release/schedule change. See KANJI_CATALOG.md.

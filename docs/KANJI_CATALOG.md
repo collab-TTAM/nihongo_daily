@@ -74,3 +74,21 @@ automatic-review rejection remains; no retry/bypass. No new-source full Flutter,
 real grading or hosted learner result is claimed. Keep #41 draft/#16 open/all14
 hosted gates pending; no merge/deployment/Auth strategy/dependency/schema/RLS/CI/
 security/provider/spend/schedule change.
+
+
+## Malformed-fixture type correction — 2026-10-20
+
+Exact ba7b06f CI39408920908 repo-sanity/database/AI succeeded. Flutter format
+passed; analyze stopped on the empty malformed-object literal at repository test
+line123 (inference_failure_on_collection_literal). Full Flutter tests, Chrome and
+downstream Web steps were skipped, never passing. Windows remained running at
+review after configured staging build success. No production error was observed.
+
+The fixture now spells its empty map as Map<String,Object?>. Encoded JSON remains
+exactly [{}], so the strict malformed/missing-field rejection and all30 new cases/
+original assertions remain unchanged. No production/lint/CI/security change.
+Pinned local format, pure-domain analysis, QA17/inventory49, whitespace and
+separate one-line source diff review passed. Corrected full Flutter/widget/build
+execution requires new exact-head Actions; prior local Flutter metadata automatic
+review rejection is not retried/bypassed. Keep #41 draft/#16 open/all14 hosted
+gates pending and inspect complete latest-attempt CI before further development.
