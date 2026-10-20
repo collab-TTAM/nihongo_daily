@@ -28,7 +28,8 @@ class StudyScreen extends StatelessWidget {
                 StudyArea.grammar =>
                   'Đọc và tìm mẫu câu N5/N4 · Giải thích và ví dụ',
                 StudyArea.srs => 'Ôn thẻ khi tài khoản học tập đã sẵn sàng',
-                StudyArea.kanji => 'Viết trực tiếp · Chấm điểm chưa khả dụng',
+                StudyArea.kanji =>
+                  'Chọn chữ N5/N4 và viết trực tiếp · Chưa chấm điểm',
                 _ => 'Xem thông tin · Nội dung đang được xây dựng',
               }),
               trailing: const Icon(Icons.chevron_right),

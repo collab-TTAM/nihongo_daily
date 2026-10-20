@@ -69,3 +69,11 @@ now share StudySessionTimerPanel. Reader readiness requires settled original
 content at the authenticated profile's level; the existing durable service alone
 stages/submits explicit finished reports. Curriculum asset loading remains public
 and has no write capability. See CURRICULUM_STUDY_TIMER.md.
+
+
+The public Kanji metadata catalog uses fixed packaged N5/N4 exports through a
+separate typed read-only repository/provider. Original IDs/versions map catalog
+selection to an isolated instance of the existing capture controller; canonical
+metadata stroke counts never become reference geometry or grading. Existing
+/kanji free capture and all owned resource lifetimes remain. KANJI_CATALOG.md
+specifies catalog/practice routes, reset behavior and remaining #16 reference gate.

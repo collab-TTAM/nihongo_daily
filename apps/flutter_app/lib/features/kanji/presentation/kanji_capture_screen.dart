@@ -1,13 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
 import '../application/kanji_capture_provider.dart';
 import '../domain/kanji_models.dart';
+import '../domain/kanji_catalog.dart';
+import '../../../shared/models/preview_level.dart';
 
 class KanjiCaptureScreen extends ConsumerWidget {
-  const KanjiCaptureScreen({super.key});
+  const KanjiCaptureScreen({super.key, this.entry});
+  final KanjiCatalogEntry? entry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +19,28 @@ class KanjiCaptureScreen extends ConsumerWidget {
     final controller = ref.read(kanjiCaptureProvider.notifier);
     return PageBody(
       children: [
-        Text('Luyện Kanji', style: Theme.of(context).textTheme.headlineMedium),
+        Text(
+          entry == null ? 'Luyện Kanji' : 'Luyện viết ${entry!.character}',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        if (entry case final selected?) ...[
+          Text(
+            selected.character,
+            key: ValueKey('kanji-selected-${selected.id}'),
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
+          Text(selected.meaningVi),
+          Text(
+            'Âm On: ${selected.onyomi.isEmpty ? 'Chưa có' : selected.onyomi.join('、')}',
+          ),
+          Text(
+            'Âm Kun: ${selected.kunyomi.isEmpty ? 'Chưa có' : selected.kunyomi.join('、')}',
+          ),
+          Text(
+            '${selected.level.label} · Số nét theo nội dung: ${selected.strokeCount}',
+          ),
+          Text('Bộ thủ: ${selected.radical ?? 'Chưa có thông tin'}'),
+        ],
         const SizedBox(height: 8),
         const Text('BẢN XEM TRƯỚC · NHẬP NÉT THỬ NGHIỆM'),
         const SizedBox(height: 12),
@@ -27,6 +52,15 @@ class KanjiCaptureScreen extends ConsumerWidget {
         const Text(
           'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
           'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
+        ),
+        OutlinedButton(
+          key: const Key('kanji-open-catalog'),
+          onPressed: () => context.go(
+            entry == null
+                ? '/kanji/characters'
+                : '/kanji/characters?level=${entry!.level.name}',
+          ),
+          child: Text(entry == null ? 'Chọn chữ N5/N4' : 'Về danh sách Kanji'),
         ),
         const SizedBox(height: 20),
         Align(

@@ -10,6 +10,11 @@ The vocabulary/grammar routes read and search packaged original exports: N5 (24 
 patterns), with readings, Vietnamese explanations/examples and adjacent
 navigation. Public browsing is read-only; it adds no completion or account progress.
 Configured Windows also offers explicit elapsed-study controls, described below.
+Kanji now offers an original N5/N4 catalog (8/95 characters), On/Kun readings,
+Vietnamese meanings, metadata stroke counts and an isolated local writing canvas
+per selected character. Open **Chọn chữ N5/N4** from `/kanji`; see
+../../docs/KANJI_CATALOG.md. No vetted stroke order, real grade or saved Kanji
+progress is installed.
 Audio/full JLPT coverage and independent linguistic review are not included. Preview level/theme choices
 last only for this process and do not alter the authenticated profile.
 

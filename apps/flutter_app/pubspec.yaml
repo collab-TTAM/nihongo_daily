@@ -31,3 +31,5 @@ flutter:
     - assets/curriculum/n5/grammar.json
     - assets/curriculum/n4/vocabulary.json
     - assets/curriculum/n4/grammar.json
+    - assets/curriculum/n5/kanji.json
+    - assets/curriculum/n4/kanji.json

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +9,8 @@ import '../features/daily_plan/presentation/daily_plan_screen.dart';
 import '../features/daily_plan/presentation/study_recovery_screen.dart';
 import '../features/auth/presentation/account_screen.dart';
 import '../features/kanji/presentation/kanji_capture_screen.dart';
+import '../features/kanji/presentation/kanji_catalog_screen.dart';
+import '../shared/models/preview_level.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/srs/presentation/srs_study_screen.dart';
 import '../features/study/presentation/study_screen.dart';
@@ -81,6 +84,38 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const KanjiCaptureScreen(),
           ),
           GoRoute(
+            path: '/kanji/characters',
+            builder: (context, state) {
+              final level = _kanjiLevel(
+                state.uri.queryParameters['level'] ?? 'n5',
+              );
+              return level == null
+                  ? const FeaturePreviewScreen(
+                      title: 'Cấp độ Kanji chưa khả dụng',
+                      description: 'Hãy chọn nội dung N5 hoặc N4.',
+                    )
+                  : KanjiCatalogScreen(
+                      key: ValueKey(level),
+                      initialLevel: level,
+                    );
+            },
+          ),
+          GoRoute(
+            path: '/kanji/practice/:level/:id',
+            builder: (context, state) {
+              final level = _kanjiLevel(state.pathParameters['level']);
+              return level == null
+                  ? const FeaturePreviewScreen(
+                      title: 'Cấp độ Kanji chưa khả dụng',
+                      description: 'Hãy chọn nội dung N5 hoặc N4.',
+                    )
+                  : KanjiPracticeScreen(
+                      level: level,
+                      entryId: state.pathParameters['id']!,
+                    );
+            },
+          ),
+          GoRoute(
             path: '/srs',
             builder: (context, state) => const SrsStudyScreen(),
           ),
@@ -106,3 +141,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   ref.onDispose(router.dispose);
   return router;
 });
+
+PreviewLevel? _kanjiLevel(String? value) => switch (value) {
+  'n5' => PreviewLevel.n5,
+  'n4' => PreviewLevel.n4,
+  _ => null,
+};

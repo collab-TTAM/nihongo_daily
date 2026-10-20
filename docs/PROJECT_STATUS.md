@@ -2137,3 +2137,42 @@ green continue remaining activity and hosted/browser gates. Keep #11/#12 open/
 #41 draft/default preview/all14 hosted groups pending; no merge/deployment/
 release/Auth strategy/security/provider/spend/schedule change. Details in
 docs/CURRICULUM_STUDY_TIMER.md and the current PR handoff.
+
+
+## Original Kanji catalog and selected capture — core-20261020T1024-kanji-reader
+
+Resumed #41 613024bf08027ebb2d178dc4f731df1f69516f94. Actual CI39393662381 latest
+attempt verified allfive jobs/every required step success. Completed Flutter logs
+confirm523 tests/five Chrome and all17 reader timer cases; Web/Windows/native/
+SDK/SQL/process gates passed. Prior reader test corrections now verified, hosted
+learner evidence still absent. Main/source drafts/Pro canonical exports unchanged.
+
+Bounded #16 integration prerequisite: public typed Kanji catalog now packages
+exact original8 N5/95 N4 metadata, preserving IDs/versions/readings/meaning/count.
+Free /kanji capture retained; new catalog/search/level and explicit original-ID/
+level practice routes reuse the same canvas implementation in an isolated local
+controller per character/version. Unsupported/wrong-level/unknown IDs never
+fallback. Search/filter/retry/empty/redacted errors and held reload/late-level
+results are safe. Drawing or metadata counts never grade/credit/save; no vetted
+reference geometry, synthetic real score, timer/learning endpoint or new resource
+owner. Same-level catalog return and correct navigation remain; owned exit keeps
+search EditableText mounted beneath its blocker.
+
+Eighteen repository/codec and12 widget cases authored using original exports and
+TEST ONLY ports, including direct identity/source reset,320px/200-percent capture
+and actual bundled owned-host search/exit retention. All prior tests/assertions
+unchanged. Local pinned format/pure-domain analyze, exact103-record/asset smoke,
+malformed/bounds/duplicate/local Japanese+Vietnamese search/immutability smoke,
+QA17/inventory49, whitespace and separate source/composition review passed. Full
+new Flutter/widget/platform verification requires exact-head Actions; prior
+metadata-endpoint automatic-review rejection not retried/bypassed. No new full
+local Flutter/native/hosted grading pass claimed.
+
+Next inspect published exact #41 head/latest-attempt every required job/step and
+fix actual failures preserving assertions. Pending-only means persist/release
+without duplicate changes or long polling. After green continue vetted Kanji
+reference import/evaluation or remaining actual activity/hosted/browser work.
+Keep #41 draft/#16 open/default preview/all14 hosted gates pending; no canonical
+content/Pro/source/main/API/Auth strategy/SDK/storage/schema/RLS/dependency/CI/
+security/provider/spend/merge/deployment/release/schedule change. Two asset-only
+pubspec declarations added. Details: docs/KANJI_CATALOG.md and current handoff.
