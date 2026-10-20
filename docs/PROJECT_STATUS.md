@@ -2350,3 +2350,40 @@ Keep #41 draft/#16 open/default preview/all14 hosted groups pending. No main/
 source/Pro/canonical content/Auth strategy/SDK/storage/schema/RLS/dependency/CI/
 security/provider/spend/merge/deployment/release/schedule change. One asset-only
 pubspec declaration. See N5_STROKE_GUIDE.md and current PR handoff.
+
+
+## Optional Kanji tracing underlay — core-20261020T1213-kanji-tracing
+
+Resumed exact #41 4497cba23d86caba9739197ca400cf58be31dc65. CI39415591962,
+latest attempt, completed allfive jobs/every step successfully; completed logs581
+Flutter/five actual Chrome plus retained SQL/SDK/native/process/Web/Windows
+builds/artifacts. All24 N5/N4 guide cases passed. N4 coverage increment verified.
+
+Bounded #16 UI increment adds explicit Hiện nét mẫu trong ô viết after a guide
+is shown. Validated immutable original prefix paints faintly under the unchanged
+learner capture painter; current stroke/start emphasized and guide step/full
+controls stay aligned. No reference point becomes learner ink. Toggling/hiding
+preserves ink; undo/clear preserves reference selection. Local trace is removed
+on selected identity/level/version/source replacement, guide refresh/loading/
+error/foreign result; same-instance refresh still requires explicit re-enable.
+No implicit load/free-canvas trace. Existing attribution/owned host retained.
+
+Local pure-domain analyze, pinned format,29 Python QA/inventory49, deterministic
+both-level import, whitespace and separate bounded diff/lifecycle review passed.
+Direct pinned Dart smoke checked all103 actual guides/1005 ordered prefix bounds,
+immutable identical source strokes/invalid indices and untouched learner capture.
+Six new guide cases authored (30 total), covering both-level trace/capture/controls,
+identical-instance refresh and route/level/free isolation; retained narrow/actual
+bundled owned-exit tests additionally trace while preserving all previous checks.
+Full new Flutter/widgets/render/platform needs exact-head Actions. No retry/
+bypass of prior local Flutter metadata automatic-review rejection or local full
+Flutter claim. No independent pedagogical/calibrated handwriting-grade claim.
+
+Next inspect published exact head/latest-attempt every required job/step and fix
+actual failures retaining assertions. Pending-only means persist/release/handoff,
+no duplicate source/docs-only commit or long polling. After complete green,
+continue reviewed real feedback/evaluation or next unblocked learning activity.
+Keep #41 draft/#16 open/default preview/all14 hosted groups pending. No geometry/
+source/manifest/license/canonical content/Pro/main/source branch/API/Auth strategy/
+SDK/storage/recorder/progress/credit/dependency/schema/RLS/CI/security/provider/
+spend/merge/deployment/release/schedule change. See N5_STROKE_GUIDE.md.

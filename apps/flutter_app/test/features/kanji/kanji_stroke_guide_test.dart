@@ -11,6 +11,8 @@ import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'package:nihongo_daily/features/kanji/presentation/kanji_stroke_guide_panel.dart';
+import 'package:nihongo_daily/features/kanji/presentation/kanji_trace_painter.dart';
+import 'package:nihongo_daily/features/kanji/application/kanji_capture_provider.dart';
 import '../daily_plan/daily_plan_widget_test.dart' show PlanOwner, PlanSource;
 import '../srs/account_widget_test.dart' show Harness;
 import 'package:nihongo_daily/features/kanji/application/kanji_catalog_provider.dart';
@@ -269,6 +271,25 @@ void main() {
     },
   );
 
+  test(
+    'trace prefixes retain original immutable coordinates and reject bounds',
+    () {
+      for (final guide in [...guides, ...n4Guides]) {
+        for (final index in [0, guide.strokes.length - 1]) {
+          final trace = KanjiGuideTrace(guide, index);
+          expect(trace.strokes, hasLength(index + 1));
+          expect(identical(trace.strokes.last, guide.strokes[index]), isTrue);
+          expect(() => trace.strokes.last.clear(), throwsUnsupportedError);
+        }
+        expect(() => KanjiGuideTrace(guide, -1), throwsRangeError);
+        expect(
+          () => KanjiGuideTrace(guide, guide.strokes.length),
+          throwsRangeError,
+        );
+      }
+    },
+  );
+
   Future<ProviderContainer> mount(
     WidgetTester tester,
     GuideFixture fixture, {
@@ -307,6 +328,137 @@ void main() {
     await tester.pumpAndSettle();
     return container;
   }
+
+  KanjiTracePainter? tracing(WidgetTester tester) =>
+      tester
+              .widget<CustomPaint>(
+                find.byKey(const Key('kanji-canvas-picture')),
+              )
+              .painter
+          as KanjiTracePainter?;
+
+  for (final level in PreviewLevel.values) {
+    testWidgets(
+      '${level.label} tracing keeps learner ink independent of guide controls',
+      (tester) async {
+        final guide = level == PreviewLevel.n5 ? guides.first : n4Guides.first;
+        final fixture = GuideFixture((_) async => guide);
+        await mount(tester, fixture, level: level);
+        expect(fixture.calls, 0);
+        expect(tracing(tester), isNull);
+        await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+        expect(tracing(tester), isNull);
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        expect(tracing(tester)!.trace.strokes, hasLength(1));
+        expect(
+          identical(tracing(tester)!.trace.strokes.first, guide.strokes.first),
+          isTrue,
+        );
+        expect(find.text('Đã nhập 0 nét / 64'), findsOneWidget);
+        await drawCatalogStroke(tester);
+        final capture = ProviderScope.containerOf(
+          tester.element(find.byKey(const Key('kanji-canvas'))),
+        );
+        final ink = capture.read(kanjiCaptureProvider).strokes.single;
+        await tapCatalog(tester, find.byKey(const Key('kanji-guide-next')));
+        expect(tracing(tester)!.trace.strokeIndex, 1);
+        expect(capture.read(kanjiCaptureProvider).strokes.single, same(ink));
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        expect(tracing(tester), isNull);
+        expect(capture.read(kanjiCaptureProvider).strokes.single, same(ink));
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        await tapCatalog(tester, find.text('Xem toàn bộ'));
+        expect(tracing(tester)!.trace.strokes, hasLength(guide.strokes.length));
+        await tapCatalog(tester, find.text('Hoàn tác nét'));
+        expect(find.text('Đã nhập 0 nét / 64'), findsOneWidget);
+        expect(tracing(tester), isNotNull);
+        await drawCatalogStroke(tester);
+        await tapCatalog(tester, find.text('Xóa tất cả'));
+        expect(find.text('Đã nhập 0 nét / 64'), findsOneWidget);
+        expect(tracing(tester), isNotNull);
+        await drawCatalogStroke(tester);
+        await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+        expect(tracing(tester), isNull);
+        expect(find.text('Đã nhập 1 nét / 64'), findsOneWidget);
+        expect(find.byKey(const Key('kanji-trace-toggle')), findsNothing);
+        expect(fixture.calls, 1);
+        expect(tester.takeException(), isNull);
+      },
+    );
+    testWidgets(
+      '${level.label} guide refresh revokes tracing even for the same returned instance',
+      (tester) async {
+        final guide = level == PreviewLevel.n5 ? guides.first : n4Guides.first;
+        final held = Completer<KanjiStrokeGuide?>();
+        addTearDown(() {
+          if (!held.isCompleted) held.complete(guide);
+        });
+        var calls = 0;
+        final container = await mount(
+          tester,
+          GuideFixture((_) async => ++calls == 1 ? guide : held.future),
+          level: level,
+        );
+        await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        await drawCatalogStroke(tester);
+        expect(tracing(tester), isNotNull);
+        final entry = level == PreviewLevel.n5 ? n5.first : n4.first;
+        container.invalidate(kanjiStrokeGuideProvider(entry));
+        await tester.pump();
+        expect(tracing(tester), isNull);
+        expect(find.text('Đã nhập 1 nét / 64'), findsOneWidget);
+        held.complete(guide);
+        await tester.pumpAndSettle();
+        expect(tracing(tester), isNull);
+        expect(
+          tester
+              .widget<SwitchListTile>(
+                find.byKey(const Key('kanji-trace-toggle')),
+              )
+              .value,
+          isFalse,
+        );
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        expect(tracing(tester), isNotNull);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets(
+    'tracing and ink do not transfer to another level or free practice',
+    (tester) async {
+      final container = await mount(
+        tester,
+        GuideFixture(
+          (entry) async =>
+              entry.level == PreviewLevel.n5 ? guides.first : n4Guides.first,
+        ),
+      );
+      await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+      await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+      await drawCatalogStroke(tester);
+      container.read(routerProvider).go('/kanji/practice/n4/${n4.first.id}');
+      await tester.pumpAndSettle();
+      expect(tracing(tester), isNull);
+      expect(find.text('Đã nhập 0 nét / 64'), findsOneWidget);
+      await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+      expect(
+        tester
+            .widget<SwitchListTile>(find.byKey(const Key('kanji-trace-toggle')))
+            .value,
+        isFalse,
+      );
+      await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+      expect(tracing(tester)!.trace.guide.level, PreviewLevel.n4);
+      container.read(routerProvider).go('/kanji');
+      await tester.pumpAndSettle();
+      expect(tracing(tester), isNull);
+      expect(find.text('Đã nhập 0 nét / 64'), findsOneWidget);
+      expect(find.byKey(const Key('kanji-trace-toggle')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'explicit guide shows original ordered steps with bounds attribution and no grade',
@@ -476,6 +628,12 @@ void main() {
         );
         await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
         await tapCatalog(tester, find.byKey(const Key('kanji-guide-next')));
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        expect(tracing(tester)!.trace.strokeIndex, 1);
+        final canvasRect = tester.getRect(
+          find.byKey(const Key('kanji-canvas')),
+        );
+        expect(canvasRect.width, closeTo(canvasRect.height, 1e-6));
         final rect = tester.getRect(
           find.byKey(const Key('kanji-guide-picture')),
         );
@@ -535,6 +693,8 @@ void main() {
         router.go('/kanji/practice/${level.name}/${subscriptions!.$3.id}');
         await tester.pumpAndSettle();
         await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+        await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
+        final traceBeforeClose = tracing(tester)!.trace;
         final editableFinder = find.descendant(
           of: find.byType(KanjiStrokeGuidePanel),
           matching: find.byType(EditableText),
@@ -559,6 +719,16 @@ void main() {
           skipOffstage: false,
         );
         expect(identical(tester.state(hidden), editableState), isTrue);
+        final hiddenCanvas = tester.widget<CustomPaint>(
+          find.byKey(const Key('kanji-canvas-picture'), skipOffstage: false),
+        );
+        expect(
+          identical(
+            (hiddenCanvas.painter as KanjiTracePainter).trace,
+            traceBeforeClose,
+          ),
+          isTrue,
+        );
         expect(
           tester.widget<EditableText>(hidden).focusNode.canRequestFocus,
           isFalse,

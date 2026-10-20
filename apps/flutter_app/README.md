@@ -15,7 +15,9 @@ Vietnamese meanings, metadata stroke counts and an isolated local writing canvas
 per selected character. Open **Chọn chữ N5/N4** from `/kanji`; see
 ../../docs/KANJI_CATALOG.md. The eight N5 seed characters and95 original N4 characters offer an optional
 KanjiVG step guide with attribution/license (../../docs/N5_STROKE_GUIDE.md). Real grading
-and saved Kanji progress remain unavailable.
+and saved Kanji progress remain unavailable. After showing a guide, enable
+**Hiện nét mẫu trong ô viết** to trace its faint prefix below your own ink.
+Changing guide steps never adds learner strokes; hiding the guide removes tracing.
 Audio/full JLPT coverage and independent linguistic review are not included. Preview level/theme choices
 last only for this process and do not alter the authenticated profile.
 

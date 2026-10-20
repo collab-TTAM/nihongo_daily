@@ -56,35 +56,53 @@ hidden/late selection fencing, narrow layouts and awaited owned exit are retaine
 Canonical stroke_data_ref/server availability remains unchanged. No real evaluator
 is installed: evaluateReal still reports unavailable; no attempt storage or grade.
 
+## Optional tracing in the capture canvas
+
+After explicitly showing a valid guide, **Hiện nét mẫu trong ô viết** enables a
+faint prefix under learner ink. Current reference stroke/start are emphasized;
+previous/next/full controls select the same original prefix in both views. No
+fitting, scaling to handwriting bounds, reference-to-capture conversion or
+recognition is performed. KanjiGuideTrace validates the index and exposes only
+immutable original geometry. KanjiTracePainter clips normalized coordinates to
+the square, paints a transparent background, then the unchanged capture painter
+paints learner ink above it. It never calls the capture controller.
+
+Default/free practice has no underlay or implicit load. Toggle off or hide the
+guide removes tracing without clearing ink. Undo/clear affect only learner ink.
+Entry/level/version/source replacement disposes local trace state; guide refresh,
+loading/error/null/foreign result revokes it even if a refresh returns the same
+instance. Re-enabling is explicit. Expanded guide attribution remains present
+while tracing. Awaited owned exit retains the same hidden tracing/EditableText
+widgets, with input blocked by the existing host; no owner or shutdown change.
+No trace or learner stroke is saved, credited or sent to an endpoint.
+
 ## Observed checks and remaining work
 
-Parent060187ee CI39413895560 passed allfive jobs/every required step:573 Flutter
-and five actual Chrome tests, retained SDK/native/process/SQL/Web/Windows builds/
-artifacts. Completed Windows log confirms actual cancelable close and owned drain;
-the prior marker publication fix and all four new real-file regressions passed.
-These are parent results, not execution of the new N4 widgets.
+Parent4497cba CI39415591962 completed allfive jobs/every step:581 Flutter/five
+actual Chrome tests plus retained SQL/SDK/native/process/Web/Windows builds and
+artifacts. All24 N5/N4 guide cases passed, including actual95 N4 mappings and
+both-level expanded-attribution owned exit. These are parent results, not new
+trace-widget execution. Previous Windows marker publication fix remains verified.
 
-Local checks passed: deterministic output for both levels,29 Python QA regressions
-(including four new N4 actual mapping/notices/tamper/level-lock cases), inventory49,
-pinned Dart format/pure-domain analysis and actual103-guide projection smoke with
-identity/version/count/bounds/immutability and foreign-level/coverage rejection.
-Four intermediate sheets of all95 normalized glyphs were visually reviewed for
-shape/placement/order continuity. This is engineering review, not independent
-teacher/native-speaker quality assessment or calibrated handwriting evaluation.
+Local checks passed:29 Python QA, inventory49, both-level deterministic --check,
+pinned format/pure-domain analyze and direct Dart smoke over all103 original
+guides/1005 ordered prefix boundaries. Prefixes retain identical immutable source
+stroke lists, invalid indices reject and the independent learner capture remains
+unchanged. No source/manifest/geometry/metadata/license/dependency change. Prior
+four-sheet visual review of all95 original N4 glyphs remains engineering review,
+not independent teacher/native-speaker handwriting-quality or scoring calibration.
 
-The expanded Flutter guide suite authors24 cases: all original8 N5/all95 N4
-mappings, immutable geometry, fixed path separation, swapped level/version/coverage
-rejection and identity mismatches; N4 explicit step/draw independence and foreign
-result rejection; missing/redacted retry and320px/200-percent controls for both
-levels; late same-level/cross-level results; expanded attribution EditableText
-retained through awaited owned exit for both actual bundles. Retained N5/other
-flow assertions remain. Obsolete N4-unavailable expectations are replaced by
-N4's fixed-asset and explicit-loading contract, not relaxed coverage assertions.
-Full new Flutter/widgets/platform execution requires exact-head Actions. The
-prior local Flutter metadata automatic-review rejection is not retried/bypassed.
+Six new guide cases are authored (30 total): all103 immutable prefix/bounds checks;
+N5/N4 explicit tracing and learner-ink independence through step/toggle/undo/clear/
+hide; N5/N4 refresh revocation even for an identical returned guide; route/level/
+free-practice isolation. Retained both-level320px/200-percent and actual bundled
+owned-exit cases now additionally enable/assert tracing while preserving every
+prior assertion. Full new Flutter/widget/render/platform execution requires
+exact-head Actions. The prior local Flutter metadata automatic-review rejection
+is not retried/bypassed; no full local Flutter pass is claimed.
 
 Keep #41 draft/#16 open/default preview/all14 hosted acceptance groups pending.
 No real recognition/grading/mastery/attention or saved Kanji progress claim.
 Independent pedagogical quality, reviewed real evaluation and wider curriculum
 remain open. No Auth strategy/storage/schema/RLS/dependency/CI/security/provider/
-spend/merge/deployment/release/schedule change; one asset-only pubspec declaration.
+spend/merge/deployment/release/schedule change.

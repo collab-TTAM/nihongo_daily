@@ -6,8 +6,15 @@ import '../domain/kanji_catalog.dart';
 import '../domain/kanji_stroke_guide.dart';
 
 class KanjiStrokeGuidePanel extends ConsumerStatefulWidget {
-  const KanjiStrokeGuidePanel({super.key, required this.entry});
+  const KanjiStrokeGuidePanel({
+    super.key,
+    required this.entry,
+    this.trace,
+    this.onTraceChanged,
+  });
   final KanjiCatalogEntry entry;
+  final KanjiGuideTrace? trace;
+  final ValueChanged<KanjiGuideTrace?>? onTraceChanged;
   @override
   ConsumerState<KanjiStrokeGuidePanel> createState() =>
       _KanjiStrokeGuidePanelState();
@@ -23,15 +30,25 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
       children: [
         OutlinedButton(
           key: const Key('kanji-guide-toggle'),
-          onPressed: () => setState(() {
-            _expanded = !_expanded;
-            _stroke = 0;
-          }),
+          onPressed: () {
+            widget.onTraceChanged?.call(null);
+            setState(() {
+              _expanded = !_expanded;
+              _stroke = 0;
+            });
+          },
           child: Text(_expanded ? 'Ẩn nét mẫu' : 'Xem nét mẫu'),
         ),
         if (_expanded) _content(),
       ],
     );
+  }
+
+  void _selectStroke(KanjiStrokeGuide guide, int index) {
+    setState(() => _stroke = index);
+    if (widget.trace != null) {
+      widget.onTraceChanged?.call(KanjiGuideTrace(guide, index));
+    }
   }
 
   Widget _content() {
@@ -87,27 +104,39 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
                         ),
                       ),
                     ),
+                    if (widget.onTraceChanged != null)
+                      SwitchListTile.adaptive(
+                        key: const Key('kanji-trace-toggle'),
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Hiện nét mẫu trong ô viết'),
+                        subtitle: const Text(
+                          'Tô theo mẫu mờ; chưa chấm điểm chữ viết.',
+                        ),
+                        value: identical(widget.trace?.guide, guide),
+                        onChanged: (enabled) => widget.onTraceChanged!(
+                          enabled ? KanjiGuideTrace(guide, stroke) : null,
+                        ),
+                      ),
                     Wrap(
                       spacing: 8,
                       children: [
                         TextButton(
                           key: const Key('kanji-guide-previous'),
                           onPressed: stroke > 0
-                              ? () => setState(() => _stroke = stroke - 1)
+                              ? () => _selectStroke(guide, stroke - 1)
                               : null,
                           child: const Text('Nét trước'),
                         ),
                         TextButton(
                           key: const Key('kanji-guide-next'),
                           onPressed: stroke + 1 < guide.strokes.length
-                              ? () => setState(() => _stroke = stroke + 1)
+                              ? () => _selectStroke(guide, stroke + 1)
                               : null,
                           child: const Text('Nét tiếp'),
                         ),
                         TextButton(
-                          onPressed: () => setState(
-                            () => _stroke = guide.strokes.length - 1,
-                          ),
+                          onPressed: () =>
+                              _selectStroke(guide, guide.strokes.length - 1),
                           child: const Text('Xem toàn bộ'),
                         ),
                       ],

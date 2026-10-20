@@ -36,6 +36,18 @@ final class KanjiStrokeGuide {
       strokes.length == entry.strokeCount;
 }
 
+/// Display-only prefix for tracing; it never contains learner stroke data.
+final class KanjiGuideTrace {
+  KanjiGuideTrace(this.guide, this.strokeIndex) {
+    if (strokeIndex < 0 || strokeIndex >= guide.strokes.length) {
+      throw RangeError.index(strokeIndex, guide.strokes, 'strokeIndex');
+    }
+  }
+  final KanjiStrokeGuide guide;
+  final int strokeIndex;
+  Iterable<List<GuidePoint>> get strokes => guide.strokes.take(strokeIndex + 1);
+}
+
 abstract interface class KanjiStrokeGuideRepository {
   Future<KanjiStrokeGuide?> load(KanjiCatalogEntry entry);
 }

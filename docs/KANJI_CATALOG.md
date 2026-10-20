@@ -44,7 +44,9 @@ SDK/store owner or close path is introduced.
 
 The eight N5 seed characters and95 original N4 characters offer optional
 attributed KanjiVG step guides (N5_STROKE_GUIDE.md). Separate level/version/
-coverage checks prevent a foreign guide from being displayed. This is not tracing,
+coverage checks prevent a foreign guide from being displayed. An explicit
+**Hiện nét mẫu trong ô viết** control adds the selected faint stroke prefix below
+learner ink in the same original canvas coordinates. It is optional tracing, not
 recognized handwriting, real grading or mastery. #16 remains open for broader
 coverage, pedagogical validation and a real evaluator. Canonical stroke_data_ref,
 server KANJI availability and study recorder area support are unchanged.

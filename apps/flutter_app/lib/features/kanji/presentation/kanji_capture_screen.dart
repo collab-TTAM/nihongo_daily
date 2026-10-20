@@ -8,16 +8,61 @@ import '../application/kanji_capture_provider.dart';
 import '../domain/kanji_models.dart';
 import '../domain/kanji_catalog.dart';
 import 'kanji_stroke_guide_panel.dart';
+import 'kanji_trace_painter.dart';
+import '../domain/kanji_stroke_guide.dart';
+import '../application/kanji_stroke_guide_provider.dart';
 import '../../../shared/models/preview_level.dart';
 
-class KanjiCaptureScreen extends ConsumerWidget {
+class KanjiCaptureScreen extends ConsumerStatefulWidget {
   const KanjiCaptureScreen({super.key, this.entry});
   final KanjiCatalogEntry? entry;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<KanjiCaptureScreen> createState() => _KanjiCaptureScreenState();
+}
+
+class _KanjiCaptureScreenState extends ConsumerState<KanjiCaptureScreen> {
+  KanjiGuideTrace? _trace;
+  KanjiCatalogEntry? get entry => widget.entry;
+  @override
+  void didUpdateWidget(covariant KanjiCaptureScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entry != widget.entry) {
+      _trace = null;
+    }
+  }
+
+  void _setTrace(KanjiGuideTrace? value) {
+    if (value != null && !(entry != null && value.guide.matches(entry!))) {
+      return;
+    }
+    setState(() => _trace = value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(kanjiCaptureProvider);
     final controller = ref.read(kanjiCaptureProvider.notifier);
+    KanjiGuideTrace? trace;
+    if (entry case final selected? when _trace != null) {
+      final provider = kanjiStrokeGuideProvider(selected);
+      // Subscribe only after explicit enable; opening practice never loads a guide.
+      ref.listen(provider, (_, next) {
+        if (_trace != null &&
+            (next.isLoading ||
+                next.hasError ||
+                !identical(next.asData?.value, _trace!.guide))) {
+          setState(() => _trace = null);
+        }
+      });
+      final current = ref.watch(provider);
+      if (!current.isLoading &&
+          !current.hasError &&
+          identical(current.asData?.value, _trace?.guide) &&
+          (_trace?.guide.matches(selected) ?? false)) {
+        trace = _trace;
+      }
+    }
     return PageBody(
       children: [
         Text(
@@ -56,7 +101,12 @@ class KanjiCaptureScreen extends ConsumerWidget {
               : 'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
                     'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
         ),
-        if (entry case final selected?) KanjiStrokeGuidePanel(entry: selected),
+        if (entry case final selected?)
+          KanjiStrokeGuidePanel(
+            entry: selected,
+            trace: trace,
+            onTraceChanged: _setTrace,
+          ),
         OutlinedButton(
           key: const Key('kanji-open-catalog'),
           onPressed: () => context.go(
@@ -118,7 +168,11 @@ class KanjiCaptureScreen extends ConsumerWidget {
                         child: ColoredBox(
                           color: color.surfaceContainerLow,
                           child: CustomPaint(
-                            painter: _StrokePainter(
+                            key: const Key('kanji-canvas-picture'),
+                            painter: trace == null
+                                ? null
+                                : KanjiTracePainter(trace, color.primary),
+                            foregroundPainter: _StrokePainter(
                               state,
                               color.primary,
                               color.outlineVariant,
