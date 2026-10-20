@@ -6,7 +6,7 @@ See `docs/` for product, architecture, security and automation contracts.
 
 The Flutter UI preview is in `apps/flutter_app`; see its README for running on
 web/Windows, routes, tests and explicit integration limitations. Default startup
-is an unconfigured preview with an original N5 vocabulary/grammar reader. Explicit
+is an unconfigured preview with an original N5/N4 vocabulary/grammar reader. Explicit
 Windows staging can use owned Auth/SRS, Daily Plan and durable completed-study
 recovery. Hosted learner acceptance, full sync and AI remain open.
 

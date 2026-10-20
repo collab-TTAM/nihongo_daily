@@ -52,12 +52,18 @@ Future<ProviderContainer> mountCurriculum(
 
 void main() {
   final original = <CurriculumKind, List<CurriculumEntry>>{};
+  final originalN4 = <CurriculumKind, List<CurriculumEntry>>{};
   setUpAll(() async {
     for (final kind in CurriculumKind.values) {
       original[kind] = decodeCurriculum(
         await File('../../data/n5/${kind.name}.json').readAsString(),
         kind,
         PreviewLevel.n5,
+      );
+      originalN4[kind] = decodeCurriculum(
+        await File('../../data/n4/${kind.name}.json').readAsString(),
+        kind,
+        PreviewLevel.n4,
       );
     }
   });
@@ -90,7 +96,7 @@ void main() {
     });
   }
 
-  testWidgets('changing to unavailable N4 hides old detail', (tester) async {
+  testWidgets('injected missing N4 hides old detail', (tester) async {
     await mountCurriculum(tester, realSeedReader(), '/vocabulary');
     await tester.pumpAndSettle();
     final entry = original[CurriculumKind.vocabulary]!.first;
@@ -366,5 +372,80 @@ void main() {
       expect(tile, findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+  }
+
+  for (final kind in CurriculumKind.values) {
+    testWidgets(
+      'original N4 ${kind.name} reads and switches at 320px 200 percent',
+      (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repository = FixtureCurriculumRepository(
+          (kind, level) async =>
+              level == PreviewLevel.n5 ? original[kind]! : originalN4[kind]!,
+        );
+        await mountCurriculum(
+          tester,
+          repository,
+          '/${kind.name}',
+          size: const Size(320, 640),
+        );
+        await tester.pumpAndSettle();
+        Future<void> tapVisible(Finder target) async {
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          expect(target.hitTestable(), findsOneWidget);
+          await tester.tap(target);
+          await tester.pumpAndSettle();
+        }
+
+        final n5 = original[kind]!.first;
+        await tapVisible(find.byKey(ValueKey(n5.id)));
+        expect(find.text(n5.explanationVi), findsOneWidget);
+        final level = find.byKey(const Key('curriculum-level'));
+        await tapVisible(level);
+        await tester.tap(find.text('N4').last);
+        await tester.pumpAndSettle();
+        final entries = originalN4[kind]!;
+        final n4 = entries.first;
+        expect(find.text(n5.explanationVi), findsNothing);
+        expect(find.byKey(const Key('curriculum-next')), findsNothing);
+        expect(
+          find.text('${entries.length} mục N4 · Chọn để xem bài'),
+          findsOneWidget,
+        );
+        expect(find.text('Chưa có nội dung N4 trong bản này.'), findsNothing);
+        expect(tester.takeException(), isNull);
+        final search = find.byKey(const Key('curriculum-search'));
+        await tester.ensureVisible(search);
+        await tester.enterText(search, n4.heading);
+        await tester.pumpAndSettle();
+        await tapVisible(find.byKey(ValueKey(n4.id)));
+        expect(find.text(n4.meaningVi), findsOneWidget);
+        expect(find.text(n4.explanationVi), findsOneWidget);
+        expect(find.text(n4.examples.first.japanese), findsOneWidget);
+        expect(find.text(n4.examples.first.reading), findsOneWidget);
+        expect(find.text(n4.examples.first.vietnamese), findsOneWidget);
+        expect(find.text('Chưa có âm thanh cho mục này.'), findsOneWidget);
+        expect(
+          find.textContaining('Chỉ đọc, chưa ghi tiến độ'),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+        await tapVisible(find.byTooltip('Xóa tìm kiếm'));
+        expect(find.byKey(ValueKey(n4.id)), findsOneWidget);
+        await tapVisible(find.byKey(ValueKey(n4.id)));
+        await tapVisible(find.byKey(const Key('curriculum-next')));
+        expect(find.text(entries[1].explanationVi), findsOneWidget);
+        expect(find.text(n4.explanationVi), findsNothing);
+        await tapVisible(level);
+        await tester.tap(find.text('N5').last);
+        await tester.pumpAndSettle();
+        expect(find.byKey(ValueKey(n5.id)), findsOneWidget);
+        expect(find.text(entries[1].explanationVi), findsNothing);
+        expect(find.byKey(const Key('curriculum-next')), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 }

@@ -6,10 +6,10 @@ recovery automatically; default runtime remains unconfigured. Explicit runtime
 storage enables controller recovery as described in ../../docs/STUDY_RECOVERY.md.
 
 Default startup is an explicitly labeled, unconfigured preview, not Personal Alpha.
-The vocabulary/grammar routes read and search packaged original N5 exports (24
-words/10 patterns), with readings, Vietnamese explanations/examples and adjacent
+The vocabulary/grammar routes read and search packaged original exports: N5 (24 words/10 patterns) and N4 (366 words/139
+patterns), with readings, Vietnamese explanations/examples and adjacent
 navigation. This is read-only; it adds no learning completion or account progress.
-N4 content/audio/full JLPT coverage are not included. Preview level/theme choices
+Audio/full JLPT coverage and independent linguistic review are not included. Preview level/theme choices
 last only for this process and do not alter the authenticated profile.
 
 Explicit Windows staging can install the owned Auth/profile/SRS runtime, Daily
@@ -60,7 +60,7 @@ claimed by this shell.
   preview repository does not implement or change the get_daily_plan contract.
 - `features/settings/`: process-local preview preferences; no Supabase writes.
 - `features/study/`: discovery of planned modules.
-- `features/curriculum/`: public bundled N5 reader/search, typed original IDs/
+- `features/curriculum/`: public bundled N5/N4 reader/search, typed original IDs/
   versions/examples; no learner write capability. See ../../docs/CURRICULUM_BROWSER.md.
 - `features/srs/`: scheduler, captured SDK/RPC adapters, owned recovery and review
   controller/UI. Default unconfigured; explicit staging assembly and limitations

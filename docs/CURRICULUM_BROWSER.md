@@ -1,7 +1,7 @@
 # Original curriculum browser — Issue #12
 
-The /vocabulary and /grammar routes now browse the original N5 exports already
-present on main. This is a read-only preview, not a completed study session or
+The /vocabulary and /grammar routes now browse the original N5 and reviewed
+structural N4 seed exports in integration #41. This is a read-only preview, not a completed study session or
 progress integration. No Auth/network/table/enrollment/write endpoint is added.
 Integration #41 now combines this public reader with the reviewed #37 Auth/SRS
 and #40 Daily Plan code. The original source drafts remain unchanged; main has
@@ -9,14 +9,14 @@ not been merged or deployed.
 
 ## Data and ownership
 
-App assets under assets/curriculum/n5 are unchanged packaged copies of the
-canonical data/n5 vocabulary.json and grammar.json. Repository tests require
+App assets under assets/curriculum/n5 and assets/curriculum/n4 are unchanged
+packaged copies of their canonical data/<level> vocabulary.json and grammar.json. Repository tests require
 exact text equality with the original exports so updates cannot silently drift.
-Paths stay inside the Flutter asset directory on Web/Windows. No authored data,
-manifest, content validators/tests or Pro-owned N4 documentation changed.
-BundledCurriculumRepository reads only those fixed asset paths and typed kinds.
-N4 is explicitly empty/unavailable in this build until its separate content lane
-is reviewed/integrated; it never substitutes N5 or TEST ONLY fixtures.
+Paths stay inside the Flutter asset directory on Web/Windows. The reviewed Pro
+content/manifest/docs/content-test files are copied unchanged from source #38;
+its branch and authored records remain untouched. BundledCurriculumRepository
+uses fixed paths for each typed level/kind. A missing or invalid N4 asset fails
+for safe explicit retry; it never substitutes N5 or TEST ONLY fixtures.
 
 The display decoder retains canonical IDs, N5/N4 level and positive integer
 content_version, filters inactive/wrong-level rows and preserves Japanese
@@ -108,3 +108,35 @@ for the combined tree. After combined-head CI, continue validated vocabulary/
 grammar activity reports through the existing durable study service; do not infer
 study duration, completion or mastery from reading/searching/navigation. Full
 content/audio/N4/hosted acceptance remain pending; keep #11/#12 open and drafts.
+
+
+## Packaged N4 integration — 2026-10-20
+
+After combined reader #41 dbbb92e1 passed CI39373165397 allfive jobs/every required
+step (495 Flutter/five Chrome/actual SDK/native/Web/Windows), reviewed Pro #38
+28c20cb0 at exact CI38696918878 allfive jobs/every step. Seven source paths are
+imported without any byte change: canonical data/n4 vocabulary/grammar/Kanji,
+data manifest/README, N4_CONTENT and contracts/test_content.py. N5 bytes, IDs,
+versions and every existing contract/security/workflow gate remain unchanged.
+The Pro branch stays independent and unmodified; this does not merge a draft
+into main, certify a curriculum or deploy database content.
+
+The two exact N4 vocabulary/grammar exports are packaged as app assets. Fixed
+paths now support N5 and N4 without fallback. N4 offers366 words/139 patterns,
+with1010 authored Japanese/kana/Vietnamese examples. Its95 Kanji metadata records
+are retained in canonical data only; no new Kanji UI, stroke order, audio or real
+grading is installed. Selection/search/detail/adjacent navigation use the same
+reader and public preview preference; Auth profile/SRS/plan level is unchanged.
+All are initial editorial seed labels, not official JLPT certification or full
+coverage. Teacher/native-speaker review remains outstanding. Reading does not
+credit study, and assets are not automatically provisioned to a hosted database.
+
+Two additional asset/codec cases compare full N4 asset text to canonical exports,
+all ordered IDs/versions/meanings and every Japanese/kana/Vietnamese example.
+The obsolete unbundled-N4 case becomes a both-kind missing-asset/no-N5-fallback
+case. Existing injected-unavailable-N4 widgets remain valid explicit missing-port
+cases with all prior assertions retained. Two new original N4 widgets exercise
+N5-detail to N4 selection, actual search/reading/examples, clear/next and return
+to N5 at320px/200-percent text using original content and real hit-testable taps.
+All prior owned-host exit/account/plan/SRS cases remain. Full new-head results
+require exact-head Actions; source-head green evidence is historical only.

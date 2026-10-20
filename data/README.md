@@ -1,14 +1,140 @@
 # Original curriculum seed — content v1 / wire v0.1
 
-This is a small original editorial N5 seed for development and initial study
-screens, not full JLPT coverage or an officially certified JLPT list. N4 is not
-included yet; #14 must extend coverage explicitly. It is authored content, not a
-provider mock, but it is not loaded into Flutter or a hosted database yet.
+This is a small original editorial N5/N4 seed for development and initial study
+screens, not full JLPT coverage or an officially certified JLPT list. The first
+N4 seed batch is included below; Issue #14 still requires broader coverage. It
+is authored content, not a provider mock, but it is not loaded into Flutter or
+a hosted database yet.
 
 | Level | Vocabulary | Kanji | Grammar | Embedded examples |
 | --- | ---: | ---: | ---: | ---: |
 | N5 | 24 | 8 | 10 | 44 |
-| N4 | 0 | 0 | 0 | 0 |
+| N4 | 366 | 95 | 139 | 1010 |
+
+## N4 seed batches
+
+The N4 seed is now forty-three original editorial batches for development. It contains
+366 vocabulary items, 95 Kanji metadata records and 139 grammar patterns, with 1010
+embedded Japanese–Vietnamese examples. Topics cover travel and planning,
+transport and shopping, work and communication, daily habits, descriptions,
+safety, culture, advice, community and the environment. This is still an initial
+seed, not complete JLPT N4 coverage.
+
+The second batch adds confirmation and guidance, transport/service, fees and
+addresses, safety and culture vocabulary; 度, 活, 送 and 始 metadata; and the
+patterns ～そうです, ～ようになります, ～なくてもいいです, ～すぎます and
+～たほうがいいです. It is authored under the same ID/version rules.
+
+The third batch adds health, daily life, safety and advice vocabulary; 動, 健 and
+直 metadata; and the patterns ～ことにします, ～ことになります,
+～かもしれません and ～ないでください. It remains a seed for review, not
+complete JLPT N4 coverage.
+
+The fourth batch adds daily-life, planning and study actions; 選 and 決 metadata;
+and the patterns ～てみます, ～ておきます and ～てしまいます.
+
+The fifth batch adds service registration, communication, punctuality and
+returning items; 伝 and 返 metadata; and the patterns Nのために, Vるようにします
+and Vることができます.
+
+The sixth batch adds health, notification and assistance actions; 薬 and 知 metadata;
+and the patterns Vるのが好きです, Vてあげます and Vてもらいます.
+
+The seventh batch adds payments, changing quantities and advice for study; 払 and 増 metadata;
+and the patterns Vるために, Vたらどうですか and Nしか～ません.
+
+The eighth batch adds transport changes, service desks, lost items and topic descriptions;
+乗 and 残 metadata; and the patterns Vる前に, Vた後で and Nについて.
+
+The ninth batch adds searching, seeing/hearing, repairs and deliveries; 急 and 壊 metadata;
+and the patterns Vると, Vないで and Nより.
+
+The tenth batch adds lodging, departures/arrivals, reassurance and concern; 到 and 泊 metadata;
+and the patterns Vることがあります, Nのような and Vるはずです.
+
+The eleventh batch adds food preparation, cleaning and queues; 焼 and 洗 metadata;
+and the patterns Vるなら, Nでも and Vるでしょう.
+
+The twelfth batch adds weather, drying, plants and cooling; 晴 and 曇 metadata;
+and the patterns Vたら, Vないと and Nの間に.
+
+The thirteenth batch adds health, rest and careful handling of objects; 疲 and 痛 metadata;
+and the patterns Vるとき, Vたまま and Vないように.
+
+The fourteenth batch adds invitations, replies and event decisions; 招 and 断 metadata;
+and the patterns Vてから, Vても and Nなら.
+
+The fifteenth batch adds safety, cleaning and storage; 滑 and 磨 metadata;
+and the patterns Vるところです, Vているところです and Vたところです. It follows the
+same authored-content and unavailable-asset rules.
+
+The sixteenth batch adds scheduling, attendance and reply vocabulary; 都 and 合 metadata;
+and the patterns Vることにします, Vることになりました and Nらしいです. It follows the
+same authored-content and unavailable-asset rules.
+
+The seventeenth batch adds housing, utilities and service-use vocabulary; 所 and 設 metadata;
+and the patterns Nに対して, Vないことにします and Nによると. It follows the same authored-content
+and unavailable-asset rules.
+
+The eighteenth batch adds community, environment and safety vocabulary; 環 and 境 metadata;
+and the patterns Vるように言います, Vている間に and Nによって. It follows the same
+authored-content and unavailable-asset rules.
+
+The nineteenth batch adds public-service procedures, applications, documents and study attendance; 役 and 類 metadata; and the patterns Vることになっています, Vるまで and Nの中で. It follows the same authored-content and unavailable-asset rules.
+
+The twentieth batch adds purpose, methods, results, reasons and community activities; 意 and 見 metadata; and the patterns Vなくてはいけません, Nという意味です and Vる必要があります. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-first batch adds airports, scenery, domestic and overseas travel, forecasts and sightseeing; 空 and 港 metadata; and the patterns Vたばかりです, Nに興味があります and Vることが大切です. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-second batch adds applications, interviews, salaries, school milestones and contact details; 卒 and 業 metadata; and the patterns Vてほしいです, Nについて話します and Vるのに時間がかかります. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-third batch adds hospitals, doctors, patients, symptoms, treatment and visiting patients; 医 and 病 metadata; and the patterns Vたらいいですか, Vてしまいました and Nのように. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-fourth batch adds fire, earthquakes, evacuation, police, accidents and prevention; 地 and 震 metadata; and the patterns Vないようにしています, Nに気をつけてください and Vるといいです. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-fifth batch adds products, prices, discounts, cash, receipts, returns, exchanges and stock; 品 and 割 metadata; and the patterns Nにします, Vてみたいです and Vてもらえますか. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-sixth batch adds repairs, construction, water leaks, power outages, batteries, machines, parts and maintenance; 機 and 械 metadata; and the patterns Vてあります, Nのまま and Vている間. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-seventh batch adds ingredients, taste, salt, sugar, cooking methods, refrigerators, temperature and food dates; 味 and 塩 metadata; and the patterns Nがします, Vるのが上手です and Vてもいいですか. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-eighth batch adds traffic jams, signals, roads, sidewalks, fares, timetables, boarding areas and destinations; 道 and 信 metadata; and the patterns Vるかどうか, Nによっては and Vるためには. It follows the same authored-content and unavailable-asset rules.
+
+The twenty-ninth batch adds doors, lights and clothing; 開 and 着 metadata; and the patterns Vているうちに, Nに比べて and Vたままにする. It follows the same authored-content and unavailable-asset rules.
+
+The thirtieth batch adds schedules, presentations, submissions, deadlines and participants; 配 and 集 metadata; and the patterns Vるまでに, Vるように言われました and Nだけでなく. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-first batch adds orders, customers, store areas, stock status and store opening/closing; 客 and 売 metadata; and the patterns Vてからでないと, Nにとって and Vるのではなく. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-second batch adds health condition, nursing, dental visits, travel costs, one-way/round-trip tickets, information desks and ticket gates; 体 and 改 metadata; and the patterns Vてくれます, Vさせてください and Vないほうがいいです. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-third batch adds permissions, deadlines, maps, event venues, relationships, opportunities, direct contact and lost-property service; 許 and 場 metadata; and the patterns Vてくれませんか, Vることはありません and Nを通して. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-fourth batch adds grades, urgent matters, articles, programs, floods, typhoons, cooling and electricity costs; 成 and 洪 metadata; and the patterns Vているようです, Vたらどうでしょうか and Nほど. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-fifth batch adds Japanese calligraphy, parks, riversides, coasts, forests, agriculture, factories and residents; 祭 and 森 metadata; and the patterns Vようと思います, Nの代わりに and Nによれば. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-sixth batch adds power, screens, functions, registration, settings, saving, deletion and data input; 画 and 源 metadata; and the patterns Vることが必要です, Nを中心に and Vるわけではありません. It follows the same authored-content and unavailable-asset rules.
+
+The thirty-seventh batch adds home improvement, tools, rooms, furniture, entrances, stairs, roofs and walls; 玄 and 階 metadata; and the patterns Nに関して, Vている場合 and Vることにしています. It follows the same authored-content and unavailable-asset rules.
+
+The Japanese sentences and Vietnamese explanations were authored for Nihongo
+Daily. Kanji meanings/readings and stroke counts use common reference metadata;
+KanjiVG is the stated reference for stroke-count checking, under CC BY-SA 3.0.
+No KanjiVG SVG/path asset is redistributed here. A later editorial/native-speaker
+review is still required before treating this seed as release curriculum.
+
+N4 content uses the same `content_version: 1` as the existing N5 seed because
+this is the first publication of these N4 records. IDs are UUIDv5 values derived
+from the project's fixed namespace and `n4:<model>:<authored key>` names. Existing
+N5 IDs and rows are unchanged.
+
+All `audio_ref`, `stroke_data_ref` and Kanji `radical` fields are currently null.
+The app must continue to show audio, stroke-order assets and real handwriting
+grading as unavailable until a separately reviewed asset issue supplies them.
+
+N4 uses the same wire objects and validation rules as `data/n5/*.json`; the
+level-specific files are kept under `data/n4/` for independent expansion.
 
 `manifest.json` makes scope/counts/assets machine-checkable. `n5/*.json` are arrays
 of the unchanged named vocabulary/kanji/grammar wire objects in
@@ -48,11 +174,11 @@ quizzes and conversation content are outside this seed.
 
 ## Metadata provenance and absent assets
 
-Eight stroke counts were cross-checked against nonvariant SVG path counts in
+Fourteen stroke counts were cross-checked against nonvariant SVG path counts in
 [KanjiVG](https://github.com/KanjiVG/kanjivg), commit
 `70a0b7ae0c18ceb5cb358274b029cce0234a43bc` (checked 2026-10-13 UTC). Source files:
 `kanji/065e5.svg`, `06708.svg`, `06728.svg`, `05c71.svg`, `05ddd.svg`,
-`04eba.svg`, `06c34.svg`, `0706b.svg`. Counts respectively: 4, 4, 4, 3, 3, 2, 4, 4.
+`04eba.svg`, `06c34.svg`, `0706b.svg`, `0958b.svg`, `07740.svg`, `0914d.svg`, `096c6.svg`, `05ba2.svg`, `058f2.svg`. Counts respectively: 4, 4, 4, 3, 3, 2, 4, 4, 12, 12, 10, 12, 9, 7.
 KanjiVG is copyright Ulrich Apel under CC BY-SA 3.0; this seed only checks factual
 counts and does not redistribute/derive SVG path geometry. Any future importer
 must retain required attribution/license and independently vet reference assets
@@ -88,3 +214,15 @@ A future importer maps examples to normalized `vocabulary_examples` /
 importer/migration/deployment in this change. #12 consumes these exports through
 typed repositories; #14 adds N4, #16 reference assets. Personal Alpha remains
 incomplete until study, auth, sync, AI/voice and release evidence are integrated.
+
+The thirty-eighth batch adds parking, corridors, ceilings, gardens, moving, tidying, windows and storage; 窓 and 庭 metadata; and the patterns Vながら, Nまでに and Vたところ. It remains an original seed pending review.
+
+The thirty-ninth batch adds neighborhood notices, waste sorting and disaster-prevention guidance with 防 and 訓 metadata; and the patterns Nに合わせて, Vるようにしてください and Vないようにしてください. It remains an original seed pending review.
+
+The fortieth batch adds public-facility safety and emergency-signage vocabulary with 消 and 非 metadata; and the patterns Nに沿って, Nに応じて and Vる際に. It remains an original seed pending review.
+
+The forty-first batch adds workplace guidance and routine-procedure vocabulary with 指 and 順 metadata; and the patterns Nに従って, Nをもとに and Vるように伝えます. It remains an original seed pending review.
+
+The forty-second batch adds study-planning and practice vocabulary with 習 and 練 metadata; and the patterns Nに役立つ, Nに向いています and VるためのN. It remains an original seed pending review.
+
+The forty-third batch adds healthy-routine and daily-care vocabulary with 朝 and 昼 metadata; and the patterns Nに気づきます, Vないでおきます and Nに必要なN. It remains an original seed pending review.

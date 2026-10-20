@@ -1938,3 +1938,55 @@ through the existing durable service, not credit from reading/navigation. Keep
 drafts #37/#39/#40 remain unchanged; no Pro content/dependency/security/provider/
 Auth policy/spend/merge/deployment or schedule change. CURRICULUM_BROWSER.md records
 composition, limitations and verification scope.
+
+
+## Reviewed N4 seed in reader — core-20261020T0515-n4-reader
+
+Resumed #41 dbbb92e1 after exact CI39373165397 latest attempt passed allfive
+jobs/every required step,495 Flutter/five Chrome/SDK/native/Web/Windows. Completed
+logs explicitly verify both owned curriculum/plan/retained-search exit cases.
+The preceding reader integration is verified. Separately reviewed Pro #38 source
+28c20cb0, exact CI38696918878 allfive jobs/every required step success. Source
+branch unchanged. These passes are historical for this new combined source.
+
+The N4 reader prerequisite is prioritized before new activity reports: an N4
+profile previously had only public N5 content available, which must not be used
+to credit an N4 plan. Import seven reviewed Pro content/manifest/docs/test paths
+byte-for-byte, retaining all N5 bytes/IDs and N4 first-version records. Package
+exact N4 vocabulary/grammar copies; fixed typed level paths now load N5 or N4,
+never fallback. Reader/search/detail/adjacent navigation supports366 N4 words and
+139 patterns/1010 original Japanese/kana/Vietnamese examples.95 Kanji metadata
+records are canonical data only, not new writing/trace/grading UI. No content is
+provisioned to a hosted database. Public level still never changes the account
+profile/SRS/plan. These are incomplete editorial seeds pending teacher/native
+review, not certified full JLPT. Audio/stroke assets/grading remain unavailable.
+
+Two N4 asset/codec cases authored: full asset-text equality, every ordered ID/
+version/meaning and every Japanese/kana/Vietnamese example. Replace the obsolete
+unbundled-level expectation with both-kind missing-asset failure/no-N5-fallback.
+All other reader cases/assertions retained, including explicit injected missing
+N4 fixtures. Two additional original N4 widget cases cover switching from N5,
+search/detail/examples/clear/next/back to N5 at320px/200-percent text, with actual
+hit-testable taps. Existing account/plan/SRS/owned exit tests unchanged.
+
+Local pinned Dart format4/0changes, QA inventory49/all17 regressions, Python
+compilation, source/asset/N5 byte parity, content-test AST review and whitespace
+passed. All prior Python content tests remain; only aggregate expectations change,
+with one added localized-meaning test from Pro. Copied Pro docs/test retain CRLF
+bytes; standard whitespace rules were checked with CR-at-EOL recognized locally,
+without repository/CI configuration changes. Full jsonschema/Flutter/widget/
+SDK/native/Web/Windows execution unavailable locally and requires exact-head
+Actions. No retry/workaround of the prior Flutter metadata-endpoint rejection.
+Separate source/test/compatibility/composition review completed before saving.
+
+Next inspect actual #41 new head/latest-attempt every required job/step, fixing
+failures without weakening tests. Only pending CI means save/release without
+duplicate changes/long polling. After green continue one shared account-scoped
+foreground/frozen-report coordinator for SRS/vocabulary/grammar: a report whose
+stage failed exists only in memory and must block cross-area replacement until
+explicit exact retry. Require real same-profile-level content and available
+same-area server plan; preserve existing drains/retained fields/immutable events.
+Keep #11/#12/#14 open/#41 draft/default preview/all14 hosted groups pending. Main,
+Pro #38 and source #37/#39/#40 branches remain unchanged; no authored-record edits,
+dependency/Auth policy/schema/RLS/security/provider/spend/merge/deployment or
+schedule change. CURRICULUM_BROWSER.md records the composition and limits.

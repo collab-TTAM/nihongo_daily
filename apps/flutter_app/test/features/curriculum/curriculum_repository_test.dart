@@ -45,20 +45,63 @@ void main() {
     }
   });
 
-  test('unbundled N4 is empty without reading or substituting N5', () async {
-    var reads = 0;
+  test('missing N4 assets fail without reading or substituting N5', () async {
+    final reads = <String>[];
     final repository = BundledCurriculumRepository(
-      read: (_) async {
-        reads++;
-        throw StateError('Must not read N5 for N4');
+      read: (path) async {
+        reads.add(path);
+        throw StateError('PRIVATE N4 ASSET');
       },
     );
-    expect(
-      await repository.load(CurriculumKind.vocabulary, PreviewLevel.n4),
-      isEmpty,
-    );
-    expect(reads, 0);
+    for (final kind in CurriculumKind.values) {
+      await expectLater(
+        repository.load(kind, PreviewLevel.n4),
+        throwsStateError,
+      );
+    }
+    expect(reads, [
+      'assets/curriculum/n4/vocabulary.json',
+      'assets/curriculum/n4/grammar.json',
+    ]);
   });
+
+  for (final kind in CurriculumKind.values) {
+    test(
+      'bundled N4 ${kind.name} preserves all original IDs and examples',
+      () async {
+        final source = await File(
+          '../../data/n4/${kind.name}.json',
+        ).readAsString();
+        final asset = 'assets/curriculum/n4/${kind.name}.json';
+        expect(await rootBundle.loadString(asset), source);
+        final rows = jsonDecode(source) as List<dynamic>;
+        final entries = await BundledCurriculumRepository().load(
+          kind,
+          PreviewLevel.n4,
+        );
+        expect(entries.length, kind == CurriculumKind.vocabulary ? 366 : 139);
+        expect(entries.map((e) => e.id), rows.map((r) => r['id']));
+        expect(entries.every((e) => e.level == PreviewLevel.n4), isTrue);
+        for (var i = 0; i < rows.length; i++) {
+          final row = rows[i] as Map<String, dynamic>;
+          final entry = entries[i];
+          expect(entry.contentVersion, row['content_version']);
+          expect(entry.meaningVi, row['meaning_vi']);
+          expect(entry.hasAudioReference, isFalse);
+          final examples = row['examples'] as List<dynamic>;
+          expect(entry.examples.length, examples.length);
+          for (var j = 0; j < examples.length; j++) {
+            expect(entry.examples[j].japanese, examples[j]['sentence_ja']);
+            expect(entry.examples[j].reading, examples[j]['reading_ja']);
+            expect(entry.examples[j].vietnamese, examples[j]['translation_vi']);
+          }
+        }
+        final matches = searchCurriculum(entries, entries.first.heading);
+        expect(matches.any((e) => identical(e, entries.first)), isTrue);
+        expect(() => entries.clear(), throwsUnsupportedError);
+      },
+    );
+  }
 
   test(
     'original vocabulary searches Japanese readings and Vietnamese',
