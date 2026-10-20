@@ -105,5 +105,6 @@ See [Daily Plan UI](../../docs/DAILY_PLAN_UI.md) and
 
 Configured Windows now installs completed-study storage and explicit
 /study-recovery from account/plan pages. See docs/OWNED_STUDY_RECOVERY.md for
-manual reconciliation and lifecycle ownership. Actual activity timer/new-report
-creation and hosted acceptance remain pending; default app stays preview.
+manual reconciliation and lifecycle ownership. Configured /srs now has a
+foreground elapsed timer and explicit durable finish; see docs/SRS_STUDY_TIMER.md.
+Other activity timers and hosted acceptance remain pending; default stays preview.

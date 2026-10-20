@@ -54,6 +54,8 @@ final class StudyServer {
   Completer<void>? writeWait;
   Completer<void>? entered;
   Object? malformed;
+  Object? planOverride;
+  Completer<Object?>? readWait;
 }
 
 final class StudyGateway implements DailyPlanStudySessionGateway {
@@ -69,7 +71,9 @@ final class StudyGateway implements DailyPlanStudySessionGateway {
   Future<Object?> getDailyPlan(Map<String, Object> parameters) async {
     server.reads++;
     if (server.readFailure != null) throw server.readFailure!;
-    return studyPlan(server.latest);
+    return server.readWait?.future ??
+        server.planOverride ??
+        studyPlan(server.latest);
   }
 
   @override

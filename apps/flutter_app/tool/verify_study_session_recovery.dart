@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import '../test/features/daily_plan/study_session_recovery_fixtures.dart';
+import '../test/features/daily_plan/srs_session_recorder_fixtures.dart';
 import 'package:nihongo_daily/features/daily_plan/data/native_study_session_journal.dart';
 import 'package:nihongo_daily/features/daily_plan/data/durable_study_session_repository.dart';
 
@@ -26,6 +27,10 @@ Future<void> main(List<String> args) async {
   for (final scenario in studyRecoveryScenarios) {
     await verifyStudyRecovery(scenario);
     stdout.writeln('PASS completed-study $scenario');
+  }
+  for (final scenario in recorderScenarios) {
+    await verifyRecorder(scenario);
+    stdout.writeln('PASS SRS session recorder $scenario');
   }
   final directory = await Directory.systemTemp.createTemp('nd-study-process-');
   NativeStudySessionJournal? journal;

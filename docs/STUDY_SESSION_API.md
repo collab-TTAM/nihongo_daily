@@ -55,9 +55,9 @@ The concrete borrowed-SDK gateway and explicit ready-state owner factory are
 reviewed in DAILY_PLAN_SDK.md. The owned read route is in DAILY_PLAN_UI.md and
 the opt-in completed-study durability library in DURABLE_STUDY_SESSIONS.md. The
 durable store/service and explicit pending recovery are now installed in
-configured Windows startup (OWNED_STUDY_RECOVERY.md). Actual activity timer/new
-completion report UI and hosted validation remain mandatory before
-claiming saves work through the learner app, restart/offline recovery or sync.
+configured Windows startup (OWNED_STUDY_RECOVERY.md). The foreground SRS
+timer/completed-report flow is in SRS_STUDY_TIMER.md. Other activities and hosted
+validation remain before claiming the full learner journey or multi-device sync.
 The owned gateway retains bounded transport/body/deadline controls and uses
 only the learner session, never service credentials or an arbitrary RPC name.
 

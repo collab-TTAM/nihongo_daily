@@ -5,8 +5,8 @@ study-session/progress helper described in STUDY_SESSIONS.md. The separately
 versioned submit RPC is reviewed in STUDY_SESSION_API.md and the explicit owned
 SDK factory in DAILY_PLAN_SDK.md. Read UI composition is in DAILY_PLAN_UI.md;
 configured Windows completed-report recovery is in OWNED_STUDY_RECOVERY.md.
-Actual activity timer/new-report creation, deployed service and authenticated
-learner acceptance remain outstanding.
+Foreground SRS timer/report creation is in SRS_STUDY_TIMER.md. Other activity
+timers, deployed service and authenticated learner acceptance remain outstanding.
 The main Flutter home remains an explicitly labeled preview; no fake save or
 completion is installed. Separate Auth/SRS #37 and reader #39 remain independent.
 

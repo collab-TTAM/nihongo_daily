@@ -63,9 +63,9 @@ new exact-head CI; local Flutter/jsonschema/PostgreSQL dependencies are absent.
 
 The initial SDK increment did not install this factory into routes/providers.
 The subsequent read-only UI composition is documented in DAILY_PLAN_UI.md.
-No durable pending-study queue, timer/save UI, automatic device-local date guess,
-live Supabase configuration or actual learner save/restart/two-device evidence
-is provided. Existing durable SRS storage is preserved and does not yet journal
-these completed-study events. Default main/CI artifacts remain explicit preview.
+The configured separate study journal/recovery is in OWNED_STUDY_RECOVERY.md
+and foreground SRS elapsed reports in SRS_STUDY_TIMER.md. Existing SRS review
+storage remains separate. Automatic profile-local date selection, live Supabase
+configuration and actual learner save/restart/two-device acceptance remain. Default main/CI artifacts remain explicit preview.
 Keep all14 hosted Personal Alpha release groups and #11 open; integration is
 draft, with no deployment/provider/security/schedule change.

@@ -71,7 +71,8 @@ browser and Web/Windows execution requires exact-head Actions.
 Parent ac8cbd9 CI39316750394 passed all five jobs/every required step; this is
 historical evidence, not execution of the changed source.
 
-Actual activity timer/new report creation, automatic profile-local today and
+A configured foreground SRS timer/new-report flow is now documented in
+SRS_STUDY_TIMER.md. Other activity timers, automatic profile-local today and
 browser study storage remain outstanding. The ordinary app remains preview.
 No hosted login/JWT/restart/two-device proof: all14 live acceptance groups remain
 pending; #11 open and #41 draft. No merge/deploy/schema/RLS/Auth strategy/provider/

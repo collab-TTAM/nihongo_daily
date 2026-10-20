@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
+import '../../daily_plan/presentation/srs_session_timer_panel.dart';
+import '../../daily_plan/application/srs_session_recorder.dart';
+import '../../daily_plan/application/srs_session_recorder_provider.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/srs_study_controller.dart';
 import '../application/srs_study_provider.dart';
@@ -35,6 +38,8 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
     final controller = ref.read(srsStudyProvider.notifier);
     final item = state.item;
     final level = controller.selectedLevel;
+    final timer = ref.watch(srsSessionRecorderProvider);
+    final timing = timer.phase == StudyRecorderPhase.running || timer.busy;
     final durable =
         ref.watch(srsStudyRuntimeProvider)?.reviews is ReviewRecovery;
     void reload() => controller.load(
@@ -47,6 +52,7 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
           subtitle:
               'Luồng giao diện đang phát triển · Chưa kiểm chứng với Supabase thật.',
         ),
+        const SrsSessionTimerPanel(),
         if (level != null) ...[
           const Text('Trình độ ôn tập'),
           DropdownButton<PreviewLevel>(
@@ -57,7 +63,7 @@ class _SrsStudyScreenState extends ConsumerState<SrsStudyScreen> {
               for (final option in PreviewLevel.values)
                 DropdownMenuItem(value: option, child: Text(option.label)),
             ],
-            onChanged: state.canChangeLevel
+            onChanged: state.canChangeLevel && !timing
                 ? (value) {
                     if (value != null) controller.changeLevel(value);
                   }

@@ -1779,3 +1779,45 @@ day. Only pending CI means save/release rather than duplicate changes/long poll.
 Main/source drafts #37/#40, Pro #14/#38/N4, reader #39, contracts/schema/RLS/
 dependencies/production Auth policy unchanged. No merge/deployment/provider/spend
 or schedule change. See docs/OWNED_STUDY_RECOVERY.md.
+
+
+## Foreground SRS session recorder — core-20261020T0326-srs-study-timer
+
+#41 parent b28684c CI39363924790 was freshly verified allfive jobs/every required
+step success, including444 Flutter/five Chrome/all9 recovery widgets/all7 SDK
+cases/native process gates/Web/Windows. The prior fixture correction is verified;
+this historical evidence does not verify the new recorder source.
+
+Configured /srs now exposes an explicit profile-date elapsed recorder only with
+a current ready real card at the profile level. Local pending-report preflight
+blocks before server reads; an available server SRS plan is required before a
+monotonic foreground interval starts. Finish freezes one UUID/date/SRS/UTC report,
+flushes through the existing durable service then awaits validated confirmation
+and fresh progress. Failed staging/ambiguous commit keeps the same frozen report
+for explicit retry across navigation; no replacement event or automatic replay.
+Reload failure remains confirmed. Definitive rejection stays durably terminal.
+Route/background/queue/account interruption cancels unfinished timing with no
+credit; no pause/background accrual. Existing runtime drains accepted saves.
+Keyed date field remains mounted, cleared/hidden/disabled/unfocusable on revocation
+for awaited exit. Duration60..90000s, wall-clock discrepancy>5s fails without
+credit; server still owns date/overlap/availability/minutes and derived progress.
+Authenticated self-reported duration does not prove mastery or attention.
+
+Eight new recorder scenarios with real disk and explicit Auth/RPC/clock passed
+locally, along with all7 prior recovery cases and abrupt child restart/process
+lease/reopen. They are included in Flutter discovery and the retained native
+verifier in both existing Linux/Windows jobs; workflow unchanged. Nine widget
+cases authored for actual card/profile/date/start/finish/retry/recovery/lifecycle/
+owner/field/large-text behavior. Existing assertions and gates retained.
+Pinned Dart formatter, targeted production/test analysis, QA inventory49/all17
+regressions and whitespace passed. Full new-source Flutter/SDK/browser/native/
+Web/Windows results pending exact-head Actions. Local Flutter CLI execution is
+blocked by metadata-endpoint approval review; no bypass/indirect retry attempted.
+
+After current-head CI/fixes, continue automatic correct profile-local day,
+additional real activity flows and hosted learner validation. Other timers,
+browser study persistence, unfinished-interval crash recovery and all14 hosted
+JWT/A-B/restart/two-device acceptance groups remain pending. Keep #11 open/#41
+draft/default preview. No source draft/main/Pro/reader content/contract/schema/
+RLS/dependency/Auth strategy/provider/spend/deployment/merge/schedule change.
+Details and limitations: docs/SRS_STUDY_TIMER.md.

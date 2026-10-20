@@ -70,8 +70,9 @@ no passing parent result is reused as new-head evidence.
 
 The durability library is documented in DURABLE_STUDY_SESSIONS.md. Its owned
 journal/service and explicit recovery are installed in configured Windows
-startup; see OWNED_STUDY_RECOVERY.md. Actual activity timer/new-report UI,
-automatic profile-local today and hosted JWT/A-B/two-device validation remain.
+startup; see OWNED_STUDY_RECOVERY.md. Foreground SRS timer/new-report UI is in
+SRS_STUDY_TIMER.md. Other activities, automatic profile-local today and hosted
+JWT/A-B/two-device validation remain.
 All14 hosted Personal Alpha acceptance gates and #11 stay open; keep the PR draft.
 No provider/Auth strategy, schema/RLS, dependency, Pro/reader content, deployment,
 release, merge or schedule change.

@@ -2,7 +2,8 @@
 
 The pure Dart/native library is now installed into configured owned Windows
 startup with explicit recovery, as documented in OWNED_STUDY_RECOVERY.md.
-Actual activity timer/new-report creation remains outstanding. The default
+Foreground SRS timer/new-report creation is documented in SRS_STUDY_TIMER.md;
+other activity timers remain outstanding. The default
 app remains preview; /plan remains a read-only authoritative view. Existing
 review storage, credentials and journal formats are unchanged.
 
@@ -96,7 +97,8 @@ that does not verify this new module.
 
 The owned journal/service and explicit pending recovery are installed; see
 OWNED_STUDY_RECOVERY.md for resource ownership and new validation. Next add
-actual activity timer/save UI after current-head checks pass. Do not mark an
+other activity timer/save UI after current-head checks pass; the configured
+foreground SRS flow is documented in SRS_STUDY_TIMER.md. Do not mark an
 event saved until durable backend acknowledgment. Automatic profile-local today,
 real JWT/A-B/restart/two-device acceptance and all14 live release gates remain.
 Keep #41 draft and #11 open. No deployment, schema/RLS, dependencies, main/source
