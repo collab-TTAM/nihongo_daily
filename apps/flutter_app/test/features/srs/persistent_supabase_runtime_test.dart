@@ -169,7 +169,7 @@ void main() {
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
-      await fixture.flush();
+      await waitForReady();
       expect(runtime.account.readyRuntime, isNotNull);
       secret = 'TEST_ONLY_ROTATED_SDK_2';
       backend.writeWait = Completer();
@@ -180,8 +180,9 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       backend.writeWait!.complete();
       await rotation;
-      await fixture.flush();
       expect(backend.secret, secret);
+      // Persistence completion does not await the separate profile request.
+      await waitForReady();
       expect(runtime.account.readyRuntime, isNotNull);
       final logout = runtime.account.signOut();
       expect(runtime.account.readyRuntime, isNull);

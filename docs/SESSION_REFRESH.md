@@ -82,3 +82,21 @@ credential-free action interface while preserving every vault/readiness/history
 assertion. These new-source tests are pending CI, not hosted Auth or OS UI
 rotation proof. Existing Windows/native/SQL/Chrome gates and all 14 live release
 groups remain unchanged/pending. No N4/content/dependency/provider/schema changes.
+
+
+## Integration readiness test correction
+
+At integration head ccd006e3, CI39474040443 attempt1 passed format/analyze and
+604 Flutter cases; the existing SDK explicit-rotation readiness test failed
+because readyRuntime remained null after eight zero-delay flushes. All19 new
+quiz cases passed. Downstream Flutter checks were skipped; no full-suite pass.
+
+The persistence refresh Future waits for credential writes; profile loading is
+a separate asynchronous AccountController operation. Inference from this source
+and the failure: the fixture sampled readiness before the profile operation
+completed. Use this file's existing bounded waitForReady helper after login and
+after rotation. The saved-secret equality assertion remains immediately after
+rotation, before the readiness wait. Every original assertion, pending-vault
+revocation check, logout check and five-second helper bound is retained.
+No production lifecycle, timeout, retry, SDK, dependency or workflow change.
+Correction awaits exact-head Actions; no local execution environment is available.

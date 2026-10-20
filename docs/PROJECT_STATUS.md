@@ -2500,3 +2500,40 @@ without duplicate source/docs-only commits or long polling.
 Keep #41 draft/#13 open/default preview/all14 hosted groups pending; no main/
 source/Pro/canonical/Auth/API/storage/schema/RLS/security/provider/spend/merge/
 deployment/release/schedule change. See VOCABULARY_QUIZ.md and PR handoff.
+
+
+## SDK profile readiness fixture — core-20261020T1825-sdk-readiness-fixture
+
+Resumed exact #41 ccd006e3a5295570bad39c56a007407027da027d.
+CI39474040443 attempt1 passed Flutter formatting and analysis. Completed Flutter
+logs show604 passed/one failed; all19 new vocabulary quiz tests passed (8 domain,
+11 widget, including both levels,320px/200-percent interaction and owned exit).
+The one failure is the existing pinned-SDK login/explicit-rotation/logout
+readiness test at line185: saved secret matched, readyRuntime was still null.
+Downstream native/Chrome/Web checks were skipped, never passed. Repo/database/AI
+completed all required steps; Windows still in progress at initial observation.
+
+Source review: PersistentSupabaseRuntime.refresh delegates to persistence.refresh,
+whose completion drains credential writes. AccountController separately launches
+unawaited profile loading after the session change; only a ready profile publishes
+the study runtime. A fixed eight zero-delay fixture flushes do not represent that
+profile completion. The observed scheduling cause is inferred from source and the
+failing assertion, not a captured production trace.
+
+In this single existing test, replace fixed post-login/post-rotation flushing
+with the existing waitForReady helper. It observes actual account state, has a
+five-second bound, fails on error/unavailable phases and requires nonnull runtime.
+Assert the rotated vault secret immediately after rotation completion, before
+waiting for profile readiness. Every original assertion is retained in order,
+including immediate revocation, readiness withheld while vault write is held,
+exact saved secret, eventual ready runtime and logout clear/signed-out state.
+No increased timeout, retry, added sleep, production change or weakened assertion.
+Other fixtures/tests and all CI/security/lint gates are unchanged.
+
+No local Dart/Flutter/format/analyze/Python/render/build execution is available.
+Do not retry/bypass prior Flutter metadata review rejection. Full-tree/pinned
+source review is not executable testing; existing exact-head Actions must verify
+this correction. Next inspect latest-attempt allfive jobs/every required step,
+fix actual failures preserving assertions. Pending-only means release/handoff
+without duplicate source/docs-only commits or long polling. Keep #41 draft,
+#13 open/default preview/all14 hosted acceptance groups pending.
