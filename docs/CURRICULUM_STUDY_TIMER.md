@@ -75,3 +75,32 @@ Keep #41 draft, #11/#12 open and all14 hosted acceptance groups pending. Remaini
 activities, hosted validation, browser study persistence, full sync, real Kanji
 grading and live AI/voice remain outstanding. Main and source drafts/content
 stay unchanged; no merge, deployment, release or schedule change.
+
+
+## Reader test corrections — 2026-10-20
+
+Exact e1915c04 CI39392930477 Flutter format/analyze passed; full tests reported
+520 passed/3 failed. All14 other new reader cases passed, including failed-stage
+cross-route retry, lifecycle/late preflight, logout, narrow/large-text confirmed
+reload failure and bundled owned-host exit. Downstream Flutter/browser/Web steps
+were skipped, not successful. Database/repo-sanity/AI were successful at review;
+Windows was still running. This is not a complete verified-head result.
+
+Both configured save cases compared separate DailyPlanDate objects, whose strict
+model deliberately has no value-equality override. Compare event.date.value to
+the exact expected YYYY-MM-DD instead. Keep acknowledgment, area,61-second
+interval, one event ID/write, two plan reads and no SRS queue assertions.
+
+The retained-data refresh case already observed loading=true, readiness=false
+and recorder=canceled; its start-button lookup ran before the scheduled panel
+frame. Render that single frame while the reload future is still held, then
+assert one disabled start plus no elapsed/frozen report. Do not settle the active
+loading spinner or complete reload to make the readiness assertion pass. All
+17 cases/original checks remain; no production/lint/CI/timeout change.
+
+Pinned local format1/0changes, QA inventory49/all17 regressions, whitespace and
+separate exact diff review passed. Full corrected Flutter execution requires
+fresh exact-head CI; prior metadata-endpoint automatic-review rejection remains
+and no local Flutter CLI retry/bypass is attempted. Next inspect that CI before
+new product work; pending-only means handoff without duplicate changes/long
+polling. All14 hosted gates remain pending; keep #11/#12 open/#41 draft.

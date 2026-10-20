@@ -215,7 +215,7 @@ void main() {
         final record = (await f.memory.list(account.owner)).single;
         expect(record.acknowledged, isTrue);
         expect(record.event.area, areaOf(kind));
-        expect(record.event.date, DailyPlanDate('2026-10-20'));
+        expect(record.event.date.value, '2026-10-20');
         expect(
           record.event.endedAt.difference(record.event.startedAt),
           const Duration(seconds: 61),
@@ -348,6 +348,12 @@ void main() {
         f.container.read(studySessionRecorderProvider).phase,
         StudyRecorderPhase.canceled,
       );
+      // The async recorder stream schedules the panel after the source frame.
+      // Keep the reload held; render cancellation without settling its spinner.
+      await tester.pump();
+      expect(control(CurriculumKind.vocabulary, 'start'), findsOneWidget);
+      expect(control(CurriculumKind.vocabulary, 'elapsed'), findsNothing);
+      expect(control(CurriculumKind.vocabulary, 'frozen-report'), findsNothing);
       expect(
         tester
             .widget<FilledButton>(control(CurriculumKind.vocabulary, 'start'))

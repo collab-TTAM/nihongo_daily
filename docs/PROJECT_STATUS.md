@@ -2104,3 +2104,36 @@ continue remaining actual activity flows and outstanding hosted/browser gates.
 Keep #41 draft/#11/#12 open/default preview/all14 hosted groups pending; no
 main/source draft change, merge, deployment, release or schedule action.
 See CURRICULUM_STUDY_TIMER.md and current #41 handoff.
+
+
+## Reader timer test correction — core-20261020T0825-reader-test-fix
+
+Resumed #41 e1915c04d8b9fdd19d9d049ff370661577578d1d. Actual CI39392930477
+Flutter format/analyze passed; full suite520 passed/3 failed. All14 other new
+reader cases passed, including exact frozen cross-route retry, lifecycle/late
+preflight/logout,320px/200-percent reload failure and actual bundled owned exit.
+Repo-sanity/database/AI completed successfully; Windows still running at review.
+Downstream Flutter/browser/Web skipped, never counted as success.
+
+Two configured save tests incorrectly compared DailyPlanDate object identity;
+assert exact event.date.value instead. All original ack/area/61-second interval/
+ID/dispatch/plan-read/no-queue checks retained. Refresh already observed loading,
+readiness false and canceled notifier, but panel's async-state frame had not
+rendered. Pump one frame with reload still held, retain disabled-start check
+and additionally assert its presence/no elapsed/no frozen report. All17 cases/
+prior assertions remain; no product/model/provider/runtime/data/Auth/security/
+CI/lint/timeout/dependency/schema/RLS/Pro/main/source branch change.
+
+Separate bounded diff/assertion review, pinned Dart format1/0changes,QA17/
+inventory49 and whitespace passed locally. No full local Flutter run; prior
+metadata-endpoint automatic-review rejection remains, no retry/bypass. Native
+production unchanged, so no redundant native rerun or new native pass claimed.
+Full corrected-head Flutter/widgets/builds require Actions.
+
+Next inspect published exact #41 head/latest-attempt complete required jobs/
+steps and fix any actual remaining failure preserving assertions. Pending-only
+means persist/release/handoff without duplicate changes/long polling. After
+green continue remaining activity and hosted/browser gates. Keep #11/#12 open/
+#41 draft/default preview/all14 hosted groups pending; no merge/deployment/
+release/Auth strategy/security/provider/spend/schedule change. Details in
+docs/CURRICULUM_STUDY_TIMER.md and the current PR handoff.
