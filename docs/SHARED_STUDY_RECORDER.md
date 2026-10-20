@@ -84,3 +84,23 @@ five Chrome/SDK/native/Web/Windows, explicitly including the four N4 cases. That
 is historical evidence for this refactor. Keep #11/#12 open/#41 draft/default
 preview and all14 hosted acceptance groups pending. No content/dependency/Auth
 strategy/schema/RLS/CI/security/provider/spend/merge/deployment/schedule change.
+
+
+## Cleanup lint correction — 2026-10-20
+
+Sourcebea659ae CI39375345330 completed with database/repo-sanity/AI/Windows success.
+Windows logs explicitly show all six new cross-area cases and actual abrupt-child/
+lease checks passed. Flutter format passed, but analyze rejected one multiline
+fixture cleanup if without a block (line267, curly_braces_in_flow_control_structures).
+Full Flutter tests/provider regression/downstream browser/Web were skipped, never
+counted as success. There was no observed production failure in this run.
+
+Both fixture cleanup if statements now use explicit blocks around their existing
+single completion call. Every scenario/checkStudy call, provider regression,
+production byte and strict lint/CI gate is unchanged. Corrected local format,
+pure targeted analysis, all27 verifier scenarios plus actual child/process checks,
+QA17/inventory49 and whitespace passed. Separate exact diff/assertion review
+confirms the bounded change. Full corrected-head Flutter/provider/browser/Web/
+Windows results require fresh Actions. Local Flutter metadata-review rejection
+is not retried or bypassed. Next inspect that exact head before reader controls;
+only pending CI means save/release without duplicate work or long polling.

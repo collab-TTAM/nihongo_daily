@@ -2040,3 +2040,30 @@ unfocusable for awaited exit. No independent activity recorder or silent credit.
 Keep #11/#12 open/#41 draft/default preview/all14 hosted groups pending; main/Pro/
 source drafts and content unchanged. No merge/deployment/Auth policy/security/
 provider/spend/schedule changes. See docs/SHARED_STUDY_RECORDER.md.
+
+
+## Shared recorder fixture cleanup lint — core-20261020T0540-shared-recorder-lint
+
+Resumed #41 bea659ae; actual CI39375345330 latest attempt completed with four jobs
+success: database/repo-sanity/AI/Windows. Windows logs explicitly confirm all six
+new shared-recorder scenarios and actual abrupt child/process lease/reopen passed.
+Flutter format succeeded, analyze failed solely on shared_study_recorder_fixtures
+line267: multiline if without braces. Full Flutter/provider/widget/browser/Web
+steps skipped, not passing. No source change justified outside this correction.
+
+Wrap both existing fixture cleanup if bodies in explicit blocks; completion calls,
+every case/checkStudy assertion and all production/provider/widget sources remain
+unchanged. No lint suppression, test removal, timeout/CI/security/config change.
+Exact diff/count review, pinned format0changes/pure targeted analyze no issues,
+retained27-scenario native verifier plus actual abrupt child/lease/reopen, QA17/
+inventory49 and whitespace passed after correction. Full new-head Flutter/provider/
+browser/Web/Windows require exact-head CI. Prior local Flutter metadata-endpoint
+approval rejection remains; no retry/workaround/full local Flutter claim.
+
+Next read actual corrected #41 head/latest-attempt complete required jobs/steps,
+fix any actual failure preserving assertions, then wire reader start/finish/retry
+and real profile-level content guards into the same shared provider. Only pending
+CI means save/release without duplicate code/long polling. Keep #11/#12 open/#41
+draft/default preview/all14 hosted groups pending. Main/source/Pro/content/deps/
+Auth/schema/RLS/CI/security/provider/spend/merge/deployment/schedule unchanged.
+See docs/SHARED_STUDY_RECORDER.md and current #41 handoff.

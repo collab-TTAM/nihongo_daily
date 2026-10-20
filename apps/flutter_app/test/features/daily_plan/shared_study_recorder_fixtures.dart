@@ -263,9 +263,12 @@ Future<void> verifySharedRecorder(String scenario) async {
     }
   } finally {
     recorder.dispose();
-    if (!(server.readWait?.isCompleted ?? true))
+    if (!(server.readWait?.isCompleted ?? true)) {
       server.readWait!.complete(studyPlan(0));
-    if (!(server.writeWait?.isCompleted ?? true)) server.writeWait!.complete();
+    }
+    if (!(server.writeWait?.isCompleted ?? true)) {
+      server.writeWait!.complete();
+    }
     await journal.close();
     await directory.delete(recursive: true);
   }
