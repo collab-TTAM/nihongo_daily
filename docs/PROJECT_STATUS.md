@@ -2682,3 +2682,40 @@ then captured-ready-session save/history UI. Current route still saves no histor
 Keep #41 draft/#13 open/default preview/QA51/all14 hosted groups pending. No main/
 source/Pro/canonical/Auth strategy/API/storage activation/schema/RLS/dependency/
 CI/security/provider/spend/merge/deployment/release change.
+
+
+## Opt-in native quiz journal — core-20261021-quiz-native-store
+
+Exact parent43094ac2 CI39480610637 attempt1 completed all five jobs/every required
+step, with621 Flutter tests (all16 history cases), five Chrome, retained native/
+process/SQL checks and Web/Windows builds/artifacts. No pending/skipped steps were
+counted. The previous model fixture warnings are resolved and verified.
+
+The separately reviewed #13 protocol is implemented as a new opt-in native store
+interface/journal: canonical version1 owner/immutable-attempt envelopes, composite
+owner/event replay, typed changed-payload conflict, serialized flushed append,
+safe failure poisoning, lease/local guard, strict complete restore and incomplete
+EOF repair,1 MiB/512-event bounds and shared close/drain. No existing production
+file, app startup, public quiz route, credential or other journal is changed.
+
+Thirteen new real-file Flutter cases cover immutable reopen, mixed owners/equal
+IDs, concurrent duplicate/conflict, accepted-work drain, partial tail, complete
+schema/canonical/duplicate-key corruption, capacity/no eviction, failed bootstrap/
+ownership cleanup and actual child-process flush/restart/lease/replay. Synthetic
+reports are not Auth proof. Injected write/flush fault coverage remains open;
+its poisoning path is source-reviewed. Unchanged Flutter CI runs these on Linux;
+new native-store Windows execution is not yet verified.
+
+Execution environment unavailable: no local Dart/Flutter/format/analyze/test/
+Python QA/build ran, and no prior metadata-review bypass. Separate source/test/
+boundary review completed; new exact-head CI must verify formatting, analysis,
+all new and retained tests and builds. See NATIVE_QUIZ_HISTORY.md/QUIZ_ATTEMPTS.md.
+
+Next inspect actual new-head/latest-attempt all five jobs/every required step and
+fix real failures retaining assertions; pending-only handoff without duplicate
+commits/long polling. After store green, add captured-ready-session repository
+and explicit save/history UI with old-session fences and safe manual retry.
+Public /quiz still saves no history; no mastery/credit or issue completion.
+Keep #13 open/#41 draft/default preview/QA51/all14 hosted groups pending.
+No main/source/Pro/content/Auth strategy/API/schema/RLS/dependency/CI/security/
+provider/spend/merge/deployment/release/schedule change.

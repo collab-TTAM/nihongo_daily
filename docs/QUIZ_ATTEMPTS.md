@@ -6,8 +6,8 @@ The rules below were recorded and separately reviewed in #13 before coding.
 This increment supplies immutable pure-Dart models and a deterministic projection
 for future owner-bound history. The public /quiz route still keeps only its
 current local round. It does not store a result or publish account history.
-Native durable storage, a ready-session repository, UI save/recovery and hosted
-transport remain pending. The models do not authorize their caller.
+An opt-in native library is described in NATIVE_QUIZ_HISTORY.md. A ready-session
+repository, UI save/recovery and hosted transport remain pending. The models do not authorize their caller.
 
 ## Local format version1
 
@@ -93,10 +93,10 @@ all14 hosted groups stay pending. Keep #13 open/#41 draft/default preview.
 
 ## Next
 
-After new-head full green, implement a bounded append-only owner-scoped durable
-store with strict decode, duplicate/conflict handling and restart/partial-write/
-corruption/failure tests. Then add a captured-ready-session repository and explicit
-save/history UI, retaining pending failures and fencing old sessions. Server sync
+After native-store current-head checks pass, add a captured-ready-session
+repository and explicit save/history UI, retaining pending failures and fencing
+old sessions. The opt-in store protocol/tests and remaining validation are in
+NATIVE_QUIZ_HISTORY.md. Server sync
 and authoritative validation require their own reviewed contract and ACL tests.
 Do not claim route persistence or progress/mastery until its flow is implemented
 and verified. No live configuration, merge or deployment in this increment.
@@ -130,3 +130,12 @@ uninferred empty list literals in malformed answers/choices fixtures. Explicit
 Object? element types retain those empty rejection inputs, all16 cases and every
 assertion. Production model/quiz, strict analysis and CI gates are unchanged.
 Full model/test/downstream execution was skipped and needs the new exact head.
+
+### Verified models and opt-in native storage
+
+Exact43094ac2 CI39480610637 latest attempt1 completed all five jobs/every required
+step:621 Flutter tests (all16 model cases), five Chrome, Web/Windows builds and
+retained native/SQL/process gates. The two fixture annotations are verified.
+A separate opt-in native quiz store and real-file/process tests are now authored;
+see NATIVE_QUIZ_HISTORY.md. New-source Actions are still required. Public /quiz
+is not wired to it; no saved history/session authorization/mastery is claimed.
