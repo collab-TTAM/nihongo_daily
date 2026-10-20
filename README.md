@@ -5,8 +5,10 @@
 See `docs/` for product, architecture, security and automation contracts.
 
 The Flutter UI preview is in `apps/flutter_app`; see its README for running on
-web/Windows, routes, tests and explicit integration limitations. This is a demo
-shell; real study, auth, sync and AI remain tracked in GitHub issues.
+web/Windows, routes, tests and explicit integration limitations. Default startup
+is an unconfigured preview with an original N5 vocabulary/grammar reader. Explicit
+Windows staging can use owned Auth/SRS, Daily Plan and durable completed-study
+recovery. Hosted learner acceptance, full sync and AI remain open.
 
 Frozen models/API are in `contracts/v0.1/`; see `docs/CONTRACT_BASELINE.md` for decisions/dependencies and `docs/PROJECT_STATUS.md` for the handoff.
 

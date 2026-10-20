@@ -13,8 +13,7 @@ class StudyScreen extends StatelessWidget {
       children: [
         const PageHeading(
           title: 'Không gian học tập',
-          subtitle:
-              'Khám phá các phần của Nihongo Daily. Nội dung đang được xây dựng.',
+          subtitle: 'Chọn phần học. Từ vựng và ngữ pháp có nội dung N5 để đọc.',
         ),
         ...StudyArea.values.map(
           (area) => Card(
@@ -22,7 +21,15 @@ class StudyScreen extends StatelessWidget {
               contentPadding: const EdgeInsets.all(16),
               leading: const Icon(Icons.menu_book_outlined),
               title: Text(area.label),
-              subtitle: const Text('Xem thông tin · Chưa có buổi học thực tế'),
+              subtitle: Text(switch (area) {
+                StudyArea.vocabulary =>
+                  'Đọc và tìm từ N5 · Cách đọc, nghĩa Việt và ví dụ',
+                StudyArea.grammar =>
+                  'Đọc và tìm mẫu câu N5 · Giải thích và ví dụ',
+                StudyArea.srs => 'Ôn thẻ khi tài khoản học tập đã sẵn sàng',
+                StudyArea.kanji => 'Viết trực tiếp · Chấm điểm chưa khả dụng',
+                _ => 'Xem thông tin · Nội dung đang được xây dựng',
+              }),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.go(area.path),
             ),

@@ -8,7 +8,8 @@ configured Windows completed-report recovery is in OWNED_STUDY_RECOVERY.md.
 Foreground SRS timer/report creation is in SRS_STUDY_TIMER.md. Other activity
 timers, deployed service and authenticated learner acceptance remain outstanding.
 The main Flutter home remains an explicitly labeled preview; no fake save or
-completion is installed. Separate Auth/SRS #37 and reader #39 remain independent.
+completion is installed. The #41 integration combines reviewed Auth/SRS #37 and
+read-only N5 reader/search #39; their source branches remain unchanged.
 
 ## Transport and identity
 

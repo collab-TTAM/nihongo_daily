@@ -5,11 +5,19 @@ Opt-in native write-before-dispatch/restart library:
 recovery automatically; default runtime remains unconfigured. Explicit runtime
 storage enables controller recovery as described in ../../docs/STUDY_RECOVERY.md.
 
-This is an explicitly labeled UI preview, not Personal Alpha. No login, real
-curriculum study flow, integrated SRS review, real grading, progress persistence, default network activation or live
-AI/voice is implemented. N5/N4 selections and theme preferences last only for the
-current process. The seven-block allocation previews the frozen 120-minute
-default; every block is shown as unavailable and cannot record study completion.
+Default startup is an explicitly labeled, unconfigured preview, not Personal Alpha.
+The vocabulary/grammar routes read and search packaged original N5 exports (24
+words/10 patterns), with readings, Vietnamese explanations/examples and adjacent
+navigation. This is read-only; it adds no learning completion or account progress.
+N4 content/audio/full JLPT coverage are not included. Preview level/theme choices
+last only for this process and do not alter the authenticated profile.
+
+Explicit Windows staging can install the owned Auth/profile/SRS runtime, Daily
+Plan, completed-study recovery and foreground SRS elapsed reports. See
+../../docs/STAGING_BOOTSTRAP.md and ../../docs/OWNED_STUDY_RECOVERY.md. Default
+startup does not activate a network service or login. Hosted learner acceptance,
+full multi-device sync, real Kanji grading and live AI/voice remain outstanding.
+The home still shows the clearly labeled seven-block 120-minute sample plan.
 
 ## Run and verify
 
@@ -52,14 +60,12 @@ claimed by this shell.
   preview repository does not implement or change the get_daily_plan contract.
 - `features/settings/`: process-local preview preferences; no Supabase writes.
 - `features/study/`: discovery of planned modules.
-- `features/srs/`: pure versioned scheduler, typed RPC repository and /srs
-  application controller/screen. The route is unconfigured by default; no real
-  Auth/queue/RPC binding or durable queue is present. Fixture UI flows exist only
-  in tests; see ../../docs/SRS_RPC.md for the integration limits.
-  Process-local captured-connection lifecycle/runtime assembly is described in
-  ../../docs/REVIEW_CONNECTION_LIFECYCLE.md; it is not a concrete SDK/Auth binding.
-  Concrete owner-configured SDK binding is in ../../docs/SUPABASE_REVIEW_BINDING.md;
-  default app still does not install it or supply login/profile/token persistence.
+- `features/curriculum/`: public bundled N5 reader/search, typed original IDs/
+  versions/examples; no learner write capability. See ../../docs/CURRICULUM_BROWSER.md.
+- `features/srs/`: scheduler, captured SDK/RPC adapters, owned recovery and review
+  controller/UI. Default unconfigured; explicit staging assembly and limitations
+  are documented in ../../docs/SUPABASE_REVIEW_BINDING.md and
+  ../../docs/STAGING_BOOTSTRAP.md.
 - `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
 
@@ -72,7 +78,7 @@ routes are replaced by feature modules as their dependency issues are merged.
 Routes: `/`, `/plan`, `/study`, `/settings`, `/auth`, `/vocabulary`, `/grammar`, `/srs`,
 `/quiz`, `/listening`, `/kanji`, `/ai`, `/conversation`, `/progress`.
 
-Tests cover preview/contract allocation parity, route recovery, all placeholders,
+Tests cover preview/contract allocation parity, route recovery, remaining placeholders, original reader/assets/search,
 study navigation, N4/theme state, injected loading/error/retry/empty results, and
 320/375-pixel layouts at 200% text size. Builds do not establish live auth/RLS,
 multi-device sync, AI availability or curriculum coverage.

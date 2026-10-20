@@ -51,3 +51,11 @@ read capability and explicit date-fill UI are reviewed in PROFILE_STUDY_DAY.md.
 The database timezone catalog owns calendar conversion; no device-date/UTC-offset
 guess or client timezone package is introduced. Existing plan/report contracts
 and server-authoritative progress remain unchanged.
+
+
+The #41 router also composes the reviewed public bundled curriculum reader/search
+from #39 (CURRICULUM_BROWSER.md). Its provider reads only two packaged original
+N5 exports, retains IDs/versions, and has no account or learning-write capability.
+Public preview-level browsing never changes the authenticated profile or SRS
+level. Owned startup/plan/recovery/SRS routes and shutdown ownership remain under
+the same existing host; no extra SDK, token writer or persistence owner is added.

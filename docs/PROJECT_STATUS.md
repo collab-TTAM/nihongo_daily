@@ -1893,3 +1893,48 @@ long polling. Keep #11 open/#41 draft/default preview/all14 hosted groups pendin
 No source drafts/main/Pro/reader/dependencies/Auth strategy/provider/spend/security
 reduction/hosted deployment/merge/schedule change. Existing immutable report dates,
 server overlap/day/minute validation and pending recovery remain authoritative.
+
+
+## Public N5 reader in owned integration — core-20261020T0503-reader-integration
+
+Resumed #41 ad299b12 after CI39372174900 latest attempt completed successfully:
+allfive jobs/every required step,474 Flutter/five Chrome, native day/calendar/ACL/
+no-write/four-wire checks, owned process/SDK/lifecycle/Web/Windows gates. Separately
+reviewed #39 reader57acb709 and CI39272055003 allfive jobs/every step success.
+These source passes are historical evidence, not combined-head verification.
+
+The integration now opens actual /vocabulary and /grammar from the existing study
+cards rather than placeholders. Imports unchanged five production reader/search
+files, two canonical N5 asset copies (24 words/10 patterns), two reader test files,
+updated real home CTA test and optional PageBody controller. Routes combine with
+all prior account/plan/recovery/SRS/Kanji/other placeholders; pubspec adds only the
+two asset declarations. Study cards explain current reading/SRS/Kanji capability.
+No #39 source/content, Pro N4 assets, dependency/lockfile/workflow/Auth/schema/RLS
+or existing owned-runtime behavior changed. Public reader has no learning-write
+capability and its process-local preview level never retargets the own profile.
+
+Two additional owned-host widget cases authored, one for each actual bundled
+reader: read the existing plan first, navigate/search original content without
+extra plan/queue calls, preserve authenticated N4 profile during public N5 reading,
+then await close with the search EditableText still mounted and focus excluded
+behind the existing closing screen. TEST ONLY Auth/plan fixtures are not hosted
+learner/actual OS shutdown proof. All existing reader and owned checks retained;
+the home test replaces its placeholder assertion with original reading/detail.
+
+Local pinned Dart formatter and pure curriculum-domain/search analysis passed;
+11 imported reader/asset/test/layout files exactly equal reviewed #39, and both
+packaged asset texts equal the canonical data. Original route-set equality and
+all five owned paths verified. QA inventory49/all17 regressions and whitespace
+passed. Full combined Flutter/widget/SDK/native/Web/Windows execution requires
+exact-head Actions; local Flutter package execution remains unavailable after
+prior metadata-endpoint approval rejection, with no retry/workaround attempted.
+Separate production/test/composition diff review completed before persistence.
+
+Next inspect actual combined #41 head/latest-attempt complete CI and fix failures
+preserving assertions. Only pending CI means save/release without duplicate work
+or long polling. After green, add validated vocabulary/grammar elapsed sessions
+through the existing durable service, not credit from reading/navigation. Keep
+#11/#12 open/#41 draft/default preview/all14 hosted gates pending. Main and source
+drafts #37/#39/#40 remain unchanged; no Pro content/dependency/security/provider/
+Auth policy/spend/merge/deployment or schedule change. CURRICULUM_BROWSER.md records
+composition, limitations and verification scope.

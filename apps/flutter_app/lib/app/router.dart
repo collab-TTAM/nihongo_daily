@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/curriculum/domain/curriculum.dart';
+import '../features/curriculum/presentation/curriculum_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/daily_plan/presentation/daily_plan_screen.dart';
 import '../features/daily_plan/presentation/study_recovery_screen.dart';
@@ -13,14 +15,6 @@ import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
 
 const previewRoutes = <String, ({String title, String description})>{
-  '/vocabulary': (
-    title: 'Từ vựng',
-    description: 'Hán tự, cách đọc và nghĩa tiếng Việt.',
-  ),
-  '/grammar': (
-    title: 'Ngữ pháp',
-    description: 'Mẫu câu, cách dùng và ví dụ tiếng Nhật.',
-  ),
   '/quiz': (
     title: 'Kiểm tra nhanh',
     description: 'Củng cố kiến thức qua các câu hỏi ngắn.',
@@ -52,6 +46,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
         routes: [
           GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+          GoRoute(
+            path: '/vocabulary',
+            builder: (context, state) =>
+                const CurriculumScreen(kind: CurriculumKind.vocabulary),
+          ),
+          GoRoute(
+            path: '/grammar',
+            builder: (context, state) =>
+                const CurriculumScreen(kind: CurriculumKind.grammar),
+          ),
           GoRoute(
             path: '/plan',
             builder: (context, state) => const DailyPlanScreen(),

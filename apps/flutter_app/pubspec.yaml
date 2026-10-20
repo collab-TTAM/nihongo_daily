@@ -26,3 +26,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/curriculum/n5/vocabulary.json
+    - assets/curriculum/n5/grammar.json
