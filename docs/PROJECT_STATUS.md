@@ -2608,3 +2608,38 @@ expected to expose the exact formatter-produced test diff while still failing.
 Read that diff, apply it without changing cases/assertions, then verify a new head.
 Do not begin durable-store implementation until the models are verified.
 Keep #41 draft/#13 open/default preview/all14 hosted groups pending.
+
+
+## Exact SDK history-test format correction — core-20261021-history-test-format
+
+The diagnostic increment fef1e081 CI39478685828 attempt1 reached the unchanged
+strict formatter gate and failed as required. Its log supplied exactly three
+hunks for vocabulary_quiz_history_test.dart: two multiline map/list displays and
+one collection argument layout. No other Dart file changed.
+
+Apply those three observed hunks exactly, without a hand-invented formatting
+change. Independent UTF-8 Git blob SHA1 (self-checked against SHA1("abc") and the
+original GitHub blob) yields ebaa415b7a9905d7abcecf11fa249adf9dc76ccc, matching
+the formatter diff's target prefix ebaa415. Every string literal and all
+non-whitespace/non-comma text remain identical; all16 test cases/assertions and
+production model/quiz behavior are retained. The successful diagnostic failure
+proves the added logging did not silently accept unformatted code.
+
+At observation diagnostic CI repo/database/AI passed, Windows bridge build in
+progress, Flutter format failed; analysis/tests/Chrome/Web skipped. Exact a9c14f22
+first model CI separately passed Windows/all other four jobs. Previous cd9e4450
+allfive/605 Flutter/five Chrome remains historical source evidence, not history-
+model execution. Local execution environment unavailable; no local SDK/format/
+test/analysis/QA/render/build or prior metadata-review bypass.
+
+Persist this source correction on the complete483-file base, read back each
+changed blob and verify all paths/modes/SHAs before fast-forwarding. Existing
+strict diagnostic gate remains installed; new exact-head CI must verify its
+clean-success branch and full model/test/platform checks. Next inspect actual
+latest-attempt allfive required jobs/every step and fix real failures retaining
+assertions. Pending-only means release/handoff without duplicate commits or long
+polling. Native quiz store/session repository/save-history UI remain pending
+until these models are verified. Keep #41 draft/#13 open/default preview/all14
+hosted groups pending. No native store activation/mastery/credit/main/source/
+Pro/canonical/Auth strategy/API/schema/RLS/dependency/security/provider/spend/
+merge/deployment/release/schedule change.

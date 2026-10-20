@@ -112,3 +112,12 @@ from the disposable runner checkout and still fails. Its exact name, SDK3.35.4,
 clean-check behavior and downstream gates stay unchanged; no source auto-push.
 Apply the observed test diff before claiming formatting or model test success.
 No local execution environment is available. Public route persistence is pending.
+
+### SDK-produced format patch applied
+
+Diagnostic fef1e081 CI39478685828 attempt1 kept the format gate failing and
+emitted three exact test-file hunks. They are applied without changing cases,
+assertions, string literals or model behavior. The resulting independently
+computed Git blob is ebaa415b7a9905d7abcecf11fa249adf9dc76ccc, matching the SDK's
+diff target. No other Dart source changes. New exact-head CI still must run
+analysis, all16 model tests and downstream platform checks before acceptance.

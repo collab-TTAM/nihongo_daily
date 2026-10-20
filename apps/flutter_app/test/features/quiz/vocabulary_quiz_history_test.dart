@@ -209,7 +209,10 @@ void main() {
       {...good, 'completed_at': 'x' * 33},
       {...good, 'answers': []},
       {...good, 'answers': List.filled(11, rows(good).first)},
-      {...good, 'answers': [rows(good).first, rows(good).first]},
+      {
+        ...good,
+        'answers': [rows(good).first, rows(good).first],
+      },
       Map<String, Object?>.of(good)..remove('event_id'),
     ]) {
       expect(
@@ -232,7 +235,10 @@ void main() {
       {...answer, 'content_version': 2147483648},
       {...answer, 'choices': []},
       {...answer, 'choices': List.filled(4, answer['item_id'])},
-      {...answer, 'choices': [owner, other, eventId(1), eventId(2)]},
+      {
+        ...answer,
+        'choices': [owner, other, eventId(1), eventId(2)],
+      },
       {...answer, 'choices': 'PRIVATE'},
     ]) {
       expect(
@@ -431,10 +437,9 @@ void main() {
       throwsFormatException,
     );
     expect(
-      () => derive(
-        [event],
-        source: List.filled(5001, originals[PreviewLevel.n5]!.first),
-      ),
+      () => derive([
+        event,
+      ], source: List.filled(5001, originals[PreviewLevel.n5]!.first)),
       throwsFormatException,
     );
   });
