@@ -12,6 +12,7 @@ import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dar
 import 'package:nihongo_daily/features/srs/application/srs_study_runtime.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 import 'windows_runtime_fixture.dart';
+import 'windows_exit_markers.dart';
 
 const exitPhases = {'exit-drain', 'exit-cancel'};
 
@@ -48,8 +49,7 @@ final class _ExitProbeOwner implements StagingOwner {
   int closes = 0;
   File marker(String name) =>
       File('${directory.path}${Platform.pathSeparator}$phase-$name');
-  Future<void> mark(String name) =>
-      marker(name).writeAsString('TEST_ONLY_EXIT_MARKER', flush: true);
+  Future<void> mark(String name) => publishExitMarker(marker(name));
   @override
   AccountController<SrsStudyRuntime> get account => owner.account;
   @override
@@ -74,6 +74,7 @@ final class _ExitProbeOwner implements StagingOwner {
     while (!await marker('release').exists()) {
       await Future<void>.delayed(const Duration(milliseconds: 25));
     }
+    _check(await marker('release').readAsString() == exitMarkerPayload);
     await owner.close();
     // Normal close must release the actual native journal lease before exit.
     final appData = await resolveWindowsReviewDirectory(origin);

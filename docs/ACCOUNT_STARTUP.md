@@ -121,3 +121,30 @@ confirmed logged-in learner rotation/restart, OS logoff or power-loss proof.
 All 14 release groups remain pending. Following evidence/QA documentation
 successor has separate CI; this source-head evidence is historical for later
 commits. Keep #37 draft and #20/#22/#15 open.
+
+
+## Exit fixture marker publication correction
+
+On integration source `72e984a8b24cde8e11ccff1babb927561dcf2296`, CI39412500938
+passed the Windows app-data, Dart/native bridge and persistent-runtime probes,
+then failed with `Windows exit marker invalid`. Inspection identifies a race:
+writing directly to the final marker name lets the existence-based reader open
+it before the asynchronous writer has finished. The failing log does not capture
+the partial payload; this cause is inferred from the publication sequence.
+
+TEST ONLY Dart signals now write/flush/close a same-directory `.publishing` file,
+validate the exact payload and rename it to the final name. PowerShell's release
+signal likewise closes a pending file before moving it. Dart also validates the
+received release payload. One fixture writer owns each target; this is not a
+multiwriter journal or a general atomic replacement contract. Strict PowerShell
+payload rejection, deadlines, real CloseMainWindow requests, alive-before-release,
+cancellation, same-owner explicit retry, drain, lease reopen and natural-exit
+assertions remain unchanged. No corrupt-marker retry, timeout increase or skip.
+
+Four real disposable-file regressions exercise held empty publication, repeated
+partial staging without truncating the prior final, invalid payload rejection and
+failed-write cleanup. Direct pinned Dart execution on Linux and pure analysis
+passed. Normal Flutter test discovery includes these four cases; actual Windows
+PowerShell/runner behavior and the full updated suite require exact-head Actions.
+No local PowerShell or full Flutter execution is claimed. Application runtime,
+Auth, SDK, vault, learner journal and guide behavior are unchanged.

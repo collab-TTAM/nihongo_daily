@@ -32,6 +32,18 @@ function Wait-ExitMarker([System.Diagnostics.Process] $process, [string] $path) 
     }
 }
 
+# A marker name must not be observable until its entire payload is closed.
+# Keep Wait-ExitMarker's exact-content failure strict; do not retry corrupt data.
+function Publish-ExitMarker([string] $path) {
+    $pending = $path + '.publishing'
+    try {
+        [System.IO.File]::WriteAllText($pending, 'TEST_ONLY_EXIT_MARKER')
+        [System.IO.File]::Move($pending, $path)
+    } finally {
+        if (Test-Path $pending) { Remove-Item $pending }
+    }
+}
+
 function Invoke-WindowExit([string] $phase) {
     $directory = Join-Path ([System.IO.Path]::GetTempPath()) ('nd-' + $scope)
     $process = Start-Process -FilePath $exe -ArgumentList @($phase, $scope) -WorkingDirectory (Split-Path $exe) -PassThru
@@ -56,7 +68,7 @@ function Invoke-WindowExit([string] $phase) {
         }
         # Drain is unreleased, or cleanup failed: the real process must stay alive.
         if ($process.WaitForExit(1000)) { throw 'Windows exited before owned cleanup' }
-        [System.IO.File]::WriteAllText((Join-Path $directory ($phase + '-release')), 'TEST_ONLY_EXIT_MARKER')
+        Publish-ExitMarker (Join-Path $directory ($phase + '-release'))
         if ($phase -eq 'exit-cancel') {
             $process.Refresh()
             if (-not $process.CloseMainWindow()) { throw 'Windows close retry failed' }

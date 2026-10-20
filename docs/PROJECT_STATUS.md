@@ -2269,3 +2269,40 @@ digest checks; importer text I/O uses explicit UTF-8 and LF.
 The upstream COPYING file is preserved byte-for-byte, including its blank EOF
 line. Full whitespace review reports that one upstream-only notice; authored-file
 whitespace check passes. Its exact license digest is also locked by the importer.
+
+
+## Windows fixture publication — core-20261020T1111-exit-marker-publication
+
+Resumed #41 `72e984a8b24cde8e11ccff1babb927561dcf2296`. Exact CI39412500938,
+latest attempt, completed repo-sanity/ai-boundary/database/Flutter with every step
+successful. Completed Flutter logs show569 tests including all16 new N5 guide
+cases, five actual Chrome tests, retained SDK/native/process/SQL and Web artifact.
+Windows bridge build and app-data/Dart-native/persistent-runtime probes passed;
+actual exit fixture then failed `Windows exit marker invalid`. Later Windows
+configured/normal builds and artifacts were skipped, never passed.
+
+Inspection identifies final-name visibility before asynchronous write completion
+as a publication race, consistent with the historical intermittent marker failure;
+the failed log itself does not capture a partial payload. TEST ONLY Dart markers
+now stage, flush, close and validate before same-directory rename. PowerShell
+release likewise stages before move, and Dart verifies its exact payload. Existing
+strict reader/deadlines/process-alive/real close/cancel/explicit retry/owned drain/
+lease reopen/natural exit checks remain. No weakening or corrupt-data retry.
+
+Four real disposable-file regressions passed direct pinned Dart execution: held
+empty stage remains unpublished, repeated partial stage preserves prior final,
+invalid payload rejected/cleaned and failed write propagated/cleaned. Pure helper/
+fixture analysis and pinned format passed. All four are included in ordinary
+Flutter discovery. QA inventory49 and25 Python regressions, whitespace and a
+separate bounded diff/assertion review passed. PowerShell is unavailable locally;
+full updated Flutter and actual Windows runner checks require exact-head Actions.
+No local Flutter metadata rejection retry/bypass or full local Flutter claim.
+
+Next inspect published exact head/latest-attempt all required jobs/steps, fix
+actual failures retaining assertions. Pending-only means persist/release/handoff,
+no duplicate source/docs-only commit or long polling. Only after complete green,
+continue the previously checked95-character N4 reference increment. No N4 guide
+asset installed in this fix. Keep #41 draft/#16/#20/#22 open/default preview/all14
+hosted groups pending. No app/Auth/SDK/vault/journal/content/Pro/main/source/API/
+provider/dependency/schema/RLS/CI/security/timeout/spend/merge/deployment/release/
+schedule change. See ACCOUNT_STARTUP.md and current PR handoff.
