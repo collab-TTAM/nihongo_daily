@@ -89,3 +89,14 @@ three Dart files, retaining literal text, logic, scenarios and assertions.
 No formatter/dependency/workflow configuration change. Manual source comparison
 is not formatter execution; the execution environment remains unavailable.
 The next exact-head Actions run must verify all required steps.
+
+### Verified public quiz and next history boundary
+
+Exact parent cd9e4450 CI39474839847 attempt1 completed allfive/every required step,
+605 Flutter/five Chrome/Web/Windows. All19 public quiz cases and the SDK readiness
+fixture correction passed. This supersedes earlier pending observations.
+
+The next increment adds immutable attempt/history models and16 authored tests;
+see QUIZ_ATTEMPTS.md. It does not activate storage or change the current route.
+Quiz results still reset locally; durable user-owned history/UI/sync/mastery remain
+pending. New model execution requires its own exact-head Actions verification.

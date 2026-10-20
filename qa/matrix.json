@@ -1041,6 +1041,28 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/quiz",
       "limitation": "Authored tests require exact-head CI. Public process-local practice only; no saved attempts, mastery, progress, attention or study credit."
+    },
+    {
+      "id": "vocabulary-quiz-history-model",
+      "status": "automated-baseline",
+      "scope": "Immutable completed-round attempts and owner-isolated deduplicated current-source error projection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_history_test.dart",
+          "contains": "foreign owner is rejected before dedup and level filtering"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_history_test.dart",
+          "contains": "wrong correct wrong preserves counts"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/vocabulary_quiz_history_test.dart",
+      "limitation": "Pure client-report models/tests only; new exact-head execution pending. No durable store, session-bound repository, current route history UI, hosted attempts, mastery or study credit."
     }
   ],
   "findings": [

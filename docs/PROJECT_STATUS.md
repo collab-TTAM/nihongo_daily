@@ -2537,3 +2537,51 @@ this correction. Next inspect latest-attempt allfive jobs/every required step,
 fix actual failures preserving assertions. Pending-only means release/handoff
 without duplicate source/docs-only commits or long polling. Keep #41 draft,
 #13 open/default preview/all14 hosted acceptance groups pending.
+
+
+## Quiz attempt snapshots and error history — core-20261020T1834-quiz-history-model
+
+Resumed exact #41 cd9e4450035051e439884badb6918a6d2746ff93, complete479-file
+treeba377dd82e73ac49e99816bc3357706a7aecf392. CI39474839847 attempt1 allfive/
+every required step passed. Completed logs605 Flutter/five Chrome; all19 quiz
+cases and SDK readiness correction passed, plus retained SQL/native/process/
+Web/Windows builds/artifacts. Previous pending/failure observations are historical.
+
+#13 bounded attempt/owner/replay/error rules recorded/reviewed before coding.
+Add immutable completed-round attempt snapshots, strict separate local-v1 JSON,
+owner envelope and pure deterministic history projection. One read-only copied
+answer-map getter is the only existing production change; current /quiz behavior
+and original tests unchanged. No route save/history success or mastery claim.
+
+Only fully advanced nonempty one-level rounds are captured. Canonical IDs/versions/
+four displayed choice IDs/first selection are copied; derive score, never accept a
+caller-supplied score or correctness. Exact schema/types/bounds/UTC round-trip
+reject unknown/normalized input. Separate owner envelope is data, not Auth:
+future repository must capture its owner from a ready session.
+
+Reject foreign owner before dedup/level filter; identical event replay counts
+once and changed payload conflicts before counters. Bound history10000. Stable
+UTC/event-ID order; historical totals retain old source reports, while current
+practice/review must resolve original generated questions with matching version
+and exact choice order. Latest wrong proposes that item for review; later correct
+clears it while preserving error counts; rank by errors/time/canonical ID.
+No MASTERED, mastery threshold, study timer, plan/SRS/profile or server credit.
+
+Sixteen new tests authored against both actual canonical levels and malformed/
+owner/replay/conflict/time/ranking/wrong-correct/stale-source/immutable edge cases.
+QA51 adds one baseline; all14 hosted groups and existing gates/findings unchanged.
+Pure JavaScript canonical inventory confirms all24/366 source IDs match UUID
+requirements; not Dart execution or linguistic acceptance.
+
+Execution environment unavailable. No new local Dart/Flutter/format/analyze/
+Python QA/browser/render/build; no previous Flutter metadata-review bypass.
+Separate source/test/rule/scope review and full-tree/blob checks accompany the
+published head; existing exact-head Actions must verify implementation.
+Next inspect exact-head/latest-attempt allfive jobs/every required step and fix
+actual failures preserving assertions. Pending-only means release/handoff without
+duplicate source/docs-only commits or long polling. After full green implement
+owner-scoped durable append/restart/corruption/replay behavior, then captured-ready-
+session repository and explicit save/history UI; no fabricated default success.
+Keep #41 draft/#13 open/default preview/all14 hosted groups pending; no main/source/
+Pro/canonical/Auth strategy/API/storage activation/schema/RLS/dependency/CI/security/
+provider/spend/merge/deployment/release/schedule change. See QUIZ_ATTEMPTS.md.

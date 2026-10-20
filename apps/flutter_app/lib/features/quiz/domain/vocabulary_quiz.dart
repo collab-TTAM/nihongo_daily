@@ -87,6 +87,7 @@ final class QuizRound {
   bool get answered => current != null && _answers.containsKey(current!.id);
   String? get selectedChoice => current == null ? null : _answers[current!.id];
   int get answeredCount => _answers.length;
+  Map<String, String> get acceptedAnswers => Map.unmodifiable(_answers);
   int get score {
     return questions.where((q) => _answers[q.id] == q.target.id).length;
   }
