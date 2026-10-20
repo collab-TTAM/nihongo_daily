@@ -2774,3 +2774,43 @@ explicit save/history UI. Public /quiz still saves no history; no mastery/credit
 Keep #41 draft/#13 open/default preview/QA51/all14 hosted groups pending.
 No production/API/schema/Auth/RLS/dependency/CI/security/main/source/Pro/content/
 provider/spend/merge/deployment/release/schedule change.
+
+
+## Captured quiz-history repository — core-20261021-quiz-session-repository
+
+Exact parent78fbfae0 CI39484645098 attempt1 completed all five jobs/every required
+step:634 Flutter/five Chrome, Web/Windows and retained SQL/native/process gates.
+All13 real-file/process native quiz store tests passed on Linux. Native quiz
+Windows execution and injected file-write/flush fault coverage remain open.
+
+New bounded #13 library provides owner-derived save/load under an exact captured
+ready session/runtime fence. It validates returned owner/full payload, coalesces
+identical/reentrant saves, rejects conflicting replay/mixed-owner/oversized
+history, returns copied immutable ordered records and redacts unknown errors.
+Readiness/identity loss permanently revokes the wrapper before storage/after
+every await, including failed results. Late old-owner writes can remain durable
+but never publish to a new session. Revoke/drain waits for accepted operations.
+
+PersistentSupabaseRuntime accepts optional quizStore (default null) and creates
+the wrapper only after own profile/secure-secret readiness. It captures exact
+ready-runtime/ready-session identity and drains quiz operations alongside existing
+Auth/study close before caller storage release. No startup/host opens a new store;
+no public /quiz save/history UI or server transport is installed.
+
+Twenty new tests authored:15 repository/real-disk port-fault cases and five
+actual pinned-SDK/simulated HTTP/vault/real-disk cases, covering duplicate/
+reentrant dispatch, owner isolation, validation, redaction/retry, A/B/A, same-user/
+readiness replacement, optional-null default, profile/rotation barriers and
+queued/held shutdown. Existing source/test assertions and CI/security retained.
+No usable local execution environment or local SDK/format/analyze/test/QA/build
+claim; source/protocol/test review is not execution. No prior review bypass.
+
+New exact-head Actions must verify formatting/analysis/new20 plus all existing
+tests and required builds/checks. Next inspect actual latest-attempt all five
+jobs/every step and fix failures without removing assertions; pending-only release
+without duplicate commits/long polling. After green, add explicitly owned journal
+opening/close forwarding and save/history providers/UI with same-round lifecycle
+binding and manual immutable retry. Public route still loses results on exit.
+Keep #13 open/#41 draft/default preview/QA51/all14 hosted groups pending.
+No main/source/Pro/content/Auth strategy/API/schema/RLS/dependency/CI/security/
+provider/spend/merge/deployment/release/schedule change.

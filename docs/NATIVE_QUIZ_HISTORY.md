@@ -2,8 +2,8 @@
 
 NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore as a separate,
 bounded append-only local library. No app runtime or public /quiz route opens it
-yet. A future captured-ready-session repository must derive the owner from Auth,
-fence every await, and expose explicit save/history UI. Supplying an owner UUID
+yet. An optional captured-ready-session repository is described in
+QUIZ_ACCOUNT_HISTORY.md; explicit owned startup and save/history UI remain next. Supplying an owner UUID
 to this library is isolation, not authentication or server authorization.
 
 ## File protocol and replay
@@ -72,9 +72,14 @@ step:621 Flutter tests (including all16 history-model cases), five Chrome tests,
 retained native/process/SQL checks, Web and Windows release builds/artifacts.
 This verifies the parent models, not the new store.
 
-After this store passes current-head checks, add captured-ready-session
-save/history composition with stale-session fences, storage error/manual retry
-and explicit lifecycle ownership. Public /quiz still loses results on exit.
+After captured-repository current-head checks pass, add owned save/history
+composition with stale-session fences, storage error/manual retry and explicit
+lifecycle ownership. See QUIZ_ACCOUNT_HISTORY.md. Public /quiz still loses results on exit.
 No mastery or server credit. Keep #13 open/#41 draft/default preview and all14
 hosted acceptance groups pending. No live activation, merge, deployment or
 schedule change.
+
+Parent78fbfae0 CI39484645098 attempt1 subsequently passed all five jobs/every
+required step,634 Flutter/five Chrome/Web/Windows. All13 actual file/process
+store tests passed on Linux. The new optional captured-session repository is
+separately awaiting current-head CI; /quiz still does not open or use this store.

@@ -6,8 +6,9 @@ The rules below were recorded and separately reviewed in #13 before coding.
 This increment supplies immutable pure-Dart models and a deterministic projection
 for future owner-bound history. The public /quiz route still keeps only its
 current local round. It does not store a result or publish account history.
-An opt-in native library is described in NATIVE_QUIZ_HISTORY.md. A ready-session
-repository, UI save/recovery and hosted transport remain pending. The models do not authorize their caller.
+An opt-in native library is described in NATIVE_QUIZ_HISTORY.md. The optional
+captured-ready-session repository is described in QUIZ_ACCOUNT_HISTORY.md;
+UI save/recovery and hosted transport remain pending. The models do not authorize their caller.
 
 ## Local format version1
 
@@ -139,3 +140,11 @@ retained native/SQL/process gates. The two fixture annotations are verified.
 A separate opt-in native quiz store and real-file/process tests are now authored;
 see NATIVE_QUIZ_HISTORY.md. New-source Actions are still required. Public /quiz
 is not wired to it; no saved history/session authorization/mastery is claimed.
+
+### Captured-session repository
+
+Parent78fbfae0 CI39484645098 latest attempt1 passed all five jobs/every step,
+634 Flutter/five Chrome/Web/Windows, including all13 native store tests. A new
+owner-derived save/load repository and optional runtime factory are now authored
+with20 lifecycle/SDK/disk tests; see QUIZ_ACCOUNT_HISTORY.md. New exact-head
+checks remain required. No startup journal/UI persistence is activated.

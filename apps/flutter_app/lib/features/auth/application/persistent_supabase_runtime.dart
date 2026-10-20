@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
+import '../../quiz/data/vocabulary_quiz_attempt_store.dart';
+import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../srs/application/srs_study_runtime.dart';
@@ -31,11 +33,13 @@ final class PersistentSupabaseRuntime
     required SessionCredentialVault vault,
     required DurableReviewStore store,
     StudySessionStore? studyStore,
+    VocabularyQuizAttemptStore? quizStore,
     http.Client? httpClient,
     DateTime Function()? now,
     bool automaticRefresh = false,
     Duration requestTimeout = const Duration(seconds: 15),
-  }) : _studyStore = studyStore {
+  }) : _studyStore = studyStore,
+       _quizStore = quizStore {
     if (kIsWeb) {
       // The pinned SDK broadcasts Auth session objects between browser tabs.
       // No browser token persistence/restore is authorized by this assembly.
@@ -109,6 +113,8 @@ final class PersistentSupabaseRuntime
     }
   }
   final StudySessionStore? _studyStore;
+  final VocabularyQuizAttemptStore? _quizStore;
+  final _quizOperations = VocabularyQuizOperationDrain();
   final _studyOperations = StudySessionOperationDrain();
   late final SupabaseClient _client;
   late final _BoundedSessionHttp _network;
@@ -198,6 +204,31 @@ final class PersistentSupabaseRuntime
     }
   }
 
+  /// Optional borrowed local storage, bound to this exact ready runtime.
+  /// Caller retains the store until close() drains all accepted operations.
+  VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() {
+    final store = _quizStore;
+    if (_closing != null || store == null || _quizOperations.isClosing) {
+      return null;
+    }
+    final ready = account.readyRuntime;
+    final session = account.readySession;
+    if (ready == null || session == null) return null;
+    try {
+      return VocabularyQuizHistoryRepository(
+        auth: ready.auth,
+        store: store,
+        operations: _quizOperations,
+        isReady: () =>
+            _closing == null &&
+            identical(account.readyRuntime, ready) &&
+            identical(account.readySession, session),
+      );
+    } on VocabularyQuizSessionChanged {
+      return null;
+    }
+  }
+
   @override
   Future<void> refresh() => persistence.refresh();
 
@@ -210,7 +241,11 @@ final class PersistentSupabaseRuntime
     unawaited(_noticeEvents.close());
     await _refreshSubscription?.cancel();
     // Preserve immediate Auth-close policy even while a study RPC is held.
-    await Future.wait([persistence.close(), _studyOperations.revokeAndDrain()]);
+    await Future.wait([
+      persistence.close(),
+      _studyOperations.revokeAndDrain(),
+      _quizOperations.revokeAndDrain(),
+    ]);
     await _port.close();
     _binding.dispose();
     await _client.dispose();
