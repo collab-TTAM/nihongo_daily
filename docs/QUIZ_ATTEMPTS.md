@@ -121,3 +121,12 @@ assertions, string literals or model behavior. The resulting independently
 computed Git blob is ebaa415b7a9905d7abcecf11fa249adf9dc76ccc, matching the SDK's
 diff target. No other Dart source changes. New exact-head CI still must run
 analysis, all16 model tests and downstream platform checks before acceptance.
+
+### Strict empty-fixture element types
+
+At1d963615 CI39479261449 attempt1 the strict formatter passed181 files/zero
+changes; database/repo/AI/Windows passed every step. Analyzer found only two
+uninferred empty list literals in malformed answers/choices fixtures. Explicit
+Object? element types retain those empty rejection inputs, all16 cases and every
+assertion. Production model/quiz, strict analysis and CI gates are unchanged.
+Full model/test/downstream execution was skipped and needs the new exact head.

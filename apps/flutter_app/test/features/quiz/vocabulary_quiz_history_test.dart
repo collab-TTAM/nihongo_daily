@@ -207,7 +207,7 @@ void main() {
       {...good, 'completed_at': '1999-01-01T00:00:00.000Z'},
       {...good, 'completed_at': '2101-01-01T00:00:00.000Z'},
       {...good, 'completed_at': 'x' * 33},
-      {...good, 'answers': []},
+      {...good, 'answers': <Object?>[]},
       {...good, 'answers': List.filled(11, rows(good).first)},
       {
         ...good,
@@ -233,7 +233,7 @@ void main() {
       {...answer, 'content_version': 0},
       {...answer, 'content_version': 1.0},
       {...answer, 'content_version': 2147483648},
-      {...answer, 'choices': []},
+      {...answer, 'choices': <Object?>[]},
       {...answer, 'choices': List.filled(4, answer['item_id'])},
       {
         ...answer,

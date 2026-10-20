@@ -2643,3 +2643,42 @@ until these models are verified. Keep #41 draft/#13 open/default preview/all14
 hosted groups pending. No native store activation/mastery/credit/main/source/
 Pro/canonical/Auth strategy/API/schema/RLS/dependency/security/provider/spend/
 merge/deployment/release/schedule change.
+
+
+## Strict history-fixture type annotations — core-20261021-history-analyzer
+
+Resumed #41 exact1d963615f6459976e8e8de8cae6f4518b2fbd8b1, complete483-file
+tree53e64964282dc99e1a6a9dbca3f9df6076ed7a11. CI39479261449 attempt1 completed
+database/repo/AI/Windows with every required step successful. Flutter strict
+formatter passed181 files/zero changes, verifying the exact formatter patch and
+the clean-success branch of the diagnostic gate.
+
+Analyzer emitted exactly two inference_failure_on_collection_literal warnings
+in vocabulary_quiz_history_test.dart210:28 and236:30: the deliberately empty
+answers/choices lists inside malformed-JSON fixtures need explicit element types.
+Add Object? list annotations in only those two inputs. Their values remain empty;
+every original case/assertion and rejection expectation is unchanged. Separate
+diff review confirmed only those annotations, no production model/quiz behavior,
+lint settings, exclusions, dependencies, workflow or security change.
+
+The16 history tests/full Flutter/Chrome/Web and downstream checks were skipped
+after analyzer failure, not passed. Existing cd9e4450 allfive/605 Flutter/five
+Chrome evidence remains historical. New exact-head Actions must verify the
+annotations, all16 cases and every retained required job/step. No local usable
+execution environment or local format/analyze/test/Python QA/render/build claim;
+no prior Flutter metadata review rejection retry/bypass.
+
+User requested continued automatic work after the hourly-resume offer. Re-enabled
+the existing cloud task6ace2a9c236c819189637e49f38182d7; tool confirmed enabled=true.
+Only enabled state changed: existing hourly Asia/Saigon schedule/prompt preserved.
+A current single-core ACTIVE marker was published before resumption. Follow the
+existing overlap guard; do not promise continuous or quota-independent execution.
+
+Next inspect actual new-head/latest-attempt allfive required jobs/every step,
+fix real failures preserving assertions. Pending-only means release/handoff
+without duplicate source/docs-only commits or long polling. After model full
+green implement owner-scoped durable append/restart/corruption/replay handling,
+then captured-ready-session save/history UI. Current route still saves no history.
+Keep #41 draft/#13 open/default preview/QA51/all14 hosted groups pending. No main/
+source/Pro/canonical/Auth strategy/API/storage activation/schema/RLS/dependency/
+CI/security/provider/spend/merge/deployment/release change.
