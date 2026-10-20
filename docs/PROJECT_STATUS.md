@@ -2387,3 +2387,43 @@ Keep #41 draft/#16 open/default preview/all14 hosted groups pending. No geometry
 source/manifest/license/canonical content/Pro/main/source branch/API/Auth strategy/
 SDK/storage/recorder/progress/credit/dependency/schema/RLS/CI/security/provider/
 spend/merge/deployment/release/schedule change. See N5_STROKE_GUIDE.md.
+
+
+## Trace refresh fixture and narrow toggle — core-20261020T1225-trace-refresh-layout
+
+Resumed #41 ecac51d2a136a50a47f338e8ad0935490f8dda3f. CI39421796252 latest
+attempt repo/database/AI passed, Flutter format/analyze passed;583 tests passed/
+four failed. Both N5/N4 tracing/capture controls, cross-level/free isolation and
+actual bundled expanded tracing/attribution owned exit passed. Both first-frame
+refresh cases and320px/200-percent trace-toggle hit tests failed. Downstream
+Flutter/Chrome/Web skipped, never passed. Windows bridge/actual close passed;
+configured staging build in progress at diagnosis, later checks not yet claimed.
+
+Refresh fixture now explicitly refreshes provider and asserts observed loading/
+exact second loader call before checking the painted frame. Riverpod2.6.1's
+invalidate schedules recomputation and does not guarantee that first-pump state;
+see versioned API references in N5_STROKE_GUIDE.md. All original no-trace/retained-
+ink/same-instance-disabled/manual-re-enable assertions retained and strengthened.
+This is an inferred fixture scheduling cause; production trace lifecycle unchanged.
+
+Replace tall adaptive switch tile with full-width outlined toggle button and
+separate explanatory text, retaining explicit on/off semantics and visible labels.
+Strict hitTestable assertions,320px/200-percent configuration/square/step checks,
+all30 guide cases and original assertions retained. No ignored tap/finder warning,
+font-scale reduction, removed scenario or semantic weakening.
+
+Local pinned format2/0changes,29 Python QA/inventory49, whitespace and separate
+bounded source/assertion review passed. Corrected full Flutter/render/platform
+needs exact-head Actions; no local full Flutter claim or retry/bypass of prior
+metadata automatic-review rejection. No next-feature source work while this
+correction is unverified. Read-only queue check found #13 owns quiz/mastery and
+requires reviewed scoring rules before coding; /quiz remains a placeholder.
+
+Next inspect published exact head/latest-attempt every required job/step and fix
+actual failures preserving assertions. Pending-only means persist/release/handoff,
+no duplicate source/docs-only commit or long polling. After complete green, review
+#13 scoring/answer/dedup rules for a bounded real curriculum quiz before replacing
+its placeholder; no inferred mastery or server credit. Keep #41 draft/#16 open/
+all14 hosted groups pending. No source/geometry/manifest/canonical/Pro/main/source
+branch/capture/Auth/SDK/storage/dependency/schema/RLS/CI/security/provider/spend/
+merge/deployment/release/schedule change. See N5_STROKE_GUIDE.md and PR handoff.

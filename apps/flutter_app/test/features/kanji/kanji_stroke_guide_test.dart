@@ -351,6 +351,13 @@ void main() {
         await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
         expect(tracing(tester)!.trace.strokes, hasLength(1));
         expect(
+          tester
+              .widget<Semantics>(find.byKey(const Key('kanji-trace-state')))
+              .properties
+              .toggled,
+          isTrue,
+        );
+        expect(
           identical(tracing(tester)!.trace.strokes.first, guide.strokes.first),
           isTrue,
         );
@@ -404,7 +411,11 @@ void main() {
         await drawCatalogStroke(tester);
         expect(tracing(tester), isNotNull);
         final entry = level == PreviewLevel.n5 ? n5.first : n4.first;
-        container.invalidate(kanjiStrokeGuideProvider(entry));
+        // Start an observed loading transition before asserting the rendered frame.
+        // invalidate alone may defer recomputation past this frame.
+        final refreshing = container.refresh(kanjiStrokeGuideProvider(entry));
+        expect(refreshing.isLoading, isTrue);
+        expect(calls, 2);
         await tester.pump();
         expect(tracing(tester), isNull);
         expect(find.text('Đã nhập 1 nét / 64'), findsOneWidget);
@@ -413,10 +424,9 @@ void main() {
         expect(tracing(tester), isNull);
         expect(
           tester
-              .widget<SwitchListTile>(
-                find.byKey(const Key('kanji-trace-toggle')),
-              )
-              .value,
+              .widget<Semantics>(find.byKey(const Key('kanji-trace-state')))
+              .properties
+              .toggled,
           isFalse,
         );
         await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));
@@ -445,8 +455,9 @@ void main() {
       await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
       expect(
         tester
-            .widget<SwitchListTile>(find.byKey(const Key('kanji-trace-toggle')))
-            .value,
+            .widget<Semantics>(find.byKey(const Key('kanji-trace-state')))
+            .properties
+            .toggled,
         isFalse,
       );
       await tapCatalog(tester, find.byKey(const Key('kanji-trace-toggle')));

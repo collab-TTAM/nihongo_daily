@@ -104,19 +104,31 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
                         ),
                       ),
                     ),
-                    if (widget.onTraceChanged != null)
-                      SwitchListTile.adaptive(
-                        key: const Key('kanji-trace-toggle'),
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text('Hiện nét mẫu trong ô viết'),
-                        subtitle: const Text(
-                          'Tô theo mẫu mờ; chưa chấm điểm chữ viết.',
-                        ),
-                        value: identical(widget.trace?.guide, guide),
-                        onChanged: (enabled) => widget.onTraceChanged!(
-                          enabled ? KanjiGuideTrace(guide, stroke) : null,
+                    if (widget.onTraceChanged != null) ...[
+                      Semantics(
+                        key: const Key('kanji-trace-state'),
+                        toggled: identical(widget.trace?.guide, guide),
+                        child: OutlinedButton.icon(
+                          key: const Key('kanji-trace-toggle'),
+                          onPressed: () => widget.onTraceChanged!(
+                            identical(widget.trace?.guide, guide)
+                                ? null
+                                : KanjiGuideTrace(guide, stroke),
+                          ),
+                          icon: Icon(
+                            identical(widget.trace?.guide, guide)
+                                ? Icons.layers_clear
+                                : Icons.gesture,
+                          ),
+                          label: Text(
+                            identical(widget.trace?.guide, guide)
+                                ? 'Ẩn nét mẫu trong ô viết'
+                                : 'Hiện nét mẫu trong ô viết',
+                          ),
                         ),
                       ),
+                      const Text('Tô theo mẫu mờ; chưa chấm điểm chữ viết.'),
+                    ],
                     Wrap(
                       spacing: 8,
                       children: [
