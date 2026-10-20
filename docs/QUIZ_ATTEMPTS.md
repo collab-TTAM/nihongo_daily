@@ -100,3 +100,15 @@ save/history UI, retaining pending failures and fencing old sessions. Server syn
 and authoritative validation require their own reviewed contract and ACL tests.
 Do not claim route persistence or progress/mastery until its flow is implemented
 and verified. No live configuration, merge or deployment in this increment.
+
+### Initial model CI and exact formatter diagnostics
+
+a9c14f22 CI39477153830 attempt1 passed all database/repo/AI/Windows steps.
+Flutter stopped at formatting vocabulary_quiz_history_test.dart; new16 tests,
+analysis and downstream Flutter checks were skipped.
+
+The existing strict formatter step now prints its pinned-SDK diff on failure
+from the disposable runner checkout and still fails. Its exact name, SDK3.35.4,
+clean-check behavior and downstream gates stay unchanged; no source auto-push.
+Apply the observed test diff before claiming formatting or model test success.
+No local execution environment is available. Public route persistence is pending.

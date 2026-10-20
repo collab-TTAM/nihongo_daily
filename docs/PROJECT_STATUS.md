@@ -2585,3 +2585,26 @@ session repository and explicit save/history UI; no fabricated default success.
 Keep #41 draft/#13 open/default preview/all14 hosted groups pending; no main/source/
 Pro/canonical/Auth strategy/API/storage activation/schema/RLS/dependency/CI/security/
 provider/spend/merge/deployment/release/schedule change. See QUIZ_ATTEMPTS.md.
+
+
+## Pinned formatter diagnostics — core-20261021-history-test-format
+
+Actual a9c14f22 CI39477153830 attempt1 passed database/repo-sanity/AI/Windows,
+every required step. Flutter formatter reports only vocabulary_quiz_history_test;
+analysis/new16 tests/Chrome/Web skipped. No model test pass is claimed.
+
+The execution environment is unavailable and formatter --output=none names files
+without a diff. Add diagnostics to the existing pinned-SDK format gate, retaining
+its exact step name, SDK3.35.4, original strict check and failure outcome. A clean
+check exits0; after failure, the disposable runner formats and prints git diff,
+then returns nonzero even if later commands would succeed. There is no auto-push,
+continue-on-error, artifact/secret change or relaxed formatter/analyzer/test gate.
+All other workflow bytes and original test/model source remain unchanged.
+
+This is a scoped observability change reviewed in #13 before the workflow edit;
+the earlier no-CI-change handoff applied to that model increment. No local
+execution or prior Flutter metadata review rejection retry/bypass. New CI is
+expected to expose the exact formatter-produced test diff while still failing.
+Read that diff, apply it without changing cases/assertions, then verify a new head.
+Do not begin durable-store implementation until the models are verified.
+Keep #41 draft/#13 open/default preview/all14 hosted groups pending.
