@@ -2644,6 +2644,32 @@ hosted groups pending. No native store activation/mastery/credit/main/source/
 Pro/canonical/Auth strategy/API/schema/RLS/dependency/security/provider/spend/
 merge/deployment/release/schedule change.
 
+## Ready-state test barrier — core-20261021T2209-ready-test-barrier
+
+Resume #41 at d6052eb6babc18970b6622974f1d15c6fd523ac1. Exact
+CI39676720583 latest attempt1 completed repo/database/AI/Windows every required
+step, including Windows configured/preview builds and retained native checks.
+Flutter format and analyze passed; all three new owned-quiz SDK/disk tests passed.
+Full Flutter result was656 passed/one failed, not a passing suite. Chrome and
+downstream Flutter/Web steps were skipped.
+
+The sole failure was the existing SDK rotation/logout real-disk recovery test:
+readyRuntime was still null at line332 after a fixed fixture.flush. Auth refresh
+completion does not prove asynchronous own-profile/runtime readiness. Replace
+exactly three fixed flush waits in that one test (login/refresh/relogin) with its
+existing waitForReady helper. The helper requires AccountPhase.ready within five
+seconds, fails on terminal account errors, and asserts a nonnull runtime. All
+original pending-request identity/disk/no-submit-RPC assertions remain unchanged;
+no production logic, retry, sleeps, timeout increase, test skip or weakened gate.
+
+Separate diagnostic/source/diff/assertion review and git diff --check verify the
+bounded change. No local Dart/Flutter SDK; new executable checks require new
+exact-head CI. Keep #41 draft/#13 open/default preview/all14 hosted gates pending.
+Next inspect allfive latest-attempt jobs/every required step; after full green
+continue captured-round save/history providers/UI. Pro/N4/main/source drafts,
+API/schema/RLS/Auth strategy/dependencies/workflow/security/providers/spend/
+merge/deployment/release/schedule unchanged.
+
 
 ## Strict history-fixture type annotations — core-20261021-history-analyzer
 
