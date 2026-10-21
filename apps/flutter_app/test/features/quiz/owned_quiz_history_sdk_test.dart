@@ -6,12 +6,17 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
+import 'package:nihongo_daily/features/daily_plan/data/durable_study_session_repository.dart';
+import 'package:nihongo_daily/features/daily_plan/data/native_study_session_journal.dart';
 import 'package:nihongo_daily/features/quiz/data/native_vocabulary_quiz_journal.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_attempt_store.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_history_repository.dart';
+import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 
 import '../srs/own_profile_fixtures.dart' as profile;
@@ -209,6 +214,115 @@ void main() {
     final fresh = runtime.createVocabularyQuizHistoryRepository()!;
     expect((await fresh.load()).single.attempt.eventId, quizReport(1).eventId);
     expect(await journal.list(wire.b), isEmpty);
+  });
+
+  test('owner forwards only the current ready quiz capability', () async {
+    final startup = PersistentAccountStartup(runtime);
+    final owner = WindowsStagingOwner(startup, reviews, quizJournal: journal);
+    final VocabularyQuizHistorySource source = owner;
+    expect(source.createVocabularyQuizHistoryRepository(), isNull);
+    await owner.start();
+    await login();
+    final service = source.createVocabularyQuizHistoryRepository()!;
+    await service.save(quizReport(1));
+    final before = requests.length;
+    expect(
+      await startup.createVocabularyQuizHistoryRepository()!.load(),
+      hasLength(1),
+    );
+    expect(requests.length, before);
+    await owner.account.signOut();
+    expect(source.createVocabularyQuizHistoryRepository(), isNull);
+    await expectLater(service.load(), changed);
+    await login();
+    expect(
+      await source.createVocabularyQuizHistoryRepository()!.load(),
+      hasLength(1),
+    );
+    await owner.close();
+    expect(source.createVocabularyQuizHistoryRepository(), isNull);
+    expect(startup.createVocabularyQuizHistoryRepository(), isNull);
+  });
+
+  test('owner keeps leases while a quiz write is held', () async {
+    final studies = await NativeStudySessionJournal.open(directory);
+    final owner = WindowsStagingOwner(
+      PersistentAccountStartup(runtime),
+      reviews,
+      studyJournal: studies,
+      quizJournal: journal,
+    );
+    try {
+      await owner.start();
+      await login();
+      final service = owner.createVocabularyQuizHistoryRepository()!;
+      store.appendWait = Completer<void>();
+      store.appended = Completer<void>();
+      final saving = expectLater(service.save(quizReport(1)), changed);
+      await store.appended!.future.timeout(const Duration(seconds: 5));
+      var closed = false;
+      final closing = owner.close();
+      expect(identical(closing, owner.close()), isTrue);
+      final observing = closing.then((_) => closed = true);
+      expect(owner.createVocabularyQuizHistoryRepository(), isNull);
+      await expectLater(service.load(), changed);
+      await Future<void>.value();
+      expect(closed, isFalse);
+      await expectLater(
+        NativeVocabularyQuizJournal.open(directory),
+        throwsA(isA<VocabularyQuizStorageFailure>()),
+      );
+      await expectLater(
+        NativeStudySessionJournal.open(directory),
+        throwsA(isA<StudySessionStorageFailure>()),
+      );
+      await expectLater(
+        NativeReviewJournal.open(directory),
+        throwsA(isA<ReviewStorageFailure>()),
+      );
+      store.appendWait!.complete();
+      await saving;
+      await observing;
+      expect(closed, isTrue);
+      final reopened = await NativeVocabularyQuizJournal.open(directory);
+      try {
+        expect(
+          (await reopened.list(wire.a)).single.attempt.eventId,
+          quizReport(1).eventId,
+        );
+        expect(await reopened.list(wire.b), isEmpty);
+      } finally {
+        await reopened.close();
+      }
+      final reopenedStudies = await NativeStudySessionJournal.open(directory);
+      await reopenedStudies.close();
+      final reopenedReviews = await NativeReviewJournal.open(directory);
+      await reopenedReviews.close();
+    } finally {
+      store.release();
+      await owner.close();
+      await studies.close();
+    }
+  });
+
+  test('owner without quiz storage has no capability', () async {
+    await runtime.close();
+    runtime = buildRuntime(withQuiz: false);
+    final owner = WindowsStagingOwner(
+      PersistentAccountStartup(runtime),
+      reviews,
+    );
+    await owner.start();
+    await runtime.account.signIn(
+      'fixture@example.invalid',
+      'TEST_ONLY_PASSWORD',
+    );
+    await until(() => runtime.account.state.phase == AccountPhase.ready);
+    expect(owner.createVocabularyQuizHistoryRepository(), isNull);
+    await owner.close();
+    // This unrelated journal was not transferred to the owner.
+    expect(await journal.list(wire.a), isEmpty);
+    expect(store.appends + store.loads, 0);
   });
 
   test('runtime close drains quiz work before caller releases store', () async {

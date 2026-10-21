@@ -5,7 +5,8 @@ captured ready ReviewSession and a trusted runtime-readiness fence. This optiona
 library does not authenticate a caller or create a hosted endpoint. The existing
 PersistentSupabaseRuntime can accept quizStore (default null) and create this
 repository only after exact secret persistence and own-profile readiness.
-No startup code opens a quiz journal yet; /quiz remains process-local.
+Configured Windows startup now owns a quiz journal in its existing trusted
+project directory; default preview and public /quiz remain process-local.
 
 ## Owner and publication boundary
 
@@ -72,9 +73,38 @@ Flutter, QA or build ran; source/boundary review is not executable testing.
 New native quiz-store Windows execution and injected file-write/flush faults
 remain outstanding; the repository fault ports do not establish those results.
 
-After this repository passes CI, add owned store opening/close forwarding,
-providers and explicit save/history UI with loading/safe errors/manual retry,
-same-round identity and old-owner clearing. Do not publish the native store as
-available merely because this optional factory exists. Keep #13 open/#41 draft,
+Parent0e33052b CI39668904464 latest attempt1 passed all five jobs/every required
+step:654 Flutter tests including all20 captured-repository/SDK cases, five Chrome,
+Web/Windows builds and retained native/SQL/process checks. This is fixture/disk
+evidence, not hosted acceptance. The ownership increment below needs new CI.
+
+## Configured Windows storage ownership
+
+openWindowsStagingOwner acquires the existing review lease, then study and quiz
+journals, before constructing the SDK/credential writer. The native quiz journal
+uses its separate existing files/format in the same trusted project directory.
+Construction failure unwinds acquired quiz/study/review handles through nested
+finally blocks; corrupt/locked quiz storage fails startup rather than silently
+falling back to guest history. Startup's existing fixed error UI redacts details.
+
+PersistentAccountStartup and WindowsStagingOwner forward the optional
+VocabularyQuizHistorySource capability. The runtime still captures the exact
+ready session/runtime and owns no journal itself. Once owner.close starts it
+offers no new history repository; it awaits runtime Auth/study/quiz drain before
+closing quiz, study and review journals. A failed runtime drain retains all
+journals, preserving the existing shutdown policy. Nested finally blocks attempt
+remaining storage closes even if a storage close fails. No history is deleted.
+Optional constructor storage remains backward compatible with existing owners.
+
+Three additional actual-SDK/simulated-HTTP/vault/real-file tests cover owner
+capability readiness/logout/same-owner replacement, duplicate close and a held
+quiz write retaining all three leases until drain, successful reopen/recovery,
+and an absent quiz capability with an unrelated caller-owned store left open.
+These tests run on the existing Flutter job; they are not live Windows learner
+or injected native close/open-failure evidence. Native startup failure cleanup
+also has source review; no new fault-injection proof is claimed.
+
+Next add providers and explicit save/history UI with safe loading/error/manual
+retry, same-round identity and old-owner clearing. Keep #13 open/#41 draft,
 default preview and all14 hosted acceptance groups pending. No dependency,
 workflow, wire/schema/RLS, live activation, deployment, merge or schedule change.

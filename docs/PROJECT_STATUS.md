@@ -2859,3 +2859,32 @@ failures while preserving assertions, then continue owned journal opening and
 captured-round save/history UI after green. Pending-only handoff without duplicate
 source/docs-only commits or long polling. Pro/N4, main/source drafts, API/schema/
 RLS/Auth strategy, dependencies/workflow/security, deployment and schedule unchanged.
+
+## Owned quiz journal — core-20261021T2107-owned-quiz-store
+
+Resumed #41 at0e33052b9035533468205e1210600b6b87888bf9 after exact
+CI39668904464 latest attempt1 passed all five jobs/every required step.
+Logs prove654 Flutter tests including the new20 repository/SDK cases, five
+Chrome, Web/Windows builds and retained checks. No hosted learner proof.
+
+Configured Windows startup now opens the separate native quiz journal before
+SDK/vault construction and transfers it to the existing Windows owner. It
+unwinds acquired quiz/study/review handles on construction failure. Shutdown
+awaits runtime operation drain before closing quiz/study/review journals;
+failed runtime drain keeps stores leased. The startup/Windows wrappers forward
+the optional captured-ready-history source and revoke access while closing.
+Default preview and public quiz UI remain unchanged/unconnected.
+
+Three added actual-SDK/simulated-HTTP/vault/real-file cases exercise source
+forwarding and account readiness, close coalescing/held-write/all-three-lease
+retention/reopen/recovery, and optional absent store/caller ownership. Source
+review covers acquisition/failure/close ordering; injected native open/close
+failures and hosted/native learner proof remain unverified. All existing tests,
+contracts, gates and Pro/N4 content retained. No SDK locally; network attempt to
+obtain Dart timed out, so new format/analyze/test/build evidence requires CI.
+
+Next inspect new exact-head/latest-attempt allfive jobs/every required step,
+fix failures retaining assertions, then implement captured-round save/history
+providers/UI. Keep #41 draft/#13 open/default preview/all14 hosted gates pending.
+No API/schema/RLS/Auth strategy/dependency/workflow/security/provider/spend/
+merge/deployment/release/schedule change.

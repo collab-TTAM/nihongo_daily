@@ -5,6 +5,11 @@ import '../domain/vocabulary_quiz_attempt.dart';
 import '../domain/vocabulary_quiz_progress.dart';
 import 'vocabulary_quiz_attempt_store.dart';
 
+/// Borrowed capability; storage remains owned through runtime shutdown.
+abstract interface class VocabularyQuizHistorySource {
+  VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository();
+}
+
 final class VocabularyQuizSessionChanged implements Exception {
   const VocabularyQuizSessionChanged();
 

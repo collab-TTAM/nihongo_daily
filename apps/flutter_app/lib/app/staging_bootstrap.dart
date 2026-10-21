@@ -14,6 +14,8 @@ import '../features/auth/presentation/account_startup_app.dart';
 import '../features/daily_plan/data/daily_plan_repository.dart';
 import '../features/daily_plan/data/durable_study_session_repository.dart';
 import '../features/daily_plan/data/native_study_session_journal.dart';
+import '../features/quiz/data/native_vocabulary_quiz_journal.dart';
+import '../features/quiz/data/vocabulary_quiz_history_repository.dart';
 import '../features/srs/application/srs_study_runtime.dart';
 import '../features/srs/data/native_review_journal.dart';
 import '../features/srs/data/supabase_review_binding.dart';
@@ -101,26 +103,34 @@ Future<StagingOwner> openWindowsStagingOwner(
   final directory = await resolveWindowsReviewDirectory(config.projectUrl);
   final journal = await NativeReviewJournal.open(directory);
   NativeStudySessionJournal? studyJournal;
+  NativeVocabularyQuizJournal? quizJournal;
   try {
     studyJournal = await NativeStudySessionJournal.open(directory);
+    quizJournal = await NativeVocabularyQuizJournal.open(directory);
     final runtime = PersistentSupabaseRuntime(
       projectUrl: config.projectUrl,
       publishableKey: config.publicKey,
       vault: createWindowsSessionCredentialVault(config.projectUrl),
       store: journal,
       studyStore: studyJournal,
+      quizStore: quizJournal,
       automaticRefresh: config.automaticRefresh,
     );
     return WindowsStagingOwner(
       PersistentAccountStartup(runtime),
       journal,
       studyJournal: studyJournal,
+      quizJournal: quizJournal,
     );
   } on Object {
     try {
-      await studyJournal?.close();
+      await quizJournal?.close();
     } finally {
-      await journal.close();
+      try {
+        await studyJournal?.close();
+      } finally {
+        await journal.close();
+      }
     }
     rethrow; // Startup controller replaces raw details with its fixed UI state.
   }
@@ -137,12 +147,22 @@ final class WindowsStagingOwner
         AccountSessionNoticeSource,
         AccountSessionRefreshAction,
         DailyPlanRepositorySource,
-        DurableStudySessionSource {
-  WindowsStagingOwner(this.session, this.journal, {this.studyJournal});
+        DurableStudySessionSource,
+        VocabularyQuizHistorySource {
+  WindowsStagingOwner(
+    this.session,
+    this.journal, {
+    this.studyJournal,
+    this.quizJournal,
+  });
+  final NativeVocabularyQuizJournal? quizJournal;
   final NativeStudySessionJournal? studyJournal;
   final PersistentAccountStartup session;
   final NativeReviewJournal journal;
   Future<void>? _closing;
+  @override
+  VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() =>
+      _closing == null ? session.createVocabularyQuizHistoryRepository() : null;
   @override
   DailyPlanRepository? createDailyPlanRepository() =>
       _closing == null ? session.createDailyPlanRepository() : null;
@@ -167,9 +187,13 @@ final class WindowsStagingOwner
   Future<void> close() => _closing ??= () async {
     await session.close();
     try {
-      await studyJournal?.close();
+      await quizJournal?.close();
     } finally {
-      await journal.close();
+      try {
+        await studyJournal?.close();
+      } finally {
+        await journal.close();
+      }
     }
   }();
 }
