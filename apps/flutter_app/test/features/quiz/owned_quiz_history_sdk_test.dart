@@ -1,4 +1,5 @@
 // TEST ONLY pinned SDK + simulated HTTP/vault and real disposable quiz files.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 

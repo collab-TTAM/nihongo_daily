@@ -2836,3 +2836,26 @@ Next inspect all five latest-attempt jobs for the corrected head and fix actual
 failures without weakening checks. When green, continue explicitly owned journal
 opening and captured-round save/history UI. Pro/N4, API/schema/RLS, dependencies,
 workflow, Auth strategy, deployment and schedule unchanged.
+
+## Quiz-session async imports — 2026-10-21 UTC
+
+Run core-20261021T2015-quiz-async-imports resumes #41 at bc5a11f1e5d08763656105ae528be7b357ef7825.
+Exact CI39659479265 latest attempt1 passed strict Dart format and all required
+repo-sanity/database/ai-boundary/windows steps. Analyzer reported sixteen
+undefined Completer class/function errors in the two new quiz-history tests.
+Full tests/new20, Chrome and downstream Flutter/Web steps were skipped.
+
+Add explicit dart:async imports in owned_quiz_history_sdk_test.dart and
+vocabulary_quiz_history_repository_test.dart; keep every remaining test byte,
+all20 scenarios/101 expect or expectLater calls and production code unchanged.
+Separate diff/import/assertion review and git diff --check verify this bounded
+correction; no local Dart/Flutter SDK, executable test or build claim.
+Fresh cloud clone matched current head/tree. New exact-head Actions is required
+for analyze/full tests/builds. Keep #41 draft/#13 open/default preview/all14
+hosted acceptance groups pending. Public quiz save/history UI is not connected.
+
+Next inspect all five latest-attempt jobs/every required step, fix actual
+failures while preserving assertions, then continue owned journal opening and
+captured-round save/history UI after green. Pending-only handoff without duplicate
+source/docs-only commits or long polling. Pro/N4, main/source drafts, API/schema/
+RLS/Auth strategy, dependencies/workflow/security, deployment and schedule unchanged.
