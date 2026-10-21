@@ -104,7 +104,42 @@ These tests run on the existing Flutter job; they are not live Windows learner
 or injected native close/open-failure evidence. Native startup failure cleanup
 also has source review; no new fault-injection proof is claimed.
 
-Next add providers and explicit save/history UI with safe loading/error/manual
-retry, same-round identity and old-owner clearing. Keep #13 open/#41 draft,
+## Read-only history view
+
+The optional source is forwarded by AccountStartupController only while active
+and not closed. AccountStartupApp installs that borrowed capability alongside
+the existing account runtime; the preview provider defaults null. The repository
+provider requires a ready account/profile/runtime and rebuilds at every account
+barrier. It never creates a store, SDK or simulated history by itself.
+
+/quiz/history is linked from the quiz page. Reading is explicit through
+Tải lịch sử; it shows loading, empty and fixed safe error states with manual
+reload only. Each row displays the saved level, integer score/total and original
+completion instant explicitly labeled UTC. No owner/event UUID, path, raw error,
+mastery or server progress is displayed. List order is newest first according
+to the existing repository ordering. Reload clears previous rows before dispatch.
+
+The stateful panel is keyed by the captured repository identity. Account/profile
+replacement or startup shutdown removes the old panel and its rows; late success
+or failure cannot set state on a disposed panel. The existing repository also
+fences the captured lifecycle after storage awaits. Route return starts empty and
+requires another explicit read; no cross-account UI cache or background retry.
+
+Eight widget cases are authored for preview/profile gates, explicit empty read,
+held read/disabled duplicate dispatch/score, redaction and manual retry, late
+success/same-owner replacement, late error/other-owner replacement, actual
+startup source publication/exit revocation and320px/200-percent layout. Test ports
+are explicitly simulated; existing disk/SDK ownership tests remain unchanged.
+New format/analyze/widget/build evidence is pending exact-head Actions.
+
+Parent09344fc5 CI39684530931 attempt1 passed allfive jobs/every required step,
+657 Flutter tests, five Chrome and Web/Windows builds. This is component/fixture
+evidence, not hosted learner acceptance. Local29 QA tests and whitespace passed;
+new Flutter UI tests did not run locally because the SDK is absent.
+
+Next add explicit save with same-round lifecycle capture and immutable manual
+retry. No save button is installed by this read-only view; existing stored
+reports can be inspected, while new quiz rounds remain process-local.
+Keep #13 open/#41 draft,
 default preview and all14 hosted acceptance groups pending. No dependency,
 workflow, wire/schema/RLS, live activation, deployment, merge or schedule change.

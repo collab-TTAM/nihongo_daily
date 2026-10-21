@@ -6,6 +6,7 @@ import '../../../app/app.dart';
 import '../../../app/router.dart';
 import '../../../app/theme.dart';
 import '../../daily_plan/application/daily_plan_provider.dart';
+import '../../quiz/application/quiz_history_provider.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../application/account_controller.dart';
 import '../application/account_provider.dart';
@@ -95,6 +96,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
     if (account != null || (_publishedApp && _exitStarted)) {
       return ProviderScope(
         overrides: [
+          quizHistorySourceProvider.overrideWithValue(
+            _controller.quizHistorySource,
+          ),
           dailyPlanSourceProvider.overrideWithValue(
             _controller.dailyPlanSource,
           ),

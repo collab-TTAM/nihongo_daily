@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
 import '../../settings/application/preview_preferences.dart';
@@ -18,6 +19,10 @@ class VocabularyQuizScreen extends ConsumerWidget {
         const PageHeading(
           title: 'Kiểm tra nhanh',
           subtitle: 'Chọn cách đọc theo bài gốc. Kết quả chỉ giữ trong bộ này.',
+        ),
+        OutlinedButton(
+          onPressed: () => context.go('/quiz/history'),
+          child: const Text('Xem lịch sử đã lưu'),
         ),
         DropdownButton<PreviewLevel>(
           key: const Key('quiz-level'),

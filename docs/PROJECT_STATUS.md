@@ -2914,3 +2914,31 @@ fix failures retaining assertions, then implement captured-round save/history
 providers/UI. Keep #41 draft/#13 open/default preview/all14 hosted gates pending.
 No API/schema/RLS/Auth strategy/dependency/workflow/security/provider/spend/
 merge/deployment/release/schedule change.
+
+## Read-only quiz history — core-20261021T2309-quiz-history-view
+
+Resumed #41 at09344fc5083ae50c362ae7262a93b970ef50275e. Exact
+CI39684530931 attempt1 passed allfive jobs/every required step:657 Flutter,
+five Chrome, Web/Windows and retained native/process/wire/SQL/security gates.
+
+Added optional startup/source/provider forwarding under existing account/profile
+readiness, /quiz/history and quiz navigation. Explicit read/reload shows saved
+level/score/total/UTC completion only; safe loading/empty/redacted error states.
+Keyed repository lifecycle removes old rows on account barriers; disposed loads
+cannot publish late results. No new save, automatic retry, owner reassignment,
+mastery/study/server credit or hosted transport. Default preview has no source.
+
+Eight new widget scenarios authored for profile/preview gates, explicit empty
+reads, held dispatch, safe errors/manual retry, late same/other-owner results,
+actual startup source/exit revocation and narrow large-text layout. All existing
+assertions retained. Separate source/lifecycle/diff review, whitespace and29
+local Python QA tests passed. Dart/Flutter absent locally; new format/analyze/
+widget/Chrome/build checks require exact-head Actions. Source/fixture checks are
+not hosted learner evidence. Source files and full tree persisted on GitHub.
+
+Next inspect allfive latest-attempt jobs/every required step, fix real failures
+preserving assertions; after green implement explicit save bound to the entire
+round's same ready lifecycle with immutable manual retry. Keep #41 draft/#13
+open/default preview/all14 hosted gates pending. Pro/N4/main/source drafts,
+API/schema/RLS/Auth strategy/dependencies/CI/security/providers/spend/merge/
+deployment/release/schedule unchanged.

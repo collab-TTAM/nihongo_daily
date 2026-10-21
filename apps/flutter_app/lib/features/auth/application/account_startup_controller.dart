@@ -1,6 +1,7 @@
 import 'dart:async';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
+import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import 'account_session_notice.dart';
 import 'account_session_refresh.dart';
 
@@ -62,6 +63,16 @@ final class AccountStartupController<T> {
         _phase == AccountStartupPhase.active &&
         runtime is DurableStudySessionSource) {
       return runtime as DurableStudySessionSource;
+    }
+    return null;
+  }
+
+  VocabularyQuizHistorySource? get quizHistorySource {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is VocabularyQuizHistorySource) {
+      return runtime as VocabularyQuizHistorySource;
     }
     return null;
   }

@@ -15,6 +15,7 @@ import '../features/settings/presentation/settings_screen.dart';
 import '../features/srs/presentation/srs_study_screen.dart';
 import '../features/study/presentation/study_screen.dart';
 import '../features/quiz/presentation/vocabulary_quiz_screen.dart';
+import '../features/quiz/presentation/quiz_history_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
 
@@ -115,6 +116,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/quiz',
             builder: (context, state) => const VocabularyQuizScreen(),
+          ),
+          GoRoute(
+            path: '/quiz/history',
+            builder: (context, state) => const QuizHistoryScreen(),
           ),
           GoRoute(
             path: '/srs',
