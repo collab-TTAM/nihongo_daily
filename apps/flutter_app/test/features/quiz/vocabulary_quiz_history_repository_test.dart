@@ -141,10 +141,11 @@ void main() {
     final input = [a, c, b, c];
     store.listOverride = input;
     final history = await repository().load();
-    expect(
-      history.map((record) => record.attempt.eventId),
-      [b.attempt.eventId, c.attempt.eventId, a.attempt.eventId],
-    );
+    expect(history.map((record) => record.attempt.eventId), [
+      b.attempt.eventId,
+      c.attempt.eventId,
+      a.attempt.eventId,
+    ]);
     input.clear();
     expect(history, hasLength(3));
     expect(() => history.clear(), throwsUnsupportedError);

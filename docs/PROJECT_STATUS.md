@@ -2814,3 +2814,25 @@ binding and manual immutable retry. Public route still loses results on exit.
 Keep #13 open/#41 draft/default preview/QA51/all14 hosted groups pending.
 No main/source/Pro/content/Auth strategy/API/schema/RLS/dependency/CI/security/
 provider/spend/merge/deployment/release/schedule change.
+
+## Quiz-session formatter correction — 2026-10-21 UTC
+
+Run core-20261021T1909-quiz-session-format resumed draft #41 on
+0a01b0f8915adf4c02969dcf6994a343e88aed96 after its stale ACTIVE marker exceeded 90 minutes.
+CI39487075159 completed repo-sanity/database/ai-boundary/windows with every
+required step successful. Flutter failed strict formatting in exactly the two
+new history test files; analyze/new20 tests/Chrome/Web were skipped, not passed.
+
+Applied only the two pinned-SDK diagnostic hunks in
+apps/flutter_app/test/features/quiz/owned_quiz_history_sdk_test.dart and
+apps/flutter_app/test/features/quiz/vocabulary_quiz_history_repository_test.dart.
+All twenty scenarios, assertions and production logic remain unchanged. Separate
+source review verifies equality after whitespace/comma removal; this is not local
+Dart execution. New exact-head Actions must verify format/analyze/full tests and
+retained builds/gates. Public quiz persistence/UI remains unconnected; keep #13
+open/#41 draft/default preview/all14 hosted acceptance groups pending.
+
+Next inspect all five latest-attempt jobs for the corrected head and fix actual
+failures without weakening checks. When green, continue explicitly owned journal
+opening and captured-round save/history UI. Pro/N4, API/schema/RLS, dependencies,
+workflow, Auth strategy, deployment and schedule unchanged.

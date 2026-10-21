@@ -141,10 +141,7 @@ void main() {
     final starting = runtime.start();
     await until(() => backend.writes == 1);
     expect(runtime.createVocabularyQuizHistoryRepository(), isNull);
-    expect(
-      requests.where((r) => r.url.path.startsWith('/rest/v1/')),
-      isEmpty,
-    );
+    expect(requests.where((r) => r.url.path.startsWith('/rest/v1/')), isEmpty);
     backend.writeWait!.complete();
     await starting;
     await profileEntered!.future.timeout(const Duration(seconds: 5));
