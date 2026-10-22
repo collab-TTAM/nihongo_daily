@@ -3231,3 +3231,46 @@ Deno/Edge execution and actual hosted signature/issuer/expiry/A-B acceptance.
 No deployment, live provider, paid spend, main/Pro/N4/content/schema/RLS/CI/
 dependency/contract changes. Keep #31/#13 open/#41 draft/default preview; Personal
 Alpha not accepted and release evidence remains pending.
+
+## Private AI PostgreSQL quota — core-20261022T0910
+
+Resume #41 branch automation/issue-11-plan-sdk-integration at parent
+2fb7c934fd9099a88aa9b06e5a64a9ccd8556151. Its exact CI39747039359 latestattempt1
+completed allfive jobs/every step successfully, including the prior Auth adapter
+and retained full platform/SQL gates. Hosted JWT/learner proof remains pending.
+
+Continue #31's merged #7 dependency with additive private ai_rate_buckets and
+consume_ai_quota. One Auth-user row shares burst10, refill1/6s and100 successful
+reservations/UTCday across allfive operations/workers. Invoker/empty search_path,
+RLS enabled/no client policies or grants; trusted service_role gets only required
+SELECT/INSERT/UPDATE and function execution, no delete/truncate. No public RPC,
+new learner fields, rate/time/identity override or Auth/provider strategy change.
+
+Unique first-create and row locks serialize debits; clock sampled after lock,
+fractional/capped refill and daily rollover preserve burst; backward clocks deny.
+Malformed inputs, invalid stored limits and rolled-back new/existing reservations
+are tested. Existing receipt/learning/security tables and helpers remain unchanged.
+Confirmed COMMIT must precede dispatch; SQL/transport/cancellation/commit ambiguity
+fails closed, never retries/refunds/uses memory fallback. Actual TypeScript driver/
+Edge binding is still outstanding; no endpoint or paid provider activated.
+
+New SQL quota/security assertions and native first-create/last-daily-slot/rollback
+observed-lock races are wired into retained scripts/test_database.sh; no existing
+gate removed. A different account proceeds while an owner is locked; new database
+connections check exact debit persistence and post-wait server timestamps.
+Local PGlite0.5.9 executed every migration and baseline/AI receipt/quota SQL suites;
+Python compilation/bash syntax/whitespace passed. PGlite is not native multi-
+session proof. New native tests/full platform checks require exact-head Actions.
+See AI_POSTGRES_QUOTA.md. Local pinned npm format/strict TypeScript/all79 Node
+tests passed unchanged; production audit0 findings. QA inventory55 groups and29
+Python QA tests passed; all14 hosted groups remain pending.
+
+Paths: new quota migration/SQL test/native Python race/doc; scripts/test_database.sh,
+supabase/README.md, docs/AI_BOUNDARY.md, this status and qa/matrix.json. No Pro/N4/
+content/Flutter/frozen-wire/dependency/workflow edits. No hosted migration,
+production deletion, security reduction, live Auth/provider/spend/release change.
+Next inspect exact published-head/latest-attempt allfive jobs/every step before
+new work. Fix real failures retaining assertions. After green bind the mandatory
+limiter to a trusted committed SQL transport; conversation/receipt transaction,
+lookup-only reconciliation and Deno/hosted acceptance still remain. Keep #31/#13/
+#20/#22/#15 open/#41 draft/default preview; Personal Alpha not accepted.

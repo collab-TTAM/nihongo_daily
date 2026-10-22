@@ -1138,6 +1138,32 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test",
       "limitation": "Actual Node24 adapter/Response/streams/service with TEST ONLY HTTP/Auth and limiter/context/provider/receipt ports. Not hosted signature/issuer/expiry/other-project JWT, Deno/Edge, distributed quota/transactions or learner acceptance. Full exact-head CI still required."
+    },
+    {
+      "id": "ai-postgres-quota",
+      "status": "automated-baseline",
+      "scope": "Private shared per-user AI burst/daily quota with SQL security and observed native row/key-lock commit/rollback contention",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_rate_limits.sql",
+          "contains": "eleventh burst reservation denied"
+        },
+        {
+          "path": "scripts/test_ai_quota_concurrency.py",
+          "contains": "Second quota worker was not observed waiting on the held row/key lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_quota_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "Local PGlite SQL-role/quota tests are component evidence only. Native PostgreSQL17 lock/reconnect checks require exact-head CI; actual committed runtime transport, hosted Auth/Edge/provider and learner acceptance remain pending."
     }
   ],
   "findings": [

@@ -157,3 +157,13 @@ Additive profile-study-day-v1 get_study_day read and calendar/ACL/no-write/actua
 wire checks: docs/PROFILE_STUDY_DAY.md, supabase/tests/study_day.sql and
 scripts/test_study_day.py. The database runner retains prior suites and appends
 this one. No hosted migration or JWT/learner acceptance is claimed.
+
+## Undeployed AI request quota (#31)
+
+`20261022091000_ai_rate_limits.sql` adds private per-user burst/daily counters and
+an invoker `consume_ai_quota` helper shared by all five AI operations. Only the
+trusted backend can reserve capacity; no client RPC/grants or receipt mutation
+is added. The adapter must confirm its short transaction COMMIT before dispatch
+and fail closed on unknown outcomes. Runtime wiring remains pending. Policy,
+ACL/clock/cancellation limits and SQL/observed-lock concurrency reproduction:
+[`AI_POSTGRES_QUOTA.md`](../docs/AI_POSTGRES_QUOTA.md).

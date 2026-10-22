@@ -150,3 +150,12 @@ or metadata. Public deployment configuration, redirect/resource/cancellation
 rules, safe errors, test evidence and remaining hosted gates are specified in
 [AI_SUPABASE_AUTH.md](AI_SUPABASE_AUTH.md). No endpoint/provider/Auth strategy or
 application default is configured by this component.
+
+## Private PostgreSQL quota component (#31)
+
+The additive `20261022091000_ai_rate_limits.sql` implements a row-serialized
+shared per-user burst/daily budget for all five operations. Private invoker/ACL/
+RLS boundaries, confirmed-commit-before-dispatch requirements, clock behavior,
+SQL/native concurrency verification and remaining runtime binding are specified
+in [AI_POSTGRES_QUOTA.md](AI_POSTGRES_QUOTA.md). The TypeScript RateLimiter port
+is still mandatory; this component installs no driver/endpoint or memory fallback.
