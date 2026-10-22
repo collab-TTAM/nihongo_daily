@@ -1460,6 +1460,10 @@
         {
           "path": "backend/ai/deno.json",
           "contains": "deno bundle --check --no-remote --packages=bundle"
+        },
+        {
+          "path": "qa/test_edge_runtime_identity.py",
+          "contains": "test_wrong_runtime_rejects_before_any_ai_request_or_docker_call"
         }
       ],
       "issues": [

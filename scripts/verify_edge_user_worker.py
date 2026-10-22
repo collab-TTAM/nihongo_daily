@@ -19,6 +19,13 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGE = "supabase/edge-runtime:v1.77.4"
+# Pinned ext/runtime/js/bootstrap.js + release.yml GIT_V_TAG (no leading v).
+# These are runtime-reported labels, not direct V8/TypeScript engine measurements.
+EDGE_RUNTIME_METADATA = {
+    "deno": "supabase-edge-runtime-1.77.4 (compatible with Deno v2.1.4)",
+    "v8": "11.6.189.12",
+    "typescript": "5.1.6",
+}
 BUNDLE = ROOT / "build/edge/worker/index.ts"
 FIXTURES = json.loads((ROOT / "contracts/v0.1/fixtures.json").read_text())
 OPERATIONS = ("tutor_explain", "correct_sentence", "start_conversation",
@@ -36,7 +43,13 @@ def check(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def probe(base: str, *, expected_deno: str = "2.1.4") -> dict:
+def verify_runtime_metadata(value: object, expected: dict[str, str]) -> None:
+    # Exact pinned fingerprint: plain Deno compatibility alone is not Edge identity.
+    # Never echo an untrusted value (including unknown fields) in failure output.
+    check(type(value) is dict and value == expected, "Unexpected user-worker runtime metadata")
+
+
+def probe(base: str, *, expected_runtime: dict[str, str] | None = None) -> dict:
     cases: list[str] = []
 
     def request(path: str, body: object = None, *, token: str | None = "fixture-A",
@@ -65,8 +78,7 @@ def probe(base: str, *, expected_deno: str = "2.1.4") -> dict:
 
     metadata = request("/__probe", method="GET")
     check(metadata["fixtureOnly"] is True and metadata["lane"] == "user-worker", "Wrong worker lane")
-    check(set(metadata["runtime"]) == {"deno", "v8", "typescript"}, "Missing actual worker runtime version")
-    check(metadata["runtime"]["deno"] == expected_deno, "Unexpected user-worker Deno version")
+    verify_runtime_metadata(metadata["runtime"], EDGE_RUNTIME_METADATA if expected_runtime is None else expected_runtime)
     cases.append("actual-user-worker-runtime")
     for op in OPERATIONS:
         result = request("/" + op + "?operation=untrusted", FIXTURES[op + "_request"])

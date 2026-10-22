@@ -3902,3 +3902,58 @@ no deployment, production deletion, security reduction, release or schedule chan
   status changed in follow-up. All seven original HTTP assertion groups and
   production/old tests/CI gates/Pro files unchanged. New exact-head Docker/full
   platform results remain required; #41 draft/all14 hosted groups still pending.
+
+
+## Core checkpoint — #31 branded Edge runtime identity, 2026-10-22 UTC
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c unchanged. Resume draft #41,
+  branch automation/issue-11-plan-sdk-integration, parentb1908d8eda9206b89ab22db93ad970818fdfc497,
+  tree028230cf61b39cc920c82bd2bc49444db3b990ed /553 blobs. Marker
+  core-20261022T2119-edge-identity; one core writer; #37 redirects unchanged.
+  Pro #14/N4/data/manifests/content tests/docs/branch reserved and untouched.
+- Fresh exactb1908d8 CI39849667906/latest attempt1 is completed/failure, complete
+  latest jobs5/all matching head+attempt. Repo-sanity/database/windows/flutter
+  completed/success/every step, retaining vault/native lifecycle/SQL/Deno/native/
+  web/Windows builds. AI earlier format/typecheck/Node168/Deno168+six/typed102-module
+  bundle passed, Edge gate failed on user-worker metadata assertion; artifact and
+  final schema projection skipped. This supersedes the previous pending handoff.
+- Actual completed AI log reached user-worker fixture metadata, then rejected its
+  Deno label because old probe expected plain2.1.4. Read primary pinned v1.77.4
+  ext/runtime/js/bootstrap.js blob1a98593cee8882faa9206b8a274496b5e8166935 and
+  release.yml: bootstrap emits supabase-edge-runtime-1.77.4 (compatible with Deno
+  v2.1.4); release passes semantic GIT_V_TAG without v. CLI crate0.1.0 and Deno
+  crate2.1.4 are separate identifiers. V8/TS are bootstrap-reported constants,
+  not direct measurement of engine/compiler internals.
+- scripts/verify_edge_user_worker.py now strictly checks entire three-field
+  pinned reported fingerprint (branded Deno string/V811.6.189.12/TS5.1.6), with
+  fixed failure that echoes no input. Plain compatibility version, wrong image,
+  compatible Deno mismatch, missing/extra/changed fields and suffixes rejected
+  before AI HTTP operations. CLI two-line regex and official image/digest pinning
+  remain; Docker entrypoint supplies no override. Explicit standalone expected
+  complete metadata remains test-only and cannot become Edge execution evidence.
+- Four new qa/test_edge_runtime_identity.py regressions: official branded tuple
+  and reordered JSON object; nine wrong/plain/mixed/suffixed Deno identifiers;
+  missing/extra/malformed/mixed reported fields without echo; actual probe with
+  TEST ONLY HTTP metadata rejects wrong identity after one GET and before POST
+  or any Docker operation. All35 QA cases passed; inventory66/all14 release
+  groups pending. Original31 QA assertions/cases/findings/gates retained; existing
+  Edge case only gains an executable anchor. CI workflow unchanged.
+- Five paths: scripts/verify_edge_user_worker.py; new qa/test_edge_runtime_identity.py;
+  qa/matrix.json; docs/AI_EDGE_USER_WORKER.md and PROJECT_STATUS.md. Separate diff
+  review confirms all original seven HTTP assertion groups byte-identical after
+  identity guard, every original workflow/production/native/SQL/dependency/Pro
+  byte unchanged. No provider/Auth/default/endpoint/RLS/TLS/deployment/spend change.
+- Local Node24 format/typecheck/all168 passed; Deno2.9.6 strict check covers all
+  source/unit/native/Edge entrypoints. Fresh source typed bundle102 modules/
+  363.83KB built with pinned Deno/internal esbuild0.25.5; direct helper-registry
+  network failed, exact npm helper/manual SDK cache fallback used as documented.
+  Actual standalone bundled Deno with denied env/files/write/run/FFI/sys and
+  listener-only net passed allseven unchanged HTTP groups with explicit full
+  Deno2.9.6 metadata. Python syntax/QA35/inventory/whitespace passed. These fixture
+  results do NOT establish Supabase Edge execution; local Docker/native SDKs absent.
+- Next inspect new exact-head/latest-attempt allfive jobs/both Edge gates/actual
+  complete AI log and evidence artifact; fix observed errors retaining assertions.
+  Real authenticated upstream adapter/provenance and hosted JWT/TLS/CA/PostgREST/
+  A-B/learner proof remain, not certified by a runtime metadata string. Keep #41
+  draft/#31/#20/#22/#15/#13 open/defaults unconfigured/all14 release groups pending;
+  no merge/issue closure/production release/schedule change.

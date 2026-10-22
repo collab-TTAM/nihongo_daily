@@ -38,16 +38,34 @@ The official tag/API was checked against these primary sources on 2026-10-22:
 - https://github.com/supabase/edge-runtime/blob/v1.77.4/DEVELOPERS.md
 - https://docs.deno.com/runtime/reference/cli/bundle/
 
-The image tag and embedded CLI/runtime versions are different identifiers.
-Official v1.77.4 `cli/src/flags.rs` formats `--version` from `cli/Cargo.toml`
-(**0.1.0**) plus `deno/Cargo.toml` (**2.1.4**). The probe strictly checks both
-CLI lines (capturing stdout and stderr) and actual user-worker Deno2.1.4.
-It never expects the release-image tag1.77.4 in CLI package-version output.
+The image tag, CLI crate version and branded JavaScript metadata are different
+identifiers. Official v1.77.4 `cli/src/flags.rs` formats `--version` from
+`cli/Cargo.toml` (**0.1.0**) plus `deno/Cargo.toml` (**2.1.4**); both CLI lines
+remain strictly checked, capturing stdout and stderr. `ext/runtime/js/bootstrap.js`
+overwrites `Deno.version.deno` with the full string:
+
+```text
+supabase-edge-runtime-1.77.4 (compatible with Deno v2.1.4)
+```
+
+The release workflow passes semantic **1.77.4**, without `v`, as `GIT_V_TAG`.
+The probe strictly compares the entire reported three-field metadata object:
+that branded string, V8 **11.6.189.12** and TypeScript **5.1.6**. The latter two
+are hard-coded bootstrap reports, not directly measured engine/compiler versions.
+Plain `2.1.4`, a different image/compatible Deno, missing/extra/changed fields or
+suffixes fail before any AI operation, with a fixed error that echoes no input.
+Four Python regressions reproduce this distinction and exercise wrong-runtime
+HTTP rejection before POST/dispatch. They are fixtures, not Edge execution proof.
+
 Primary pinned sources: [flags.rs](https://github.com/supabase/edge-runtime/blob/v1.77.4/cli/src/flags.rs),
-[cli manifest](https://github.com/supabase/edge-runtime/blob/v1.77.4/cli/Cargo.toml),
-[Deno manifest](https://github.com/supabase/edge-runtime/blob/v1.77.4/deno/Cargo.toml).
-Standalone bundle/fixture testing can explicitly expect Deno2.9.6; that is never
-emitted as actual Edge evidence by the Docker entrypoint.
+[CLI manifest](https://github.com/supabase/edge-runtime/blob/v1.77.4/cli/Cargo.toml),
+[Deno manifest](https://github.com/supabase/edge-runtime/blob/v1.77.4/deno/Cargo.toml),
+[bootstrap.js](https://github.com/supabase/edge-runtime/blob/v1.77.4/ext/runtime/js/bootstrap.js)
+(blob1a98593cee8882faa9206b8a274496b5e8166935), and
+[release workflow](https://github.com/supabase/edge-runtime/blob/v1.77.4/.github/workflows/release.yml).
+Standalone bundle/fixture testing may explicitly pass a complete expected runtime
+metadata object; the Docker entrypoint always uses the pinned Edge fingerprint.
+Such standalone execution never becomes actual Edge evidence.
 
 ## Cases and CI acceptance
 
@@ -57,7 +75,7 @@ The evidence artifact publication is also mandatory. QA rejects either step
 missing, skipped, failed or pending behind a green job.
 
 The actual HTTP probe checks seven groups:
-1. User-worker fixture marker and actual Deno/V8/TypeScript version metadata.
+1. User-worker fixture marker and strict pinned branded Deno/V8/TypeScript reported metadata.
 2. All five unchanged original wire fixtures, fixed operation and safe headers.
 3. Completed mutation replay without dispatch and separate fixture A/B receipts.
 4. Missing/invalid fixture Auth, wrong method and strict unknown owner rejection.
