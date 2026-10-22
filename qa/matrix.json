@@ -1322,7 +1322,33 @@
         18
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
-      "limitation": "138 local Node tests/format/type check/audit passed, including21 new fixture cases. Ten compiled real-driver native cases require exact-head CI; no local PostgreSQL17 execution claim. Plaintext/Auth/provider/commit-delivery fixtures are not hosted TLS/CA/JWT/Edge/Deno/real partition/provider/learner evidence. No endpoint/default or correlated recovery; all14 hosted groups pending."
+      "limitation": "Exact parent014bee0087ac197774efbac89a2ac4ec32898e09 passed all138 Node tests,10 actual pg runtime native cases and allfive jobs/every step in CI39805367641 attempt1. Plaintext/Auth/provider/injected delivery fixtures are not hosted TLS/CA/JWT/Edge/Deno/real partition/provider/learner proof. Future heads need their own checks; trusted upstream lookup-only reconciliation/all14 hosted groups remain pending."
+    },
+    {
+      "id": "ai-conversation-reconciliation-sql",
+      "status": "automated-baseline",
+      "scope": "Private STABLE saved receipt/canonical-key/context lookup without token and original-bound atomic SQL reconciliation without creating or renewing dispatch claims",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_conversation_reconciliation.sql",
+          "contains": "storage failure rolls back all sessions messages receipt and release state"
+        },
+        {
+          "path": "scripts/test_ai_reconciliation_concurrency.py",
+          "contains": "Second reconciliation worker was not observed waiting on the held owner lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_reconciliation_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "72 SQL-role assertions/all14 migrations and retained250/28/59/59/68/99 passed on fresh PGlite0.5.9/PostgreSQL18.6; eight authored native races need exact-head CI. SQL receipt/key/context binding does not authenticate upstream results. Trusted provider lookup-only verifier/runtime recovery remains absent; no endpoint/default/hosted Auth/provider/learner proof or release claim."
     }
   ],
   "findings": [

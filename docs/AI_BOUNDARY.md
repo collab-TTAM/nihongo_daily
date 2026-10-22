@@ -192,3 +192,10 @@ Pending stays unavailable until correlated reconciliation is implemented. Truste
 owned connections, bounds/cancellation/native probes and remaining hosted gates:
 [AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md). No endpoint/default or
 live provider is installed; existing text/legacy fixture interfaces remain compatible.
+
+
+The private lookup-only saved correlation/context and token-internal atomic SQL
+reconciliation component is in
+[AI_CONVERSATION_RECONCILIATION.md](AI_CONVERSATION_RECONCILIATION.md). Existing
+pending runtime behavior stays fail-closed until a trusted upstream lookup verifier
+is installed; SQL correlation/fixture identity alone does not prove a genuine result.

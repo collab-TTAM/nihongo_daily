@@ -3603,3 +3603,71 @@ no deployment, production deletion, security reduction, release or schedule chan
   observed Edge/Deno compatibility and hosted configuration/evidence. Default and
   live endpoint stay unconfigured; #31/#13/#20/#22/#15 open/#41 draft/all14 hosted
   learner release groups/Personal Alpha still pending. No schedule change.
+
+## Core checkpoint — #31 private reconciliation SQL, 2026-10-22 16:18 UTC
+
+- Resume draft #41 `automation/issue-11-plan-sdk-integration`, expected parent
+  `014bee0087ac197774efbac89a2ac4ec32898e09`, exact base tree
+  `073697c6e0b0a732d98b7eb0bc3494ec81bc3463`. Fresh main remains
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; #37 redirects here; one core writer.
+  Pro/#14/N4/content/manifests/content tests/docs/branch untouched.
+- Parent CI39805367641 raw exact014bee0/latest attempt1 allfive jobs/every step
+  completed/success verified, including all10 actual pg conversation runtime cases.
+  Resolves that source's previously pending Flutter/Windows handoff.
+- Added private service-only STABLE/invoker/empty-search-path saved recovery lookup:
+  exact original owner/operation/event/request, original receipt UUID, canonical
+  existing ProviderInput idempotency key and saved context. One statement snapshot
+  returns coherent missing/pending/completed; no current-source context rebuilding,
+  receipt/claim/token write, dispatch lock, release or capability exposure. Legacy
+  pending without a saved atomic reservation remains capability/context-free pending.
+- Added narrow service-only empty-search-path definer reconciliation bound to exact
+  original receipt/request/key/context. Owner advisory + receipt/reservation locks,
+  original token read ONLY inside SQL, then reuse all validated completion guards/
+  source rechecks/public writes/token receipt/release in one transaction. No token
+  returned/renewed/replaced; no new claim/reset/expiry/delete/takeover. Duplicate or
+  original-worker completion races yield one original result; wrong key/owner/
+  request/context/result conflicts. Completed original replay precedes active checks.
+- SQL identity binding does NOT authenticate a provider result. Trusted authenticated
+  lookup-only upstream verifier/runtime recovery remains absent and mandatory before
+  invoking this component from runtime. Never accept a learner/model/legacy recovery
+  proof or interpret missing upstream output as permission to redispatch. Existing
+  AiService pending behavior still fails closed; no new endpoint/default/provider,
+  strategy/Auth/wire/dependency/collection/spend/deployment change. Existing service
+  can already read claims/complete; no new client authority or reduced RLS/grants.
+- Eleven paths: new supabase/migrations/20261022161500_ai_conversation_reconciliation.sql,
+  supabase/tests/ai_conversation_reconciliation.sql,
+  scripts/test_ai_reconciliation_concurrency.py, docs/AI_CONVERSATION_RECONCILIATION.md;
+  scripts/test_database.sh, docs/AI_BOUNDARY.md, AI_CONVERSATION_RUNTIME.md,
+  AI_CONVERSATION_COMPLETION.md, this status, qa/matrix.json, supabase/README.md.
+  Existing runner adds one SQL suite/eight native cases and retains all prior steps.
+  Original migrations/SQL tests/Node runtime/workflow/contracts/Pro content untouched.
+- Local fresh PGlite0.5.9/PostgreSQL18.6 applied all14 migrations:72 new SQL assertions
+  passed, retaining250 baseline/28 receipt/59 quota/59 text/68 reservation/99 completion.
+  Covers missing/no writes, saved context/no tokens, canonical UUID key vs original
+  request casing, owner/receipt/key/context/shape/bounds, legacy pending, source drift,
+  every mutation/replay, actual release-storage fault after public/session/message/
+  receipt writes with full rollback (including finish timestamps/scores/summary),
+  denied direct release/client helpers, no new tokens and no duplicate writes.
+- Eight native PostgreSQL17 cases authored/syntax checked, not locally executed:
+  same result, changed result, original normal completion, rollback, next distinct
+  turn, finish vs turn, wrong context and wrong key. Independent psql processes/
+  bounded barriers and actual ungranted advisory waits. During held first transaction,
+  separate STABLE lookup sees only original pending metadata/no partial public rows;
+  B/separate scenario with same event UUID acquires independently. Fresh connections
+  verify exactly one receipt/token/original result, release/closure and consecutive
+  next slots. No dispatch token leaves SQL. Fixed disposable CI URL only; real
+  upstream/Auth/hosted/partition/learner proof is not established by these fixtures.
+- All29 QA regressions/inventory62/all14 hosted groups pending, Python compile,
+  bash syntax/whitespace and separate diff/security/source review passed. Existing
+  migration/test/runtime/workflow and every old runner step byte-identical. Node138/
+  native runtime10/platform are observed parent CI evidence, not new local execution.
+- Exact commit/tree/full-tree/changed-blob readback/expected-parent nonforce evidence
+  and latest CI are recorded after publication in re-read #41/#37/#31 RELEASED
+  handoffs. Current-head native/platform checks cannot be inferred from embedded SQL
+  or parent success. No merge/issue close/release/deployment/schedule change.
+- Next inspect exact-head latest-attempt allfive jobs/steps and eight native results;
+  fix actual failures preserving assertions. Then implement trusted upstream lookup-
+  only correlation verifier/driver/runtime recovery with captured immutable result/
+  request/key/context, safe COMMIT/cancel/restart behavior and no borrowed token,
+  legacy fallback or redispatch. Hosted TLS/CA/JWT/PostgREST/Edge/Deno/provider and
+  all14 learner release groups remain pending; #31/#20/#22/#15/#13 open/#41 draft.

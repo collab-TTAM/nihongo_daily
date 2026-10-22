@@ -112,3 +112,12 @@ No production endpoint/default should be installed before those remaining guards
 and applicable release gates. All14 hosted learner groups remain pending; fixture
 roles/Auth/model text, native process restart or injected delivery failure are not
 live identity/provider, real network partition or Personal Alpha acceptance.
+
+
+The private SQL prerequisites for lookup-only saved correlation/context and guarded
+atomic reconciliation now exist in
+[AI_CONVERSATION_RECONCILIATION.md](AI_CONVERSATION_RECONCILIATION.md). SQL binds
+receipt/key/request/context but cannot authenticate an upstream result. No runtime
+recovery verifier/port is installed by this addition; pending remains unavailable.
+All10 runtime native cases and allfive jobs/every step passed on exact014bee0 in
+CI39805367641/latest attempt1. Future heads require their own complete checks.

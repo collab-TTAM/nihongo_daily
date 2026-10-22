@@ -208,3 +208,14 @@ claims. The required database job adds actual pg runtime probes, retaining all S
 suites/races/quota/text/profile exports. See
 [AI_CONVERSATION_RUNTIME.md](../docs/AI_CONVERSATION_RUNTIME.md); hosted identity,
 TLS/Edge/provider and correlated reconciliation remain unverified.
+
+
+## Undeployed conversation reconciliation SQL (#31)
+
+`20261022161500_ai_conversation_reconciliation.sql` adds service-only STABLE saved
+correlation/context lookup and atomic reconciliation bound to original receipt,
+owner/operation/event key/request/context. The dispatch token stays inside SQL;
+existing validated completion/ACL/RLS/claim lifetime remain intact. Retained runner
+adds72 SQL assertions/eight native races. No trusted upstream verifier/runtime
+recovery/endpoint is installed; SQL identity matching is not provider proof. See
+[AI_CONVERSATION_RECONCILIATION.md](../docs/AI_CONVERSATION_RECONCILIATION.md).

@@ -110,3 +110,10 @@ in prepare and return another worker's token from a pending claim. Test real dri
 COMMIT ambiguity/cancellation/restart before installing an endpoint. Hosted TLS/CA,
 JWT/PostgREST/Edge/Deno/provider/learner and all14 release groups remain unverified;
 SQL roles, fixed model fixtures and reconnect probes do not establish those gates.
+
+
+A separate service-only token-internal SQL reconciliation wrapper and STABLE saved
+correlation/context lookup are specified in
+[AI_CONVERSATION_RECONCILIATION.md](AI_CONVERSATION_RECONCILIATION.md). They reuse
+all completion guards without exposing a dispatch token. Genuine upstream result
+verification and runtime binding remain mandatory/unimplemented; no client route.
