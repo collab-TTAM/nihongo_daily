@@ -132,8 +132,11 @@ void main() {
     );
     if (signIn) harness.access.change(fixture.owner);
     await tester.pumpAndSettle();
+    expect(harness.runtime.readyRuntime != null, signIn);
+    expect(container.read(quizHistoryRepositoryProvider) != null, signIn);
     container.read(routerProvider).go('/quiz');
     await tester.pumpAndSettle();
+    expect(find.text('Câu 1 / 1'), findsOneWidget);
     return container;
   }
 
@@ -142,7 +145,9 @@ void main() {
       tester,
       find.byKey(ValueKey('quiz-choice-${questions.single.target.id}')),
     );
+    expect(find.text('Đúng theo bài gốc.'), findsOneWidget);
     await tapQuiz(tester, find.byKey(const Key('quiz-next')));
+    expect(find.text('Kết quả bộ này: 1 / 1'), findsOneWidget);
   }
 
   test('secure factory returns distinct validated UTC reports', () async {

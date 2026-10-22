@@ -3021,3 +3021,24 @@ weak-point reviewed rules/acceptance. Keep #41 draft/#13 open/default preview/
 all14 hosted gates pending. Pro/N4/main/source drafts/API/schema/RLS/Auth strategy/
 dependencies/workflow/security/providers/spend/merge/deployment/release/schedule
 unchanged.
+
+## Quiz-save boundary diagnostics — core-20261022T0318
+
+Resume #41 at64256e83a4c66124963be1c40694a7dc1eb1eac3. Exact
+CI39710333451 attempt1 completed all five jobs: repo/database/AI/Windows passed
+every required step, Flutter strict format/analyze passed but its full suite
+reported666 passed/eight failures, all in the new save widget scenarios. Secure
+factory unit case passed; Chrome/runtime/Web downstream were skipped, not passed.
+
+All failing UI cases either never called the injected capture or could not find
+the save button. Added explicit fixture preconditions for ready runtime/history
+capability, exactly one rendered question, accepted correct answer and completed
+result. Existing nine cases/45 assertions remain; no production/CI/security or
+content changes. The extra provider read also initializes the capability before
+navigation. This is a diagnostic checkpoint, not a proven root-cause fix.
+
+Separate source/lifecycle/diff review and git diff --check passed. No local SDK;
+new Flutter execution requires exact-head CI. Inspect the first new boundary
+failure or all-five success before selecting a functional fix. Do not equate
+fixture/component checks to hosted learner proof. Keep draft #41/#13 open and
+all14 hosted gates pending; Pro/N4 and Auth/API/schema/RLS policies unchanged.
