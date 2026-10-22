@@ -82,3 +82,41 @@ approved live provider/authenticated lookup provenance and learner acceptance.
 No hosted JWT signature/expiry/A-B or Personal Alpha proof is implied by protocol
 fixtures, a frozen handler table or a local official container. All14 hosted release
 groups remain pending; #31 stays open/#41 draft/defaults unconfigured.
+
+
+## Native full-handler assembly stage
+
+`test/trusted_runtime.native.ts` adds eight bounded cases through the actual
+assembled fixed-operation Request/Response handlers with real PostgreSQL17/pg and
+all unchanged SQL migrations. Node24 runs `npm run test:postgres-assembly` as a new
+mandatory database step; the existing restricted Deno2.9.6 `test:postgres` task
+also includes the file (42 retained native cases +8 =50). No existing gate is
+removed. QA rejects missing/skipped/failed/pending native assembly evidence.
+
+The suite verifies all five operations, committed ended session/ordered messages/
+completed receipts and reservations, fresh-handler replay after source retirement
+and profile change, two independent instances over the same database, actual
+reservation/completion COMMIT followed by simulated lost delivery, and fresh-handler
+recovery that never redispatches. It also covers Auth A/B identity/foreign denial,
+forged owner and invalid credentials, malformed provider durable pending without
+public writes, source retirement during text generation, and committed daily quota
+exhaustion before context/reservation/provider. Provider entry checks all acquired
+connections closed and no matching pg_stat_activity transaction open. Real COMMIT
+must reach ReadyForQuery idle before delivery injection; durable rows are queried
+from separate real connections afterward.
+
+Auth uses the actual Supabase verifier with an injected TEST ONLY HTTP response;
+provider output and ambiguous network delivery are fixtures. Only the exact
+localhost disposable CI database is accepted; plaintext is confined to these test
+factories. The verified-TLS production factory/configuration is unchanged. These
+native assertions have not executed locally because PostgreSQL/Docker is absent;
+new exact-head CI must be observed before counting them as passed.
+
+The preceding assembly source `dee799f5e741a8594a4f89c95a46a5ffb627bead` has
+observed [CI39864435084](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39864435084)
+latest attempt1 completed/success, allfive jobs/every step/no skips. Its Node/Deno180,
+native42 and Edge7 evidence predates this new native assembly suite. Next independent
+stage is the full pg assembly inside the actual Edge user isolate; these native
+handlers alone do not prove network listening/Edge, TLS/CA, hosted Supabase JWT/
+PostgREST, approved live provider/lookup provenance or learner acceptance. #31 and
+all14 release groups remain open; no endpoint/default/deployment is enabled.

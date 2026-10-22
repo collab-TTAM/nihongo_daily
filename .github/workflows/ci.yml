@@ -268,6 +268,9 @@ jobs:
       - name: Verify atomic conversation adapter with native PostgreSQL
         working-directory: backend/ai
         run: npm run test:postgres-conversation
+      - name: Verify trusted AI assembly with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-assembly
       - uses: denoland/setup-deno@v2
         with:
           deno-version: 'v2.9.6'

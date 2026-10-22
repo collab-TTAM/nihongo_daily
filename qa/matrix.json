@@ -18,7 +18,8 @@
       "Publish actual native SQL queue projections",
       "Verify committed AI quota adapter with native PostgreSQL",
       "Verify text context adapter with native PostgreSQL",
-      "Verify AI PostgreSQL adapters with pinned Deno"
+      "Verify AI PostgreSQL adapters with pinned Deno",
+      "Verify trusted AI assembly with native PostgreSQL"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -1503,6 +1504,41 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test && deno task check && deno task test",
       "limitation": "Local180 Node/Deno tests (168 retained+12 new) use TEST ONLY Auth HTTP/SQL protocol/provider. Trusted construction opens no connection and retains verified-TLS factories; no native assembled TLS/PostgreSQL/Edge/PostgREST/hosted identity/provider or learner proof. Parent15896c5 Edge7 fixture probe/allfive jobs passed, not this full new assembly. Defaults unconfigured/all14 release groups remain pending; exact-head full CI required."
+    },
+    {
+      "id": "ai-native-trusted-assembly",
+      "status": "automated-baseline",
+      "scope": "Full fixed Request/Response handler composition over actual PostgreSQL quota, text and atomic conversation SQL on Node24 and pinned Deno; TEST ONLY Auth HTTP/provider/plaintext transport",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/trusted_runtime.native.ts",
+          "contains": "native assembled five operations persist full lifecycle and fresh closure retirement replay"
+        },
+        {
+          "path": "backend/ai/test/trusted_runtime.native.ts",
+          "contains": "native assembled independent instances cannot redispatch same event or overtake reserved session"
+        },
+        {
+          "path": "backend/ai/test/trusted_runtime.native.ts",
+          "contains": "COMMIT lost delivery is conservative across fresh handler restart"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/trusted_runtime.native.ts"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "test/postgres_conversation.native.ts test/trusted_runtime.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "Fixed disposable CI PostgreSQL17 with all existing migrations: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-assembly && deno task test:postgres",
+      "limitation": "Eight new actual native assembly cases must pass in exact-head Actions (Deno native42 retained +8 =50); local SDK checks without PostgreSQL do not execute these assertions. Auth HTTP, provider, localhost plaintext and lost-delivery injection are TEST ONLY. No PostgreSQL-inside-Edge, real TLS/CA, PostgREST/JWT/provider or learner acceptance. All14 release groups pending; default bindings remain unconfigured."
     }
   ],
   "findings": [

@@ -13,7 +13,8 @@
     "test": "node --test test/*.test.ts",
     "test:postgres-quota": "node --test test/postgres_quota.native.ts",
     "test:postgres-text": "node --test test/postgres_text_context.native.ts",
-    "test:postgres-conversation": "node --test test/postgres_conversation.native.ts"
+    "test:postgres-conversation": "node --test test/postgres_conversation.native.ts",
+    "test:postgres-assembly": "node --test test/trusted_runtime.native.ts"
   },
   "dependencies": {
     "ajv": "8.20.0",

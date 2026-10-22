@@ -4021,3 +4021,50 @@ no deployment, production deletion, security reduction, release or schedule chan
   learner gates remain. #31/#20/#22/#15/#13 open/#41 draft/defaults unconfigured/
   all14 release groups/Personal Alpha pending. No merge/issue closure/release or
   schedule change.
+
+
+## Native full-handler PostgreSQL assembly checkpoint (2026-10-22 23:18 UTC)
+
+- Continue draft #41 / automation/issue-11-plan-sdk-integration from exact source
+  dee799f5e741a8594a4f89c95a46a5ffb627bead (base tree
+  3d9de71f1c36f42c89d8dc1a3119712810e990b1 /557 blobs), main78a44fa unchanged.
+  Marker core-20261022T2314-assembly-native, one core writer; #37 redirects here.
+  #14 Pro/N4/data/manifests/content tests/docs/branch remain reserved and untouched.
+- Resolve prior waiting checkpoint: source dee799f has observed
+  [CI39864435084](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39864435084),
+  latest attempt1 completed/success/allfive jobs/every step/no skipped steps.
+  Retained Node/Deno180, native PostgreSQL42 and Edge7 passed at that parent.
+  Parent evidence does not execute the new suite below.
+- Add eight native cases through the actual assembled fixed Request/Response
+  handlers, Supabase verifier (TEST ONLY Auth HTTP), actual pg/PostgreSQL17 SQL
+  and TEST ONLY provider/plaintext/lost-delivery injection. Allfive operations,
+  durable ended session/ordered slots/completed receipt+reservation, fresh closure
+  replay after source/profile changes, two independent instances/same-event and
+  reserved-session races, real acquire/complete COMMIT followed by lost delivery,
+  A/B foreign-session NOT_FOUND (same existing SQL policy), forged owner/bad Auth,
+  malformed result durable pending/no public writes/redispatch, text retirement
+  and final quota denial. Provider entry requires every connection closed and
+  no matching real pg transaction; COMMIT must reach idle before injection.
+- Add mandatory Node native assembly database gate; append file to retained
+  permission-bounded Deno pg task (42+8=50). Retain every original workflow step,
+  native/SQL/unit/Edge/platform check. QA adds this gate to exact-head assurance
+  and rejects missing/skipped/failed/pending evidence; all14 release groups pending.
+- Eight paths: new backend/ai/test/trusted_runtime.native.ts; backend/ai/package.json,
+  deno.json; .github/workflows/ci.yml; qa/matrix.json, test_verify_qa.py;
+  docs/AI_TRUSTED_RUNTIME.md and this status. Production source/SQL/TLS/locks/
+  dependencies/RLS/default app/approved provider strategy untouched. No live call,
+  hosted migration/deployment or production data access.
+- Local observed: npm format:check + strict TypeScript passed; strict Deno2.9.6
+  checks include new native file; Node180/180 and Deno180/180 passed, no skips;
+  QA36/36 passed; inventory68 valid with all14 integrations pending. No local
+  PostgreSQL/Docker or Flutter SDK: native8/combined Deno50 and platform builds
+  require NEW exact-head Actions; authored assertions are not observed proof.
+- Separate review: native expectations align with unchanged SQL/error mappings;
+  all prior source/tests/SQL/dependency locks/Pro files preserved. Persist via
+  correct base tree, full tree/blob readback and expected-head non-force CAS;
+  final commit/CI/RELEASED marker recorded in #41/#37/#31 handoff.
+- Next: inspect new exact-head full/latest-attempt jobs and actual native results;
+  if green, independently stage full PostgreSQL assembly inside actual Edge user
+  isolate. Native handlers do not prove that isolate/network listener, real TLS/CA,
+  hosted Auth JWT/signature/expiry/A-B/PostgREST, approved live provider/lookup
+  provenance or learner acceptance. #31 stays open/#41 draft; no Alpha sign-off.
