@@ -174,3 +174,9 @@ ContextRepository methods through those helpers. Fresh owned READ ONLY phases,
 strict result/ref/error checks and real-driver verification are specified in
 [AI_TEXT_CONTEXT_RUNTIME.md](AI_TEXT_CONTEXT_RUNTIME.md). Conversation methods
 remain explicitly unavailable; no host endpoint/default/provider is installed.
+
+The undeployed private conversation reserve/context helpers now atomically bind
+server identity/sequence and a durable per-session pending guard to the original
+receipt claim. This is not wired into the separate prepare/claim runtime ports;
+completion/release and coherent runtime acquisition remain pending. See
+[AI_CONVERSATION_RESERVATIONS.md](AI_CONVERSATION_RESERVATIONS.md).

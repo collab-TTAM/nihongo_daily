@@ -177,3 +177,13 @@ conversation mutation changes. The retained database runner adds
 `supabase/tests/ai_text_context.sql`; bounds/selection/trusted-user requirements
 and pending runtime/hosted evidence are in
 [`AI_TEXT_CONTEXT.md`](../docs/AI_TEXT_CONTEXT.md).
+
+## Undeployed conversation reservations (#31)
+
+`20261022131000_ai_conversation_reservations.sql` adds private strict request/
+context/reserve helpers and a SELECT/INSERT-only pending reservation table. Server
+IDs/sequence and receipt claim commit together; one pending slot blocks distinct
+session events. No public message/session completion or release is installed.
+Retained database tests now add the SQL suite and five native races; authorization,
+limits, pending safety, runtime ordering and remaining completion/recovery work:
+[`AI_CONVERSATION_RESERVATIONS.md`](../docs/AI_CONVERSATION_RESERVATIONS.md).

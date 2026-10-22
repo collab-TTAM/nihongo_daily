@@ -3414,3 +3414,60 @@ no deployment, production deletion, security reduction, release or schedule chan
   message/session+token receipt completion, then lookup-only reconciliation.
   Keep #31/#13/#20/#22/#15 open/#41 draft. Hosted configuration/evidence and all14
   release groups remain pending; default preview is unchanged, no Alpha release.
+
+## Core checkpoint — #31 atomic conversation reservation, 2026-10-22 13:24 UTC
+
+- Resume #41 `automation/issue-11-plan-sdk-integration`, expected parent
+  `c8d66f43273aa5c7f5cc8202cc64e12628f0a27e`, exact base tree
+  `c36d546325b4c279e910398cd4e88012776c951e`; fresh main unchanged at
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. #37 redirects here; one core writer.
+  Pro/#14 N4/content/manifests/content tests/docs/branch unchanged.
+- Parent CI39778434269, raw exact c8d66f4 latest attempt1: allfive jobs/every step
+  completed/success, including allnine native text cases and Flutter/Windows.
+  Resolves that source's full CI pending handoff; hosted release proof remains open.
+- Added private strict request/context/reserve SQL for allthree conversation ops:
+  verified backend owner/profile/level, active scenario/typed curriculum, owned open
+  contiguous alternating transcript, bounded data and generated server IDs/slots.
+  Same-transaction receipt/token+private context reservation, short per-owner
+  advisory/profile/session/scenario locks and unique pending session guard prevent
+  distinct events/finish from overtaking an unresolved turn. Replay returns original
+  completed or capability-free pending before active checks; legacy pending never
+  acquires a replacement token. No public session/message/success write is made.
+- New private table has RLS and SELECT/column-INSERT only; cannot insert completed
+  flags or clocks, update/release/delete/truncate. Deliberately no completion/release
+  endpoint yet; even bare legacy receipt completion leaves the guard held. No token
+  logs, reset/expiry/takeover, default/runtime/endpoint/provider/Auth strategy,
+  dependency/frozen wire/client grants/RLS reduction/deployment/spend change.
+- Ten paths: new supabase/migrations/20261022131000_ai_conversation_reservations.sql,
+  supabase/tests/ai_conversation_reservations.sql,
+  scripts/test_ai_conversation_concurrency.py, scripts/test_database.sh,
+  docs/AI_CONVERSATION_RESERVATIONS.md, docs/AI_BOUNDARY.md,
+  docs/AI_TEXT_CONTEXT_RUNTIME.md, supabase/README.md, qa/matrix.json, this status.
+  Existing retained required database step adds SQL suite and five native races;
+  every original gate/test/Node/Flutter source remains intact.
+- Local PGlite0.5.9/PostgreSQL18.6 applied all12 migrations and passed68 new SQL
+  assertions plus250 baseline/28 receipt/59 quota/59 text-context assertions.
+  Includes malformed/owner/level/curriculum/transcript/capacity cases, pending and
+  completed replay, no public writes, denied releases, rollback and TEST ONLY
+  trigger storage failure after claim with no orphan receipt/token/reservation.
+  Python compilation/bash syntax/whitespace and all29 QA regressions passed;
+  inventory59, all14 hosted release groups pending. Existing Node117/native text9
+  checks are observed parent CI evidence, not a new local execution claim.
+- Five authored native PostgreSQL17 races use independent psql processes, bounded
+  barriers, observed ungranted advisory locks, A/B independence and fresh-process
+  receipt/token/reservation/slot/public-message verification: identical event,
+  changed same event, distinct event, finish overtaking turn and rolled-back owner.
+  Fresh pending retries expose no token/context and never renew dispatch. Fixed
+  disposable CI URL only; no local PostgreSQL17/native execution claimed yet.
+- Separate source/diff review covers strict shapes, owner locks, NULL-safe identity
+  constraints, ACLs, atomic rollback, source bounds and safe pending availability.
+  Exact commit/tree/non-force expected-parent/full-tree/blob readback and latest CI
+  are recorded in re-read PR #41/#37 and #31 released checkpoints after publication.
+- Next: inspect exact-head latest-attempt CI/allfive jobs, fix any failure first.
+  Then implement validated session/user+assistant message and token-checked receipt
+  completion with reservation release in ONE transaction, source/owner/sequence
+  rechecks and correlated lookup-only recovery. Introduce coherent runtime atomic
+  acquisition; do not hide a claim in current separate prepare/claim calls or return
+  another dispatch owner's token. #41 remains draft; #31/#20/#22/#15/#13 open.
+  SQL-role/PGlite/reconnect fixtures are not hosted JWT/Edge/provider/learner/Alpha
+  proof. No production deployment/release or schedule change; all14 gates pending.

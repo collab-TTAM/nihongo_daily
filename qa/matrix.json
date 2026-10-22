@@ -1243,7 +1243,33 @@
         18
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-text",
-      "limitation": "117 Node tests include 19 new protocol/service cases. Nine new native driver cases await exact-head CI; plaintext test transport/Auth/provider/receipts and lost-delivery injection are fixtures. No hosted TLS/CA/JWT/Edge/Deno/conversation or learner proof; all 14 hosted release groups remain pending."
+      "limitation": "Exact parent c8d66f43273aa5c7f5cc8202cc64e12628f0a27e passed all nine native text driver cases and all five jobs in CI39778434269 attempt1. Plaintext/Auth/provider/receipts/lost-delivery fixtures are not hosted TLS/CA/JWT/Edge/Deno/conversation/learner or real partition proof. Future heads require their own exact checks."
+    },
+    {
+      "id": "ai-conversation-reservation",
+      "status": "automated-baseline",
+      "scope": "Private atomic server context/identity reservation plus receipt claim with one pending session and native owner-lock commit/rollback/restart probes",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_conversation_reservations.sql",
+          "contains": "storage failure leaves no orphan receipt token or reservation"
+        },
+        {
+          "path": "scripts/test_ai_conversation_concurrency.py",
+          "contains": "Second conversation worker was not observed waiting on the held owner lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_conversation_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "68 new SQL-role assertions passed with all 12 migrations on PGlite0.5.9/PostgreSQL18.6. Five new native contention cases require exact-head CI. No runtime/provider binding, public messages/session completion/release, hosted JWT/Edge or learner proof; all 14 hosted groups pending."
     }
   ],
   "findings": [
