@@ -3884,3 +3884,21 @@ no deployment, production deletion, security reduction, release or schedule chan
   official local image is not proof of deployed hosted runtime equivalence,
   stress limits, real proxy disconnect, distributed fixture receipts or Personal
   Alpha. All14 release groups pending; no release/schedule change.
+
+
+### Edge probe CI correction — 2026-10-22 20:32 UTC
+
+- Exact65ecbbc / CI39849089985 latest attempt1 actual completed AI logs prove
+  Node168/Deno168+six/native permission gates and typed102-module bundle passed.
+  Edge gate failed before user-worker launch: the probe incorrectly assumed
+  image tag1.77.4 equals CLI package version; artifact/final schema steps skipped.
+  This is not Edge/isolate proof. Earlier pending observation superseded.
+- Verified primary pinned v1.77.4 cli/src/flags.rs formats CLI0.1.0 (cli/Cargo.toml)
+  and embedded Deno2.1.4 (deno/Cargo.toml). Corrected strict CLI two-line regex,
+  stdout+stderr capture and actual worker Deno2.1.4 check. Image tag/digest/ID
+  still recorded; no bypass/removal of runtime identity verification. Local
+  standalone test passes explicit expected2.9.6 and cannot become Edge evidence.
+- Only scripts/verify_edge_user_worker.py, docs/AI_EDGE_USER_WORKER.md and this
+  status changed in follow-up. All seven original HTTP assertion groups and
+  production/old tests/CI gates/Pro files unchanged. New exact-head Docker/full
+  platform results remain required; #41 draft/all14 hosted groups still pending.

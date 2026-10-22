@@ -38,6 +38,17 @@ The official tag/API was checked against these primary sources on 2026-10-22:
 - https://github.com/supabase/edge-runtime/blob/v1.77.4/DEVELOPERS.md
 - https://docs.deno.com/runtime/reference/cli/bundle/
 
+The image tag and embedded CLI/runtime versions are different identifiers.
+Official v1.77.4 `cli/src/flags.rs` formats `--version` from `cli/Cargo.toml`
+(**0.1.0**) plus `deno/Cargo.toml` (**2.1.4**). The probe strictly checks both
+CLI lines (capturing stdout and stderr) and actual user-worker Deno2.1.4.
+It never expects the release-image tag1.77.4 in CLI package-version output.
+Primary pinned sources: [flags.rs](https://github.com/supabase/edge-runtime/blob/v1.77.4/cli/src/flags.rs),
+[cli manifest](https://github.com/supabase/edge-runtime/blob/v1.77.4/cli/Cargo.toml),
+[Deno manifest](https://github.com/supabase/edge-runtime/blob/v1.77.4/deno/Cargo.toml).
+Standalone bundle/fixture testing can explicitly expect Deno2.9.6; that is never
+emitted as actual Edge evidence by the Docker entrypoint.
+
 ## Cases and CI acceptance
 
 `Verify bundled Supabase Edge user worker` is mandatory in the existing

@@ -10,6 +10,7 @@ import hashlib
 import http.client
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
@@ -27,7 +28,7 @@ OPERATIONS = ("tutor_explain", "correct_sentence", "start_conversation",
 def docker(*args: str, timeout: int = 90) -> str:
     result = subprocess.run(["docker", *args], check=True, capture_output=True,
                             text=True, timeout=timeout)
-    return (result.stdout + (result.stderr if args[0] == "logs" else "")).strip()
+    return (result.stdout + (result.stderr if args[0] == "logs" or "--version" in args else "")).strip()
 
 
 def check(condition: bool, message: str) -> None:
@@ -35,7 +36,7 @@ def check(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def probe(base: str) -> dict:
+def probe(base: str, *, expected_deno: str = "2.1.4") -> dict:
     cases: list[str] = []
 
     def request(path: str, body: object = None, *, token: str | None = "fixture-A",
@@ -65,6 +66,7 @@ def probe(base: str) -> dict:
     metadata = request("/__probe", method="GET")
     check(metadata["fixtureOnly"] is True and metadata["lane"] == "user-worker", "Wrong worker lane")
     check(set(metadata["runtime"]) == {"deno", "v8", "typescript"}, "Missing actual worker runtime version")
+    check(metadata["runtime"]["deno"] == expected_deno, "Unexpected user-worker Deno version")
     cases.append("actual-user-worker-runtime")
     for op in OPERATIONS:
         result = request("/" + op + "?operation=untrusted", FIXTURES[op + "_request"])
@@ -123,7 +125,10 @@ def main() -> None:
     info = json.loads(docker("image", "inspect", IMAGE))[0]
     check(info["RepoDigests"], "Missing registry image digest")
     version = docker("run", "--rm", "--network=none", info["Id"], "--version")
-    check("1.77.4" in version, "Unexpected Edge Runtime binary")
+    # The v1.77.4 image CLI reports cli/Cargo.toml 0.1.0, NOT its image tag.
+    # flags.rs includes the embedded deno/Cargo.toml 2.1.4 on its second line.
+    check(re.fullmatch(r"edge-runtime 0\.1\.0\ndeno 2\.1\.4 \([^\n]+\)", version) is not None,
+          "Unexpected Edge CLI/embedded Deno version: " + version[:200])
     container = ""
     passed = False
     try:
