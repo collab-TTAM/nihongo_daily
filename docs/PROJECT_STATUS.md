@@ -2966,3 +2966,35 @@ commits/long polling. After history view full green, implement explicit immutabl
 same-round/session save. Keep #41 draft/#13 open/default preview/all14 hosted
 gates pending; Pro/N4/API/schema/RLS/Auth strategy/dependencies/workflow/security/
 providers/spend/merge/deployment/release/schedule unchanged.
+
+## Explicit quiz save — core-20261022T0112-quiz-save-ui
+
+Resume #41 at66d32e97e617f3b726ad115dd09c4d29ea89b5fb. Exact
+CI39698216596 attempt1 passed allfive jobs/every required step,665 Flutter,
+five Chrome and Web/Windows. All eight history-view widget cases now passed.
+
+Quiz rounds capture an optional ready repository at start; guest/old-session
+rounds are never assigned to a later login. Captured-repository replacement
+hides old answers/status and fences stale actions until an explicit new round.
+Completed configured rounds capture one immutable UUIDv4/UTC local report.
+Explicit save is single-flight, succeeds only after validated storage return,
+and retries the exact original event on manual request after uncertain failure.
+No raw errors/owner IDs, fabricated save, automatic retry, mastery/time/SRS/plan
+or server credit. Default preview still has no Auth/history source.
+
+Nine tests authored: secure UUID/UTC capture plus eight widget cases with
+explicit Auth/profile/memory-storage/fixed-clock ports and original N5 content.
+They cover save-to-history, stale/disabled duplicate, uncertain replay identity,
+guest boundary, same/other-owner late results, mid-round same-user replacement,
+capture failure and narrow large-text UI. Existing tests/assertions retained.
+Separate lifecycle/replay/source/diff review and29 local Python QA tests passed;
+Dart/Flutter SDK absent locally, new format/analyze/tests/builds require CI.
+UI port evidence is not hosted learner or native fault proof.
+
+Next inspect new exact-head/latest-attempt allfive jobs/every step and fix real
+failures retaining assertions. Pending-only handoff without duplicate commits/
+long polling. After save integration green, continue remaining #13 owned-event
+progress/weak-point rules and acceptance; do not close #13 or merge draft until
+its full criteria and hosted/release gates are satisfied. Pro/N4/main/source
+drafts/API/schema/RLS/Auth strategy/dependencies/workflow/security/providers/
+spend/merge/deployment/release/schedule unchanged.

@@ -6,7 +6,7 @@ library does not authenticate a caller or create a hosted endpoint. The existing
 PersistentSupabaseRuntime can accept quizStore (default null) and create this
 repository only after exact secret persistence and own-profile readiness.
 Configured Windows startup now owns a quiz journal in its existing trusted
-project directory; default preview and public /quiz remain process-local.
+project directory; default preview still has no account/history source.
 
 ## Owner and publication boundary
 
@@ -137,9 +137,42 @@ Parent09344fc5 CI39684530931 attempt1 passed allfive jobs/every required step,
 evidence, not hosted learner acceptance. Local29 QA tests and whitespace passed;
 new Flutter UI tests did not run locally because the SDK is absent.
 
-Next add explicit save with same-round lifecycle capture and immutable manual
-retry. No save button is installed by this read-only view; existing stored
-reports can be inspected, while new quiz rounds remain process-local.
+## Explicit completed-round save
+
+The quiz panel captures the optional ready repository when a round starts.
+Login after a guest round never assigns that round to the new owner. Any
+replacement of a previously captured ready repository hides that round's
+answers/result/save status, fences stale actions and requires an explicit new
+round. Same-user refresh/profile replacement is also a new lifecycle.
+
+On advancing the final accepted answer, the configured round captures one
+immutable local-v1 report with secure UUIDv4 and UTC completion time. Capture
+failure is fixed-text, dispatches nothing and claims no save. Only the explicit
+save button calls the captured repository. While waiting, save/restart/next-batch
+actions cannot dispatch duplicates or replace that event. A transient/uncertain
+failure exposes manual retry of the exact same immutable object, UUID, time and
+answers; unknown errors are redacted. Success appears only after the existing
+validated repository returns. No automatic retry or reconstructed new event.
+
+Account barriers clear visible status. A late old-round operation may remain
+durable under its original owner, but cannot publish to a different round,
+session or disposed view. History can resolve that uncertainty after login.
+Explicit restart or route exit discards only unsaved local view state; any
+accepted original disk report is retained. No pending event is reassigned to a
+fresh owner. Results are self-reported local quiz history, not study-time,
+mastery, SRS, plan or server credit. No new hosted operation is introduced.
+
+Nine tests are authored: one real UUID/UTC capture case and eight widget cases
+using explicit Auth/profile/memory-storage/fixed-clock ports and an original N5
+question. They cover save-to-history, disabled/stale duplicate actions, uncertain
+commit and exact replay, guest-login fencing, late same/other-owner save results,
+unfinished same-user replacement, capture failure and320px/200-percent text.
+These UI ports do not prove real filesystem faults or hosted learner behavior;
+the existing native store/repository/SDK tests remain unchanged.
+
+Parent66d32e97 CI39698216596 attempt1 passed allfive jobs/every required step,
+665 Flutter including all eight history-view widget cases, five Chrome and
+Web/Windows builds. New save source/tests require their own exact-head CI.
 Keep #13 open/#41 draft,
 default preview and all14 hosted acceptance groups pending. No dependency,
 workflow, wire/schema/RLS, live activation, deployment, merge or schedule change.
