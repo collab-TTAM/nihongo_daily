@@ -199,3 +199,11 @@ reconciliation component is in
 [AI_CONVERSATION_RECONCILIATION.md](AI_CONVERSATION_RECONCILIATION.md). Existing
 pending runtime behavior stays fail-closed until a trusted upstream lookup verifier
 is installed; SQL correlation/fixture identity alone does not prove a genuine result.
+
+The host-only [PostgreSQL recovery driver](AI_CONVERSATION_RECOVERY_DRIVER.md)
+implements strict original-bound saved correlation/context lookup and atomic
+reconcile with confirmed COMMIT, owned deadlines and cancellation fencing. It is
+not wired into AiDependencies/AiService/defaults; pending still fails closed. Its
+database association checks do not authenticate a provider result. Trusted
+authenticated lookup-only verification/runtime integration and all hosted evidence
+remain outstanding; never substitute learner/model/legacy recovery echo as proof.

@@ -520,3 +520,474 @@ for (const phase of [3, 4])
       assert.equal(t.closed(), t.opened());
     },
   );
+
+// TEST ONLY structured result. No provider transport/authentication is exercised.
+const recoverySignal = () => new AbortController().signal;
+function recoveryKey(user: string, op: Mutation, request: Requests[Mutation]) {
+  return {
+    userId: user,
+    operation: op,
+    eventId: request.client_event_id.toLowerCase(),
+  };
+}
+function recoveryStore(t = transport()) {
+  return new PostgresConversationStore(contracts, t.factory);
+}
+async function pendingRecord(
+  repo: PostgresConversationStore,
+  key: ReturnType<typeof recoveryKey>,
+  request: Requests[Mutation],
+) {
+  const found = await repo.lookupRecovery(key, request, recoverySignal());
+  assert.equal(found.kind, "pending");
+  if (found.kind !== "pending" || !("correlation" in found)) assert.fail();
+  assert.deepEqual(Object.keys(found).sort(), [
+    "context",
+    "correlation",
+    "kind",
+  ]);
+  assert.deepEqual(Object.keys(found.correlation).sort(), [
+    "client_event_id",
+    "idempotency_key",
+    "operation",
+    "receipt_id",
+    "user_id",
+  ]);
+  assert.equal(
+    found.correlation.idempotency_key,
+    `${key.userId}/${key.operation}/${key.eventId}`,
+  );
+  return found;
+}
+function recoveredOutput(
+  op: Mutation,
+  request: Requests[Mutation],
+  record: Awaited<ReturnType<typeof pendingRecord>>,
+) {
+  return generated({
+    operation: op,
+    systemInstruction: "TEST ONLY",
+    request,
+    context: record.context,
+    idempotencyKey: record.correlation.idempotency_key,
+  });
+}
+async function recoveryFailure(work: Promise<unknown>, code: string) {
+  await assert.rejects(work, (e: unknown) => {
+    assert.ok(e instanceof BoundaryError);
+    assert.equal(e.code, code);
+    assert.equal(e.message, code);
+    return true;
+  });
+}
+test(
+  "native recovery driver all three mutations reconcile once and replay after closure retirement profile change",
+  { timeout: 20000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      k = recoveryKey(f.user, "start_conversation", req);
+    assert.deepEqual(
+      await recoveryStore().lookupRecovery(k, req, recoverySignal()),
+      { kind: "missing" },
+    );
+    await recoveryStore().acquire(k, req, recoverySignal());
+    const startRecord = await pendingRecord(recoveryStore(), k, req);
+    const startResult = recoveredOutput(
+      k.operation,
+      req,
+      startRecord,
+    ) as Responses["start_conversation"];
+    await recoveryStore().reconcile(
+      k,
+      req,
+      startRecord.correlation,
+      startRecord.context,
+      startResult,
+      recoverySignal(),
+    );
+    const turn: Requests["conversation_turn"] = {
+      session_id: startResult.session_id,
+      client_event_id: randomUUID(),
+      text_ja: "原文",
+    };
+    const finish: Requests["finish_conversation"] = {
+      session_id: startResult.session_id,
+      client_event_id: randomUUID(),
+    };
+    const records: {
+      key: ReturnType<typeof recoveryKey>;
+      request: Requests[Mutation];
+      record: Awaited<ReturnType<typeof pendingRecord>>;
+      result: Responses[Mutation];
+    }[] = [{ key: k, request: req, record: startRecord, result: startResult }];
+    for (const [op, request] of [
+      ["conversation_turn", turn],
+      ["finish_conversation", finish],
+    ] as const) {
+      const key = recoveryKey(f.user, op, request);
+      await recoveryStore().acquire(key, request, recoverySignal());
+      const record = await pendingRecord(recoveryStore(), key, request),
+        result = recoveredOutput(op, request, record);
+      await recoveryStore().reconcile(
+        key,
+        request,
+        record.correlation,
+        record.context,
+        result,
+        recoverySignal(),
+      );
+      records.push({ key, request, record, result });
+    }
+    await admin(
+      "UPDATE public.profiles SET preferred_jlpt='N4' WHERE id=$1::uuid",
+      [f.user],
+    );
+    await admin(
+      "UPDATE public.conversation_scenarios SET is_active=false WHERE id=$1::uuid",
+      [f.scenario],
+    );
+    for (const { key, request, record, result } of records) {
+      await recoveryStore().reconcile(
+        key,
+        request,
+        record.correlation,
+        record.context,
+        result,
+        recoverySignal(),
+      );
+      assert.deepEqual(
+        await recoveryStore().lookupRecovery(key, request, recoverySignal()),
+        { kind: "completed", response: result },
+      );
+    }
+    const state = await admin(
+      "SELECT s.ended_at IS NOT NULL AS closed,(SELECT count(*)::int FROM public.conversation_messages m WHERE m.conversation_session_id=s.id) AS messages,(SELECT count(*)::int FROM public.operation_receipts o JOIN private.ai_conversation_reservations r ON r.receipt_id=o.id WHERE o.user_id=s.user_id AND o.status='COMPLETED' AND r.is_completed) AS receipts FROM public.conversation_sessions s WHERE s.user_id=$1::uuid",
+      [f.user],
+    );
+    assert.deepEqual(state.rows, [{ closed: true, messages: 3, receipts: 3 }]);
+  },
+);
+for (const method of ["lookup", "reconcile"] as const)
+  test(
+    `native recovery ${method} actual COMMIT with injected lost delivery requires fresh lookup without claim renewal`,
+    { timeout: 15000 },
+    async () => {
+      const f = await fixture(),
+        req = start(f),
+        key = recoveryKey(f.user, "start_conversation", req);
+      await recoveryStore().acquire(key, req, recoverySignal());
+      const record = await pendingRecord(recoveryStore(), key, req),
+        result = recoveredOutput(key.operation, req, record);
+      let lost = false;
+      const t = transport(async (_phase, text, execute) => {
+          const r = await execute();
+          if (text === "COMMIT") {
+            lost = true;
+            throw Error("TEST_ONLY_LOST_DELIVERY");
+          }
+          return r;
+        }),
+        repo = recoveryStore(t);
+      await recoveryFailure(
+        method === "lookup"
+          ? repo.lookupRecovery(key, req, recoverySignal())
+          : repo.reconcile(
+              key,
+              req,
+              record.correlation,
+              record.context,
+              result,
+              recoverySignal(),
+            ),
+        "NETWORK_UNAVAILABLE",
+      );
+      assert.equal(lost, true);
+      assert.equal(t.opened(), 1);
+      assert.equal(t.closed(), 1);
+      const found = await recoveryStore().lookupRecovery(
+        key,
+        req,
+        recoverySignal(),
+      );
+      assert.equal(found.kind, method === "lookup" ? "pending" : "completed");
+      if (found.kind === "pending" && "correlation" in found)
+        assert.deepEqual(found.correlation, record.correlation);
+      if (found.kind === "completed") assert.deepEqual(found.response, result);
+      const state = await admin(
+        "SELECT o.status,r.is_completed,(SELECT count(*)::int FROM public.conversation_sessions s WHERE s.user_id=o.user_id) AS sessions FROM public.operation_receipts o JOIN private.ai_conversation_reservations r ON r.receipt_id=o.id WHERE o.user_id=$1::uuid",
+        [f.user],
+      );
+      assert.deepEqual(state.rows, [
+        {
+          status: method === "lookup" ? "PENDING" : "COMPLETED",
+          is_completed: method === "reconcile",
+          sessions: method === "lookup" ? 0 : 1,
+        },
+      ]);
+    },
+  );
+for (const method of ["lookup", "reconcile"] as const)
+  test(
+    `native recovery ${method} waits for actual COMMIT delivery before exposing result`,
+    { timeout: 15000 },
+    async () => {
+      const f = await fixture(),
+        req = start(f),
+        key = recoveryKey(f.user, "start_conversation", req);
+      await recoveryStore().acquire(key, req, recoverySignal());
+      const record = await pendingRecord(recoveryStore(), key, req),
+        result = recoveredOutput(key.operation, req, record);
+      let release!: () => void,
+        done = false;
+      const t = transport(async (_phase, text, execute) => {
+          const r = await execute();
+          if (text === "COMMIT")
+            return new Promise((resolve) => {
+              release = () => resolve(r);
+            });
+          return r;
+        }),
+        repo = recoveryStore(t);
+      const work = (
+        method === "lookup"
+          ? repo.lookupRecovery(key, req, recoverySignal())
+          : repo.reconcile(
+              key,
+              req,
+              record.correlation,
+              record.context,
+              result,
+              recoverySignal(),
+            )
+      ).then((r) => {
+        done = true;
+        return r;
+      });
+      await barrier(() => Boolean(release));
+      assert.equal(done, false);
+      const found = await recoveryStore().lookupRecovery(
+        key,
+        req,
+        recoverySignal(),
+      );
+      assert.equal(found.kind, method === "lookup" ? "pending" : "completed");
+      release();
+      await work;
+      assert.equal(t.closed(), 1);
+    },
+  );
+test(
+  "native recovery observed blocked reconciliation cancellation cannot persist after lock release",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    const record = await pendingRecord(recoveryStore(), key, req),
+      result = recoveredOutput(key.operation, req, record);
+    const t = transport(),
+      parent = new AbortController(),
+      locker = client();
+    await locker.connect();
+    try {
+      await locker.query("BEGIN");
+      await locker.query(
+        "SELECT pg_advisory_xact_lock(hashtextextended('nihongo-ai-conversation:'||$1::text,0))",
+        [f.user],
+      );
+      const work = recoveryStore(t).reconcile(
+        key,
+        req,
+        record.correlation,
+        record.context,
+        result,
+        parent.signal,
+      );
+      await waitForLock(t.name);
+      parent.abort();
+      await recoveryFailure(work, "NETWORK_UNAVAILABLE");
+      await locker.query("ROLLBACK");
+      await delay(30);
+      assert.deepEqual(
+        (await pendingRecord(recoveryStore(), key, req)).correlation,
+        record.correlation,
+      );
+      assert.equal(
+        (
+          await admin(
+            "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+            [f.user],
+          )
+        ).rows[0]?.n,
+        0,
+      );
+      assert.equal(t.opened(), 1);
+      assert.equal(t.closed(), 1);
+    } finally {
+      await locker.end();
+    }
+  },
+);
+test(
+  "native recovery failure after SQL writes rolls back and fresh reconciliation completes exactly once",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    const record = await pendingRecord(recoveryStore(), key, req),
+      result = recoveredOutput(key.operation, req, record);
+    let injected = false;
+    const t = transport(async (_phase, text, execute) => {
+      const r = await execute();
+      if (text.includes("ai_conversation_reconcile")) {
+        injected = true;
+        throw Error("TEST_ONLY_POST_WRITE_FAILURE");
+      }
+      return r;
+    });
+    await recoveryFailure(
+      recoveryStore(t).reconcile(
+        key,
+        req,
+        record.correlation,
+        record.context,
+        result,
+        recoverySignal(),
+      ),
+      "NETWORK_UNAVAILABLE",
+    );
+    assert.equal(injected, true);
+    assert.deepEqual(
+      (await pendingRecord(recoveryStore(), key, req)).correlation,
+      record.correlation,
+    );
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+          [f.user],
+        )
+      ).rows[0]?.n,
+      0,
+    );
+    // Fresh writer waits for server disconnect/rollback, not a local memory result.
+    await recoveryStore().reconcile(
+      key,
+      req,
+      record.correlation,
+      record.context,
+      result,
+      recoverySignal(),
+    );
+    await recoveryStore().reconcile(
+      key,
+      req,
+      record.correlation,
+      record.context,
+      result,
+      recoverySignal(),
+    );
+    assert.deepEqual(
+      await recoveryStore().lookupRecovery(key, req, recoverySignal()),
+      { kind: "completed", response: result },
+    );
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_messages m JOIN public.conversation_sessions s ON s.id=m.conversation_session_id WHERE s.user_id=$1::uuid",
+          [f.user],
+        )
+      ).rows[0]?.n,
+      1,
+    );
+    assert.equal(t.opened(), 1);
+    assert.equal(t.closed(), 1);
+  },
+);
+test(
+  "native recovery A B A immutable association and source retirement never overwrite or borrow another receipt",
+  { timeout: 20000 },
+  async () => {
+    const a = await fixture(),
+      b = await fixture("N4"),
+      ra = start(a),
+      rb = { ...start(b), client_event_id: ra.client_event_id };
+    const ka = recoveryKey(a.user, "start_conversation", ra),
+      kb = recoveryKey(b.user, "start_conversation", rb);
+    await recoveryStore().acquire(ka, ra, recoverySignal());
+    await recoveryStore().acquire(kb, rb, recoverySignal());
+    const ar = await pendingRecord(recoveryStore(), ka, ra),
+      br = await pendingRecord(recoveryStore(), kb, rb);
+    assert.notEqual(ar.correlation.receipt_id, br.correlation.receipt_id);
+    assert.notEqual(ar.context.sessionId, br.context.sessionId);
+    const out = recoveredOutput(ka.operation, ra, ar);
+    await recoveryFailure(
+      recoveryStore().reconcile(
+        ka,
+        ra,
+        { ...ar.correlation, receipt_id: br.correlation.receipt_id },
+        ar.context,
+        out,
+        recoverySignal(),
+      ),
+      "FORBIDDEN",
+    );
+    await recoveryFailure(
+      recoveryStore().reconcile(
+        ka,
+        ra,
+        ar.correlation,
+        { ...ar.context, instruction: "変更" },
+        out,
+        recoverySignal(),
+      ),
+      "SYNC_CONFLICT",
+    );
+    await recoveryFailure(
+      recoveryStore().lookupRecovery(
+        ka,
+        { ...ra, scenario_id: b.scenario },
+        recoverySignal(),
+      ),
+      "SYNC_CONFLICT",
+    );
+    await admin(
+      "UPDATE public.conversation_scenarios SET is_active=false WHERE id=$1::uuid",
+      [a.scenario],
+    );
+    assert.deepEqual(await pendingRecord(recoveryStore(), ka, ra), ar);
+    await recoveryFailure(
+      recoveryStore().reconcile(
+        ka,
+        ra,
+        ar.correlation,
+        ar.context,
+        out,
+        recoverySignal(),
+      ),
+      "NOT_FOUND",
+    );
+    await recoveryStore().reconcile(
+      kb,
+      rb,
+      br.correlation,
+      br.context,
+      recoveredOutput(kb.operation, rb, br),
+      recoverySignal(),
+    );
+    assert.deepEqual(await pendingRecord(recoveryStore(), ka, ra), ar);
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+          [a.user],
+        )
+      ).rows[0]?.n,
+      0,
+    );
+  },
+);

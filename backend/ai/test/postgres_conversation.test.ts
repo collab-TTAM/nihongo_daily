@@ -822,3 +822,582 @@ test("service captures the acquired capability and context before asynchronous p
   assert.equal(r.ok, true);
   assert.equal(completed, 1);
 });
+
+// TEST ONLY recovery transport/correlation; no upstream authentication proof.
+function recoveryCorrelation(op: Mutation, owner = userA) {
+  const k = key(op, owner);
+  return {
+    receipt_id: "f2000000-0000-4000-8000-000000000001",
+    user_id: k.userId,
+    operation: op,
+    client_event_id: k.eventId,
+    idempotency_key: `${k.userId}/${op}/${k.eventId}`,
+  };
+}
+function recoveryReply(text: string, values?: string[]): PostgresResult {
+  if (text.includes("ai_conversation_recovery_lookup")) {
+    const op = values![1] as Mutation;
+    return {
+      command: "SELECT",
+      rowCount: 1,
+      rows: [
+        {
+          result: {
+            kind: "pending",
+            correlation: recoveryCorrelation(op, values![0]),
+            context: context(op),
+          },
+        },
+      ],
+    };
+  }
+  if (text.includes("ai_conversation_reconcile"))
+    return {
+      command: "SELECT",
+      rowCount: 1,
+      rows: [{ result: JSON.parse(values![6]!) }],
+    };
+  return reply(text, values);
+}
+function recoveryFixture() {
+  const f = fixture();
+  f.setQuery(async (text, values) => recoveryReply(text, values));
+  return f;
+}
+test("recovery driver all mutations use exact original correlation and context without dispatch token or claim", async () => {
+  for (const op of [
+    "start_conversation",
+    "conversation_turn",
+    "finish_conversation",
+  ] as const) {
+    const f = recoveryFixture(),
+      repo = f.repo();
+    const found = await repo.lookupRecovery(key(op), request(op), signal());
+    assert.equal(found.kind, "pending");
+    if (found.kind !== "pending" || !("correlation" in found)) assert.fail();
+    assert.deepEqual(found.correlation, recoveryCorrelation(op));
+    assert.deepEqual(found.context, context(op));
+    assert.ok(Object.isFrozen(found));
+    assert.ok(Object.isFrozen(found.correlation));
+    assert.ok(Object.isFrozen(found.context.transcript));
+    assert.equal(JSON.stringify(found).includes(token), false);
+    await repo.reconcile(
+      key(op),
+      request(op),
+      found.correlation,
+      found.context,
+      response(op),
+      signal(),
+    );
+    const selects = f.calls.filter((c) => c.text.startsWith("SELECT"));
+    assert.equal(selects.length, 2);
+    assert.deepEqual(selects[1]?.values, [
+      userA,
+      op,
+      JSON.stringify(request(op)),
+      recoveryCorrelation(op).receipt_id,
+      recoveryCorrelation(op).idempotency_key,
+      JSON.stringify(context(op)),
+      JSON.stringify(response(op)),
+    ]);
+    assert.equal(
+      f.calls[0]?.text,
+      "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY",
+    );
+    assert.equal(f.calls[7]?.text, "BEGIN ISOLATION LEVEL READ COMMITTED");
+    assert.equal(f.calls.filter((c) => c.text === "COMMIT").length, 2);
+    assert.equal(f.closed(), 2);
+    assert.equal(
+      f.calls.some((c) =>
+        /reserve|receipt_claim|conversation_complete/.test(c.text),
+      ),
+      false,
+    );
+  }
+});
+test("recovery missing legacy pending and completed replay never fabricate correlation context or claims", async () => {
+  for (const result of [
+    { kind: "missing" },
+    { kind: "pending" },
+    { kind: "completed", response: response("start_conversation") },
+  ]) {
+    const f = recoveryFixture();
+    f.setQuery(async (text, values) =>
+      text.startsWith("SELECT")
+        ? { command: "SELECT", rowCount: 1, rows: [{ result }] }
+        : recoveryReply(text, values),
+    );
+    const found = await f
+      .repo()
+      .lookupRecovery(
+        key("start_conversation"),
+        request("start_conversation"),
+        signal(),
+      );
+    assert.deepEqual(found, result);
+    assert.equal("context" in found, false);
+    assert.equal("correlation" in found, false);
+    assert.equal(f.opened(), 1);
+  }
+});
+test("recovery lookup rejects malformed extra token context and cross-owner key association before COMMIT", async () => {
+  const op = "start_conversation",
+    good = {
+      kind: "pending",
+      correlation: recoveryCorrelation(op),
+      context: context(op),
+    };
+  const bad: unknown[] = [
+    { ...good, token },
+    { ...good, context: { ...context(op), instruction: "" } },
+    { kind: "pending", correlation: good.correlation },
+    { ...good, kind: "acquired" },
+    ...[
+      "receipt_id",
+      "user_id",
+      "operation",
+      "client_event_id",
+      "idempotency_key",
+    ].map((field) => ({
+      ...good,
+      correlation: {
+        ...good.correlation,
+        [field]: field === "receipt_id" ? "INVALID" : "PRIVATE",
+      },
+    })),
+    { ...good, correlation: { ...good.correlation, token } },
+    { kind: "completed", response: { PRIVATE: true } },
+    { kind: "missing", context: good.context },
+  ];
+  for (const result of bad) {
+    const f = recoveryFixture();
+    f.setQuery(async (text, values) =>
+      text.startsWith("SELECT")
+        ? { command: "SELECT", rowCount: 1, rows: [{ result }] }
+        : recoveryReply(text, values),
+    );
+    await assert.rejects(
+      f.repo().lookupRecovery(key(op), request(op), signal()),
+      (e: unknown) => {
+        assert.ok(e instanceof BoundaryError);
+        assert.equal(e.message.includes("PRIVATE"), false);
+        return true;
+      },
+    );
+    assert.equal(
+      f.calls.some((c) => c.text === "COMMIT"),
+      false,
+    );
+    assert.equal(f.closed(), 1);
+  }
+});
+test("reconcile rejects borrowed owner operation event key malformed receipt and extra token before opening I/O", async () => {
+  const op = "start_conversation",
+    good = recoveryCorrelation(op);
+  for (const bound of [
+    { ...good, user_id: userB },
+    { ...good, operation: "finish_conversation" as const },
+    { ...good, client_event_id: userB },
+    { ...good, idempotency_key: "PRIVATE" },
+    { ...good, receipt_id: "INVALID" },
+    { ...good, token },
+  ]) {
+    const f = recoveryFixture();
+    await failure(
+      f
+        .repo()
+        .reconcile(
+          key(op),
+          request(op),
+          bound,
+          context(op),
+          response(op),
+          signal(),
+        ),
+      "FORBIDDEN",
+    );
+    assert.equal(f.opened(), 0);
+  }
+});
+test("reconcile validates frozen wire IDs sequence audio refs and byte bounds before SQL", async () => {
+  const op = "start_conversation",
+    good = response(op);
+  const bad = [
+    { ...good, session_id: userB },
+    ...[
+      { id: userB },
+      { sequence_no: 1 },
+      { audio_ref: "PRIVATE" },
+      { text_ja: "x".repeat(5001) },
+    ].map((patch) => ({
+      ...good,
+      assistant_message: { ...good.assistant_message, ...patch },
+    })),
+    { ...good, PRIVATE: true },
+    {
+      ...good,
+      live_feedback: [
+        {
+          original_text: "文",
+          corrected_text: "文",
+          explanation_vi: "fixture",
+          item_refs: [{ item_type: "VOCABULARY", item_id: userB }],
+        },
+      ],
+    },
+  ];
+  for (const value of bad) {
+    const f = recoveryFixture();
+    await failure(
+      f
+        .repo()
+        .reconcile(
+          key(op),
+          request(op),
+          recoveryCorrelation(op),
+          context(op),
+          value as Responses[typeof op],
+          signal(),
+        ),
+      "PROVIDER_UNAVAILABLE",
+    );
+    assert.equal(f.opened(), 0);
+  }
+});
+test("recovery results and reconciliation success remain hidden until confirmed COMMIT delivery", async () => {
+  for (const method of ["lookup", "reconcile"]) {
+    const f = recoveryFixture();
+    let release!: () => void,
+      done = false;
+    f.setQuery((text, values) =>
+      text === "COMMIT"
+        ? new Promise((resolve) => {
+            release = () => resolve(recoveryReply(text, values));
+          })
+        : Promise.resolve(recoveryReply(text, values)),
+    );
+    const op = "start_conversation";
+    const work = (
+      method === "lookup"
+        ? f.repo().lookupRecovery(key(op), request(op), signal())
+        : f
+            .repo()
+            .reconcile(
+              key(op),
+              request(op),
+              recoveryCorrelation(op),
+              context(op),
+              response(op),
+              signal(),
+            )
+    ).then((r) => {
+      done = true;
+      return r;
+    });
+    await barrier(() => Boolean(release));
+    assert.equal(done, false);
+    release();
+    await work;
+    assert.equal(f.closed(), 1);
+  }
+});
+test("reconcile changed database response and unknown COMMIT fail safely without retry", async () => {
+  const op = "start_conversation";
+  for (const phase of ["result", "commit"]) {
+    const f = recoveryFixture();
+    f.setQuery(async (text, values) => {
+      if (phase === "commit" && text === "COMMIT")
+        throw Error("PRIVATE password");
+      if (phase === "result" && text.includes("ai_conversation_reconcile"))
+        return {
+          command: "SELECT",
+          rowCount: 1,
+          rows: [
+            {
+              result: {
+                ...response(op),
+                assistant_message: {
+                  ...response(op).assistant_message,
+                  text_ja: "変更",
+                },
+              },
+            },
+          ],
+        };
+      return recoveryReply(text, values);
+    });
+    await failure(
+      f
+        .repo()
+        .reconcile(
+          key(op),
+          request(op),
+          recoveryCorrelation(op),
+          context(op),
+          response(op),
+          signal(),
+        ),
+    );
+    assert.equal(f.opened(), 1);
+    assert.equal(f.closed(), 1);
+    assert.equal(
+      f.calls.filter((c) => c.text === "COMMIT").length,
+      phase === "commit" ? 1 : 0,
+    );
+  }
+});
+test("recovery and reconciliation abort ignored queries or COMMIT without advancing after late settlement", async () => {
+  for (const method of ["lookup", "reconcile"])
+    for (const phase of ["connect", "query", "commit"]) {
+      const f = recoveryFixture(),
+        parent = new AbortController();
+      let release!: () => void;
+      if (phase === "connect")
+        f.setConnect(
+          () =>
+            new Promise((resolve) => {
+              release = resolve;
+            }),
+        );
+      else
+        f.setQuery((text, values) =>
+          (phase === "query" ? text.startsWith("SELECT") : text === "COMMIT")
+            ? new Promise((resolve) => {
+                release = () => resolve(recoveryReply(text, values));
+              })
+            : Promise.resolve(recoveryReply(text, values)),
+        );
+      const op = "start_conversation";
+      const work =
+        method === "lookup"
+          ? f.repo().lookupRecovery(key(op), request(op), parent.signal)
+          : f
+              .repo()
+              .reconcile(
+                key(op),
+                request(op),
+                recoveryCorrelation(op),
+                context(op),
+                response(op),
+                parent.signal,
+              );
+      await barrier(() => Boolean(release));
+      parent.abort();
+      await failure(work);
+      const count = f.calls.length;
+      release();
+      await setImmediate();
+      assert.equal(f.calls.length, count);
+      assert.equal(f.closed(), 1);
+      assert.equal(getEventListeners(parent.signal, "abort").length, 0);
+    }
+});
+test("recovery pre-abort and independent deadline close once with no late reconciliation", async () => {
+  for (const method of ["lookup", "reconcile"])
+    for (const preAbort of [true, false]) {
+      const f = recoveryFixture(),
+        parent = new AbortController();
+      let release!: () => void;
+      f.setConnect(
+        () =>
+          new Promise((resolve) => {
+            release = resolve;
+          }),
+      );
+      if (preAbort) parent.abort();
+      const op = "start_conversation",
+        repo = f.repo(5);
+      await failure(
+        method === "lookup"
+          ? repo.lookupRecovery(key(op), request(op), parent.signal)
+          : repo.reconcile(
+              key(op),
+              request(op),
+              recoveryCorrelation(op),
+              context(op),
+              response(op),
+              parent.signal,
+            ),
+      );
+      if (release) {
+        release();
+        await setImmediate();
+      }
+      assert.equal(f.calls.length, 0);
+      assert.equal(f.closed(), preAbort ? 0 : 1);
+      assert.equal(getEventListeners(parent.signal, "abort").length, 0);
+    }
+});
+test("reconciliation snapshots original request correlation context and output before asynchronous connection", async () => {
+  const f = recoveryFixture(),
+    op = "start_conversation",
+    k = key(op),
+    req = request(op),
+    bound = recoveryCorrelation(op),
+    ctx = context(op),
+    value = response(op);
+  let release!: () => void;
+  f.setConnect(
+    () =>
+      new Promise((resolve) => {
+        release = resolve;
+      }),
+  );
+  const work = f.repo().reconcile(k, req, bound, ctx, value, signal());
+  k.userId = userB;
+  (req as { client_event_id: string }).client_event_id = userB;
+  bound.receipt_id = userB;
+  bound.idempotency_key = "PRIVATE";
+  (ctx as { instruction: string }).instruction = "変更";
+  (value.assistant_message as { text_ja: string }).text_ja = "変更";
+  release();
+  await work;
+  assert.deepEqual(f.calls[5]?.values, [
+    userA,
+    op,
+    JSON.stringify(request(op)),
+    recoveryCorrelation(op).receipt_id,
+    recoveryCorrelation(op).idempotency_key,
+    JSON.stringify(context(op)),
+    JSON.stringify(response(op)),
+  ]);
+});
+test("recovery A B A uses independent connections and same canonical event without account mixing", async () => {
+  const f = recoveryFixture(),
+    repo = f.repo(),
+    op = "start_conversation";
+  const found = await Promise.all(
+    [userA, userB, userA].map((owner) =>
+      repo.lookupRecovery(key(op, owner), request(op), signal()),
+    ),
+  );
+  assert.equal(f.opened(), 3);
+  assert.equal(f.closed(), 3);
+  assert.deepEqual(
+    found.map((r) =>
+      r.kind === "pending" && "correlation" in r ? r.correlation.user_id : null,
+    ),
+    [userA, userB, userA],
+  );
+  assert.notEqual(found[0], found[2]);
+});
+test("recovery preserves uppercase original request while fencing canonical correlation and immutable lookup snapshot", async () => {
+  const f = recoveryFixture(),
+    op = "start_conversation",
+    req = request(op),
+    event = "abcdef00-0000-4000-8000-000000000001",
+    k = { ...key(op), eventId: event };
+  const raw = { ...req, client_event_id: event.toUpperCase() };
+  let release!: () => void;
+  f.setConnect(
+    () =>
+      new Promise((resolve) => {
+        release = resolve;
+      }),
+  );
+  f.setQuery(async (text, values) =>
+    text.startsWith("SELECT")
+      ? {
+          command: "SELECT",
+          rowCount: 1,
+          rows: [
+            {
+              result: {
+                kind: "pending",
+                correlation: {
+                  ...recoveryCorrelation(op),
+                  client_event_id: event,
+                  idempotency_key: `${userA}/${op}/${event}`,
+                },
+                context: context(op),
+              },
+            },
+          ],
+        }
+      : recoveryReply(text, values),
+  );
+  const work = f.repo().lookupRecovery(k, raw, signal());
+  k.userId = userB;
+  raw.client_event_id = userB;
+  release();
+  const found = await work;
+  assert.equal(found.kind, "pending");
+  assert.deepEqual(f.calls[5]?.values, [
+    userA,
+    op,
+    JSON.stringify({ ...req, client_event_id: event.toUpperCase() }),
+  ]);
+});
+test("recovery bounds context and reconciliation output before COMMIT or I/O", async () => {
+  const op = "finish_conversation";
+  const f = recoveryFixture();
+  const ctx = { ...context(op), instruction: "界".repeat(4000) };
+  await failure(
+    f
+      .repo()
+      .reconcile(
+        key(op),
+        request(op),
+        recoveryCorrelation(op),
+        ctx,
+        response(op),
+        signal(),
+      ),
+  );
+  assert.equal(f.opened(), 0);
+  // Every field remains schema-valid but combined UTF-8 output exceeds1MiB.
+  const oversized = {
+    ...response(op),
+    strengths_vi: Array(100).fill("界".repeat(2000)),
+    focus_next_vi: Array(100).fill("界".repeat(2000)),
+  };
+  await assert.rejects(
+    f
+      .repo()
+      .reconcile(
+        key(op),
+        request(op),
+        recoveryCorrelation(op),
+        context(op),
+        oversized,
+        signal(),
+      ),
+    BoundaryError,
+  );
+  assert.equal(f.opened(), 0);
+});
+test("reconcile compares JSON semantics without requiring property order in database response", async () => {
+  const f = recoveryFixture(),
+    op = "start_conversation";
+  f.setQuery(async (text, values) => {
+    if (text.includes("ai_conversation_reconcile")) {
+      const original = JSON.parse(values![6]!);
+      return {
+        command: "SELECT",
+        rowCount: 1,
+        rows: [
+          {
+            result: {
+              assistant_message: Object.fromEntries(
+                Object.entries(original.assistant_message).reverse(),
+              ),
+              session_id: original.session_id,
+            },
+          },
+        ],
+      };
+    }
+    return recoveryReply(text, values);
+  });
+  await f
+    .repo()
+    .reconcile(
+      key(op),
+      request(op),
+      recoveryCorrelation(op),
+      context(op),
+      response(op),
+      signal(),
+    );
+  assert.equal(f.calls.at(-1)?.text, "COMMIT");
+});

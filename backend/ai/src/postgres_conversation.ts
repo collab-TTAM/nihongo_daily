@@ -2,6 +2,9 @@ import { BoundaryError, Contracts, UUID } from "./contracts.ts";
 import type { Mutation, Requests, Responses } from "./contracts.ts";
 import type {
   ConversationStore,
+  ConversationRecoveryStore,
+  ConversationRecoveryLookup,
+  ConversationCorrelation,
   ConversationClaim,
   ReceiptKey,
   ReceiptLookup,
@@ -18,6 +21,10 @@ const acquireSql =
   "SELECT private.ai_conversation_reserve($1::uuid,$2::text,$3::jsonb) AS result";
 const completeSql =
   "SELECT private.ai_conversation_complete($1::uuid,$2::text,$3::jsonb,$4::uuid,$5::jsonb) AS result";
+const recoveryLookupSql =
+  "SELECT private.ai_conversation_recovery_lookup($1::uuid,$2::text,$3::jsonb) AS result";
+const reconcileSql =
+  "SELECT private.ai_conversation_reconcile($1::uuid,$2::text,$3::jsonb,$4::uuid,$5::text,$6::jsonb,$7::jsonb) AS result";
 const failure = () => new BoundaryError("NETWORK_UNAVAILABLE");
 const bytes = (text: string) => new TextEncoder().encode(text).byteLength;
 function serialized(value: unknown, limit: number): string {
@@ -112,6 +119,20 @@ function context(
   }
   return freeze(structuredClone(o)) as unknown as PreparedContext;
 }
+function correlation(value: unknown, key: ReceiptKey): ConversationCorrelation {
+  serialized(value, 1024);
+  const o = object(value);
+  if (Object.keys(o).length !== 5 || !canonicalUuid(o.receipt_id))
+    throw new BoundaryError("FORBIDDEN");
+  if (
+    o.user_id !== key.userId ||
+    o.operation !== key.operation ||
+    o.client_event_id !== key.eventId ||
+    o.idempotency_key !== `${key.userId}/${key.operation}/${key.eventId}`
+  )
+    throw new BoundaryError("FORBIDDEN");
+  return freeze(structuredClone(o)) as unknown as ConversationCorrelation;
+}
 function row(r: PostgresResult): unknown {
   if (
     r.command !== "SELECT" ||
@@ -162,7 +183,9 @@ function same(a: unknown, b: unknown): boolean {
   );
 }
 /** Explicit coherent lane; fresh owned transactions, no split-port shim or retry. */
-export class PostgresConversationStore implements ConversationStore {
+export class PostgresConversationStore
+  implements ConversationStore, ConversationRecoveryStore
+{
   private readonly contracts: Contracts;
   private readonly factory: () => PostgresConnection;
   private readonly timeoutMs: number;
@@ -266,6 +289,73 @@ export class PostgresConversationStore implements ConversationStore {
   ): Promise<void> {
     const input = this.input(key, request);
     if (!canonicalUuid(token)) throw new BoundaryError("FORBIDDEN");
+    const { valid } = this.completion(input, captured, response);
+    input.values.push(token, serialized(valid, 1048576));
+    await this.transaction(completeSql, input.values, signal, false, (r) => {
+      const returned = this.contracts.response(input.key.operation, row(r));
+      serialized(returned, 1048576);
+      if (!same(returned, valid)) throw failure();
+    });
+  }
+  async lookupRecovery(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ConversationRecoveryLookup> {
+    const input = this.input(key, request);
+    return this.transaction(
+      recoveryLookupSql,
+      input.values,
+      signal,
+      true,
+      (r) => {
+        const o = object(row(r));
+        if (
+          o.kind === "pending" &&
+          Object.keys(o).length === 3 &&
+          "correlation" in o &&
+          "context" in o
+        ) {
+          serialized(o, 67584);
+          return freeze({
+            kind: "pending",
+            correlation: correlation(o.correlation, input.key),
+            context: context(o.context, input.key.operation, input.request),
+          });
+        }
+        return this.lookupResult(o, input.key.operation);
+      },
+    );
+  }
+  async reconcile(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    capturedCorrelation: ConversationCorrelation,
+    capturedContext: PreparedContext,
+    response: Responses[Mutation],
+    signal: AbortSignal,
+  ): Promise<void> {
+    const input = this.input(key, request);
+    const bound = correlation(structuredClone(capturedCorrelation), input.key);
+    const { ctx, valid } = this.completion(input, capturedContext, response);
+    // All values are captured before I/O; the original dispatch token stays in SQL.
+    input.values.push(
+      bound.receipt_id,
+      bound.idempotency_key,
+      serialized(ctx, 65536),
+      serialized(valid, 1048576),
+    );
+    await this.transaction(reconcileSql, input.values, signal, false, (r) => {
+      const returned = this.contracts.response(input.key.operation, row(r));
+      serialized(returned, 1048576);
+      if (!same(returned, valid)) throw failure();
+    });
+  }
+  private completion(
+    input: { key: ReceiptKey; request: Requests[Mutation] },
+    captured: PreparedContext,
+    response: Responses[Mutation],
+  ): { ctx: PreparedContext; valid: Responses[Mutation] } {
     const ctx = context(
       structuredClone(captured),
       input.key.operation,
@@ -303,12 +393,8 @@ export class PostgresConversationStore implements ConversationStore {
       )
     )
       throw new BoundaryError("PROVIDER_UNAVAILABLE");
-    input.values.push(token, serialized(valid, 1048576));
-    await this.transaction(completeSql, input.values, signal, false, (r) => {
-      const returned = this.contracts.response(input.key.operation, row(r));
-      serialized(returned, 1048576);
-      if (!same(returned, valid)) throw failure();
-    });
+    serialized(valid, 1048576);
+    return { ctx, valid };
   }
   private async transaction<T>(
     sql: string,

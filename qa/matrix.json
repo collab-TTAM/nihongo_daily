@@ -1348,7 +1348,33 @@
         18
       ],
       "reproduce": "bash scripts/test_database.sh",
-      "limitation": "72 SQL-role assertions/all14 migrations and retained250/28/59/59/68/99 passed on fresh PGlite0.5.9/PostgreSQL18.6; eight authored native races need exact-head CI. SQL receipt/key/context binding does not authenticate upstream results. Trusted provider lookup-only verifier/runtime recovery remains absent; no endpoint/default/hosted Auth/provider/learner proof or release claim."
+      "limitation": "Exact parent9b9283f1c8ae0f2bcd59a0f5633b52d238efe62b passed all72 reconciliation SQL assertions/eight native SQL races and allfive jobs/every step in CI39813007245/latest attempt1. Database association is not upstream authentication; trusted lookup-only verifier/runtime/hosted evidence remains pending. New heads need their own checks."
+    },
+    {
+      "id": "ai-conversation-recovery-driver",
+      "status": "automated-baseline",
+      "scope": "Host-only strict original-bound PostgreSQL recovery lookup/reconcile with confirmed COMMIT and cancellation fences; not an activated provider recovery flow",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_conversation.test.ts",
+          "contains": "recovery driver all mutations use exact original correlation and context without dispatch token or claim"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "native recovery observed blocked reconciliation cancellation cannot persist after lock release"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/postgres_conversation.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
+      "limitation": "Local Node24 format/typecheck/152 tests/audit0 passed; eight additional real pg cases authored/typechecked require exact-head CI (18 native total). SQL association/plaintext/generated response/injected delivery fixtures are not trusted upstream/TLS/CA/JWT/Edge/Deno/real partition/learner proof. No AiService/default recovery binding; pending fails closed. All14 hosted release groups remain pending."
     }
   ],
   "findings": [

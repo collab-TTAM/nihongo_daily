@@ -129,6 +129,41 @@ export interface ConversationStore {
     signal: AbortSignal,
   ): Promise<void>;
 }
+/** Database identity binding only; this is NOT upstream authenticity proof. */
+export interface ConversationCorrelation {
+  readonly receipt_id: string;
+  readonly user_id: string;
+  readonly operation: Mutation;
+  readonly client_event_id: string;
+  readonly idempotency_key: string;
+}
+export type ConversationRecoveryLookup =
+  | ReceiptLookup
+  | {
+      kind: "pending";
+      correlation: ConversationCorrelation;
+      context: PreparedContext;
+    };
+/** Host-only prerequisite for trusted authenticated lookup-only recovery.
+ * Not an AiDependencies/default binding. Never feed learner/model/legacy recovery
+ * output here as proof; the host must authenticate upstream result association.
+ * Missing/legacy pending never creates/renews a claim or permits redispatch.
+ */
+export interface ConversationRecoveryStore {
+  lookupRecovery(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ConversationRecoveryLookup>;
+  reconcile(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    correlation: ConversationCorrelation,
+    context: PreparedContext,
+    response: Responses[Mutation],
+    signal: AbortSignal,
+  ): Promise<void>;
+}
 export interface AiDependencies {
   /** Explicit binding; never fall back to split claim or legacy recovery when set. */
   conversations?: ConversationStore;

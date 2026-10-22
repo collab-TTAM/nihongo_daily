@@ -3671,3 +3671,50 @@ no deployment, production deletion, security reduction, release or schedule chan
   request/key/context, safe COMMIT/cancel/restart behavior and no borrowed token,
   legacy fallback or redispatch. Hosted TLS/CA/JWT/PostgREST/Edge/Deno/provider and
   all14 learner release groups remain pending; #31/#20/#22/#15/#13 open/#41 draft.
+
+## Core checkpoint — #31 PostgreSQL recovery driver, 2026-10-22 17:22 UTC
+
+- One core writer resumes draft #41 `automation/issue-11-plan-sdk-integration`,
+  expected parent `9b9283f1c8ae0f2bcd59a0f5633b52d238efe62b`, base tree
+  `af9f4988d4a9cd2d49be41ee47bcc45d63c3ae65`. Fresh main remains
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; #37 redirects/source unchanged;
+  Pro #14/N4/content/manifests/content tests/docs/branch untouched.
+- Exact parent CI39813007245/latest attempt1 now allfive jobs/every step success,
+  including SQL72/eight native reconciliation races/runtime10. This resolves its
+  old Windows/Flutter pending checkpoint, not this new head's validation.
+- Explicit separate host-only ConversationRecoveryStore plus actual owned pg
+  lookupRecovery/reconcile methods. Canonical original owner/op/event/full key and
+  receipt UUID, strict saved context/output/IDs/sequence/audio/refs/byte limits;
+  frozen lookup outputs and all parameters captured before I/O. Fixed SQL/roles/
+  limits/fresh TLS connections; no dispatch token returned, borrowed or renewed.
+  Missing/legacy never fabricates context. Shared completion validator preserves
+  normal token-bound completion behavior. Semantic returned response match before
+  confirmed COMMIT; no success/result on uncertain delivery. Existing monotonic
+  deadline/parent abort/late response/close-once/listener cleanup apply both methods.
+- Paths: backend/ai/src/ports.ts, src/postgres_conversation.ts,
+  test/postgres_conversation.test.ts and .native.ts; new
+  docs/AI_CONVERSATION_RECOVERY_DRIVER.md; docs/AI_BOUNDARY.md,
+  AI_CONVERSATION_RUNTIME.md, AI_CONVERSATION_RECONCILIATION.md, this status and
+  qa/matrix.json. No migration/workflow/dependency/provider/Auth/public wire/default/
+  endpoint/RLS/collection/spend/deployment changes. AiService still fails closed
+  on pending; legacy recovery is never substituted. Stored database correlation
+  is NOT authenticated upstream proof; trusted lookup-only verifier remains absent.
+- Local pinned Node24 format/check/152 tests passed (138 retained/14 new, no failed/
+  skipped/cancelled); production audit0 findings. New unit cases cover allthree
+  mutations/strict replies/borrowed correlation/context/output bounds/IDs/refs,
+  missing/legacy/completed, canonical key/original casing, captured immutable args,
+  semantic response order, commit gates/ambiguity/abort/deadline/late cleanup/A-B-A.
+- Eight additional actual-driver native tests authored/typechecked in retained
+  required database command (18 total): allthree mutations/fresh replay after
+  closure/retirement/profile change, lookup/reconcile actual COMMIT lost-delivery
+  and delivery gates, observed blocked reconciliation abort, post-write rollback
+  and fresh once-only retry, A/B/A same event/borrowed receipt/context/request/source
+  denial. No local PostgreSQL binary; native execution pending exact-head CI.
+  Fixtures/SQL role/plaintext/generated result/delivery injections are not hosted
+  identity/provider/real partition/learner proof.
+- Next inspect exact-head allfive latest-attempt jobs/every step/native18 and fix
+  failures preserving assertions. Then trusted authenticated lookup-only result
+  verifier and bounded captured runtime recovery; no legacy fallback/redispatch.
+  Hosted TLS/CA/JWT/PostgREST/Edge/Deno/provider proof and all14 learner release
+  groups remain pending. Keep #31/#20/#22/#15/#13 open/#41 draft. No merge/release/
+  deployment or schedule change.

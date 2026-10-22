@@ -3,7 +3,7 @@
 Migration `20261022161500_ai_conversation_reconciliation.sql` is an undeployed SQL
 component. It provides lookup-only saved correlation/context and atomic completion
 of a recovered original result. It does not install a provider lookup verifier,
-runtime recovery port, endpoint or default; the existing runtime still fails closed
+runtime recovery flow, endpoint or default; the existing runtime still fails closed
 on pending. Never wire an unverified learner/model/legacy PendingRecovery result
 straight to this helper. No provider selection, strategy, paid call or new learner
 data category is introduced; the key already exists in ProviderInput.idempotencyKey.
@@ -59,8 +59,8 @@ Service_role already has access to the original claims and completion capability
 this narrow helper keeps that capability internal rather than granting client or
 pending-caller token access. Direct reservation UPDATE/DELETE/TRUNCATE/pre-released
 INSERT remain denied. Static fully qualified SQL, fixed controlled errors and no
-SQL/credential/token/context logs preserve the existing boundary. Future driver
-code must redact unknown errors and require confirmed COMMIT before success.
+SQL/credential/token/context logs preserve the existing boundary. The separate [owned driver](AI_CONVERSATION_RECOVERY_DRIVER.md) redacts unknown
+errors and requires confirmed COMMIT before exposing results or success.
 
 ## What SQL does not prove
 
@@ -111,3 +111,11 @@ abort/restart guards, without a legacy fallback, token leak or provider redispat
 Keep #31 open/default preview/#41 draft. Hosted TLS/CA/JWT/PostgREST/Edge/Deno/provider/
 real network-partition/learner proof and all14 Personal Alpha release groups remain
 pending; no deployment, provider strategy or release acceptance is claimed.
+
+The next database binding is now implemented separately in
+[AI_CONVERSATION_RECOVERY_DRIVER.md](AI_CONVERSATION_RECOVERY_DRIVER.md). It supplies
+strict original-bound lookup/reconcile methods, not upstream authentication or an
+enabled runtime recovery path. Parent9b9283f passed allfive jobs/every step in
+CI39813007245/latest attempt1, including all72 SQL assertions/eight native SQL races.
+The driver's new source needs its own exact-head checks; trusted provider verifier
+and explicit runtime recovery remain next.

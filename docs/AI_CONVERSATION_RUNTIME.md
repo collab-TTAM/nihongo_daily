@@ -118,6 +118,14 @@ The private SQL prerequisites for lookup-only saved correlation/context and guar
 atomic reconciliation now exist in
 [AI_CONVERSATION_RECONCILIATION.md](AI_CONVERSATION_RECONCILIATION.md). SQL binds
 receipt/key/request/context but cannot authenticate an upstream result. No runtime
-recovery verifier/port is installed by this addition; pending remains unavailable.
+recovery flow is installed by this addition; pending remains unavailable.
 All10 runtime native cases and allfive jobs/every step passed on exact014bee0 in
 CI39805367641/latest attempt1. Future heads require their own complete checks.
+
+The separate host-only [recovery driver](AI_CONVERSATION_RECOVERY_DRIVER.md) now
+implements strict lookupRecovery/reconcile on the same owned PostgreSQL store.
+AiDependencies and AiService are unchanged: no automatic/legacy recovery binding,
+provider lookup or redispatch. Database correlation is not genuine upstream proof;
+a trusted authenticated lookup-only verifier and explicit runtime guards remain
+required. Allfive jobs/every step passed on parent9b9283f in CI39813007245/attempt1;
+new driver native cases require their own source's CI.
