@@ -107,3 +107,12 @@ Then implement/verify an approved real authenticated lookup adapter and hosted
 TLS/CA/JWT/PostgREST/Edge/Deno/provider evidence; keep unconfigured defaults and #31
 open/#41 draft. All14 Personal Alpha learner release groups remain pending. No
 provider strategy/Auth/wire/migration/RLS/dependency/workflow/deploy/release change.
+
+The additive [standalone Deno compatibility gate](AI_DENO_COMPATIBILITY.md)
+now runs the unchanged Node fixture suite on pinned Deno2.9.6, plus real loopback
+HTTP/disconnect/deadline/permission tests and required CI pg execution on Deno.
+Standalone CLI evidence does not establish Supabase Edge bundling/deployment/runtime
+version or real Auth/provider provenance. Every existing Node/security gate remains.
+Parent691a797 passed allfive jobs/every step in CI39831337442/latest attempt1; new
+Deno gates/native42 require their own source's exact-head checks. Defaults stay
+unconfigured, #31 open/#41 draft/all14 hosted learner release groups pending.

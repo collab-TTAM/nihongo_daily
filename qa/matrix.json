@@ -17,7 +17,8 @@
       "Publish actual native SQL profile projections",
       "Publish actual native SQL queue projections",
       "Verify committed AI quota adapter with native PostgreSQL",
-      "Verify text context adapter with native PostgreSQL"
+      "Verify text context adapter with native PostgreSQL",
+      "Verify AI PostgreSQL adapters with pinned Deno"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -69,7 +70,10 @@
       "Run npm run format:check",
       "Run npm run check",
       "Run npm test",
-      "Verify schema-generated TypeScript projections"
+      "Verify schema-generated TypeScript projections",
+      "Check AI modules with pinned Deno",
+      "Verify AI boundary with pinned Deno",
+      "Verify Deno native HTTP and permission boundaries"
     ]
   },
   "cases": [
@@ -1402,6 +1406,36 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
       "limitation": "Local Node24 format/typecheck/168 tests/audit0 passed; ten additional real pg runtime cases authored/typechecked require exact-head CI (28 total). An injected AuthenticatedConversationLookup contract/JSON metadata equality is not genuine upstream authenticity. No real upstream adapter/default/endpoint is configured. Hosted TLS/CA/JWT/PostgREST/Edge/Deno/real partition/learner evidence and all14 release groups remain pending."
+    },
+    {
+      "id": "ai-deno-compatibility",
+      "status": "automated-baseline",
+      "scope": "Pinned standalone Deno2.9.6 strict type checks, full existing168 fixture tests, actual loopback HTTP disconnect/deadline and bounded permissions, plus retained real PostgreSQL adapters under Deno; not Supabase Edge deployment",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/deno/runtime_test.ts",
+          "contains": "actual Deno client disconnect aborts captured provider signal and fences late completion"
+        },
+        {
+          "path": "backend/ai/deno/runtime_test.ts",
+          "contains": "pinned Deno denies external network secrets arbitrary files writes subprocess FFI and system permissions"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "--allow-net=localhost:5432"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "native correlated runtime actual reconciliation COMMIT lost delivery returns failure then fresh original replay without upstream"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task test && deno task test:web; fixed disposable CI database: deno task test:postgres",
+      "limitation": "Local actual Deno2.9.6 strict check/all168 retained tests/six Deno loopback+permission tests passed; no test/production assertion or TLS policy weakened. Deno pg42 (quota5/text9/conversation28) requires exact-head CI because local PostgreSQL is unavailable. Standalone Deno/npm manual-resolution/loopback/Auth/provider fixtures are not deployed Supabase Edge runtime-version, bundling, JWT/TLS/CA/PostgREST/real upstream/learner proof. All14 release groups remain pending."
     }
   ],
   "findings": [

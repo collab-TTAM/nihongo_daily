@@ -3772,3 +3772,54 @@ no deployment, production deletion, security reduction, release or schedule chan
   upstream adapter and hosted/Edge/Deno integration remain missing. Keep default
   unconfigured/#31/#20/#22/#15/#13 open/#41 draft/all14 learner release groups pending.
   No merge/release/deployment/schedule change.
+
+## Core checkpoint — #31 standalone Deno compatibility, 2026-10-22 19:26 UTC
+
+- One core writer resumes draft #41 `automation/issue-11-plan-sdk-integration`,
+  expected parent `691a797f9bdc333fe6d30c9476476474dd9e8328`, base tree
+  `c1dbdd1f0ffc533f5bcadc502ba41aa02bcf9ef5`; main78a44fa/#37 redirect/source afa572a
+  unchanged. Pro #14/N4/content/manifests/content tests/docs/branch untouched.
+- Exact parent CI39831337442/latest attempt1 raw allfive jobs/every step success;
+  all28 Node pg conversation cases verified in prior completed database log. Old
+  Flutter/Windows pending resolved; no hosted/provenance/Personal Alpha claim.
+- Added backend/ai/deno.json and deno/runtime_test.ts, pinned standalone Deno2.9.6
+  with manual npm-ci node_modules and cached-only checks/tests. Exact package-lock
+  remains sole dependency authority; no independent Deno lock/re-resolve/download,
+  no production import/provider/Auth/source/SQL/RLS/TLS/default/endpoint change.
+- Strict Deno check covers every source and unit/native/Deno test without no-check;
+  unchanged original168 unit cases run on both Node24 and Deno. Six real native
+  Deno HTTP/permission cases: pinned version/denied external network/secrets/files/
+  write/run/FFI/system, allfive original operations/fixed binding, Auth/method/owner
+  rejection, chunked multibyte32KiB bound, deadline/late output/no redispatch, actual
+  client disconnect/abort/no late commit. Servers close/finish; fixture ports only.
+- Unit permissions deny network; web allows only127.0.0.1. Native pg task runs
+  retained quota5/text9/conversation28 (42 total) under Deno against fixed disposable
+  URL/localhost5432 with enumerated pg/test env/node_modules/contracts read only,
+  no write/run/FFI/system. No local PostgreSQL binary; Deno native42 need new-head CI.
+- Four mandatory Deno CI gates added in existing ai-boundary/database jobs with
+  exact2.9.6 setup/version output, keeping every original command/step/job. QA now
+  rejects each new step omitted/skipped/failed/pending behind green jobs (16 negative
+  variants); no gate/old assertion removed. Inventory65/all14 release groups pending.
+- Local actual Deno2.9.6/V815.0.245.2-rusty/TS6.0.3: strict check including cold
+  dependency cache, all168 original cases and six native cases passed/no ignored.
+  Node24 format/strict TypeScript/168 tests/audit0, Python QA30 and whitespace pass.
+  Initial newly authored timeout assertion corrected to existing HTTP504 contract;
+  production behavior unchanged. Deno default legacy request.signal warning after
+  response delivery is observed; success/disconnect/cleanup pass without unstable
+  flags, not suppressed by changing server semantics.
+- Paths: .github/workflows/ci.yml; new backend/ai/deno.json, deno/runtime_test.ts,
+  docs/AI_DENO_COMPATIBILITY.md; docs/AI_BOUNDARY.md, AI_CONVERSATION_RUNTIME.md,
+  AI_CONVERSATION_RECOVERY_RUNTIME.md, PROJECT_STATUS.md; qa/matrix.json and
+  qa/test_verify_qa.py. No production source/dependency/SQL/content edited.
+- Separate source/permission/CI/diff review and complete GitHub tree/blob expected-
+  head publication are recorded in released #41/#37/#31 handoffs. New-head allfive
+  jobs/four added Deno gates/actual Deno pg42 required; parent evidence insufficient.
+  Native PostgreSQL/full Flutter/Windows are CI checks, not local runtime results.
+- Standalone Deno/Linux/npm/loopback fixtures are NOT deployed Supabase Edge runtime
+  version/bundle/isolate/resource limits, hosted JWT/TLS/CA/PostgREST/approved real
+  provider lookup provenance/network partition or learner proof. Next inspect exact
+  head CI/native42, fix actual failures retaining guards; then actual Edge packaging/
+  runtime evidence independently. Real provider decisions/configuration remain gated.
+  Keep #31/#20/#22/#15/#13 open/#41 draft/all14 release groups/Personal Alpha pending.
+  No deployment/provider strategy/Auth/wire/security reduction/spend/release/schedule
+  change; no automatic default AI success or unverified lookup binding.

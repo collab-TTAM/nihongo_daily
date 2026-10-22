@@ -268,6 +268,14 @@ jobs:
       - name: Verify atomic conversation adapter with native PostgreSQL
         working-directory: backend/ai
         run: npm run test:postgres-conversation
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 'v2.9.6'
+      - name: Verify AI PostgreSQL adapters with pinned Deno
+        working-directory: backend/ai
+        run: |
+          deno --version
+          deno task test:postgres
       - name: Validate profile bootstrap and observed concurrent creation
         run: |
           python3 scripts/export_profiles.py build/profile-bootstrap-sql.json
@@ -303,6 +311,18 @@ jobs:
       - run: npm run format:check
       - run: npm run check
       - run: npm test
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 'v2.9.6'
+      - name: Check AI modules with pinned Deno
+        run: |
+          deno --version
+          deno fmt --check deno deno.json
+          deno task check
+      - name: Verify AI boundary with pinned Deno
+        run: deno task test
+      - name: Verify Deno native HTTP and permission boundaries
+        run: deno task test:web
       - name: Verify schema-generated TypeScript projections
         working-directory: .
         run: |

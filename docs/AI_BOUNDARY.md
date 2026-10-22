@@ -215,3 +215,12 @@ AuthenticatedConversationLookup that authenticates existing upstream results; no
 real adapter or default is configured. JSON/schema/metadata equality and test
 fixtures do not authenticate a provider. Existing pending remains unavailable
 without that explicit binding; no legacy fallback, claim renewal or redispatch.
+
+The additive [standalone Deno compatibility gate](AI_DENO_COMPATIBILITY.md)
+now runs the unchanged Node fixture suite on pinned Deno2.9.6, plus real loopback
+HTTP/disconnect/deadline/permission tests and required CI pg execution on Deno.
+Standalone CLI evidence does not establish Supabase Edge bundling/deployment/runtime
+version or real Auth/provider provenance. Every existing Node/security gate remains.
+Parent691a797 passed allfive jobs/every step in CI39831337442/latest attempt1; new
+Deno gates/native42 require their own source's exact-head checks. Defaults stay
+unconfigured, #31 open/#41 draft/all14 hosted learner release groups pending.
