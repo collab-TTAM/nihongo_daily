@@ -16,6 +16,7 @@ import '../features/srs/presentation/srs_study_screen.dart';
 import '../features/study/presentation/study_screen.dart';
 import '../features/quiz/presentation/vocabulary_quiz_screen.dart';
 import '../features/quiz/presentation/quiz_history_screen.dart';
+import '../features/quiz/presentation/quiz_progress_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
 
@@ -31,10 +32,6 @@ const previewRoutes = <String, ({String title, String description})>{
   '/conversation': (
     title: 'Hội thoại AI',
     description: 'Luyện hội thoại theo tình huống.',
-  ),
-  '/progress': (
-    title: 'Tiến độ học tập',
-    description: 'Theo dõi thói quen và điểm cần ôn lại.',
   ),
 };
 
@@ -120,6 +117,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/quiz/history',
             builder: (context, state) => const QuizHistoryScreen(),
+          ),
+          GoRoute(
+            path: '/progress',
+            builder: (context, state) => const QuizProgressScreen(),
           ),
           GoRoute(
             path: '/srs',

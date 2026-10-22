@@ -998,7 +998,7 @@
         18
       ],
       "reproduce": "Submit correct/wrong/repeated/duplicate attempts; verify owner history/counters, empty state and recommendations referencing curriculum; inspect dashboard.",
-      "limitation": "Public route-local reading practice does not implement owned attempt persistence, mastery or progress; reserved MASTERED cannot substitute for evidence."
+      "limitation": "Configured local quiz save/history is component-tested; current-source practice/needs-review dashboard is authored and needs new-head CI. Hosted attempts/sync, reviewed mastery and learner acceptance remain unverified; reserved MASTERED cannot substitute for evidence."
     },
     {
       "id": "browser-windows-smoke",
@@ -1055,6 +1055,14 @@
         {
           "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_history_test.dart",
           "contains": "wrong correct wrong preserves counts"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart",
+          "contains": "dedup repeated errors and later correct clear review candidate"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart",
+          "contains": "held read cannot publish after replacement"
         }
       ],
       "issues": [
@@ -1062,7 +1070,7 @@
         18
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/vocabulary_quiz_history_test.dart",
-      "limitation": "Pure client-report models/tests only; new exact-head execution pending. No durable store, session-bound repository, current route history UI, hosted attempts, mastery or study credit."
+      "limitation": "Client-report models and configured local history; new progress UI exact-head execution pending. Simulated Auth/storage UI ports do not prove hosted attempts, multi-device sync, mastery, native file faults or study credit."
     }
   ],
   "findings": [

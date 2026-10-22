@@ -3064,3 +3064,37 @@ Dart/Flutter SDK; exact-head CI must confirm the correction.
 Next inspect latest-attempt allfive jobs/every step, especially all eight save
 widget cases and retained full Flutter/Chrome/Web/Windows checks. Keep draft/
 release gates pending until observed; fixture clocks are not hosted Auth proof.
+
+## Own-device quiz progress view — core-20261022T0407
+
+Resume #41 atc1f0b9b33ffa8040a565cc1c33efa755def3ad02. CI39716360716
+latest attempt2 now completed allfive jobs/every required step successfully.
+674 Flutter tests include allnine save cases; five actual Chrome, Web/Windows
+configured/preview builds/native credential/process/wire/SQL/artifact gates pass.
+Attempt1's only remaining failure was npm registry security-advisory HTTP503,
+resolved by one failed-jobs rerun without source/dependency/workflow changes.
+This confirms the save fixture zone correction; hosted learner proof is absent.
+
+Replace /progress placeholder with explicit read-only own-device quiz practice
+and current-source needs-review projection, using already-reviewed #13 rules.
+Selected-level unique rounds/canonical correct answers/current practiced items
+and latest-wrong recommendations remain client reports, not mastery/time/server
+credit. Display at most20 original words/readings/Vietnamese meanings/error
+counts. New view-local level does not modify profile/preview/study selection.
+
+Exact repository/source/owner/level keys revoke old panels. Public vocabulary
+loads before captured history so readiness is checked after the content await.
+Single-flight explicit load clears prior data; safe failure/retry and late
+account/source/level/route fences prevent partial or old-owner publication.
+Default preview still offers unavailable/configured-account state, no mock data.
+No new API/schema/RLS/Auth/storage/dependency/workflow/security/provider/spend.
+
+Ten widget scenarios authored with original N5 source and TEST ONLY Auth/profile/
+local reads; controller construction stays inside widget FakeAsync. Existing
+scoring/projection/owner/SDK/native tests retained. Separate source/lifecycle/
+route/projection/diff review plus local QA51/29 regressions/whitespace passed.
+No local Flutter/Dart SDK: new format/analyze/widgets/builds require exact-head
+Actions. See QUIZ_PROGRESS_VIEW.md. Keep #13 open/#41 draft/all14 hosted gates
+pending. Next inspect complete latest-attempt CI and fix real diagnostics; only
+pending CI means released handoff without duplicate code or long polling.
+Pro/N4/main/source branches, merge/deployment/release/schedule unchanged.
