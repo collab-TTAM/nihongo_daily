@@ -140,3 +140,13 @@ nonetheless the pinned production dependency is updated to 8.20.0. CI retains
 a production-only npm audit at moderate severity. Advisory reference:
 https://github.com/advisories/GHSA-2g4f-4pwh-qvx6 . An audit snapshot is not proof
 of overall application security; integrated regression work remains #8/#18.
+
+## Opt-in fixed-project Auth port (#31)
+
+`SupabaseAuthVerifier` in `src/supabase_auth.ts` resolves the existing verified
+identity port through a fixed trusted Supabase `/auth/v1/user` lookup. The server
+validates the access token; the adapter never authorizes from decoded JWT claims
+or metadata. Public deployment configuration, redirect/resource/cancellation
+rules, safe errors, test evidence and remaining hosted gates are specified in
+[AI_SUPABASE_AUTH.md](AI_SUPABASE_AUTH.md). No endpoint/provider/Auth strategy or
+application default is configured by this component.

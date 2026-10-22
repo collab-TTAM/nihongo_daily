@@ -1115,6 +1115,29 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test",
       "limitation": "Node24 native HTTP APIs with TEST ONLY Auth/limiter/context/provider/receipts; no deployed endpoint, real identity/distributed transactions/provider, Deno/Edge compatibility or hosted learner proof. New exact-head CI remains required."
+    },
+    {
+      "id": "ai-supabase-auth-adapter",
+      "status": "automated-baseline",
+      "scope": "Fixed-project Supabase user lookup adapter with bounded response/deadline/cancellation and verified-server-UUID service ownership",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/supabase_auth.test.ts",
+          "contains": "fixed project GET sends only configured public key and caller token; returns only server identity"
+        },
+        {
+          "path": "backend/ai/test/supabase_auth.test.ts",
+          "contains": "Auth timeout and malformed response cannot advance service or dispatch after late HTTP"
+        }
+      ],
+      "issues": [
+        31,
+        20,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test",
+      "limitation": "Actual Node24 adapter/Response/streams/service with TEST ONLY HTTP/Auth and limiter/context/provider/receipt ports. Not hosted signature/issuer/expiry/other-project JWT, Deno/Edge, distributed quota/transactions or learner acceptance. Full exact-head CI still required."
     }
   ],
   "findings": [

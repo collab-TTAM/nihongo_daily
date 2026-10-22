@@ -3195,3 +3195,39 @@ retaining assertions. After green continue #31 concrete verified Auth, distribut
 limits and conversation/receipt transaction binding with Deno/Edge evidence. No
 paid provider/live config, production/Pro/N4 changes. Keep #31/#13 open/#41 draft;
 no main/source branch/merge/release/schedule changes.
+
+## Fixed-project server AI Auth adapter — core-20261022T0810
+
+Resume #41 at18642c650d84d7683ffb2bc4096495bc03937cf5. Exact CI39740748424
+latest attempt1 completed allfive jobs/every step successfully, including AI58
+Node tests/format/strict types/audit, retained Flutter/Web/Windows/native/SQL gates.
+This verifies the prior HTTP increment as a component, not hosted learner gates.
+
+Continue ready #31 with an opt-in implementation of its existing AuthVerifier
+port: fixed trusted HTTPS project origin/public key, GET /auth/v1/user with only
+caller access token and public apikey; no redirects/cache/session/refresh/retry.
+Supabase Auth owns token verification; no decoded learner JWT/metadata/owner
+fallback. Only validated server UUID/aud authenticated may reach existing limiter,
+context and receipt ownership.401/403 reject,429 rate-limits, all remaining network/
+malformed/resource faults fail closed with fixed errors/no raw body or token logs.
+
+Independent bounded deadline/caller abort, monotonic checks, actual64KiB fatal
+UTF-8 streaming bound/empty-read cap and nonblocking cancellation fence ignored/
+late fetch/read responses; timers/listeners/reader locks cleaned. Public legacy
+key decoding only classifies trusted deployment configuration, never authorizes
+learner identity. No learner-editable URL/key or Auth strategy/provider change.
+See AI_SUPABASE_AUTH.md for supported settings, semantics and evidence limits.
+
+Local Node24.19.0 pinned npm install/Prettier/strict TypeScript/all79 tests passed:
+21 new adapter/composition cases plus58 original unchanged; audit0 findings.
+QA inventory adds one baseline to54; all14 hosted groups remain pending. Full new
+head CI still required; no local Flutter/Dart/Windows execution claimed. Separate
+source/security/resource/owner/error/diff review completed before publication.
+
+Next inspect exact published-head latest-attempt allfive jobs/every required step.
+Fix actual failures retaining assertions. Then #31 still needs atomic distributed
+limits, conversation/receipt transaction and lookup-only reconciliation adapters,
+Deno/Edge execution and actual hosted signature/issuer/expiry/A-B acceptance.
+No deployment, live provider, paid spend, main/Pro/N4/content/schema/RLS/CI/
+dependency/contract changes. Keep #31/#13 open/#41 draft/default preview; Personal
+Alpha not accepted and release evidence remains pending.
