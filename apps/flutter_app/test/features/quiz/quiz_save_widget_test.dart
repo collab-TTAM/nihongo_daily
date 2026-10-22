@@ -101,9 +101,9 @@ void main() {
       overrides: [
         accountRuntimeProvider.overrideWithValue(harness.runtime),
         quizHistorySourceProvider.overrideWithValue(source),
-        vocabularyQuizProvider(PreviewLevel.n5).overrideWith(
-          (ref) async => questions,
-        ),
+        vocabularyQuizProvider(
+          PreviewLevel.n5,
+        ).overrideWith((ref) async => questions),
         quizAttemptFactoryProvider.overrideWithValue((round) {
           captures++;
           if (failCapture) throw StateError('PRIVATE CAPTURE');

@@ -2998,3 +2998,26 @@ progress/weak-point rules and acceptance; do not close #13 or merge draft until
 its full criteria and hosted/release gates are satisfied. Pro/N4/main/source
 drafts/API/schema/RLS/Auth strategy/dependencies/workflow/security/providers/
 spend/merge/deployment/release/schedule unchanged.
+
+## Quiz-save formatter correction — core-20261022T0214-save-test-format
+
+Resume #41 at2343d755834e86662663666b04138ff60a4f78ba. Exact
+CI39704833968 attempt1 completed repo/database/AI/Windows every required step,
+including configured/preview Windows builds/native checks/artifacts. Flutter
+strict format reported exactly one hunk in quiz_save_widget_test.dart around
+its FutureProvider family override. Analyze/nine new tests/Chrome/Web/downstream
+were skipped, not passed.
+
+Apply the exact pinned-SDK diagnostic hunk only. Corrected test Git blob matches
+diagnostic d8923b0 prefix; allnine scenarios/assertions and non-whitespace/comma
+text retained, production behavior and CI/lint/security gates unchanged.
+Separate diagnostic/source/assertion/diff review and git diff --check passed.
+Dart/Flutter SDK absent locally; no new executable format/test/build claim.
+
+Next inspect allfive corrected-head/latest-attempt jobs/every required step,
+fix real failures retaining assertions; pending-only release without duplicate
+commits/long polling. After save full green continue remaining #13 progress/
+weak-point reviewed rules/acceptance. Keep #41 draft/#13 open/default preview/
+all14 hosted gates pending. Pro/N4/main/source drafts/API/schema/RLS/Auth strategy/
+dependencies/workflow/security/providers/spend/merge/deployment/release/schedule
+unchanged.
