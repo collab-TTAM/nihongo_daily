@@ -89,3 +89,7 @@ Official sources checked2026-10-22 UTC: [Deno releases](https://github.com/denol
 [Supabase Edge overview](https://supabase.com/docs/guides/functions).
 Supabase's overview identifies a Deno-compatible Edge runtime; it does not establish
 that our selected standalone CLI equals the version deployed for a learner project.
+
+See [AI_EDGE_USER_WORKER.md](AI_EDGE_USER_WORKER.md) for the separate TEST ONLY
+Supabase Edge bundle/main-to-user-isolate probe and its exact-head CI requirement.
+Standalone Deno evidence does not substitute for that execution or hosted proof.

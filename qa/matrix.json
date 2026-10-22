@@ -73,7 +73,9 @@
       "Verify schema-generated TypeScript projections",
       "Check AI modules with pinned Deno",
       "Verify AI boundary with pinned Deno",
-      "Verify Deno native HTTP and permission boundaries"
+      "Verify Deno native HTTP and permission boundaries",
+      "Verify bundled Supabase Edge user worker",
+      "Publish Edge user-worker compatibility evidence"
     ]
   },
   "cases": [
@@ -1436,6 +1438,36 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task test && deno task test:web; fixed disposable CI database: deno task test:postgres",
       "limitation": "Local actual Deno2.9.6 strict check/all168 retained tests/six Deno loopback+permission tests passed; no test/production assertion or TLS policy weakened. Deno pg42 (quota5/text9/conversation28) requires exact-head CI because local PostgreSQL is unavailable. Standalone Deno/npm manual-resolution/loopback/Auth/provider fixtures are not deployed Supabase Edge runtime-version, bundling, JWT/TLS/CA/PostgREST/real upstream/learner proof. All14 release groups remain pending."
+    },
+    {
+      "id": "ai-edge-user-worker",
+      "status": "automated-baseline",
+      "scope": "TEST ONLY self-contained schema/service/HTTP bundle in official pinned Supabase Edge Runtime main-to-user-worker bridge; fixture ports, not hosted Auth/provider or learner acceptance",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/main.ts",
+          "contains": "runtime.userWorkers.create"
+        },
+        {
+          "path": "backend/ai/edge/worker.ts",
+          "contains": "TEST ONLY. Fixture ports"
+        },
+        {
+          "path": "scripts/verify_edge_user_worker.py",
+          "contains": "deadline-private-abort-late-result-no-redispatch"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "deno bundle --check --no-remote --packages=bundle"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task bundle:edge && mkdir -p ../../build/edge/main && cp edge/main.ts ../../build/edge/main/index.ts && python3 ../../scripts/verify_edge_user_worker.py",
+      "limitation": "Local Docker absent; the mandatory exact-head CI step must execute the actual pinned container/user worker before claiming Edge compatibility. Local strict checks or standalone Deno do not prove user-isolate execution. All ports/receipts are TEST ONLY; no hosted runtime equivalence, real JWT, TLS/CA, PostgREST, distributed memory receipt, authenticated upstream, learner/release evidence or deployment. Existing all14 release groups remain pending."
     }
   ],
   "findings": [

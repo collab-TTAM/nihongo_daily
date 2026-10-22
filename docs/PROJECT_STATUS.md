@@ -3823,3 +3823,64 @@ no deployment, production deletion, security reduction, release or schedule chan
   Keep #31/#20/#22/#15/#13 open/#41 draft/all14 release groups/Personal Alpha pending.
   No deployment/provider strategy/Auth/wire/security reduction/spend/release/schedule
   change; no automatic default AI success or unverified lookup binding.
+
+
+## Core checkpoint — #31 Supabase Edge user-worker probe, 2026-10-22 20:28 UTC
+
+- Resume draft #41 / automation/issue-11-plan-sdk-integration from exact
+  ef2200885b0748b3ebc2581953c881de76041b88, tree
+  a3ae6384e11599b745f21189e05854b7021bf8d3 (549 blobs); main78a44fa unchanged.
+  Marker core-20261022T2018-edge-worker; single core writer; #37 redirects here.
+  Parent CI39840365647 latest attempt1 now allfive jobs/every step success,
+  including allfour Deno gates. This resolves its prior platform-pending handoff;
+  original Deno168+six native HTTP and real Deno pg42 remain component evidence.
+- Add TEST ONLY edge/main.ts and edge/worker.ts. Original Contracts/Ajv/service/
+  HTTP/recovery modules and static frozen schema/fixtures bundle into one ESM
+  worker; no production source/test/SQL/RLS/Auth/provider/default/endpoint change.
+  Pinned Deno2.9.6 bundle --check/--no-remote/--packages=bundle with unchanged
+  npm-ci lock/manual node_modules; strict check covers both entrypoints. Official
+  Supabase Edge Runtime v1.77.4 API/tag verified against pinned example/types/docs.
+- Main calls real EdgeRuntime.userWorkers.create then worker.fetch: fixed path,
+  no npm/remote module loading or forwarded env; bounded CPU/memory/wall time,
+  no retry/fallback. Fixture memory receipt/Auth/quota/context/provider are test
+  bindings only. No model/provider URL, real token/key, deployment or paid call.
+- Bounded stdlib Docker runner resolves fixed official tag to local image ID,
+  records registry digest/binary/user Deno versions/bundle hash/source+checkout
+  head. Loopback random port/read-only mount/capability-drop/no-new-privileges/
+  CPU-memory-PID caps; finite pull/HTTP/readiness/cleanup. Only captured container
+  removed; redacted bounded fixture startup diagnostics cannot skip cleanup.
+- Seven HTTP assertion groups: actual user-worker/version; allfive original wire
+  operations/fixed operation/safe headers; completed replay/no dispatch and A/B
+  fixture receipt isolation; missing/invalid Auth/method/unknown owner rejection;
+  chunked multibyte32KiB before Auth; malformed provider strict safe failure/no
+  completion; deadline/private abort/late result/no completion or redispatch.
+- Mandatory CI Verify bundled Supabase Edge user worker plus Publish Edge
+  user-worker compatibility evidence in existing ai-boundary job. Every prior
+  workflow line/Node/Deno/native/SQL/platform check retained; artifact contains
+  fixture-only metadata, never learner/header/provider/claim output. QA rejects
+  either new step missing/skipped/failed/pending even behind green jobs (eight
+  negative variants); original cases/findings/gates/assertions retained.
+- Local observed: Node24 format/typecheck/168 tests/audit0; Deno2.9.6 format/strict
+  check/168 original tests/six retained native HTTP+permission tests all passed.
+  Deno bundle initially could not directly reach registry for internal esbuild;
+  official v2.9.6 source pins0.25.5 and documents manual cache installation.
+  Exact @esbuild/linux-x64@0.25.5 fetched through npm, then Deno built102 modules /
+  363.83KB with zero residual imports. Actual self-contained standalone Deno
+  execution with denied env/read/write/run/FFI/sys and only listener net passed
+  allseven new protocol groups. This is bundle/fixture proof, NOT Edge isolate.
+  QA31/inventory66/all14 hosted pending, Python syntax/whitespace checks passed.
+- Paths: .github/workflows/ci.yml; backend/ai/deno.json; new backend/ai/edge/main.ts,
+  edge/worker.ts and scripts/verify_edge_user_worker.py; new docs/AI_EDGE_USER_WORKER.md;
+  docs/AI_DENO_COMPATIBILITY.md, AI_BOUNDARY.md, PROJECT_STATUS.md; qa/matrix.json,
+  qa/test_verify_qa.py. Separate diff review checks old production/native/Pro bytes,
+  workflow subsequence, old QA objects/assertions, permissions and cleanup.
+- Local Docker/PostgreSQL/Flutter/Windows absent. New exact-head/latest-attempt
+  full jobs/two added Edge gates and actual container logs/artifact still required;
+  no container/isolate/native-platform pass inferred from local or parent proof.
+  Keep #31/#20/#22/#15/#13 open/#41 draft/defaults unconfigured/Pro scope intact.
+- Next inspect exact-head Actions, fix genuine failures without weakening tests.
+  Then real authenticated upstream result-provenance adapter/configured hosted
+  JWT/TLS/CA/PostgREST/A-B integration and learner/release evidence remain. The
+  official local image is not proof of deployed hosted runtime equivalence,
+  stress limits, real proxy disconnect, distributed fixture receipts or Personal
+  Alpha. All14 release groups pending; no release/schedule change.

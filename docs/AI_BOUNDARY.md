@@ -224,3 +224,7 @@ version or real Auth/provider provenance. Every existing Node/security gate rema
 Parent691a797 passed allfive jobs/every step in CI39831337442/latest attempt1; new
 Deno gates/native42 require their own source's exact-head checks. Defaults stay
 unconfigured, #31 open/#41 draft/all14 hosted learner release groups pending.
+
+See [AI_EDGE_USER_WORKER.md](AI_EDGE_USER_WORKER.md) for the separate TEST ONLY
+Supabase Edge bundle/main-to-user-isolate probe and its exact-head CI requirement.
+Standalone Deno evidence does not substitute for that execution or hosted proof.
