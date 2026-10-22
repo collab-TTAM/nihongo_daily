@@ -106,3 +106,13 @@ remain pending; no migration was deployed or paid provider called.
 
 Primary PostgreSQL17 snapshot rules reviewed2026-10-22:
 https://www.postgresql.org/docs/17/xfunc-volatility.html
+
+## Opt-in runtime binding
+
+The text-only `PostgresTextContextRepository` now binds these two helpers with
+fresh owned read-only transactions, original schema/ref validation, confirmed
+COMMIT and bounded cancellation/safe errors. See AI_TEXT_CONTEXT_RUNTIME.md for
+tests and remaining native/hosted gates. The SQL components above do not themselves
+install that host binding or a deployed endpoint. Parent a16bdb4a03b16f1d01dabfcf89961a2d5cde18d9
+passed allfive jobs/every step in CI39770572353 attempt1, including all59 SQL text
+assertions; that source's pending native/full-CI checkpoint is resolved.

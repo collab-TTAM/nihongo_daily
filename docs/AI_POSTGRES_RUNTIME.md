@@ -105,3 +105,9 @@ native cases above passed, including held COMMIT, locked abort, actual commit wi
 injected lost delivery and production-factory TLS rejection of plaintext. This
 resolves that source's native-test-pending checkpoint; hosted TLS/CA/JWT/Deno/Edge,
 conversation transactions and learner gates remain unverified.
+
+The quota factory now delegates to `src/postgres_connection.ts` so the text context
+adapter can reuse its exact URL/TLS/client lifetime configuration. QuotaConnection/
+QuotaResult remain compatible type aliases; quota transaction logic and every
+original test remain unchanged. New text phases are specified separately in
+AI_TEXT_CONTEXT_RUNTIME.md and cannot consume or refund quota themselves.

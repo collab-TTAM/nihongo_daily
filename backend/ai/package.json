@@ -11,7 +11,8 @@
     "format:check": "prettier --check src test *.json",
     "check": "tsc --noEmit",
     "test": "node --test test/*.test.ts",
-    "test:postgres-quota": "node --test test/postgres_quota.native.ts"
+    "test:postgres-quota": "node --test test/postgres_quota.native.ts",
+    "test:postgres-text": "node --test test/postgres_text_context.native.ts"
   },
   "dependencies": {
     "ajv": "8.20.0",

@@ -168,3 +168,9 @@ projection and fresh post-provider revalidation for tutor/correction. Fixed boun
 whole-entry allowlists, strict shapes and SQL-role tests are documented in
 [AI_TEXT_CONTEXT.md](AI_TEXT_CONTEXT.md). No runtime ContextRepository/endpoint or
 conversation reservation/completion adapter is bound by this SQL component.
+
+The opt-in `PostgresTextContextRepository` now implements the two text-operation
+ContextRepository methods through those helpers. Fresh owned READ ONLY phases,
+strict result/ref/error checks and real-driver verification are specified in
+[AI_TEXT_CONTEXT_RUNTIME.md](AI_TEXT_CONTEXT_RUNTIME.md). Conversation methods
+remain explicitly unavailable; no host endpoint/default/provider is installed.

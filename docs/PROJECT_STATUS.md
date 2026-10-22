@@ -3360,3 +3360,57 @@ no deployment, production deletion, security reduction, release or schedule chan
   remain open. Do not merge this draft, close #31 or claim Personal Alpha.
 - Durable publication commit/tree/exact-head CI and released marker are recorded
   in the re-read PR #41/#37 and #31 handoff; only pending CI remains after publish.
+
+## Core checkpoint — #31 text context runtime, 2026-10-22 12:24 UTC
+
+- Resume draft #41, `automation/issue-11-plan-sdk-integration`, expected parent
+  `a16bdb4a03b16f1d01dabfcf89961a2d5cde18d9`, exact base tree
+  `1c6f9c4a4b53bc6b954ecaf33362588c4b284974`. Fresh main unchanged at
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; #37 redirects here. One core writer,
+  Pro retains #14/N4/content/manifests/tests/docs/branch scope without edits.
+- Exact parent CI39770572353 latest attempt1 completed/success; allfive jobs and
+  every step passed, including Flutter/Windows. This resolves that source's full
+  CI pending handoff; no hosted learner/Alpha acceptance follows from it.
+- Delivered opt-in PostgresTextContextRepository for tutor/correction: captured
+  original requests, detached frozen bounded contexts, fresh owned READ COMMITTED
+  READ ONLY prepare and validation phases, confirmed COMMIT before dispatch/final
+  success, exact safe SQL error pairs, deadline/abort/late-result fences and no
+  automatic retry. Real SQL profile/active-content revalidation is bound through
+  the original ContextRepository port. Conversation operations remain explicitly
+  unsupported. Host still supplies mandatory verified Auth/limiter/provider/receipts.
+- Extracted the existing owned pg URL/TLS factory into postgres_connection.ts;
+  unchanged verified TLS/no overrides/no pipeline/timeouts/close/error suppression.
+  Quota's original API/type aliases/config error and entire transaction body are
+  preserved; all original quota unit/native tests remain text-identical. No new
+  dependency, lock, SQL migration, public wire/RLS/Flutter/default/provider/Auth
+  strategy/deployment/spend change, token/raw SQL logs or plaintext fallback.
+- Thirteen paths: backend/ai src postgres_connection.ts, postgres_text_context.ts,
+  postgres_quota.ts; new test/postgres_text_context.test.ts and .native.ts;
+  package.json; .github/workflows/ci.yml; docs/AI_TEXT_CONTEXT_RUNTIME.md,
+  AI_TEXT_CONTEXT.md, AI_BOUNDARY.md, AI_POSTGRES_RUNTIME.md, this status;
+  qa/matrix.json. New required database native step retains every existing gate.
+- Local clean pinned Node24 install; formatter/strict TypeScript and117 tests
+  passed (98 retained +19 new;0 fail/skip/cancel); production audit0 findings.
+  All29 QA regressions passed; inventory58/all14 hosted groups pending. A new
+  redundant workflow-file QA anchor initially conflicted with an existing fixture's
+  directory setup; replaced it with the new cancellation test anchor, retaining
+  the explicit required CI step and every existing QA assertion unchanged.
+  Whitespace/source checks and separate quota-body/original-tests equality passed.
+- Nine real-driver/native PostgreSQL17 cases added: actual quota+context/service
+  both text operations/no open provider transaction, A/B/A levels/refs, actual
+  content retirement/version and profile changes after dispatch, actual COMMIT
+  barriers before provider/final success, observed table-lock abort/no late work,
+  actual commit with injected lost delivery both phases/no retry, absent profile/
+  inactive requested content, production TLS factory rejects plaintext. These are
+  authored/compiled but not locally executed; exact-head CI remains required.
+  Disposable URL restricted; Auth/provider/receipt/plaintext/lost-delivery probes
+  TEST ONLY. No native/hosted TLS/CA/JWT/Deno/Edge/network-partition/learner claim.
+- Separate source/diff review covers connection/transaction closure, immutable
+  parameters, safe-error mapping, bounds, fresh snapshots and retained CI/security.
+  Publication commit/tree/readback/non-force expected-head evidence and released
+  marker are stored in PR #41/#37 and issue #31 after re-reading their bodies.
+- Next: inspect exact-head latest-attempt CI/allfive jobs before new work; if green,
+  implement coherent conversation reserve+claim serialization and validated
+  message/session+token receipt completion, then lookup-only reconciliation.
+  Keep #31/#13/#20/#22/#15 open/#41 draft. Hosted configuration/evidence and all14
+  release groups remain pending; default preview is unchanged, no Alpha release.

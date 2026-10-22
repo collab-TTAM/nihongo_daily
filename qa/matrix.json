@@ -15,7 +15,8 @@
       "Validate profile bootstrap and observed concurrent creation",
       "Publish actual native SQL profile projections",
       "Publish actual native SQL queue projections",
-      "Verify committed AI quota adapter with native PostgreSQL"
+      "Verify committed AI quota adapter with native PostgreSQL",
+      "Verify text context adapter with native PostgreSQL"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -1212,7 +1213,37 @@
         18
       ],
       "reproduce": "bash scripts/test_database.sh",
-      "limitation": "59 new assertions passed locally with all migrations on PGlite0.5.9/PostgreSQL18.6. Native exact-head CI pending. No runtime ContextRepository, conversation reservation/completion, hosted Auth/Edge/Deno/provider or learner proof. All 14 hosted release groups remain pending."
+      "limitation": "Exact parent a16bdb4a03b16f1d01dabfcf89961a2d5cde18d9 passed all 59 native SQL assertions and all five jobs in CI39770572353 attempt1. This is private SQL-role component proof, not hosted Auth/Edge/Deno/provider, conversation serialization or learner proof. Future heads require their own exact checks."
+    },
+    {
+      "id": "ai-postgres-text-runtime",
+      "status": "automated-baseline",
+      "scope": "Owned read-only PostgreSQL text context prepare/revalidation composed with AiService and confirmed COMMIT/cancellation guards",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_text_context.native.ts",
+          "contains": "native text service composes real quota/context/validation for both frozen text operations"
+        },
+        {
+          "path": "backend/ai/test/postgres_text_context.native.ts",
+          "contains": "native text COMMIT barriers fence both provider dispatch and final success"
+        },
+        {
+          "path": "backend/ai/test/postgres_text_context.native.ts",
+          "contains": "native actual text COMMIT with injected lost delivery never returns success or retries"
+        },
+        {
+          "path": "backend/ai/test/postgres_text_context.test.ts",
+          "contains": "text abort during SELECT or COMMIT rejects late completion and cleans listeners"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-text",
+      "limitation": "117 Node tests include 19 new protocol/service cases. Nine new native driver cases await exact-head CI; plaintext test transport/Auth/provider/receipts and lost-delivery injection are fixtures. No hosted TLS/CA/JWT/Edge/Deno/conversation or learner proof; all 14 hosted release groups remain pending."
     }
   ],
   "findings": [
