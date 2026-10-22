@@ -1092,7 +1092,29 @@
         18
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/quiz_disk_journey_widget_test.dart",
-      "limitation": "Authored integration test needs new exact-head CI. Actual SDK/native files with TEST ONLY unsigned JWT/HTTP/memory vault; not hosted identity/RLS/sync, real Windows credential vault, forced-process restart or hardware power-loss evidence."
+      "limitation": "Composed local SDK/native-file UI journey passed at49ee8fb9 CI39733485647. TEST ONLY unsigned JWT/HTTP/memory vault does not prove hosted identity/RLS/sync, real Windows credential vault, forced-process restart or hardware power-loss resilience."
+    },
+    {
+      "id": "ai-http-resource-boundary",
+      "status": "automated-baseline",
+      "scope": "Fixed-operation HTTP envelope, bounded UTF-8 streaming and overall deadline/client cancellation through the AI service",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/http.test.ts",
+          "contains": "HTTP actual stream byte limit ignores absent or forged length"
+        },
+        {
+          "path": "backend/ai/test/http.test.ts",
+          "contains": "HTTP deadline retains uncertain receipt and never redispatches late result"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test",
+      "limitation": "Node24 native HTTP APIs with TEST ONLY Auth/limiter/context/provider/receipts; no deployed endpoint, real identity/distributed transactions/provider, Deno/Edge compatibility or hosted learner proof. New exact-head CI remains required."
     }
   ],
   "findings": [

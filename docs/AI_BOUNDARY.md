@@ -100,6 +100,14 @@ claim tokens likewise never grant a new dispatch through these helpers.
 
 ## Outstanding integration
 
+An additive server-only standard Request adapter now enforces streamed body,
+UTF-8/header and overall deadline/client cancellation guards before invoking
+this library. See AI_HTTP_BOUNDARY.md. It binds a trusted fixed operation and
+preserves mandatory injected Auth/limiter/context/receipt/provider boundaries;
+it installs no Edge endpoint or fallback implementations. Optional parent abort
+propagation is added to execute; existing callers remain compatible. Node tests
+do not establish Deno/hosted compatibility or verified production Auth.
+
 Issue #31 tracks a scoped runtime adapter to bind real verified Auth, distributed limiter,
 context/ownership and session serialization, SQL transactions + original receipt
 replay, persisted message sequences and upstream result reconciliation. It must

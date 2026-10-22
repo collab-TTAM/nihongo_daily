@@ -48,10 +48,21 @@ export class AiService {
     op: O,
     bearer: string | null,
     text: string,
+    parentSignal?: AbortSignal,
   ): Promise<Outcome<O>> {
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let cancel: (() => void) | undefined;
     try {
+      if (parentSignal?.aborted)
+        throw new BoundaryError("PROVIDER_UNAVAILABLE");
+      const cancelled = new Promise<never>((_, reject) => {
+        cancel = () => {
+          controller.abort();
+          reject(new BoundaryError("PROVIDER_UNAVAILABLE"));
+        };
+        parentSignal?.addEventListener("abort", cancel, { once: true });
+      });
       const timeout = new Promise<never>((_, reject) => {
         timer = setTimeout(() => {
           controller.abort();
@@ -61,6 +72,7 @@ export class AiService {
       const response = await Promise.race([
         this.run(op, bearer, text, controller.signal),
         timeout,
+        cancelled,
       ]);
       return { ok: true, response };
     } catch (error) {
@@ -80,6 +92,7 @@ export class AiService {
       };
     } finally {
       clearTimeout(timer);
+      if (cancel) parentSignal?.removeEventListener("abort", cancel);
       controller.abort();
     }
   }

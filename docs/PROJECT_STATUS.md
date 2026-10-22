@@ -3160,3 +3160,38 @@ diagnostics retaining assertions. New format/analyze/native-widget/platform
 execution requires Actions because local Dart/Flutter SDK is absent. Keep #13
 open/#41 draft; no main/source/Pro/N4/API/schema/RLS/Auth strategy/dependency/CI/
 security/provider/spend/merge/deployment/release/schedule changes.
+
+## Bounded AI HTTP resource adapter — core-20261022T0716
+
+Resume #41 at49ee8fb93631eefed974ffc59ed4299ea552f4bf. Exact CI39733485647
+latest attempt1 allfive jobs/every required step passed;684 Flutter tests include
+the composed real native-disk quiz save/history/progress/reopen/A-B-A journey,
+five Chrome/Web/Windows and retained checks. That new journey is verified as
+local SDK/disk/UI composition with TEST ONLY HTTP/vault, not hosted learner proof.
+
+#13 hosted ownership/sync/mastery/learner gates remain open. Proceed with #31's
+ready independent HTTP resource increment after its merged #7 dependency: trusted
+fixed-operation handler, strict POST/JSON/Bearer/identity encoding, actual streamed
+32768-byte fatal UTF-8 bound and length validation before concatenation. Bound
+empty chunks/read iterations; reject malformed/truncated/BOM JSON safely.
+
+Combined client/overall deadline starts before body read; monotonic checks fence
+starved timers. Per-read abort listener cleanup, non-blocking source cancellation
+and reader release bound stalled/uncooperative reads. Optional parent signal in
+AiService preserves existing callers and Auth/limiter/receipt/output rules; late
+identity/provider results cannot dispatch/complete after guards. Uncertain claims
+remain pending, no automatic retries/takeover. Fixed safe HTTP/error mapping,
+no-store/no token/raw reason logs, frozen JSON shapes unchanged. No endpoint or
+Auth strategy/provider/dependency/deployment change. See AI_HTTP_BOUNDARY.md.
+
+Local Node24.19.0 pinned npm ci, Prettier check, strict TypeScript and58 tests
+passed:20 new HTTP/cancellation cases and38 original unchanged. Native Request/
+ReadableStream are actual; Auth/limiter/context/provider/receipts are TEST ONLY.
+Local Flutter/Dart SDK absent; full new-source platform CI remains required.
+QA adds one baseline to53 and retains all14 pending integration groups.
+
+Next inspect exact-head latest-attempt allfive jobs/every step; fix diagnostics
+retaining assertions. After green continue #31 concrete verified Auth, distributed
+limits and conversation/receipt transaction binding with Deno/Edge evidence. No
+paid provider/live config, production/Pro/N4 changes. Keep #31/#13 open/#41 draft;
+no main/source branch/merge/release/schedule changes.

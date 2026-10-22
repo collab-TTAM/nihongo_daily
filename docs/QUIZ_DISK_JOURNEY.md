@@ -57,3 +57,12 @@ required step,683 Flutter including allten progress cases, five Chrome and
 Web/Windows builds. That confirms the progress format correction. This new test
 requires new exact-head format/analyze/test/build evidence; local Dart/Flutter
 SDK is unavailable. Source review and Python QA are not execution of this test.
+
+### Observed component execution
+
+At49ee8fb93631eefed974ffc59ed4299ea552f4bf, CI39733485647 latest attempt1
+completed allfive jobs/every required step successfully. Flutter logs explicitly
+show the new composed native-file journey passed;684 Flutter/five Chrome and
+Web/Windows/retained gates passed. The authored scenario above is now observed
+local component evidence; all stated simulated Auth/vault, same-process reopen
+and hosted/Windows/power-loss limitations remain.
