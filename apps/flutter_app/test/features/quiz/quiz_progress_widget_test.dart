@@ -186,26 +186,28 @@ void main() {
     expect(ports.contentReads, 1);
   });
 
-  testWidgets('dedup repeated errors and later correct clear review candidate', (
-    tester,
-  ) async {
-    final ports = _Ports(original)..records = [report(1), report(2), report(1)];
-    await mount(tester, ports);
-    await load(tester);
-    expect(find.text('N5 · 2 bộ đã lưu'), findsOneWidget);
-    expect(find.text('Câu đúng theo bài gốc: 0 / 2'), findsOneWidget);
-    expect(find.text('Từ hiện tại đã luyện: 1'), findsOneWidget);
-    expect(find.text('Từ cần ôn: 1'), findsOneWidget);
-    expect(find.text(question.target.heading), findsOneWidget);
-    expect(find.textContaining('Sai 2 lần'), findsOneWidget);
-    expect(find.textContaining(fixture.owner), findsNothing);
-    ports.records = [...ports.records, report(3, correct: true)];
-    await load(tester);
-    expect(find.text('N5 · 3 bộ đã lưu'), findsOneWidget);
-    expect(find.text('Câu đúng theo bài gốc: 1 / 3'), findsOneWidget);
-    expect(find.text('Từ cần ôn: 0'), findsOneWidget);
-    expect(find.text(question.target.heading), findsNothing);
-  });
+  testWidgets(
+    'dedup repeated errors and later correct clear review candidate',
+    (tester) async {
+      final ports = _Ports(original)
+        ..records = [report(1), report(2), report(1)];
+      await mount(tester, ports);
+      await load(tester);
+      expect(find.text('N5 · 2 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 0 / 2'), findsOneWidget);
+      expect(find.text('Từ hiện tại đã luyện: 1'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      expect(find.text(question.target.heading), findsOneWidget);
+      expect(find.textContaining('Sai 2 lần'), findsOneWidget);
+      expect(find.textContaining(fixture.owner), findsNothing);
+      ports.records = [...ports.records, report(3, correct: true)];
+      await load(tester);
+      expect(find.text('N5 · 3 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 1 / 3'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(find.text(question.target.heading), findsNothing);
+    },
+  );
 
   testWidgets('reload clears previous data and redacts storage failure', (
     tester,
@@ -267,33 +269,34 @@ void main() {
     });
   }
 
-  testWidgets('level replacement fences held source without retargeting account', (
-    tester,
-  ) async {
-    final ports = _Ports(original)..records = [report(1)];
-    final container = await mount(tester, ports);
-    final profile = ports.harness.runtime.state.profile;
-    ports.contentWaiting = Completer<List<CurriculumEntry>>();
-    final loadButton = find.byKey(const Key('quiz-progress-load'));
-    await tester.ensureVisible(loadButton);
-    await tester.tap(loadButton);
-    await tester.pump();
-    final selector = tester.widget<DropdownButton<PreviewLevel>>(
-      find.byKey(const Key('quiz-progress-level')),
-    );
-    selector.onChanged!(PreviewLevel.n4);
-    await tester.pumpAndSettle();
-    ports.contentWaiting!.complete(original);
-    await tester.pumpAndSettle();
-    expect(ports.reads, 0);
-    expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
-    ports.contentWaiting = null;
-    await load(tester);
-    expect(find.text('N4 · 0 bộ đã lưu'), findsOneWidget);
-    expect(find.text(question.target.heading), findsNothing);
-    expect(identical(ports.harness.runtime.state.profile, profile), isTrue);
-    expect(container.read(previewLevelProvider), PreviewLevel.n5);
-  });
+  testWidgets(
+    'level replacement fences held source without retargeting account',
+    (tester) async {
+      final ports = _Ports(original)..records = [report(1)];
+      final container = await mount(tester, ports);
+      final profile = ports.harness.runtime.state.profile;
+      ports.contentWaiting = Completer<List<CurriculumEntry>>();
+      final loadButton = find.byKey(const Key('quiz-progress-load'));
+      await tester.ensureVisible(loadButton);
+      await tester.tap(loadButton);
+      await tester.pump();
+      final selector = tester.widget<DropdownButton<PreviewLevel>>(
+        find.byKey(const Key('quiz-progress-level')),
+      );
+      selector.onChanged!(PreviewLevel.n4);
+      await tester.pumpAndSettle();
+      ports.contentWaiting!.complete(original);
+      await tester.pumpAndSettle();
+      expect(ports.reads, 0);
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      ports.contentWaiting = null;
+      await load(tester);
+      expect(find.text('N4 · 0 bộ đã lưu'), findsOneWidget);
+      expect(find.text(question.target.heading), findsNothing);
+      expect(identical(ports.harness.runtime.state.profile, profile), isTrue);
+      expect(container.read(previewLevelProvider), PreviewLevel.n5);
+    },
+  );
 
   testWidgets('route exit fences late history failure', (tester) async {
     final ports = _Ports(original);

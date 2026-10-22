@@ -3098,3 +3098,29 @@ Actions. See QUIZ_PROGRESS_VIEW.md. Keep #13 open/#41 draft/all14 hosted gates
 pending. Next inspect complete latest-attempt CI and fix real diagnostics; only
 pending CI means released handoff without duplicate code or long polling.
 Pro/N4/main/source branches, merge/deployment/release/schedule unchanged.
+
+## Progress widget pinned-format correction — core-20261022T0510
+
+Resume #41 at935b7286618e6ebd5269d7340e2de1e6ad17d1bd. Exact
+CI39721489739 latest attempt1 completed repo/database/AI/Windows every required
+step successfully, including configured/preview builds/native checks/artifacts.
+Flutter stopped at strict format: exactly two hunks in the new progress widget
+test, wrapping two long testWidgets calls and one cascade. Production progress
+source and all other Dart files were accepted by the formatter. Analyze, new
+ten widgets/full Flutter/Chrome/Web/downstream were skipped, not passed.
+
+Applied exactly the pinned-SDK diff from the completed Flutter job. Complete
+corrected test Git hash04081f48 matches diagnostic target04081f4; all ten expanded
+cases, all original assertions and string literals retained. All non-whitespace/
+non-comma text is identical. No production/model/owner guards, CI/lint/security,
+workflow/dependency or Pro/content changes. Separate diagnostic/source/assertion/
+blob/diff review and git diff --check passed. Local Dart/Flutter SDK absent; no
+new executable format/analyze/widget/build pass claim.
+
+Next inspect corrected-head latest-attempt allfive jobs/every required step,
+including all ten progress widgets, before further implementation. Fix actual
+diagnostics retaining assertions; pending-only release without duplicate source/
+docs-only commits or long polling. Keep #13 open/#41 draft/default preview/all14
+hosted groups pending. Historical674 Flutter/five Chrome validates only the
+previous save increment. Main/source/Pro/API/schema/RLS/Auth strategy/providers/
+spend/merge/deployment/release/schedule unchanged.
