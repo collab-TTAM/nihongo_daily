@@ -3957,3 +3957,67 @@ no deployment, production deletion, security reduction, release or schedule chan
   A-B/learner proof remain, not certified by a runtime metadata string. Keep #41
   draft/#31/#20/#22/#15/#13 open/defaults unconfigured/all14 release groups pending;
   no merge/issue closure/production release/schedule change.
+
+
+## Core checkpoint — #31 explicit trusted server assembly, 2026-10-22 UTC
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c unchanged. Resume draft#41 /
+  automation/issue-11-plan-sdk-integration, parent15896c53573e205c016c790c42aa0e4427c74262,
+  base0c5ed53c0a948cfbb1d5de15442d11ea14feddb3/554 blobs. Single core writer marker
+  core-20261022T2218-trusted-assembly; #37 redirects unchanged. Pro #14/N4/data/
+  manifests/content tests/docs/branch reserved and untouched.
+- Exact-parent CI39856656219/latest attempt1 now allfive jobs/every step completed/
+  success (no skips), superseding old pending handoff. Actual completed AI log
+  proves allseven Supabase v1.77.4 main-to-user-worker HTTP groups passed. Artifact
+  ai-edge-user-worker ID12459851532/zip digest3a9d7bb1736db5ebd029770e5ce5b5368980d6967c251dc4f120f2f0d10c174a,
+  source15896c5; registry image digestad45164b7548bf5820ed7be714789c17ac2865edce79a09cfb4c3756c3d365a8,
+  bundle749ba4a178e2d0d9a3dfeecbfe3536fa2db2fe6281559f29f6b6e17933c57759.
+  Reported V8/TS literals are not direct engine measurement. This proves parent
+  Edge fixture portability, not hosted Auth/provider/SQL inside Edge or release.
+- New trusted_runtime.ts composes SupabaseAuthVerifier, verified-TLS owned pg quota,
+  text context and atomic conversation drivers with fixed five HTTP handlers.
+  Explicit createTrustedPostgresAiHandlers requires trusted server HTTPS origin/
+  public key/database URL and mandatory caller provider; construction performs no
+  I/O, selects no provider, reads no environment and installs no listener/default.
+  Existing URL/key/SSL-override validation and fixed application names retained.
+- Lower assemblePostgresAiHandlers is an explicit host-only seam with exclusively
+  owned factories. Captures Auth/provider/lookup functions and receivers plus
+  three connection factory functions/receiver before async work, freezes dependency
+  container/wrappers/returned exact-five handler table. Caller still owns mutable
+  factory/provider/lookup internals and resources; no cloning/freezing/automatic
+  close or SDK session ownership. Request query/body cannot select operation.
+- Real existing drivers retain short transaction/COMMIT-before-provider/no-open-
+  transaction-during-provider/COMMIT-before-success and abort/late-response guards.
+  Immutable fail-closed legacy receipt sentinel prohibits memory/split fallback;
+  optional lookup-only recovery binds exact same internally owned conversation
+  store and captured method. Missing recovery keeps pending unavailable without
+  reset/acquisition/redispatch. No RLS/TLS/SQL/default/Auth strategy/provider/wire/
+  spend/collection/endpoint/deployment/production deletion change.
+- Twelve new tests use actual Supabase verifier with TEST ONLY HTTP, actual drivers
+  with TEST ONLY SQL protocol replies and TEST ONLY provider: allfive operations/
+  exact owner-op parameters/COMMIT and close counts, immutable handlers/no initial
+  I/O, trusted config rejection/missing provider, Auth/quota/uncertain COMMIT failure,
+  captured methods/receivers/factories, A/B/A without identity cache, same-store
+  recovered success without acquire/provider, no-recovery pending and cancel during
+  quota COMMIT with ignored late delivery/close once. Turn reserves assistant2
+  under existing coherent-driver rules; frozen wire models unchanged.
+- Local observed Node24 format/strict check/all180 (168 original+12 new), production
+  audit0; pinned Deno2.9.6 strict check/all180 passed/no skips. Python QA35 and
+  inventory67/all14 hosted pending/whitespace passed. Existing Node/Deno test glob
+  includes new file; workflow/old source/tests/native assertions/dependencies/SQL/
+  Edge probe/Pro bytes unchanged. Separate review confirms no dropped old QA
+  cases/findings/gates/assertions or old runtime logic; all three owned factories
+  still use certificate verification, fresh connection/short transactions.
+- Seven paths: new backend/ai/src/trusted_runtime.ts, test/trusted_runtime.test.ts,
+  docs/AI_TRUSTED_RUNTIME.md; docs/AI_BOUNDARY.md, AI_EDGE_USER_WORKER.md,
+  PROJECT_STATUS.md and qa/matrix.json. New exact-head latest-attempt full CI remains
+  required; parent platform/Edge/native results cannot substitute. Local native
+  PostgreSQL/Docker/Flutter/Windows absent; new assembly lacks native hosted/Edge
+  transport proof. Existing Edge bundle uses fixture ports and is not this assembly.
+- Next inspect new exact-head allfive jobs/every step/Node+Deno180/retained Edge7/
+  pg42, fix genuine failures retaining assertions/security. Then add native full
+  assembled transport/Edge/PostgreSQL proof independently of live provider choices;
+  real authenticated upstream adapter/provenance, hosted JWT/TLS/CA/PostgREST/A-B/
+  learner gates remain. #31/#20/#22/#15/#13 open/#41 draft/defaults unconfigured/
+  all14 release groups/Personal Alpha pending. No merge/issue closure/release or
+  schedule change.

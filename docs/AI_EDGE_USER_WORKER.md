@@ -115,3 +115,8 @@ real disconnect across the hosted proxy, deployment or Personal Alpha claim.
 The local cloud environment has no Docker; actual container/user-isolate proof
 requires the new exact-head Actions step, observed with all latest-attempt jobs.
 All14 hosted release groups and provider decisions/configuration remain gated.
+
+The explicit server composition is documented in [AI_TRUSTED_RUNTIME.md](AI_TRUSTED_RUNTIME.md).
+It requires caller configuration/provider and retains verified TLS/atomic transactions;
+no default endpoint or live provider is enabled. Parent Edge fixture evidence does
+not certify the new full PostgreSQL assembly inside an Edge worker.

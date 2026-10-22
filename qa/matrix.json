@@ -1472,6 +1472,37 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task bundle:edge && mkdir -p ../../build/edge/main && cp edge/main.ts ../../build/edge/main/index.ts && python3 ../../scripts/verify_edge_user_worker.py",
       "limitation": "Local Docker absent; the mandatory exact-head CI step must execute the actual pinned container/user worker before claiming Edge compatibility. Local strict checks or standalone Deno do not prove user-isolate execution. All ports/receipts are TEST ONLY; no hosted runtime equivalence, real JWT, TLS/CA, PostgREST, distributed memory receipt, authenticated upstream, learner/release evidence or deployment. Existing all14 release groups remain pending."
+    },
+    {
+      "id": "ai-trusted-postgres-assembly",
+      "status": "automated-baseline",
+      "scope": "Explicit trusted server composition of SupabaseAuthVerifier, PostgreSQL quota/text/atomic conversation and same-store recovery into five fixed HTTP handlers; no default endpoint/provider",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/trusted_runtime.test.ts",
+          "contains": "assembled same-store recovery uses captured lookup without new acquisition or provider"
+        },
+        {
+          "path": "backend/ai/test/trusted_runtime.test.ts",
+          "contains": "assembled cancelled quota commit closes once and ignores late result before provider"
+        },
+        {
+          "path": "backend/ai/src/trusted_runtime.ts",
+          "contains": "createTrustedPostgresAiHandlers"
+        },
+        {
+          "path": "backend/ai/src/trusted_runtime.ts",
+          "contains": "store: conversations"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test && deno task check && deno task test",
+      "limitation": "Local180 Node/Deno tests (168 retained+12 new) use TEST ONLY Auth HTTP/SQL protocol/provider. Trusted construction opens no connection and retains verified-TLS factories; no native assembled TLS/PostgreSQL/Edge/PostgREST/hosted identity/provider or learner proof. Parent15896c5 Edge7 fixture probe/allfive jobs passed, not this full new assembly. Defaults unconfigured/all14 release groups remain pending; exact-head full CI required."
     }
   ],
   "findings": [

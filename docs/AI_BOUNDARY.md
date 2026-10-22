@@ -228,3 +228,8 @@ unconfigured, #31 open/#41 draft/all14 hosted learner release groups pending.
 See [AI_EDGE_USER_WORKER.md](AI_EDGE_USER_WORKER.md) for the separate TEST ONLY
 Supabase Edge bundle/main-to-user-isolate probe and its exact-head CI requirement.
 Standalone Deno evidence does not substitute for that execution or hosted proof.
+
+The explicit server composition is documented in [AI_TRUSTED_RUNTIME.md](AI_TRUSTED_RUNTIME.md).
+It requires caller configuration/provider and retains verified TLS/atomic transactions;
+no default endpoint or live provider is enabled. Parent Edge fixture evidence does
+not certify the new full PostgreSQL assembly inside an Edge worker.
