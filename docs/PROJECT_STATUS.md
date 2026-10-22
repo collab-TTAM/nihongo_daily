@@ -3042,3 +3042,25 @@ new Flutter execution requires exact-head CI. Inspect the first new boundary
 failure or all-five success before selecting a functional fix. Do not equate
 fixture/component checks to hosted learner proof. Keep draft #41/#13 open and
 all14 hosted gates pending; Pro/N4 and Auth/API/schema/RLS policies unchanged.
+
+### Widget Auth fixture zone correction
+
+Diagnostic checkpoint9ac29bf428b63fe2d8fb874fd55700036eb0fe89 preserves the
+original assertions and adds readiness/round-result preconditions. Follow-up
+source review found Harness (AccountController and Auth stream subscription)
+created by setUp, outside testWidgets' FakeAsync zone. Existing passing account/
+history fixtures construct it inside the widget body instead. Stream listeners
+run callbacks in their registration zone, so later pumps cannot deterministically
+flush profile work registered outside their fake clock.
+
+Move Harness/source construction into mount inside each widget body; retain
+in-memory synchronous store/reset in setUp and explicitly construct/close the
+unit test's Harness in its own body. Preserve all nine cases and every original
+assertion; add five helper assertions for actual readiness and rendered one-
+question completion. No delays, polling, timeout increase, skips or production
+behavior changes. Source/zone/lifecycle teardown/diff review passed. No local
+Dart/Flutter SDK; exact-head CI must confirm the correction.
+
+Next inspect latest-attempt allfive jobs/every step, especially all eight save
+widget cases and retained full Flutter/Chrome/Web/Windows checks. Keep draft/
+release gates pending until observed; fixture clocks are not hosted Auth proof.

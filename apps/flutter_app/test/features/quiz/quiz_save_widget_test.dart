@@ -86,9 +86,7 @@ void main() {
   });
 
   setUp(() {
-    harness = Harness();
     store = _Store();
-    source = _Source(harness, store);
     captures = 0;
   });
 
@@ -97,6 +95,9 @@ void main() {
     bool signIn = true,
     bool failCapture = false,
   }) async {
+    // Register Auth/profile callbacks inside testWidgets' fake-async zone.
+    harness = Harness();
+    source = _Source(harness, store);
     final container = ProviderContainer(
       overrides: [
         accountRuntimeProvider.overrideWithValue(harness.runtime),
@@ -151,6 +152,7 @@ void main() {
   }
 
   test('secure factory returns distinct validated UTC reports', () async {
+    harness = Harness();
     try {
       final round = QuizRound(questions);
       final question = questions.single;
