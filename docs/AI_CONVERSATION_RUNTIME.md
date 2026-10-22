@@ -12,7 +12,8 @@ bounded HTTP/deadline and original contracts remain required host dependencies.
 After verified Auth and rate limiting, AiService freezes the user/operation/event
 key and original request. The opt-in lane first looks up the immutable receipt.
 Completed returns the original schema-checked result before active source checks;
-pending fails safely without calling a provider. Missing proceeds to acquire,
+pending fails safely unless the host explicitly installs the
+[same-store correlated lookup-only binding](AI_CONVERSATION_RECOVERY_RUNTIME.md). Missing proceeds to acquire,
 which reserves the source context/IDs and original dispatch claim together in one
 short owned PostgreSQL transaction. A losing acquire returns only pending or the
 original completed result; it never borrows another worker's token.
@@ -129,3 +130,11 @@ provider lookup or redispatch. Database correlation is not genuine upstream proo
 a trusted authenticated lookup-only verifier and explicit runtime guards remain
 required. Allfive jobs/every step passed on parent9b9283f in CI39813007245/attempt1;
 new driver native cases require their own source's CI.
+
+Current optional recovery is documented in
+[AI_CONVERSATION_RECOVERY_RUNTIME.md](AI_CONVERSATION_RECOVERY_RUNTIME.md). It never
+uses legacy PendingRecovery, creates/renews a claim or calls generate. Explicit
+same-store plus trusted authenticated lookup port is required; no real lookup
+adapter/default is configured. Parent d8eeebc passed allfive jobs/every step and all18
+native cases in CI39822068710/attempt1; new runtime native tests require own-head CI.
+Structural correlation is not authenticated upstream or Personal Alpha proof.

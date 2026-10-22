@@ -3718,3 +3718,57 @@ no deployment, production deletion, security reduction, release or schedule chan
   Hosted TLS/CA/JWT/PostgREST/Edge/Deno/provider proof and all14 learner release
   groups remain pending. Keep #31/#20/#22/#15/#13 open/#41 draft. No merge/release/
   deployment or schedule change.
+
+## Core checkpoint — #31 opt-in correlated recovery runtime, 2026-10-22 18:24 UTC
+
+- One core writer resumes draft #41 `automation/issue-11-plan-sdk-integration`,
+  expected parent `d8eeebc6a616a7f347e9c0358f3baaeece356bb5`, base tree
+  `be7749af81d599fa2b60c468f8a3a24715cb75da`. Main78a44fa unchanged/#37 redirects/
+  source unchanged; Pro #14/N4/content/manifests/content tests/docs/branch untouched.
+- Parent CI39822068710/latest attempt1 raw exactd8eeebc allfive jobs/every step
+  completed/success. Actual completed database log verifies18 native pg cases passed
+  (eight driver +ten earlier runtime, zero fail/skip/cancel); old pending resolved.
+- Added explicit ConversationRecoveryBinding/AuthenticatedConversationLookup port
+  and bounded CorrelatedConversationRecovery coordinator. AiService captures SAME
+  coherent store/lookup before async I/O; pending/losing acquire can recover only
+  with that opt-in. Default remains unavailable; ordinary missing/acquire/generate
+  and legacy fixture lane unchanged. No real provider lookup adapter configured;
+  trusted adapter MUST authenticate upstream provenance, never echo arbitrary
+  learner/model JSON. Metadata/types/SQL fixtures are NOT genuine upstream proof.
+- Capture canonical owner/op/event/full key/original request/saved receipt/context;
+  missing/legacy never fabricates context or dispatch capability. Require <=2MiB
+  exact seven-field original lookup JSON, full semantic request/context equality,
+  unchanged schema/1MiB response/IDs/slots/null audio/typed refs. Shared original
+  pure validators extracted unchanged from pg driver; retained tests unchanged.
+  Frozen captured values pass to guarded SQL reconcile, confirmed COMMIT before
+  success; no renew/acquire/borrowed token/legacy fallback/generate/automatic retry.
+- Independent monotonic10s recovery deadline plus service overall/parent abort;
+  wait races prevent ignored/late store/upstream/reconcile replies from advancing.
+  Cleanup private signal/timer/parent listener; driver owns/closes DB connection.
+  Unknown upstream failures safe PROVIDER_UNAVAILABLE; controlled DB errors kept.
+- Paths: backend/ai/src/ports.ts, service.ts, postgres_conversation.ts; new
+  src/conversation_validation.ts, src/conversation_recovery.ts and
+  test/conversation_recovery.test.ts; appended test/postgres_conversation.native.ts;
+  new docs/AI_CONVERSATION_RECOVERY_RUNTIME.md; docs/AI_BOUNDARY.md,
+  AI_CONVERSATION_RUNTIME.md, AI_CONVERSATION_RECOVERY_DRIVER.md, this status and
+  qa/matrix.json. No endpoint/default/provider strategy/Auth/public wire/migration/
+  RLS/grant/dependency/workflow/spend/collection/deployment change.
+- Local Node24 formatter/strict TypeScript/168 tests (152 retained/16 new, no failed/
+  skipped/cancelled), production audit0 passed. New unit cases cover allthree ops,
+  malformed/misassociated/unknown/oversized result/DB context, same-store/late host
+  binding capture, immutable request casing/semantic object order/output refs/IDs,
+  COMMIT gates/ambiguity/cancel/deadline/late settle/timer starvation/A-B-A.
+- Ten new native pg runtime cases authored/typechecked (28 total) in existing
+  required database command: full lifecycle/replay with actual quota and no open
+  upstream transaction, actual completion delivery loss/restart, lost acquisition
+  with absent original staying pending, late upstream cancellation, observed SQL
+  lock cancellation/no late writes, same/changed original-worker completion races,
+  A/B/A borrowed-result denial, source-retirement rollback and actual COMMIT delivery
+  before success. No local PostgreSQL binary; new exact-head CI execution pending.
+  Synthetic Auth/upstream/plaintext/delivery injection are not live provenance,
+  TLS/CA/JWT/Edge/Deno/real partition or learner evidence.
+- Next inspect exact-head allfive latest-attempt jobs/every step and native28 logs,
+  fixing actual failures without weakening assertions. Real approved authenticated
+  upstream adapter and hosted/Edge/Deno integration remain missing. Keep default
+  unconfigured/#31/#20/#22/#15/#13 open/#41 draft/all14 learner release groups pending.
+  No merge/release/deployment/schedule change.

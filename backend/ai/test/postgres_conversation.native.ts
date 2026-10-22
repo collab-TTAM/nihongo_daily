@@ -991,3 +991,455 @@ test(
     );
   },
 );
+
+// TEST ONLY authenticated-lookup contract fixture: no real upstream provenance.
+type ExistingInput = Parameters<
+  import("../src/ports.ts").AuthenticatedConversationLookup["lookupExisting"]
+>[0];
+function existingRecord(input: ExistingInput) {
+  return JSON.stringify({
+    user_id: input.key.userId,
+    operation: input.key.operation,
+    client_event_id: input.key.eventId,
+    idempotency_key: input.idempotencyKey,
+    request: input.request,
+    context: input.context,
+    response: generated({
+      operation: input.key.operation,
+      systemInstruction: "TEST ONLY",
+      request: input.request,
+      context: input.context,
+    }),
+  });
+}
+function recoveryRuntime(
+  f: Awaited<ReturnType<typeof fixture>>,
+  t: ReturnType<typeof transport>,
+  lookup: (input: ExistingInput, signal: AbortSignal) => Promise<string | null>,
+) {
+  const s = setup(),
+    store = recoveryStore(t);
+  s.deps.auth = {
+    verify: async (bearer) => (bearer === "fixture" ? { id: f.user } : null),
+  };
+  s.deps.limiter = new PostgresQuotaLimiter(t.factory);
+  s.deps.conversations = store;
+  s.deps.conversationRecovery = { store, lookup: { lookupExisting: lookup } };
+  s.deps.provider.generate = async () =>
+    assert.fail("Native recovery must never dispatch");
+  s.deps.recovery = {
+    lookup: async () => assert.fail("Native legacy lookup used"),
+  };
+  s.deps.context = {
+    prepare: async () => assert.fail("split context used"),
+    validateResult: async () => assert.fail("split validation used"),
+  };
+  for (const method of ["lookup", "claim", "complete", "reconcile"] as const)
+    s.store[method] = async () => assert.fail("Native legacy receipt used");
+  const instance = new AiService(contracts, s.deps);
+  return {
+    run: <O extends Mutation>(op: O, req: Requests[O], parent?: AbortSignal) =>
+      instance.execute(op, "fixture", JSON.stringify(req), parent),
+  };
+}
+test(
+  "native correlated runtime recovers start turn finish with real quota and replays closed retired original without upstream",
+  { timeout: 20000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req),
+      t = transport();
+    let lookups = 0;
+    const s = recoveryRuntime(f, t, async (input) => {
+      lookups++;
+      assert.equal(
+        (
+          await admin(
+            "SELECT count(*)::int AS n FROM pg_stat_activity WHERE application_name=$1 AND state LIKE 'idle in transaction%'",
+            [t.name],
+          )
+        ).rows[0]?.n,
+        0,
+      );
+      return existingRecord(input);
+    });
+    await recoveryStore().acquire(key, req, recoverySignal());
+    const first = await s.run("start_conversation", req);
+    assert.equal(first.ok, true);
+    if (!first.ok) assert.fail();
+    const turn = {
+      session_id: first.response.session_id,
+      client_event_id: randomUUID(),
+      text_ja: "元の文",
+    };
+    await recoveryStore().acquire(
+      recoveryKey(f.user, "conversation_turn", turn),
+      turn,
+      recoverySignal(),
+    );
+    const second = await s.run("conversation_turn", turn);
+    assert.equal(second.ok, true);
+    const finish = {
+      session_id: first.response.session_id,
+      client_event_id: randomUUID(),
+    };
+    await recoveryStore().acquire(
+      recoveryKey(f.user, "finish_conversation", finish),
+      finish,
+      recoverySignal(),
+    );
+    const third = await s.run("finish_conversation", finish);
+    assert.equal(third.ok, true);
+    await admin(
+      "UPDATE public.conversation_scenarios SET is_active=false WHERE id=$1::uuid",
+      [f.scenario],
+    );
+    await admin(
+      "UPDATE public.profiles SET preferred_jlpt='N4' WHERE id=$1::uuid",
+      [f.user],
+    );
+    assert.deepEqual(await s.run("start_conversation", req), first);
+    assert.deepEqual(await s.run("conversation_turn", turn), second);
+    assert.deepEqual(await s.run("finish_conversation", finish), third);
+    assert.equal(lookups, 3);
+    assert.equal(t.closed(), t.opened());
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_messages WHERE conversation_session_id=$1::uuid",
+          [first.response.session_id],
+        )
+      ).rows[0]?.n,
+      3,
+    );
+  },
+);
+test(
+  "native correlated runtime actual reconciliation COMMIT lost delivery returns failure then fresh original replay without upstream",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    let lost = false,
+      lookups = 0;
+    const t = transport(async (phase, text, execute) => {
+      const r = await execute();
+      if (phase === 4 && text === "COMMIT") {
+        lost = true;
+        throw Error("TEST_ONLY_RECONCILE_COMMIT_DELIVERY");
+      }
+      return r;
+    });
+    const s = recoveryRuntime(f, t, async (input) => {
+      lookups++;
+      return existingRecord(input);
+    });
+    const out = await s.run("start_conversation", req);
+    assert.equal(out.ok, false);
+    if (!out.ok) assert.equal(out.error.code, "NETWORK_UNAVAILABLE");
+    assert.equal(lost, true);
+    assert.equal(lookups, 1);
+    const retry = recoveryRuntime(f, transport(), async () =>
+      assert.fail("Already completed must not look upstream"),
+    );
+    const replay = await retry.run("start_conversation", req);
+    assert.equal(replay.ok, true);
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_messages m JOIN public.conversation_sessions s ON s.id=m.conversation_session_id WHERE s.user_id=$1::uuid",
+          [f.user],
+        )
+      ).rows[0]?.n,
+      1,
+    );
+  },
+);
+test(
+  "native correlated runtime acquire delivery loss without provider result stays pending across fresh retries",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    const t = transport(async (_phase, text, execute) => {
+      const r = await execute();
+      if (text === "COMMIT") throw Error("TEST_ONLY_ACQUIRE_DELIVERY");
+      return r;
+    });
+    await recoveryFailure(
+      recoveryStore(t).acquire(key, req, recoverySignal()),
+      "NETWORK_UNAVAILABLE",
+    );
+    const initial = await pendingRecord(recoveryStore(), key, req);
+    let lookups = 0;
+    for (let i = 0; i < 2; i++) {
+      const s = recoveryRuntime(f, transport(), async () => {
+        lookups++;
+        return null;
+      });
+      const out = await s.run("start_conversation", req);
+      assert.equal(out.ok, false);
+      if (!out.ok) assert.equal(out.error.code, "PROVIDER_UNAVAILABLE");
+    }
+    assert.equal(lookups, 2);
+    assert.deepEqual(await pendingRecord(recoveryStore(), key, req), initial);
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+          [f.user],
+        )
+      ).rows[0]?.n,
+      0,
+    );
+  },
+);
+test(
+  "native correlated runtime cancelled upstream ignores late result without SQL reconciliation or claim",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    let release!: () => void,
+      reconciles = 0;
+    const t = transport(async (_phase, text, execute) => {
+      if (text.includes("ai_conversation_reconcile(")) reconciles++;
+      return execute();
+    });
+    const parent = new AbortController(),
+      s = recoveryRuntime(
+        f,
+        t,
+        (input) =>
+          new Promise((resolve) => {
+            release = () => resolve(existingRecord(input));
+          }),
+      );
+    const work = s.run("start_conversation", req, parent.signal);
+    await barrier(() => Boolean(release));
+    parent.abort();
+    assert.equal((await work).ok, false);
+    release();
+    await delay(30);
+    assert.equal(reconciles, 0);
+    assert.equal(t.closed(), t.opened());
+    await pendingRecord(recoveryStore(), key, req);
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+          [f.user],
+        )
+      ).rows[0]?.n,
+      0,
+    );
+  },
+);
+test(
+  "native correlated runtime cancellation at observed reconciliation lock cannot persist after release",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    const parent = new AbortController(),
+      t = transport(),
+      locker = client();
+    await locker.connect();
+    try {
+      await locker.query("BEGIN");
+      await locker.query(
+        "SELECT pg_advisory_xact_lock(hashtextextended('nihongo-ai-conversation:'||$1::text,0))",
+        [f.user],
+      );
+      const s = recoveryRuntime(f, t, async (input) => existingRecord(input));
+      const work = s.run("start_conversation", req, parent.signal);
+      await waitForLock(t.name);
+      parent.abort();
+      assert.equal((await work).ok, false);
+      await locker.query("ROLLBACK");
+      await delay(30);
+      await pendingRecord(recoveryStore(), key, req);
+      assert.equal(
+        (
+          await admin(
+            "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+            [f.user],
+          )
+        ).rows[0]?.n,
+        0,
+      );
+      assert.equal(t.closed(), t.opened());
+    } finally {
+      await locker.end();
+    }
+  },
+);
+for (const changed of [false, true])
+  test(
+    `native correlated runtime original worker completion while lookup held yields ${changed ? "conflict" : "original replay"} without duplicate writes`,
+    { timeout: 15000 },
+    async () => {
+      const f = await fixture(),
+        req = start(f),
+        key = recoveryKey(f.user, "start_conversation", req),
+        repo = recoveryStore();
+      const claim = await repo.acquire(key, req, recoverySignal());
+      if (claim.kind !== "acquired") assert.fail();
+      const result = generated({
+        operation: key.operation,
+        systemInstruction: "TEST ONLY",
+        request: req,
+        context: claim.context,
+      });
+      let release!: () => void;
+      const s = recoveryRuntime(
+        f,
+        transport(),
+        (input) =>
+          new Promise((resolve) => {
+            release = () => {
+              const record = JSON.parse(existingRecord(input));
+              if (changed) record.response.assistant_message.text_ja = "変更";
+              resolve(JSON.stringify(record));
+            };
+          }),
+      );
+      const work = s.run("start_conversation", req);
+      await barrier(() => Boolean(release));
+      await repo.complete(
+        key,
+        req,
+        claim.token,
+        result,
+        claim.context,
+        recoverySignal(),
+      );
+      release();
+      const out = await work;
+      assert.equal(out.ok, !changed);
+      if (!out.ok) assert.equal(out.error.code, "SYNC_CONFLICT");
+      else assert.deepEqual(out.response, result);
+      assert.deepEqual(
+        await recoveryStore().lookupRecovery(key, req, recoverySignal()),
+        { kind: "completed", response: result },
+      );
+      assert.equal(
+        (
+          await admin(
+            "SELECT count(*)::int AS n FROM public.conversation_messages m JOIN public.conversation_sessions s ON s.id=m.conversation_session_id WHERE s.user_id=$1::uuid",
+            [f.user],
+          )
+        ).rows[0]?.n,
+        1,
+      );
+    },
+  );
+test(
+  "native correlated runtime A B A rejects another account result under same event and preserves both originals",
+  { timeout: 15000 },
+  async () => {
+    const a = await fixture(),
+      b = await fixture("N4"),
+      ra = start(a),
+      rb = { ...start(b), client_event_id: ra.client_event_id };
+    const ka = recoveryKey(a.user, "start_conversation", ra),
+      kb = recoveryKey(b.user, "start_conversation", rb);
+    await recoveryStore().acquire(ka, ra, recoverySignal());
+    await recoveryStore().acquire(kb, rb, recoverySignal());
+    let aRecord!: string;
+    const sa = recoveryRuntime(a, transport(), async (input) => {
+      aRecord = existingRecord(input);
+      return aRecord;
+    });
+    const first = await sa.run("start_conversation", ra);
+    assert.equal(first.ok, true);
+    const wrong = recoveryRuntime(b, transport(), async () => aRecord);
+    const denied = await wrong.run("start_conversation", rb);
+    assert.equal(denied.ok, false);
+    if (!denied.ok) assert.equal(denied.error.code, "PROVIDER_UNAVAILABLE");
+    await pendingRecord(recoveryStore(), kb, rb);
+    const sb = recoveryRuntime(b, transport(), async (input) =>
+      existingRecord(input),
+    );
+    assert.equal((await sb.run("start_conversation", rb)).ok, true);
+    assert.deepEqual(await sa.run("start_conversation", ra), first);
+  },
+);
+test(
+  "native correlated runtime source retirement during upstream lookup rolls back without replacing saved context",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    const saved = await pendingRecord(recoveryStore(), key, req);
+    const s = recoveryRuntime(f, transport(), async (input) => {
+      await admin(
+        "UPDATE public.conversation_scenarios SET is_active=false WHERE id=$1::uuid",
+        [f.scenario],
+      );
+      return existingRecord(input);
+    });
+    const out = await s.run("start_conversation", req);
+    assert.equal(out.ok, false);
+    if (!out.ok) assert.equal(out.error.code, "NOT_FOUND");
+    assert.deepEqual(await pendingRecord(recoveryStore(), key, req), saved);
+    assert.equal(
+      (
+        await admin(
+          "SELECT count(*)::int AS n FROM public.conversation_sessions WHERE user_id=$1::uuid",
+          [f.user],
+        )
+      ).rows[0]?.n,
+      0,
+    );
+  },
+);
+test(
+  "native correlated runtime success waits for real reconciliation COMMIT delivery while fresh reader sees exactly one original",
+  { timeout: 15000 },
+  async () => {
+    const f = await fixture(),
+      req = start(f),
+      key = recoveryKey(f.user, "start_conversation", req);
+    await recoveryStore().acquire(key, req, recoverySignal());
+    let release!: () => void,
+      done = false;
+    const t = transport(async (phase, text, execute) => {
+      const r = await execute();
+      if (phase === 4 && text === "COMMIT")
+        return new Promise((resolve) => {
+          release = () => resolve(r);
+        });
+      return r;
+    });
+    const s = recoveryRuntime(f, t, async (input) => existingRecord(input));
+    const work = s.run("start_conversation", req).then((out) => {
+      done = true;
+      return out;
+    });
+    await barrier(() => Boolean(release));
+    assert.equal(done, false);
+    const found = await recoveryStore().lookupRecovery(
+      key,
+      req,
+      recoverySignal(),
+    );
+    assert.equal(found.kind, "completed");
+    release();
+    const out = await work;
+    assert.equal(out.ok, true);
+    if (found.kind === "completed" && out.ok)
+      assert.deepEqual(out.response, found.response);
+    assert.equal(t.closed(), t.opened());
+  },
+);

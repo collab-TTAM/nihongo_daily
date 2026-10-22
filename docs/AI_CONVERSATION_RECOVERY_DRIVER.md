@@ -3,8 +3,9 @@
 `PostgresConversationStore` additionally implements the separate host-only
 `ConversationRecoveryStore` port. It calls the existing private reconciliation SQL
 through `lookupRecovery` and `reconcile`. This is a database component, not a provider
-verifier or an enabled recovery flow. `AiDependencies`/AiService/default application
-are unchanged; pending still fails closed. No endpoint, provider, paid call, Auth
+verifier or an enabled default recovery flow. The separate optional
+[runtime binding](AI_CONVERSATION_RECOVERY_RUNTIME.md) requires a trusted authenticated
+lookup adapter; no real upstream adapter is configured and default pending fails closed. No endpoint, provider, paid call, Auth
 strategy, public wire field, database migration/grant or deployment is introduced.
 
 ## Original binding and transaction order
@@ -55,9 +56,10 @@ They do NOT prove genuine upstream output. Before calling reconcile, a trusted
 lookup-only provider adapter must authenticate its transport and prove stable
 owner/operation/event/key, original request/context and result association. A type,
 SQL role, learner/model echo or legacy PendingRecovery object supplies no such proof.
-This driver deliberately is not an AiDependencies recovery binding. Never wire
-legacy recovery directly here or use absence/unknown to authorize another dispatch.
-There is no configured upstream lookup/authentication or complete recovery runtime.
+The optional explicit runtime binding requires this SAME coherent store and a
+trusted authenticated lookup port. Never wire legacy recovery directly here or use
+absence/unknown to authorize another dispatch. No real upstream lookup/authentication
+adapter is configured; types/metadata equality cannot prove genuine provenance.
 
 ## Evidence and next step
 
@@ -90,3 +92,9 @@ then implement trusted lookup-only verifier and explicit bounded runtime recover
 without legacy fallback, token borrowing or redispatch. Hosted/Edge/Deno/provider
 proof and all14 Personal Alpha learner release groups remain pending; #41 draft,
 #31 open. No release acceptance or schedule change.
+
+Parent d8eeebc passed allfive jobs/every step in CI39822068710/attempt1; completed
+database log verifies all18 native pg cases, including all eight driver additions.
+That resolves this driver's native/platform pending checkpoint. The next source
+adds [opt-in correlated recovery runtime](AI_CONVERSATION_RECOVERY_RUNTIME.md); its
+new tests need separate exact-head CI and do not authenticate a real upstream.

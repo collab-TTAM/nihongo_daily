@@ -207,3 +207,11 @@ not wired into AiDependencies/AiService/defaults; pending still fails closed. It
 database association checks do not authenticate a provider result. Trusted
 authenticated lookup-only verification/runtime integration and all hosted evidence
 remain outstanding; never substitute learner/model/legacy recovery echo as proof.
+
+The [opt-in correlated recovery coordinator](AI_CONVERSATION_RECOVERY_RUNTIME.md)
+now supplies explicit same-store runtime wiring and strict immutable association
+checks with bounded abort/deadline/COMMIT guards. It requires an injected trusted
+AuthenticatedConversationLookup that authenticates existing upstream results; no
+real adapter or default is configured. JSON/schema/metadata equality and test
+fixtures do not authenticate a provider. Existing pending remains unavailable
+without that explicit binding; no legacy fallback, claim renewal or redispatch.

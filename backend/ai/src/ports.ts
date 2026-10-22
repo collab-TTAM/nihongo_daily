@@ -164,9 +164,34 @@ export interface ConversationRecoveryStore {
     signal: AbortSignal,
   ): Promise<void>;
 }
+/** Trusted server adapter MUST authenticate upstream and verify result provenance.
+ * Metadata here must come from that verified lookup, never model/learner echoes.
+ * Read existing result only: no generate/reissue/claim/reset on missing or unknown.
+ * Return null for absent/ambiguous; otherwise <=2MiB JSON with exactly user_id,
+ * operation, client_event_id, idempotency_key, original request/context and response.
+ * Structural checks in recovery do not implement transport authentication.
+ */
+export interface AuthenticatedConversationLookup {
+  lookupExisting(
+    input: {
+      readonly key: Readonly<ReceiptKey>;
+      readonly request: Requests[Mutation];
+      readonly context: PreparedContext;
+      readonly idempotencyKey: string;
+    },
+    signal: AbortSignal,
+  ): Promise<string | null>;
+}
+export interface ConversationRecoveryBinding {
+  /** Must be the identical captured AiDependencies.conversations object. */
+  readonly store: ConversationStore & ConversationRecoveryStore;
+  readonly lookup: AuthenticatedConversationLookup;
+}
 export interface AiDependencies {
   /** Explicit binding; never fall back to split claim or legacy recovery when set. */
   conversations?: ConversationStore;
+  /** Explicit opt-in only; no adapter/default/legacy fallback is supplied. */
+  conversationRecovery?: ConversationRecoveryBinding;
   auth: AuthVerifier;
   limiter: RateLimiter;
   context: ContextRepository;

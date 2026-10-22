@@ -1374,7 +1374,34 @@
         18
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
-      "limitation": "Local Node24 format/typecheck/152 tests/audit0 passed; eight additional real pg cases authored/typechecked require exact-head CI (18 native total). SQL association/plaintext/generated response/injected delivery fixtures are not trusted upstream/TLS/CA/JWT/Edge/Deno/real partition/learner proof. No AiService/default recovery binding; pending fails closed. All14 hosted release groups remain pending."
+      "limitation": "Exact parentd8eeebc6a616a7f347e9c0358f3baaeece356bb5 passed allfive jobs/every step and18 native pg cases (including all eight recovery-driver cases) in CI39822068710/latest attempt1. Plaintext/generated result/delivery injection fixtures are not authenticated upstream or hosted learner proof; new optional runtime source requires own-head checks. All14 release groups remain pending."
+    },
+    {
+      "id": "ai-conversation-correlated-recovery",
+      "status": "automated-baseline",
+      "scope": "Explicit same-store lookup-only runtime with immutable original association and strict output validation, confirmed reconciliation COMMIT and bounded cancellation; authentic upstream adapter remains required",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/conversation_recovery.test.ts",
+          "contains": "correlated runtime recovers all three original mutations with frozen original association and no dispatch"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "native correlated runtime cancelled upstream ignores late result without SQL reconciliation or claim"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/postgres_conversation.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
+      "limitation": "Local Node24 format/typecheck/168 tests/audit0 passed; ten additional real pg runtime cases authored/typechecked require exact-head CI (28 total). An injected AuthenticatedConversationLookup contract/JSON metadata equality is not genuine upstream authenticity. No real upstream adapter/default/endpoint is configured. Hosted TLS/CA/JWT/PostgREST/Edge/Deno/real partition/learner evidence and all14 release groups remain pending."
     }
   ],
   "findings": [
@@ -1397,8 +1424,8 @@
         "ai-runtime",
         "ai-live"
       ],
-      "description": "Distributed limits, trusted message/session transactions and upstream reconciliation are not bound in the runtime. Fixture success cannot authorize real provider calls.",
-      "action": "Complete #31/#17 with durable commit-before-dispatch and correlated lookup-only recovery; retain safe pending state."
+      "description": "Provider-neutral opt-in Auth/quota/conversation/recovery components and strict correlation checks lack an approved real authenticated upstream adapter and deployed Edge evidence. Fixture or echoed metadata success cannot authorize real provider calls.",
+      "action": "Complete #31 hosted/Edge/Deno proof and #17 approved live provider/lookup authentication; retain default fail-closed pending, no legacy fallback or redispatch."
     },
     {
       "id": "SEC-03",

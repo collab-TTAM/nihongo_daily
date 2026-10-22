@@ -15,6 +15,8 @@ import type {
 } from "./ports.ts";
 import type { error as WireError, item_ref } from "./wire.ts";
 
+import { CorrelatedConversationRecovery } from "./conversation_recovery.ts";
+
 const messages: Record<WireError["code"], string> = {
   UNAUTHORIZED: "Phiên đăng nhập không hợp lệ. Hãy đăng nhập lại.",
   FORBIDDEN: "Bạn không có quyền truy cập nội dung này.",
@@ -191,9 +193,22 @@ export class AiService {
     signal: AbortSignal,
   ): Promise<Responses[O]> {
     const store = this.deps.conversations!;
-    const replay = (found: ReceiptLookup): Responses[O] => {
-      if (found.kind !== "completed")
-        throw new BoundaryError("PROVIDER_UNAVAILABLE");
+    const recoveryStore = this.deps.conversationRecovery?.store;
+    const recoveryLookup = this.deps.conversationRecovery?.lookup;
+    const replay = async (found: ReceiptLookup): Promise<Responses[O]> => {
+      if (found.kind !== "completed") {
+        if (
+          found.kind !== "pending" ||
+          recoveryStore !== store ||
+          !recoveryLookup
+        )
+          throw new BoundaryError("PROVIDER_UNAVAILABLE");
+        return new CorrelatedConversationRecovery(
+          this.contracts,
+          recoveryStore,
+          recoveryLookup,
+        ).recover(key, request, signal) as Promise<Responses[O]>;
+      }
       return deepFreeze(
         this.contracts.response(op, structuredClone(found.response)),
       );
