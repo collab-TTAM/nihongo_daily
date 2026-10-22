@@ -3124,3 +3124,39 @@ docs-only commits or long polling. Keep #13 open/#41 draft/default preview/all14
 hosted groups pending. Historical674 Flutter/five Chrome validates only the
 previous save increment. Main/source/Pro/API/schema/RLS/Auth strategy/providers/
 spend/merge/deployment/release/schedule unchanged.
+
+## Native quiz save/history/progress journey — core-20261022T0614
+
+Resume #41 at03cda71f75354b1fc9941502f6493c42537724fe. Exact CI39726504614
+latest attempt1 completed allfive jobs/every required step. Completed logs prove
+683 Flutter tests, allten progress cases/five actual Chrome/Web release, retained
+SDK/native/process/wire/SQL and configured/preview Windows/native/artifact gates.
+Progress formatting and all57 widget assertions are verified as components;
+all14 hosted learner groups remain pending.
+
+Add a composed real-file widget journey: actual pinned SDK/persistent runtime/
+owned startup, original bundled N5 and production UUID/UTC capture through ten
+real answers, explicit save, history and current-source needs-review statistics.
+A forwarding observation port still awaits actual native append/flush/read and
+returns unchanged rows; it supplies no success/result fixtures. Stale duplicate
+save must append once. History/progress must agree with disk9/10/one candidate.
+
+Await owned close before unmount; reopen real journals under a fresh SDK/runtime
+and retained TEST ONLY vault, require refresh/profile barrier without manual
+login or seeded attempt, then recover the exact event and visible projection.
+A/B/A logout/login must clear old UI, return empty B data, recover A only after
+explicit read, leave file bytes unchanged and append nothing. Only fixture Auth/
+profile endpoints may be called; no quiz RPC or owner/token text in the view.
+
+SDK/storage/callbacks/awaited close use the real event loop with bounded native
+completion/readiness, then normal frame checks. New composed test is authored,
+not yet executed. HTTP/unsigned JWT/vault are simulated; graceful same-process
+reopen is not forced-process/power-loss, physical Windows vault, hosted Auth/RLS
+or multi-device evidence. Default/prod behavior and all prior tests unchanged.
+See QUIZ_DISK_JOURNEY.md. QA adds a baseline anchor, retains all14 pending gates.
+
+Next inspect new exact-head latest-attempt allfive jobs/every step, fix real
+diagnostics retaining assertions. New format/analyze/native-widget/platform
+execution requires Actions because local Dart/Flutter SDK is absent. Keep #13
+open/#41 draft; no main/source/Pro/N4/API/schema/RLS/Auth strategy/dependency/CI/
+security/provider/spend/merge/deployment/release/schedule changes.

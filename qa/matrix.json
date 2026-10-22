@@ -1070,7 +1070,29 @@
         18
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/vocabulary_quiz_history_test.dart",
-      "limitation": "Client-report models and configured local history; new progress UI exact-head execution pending. Simulated Auth/storage UI ports do not prove hosted attempts, multi-device sync, mastery, native file faults or study credit."
+      "limitation": "Client-report models and configured local history/progress UI have component CI evidence. Simulated Auth/storage UI ports do not prove hosted attempts, multi-device sync, mastery, native file faults or study credit."
+    },
+    {
+      "id": "quiz-native-ui-restart",
+      "status": "automated-baseline",
+      "scope": "Owned SDK-to-native-file quiz save, history and progress through graceful reopen and account replacement",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "real disk quiz save history progress survives owned restart and A B A"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(bytesAfterAccounts, bytesBeforeRestart)"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/quiz_disk_journey_widget_test.dart",
+      "limitation": "Authored integration test needs new exact-head CI. Actual SDK/native files with TEST ONLY unsigned JWT/HTTP/memory vault; not hosted identity/RLS/sync, real Windows credential vault, forced-process restart or hardware power-loss evidence."
     }
   ],
   "findings": [
