@@ -4,7 +4,10 @@ Migration `20261022131000_ai_conversation_reservations.sql` is an undeployed SQL
 component for start_conversation, conversation_turn and finish_conversation.
 It commits a private server context/identity reservation together with the original
 receipt/dispatch claim. It does not install a runtime conversation adapter, provider,
-endpoint, public session/message write, completion/release API or application default.
+endpoint, public session/message write, completion/release API or application default
+by itself. A separate validated
+[completion component](AI_CONVERSATION_COMPLETION.md) now supplies guarded atomic
+public persistence and release; neither component is bound to a runtime.
 Do not enable conversation dispatch from this component alone.
 
 ## Authorization and source context
@@ -71,10 +74,11 @@ no UPDATE/DELETE/TRUNCATE or pre-released insert privilege. No client/public gra
 RLS policy, frozen wire or existing table shape is changed. Public sessions/messages
 are not created before a validated provider result.
 
-**There is deliberately no release path yet.** A reservation stays pending after
-timeouts, lost commit delivery, restart, malformed output or even bare legacy
+**Reservation alone never releases a slot.** Only the separately validated atomic
+completion can release after public writes and receipt completion. A reservation
+stays pending after timeouts, lost commit delivery, restart, malformed output or even bare legacy
 receipt completion. Never expire, delete, reset or mark it completed to permit a
-retry. Availability is conservative until validated completion/recovery exists.
+retry. Availability stays conservative when validated completion or recovery is absent.
 
 The future runtime must use bounded owned READ COMMITTED transactions and verify
 COMMIT/ReadyForQuery before dispatching acquired exactly once. Ambiguous COMMIT must
@@ -101,8 +105,11 @@ event, distinct event, finish overtaking turn and rolled-back owner. User B must
 acquire while A is held; fresh connections verify exactly one receipt/token/
 reservation, reserved slots, no new public messages and pending/no leaked capability
 on restart/lost-delivery retry. It refuses URLs other than the fixed disposable CI
-database and never prints tokens/context. Native cases await exact-head Actions;
-embedded single-connection PGlite is not concurrency evidence. SQL roles, fixtures
+database and never prints tokens/context. Allfive native cases passed on
+exact007b2d4/latest attempt1 in
+[CI39787225163](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39787225163),
+with allfive jobs/every step successful. Embedded single-connection PGlite is not
+concurrency evidence; future heads require their own checks. SQL roles, fixtures
 and reconnect checks do not establish hosted JWT/Edge/provider/power-loss/learner proof.
 
 Parent c8d66f43273aa5c7f5cc8202cc64e12628f0a27e passed allfive jobs/every step
@@ -110,10 +117,9 @@ in [CI39778434269](https://github.com/collab-TTAM/nihongo_daily/actions/runs/397
 attempt1. Allnine native text driver cases passed there. That source's full CI
 pending checkpoint is resolved; this increment requires its own exact-head run.
 
-Next: implement validated public session/user+assistant message writes and token-
-checked receipt completion with reservation release in ONE transaction. Recheck
-captured source/owner/sequence under appropriate locks; preserve original replay
-and safe pending recovery. Then introduce a coherent runtime acquisition port:
+Validated public persistence/token receipt completion/release is now specified in
+[AI_CONVERSATION_COMPLETION.md](AI_CONVERSATION_COMPLETION.md). Next introduce
+lookup-only correlated recovery and a coherent runtime acquisition port:
 the current AiService prepare/claim calls are separate. Do not call this helper
 inside prepare and then return a pending token from claim to work around that
 ordering. Never expose another dispatch owner's token. Bind only after atomic

@@ -178,5 +178,7 @@ remain explicitly unavailable; no host endpoint/default/provider is installed.
 The undeployed private conversation reserve/context helpers now atomically bind
 server identity/sequence and a durable per-session pending guard to the original
 receipt claim. This is not wired into the separate prepare/claim runtime ports;
-completion/release and coherent runtime acquisition remain pending. See
-[AI_CONVERSATION_RESERVATIONS.md](AI_CONVERSATION_RESERVATIONS.md).
+validated atomic completion is a separate undeployed SQL component. Coherent
+runtime acquisition/reconciliation remain pending. See
+[AI_CONVERSATION_RESERVATIONS.md](AI_CONVERSATION_RESERVATIONS.md) and
+[AI_CONVERSATION_COMPLETION.md](AI_CONVERSATION_COMPLETION.md).

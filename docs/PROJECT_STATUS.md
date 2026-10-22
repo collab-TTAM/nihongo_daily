@@ -3471,3 +3471,65 @@ no deployment, production deletion, security reduction, release or schedule chan
   another dispatch owner's token. #41 remains draft; #31/#20/#22/#15/#13 open.
   SQL-role/PGlite/reconnect fixtures are not hosted JWT/Edge/provider/learner/Alpha
   proof. No production deployment/release or schedule change; all14 gates pending.
+
+## Core checkpoint — #31 atomic conversation completion, 2026-10-22 14:27 UTC
+
+- Resume draft #41 `automation/issue-11-plan-sdk-integration`, expected parent
+  `007b2d49587f5e7979a5acee8913521f17efeac2`, exact base tree
+  `bdf7d3a2e76a99cf891e60bdfa0f4182639f9670`. Fresh main remains
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; #37 redirects here. One core writer;
+  Pro/#14 content/manifests/content tests/N4 docs/branch untouched.
+- Parent CI39787225163 exact007b2d4/latest attempt1: allfive jobs/every step
+  completed/success verified. Includes68 native reservation assertions and allfive
+  native races; resolves that source's pending Flutter/Windows handoff.
+- Added strict original bounded response validator and service-only atomic completion
+  for allthree conversation mutations. Exact owner/request/private token/receipt,
+  captured profile/active scenario/typed curriculum/transcript/version/slots rechecked
+  under short locks. Completed original replay precedes active source checks; changed
+  response/request conflicts. Model IDs/roles/sequence/audio/refs cannot choose writes.
+- Start saves reserved session/server clock+assistant0; turn saves exact immutable
+  user text plus reserved validated assistant; finish saves server close clock and
+  exact scores/summary without SRS/learning-error writes. All public changes,
+  token-checked receipt completion and reservation release share ONE transaction.
+  Any message/receipt/release error rolls back the entire operation. Legacy bare
+  receipt completion never heals/releases missing public writes or renews dispatch.
+- Narrow SECURITY DEFINER/empty search_path/static qualified SQL supplies guarded
+  release; direct service UPDATE/DELETE/TRUNCATE/pre-released INSERT stay denied.
+  Existing reservation denial assertions, client grants/RLS/frozen wire/Auth strategy,
+  legacy helpers and every prior runner gate unchanged. No reset/expiry/takeover,
+  provider/endpoint/runtime/default/deployment/collection/spend change or token log.
+- Ten paths: new supabase/migrations/20261022142000_ai_conversation_completion.sql,
+  supabase/tests/ai_conversation_completion.sql,
+  scripts/test_ai_completion_concurrency.py, docs/AI_CONVERSATION_COMPLETION.md;
+  scripts/test_database.sh, docs/AI_CONVERSATION_RESERVATIONS.md,
+  docs/AI_BOUNDARY.md, supabase/README.md, qa/matrix.json, this status.
+- Fresh local PGlite0.5.9/PostgreSQL18.6 applied all13 migrations. New99 SQL assertions
+  passed, retaining250 baseline/28 receipt/59 quota/59 text/68 reservation assertions.
+  Includes malformed original shapes/arrays/text/bounds/typed refs, owner/token/
+  request fencing, captured source drift and retirement, actual storage fault
+  injection after start/session, turn/user+assistant, finish/closure, receipt and
+  release writes; every failure leaves pending/no partial writes. Exact replay of
+  allthree operations after closure/retirement/profile changes passed. Fixture roles/
+  model results do not establish real Auth/provider or learner success.
+- Eight native PostgreSQL17 cases authored using independent psql processes and
+  observed ungranted locks/bounded barriers: duplicate/changed completion, next turn/
+  consecutive slots, transaction rollback, finish vs next turn, target update,
+  new scenario link and old transcript update. Unrelated owner/scenario remains
+  independent; fresh connections verify exact messages/receipt/guard/closure/replay.
+  Fixed disposable CI URL/no capability output. Not locally executed; exact-head CI
+  required. Reconnect/ignored delivery is not a real network-partition/commit-ACK proof.
+- All29 QA regressions, inventory60/all14 hosted groups pending, Python compilation,
+  bash syntax, SQL parsing/embedded execution and whitespace checks passed. Separate
+  diff review covers NULL/shape/identity checks, definer ACLs, static SQL, row/FK locks,
+  rollback, bounded native barriers and preserved old tests/gates. Early embedded
+  execution caught JSON operator precedence/local-variable qualification errors;
+  corrected before publication and all suites rerun successfully.
+- Exact commit/tree/expected-parent nonforce/full-tree/changed-blob readback and
+  latest CI are recorded after publication in re-read #41/#37/#31 RELEASED handoffs.
+- Next inspect exact-head latest-attempt allfive jobs/steps, fix actual failures.
+  Then introduce coherent atomic runtime acquisition/completion and lookup-only
+  correlated reconciliation with real-driver COMMIT/cancellation/restart guards.
+  Current separate prepare/claim methods cannot hide reserve in prepare and expose
+  another worker's pending token. Do not install a default/endpoint before this
+  binding and uncertainty behavior are verified. #31/#13/#20/#22/#15 remain open,
+  #41 draft; all14 hosted release groups/Personal Alpha proof still pending.

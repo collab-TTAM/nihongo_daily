@@ -1269,7 +1269,33 @@
         18
       ],
       "reproduce": "bash scripts/test_database.sh",
-      "limitation": "68 new SQL-role assertions passed with all 12 migrations on PGlite0.5.9/PostgreSQL18.6. Five new native contention cases require exact-head CI. No runtime/provider binding, public messages/session completion/release, hosted JWT/Edge or learner proof; all 14 hosted groups pending."
+      "limitation": "Exact parent007b2d49587f5e7979a5acee8913521f17efeac2 passed all68 native SQL assertions, five native races and allfive jobs/every step in CI39787225163 attempt1. Reservation alone does not install runtime/completion/recovery. SQL-role fixtures are not hosted JWT/Edge/provider/learner proof; future heads require exact checks."
+    },
+    {
+      "id": "ai-conversation-completion",
+      "status": "automated-baseline",
+      "scope": "Strict captured-context/token-bound atomic conversation session/messages receipt and guarded release with native completion/source-lock rollback and restart probes",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_conversation_completion.sql",
+          "contains": "release fault rolls back messages and completed receipt"
+        },
+        {
+          "path": "scripts/test_ai_completion_concurrency.py",
+          "contains": "Second completion worker was not observed waiting on the held transaction lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_completion_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "99 SQL-role assertions/all13 migrations passed on fresh PGlite0.5.9/PostgreSQL18.6, retaining all earlier assertions. Eight authored native lock/restart cases require exact-head CI. No coherent runtime acquisition/reconciliation, COMMIT delivery, hosted Auth/Edge/Deno/provider/learner proof or deployment; all14 release groups pending."
     }
   ],
   "findings": [

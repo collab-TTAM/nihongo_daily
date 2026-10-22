@@ -183,7 +183,19 @@ and pending runtime/hosted evidence are in
 `20261022131000_ai_conversation_reservations.sql` adds private strict request/
 context/reserve helpers and a SELECT/INSERT-only pending reservation table. Server
 IDs/sequence and receipt claim commit together; one pending slot blocks distinct
-session events. No public message/session completion or release is installed.
+session events. Reservation alone never completes public messages/session or releases
+a slot; the separate validated completion component below provides that transaction.
 Retained database tests now add the SQL suite and five native races; authorization,
-limits, pending safety, runtime ordering and remaining completion/recovery work:
+limits, pending safety, runtime ordering and remaining runtime/recovery work:
 [`AI_CONVERSATION_RESERVATIONS.md`](../docs/AI_CONVERSATION_RESERVATIONS.md).
+
+## Undeployed atomic conversation completion (#31)
+
+`20261022142000_ai_conversation_completion.sql` adds strict original response
+validation and owner/request/token-bound public session/messages + receipt + guarded
+reservation release in one transaction. Narrow service-only definer authority keeps
+direct private release denied. Source/owner/sequence locks, immutable completed
+replay and whole rollback preserve safe uncertainty. The retained runner adds99 SQL
+assertions/eight native lock/restart races; runtime acquisition/reconciliation,
+COMMIT delivery, real Auth/Edge/provider/learner proof remain open. Details:
+[`AI_CONVERSATION_COMPLETION.md`](../docs/AI_CONVERSATION_COMPLETION.md).
