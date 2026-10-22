@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../shared/models/preview_level.dart';
 import '../../../shared/widgets/page_body.dart';
 import '../application/quiz_history_provider.dart';
 import '../data/vocabulary_quiz_history_repository.dart';
@@ -17,7 +18,8 @@ class QuizHistoryScreen extends ConsumerWidget {
       children: [
         const PageHeading(
           title: 'Lịch sử quiz trên thiết bị',
-          subtitle: 'Kết quả đã lưu của tài khoản hiện tại trên thiết bị này. '
+          subtitle:
+              'Kết quả đã lưu của tài khoản hiện tại trên thiết bị này. '
               'Chưa đồng bộ hoặc xác định mức ghi nhớ.',
         ),
         if (repository == null) ...[

@@ -8,21 +8,20 @@ final quizHistorySourceProvider = Provider<VocabularyQuizHistorySource?>(
   (ref) => null,
 );
 
-final quizHistoryRepositoryProvider = Provider<VocabularyQuizHistoryRepository?>(
-  (ref) {
-    final account = ref.watch(accountStateProvider);
-    final runtime = ref.watch(accountRuntimeProvider);
-    final source = ref.watch(quizHistorySourceProvider);
-    if (account.phase != AccountPhase.ready ||
-        account.profile == null ||
-        runtime?.readyRuntime == null ||
-        source == null) {
-      return null;
-    }
-    try {
-      return source.createVocabularyQuizHistoryRepository();
-    } on Object {
-      return null;
-    }
-  },
-);
+final quizHistoryRepositoryProvider =
+    Provider<VocabularyQuizHistoryRepository?>((ref) {
+      final account = ref.watch(accountStateProvider);
+      final runtime = ref.watch(accountRuntimeProvider);
+      final source = ref.watch(quizHistorySourceProvider);
+      if (account.phase != AccountPhase.ready ||
+          account.profile == null ||
+          runtime?.readyRuntime == null ||
+          source == null) {
+        return null;
+      }
+      try {
+        return source.createVocabularyQuizHistoryRepository();
+      } on Object {
+        return null;
+      }
+    });

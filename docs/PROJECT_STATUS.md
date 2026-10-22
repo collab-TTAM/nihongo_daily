@@ -2942,3 +2942,27 @@ round's same ready lifecycle with immutable manual retry. Keep #41 draft/#13
 open/default preview/all14 hosted gates pending. Pro/N4/main/source drafts,
 API/schema/RLS/Auth strategy/dependencies/CI/security/providers/spend/merge/
 deployment/release/schedule unchanged.
+
+## History-view build correction — core-20261022T0011-history-build-fix
+
+Resume #41 atc8fcf059066e74b730bb96c20bd408ac3725ae61. Exact
+CI39691899499 latest attempt1 passed repo/database/AI every required step.
+Flutter strict format reported two production-file hunks (provider wrapping and
+history subtitle wrapping); analyze/eight new widget cases/downstream Web skipped.
+Windows first compile failed on PreviewLevel.label missing extension scope, so
+no current UI Windows build/native/artifact success is claimed.
+
+Apply exactly the pinned-SDK formatter diff and add explicit
+shared/models/preview_level.dart import to quiz_history_screen.dart, bringing
+PreviewLevelLabel into scope without changing labels/level mapping. No behavior,
+validation, source/session guard, test/assertion, UI content or CI/lint changes.
+All eight new widget scenarios and all other tests remain byte-identical.
+Separate diagnostic/import/source/diff review plus git diff --check passed.
+Local Dart/Flutter SDK remains absent; new executable checks require new CI.
+
+Next inspect allfive exact-head/latest-attempt jobs/every required step and fix
+real failures preserving assertions. Pending-only handoff without duplicate
+commits/long polling. After history view full green, implement explicit immutable
+same-round/session save. Keep #41 draft/#13 open/default preview/all14 hosted
+gates pending; Pro/N4/API/schema/RLS/Auth strategy/dependencies/workflow/security/
+providers/spend/merge/deployment/release/schedule unchanged.
