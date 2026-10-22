@@ -102,7 +102,36 @@ export interface ReceiptStore {
     signal: AbortSignal,
   ): Promise<void>;
 }
+/** Atomic mutation lane. Acquired resolves only after confirmed context+claim
+ * COMMIT; pending never exposes a token. Completion atomically revalidates and
+ * persists public writes + receipt + reservation release. No recovery redispatch.
+ */
+export type ConversationClaim =
+  | { kind: "acquired"; token: string; context: PreparedContext }
+  | Exclude<ReceiptLookup, { kind: "missing" }>;
+export interface ConversationStore {
+  lookup(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ReceiptLookup>;
+  acquire(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ConversationClaim>;
+  complete(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    token: string,
+    response: Responses[Mutation],
+    context: PreparedContext,
+    signal: AbortSignal,
+  ): Promise<void>;
+}
 export interface AiDependencies {
+  /** Explicit binding; never fall back to split claim or legacy recovery when set. */
+  conversations?: ConversationStore;
   auth: AuthVerifier;
   limiter: RateLimiter;
   context: ContextRepository;

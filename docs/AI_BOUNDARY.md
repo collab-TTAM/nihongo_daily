@@ -182,3 +182,13 @@ validated atomic completion is a separate undeployed SQL component. Coherent
 runtime acquisition/reconciliation remain pending. See
 [AI_CONVERSATION_RESERVATIONS.md](AI_CONVERSATION_RESERVATIONS.md) and
 [AI_CONVERSATION_COMPLETION.md](AI_CONVERSATION_COMPLETION.md).
+
+
+The explicit `AiDependencies.conversations` binding now selects one coherent
+`PostgresConversationStore` for lookup/acquire/complete. Confirmed atomic reserve
+COMMIT precedes provider dispatch; atomic SQL completion/COMMIT precedes success.
+No split text prepare/claim or legacy recovery fallback occurs in this lane.
+Pending stays unavailable until correlated reconciliation is implemented. Trusted
+owned connections, bounds/cancellation/native probes and remaining hosted gates:
+[AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md). No endpoint/default or
+live provider is installed; existing text/legacy fixture interfaces remain compatible.

@@ -199,3 +199,12 @@ replay and whole rollback preserve safe uncertainty. The retained runner adds99 
 assertions/eight native lock/restart races; runtime acquisition/reconciliation,
 COMMIT delivery, real Auth/Edge/provider/learner proof remain open. Details:
 [`AI_CONVERSATION_COMPLETION.md`](../docs/AI_CONVERSATION_COMPLETION.md).
+
+
+The opt-in TypeScript conversation driver now calls these helpers through one
+coherent acquire/complete port, with confirmed COMMIT before provider/final success.
+No transaction spans provider I/O and no pending legacy recovery fallback renews
+claims. The required database job adds actual pg runtime probes, retaining all SQL
+suites/races/quota/text/profile exports. See
+[AI_CONVERSATION_RUNTIME.md](../docs/AI_CONVERSATION_RUNTIME.md); hosted identity,
+TLS/Edge/provider and correlated reconciliation remain unverified.

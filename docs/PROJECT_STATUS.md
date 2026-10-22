@@ -3533,3 +3533,73 @@ no deployment, production deletion, security reduction, release or schedule chan
   another worker's pending token. Do not install a default/endpoint before this
   binding and uncertainty behavior are verified. #31/#13/#20/#22/#15 remain open,
   #41 draft; all14 hosted release groups/Personal Alpha proof still pending.
+
+## Core checkpoint — #31 coherent conversation runtime, 2026-10-22 15:29 UTC
+
+- Resume draft #41 `automation/issue-11-plan-sdk-integration`, expected parent
+  `e621c9d074bdcbc8f8c551433e7e7f67dfb5183b`, exact base tree
+  `35b05a534630a49e3a63b543dfe4edda094a438a`. Fresh main remains
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; #37 source redirects here. One core
+  writer; Pro/#14/N4/content/manifests/content tests/docs/branch unchanged.
+- Parent CI39795974325 raw exact e621c9d/latest attempt1: allfive jobs/every step
+  completed/success. Actual database log confirms99 new completion SQL assertions
+  and all8 native SQL races. Resolves its old queued/unverified platform handoff.
+- Added explicit ConversationStore lookup/acquire/complete port and owned actual pg
+  adapter; optional AiDependencies.conversations selects this lane for allthree
+  mutations only. Atomic context/server IDs/dispatch claim COMMIT must be confirmed
+  before provider; validated public/session/message + token receipt + guarded release
+  COMMIT must be confirmed before success. Shared original provider/schema/ID/ref/
+  audio checks remain. No transaction spans provider I/O. No split prepare/claim,
+  text context validation or legacy receipt/recovery fallback occurs in this lane.
+- Completed original replay precedes active-source checks; pending or unknown
+  delivery remains unavailable with no capability exposure, provider retry, expiry,
+  reset/takeover/delete. Capture/freeze request/normalized owner-event key/token and
+  cloned bounded strict context/result before asynchronous work. All parameters
+  fixed/bound, exact row/shape/operation/UUID/sequence/typed-ref checks, semantic
+  returned-original equality before COMMIT. Authoritative source/owner/token checks
+  remain inside the already reviewed SQL transaction.
+- Fresh owned READ COMMITTED phases (lookup READ ONLY), fixed service role and
+  lock1s/statement2s/idle3s/independent5s limits, monotonic alive checks, abort/late
+  result guards and exactly-once immediate close. Only exact controlled SQLSTATE/
+  message pairs cross safe errors; unknown driver/storage/COMMIT errors redact to
+  NETWORK_UNAVAILABLE, without SQL/credential/token/context logs. Existing strict
+  TLS factory body unchanged, only one fixed application-name type added. No learner
+  URL/key, plaintext fallback, endpoint/default/provider/Auth strategy/deploy change.
+- Fifteen paths: new backend/ai/src/postgres_conversation.ts,
+  backend/ai/test/postgres_conversation.test.ts,
+  backend/ai/test/postgres_conversation.native.ts, docs/AI_CONVERSATION_RUNTIME.md;
+  backend/ai/src/ports.ts, service.ts, postgres_connection.ts, package.json;
+  .github/workflows/ci.yml, docs/AI_BOUNDARY.md, AI_CONVERSATION_COMPLETION.md,
+  AI_CONVERSATION_RESERVATIONS.md, this status, qa/matrix.json, supabase/README.md.
+  New required database native step retains every old SQL/race/quota/text/profile/
+  export gate. Original tests/support/SQL/runner/lockfile/frozen contracts unchanged.
+- Local pinned Node24 clean install, formatter/check, strict TypeScript and138 tests
+  passed (117 retained +21 new,0 fail/skip/cancel); production audit0 findings.
+  Covers allthree operations/parameter order/owned phases, malformed context/capability/
+  replies/output, original pending/completed/no legacy fallback, COMMIT provider and
+  success barriers, unknown delivery, deadline/abort/late I/O, snapshots and A/B/A
+  connections. Source review captured the token before provider awaits. The generic
+  frozen turn fixture allows sequence0; new TEST ONLY atomic projection uses2 after
+  assistant0/user1, preserving original fixture and strict production slot checks.
+- Ten compiled native PostgreSQL17 cases authored: actual quota and start→turn→finish,
+  restart/original replay after closure/retirement/profile change; same pending event
+  and distinct turn/finish during held provider; actual acquire/completion COMMIT with
+  TEST ONLY lost delivery and fresh retry; retired-source rollback/pending; observed
+  blocked-lock cancellation/no late provider; A/B/A/foreign parent; production TLS
+  factory rejects plaintext; actual COMMIT delivery gates provider/final success.
+  Barriers bounded; fixed disposable URL only. Not locally executed; exact-head CI
+  required. Fixture Auth/provider/plaintext/injected delivery is not hosted TLS/CA/
+  JWT/PostgREST/Edge/Deno/provider/real network-partition/learner proof.
+- All29 QA regressions/inventory61/all14 hosted groups pending, whitespace and
+  separate diff/source review passed. Existing tests/SQL/runner/quota/text adapters/
+  lockfile and strict TLS factory body confirmed byte-identical. No dependency/
+  migration/client grant/RLS/security reduction/paid call/content/merge change.
+- Exact commit/tree/nonforce expected-head/full-tree/changed-blob readback evidence
+  and current CI are recorded after publication in re-read #41/#37/#31 RELEASED
+  handoffs. New native/runtime CI must not be inferred from parent or fixture tests.
+- Next inspect exact-head latest-attempt allfive jobs/every required step and all10
+  native logs; fix actual failures preserving assertions. Then add lookup-only
+  correlated reconciliation without another worker's token or dispatch renewal,
+  observed Edge/Deno compatibility and hosted configuration/evidence. Default and
+  live endpoint stay unconfigured; #31/#13/#20/#22/#15 open/#41 draft/all14 hosted
+  learner release groups/Personal Alpha still pending. No schedule change.

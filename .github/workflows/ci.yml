@@ -265,6 +265,9 @@ jobs:
       - name: Verify text context adapter with native PostgreSQL
         working-directory: backend/ai
         run: npm run test:postgres-text
+      - name: Verify atomic conversation adapter with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-conversation
       - name: Validate profile bootstrap and observed concurrent creation
         run: |
           python3 scripts/export_profiles.py build/profile-bootstrap-sql.json

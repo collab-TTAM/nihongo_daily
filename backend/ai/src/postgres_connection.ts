@@ -18,7 +18,10 @@ export interface PostgresConnection {
 /** Trusted deployment only: fixed TLS, no URL overrides, fresh owned clients. */
 export function createOwnedPostgresFactory(
   databaseUrl: string,
-  applicationName: "nihongo-ai-quota" | "nihongo-ai-text-context",
+  applicationName:
+    | "nihongo-ai-quota"
+    | "nihongo-ai-text-context"
+    | "nihongo-ai-conversation",
 ): () => PostgresConnection {
   try {
     const url = new URL(databaseUrl);

@@ -7,7 +7,8 @@ receipt/dispatch claim. It does not install a runtime conversation adapter, prov
 endpoint, public session/message write, completion/release API or application default
 by itself. A separate validated
 [completion component](AI_CONVERSATION_COMPLETION.md) now supplies guarded atomic
-public persistence and release; neither component is bound to a runtime.
+public persistence and release. The explicit opt-in driver is now specified in
+[AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md); no endpoint/default is bound.
 Do not enable conversation dispatch from this component alone.
 
 ## Authorization and source context
@@ -118,8 +119,9 @@ attempt1. Allnine native text driver cases passed there. That source's full CI
 pending checkpoint is resolved; this increment requires its own exact-head run.
 
 Validated public persistence/token receipt completion/release is now specified in
-[AI_CONVERSATION_COMPLETION.md](AI_CONVERSATION_COMPLETION.md). Next introduce
-lookup-only correlated recovery and a coherent runtime acquisition port:
+[AI_CONVERSATION_COMPLETION.md](AI_CONVERSATION_COMPLETION.md). The opt-in coherent runtime is in
+[AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md). Correlated lookup-only
+recovery remains pending. The legacy path is still separate:
 the current AiService prepare/claim calls are separate. Do not call this helper
 inside prepare and then return a pending token from claim to work around that
 ordering. Never expose another dispatch owner's token. Bind only after atomic

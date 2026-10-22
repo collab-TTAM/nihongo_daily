@@ -120,11 +120,18 @@ export class AiService {
     this.alive(signal);
     let key: ReceiptKey | undefined;
     if (isMutation(op)) {
-      key = {
+      key = Object.freeze({
         userId,
         operation: op,
         eventId: (request as Requests[Mutation]).client_event_id.toLowerCase(),
-      };
+      });
+      if (this.deps.conversations)
+        return this.conversation(
+          op as Mutation,
+          request as Requests[Mutation],
+          key,
+          signal,
+        ) as Promise<Responses[O]>;
       const found = await this.deps.receipts.lookup(
         key,
         request as Requests[Mutation],
@@ -157,6 +164,72 @@ export class AiService {
         throw new BoundaryError("INTERNAL_ERROR");
       token = claim.token;
     }
+    const response = await this.generate(
+      op,
+      userId,
+      request,
+      context,
+      signal,
+      key,
+    );
+    if (key && token) {
+      await this.deps.receipts.complete(
+        key,
+        token,
+        response as Responses[Mutation],
+        context,
+        signal,
+      );
+      this.alive(signal);
+    }
+    return response;
+  }
+  private async conversation<O extends Mutation>(
+    op: O,
+    request: Requests[O],
+    key: ReceiptKey,
+    signal: AbortSignal,
+  ): Promise<Responses[O]> {
+    const store = this.deps.conversations!;
+    const replay = (found: ReceiptLookup): Responses[O] => {
+      if (found.kind !== "completed")
+        throw new BoundaryError("PROVIDER_UNAVAILABLE");
+      return deepFreeze(
+        this.contracts.response(op, structuredClone(found.response)),
+      );
+    };
+    const found = await store.lookup(key, request, signal);
+    this.alive(signal);
+    if (found.kind !== "missing") return replay(found);
+    const claim = await store.acquire(key, request, signal);
+    this.alive(signal);
+    if (claim.kind !== "acquired") return replay(claim);
+    const token = claim.token;
+    if (!UUID.test(token)) throw new BoundaryError("INTERNAL_ERROR");
+    this.checkContext(op, claim.context, request);
+    const context = deepFreeze(structuredClone(claim.context));
+    const response = await this.generate(
+      op,
+      key.userId,
+      request,
+      context,
+      signal,
+      key,
+      true,
+    );
+    await store.complete(key, request, token, response, context, signal);
+    this.alive(signal);
+    return response;
+  }
+  private async generate<O extends Operation>(
+    op: O,
+    userId: string,
+    request: Requests[O],
+    context: PreparedContext,
+    signal: AbortSignal,
+    key?: ReceiptKey,
+    atomicConversation = false,
+  ): Promise<Responses[O]> {
     let raw: string;
     try {
       raw = await this.deps.provider.generate(
@@ -188,17 +261,15 @@ export class AiService {
         parseBounded(raw, 1048576, "PROVIDER_UNAVAILABLE"),
       ),
     );
-    await this.validate(op, userId, request, response, context, signal);
-    if (key && token) {
-      await this.deps.receipts.complete(
-        key,
-        token,
-        response as Responses[Mutation],
-        context,
-        signal,
-      );
-      this.alive(signal);
-    }
+    await this.validate(
+      op,
+      userId,
+      request,
+      response,
+      context,
+      signal,
+      atomicConversation,
+    );
     return response;
   }
   private async replay<O extends Operation>(
@@ -280,6 +351,7 @@ export class AiService {
     response: Responses[O],
     context: PreparedContext,
     signal: AbortSignal,
+    atomicConversation = false,
   ): Promise<void> {
     const object = response as unknown as Record<string, unknown>;
     if ("assistant_message" in object) {
@@ -318,14 +390,15 @@ export class AiService {
     ) {
       throw new BoundaryError("PROVIDER_UNAVAILABLE");
     }
-    await this.deps.context.validateResult(
-      userId,
-      op,
-      request,
-      response,
-      context,
-      signal,
-    );
+    if (!atomicConversation)
+      await this.deps.context.validateResult(
+        userId,
+        op,
+        request,
+        response,
+        context,
+        signal,
+      );
     this.alive(signal);
   }
 }

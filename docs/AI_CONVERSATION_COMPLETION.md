@@ -2,8 +2,9 @@
 
 Migration `20261022142000_ai_conversation_completion.sql` adds an undeployed private
 SQL component for the three original conversation mutations. It builds on the
-[reservation component](AI_CONVERSATION_RESERVATIONS.md). No runtime adapter,
-provider, endpoint, correlated recovery or application default is installed.
+[reservation component](AI_CONVERSATION_RESERVATIONS.md). It does not itself install a runtime/provider/endpoint or default. The explicit
+opt-in adapter is now documented in [AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md);
+correlated recovery and hosted evidence remain pending.
 
 `private.ai_conversation_complete(uuid,text,jsonb,uuid,jsonb)` takes the verified
 backend owner, original operation/request, private dispatch token and validated
@@ -93,16 +94,18 @@ duplicate and changed completion, next distinct turn/slots, rollback, finish vs
 next turn, target update, new scenario link and old transcript update. An unrelated
 owner/scenario acquires while A is held. Fresh processes check exact public rows,
 receipt/release/closure and original replay without a new dispatch capability.
-The script refuses any URL except the disposable CI database. Native execution
-requires exact-head Actions; do not infer a pass from authored or embedded tests.
+The script refuses any URL except the disposable CI database. All8 native SQL cases and all99 SQL assertions passed on parent e621c9d/latest
+attempt1 in CI39795974325, with allfive jobs/every step successful. Future changes
+require their own exact-head checks; embedded tests alone are not concurrency proof.
 
 Parent007b2d49587f5e7979a5acee8913521f17efeac2 passed allfive latest-attempt jobs and
 every step in [CI39787225163](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39787225163),
 attempt1, including all68 native reservation assertions and five native races.
 This resolves that source's pending platform handoff; this increment needs its own CI.
 
-Next bind a coherent atomic acquisition/completion port and lookup-only correlated
-reconciliation. Current AiService prepare/claim are separate; do not hide reserve
+An opt-in coherent atomic runtime port/driver is documented in
+[AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md). Next add lookup-only
+correlated reconciliation and hosted runtime evidence. Current AiService prepare/claim are separate; do not hide reserve
 in prepare and return another worker's token from a pending claim. Test real driver
 COMMIT ambiguity/cancellation/restart before installing an endpoint. Hosted TLS/CA,
 JWT/PostgREST/Edge/Deno/provider/learner and all14 release groups remain unverified;

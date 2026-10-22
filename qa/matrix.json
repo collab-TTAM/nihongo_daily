@@ -12,6 +12,7 @@
     "database": [
       "Install review parity validator",
       "Migration, grants, RLS, replay and concurrent uniqueness",
+      "Verify atomic conversation adapter with native PostgreSQL",
       "Validate profile bootstrap and observed concurrent creation",
       "Publish actual native SQL profile projections",
       "Publish actual native SQL queue projections",
@@ -1295,7 +1296,33 @@
         18
       ],
       "reproduce": "bash scripts/test_database.sh",
-      "limitation": "99 SQL-role assertions/all13 migrations passed on fresh PGlite0.5.9/PostgreSQL18.6, retaining all earlier assertions. Eight authored native lock/restart cases require exact-head CI. No coherent runtime acquisition/reconciliation, COMMIT delivery, hosted Auth/Edge/Deno/provider/learner proof or deployment; all14 release groups pending."
+      "limitation": "Exact parent e621c9d074bdcbc8f8c551433e7e7f67dfb5183b passed all99 SQL completion assertions, all8 native SQL races and allfive jobs/every step in CI39795974325 attempt1. SQL-role/model fixtures are not hosted Auth/Edge/provider/learner evidence. Runtime changes require their own exact-head CI; correlated recovery/all14 release groups pending."
+    },
+    {
+      "id": "ai-conversation-runtime",
+      "status": "automated-baseline",
+      "scope": "Opt-in coherent owned PostgreSQL conversation lookup/acquire/complete with confirmed COMMIT dispatch/success gates, bounded cancellation and no pending redispatch fallback",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_conversation.test.ts",
+          "contains": "pending from lookup or acquire never invokes provider or legacy recovery even when configured"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "Actual conversation adapter was not observed waiting on PostgreSQL lock"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/postgres_conversation.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
+      "limitation": "138 local Node tests/format/type check/audit passed, including21 new fixture cases. Ten compiled real-driver native cases require exact-head CI; no local PostgreSQL17 execution claim. Plaintext/Auth/provider/commit-delivery fixtures are not hosted TLS/CA/JWT/Edge/Deno/real partition/provider/learner evidence. No endpoint/default or correlated recovery; all14 hosted groups pending."
     }
   ],
   "findings": [
