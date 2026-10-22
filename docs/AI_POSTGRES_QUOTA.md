@@ -2,8 +2,9 @@
 
 `20261022091000_ai_rate_limits.sql` adds one private row per verified Auth user
 and `private.consume_ai_quota(uuid,text)`. This is an undeployed database component
-for #31. It does not assemble an Edge endpoint, connect the TypeScript RateLimiter
-port, select a provider, enable paid calls, change Auth strategy or alter the
+for #31. The opt-in Node driver/RateLimiter binding is in AI_POSTGRES_RUNTIME.md.
+It does not assemble an Edge endpoint, select a provider, enable paid calls, change
+Auth strategy or alter the
 ordinary app preview. Live production configuration/deployment remains separate.
 
 ## Policy and ownership
@@ -44,7 +45,7 @@ without resetting counters or minting tokens. Denial does not update refill/debi
 state. Successful refill and the burst/daily debit happen in one transaction.
 Fractional refill is retained in numeric arithmetic; long idle refill caps at10.
 
-The future trusted SQL adapter must execute a short READ COMMITTED transaction,
+The trusted SQL adapter (see AI_POSTGRES_RUNTIME.md) must execute a short READ COMMITTED transaction,
 apply bounded database lock/statement/network deadlines and return true only
 AFTER a confirmed COMMIT. Return false on denial; map SQL, cancellation, transport,
 serialization and commit uncertainty to existing fixed safe errors. Never
@@ -101,3 +102,11 @@ transactions and provider/learner evidence remain open in #31/#17/#18. The
 Primary PostgreSQL17 references checked2026-10-22:
 - https://www.postgresql.org/docs/17/explicit-locking.html
 - https://www.postgresql.org/docs/17/functions-datetime.html
+
+## Observed native component evidence
+
+Source b65f5cc681b4d70ccbe9229933ba2dd823998168 passed allfive jobs/every step
+in CI39754447718 attempt1. Completed database logs explicitly show allthree native
+quota first_create/last_daily_slot/rollback observed-lock/isolation/fresh-connection
+checks passed. This verifies the SQL component; the subsequently added driver
+composition still requires its own exact-head checks and hosted gates.

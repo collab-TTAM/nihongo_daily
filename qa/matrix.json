@@ -14,7 +14,8 @@
       "Migration, grants, RLS, replay and concurrent uniqueness",
       "Validate profile bootstrap and observed concurrent creation",
       "Publish actual native SQL profile projections",
-      "Publish actual native SQL queue projections"
+      "Publish actual native SQL queue projections",
+      "Verify committed AI quota adapter with native PostgreSQL"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -1164,6 +1165,28 @@
       ],
       "reproduce": "bash scripts/test_database.sh",
       "limitation": "Local PGlite SQL-role/quota tests are component evidence only. Native PostgreSQL17 lock/reconnect checks require exact-head CI; actual committed runtime transport, hosted Auth/Edge/provider and learner acceptance remain pending."
+    },
+    {
+      "id": "ai-committed-postgres-limiter",
+      "status": "automated-baseline",
+      "scope": "Real-driver owned PostgreSQL quota with committed-before-provider and fail-closed cancellation/uncertainty guards",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_quota.native.ts",
+          "contains": "native quota COMMIT barrier prevents provider dispatch and serializes the last slot"
+        },
+        {
+          "path": "backend/ai/test/postgres_quota.native.ts",
+          "contains": "actual committed debit with injected lost COMMIT delivery never dispatches or retries"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-quota",
+      "limitation": "New exact-head native PostgreSQL17 driver/service tests pending CI; plaintext fixture transport and Auth/context/provider/receipt ports TEST ONLY. No hosted TLS/CA/Edge/Deno/learner or real network-partition proof."
     }
   ],
   "findings": [

@@ -158,4 +158,5 @@ shared per-user burst/daily budget for all five operations. Private invoker/ACL/
 RLS boundaries, confirmed-commit-before-dispatch requirements, clock behavior,
 SQL/native concurrency verification and remaining runtime binding are specified
 in [AI_POSTGRES_QUOTA.md](AI_POSTGRES_QUOTA.md). The TypeScript RateLimiter port
-is still mandatory; this component installs no driver/endpoint or memory fallback.
+is still mandatory; the opt-in Node driver binding is documented in
+AI_POSTGRES_RUNTIME.md. No endpoint or memory fallback is installed.

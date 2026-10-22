@@ -3274,3 +3274,44 @@ new work. Fix real failures retaining assertions. After green bind the mandatory
 limiter to a trusted committed SQL transport; conversation/receipt transaction,
 lookup-only reconciliation and Deno/hosted acceptance still remain. Keep #31/#13/
 #20/#22/#15 open/#41 draft/default preview; Personal Alpha not accepted.
+
+## Committed PostgreSQL AI limiter — core-20261022T1015
+
+Resume #41 automation/issue-11-plan-sdk-integration at
+b65f5cc681b4d70ccbe9229933ba2dd823998168. Exact CI39754447718 attempt1 allfive
+jobs/every step succeeded. Completed database logs prove allthree quota native
+first-create/last-daily-slot/rollback lock/isolation/reconnect cases passed.
+
+Add opt-in Node PostgresQuotaLimiter implementing existing RateLimiter, with real
+pinned pg8.23.1/@types8.23.1 driver. Deployment helper captures trusted URL only,
+verified TLS/no URL SSL overrides/Unix socket hosts, fresh owned client/no pipeline,
+fixed role/READ COMMITTED and bounded connect/query/lock/statement/idle/overall
+deadlines. Parameterized UUID/operation only; validate exactly one boolean; allow
+only after COMMIT command/protocol acknowledgement. Errors/cancellation/late replies
+or unknown COMMIT fail closed with fixed safe error/no raw logs, automatic retry,
+refund or memory fallback. No endpoint/Auth strategy/provider/paid spend activated.
+
+Add19 protocol-fault/composition tests: all98 Node tests/formatter/strict types
+and audit0 passed locally, including no provider on unconfirmed/failed COMMIT.
+Five additional real-driver/native PostgreSQL service cases are authored and
+added as a required database CI step, retaining every old gate. They exercise
+shared operations/A-B-A, real COMMIT barrier/observed row wait/last-slot isolation,
+locked-query abort/no late debit, actual commit with injected lost delivery/no
+provider, and production factory rejecting the fixture server's missing TLS.
+These five are NOT executed locally; no PostgreSQL17/Dart/Flutter/Windows SDK.
+Native plaintext transport and Auth/context/provider/receipts are TEST ONLY.
+
+Paths: new backend/ai/src/postgres_quota.ts, test/postgres_quota.test.ts and
+postgres_quota.native.ts; package/lock; .github/workflows/ci.yml; new
+AI_POSTGRES_RUNTIME.md; AI_POSTGRES_QUOTA.md/AI_BOUNDARY.md/this status; qa/matrix.json.
+QA inventory56 and all29 Python QA tests passed; new critical native step added,
+all14 hosted release groups remain pending. Separate source/driver/SSL/transaction/
+cancellation/owner/diff review completed before publication. No original source/test assertions, SQL/RLS,
+Pro/N4/content/Flutter/frozen wire changes or weaker checks.
+
+Next inspect published exact-head/latest-attempt allfive jobs/every step and all
+five new native driver cases. Fix real failures retaining assertions; pending-only
+handoff without duplicate work. Then #31 conversation/context/receipt transactions,
+lookup-only reconciliation and Deno/hosted Auth/TLS/learner evidence remain open.
+See AI_POSTGRES_RUNTIME.md. Keep #31/#13/#20/#22/#15 open/#41 draft/default preview;
+no deployment, production deletion, security reduction, release or schedule change.

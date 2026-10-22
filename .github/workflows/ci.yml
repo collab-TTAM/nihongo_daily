@@ -251,6 +251,17 @@ jobs:
         run: python3 -m pip install -r contracts/requirements.txt
       - name: Migration, grants, RLS, replay and concurrent uniqueness
         run: bash scripts/test_database.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/ai/package-lock.json
+      - name: Install pinned AI PostgreSQL adapter dependencies
+        working-directory: backend/ai
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify committed AI quota adapter with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-quota
       - name: Validate profile bootstrap and observed concurrent creation
         run: |
           python3 scripts/export_profiles.py build/profile-bootstrap-sql.json
