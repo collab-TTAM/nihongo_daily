@@ -16,6 +16,8 @@ python3 "$repo_root/scripts/test_ai_claim_concurrency.py"
 psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f "$repo_root/supabase/tests/ai_rate_limits.sql"
 python3 "$repo_root/scripts/test_ai_quota_concurrency.py"
 
+psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f "$repo_root/supabase/tests/ai_text_context.sql"
+
 psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f "$repo_root/supabase/tests/review_rpc.sql"
 python3 "$repo_root/scripts/verify_review_parity.py"
 python3 "$repo_root/scripts/test_submit_review_concurrency.py"

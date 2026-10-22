@@ -96,3 +96,12 @@ Primary documentation and pinned driver implementation checked2026-10-22:
 - https://node-postgres.com/features/ssl
 - https://node-postgres.com/apis/client
 - pg8.23.1 lib/client.js: query ReadyForQuery completion and non-pipeline end.
+
+## Observed native driver evidence
+
+Source cdae78b54d14c7aadff5e4a849adafa3452c47c5 passed allfive jobs/all steps
+in CI39763102669 attempt1. The completed database log explicitly reports allfive
+native cases above passed, including held COMMIT, locked abort, actual commit with
+injected lost delivery and production-factory TLS rejection of plaintext. This
+resolves that source's native-test-pending checkpoint; hosted TLS/CA/JWT/Deno/Edge,
+conversation transactions and learner gates remain unverified.

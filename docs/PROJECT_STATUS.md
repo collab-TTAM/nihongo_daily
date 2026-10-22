@@ -3315,3 +3315,48 @@ handoff without duplicate work. Then #31 conversation/context/receipt transactio
 lookup-only reconciliation and Deno/hosted Auth/TLS/learner evidence remain open.
 See AI_POSTGRES_RUNTIME.md. Keep #31/#13/#20/#22/#15 open/#41 draft/default preview;
 no deployment, production deletion, security reduction, release or schedule change.
+
+## Core checkpoint — #31 text context, 2026-10-22 11:23 UTC
+
+- Resume draft PR #41, `automation/issue-11-plan-sdk-integration`, expected parent
+  `cdae78b54d14c7aadff5e4a849adafa3452c47c5`, base tree
+  `aa6190c05152fac08e217410e94c02d184ea8720`. Main observed unchanged at
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; PR #37 redirects here. One core
+  writer; #14/Pro N4 scope, content/manifests/tests/branch left untouched.
+- Observed parent CI39763102669, latest attempt1, exact cdae78b54: allfive jobs
+  and every step succeeded. Actual completed database log confirms allfive native
+  pg-driver cases passed (shared operations/A-B-A, held COMMIT/no early provider,
+  locked abort/no late debit, actual commit with injected lost delivery/no retry,
+  production TLS factory rejects plaintext/no fallback). These are component
+  fixtures, not hosted TLS/CA/JWT/Edge/Deno/provider/learner proof.
+- Implemented a complete independent SQL increment for two text operations:
+  private STABLE invoker profile/level and active grammar/vocabulary projection,
+  strict original request shapes, canonical bounded IDs, deterministic whole-entry
+  8000-byte curriculum budget/allowlist and fresh post-provider snapshot validation.
+  Unknown/forged/malformed/overbudget input and changed content/profile fail closed.
+  No learning/receipt/session writes, public RPC, client privileges, RLS reduction,
+  live deployment, provider/Auth strategy, paid calls or application default change.
+- Nine paths: new migration `20261022111500_ai_text_context.sql`,
+  `supabase/tests/ai_text_context.sql`, `scripts/test_database.sh`,
+  `docs/AI_TEXT_CONTEXT.md`, `docs/AI_BOUNDARY.md`, `docs/AI_POSTGRES_RUNTIME.md`,
+  `supabase/README.md`, `qa/matrix.json`, this status. Existing checks/tests and
+  all public frozen wire contracts remain intact. Native required database runner
+  adds the new SQL suite after retained quota/claim suites.
+- Local: clean pinned Node install; formatter/strict TypeScript and98 existing Node
+  tests passed (0 failure/skip/cancel); PGlite0.5.9/PostgreSQL18.6 applied all11
+  migrations and passed59 new text-context assertions plus250 retained baseline,
+  28 AI receipt and59 quota assertions. All29 QA regressions, QA inventory57/14
+  hosted pending, shell syntax and whitespace checks passed. Separate source/diff review
+  completed for ACLs, bounded selection and fresh snapshot limits; it caught and
+  fixed catalog-test isolation against earlier committed review fixtures. A local
+  probe confirms those rows/FKs/receipts survive the suite rollback. New native PostgreSQL17 and complete exact-head Actions remain
+  pending; no local PostgreSQL17/Dart/Flutter/Windows SDK was used or claimed.
+- Limits/next: SQL components are not a bound ContextRepository. Add bounded real
+  driver prepare/revalidation for tutor/correction with cancellation/safe errors
+  and late results; never hold/reuse a transaction snapshot across provider I/O.
+  Conversation prepare/reservation/claim and validated message/session+receipt
+  completion need coherent transactions and distinct-event serialization before
+  wiring. Lookup-only recovery, hosted Auth/Edge/provider and all14 release groups
+  remain open. Do not merge this draft, close #31 or claim Personal Alpha.
+- Durable publication commit/tree/exact-head CI and released marker are recorded
+  in the re-read PR #41/#37 and #31 handoff; only pending CI remains after publish.

@@ -1186,7 +1186,33 @@
         18
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-quota",
-      "limitation": "New exact-head native PostgreSQL17 driver/service tests pending CI; plaintext fixture transport and Auth/context/provider/receipt ports TEST ONLY. No hosted TLS/CA/Edge/Deno/learner or real network-partition proof."
+      "limitation": "Exact source cdae78b54d14c7aadff5e4a849adafa3452c47c5 passed all five native driver cases in CI39763102669 attempt1. Plaintext fixture transport and Auth/context/provider/receipt ports TEST ONLY. No hosted TLS/CA/Edge/Deno/learner or real network-partition proof; future heads require their own exact checks."
+    },
+    {
+      "id": "ai-text-context",
+      "status": "automated-baseline",
+      "scope": "Private read-only tutor/correction profile-level and active curriculum projection with bounded whole-entry allowlists and fresh post-provider revalidation",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_text_context.sql",
+          "contains": "late provider result cannot reuse changed curriculum snapshot"
+        },
+        {
+          "path": "supabase/tests/ai_text_context.sql",
+          "contains": "large multibyte catalog has deterministic whole-entry bounded allowlist"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "supabase/tests/ai_text_context.sql"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "59 new assertions passed locally with all migrations on PGlite0.5.9/PostgreSQL18.6. Native exact-head CI pending. No runtime ContextRepository, conversation reservation/completion, hosted Auth/Edge/Deno/provider or learner proof. All 14 hosted release groups remain pending."
     }
   ],
   "findings": [

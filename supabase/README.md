@@ -167,3 +167,13 @@ is added. The adapter must confirm its short transaction COMMIT before dispatch
 and fail closed on unknown outcomes. Runtime wiring remains pending. Policy,
 ACL/clock/cancellation limits and SQL/observed-lock concurrency reproduction:
 [`AI_POSTGRES_QUOTA.md`](../docs/AI_POSTGRES_QUOTA.md).
+
+## Undeployed text context (#31)
+
+`20261022111500_ai_text_context.sql` adds two private service-only STABLE invoker
+functions for tutor/correction active curriculum/profile-level projection and
+post-provider snapshot revalidation. No public RPC/table/RLS/client grant or
+conversation mutation changes. The retained database runner adds
+`supabase/tests/ai_text_context.sql`; bounds/selection/trusted-user requirements
+and pending runtime/hosted evidence are in
+[`AI_TEXT_CONTEXT.md`](../docs/AI_TEXT_CONTEXT.md).

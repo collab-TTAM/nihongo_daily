@@ -160,3 +160,11 @@ SQL/native concurrency verification and remaining runtime binding are specified
 in [AI_POSTGRES_QUOTA.md](AI_POSTGRES_QUOTA.md). The TypeScript RateLimiter port
 is still mandatory; the opt-in Node driver binding is documented in
 AI_POSTGRES_RUNTIME.md. No endpoint or memory fallback is installed.
+
+## Private read-only text context component (#31)
+
+`20261022111500_ai_text_context.sql` adds service-only profile/active-curriculum
+projection and fresh post-provider revalidation for tutor/correction. Fixed bounds,
+whole-entry allowlists, strict shapes and SQL-role tests are documented in
+[AI_TEXT_CONTEXT.md](AI_TEXT_CONTEXT.md). No runtime ContextRepository/endpoint or
+conversation reservation/completion adapter is bound by this SQL component.
