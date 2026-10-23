@@ -91,6 +91,11 @@ Future<TimerHarness> mountReadingStudy(
 
 Future<void> begin(WidgetTester tester, {bool settle = true}) async {
   await tester.enterText(timer('date'), '2026-10-20');
+  // Complete date editing before scrolling to the separate start control.
+  // Otherwise EditableText's deferred caret reveal can undo ensureVisible
+  // during tapReading's pump and move the real hit target offscreen.
+  await tester.testTextInput.receiveAction(TextInputAction.done);
+  await tester.pumpAndSettle();
   await tapReading(tester, timer('start'), settle: settle);
 }
 

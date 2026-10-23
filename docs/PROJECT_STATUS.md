@@ -4608,3 +4608,40 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   or long polling. Then reviewed original/licensed material and trusted server
   reading availability/version mapping before activation; audio remains separate.
   #34/#11 open/#41 draft/all14 hosted Personal Alpha groups pending.
+
+
+## Reading timer input-focus regression (2026-10-23 UTC)
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c, current draft41
+  parenta00d17b4d558a9e891aeff5e30d296a79ae2ff49/tree
+  7a9fe4542fb4c8bae1bf91bbcc65f74d9d19ee82; old draft37 redirects here.
+  Single core marker core-20261023T0913-reading-timer-hit-test active before edits;
+  independent Pro14/38 scope/content/manifests/tests/branch untouched.
+- Observed exact-head CI39924427623/latest attempt1 completed failure. All steps
+  in repo-sanity, ai-boundary, database and windows succeeded. Flutter formatting
+  and analysis passed; full test step reported732 passed/10 failed. All10 failed
+  reading_study_widget_test.dart cases stopped at begin -> tapReading line122:
+  no hit-testable listening_reading-timer-start after date input/ensureVisible/
+  pump. Remaining Flutter owned-SDK/Chrome/Web steps skipped, not passed.
+- In reading-study begin helper, send the real keyboard Done action and settle
+  date-edit focus/caret-reveal work before ensureVisible and the real start tap.
+  Deferred EditableText reveal can otherwise override that scroll during the
+  helper pump. Input completion happens before any possibly held preflight starts;
+  no settling loop is added around a held operation/running timer. Existing
+  hitTestable expectation, real tap, all12 test bodies/assertions remain unchanged.
+  No direct onPressed start, tap warning suppression, removed case or weaker gate.
+- Local fresh official Dart3.9.2 archive SHA256 verified; strict target formatting
+  passed unchanged (unresolved Flutter lint include warning). QA inventory76
+  valid; all14 hosted groups still pending. Separate exact insertion/diff review
+  confirms original test source preserved byte-for-byte aside from5 added lines.
+  No local Flutter analyze/test/build or bootstrap metadata-rejection workaround.
+  New real Flutter/widget outcome must be observed on exact new-head CI.
+- Two intended paths only: reading_study_widget_test.dart and this status.
+  App/core/store/Auth/source/SQL/API/security/content/defaults/dependency/workflow/
+  QA matrix unchanged. Current server reading area remains BLOCKED; no live
+  learner/audio/Personal Alpha acceptance, deployment, merge or issue closure.
+- Publish against correct base tree; verify complete remote tree/changed contents/
+  parent and expected-head non-force ref. Final SHA/tree/CI/released heartbeat in
+  PR41/issue34. Next inspect allfive latest-attempt jobs/every required step and
+  fix actual diagnostics while preserving assertions. Keep draft41/issues34/11
+  open; no duplicate work while CI alone is pending.
