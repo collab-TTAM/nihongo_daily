@@ -5,6 +5,7 @@ import '../../curriculum/application/curriculum_provider.dart';
 import '../../curriculum/domain/curriculum.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../../reading/application/reading_provider.dart';
+import '../../quiz/application/vocabulary_quiz_provider.dart';
 import '../../srs/application/srs_study_controller.dart';
 import '../../srs/application/srs_study_provider.dart';
 import '../domain/daily_plan.dart';
@@ -32,6 +33,24 @@ final canStartStudyRecorderProvider = Provider.autoDispose
     .family<bool, DailyPlanArea>((ref, area) {
       if (area == DailyPlanArea.srs) {
         return ref.watch(canStartSrsRecorderProvider);
+      }
+      if (area == DailyPlanArea.quizReview) {
+        final profile = ref.watch(accountStateProvider).profile;
+        final level = ref.watch(previewLevelProvider);
+        if (profile == null || profile.level != level.label) return false;
+        final content = ref.watch(vocabularyQuizProvider(level));
+        if (content.isLoading || content.hasError) return false;
+        final questions = content.asData?.value;
+        bool valid(CurriculumEntry entry) =>
+            entry.kind == CurriculumKind.vocabulary &&
+            entry.level == level &&
+            entry.contentVersion > 0;
+        return questions != null &&
+            questions.isNotEmpty &&
+            questions.every(
+              (question) =>
+                  valid(question.target) && question.choices.every(valid),
+            );
       }
       if (area == DailyPlanArea.listeningReading) {
         final profile = ref.watch(accountStateProvider).profile;

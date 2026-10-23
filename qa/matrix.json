@@ -1807,6 +1807,37 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading",
       "limitation": "Current SQL still BLOCKS LISTENING_READING; local text cannot grant availability or credit. TEST ONLY permissive plan/Auth/RPC/source/clock;5 actual-file core cases and12 widget cases require exact-head Flutter evidence. Core close/reopen is one-process, not new Windows crash/hosted JWT proof. No default source/audio activation or scored completion; all14 hosted release groups pending."
+    },
+    {
+      "id": "quiz-study-recorder",
+      "status": "automated-baseline",
+      "scope": "Opt-in current-profile quiz elapsed time through the shared captured-owner durable recorder, immutable recovery and round/lifecycle guards",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_recorder_test.dart",
+          "contains": "uncertain quiz commit reopens and replays once with original identity"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_widget_test.dart",
+          "contains": "blocked quiz server plan overrides loaded eligible questions"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_widget_test.dart",
+          "contains": "frozen quiz report retries unchanged through SRS"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_widget_test.dart",
+          "contains": "quiz date editor is retained and cleared on logout during save"
+        }
+      ],
+      "issues": [
+        11,
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz",
+      "limitation": "Current server QUIZ_REVIEW remains zero-resource/BLOCKED. TEST ONLY permissive plans/Auth/RPC/clock, original curriculum unchanged. Four actual-file core cases and11 widgets need exact-head Flutter proof; native close/reopen is one process, not Windows crash/hosted learner or synced quiz-attempt acceptance. Elapsed self-report is separate from scores/history/mastery; all14 hosted groups pending."
     }
   ],
   "findings": [

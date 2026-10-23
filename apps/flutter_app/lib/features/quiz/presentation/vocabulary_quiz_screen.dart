@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
+import '../../daily_plan/application/srs_session_recorder_provider.dart';
+import '../../daily_plan/domain/daily_plan.dart';
+import '../../daily_plan/presentation/study_session_timer_panel.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/vocabulary_quiz_provider.dart';
 import '../application/quiz_history_provider.dart';
@@ -49,6 +52,7 @@ class VocabularyQuizScreen extends ConsumerWidget {
         ),
         ...content.when(
           skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
           loading: () => [
             const LinearProgressIndicator(),
             const Text('Đang tải câu hỏi…'),
@@ -75,14 +79,14 @@ class VocabularyQuizScreen extends ConsumerWidget {
         const SizedBox(height: 16),
         const Text(
           'Mỗi câu chỉ nhận câu trả lời đầu tiên. Chưa lưu tiến độ, '
-          'xác định mức ghi nhớ hoặc cộng thời gian học.',
+          'xác định mức ghi nhớ hoặc tự cộng thời gian học.',
         ),
       ],
     );
   }
 }
 
-class _QuizPanel extends StatefulWidget {
+class _QuizPanel extends ConsumerStatefulWidget {
   const _QuizPanel({
     super.key,
     required this.questions,
@@ -94,10 +98,10 @@ class _QuizPanel extends StatefulWidget {
   final QuizAttemptFactory capture;
 
   @override
-  State<_QuizPanel> createState() => _QuizPanelState();
+  ConsumerState<_QuizPanel> createState() => _QuizPanelState();
 }
 
-class _QuizPanelState extends State<_QuizPanel> {
+class _QuizPanelState extends ConsumerState<_QuizPanel> {
   int _offset = 0;
   late QuizRound _round;
   VocabularyQuizHistoryRepository? _roundHistory;
@@ -137,6 +141,9 @@ class _QuizPanelState extends State<_QuizPanel> {
 
   void _restart(QuizRound expected, {bool next = false}) {
     if (!mounted || !identical(_round, expected) || _saving) return;
+    ref
+        .read(studySessionRecorderProvider.notifier)
+        .interrupt(area: DailyPlanArea.quizReview);
     setState(() {
       if (next) _offset += expected.questions.length;
       _startRound();
@@ -197,6 +204,25 @@ class _QuizPanelState extends State<_QuizPanel> {
   @override
   Widget build(BuildContext context) {
     final round = _round;
+    final current = _roundHistory == null || _eligible;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Keep the editor mounted even when the captured history owner changes.
+        StudySessionTimerPanel(
+          area: DailyPlanArea.quizReview,
+          contentVisible: current,
+          isContentCurrent: () =>
+              mounted &&
+              identical(_round, round) &&
+              (_roundHistory == null || _eligible),
+        ),
+        _quizBody(context, round),
+      ],
+    );
+  }
+
+  Widget _quizBody(BuildContext context, QuizRound round) {
     if (_roundHistory != null && !_eligible) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

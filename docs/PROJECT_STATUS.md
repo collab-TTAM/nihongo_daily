@@ -4695,3 +4695,67 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   diagnostics with assertions intact. Draft41/issues34/11 remain open, reviewed
   material/server mapping/audio/hosted learner acceptance still required. No
   merge/deployment/release or schedule change; pending-only CI means handoff.
+
+
+## Gated Quiz/Review elapsed-session composition (2026-10-23 UTC)
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c; draft41
+  parent77e9cf445ca9eade2aeed2cc26f37a8e84954c8c/tree
+  3d16dd155dc238b6990183406a374dc0aaa9e0f2. Source37afa572a redirects here;
+  Pro14/38 reserved/untouched. Single core marker
+  core-20261023T1113-quiz-study-composition active in41/11 before code.
+- Exact parent CI39938761913/latest attempt1 completed success: allfive jobs,
+  every required step/no skips,747 Flutter/five Chrome/Web/Windows/native/SQL/
+  Edge. Allfive new reading action-identity regressions explicitly passed.
+  Component evidence only; no hosted learner/availability/release acceptance.
+- Scoped #11/#13 policy reviewed before code: explicit self-reported elapsed
+  quiz/review time, separate from score, local attempt capture/save and mastery.
+  Partial or completed current rounds can retain an explicitly started interval;
+  answering/finishing/saving never starts/credits time. Guest-to-ready may start
+  new time explicitly, never retarget earlier answers as an owned quiz attempt.
+- Added only QUIZ_REVIEW to client recorder allowlist. Current SQL still counts
+  quiz resources as0/BLOCKED; local questions/readiness cannot enable that area.
+  Unchanged same-owner pending recovery, exact nonblocked/nonempty plan block,
+  async readiness recheck/calendar/overlap/derived-credit/server replay rules
+  remain authoritative. No SQL, snapshot reset, grant/RLS or wire change.
+- Quiz start requires settled nonempty questions whose vocabulary targets/choices
+  match preview/own-profile level and positive versions, plus mounted current
+  round/history-owner eligibility. Shared owner/state/round guards reject stale
+  start/finish. Restart/next batch interrupts only unfinished quiz preflight/time;
+  source/level/loading/route/background/account loss cancels. Date editor remains
+  mounted/cleared/offstage through history-owner loss/logout/awaited app exit;
+  source/level/route still replace hosts normally. No second recorder/store/SDK.
+- One frozen report blocks all activities even before stage success. Existing
+  stage-before-RPC/ack/fresh-plan/manual retry/drain keeps exact ID/date/area/UTC
+  times across routes, including retry from SRS. Accepted saves retain owner
+  isolation; late old-account publication is suppressed. No score/answer fields
+  are added to study reports, no fake save/Auth success or default live service.
+- Four new actual-file core cases passed in fresh Dart3.9.2 disposable harness:
+  readiness/exact blocked/nonempty area +ack; unstaged cross-area exclusion and
+  exact retry; uncertain commit +journal close/reopen/manual replay; late save/
+  owner replacement. Official archive SHA256 verified; strict targeted analysis
+  clean. Exact production/dependency fixtures/test bodies matched, only runner
+  import changed to package:test1.26.2. Reopen is one process, not new Windows
+  crash/hosted Auth proof. No local full Flutter/bootstrap-rejection bypass.
+- Eleven new actual-router/provider/widget cases authored with unchanged decoded
+  original N5/N4 and TEST ONLY Auth/RPC/memory/clock/permissive plans: public no
+  credit, explicit partial-quiz interval, blocked area, profile mismatch,
+  restart/next-batch/stale finish, held refresh, late preflight/route exit,
+  cross-route frozen retry,320px/200%, logout/held save/date retention. Actual
+  NEW Flutter/provider/widgets/platform outcomes require exact-head CI.
+- Local strict format six files passed,46 QA tests/inventory77/whitespace passed.
+  All76 old QA case objects/findings/gates retained; all14 hosted groups pending.
+  Separate diff/lifecycle review proves old quiz answer/advance/attempt/save logic
+  and question/result rendering exact; every old test remains unchanged.
+- Eleven intended paths: four existing recorder/provider/panel/quiz-screen files;
+  two new quiz-study test files; new docs/QUIZ_STUDY_TIMER.md, existing shared
+  recorder/vocabulary-quiz docs, PROJECT_STATUS.md and qa/matrix.json. Protected
+  canonical content/Pro/manifests/content tests/contracts/Auth/store/SQL/security/
+  dependencies/CI/provider/spend unchanged. Keep #11/#13 open/#41 draft.
+- Publish only after correct-base/full-tree/unchanged-blob/content/single-parent
+  and expected-head non-force guards. Final SHA/tree/new run/released heartbeat
+  in41/11 and37 redirect. Next inspect every required latest-attempt exact-head
+  job/step and fix actual diagnostics without weakening assertions. Pending-only
+  means durable handoff, no duplicate code/long polling. Trusted quiz availability
+  mapping, reading/audio, hosted attempts/sync/learner/release gates remain open;
+  no deployment/merge/closure/release/schedule action.

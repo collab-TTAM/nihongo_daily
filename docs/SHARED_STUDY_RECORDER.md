@@ -1,7 +1,7 @@
 # Shared foreground completed-study recorder — Issue #11
 
 The account-scoped recorder core supports SRS, vocabulary, grammar and opt-in
-reading with one active/preflight/frozen-report slot. Configured SRS, vocabulary and grammar
+reading/quiz with one active/preflight/frozen-report slot. Configured SRS, vocabulary and grammar
 now use one area-aware panel/provider. Reader starts require settled nonempty
 original content at the authenticated profile's level and a matching available
 server-plan block. Default browsing remains public and does not record time.
@@ -16,7 +16,7 @@ wall-clock consistency check and existing durable stage/submit/ack/fresh-plan
 path. Server identity/calendar/availability/overlap/minute validation remains
 unchanged. This is authenticated self-reported time, not attention or mastery.
 
-start(date, area: ...) accepts only the four supported areas. Reading readiness
+start(date, area: ...) accepts only the five supported areas. Reading readiness
 and the still-blocked authoritative area are documented in READING_STUDY_TIMER.md. It requires an
 area-specific readiness callback both before asynchronous preflight and after
 plan lookup, then checks the requested area's nonblocked/nonempty server block.
@@ -107,3 +107,8 @@ confirms the bounded change. Full corrected-head Flutter/provider/browser/Web/
 Windows results require fresh Actions. Local Flutter metadata-review rejection
 is not retried or bypassed. Next inspect that exact head before reader controls;
 only pending CI means save/release without duplicate work or long polling.
+
+
+Quiz/Review composition, current BLOCKED server availability and separate elapsed-time/
+quiz-result semantics are documented in QUIZ_STUDY_TIMER.md. It uses the same owner/
+slot and keeps all existing frozen-event/drain and server rules.

@@ -100,3 +100,13 @@ The next increment adds immutable attempt/history models and16 authored tests;
 see QUIZ_ATTEMPTS.md. It does not activate storage or change the current route.
 Quiz results still reset locally; durable user-owned history/UI/sync/mastery remain
 pending. New model execution requires its own exact-head Actions verification.
+
+
+### Optional elapsed-study composition
+
+The original public scoring rules above remain separate from the optional
+configured account timer in QUIZ_STUDY_TIMER.md. Explicit valid elapsed time is
+not inferred from answers/scores/local saves and does not establish mastery.
+Quiz/Review uses the existing one captured-owner durable recorder; current SQL
+still BLOCKS that area. This does not activate server credit or change any local
+attempt/history/owner rule. Default public practice has no account timer credit.
