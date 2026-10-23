@@ -1,8 +1,9 @@
 # Reading practice screen — Issue #34
 
-The existing `/listening` module now hosts read-only reading practice. It uses
+The existing `/listening` module hosts reading practice. Its content uses
 Riverpod `readingRepositoryProvider` and an auto-disposed level-specific catalog
-provider, not database tables or an account runtime. The provider defaults to
+provider, not database tables. The optional captured-owner timer is described in
+READING_STUDY_TIMER.md. The content provider defaults to
 null: the normal preview explicitly reports missing reviewed reading material.
 No TEST ONLY lesson is packaged or injected into the application. A trusted host
 may supply the reviewed `LocalReadingRepository` described in READING_MATERIAL.md.
@@ -28,9 +29,11 @@ exact round object; retained callbacks cannot answer or reset its successor,
 including a restarted round with the same content identity/version.
 
 Selection, answers and results are local to the mounted reader. Opening another
-passage or leaving the route discards the round. There is no save/completed-study
-button or account capability, progress/mastery inference, study-minute credit,
-SRS enrollment, journal, timer or sync operation in this increment.
+passage or leaving the route discards the round. Answers and scores do not authorize
+progress/mastery, study-minute credit or SRS enrollment. An optional account-gated
+elapsed-study panel is composed separately through the existing durable service;
+see READING_STUDY_TIMER.md for selection/lifecycle/server-plan gates. Current SQL
+still BLOCKS the combined area; no real reading time is activated by local text.
 
 ## Loading and source changes
 
@@ -75,6 +78,6 @@ for these new cases. Local pinned Dart formatting and QA inventory are not Flutt
 execution. Actual observed results are recorded in PROJECT_STATUS and PR #41.
 
 Next: verify full current-head CI, supply separately reviewed original/licensed
-reading material in coordination with #26/#14, and bind eligible reading to the
-existing captured-session/durable completed-study recorder. Audio, hosted learner
+reading material in coordination with #26/#14, and validate the optional reading timer composition described in
+READING_STUDY_TIMER.md before trusted server availability can enable real reports. Audio, hosted learner
 acceptance and all14 release groups remain pending; #34 stays open and #41 draft.

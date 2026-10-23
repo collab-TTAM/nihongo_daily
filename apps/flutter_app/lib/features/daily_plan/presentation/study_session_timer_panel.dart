@@ -173,7 +173,12 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                 const Text(
                   'Rời trang hoặc đưa ứng dụng xuống nền sẽ hủy bộ đếm đang chạy.',
                 ),
-                if (widget.area != DailyPlanArea.srs)
+                if (widget.area == DailyPlanArea.listeningReading)
+                  const Text(
+                    'Chỉ tính thời gian đọc bài; luyện nghe chưa khả dụng. '
+                    'Đổi bài, làm lại hoặc tải lại sẽ hủy bộ đếm.',
+                  )
+                else if (widget.area != DailyPlanArea.srs)
                   const Text(
                     'Đổi cấp độ hoặc tìm kiếm không có kết quả cũng hủy bộ đếm.',
                   ),
@@ -251,7 +256,9 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                     onPressed: () {
                       final current = ref.read(studySessionRecorderProvider);
                       if (current.area == widget.area &&
-                          current.phase == StudyRecorderPhase.running) {
+                          current.phase == StudyRecorderPhase.running &&
+                          (widget.area != DailyPlanArea.listeningReading ||
+                              identical(current, state))) {
                         unawaited(owner.finish());
                       }
                     },

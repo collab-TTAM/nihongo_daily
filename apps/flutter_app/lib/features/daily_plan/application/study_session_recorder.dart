@@ -64,7 +64,7 @@ final class StudyRecorderState {
   }.contains(phase);
 }
 
-/// One foreground interval across SRS/vocabulary/grammar, not attention/mastery.
+/// One foreground interval across SRS/vocabulary/grammar/reading, not attention/mastery.
 /// One current-owner instance retains even a not-yet-staged frozen report. Explicit
 /// finish dispatches. Owner replacement disposes this captured controller;
 /// unfinished timing is canceled on route/background loss by the host widget.
@@ -148,6 +148,7 @@ class StudySessionRecorder {
       DailyPlanArea.srs,
       DailyPlanArea.vocabulary,
       DailyPlanArea.grammar,
+      DailyPlanArea.listeningReading,
     }.contains(area)) {
       return;
     }

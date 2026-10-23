@@ -4,6 +4,7 @@ import '../../auth/application/account_provider.dart';
 import '../../curriculum/application/curriculum_provider.dart';
 import '../../curriculum/domain/curriculum.dart';
 import '../../settings/application/preview_preferences.dart';
+import '../../reading/application/reading_provider.dart';
 import '../../srs/application/srs_study_controller.dart';
 import '../../srs/application/srs_study_provider.dart';
 import '../domain/daily_plan.dart';
@@ -31,6 +32,22 @@ final canStartStudyRecorderProvider = Provider.autoDispose
     .family<bool, DailyPlanArea>((ref, area) {
       if (area == DailyPlanArea.srs) {
         return ref.watch(canStartSrsRecorderProvider);
+      }
+      if (area == DailyPlanArea.listeningReading) {
+        final profile = ref.watch(accountStateProvider).profile;
+        final level = ref.watch(previewLevelProvider);
+        final selected = ref.watch(readingSelectedPassageProvider);
+        if (profile == null ||
+            profile.level != level.label ||
+            selected == null) {
+          return false;
+        }
+        final content = ref.watch(readingCatalogProvider(level));
+        if (content.isLoading || content.hasError) return false;
+        final passages = content.asData?.value;
+        return passages != null &&
+            passages.any((p) => identical(p, selected)) &&
+            passages.every((p) => p.level == level && p.contentVersion > 0);
       }
       final kind = switch (area) {
         DailyPlanArea.vocabulary => CurriculumKind.vocabulary,

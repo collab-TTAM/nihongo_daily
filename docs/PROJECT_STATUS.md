@@ -4552,3 +4552,59 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   fix actual diagnostics preserving assertions. Pending-only handoff, no duplicate
   code/docs-only commits/long polling. Only after verified UI continue reviewed
   material and captured-session/durable reading reports; #34 open/#41 draft.
+
+
+## Reading elapsed-session composition (2026-10-23T08:22:58.547468+00:00)
+
+- Fresh parentd1787cae7ec58cc34f0cacd8756df4cb88d51681/tree
+  39d7cb942881e4d788b1fa206f743fd21ae020c3, main78a44fa/source37afa572a/
+  Pro38 preserved. Single core writer marker core-20261023T081123-reading-timer
+  recorded active before implementation; repeated continuation stayed in this lane.
+- Exact parent CI39916233287/latest attempt1 completed success: allfive jobs/every
+  required step passed, including actual15 reading widgets/full Flutter/Chrome/
+  Web/Windows/native/database/AI checks. Component evidence, not hosted acceptance.
+- Composed reading into the existing one captured-owner study recorder, adding
+  only LISTENING_READING to supported client areas; unchanged preflight requires
+  same-owner pending recovery, local readiness recheck and matching nonblocked/
+  nonempty authoritative area. IMPORTANT current SQL still grants zero reading
+  resources/BLOCKED. Local text cannot unblock server plans or authorize credit;
+  tests explicitly use permissive TEST ONLY plans. No SQL/RLS/availability change.
+- Source/level/catalog-generation-bound selected passage provider resets on refresh,
+  including identical immediate lists. Own-profile level, settled valid catalog and
+  exact selected object membership gate readiness. Root-mounted shared panel retains
+  date editor on logout/awaited exit; no second recorder/SDK/journal owner. Opening/
+  restarting/back/reload clears selection and interrupts only unfinished reading.
+  Source/level/route/background loss cancels; frozen reports/retry/accepted-save
+  drain remain unchanged. Reading finish callback captures running-state identity
+  to reject a retained callback after restart. Audio disabled; time is reading
+  self-report, not saved answers/comprehension/mastery or listening completion.
+- Five new real-file core cases: local/blocked/nonempty gates; failed stage/frozen
+  cross-area exclusion/exact retry; uncertain commit +journal close/reopen/manual
+  replay; held canceled preflight/new-area isolation; late save/owner replacement.
+  Actual fresh Dart3.9.2 SHA256 verified. Strict targeted analysis clean and5/5
+  passed in disposable harness with identical production/core/dependency fixtures/
+  all test bodies, only flutter_test import changed to package:test1.26.2. Native
+  reopen is one process, not new Windows crash/hosted Auth proof. No app lock change.
+- Twelve new widget cases authored for public/no dispatch, selected-profile staged
+  interval, blocked plan, level mismatch, held reload, back/restart, late preflight,
+  cross-route reading retry via SRS, old finish/new interval,320px/200% and logout/
+  held-save/date-editor retention. Actual router/providers/shared core/service with
+  TEST ONLY Auth/RPC/memory store/material/clock. All15 prior reader tests and every
+  old study/Auth/SQL/CI assertion retained. NEW widget/provider/full Flutter/platform
+  execution pending exact-head CI; no local Flutter bootstrap retry/workaround.
+- Pinned Dart formatting passed; unresolved Flutter lint include warned. Local QA
+  46/46/inventory76 passed; all75 prior QA cases/findings/gates unchanged; all14
+  hosted release groups pending. Separate lifecycle/source/diff review, harness
+  equality and full-tree/blob/parent guards required before expected-head non-force
+  publication; final commit/run/released marker in PR41/issue34.
+- Twelve paths: five existing study/reading provider/core/panel/screen files; new
+  reading_study_recorder_test.dart +reading_study_widget_test.dart; new
+  docs/READING_STUDY_TIMER.md; READING_SCREEN.md, SHARED_STUDY_RECORDER.md,
+  PROJECT_STATUS.md and qa/matrix.json. Canonical content/Pro/frozen contracts/SQL/
+  Auth/transport/storage/CI/dependencies/default source unchanged. No default fake
+  success/provider/spend/deployment/merge/closure/release/schedule change.
+- Next inspect exact new-head latest-attempt allfive jobs/every required step and
+  fix real failures preserving assertions. Pending-only handoff; no duplicate code
+  or long polling. Then reviewed original/licensed material and trusted server
+  reading availability/version mapping before activation; audio remains separate.
+  #34/#11 open/#41 draft/all14 hosted Personal Alpha groups pending.

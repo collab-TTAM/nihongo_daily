@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/page_body.dart';
 import '../../settings/application/preview_preferences.dart';
+import '../../daily_plan/application/daily_plan_provider.dart';
+import '../../daily_plan/application/srs_session_recorder_provider.dart';
+import '../../daily_plan/domain/daily_plan.dart';
+import '../../daily_plan/presentation/study_session_timer_panel.dart';
 import '../application/reading_provider.dart';
 import '../domain/reading_material.dart';
 import '../domain/reading_repository.dart';
@@ -25,9 +29,36 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
 
   void _reload(PreviewLevel level, ReadingRepository repository) {
     if (!_scope(level, repository)) return;
+    _clearSelection();
     setState(() => _revision++);
     ref.invalidate(readingCatalogProvider(level));
     _top();
+  }
+
+  void _clearSelection() {
+    ref
+        .read(studySessionRecorderProvider.notifier)
+        .interrupt(area: DailyPlanArea.listeningReading);
+    ref.read(readingSelectedPassageProvider.notifier).state = null;
+  }
+
+  bool _select(
+    PreviewLevel level,
+    ReadingRepository repository,
+    List<ReadingPassage> passages,
+    ReadingPassage? passage,
+  ) {
+    if (!_scope(level, repository)) return false;
+    final current = ref.read(readingCatalogProvider(level));
+    if (current.isLoading ||
+        current.hasError ||
+        !identical(current.asData?.value, passages) ||
+        (passage != null && !passages.any((p) => identical(p, passage)))) {
+      return false;
+    }
+    _clearSelection();
+    ref.read(readingSelectedPassageProvider.notifier).state = passage;
+    return true;
   }
 
   void _top() {
@@ -46,6 +77,8 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   Widget build(BuildContext context) {
     final level = ref.watch(previewLevelProvider);
     final repository = ref.watch(readingRepositoryProvider);
+    final selected = ref.watch(readingSelectedPassageProvider);
+    final configured = ref.watch(durableStudyRepositoryProvider) != null;
     return PageBody(
       scrollController: _scroll,
       children: [
@@ -65,6 +98,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
             if (!_scope(level, repository) || value == null || value == level) {
               return;
             }
+            _clearSelection();
             ref.read(previewLevelProvider.notifier).state = value;
             _top();
           },
@@ -77,6 +111,11 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         ),
         const Text('Chưa có âm thanh được duyệt để luyện nghe.'),
         const SizedBox(height: 16),
+        // Keep the date editor mounted through account revocation/awaited exit.
+        StudySessionTimerPanel(
+          area: DailyPlanArea.listeningReading,
+          contentVisible: selected != null,
+        ),
         if (repository == null)
           const Text(
             'Chưa có nguồn bài đọc được cấu hình. '
@@ -121,14 +160,19 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                       key: ValueKey((repository, level, _revision, passages)),
                       passages: passages,
                       onNavigate: _top,
+                      onRoundChanged: (passage) =>
+                          _select(level, repository, passages, passage),
                     ),
                 ],
               ),
         ],
         const SizedBox(height: 24),
-        const Text(
-          'Kết quả chỉ giữ khi bạn đang mở bài; '
-          'chưa lưu tiến độ hoặc cộng thời gian học.',
+        Text(
+          configured
+              ? 'Câu trả lời chỉ giữ khi đang mở bài. Thời gian đọc chỉ được '
+                    'ghi nhận khi bạn bắt đầu và kết thúc buổi học hợp lệ.'
+              : 'Kết quả chỉ giữ khi bạn đang mở bài; '
+                    'chưa lưu tiến độ hoặc cộng thời gian học.',
         ),
       ],
     );
@@ -140,9 +184,11 @@ class _ReadingPanel extends StatefulWidget {
     super.key,
     required this.passages,
     required this.onNavigate,
+    required this.onRoundChanged,
   });
   final List<ReadingPassage> passages;
   final VoidCallback onNavigate;
+  final bool Function(ReadingPassage?) onRoundChanged;
 
   @override
   State<_ReadingPanel> createState() => _ReadingPanelState();
@@ -156,7 +202,7 @@ class _ReadingPanelState extends State<_ReadingPanel> {
   bool _current(ReadingRound round) => mounted && identical(_round, round);
 
   void _open(ReadingPassage passage) {
-    if (!mounted || _round != null) return;
+    if (!mounted || _round != null || !widget.onRoundChanged(passage)) return;
     setState(() => _round = ReadingRound(passage));
     widget.onNavigate();
   }
@@ -197,7 +243,7 @@ class _ReadingPanelState extends State<_ReadingPanel> {
         OutlinedButton(
           key: const Key('reading-back'),
           onPressed: () {
-            if (!_current(round)) return;
+            if (!_current(round) || !widget.onRoundChanged(null)) return;
             setState(() => _round = null);
             widget.onNavigate();
           },
@@ -283,7 +329,7 @@ class _ReadingPanelState extends State<_ReadingPanel> {
         OutlinedButton(
           key: const Key('reading-restart'),
           onPressed: () {
-            if (!_current(round)) return;
+            if (!_current(round) || !widget.onRoundChanged(passage)) return;
             setState(() => _round = ReadingRound(passage));
             widget.onNavigate();
           },

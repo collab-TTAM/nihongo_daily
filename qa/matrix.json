@@ -1776,6 +1776,37 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading/reading_widget_test.dart",
       "limitation": "Widget cases authored using actual router/providers/parser/local repository and TEST ONLY source material; full new-head Flutter execution/build still required. No reviewed default lesson or playable audio, account-owned study report/minutes/mastery/persistence/sync or hosted learner acceptance. All14 release groups pending; unconfigured source remains unavailable."
+    },
+    {
+      "id": "reading-study-recorder",
+      "status": "automated-baseline",
+      "scope": "Opt-in selected-profile reading through one captured durable study recorder, unchanged authoritative plan gate, lifecycle interruption and exact immutable recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/application/reading_provider.dart",
+          "contains": "readingSelectedPassageProvider"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_study_recorder_test.dart",
+          "contains": "uncertain reading commit survives journal reopen and exact manual replay"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_study_widget_test.dart",
+          "contains": "blocked authoritative reading plan refuses timing even when text is selected"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_study_widget_test.dart",
+          "contains": "old reading finish callback cannot finish a restarted interval"
+        }
+      ],
+      "issues": [
+        34,
+        11,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading",
+      "limitation": "Current SQL still BLOCKS LISTENING_READING; local text cannot grant availability or credit. TEST ONLY permissive plan/Auth/RPC/source/clock;5 actual-file core cases and12 widget cases require exact-head Flutter evidence. Core close/reopen is one-process, not new Windows crash/hosted JWT proof. No default source/audio activation or scored completion; all14 hosted release groups pending."
     }
   ],
   "findings": [

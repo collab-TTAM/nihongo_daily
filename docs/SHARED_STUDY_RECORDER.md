@@ -1,7 +1,7 @@
 # Shared foreground completed-study recorder — Issue #11
 
-The account-scoped recorder core now supports SRS, vocabulary and grammar with
-one active/preflight/frozen-report slot. Configured SRS, vocabulary and grammar
+The account-scoped recorder core supports SRS, vocabulary, grammar and opt-in
+reading with one active/preflight/frozen-report slot. Configured SRS, vocabulary and grammar
 now use one area-aware panel/provider. Reader starts require settled nonempty
 original content at the authenticated profile's level and a matching available
 server-plan block. Default browsing remains public and does not record time.
@@ -16,7 +16,8 @@ wall-clock consistency check and existing durable stage/submit/ack/fresh-plan
 path. Server identity/calendar/availability/overlap/minute validation remains
 unchanged. This is authenticated self-reported time, not attention or mastery.
 
-start(date, area: ...) accepts only the three supported areas. It requires an
+start(date, area: ...) accepts only the four supported areas. Reading readiness
+and the still-blocked authoritative area are documented in READING_STUDY_TIMER.md. It requires an
 area-specific readiness callback both before asynchronous preflight and after
 plan lookup, then checks the requested area's nonblocked/nonempty server block.
 An available SRS block cannot stand in for unavailable vocabulary or grammar.
