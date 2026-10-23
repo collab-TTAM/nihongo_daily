@@ -35,6 +35,7 @@ Future<TimerHarness> mountReadingStudy(
   bool configured = true,
   PreviewLevel level = PreviewLevel.n4,
   ReadingRepository? content,
+  StateProvider<ReadingRepository?>? source,
   bool settled = true,
   Size size = const Size(1100, 900),
   double scale = 1,
@@ -51,10 +52,13 @@ Future<TimerHarness> mountReadingStudy(
       if (configured) accountRuntimeProvider.overrideWithValue(f.h.runtime),
       if (configured) durableStudySourceProvider.overrideWithValue(f.source),
       studyRecorderClockProvider.overrideWithValue(f.clock),
-      readingRepositoryProvider.overrideWithValue(
-        content ??
-            LocalReadingRepository(read: () async => material(level: 'N4')),
-      ),
+      if (source != null)
+        readingRepositoryProvider.overrideWith((ref) => ref.watch(source))
+      else
+        readingRepositoryProvider.overrideWithValue(
+          content ??
+              LocalReadingRepository(read: () async => material(level: 'N4')),
+        ),
     ],
   );
   f.container.read(previewLevelProvider.notifier).state = level;
@@ -100,6 +104,131 @@ Future<void> begin(WidgetTester tester, {bool settle = true}) async {
 }
 
 void main() {
+  for (final action in ['reading-restart', 'reading-reload']) {
+    testWidgets('retained start cannot follow $action into a new round', (
+      tester,
+    ) async {
+      final f = await mountReadingStudy(tester);
+      await openReading(tester);
+      final passage = f.container.read(readingSelectedPassageProvider);
+      final before = f.container.read(studySessionRecorderProvider);
+      final stale = tester.widget<FilledButton>(timer('start')).onPressed!;
+      await tapReading(tester, find.byKey(Key(action)));
+      if (action == 'reading-reload') {
+        await openReading(tester);
+      }
+      // The same passage and idle recorder cannot stand in for round identity.
+      expect(f.container.read(readingSelectedPassageProvider), same(passage));
+      expect(f.container.read(studySessionRecorderProvider), same(before));
+      await tester.enterText(timer('date'), '2026-10-20');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      stale();
+      await tester.pumpAndSettle();
+      expect(f.container.read(studySessionRecorderProvider), same(before));
+      expect(f.server.reads, 0);
+      expect(f.server.writes, 0);
+      expect(f.clock.ids, 0);
+      expect(f.memory.records, isEmpty);
+      await begin(tester);
+      expect(timer('elapsed'), findsOneWidget);
+      expect(f.server.reads, 1);
+    });
+  }
+
+  testWidgets('replaced reading source cannot reuse its retained start', (
+    tester,
+  ) async {
+    final passages = decodeReadingMaterial(
+      material(level: 'N4'),
+      PreviewLevel.n4,
+    );
+    final first = TestReadingRepository((_) async => passages);
+    final second = TestReadingRepository((_) async => passages);
+    final source = StateProvider<ReadingRepository?>((ref) => first);
+    final f = await mountReadingStudy(tester, source: source);
+    await openReading(tester);
+    final stale = tester.widget<FilledButton>(timer('start')).onPressed!;
+    f.container.read(source.notifier).state = second;
+    await tester.pumpAndSettle();
+    expect(f.container.read(readingSelectedPassageProvider), isNull);
+    await openReading(tester);
+    expect(
+      f.container.read(readingSelectedPassageProvider),
+      same(passages.single),
+    );
+    await tester.enterText(timer('date'), '2026-10-20');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    stale();
+    await tester.pumpAndSettle();
+    expect(f.server.reads, 0);
+    expect(f.server.writes, 0);
+    expect(f.clock.ids, 0);
+    expect(f.memory.records, isEmpty);
+    await begin(tester);
+    expect(timer('elapsed'), findsOneWidget);
+    expect(f.server.reads, 1);
+  });
+
+  testWidgets('A B A owner replacement invalidates an old reading start', (
+    tester,
+  ) async {
+    final f = await mountReadingStudy(tester);
+    await openReading(tester);
+    final stale = tester.widget<FilledButton>(timer('start')).onPressed!;
+    final oldOwner = f.container.read(studySessionRecorderProvider.notifier);
+    for (final user in [account.other, account.owner]) {
+      f.h.access.change(user);
+      await tester.pumpAndSettle();
+      expect(
+        f.container.read(studySessionRecorderProvider.notifier),
+        isNot(same(oldOwner)),
+      );
+      expect(tester.widget<TextField>(timer('date')).controller!.text, isEmpty);
+    }
+    await tester.enterText(timer('date'), '2026-10-20');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    stale();
+    await tester.pumpAndSettle();
+    expect(f.server.reads, 0);
+    expect(f.server.writes, 0);
+    expect(f.clock.ids, 0);
+    expect(f.memory.records, isEmpty);
+    await begin(tester);
+    expect(timer('elapsed'), findsOneWidget);
+    expect(f.server.reads, 1);
+  });
+
+  testWidgets(
+    'disposed reading start and finish are harmless after route exit',
+    (tester) async {
+      final f = await mountReadingStudy(tester);
+      await openReading(tester);
+      final staleStart = tester.widget<FilledButton>(timer('start')).onPressed!;
+      await begin(tester);
+      final staleFinish = tester
+          .widget<FilledButton>(timer('finish'))
+          .onPressed!;
+      f.clock.advance(const Duration(seconds: 61));
+      f.container.read(routerProvider).go('/study');
+      await tester.pumpAndSettle();
+      expect(staleStart, returnsNormally);
+      expect(staleFinish, returnsNormally);
+      await tester.pumpAndSettle();
+      expect(
+        f.container.read(studySessionRecorderProvider).phase,
+        StudyRecorderPhase.canceled,
+      );
+      expect(f.server.reads, 1);
+      expect(f.server.writes, 0);
+      expect(f.clock.ids, 0);
+      expect(f.memory.records, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('public reading opens without any account timer or dispatch', (
     tester,
   ) async {

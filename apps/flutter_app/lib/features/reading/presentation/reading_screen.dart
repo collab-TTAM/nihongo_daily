@@ -21,6 +21,7 @@ class ReadingScreen extends ConsumerStatefulWidget {
 class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   final _scroll = ScrollController(keepScrollOffset: false);
   int _revision = 0;
+  Object _roundGeneration = Object();
 
   bool _scope(PreviewLevel level, ReadingRepository? repository) =>
       mounted &&
@@ -36,6 +37,8 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   }
 
   void _clearSelection() {
+    // Restarting the same immutable passage still creates a new interaction.
+    setState(() => _roundGeneration = Object());
     ref
         .read(studySessionRecorderProvider.notifier)
         .interrupt(area: DailyPlanArea.listeningReading);
@@ -79,6 +82,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     final repository = ref.watch(readingRepositoryProvider);
     final selected = ref.watch(readingSelectedPassageProvider);
     final configured = ref.watch(durableStudyRepositoryProvider) != null;
+    final roundGeneration = _roundGeneration;
     return PageBody(
       scrollController: _scroll,
       children: [
@@ -115,6 +119,8 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         StudySessionTimerPanel(
           area: DailyPlanArea.listeningReading,
           contentVisible: selected != null,
+          isContentCurrent: () =>
+              mounted && identical(_roundGeneration, roundGeneration),
         ),
         if (repository == null)
           const Text(

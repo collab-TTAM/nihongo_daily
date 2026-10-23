@@ -17,9 +17,12 @@ class StudySessionTimerPanel extends ConsumerStatefulWidget {
     super.key,
     required this.area,
     this.contentVisible = true,
+    this.isContentCurrent,
   });
   final DailyPlanArea area;
   final bool contentVisible;
+  // The host captures its round identity and checks it again on invocation.
+  final bool Function()? isContentCurrent;
   @override
   ConsumerState<StudySessionTimerPanel> createState() =>
       _StudySessionTimerPanelState();
@@ -58,19 +61,33 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
     }
   }
 
-  void _start() {
-    if (!widget.contentVisible ||
-        !ref.read(canStartStudyRecorderProvider(widget.area))) {
+  bool _currentAction(
+    StudyRecorderNotifier owner,
+    StudyRecorderState state,
+    DailyPlanArea area,
+    bool Function()? isContentCurrent,
+  ) =>
+      mounted &&
+      widget.area == area &&
+      identical(ref.read(studySessionRecorderProvider.notifier), owner) &&
+      identical(ref.read(studySessionRecorderProvider), state) &&
+      (isContentCurrent?.call() ?? true);
+
+  void _start(
+    StudyRecorderNotifier owner,
+    StudyRecorderState state,
+    DailyPlanArea area,
+    bool Function()? isContentCurrent,
+  ) {
+    if (!_currentAction(owner, state, area, isContentCurrent) ||
+        !widget.contentVisible ||
+        !ref.read(canStartStudyRecorderProvider(area))) {
       return;
     }
     try {
       final date = DailyPlanDate(_date.text.trim());
       setState(() => _validation = null);
-      unawaited(
-        ref
-            .read(studySessionRecorderProvider.notifier)
-            .start(date, area: widget.area),
-      );
+      unawaited(owner.start(date, area: area));
     } on FormatException {
       setState(() => _validation = 'Nhập ngày hợp lệ theo dạng YYYY-MM-DD.');
     }
@@ -101,6 +118,8 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
   Widget build(BuildContext context) {
     final state = ref.watch(studySessionRecorderProvider);
     final owner = ref.read(studySessionRecorderProvider.notifier);
+    final area = widget.area;
+    final isContentCurrent = widget.isContentCurrent;
     _owner = owner;
     final canStudy =
         widget.contentVisible &&
@@ -222,7 +241,9 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                     ),
                   FilledButton(
                     key: _key('start'),
-                    onPressed: visible && canStudy ? _start : null,
+                    onPressed: visible && canStudy
+                        ? () => _start(owner, state, area, isContentCurrent)
+                        : null,
                     child: const Text('Bắt đầu tính giờ'),
                   ),
                 ],
@@ -254,11 +275,17 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                   FilledButton(
                     key: _key('finish'),
                     onPressed: () {
+                      if (!mounted || widget.area != area) return;
                       final current = ref.read(studySessionRecorderProvider);
-                      if (current.area == widget.area &&
+                      if (current.area == area &&
                           current.phase == StudyRecorderPhase.running &&
-                          (widget.area != DailyPlanArea.listeningReading ||
-                              identical(current, state))) {
+                          (area != DailyPlanArea.listeningReading ||
+                              _currentAction(
+                                owner,
+                                state,
+                                area,
+                                isContentCurrent,
+                              ))) {
                         unawaited(owner.finish());
                       }
                     },

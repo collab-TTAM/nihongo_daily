@@ -4645,3 +4645,53 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   PR41/issue34. Next inspect allfive latest-attempt jobs/every required step and
   fix actual diagnostics while preserving assertions. Keep draft41/issues34/11
   open; no duplicate work while CI alone is pending.
+
+
+## Captured reading start/finish actions (2026-10-23 UTC)
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c and draft41
+  parent3a55cf4c3519839a37fee36a8395ac7dba377d61/tree
+  fb78e66a9f293e5d4fb41b8e6e310aeb3e0cc862. Source37afa572a redirects to41;
+  Pro14/38 unchanged/reserved. Marker core-20261023T1019-reading-action-generation
+  recorded active in41 and issue34 before implementation; one core writer.
+- Exact parent CI39930585722/latest attempt1 completed success. Allfive jobs and
+  every required step succeeded/no skips. Flutter log confirms all12 original
+  reading-study widgets and742 full cases, plus5 Chrome cases; Web/Windows/native/
+  owned-SDK/SQL/Edge retained checks passed. Prior date-input focus/scroll fix is
+  verified. Component evidence only, not hosted learner or reading availability.
+- Separate source review found start was a State method tearoff reading the
+  current owner/selection on invocation. Retaining it across same-passage restart
+  or A B A account replacement could begin a successor's interval. Start now
+  captures owner/exact recorder state/area and requires mounted current identity
+  before reading date/ref or dispatching through that captured owner. Existing
+  content/profile readiness and asynchronous/server preflight checks remain.
+- Reading host rotates an opaque generation at every clear/open/restart/reload.
+  Captured host guard checks actual current generation at invocation, including
+  before the next rebuild and when passage identity/idle state are unchanged.
+  No round-key/editor remount. Reading finish also uses captured owner/state/round;
+  disposed start/finish return before widget-ref access. Other hosts retain their
+  area/default content behavior; shared start owner/state checks apply throughout.
+- Five new TEST ONLY widget cases: retained start after same-object restart and
+  reload; replacement repository returning the same immutable passage objects;
+  A B A account swap with cleared editor/new owner; disposed start and finish
+  after a61-second canceled route exit. Stale starts must produce no plan read,
+  write, event ID or journal event, while current controls still start via real
+  hit-tested taps. Original12 test bodies/assertions/date-input helper preserved
+  byte-for-byte; actual parser/router/providers/shared recorder/service in use.
+- Fresh official Dart3.9.2 SHA256 verified. Local pinned formatting,46 QA tests,
+  inventory76 and whitespace passed; all14 hosted groups remain pending. Full
+  new Flutter analyze/widget/browser/platform execution not run locally; prior
+  bootstrap metadata-review rejection remains respected without retry/bypass.
+  New guards/cases need exact-head CI before claiming runtime verification.
+- Five intended paths: shared timer panel, reading screen, reading-study widget
+  tests, docs/READING_STUDY_TIMER.md and this status. No canonical content/Pro,
+  data/manifest/content tests, default fake source/success, Auth strategy/provider,
+  SQL/RLS/API/wire/availability, storage/core, CI/dependencies or paid operation
+  change. Actual server LISTENING_READING remains BLOCKED; audio unavailable.
+- Separate diff/lifecycle/source-preservation review completed before publication.
+  Use correct base/full-tree/UTF8/blob/one-parent verification and expected-head
+  non-force ref. Final SHA/tree/run and released heartbeat in41/34/37 redirect.
+  Next inspect allfive latest-attempt new-head jobs/every required step; fix actual
+  diagnostics with assertions intact. Draft41/issues34/11 remain open, reviewed
+  material/server mapping/audio/hosted learner acceptance still required. No
+  merge/deployment/release or schedule change; pending-only CI means handoff.

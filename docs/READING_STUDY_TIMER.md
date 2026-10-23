@@ -40,9 +40,16 @@ then load fresh progress through the existing captured service.
 Changing/restarting a passage, back-to-list, level/source/reload loss, leaving the
 route or backgrounding cancels unfinished timing/preflight without a report.
 Opening/restarting explicitly interrupts the reading area only; an old reading
-host cannot cancel a different activity. Reading finish callbacks additionally
-capture the exact running state so a retained callback cannot finish a later
-restarted reading interval. No automatic resume is installed.
+host cannot cancel a different activity. Start callbacks capture the mounted
+panel's recorder owner, exact state and area. The reading host additionally
+captures an opaque round generation, rotated even when restarting or reopening
+the same immutable passage. Its guard reads the current host generation at
+invocation, so an obsolete start cannot begin a new round or a replacement
+account's session. Current loaded-content/profile/plan checks still apply.
+Reading finish callbacks use the same owner/state/round guard; disposed start
+and finish callbacks return before accessing widget ref/controllers. The panel
+and its date editor stay mounted across round changes. No automatic resume is
+installed, and this UI guard does not grant server reading availability.
 
 A frozen uncertain report survives route navigation in the one shared slot,
 including failure before local staging. It blocks new starts in every activity.
@@ -73,6 +80,22 @@ level mismatch, held reload, back/restart cancellation, late preflight after rou
 exit, frozen reading retry through SRS, retained old finish versus new interval,
 320px/200% controls and logout/held save/date-editor retention. All15 prior reading
 widget cases and existing study/Auth/native/SQL/CI tests remain unchanged.
+
+Exact source3a55cf4 CI39930585722/latest attempt1 completed successfully in all
+five jobs/every required step, including all12 original reading-timer cases,
+742 full Flutter tests, five Chrome tests and Web/Windows/native/SQL checks.
+The date-edit helper explicitly sends Done and settles focus/caret reveal before
+scrolling to the real start hit target. This is component evidence, not hosted
+learner acceptance or reviewed material/audio availability.
+
+Five further widget regressions exercise stale start after same-object restart,
+same-object reload, repository replacement reusing identical passages, A B A
+account replacement, and disposed start/finish after route exit. They assert zero
+preflight/write/event creation for stale starts and a usable current real start;
+the disposal case preserves the original canceled interval without a report.
+The only new direct callback invocations deliberately exercise obsolete controls.
+All prior12 test bodies/assertions and the date-focus fix are preserved. These
+new cases require actual new-head Flutter CI; they were not run locally.
 
 Observed local core testing uses identical current production source and allfive
 new test bodies in a disposable Dart3.9.2 harness; only flutter_test import becomes
