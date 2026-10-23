@@ -4887,3 +4887,57 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   draft/13 open/all14 hosted release groups pending. No protected Pro/content/
   manifest/SQL/RLS/Auth/default/provider/dependency/CI/spend changes, merge,
   closure, deployment, release or schedule action.
+
+
+## Focused correction native/UI restart journey — Issues #13/#18, 2026-10-23 UTC
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c; draft41 parent
+  a396b146fccc862574121e7613ca68d2f167d979/tree
+  7dfd8148faaae9c9b4b5e1ae5bac517bdfa1dbe1. Source37afa572a redirects
+  here, Pro14/38 reserved/unchanged. Prior marker released; single core marker
+  core-20261023T1511-focused-disk-journey active in41/13 before edits.
+- Exact parent CI39968283133/latest attempt1 completed success, allfive jobs/
+  every required step/no skips. Raw complete latest-attempt snapshot accepted
+  by evidence verifier before QA changes. Logs prove777 full Flutter/five Chrome
+  including allnine focused widgets/all six selector cases and old native-file
+  quiz journey. Previous version-fixture FakeAsync timeout correction verified;
+  Web/Windows/native/SQL/Edge gates all passed. Component evidence, not hosted
+  identity/learner/availability/release acceptance.
+- Extended the actual SDK/native-file/UI quiz journey through focused correction
+  and a second owned restart. Select current original needs-review question via
+  real progress control, verify all canonical choices, answer correctly. Completed
+  round alone must leave append count/file unchanged. Explicit save and retained
+  save callback produce one new actual UUIDv4/UTC event, not a synthetic row.
+- Require original9/10 immutable event plus exact new1/1 target/version/choices,
+  two records, preserved original journal prefix. Back retains prior stats until
+  explicit reload produces2 rounds/10-of11 correct/10 current practiced/no review
+  candidate. These local actions dispatch no HTTP; scores remain separate from
+  mastery/time/SRS/plan credit. No production/default/storage/contract change.
+- Await second owned close; third fresh SDK/runtime/controller refreshes retained
+  TEST ONLY vault, passes own-profile gate without manual login and explicitly
+  recovers both byte-equivalent events/history/progress. B loads empty data;
+  returning A explicitly recovers corrected counts/no candidate. Restore/A-B-A
+  writes nothing and preserves complete corrected bytes; no owner/token text.
+  Actual file IO/SDK/close stay inside existing bounded real-loop runAsync path.
+- Original fixture/helpers/journey/assertions preserved byte-for-byte before
+  appended continuation;58 assertion statements added. Separate source/ownership/
+  real-loop/cleanup/immutable event/diff review passed. Existing test name and
+  every original QA case/finding/gate retained. Inventory79/46 QA regressions/
+  whitespace passed. Fresh official Dart3.9.2 SHA256 verified/pinned formatting;
+  unresolved flutter_lints include reflects absent Flutter package resolution.
+  New Flutter/analyze/full-platform execution unrun locally; no prior metadata-
+  bootstrap rejection retry/bypass or source-review-as-runtime claim.
+- Five paths only: quiz_disk_journey_widget_test.dart,
+  docs/QUIZ_DISK_JOURNEY.md, docs/FOCUSED_QUIZ_REVIEW.md,
+  docs/PROJECT_STATUS.md, qa/matrix.json. New QA group documents component scope
+  and exact test anchors. No protected Pro/content/manifests/content tests, SQL/
+  RLS/Auth strategy/API/store/provider/dependency/workflow/spend changes.
+- Correct-base/full-tree/unchanged blobs/UTF8/single-parent checks and fresh
+  expected-head non-force publication; final commit/tree/new CI/release in41/13/37.
+  Next inspect exact-head latest-attempt allfive jobs/every required step and
+  actual extended journey diagnostics, retaining assertions. Pending-only handoff
+  rather than duplicate implementation/long polling. Keep41 draft/13 open/all14
+  hosted release groups pending. Same-process graceful reopen/TEST ONLY HTTP,
+  unsigned JWT and vault are not hosted learner/sync, physical Windows launch/
+  vault or forced-process/power-loss proof. No merge/closure/deployment/release/
+  schedule action; continue independent reviewed integration gaps after green.

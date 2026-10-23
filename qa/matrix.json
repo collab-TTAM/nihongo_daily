@@ -1868,6 +1868,32 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz",
       "limitation": "Six pure selection cases use TEST ONLY synthetic metadata and actual domain builder/projection; nine widget cases use original N5 and simulated Auth/memory/clock, requiring new exact-head Flutter proof. Dedicated /quiz timer remains separate; no implicit save/minutes/mastery or hosted sync/learner acceptance. All14 release groups remain pending."
+    },
+    {
+      "id": "focused-quiz-native-correction-restart",
+      "status": "automated-baseline",
+      "scope": "Explicit focused correction through actual SDK/native journal/UI, preserving the original event and corrected history across a second owned restart and A/B/A isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "Focused correction survives a second owned restart"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(correction.answers.single.itemId, questions.first.target.id)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(third.store.appends, 0)"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz/quiz_disk_journey_widget_test.dart",
+      "limitation": "New continuation adds58 assertions and requires exact-head execution. Production capture/source/journal/owned SDK lifecycle are composed, but HTTP/unsigned JWT/vault remain TEST ONLY. Same-process graceful reopen is not hosted identity/RLS/sync, physical Windows launch/vault, forced-process/power-loss or authoritative mastery/study credit proof. All14 release groups remain pending."
     }
   ],
   "findings": [

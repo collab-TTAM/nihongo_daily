@@ -377,6 +377,183 @@ void main() {
       });
       expect(second.store.appends, 0);
       expect(tester.takeException(), isNull);
+
+      // Focused correction survives a second owned restart. Keep the actual
+      // original event; the UI must explicitly capture and save a new event.
+      final requestsBeforeReview = server.paths.length;
+      await tapQuiz(tester, find.byKey(const Key('quiz-review-start')));
+      expect(find.text('Luyện lại 1 từ cần ôn'), findsOneWidget);
+      expect(find.text(questions.first.target.heading), findsOneWidget);
+      for (final choice in questions.first.choices) {
+        expect(
+          find.byKey(ValueKey('quiz-choice-${choice.id}')),
+          findsOneWidget,
+        );
+      }
+      await tapQuiz(
+        tester,
+        find.byKey(ValueKey('quiz-choice-${questions.first.target.id}')),
+      );
+      await tapQuiz(tester, find.byKey(const Key('quiz-next')));
+      expect(find.text('Kết quả bộ này: 1 / 1'), findsOneWidget);
+      expect(second.store.appends, 0);
+      expect(
+        (await tester.runAsync(() => second.journal.list(wire.a)))!,
+        hasLength(1),
+      );
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        bytesBeforeRestart,
+      );
+      final staleReviewSave = tester
+          .widget<FilledButton>(find.byKey(const Key('quiz-save')))
+          .onPressed!;
+      await diskAction(second, 'quiz-save');
+      expect(find.byKey(const Key('quiz-saved')), findsOneWidget);
+      staleReviewSave();
+      await tester.pumpAndSettle();
+      expect(second.store.appends, 1);
+      final corrected = (await tester.runAsync(
+        () => second.journal.list(wire.a),
+      ))!;
+      expect(corrected, hasLength(2));
+      expect(
+        sameVocabularyQuizAttempt(
+          corrected
+              .singleWhere((r) => r.attempt.eventId == original.eventId)
+              .attempt,
+          original,
+        ),
+        isTrue,
+      );
+      final correction = corrected
+          .singleWhere((r) => r.attempt.eventId != original.eventId)
+          .attempt;
+      expect(correction.score, 1);
+      expect(correction.answers, hasLength(1));
+      expect(correction.answers.single.itemId, questions.first.target.id);
+      expect(correction.answers.single.selectedId, questions.first.target.id);
+      expect(
+        correction.answers.single.contentVersion,
+        questions.first.target.contentVersion,
+      );
+      expect(
+        correction.answers.single.choices,
+        questions.first.choices.map((c) => c.id),
+      );
+      expect(correction.eventId[14], '4');
+      expect(correction.completedAt.isUtc, isTrue);
+      await tapQuiz(tester, find.byKey(const Key('quiz-review-back')));
+      // The prior statistics snapshot stays unchanged until an explicit reload.
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      await diskAction(second, 'quiz-progress-load');
+      expect(find.text('N5 · 2 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      expect(find.text('Từ hiện tại đã luyện: 10'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(find.byKey(const Key('quiz-review-start')), findsNothing);
+      expect(server.paths.length, requestsBeforeReview);
+      final correctedBytes = (await tester.runAsync(
+        () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+      ))!;
+      expect(correctedBytes.length, greaterThan(bytesBeforeRestart.length));
+      expect(
+        correctedBytes.take(bytesBeforeRestart.length),
+        bytesBeforeRestart,
+      );
+      await tester.runAsync(second.close);
+      await tester.pumpWidget(const SizedBox());
+      expect(second.controller.quizHistorySource, isNull);
+
+      final tokensBeforeCorrectionRestore = server.paths
+          .where((p) => p == '/auth/v1/token')
+          .length;
+      final third = (await tester.runAsync(() async {
+        final app = await _open(directory, server, vault);
+        current = app;
+        await app.ready();
+        return app;
+      }))!;
+      expect(
+        server.paths.where((p) => p == '/auth/v1/token').length,
+        tokensBeforeCorrectionRestore + 1,
+      );
+      expect(third.runtime.account.state.profile!.id, wire.a);
+      container = await mount(third);
+      final requestsBeforeRestoredViews = server.paths.length;
+      container.read(routerProvider).go('/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await diskAction(third, 'quiz-progress-load');
+      expect(find.text('N5 · 2 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      expect(find.text('Từ hiện tại đã luyện: 10'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(find.byKey(const Key('quiz-review-start')), findsNothing);
+      container.read(routerProvider).go('/quiz/history');
+      await tester.pumpAndSettle();
+      await diskAction(third, 'quiz-history-load');
+      expect(find.text('N5 · 9 / 10'), findsOneWidget);
+      expect(find.text('N5 · 1 / 1'), findsOneWidget);
+      expect(server.paths.length, requestsBeforeRestoredViews);
+      final restoredCorrections = (await tester.runAsync(
+        () => third.journal.list(wire.a),
+      ))!;
+      expect(restoredCorrections, hasLength(2));
+      for (final attempt in [original, correction]) {
+        expect(
+          sameVocabularyQuizAttempt(
+            restoredCorrections
+                .singleWhere((r) => r.attempt.eventId == attempt.eventId)
+                .attempt,
+            attempt,
+          ),
+          isTrue,
+        );
+      }
+
+      container.read(routerProvider).go('/progress');
+      await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.b;
+        await third.login();
+      });
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await diskAction(third, 'quiz-progress-load');
+      expect(find.text('N5 · 0 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(find.byKey(const Key('quiz-review-start')), findsNothing);
+      expect(find.text(questions.first.target.heading), findsNothing);
+      expect(
+        (await tester.runAsync(() => third.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.a;
+        await third.login();
+      });
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await diskAction(third, 'quiz-progress-load');
+      expect(find.text('N5 · 2 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(find.byKey(const Key('quiz-review-start')), findsNothing);
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        correctedBytes,
+      );
+      expect(third.store.appends, 0);
+      expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining('TEST_ONLY'), findsNothing);
+      expect(tester.takeException(), isNull);
     },
   );
 }

@@ -66,3 +66,42 @@ show the new composed native-file journey passed;684 Flutter/five Chrome and
 Web/Windows/retained gates passed. The authored scenario above is now observed
 local component evidence; all stated simulated Auth/vault, same-process reopen
 and hosted/Windows/power-loss limitations remain.
+
+### Focused correction across another owned restart
+
+The same real-file journey now continues from A's restored needs-review item.
+It opens focused practice through the actual progress control, verifies the
+original full-deck choices, answers correctly and checks that completing a round
+alone changes neither the journal bytes nor append count. Explicit save must
+append exactly one new UUIDv4/UTC event, even after a retained save callback.
+The original9/10 event remains byte-for-byte intact; the new1/1 event must contain
+the original target/version/choice order. No attempt factory or history row is
+replaced by a fixture.
+
+Back initially retains the previous statistics snapshot. Only explicit reload
+shows two saved rounds,10/11 correct answers, ten current practiced items and
+zero needs-review candidates. The complete original file must be the unchanged
+prefix of the appended journal. Quiz/progress actions dispatch no HTTP request.
+
+Await shutdown again and create a third fresh SDK/runtime/controller on the same
+files and retained TEST ONLY vault. Require exactly one startup refresh plus
+own-profile readiness without manual login. Explicit history/progress reads must
+recover both identical events,9/10 and1/1 history rows and the cleared review
+candidate. B must see empty history/progress, then returning to A must explicitly
+recover10/11 and no review action. Restoration/account changes append nothing,
+preserve the complete corrected journal bytes and show no owner/token text.
+
+All original fixture/helper/journey/assertion bytes before this continuation are
+unchanged. The extension adds58 assertion statements; existing real-loop IO,
+bounded completion/readiness, hit-tested controls and cleanup are reused. It
+does not simulate storage success, extend timeouts or change production code.
+
+Exact parenta396b146 CI39968283133/latest attempt1 completed allfive jobs/every
+required step successfully:777 full Flutter/five Chrome, allnine focused widgets
+including the corrected version case, Web/Windows and retained native/SQL/Edge
+gates. The evidence verifier accepted the complete unmodified parent snapshot.
+This proves prior components, not the newly extended journey. New exact-head
+Flutter/analyze/full-platform execution remains required; no local Flutter
+bootstrap review rejection workaround. Same-process graceful reopen, TEST ONLY
+HTTP/JWT/vault and all hosted learner/sync/mastery/Windows/power-loss limitations
+above remain. All14 Personal Alpha release groups stay pending.

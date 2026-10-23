@@ -95,3 +95,18 @@ No file IO remains inside a widget body. All nine cases, assertions, original
 source/choices and production behavior are retained; no timeout extension or
 gate weakening. Corrected-head full Flutter and downstream execution still
 require exact-head Actions. PROJECT_STATUS and PR41 record observed results.
+
+### Observed focused component execution and disk journey extension
+
+At exacta396b146fccc862574121e7613ca68d2f167d979, CI39968283133 latest
+attempt1 passed allfive jobs/every required step:777 full Flutter, five Chrome,
+Web/Windows and retained native/SQL/Edge checks. Allnine focused widget cases,
+including changed-content-version, and allsix pure selector cases passed. The
+fixture event-loop correction is verified; this is component evidence only.
+
+QUIZ_DISK_JOURNEY.md now specifies the composed actual-file focused correction,
+explicit save/reload and second owned restart extension. It retains production
+UUID/UTC capture, exact original/corrected events and account A/B/A isolation,
+with no synthetic saved rows. Its58 additional assertion statements require new
+exact-head execution. Hosted learner/identity/sync/mastery, physical Windows
+launch/vault and power-loss acceptance remain unverified; no release gate passes.
