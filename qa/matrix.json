@@ -1644,6 +1644,44 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && deno task check && deno task test && deno task bundle:edge-postgres; fixed disposable DB and actual Edge CI required",
       "limitation": "Parent d875fd3 CI39882989584 proves both actual user isolates now boot/pinned metadata succeeds, but first tutor request503 remains undiagnosed. Native8/50 passed; new full Edge SQL groups/artifact/Flutter not passed. New preflight and fixed category snapshots aid diagnosis without raw token/URL/message/SQL logs; do not claim root cause or transport success until actual exact-head CI. Original seven full-handler groups and security/permission gates remain; no real JWT/TLS/provider/learner proof/all14 pending."
+    },
+    {
+      "id": "ai-edge-postgres-distinct-events",
+      "status": "automated-baseline",
+      "scope": "Actual two Edge user isolates: held turn reservation rejects distinct turn/finish without provider or orphan writes, explicit same-ID retry preserves order and fresh worker replays committed originals",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_worker.ts",
+          "contains": "handlers.set(\"/held_turn\", bound.conversation_turn)"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "actual-distinct-events-pending-fence-rollback-ordered-retry"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "Rejected distinct event left receipt or public mutation"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "Distinct-event final committed state differs"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_distinct_events_reject_orphan_receipt_and_release_held_provider"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_distinct_events_reject_wrong_committed_order_or_pending_reservation"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "Fixed disposable CI PostgreSQL17/all migrations + Docker: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task bundle:edge-postgres && mkdir -p ../../build/edge-postgres/main && cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts && python3 ../../scripts/verify_edge_postgres.py && cd ../.. && python3 -m unittest discover -s qa -p test_*.py",
+      "limitation": "Adds ninth mandatory group; parent2cc9987 CI39894048642 allfive jobs/every step and original eight actual Edge SQL groups succeeded. New group requires new exact-head Edge execution; local negative oracle tests do not prove native concurrency. Fixed fixture Auth/provider/plaintext only; no hosted JWT/TLS/PostgREST/provider/learner acceptance. Quota remains unchanged, nine serial-owner attempts including restart replay, no reset/refill timing. All14 release groups pending/default bindings unconfigured."
     }
   ],
   "findings": [

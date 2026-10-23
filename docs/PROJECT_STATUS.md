@@ -4300,3 +4300,62 @@ and atomically cached, then build passed. No application dependency/lock/CI chan
 Separate diff review preserves the entire original bootstrap test except adding
 the runtime-global preservation sentinel; production/SQL/old probe/CI/Pro files
 byte-identical. Bundle order inspected: initializer before inlined worker graph.
+
+
+## Edge PostgreSQL distinct-event serialization checkpoint (2026-10-23 04:18 UTC)
+
+- Fresh main78a44fa; #37 redirects to draft #41 branch
+  automation/issue-11-plan-sdk-integration, exact parent
+  2cc9987fbd5869b42d92999da39c3bc30e85a509/base tree
+  20ca8fcd683588855d61aaf97b30a0eeafff78a9/568 blobs. One core writer marker
+  core-20261023T0417-edge-distinct-events; Pro #14/#38/N4/data/manifests/content
+  tests/docs/branch reserved/untouched. #31 acceptance/dependencies re-read.
+- Observed [CI39894048642](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39894048642)
+  exact parent/latest attempt1 completed/success. Full allfive jobs/every required
+  step successful/no skips: repo-sanity120220214827, ai-boundary120220214738,
+  database120220214584, windows120220289711, flutter120220697680. Actual completed
+  DB log proves native Node8/Deno50 and original eight actual Edge PostgreSQL groups;
+  mandatory evidence uploaded, exact-head nonexpired artifact12476550226/archive
+  sha256:1e8bf982c971b0fdd30a67ed8fdcf4267ad1889ac431ee8b949ecf460df65b26.
+  Source2cc9987/Actions merge checkoutdf52fc7/bundlebf62a857... recorded in log.
+  Prior global constructor correction now confirmed in that actual Edge/SQL scope.
+- Complete new #31 assurance increment: ninth actual group holds real reserved turn
+  in one user isolate and sends distinct turn/finish from another. Require409
+  SYNC_CONFLICT/no provider, zero rejected receipts/public writes, slots[0], one
+  pending reservation/unended session and no SQL transaction across provider wait.
+  Always release held provider in finally. Explicit retry of same rejected IDs after
+  original COMMIT must yield assistant sequences2/4, exact slots0..4/ordered user
+  texts, ended/four completed joined reservations/zero pending and exact dispatch
+  counts. Fresh-container replay returns both original turns/finish, no dispatch or
+  connection leak. Adds fixed TEST ONLY held_turn route using existing binding and
+  eighth disposable owner; previous owner IDs/metrics/limits preserved. Nine quota
+  attempts including replay; no reset/refill timing/bypass/automatic mutation retry.
+- Two new negative QA regressions reject orphan rejected receipt, missing/reordered
+  slots/texts, remaining pending/missing completion/unended session and verify held
+  provider release. These are mock oracle regressions, not native concurrency proof.
+  Adds one QA case with executable anchors; original71 cases/findings/gates and all14
+  pending release cases retained. Original eight actual groups/assertions mandatory.
+- Local observed format:check/strict TS +Deno2.9.6 check/edge fmt; Node185/185 and
+  Deno185/185 passed/no skips; QA46/46; inventory72 valid; Python compile/whitespace.
+  Local Docker/PostgreSQL/Flutter absent; NEW actual ninth group/SQL assertions need
+  new exact-head CI. Bundle result/commit/run/released checkpoint follows in bodies.
+- Six paths: backend/ai/edge/postgres_worker.ts; scripts/verify_edge_postgres.py;
+  qa/test_edge_postgres.py +matrix.json; docs/AI_EDGE_POSTGRES.md +this status.
+  Separate diff preserves production src/SQL/RLS/Auth/TLS/quotas/receipts/defaults,
+  dependencies/locks/workflow/runtime limits/permissions and Pro bytes. Publication
+  requires correct base/full untruncated tree +all exact changed blobs/one-parent
+  verification and expected-head non-force CAS; actual heads/CI in #41/#37/#31.
+- Next inspect new exact-head latest-attempt complete allfive jobs/every required
+  step +DB log/artifact before more code. Fix genuine failures preserving assertions;
+  pending-only means handoff, no duplicate implementation. Hosted TLS/CA/JWT issuer/
+  signature/expiry/PostgREST/approved provider/authenticated lookup/cost/voice and
+  learner acceptance missing; #31 open/#41 draft/all14 release groups/default
+  bindings pending. No merge/issue closure/deployment/Personal Alpha signoff/pause.
+
+Local checked extension bundle:151 modules/599497 bytes/SHA256
+`17360c95acfbd46e947cf60488d8f688351c26d824fc5d4934d1db2b3536cd77`.
+SDK helper registry refused connection; verified exact npm esbuild0.25.5 atomically
+cached before successful checked build, no application dependency/lock/CI override.
+Separate preservation review compares AST: all21 old probe check calls and all old
+helper function bodies retained; all71 old QA case objects/gates/findings unchanged.
+Only six intended files differ; new actual ninth-group pass awaits exact-head CI.

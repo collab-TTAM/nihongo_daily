@@ -233,3 +233,56 @@ and atomically cached, then build passed. No application dependency/lock/CI chan
 Separate diff review preserves the entire original bootstrap test except adding
 the runtime-global preservation sentinel; production/SQL/old probe/CI/Pro files
 byte-identical. Bundle order inspected: initializer before inlined worker graph.
+
+
+## Observed eight-group success and distinct-event extension (2026-10-23)
+
+Exact source2cc9987fbd5869b42d92999da39c3bc30e85a509
+[CI39894048642](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39894048642),
+latest attempt1 completed/success: complete allfive jobs/every step success/no skips.
+Database120220214584 completed log proves native Node8/Deno50 and all eight actual
+Edge PostgreSQL groups including fixed SELECT1/idle preflight, five-operation
+lifecycle, owner denial, lost COMMIT delivery, malformed output, simultaneous
+same-event fencing/no open transaction and fresh-container replay. This confirms
+the global alias correction in that actual runtime/SQL scope. Artifact
+ai-edge-postgres-assembly id12476550226 is non-expired/exact source head; archive
+digest sha256:1e8bf982c971b0fdd30a67ed8fdcf4267ad1889ac431ee8b949ecf460df65b26.
+Printed evidence reports source head2cc9987 /Actions merge checkoutdf52fc7, bundle
+bf62a857b3554b815c5fcd5fd52939eaaa2c59e0937ac143d8389d1da4423b81 and pinned
+supabase/edge-runtime registry digestad45164b7548bf5820ed7be714789c17ac2865edce79a09cfb4c3756c3d365a8.
+Fixture Auth/provider/plaintext is not hosted JWT/TLS/PostgREST or learner proof.
+
+Issue31 also requires distinct events for a session. A new ninth mandatory group
+uses one additional fixed disposable owner, preserving all original owner IDs and
+all eight prior assertions. Fixed TEST ONLY /held_turn uses the existing held
+provider/real conversation_turn handler and metrics; no new production route.
+While the first turn is durably reserved and waiting for provider, a second isolate
+sends a different turn and finish. Both must return SYNC_CONFLICT409, dispatch no
+provider and leave zero rejected receipts, only original slot0, one pending
+reservation, unended session and no open SQL transaction across provider wait.
+Finally releases the held provider even when an assertion fails.
+
+After confirmed completion, explicitly retry the same rejected turn/finish IDs.
+Require assistant slots2 then4, complete slots0..4, exact ordered Japanese user
+texts, ended session/four completed joined reservations and zero pending. Dispatch
+counts prove one held turn plus exactly two later provider calls. Fresh-container
+replay returns both original turns/finish byte-equivalent with no dispatch or
+connection leak. Total nine quota attempts for the new owner including restart
+replays; no bucket reset, bypass, timing-dependent refill or automatic mutation
+retry. Original burst/day limits remain unchanged.
+
+Two negative Python regressions require oracle failure for orphan rejected receipt,
+missing/reordered message slots/texts, residual pending, missing completion or
+unended session; held-provider release is still asserted. These are mock negative
+oracle checks, not concurrency/SQL proof. New exact-head actual Docker/PostgreSQL
+execution plus artifact publication is required before claiming ninth-group success.
+Local Docker/PostgreSQL/Flutter absent. All14 release groups/default bindings and
+hosted JWT/TLS/PostgREST/provider/voice/learner acceptance remain pending.
+
+Local checked extension bundle:151 modules/599497 bytes/SHA256
+`17360c95acfbd46e947cf60488d8f688351c26d824fc5d4934d1db2b3536cd77`.
+SDK helper registry refused connection; verified exact npm esbuild0.25.5 atomically
+cached before successful checked build, no application dependency/lock/CI override.
+Separate preservation review compares AST: all21 old probe check calls and all old
+helper function bodies retained; all71 old QA case objects/gates/findings unchanged.
+Only six intended files differ; new actual ninth-group pass awaits exact-head CI.

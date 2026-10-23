@@ -22,7 +22,7 @@ import { SupabaseAuthVerifier } from "../src/supabase_auth.ts";
 const contracts = new Contracts(schema);
 const data = fixtures as Record<string, unknown>;
 const owners: Record<string, string> = Object.fromEntries(
-  ["A", "B", "text", "acquire", "complete", "malformed", "held"].map((
+  ["A", "B", "text", "acquire", "complete", "malformed", "held", "serial"].map((
     name,
     i,
   ) => [
@@ -114,7 +114,9 @@ const normal = bind("normal"),
   handlers = new Map<string, (r: Request) => Promise<Response>>();
 for (const op of operations) handlers.set(`/${op}`, normal[op]);
 for (const mode of ["acquire", "complete", "malformed", "held"] as const) {
-  handlers.set(`/${mode}`, bind(mode).start_conversation);
+  const bound = bind(mode);
+  handlers.set(`/${mode}`, bound.start_conversation);
+  if (mode === "held") handlers.set("/held_turn", bound.conversation_turn);
 }
 Deno.serve(async (request) => {
   const path = new URL(request.url).pathname;

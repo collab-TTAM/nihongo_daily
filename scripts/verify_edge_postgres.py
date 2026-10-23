@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build/edge-postgres"
 DATABASE = "postgresql://postgres:postgres@localhost:5432/nihongo_test"
 OWNERS = {name: f"71000000-0000-4000-8000-00000000000{i + 1}"
-          for i, name in enumerate(("A", "B", "text", "acquire", "complete", "malformed", "held"))}
+          for i, name in enumerate(("A", "B", "text", "acquire", "complete", "malformed", "held", "serial"))}
 SCENARIO = "72000000-0000-4000-8000-000000000001"
 OTHER_SCENARIO = "72000000-0000-4000-8000-000000000002"
 GRAMMAR = "73000000-0000-4000-8000-000000000001"
@@ -130,6 +130,62 @@ def receipt(owner: str, event: str) -> dict:
                           f"AND client_event_id={uuid_sql(event)};"))
 
 
+def distinct_events(a: str, b: str) -> list[tuple[str, dict, dict]]:
+    """Actual held turn barrier, separate instance conflicts and durable order.
+
+    Nine total HTTP quota attempts including three fresh-worker replays;
+    no quota reset/refill timing or automatic AI mutation retry is required.
+    """
+    owner = uuid_sql(OWNERS["serial"])
+    initial = request(a, "/start_conversation", start(), token="serial")
+    session = uuid_sql(initial["session_id"])
+    first = {"session_id": initial["session_id"], "client_event_id": str(uuid4()), "text_ja": "先の発言"}
+    second = {**first, "client_event_id": str(uuid4()), "text_ja": "次の発言"}
+    finish = {"session_id": initial["session_id"], "client_event_id": str(uuid4())}
+    before = metadata(a)["metrics"]["held"]["calls"]
+    other_calls = metadata(b)["metrics"]["normal"]["calls"]
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        work = pool.submit(request, a, "/held_turn", first, token="serial")
+        try:
+            deadline = time.monotonic() + 3
+            while metadata(a)["metrics"]["held"]["calls"] != before + 1:
+                check(time.monotonic() < deadline, "Distinct-event held provider not reached")
+                time.sleep(0.01)
+            check(receipt("serial", first["client_event_id"])["status"] == "PENDING", "Held turn not durably reserved")
+            for operation, body in (("conversation_turn", second), ("finish_conversation", finish)):
+                error = request(b, "/" + operation, body, token="serial", expected=409)
+                check(error["code"] == "SYNC_CONFLICT", "Distinct event bypassed pending session fence")
+            check(metadata(b)["metrics"]["normal"]["calls"] == other_calls, "Distinct event dispatched before prior completion")
+            # Observe through a separate admin connection while provider is held.
+            state = json.loads(sql("SELECT json_build_object('slots',"
+                                   "(SELECT array_agg(sequence_no ORDER BY sequence_no) FROM public.conversation_messages WHERE conversation_session_id=s.id),"
+                                   "'ended',s.ended_at IS NOT NULL,'pending',"
+                                   "(SELECT count(*) FROM private.ai_conversation_reservations WHERE session_id=s.id AND NOT is_completed),"
+                                   "'rejected',(SELECT count(*) FROM public.operation_receipts "
+                                   f"WHERE user_id={owner} AND client_event_id IN ({uuid_sql(second['client_event_id'])},{uuid_sql(finish['client_event_id'])}))) "
+                                   f"FROM public.conversation_sessions s WHERE s.id={session};"))
+            check(state == {"slots": [0], "ended": False, "pending": 1, "rejected": 0}, "Rejected distinct event left receipt or public mutation")
+            check(sql("SELECT count(*) FROM pg_stat_activity WHERE application_name='nd-edge-pg' AND xact_start IS NOT NULL;") == "0", "Distinct-event provider held SQL transaction")
+        finally:
+            request(a, "/__probe/release", method="GET")
+        first_result = work.result(timeout=8)
+    check(first_result["assistant_message"]["sequence_no"] == 2, "Held turn sequence changed")
+    # Explicit retry of the same formerly rejected IDs, only after prior COMMIT.
+    second_result = request(b, "/conversation_turn", second, token="serial")
+    check(second_result["assistant_message"]["sequence_no"] == 4, "Distinct retry skipped or reused sequence slots")
+    final_result = request(b, "/finish_conversation", finish, token="serial")
+    state = json.loads(sql("SELECT json_build_object('slots',"
+                           "(SELECT array_agg(sequence_no ORDER BY sequence_no) FROM public.conversation_messages WHERE conversation_session_id=s.id),"
+                           "'user_texts',(SELECT array_agg(text_ja ORDER BY sequence_no) FROM public.conversation_messages WHERE conversation_session_id=s.id AND role='user'),"
+                           "'ended',s.ended_at IS NOT NULL,'completed',"
+                           f"(SELECT count(*) FROM public.operation_receipts o JOIN private.ai_conversation_reservations r ON r.receipt_id=o.id WHERE o.user_id={owner} AND o.status='COMPLETED' AND r.is_completed),"
+                           "'pending',(SELECT count(*) FROM private.ai_conversation_reservations WHERE session_id=s.id AND NOT is_completed)) "
+                           f"FROM public.conversation_sessions s WHERE s.id={session};"))
+    check(state == {"slots": [0, 1, 2, 3, 4], "user_texts": [first["text_ja"], second["text_ja"]], "ended": True, "completed": 4, "pending": 0}, "Distinct-event final committed state differs")
+    check(metadata(a)["metrics"]["held"]["calls"] == before + 1 and metadata(b)["metrics"]["normal"]["calls"] == other_calls + 2, "Distinct-event dispatch count differs")
+    return [("conversation_turn", first, first_result), ("conversation_turn", second, second_result), ("finish_conversation", finish, final_result)]
+
+
 def probe(a: str, b: str, restart) -> dict:
     cases = []
     metadata(a)
@@ -200,6 +256,8 @@ def probe(a: str, b: str, restart) -> dict:
         held_result = work.result(timeout=8)
     check(request(b, "/held", held, token="held") == held_result, "Other instance failed durable replay")
     cases.append("actual-concurrent-isolates-one-dispatch-no-open-transaction")
+    serial = distinct_events(a, b)
+    cases.append("actual-distinct-events-pending-fence-rollback-ordered-retry")
     fresh = restart()
     check(all(x["calls"] == 0 for x in metadata(fresh)["metrics"].values()), "Restart did not create fresh worker")
     for op, body, value in lifecycle:
@@ -210,6 +268,8 @@ def probe(a: str, b: str, restart) -> dict:
             check(value == saved["response"], "Fresh worker did not return committed original")
     request(fresh, "/malformed", malformed, token="malformed", expected=503)
     check(request(fresh, "/held", held, token="held") == held_result, "Fresh worker held replay changed")
+    for op, body, value in serial:
+        check(request(fresh, "/" + op, body, token="serial") == value, "Fresh worker distinct-event replay changed")
     stats = metadata(fresh)["metrics"]
     check(all(x["calls"] == 0 and x["opened"] == x["closed"] for x in stats.values()), "Restart redispatched or leaked connection")
     cases.append("fresh-container-restart-original-replay-pending-no-redispatch")
