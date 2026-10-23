@@ -4421,3 +4421,52 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   study reports; reviewed material/audio remain separate and coordinated. #34/#31
   open/#41 draft/all14 release groups/default lessons pending; no merge/issue close/
   deployment/Personal Alpha acceptance/pause.
+
+
+## Reading repository / independent Issue #34 checkpoint (2026-10-23 05:37 UTC)
+
+- Parent83276f435cf98662bbb76f1a66761ead4392a162, full clone; latest parent
+  CI39905018821/attempt1 completed success. All five jobs/every listed required
+  step succeeded, including Flutter format/analyze/full tests/Chrome, Web release,
+  Windows builds/native credential/storage restart and retained database/AI gates.
+  This is component evidence, not hosted learner acceptance.
+- Added read-only ReadingRepository and opt-in LocalReadingRepository with one
+  trusted host-supplied source callback, no default lesson/route/asset/network.
+  Full256KiB catalog validation precedes level filtering. Concurrent reads/lookup
+  share a pending read registered before source invocation; five-second default
+  deadline (positive/up to15s), fixed typed safe errors, explicit retry only.
+  Timed-out late successes/errors never publish data/fences; loader side effects
+  are not cancelled. Host must provide read-only bounded source/provenance review.
+- IDs retain level/monotone version. Fixed semantic serialization preserves all
+  text/order/answer/attribution; same ID/version cannot change content and reuses
+  the original immutable passage. Higher versions create new snapshots; old rounds
+  retain old content. Exact lookup never substitutes another version. Validate the
+  entire prospective mapping before publishing any fence; hidden-level conflicts
+  cannot advance earlier entries. Removal returns no stale fallback; retired IDs
+  retain fences. Bound50 lifetime IDs/latest snapshots, fail closed on churn,
+  never silently evict. Fences are process-local, not authenticity/durable rollback
+  protection; resetting repository requires a separately reviewed trusted source.
+- Sixteen new TEST ONLY repository cases +retained11 domain cases:27 pure Dart
+  tests passed, strict casts/inference/raw-types/recommended lints analysis clean.
+  Official Dart3.9.2 archive SHA256 verified. Disposable harness copies production
+  model/repository/level and all test bodies exactly; only flutter_test import
+  replaced by package:test1.26.2. This is not actual Flutter widget/platform proof.
+  Dart formatter passed; unresolved Flutter lint include warned during local
+  repository formatting. Flutter3.35.4 bootstrap was blocked by automatic approval
+  review for cloud metadata access; no workaround attempted. Actual new-head
+  Flutter/analyze/full tests/Web/Windows verification remains with GitHub CI.
+- Local QA46 tests passed; inventory74 valid/all14 release groups still pending.
+  Separate preservation review:73 old QA case objects/findings/gates unchanged;
+  original Dart/domain tests and canonical Pro/N4 content/assets/contracts/SQL/
+  Auth/security/defaults/dependencies/workflow unchanged. No new learner write,
+  mastery, timer, sync, audio/capture/retention/spend/deployment or release claim.
+- Six paths: new domain/reading_repository.dart, data/local_reading_repository.dart
+  and test/features/reading/local_reading_repository_test.dart; READING_MATERIAL.md,
+  PROJECT_STATUS.md and qa/matrix.json. Full tree/content/parent verification and
+  expected-head non-force publication required; final commit/run in PR41/issue34.
+- Next inspect new exact-head latest-attempt five jobs/every required step, fix
+  actual failures preserving assertions. After verified repository, implement
+  explicit reading loading/error/empty/offline UI with injected trusted source,
+  then captured-session study reports/durable retry. Reviewed lessons/audio need
+  separate coordination; absence never counts as listening completion. Keep #34
+  open/#41 draft/all14 release groups pending. Main/Pro/other branches unchanged.

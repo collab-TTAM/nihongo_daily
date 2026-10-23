@@ -1712,6 +1712,36 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading/reading_material_test.dart",
       "limitation": "New pure domain/tests only, no reviewed reading assets, curriculum changes, source-license verification, UI/loading/offline flow, playable audio, study-session write/history/sync or learner acceptance. Model score does not prove comprehension/mastery/attention. New exact-head Flutter format/analyze/tests/build must be observed; previous AI/Edge CI is not Dart execution evidence. Pro N4 scope untouched; all14 release cases pending/default lessons unconfigured."
+    },
+    {
+      "id": "reading-local-repository",
+      "status": "automated-baseline",
+      "scope": "Bounded trusted-local-source reading repository, exact version lookup, coalesced bounded reads and atomic in-memory content-version fences before N5/N4 exposure",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/data/local_reading_repository.dart",
+          "contains": "_known = next"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/local_reading_repository_test.dart",
+          "contains": "rejected catalogs publish none of their otherwise valid changes"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/local_reading_repository_test.dart",
+          "contains": "timed out source cannot publish late results over a later load"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/local_reading_repository_test.dart",
+          "contains": "concurrent levels and lookups share one pending source read"
+        }
+      ],
+      "issues": [
+        34,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading",
+      "limitation": "Local read-only component and TEST ONLY source fixtures; host must supply reviewed trusted material. In-memory version fences reset with repository replacement; no cryptographic source authenticity, durable offline cache, UI, audio, study reports or learner acceptance. Exact-head CI still required; all14 release groups remain pending and defaults unchanged."
     }
   ],
   "findings": [

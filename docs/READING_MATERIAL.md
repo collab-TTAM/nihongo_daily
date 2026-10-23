@@ -88,3 +88,61 @@ Dart logic evidence, not the actual Flutter runner/widget/platform build. SDK/te
 harness dependencies live outside the repository and do not alter its lockfile.
 QA46 cases/inventory73 passed, all14 release cases still pending. Full new-head
 Flutter validation remains pending CI.
+
+## Read-only local repository — Issue #34
+
+`ReadingRepository` exposes asynchronous level loads and exact current-version
+lookup. `LocalReadingRepository` requires a trusted host-supplied local/packaged
+source callback; it installs no default lesson, asset, URL, HTTP client or writer.
+The host owns source provenance, licensing and linguistic review. First-load
+validation is structural, not cryptographic source authentication.
+
+One source contains both levels. Concurrent N5/N4 loads and exact lookups share
+one pending read, registered before calling the loader so synchronous reentry
+cannot dispatch twice. The default deadline is five seconds, configurable only
+within `(0, 15 seconds]`. A timeout/failure produces a fixed typed safe error,
+never an exception/source/path/token excerpt; retry requires another explicit
+call. No automatic retry or stale cached success is returned. A late source
+completion/error is consumed without publishing content or changing version
+fences. The deadline does not cancel side effects inside a host loader; supply
+a read-only source with its own resource limits.
+
+The full bounded catalog is validated before exposing either level. Accepted
+IDs retain one level and a monotonically increasing content version throughout
+the repository lifetime. Repeating an ID/version must preserve every displayed
+field, question/choice order, answer key and attribution; fixed-order semantic
+serialization tolerates JSON whitespace/member-order changes only. Identical
+versions reuse the original immutable passage object. A newer version yields a
+new snapshot; existing `ReadingRound` objects retain the old one. Exact lookup
+returns null for missing, other-level or old-version content and never silently
+substitutes the newest version.
+
+Each load validates its complete prospective mapping before publishing any
+fence. Invalid hidden-level entries, a conflicting second entry or capacity
+failure cannot partially advance earlier entries. Removed IDs remain fenced,
+but are absent from current results. At most 50 distinct IDs/latest snapshots
+are retained per repository lifetime, including removed IDs; exceeding this
+bound is a safe version conflict, never silent eviction. Replacing a repository
+resets these in-memory fences and requires a separately reviewed trusted source;
+this is not durable rollback protection, offline persistence, account history,
+server authority or authenticity verification across app restarts.
+
+Sixteen repository cases cover exact lookup/immutability, cross-level concurrent
+loads, synchronous reentry, safe source errors/manual retry, malformed hidden
+content/UTF-8 bounds, semantic equality/all displayed and answer fields, version
+upgrades/captured old rounds/rollback/level reassignment, atomic rejection,
+removal/reappearance, lifetime identity bound and late success/error after timeout.
+Run with the pinned Flutter SDK:
+
+```bash
+cd apps/flutter_app
+flutter pub get --enforce-lockfile
+dart format --output=none --set-exit-if-changed .
+flutter analyze
+flutter test test/features/reading
+```
+
+No new route/provider or reviewed content/audio is enabled by this repository.
+Next: explicit reading loading/error/empty/offline UI and captured-session study
+reports with durable retry/restart deduplication. Listening remains unavailable
+until a separately vetted playable source/license/availability adapter exists.
