@@ -5003,3 +5003,64 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   receipt and may invoke a provider again. Live identity/provider choice/spend/
   voice/learner gates remain; keep41 draft/17 open. No deployment/merge/closure/
   release/schedule action or Personal Alpha claim.
+
+
+## Captured AI text repository — Issue #17, 2026-10-23 UTC
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c; draft41 parent
+  1fb3611563b752e0b44acdba48025a017aa6ab47/tree
+  0aef0c9b6a1131d6c95de28133c39de8293d6161. Source37afa572a redirects
+  here, Pro14/38 reserved. Previous worker released; single core marker
+  core-20261023T1712-ai-text-repository active in41/17 before implementation.
+- Exact parent CI39986349215/latest attempt1 completed success, allfive jobs/
+  every required step/no skips. Fresh complete raw run/jobs correlated to exact
+  head/run/attempt and all required matrix steps through JS checks. Logs prove
+  794 full Flutter/five Chrome, all17 new text-model cases; Web/Windows/native/
+  SQL/Edge retained. Prior models verified as components, not hosted AI/learner
+  acceptance. Existing 14 release groups remain pending.
+- Added borrowed CapturedAiTextRepository over ReviewAuth/one exact ReviewSession
+  hint, caller's captured vault/profile/runtime generation readiness fence and
+  two fixed AiTextTransport methods. Construction/dispatch/success/error/timeout/
+  decoded-result publication guard original capability. Observed identity/
+  readiness/getter/revoke/server-UNAUTHORIZED permanently fences it; no ABA reuse.
+  No SDK/client/token/storage owner, sign-out, provider or runtime/default activation.
+- Deeply freeze exact request body; strict frozen models decode successful text.
+  Exact safe error shape/code/bounded-message/boolean validation discards raw
+  server text; permanent retry flags clamped off, unknown failures fixed internal.
+  Local pending state distinguished from server quota; no logs/cache/derived write.
+- One request spans both operations, registered before reentrant transport calls.
+  Release only after result handling and original I/O both settle. Trusted
+  timeout in(0,15s] bounds asynchronous result wait/revocation takes precedence;
+  timeout returns non-retryable network failure and retains busy lock. Late
+  success/error only settles/release, never publishes or redispatches/unhandled
+  error. Not cancellation/rollback/hard CPU deadline or proof of zero provider cost.
+  Text v0.1 has no event key, so no automatic retry/idempotency promise.
+- Twenty-two cases authored with original frozen fixtures and TEST ONLY Auth/
+  readiness/transport: fixed bodies/identity, deep immutable dispatch, construction/
+  timeout bounds, same/other-account/logout/revoke/readiness/getter/generation
+  guards, late result/error, safe server/transport/malformed failure normalization,
+  duplicate/cross-method/reentrant dispatch, timeout held success/error and
+  revocation precedence. Old model/app/tests/contracts/content unchanged.
+- Runtime unavailable: one exec probe returned no usable execution environment.
+  Read full recursive701-entry/592-blob fresh GitHub head tree plus complete
+  relevant blobs; no previous scratch/source/SDK dependency. No local clone/
+  Dart/Flutter/format/analyze/test/Python QA/build execution claim. Source review,
+  delimiter/whitespace/new-anchor/old-inventory checks are static only; CI required.
+- Independent JS Git-object hashing checked known SHA1/blob vectors and rebuilt
+  exact original tree SHA. New full expected tree/blob hashes will be compared
+  with GitHub and all UTF8 files read back before single-parent, fresh head/marker,
+  expected-head non-force publication. All80 prior QA cases/findings/gates exact;
+  new inventory81 and14 pending groups structurally checked, not Python QA execution.
+- Six paths: new lib/features/ai/data/captured_ai_text_repository.dart,
+  test/features/ai/captured_ai_text_repository_test.dart,
+  docs/AI_TEXT_REPOSITORY.md; docs/AI_TEXT_MODELS.md, PROJECT_STATUS.md,
+  qa/matrix.json. Separate ownership/async/error/immutability/timeout/diff review.
+  Final commit/tree/new CI/latest-attempt status/released checkpoint in41/17/37.
+- Next inspect exact-head latest attempt/allfive jobs/every required step, format
+  diagnostics and22 new cases, retaining assertions. Pending-only handoff/no
+  duplicate code/long polling. After green add actual caller-owned fixed-project
+  text HTTP/SDK credential capture/raw body/JSON/redirect/cancellation/deadline
+  controls and tests before runtime/UI integration; injected ports alone do not
+  prove them. Keep41 draft/17 open/all14 hosted groups pending. Pro/content/
+  manifests/content tests/SQL/RLS/Auth strategy/CI/dependencies/provider/spend
+  untouched; no merge/closure/deployment/release/schedule/Personal Alpha claim.

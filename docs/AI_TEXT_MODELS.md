@@ -90,3 +90,15 @@ client_event_id in v0.1; repeating them can call a provider again, so no automat
 retry or conversation-receipt guarantee may be inferred. Live provider choice,
 hosted Auth/Edge proof, voice/retention/spend approvals and actual learner acceptance
 remain separate gates. No Personal Alpha, sync, mastery or study-credit claim.
+
+## Verified models and captured repository increment
+
+At1fb3611563b752e0b44acdba48025a017aa6ab47, CI39986349215 latest attempt1
+completed allfive jobs/every required step successfully:794 Flutter/five Chrome,
+including all17 model tests, Web/Windows and retained native/SQL/Edge gates.
+The model increment now has actual Flutter/component evidence; no hosted AI claim.
+
+AI_TEXT_REPOSITORY.md specifies the new borrowed captured-ready-session text
+repository, safe failures, immutable dispatch and one-request/timeout/late-result
+guards. It is not yet a concrete authenticated network adapter or owned UI/runtime
+activation. Its22 authored lifecycle tests require new exact-head Actions.

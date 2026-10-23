@@ -1928,6 +1928,36 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_text_models_test.dart",
       "limitation": "Seventeen cases passed with identical pure-Dart source/test graph and original fixtures in a disposable strict harness; only flutter_test import adapted to package:test1.26.2. New exact-head Flutter proof required. No transport, session/identity, raw byte/duplicate-key/deadline guard, UI activation, storage, provider call, voice, live learner or mastery/study-credit acceptance. All14 hosted release groups pending."
+    },
+    {
+      "id": "ai-dart-captured-text-repository",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured-ready-session text repository with strict frozen decoding, safe errors, immutable fixed dispatch and single-flight lock retained through late timeout settlement",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "both fixed text methods preserve frozen bodies and captured identity"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "same-user session replacement never retargets or revives a captured repository"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "timeout keeps busy through late success and never automatically redispatches"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "late timeout error is consumed without publication or an unhandled exception"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "Twenty-two cases authored with original frozen fixtures and TEST ONLY Auth/readiness/transport; no local runtime/format/analyze/test/build execution available. New exact-head CI required. No concrete SDK/HTTP credential capture, raw body/JSON/deadline/cancellation guard, provider call, owned UI/runtime activation, hosted identity/voice/learner or mastery/study credit proof. Timeout is not rollback/cancellation and text calls have no idempotency key. All14 release groups pending."
     }
   ],
   "findings": [
