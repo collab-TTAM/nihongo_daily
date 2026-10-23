@@ -1,6 +1,5 @@
 // TEST ONLY disposable localhost PostgreSQL17/plaintext, Auth HTTP and provider.
 // Never a deployable binding: fixed fixtures, no environment or learner config.
-import { Client } from "pg";
 import schema from "../../../contracts/v0.1/models.schema.json" with {
   type: "json",
 };
@@ -10,7 +9,13 @@ import fixtures from "../../../contracts/v0.1/fixtures.json" with {
 import { Contracts, operations } from "../src/contracts.ts";
 import type { Operation } from "../src/contracts.ts";
 import type { ProviderInput } from "../src/ports.ts";
-import type { PostgresConnection } from "../src/postgres_connection.ts";
+import {
+  createProbeFactory,
+  newMetrics,
+  recordFailure,
+  verifyProbeTransport,
+} from "./postgres_probe.ts";
+import type { ProbeMetrics } from "./postgres_probe.ts";
 import { assemblePostgresAiHandlers } from "../src/trusted_runtime.ts";
 import { SupabaseAuthVerifier } from "../src/supabase_auth.ts";
 
@@ -25,10 +30,10 @@ const owners: Record<string, string> = Object.fromEntries(
     `71000000-0000-4000-8000-00000000000${i + 1}`,
   ]),
 );
-const metrics: Record<
-  string,
-  { calls: number; opened: number; closed: number; injected: boolean }
-> = {};
+const metrics: Record<string, ProbeMetrics> = {};
+const transport = newMetrics();
+metrics.transport = transport;
+const transportFactory = createProbeFactory(transport, "transport");
 let release: (() => void) | undefined;
 function generated(input: ProviderInput): unknown {
   if (input.operation === "tutor_explain") return data.tutor_explain_response;
@@ -72,55 +77,9 @@ const auth = new SupabaseAuthVerifier(
 );
 type Mode = "normal" | "acquire" | "complete" | "malformed" | "held";
 function bind(mode: Mode) {
-  const counts = { calls: 0, opened: 0, closed: 0, injected: false };
+  const counts = newMetrics();
   metrics[mode] = counts;
-  const factory = (): PostgresConnection => {
-    const c = new Client({
-      host: "127.0.0.1",
-      port: 5432,
-      user: "postgres",
-      password: "postgres",
-      database: "nihongo_test",
-      ssl: false,
-      application_name: "nd-edge-pg",
-      connectionTimeoutMillis: 2000,
-      query_timeout: 3000,
-      pipeline: false,
-    });
-    c.on("error", () => {});
-    counts.opened++;
-    let phase = "";
-    return {
-      connect: async () => {
-        await c.connect();
-      },
-      query: async (text, values) => {
-        if (text.startsWith("SELECT")) phase = text;
-        const result = await c.query(text, values);
-        if (text === "COMMIT") {
-          if (c.getTransactionStatus() !== "I") {
-            throw Error("TEST ONLY COMMIT not idle");
-          }
-          if (
-            !counts.injected && (mode === "acquire" || mode === "complete") &&
-            phase.includes(
-              mode === "acquire"
-                ? "ai_conversation_reserve"
-                : "ai_conversation_complete",
-            )
-          ) {
-            counts.injected = true;
-            throw Error("PRIVATE TEST ONLY lost committed delivery");
-          }
-        }
-        return result;
-      },
-      close: () => {
-        counts.closed++;
-        void c.end().catch(() => {});
-      },
-    };
-  };
+  const factory = createProbeFactory(counts, mode);
   return assemblePostgresAiHandlers(contracts, {
     auth,
     connections: { quota: factory, text: factory, conversation: factory },
@@ -159,6 +118,17 @@ for (const mode of ["acquire", "complete", "malformed", "held"] as const) {
 }
 Deno.serve(async (request) => {
   const path = new URL(request.url).pathname;
+  if (request.method === "GET" && path === "/__probe/transport") {
+    try {
+      await verifyProbeTransport(transportFactory);
+      return Response.json({ fixtureOnly: true, transport: true });
+    } catch (error) {
+      recordFailure(transport, "probe", error);
+      return Response.json({ fixtureOnly: true, transport: false }, {
+        status: 503,
+      });
+    }
+  }
   if (request.method === "GET" && path === "/__probe/release") {
     release?.();
     release = undefined;

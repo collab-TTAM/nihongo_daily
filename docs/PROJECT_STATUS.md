@@ -4187,3 +4187,64 @@ no deployment, production deletion, security reduction, release or schedule chan
   Actual hosted TLS/CA/JWT issuer/signature/expiry/PostgREST, approved live provider/
   authenticated lookup/cost/voice and learner acceptance remain missing. #31 open,
   #41 draft/all14 release groups/default bindings unconfigured; no Alpha or pause.
+
+
+## Edge PostgreSQL transport preflight / safe diagnostic checkpoint (2026-10-23 02:22 UTC)
+
+- Resume draft #41 / automation/issue-11-plan-sdk-integration from exact source
+  d875fd335f3bd9ae843c705a7ed474220c591525, base tree
+  cf5450e3997deeae65efdb2167e0247e483ec6f8/566 blobs; main78a44fa/#37 afa572a unchanged.
+  Marker core-20261023T0216-edge-transport-probe; one core writer;
+  Pro #14/N4/data/manifests/content tests/docs/branch reserved/untouched.
+- Actual [CI39882989584](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39882989584)
+  latest attempt1 completed/failure: database120184498914 fails first tutor_explain
+  request503 after BOTH actual user-isolate pinned metadata checks +fixture seeding.
+  This confirms Buffer boot correction in that scope; empty safe container logs
+  leave transport phase/root cause unknown. Completed DB log retains native Node8
+  and Deno50 passed. AI/repo-sanity/windows pass; Edge artifact/profile projections
+  and Flutter skipped. No full-CI or new full Edge/SQL acceptance claim.
+- Add TEST ONLY postgres_probe.ts: extract same fixed disposable pg factory,
+  preserve timeout/pipeline/owned connection/COMMIT idle/injected lost-delivery
+  semantics; add fixed phases and bounded distinct failure categories, max8 pairs
+  per fixture lane. No raw exception code/message/stack/SQL/URL/token/learner data
+  enters metrics. Unknown/hostile getters map to unknown; original errors rethrown
+  to unchanged production drivers, not simulated SQL or unconditional success.
+- Add fixed GET/__probe/transport read before fixture seeding and on fresh restart.
+  Same owned factory must actually connect, SELECT1 return exact SELECT/one row/
+  numeric1 and pg ReadyForQuery idle; finally closes. No caller SQL/config/Auth,
+  quota/provider work or application writes. Adds one actual transport group
+  before original seven full-handler groups; all old assertions/gates retained.
+  Transport success can never stand in for the five handlers or hosted proof.
+- Fixture runner failure snapshot strictly validates exact lanes/fields, integer
+  counters0..1000 (no booleans), fixed phase/category enums and max8 failures before
+  printing. Unknown/private fields rejected; snapshot failure prints a fixed line
+  only. Cleanup remains in outer finally even if snapshot reporting fails; existing
+  both-container cleanup regressions unchanged. No new runtime permission/logging
+  in production/default app; no secrets or live config asked/used.
+- Three new Node/Deno cases prove bounded redaction/deduplication/hostile getters,
+  exact preflight result and one close, no query after connect failure/query failure
+  close/constructor failure. Added QA case rejects raw fields/categories, excessive
+  counters/arrays, bool-as-int and snapshot exception leaks. Existing executable
+  getTransactionStatus anchor moves from worker to extracted helper; assertion is
+  preserved, not replaced by a comment. Original70 cases otherwise retained +1=71;
+  all findings/gates/all14 pending release groups unchanged.
+- Local observed: strict TS +Deno2.9.6 checks/edge formatting +npm format:check;
+  Node184/184 and Deno184/184 passed/no skips; QA44/44; inventory71 valid;
+  Python compile/whitespace. Checked bundle151 modules/599249 bytes/SHA256
+  ae2eb4c157dc98d2a704a758ad619f48071cc01598b9d6ba456332973382a383.
+  Direct registry SDK helper unavailable; exact npm esbuild0.25.5 cached atomically
+  after verifying version, build passed; no app dependency/lock/CI override.
+- Eight paths: new backend/ai/edge/postgres_probe.ts and test/postgres_probe.test.ts;
+  backend/ai/edge/postgres_worker.ts; scripts/verify_edge_postgres.py;
+  qa/test_edge_postgres.py, qa/matrix.json; docs/AI_EDGE_POSTGRES.md and this status.
+  Separate review preserves production source/SQL/TLS/Auth/provider/default/npm locks/
+  all old tests/Pro bytes, original seven full-handler probes and runtime permissions.
+  Correct base tree/full tree+blob/one-parent readback before expected-head non-force
+  CAS; commit/CI/RELEASED handoff recorded in #41/#37/#31.
+- Local Docker/PostgreSQL/Flutter absent: new SELECT1 and actual eight-group
+  Edge/SQL execution require NEW exact-head CI; this increment does not claim the
+  original503 root cause is found/fixed. Next inspect safe phase/category snapshot
+  if preflight or handlers fail, retain every check while implementing a real fix.
+  Hosted TLS/CA/JWT issuer/signature/expiry/PostgREST, approved live provider/lookup/
+  cost/voice and learner acceptance still missing. #31 open/#41 draft/defaults
+  unconfigured/all14 release gates pending; no Personal Alpha acceptance or pause.

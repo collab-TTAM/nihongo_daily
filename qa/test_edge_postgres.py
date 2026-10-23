@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 import unittest
 from unittest.mock import patch, call
+from copy import deepcopy
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("edge_pg_probe", ROOT / "scripts/verify_edge_postgres.py")
@@ -41,6 +42,23 @@ class EdgePostgresGuardTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(AssertionError):
                 probe.uuid_sql(value)
         self.assertEqual(probe.uuid_sql(probe.OWNERS["A"]), "'" + probe.OWNERS["A"] + "'::uuid")
+
+    def test_phase_snapshots_reject_raw_unknown_fields_unbounded_values_and_categories(self):
+        lanes = ("normal", "acquire", "complete", "malformed", "held", "transport")
+        good = {name: {"calls": 0, "opened": 1, "closed": 1, "injected": False,
+                       "phase": "close", "failures": [{"phase": "connect", "kind": "refused"}]} for name in lanes}
+        self.assertEqual(probe.safe_metrics(good), good)
+        for field, value in (("token", "PRIVATE"), ("calls", True), ("opened", 1001),
+                             ("phase", "PRIVATE SQL"), ("failures", [{"phase": "connect", "kind": "PRIVATE URL"}]),
+                             ("failures", [{"phase": "connect", "kind": "unknown", "message": "PRIVATE"}]),
+                             ("failures", [{"phase": "connect", "kind": "refused"}] * 9)):
+            bad = deepcopy(good)
+            bad["transport"][field] = value
+            with self.subTest(field=field, value=value), self.assertRaises(AssertionError):
+                probe.safe_metrics(bad)
+        with patch.object(probe, "metadata", side_effect=RuntimeError("PRIVATE token")), patch("builtins.print") as output:
+            probe.print_safe_metrics(["http://127.0.0.1:8001"])
+            output.assert_called_once_with("TEST ONLY Edge PostgreSQL phase snapshot unavailable")
 
     def test_first_diagnostic_failure_still_removes_both_owned_containers(self):
         def docker(*args, **kwargs):

@@ -1553,7 +1553,7 @@
           "contains": "assemblePostgresAiHandlers"
         },
         {
-          "path": "backend/ai/edge/postgres_worker.ts",
+          "path": "backend/ai/edge/postgres_probe.ts",
           "contains": "getTransactionStatus"
         },
         {
@@ -1610,6 +1610,40 @@
       ],
       "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test && deno task check && deno task test && deno task bundle:edge-postgres; actual disposable DB/Edge probe remains mandatory in CI",
       "limitation": "Cold module test uses actual pinned pg/postgres-bytea plus real node:buffer/process, not hosted/Edge SQL proof. Parent8ef704f CI39877892790 fails before seeding at Buffer undefined/GET metadata502; native8/50 passed but Flutter/artifact/profile gates skipped. All original actual seven-group assertions/runtime limits/permissions unchanged and must pass at NEW exact head. No production Auth/TLS/default/provider change or release acceptance; all14 integrations pending."
+    },
+    {
+      "id": "ai-edge-postgres-transport-diagnostics",
+      "status": "automated-baseline",
+      "scope": "Fixed actual SELECT1/ReadyForQuery-idle preflight in fixture user isolates before SQL seeding; bounded allowlisted connection phases/failure categories and validated failure snapshots",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_probe.ts",
+          "contains": "SELECT 1 AS probe"
+        },
+        {
+          "path": "backend/ai/edge/postgres_probe.ts",
+          "contains": "metrics.failures.length < 8"
+        },
+        {
+          "path": "backend/ai/test/postgres_probe.test.ts",
+          "contains": "fixture transport preflight never queries after connect failure and closes on query failure without success"
+        },
+        {
+          "path": "backend/ai/test/postgres_probe.test.ts",
+          "contains": "fixture PostgreSQL diagnostic ledger is bounded deduplicated and never returns raw exception fields"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_phase_snapshots_reject_raw_unknown_fields_unbounded_values_and_categories"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && deno task check && deno task test && deno task bundle:edge-postgres; fixed disposable DB and actual Edge CI required",
+      "limitation": "Parent d875fd3 CI39882989584 proves both actual user isolates now boot/pinned metadata succeeds, but first tutor request503 remains undiagnosed. Native8/50 passed; new full Edge SQL groups/artifact/Flutter not passed. New preflight and fixed category snapshots aid diagnosis without raw token/URL/message/SQL logs; do not claim root cause or transport success until actual exact-head CI. Original seven full-handler groups and security/permission gates remain; no real JWT/TLS/provider/learner proof/all14 pending."
     }
   ],
   "findings": [

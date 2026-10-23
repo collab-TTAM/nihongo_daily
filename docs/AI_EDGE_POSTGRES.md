@@ -148,3 +148,51 @@ with zero DB/provider calls under denied net/write/run/ffi/sys and bounded read.
 That checks bundled module order only; it is not a real supervisor/user-isolate,
 PostgreSQL or hosted-service test. Direct helper registry unavailable locally;
 exact npm esbuild0.25.5 restored to SDK cache, no application lock/CI override.
+
+
+## Transport preflight and bounded diagnostic stage (2026-10-23)
+
+Exact d875fd335f3bd9ae843c705a7ed474220c591525
+[CI39882989584](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39882989584)
+latest attempt1 completed/failure. Both actual user isolates now initialize and
+pass pinned metadata checks; SQL fixture seeding runs. This confirms the Buffer
+boot correction in that scope. First assembled tutor request then returns503 with
+empty safe container logs: its failure phase/root cause is still unknown. Native
+Node8/Deno50 pass, but full new Edge/SQL groups, artifact/projections and Flutter
+do not pass. No claim that the503 is fixed is made by this diagnostic increment.
+
+New TEST ONLY postgres_probe.ts extracts the unchanged fixed pg factory from the
+fixture worker, retaining disposable localhost config/timeouts/pipeline:false,
+fresh ownership, COMMIT-idle fence and acquire/complete lost-delivery injection.
+It adds bounded fixed phase/failure-kind metrics. Exceptions are rethrown to the
+unchanged safe driver path; categories contain no raw message/code/stack/URL/token/
+SQL/user input. At most eight distinct phase/kind pairs per fixture lane are stored.
+Hostile getters map to unknown; no diagnostic can authorize success or a retry.
+Production source/TLS/Auth/quota/default bindings are untouched.
+
+GET /__probe/transport is TEST ONLY, immutable fixed SELECT1 through the same owned
+factory. Real command SELECT/rowCount1/numeric probe1 plus actual pg idle
+ReadyForQuery are required; connection closes in finally. No caller SQL/config,
+Auth/provider request, quota mutation or application write occurs. The runner
+requires it in each actual user isolate before seeding, and after a fresh-container
+restart. This adds one transport group before the original seven full-handler
+groups, which remain unchanged and mandatory. Successful transport never substitutes
+for Auth/quota/context/receipt/COMMIT/concurrency/replay tests or hosted proof.
+
+On failure the host fetches fixture metadata, strictly validates lane names, exact
+fields, integer counters0..1000, phase/category enums and eight-pair bound before
+printing only that snapshot. Unknown fields/raw error text are rejected, and
+snapshot failure prints one fixed message without details. Both captured containers
+still receive cleanup attempts. The prior empty logs now have a safe way to locate
+construct/connect/query/commit failures without enabling raw exception logging.
+
+Three new Node/Deno unit cases cover bounded redaction/deduplication/hostile getters,
+checked preflight result+one close, and no query after connect failure/close on query
+failure/constructor failure. One added QA test rejects unknown/private snapshot
+fields/categories, booleans-as-counters and excessive sizes; snapshot exceptions
+never leak their message. The existing getTransactionStatus executable QA anchor
+moves to the extracted helper; the assertion is retained. All other old QA cases,
+findings/gates, seven full Edge/SQL assertions and runtime permissions remain.
+Local Node184/Deno184 and QA44 pass; this is fixture/logic assurance, not native
+Edge transport execution. New exact-head official-container CI must run the actual
+SELECT1 and complete eight groups before acceptance. All14 release groups pending.

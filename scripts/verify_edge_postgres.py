@@ -93,6 +93,33 @@ def metadata(base: str) -> dict:
     return value
 
 
+PHASES = {"none", "construct", "connect", "begin", "setup", "quota", "lookup", "reserve", "complete", "text", "commit", "probe", "query", "close", "idle"}
+KINDS = {"unknown", "refused", "reset", "timeout", "permission", "unsupported", "missing-global", "auth", "protocol", "injected"}
+
+
+def safe_metrics(value: object) -> dict:
+    check(type(value) is dict and set(value) == {"normal", "acquire", "complete", "malformed", "held", "transport"}, "Invalid fixture metric lanes")
+    for row in value.values():
+        check(type(row) is dict and set(row) == {"calls", "opened", "closed", "injected", "phase", "failures"}, "Invalid fixture metric fields")
+        check(all(type(row[k]) is int and 0 <= row[k] <= 1000 for k in ("calls", "opened", "closed")), "Invalid fixture metric counters")
+        check(type(row["injected"]) is bool and type(row["phase"]) is str and row["phase"] in PHASES, "Invalid fixture metric phase")
+        check(type(row["failures"]) is list and len(row["failures"]) <= 8, "Invalid fixture failure bound")
+        for failure in row["failures"]:
+            check(type(failure) is dict and set(failure) == {"phase", "kind"}, "Invalid fixture failure fields")
+            check(type(failure["phase"]) is str and failure["phase"] in PHASES and type(failure["kind"]) is str and failure["kind"] in KINDS, "Invalid fixture failure category")
+    return value
+
+
+def print_safe_metrics(bases: list[str]) -> None:
+    for base in bases:
+        try:
+            snapshot = safe_metrics(metadata(base)["metrics"])
+            print("TEST ONLY allowlisted Edge PostgreSQL phases: " + json.dumps(snapshot, sort_keys=True))
+        except Exception:
+            # Never echo an exception/response/header/unknown metadata field.
+            print("TEST ONLY Edge PostgreSQL phase snapshot unavailable")
+
+
 def start(scenario: str = OTHER_SCENARIO) -> dict:
     return {"scenario_id": scenario, "jlpt_level": "N5", "client_event_id": str(uuid4())}
 
@@ -108,6 +135,9 @@ def probe(a: str, b: str, restart) -> dict:
     metadata(a)
     metadata(b)
     cases.append("actual-two-user-isolates-pinned-runtime")
+    for base in (a, b):
+        check(request(base, "/__probe/transport", method="GET") == {"fixtureOnly": True, "transport": True}, "PostgreSQL preflight failed")
+    cases.append("actual-user-isolate-select1-idle-transport-preflight")
     tutor = request(a, "/tutor_explain?operation=forged", {
         "jlpt_level": "N5", "question_vi": "Giải thích",
         "context": {"recent_grammar_ids": [GRAMMAR], "recent_vocabulary_ids": []}}, token="text")
@@ -213,6 +243,7 @@ def main() -> None:
     version = docker("run", "--rm", "--network=none", info["Id"], "--version")
     check(re.fullmatch(r"edge-runtime 0\.1\.0\ndeno 2\.1\.4 \([^\n]+\)", version) is not None, "Wrong Edge binary")
     containers = []
+    bases = []
     passed = False
 
     def launch() -> str:
@@ -227,10 +258,12 @@ def main() -> None:
                            "--port", str(port), "--policy", "per_worker", "--main-service", "/probe/main")
         containers.append(container)
         base = f"http://127.0.0.1:{port}"
+        bases.append(base)
         deadline = time.monotonic() + 45
         while True:
             try:
                 metadata(base)
+                check(request(base, "/__probe/transport", method="GET") == {"fixtureOnly": True, "transport": True}, "PostgreSQL preflight failed")
                 return base
             except (URLError, TimeoutError, ConnectionError):
                 check(time.monotonic() < deadline, "Edge PostgreSQL worker not ready within bound")
@@ -243,6 +276,7 @@ def main() -> None:
         def restart() -> str:
             docker("rm", "--force", containers[0], timeout=20)
             containers.pop(0)
+            bases.pop(0)
             return launch()
 
         evidence = probe(a, b, restart)
@@ -260,7 +294,11 @@ def main() -> None:
         print(json.dumps(evidence, indent=2))
         print(f"Supabase Edge PostgreSQL assembly: {len(evidence['cases'])} groups passed (TEST ONLY)")
     finally:
-        cleanup(containers, diagnostics=not passed)
+        try:
+            if not passed:
+                print_safe_metrics(bases)
+        finally:
+            cleanup(containers, diagnostics=not passed)
 
 
 if __name__ == "__main__":
