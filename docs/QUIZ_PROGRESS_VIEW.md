@@ -63,3 +63,13 @@ new format/analyze/widget/platform execution requires exact-head Actions because
 the local Flutter/Dart SDK is unavailable. Source review is not runtime proof.
 All14 hosted release groups remain pending. Keep #13 open/#41 draft for hosted
 ownership/sync, authoritative mastery rules and actual learner acceptance.
+
+
+## Explicit focused practice
+
+The current-source needs-review list now offers explicit focused practice through
+the existing quiz panel; see FOCUSED_QUIZ_REVIEW.md for source/owner/level guards,
+canonical full-source choices and verification limits. Statistics loading still
+never saves. The learner separately completes and explicitly saves a new local
+attempt, then reloads statistics to include it. Default account absence, projection
+rules, no mastery/time credit and all hosted acceptance limits remain unchanged.

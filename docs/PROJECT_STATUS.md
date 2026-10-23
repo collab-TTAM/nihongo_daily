@@ -4792,3 +4792,61 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   duplicate code or long polling. Keep41 draft/issues11/13 open; server quiz and
   reading areas remain BLOCKED, original-content/audio/hosted learner/sync/release
   gates remain open. No merge/closure/availability/deployment/release/pause.
+
+
+## Focused current-source quiz practice (2026-10-23 UTC)
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c, draft41
+  parenteb58c1c53c0d6ef0e0aac7d23f05828f6a70cd85/tree
+  ebe9d4ab2467fa69431792988a588181a9607710; source37afa572a redirects here,
+  Pro14/38 reserved/unchanged. Single core marker
+  core-20261023T1321-focused-quiz-review active in41/13 before implementation.
+- Exact parent CI39951748561/latest attempt1 completed success: allfive jobs,
+  every required step/no skips,762 full Flutter/five Chrome/Web/Windows/native/
+  SQL/Edge, all11 quiz-study widgets passed. Component evidence only, not hosted
+  learner/availability/release acceptance. Prior unused-import correction verified.
+- Implemented explicit focused practice from current needs-review projection.
+  Select original questions in existing error/time/ID priority, retain full-deck
+  canonical choice order/objects rather than inventing a smaller distractor pool.
+  Require exact level/ID/version and current entry identity; removed/new-version/
+  foreign/copied sources cannot retarget old progress. Immutable result; duplicate
+  question keys and deck>5000 rejected. Single target still has its four choices.
+- Extracted reusable VocabularyQuizPanel. Separate generated/canonical-format
+  comparison proves entire old panel preserved plus names/optional timer gate;
+  answer/advance/capture/save/retry/question/result/batch semantics unchanged.
+  /quiz retains its timer. Focused progress practice has no timer/editor or start/
+  interrupt path. No scoring/mastery/SRS/server-minute/implicit-save change.
+- New progress action captures mounted current owner/history/source/level and
+  exact projection, including replacement before next frame. Each practice gets
+  fresh question-list identity; old controls cannot reset active practice or close
+  a reopened round. Existing first answer/max10/explicit batch/restart/manual local
+  save/immutable retry and accepted-owner-drain rules reused. Back/source/level/
+  owner/reload exits clear practice; explicit reload after saved correction updates
+  recommendations through existing latest-answer projection. Defaults unchanged.
+- Six pure selection cases passed: both levels' priority and canonical choices,
+  immutable objects, focused correct event/dedup clears matching targets,
+  same-version copied/new-version source, empty/correct/foreign and duplicate/
+  oversized decks. Fresh official Dart3.9.2 SHA256 verified; strict analysis clean.
+  Actual seven-file production/test graph copied identically to fresh disposable
+  harness, only flutter_test import changed to package:test1.26.2. Not Flutter UI.
+- Nine widget cases authored against actual router/providers/model/panel/history
+  and original N5 with TEST ONLY Auth/memory/clock: empty, prioritized practice/
+  explicit save/reload, stale projection, source replacement before frame,
+  changed version, logout/B held-save, level/old answer, back/reopen/old back,
+  320px/200-percent controls. Test capture uses actual completed round, never
+  reconstructs answers. Existing tests/Pro content tests/assertions unchanged.
+- Local pinned format six files,46 QA regressions/inventory78/whitespace passed;
+  all77 old QA objects/findings/gates preserved/all14 hosted groups still pending.
+  New full Flutter/analyze/widgets/platform execution requires exact-head CI;
+  prior metadata-bootstrap review rejection respected without retry/bypass.
+- Ten intended paths: two existing quiz/progress screens; new shared quiz panel
+  and pure review selector; two new test files; new FOCUSED_QUIZ_REVIEW.md plus
+  QUIZ_PROGRESS_VIEW.md/PROJECT_STATUS.md/qa matrix. No canonical content/Pro,
+  contracts/SQL/RLS/Auth/store/recorder/CI/dependency/provider/spend changes.
+- Publish with correct base/full-tree/unchanged blobs/UTF8/one-parent verification
+  and expected-head non-force ref. Final SHA/tree/new run/released heartbeat in
+  41/13/37 redirect. Next inspect allfive latest-attempt exact-head jobs/every
+  required step and fix actual diagnostics preserving assertions. Pending-only
+  means handoff, no duplicate implementation/long polling. Keep41 draft/13 open,
+  hosted learner/sync/mastery/curriculum/availability/release gates pending; no
+  merge/closure/deployment/release/schedule action.

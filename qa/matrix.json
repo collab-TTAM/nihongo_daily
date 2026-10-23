@@ -1838,6 +1838,36 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz",
       "limitation": "Current server QUIZ_REVIEW remains zero-resource/BLOCKED. TEST ONLY permissive plans/Auth/RPC/clock, original curriculum unchanged. Four actual-file core cases and11 widgets need exact-head Flutter proof; native close/reopen is one process, not Windows crash/hosted learner or synced quiz-attempt acceptance. Elapsed self-report is separate from scores/history/mastery; all14 hosted groups pending."
+    },
+    {
+      "id": "focused-quiz-review",
+      "status": "automated-baseline",
+      "scope": "Explicit current-source needs-review practice using unchanged canonical choices and captured local quiz save, fenced by projection/source/level/owner",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_review_quiz_test.dart",
+          "contains": "saved focused correction clears only its current-source review targets"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/focused_quiz_review_widget_test.dart",
+          "contains": "focused review preserves priority choices and explicit save clears candidates"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/focused_quiz_review_widget_test.dart",
+          "contains": "source replacement rejects retained review before the next frame"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/focused_quiz_review_widget_test.dart",
+          "contains": "focused save remains original-owner only after logout and late completion"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz",
+      "limitation": "Six pure selection cases use TEST ONLY synthetic metadata and actual domain builder/projection; nine widget cases use original N5 and simulated Auth/memory/clock, requiring new exact-head Flutter proof. Dedicated /quiz timer remains separate; no implicit save/minutes/mastery or hosted sync/learner acceptance. All14 release groups remain pending."
     }
   ],
   "findings": [
