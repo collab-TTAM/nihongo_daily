@@ -5064,3 +5064,45 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   prove them. Keep41 draft/17 open/all14 hosted groups pending. Pro/content/
   manifests/content tests/SQL/RLS/Auth strategy/CI/dependencies/provider/spend
   untouched; no merge/closure/deployment/release/schedule/Personal Alpha claim.
+
+
+## AI text repository format/analyzer verification — Issue #17, 2026-10-23 UTC
+
+- Sole core marker core-20261023T1819-ai-text-ci-fix; resumed PR41 branch
+  automation/issue-11-plan-sdk-integration at9014ee7dbaf0f07e8209f30e73845052762a0801,
+  parent tree6ec2967f919e429089dec6c5770d0709dfdc9f68. Fresh main78a44fa,
+  source37afa572a/Pro38 unchanged; previous worker released17:25:43 UTC.
+- Observed CI39994699895 exact9014ee7/latest attempt1 completed failure:
+  AI/database/repo-sanity/Windows all steps success; Flutter pinned formatter
+  failed on the two new Dart files. Flutter analyze/test/native/Chrome/Web
+  downstream steps skipped, not passed. Read actual job120555870767 logs.
+- Fresh official Dart3.9.2 archive and freshly fetched SHA256 matched
+  ec22e81271582def81d3e10e2a555ae5d3d81c6951465a3d16cfc47938e9f92a.
+  Formatter diff exactly matched CI. Independent non-layout token/string/comment
+  comparison retained all22 cases/assertions and source behavior. Strict analysis
+  then found an unnecessary double-underscore StackTrace parameter; replaced it
+  with wildcard, preserving error consumption and lock-release behavior.
+- Fresh identical four-library/one-test source graph, original frozen fixture
+  bytes and only flutter_test -> package:test1.26.2 import adaptation:
+  strict casts/inference/raw types+lints6.0.0 analysis clean;22/22 cases passed.
+  Initial analyze started before package resolution finished and failed URI
+  resolution; after successful pub get the real lint above was fixed and clean
+  analysis observed. These are pure Dart checks, not full Flutter/SDK/hosted proof.
+  Final pinned format two files/zero changes, QA inventory81/14 pending and
+  git diff --check passed. No previous scratch source or Flutter bootstrap retry.
+- Four paths: lib/features/ai/data/captured_ai_text_repository.dart,
+  test/features/ai/captured_ai_text_repository_test.dart,
+  docs/AI_TEXT_REPOSITORY.md and this status. Separate diff review preserved
+  every test assertion, fixed request/response boundaries, session/generation
+  fencing, safe errors and timeout/single-flight behavior. No fixtures/contracts/
+  QA matrix/Pro/content/manifests/SQL/RLS/Auth strategy/CI/dependency edits.
+- Publish using exact parent base_tree and verify complete recursive tree,
+  unchanged blob SHAs/type/mode/path inventory, allfour UTF8/blob readbacks,
+  single-parent tree and fresh marker/head before expected-head non-force ref.
+  Final commit/tree/new workflow latest-attempt/jobs evidence in PR41/Issue17/37.
+- Next inspect new exact-head allfive jobs/every step; fix real diagnostics with
+  assertions intact. Pending-only handoff/no duplicate code/long polling. After
+  green continue reviewed concrete caller-owned fixed-project HTTP/SDK captured
+  credentials/raw-body/JSON/redirect/cancellation/deadline tests before owned UI
+  integration. Keep17 open/41 draft/all14 hosted release groups pending. No merge,
+  closure, provider/default activation, deployment, release or schedule change.

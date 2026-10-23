@@ -75,12 +75,21 @@ malformed errors/swapped success; duplicate/cross-method/reentrant calls; timeou
 lock retention, late success/error and revocation precedence. They neither verify
 SDK credential capture nor call a hosted endpoint/provider.
 
-This run has no usable execution environment. Fresh GitHub full recursive tree
-and required complete source blobs were read; no previous scratch source/SDK is
-used. Format/analyze/test/QA/build have not run locally. Source/diff/schema and
-static inventory review are not executable Dart proof. Persist as draft and
-inspect exact-head Actions/allfive latest-attempt jobs/every step before claiming
-these cases pass. No skipped or prior-head evidence substitutes for that.
+At source9014ee7, CI39994699895 attempt1 completed with the AI, database,
+repo-sanity and Windows jobs/every step successful. Flutter failed pinned
+formatting for the two new Dart files; analyze, tests and downstream Flutter
+platform checks were skipped. Those skipped checks are not passing evidence.
+
+The follow-up fetched a fresh checkout and official Dart3.9.2 archive/checksum.
+Its formatter diff exactly matched the pinned CI diagnostic. All22 cases and
+assertions were retained; one unused StackTrace parameter now uses a wildcard
+to satisfy the analyzer. A fresh identical four-library/one-test graph and original
+fixture bytes, with only flutter_test import adapted to package:test1.26.2, passed
+22/22 tests and strict casts/inference/raw types plus lints6.0.0 analysis. Format
+reports zero changes and the81-case QA inventory is valid. This is pure Dart
+component execution; full Flutter/SDK/browser/build checks require the new exact
+head Actions/latest-attempt jobs/every step. No prior-head or skipped evidence
+substitutes for those checks. Final commit/CI checkpoint is in PR41/Issue17.
 
 Next implement a separately reviewed concrete caller-owned fixed-project text
 transport with actual credential capture, request/response byte/JSON limits,

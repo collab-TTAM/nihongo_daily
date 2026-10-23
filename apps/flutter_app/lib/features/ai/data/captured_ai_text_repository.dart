@@ -4,7 +4,10 @@ import '../../srs/data/review_repository.dart';
 import '../domain/ai_text_models.dart';
 
 enum AiTextErrorCode {
-  unauthorized('UNAUTHORIZED', 'Phiên đăng nhập đã thay đổi. Hãy mở lại trợ lý.'),
+  unauthorized(
+    'UNAUTHORIZED',
+    'Phiên đăng nhập đã thay đổi. Hãy mở lại trợ lý.',
+  ),
   forbidden('FORBIDDEN', 'Bạn không có quyền thực hiện yêu cầu này.'),
   notFound('NOT_FOUND', 'Nội dung yêu cầu chưa khả dụng.'),
   validationFailure('VALIDATION_FAILURE', 'Dữ liệu yêu cầu AI không hợp lệ.'),
@@ -14,7 +17,10 @@ enum AiTextErrorCode {
     'Chưa nhận được kết quả AI. Gửi lại có thể tạo yêu cầu mới.',
   ),
   providerUnavailable('PROVIDER_UNAVAILABLE', 'Dịch vụ AI chưa khả dụng.'),
-  syncConflict('SYNC_CONFLICT', 'Dữ liệu đã thay đổi. Hãy kiểm tra lại yêu cầu.'),
+  syncConflict(
+    'SYNC_CONFLICT',
+    'Dữ liệu đã thay đổi. Hãy kiểm tra lại yêu cầu.',
+  ),
   internalError('INTERNAL_ERROR', 'Chưa thể xử lý kết quả AI.');
 
   const AiTextErrorCode(this.wireName, this.messageVi);
@@ -113,13 +119,14 @@ final class CapturedAiTextRepository {
     TutorExplanation.fromJson,
   );
 
-  Future<SentenceCorrection> correct(CorrectSentenceRequest request) => _execute(
-    () => _transport.correctSentence(
-      capturedSession: _session,
-      body: _body(request.toJson()),
-    ),
-    SentenceCorrection.fromJson,
-  );
+  Future<SentenceCorrection> correct(CorrectSentenceRequest request) =>
+      _execute(
+        () => _transport.correctSentence(
+          capturedSession: _session,
+          body: _body(request.toJson()),
+        ),
+        SentenceCorrection.fromJson,
+      );
 
   Future<T> _execute<T>(
     Future<Object?> Function() dispatch,
@@ -148,7 +155,7 @@ final class CapturedAiTextRepository {
           settled = true;
           release();
         },
-        onError: (Object _, StackTrace __) {
+        onError: (Object _, StackTrace _) {
           settled = true;
           release();
         },
