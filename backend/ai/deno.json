@@ -13,6 +13,6 @@
     "test:web": "deno test --cached-only --no-prompt --deny-write --deny-run --deny-ffi --deny-sys --allow-read=./node_modules,../../contracts --allow-env=NODE_V8_COVERAGE --allow-net=127.0.0.1 deno/runtime_test.ts",
     "test:postgres": "deno test --cached-only --no-prompt --deny-write --deny-run --deny-ffi --deny-sys --allow-read=./node_modules,../../contracts --allow-env=TEST_DATABASE_URL,NODE_V8_COVERAGE,USER,USERNAME,NODE_PG_FORCE_NATIVE,PGUSER,PGDATABASE,PGPORT,PGHOST,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGCHANNELBINDING,PGBINARY,PGOPTIONS,PGSSLNEGOTIATION,PGCLIENT_ENCODING,PGREPLICATION --allow-net=localhost:5432 test/postgres_quota.native.ts test/postgres_text_context.native.ts test/postgres_conversation.native.ts test/trusted_runtime.native.ts",
     "bundle:edge": "deno bundle --check --no-remote --packages=bundle --format=esm --output=../../build/edge/worker/index.ts edge/worker.ts",
-    "bundle:edge-postgres": "deno bundle --check --no-remote --packages=bundle --format=esm --output=../../build/edge-postgres/worker/index.ts edge/postgres_worker.ts"
+    "bundle:edge-postgres": "deno bundle --check --no-remote --packages=bundle --format=esm --output=../../build/edge-postgres/worker/index.ts edge/postgres_bootstrap.ts"
   }
 }

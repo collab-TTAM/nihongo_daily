@@ -4132,3 +4132,58 @@ no deployment, production deletion, security reduction, release or schedule chan
   not prove hosted TLS/CA, real JWT issuer/signature/expiry/PostgREST, approved live
   provider/authenticated lookup/cost/voice or learner acceptance. #31 open/#41 draft,
   all14 release groups/default app bindings unconfigured; no Alpha sign-off/pause.
+
+
+## Edge PostgreSQL cold CommonJS bootstrap correction (2026-10-23 01:14 UTC)
+
+- Resume draft #41 / automation/issue-11-plan-sdk-integration from exact source
+  8ef704f7dc8eadfb9915698391a3095f650af6e5, base tree
+  b1a316b25fe26b5540d2bba0b409dfdd692bf75d/563 blobs. Main78a44fa and #37 afa572a
+  unchanged. Marker core-20261023T0112-edge-node-bootstrap; one core writer;
+  Pro #14/N4/data/manifests/content tests/docs/branch reserved and untouched.
+- Actual [CI39877892790](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39877892790)
+  latest attempt1 completed/failure. AI/repo-sanity/windows all steps success;
+  database120167880018 failed new Edge PostgreSQL startup. Evidence artifact and
+  profile projections skipped; Flutter job skipped. Full workflow did NOT pass.
+  Completed DB log explicitly shows Node native assembly8 and Deno native50 passed.
+- Actual user-isolate boot raises ReferenceError Buffer is not defined while
+  evaluating pinned postgres-bytea, GET/__probe502, before fixture seeding or any
+  new seven-group SQL/HTTP assertions. Bundled CommonJS pg graph bypasses npm global
+  initialization. Read fresh pinned pg/pgpass source: process also used unbound.
+- Add TEST ONLY postgres_node_globals.ts using actual node:buffer Buffer and
+  node:process, defining only absent globals/preserving existing runtime bindings.
+  No host env copy, stub/simulated process/SQL success or permission addition.
+  New postgres_bootstrap.ts initializes first, then dynamic-imports unchanged
+  postgres_worker.ts. Checked bundler inlines that graph without runtime npm or
+  remote loading. Only pg bundle entry changes; no production source/default,
+  SQL/RLS/TLS/dependency lock/Auth/provider strategy or existing Edge probe edits.
+- One new cold CommonJS test runs in retained Node/Deno unit globs and unchanged
+  permissions: synchronously remove globals, reproduce actual postgres-bytea import
+  failure, install actual builtins, load actual pg and decode bytea UTF8/binary
+  bytes; re-entry preserves supplied runtime identities/descriptors. Finally restores
+  original globals before yielding. All prior180 unit assertions retained.
+- Local observed: format:check +strict TypeScript; strict Deno2.9.6 checks and
+  edge/JSON formatting; Node181/181 and Deno181/181 passed/no skips; QA43/43;
+  inventory70/all14 integration groups pending; whitespace passed. Checked bundle
+  150 modules/594983 bytes/SHA256
+  df6ba27afc49b40be3589b2186514faf1b2f80158e5c04056ee86a544ce40de5.
+  Direct registry SDK helper unavailable; exact npm esbuild0.25.5 atomically restored
+  into SDK cache, build passed with no application dependency/lock/CI override.
+- Separate bundle inspection confirms initializer executes before inlined worker
+  initialization. Local standalone Deno cold bundle import with globals absent,
+  intercepted Deno.serve and denied net/write/run/ffi/sys returned metadata200,
+  zero connections/provider. This is module-order proof only, NOT actual Edge
+  user-isolate/SQL or hosted evidence. Local Docker/PostgreSQL/Flutter absent.
+- Seven paths: new backend/ai/edge/postgres_node_globals.ts, postgres_bootstrap.ts,
+  test/postgres_node_globals.test.ts; backend/ai/deno.json; qa/matrix.json;
+  docs/AI_EDGE_POSTGRES.md and this status. Separate review preserves original
+  source/worker/scripts/SQL/old tests/dependencies/Pro bytes; every old CI gate,
+  seven actual Edge/SQL groups, quota/COMMIT/ownership/replay assertions and runtime
+  limits/permissions unchanged. Correct base tree/full tree+blob readback/one-parent
+  expected-head non-force CAS before publication; commit/CI/release in #41/#37/#31.
+- Next inspect NEW exact-head latest-attempt allfive jobs/every required step,
+  actual new Edge PostgreSQL groups and evidence. Fix genuine compatibility failures
+  without weakening tests/security; fixture/default success not a substitute.
+  Actual hosted TLS/CA/JWT issuer/signature/expiry/PostgREST, approved live provider/
+  authenticated lookup/cost/voice and learner acceptance remain missing. #31 open,
+  #41 draft/all14 release groups/default bindings unconfigured; no Alpha or pause.

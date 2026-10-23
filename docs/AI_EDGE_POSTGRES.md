@@ -97,3 +97,54 @@ Even a successful official-container fixture run does not prove hosted TLS/CA,
 Supabase JWT signatures/issuer/expiry/PostgREST, real authenticated upstream lookup,
 approved provider/cost/voice, proxy disconnect behavior or learner acceptance.
 All14 release groups pending; #31 open/#41 draft; no Personal Alpha sign-off.
+
+
+## Cold CommonJS bootstrap correction (2026-10-23)
+
+Exact source8ef704f7dc8eadfb9915698391a3095f650af6e5
+[CI39877892790](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39877892790)
+latest attempt1 completed/failure. AI/repo-sanity/windows passed, but database failed
+at new Edge PostgreSQL startup; artifact/profile projections and Flutter skipped.
+Completed DB log still proves native Node8 and Deno50 passed. This is not a full-CI
+pass or completion of any new actual Edge/SQL group.
+
+The actual user isolate fails while evaluating pinned postgres-bytea, before any
+fixture seeding: `ReferenceError: Buffer is not defined`; metadata GET returns502.
+Bundled CommonJS dependencies lack the npm loader's global setup. Pinned pg/pgpass
+sources also contain unbound process access. A type-correct ESM bundle alone did
+not establish that runtime initialization order.
+
+New TEST ONLY postgres_bootstrap.ts imports an explicit initializer using actual
+node:buffer Buffer and node:process. It defines only absent globals, preserves any
+existing runtime bindings and lets forbidden definitions fail. It copies no host
+environment, installs no fake process/SQL/provider and changes no runtime permission.
+After initialization it dynamically imports unchanged postgres_worker.ts. Deno's
+checked bundler inlines that dynamic dependency graph; no runtime network/npm/module
+path is enabled. Only bundle:edge-postgres's entry changes; production source,
+verified TLS factories, SQL/roles, old worker/probe/CI assertions and defaults stay
+unchanged.
+
+One new cold CommonJS regression runs with the existing Node/Deno unit globs and
+unchanged permissions. It synchronously removes the two globals, reproduces the
+actual pinned postgres-bytea import failure, initializes actual Node builtins, then
+loads actual pg and verifies its real bytea parser returns UTF8/binary expected
+bytes. It also verifies repeated initialization preserves existing binding
+identities/descriptors; a finally block restores original global descriptors before
+yielding to the harness. No database/network/child process is used. Observed
+Node181/181 and Deno181/181 passed; this is module compatibility, not actual Edge.
+
+The seven actual Edge/PostgreSQL groups, runtime fingerprint/SQL assertions,
+no-redispatch/quota fences and evidence publication gates remain mandatory and
+unchanged. New exact-head official-container execution must pass; no hosted JWT,
+TLS/CA/PostgREST/provider/authenticated lookup/learner acceptance is inferred.
+
+
+Local corrected build: 150 modules/594983 bytes, SHA256
+`df6ba27afc49b40be3589b2186514faf1b2f80158e5c04056ee86a544ce40de5`.
+Separate bundle inspection confirms installPostgresNodeGlobals executes before
+inlined init_postgres_worker. An additional local standalone Deno cold import,
+with both globals absent and Deno.serve intercepted, returned fixture metadata200
+with zero DB/provider calls under denied net/write/run/ffi/sys and bounded read.
+That checks bundled module order only; it is not a real supervisor/user-isolate,
+PostgreSQL or hosted-service test. Direct helper registry unavailable locally;
+exact npm esbuild0.25.5 restored to SDK cache, no application lock/CI override.

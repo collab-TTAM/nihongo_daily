@@ -1580,6 +1580,36 @@
       ],
       "reproduce": "Fixed disposable CI PostgreSQL17/all retained migrations + Docker: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task bundle:edge-postgres && mkdir -p ../../build/edge-postgres/main && cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts && python3 ../../scripts/verify_edge_postgres.py",
       "limitation": "New seven-group probe requires observed exact-head mandatory container execution/evidence artifact; local checks/bundle/QA do not prove Edge/PostgreSQL execution. TEST ONLY Auth HTTP/provider/plaintext/faults; fixed local CI database and capped containers/loopback host network. No production TLS weakening, hosted JWT/signature/expiry/PostgREST, real provider/lookup or learner proof. All14 release groups remain pending/default bindings unconfigured."
+    },
+    {
+      "id": "ai-edge-postgres-node-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Explicit actual Node Buffer/process initialization before bundled pg CommonJS evaluation; cold pinned dependency reproduction and existing-runtime binding preservation",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_bootstrap.ts",
+          "contains": "await import(\"./postgres_worker.ts\")"
+        },
+        {
+          "path": "backend/ai/edge/postgres_node_globals.ts",
+          "contains": "Reflect.get(target, name) === undefined"
+        },
+        {
+          "path": "backend/ai/test/postgres_node_globals.test.ts",
+          "contains": "cold bundled CommonJS pg graph needs real Node globals before evaluation and preserves runtime bindings"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "edge/postgres_bootstrap.ts"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test && deno task check && deno task test && deno task bundle:edge-postgres; actual disposable DB/Edge probe remains mandatory in CI",
+      "limitation": "Cold module test uses actual pinned pg/postgres-bytea plus real node:buffer/process, not hosted/Edge SQL proof. Parent8ef704f CI39877892790 fails before seeding at Buffer undefined/GET metadata502; native8/50 passed but Flutter/artifact/profile gates skipped. All original actual seven-group assertions/runtime limits/permissions unchanged and must pass at NEW exact head. No production Auth/TLS/default/provider change or release acceptance; all14 integrations pending."
     }
   ],
   "findings": [
