@@ -2054,6 +2054,37 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
       "limitation": "Pure controller tests use actual repository/strict DTOs with TEST ONLY Auth/readiness/held transport and frozen fixtures, not hosted identity/provider/learner proof. Caller must synchronously invalidate on readiness loss and mount a fresh controller for a fresh ready capability; notifications are availability hints and views must read current state. No SDK/HTTP ownership, input persistence, automatic retry, voice, server credit, UI/provider/default activation or live endpoint configuration. Late/canceled HTTP is not remote rollback or zero-cost proof. Full new-head Flutter/build proof requires CI; all14 hosted release groups remain pending."
+    },
+    {
+      "id": "ai-tutor-screen",
+      "status": "automated-baseline",
+      "scope": "Injectable null-default Riverpod /ai tutor/correction view with explicit N5/N4 send, bounded exact text, plain typed results, empty corrections, safe loading/error/pending/manual recheck, binding/draft/result isolation and request-revision-bound callbacks. Existing default preview and route/mobile tests unchanged.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "null default keeps original unavailable preview and no input"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "binding replacement fences retained actions and late old result error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "readiness revocation clears editor and private result"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "tutor controls results and safe errors fit large text"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_tutor_screen_test.dart test/app_test.dart",
+      "limitation": "15 new widgets authored, unrun locally; full new-head analyzer/Flutter/platform/build requires CI. TEST ONLY captured Auth/readiness/port/DTOs and injected view binding are not hosted identity/provider/voice/learner proof. Actual owned-startup ready-generation factory-to-provider bridge remains next work; host must synchronously revoke/remove or replace binding on readiness loss. Main/staging AI remains disabled. No simulated default Auth/save, automatic retry, transcript storage, mastery/SRS/plan write, live provider/collection/spend activation or remote rollback/cost guarantee. All14 hosted release groups pending."
     }
   ],
   "findings": [

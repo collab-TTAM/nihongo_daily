@@ -19,6 +19,7 @@ import '../features/quiz/presentation/quiz_history_screen.dart';
 import '../features/quiz/presentation/quiz_progress_screen.dart';
 import '../features/reading/presentation/reading_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
+import '../features/ai/presentation/ai_tutor_screen.dart';
 import 'app_shell.dart';
 
 const previewRoutes = <String, ({String title, String description})>{
@@ -130,10 +131,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           for (final entry in previewRoutes.entries)
             GoRoute(
               path: entry.key,
-              builder: (context, state) => FeaturePreviewScreen(
-                title: entry.value.title,
-                description: entry.value.description,
-              ),
+              builder: (context, state) => entry.key == '/ai'
+                  ? const AiTutorScreen()
+                  : FeaturePreviewScreen(
+                      title: entry.value.title,
+                      description: entry.value.description,
+                    ),
             ),
         ],
       ),

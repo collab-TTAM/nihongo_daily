@@ -5303,3 +5303,55 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Do not enable aiTextEnabled in default/staging or bypass hosted/provider/
   collection/spend gates. Keep41 draft/17 open/all14 hosted pending; no merge,
   close/deploy/release/schedule action/Personal Alpha claim.
+
+
+## Injectable AI tutor/correction screen — Issue #17, 2026-10-23 UTC
+
+- Sole marker core-20261023T2313-ai-screen; resumed draft41 branch
+  automation/issue-11-plan-sdk-integration at exact parent
+  fcd0861b2cbca43ba064392b4536d32dedf6c4dc/tree73b41665d98aabe5dd735a2eb4e37c7c1a11b57e.
+  Fresh main78a44fa/source37afa572a unchanged; prior released22:18:30 UTC.
+- Parent CI40032646839 raw exact head/latest attempt1 completed success, complete
+  allfive jobs/every required step/no skips. Flutter log120685085809 shows clean
+  analyze/891 Flutter/five Chrome including20 controller cases; retained owned
+  SDK/runtime/Windows/native/SQL/Edge proof. No hosted learner acceptance.
+- /ai consumes null-default immutable AiTextViewBinding through Riverpod and
+  preserves exact prior unavailable preview/route/mobile assertions when absent.
+  An explicitly injected captured repository enables N5/N4 explain/correct input,
+  bounded5000 code points/exact whitespace, explicit send/loading/safe error/
+  pending/recheck/typed plain-text answer/examples/practice/corrections. Empty
+  errors stay empty; voice unavailable/reference results not saved progress.
+- Mounted binding identity owns ephemeral controller/editor/focus/subscription,
+  never SDK/HTTP/repository. Revocation clears editor/results; removal/replacement
+  disposes private state. Request-bound revision/level/mode/text callbacks cannot
+  retarget new edits/selections/accounts; held work disables changes and duplicate
+  send. External wire-busy offers explicit status check/no polling/auto retry.
+  Host still must synchronously revoke/remove binding on readiness loss; actual
+  owned startup/factory-to-provider bridge remains next work, not claimed done.
+- Fifteen widgets authored/unrun locally: null preview/exact explicit explanation,
+  N4 correction/empty errors/held controls, safe failure/recheck/malformed literal
+  model text, edit/selection/stale-send fences, revoke/editor clearing, A/B binding
+  replacement with late success/error, source removal/borrowed resources, Unicode
+  paste limit, external busy and320/375px at200% text success/error. New exact-head
+  Flutter analyzer/full suite/platform/build evidence required, not passed locally.
+- Fresh official Dart3.9.2/fresh checksum matched; four changed Dart files pinned
+  format clean (unresolved app Flutter lint include warning, not full analysis).
+  Inventory85/46 QA regressions/whitespace passed. Separate source/diff/callback/
+  lifecycle/plain-text/limits review; all84 old QA cases/findings/gates exact +85th,
+  all14 hosted release groups pending. No original tests weakened or edited.
+- Seven paths: new ai/application/ai_text_view_binding.dart,
+  ai/presentation/ai_tutor_screen.dart, test/features/ai/ai_tutor_screen_test.dart,
+  docs/AI_TUTOR_SCREEN.md; app/router.dart, this status, qa/matrix.json.
+  Existing runtime/controller/Auth/SDK/vault/main/staging/AI flag/providers/keys/
+  contracts/fixtures/SQL/RLS/dependencies/CI and Pro14/38/content/manifests unchanged.
+  No fake Auth/save/default/live provider or additional collection activation.
+- Publish correct actual parent base_tree/full recursive inventory/local tree
+  equality/unchanged blob-type-mode proof, allseven UTF8/SHA readbacks/single parent
+  and fresh own marker/head expected-head non-force update. Final commit/tree/new
+  exact workflow/latest attempt/release in41/17/37.
+- Next inspect exact new-head allfive jobs/every required step, fix real diagnostics
+  retaining assertions; pending-only handoff/no duplicate code/long polling. Then
+  explicit owned ready-generation startup/provider bridge and SDK/vault/profile/
+  UI refresh/logout/A-B-A/drain fixtures. Keep defaults off/41 draft/17 open/all14
+  hosted groups pending; no merge/close/deploy/release/provider/spend/collection/
+  security/schedule action or Personal Alpha claim.
