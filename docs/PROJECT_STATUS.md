@@ -5161,3 +5161,58 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   No Pro/content/manifests/fixtures/SQL/RLS/Auth strategy/CI/dependency changes.
   Keep41 draft/17 open/all14 hosted gates pending; no merge/close/deploy/release/
   provider/default activation/schedule action or Personal Alpha claim.
+
+
+## Owned AI text ready-generation integration — Issue #17, 2026-10-23 UTC
+
+- Sole marker core-20261023T2017-ai-owner; resumed PR41 branch
+  automation/issue-11-plan-sdk-integration at exact parent
+  e2b403df57ecd6cb0dfcae1da4743c15a51f6237/tree78dcf1bddf49ab08481ccf20cedc05b40cc00185.
+  Fresh main78a44fa/source37afa572a/Pro38 unchanged; prior worker released19:30:41 UTC.
+- Parent CI40011788906 raw exact head/latest attempt1 completed success, complete
+  allfive jobs/every required step/no skips. Unmodified metadata accepted by QA
+  verifier; Flutter log120614663554 shows844 Flutter/five Chrome. All28 HTTP
+  component cases now have actual Flutter evidence; hosted gates stay pending.
+- AiTextRuntimeOwner owns one repository/transport pair per fresh AiTextGeneration,
+  with weak retired-token marking, cached acquisition/no implicit dispatch,
+  synchronous revoke and asynchronous drain before replacement. Constructor
+  reentry/orphans fenced, failed revoke/close permanently disables, safe errors.
+  Idempotent close includes construction drain; paused notification listeners
+  cannot block resource shutdown. No SDK/token/store/provider ownership added
+  to the pure coordinator; concrete transport gains the explicit lifecycle port.
+- PersistentSupabaseRuntime factory is explicitly gated by aiTextEnabled=false
+  default, exact persisted/own-profile ready runtime/session and fresh generation.
+  Both explicit and scheduled refresh revoke before persistence barrier; account
+  readiness/logout transitions revoke synchronously. New-generation allocation
+  waits for old HTTP drain. HTTP401 cannot recreate under the same generation.
+  close revokes before first await/drains before SDK/binding/resource disposal.
+  Separate transport-owned/optional borrowed AI HTTP; Auth/REST allowlist untouched.
+  Main/staging never enable flag; no provider/default/UI/network activation.
+- Fresh official Dart3.9.2 archive/fresh checksum matched; fresh exact eight-library/
+  three-test graph +original fixture bytes, only flutter_test -> package:test1.26.2.
+  Focused strict casts/inference/raw types+lints6.0.0 analysis clean;69/69 passed
+  (19 new owner +50 retained). Initial analyze ran before package resolution and
+  returned import failures; after successful pub get, clean analysis observed.
+  No source/assertion weakening or full local Flutter/SDK-assembly/build claim.
+- Eight actual owned SDK/runtime/vault/profile/AI HTTP tests authored: default-off,
+  startup persist/profile gate/cache, refresh held-header drain/exact bearer,
+  logout/new account, shutdown/borrowed resource drain, vault failure, profile
+  retry and HTTP401/fresh generation. These require new exact-head full Flutter CI.
+  Fixture HTTP/OS/unsigned JWT/component success is not hosted learner proof.
+- Eight paths: new lib/features/ai/application/ai_text_runtime_owner.dart,
+  test/features/ai/ai_text_runtime_owner_test.dart,
+  test/features/ai/persistent_ai_text_runtime_test.dart; concrete text transport,
+  persistent_supabase_runtime.dart, docs/AI_TEXT_REPOSITORY.md, this status,
+  qa/matrix.json. Separate diff/ownership/readiness/reentry/close/security review;
+  all82 prior QA cases/findings/gates exact, add83rd component group/14 pending.
+- Publish using correct actual parent base_tree/full recursive inventory/local
+  tree match/untouched blob-type-mode proof, eight exact UTF8/SHA readbacks,
+  single parent/tree and fresh marker/head expected-head non-force update.
+  Final commit/tree/new exact workflow/latest-attempt jobs/release in41/17/37.
+- Next inspect new exact-head allfive jobs/every step, retaining assertions when
+  fixing real diagnostics. Pending-only handoff/no duplicate implementation or
+  long polling. After green build tutor UI with unavailable/loading/error/success
+  and captured owner lease through the explicit factory, no mock success or live
+  provider activation. All14 hosted gates pending; keep41 draft/17 open. No Pro/
+  content/manifests/fixtures/SQL/RLS/Auth strategy/CI/dependency changes or merge/
+  closure/deployment/release/schedule action/Personal Alpha claim.

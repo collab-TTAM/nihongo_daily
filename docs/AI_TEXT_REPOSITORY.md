@@ -180,3 +180,69 @@ hosted identity/provider/voice or learner proof. New exact-head full CI required
 Next add separately reviewed owned runtime factory, ready-generation revocation and
 transport drain before resource closure, then unavailable/loading/error tutor UI.
 All hosted/collection/spend/voice gates remain; no default activation or release.
+
+
+## Owned ready-generation assembly — explicit, default-disabled
+
+AiTextRuntimeOwner retains one repository/OwnedAiTextTransport pair for one
+AiTextGeneration. The generation is a fresh owner-created token per ready runtime,
+not a user ID. Repeated factory access returns the same repository and issues no
+request. Retired tokens are weakly marked with Expando, so A/B/A or a server401
+cannot reconstruct another capability under the same ready generation without
+retaining every old learner runtime in an ordinary strong-reference set.
+
+Construction is registered before supplied getters/factories can reenter. Failed
+readiness after allocation revokes/closes the orphan. Invalidate synchronously
+revokes the repository and transport, then waits for accepted transport work and
+cleanup before a new capability may be allocated. Old late success/error cannot
+publish; drain completion only changes availability, never automatically creates
+a repository or resends text. Revoke/close errors permanently disable that owner
+and shutdown reports fixed INTERNAL_ERROR without raw cleanup details.
+Idempotent close also waits for an orphan from reentrant construction. Availability
+notifications contain no account/credential/text, and paused UI listeners cannot
+hold SDK/resource shutdown open. Custom transport close must actually drain its
+accepted work; a never-settling custom source keeps replacement blocked.
+
+PersistentSupabaseRuntime now accepts trusted aiTextEnabled (default false) and
+optional borrowed aiHttpClient, with createAiTextRepository/isAiTextEnabled/
+aiTextChanges for later explicit UI assembly. Default main and Windows staging
+startup do not enable this flag; no provider, route or live request is activated.
+The flag is owner configuration, never a learner-controlled URL/key or approval
+for paid provider use. Existing hosted/configuration/collection/spend gates remain.
+
+The factory requires the exact persisted-session and own-profile ready runtime,
+then binds a fresh generation and captures its readiness in both repository and
+SupabaseAiTextTransport. No network call occurs on factory acquisition. Account
+readiness transitions revoke synchronously. Explicit refresh and the optional
+scheduler both pass through the runtime's revoke-before-persistence-refresh path.
+A new ready generation waits for old transport drain, including ignored header
+abort, before another factory call can succeed. After HTTP401 the same generation
+remains unavailable; explicit refresh/relogin must establish a fresh ready barrier.
+
+AI uses its own transport-owned HTTP client unless the caller explicitly supplies
+a separate borrowed aiHttpClient. The existing Auth/REST-only HTTP wrapper and its
+allowlist are unchanged; function requests never use that wrapper. The exclusively
+owned SDK remains private and automatic SDK refresh stays disabled. close revokes
+AI before its first await and drains it together with accepted persistence/study/
+quiz operations before closing SDK/binding/owned resources. Supplied AI HTTP and
+journal remain caller-owned; logout still clears credentials through the existing
+ordered persistence path. Token storage/rotation/Auth strategy are not changed.
+
+Parent e2b403d CI40011788906 attempt1 passed allfive jobs/every step:844 Flutter,
+five Chrome and retained native/Windows/SQL/Edge gates, including28 HTTP cases.
+Fresh official Dart3.9.2/checksum verified; identical eight-library/three-test graph
+plus original fixtures passed69/69 cases (19 new owner +50 retained) and focused
+strict analysis. Only flutter_test import adapted to package:test1.26.2. The19
+new owner cases cover ready caching/no dispatch, missing/getter/readiness failures,
+new/retired/same-user/A-B-A generation fencing, late results, reentrant acquire/
+invalidate/close, orphan cleanup, failed revoke/close and paused listeners.
+
+Eight additional tests target the actual PersistentSupabaseRuntime/SDK/vault/
+profile/AI HTTP assembly: default-disabled, persisted-token/profile barriers,
+refresh with held old headers and exact old/new bearer capture, logout/new-account
+isolation, close drain/borrowed resources, vault write failure, profile retry and
+401/fresh-generation recovery. They are authored, not run locally: this environment
+has no full Flutter SDK; new exact-head Actions must confirm them and the builds.
+All simulated Auth/vault/HTTP and unsigned JWTs are TEST ONLY, not hosted security
+or learner evidence. Next review new CI, then add unavailable/loading/error tutor
+UI through this factory, retaining explicit owner enablement and all release gates.

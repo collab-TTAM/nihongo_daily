@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
+import '../../ai/application/ai_text_runtime_owner.dart';
+import '../../ai/data/captured_ai_text_repository.dart';
+import '../../ai/data/supabase_ai_text_transport.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
 import '../../quiz/data/vocabulary_quiz_attempt_store.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
@@ -35,11 +38,14 @@ final class PersistentSupabaseRuntime
     StudySessionStore? studyStore,
     VocabularyQuizAttemptStore? quizStore,
     http.Client? httpClient,
+    http.Client? aiHttpClient,
     DateTime Function()? now,
     bool automaticRefresh = false,
+    bool aiTextEnabled = false,
     Duration requestTimeout = const Duration(seconds: 15),
   }) : _studyStore = studyStore,
-       _quizStore = quizStore {
+       _quizStore = quizStore,
+       _aiTextEnabled = aiTextEnabled {
     if (kIsWeb) {
       // The pinned SDK broadcasts Auth session objects between browser tabs.
       // No browser token persistence/restore is authorized by this assembly.
@@ -88,6 +94,24 @@ final class PersistentSupabaseRuntime
       store: store,
       access: persistence,
     );
+    _aiOwner = AiTextRuntimeOwner(
+      createTransport: ({required auth, required isReady}) =>
+          SupabaseAiTextTransport(
+            client: _client,
+            auth: auth,
+            isReady: isReady,
+            projectUrl: url,
+            publishableKey: key,
+            httpClient: aiHttpClient,
+            now: now,
+            timeout: requestTimeout,
+          ),
+    );
+    _aiSubscription = account.changes.listen(
+      (_) => _syncAiReadiness(),
+      onError: (Object _, StackTrace _) => _aiOwner.invalidate(),
+      onDone: _aiOwner.invalidate,
+    );
     _noticeSubscription = persistence.sessionChanges.listen(
       (_) => _publishNotice(),
       onError: (Object _, StackTrace __) =>
@@ -102,7 +126,7 @@ final class PersistentSupabaseRuntime
               ? null
               : RefreshLease(session, expiry);
         },
-        refresh: persistence.refresh,
+        refresh: refresh,
         now: now,
       );
       _refreshSubscription = persistence.sessionChanges.listen(
@@ -114,6 +138,11 @@ final class PersistentSupabaseRuntime
   }
   final StudySessionStore? _studyStore;
   final VocabularyQuizAttemptStore? _quizStore;
+  final bool _aiTextEnabled;
+  late final AiTextRuntimeOwner _aiOwner;
+  StreamSubscription<AccountState>? _aiSubscription;
+  SrsStudyRuntime? _aiReadyRuntime;
+  AiTextGeneration? _aiGeneration;
   final _quizOperations = VocabularyQuizOperationDrain();
   final _studyOperations = StudySessionOperationDrain();
   late final SupabaseClient _client;
@@ -146,6 +175,40 @@ final class PersistentSupabaseRuntime
   StreamSubscription<void>? _refreshSubscription;
   SessionRefreshPhase? get refreshPhase => _refreshScheduler?.phase;
   void resume() => _refreshScheduler?.update();
+
+  /// Trusted owner availability only; default and staging startup leave it off.
+  bool get isAiTextEnabled => _aiTextEnabled;
+  Stream<void> get aiTextChanges => _aiOwner.changes;
+
+  void _syncAiReadiness() {
+    final ready = _closing == null ? account.readyRuntime : null;
+    if (!identical(ready, _aiReadyRuntime)) {
+      _aiOwner.invalidate();
+      _aiReadyRuntime = ready;
+      _aiGeneration = ready == null ? null : AiTextGeneration();
+    }
+    _aiOwner.check();
+  }
+
+  /// Explicit opt-in; no HTTP call occurs until a caller submits text. One
+  /// capability per ready generation, with no replacement during old I/O drain.
+  CapturedAiTextRepository? createAiTextRepository() {
+    if (!_aiTextEnabled || _closing != null) return null;
+    _syncAiReadiness();
+    final ready = _aiReadyRuntime;
+    final generation = _aiGeneration;
+    final session = account.readySession;
+    if (ready == null || generation == null || session == null) return null;
+    return _aiOwner.acquire(
+      auth: ready.auth,
+      generation: generation,
+      isReady: () =>
+          _closing == null &&
+          identical(account.readyRuntime, ready) &&
+          identical(account.readySession, session) &&
+          identical(_aiGeneration, generation),
+    );
+  }
 
   Future<void> start() async {
     try {
@@ -230,21 +293,29 @@ final class PersistentSupabaseRuntime
   }
 
   @override
-  Future<void> refresh() => persistence.refresh();
+  Future<void> refresh() {
+    _aiOwner.invalidate(); // Revoke synchronously before the vault/SDK barrier.
+    return persistence.refresh();
+  }
 
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.
   Future<void> close() => _closing ??= () async {
+    final aiClosing = _aiOwner.close(); // Revoke before the first await.
     account.dispose();
     _refreshScheduler?.dispose();
     await _noticeSubscription?.cancel();
     _notice = AccountSessionNotice.none;
     unawaited(_noticeEvents.close());
     await _refreshSubscription?.cancel();
+    await _aiSubscription?.cancel();
+    _aiReadyRuntime = null;
+    _aiGeneration = null;
     // Preserve immediate Auth-close policy even while a study RPC is held.
     await Future.wait([
       persistence.close(),
       _studyOperations.revokeAndDrain(),
       _quizOperations.revokeAndDrain(),
+      aiClosing,
     ]);
     await _port.close();
     _binding.dispose();

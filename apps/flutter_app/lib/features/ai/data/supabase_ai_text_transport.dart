@@ -7,13 +7,14 @@ import 'package:supabase/supabase.dart';
 
 import '../../srs/data/review_repository.dart';
 import '../../srs/data/supabase_review_binding.dart';
+import '../application/ai_text_runtime_owner.dart';
 import '../domain/ai_text_models.dart';
 import 'captured_ai_text_repository.dart';
 
 /// Explicit owner-created capability, never installed by the default app.
 /// Borrows SDK/Auth and captures one exact SDK Session/token plus ready generation.
 /// The server still verifies the JWT; local claims are only fail-closed hints.
-final class SupabaseAiTextTransport implements AiTextTransport {
+final class SupabaseAiTextTransport implements OwnedAiTextTransport {
   SupabaseAiTextTransport({
     required SupabaseClient client,
     required ReviewAuth auth,
@@ -78,6 +79,7 @@ final class SupabaseAiTextTransport implements AiTextTransport {
   Future<void>? _closing;
 
   bool get isBusy => _active != null;
+  @override
   bool get isCurrent {
     if (_revoked) return false;
     try {
@@ -98,6 +100,7 @@ final class SupabaseAiTextTransport implements AiTextTransport {
 
   /// Owner calls this synchronously on vault/profile/runtime readiness loss.
   /// SDK session changes are also observed; no sign-out or token writer is added.
+  @override
   void revoke() {
     _revoked = true;
     _active?.stop();
@@ -105,6 +108,7 @@ final class SupabaseAiTextTransport implements AiTextTransport {
 
   /// Borrowed clients remain owned by the caller. Drain may wait for a custom
   /// client that ignores abort/cancellation; it never silently permits overlap.
+  @override
   Future<void> close() => _closing ??= () async {
     revoke();
     final active = _active;

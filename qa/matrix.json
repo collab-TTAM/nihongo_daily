@@ -1988,6 +1988,41 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
       "limitation": "28 new cases plus22 unchanged repository cases passed in identical seven-library/two-test pure Dart graph with actual pinned Supabase/http libraries, original fixtures, TEST ONLY Auth/streamed HTTP and only flutter_test import adapted. New exact-head full CI required. No real network/TLS/hosted JWT verification/provider/voice, owned runtime/UI activation, rollout or learner proof. Abort/cancel is not remote rollback or zero-cost proof; ignored abort/cleanup can keep busy/drain pending; cancellation failure revokes. No automatic text retry or receipt. All14 hosted release gates pending."
+    },
+    {
+      "id": "ai-dart-owned-ready-runtime",
+      "status": "automated-baseline",
+      "scope": "One owner-held captured text repository per ready generation with synchronous revoke, transport drain before reuse/SDK shutdown and default-disabled actual owned runtime factory",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_runtime_owner_test.dart",
+          "contains": "new generation waits for old close and cannot revive the retired generation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_runtime_owner_test.dart",
+          "contains": "close during construction waits for orphan cleanup and is idempotent"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "AI factory waits for persisted rotation and own profile then caches one capability"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "refresh revokes AI synchronously and holds new generation until old headers drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "shutdown revokes AI immediately and waits for ignored abort before SDK disposal"
+        }
+      ],
+      "issues": [
+        17,
+        20,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "19 new owner cases plus50 retained repository/actual SDK-streamed HTTP cases passed in identical eight-library/three-test pure Dart graph with only flutter_test import adapted. Eight new actual PersistentSupabaseRuntime/SDK/vault/profile/AI HTTP assembly cases authored and require new exact-head Flutter CI; builds/native/hosted proof unrun locally. Default main/staging AI stays disabled. Simulated Auth/vault/HTTP and unsigned JWTs do not establish hosted identity/provider/voice/learner acceptance. No automatic text retry or receipt; ignored transport/cancel may keep replacement/close pending. All14 live release gates pending."
     }
   ],
   "findings": [
