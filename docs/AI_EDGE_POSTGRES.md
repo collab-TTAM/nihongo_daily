@@ -196,3 +196,40 @@ findings/gates, seven full Edge/SQL assertions and runtime permissions remain.
 Local Node184/Deno184 and QA44 pass; this is fixture/logic assurance, not native
 Edge transport execution. New exact-head official-container CI must run the actual
 SELECT1 and complete eight groups before acceptance. All14 release groups pending.
+
+
+## Actual constructor missing global alias (2026-10-23)
+
+Exact parent464360edea1bca0e2e2869ced0f9716183e86918
+[CI39889372926](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39889372926)
+latest attempt1 completed/failure: actual SELECT1 preflight503 before seeding;
+allowlisted snapshot proves construct/missing-global, opened0. AI/repo-sanity/windows
+pass; database fails; Edge artifact/profile projections and Flutter skipped. Native
+Node8/Deno50 pass independently; full Edge SQL acceptance remains pending.
+
+The pinned pg8.23.1 Client constructor reads c.Promise || global.Promise after
+module evaluation. TEST ONLY bootstrap now supplies absent global as actual
+globalThis alongside the existing actual Buffer/process bindings, preserving any
+runtime-supplied value and throwing on forbidden definitions. No Promise stub,
+host environment copy or additional permissions. Checked inlined bundle still
+initializes globals before its pg/worker graph. Production source/factories/TLS,
+SQL/Auth/quota/receipt guards and all eight actual transport/full-handler groups
+remain unchanged.
+
+A new actual Client constructor regression deletes global, reproduces the precise
+ReferenceError, restores the alias and verifies intrinsic Promise/not-connected
+state before destroying its unconnected real socket. Synchronous finally restores
+original global descriptors. Explicit hermetic constructor-only parameters avoid
+environment access; no connect/query is made. Existing parser and preservation
+assertions remain. Node185/Deno185 pass under unchanged unit permissions, QA44 pass.
+Actual user-isolate SELECT1/ReadyForQuery/eight-group/SQL artifact success requires
+NEW exact-head CI and is not claimed by constructor-only or bundle evidence. All14
+release groups/hosted JWT/TLS/PostgREST/provider/voice/learner proof remain pending.
+
+Local corrected checked bundle:151 modules/599374 bytes, SHA256
+`bf62a857b3554b815c5fcd5fd52939eaaa2c59e0937ac143d8389d1da4423b81`.
+SDK internal helper registry refused connection; exact npm esbuild0.25.5 verified
+and atomically cached, then build passed. No application dependency/lock/CI change.
+Separate diff review preserves the entire original bootstrap test except adding
+the runtime-global preservation sentinel; production/SQL/old probe/CI/Pro files
+byte-identical. Bundle order inspected: initializer before inlined worker graph.

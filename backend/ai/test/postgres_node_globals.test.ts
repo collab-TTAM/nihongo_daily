@@ -33,6 +33,7 @@ test("cold bundled CommonJS pg graph needs real Node globals before evaluation a
     const supplied = {
       Buffer: Object.freeze({ marker: "runtime-buffer" }),
       process: Object.freeze({ marker: "runtime-process" }),
+      global: Object.freeze({ marker: "runtime-global" }),
     };
     const before = Object.getOwnPropertyDescriptors(supplied);
     installPostgresNodeGlobals(supplied);
@@ -43,5 +44,58 @@ test("cold bundled CommonJS pg graph needs real Node globals before evaluation a
       if (descriptor) Object.defineProperty(globalThis, name, descriptor);
       else Reflect.deleteProperty(globalThis, name);
     }
+  }
+});
+
+test("cold pg Client constructor requires the real global alias without network or environment access", () => {
+  const require = createRequire(import.meta.url);
+  const { Client } = require("pg") as typeof import("pg");
+  const original = Object.getOwnPropertyDescriptor(globalThis, "global");
+  // Every environment-backed connection parameter is explicit and truthy so
+  // this constructor-only fixture keeps the existing deny-env/net permissions.
+  // No connect/query is called; replication/options are never sent to a server.
+  const config = {
+    host: "127.0.0.1",
+    port: 5432,
+    user: "fixture",
+    password: "fixture",
+    database: "nihongo_test",
+    binary: true,
+    options: "-c statement_timeout=1000",
+    ssl: false,
+    sslnegotiation: "postgres" as const,
+    client_encoding: "UTF8",
+    replication: "database",
+    application_name: "nd-constructor-only",
+    connectionTimeoutMillis: 2000,
+    pipeline: false,
+  };
+  try {
+    assert.equal(Reflect.deleteProperty(globalThis, "global"), true);
+    assert.throws(() => new Client(config), /global is not defined/);
+    installPostgresNodeGlobals();
+    assert.equal(Reflect.get(globalThis, "global"), globalThis);
+    const client = new Client(config);
+    try {
+      // The real constructor selected the intrinsic Promise, not a stub/override.
+      assert.equal(Reflect.get(client, "_Promise"), Promise);
+      assert.equal(Reflect.get(client, "_connected"), false);
+      assert.equal(Reflect.get(client, "_connecting"), false);
+    } finally {
+      const connection = Reflect.get(client, "connection") as {
+        stream: { destroy(): void };
+      };
+      connection.stream.destroy();
+    }
+    const supplied = { global: Object.freeze({ marker: "runtime-global" }) };
+    const before = Object.getOwnPropertyDescriptors(supplied);
+    installPostgresNodeGlobals(supplied);
+    assert.deepEqual(
+      Object.getOwnPropertyDescriptor(supplied, "global"),
+      before.global,
+    );
+  } finally {
+    if (original) Object.defineProperty(globalThis, "global", original);
+    else Reflect.deleteProperty(globalThis, "global");
   }
 });

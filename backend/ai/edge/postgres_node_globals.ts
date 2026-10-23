@@ -4,7 +4,12 @@ import process from "node:process";
 
 export function installPostgresNodeGlobals(target: object = globalThis): void {
   for (
-    const [name, value] of [["Buffer", Buffer], ["process", process]] as const
+    const [name, value] of [
+      ["Buffer", Buffer],
+      ["process", process],
+      // pg's Client constructor selects global.Promise after module evaluation.
+      ["global", globalThis],
+    ] as const
   ) {
     // Preserve an existing runtime binding. A forbidden definition throws;
     // never hide bootstrap failure or replace it with simulated SQL success.

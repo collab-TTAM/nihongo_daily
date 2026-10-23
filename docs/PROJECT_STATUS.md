@@ -4248,3 +4248,55 @@ no deployment, production deletion, security reduction, release or schedule chan
   Hosted TLS/CA/JWT issuer/signature/expiry/PostgREST, approved live provider/lookup/
   cost/voice and learner acceptance still missing. #31 open/#41 draft/defaults
   unconfigured/all14 release gates pending; no Personal Alpha acceptance or pause.
+
+
+## Client constructor global alias correction (2026-10-23 03:14 UTC)
+
+- Fresh #41 head464360edea1bca0e2e2869ced0f9716183e86918, correct base tree
+  1c229837adddad6b07cc2bfd8f481bb84abc694e/568 blobs; main78a44fa/#37 afa572a
+  unchanged. Single writer marker core-20261023T0314-pg-global-alias; Pro #14/#38
+  N4/data/manifests/content tests/docs/branch reserved and untouched.
+- Actual [CI39889372926](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39889372926),
+  exact parent/latest attempt1 completed/failure. Allfive jobs/each step inspected:
+  repo-sanity/ai-boundary/windows successful; database120205166163 fails actual
+  user-isolate SELECT1 preflight503 BEFORE seed. Strict safe snapshot reports
+  transport construct/missing-global, opened0, no handler/provider calls. Edge
+  artifact/profile projections and Flutter skipped. Native Node8/Deno50 retained
+  successful in completed DB log; no full-CI/Edge PostgreSQL pass.
+- Pinned actual pg8.23.1 client.js constructor selects c.Promise || global.Promise;
+  bootstrap initialized only Buffer/process. Add TEST ONLY absent global alias to
+  actual globalThis before bundled graph initialization. Preserve existing binding
+  identity/descriptors and let forbidden definitions fail. No Promise override,
+  environment copy, fake SQL/provider success or runtime permission change.
+- Added synchronous actual pinned Client constructor regression: delete global,
+  reproduce ReferenceError, initialize actual alias, construct Client and verify
+  intrinsic Promise plus not connecting/connected, destroy unconnected real socket,
+  restore original global descriptor in finally. Explicit truthy environment-backed
+  fixture parameters avoid reading env under unchanged denied permissions; no
+  connect/query/replication/options sent to a server. Original cold bytea parser
+  assertions retained; existing-binding fixture now includes global sentinel.
+- Local format:check/strict TypeScript +Deno2.9.6 check/edge fmt passed; Node185/185
+  and Deno185/185 passed/no skips; QA44/44; inventory71/all14 release cases pending.
+  Local Docker/PostgreSQL/Flutter absent; actual new Edge transport/eight fullgroups
+  must execute in NEW exact-head CI. Bundle evidence/checkpoint follows in PR bodies.
+- Four paths: backend/ai/edge/postgres_node_globals.ts, test/postgres_node_globals.test.ts,
+  docs/AI_EDGE_POSTGRES.md and this status. Separate review retains production src,
+  Auth/TLS/SQL/RLS/quota/receipts/timeout/owned factory, fixed SELECT1/idle guards,
+  all original full-handler cases/scripts/CI/runtime limits, dependencies/locks,
+  QA release gates and Pro files. Correct full tree/blob/parent readback before
+  expected-head non-force CAS; final actual commit/run/RELEASED in #41/#37/#31.
+- Next inspect exact new head/latest attempt/allfive jobs/every required step and
+  actual transport/eight-group Edge SQL artifact. Constructor fixture success does
+  not prove native Edge connectivity; if actual probe fails use safe phase snapshot
+  and fix real cause without bypassing assertions. Hosted TLS/CA/Supabase JWT issuer/
+  signature/expiry/PostgREST, approved provider/authenticated lookup/cost/voice and
+  learner acceptance remain missing. #31 open/#41 draft/default bindings/all14
+  release groups pending. No merge/issue closure/Alpha acceptance/pause.
+
+Local corrected checked bundle:151 modules/599374 bytes, SHA256
+`bf62a857b3554b815c5fcd5fd52939eaaa2c59e0937ac143d8389d1da4423b81`.
+SDK internal helper registry refused connection; exact npm esbuild0.25.5 verified
+and atomically cached, then build passed. No application dependency/lock/CI change.
+Separate diff review preserves the entire original bootstrap test except adding
+the runtime-global preservation sentinel; production/SQL/old probe/CI/Pro files
+byte-identical. Bundle order inspected: initializer before inlined worker graph.
