@@ -18,7 +18,6 @@ import 'package:nihongo_daily/features/daily_plan/data/durable_study_session_rep
     show sameStudyEvent;
 import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
 import 'package:nihongo_daily/features/quiz/application/vocabulary_quiz_provider.dart';
-import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz.dart';
 import 'package:nihongo_daily/features/settings/application/preview_preferences.dart';
 import '../curriculum/curriculum_widget_test.dart'
     show FixtureCurriculumRepository;

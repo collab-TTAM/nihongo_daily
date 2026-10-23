@@ -4759,3 +4759,36 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   means durable handoff, no duplicate code/long polling. Trusted quiz availability
   mapping, reading/audio, hosted attempts/sync/learner/release gates remain open;
   no deployment/merge/closure/release/schedule action.
+
+
+## Quiz widget unused-import correction (2026-10-23 UTC)
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c, draft41
+  parent14fb8bc3e163721055776626e1030fb7f2abc371/tree
+  b9188566d891e98db011a54f2c4a703f20244574; source37afa572a redirects here.
+  Marker core-20261023T1212-quiz-unused-import active in41/11 before editing;
+  single core writer, Pro14/38 content/manifests/tests/branch untouched.
+- Observed exact parent CI39945699267/latest attempt1 completed failure.
+  Repo-sanity, database, ai-boundary and windows all jobs/every step succeeded.
+  Flutter strict format passed; analyze reported exactly one warning:
+  test/features/quiz/quiz_study_widget_test.dart:21 unused_import of
+  package:nihongo_daily/features/quiz/domain/vocabulary_quiz.dart. Full/new
+  widget/native/owned-SDK/Chrome/Web downstream steps skipped, not passed.
+- Removed only that unused test import. Exact comparison against fresh parent
+  proves all other bytes, all11 test cases/helpers/assertions and real taps
+  unchanged. All app/core/store/default/content/SQL/Auth/CI/lint/dependency rules
+  remain unchanged; no suppression, removed case or weaker required check.
+- Fresh official Dart3.9.2 archive SHA256 verified; strict target format passed
+  with0 changes (unresolved Flutter lint include warning). QA inventory77 valid,
+  all14 hosted groups still pending; separate import-removal/diff/whitespace
+  review passed. No new executable-test success claimed for this import-only
+  correction; actual Flutter analyze/tests/widgets/platforms need new-head CI.
+  Prior metadata-bootstrap review rejection respected, no retry or bypass.
+- Two paths only: quiz_study_widget_test.dart and this status. Publish with correct
+  base/full-tree/unchanged blobs/exact UTF8/parent checks and expected-head non-force
+  ref. Final commit/tree/new CI/released heartbeat in41/11/37 redirect.
+- Next inspect exact new run/latest-attempt allfive jobs/every required step and
+  fix real diagnostics with assertions intact. Pending-only means handoff without
+  duplicate code or long polling. Keep41 draft/issues11/13 open; server quiz and
+  reading areas remain BLOCKED, original-content/audio/hosted learner/sync/release
+  gates remain open. No merge/closure/availability/deployment/release/pause.
