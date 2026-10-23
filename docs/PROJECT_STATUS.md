@@ -4359,3 +4359,65 @@ cached before successful checked build, no application dependency/lock/CI overri
 Separate preservation review compares AST: all21 old probe check calls and all old
 helper function bodies retained; all71 old QA case objects/gates/findings unchanged.
 Only six intended files differ; new actual ninth-group pass awaits exact-head CI.
+
+
+## Reading domain / independent Issue #34 checkpoint (2026-10-23 05:17 UTC)
+
+- Fresh main78a44fa; #37 redirects to draft #41 branch
+  automation/issue-11-plan-sdk-integration, exact parent
+  3c47ceb20194c5b21edf4e1e230b2723b7922222/base tree
+  9a8f7ce24e356019d6d502b4593c0bd7aa490ed6/568 blobs. One core writer marker
+  core-20261023T0513-reading-domain; Pro #14/#38/N4/data/manifests/content tests/
+  documents/branch reserved/untouched. No parallel agent or default activation.
+- Exact parent [CI39899724078](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39899724078)
+  latest attempt1 completed/success: full allfive jobs/every step success/no skips.
+  Database120238265739 completed log proves all9 actual Edge/PostgreSQL groups,
+  including distinct-event pending fence/rollback/ordered retry and fresh replay;
+  Deno native50 passed, mandatory artifact upload succeeded. Printed source3c47ceb/
+  Actions checkout5fd3a27/bundle17360c95... observed. #31 remains open for hosted
+  TLS/CA/JWT issuer/signature/expiry/PostgREST and approved live provider/authenticated
+  lookup/voice/learner evidence; no provider or Auth strategy chosen/activated.
+- Select independent #34 acceptance explicitly permitting original parser/model
+  work before reviewed material/audio. #11/#12 typed libraries and valid-session
+  foundations present; reviewed reading assets/audio and integrated learner proof
+  remain missing. Read AUTO_LEARNING/spec/API/database/security and actual issue.
+- Complete pure reading domain: separately documented local import v1 bounded at
+  256KiB UTF8/50 passages/10 questions/2-4 choices, strict exact keys/types/N5-N4/
+  positive version, required Japanese/readings/Vietnamese/attribution metadata,
+  duplicate IDs/labels and missing answer rejection. Validate whole catalog before
+  filtering, fixed safe errors with no raw JSON. Private constructors/unmodifiable
+  nested lists, stable level/id/version snapshot, first valid answer per question,
+  all-answers completion and deterministic correctCount with immutable answers.
+  Captured key rejects another passage/level/version; new round starts empty.
+- No source/license authenticity or linguistic review inferred from metadata.
+  Local answer keys/score are practice only and authorize no minutes/mastery/SRS/
+  persistence/sync. Text-only importer accepts no audio_ref/default fake audio or
+  success; no player/capture/retention/spend, UI/content asset or endpoint change.
+  Original frozen contracts/SQL/Auth/security/seven plan blocks unchanged.
+- Eleven new TEST ONLY parser/scoring cases cover exact level/readings/translation/
+  order/empty/max collections/immutable copies, UTF8 limits/safe decoder errors,
+  malformed hidden-level entries/duplicates/invalid IDs/version/field/choice/answer,
+  first-answer, stale snapshot/reset/mixed score. These are new reading-domain
+  fixtures, not reviewed N5/N4 curriculum or changes to Pro content tests.
+- Local observed: official Dart3.9.2 archive SHA256 verified; both repository files
+  formatted. Identical model/PreviewLevel and all11 test bodies copied to disposable
+  pure-Dart harness, only flutter_test import replaced by package:test1.26.2.
+  Strict casts/inference/raw-types +recommended lints analyzed with no issues;
+  11/11 pure-Dart tests pass/no skips. No repo SDK/dependency/lock modification.
+  Formatter warned unresolved Flutter lint include locally; actual Flutter format/
+  analyzer/tests/web/Windows remain NEW exact-head CI work, not locally passed.
+  QA46/46/inventory73/Python checks/whitespace passed; all14 release cases pending.
+- Five paths: new apps/flutter_app/lib/features/reading/domain/reading_material.dart,
+  test/features/reading/reading_material_test.dart, docs/READING_MATERIAL.md;
+  qa/matrix.json +this status. Old72 QA cases/gates/findings/assertions and all
+  prior Dart/backend/SQL/CI/defaults/assets/Pro bytes retained. Separate review +
+  correct base/full tree/all exact changed blobs/one-parent readback required before
+  expected-head non-force CAS. Final commit/run/RELEASED in #41/#37/#34; #31 gets
+  observed nine-group handoff, no completed-issue claim.
+- Next inspect new exact-head latest-attempt complete allfive jobs/every step;
+  fix genuine Flutter failures without weakening gates. Pending-only handoff/no
+  duplicate implementation. Then trusted bounded reading repository/version mapping,
+  explicit loading/error/empty/offline reading UI and captured-session/durable valid
+  study reports; reviewed material/audio remain separate and coordinated. #34/#31
+  open/#41 draft/all14 release groups/default lessons pending; no merge/issue close/
+  deployment/Personal Alpha acceptance/pause.

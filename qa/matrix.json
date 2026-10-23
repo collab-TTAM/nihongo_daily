@@ -1682,6 +1682,36 @@
       ],
       "reproduce": "Fixed disposable CI PostgreSQL17/all migrations + Docker: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task bundle:edge-postgres && mkdir -p ../../build/edge-postgres/main && cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts && python3 ../../scripts/verify_edge_postgres.py && cd ../.. && python3 -m unittest discover -s qa -p test_*.py",
       "limitation": "Adds ninth mandatory group; parent2cc9987 CI39894048642 allfive jobs/every step and original eight actual Edge SQL groups succeeded. New group requires new exact-head Edge execution; local negative oracle tests do not prove native concurrency. Fixed fixture Auth/provider/plaintext only; no hosted JWT/TLS/PostgREST/provider/learner acceptance. Quota remains unchanged, nine serial-owner attempts including restart replay, no reset/refill timing. All14 release groups pending/default bindings unconfigured."
+    },
+    {
+      "id": "reading-material-domain",
+      "status": "automated-baseline",
+      "scope": "Pure reading import/model and deterministic first-answer comprehension, strict catalog validation before N5/N4 filtering and immutable versioned snapshot identity; no study write/audio/default lesson",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/domain/reading_material.dart",
+          "contains": "decodeReadingMaterial"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/reading/domain/reading_material.dart",
+          "contains": "snapshotKey != passage.snapshotKey"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_material_test.dart",
+          "contains": "snapshot version passage and level prevent stale callback answers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_material_test.dart",
+          "contains": "duplicate passage and malformed hidden level fail before filtering"
+        }
+      ],
+      "issues": [
+        34,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading/reading_material_test.dart",
+      "limitation": "New pure domain/tests only, no reviewed reading assets, curriculum changes, source-license verification, UI/loading/offline flow, playable audio, study-session write/history/sync or learner acceptance. Model score does not prove comprehension/mastery/attention. New exact-head Flutter format/analyze/tests/build must be observed; previous AI/Edge CI is not Dart execution evidence. Pro N4 scope untouched; all14 release cases pending/default lessons unconfigured."
     }
   ],
   "findings": [
