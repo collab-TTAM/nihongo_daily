@@ -5216,3 +5216,40 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   provider activation. All14 hosted gates pending; keep41 draft/17 open. No Pro/
   content/manifests/fixtures/SQL/RLS/Auth strategy/CI/dependency changes or merge/
   closure/deployment/release/schedule action/Personal Alpha claim.
+
+
+## Owned AI fixture analyzer fix — Issue #17, 2026-10-23 UTC
+
+- Sole marker core-20261023T2111-ai-owner-analyze; resumed draft PR41 branch
+  automation/issue-11-plan-sdk-integration from exact
+  b6ab534f1b9d6dfae0d0e4c0d00507978c099ce9/tree279ad1c82a82c6735520dac4fe97d1983824b8c6.
+  Fresh main78a44fa/source37afa572a unchanged; previous worker released20:30:36 UTC.
+  Protected Pro14/38/N4/content scope remains untouched.
+- CI40019599368, exact parent/latest attempt1, completed failure. Full latest jobs
+  page has all five: repo-sanity/ai-boundary/database/windows every step success,
+  including both Windows builds and native credential/process checks. Flutter
+  pinned format222 files/zero changes passed; analyzer failed with exactly two
+  curly_braces_in_flow_control_structures diagnostics at test/features/ai/
+  persistent_ai_text_runtime_test.dart129:9 and154:9. Flutter tests, Chrome, Web
+  and all downstream Flutter verifiers were skipped, never passed.
+- Add blocks only around the multiline TEST ONLY token and ensure_profile fixture
+  branches. Keep all eight cases, assertions, helper expressions and response
+  behavior intact. Separate diff review verifies exactly four brace tokens added;
+  removing those additions recovers the parent file byte-for-byte. No production
+  runtime/Auth/vault/HTTP/default/CI/lint/dependency/QA matrix or gate changes.
+- Fresh official Dart3.9.2 archive/checksum matched; pinned single-file format
+  zero changes (formatter warned Flutter lint include unresolved; not analysis).
+  Inventory83 and all46 QA regression tests passed; whitespace clean.
+  Local Flutter/full analyzer/eight integrated runtime tests/build were not run.
+  New exact-head CI must execute them; the previous69 focused pure Dart passes
+  are parent evidence and do not establish these eight integrated cases.
+- Two paths only: the fixture above and docs/PROJECT_STATUS.md. Publish using
+  actual parent base_tree, full recursive tree/unchanged blob/mode/type proof,
+  exact UTF8/SHA readbacks/single parent and fresh marker/head expected-head
+  non-force update. Final commit/tree/CI and RELEASED checkpoint in41/17/37.
+- Next inspect exact new-head/latest-attempt all five jobs and every required step;
+  fix observed diagnostics without weakening tests. Pending-only handoff/no
+  duplicate implementation or long polling. After full green, implement explicit
+  unavailable/loading/error/success tutor UI through the owned ready-generation
+  factory. Keep41 draft/17 open/all14 hosted release groups pending; no merge,
+  deployment/provider/default activation/security reduction or Personal Alpha claim.

@@ -125,7 +125,7 @@ void main() {
       ..onSend = (r) async => answer(r.url.path.split('/').last);
     authHttp = MockClient((r) async {
       authRequests.add(r);
-      if (r.url.path == '/auth/v1/token')
+      if (r.url.path == '/auth/v1/token') {
         return http.Response(
           jsonEncode({
             'access_token': wire.token(
@@ -149,8 +149,9 @@ void main() {
           200,
           headers: {'content-type': 'application/json'},
         );
+      }
       if (r.url.path == '/auth/v1/logout') return http.Response('', 204);
-      if (r.url.path == '/rest/v1/rpc/ensure_profile')
+      if (r.url.path == '/rest/v1/rpc/ensure_profile') {
         return profileWait?.future ??
             Future.value(
               http.Response(
@@ -161,6 +162,7 @@ void main() {
                 headers: {'content-type': 'application/json'},
               ),
             );
+      }
       throw StateError('unexpected TEST ONLY Auth/REST endpoint');
     });
     runtime = build();
