@@ -1958,6 +1958,36 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
       "limitation": "Twenty-two cases authored with original frozen fixtures and TEST ONLY Auth/readiness/transport; no local runtime/format/analyze/test/build execution available. New exact-head CI required. No concrete SDK/HTTP credential capture, raw body/JSON/deadline/cancellation guard, provider call, owned UI/runtime activation, hosted identity/voice/learner or mastery/study credit proof. Timeout is not rollback/cancellation and text calls have no idempotency key. All14 release groups pending."
+    },
+    {
+      "id": "ai-dart-captured-http-text",
+      "status": "automated-baseline",
+      "scope": "Explicit captured SDK-session fixed-operation text HTTP component with byte/JSON/redirect/deadline/abort/late-work guards and drain isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "fixed text endpoints use captured SDK bearer and exact original frozen bodies"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "header timeout retains lock through late settlement error=$lateError"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "uncooperative stream cancellation retains busy until cleanup settles"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "cancellation failure permanently revokes without exposing raw detail"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "28 new cases plus22 unchanged repository cases passed in identical seven-library/two-test pure Dart graph with actual pinned Supabase/http libraries, original fixtures, TEST ONLY Auth/streamed HTTP and only flutter_test import adapted. New exact-head full CI required. No real network/TLS/hosted JWT verification/provider/voice, owned runtime/UI activation, rollout or learner proof. Abort/cancel is not remote rollback or zero-cost proof; ignored abort/cleanup can keep busy/drain pending; cancellation failure revokes. No automatic text retry or receipt. All14 hosted release gates pending."
     }
   ],
   "findings": [

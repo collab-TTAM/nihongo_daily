@@ -5106,3 +5106,58 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   credentials/raw-body/JSON/redirect/cancellation/deadline tests before owned UI
   integration. Keep17 open/41 draft/all14 hosted release groups pending. No merge,
   closure, provider/default activation, deployment, release or schedule change.
+
+
+## Captured Supabase AI HTTP component — Issue #17, 2026-10-23 UTC
+
+- Sole marker core-20261023T1911-ai-http, PR41 branch
+  automation/issue-11-plan-sdk-integration, exact parent
+  2ebe41ac34b42839fc21c417ff22f95a9ad8494f/tree88dccb7ba84b57c70a67c48fbabf03114bf70001.
+  Fresh main78a44fa/source37afa572a/Pro38 unchanged; prior worker released18:25:30 UTC.
+- Parent CI40002993953 raw exact head/latest attempt1 completed success, complete
+  allfive jobs/every required step/no skips. Unmodified metadata accepted by QA
+  evidence verifier; Flutter log120584531944 shows816 Flutter/five Chrome/all22
+  captured-repository cases. Windows/native/SQL/Edge retained; no hosted claim.
+- New SupabaseAiTextTransport captures exact SDK Session/bearer/ReviewSession and
+  owner's ready generation, validates fixed trusted HTTPS project/public key and
+  dispatches only two fixed function paths. No current-token selection, refresh,
+  token persistence/logging/provider/default activation. SDK replacement/expiry/
+  readiness/getter/revoke/401 permanently fences; owner readiness loss must revoke.
+- Strict DTO request reconstruction/32KiB UTF8, redirects off/max0, JSON/identity
+  encoding, declared/actual lengths,1MiB/4096-read bound, fatal UTF8/BOM rejection,
+  depth16/duplicate escaped/nested-key preflight and strict success/error decoding.
+  JWT claims are local hints only; actual server Auth still mandatory. No RLS/
+  contract/provider/auth-strategy change or hosted endpoint deployment.
+- One registered attempt across methods, captured bearer even across SDK refresh,
+  monotonic overall <=15s wait/AbortableRequest/per-read stop listener cleanup.
+  Hold busy across ignored abort/late headers/cancellation; late bodies/errors only
+  cancel/settle. Cooperative cleanup settles before returning, normal EOF drained;
+  cancellation failure revokes. Local pending propagated by existing repository.
+  close removes owned subscription/closes only owned HTTP/drains; borrowed clients
+  stay caller-owned. Timeout/cancel is not remote rollback/zero-cost/hard CPU proof.
+- Fresh official Dart3.9.2 archive/fresh checksum matched. Same-run execution
+  disconnected once then reconnected; original files verified intact. Fresh exact
+  seven-library/two-test graph +original fixture bytes copied again after final
+  changes; only flutter_test -> package:test1.26.2. Focused strict casts/inference/
+  raw types+lints6.0.0 analysis clean;50/50 passed (28 new HTTP/SDK +22 retained).
+  Initial diagnostics fixed typed future inference/curly braces/fixture helper,
+  decoded nullable JSON collection types, normal cleanup timing and unused fixture
+  stream closure. Assertions retained. Later cancel-error/JWT depth guards included
+  in final rerun. Full Flutter/build/SDK-native-network checks require new CI.
+- Six paths: new lib/features/ai/data/supabase_ai_text_transport.dart and
+  test/features/ai/supabase_ai_text_transport_test.dart; existing captured text
+  repository, AI_TEXT_REPOSITORY.md, PROJECT_STATUS.md, qa/matrix.json. Separate
+  diff/ownership/limits/late-result/security review; all81 prior QA cases/findings/
+  gates retained exactly, add82nd component group/all14 hosted groups pending.
+- Publish correct actual-parent base_tree, local/remote tree match/full recursive
+  inventory/untouched blob/type/mode checks, six UTF8/SHA readbacks/single parent,
+  fresh marker/head and expected-head non-force update. Final commit/tree/new
+  exact workflow/latest-attempt/jobs and released checkpoint in41/17/37.
+- Next inspect exact-head allfive jobs/every step, fix real diagnostics retaining
+  assertions; pending-only handoff/no duplicate work/long polling. After green add
+  owned runtime AI factory capturing ready generation/revoke/drain before closure,
+  then unavailable/loading/error UI. Existing Auth-only HTTP wrapper disallows
+  function routes: use separately scoped owned AI transport, not an endpoint bypass.
+  No Pro/content/manifests/fixtures/SQL/RLS/Auth strategy/CI/dependency changes.
+  Keep41 draft/17 open/all14 hosted gates pending; no merge/close/deploy/release/
+  provider/default activation/schedule action or Personal Alpha claim.

@@ -99,3 +99,84 @@ No learner-supplied URL/key, default mock success or plaintext credential fallba
 Hosted Auth/Edge/provider/voice/learner evidence and applicable collection/spend
 approvals remain open. All14 Personal Alpha release groups remain pending; keep
 #17 open/#41 draft. No Pro/content/manifest/SQL/RLS/CI/dependency change or deployment.
+
+
+## Concrete captured HTTP transport — opt-in component
+
+SupabaseAiTextTransport implements both fixed operations using http1.6.0 and a
+caller-owned Supabase2.16.5 client. It accepts trusted owner project/public-key
+configuration checked against that SDK client. It never accepts a learner URL,
+key, operation path, owner or credential field. The only destinations are the
+configured HTTPS origin's /functions/v1/tutor_explain and correct_sentence.
+These are adapter route assumptions for later reviewed hosting, not deployed
+functions or a provider selection. No runtime/default/UI assembly calls it yet.
+
+Capture the exact ReviewAuth identity, SDK Session object and immutable bearer
+once, together with the owner's captured ready-generation callback. Only fixed
+captured credentials enter request headers; never select a current-token callback,
+set SDK Auth, refresh, sign out, save tokens or log payloads. JWT role/sub/session/
+expiry/shape are bounded fail-closed local hints, not signature verification.
+Construction and dispatch require matching project/public key and ready identity;
+SDK Session replacement (including refresh), identity/readiness/getter failure,
+expiry, explicit revoke and HTTP401 permanently fence that capability. SDK Auth
+changes are subscribed; the owner must call revoke synchronously for vault/profile/
+runtime readiness loss. Checks bracket all awaits and decoding/publication.
+
+Request maps are strictly reconstructed through the frozen DTOs, rejecting extra
+owner/context fields and invalid types/IDs/bounds before HTTP. Encode once, limit
+UTF8 bytes to32768, POST JSON to one fixed path with captured apikey/bearer,
+no-store and redirects disabled/maxRedirects0. No automatic retry. A custom HTTP
+client must honor that contract; this library cannot make a malicious client safe.
+
+Accept only JSON UTF8 (optional charset=utf-8) and absent/identity encoding.
+Canonical supplied Content-Length and StreamedResponse length metadata must agree
+with actual bytes. Count real chunks up to1 MiB and4096 reads including EOF;
+empty-chunk floods cannot consume unbounded reads. Fatal UTF8 and explicit BOM
+rejection precede bounded JSON depth16/duplicate-key preflight (including escaped
+and nested duplicate keys), then standard grammar and strict response DTO decoding.
+The same JSON preflight bounds local JWT payload parsing. These operational byte/
+read limits may reject otherwise schema-valid very large responses; they never
+truncate or manufacture output. A single oversized custom chunk is already
+allocated by that client's source; adapter-side accumulation stays bounded.
+
+Only HTTP200 with the named valid success schema returns data. Matching bounded
+frozen error objects on their expected HTTP status become fixed safe failures,
+with only transient retry flags retained. Gateway/non-JSON status failures receive
+fixed mappings; malformed JSON/success fails internal. HTTP401 revokes before body
+parsing. Raw server/SDK/stream/cancel messages never enter exception strings or UI.
+A retryable server flag still provides no text receipt or automatic retry permission.
+
+One in-flight lease covers both methods, installed before reentrant map/HTTP code.
+Use AbortableRequest, a single overall (0,15s] asynchronous wait budget and
+monotonic elapsed checks around reads/dispatch/JSON. Per-read abort listeners are
+removed after settlement. Timeout/revoke triggers abort and cancels the body;
+late headers/errors are consumed/cancelled, never published or redispatched.
+Hold busy until underlying headers and stream-cancellation cleanup settle. Even
+when a result wait has ended, another operation receives local pending rather
+than a new HTTP call. CapturedAiTextRepository preserves that local pending type.
+Normal EOF and cooperative cleanup allow immediate subsequent calls; cancellation
+errors permanently revoke the port. No remote rollback/zero-cost/hard CPU-preemption
+or actual hosted proxy cancellation proof is inferred from local abort signals.
+
+close is idempotent: revoke, remove owned SDK subscription, close only an owned
+HTTP client and drain accepted work. Borrowed SDK/HTTP remain caller-owned. A custom
+client that ignores abort or whose cancellation never settles can keep drain/busy
+pending; the owner must resolve its resources rather than permit overlap. A failed
+cancellation revokes future dispatch but does not prove the remote request stopped.
+The existing Auth-only runtime HTTP wrapper does not allow function routes; later
+owned assembly needs an explicitly scoped AI HTTP resource, not a broader bypass.
+
+Verification: parent2ebe41a CI40002993953 attempt1 allfive/every step passed,
+816 Flutter/five Chrome including22 repository cases. This increment passed28
+new streamed-HTTP/actual-SDK cases plus all22 unchanged repository cases in a
+fresh identical seven-library/two-test graph; only flutter_test import adapted to
+package:test1.26.2. Fresh official Dart3.9.2 archive/checksum matched; direct app
+Supabase/http/logging versions retained. Strict focused analysis clean, formatting
+and QA inventory/regressions checked separately. The execution environment briefly
+disconnected then reconnected with same-run files intact; final source graph was
+copied again and50/50 cases rerun. No reconstructed replacement source was used.
+Tests use TEST ONLY unsigned JWT/Auth and HTTP streams, not real network/TLS/
+hosted identity/provider/voice or learner proof. New exact-head full CI required.
+Next add separately reviewed owned runtime factory, ready-generation revocation and
+transport drain before resource closure, then unavailable/loading/error tutor UI.
+All hosted/collection/spend/voice gates remain; no default activation or release.

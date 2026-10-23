@@ -169,6 +169,9 @@ final class CapturedAiTextRepository {
       final result = decode(value);
       _requireCurrent();
       return result;
+    } on AiTextRequestPending {
+      _requireCurrent();
+      rethrow;
     } on AiTextFailure catch (failure) {
       _requireCurrent();
       if (failure.code == AiTextErrorCode.unauthorized) _revoked = true;
