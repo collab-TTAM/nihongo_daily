@@ -1,8 +1,8 @@
 # Reading material domain — Issue #34
 
-This increment is a pure local model/importer and deterministic comprehension
-round. It installs no route, repository, default lesson, audio or study-session
-writer. Frozen v0.1 APIs/database models and seven Daily Plan blocks are unchanged.
+The core is a pure local model/importer and deterministic comprehension round.
+The opt-in repository is described below; READING_SCREEN.md documents its later
+read-only UI. No default lesson, audio or study-session writer is installed. Frozen v0.1 APIs/database models and seven Daily Plan blocks are unchanged.
 No canonical N5/N4 asset, content manifest or Pro-owned content/test is modified.
 Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
@@ -55,7 +55,7 @@ A new round starts empty; no persistence or replay authority is implied.
 This score does not authorize minutes, mastery, progress, SRS or server writes.
 Answer keys are local study aids, not protected assessment credentials. Content
 changes must increment content_version; identical identity/version is assumed to
-refer to the same reviewed snapshot. The future trusted repository must enforce
+refer to the same reviewed snapshot. The trusted repository must enforce
 that mapping; this model cannot authenticate a content source.
 
 ## Verification and remaining work
@@ -72,9 +72,8 @@ is not Flutter widget/platform or learner evidence. There is no new dependency o
 lock change in the repository. Actual local results and CI are recorded in the PR
 checkpoint and PROJECT_STATUS; previous Edge success is not new Dart test evidence.
 
-Next: trusted bounded content repository/version mapping and explicit loading,
-error/empty/offline reading UI; then captured-session valid study reports and durable
-retry/restart deduplication. No audio reference is accepted by this text-only format.
+The repository is described below and the reading UI in READING_SCREEN.md.
+Next: captured-session valid study reports and durable retry/restart deduplication. No audio reference is accepted by this text-only format.
 Listening playback/source/license/availability needs a separate reviewed adapter;
 absent/broken audio cannot complete listening. No permission/capture/retention/spend
 change is made. #34 remains open and all14 Personal Alpha release gates remain pending.
@@ -142,7 +141,7 @@ flutter analyze
 flutter test test/features/reading
 ```
 
-No new route/provider or reviewed content/audio is enabled by this repository.
-Next: explicit reading loading/error/empty/offline UI and captured-session study
-reports with durable retry/restart deduplication. Listening remains unavailable
+The repository enables no reviewed content/audio by default. The read-only
+/listening route and injected providers are documented in READING_SCREEN.md.
+Captured-session study reports with durable retry/restart deduplication remain next. Listening remains unavailable
 until a separately vetted playable source/license/availability adapter exists.

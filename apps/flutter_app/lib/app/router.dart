@@ -17,14 +17,11 @@ import '../features/study/presentation/study_screen.dart';
 import '../features/quiz/presentation/vocabulary_quiz_screen.dart';
 import '../features/quiz/presentation/quiz_history_screen.dart';
 import '../features/quiz/presentation/quiz_progress_screen.dart';
+import '../features/reading/presentation/reading_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
 
 const previewRoutes = <String, ({String title, String description})>{
-  '/listening': (
-    title: 'Nghe và đọc',
-    description: 'Luyện hiểu tiếng Nhật trong ngữ cảnh.',
-  ),
   '/ai': (
     title: 'Trợ lý AI',
     description: 'Giải thích và sửa câu ở trình độ N5–N4.',
@@ -125,6 +122,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/srs',
             builder: (context, state) => const SrsStudyScreen(),
+          ),
+          GoRoute(
+            path: '/listening',
+            builder: (context, state) => const ReadingScreen(),
           ),
           for (final entry in previewRoutes.entries)
             GoRoute(

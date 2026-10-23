@@ -4470,3 +4470,56 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   then captured-session study reports/durable retry. Reviewed lessons/audio need
   separate coordination; absence never counts as listening completion. Keep #34
   open/#41 draft/all14 release groups pending. Main/Pro/other branches unchanged.
+
+
+## Reading UI / independent Issue #34 checkpoint (2026-10-23T06:19:26.841001+00:00)
+
+- Fresh source clone at parent1ad9590c6548e54292ce35d34fb7718b17d57b94,
+  treefb797a0fd6d0661962fbe0e0034899ed0f7f6162; main78a44faf observed unchanged.
+  PR37 sourceafa572a remains a redirect to draft41/current core branch. One core
+  writer marker recorded active before implementation; Pro14/38 scope preserved.
+- Verified parent CI39906926247 latest attempt1 completed/success: allfive jobs
+  and every required step succeeded/no skips. Actual new repository Flutter/
+  Chrome/Web/Windows/native/database/AI component gates passed. No hosted learner
+  acceptance inferred; Auth/provider/live configuration gaps remain separate.
+- Added nullable default reading repository provider and auto-disposed level loads.
+  Existing /listening now hosts read-only list/passage/first-answer feedback/result
+  with Japanese selectable text, optional kana/Vietnamese, source attribution,
+  restart/back, disabled missing-audio control and unavailable/loading/error/empty
+  states. Only trusted host source injection; no bundled demo lesson, learner
+  URL/key/path input or direct database/account capability.
+- Both refresh/reload paths remove prior content; panel identity includes source,
+  level, explicit reload revision and collection. Even immediate identical-list
+  reload resets the round. Answer/restart/back/toggle callbacks capture exact
+  round identity; old/disposed callbacks cannot affect new rounds. Source/level
+  replacement/null and route exit discard selection/answers. Explicit retry only;
+  no stale offline fallback or raw source exceptions. Mounted scroll guard resets
+  explicit navigation. Scores grant no minutes/mastery/progress/SRS/sync.
+- Fifteen new widget cases authored using actual router/providers/parser/local
+  repository and TEST ONLY source/read ports, including wrong/correct completion,
+  duplicate callbacks/restart/back, null/default/audio, error/retry/empty, level
+  dropdown and pending old-level success/error, same-level source replacement/
+  null and late data, pending reload/version upgrade/immediate identical list,
+  version conflict, route disposal/late error, N5/N4 320px/200% controls.
+  Original app_test.dart/all existing test bodies unchanged; the dynamic listening
+  placeholder iteration is replaced by dedicated real-route cases.
+- Local observed: fresh official Dart3.9.2 SDK archive SHA256 verified, allfour
+  changed/new Dart files formatted and final format check passed. Formatter warned
+  unresolved Flutter lint include. QA46/46/inventory75 valid; all74 original QA
+  case objects/findings/gates retained byte-equivalent after JSON decoding.
+  No local Flutter analyzer/widget/platform build claimed; prior cloud metadata
+  bootstrap rejection respected with no retry/bypass. New exact-head CI required.
+- Eight paths: app/router.dart; new reading/application/reading_provider.dart,
+  reading/presentation/reading_screen.dart, reading/reading_widget_test.dart;
+  new docs/READING_SCREEN.md; READING_MATERIAL.md, PROJECT_STATUS.md, qa/matrix.json.
+  All canonical curriculum/Pro/N4 assets, frozen wire/API/SQL/Auth/security/seven
+  plan blocks, runtime/storage ownership, dependencies/locks and CI preserved.
+  No new player/capture/retention/spend/provider, production write/deployment,
+  merge/issue closure, Personal Alpha acceptance or schedule change.
+- Separate diff review and full tree/all changed blobs/one-parent verification
+  required before expected-head non-force publication; final commit/run/release
+  in PR41/issue34. Next inspect exact-head latest-attempt allfive jobs/every step,
+  fix actual failures without weakening assertions, pending-only handoff if needed.
+  Then trusted reviewed material and captured-session/durable reading study reports;
+  vetted playable audio remains a separate adapter. Keep #34 open/#41 draft/all14
+  hosted release groups pending. No fabricated lesson/audio/saved success.
