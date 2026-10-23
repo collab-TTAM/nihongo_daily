@@ -4850,3 +4850,40 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   means handoff, no duplicate implementation/long polling. Keep41 draft/13 open,
   hosted learner/sync/mastery/curriculum/availability/release gates pending; no
   merge/closure/deployment/release/schedule action.
+
+
+## Focused quiz widget fixture correction — Issue #13, 2026-10-23 UTC
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c, draft41 parent
+  9a7359044d3b09bea2a454dcb35edc13779b6928/tree
+  7dfefafec4d0d773c6328e4dfb4673c99f4e36e8. Prior core released;
+  core-20261023T1414-focused-review-fixture active in41/13 before edits.
+  Fresh cloud clone/source/docs/issues/PRs/CI; Pro14/38 remains reserved.
+- Exact parent CI39962254749/latest attempt1 completed failure. All steps in
+  repo-sanity/AI/database/Windows passed. Flutter strict format/analyze passed;
+  full test recorded776 passed/one10-minute timeout. The sole failure was changed
+  content version excludes old mistakes from focused practice, awaiting real
+  File.readAsString inside testWidgets FakeAsync. Eight other new focused-review
+  widgets and six selector cases passed. Later Flutter SDK/native/Chrome/Web
+  steps were skipped, not passed. No full-CI/hosted learner acceptance claim.
+- Read unchanged original N5 JSON once in real-loop setUpAll and reuse the same
+  string for initial source and in-memory version2 publication. No real file IO
+  remains inside widget bodies. All nine cases/all assertion statements, version
+  mutation, original content/choices and production behavior remain intact.
+  No timeout increase, fixture-success substitution or test/CI weakening.
+- Three intended files: focused_quiz_review_widget_test.dart,
+  docs/FOCUSED_QUIZ_REVIEW.md and docs/PROJECT_STATUS.md. Separate diff/assertion/
+  lifecycle review passed. Fresh official Dart3.9.2 SHA256 verified; pinned
+  format checked one file/zero changes. Formatter reports missing flutter_lints
+  include because this cloud checkout has no Flutter package resolution; no
+  full local Flutter analysis/test/build claim or bootstrap rejection bypass.
+  QA inventory78 and whitespace passed; QA/production/old tests unchanged.
+- Correct-base/full-tree/path/mode/unchanged blobs/UTF8/one-parent and fresh
+  head/marker verification precede expected-head non-force publication. Final
+  commit/tree/new exact-head Actions/status/released heartbeat in41/13/37.
+- Next inspect exact new run/latest-attempt allfive jobs/every required step,
+  including corrected version case and previously skipped Flutter downstream.
+  Pending-only handoff, no duplicate implementation or long polling. Keep41
+  draft/13 open/all14 hosted release groups pending. No protected Pro/content/
+  manifest/SQL/RLS/Auth/default/provider/dependency/CI/spend changes, merge,
+  closure, deployment, release or schedule action.

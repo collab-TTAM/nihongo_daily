@@ -89,11 +89,13 @@ final class _Ports
 }
 
 void main() {
+  late String originalJson;
   late List<CurriculumEntry> original;
   late List<QuizQuestion> deck;
   setUpAll(() async {
+    originalJson = await File('../../data/n5/vocabulary.json').readAsString();
     original = decodeCurriculum(
-      await File('../../data/n5/vocabulary.json').readAsString(),
+      originalJson,
       CurriculumKind.vocabulary,
       PreviewLevel.n5,
     );
@@ -283,10 +285,9 @@ void main() {
       await mount(tester, ports);
       await load(tester);
       expect(find.byKey(const Key('quiz-review-start')), findsOneWidget);
-      final raw = await File('../../data/n5/vocabulary.json').readAsString();
       // New valid objects/versions represent an explicit source publication.
       ports.current = decodeCurriculum(
-        raw.replaceAll('"content_version": 1', '"content_version": 2'),
+        originalJson.replaceAll('"content_version": 1', '"content_version": 2'),
         CurriculumKind.vocabulary,
         PreviewLevel.n5,
       );

@@ -78,3 +78,20 @@ recorded in PROJECT_STATUS/PR41/Issue13. Keep #13 open/#41 draft and all14 hoste
 release groups pending. Hosted identity/sync/learner proof, authoritative mastery,
 complete reviewed curriculum and server quiz availability remain separate work.
 No Pro/content/manifest/SQL/security/CI/dependency/provider/spend/deployment change.
+
+### Widget fixture event loop correction
+
+Exact9a735904 CI39962254749/latest attempt1 passed repo-sanity, AI, database
+and Windows with every step successful. Flutter format/analyze passed; the full
+suite recorded776 passing tests and one10-minute timeout in the changed-content-
+version widget case. The other eight new focused-practice widgets and six pure
+selector cases passed. SDK/native/Chrome/Web steps after the failed test were
+skipped and are not evidence for this head.
+
+The timed-out case awaited File.readAsString inside testWidgets' FakeAsync zone.
+Read the unchanged original N5 JSON once in real-loop setUpAll and reuse that
+string for both initial decoding and the later in-memory version2 publication.
+No file IO remains inside a widget body. All nine cases, assertions, original
+source/choices and production behavior are retained; no timeout extension or
+gate weakening. Corrected-head full Flutter and downstream execution still
+require exact-head Actions. PROJECT_STATUS and PR41 record observed results.
