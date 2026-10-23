@@ -5253,3 +5253,53 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   unavailable/loading/error/success tutor UI through the owned ready-generation
   factory. Keep41 draft/17 open/all14 hosted release groups pending; no merge,
   deployment/provider/default activation/security reduction or Personal Alpha claim.
+
+
+## Captured AI text view controller — Issue #17, 2026-10-23 UTC
+
+- Sole marker core-20261023T2207-ai-controller; resumed draft41 branch
+  automation/issue-11-plan-sdk-integration at actual parent
+  5c3e58ab20be8731924c070467d74106bba2ab3b/tree4ad64da90a564d153545054fcc4c8ed236f3266f.
+  Fresh main78a44fa/source37afa572a unchanged; prior worker released21:16:05 UTC.
+- Parent CI40025398321 raw exact head/latest attempt1 completed success: full
+  allfive jobs/every required step/no skips. Actual Flutter analyzer clean,
+  871 Flutter/five Chrome including all eight owned SDK/runtime/vault/profile/
+  AI HTTP cases and19 owner tests. Windows/native/SQL/Edge retained. The two
+  previous missing fixture blocks are verified fixed; no hosted learner claim.
+- Add pure borrowed-capability AiTextController, prerequisite to mounted tutor UI.
+  Explicit N5/N4 explain/correct; unavailable/idle/loading/success/error/pending;
+  strict existing DTOs/exact accepted text/level/operation/typed result, no save or
+  invented correction/mastery/plan credit. Register before supplied callbacks,
+  duplicate/reentrant/external/timeout-held wire guards, fixed safe errors,
+  no automatic resend, stored retry request, timers or fallback success.
+- State reads/completions check captured lease. Owner must synchronously invalidate
+  on readiness loss; fresh controller/capability required after replacement.
+  Revocation/disposal permanently clears accepted text/results and fences late
+  success/error/A-B-A. Void async hints never carry old text snapshots; consumers
+  read current state. Error/closed availability stream fails closed. Disposal owns
+  only its subscription/notifications, does not revoke or close borrowed runtime;
+  paused UI listeners cannot hold shutdown. Actual screen/draft clearing follows.
+- Fresh official Dart3.9.2/checksum matched; identical six-library/four-test graph
+  plus original frozen fixtures, only flutter_test -> package:test1.26.2, passed
+  78/78 tests (20 new controller +58 retained models/repository/owner).
+  Focused strict casts/inference/raw types+lints6.0.0 analysis no issues; two-file
+  pinned format zero changes (app Flutter lint include unresolved warning, not
+  full analyzer proof). Inventory84/46 QA regressions/whitespace passed. No new
+  local full Flutter/widgets/build/SDK graph or hosted identity/provider proof.
+- Five paths: new lib/features/ai/application/ai_text_controller.dart,
+  test/features/ai/ai_text_controller_test.dart, docs/AI_TEXT_CONTROLLER.md;
+  this status, qa/matrix.json. Separate source/diff/lease/reentry/error/lifetime
+  review; all83 old QA objects/findings/gates exact/add84th/all14 hosted pending.
+  Existing runtime, routes/providers/defaults, fixtures/contracts/SQL/RLS/Auth/
+  dependencies/CI and protected Pro14/38/content/manifests untouched.
+- Publish correct actual base_tree/full recursive tree/local tree match/unchanged
+  blob-type-mode checks, allfive UTF8/SHA readbacks/single parent and fresh own
+  marker/head expected-head non-force update. Final commit/tree/new exact CI/
+  latest attempt and released checkpoint in41/17/37.
+- Next inspect exact new-head allfive jobs/every required step; pending-only
+  handoff/no duplicate implementation/long polling. After green implement
+  Riverpod/route/tutor screen through explicit owned factory, safe plain text,
+  request-bound drafts/results and mobile/large-text/session-clearing widgets.
+  Do not enable aiTextEnabled in default/staging or bypass hosted/provider/
+  collection/spend gates. Keep41 draft/17 open/all14 hosted pending; no merge,
+  close/deploy/release/schedule action/Personal Alpha claim.

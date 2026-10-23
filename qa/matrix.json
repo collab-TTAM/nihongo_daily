@@ -2023,6 +2023,37 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
       "limitation": "19 new owner cases plus50 retained repository/actual SDK-streamed HTTP cases passed in identical eight-library/three-test pure Dart graph with only flutter_test import adapted. Eight new actual PersistentSupabaseRuntime/SDK/vault/profile/AI HTTP assembly cases authored and require new exact-head Flutter CI; builds/native/hosted proof unrun locally. Default main/staging AI stays disabled. Simulated Auth/vault/HTTP and unsigned JWTs do not establish hosted identity/provider/voice/learner acceptance. No automatic text retry or receipt; ignored transport/cancel may keep replacement/close pending. All14 live release gates pending."
+    },
+    {
+      "id": "ai-text-view-controller",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured-ready-generation text view controller: explicit N5/N4 explain/correct; safe unavailable/idle/loading/success/error/pending state; cross-method and reentrant duplicate guards, no automatic replay, read-time and owner invalidation clearing, ignored late response, timeout wire-busy fence and borrowed resource lifetime. No UI route/provider activation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "loading blocks cross-method duplicate taps and clearing without resending"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "timeout retains wire busy until late error settles then requires manual submit"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "logout clears immediately and ignores late old response error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "dispose clears synchronously with held work and paused notification listener"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "Pure controller tests use actual repository/strict DTOs with TEST ONLY Auth/readiness/held transport and frozen fixtures, not hosted identity/provider/learner proof. Caller must synchronously invalidate on readiness loss and mount a fresh controller for a fresh ready capability; notifications are availability hints and views must read current state. No SDK/HTTP ownership, input persistence, automatic retry, voice, server credit, UI/provider/default activation or live endpoint configuration. Late/canceled HTTP is not remote rollback or zero-cost proof. Full new-head Flutter/build proof requires CI; all14 hosted release groups remain pending."
     }
   ],
   "findings": [
