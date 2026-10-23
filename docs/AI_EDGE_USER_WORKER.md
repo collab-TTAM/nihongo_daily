@@ -120,3 +120,8 @@ The explicit server composition is documented in [AI_TRUSTED_RUNTIME.md](AI_TRUS
 It requires caller configuration/provider and retains verified TLS/atomic transactions;
 no default endpoint or live provider is enabled. Parent Edge fixture evidence does
 not certify the new full PostgreSQL assembly inside an Edge worker.
+
+
+The separate TEST ONLY full PostgreSQL/user-isolate stage is specified in
+[AI_EDGE_POSTGRES.md](AI_EDGE_POSTGRES.md); retained memory-port and native suites
+remain mandatory. Only observed new exact-head execution can establish its scope.

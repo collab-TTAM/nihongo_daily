@@ -279,6 +279,20 @@ jobs:
         run: |
           deno --version
           deno task test:postgres
+      - name: Verify bundled Edge PostgreSQL assembly
+        working-directory: backend/ai
+        run: |
+          deno fmt --check edge
+          deno task bundle:edge-postgres
+          mkdir -p ../../build/edge-postgres/main
+          cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts
+          python3 ../../scripts/verify_edge_postgres.py
+      - name: Publish Edge PostgreSQL assembly evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-edge-postgres-assembly
+          path: build/edge-postgres/evidence.json
+          if-no-files-found: error
       - name: Validate profile bootstrap and observed concurrent creation
         run: |
           python3 scripts/export_profiles.py build/profile-bootstrap-sql.json

@@ -136,6 +136,23 @@ class QaEvidenceTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     qa.validate_ci(self.matrix, evidence, HEAD)
 
+    def test_missing_skipped_failed_or_pending_edge_postgres_gate_rejects_green_job(self):
+        for gate in ("Verify bundled Edge PostgreSQL assembly",
+                     "Publish Edge PostgreSQL assembly evidence"):
+            self.assertIn(gate, self.matrix["ci_gates"]["database"])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(gate=gate, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "database")
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
     def test_mixed_run_attempt_head_or_repository_is_rejected(self):
         for key, value in (("run_id", 124), ("run_attempt", 1), ("head_sha", "b" * 40)):
             evidence = deepcopy(self.evidence)

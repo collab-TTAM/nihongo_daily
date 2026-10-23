@@ -19,7 +19,9 @@
       "Verify committed AI quota adapter with native PostgreSQL",
       "Verify text context adapter with native PostgreSQL",
       "Verify AI PostgreSQL adapters with pinned Deno",
-      "Verify trusted AI assembly with native PostgreSQL"
+      "Verify trusted AI assembly with native PostgreSQL",
+      "Verify bundled Edge PostgreSQL assembly",
+      "Publish Edge PostgreSQL assembly evidence"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -1539,6 +1541,45 @@
       ],
       "reproduce": "Fixed disposable CI PostgreSQL17 with all existing migrations: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-assembly && deno task test:postgres",
       "limitation": "Eight new actual native assembly cases must pass in exact-head Actions (Deno native42 retained +8 =50); local SDK checks without PostgreSQL do not execute these assertions. Auth HTTP, provider, localhost plaintext and lost-delivery injection are TEST ONLY. No PostgreSQL-inside-Edge, real TLS/CA, PostgREST/JWT/provider or learner acceptance. All14 release groups pending; default bindings remain unconfigured."
+    },
+    {
+      "id": "ai-edge-postgres-assembly",
+      "status": "automated-baseline",
+      "scope": "Pinned actual Supabase main-to-user isolates over full trusted assembly and real disposable PostgreSQL SQL/COMMIT; two instances, ambiguity and fresh-container restart",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_worker.ts",
+          "contains": "assemblePostgresAiHandlers"
+        },
+        {
+          "path": "backend/ai/edge/postgres_worker.ts",
+          "contains": "getTransactionStatus"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "actual-concurrent-isolates-one-dispatch-no-open-transaction"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "fresh-container-restart-original-replay-pending-no-redispatch"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "bundle:edge-postgres"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_wrong_runtime_cannot_reach_sql_or_post"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "Fixed disposable CI PostgreSQL17/all retained migrations + Docker: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task bundle:edge-postgres && mkdir -p ../../build/edge-postgres/main && cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts && python3 ../../scripts/verify_edge_postgres.py",
+      "limitation": "New seven-group probe requires observed exact-head mandatory container execution/evidence artifact; local checks/bundle/QA do not prove Edge/PostgreSQL execution. TEST ONLY Auth HTTP/provider/plaintext/faults; fixed local CI database and capped containers/loopback host network. No production TLS weakening, hosted JWT/signature/expiry/PostgREST, real provider/lookup or learner proof. All14 release groups remain pending/default bindings unconfigured."
     }
   ],
   "findings": [

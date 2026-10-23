@@ -120,3 +120,8 @@ stage is the full pg assembly inside the actual Edge user isolate; these native
 handlers alone do not prove network listening/Edge, TLS/CA, hosted Supabase JWT/
 PostgREST, approved live provider/lookup provenance or learner acceptance. #31 and
 all14 release groups remain open; no endpoint/default/deployment is enabled.
+
+
+The separate TEST ONLY full PostgreSQL/user-isolate stage is specified in
+[AI_EDGE_POSTGRES.md](AI_EDGE_POSTGRES.md); retained memory-port and native suites
+remain mandatory. Only observed new exact-head execution can establish its scope.

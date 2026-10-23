@@ -4068,3 +4068,67 @@ no deployment, production deletion, security reduction, release or schedule chan
   isolate. Native handlers do not prove that isolate/network listener, real TLS/CA,
   hosted Auth JWT/signature/expiry/A-B/PostgREST, approved live provider/lookup
   provenance or learner acceptance. #31 stays open/#41 draft; no Alpha sign-off.
+
+
+## Full PostgreSQL Edge user-isolate probe checkpoint (2026-10-23 00:22 UTC)
+
+- Resume draft #41 / automation/issue-11-plan-sdk-integration from exact source
+  c7ec35bb546752e9c883864d58207ed1b6a89aad, base tree
+  7911ac4b706a062649c5ca5311870006feff2c19/558 blobs; main78a44fa unchanged.
+  Marker core-20261023T0016-edge-postgres; one core writer; #37 redirects here.
+  #14 Pro/N4/data/manifests/content tests/docs/branch remain reserved/untouched.
+- Resolve prior waiting checkpoint: observed parent
+  [CI39870924303](https://github.com/collab-TTAM/nihongo_daily/actions/runs/39870924303)
+  latest attempt1 completed/success/allfive jobs/every step/no skips. Actual completed
+  database120144866077 log confirms all eight new assembled handler cases passed
+  on Node24 and combined native50/50 on Deno2.9.6. No fixture-to-hosted equivalence.
+- Add separate TEST ONLY edge/postgres_main.ts + postgres_worker.ts. Actual trusted
+  assembly/Supabase verifier/pg quota/text/atomic conversation/service/five handlers
+  are bundled with original contracts/schema; fixed disposable localhost PostgreSQL
+  and Auth HTTP/provider/lost-delivery fixtures. Fixed operations only; no environment,
+  learner URL/key, default endpoint/provider decision or production TLS-off option.
+- New Python runner checks exact disposable DB before any command/container,
+  seeds seven fixture users/two scenarios/one grammar (no canonical content edits),
+  strictly validates response UUIDs before SQL, launches two capped official Edge
+  v1.77.4 containers, then replaces one with a fresh container over the same DB.
+  Actual main-to-user crossing/no npm/remote modules/host env; immutable imageID,
+  read-only mount/cap-drop/no-new-privileges,512MiB/2CPU/128PID each. Linux CI host
+  network reaches fixed loopback pg only; explicit --ip127.0.0.1 HTTP ephemeral
+  listener flags verified in pinned official flags.rs. Cleanup only captured IDs;
+  finite readiness/Docker/HTTP/SQL/provider-hold bounds; no mutation retry.
+- Seven planned groups: pinned actual-isolate runtime; allfive HTTP operations and
+  durable ended session/slots0,1,2/completed receipts+reservations; A/B denial and
+  independent-instance replay after source/profile retirement; real acquire/complete
+  COMMIT before lost delivery; malformed result durable pending/no session write;
+  concurrent instance one-dispatch and host-observed no SQL transaction held across
+  provider; fresh-container original replay/pending no redispatch/all connections
+  closed. Scenario-specific owners remain below unchanged burst10 quota; no reset.
+- Mandatory database CI execution and artifact publication added after retained
+  native Node8/Deno50. Existing memory-port Edge7 and all prior workflow lines/
+  SQL/native/Node/Deno/platform assertions remain. New task bundle:edge-postgres;
+  QA inventory69, all14 pending groups unchanged; QA negative missing/skipped/
+  failed/pending execution or publication cannot count as success. Six fixture
+  guard regressions reject wrong DB before subprocess/container, wrong runtime
+  before SQL/POST, invalid/untrusted UUID SQL interpolation; both captured
+  containers still get cleanup attempts after first diagnostics/removal failure.
+- Local observed: strict TS + Deno2.9.6 checks include both new entrypoints;
+  Node180/180 and Deno180/180 passed/no skips; format:check and deno fmt edge/JSON
+  passed; QA43/43 passed; inventory69 valid; Python compile/whitespace passed.
+  Checked bundle148 modules/581994 bytes/SHA256
+  afd0290c6945909cced1d1abb98477de6cce874042d796979e390a80a647ff79.
+  Direct registry for SDK helper unavailable: exact npm esbuild0.25.5 installed in
+  SDK cache then bundle passed, no application dependency/lock/CI override.
+- Twelve paths: new backend/ai/edge/postgres_main.ts, postgres_worker.ts,
+  scripts/verify_edge_postgres.py, qa/test_edge_postgres.py, docs/AI_EDGE_POSTGRES.md;
+  backend/ai/deno.json; .github/workflows/ci.yml; qa/matrix.json, test_verify_qa.py;
+  docs/AI_EDGE_USER_WORKER.md, AI_TRUSTED_RUNTIME.md and this status. Production
+  source/SQL/RLS/TLS/old tests/npm locks/Pro bytes unchanged. Separate diff review
+  precedes full tree/blob readback and expected-head non-force CAS publication;
+  actual commit/CI/RELEASED handoff maintained in #41/#37/#31.
+- Local Docker/PostgreSQL/Flutter absent; new seven Edge/SQL groups and platform
+  builds require NEW exact-head Actions, not inferred from local bundle or parent CI.
+  Next fetch full latest-attempt jobs/every required step/exact head and actual logs;
+  fix real compatibility failures without weakening assertions. Even success does
+  not prove hosted TLS/CA, real JWT issuer/signature/expiry/PostgREST, approved live
+  provider/authenticated lookup/cost/voice or learner acceptance. #31 open/#41 draft,
+  all14 release groups/default app bindings unconfigured; no Alpha sign-off/pause.
