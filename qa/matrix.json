@@ -1894,6 +1894,40 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz/quiz_disk_journey_widget_test.dart",
       "limitation": "New continuation adds58 assertions and requires exact-head execution. Production capture/source/journal/owned SDK lifecycle are composed, but HTTP/unsigned JWT/vault remain TEST ONLY. Same-process graceful reopen is not hosted identity/RLS/sync, physical Windows launch/vault, forced-process/power-loss or authoritative mastery/study credit proof. All14 release groups remain pending."
+    },
+    {
+      "id": "ai-dart-text-contract-models",
+      "status": "automated-baseline",
+      "scope": "Pure immutable Dart tutor/correction request and response models preserving frozen v0.1 fields, Unicode bounds, nested validation and original fixture encodings",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "both request encoders match untouched frozen v0.1 fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "both response decoders round trip untouched frozen v0.1 fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "requests count Unicode code points and retain boundary text"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "correction deep copies nested refs and freezes both error arrays"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "malformed output exposes only a constant format error with no payload echo"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_text_models_test.dart",
+      "limitation": "Seventeen cases passed with identical pure-Dart source/test graph and original fixtures in a disposable strict harness; only flutter_test import adapted to package:test1.26.2. New exact-head Flutter proof required. No transport, session/identity, raw byte/duplicate-key/deadline guard, UI activation, storage, provider call, voice, live learner or mastery/study-credit acceptance. All14 hosted release groups pending."
     }
   ],
   "findings": [

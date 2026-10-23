@@ -4941,3 +4941,65 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   unsigned JWT and vault are not hosted learner/sync, physical Windows launch/
   vault or forced-process/power-loss proof. No merge/closure/deployment/release/
   schedule action; continue independent reviewed integration gaps after green.
+
+
+## Pure Dart AI text contract models — Issue #17, 2026-10-23 UTC
+
+- Fresh main78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c; draft41 parent
+  f4f822a03a14e949271c9bb4a1c0622ed5bbb0d8/tree
+  4128007a70cbad61736bedc58f8b4d1217385459. Source37afa572a redirects
+  here, Pro14/38 remains reserved. Prior worker released; core marker
+  core-20261023T1611-ai-text-models active in41/17 before implementation.
+- Exact parent CI39976858658/latest attempt1 completed success, allfive jobs/
+  every required step/no skips. Complete raw snapshot accepted by QA evidence
+  verifier before inventory changes. Logs prove777 full Flutter/five Chrome,
+  extended actual-file focused correction/second owned restart/A-B-A journey
+  passed; Web/Windows/native/SQL/Edge retained. Prior58-assertion continuation
+  verified. Component evidence only; all14 hosted release groups remain pending.
+- Independent #17 prerequisite: typed pure-Dart tutor_explain/correct_sentence
+  request encoders and strict response decoders from unchanged frozen v0.1.
+  Read schema/fixtures/API/architecture/security and Issue17 acceptance first.
+  No endpoint/provider/Auth strategy/key/URL/operation/owner or default activation.
+  Allfive wire levels represented without expanding N5/N4 UI/content scope.
+- Preserve exact keys/text/whitespace/combining characters/case. Count Unicode
+  code points at schema limits1..5000/10000/2000, first bounding UTF16 scan.
+  Arrays0..100, independent unique context UUID lists, exact upper/nil UUID
+  spelling. Nested correction references preserve schema-permitted duplicates;
+  structural validity never claims current curriculum existence/authorization.
+- Require every response/nested field and reject unknown/missing/mixed error,
+  wrong scalars/lists/maps/null/enum/ID/oversize before returning models. Empty
+  correction arrays stay empty. Copy/freeze all collections; nested final models
+  and fresh wire exports prevent input/output mutation from rewriting state.
+  Constant FormatException has no payload source/echo; no logging/persistence,
+  model-instruction execution, counters/mastery/SRS/study-credit mutation.
+- Seventeen cases read original frozen fixtures unchanged: exact two request
+  encodings/two response round trips/allfive levels, immutable contexts, UUID
+  case/nil/unique behavior, Unicode/bounds, every nested key/type/text/list limit,
+  all reference types/duplicates/empty, deep copy/fresh exports and safe failures.
+  Initial new-test analysis found one uninferred empty Map and three unnecessary
+  interpolation braces; typed/wrote equivalent literals, retaining assertions.
+- Fresh official Dart3.9.2 archive/SHA256 matched. Fresh disposable two-file
+  production/test graph +original fixture bytes copied identically, only
+  flutter_test import adapted to package:test1.26.2. Strict casts/inference/raw
+  types with lints6.0.0 analysis found no issues;17/17 pure tests passed on final
+  source. Pinned format two files/zero changes; QA inventory80/46 regressions and
+  whitespace passed; all79 prior QA objects/findings/gates unchanged. Full new
+  Flutter/analyze/platform checks require exact-head CI; no prior metadata-
+  bootstrap rejection retry/bypass. No local JSON Schema validator available;
+  no new Python schema or hosted/SDK/UI execution claim.
+- Five intended paths: new lib/features/ai/domain/ai_text_models.dart,
+  test/features/ai/ai_text_models_test.dart, docs/AI_TEXT_MODELS.md;
+  docs/PROJECT_STATUS.md and qa/matrix.json. Separate schema-to-model fields/
+  limits/ownership/immutability/diff review completed. No prior source/tests,
+  frozen contracts/content/Pro/manifests/SQL/RLS/Auth/CI/dependencies modified.
+- Correct-base/full-tree/unchanged blobs/UTF8/single-parent checks and fresh
+  expected-head non-force publication precede final commit/tree/new CI/released
+  checkpoint41/17/37. Next inspect exact run/latest attempt/allfive jobs/every
+  required step, fixing actual diagnostics with assertions intact. Pending-only
+  handoff, no duplicate code/long polling. After green add reviewed caller-owned
+  captured-ready-session text gateway/repository and safe errors/late-response/
+  timeout tests, then actual tutor/correction UI. No global current-user client,
+  learner endpoint/key or automatic text retries: v0.1 text calls have no event
+  receipt and may invoke a provider again. Live identity/provider choice/spend/
+  voice/learner gates remain; keep41 draft/17 open. No deployment/merge/closure/
+  release/schedule action or Personal Alpha claim.
