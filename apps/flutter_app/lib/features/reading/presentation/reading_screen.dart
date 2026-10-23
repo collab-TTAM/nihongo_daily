@@ -224,8 +224,9 @@ class _ReadingPanelState extends State<_ReadingPanel> {
           title: const Text('Hiện bản dịch'),
           value: _showTranslation,
           onChanged: (value) {
-            if (_current(round))
+            if (_current(round)) {
               setState(() => _showTranslation = value ?? false);
+            }
           },
         ),
         SelectableText(passage.japanese, key: const Key('reading-text')),

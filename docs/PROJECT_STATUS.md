@@ -4523,3 +4523,32 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Then trusted reviewed material and captured-session/durable reading study reports;
   vetted playable audio remains a separate adapter. Keep #34 open/#41 draft/all14
   hosted release groups pending. No fabricated lesson/audio/saved success.
+
+
+## Reading translation-toggle lint correction (2026-10-23T07:11:10.253649+00:00)
+
+- Fresh parent877469aa72956c9322a2f96e332d6064a217c981/tree
+  875176f105a2c9d0b2321ea3443fdde6544ab7b6; main78a44fa unchanged; draft41
+  resumes the core lane, source37/Pro38 branches untouched. Active marker recorded
+  before code: core-20261023T071023-reading-lint.
+- Exact parent CI39911022005/latest attempt1 completed failure. repo-sanity,
+  ai-boundary/database/windows and every listed step succeeded. Flutter strict
+  formatter passed; analyzer found only curly_braces_in_flow_control_structures
+  at reading_screen.dart:228. Full/widget/Chrome/Web downstream steps were skipped,
+  not passed;15 new reading widget cases still require actual execution.
+- Added explicit braces around the existing translation-toggle if/setState only.
+  Exact replacement comparison proves condition/assignment/all other source bytes
+  retained. All15 widget cases/assertions, model/repository, lint settings, workflow,
+  QA inventory, dependencies, content and defaults unchanged; no suppression/new
+  test/behavior change. Separate diff/whitespace review and QA75 inventory passed;
+  all14 release groups remain pending. Fresh official Dart3.9.2 archive SHA256 verified; pinned formatter passed
+  without changes (unresolved Flutter lint include warning only).
+- Two paths: reading/presentation/reading_screen.dart and this status. Local full
+  Flutter/analyzer/widget/build not executed; prior metadata-bootstrap rejection
+  remains respected. No new feature/persistence/audio/Auth/production integration,
+  Pro/content/contract/security change, merge/closure/deployment/release or schedule
+  action. Final verified commit/tree/run and released heartbeat in PR41/issue34.
+- Next inspect new exact-head latest-attempt allfive jobs/every required step;
+  fix actual diagnostics preserving assertions. Pending-only handoff, no duplicate
+  code/docs-only commits/long polling. Only after verified UI continue reviewed
+  material and captured-session/durable reading reports; #34 open/#41 draft.
