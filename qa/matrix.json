@@ -2246,6 +2246,49 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_mutation_lane_test.dart",
       "limitation": "Pure injected-port tests are not SDK/HTTP/hosted receipts/remote drain evidence. One host must reuse one lane; separate lanes/devices/processes/session progression/message correlation/scenario ownership/durable restart/UI/provider/voice remain open. No automatic retry/fresh event ID/reset/eviction/default activation; server owns authorization/idempotency, all14 hosted release groups pending."
+    },
+    {
+      "id": "captured-conversation-session",
+      "status": "automated-baseline",
+      "scope": "One captured ready-owner conversation enforces explicit start/turn/finish progression, matching session, immutable nonduplicated message projection, monotonic sequence, exact replay without rollback, unresolved event fencing and terminal owner/correlation revocation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "explicit progression captures session and finishes without derived writes"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "pre-start foreign-session and post-finish operations never dispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "identical replay cannot append twice or roll back later progress"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "terminally clears publication"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "keeps exact retry and projection"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "port and readiness reentry cannot overlap and nested read is redacted"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "retains drain"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_session_test.dart",
+      "limitation": "Pure injected-port component tests do not prove SDK/HTTP/hosted receipts/remote drain, server ownership or scenario/message context, cross-device/restart recovery, UI or voice. Host must revoke every lifecycle barrier; separate instances are not coordinated. No new IDs/reset/automatic retry/derived writes/default activation; all14 hosted release groups pending."
     }
   ],
   "findings": [

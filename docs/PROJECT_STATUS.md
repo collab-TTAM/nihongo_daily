@@ -5832,3 +5832,70 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   draft/issues open/AI defaults off/all14 hosted pending; hosted identity/provider/
   voice/learner/physical launch/human gates remain. No merge/close/deploy/release/
   Auth strategy/provider/collection/spend/security/schedule action or Alpha claim.
+
+
+## Captured conversation session progression — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T1017-conversation-flow; resume draft41 branch
+  automation/issue-11-plan-sdk-integration atc222d53d910922683af2f561bd0ee79c9a36f21d
+  /tree9b565faf4df6c6af6018fddcd09bc44f8e342a85. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; prior core marker released09:18:12 UTC.
+- Parent CI40081353423 raw exactc222d53/latest attempt1 completed success:
+  complete allfive jobs/every required step/no skips. Log120835724184 confirms
+  965 Flutter/all13 lane cases/five Chrome; full analyzer/Web/Windows/native/SQL/
+  Edge/build steps passed. Component evidence, not hosted learner/provider proof.
+- New CapturedConversationSession owns a private actual ConversationMutationLane
+  for one captured ready-owner conversation. Explicit start captures server ID;
+  typed turn/finish require active matching UUID identity; no pre-start/foreign
+  session/second start or post-finish turn/start dispatch. Identical finish replay
+  remains valid; operation-scoped same UUIDs retained. Supplied exact wire/text/
+  whitespace/case unchanged. No ID generator/reset/automatic retry/activation.
+- Immutable notStarted/active/finished/revoked snapshot retains assistant messages
+  and optional typed summary. New turn requires strictly increasing sequence and
+  previously unseen case-insensitive message UUID. Gaps accepted, no invented
+  consecutive/+2 protocol. Accepted replay does not append twice or roll back
+  later progress. Bad correlation permanently revokes/clears projection because
+  underlying accepted receipt cannot be repaired by a new event. Turn has no
+  response session ID; captured request/port association is not server ownership
+  or scenario/context/receipt proof. No model-driven SRS/mastery/progress write.
+- Failure/timeout preserves projection and unresolved original key after injected
+  drain; only explicit identical retry advances on success. New event/older cache/
+  finish cannot bypass uncertainty. Reserve before getter/port reentry; nested
+  readiness read is redacted, nested send pending. Snapshot/dispatch/publication/
+  replay check current identity/readiness; getter loss/401/same-user replacement
+  or explicit lifecycle revoke permanently clears keys/messages/summary. A-B-A
+  and late success/error cannot revive; held busy drains without closing borrowed
+  SDK/HTTP/Auth. Previously returned snapshots cannot be erased from callers;
+  host must invalidate views and synchronously revoke every lifecycle barrier.
+  Private lane bounds retained messages/events without eviction; distinct flow
+  instances/processes/devices are not coordinated; do not recreate to bypass work.
+- 20/20 pure injected-port cases passed: explicit progression/exact wire, wrong
+  lifecycle/session, replay without rollback/changed wire/scoped IDs, three invalid
+  sequence/message cases, allthree operations with late success/error and exact
+  manual retry, provider/malformed failures, port/readiness reentry, A-B-A late
+  drain, readiness/getter/same-user/401 summary cleanup and capacity. Fresh official
+  Dart3.9.2 checksum matched; exact ten-file production/test graph and unchanged
+  fixture in disposable harness, only Flutter runner import adapted to test1.26.2.
+  Strict casts/inference/raw types+lints6 analyzer no issues; new test-only braces
+  lint fixed retaining assertions. No full local Flutter/SDK/HTTP/native/build
+  execution or prior denied Flutter bootstrap retry/bypass.
+- Pinned two-file format/zero changes, inventory91/46 QA regressions/whitespace
+  passed; all90 old cases/gates/findings exact/all14 hosted pending. Separate
+  progression/schema/UUID/sequence/cache/reentry/uncertainty/drain/lifecycle/diff
+  review completed. No old source/test/Auth strategy/provider/default/SDK/vault/
+  RLS/contract/CI/dependency/Pro/content edits.
+- Five paths: new lib/features/ai/data/captured_conversation_session.dart,
+  test/features/ai/captured_conversation_session_test.dart and
+  docs/CAPTURED_CONVERSATION_SESSION.md; PROJECT_STATUS.md and qa/matrix.json.
+  Publish actual parent base_tree/full recursive tree/local equality/unaffected
+  mode-type-blob proof, five exact UTF8/blobSHA/single parent/tree readbacks then
+  fresh own marker/head expected-head non-force update. Final commit/tree/new
+  exact workflow/latest attempt/released handoff in41/17/37.
+- Next inspect new exact-head/latest-attempt allfive jobs/every required step;
+  fix actual diagnostics retaining assertions. Pending-only handoff/no duplicate
+  source/long polling. Then owned fixed-endpoint SDK/HTTP conversation transport,
+  actual lifecycle/late HTTP drain/recovery and UI. No durable transcript/receipt,
+  hosted identity/provider/voice/learner/physical launch proof. Keep41 draft/issues
+  open/AI defaults off/all14 hosted pending; human gates remain. No merge/close/
+  deploy/release/Auth strategy/provider/collection/spend/security/schedule action
+  or Personal Alpha claim.
