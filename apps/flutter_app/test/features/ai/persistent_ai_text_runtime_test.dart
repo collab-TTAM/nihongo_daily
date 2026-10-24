@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
@@ -65,18 +67,21 @@ void main() {
   Completer<http.Response>? profileWait;
   final authRequests = <http.Request>[];
 
-  PersistentSupabaseRuntime build({bool enabled = true}) =>
-      PersistentSupabaseRuntime(
-        projectUrl: wire.origin,
-        publishableKey: wire.key,
-        vault: vault,
-        store: journal,
-        httpClient: authHttp,
-        aiHttpClient: aiHttp,
-        now: () => now,
-        aiTextEnabled: enabled,
-        requestTimeout: const Duration(seconds: 2),
-      );
+  PersistentSupabaseRuntime build({
+    bool enabled = true,
+    bool conversationEnabled = false,
+  }) => PersistentSupabaseRuntime(
+    projectUrl: wire.origin,
+    publishableKey: wire.key,
+    vault: vault,
+    store: journal,
+    httpClient: authHttp,
+    aiHttpClient: aiHttp,
+    now: () => now,
+    aiTextEnabled: enabled,
+    aiConversationEnabled: conversationEnabled,
+    requestTimeout: const Duration(seconds: 2),
+  );
   Future<void> ready() async {
     if (runtime.account.state.phase != AccountPhase.ready) {
       final state = await runtime.account.changes
@@ -421,6 +426,149 @@ void main() {
       await ready();
       expect(runtime.createAiTextRepository(), isNotNull);
       expect(aiHttp.requests, hasLength(1));
+    },
+  );
+
+  test(
+    'conversation is separately disabled while text owner is enabled',
+    () async {
+      await runtime.start();
+      await login();
+      expect(runtime.isAiConversationEnabled, isFalse);
+      expect(runtime.createAiConversationSession(), isNull);
+      expect(runtime.createAiTextRepository(), isNotNull);
+      expect(aiHttp.requests, isEmpty);
+    },
+  );
+  test(
+    'conversation factory waits for vault and profile then retains one session without text exposure',
+    () async {
+      await runtime.close();
+      runtime = build(enabled: false, conversationEnabled: true);
+      backend.secret = 'TEST_ONLY_SAVED';
+      backend.writeWait = Completer<void>();
+      profileWait = Completer<http.Response>();
+      final starting = runtime.start();
+      await lifecycle.flush();
+      expect(runtime.createAiConversationSession(), isNull);
+      backend.writeWait!.complete();
+      await starting;
+      await lifecycle.flush();
+      expect(runtime.createAiConversationSession(), isNull);
+      expect(aiHttp.requests, isEmpty);
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(user)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await ready();
+      final flow = runtime.createAiConversationSession()!;
+      expect(identical(runtime.createAiConversationSession(), flow), isTrue);
+      expect(runtime.createAiTextRepository(), isNull);
+      expect(flow.snapshot.phase, ConversationSessionPhase.notStarted);
+      expect(aiHttp.requests, isEmpty);
+      await flow.start(
+        StartConversationRequest.fromJson(
+          fixtures['start_conversation_request'],
+        ),
+      );
+      expect(flow.snapshot.phase, ConversationSessionPhase.active);
+      expect(aiHttp.requests, hasLength(1));
+    },
+  );
+  test(
+    'conversation refresh revokes before rotation and waits for old ignored-abort HTTP drain',
+    () async {
+      await runtime.close();
+      runtime = build(conversationEnabled: true);
+      await runtime.start();
+      await login();
+      final flow = runtime.createAiConversationSession()!;
+      final held = Completer<http.StreamedResponse>();
+      aiHttp.onSend = (_) => held.future;
+      final rejected = expectLater(
+        flow.start(
+          StartConversationRequest.fromJson(
+            fixtures['start_conversation_request'],
+          ),
+        ),
+        throwsA(unauthorized),
+      );
+      secret = 'TEST_ONLY_ROTATED_CONVERSATION';
+      generation++;
+      final refreshing = runtime.refresh();
+      expect(flow.snapshot.messages, isEmpty);
+      expect(flow.isCurrent, isFalse);
+      try {
+        await rejected;
+        await refreshing;
+        await ready();
+        expect(backend.secret, secret);
+        expect(runtime.createAiConversationSession(), isNull);
+        expect(aiHttp.requests, hasLength(1));
+      } finally {
+        if (!held.isCompleted)
+          held.completeError(StateError('TEST_ONLY_LATE_CONVERSATION'));
+      }
+      await lifecycle.flush();
+      final next = runtime.createAiConversationSession()!;
+      expect(identical(next, flow), isFalse);
+      aiHttp.onSend = (r) async => answer(r.url.path.split('/').last);
+      await next.start(
+        StartConversationRequest.fromJson(
+          fixtures['start_conversation_request'],
+        ),
+      );
+      expect(
+        aiHttp.requests.last.headers['authorization'],
+        'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+      );
+      await runtime.account.signOut();
+      expect(next.snapshot.messages, isEmpty);
+      expect(runtime.createAiConversationSession(), isNull);
+    },
+  );
+  test(
+    'conversation owned close clears publication immediately and drains held HTTP preserving vault',
+    () async {
+      await runtime.close();
+      runtime = build(conversationEnabled: true);
+      await runtime.start();
+      await login();
+      final flow = runtime.createAiConversationSession()!;
+      final saved = backend.secret;
+      final held = Completer<http.StreamedResponse>();
+      aiHttp.onSend = (_) => held.future;
+      final rejected = expectLater(
+        flow.start(
+          StartConversationRequest.fromJson(
+            fixtures['start_conversation_request'],
+          ),
+        ),
+        throwsA(unauthorized),
+      );
+      var drained = false;
+      final closing = runtime.close()
+        ..then((_) {
+          drained = true;
+        });
+      expect(flow.isCurrent, isFalse);
+      expect(runtime.createAiConversationSession(), isNull);
+      try {
+        await rejected;
+        await lifecycle.flush();
+        expect(drained, isFalse);
+        expect(aiHttp.closed, isFalse);
+      } finally {
+        if (!held.isCompleted)
+          held.completeError(StateError('TEST_ONLY_LATE_CLOSE'));
+      }
+      await closing;
+      expect(drained, isTrue);
+      expect(backend.secret, saved);
+      expect(aiHttp.closed, isFalse);
     },
   );
 }

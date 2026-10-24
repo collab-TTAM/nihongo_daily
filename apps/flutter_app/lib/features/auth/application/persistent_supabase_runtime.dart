@@ -7,6 +7,7 @@ import 'package:supabase/supabase.dart';
 import '../../ai/application/ai_text_runtime_owner.dart';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/captured_ai_text_repository.dart';
+import '../../ai/data/captured_conversation_session.dart';
 import '../../ai/data/supabase_ai_text_transport.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
 import '../../quiz/data/vocabulary_quiz_attempt_store.dart';
@@ -46,10 +47,12 @@ final class PersistentSupabaseRuntime
     DateTime Function()? now,
     bool automaticRefresh = false,
     bool aiTextEnabled = false,
+    bool aiConversationEnabled = false,
     Duration requestTimeout = const Duration(seconds: 15),
   }) : _studyStore = studyStore,
        _quizStore = quizStore,
-       _aiTextEnabled = aiTextEnabled {
+       _aiTextEnabled = aiTextEnabled,
+       _aiConversationEnabled = aiConversationEnabled {
     if (kIsWeb) {
       // The pinned SDK broadcasts Auth session objects between browser tabs.
       // No browser token persistence/restore is authorized by this assembly.
@@ -143,6 +146,7 @@ final class PersistentSupabaseRuntime
   final StudySessionStore? _studyStore;
   final VocabularyQuizAttemptStore? _quizStore;
   final bool _aiTextEnabled;
+  final bool _aiConversationEnabled;
   late final AiTextRuntimeOwner _aiOwner;
   StreamSubscription<AccountState>? _aiSubscription;
   SrsStudyRuntime? _aiReadyRuntime;
@@ -182,6 +186,7 @@ final class PersistentSupabaseRuntime
 
   /// Trusted owner availability only; default and staging startup leave it off.
   bool get isAiTextEnabled => _aiTextEnabled;
+  bool get isAiConversationEnabled => _aiConversationEnabled;
   @override
   Stream<void> get aiTextChanges => _aiOwner.changes;
 
@@ -206,6 +211,26 @@ final class PersistentSupabaseRuntime
     final session = account.readySession;
     if (ready == null || generation == null || session == null) return null;
     return _aiOwner.acquire(
+      auth: ready.auth,
+      generation: generation,
+      isReady: () =>
+          _closing == null &&
+          identical(account.readyRuntime, ready) &&
+          identical(account.readySession, session) &&
+          identical(_aiGeneration, generation),
+    );
+  }
+
+  /// Separate trusted opt-in, not exposed by default startup/UI. Uses the same
+  /// owner/transport/drain as text, after persisted rotation and own profile.
+  CapturedConversationSession? createAiConversationSession() {
+    if (!_aiConversationEnabled || _closing != null) return null;
+    _syncAiReadiness();
+    final ready = _aiReadyRuntime;
+    final generation = _aiGeneration;
+    final session = account.readySession;
+    if (ready == null || generation == null || session == null) return null;
+    return _aiOwner.acquireConversation(
       auth: ready.auth,
       generation: generation,
       isReady: () =>

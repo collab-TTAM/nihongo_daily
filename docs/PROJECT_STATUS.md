@@ -5953,3 +5953,66 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   draft/issues open/AI off/all14 hosted pending/human gates intact. No merge/
   close/deploy/release/Auth strategy/provider/collection/spend/security/schedule
   action or Personal Alpha claim.
+
+
+## Retained conversation runtime owner — #17, 2026-10-24 UTC
+
+- Marker core-20261024T1213-conversation-owner; resume draft41 branch
+  automation/issue-11-plan-sdk-integration, parentdec021c002e915be75b63f5377b99b359c7f5793
+  /treec1f54c1e815c5abc77a3d31c0d245da20772c092. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released11:16:57 UTC.
+- Parent CI40089202113 raw exactdec021c/latest attempt1 completed success:
+  complete allfive jobs/every required step/no skips. Log120858622078 confirms995
+  Flutter/five Chrome; analyzer/Web/Windows/native/SQL/Edge/builds passed. Component
+  evidence, not hosted identity/provider/learner acceptance.
+- AiTextRuntimeOwner retains one CapturedConversationSession per existing lease
+  and exact shared owned transport. Factory reuses guarded text acquisition and
+  then reserves construction before supplied getters can reenter; unsupported
+  text-only transport returns unavailable. Identical factory calls return same
+  finished/unresolved session, not fresh event/progression/HTTP capability.
+- Invalidate revokes conversation synchronously before repository/transport and
+  existing actual close/drain; retired generations cannot revive and a new one
+  waits for old I/O. check includes conversation availability; failed cleanup
+  blocks replacement. Existing reentrant close waits for construction/orphans.
+  No second SDK/network engine/credential writer or raw failure disclosure.
+- PersistentSupabaseRuntime adds separate aiConversationEnabled=false flag and
+  createAiConversationSession gated by persisted rotation/own-profile and exact
+  runtime/session/generation. Uses same AI owner as text; existing refresh revokes
+  before persistence barrier, logout/readiness invalidates, close drains before
+  SDK disposal. No default/staging flag or source-interface/UI/provider activation.
+  One retained session per ready generation has no automatic reset/new-round;
+  refresh is not permission to bypass uncertain old events. Server reconciliation,
+  durable restart/transcript and explicit new-round policy remain open.
+- 25/25 pure owner cases passed:19 original unchanged plus6 new retained finished
+  session/shared transport, synchronous revoke/generation drain, same-user loss,
+  readiness reentry/reentrant close, failed cleanup and unresolved factory/event
+  retention. Fresh official Dart3.9.2 checksum matched; complete12-file actual
+  production/test graph+unchanged fixture, only Flutter runner import adapted to
+  test1.26.2; strict casts/inference/raw types+lints6 analyze no issues. Initial
+  new interface intersection compile error fixed with checked port cast and new
+  guard braces; no weakening/suppression. No full local Flutter/platform/build
+  execution or retry/bypass of prior denied Flutter bootstrap.
+- Four new actual runtime cases AUTHORED, NOT run locally: separately disabled
+  conversation while text enabled; vault-write/profile barriers and retained
+  conversation-only opt-in; refresh/rotated bearer/ignored-abort drain/replacement/
+  logout; owned close with held HTTP/preserved vault/borrowed clients. All8 old
+  runtime test bodies/assertions unchanged except optional build helper default
+  remains false/two imports. Actual SDK/vault/HTTP here remain TEST ONLY fixtures;
+  exact new-head CI must confirm these four cases and full analyzer/builds.
+- Pinned four-file format clean/inventory93/46 QA regressions/whitespace passed;
+  all92 previous cases/gates/findings exact/all14 hosted pending. Separate lease/
+  flags/factory/reentry/epoch/orphan/uncertainty/cleanup/lifecycle/diff review done.
+- Seven paths: existing ai/application/ai_text_runtime_owner.dart,
+  auth/application/persistent_supabase_runtime.dart and persistent_ai_text_runtime_test.dart;
+  new ai_conversation_runtime_owner_test.dart and docs/CONVERSATION_RUNTIME_OWNER.md;
+  PROJECT_STATUS.md/qa matrix. Publish with actual parent base_tree/full recursive
+  tree/local equality/unaffected mode-type-blob proof; seven exact UTF8/blobSHA/
+  single parent/tree readbacks and fresh own marker/head expected-head non-force
+  update. Final commit/tree/new CI/latest attempt/released handoff in41/17/37.
+- Next inspect exact new-head/latest-attempt complete allfive jobs/every step,
+  including allfour new actual runtime cases. Fix real diagnostics, keep assertions;
+  pending-only handoff/no duplicate code/long polling. Then startup/source/UI
+  conversation flow and explicit recovery/reconciliation/new-round policy. Keep41
+  draft/issues open/AI flags off/all14 hosted pending/human gates intact. No hosted
+  JWT/provider/receipt/voice/learner/physical launch proof; no merge/close/deploy/
+  release/Auth strategy/provider/collection/spend/security/schedule/Alpha claim.

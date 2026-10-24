@@ -2,6 +2,8 @@ import 'dart:async';
 
 import '../../srs/data/review_repository.dart';
 import '../data/captured_ai_text_repository.dart';
+import '../data/captured_conversation_mutation.dart';
+import '../data/captured_conversation_session.dart';
 
 /// One owner-created ready generation. Never reuse after a readiness barrier.
 final class AiTextGeneration {}
@@ -38,6 +40,71 @@ final class AiTextRuntimeOwner {
 
   bool get isDraining => _retiring != null || _creating != null;
   bool get isFailed => _failed;
+
+  /// One retained conversation per lease, on the exact shared text transport.
+  /// An uncertain/finished session is never replaced by another factory call.
+  CapturedConversationSession? acquireConversation({
+    required ReviewAuth auth,
+    required AiTextGeneration generation,
+    required bool Function() isReady,
+  }) {
+    final repository = acquire(
+      auth: auth,
+      generation: generation,
+      isReady: isReady,
+    );
+    final lease = _lease;
+    if (repository == null ||
+        lease == null ||
+        !identical(repository, lease.repository) ||
+        isDraining ||
+        _closed ||
+        _failed) {
+      return null;
+    }
+    final creating = Completer<void>();
+    _creating =
+        creating; // Before supplied readiness/transport getters reenter.
+    CapturedConversationSession? orphan;
+    try {
+      final existing = lease.conversation;
+      if (existing != null) {
+        if (existing.isCurrent) return existing;
+        invalidate();
+        return null;
+      }
+      final transport = lease.transport;
+      if (transport is! ConversationMutationTransport) return null;
+      final epoch = _epoch;
+      bool ready() =>
+          !_closed &&
+          !_failed &&
+          epoch == _epoch &&
+          identical(_lease, lease) &&
+          repository.isCurrent &&
+          transport.isCurrent;
+      orphan = CapturedConversationSession(
+        auth: lease.auth,
+        transport: transport as ConversationMutationTransport,
+        isReady: ready,
+      );
+      if (!ready() || !orphan.isCurrent) {
+        invalidate();
+        return null;
+      }
+      lease.conversation = orphan;
+      orphan = null;
+      _notify();
+      return lease.conversation;
+    } on Object {
+      invalidate(); // Availability only, never expose supplied getter details.
+      return null;
+    } finally {
+      orphan?.revoke();
+      _creating = null;
+      creating.complete();
+    }
+  }
 
   CapturedAiTextRepository? acquire({
     required ReviewAuth auth,
@@ -114,7 +181,11 @@ final class AiTextRuntimeOwner {
     final lease = _lease;
     if (lease == null) return;
     try {
-      if (lease.repository.isCurrent && lease.transport.isCurrent) return;
+      if (lease.repository.isCurrent &&
+          lease.transport.isCurrent &&
+          (lease.conversation?.isCurrent ?? true)) {
+        return;
+      }
     } on Object {
       /* Revocation below fails closed. */
     }
@@ -127,6 +198,7 @@ final class AiTextRuntimeOwner {
     if (lease == null) return;
     _lease = null;
     _retired[lease.generation] = true;
+    lease.conversation?.revoke();
     lease.repository.revoke();
     _retire(lease.transport);
     _notify();
@@ -181,7 +253,7 @@ final class AiTextRuntimeOwner {
 }
 
 final class _Lease {
-  const _Lease(
+  _Lease(
     this.generation,
     this.auth,
     this.session,
@@ -193,6 +265,7 @@ final class _Lease {
   final ReviewSession session;
   final OwnedAiTextTransport transport;
   final CapturedAiTextRepository repository;
+  CapturedConversationSession? conversation;
 }
 
 final class _Drain {

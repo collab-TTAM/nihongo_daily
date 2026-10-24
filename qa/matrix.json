@@ -2328,6 +2328,45 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
       "limitation": "Actual pinned SDK with TEST ONLY unsigned JWT/Auth and streamed AI HTTP responses; no hosted signature/provider/receipt/learner/voice proof. Runtime conversation factory/UI/reconciliation/restart remain open. No default activation, wider Auth/REST grants, credential writers, automatic retry or provider change; all14 hosted gates pending."
+    },
+    {
+      "id": "conversation-runtime-owner",
+      "status": "automated-baseline",
+      "scope": "One retained captured conversation per existing AI owner lease/shared transport, synchronous lifecycle revoke and generation drain, separate default-off runtime factory gated by persisted rotation and own-profile readiness.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_runtime_owner_test.dart",
+          "contains": "one retained conversation shares owner transport and completed session cannot reset"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_runtime_owner_test.dart",
+          "contains": "fresh generation waits for drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_runtime_owner_test.dart",
+          "contains": "failed shared cleanup cannot authorize replacement conversation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "conversation factory waits for vault and profile then retains one session without text exposure"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "conversation refresh revokes before rotation and waits for old ignored-abort HTTP drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "conversation owned close clears publication immediately and drains held HTTP preserving vault"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_runtime_owner_test.dart test/features/ai/ai_text_runtime_owner_test.dart test/features/ai/persistent_ai_text_runtime_test.dart",
+      "limitation": "Pure owner cases and separately executed TEST ONLY SDK/vault/HTTP runtime cases are not hosted JWT/provider/receipt/voice/learner proof. One retained session is not reset; durable restart/server reconciliation/new-round policy/startup UI source remain open. Default flags off/all14 hosted gates pending; no new credential writer/provider/Auth strategy/derived writes."
     }
   ],
   "findings": [
