@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/ai/data/ai_text_repository_source.dart';
+import '../features/ai/data/captured_ai_text_repository.dart';
 import '../features/auth/application/account_controller.dart';
 import '../features/auth/application/account_startup_controller.dart';
 import '../features/auth/application/account_session_notice.dart';
@@ -148,7 +150,8 @@ final class WindowsStagingOwner
         AccountSessionRefreshAction,
         DailyPlanRepositorySource,
         DurableStudySessionSource,
-        VocabularyQuizHistorySource {
+        VocabularyQuizHistorySource,
+        AiTextRepositorySource {
   WindowsStagingOwner(
     this.session,
     this.journal, {
@@ -160,6 +163,11 @@ final class WindowsStagingOwner
   final PersistentAccountStartup session;
   final NativeReviewJournal journal;
   Future<void>? _closing;
+  @override
+  CapturedAiTextRepository? createAiTextRepository() =>
+      _closing == null ? session.createAiTextRepository() : null;
+  @override
+  Stream<void> get aiTextChanges => session.aiTextChanges;
   @override
   VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() =>
       _closing == null ? session.createVocabularyQuizHistoryRepository() : null;

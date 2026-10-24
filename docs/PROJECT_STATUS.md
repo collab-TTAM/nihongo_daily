@@ -5485,3 +5485,52 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   all14 hosted pending; no merge/deploy/release/provider/collection/spend/security/
   schedule action or Personal Alpha claim. Next exact CI then actual owned SDK/
   vault/profile/startup/mounted UI refresh/logout/A-B-A/drain journey fixtures.
+
+
+## Windows AI source completion and mounted SDK journey — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0316-ai-journey; resumed draft41 branch
+  automation/issue-11-plan-sdk-integration at exact
+  093baab8e257374676c9330ded5bf2c479d63b8f/tree3a0add924ba2ca611a86f2c1de91e8d94d359242.
+  Fresh main78a44fa/source37afa572a unchanged; prior marker released02:17:26 UTC.
+  Pro14/38/content/manifests remain reserved and untouched.
+- Parent CI40053492651 raw exact093baab/latest attempt1 completed success:
+  complete allfive jobs/every required step/no skips. Flutter log120751535130
+  confirms915 tests including allnine new source cases and five Chrome cases;
+  retained15 tutor widgets/native/Windows/SQL/Edge steps passed. Component evidence
+  only, not hosted learner acceptance.
+- Source review found the outer WindowsStagingOwner did not implement the new
+  AiTextRepositorySource. Startup's active controller therefore saw no source
+  through the actual production wrapper. Add only interface/captured factory
+  forwarding while not closing and borrowed stream forwarding. Runtime ready/
+  generation/persistence/profile/drain guards remain authoritative. No build
+  switch/aiTextEnabled=false/main/staging/provider/Auth strategy/resource change.
+- Eight expanded new widget cases exercise actual pinned SDK/native review file/
+  Windows owner/startup/controller/app/default Riverpod source+binding/router/tutor,
+  with TEST ONLY Auth/REST/AI HTTP/vault ports, no binding/account overrides.
+  Startup holds rotated-secret write then profile independently/no early dispatch;
+  exact explain/context/whitespace/bearer; disabled host; refresh old success/error
+  after ignored abort/no allocation before old drain/fresh explicit N4 correction;
+  A-B-A old result/editor/callback isolation; vault/profile failure and explicit
+  recovery/no implicit send; owned close publication/revocation/drain/borrowed HTTP/
+  retained saved secret. Real-loop filesystem/runtime barriers, bounded waits.
+- New eight cases UNRUN locally; full new-head Flutter/analyzer/platform/build
+  awaits CI. Fresh official Dart3.9.2 archive checksum matched; both changed Dart
+  files format clean (unresolved Flutter lint include warning, not analyzer proof).
+  Inventory86/46 QA regressions/whitespace checks and separate diff/lifetime/wire/
+  fixture review recorded before publication. No prior denied Flutter bootstrap
+  retry/bypass. Existing test bodies/assertions/CI/gates/dependencies unchanged.
+- Five paths: lib/app/staging_bootstrap.dart; new test/features/ai/
+  ai_owned_startup_journey_test.dart; docs/AI_TUTOR_SCREEN.md, PROJECT_STATUS.md,
+  qa/matrix.json. All85 previous QA cases/findings/gates retained exactly; one
+  additional component group, all14 hosted release groups still pending.
+- Publish with correct actual parent base_tree/full recursive tree/unaffected
+  blob-type-mode proof/local Git tree equality, allfive UTF8/blob SHA readbacks,
+  single parent/tree, fresh own marker/head and expected-head non-force update.
+  Final commit/tree/exact new workflow/latest attempt/released checkpoint in41/17/37.
+- Next inspect exact new-head latest-attempt allfive jobs/every required step;
+  correct real failures retaining assertions. Pending-only handoff/no duplicate
+  implementation/long polling. Keep41 draft/issues open/default AI off. Hosted
+  Auth/provider/voice/learner/physical launch and applicable release/security/
+  collection/spend gates remain; no merge/close/deploy/release/schedule action or
+  Personal Alpha claim.

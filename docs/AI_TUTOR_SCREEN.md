@@ -103,3 +103,46 @@ and active-only startup exposure before/after held start/close. Full new-head
 Flutter analyzer/test/build is required. Next add actual owned SDK/vault/profile
 startup-to-mounted-tutor refresh/logout/A-B-A/drain journey tests. Defaults remain
 off and all hosted/Auth/provider/collection/spend/voice gates stay open.
+
+
+## Actual Windows owner and mounted SDK journey
+
+The WindowsStagingOwner lifetime wrapper now implements AiTextRepositorySource,
+forwards the existing availability stream and delegates the captured factory only
+while not closing. The prior runtime/startup/provider bridge omitted this outer
+production wrapper: a controller holding the Windows owner could not publish its
+source even with an explicitly enabled runtime. No build setting, default flag,
+provider activation, URL/key input or resource ownership changes accompany this fix.
+
+Eight expanded widget cases in ai_owned_startup_journey_test.dart exercise the
+actual pinned SDK, NativeReviewJournal, WindowsStagingOwner,
+PersistentAccountStartup, AccountStartupController, AccountStartupApp, default
+Riverpod bridge, router and mounted tutor. No view/source/account provider override
+manufactures readiness or an AI result. Only Auth/REST/AI HTTP and vault backend
+ports are TEST ONLY. File/runtime operations use tester.runAsync and bounded
+completion barriers so FakeAsync does not wait for filesystem futures.
+
+The fixtures hold startup rotation and own-profile responses independently; assert
+no factory capability/text dispatch before both; and send exact whitespace/context
+and captured bearer through the real mounted explain control. Refresh cases hold
+old HTTP despite abort, verify synchronous runtime revocation and retained callback
+fences, persisted/profile barriers, no new allocation until old success/error drains,
+fresh empty editor and explicit N4 correction with the new bearer. A-B-A checks
+completed A result removal, held B error drain, fresh A capability and retired A/B
+callbacks. Storage/profile failures remain unavailable until explicit recovery,
+which submits no text. Disabled host remains unavailable. Owned close removes
+source publication immediately, then revokes/drains the runtime before journal
+cleanup while preserving the saved vault secret and borrowed HTTP client.
+
+Parent093baab CI40053492651 attempt1 passed allfive jobs/every required step,
+915 Flutter tests including allnine source cases and existing15 tutor widgets,
+plus five Chrome cases and native/Windows/SQL/Edge checks. This confirms prior
+components, not these new eight cases. New cases are authored, UNRUN locally;
+fresh exact-head analyzer/Flutter/platform CI is required. Fresh pinned Dart
+format and QA inventory/regressions are recorded in PROJECT_STATUS.
+
+Fixtures do not verify hosted JWT signatures/TLS/provider/learner flows, real
+Windows credential storage or physical app launch. Main/staging AI remain off,
+voice unavailable and all14 hosted release groups pending. After exact new-head
+CI, continue reviewed remaining #17 integration gaps without inferring live
+provider/collection/spend approval or bypassing Auth/release gates.

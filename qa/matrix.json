@@ -2085,6 +2085,41 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_tutor_screen_test.dart test/app_test.dart",
       "limitation": "15 new widgets authored, unrun locally; full new-head analyzer/Flutter/platform/build requires CI. TEST ONLY captured Auth/readiness/port/DTOs and injected view binding are not hosted identity/provider/voice/learner proof. Actual owned-startup ready-generation factory-to-provider bridge remains next work; host must synchronously revoke/remove or replace binding on readiness loss. Main/staging AI remains disabled. No simulated default Auth/save, automatic retry, transcript storage, mastery/SRS/plan write, live provider/collection/spend activation or remote rollback/cost guarantee. All14 hosted release groups pending."
+    },
+    {
+      "id": "ai-owned-startup-tutor-journey",
+      "status": "automated-baseline",
+      "scope": "Actual pinned SDK/native journal/WindowsStagingOwner/startup/Riverpod/router/mounted tutor with TEST ONLY service and vault ports: persisted rotation/profile barriers, explicit request wire, refresh late success/error drain, A-B-A callback isolation, storage/profile failure recovery, disabled host and owned shutdown.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "Windows owner startup waits for rotation and profile before first tutor binding"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted tutor refresh fences old callback and ignored HTTP abort error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted tutor A B A clears results and never retargets old callbacks"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted tutor stays unavailable after failed barrier storage="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "owned startup close removes tutor and drains ignored HTTP without closing borrowed client"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart test/features/ai/ai_text_source_test.dart test/features/ai/persistent_ai_text_runtime_test.dart",
+      "limitation": "Eight new expanded widget cases authored, unrun locally; exact new-head full CI must confirm execution. Actual Windows owner now forwards the captured AI source/factory but default preview/staging AI remain disabled. Simulated service/vault/unsigned JWT and native-file fixtures are not hosted identity, real OS vault, provider, voice, physical launch, learner or release evidence. No automatic retry/dispatch, transcript/progress/SRS writes, provider/Auth strategy/collection/spend activation. All14 hosted release groups remain pending."
     }
   ],
   "findings": [
