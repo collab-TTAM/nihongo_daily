@@ -5395,3 +5395,47 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   fixtures. Keep defaults off/41 draft/17 open/all14 hosted groups pending. No
   merge/close/deploy/release/Auth strategy/provider/spend/collection/security/
   schedule action or Personal Alpha claim.
+
+
+## AI dependency audit remediation — Issue #17/#18, 2026-10-24 UTC
+
+- Sole marker core-20261024T0109-fast-uri; resumed draft41 branch
+  automation/issue-11-plan-sdk-integration from exact
+  75e7bc808d6f20888cb9a07bd319c40270088b2b/treeb4e1eaca123ac51ab91d4f639c077652349880e8.
+  Fresh main78a44fa/source37afa572a unchanged; prior released00:14:24 UTC.
+- Parent CI40043896926 raw exact head/latest attempt1 completed failure. Complete
+  five jobs observed: Flutter/windows/database/repo-sanity every required step
+  success; Flutter log120721489794 clean analyze/906 tests/five Chrome, including
+  all15 tutor widgets. Both previous compile/analyzer fixes verified. AI job stopped
+  at mandatory production npm audit; subsequent AI/TypeScript/Node/Deno/Edge steps
+  skipped, not passed. Native/Windows component evidence is not hosted proof.
+- Audit flagged Ajv's fast-uri3.1.8 for four moderate advisories:
+  GHSA-w74x-v6f9-j3xg, GHSA-xhq7-xmqj-769h, GHSA-wjr9-j795-jxcr and
+  GHSA-333x-w4r6-6crp. GitHub-reviewed primary advisory updated2026-10-23 confirms
+  patched3.1.9 within Ajv's existing ^3.0.1 range:
+  https://github.com/advisories/GHSA-w74x-v6f9-j3xg .
+- npm update fast-uri --package-lock-only --ignore-scripts --no-audit --no-fund
+  changes only fast-uri3.1.8 ->3.1.9 version/resolved URL/integrity. Separate parsed
+  lock comparison: every other package/root object exact, all other fast-uri fields
+  exact; package.json/source/tests/CI/security threshold unchanged. No override,
+  major upgrade, audit exclusion or reduced validation. Strict URI normalization
+  is the upstream security fix, not evidence of an exploitable app path.
+- Clean npm ci --ignore-scripts --no-audit --no-fund succeeded; unchanged npm audit
+  --omit=dev --audit-level=moderate reports0 vulnerabilities. Prettier format:check,
+  tsc --noEmit and185/185 existing Node tests passed, zero skipped/cancelled/fail.
+  Local Node24.19.0/npm11.9.0 differs from CI24.21.0/npm11.19.0; new exact-head
+  full CI/Deno/native checks remain required. Inventory85/46 QA regressions/
+  whitespace passed. No full local Flutter/Windows/Deno/PostgreSQL/hosted claim.
+- Two paths only: backend/ai/package-lock.json and docs/PROJECT_STATUS.md.
+  Protected Pro14/38/content/manifests, app/UI/Auth/SDK/vault/default AI flag,
+  schemas/RLS/contracts/fixtures/QA matrix/dependency manifest/workflows untouched.
+- Publish correct actual parent base_tree/full recursive tree/local tree equality/
+  unaffected blob/mode/type proof, both UTF8/SHA readbacks/single parent and fresh
+  own marker/head expected-head non-force update. Final commit/tree/exact workflow/
+  latest attempt/released checkpoint in41/17/37.
+- Next inspect exact new-head allfive jobs/every required step; pending-only handoff/
+  no duplicate code/long polling. Once full green continue owned ready-generation
+  startup/factory-to-provider bridge with SDK/vault/profile/UI lifecycle fixtures.
+  Keep41 draft/issues open/defaults off/all14 hosted pending. No merge/deploy/
+  release/provider/Auth strategy/collection/spend/security reduction/schedule change
+  or Personal Alpha claim.
