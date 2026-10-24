@@ -5664,3 +5664,54 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Keep41 draft/issues open/AI defaults off/all14 hosted pending; no merge/close/
   deploy/release/provider/Auth strategy/collection/spend/security/schedule action
   or Personal Alpha claim.
+
+
+## Frozen conversation response models — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0706-conversation-responses; resume draft41 branch
+  automation/issue-11-plan-sdk-integration at061643f9577966cefbce961b65c6116e73304929
+  /tree4324615da18442aad5aa5f7f52ab45bbb8880d75. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; prior marker released06:14:11 UTC.
+- Parent CI40069345322 raw exact061643f/latest attempt1 completed success:
+  allfive jobs/every required step/no skips. Flutter log120799571266 confirms931
+  tests/all7 request-model cases and five Chrome cases; native/Windows/SQL/Edge/
+  builds passed. Component evidence, not hosted learner/provider acceptance.
+- Independent #17 prerequisite: strict immutable start/turn/finish response DTOs,
+  assistant message and scores; private constructors/validated factories. Require
+  exact object shapes/assistant role/UUID/nonnegative Dart integer sequence,
+  required explicitly nullable translation/audio, exact bounded Unicode strings.
+  Optional live_feedback omitted vs empty preserved; present null rejected.
+  Scores allthree finite numeric0..100 preserve integer/fractional values.
+  Lists0..100 and nested correction/ref limits; reuse existing immutable strict
+  AiTextCorrection/AiTextItemRef, normalize failures to fixed response error with
+  no raw input/source. Snapshots/unmodifiable collections/fresh deep exports;
+  empty and schema-permitted duplicate refs retained. Audio is opaque, never
+  opened/played; recommendations authorize no SRS/progress/learning write.
+- 8/8 pure Dart groups passed: three original frozen response round trips;
+  optional feedback/nullables; message keys/role/IDs/sequence; Unicode/audio bounds;
+  finite numeric limits; every list0/100/101; nested alias/export mutation and
+  immutable views; malformed nested corrections/refs/mixed errors/safe failure.
+  Fresh official Dart3.9.2 checksum matched; exact three-file production/test graph
+  +unchanged fixture in disposable harness, only Flutter test import adapted to
+  package:test1.26.2. Strict casts/inference/raw types+lints6 analyzer no issues.
+  Pure evidence is not actual Flutter/network/SDK/hosted proof.
+- Both new Dart files pinned format clean; inventory88/46 QA regressions/whitespace
+  passed. Separate schema/optional/role/score/bounds/immutability/diff review;
+  all87 old QA cases/findings/gates exact/all14 hosted pending. No old source/test,
+  default flag/Auth strategy/provider/SDK/vault/RLS/contract/CI/dependency/Pro/content
+  changes. No full local Flutter/analyzer/build or denied bootstrap retry/bypass.
+- Five paths: new lib/features/ai/domain/conversation_responses.dart and
+  test/features/ai/conversation_responses_test.dart; new docs/CONVERSATION_RESPONSES.md;
+  docs/PROJECT_STATUS.md and qa/matrix.json. Publish actual parent base_tree/full
+  recursive tree/local equality/unaffected blob-mode-type proof; five exact UTF8/
+  blobSHA/single parent/tree readbacks then fresh own marker/head expected-head
+  non-force update. Final commit/tree/exact new CI/latest attempt/released handoff
+  in41/17/37.
+- Next exact new-head/latest-attempt complete allfive jobs/every required step;
+  fix real diagnostics retaining assertions. Pending-only handoff/no duplicate
+  source/long polling. After green bind request/response DTOs to captured-session
+  idempotent conversation gateway/recovery/UI; server owns auth/receipts. No
+  owner/message correlation/transport/retry/voice acceptance follows from DTOs.
+  Keep41 draft/issues open/AI defaults off/all14 hosted pending; no merge/close/
+  deploy/release/provider/Auth strategy/collection/spend/security/schedule action
+  or Personal Alpha claim.

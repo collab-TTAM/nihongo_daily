@@ -2146,6 +2146,36 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_requests_test.dart",
       "limitation": "Pure request/fixture validation is not hosted Auth, scenario existence/ownership, provider, durable receipt/retry, conversation response/transport/UI or voice proof. No dispatch/UUID generation/retention/default activation or Auth strategy change. Full exact-head Flutter/platform CI and hosted learner gates remain required; all14 release groups stay pending."
+    },
+    {
+      "id": "conversation-mutation-responses",
+      "status": "automated-baseline",
+      "scope": "Strict immutable frozen conversation start/turn/finish responses, assistant role/message/nullable fields, optional feedback presence, bounded score/list/text validation and fresh immutable nested snapshots.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "three strict responses round trip unchanged frozen fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "optional feedback omitted and empty remain distinct and null is invalid"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "input aliases exports and every nested list cannot mutate captured responses"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "nested corrections references and mixed error success fail closed without echo"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_responses_test.dart",
+      "limitation": "Pure shape/fixture validation does not verify hosted identity/session ownership/message correlation/provider authenticity/durable receipts/retry/conversation UI/audio safety/playback. Opaque audio references are never activated; recommendations authorize no SRS/progress write. Exact new-head Flutter/platform CI and all14 pending hosted learner release gates remain required. No provider/Auth strategy/default activation."
     }
   ],
   "findings": [
