@@ -2452,6 +2452,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_source_test.dart",
       "limitation": "Ten authored TEST ONLY source/real-flow cases require exact-head Flutter execution. No mounted conversation route/UI or hosted provider/JWT/voice/learner proof, no default activation; all14 hosted gates pending."
+    },
+    {
+      "id": "conversation-mounted-host",
+      "status": "automated-baseline",
+      "scope": "Actual mounted AccountStartupApp/default Riverpod conversation binding across vault/profile readiness, explicit captured HTTP start, refresh/logout and default-off.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted conversation binding waits for vault profile and fences refresh logout"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted App conversation binding remains off by default"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "each fixture must release its real exclusive vault owner"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "Two new mounted host cases authored/not locally executed; TEST ONLY Auth/vault/profile/HTTP ports and unsigned JWT over actual SDK/journal are not hosted identity/provider/receipts/voice/learner proof. No conversation UI/default activation; all14 hosted groups pending."
     }
   ],
   "findings": [

@@ -13,6 +13,8 @@ import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_controller.dart';
+import 'package:nihongo_daily/features/ai/application/ai_conversation_controller.dart';
+import 'package:nihongo_daily/features/ai/application/ai_conversation_view_binding.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_view_binding.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
@@ -866,4 +868,166 @@ void main() {
       });
     },
   );
+
+  _ownedTest(
+    'mounted conversation binding waits for vault profile and fences refresh logout',
+    (tester) async {
+      final app = await _fixture(
+        tester,
+        start: false,
+        enabled: false,
+        conversationEnabled: true,
+      );
+      AiConversationController? view;
+      ProviderSubscription<AiConversationViewBinding?>? subscription;
+      try {
+        app.vault.secret = 'TEST_ONLY_SAVED';
+        app.vault.writeWait = Completer<void>();
+        app.server.profileWait = Completer<http.Response>();
+        await tester.runAsync(() async {
+          app.starting = app.controller.start();
+          await lifecycle.flush();
+        });
+        await tester.pumpWidget(AccountStartupApp(controller: app.controller));
+        await tester.pump();
+        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
+        expect(app.controller.aiConversationSource, isNull);
+        expect(app.ai.requests, isEmpty);
+        await tester.runAsync(() async {
+          app.vault.writeWait!.complete();
+          await app.starting;
+          await lifecycle.flush();
+        });
+        expect(app.vault.secret, app.server.secret);
+        expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+        final container = await _mount(tester, app);
+        await tester.runAsync(() async {
+          expect(container.read(aiConversationSourceProvider), same(app.owner));
+          subscription = container.listen(
+            aiConversationViewBindingProvider,
+            (_, _) {},
+          );
+          expect(container.read(aiConversationViewBindingProvider), isNull);
+          expect(app.owner.createAiConversationSession(), isNull);
+          expect(app.ai.requests, isEmpty);
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        late AiConversationViewBinding old;
+        late String oldBearer;
+        await tester.runAsync(() async {
+          old = container.read(aiConversationViewBindingProvider)!;
+          expect(old.session, same(app.owner.createAiConversationSession()));
+          expect(
+            old.availabilityChanges,
+            same(app.owner.aiConversationChanges),
+          );
+          expect(
+            old.session.snapshot.phase,
+            ConversationSessionPhase.notStarted,
+          );
+          expect(container.read(aiTextViewBindingProvider), isNull);
+          expect(app.ai.requests, isEmpty);
+          final controller = AiConversationController(
+            session: old.session,
+            availabilityChanges: old.availabilityChanges,
+          );
+          view = controller;
+          final request = StartConversationRequest.fromJson(
+            _fixtures['start_conversation_request'],
+          );
+          oldBearer = app.server.bearer;
+          await controller.start(
+            scenarioId: request.scenarioId,
+            level: request.level,
+            clientEventId: request.clientEventId,
+          );
+          expect(
+            controller.state.conversation!.phase,
+            ConversationSessionPhase.active,
+          );
+          final sent = app.ai.requests.single as http.Request;
+          expect(sent.url.path, '/functions/v1/start_conversation');
+          expect(sent.headers['authorization'], 'Bearer $oldBearer');
+          expect(jsonDecode(sent.body), request.toJson());
+        });
+        app.vault.writeWait = Completer<void>();
+        app.server.profileWait = Completer<http.Response>();
+        Future<void>? refreshing;
+        await tester.runAsync(() async {
+          refreshing = app.owner.refresh();
+          expect(old.session.isCurrent, isFalse);
+          expect(view!.state.phase, AiConversationPhase.unavailable);
+          expect(view!.state.conversation, isNull);
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          expect(container.read(aiConversationViewBindingProvider), isNull);
+          expect(app.ai.requests, hasLength(1));
+          app.vault.writeWait!.complete();
+          await refreshing;
+          await lifecycle.flush();
+          expect(app.vault.secret, app.server.secret);
+          expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+          expect(container.read(aiConversationViewBindingProvider), isNull);
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          final next = container.read(aiConversationViewBindingProvider)!;
+          expect(next.session, isNot(same(old.session)));
+          expect(next.session, same(app.owner.createAiConversationSession()));
+          expect(
+            next.session.snapshot.phase,
+            ConversationSessionPhase.notStarted,
+          );
+          expect(next.session.snapshot.messages, isEmpty);
+          expect(old.session.snapshot.messages, isEmpty);
+          expect(view!.state.conversation, isNull);
+          expect(app.server.bearer, isNot(oldBearer));
+          expect(app.ai.requests, hasLength(1)); // Refresh never resends start.
+          await app.runtime.account.signOut();
+          await lifecycle.flush();
+          expect(next.session.isCurrent, isFalse);
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          expect(container.read(aiConversationViewBindingProvider), isNull);
+          expect(app.owner.createAiConversationSession(), isNull);
+          expect(app.ai.requests, hasLength(1));
+        });
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.runAsync(() async {
+          view?.dispose();
+          subscription?.close();
+        });
+      }
+    },
+  );
+
+  _ownedTest('mounted App conversation binding remains off by default', (
+    tester,
+  ) async {
+    final app = await _fixture(tester);
+    await tester.runAsync(app.login);
+    final container = await _mount(tester, app);
+    await tester.runAsync(() async {
+      expect(container.read(aiConversationSourceProvider), same(app.owner));
+      expect(container.read(aiConversationViewBindingProvider), isNull);
+      expect(app.owner.createAiConversationSession(), isNull);
+      expect(app.owner.createAiTextRepository(), isNotNull);
+      expect(app.ai.requests, isEmpty);
+    });
+    expect(tester.takeException(), isNull);
+  });
 }
