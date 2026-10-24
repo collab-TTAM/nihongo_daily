@@ -49,6 +49,9 @@ final class CapturedConversationSession {
   bool _checking = false;
   bool _revoked = false;
 
+  /// Reentrant reads must redact while a supplied availability getter is active.
+  /// This hint grants no authority; callers still check isCurrent afterward.
+  bool get isCheckingAvailability => _checking;
   bool get isBusy => _executing || _checking || _lane.isBusy;
   bool get hasUnresolvedMutation => _lane.hasUnresolvedMutation;
 

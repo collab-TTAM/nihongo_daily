@@ -2394,6 +2394,37 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "Auth/vault/HTTP ports and unsigned JWT are TEST ONLY; real SDK/native journal/owned startup assertions are not hosted provider/JWT/receipt/voice/learner proof. No conversation App provider/binding/UI/source default activation; new cases require actual exact-head Flutter execution. All14 hosted gates pending; no resource lifetime or Auth strategy/collection/spend changes."
+    },
+    {
+      "id": "conversation-view-controller",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured conversation controller with explicit exact-event retry after drain, unresolved-event/new-round fences and redacted lifecycle/reentry publication.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_controller_test.dart",
+          "contains": "explicit progression uses exact caller events and captured session only"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_controller_test.dart",
+          "contains": "uncertain ${operation.name} lateError=$lateError retries exact DTO after drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_controller_test.dart",
+          "contains": "duplicate taps port and readiness reentry cannot create another command"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_controller_test.dart",
+          "contains": "disposed timeout view cannot recover by remounting or accept late success"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_controller_test.dart test/features/ai/captured_conversation_session_test.dart",
+      "limitation": "Pure injected Auth/port tests use the actual captured flow but do not prove HTTP/native/UI/hosted JWT/receipts/provider/voice. No scenario catalog, App/Riverpod binding, default activation, durable recovery or new-round/reset policy; all14 hosted gates pending."
     }
   ],
   "findings": [
