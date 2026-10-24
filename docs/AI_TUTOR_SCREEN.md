@@ -166,3 +166,31 @@ Production lifetime/locking, default AI flags, scope and security are unchanged;
 no unique-project workaround, owner-set reset, skipped test or timeout increase.
 New exact-head Flutter CI must verify corrected cleanup and all eight journeys.
 The correction is formatted locally; no new local Flutter execution is claimed.
+
+
+## Mounted HTTP401 invalidation and explicit refresh
+
+Parent03ca4e3 CI40061875705 attempt1 passed allfive jobs/every required step,
+923 Flutter and five Chrome tests. All eight owned startup/tutor journeys,
+including cleanup ownership assertions, now passed. This confirms the fixture
+ordering correction; simulated service/vault/unsigned JWT ports are not hosted
+learner, identity, Windows credential hardware or live provider evidence.
+
+A ninth journey is authored in ai_owned_startup_journey_test.dart, UNRUN locally.
+It first renders an actual strict explanation through the mounted control, then
+returns HTTP401/plain private response bytes through the real SDK-bound transport.
+It asserts previous answer/rejected editor disappear, raw bytes remain hidden,
+old repository is revoked while account readiness is still ready, and neither
+another AI request nor an Auth call occurs automatically. A retained send and
+explicit factory re-acquisition cannot revive the retired capability; leaving and
+re-entering /ai remains unavailable. Only an explicit owner refresh, persisted
+rotation and ready-profile barrier publish a different capability with an empty
+editor. Old callbacks still send nothing; a new explicit request uses the fresh
+bearer and succeeds. No provider activation, implicit retry/refresh, receipt or
+remote rollback guarantee is introduced. Defaults remain off.
+
+The case uses the existing real-loop owned finally/release assertion and existing
+TEST ONLY service/vault fixtures without new source/binding/account overrides.
+All original eight test bodies/helpers/assertions are retained. New exact-head
+Flutter/analyzer/platform CI must confirm this ninth case; local format/QA checks
+are not its execution. Hosted/provider/voice/release gates remain open.

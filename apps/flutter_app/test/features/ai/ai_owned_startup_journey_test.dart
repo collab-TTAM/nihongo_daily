@@ -675,4 +675,82 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  _ownedTest(
+    'mounted tutor HTTP401 clears private state and requires fresh explicit refresh',
+    (tester) async {
+      final app = await _fixture(tester);
+      await tester.runAsync(app.login);
+      final container = await _mount(tester, app);
+      final old = container.read(aiTextViewBindingProvider)!;
+      final oldBearer = app.server.bearer;
+      await _draft(tester, 'TEST ONLY PREVIOUS ANSWER');
+      await _send(tester);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('ai-result')), findsOneWidget);
+      final retained = await _draft(tester, 'TEST ONLY REJECTED DRAFT');
+      final authCount = app.server.requests.length;
+      app.ai.onSend = (_) async => http.StreamedResponse(
+        Stream.value(utf8.encode('TEST_ONLY_PRIVATE_401_BODY')),
+        401,
+        headers: {'content-type': 'text/plain'},
+      );
+      await _send(tester);
+      await tester.pumpAndSettle();
+      _empty(tester);
+      expect(find.text('TEST ONLY PREVIOUS ANSWER'), findsNothing);
+      expect(find.text('TEST ONLY REJECTED DRAFT'), findsNothing);
+      expect(old.repository.isCurrent, isFalse);
+      expect(app.runtime.account.state.phase, AccountPhase.ready);
+      expect(app.server.requests, hasLength(authCount));
+      expect(app.ai.requests, hasLength(2));
+      retained();
+      expect(app.owner.createAiTextRepository(), isNull);
+      await tester.runAsync(lifecycle.flush);
+      await tester.pumpAndSettle();
+      expect(container.read(aiTextViewBindingProvider), isNull);
+      container.read(routerProvider).go('/conversation');
+      await tester.pumpAndSettle();
+      container.read(routerProvider).go('/ai');
+      await tester.pumpAndSettle();
+      _empty(tester);
+      retained();
+      expect(app.owner.createAiTextRepository(), isNull);
+      expect(app.ai.requests, hasLength(2));
+      expect(app.server.requests, hasLength(authCount));
+      app.ai.onSend = null;
+      await tester.runAsync(() async {
+        await app.owner.refresh();
+        await app.ready();
+        await lifecycle.flush();
+      });
+      await tester.pumpAndSettle();
+      final fresh = container.read(aiTextViewBindingProvider)!;
+      expect(identical(fresh.repository, old.repository), isFalse);
+      expect(app.vault.secret, app.server.secret);
+      expect(oldBearer, isNot(app.server.bearer));
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('ai-draft')))
+            .controller!
+            .text,
+        isEmpty,
+      );
+      expect(find.byKey(const Key('ai-result')), findsNothing);
+      retained();
+      expect(app.ai.requests, hasLength(2));
+      await _draft(tester, 'TEST ONLY FRESH REQUEST');
+      await _send(tester);
+      await tester.pumpAndSettle();
+      expect(app.ai.requests, hasLength(3));
+      expect(app.ai.requests[1].headers['authorization'], 'Bearer $oldBearer');
+      expect(
+        app.ai.requests.last.headers['authorization'],
+        'Bearer ${app.server.bearer}',
+      );
+      expect(find.byKey(const Key('ai-result')), findsOneWidget);
+      expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

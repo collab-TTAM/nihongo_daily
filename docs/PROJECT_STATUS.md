@@ -5575,3 +5575,44 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   provider/voice/learner/physical launch and human gates remain; no merge/closure/
   deployment/release/provider/Auth strategy/collection/spend/security/schedule
   change or Personal Alpha claim.
+
+
+## Mounted AI HTTP401 lifecycle regression — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0508-ai-unauthorized; resume draft41 branch
+  automation/issue-11-plan-sdk-integration at03ca4e308c6a684fb8b313268606c4c85df248e3
+  /treebaf7dd870969dff5a993e33d1c2bdba80ad25911. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released04:19:53 UTC.
+- Parent CI40061875705 raw exact03ca4e3/latest attempt1 completed success:
+  allfive jobs/every required step/no skips. Flutter log120777261349 confirms923
+  tests/all8 actual owned-startup/tutor journeys including per-case ownership
+  release assertion and five Chrome cases; native/Windows/SQL/Edge/builds passed.
+  Previous fixture cleanup verified. Component evidence, not hosted acceptance.
+- Add one meaningful integration case, actual owned startup/default providers/
+  router/mounted tutor/SDK-bound HTTP401 after a displayed strict answer. Check
+  previous answer/rejected editor removal, raw private body redaction, permanent
+  old repo revocation despite account-ready state, no auto AI/Auth dispatch,
+  retained callback/factory/navigation cannot resurrect capability. Explicit
+  owner refresh/persisted rotation/profile readiness grants different capability
+  and empty editor; old callback still fenced; fresh explicit request uses new
+  captured bearer. Existing owned finally/actual target release assertion reused.
+- Ninth case authored UNRUN locally; all original8 bodies/helpers/assertions kept
+  byte-for-byte before appended case. No production source/lock/default flag/
+  SDK/vault/schema/RLS/provider/Auth strategy/Pro/content/QA matrix/gate/workflow/
+  dependency change. Main and staging AI remain disabled/all14 hosted groups pending.
+- Fresh official Dart3.9.2 checksum verified; fixture pinned format clean with
+  unresolved Flutter lint include warning (not full analysis). Inventory86,
+  46 QA regressions/whitespace passed. Separate actual source/wire/lifecycle/diff
+  review; no local new Flutter/analyzer/build execution or denied bootstrap retry.
+- Three paths: ai_owned_startup_journey_test.dart, docs/AI_TUTOR_SCREEN.md and
+  PROJECT_STATUS.md. Publish correct actual parent base_tree/full recursive tree/
+  local equality/unaffected blob-type-mode proof; allthree exact UTF8/blobSHA/
+  single parent/tree readbacks then fresh own marker/head expected-head nonforce.
+  Final commit/tree/exact workflow/latest attempt/released handoff in41/17/37.
+- Next exact new-head latest-attempt allfive jobs/every required step/ninth case
+  logs; fix real diagnostics retaining assertions. Pending-only handoff/no duplicate
+  implementation/long polling. After green review remaining #17 text-conversation
+  integration and independent ready work. Keep41 draft/issues open/defaults off;
+  hosted identity/provider/voice/learner/physical launch/human gates remain. No
+  merge/close/deploy/release/provider/collection/spend/security/schedule action or
+  Personal Alpha claim.
