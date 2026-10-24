@@ -509,8 +509,9 @@ void main() {
         expect(runtime.createAiConversationSession(), isNull);
         expect(aiHttp.requests, hasLength(1));
       } finally {
-        if (!held.isCompleted)
+        if (!held.isCompleted) {
           held.completeError(StateError('TEST_ONLY_LATE_CONVERSATION'));
+        }
       }
       await lifecycle.flush();
       final next = runtime.createAiConversationSession()!;
@@ -562,8 +563,9 @@ void main() {
         expect(drained, isFalse);
         expect(aiHttp.closed, isFalse);
       } finally {
-        if (!held.isCompleted)
+        if (!held.isCompleted) {
           held.completeError(StateError('TEST_ONLY_LATE_CLOSE'));
+        }
       }
       await closing;
       expect(drained, isTrue);

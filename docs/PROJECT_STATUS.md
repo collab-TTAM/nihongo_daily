@@ -6016,3 +6016,42 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   draft/issues open/AI flags off/all14 hosted pending/human gates intact. No hosted
   JWT/provider/receipt/voice/learner/physical launch proof; no merge/close/deploy/
   release/Auth strategy/provider/collection/spend/security/schedule/Alpha claim.
+
+
+## Conversation runtime fixture lint correction — #17, 2026-10-24 UTC
+
+- Marker core-20261024T1309-runtime-lint; draft41 branch
+  automation/issue-11-plan-sdk-integration, parent0d00728b0136b20225a15a9147f81a3b73778a38
+  /treef31108e82a743cfa6aa6dfc2510c98031236cd70. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released12:20:58 UTC.
+- Exact parent CI40093496842/latest attempt1 completed failure. Full five-job
+  snapshot observed: repo-sanity/AI/database/Windows completed success with every
+  step passing. Flutter format succeeded, then analyzer failed exactly two
+  curly_braces_in_flow_control_structures diagnostics in new runtime fixture
+  cleanup at lines513/566 (log120871209718). Flutter tests, later native/browser/
+  wire checks and Web build/upload skipped; no passing integration claim.
+- Added blocks around those two existing if(!held.isCompleted) cleanup statements.
+  No assertion, timeout, helper behavior, test case or production source changed.
+  Separate exact-diff reconstruction proves all other bytes retained. All8 old
+  runtime tests and four new conversation cases remain, with their assertions;
+  no lint ignore/check weakening/new empty tests. Full QA matrix unchanged,
+  inventory93/46 QA regressions/whitespace passed; all14 hosted groups pending.
+- Fresh official Dart3.9.2 checksum verified; target format zero changes. No full
+  local Flutter/analyzer/integration/platform/build run or retry/bypass of prior
+  denied Flutter bootstrap. Parent pure25-owner checks remain historical,
+  not evidence that the four actual runtime cases executed. Corrected full
+  Flutter/analyzer/runtime tests must be confirmed by new exact-head CI.
+- Two paths only: apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart
+  and docs/PROJECT_STATUS.md. Publish with actual parent base_tree/full recursive
+  tree/local equality/unaffected mode-type-blob proof; two exact UTF8/blobSHA/
+  single parent/tree readbacks before fresh own active marker/head expected-head
+  non-force ref update. Commit/tree/new workflow/latest attempt/released handoff
+  persisted in41/17/37. No Pro/content/Auth strategy/provider/default/dependency/
+  production/RLS/contract/CI edit or merge/issue closure/deploy/release/schedule action.
+- NEXT inspect exact new-head/latest-attempt allfive jobs/every required step and
+  allfour new actual-runtime cases; fix real diagnostics retaining assertions.
+  Pending-only handoff/no duplicate implementation/long polling. Then startup/
+  source/UI conversation and explicit recovery/reconciliation/new-round policy.
+  Keep41 draft/issues open/AI flags off/all14 hosted pending/human gates intact;
+  TEST ONLY Auth/vault/HTTP and builds are not hosted provider/JWT/voice/learner/
+  physical launch or Personal Alpha proof.
