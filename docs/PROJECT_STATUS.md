@@ -6162,3 +6162,52 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   deploy/release/Auth strategy/provider/collection/spend/security/schedule action
   or Personal Alpha claim; fixtures/builds are not hosted JWT/provider/voice/
   learner/physical launch proof.
+
+
+## Source-startup journey real-loop correction — #17, 2026-10-24 UTC
+
+- Marker core-20261024T1612-source-real-loop; draft41 branch
+  automation/issue-11-plan-sdk-integration, parent3b92997a0dce4cafc9199761b8e0a78b259e13c4
+  /treefcfe0ecb93610cc63cc0ed5c988f0179a1e323a0. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released15:17:27 UTC.
+- Parent CI40106242750 raw exact3b92997/latest attempt1 completed failure.
+  Complete five-job snapshot: repo-sanity/AI/database/Windows all jobs/every step
+  success. Timestamp validator fix/new regressions now verified. Flutter format/
+  analyze passed,1005 tests passed/two new source startup cases failed: first
+  ten-minute timeout, second guarded-function conflict after prior test remained
+  outstanding (log120908766843). Later native/browser/wire checks and Web build/
+  upload skipped, not passed. No passing new source-case/full Flutter claim.
+- The new nonvisual journeys mixed FakeAsync capability/listener construction
+  and cancellation with multiple real-loop runAsync I/O calls. Keep those two
+  source journeys in one real-loop body each, including source factory, listen,
+  async start/refresh/logout/close, cancellation and assertions. Existing fixture
+  construction already runs on real loop; no nested runAsync in journey bodies.
+  This addresses the cross-zone risk shown by the timeout; exact stalled await
+  was not identified by the remote timeout trace and success still requires CI.
+- New private _sourceJourney helper bounds entire real-loop body to15s instead
+  of waiting the default10min, no test/production timeout increase. Existing
+  _ownedTest real-loop finally cleanup and exclusive-vault target-release assert
+  remain unchanged. No production source, ownership semantics, feature flag,
+  provider/Auth strategy, endpoint, contract or resource policy changed.
+- Separate diff proof: all9 original main journey cases exact; both new source
+  cases have identical expect expressions/order; no case/assertion removed,
+  weakened or skipped. No new empty tests, no CI/check changes. Entire QA matrix
+  exact/inventory94/46 QA regressions/whitespace passed/all14 hosted pending.
+- Fresh official Dart3.9.2 checksum matched; target format zero changes. No full
+  local Flutter/analyzer/journey/platform/build execution or denied Flutter
+  bootstrap retry/bypass. These checks validate source/diff only; new CI must
+  confirm both actual owned SDK/native journal/source cases plus all full gates.
+- Two paths only: apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart
+  and docs/PROJECT_STATUS.md. Publish actual parent base_tree/full recursive tree/
+  local equality/unaffected mode-type-blob proof; two exact UTF8/blobSHA/single
+  parent/tree readbacks before fresh own active marker/head expected-head non-force
+  ref update. Final commit/tree/new workflow/latest attempt/released handoff in
+ 41/17/37. No Pro/content/manifest/dependency/production/QA matrix edit.
+- Next exact-head/latest-attempt allfive jobs/every required step and both source
+  startup cases. Fix real diagnostics retaining all assertions; pending-only
+  handoff/no duplicate code/long polling. Then conversation controller/App binding/
+  UI/explicit same-event recovery/reconciliation/new-round policy. Keep41 draft/
+  issues open/AI flags off/all14 hosted pending/human gates intact. No merge/close/
+  deploy/release/Auth strategy/provider/collection/spend/security/schedule action
+  or Alpha claim; TEST ONLY fixtures/builds are not hosted JWT/provider/voice/
+  learner/physical launch proof.

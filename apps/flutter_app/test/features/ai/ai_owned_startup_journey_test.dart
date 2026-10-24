@@ -265,6 +265,16 @@ Future<_App> _fixture(
   return app;
 }
 
+// Nonvisual source/SDK journeys must create, listen, await and cancel in one
+// real event-loop zone. Bound the whole journey instead of waiting ten minutes
+// for a mixed FakeAsync/real-loop stream completion that cannot be pumped.
+Future<void> _sourceJourney(
+  WidgetTester tester,
+  Future<void> Function() body,
+) async {
+  await tester.runAsync(() => body().timeout(const Duration(seconds: 15)));
+}
+
 Future<ProviderContainer> _mount(WidgetTester tester, _App app) async {
   await tester.pumpWidget(AccountStartupApp(controller: app.controller));
   // The account route can still show an intentionally held profile spinner.
@@ -771,89 +781,89 @@ void main() {
         conversationEnabled: true,
         start: false,
       );
-      expect(app.controller.aiConversationSource, isNull);
-      expect(app.owner.createAiConversationSession(), isNull);
-      expect(app.ai.requests, isEmpty);
-      await tester.runAsync(app.controller.start);
-      final source = app.controller.aiConversationSource!;
-      expect(identical(source, app.owner), isTrue);
-      expect(
-        identical(
-          source.aiConversationChanges,
-          app.runtime.aiConversationChanges,
-        ),
-        isTrue,
-      );
-      expect(
-        identical(
-          app.owner.session.aiConversationChanges,
-          source.aiConversationChanges,
-        ),
-        isTrue,
-      );
-      expect(source.createAiConversationSession(), isNull);
-      var hints = 0;
-      final listener = source.aiConversationChanges.listen((_) {
-        hints++;
-      });
-      try {
-        await tester.runAsync(app.login);
-        final flow = source.createAiConversationSession()!;
-        expect(
-          identical(app.owner.session.createAiConversationSession(), flow),
-          isTrue,
-        );
-        expect(
-          identical(app.runtime.createAiConversationSession(), flow),
-          isTrue,
-        );
-        expect(identical(source.createAiConversationSession(), flow), isTrue);
-        expect(app.owner.createAiTextRepository(), isNull);
+      await _sourceJourney(tester, () async {
+        expect(app.controller.aiConversationSource, isNull);
+        expect(app.owner.createAiConversationSession(), isNull);
         expect(app.ai.requests, isEmpty);
-        await tester.runAsync(
-          () => flow.start(
+        await app.controller.start();
+        final source = app.controller.aiConversationSource!;
+        expect(identical(source, app.owner), isTrue);
+        expect(
+          identical(
+            source.aiConversationChanges,
+            app.runtime.aiConversationChanges,
+          ),
+          isTrue,
+        );
+        expect(
+          identical(
+            app.owner.session.aiConversationChanges,
+            source.aiConversationChanges,
+          ),
+          isTrue,
+        );
+        expect(source.createAiConversationSession(), isNull);
+        var hints = 0;
+        final listener = source.aiConversationChanges.listen((_) {
+          hints++;
+        });
+        try {
+          await app.login();
+          final flow = source.createAiConversationSession()!;
+          expect(
+            identical(app.owner.session.createAiConversationSession(), flow),
+            isTrue,
+          );
+          expect(
+            identical(app.runtime.createAiConversationSession(), flow),
+            isTrue,
+          );
+          expect(identical(source.createAiConversationSession(), flow), isTrue);
+          expect(app.owner.createAiTextRepository(), isNull);
+          expect(app.ai.requests, isEmpty);
+          await flow.start(
             StartConversationRequest.fromJson(
               _fixtures['start_conversation_request'],
             ),
-          ),
-        );
-        expect(flow.snapshot.phase, ConversationSessionPhase.active);
-        expect(app.ai.requests, hasLength(1));
-        final oldSecret = app.vault.secret;
-        await tester.runAsync(() async {
+          );
+          expect(flow.snapshot.phase, ConversationSessionPhase.active);
+          expect(app.ai.requests, hasLength(1));
+          final oldSecret = app.vault.secret;
           await app.owner.refresh();
           await app.ready();
-        });
-        expect(flow.snapshot.messages, isEmpty);
-        expect(app.vault.secret, isNot(oldSecret));
-        final next = source.createAiConversationSession()!;
-        expect(identical(next, flow), isFalse);
-        expect(next.snapshot.phase, ConversationSessionPhase.notStarted);
-        await tester.runAsync(() => Future<void>.delayed(Duration.zero));
-        expect(hints, greaterThan(0));
-        await tester.runAsync(app.runtime.account.signOut);
-        expect(next.snapshot.messages, isEmpty);
-        expect(source.createAiConversationSession(), isNull);
-        await tester.runAsync(app.controller.close);
-        expect(app.controller.aiConversationSource, isNull);
-        expect(app.owner.createAiConversationSession(), isNull);
-      } finally {
-        await listener.cancel();
-      }
+          expect(flow.snapshot.messages, isEmpty);
+          expect(app.vault.secret, isNot(oldSecret));
+          final next = source.createAiConversationSession()!;
+          expect(identical(next, flow), isFalse);
+          expect(next.snapshot.phase, ConversationSessionPhase.notStarted);
+          await Future<void>.delayed(Duration.zero);
+          expect(hints, greaterThan(0));
+          await app.runtime.account.signOut();
+          expect(next.snapshot.messages, isEmpty);
+          expect(source.createAiConversationSession(), isNull);
+          await app.controller.close();
+          expect(app.controller.aiConversationSource, isNull);
+          expect(app.owner.createAiConversationSession(), isNull);
+        } finally {
+          await listener.cancel();
+        }
+      });
     },
   );
   _ownedTest(
     'default-off conversation source stays unavailable through Windows startup',
     (tester) async {
       final app = await _fixture(tester);
-      await tester.runAsync(app.login);
-      final source = app.controller.aiConversationSource!;
-      expect(identical(source, app.owner), isTrue);
-      expect(app.runtime.isAiConversationEnabled, isFalse);
-      expect(source.createAiConversationSession(), isNull);
-      expect(app.owner.session.createAiConversationSession(), isNull);
-      expect(app.owner.createAiTextRepository(), isNotNull);
-      expect(app.ai.requests, isEmpty);
+      await _sourceJourney(tester, () async {
+        await app.login();
+        final source = app.controller.aiConversationSource!;
+        expect(identical(source, app.owner), isTrue);
+        expect(app.runtime.isAiConversationEnabled, isFalse);
+        expect(source.createAiConversationSession(), isNull);
+        expect(app.owner.session.createAiConversationSession(), isNull);
+        expect(app.owner.createAiTextRepository(), isNotNull);
+        expect(app.ai.requests, isEmpty);
+      });
     },
   );
 }
