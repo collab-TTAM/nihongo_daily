@@ -5355,3 +5355,43 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   UI refresh/logout/A-B-A/drain fixtures. Keep defaults off/41 draft/17 open/all14
   hosted groups pending; no merge/close/deploy/release/provider/spend/collection/
   security/schedule action or Personal Alpha claim.
+
+
+## Tutor SDK compile/analyzer correction — Issue #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0010-ai-screen-fix; resumed draft41 branch
+  automation/issue-11-plan-sdk-integration at exact parent
+  9bb5e4c6c0af53440c792c399b3ef58f189e85ed/treef887f8ffee5dd71a31d57f206b8103e9cf6cbe3f.
+  Fresh main78a44fa/source37afa572a unchanged; prior released23:24:43 UTC.
+- CI40039427005 raw exact parent/latest attempt1 completed failure, complete all
+  five latest jobs observed. AI/database/repo-sanity every step success. Flutter
+  pinned format passed, then analyzer reported const_with_non_const at screen243
+  and library_private_types_in_public_api at test70. Windows first TEST ONLY bridge
+  build failed for the same invalid const Semantics. Remaining Flutter tests/15 new
+  widgets/Chrome/Web/native/Windows builds and verifiers skipped, never passed.
+- Remove const only from the non-const Semantics constructor; keep its Text child
+  const, unchanged loading text/liveRegion. Rename fixture mount helper to _mount
+  and all13 call sites, keeping its private Harness parameter. Separate exact
+  diff/inverse-transform review recovers both parent files byte-for-byte after
+  reversing only those changes: all13 test declarations/15 expanded widget cases,
+  assertion bodies, fixtures and UI behavior retained. No suppression or lint/
+  test/SDK/CI/dependency/security reduction. Original app tests unchanged.
+- Fresh official Dart3.9.2 archive/fresh checksum matched; two-file pinned format
+  zero changes (unresolved app Flutter lint include warning, not analyzer proof).
+  Inventory85/46 QA regressions/whitespace passed. Full local Flutter/analyzer/
+  widgets/platform/build unrun; new exact-head CI must confirm this correction.
+- Three paths only: lib/features/ai/presentation/ai_tutor_screen.dart,
+  test/features/ai/ai_tutor_screen_test.dart, docs/PROJECT_STATUS.md. Runtime/
+  controller/route/binding/main/staging/AI flag/Auth/vault/SQL/RLS/fixtures/QA
+  matrix/contracts/CI/dependencies and Pro14/38/content/manifests unchanged.
+- Publish correct actual parent base_tree/full recursive tree/local tree match/
+  unchanged blob-type-mode proof, three UTF8/SHA readbacks/single parent and fresh
+  own marker/head expected-head non-force update. Final commit/tree/new exact
+  workflow/latest attempt and released checkpoint in41/17/37.
+- Next inspect exact new-head allfive jobs/every required step, especially the15
+  widgets; fix actual diagnostics retaining assertions. Pending-only handoff/no
+  duplicate code/long polling. After full green continue actual owned-startup/
+  ready-generation factory-to-provider bridge and SDK/vault/profile/UI lifecycle
+  fixtures. Keep defaults off/41 draft/17 open/all14 hosted groups pending. No
+  merge/close/deploy/release/Auth strategy/provider/spend/collection/security/
+  schedule action or Personal Alpha claim.

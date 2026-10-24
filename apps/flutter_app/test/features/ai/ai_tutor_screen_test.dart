@@ -64,7 +64,7 @@ final class _Harness {
   );
 }
 
-Future<ProviderContainer> mount(
+Future<ProviderContainer> _mount(
   WidgetTester tester,
   AiTextViewBinding? binding, {
   List<_Harness> harnesses = const [],
@@ -124,7 +124,7 @@ void main() {
   testWidgets('null default keeps original unavailable preview and no input', (
     tester,
   ) async {
-    await mount(tester, null);
+    await _mount(tester, null);
     expect(find.text('Đang xây dựng'), findsOneWidget);
     expect(
       find.text('Giải thích và sửa câu ở trình độ N5–N4.'),
@@ -146,7 +146,7 @@ void main() {
           questionVi: 'TEST ONLY EXTERNAL',
         ),
       );
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       expect(
         tester.widget<TextField>(find.byKey(const Key('ai-draft'))).enabled,
         isFalse,
@@ -170,7 +170,7 @@ void main() {
     'explicit explanation renders accepted text examples reading translation and practice',
     (tester) async {
       final h = _Harness();
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       expect(h.port.calls, isEmpty);
       expect(sendButton(tester).onPressed, isNull);
       await enter(tester, '   ');
@@ -197,7 +197,7 @@ void main() {
     'correction preserves empty errors and uses explicitly chosen N4',
     (tester) async {
       final h = _Harness();
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       chooseCorrection(tester);
       await tester.pump();
       tester
@@ -223,7 +223,7 @@ void main() {
       final h = _Harness();
       final held = Completer<Object?>();
       h.port.onCall = (_) => held.future;
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       await enter(tester, 'TEST ONLY');
       final oldSend = sendButton(tester).onPressed!;
       await send(tester);
@@ -267,7 +267,7 @@ void main() {
   ) async {
     final h = _Harness();
     h.port.onCall = (_) => throw StateError('TEST_ONLY_PROVIDER_SECRET');
-    await mount(tester, h.binding, harnesses: [h]);
+    await _mount(tester, h.binding, harnesses: [h]);
     await enter(tester, 'TEST ONLY');
     await send(tester);
     await tester.pumpAndSettle();
@@ -289,7 +289,7 @@ void main() {
     (tester) async {
       final h = _Harness();
       h.port.onCall = (_) => {'answer_vi': 'TEST_ONLY_MALFORMED'};
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       await enter(tester, 'TEST ONLY');
       await send(tester);
       await tester.pumpAndSettle();
@@ -314,7 +314,7 @@ void main() {
     'editing and level or mode changes clear results and fence retained send',
     (tester) async {
       final h = _Harness();
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       await enter(tester, 'OLD QUESTION');
       final firstSend = sendButton(tester).onPressed!;
       await enter(tester, 'NEW QUESTION');
@@ -355,7 +355,7 @@ void main() {
     tester,
   ) async {
     final h = _Harness();
-    await mount(tester, h.binding, harnesses: [h]);
+    await _mount(tester, h.binding, harnesses: [h]);
     await enter(tester, 'PRIVATE OLD DRAFT');
     await send(tester);
     await tester.pumpAndSettle();
@@ -387,7 +387,7 @@ void main() {
         );
         final held = Completer<Object?>();
         a.port.onCall = (_) => held.future;
-        final container = await mount(tester, a.binding, harnesses: [a, b]);
+        final container = await _mount(tester, a.binding, harnesses: [a, b]);
         await enter(tester, 'PRIVATE A');
         final oldSend = sendButton(tester).onPressed!;
         await send(tester);
@@ -424,7 +424,7 @@ void main() {
     'source removal clears view and stale callbacks without closing borrowed repository',
     (tester) async {
       final h = _Harness();
-      final container = await mount(tester, h.binding, harnesses: [h]);
+      final container = await _mount(tester, h.binding, harnesses: [h]);
       await enter(tester, 'PRIVATE DRAFT');
       final oldSend = sendButton(tester).onPressed!;
       container.read(selectedBinding.notifier).state = null;
@@ -440,7 +440,7 @@ void main() {
     'code point input bound preserves accepted emoji and rejects oversized paste',
     (tester) async {
       final h = _Harness();
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       await enter(tester, '😀' * 5000);
       expect(
         tester
@@ -471,7 +471,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       final h = _Harness();
-      await mount(tester, h.binding, harnesses: [h]);
+      await _mount(tester, h.binding, harnesses: [h]);
       await enter(tester, 'TEST ONLY');
       await send(tester);
       await tester.pumpAndSettle();

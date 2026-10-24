@@ -240,9 +240,9 @@ class _BoundTutorState extends State<_BoundTutor> {
         if (state.phase == AiTextPhase.idle)
           const Text('Nhập câu hỏi hoặc câu cần sửa để bắt đầu.'),
         if (state.phase == AiTextPhase.loading)
-          const Semantics(
+          Semantics(
             liveRegion: true,
-            child: Text('Đang chờ kết quả AI…'),
+            child: const Text('Đang chờ kết quả AI…'),
           ),
         if (state.phase == AiTextPhase.pending ||
             (!canSubmit && state.phase != AiTextPhase.loading))
