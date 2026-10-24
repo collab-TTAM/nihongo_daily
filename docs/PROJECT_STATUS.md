@@ -5715,3 +5715,63 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Keep41 draft/issues open/AI defaults off/all14 hosted pending; no merge/close/
   deploy/release/provider/Auth strategy/collection/spend/security/schedule action
   or Personal Alpha claim.
+
+
+## One captured immutable conversation mutation — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0808-conversation-mutation; resume draft41 branch
+  automation/issue-11-plan-sdk-integration at81bd0f70102cc711d3c99fff2d936b3ff4c5753c
+  /tree703041be8a7e92017b6260ebf6f2521f44fdaf60. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released07:12:55 UTC.
+- Parent CI40073204935 raw exact81bd0f7/latest attempt1 completed success:
+  allfive jobs/every required step/no skips. Flutter log120811279750 confirms939
+  tests/all8 response-model cases and five Chrome cases; native/Windows/SQL/Edge/
+  builds passed. Component evidence, not hosted learner/provider acceptance.
+- Add per-event CapturedConversationMutation<T> with typed start/turn/finish
+  factories and borrowed unconfigured ConversationMutationTransport. One fixed
+  immutable scalar request/operation/client_event_id and exact captured session/
+  ready-generation fence. Construction sends nothing; explicit submit only.
+  Accepted typed success cached locally/no second dispatch while current; cache
+  is not durable receipt proof. Manual retry after uncertainty reuses same object/
+  wire/event identity; no generated IDs or auto retry. Register singleflight before
+  supplied port can reenter; positive<=15s timeout remains uncertain, busy until
+  accepted injected future settles. Consume late errors/success without caching.
+  Check identity/readiness before dispatch/publication/cache; permanent observed
+  loss/getter/unauthorized fence, explicit revoke drops cached publication. Safe
+  frozen error parser discards raw messages/unknown errors and restricts retryable.
+- 13/13 injected-port pure Dart tests passed: exact three frozen wires/typed
+  decoders/cache, same-wire manual retry, reentry/duplicates, timeout late success/
+  error, A-B-A late success/error, ready-loss/revoke/cache, unauthorized/redaction,
+  malformed/errors/unknown exceptions, nontransient flags/getter failures,
+  unavailable construction/deadlines and same-user fresh identity. Fresh official
+  Dart3.9.2 checksum verified; exact eight-file production/test graph+unchanged
+  fixture in disposable harness, only test runner import adapted to test1.26.2.
+  Strict casts/inference/raw types+lints6 analyzer clean after one explicit empty
+  test-map type; all assertions retained. Not actual SDK/HTTP or hosted proof.
+- SDK HTTP, global cross-instance serialization/event uniqueness, message/session
+  correlation, durable receipts/restart recovery/UI remain next work. Port must
+  bind actual captured bearer/generation, limit trusted fixed HTTP/JSON and block
+  fresh dispatch while ignored-abort network work drains; injected future settle
+  alone is not remote drain/rollback proof. Caller must revoke every owner barrier.
+  No borrowed SDK/HTTP/vault/journal ownership/cleanup, transcript persistence,
+  provider/default/voice/Auth strategy activation or learning/progress/SRS write.
+- Both new Dart files pinned format clean; inventory89/46 QA regressions/whitespace
+  passed. Separate reentry/drain/lifecycle/wire/immutability/error/scope/diff review;
+  all88 old QA cases/findings/gates exact/all14 hosted pending. No old source/test,
+  default flag/SQL/RLS/contract/CI/dependency/Pro/content edits or full local Flutter/
+  analyzer/build/denied bootstrap retry/bypass.
+- Five paths: new lib/features/ai/data/captured_conversation_mutation.dart and
+  test/features/ai/captured_conversation_mutation_test.dart; new
+  docs/CAPTURED_CONVERSATION_MUTATION.md; docs/PROJECT_STATUS.md and qa/matrix.json.
+  Publish actual parent base_tree/full recursive tree/local equality/unaffected
+  blob-type-mode proof, five exact UTF8/blobSHA/single parent/tree readbacks then
+  fresh own marker/head expected-head non-force update. Final commit/tree/new
+  exact workflow/latest attempt/released handoff in41/17/37.
+- Next exact new-head/latest-attempt complete allfive jobs/every required step;
+  fix real diagnostics retaining assertions. Pending-only handoff/no duplicate
+  source/long polling. After green add one captured-session conversation operation
+  coordinator/global serialization/receipt identity before SDK transport/UI.
+  Keep41 draft/issues open/AI defaults off/all14 hosted pending; hosted Auth/
+  provider/voice/learner/physical launch and human gates remain. No merge/close/
+  deploy/release/provider/Auth strategy/collection/spend/security/schedule action
+  or Personal Alpha claim.

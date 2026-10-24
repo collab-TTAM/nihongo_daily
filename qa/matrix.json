@@ -2176,6 +2176,41 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_responses_test.dart",
       "limitation": "Pure shape/fixture validation does not verify hosted identity/session ownership/message correlation/provider authenticity/durable receipts/retry/conversation UI/audio safety/playback. Opaque audio references are never activated; recommendations authorize no SRS/progress write. Exact new-head Flutter/platform CI and all14 pending hosted learner release gates remain required. No provider/Auth strategy/default activation."
+    },
+    {
+      "id": "captured-conversation-mutation",
+      "status": "automated-baseline",
+      "scope": "One immutable captured ready-session conversation mutation with typed start/turn/finish factories, same-wire manual retry, local accepted cache, reentrant singleflight, timeout-held injected-future drain and permanent late identity fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "three typed mutations send exact frozen requests and cache success without redispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "singleflight registers before synchronous port reentry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "timeout holds actual drain and late response cannot cache success error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "account identity replacement rejects late result and returning A cannot revive error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "new same-user identity never inherits the captured operation"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_mutation_test.dart",
+      "limitation": "Injected port/session/readiness fixtures are not actual SDK/HTTP, hosted Auth/provider/receipts or remote drain proof. This is per-event only: global coordination/event uniqueness/sequence correlation/restart persistence/UI/voice and SDK transport remain next work. Server must authorize owner/receipt replay; no new ID/automatic retry/default/provider activation. Borrowed resources untouched/all14 hosted release groups pending."
     }
   ],
   "findings": [
