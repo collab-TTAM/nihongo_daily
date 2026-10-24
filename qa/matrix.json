@@ -2289,6 +2289,45 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_session_test.dart",
       "limitation": "Pure injected-port component tests do not prove SDK/HTTP/hosted receipts/remote drain, server ownership or scenario/message context, cross-device/restart recovery, UI or voice. Host must revoke every lifecycle barrier; separate instances are not coordinated. No new IDs/reset/automatic retry/derived writes/default activation; all14 hosted release groups pending."
+    },
+    {
+      "id": "conversation-sdk-http",
+      "status": "automated-baseline",
+      "scope": "Captured actual Supabase SDK HTTP capability exposes a closed conversation operation set with strict DTOs and shares text/conversation actual HTTP busy-drain lease, exact event retries and safe identity/401 fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation fixed endpoints preserve captured bearer event and exact wire"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation operation allowlist and strict bodies reject before HTTP"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "text and conversation share one actual HTTP busy lease"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "captured conversation progression uses SDK HTTP and replays locally without redispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation timeout fences ignored abort then exact event retry after actual drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation 401 and SDK session replacement permanently fence old capability"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
+      "limitation": "Actual pinned SDK with TEST ONLY unsigned JWT/Auth and streamed AI HTTP responses; no hosted signature/provider/receipt/learner/voice proof. Runtime conversation factory/UI/reconciliation/restart remain open. No default activation, wider Auth/REST grants, credential writers, automatic retry or provider change; all14 hosted gates pending."
     }
   ],
   "findings": [

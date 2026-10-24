@@ -10,6 +10,8 @@ import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/data/supabase_ai_text_transport.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
 import 'package:supabase/supabase.dart';
@@ -938,6 +940,296 @@ void main() {
       expect(network.requests, hasLength(1));
       expect(network.closed, isFalse);
       await stream.close();
+    },
+  );
+
+  test(
+    'conversation fixed endpoints preserve captured bearer event and exact wire',
+    () async {
+      final t = make();
+      for (final op in [
+        'start_conversation',
+        'conversation_turn',
+        'finish_conversation',
+      ]) {
+        final body = request(op);
+        if (op == 'conversation_turn') body['text_ja'] = '  日\u3099  ';
+        expect(
+          await t.invoke(
+            capturedSession: auth.currentSession!,
+            operation: op,
+            body: body,
+          ),
+          fixture(op, 'response'),
+        );
+        final sent = network.requests.last as http.AbortableRequest;
+        expect(sent.url.toString(), '$origin/functions/v1/$op');
+        expect(sent.method, 'POST');
+        expect(sent.headers['authorization'], 'Bearer ${token(now, userA, 0)}');
+        expect(sent.headers['apikey'], key);
+        expect(sent.headers['cache-control'], 'no-store');
+        expect(sent.followRedirects, isFalse);
+        expect(sent.maxRedirects, 0);
+        expect(jsonDecode(sent.body), body);
+      }
+      expect(network.requests, hasLength(3));
+    },
+  );
+  test(
+    'conversation operation allowlist and strict bodies reject before HTTP',
+    () async {
+      final t = make();
+      for (final op in [
+        'tutor_explain',
+        'correct_sentence',
+        '../auth/v1/token',
+        'start_conversation?owner=x',
+        'https://evil.invalid',
+      ]) {
+        await expectLater(
+          t.invoke(
+            capturedSession: auth.currentSession!,
+            operation: op,
+            body: request('start_conversation'),
+          ),
+          throwsA(failure(AiTextErrorCode.validationFailure)),
+        );
+      }
+      for (final op in [
+        'start_conversation',
+        'conversation_turn',
+        'finish_conversation',
+      ]) {
+        for (final body in [
+          {...request(op), 'user_id': userB},
+          {...request(op), 'client_event_id': 'private malformed id'},
+          <String, Object>{},
+        ]) {
+          await expectLater(
+            t.invoke(
+              capturedSession: auth.currentSession!,
+              operation: op,
+              body: body,
+            ),
+            throwsA(failure(AiTextErrorCode.validationFailure)),
+          );
+        }
+        await expectLater(
+          t.invoke(
+            capturedSession: ReviewSession(userId: userA),
+            operation: op,
+            body: request(op),
+          ),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+      }
+      expect(network.requests, isEmpty);
+    },
+  );
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    test(
+      'conversation strict response decoding $op rejects foreign shape and duplicate JSON keys',
+      () async {
+        final t = make();
+        for (final raw in [
+          output('tutor_explain'),
+          '{"scores":{},"scores":{}}',
+          '{"private":"malformed"}',
+        ]) {
+          network.onSend = (_) async => response(raw);
+          await expectLater(
+            t.invoke(
+              capturedSession: auth.currentSession!,
+              operation: op,
+              body: request(op),
+            ),
+            throwsA(failure(AiTextErrorCode.internalError)),
+          );
+        }
+        expect(network.requests, hasLength(3));
+        network.onSend = (_) async => response(output(op));
+        expect(
+          await t.invoke(
+            capturedSession: auth.currentSession!,
+            operation: op,
+            body: request(op),
+          ),
+          fixture(op, 'response'),
+        );
+      },
+    );
+  }
+  for (final firstConversation in [true, false]) {
+    test(
+      'text and conversation share one actual HTTP busy lease conversationFirst=$firstConversation',
+      () async {
+        final t = make();
+        final held = Completer<http.StreamedResponse>();
+        network.onSend = (_) => held.future;
+        Future<Object?> conversation() => t.invoke(
+          capturedSession: auth.currentSession!,
+          operation: 'start_conversation',
+          body: request('start_conversation'),
+        );
+        final first = firstConversation ? conversation() : invoke(t);
+        await expectLater(
+          firstConversation ? invoke(t) : conversation(),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+        expect(network.requests, hasLength(1));
+        held.complete(
+          response(
+            output(firstConversation ? 'start_conversation' : 'tutor_explain'),
+          ),
+        );
+        await first;
+        expect(t.isBusy, isFalse);
+        network.onSend = (r) async =>
+            response(output(r.url.path.split('/').last));
+        await (firstConversation ? invoke(t) : conversation());
+        expect(network.requests, hasLength(2));
+      },
+    );
+  }
+  test(
+    'captured conversation progression uses SDK HTTP and replays locally without redispatch',
+    () async {
+      final t = make();
+      final flow = CapturedConversationSession(
+        auth: auth,
+        transport: t,
+        isReady: () => ready && t.isCurrent,
+      );
+      network.onSend = (r) async {
+        final op = r.url.path.split('/').last;
+        final raw = jsonDecode(output(op)) as Map<String, Object?>;
+        if (op == 'conversation_turn') {
+          final message = raw['assistant_message']! as Map<String, Object?>;
+          message['sequence_no'] = 2;
+          message['id'] = userB;
+        }
+        return response(jsonEncode(raw));
+      };
+      final start = StartConversationRequest.fromJson(
+        request('start_conversation'),
+      );
+      final turn = ConversationTurnRequest.fromJson(
+        request('conversation_turn'),
+      );
+      final finish = FinishConversationRequest.fromJson(
+        request('finish_conversation'),
+      );
+      await flow.start(start);
+      await flow.turn(turn);
+      final active = flow.snapshot;
+      await flow.start(start);
+      await flow.turn(turn);
+      expect(identical(flow.snapshot, active), isTrue);
+      final summary = await flow.finish(finish);
+      expect(identical(await flow.finish(finish), summary), isTrue);
+      expect(flow.snapshot.phase, ConversationSessionPhase.finished);
+      expect(flow.snapshot.messages.map((m) => m.sequenceNo), [0, 2]);
+      expect(network.requests, hasLength(3));
+      flow.revoke();
+      expect(flow.snapshot.messages, isEmpty);
+      expect(network.closed, isFalse);
+    },
+  );
+  test(
+    'conversation timeout fences ignored abort then exact event retry after actual drain',
+    () async {
+      final t = make(timeout: const Duration(milliseconds: 25));
+      final flow = CapturedConversationSession(
+        auth: auth,
+        transport: t,
+        isReady: () => ready && t.isCurrent,
+      );
+      final held = Completer<http.StreamedResponse>();
+      network.onSend = (_) => held.future;
+      final start = StartConversationRequest.fromJson(
+        request('start_conversation'),
+      );
+      await expectLater(
+        flow.start(start),
+        throwsA(failure(AiTextErrorCode.networkUnavailable)),
+      );
+      expect(t.isBusy, isTrue);
+      expect(flow.hasUnresolvedMutation, isTrue);
+      expect(flow.snapshot.phase, ConversationSessionPhase.notStarted);
+      await expectLater(
+        flow.start(start),
+        throwsA(isA<AiTextRequestPending>()),
+      );
+      await expectLater(invoke(t), throwsA(isA<AiTextRequestPending>()));
+      held.completeError(StateError('TEST_ONLY_PRIVATE_LATE'));
+      await Future<void>.delayed(Duration.zero);
+      expect(t.isBusy, isFalse);
+      expect(flow.hasUnresolvedMutation, isTrue);
+      await expectLater(
+        flow.start(
+          StartConversationRequest(
+            scenarioId: start.scenarioId,
+            level: start.level,
+            clientEventId: userB,
+          ),
+        ),
+        throwsA(isA<AiTextRequestPending>()),
+      );
+      expect(network.requests, hasLength(1));
+      network.onSend = (_) async => response(output('start_conversation'));
+      await flow.start(start);
+      final first = network.requests.first as http.Request;
+      final second = network.requests.last as http.Request;
+      expect(first.bodyBytes, second.bodyBytes);
+      expect(flow.snapshot.phase, ConversationSessionPhase.active);
+      expect(flow.hasUnresolvedMutation, isFalse);
+      expect(network.requests, hasLength(2));
+    },
+  );
+  test(
+    'conversation 401 and SDK session replacement permanently fence old capability',
+    () async {
+      final t = make();
+      final old = auth.currentSession!;
+      network.onSend = (_) async => response(
+        'TEST_ONLY_PRIVATE_BODY',
+        status: 401,
+        headers: {'content-type': 'text/plain'},
+      );
+      await expectLater(
+        t.invoke(
+          capturedSession: old,
+          operation: 'start_conversation',
+          body: request('start_conversation'),
+        ),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      expect(t.isCurrent, isFalse);
+      await expectLater(
+        invoke(t),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      generation++;
+      await login();
+      final fresh = make();
+      generation++;
+      await login();
+      await expectLater(
+        fresh.invoke(
+          capturedSession: auth.currentSession!,
+          operation: 'start_conversation',
+          body: request('start_conversation'),
+        ),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      expect(network.requests, hasLength(1));
+      await t.close();
+      expect(network.closed, isFalse);
+      expect(sdk.auth.currentSession, isNotNull);
     },
   );
 }

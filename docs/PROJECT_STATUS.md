@@ -5899,3 +5899,57 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   open/AI defaults off/all14 hosted pending; human gates remain. No merge/close/
   deploy/release/Auth strategy/provider/collection/spend/security/schedule action
   or Personal Alpha claim.
+
+
+## Captured SDK conversation HTTP port — #17, 2026-10-24 UTC
+
+- Marker core-20261024T1110-conversation-http; branch
+  automation/issue-11-plan-sdk-integration, parent3ad29d3d727a947d657a1e71360587f3e3306dda
+  /tree2ae15ef4cb48210e79da3aa6757ba8441c704249. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged. Prior worker released10:28:49 UTC.
+- Parent CI40085997614 raw exact3ad29d3/latest attempt1 completed success:
+  complete allfive jobs/every required step/no skips. Log120849285801 confirms
+  985 Flutter and five Chrome tests; full analyzer/Web/Windows/native/SQL/Edge
+  builds passed. Component evidence only; not hosted learner/identity proof.
+- SupabaseAiTextTransport also implements closed ConversationMutationTransport:
+  only start_conversation/conversation_turn/finish_conversation, fixed trusted
+  endpoint/public key and exact captured SDK bearer/ReviewSession/ready generation.
+  Strict request/response DTOs preserve exact scalar event/session/text wire.
+  Arbitrary URL/path, text operation and malformed/owner fields reject before HTTP.
+  Text and conversation share the same actual HTTP singleflight/drain engine,
+  unchanged byte/read/depth/UTF8/duplicate-key/media/redirect/timeout/401 guards.
+  No wider Auth/REST privileges, credential writer, global retarget or auto retry.
+- Ten new actual-SDK/HTTP cases plus all28 original unchanged cases passed (38/38):
+  fixed endpoints/bearer/exact wire; allowlist/body/session rejection; allthree
+  wrong-shape/duplicate JSON responses; shared text/conversation busy both ways;
+  actual captured session progression/local cache replay without HTTP redispatch;
+  timeout ignored-abort/exact-event retry after actual drain; 401 and same-user
+  SDK replacement fencing. Original full test/helper prefix retained exactly
+  except two added imports. TEST ONLY Auth/unsigned JWT/streamed HTTP, not hosted.
+- Fresh official Dart3.9.2 checksum matched; disposable complete14-file actual
+  production/test import graph+unchanged fixture, only Flutter runner import
+  adapted to test1.26.2. Supabase2.16.5/http1.6.0/logging1.3.0 and all8 SDK/HTTP
+  core package lock records exact. Changed transport/test strict analyzer clean.
+  Whole graph with newer lints6 reports one pre-existing unnecessary_underscores
+  info in unchanged supabase_review_binding.dart:47; no broad clean claim or
+  unrelated edit/suppression. No local full Flutter/platform/build execution or
+  retry/bypass of prior denied Flutter bootstrap. Pinned two-file format clean.
+- Inventory92/46 QA regressions/whitespace passed; all91 previous cases/gates/
+  findings exact/all14 hosted pending. Separate fixed-path/schema/dispatch/
+  credential/decoder/shared lease/cleanup/late response/diff review completed.
+- Five paths: existing supabase_ai_text_transport.dart and its test extended;
+  new docs/CONVERSATION_SDK_HTTP.md; PROJECT_STATUS.md/qa matrix. Correct actual
+  parent base_tree/full tree/local equality and unaffected path/type/mode/blob
+  proof plus allfive UTF8/blobSHA/single parent/tree readbacks required before
+  fresh own marker/head expected-head non-force update. Commit/tree/new exact
+  workflow/latest attempt/released checkpoint will be recorded in41/17/37.
+- Next observe new exact-head/latest-attempt complete allfive jobs/every required
+  step; pending-only handoff/no duplicate implementation. Then runtime-owned
+  conversation capability factory/startup/refresh/logout/late-I/O drain tests,
+  recovery/reconciliation and UI. Default runtime still exposes text only; no
+  conversation/provider activation. Port alone owns no receipts/progression;
+  retain captured session/lane/event and do not rebuild to bypass uncertainty.
+  No durable restart/transcript/server JWT/provider/voice/learner proof. Keep41
+  draft/issues open/AI off/all14 hosted pending/human gates intact. No merge/
+  close/deploy/release/Auth strategy/provider/collection/spend/security/schedule
+  action or Personal Alpha claim.

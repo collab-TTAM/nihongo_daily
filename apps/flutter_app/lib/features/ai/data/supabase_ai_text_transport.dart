@@ -9,12 +9,16 @@ import '../../srs/data/review_repository.dart';
 import '../../srs/data/supabase_review_binding.dart';
 import '../application/ai_text_runtime_owner.dart';
 import '../domain/ai_text_models.dart';
+import '../domain/conversation_requests.dart';
+import '../domain/conversation_responses.dart';
 import 'captured_ai_text_repository.dart';
+import 'captured_conversation_mutation.dart';
 
 /// Explicit owner-created capability, never installed by the default app.
 /// Borrows SDK/Auth and captures one exact SDK Session/token plus ready generation.
 /// The server still verifies the JWT; local claims are only fail-closed hints.
-final class SupabaseAiTextTransport implements OwnedAiTextTransport {
+final class SupabaseAiTextTransport
+    implements OwnedAiTextTransport, ConversationMutationTransport {
   SupabaseAiTextTransport({
     required SupabaseClient client,
     required ReviewAuth auth,
@@ -129,6 +133,23 @@ final class SupabaseAiTextTransport implements OwnedAiTextTransport {
     required ReviewSession capturedSession,
     required Map<String, Object> body,
   }) => _send('correct_sentence', capturedSession, body);
+
+  /// Closed conversation operation set; never accept a caller-provided URL/path.
+  /// Share this exact capability with text calls to retain one HTTP busy lease.
+  @override
+  Future<Object?> invoke({
+    required ReviewSession capturedSession,
+    required String operation,
+    required Map<String, Object> body,
+  }) async {
+    _requireCurrent();
+    if (operation != 'start_conversation' &&
+        operation != 'conversation_turn' &&
+        operation != 'finish_conversation') {
+      throw const AiTextFailure(AiTextErrorCode.validationFailure);
+    }
+    return _send(operation, capturedSession, body);
+  }
 
   void _requireCurrent() {
     if (!isCurrent) throw const AiTextFailure(AiTextErrorCode.unauthorized);
@@ -259,9 +280,18 @@ final class SupabaseAiTextTransport implements OwnedAiTextTransport {
       if (response.statusCode != 200) {
         throw _httpFailure(response.statusCode, raw);
       }
-      final result = operation == 'tutor_explain'
-          ? TutorExplanation.fromJson(raw).toJson()
-          : SentenceCorrection.fromJson(raw).toJson();
+      final result = switch (operation) {
+        'tutor_explain' => TutorExplanation.fromJson(raw).toJson(),
+        'correct_sentence' => SentenceCorrection.fromJson(raw).toJson(),
+        'start_conversation' => StartConversationResponse.fromJson(
+          raw,
+        ).toJson(),
+        'conversation_turn' => ConversationTurnResponse.fromJson(raw).toJson(),
+        'finish_conversation' => FinishConversationResponse.fromJson(
+          raw,
+        ).toJson(),
+        _ => throw const AiTextFailure(AiTextErrorCode.validationFailure),
+      };
       guard();
       return result;
     } on AiTextFailure {
@@ -336,6 +366,19 @@ _Token _captureToken(Session session, ReviewSession owner, DateTime now) {
 
 List<int> _requestBody(String operation, Map<String, Object> body) {
   try {
+    // Strict immutable DTOs snapshot exact scalar wire identity before HTTP.
+    final conversation = switch (operation) {
+      'start_conversation' => StartConversationRequest.fromJson(body).toJson(),
+      'conversation_turn' => ConversationTurnRequest.fromJson(body).toJson(),
+      'finish_conversation' => FinishConversationRequest.fromJson(
+        body,
+      ).toJson(),
+      _ => null,
+    };
+    if (conversation != null) return utf8.encode(jsonEncode(conversation));
+    if (operation != 'tutor_explain' && operation != 'correct_sentence') {
+      throw const FormatException();
+    }
     final level = AiTextLevel.values.singleWhere(
       (l) => l.wireName == body['jlpt_level'],
     );
