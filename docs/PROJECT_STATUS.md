@@ -5616,3 +5616,51 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   hosted identity/provider/voice/learner/physical launch/human gates remain. No
   merge/close/deploy/release/provider/collection/spend/security/schedule action or
   Personal Alpha claim.
+
+
+## Frozen conversation mutation request models — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0608-conversation-requests; resume draft41 branch
+  automation/issue-11-plan-sdk-integration at5376cd43ef953d2842d3664ef31257ca04fa2dda
+  /tree38cecdd1af5f3d58e3c57830069705f2885ee81a. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released05:11:46 UTC.
+- Parent CI40065258364 raw exact5376cd4/latest attempt1 completed success:
+  allfive jobs/every required step/no skips. Flutter log120787422501 confirms924
+  tests/ninth mounted HTTP401 journey and five Chrome cases; native/Windows/SQL/
+  Edge/builds passed. Component evidence, not hosted learner/provider acceptance.
+- Independent #17 prerequisite: immutable StartConversationRequest,
+  ConversationTurnRequest and FinishConversationRequest. Match frozen v0.1 field
+  sets/fixture wire exactly; strict fromJson rejects extra/missing/null/wrong types.
+  Preserve caller scenario/session/event ID spelling including nil/uppercase;
+  no UUID generation or retry. Fresh scalar maps do not mutate accepted request.
+  Reuse allfive wire levels without expanding N5/N4 product scope. Preserve exact
+  turn whitespace/combining characters;1..5000 code points/early10000 UTF16 bound.
+  Fixed FormatException without source/raw input. Structural validation does not
+  establish owner/scenario existence/server receipt or authorize dispatch.
+- Seven pure-Dart groups passed: three frozen fixture round trips; five levels/
+  uppercase/nil; mutated input/export/captured identity; Unicode bounds; every
+  constructor identifier; malformed shapes/fields/authority injection; redacted
+  failure. Fresh official Dart3.9.2 checksum matched; identical three-file graph/
+  fixtures/original test bodies in disposable harness, only Flutter test import
+  replaced by package:test1.26.2. Strict casts/inference/raw-types +lints6 analysis
+  no issues after explicit empty collection types; all assertions retained.
+  This is not actual Flutter/SDK/network/hosted proof.
+- Both new Dart files formatted; inventory87/46 QA regressions/whitespace passed.
+  Separate schema/wire/immutability/bounds/diff review; all86 prior QA cases,
+  findings and gates exact; all14 hosted groups pending. No full local Flutter/
+  analyzer/build run or denied bootstrap retry/bypass. No old app/source/test,
+  Auth strategy/provider/default/schema/RLS/dependency/workflow/Pro/content edits.
+- Five paths: new lib/features/ai/domain/conversation_requests.dart and
+  test/features/ai/conversation_requests_test.dart; new docs/CONVERSATION_REQUESTS.md;
+  docs/PROJECT_STATUS.md and qa/matrix.json. Publish actual parent base_tree/full
+  recursive tree/local tree equality/unaffected mode-type-blob proof, five exact
+  UTF8/blobSHA/single parent/tree readbacks then fresh own marker/head and
+  expected-head non-force update. Final commit/tree/new exact workflow/latest
+  attempt/released checkpoint in41/17/37.
+- Next inspect exact new-head/latest-attempt allfive jobs/every required step;
+  pending-only handoff/no duplicate code/long polling. After green add strict
+  conversation response DTOs then captured-session idempotent gateway/recovery/UI.
+  Request models alone are not receipt/durable retry/ownership/voice proof.
+  Keep41 draft/issues open/AI defaults off/all14 hosted pending; no merge/close/
+  deploy/release/provider/Auth strategy/collection/spend/security/schedule action
+  or Personal Alpha claim.

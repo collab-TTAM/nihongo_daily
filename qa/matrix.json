@@ -2120,6 +2120,32 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart test/features/ai/ai_text_source_test.dart test/features/ai/persistent_ai_text_runtime_test.dart",
       "limitation": "Eight new expanded widget cases authored, unrun locally; exact new-head full CI must confirm execution. Actual Windows owner now forwards the captured AI source/factory but default preview/staging AI remain disabled. Simulated service/vault/unsigned JWT and native-file fixtures are not hosted identity, real OS vault, provider, voice, physical launch, learner or release evidence. No automatic retry/dispatch, transcript/progress/SRS writes, provider/Auth strategy/collection/spend activation. All14 hosted release groups remain pending."
+    },
+    {
+      "id": "conversation-mutation-requests",
+      "status": "automated-baseline",
+      "scope": "Pure immutable frozen v0.1 start/turn/finish request encoders and strict decoders; preserved client event/session/scenario identity, fresh maps, UUID/Unicode limits and safe errors.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_requests_test.dart",
+          "contains": "three requests round trip unchanged frozen fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_requests_test.dart",
+          "contains": "retry exports are fresh maps without mutating captured event identity"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_requests_test.dart",
+          "contains": "decoders reject missing extra null wrong typed and authority fields"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_requests_test.dart",
+      "limitation": "Pure request/fixture validation is not hosted Auth, scenario existence/ownership, provider, durable receipt/retry, conversation response/transport/UI or voice proof. No dispatch/UUID generation/retention/default activation or Auth strategy change. Full exact-head Flutter/platform CI and hosted learner gates remain required; all14 release groups stay pending."
     }
   ],
   "findings": [
