@@ -6113,3 +6113,52 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   hosted JWT/provider/receipt/voice/learner/physical launch or Alpha proof. No
   merge/close/deploy/release/Auth strategy/provider/collection/spend/security/
   schedule action.
+
+
+## Deterministic timestamp range validation — CI blocker, 2026-10-24 UTC
+
+- Marker core-20261024T1512-timestamp-guard; coordinator shared-file scope on
+  draft41/automation/issue-11-plan-sdk-integration, parent47dbb080321bf49712284fdabaf913b43ebcd85c
+  /tree43ad736ebc3c5809f3c1e3a416350df3fc861bcf. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released14:16:19 UTC.
+- Parent CI40101695804 raw exact47dbb08/latest attempt1 completed failure.
+  Complete five-job snapshot: AI/database all steps success; repo-sanity failed
+  existing test_review_queue invalid-clock case2026-10-14T24:00:00Z because
+  ContractError was not raised (log120895006244,58 tests/one failure). QA step,
+  Windows and Flutter skipped, not passed; two source-startup cases unexecuted.
+  Runner Python version/normalization cause is not established by that log.
+- Existing common validator delegated all clock/offset bounds to fromisoformat
+  after an unconstrained digit regex. Add explicit ASCII hour00..23/minute00..59/
+  second00..59 and offset hour00..23/minute00..59 before that parser. datetime
+  still validates actual calendar/zone presence; documented uppercase T/Z,
+  fractional seconds and valid explicit offsets retained. No frozen schema/wire
+  definition, runtime behavior, endpoint, Auth strategy/provider or dependency
+  change; no tolerance for24:00/leap-second/offset rollover/Unicode clock digits.
+- Added two meaningful regressions without removing old tests: mocked lenient
+  host parser must never receive any of10 malformed clock/offset/case/Unicode
+  inputs; actual valid leap date/time/offset/zero-offset boundaries accepted and
+  invalid calendar dates rejected. New lenient-parser regression FAILED against
+  unchanged validator (nine malformed inputs reached parser), then passed after
+  guard. Existing queue24:00 test and all prior58 contract tests exact.
+- Fresh disposable Python3.12.14 environment installed actual committed
+  jsonschema4.23.0 requirement. Frozen baseline20 fixtures/60 full contract tests
+  and46 QA regressions passed; inventory94/entire unchanged QA matrix/all14 hosted
+  pending, py_compile/whitespace/separate diff review passed. No Pro content tests
+  or curriculum/manifests changed. Local checks are Python validation only, not
+  new Flutter/Windows/analyzer/startup/hosted evidence; no denied SDK bootstrap
+  retry/bypass and no CI runtime pin/downgrade/check suppression.
+- Three paths only: contracts/validate.py, contracts/test_contracts.py and
+  docs/PROJECT_STATUS.md. Publish actual parent base_tree/full recursive tree/
+  local equality/unaffected path-mode-type-blob proof plus three exact UTF8/blobSHA/
+  single parent/tree readbacks before fresh own marker/head expected-head non-force
+  ref update. Final commit/tree/new exact-head CI/latest attempt/released handoff
+  persisted in41/17/37. No new independent conversation code while CI is blocked.
+- NEXT exact-head/latest-attempt complete allfive jobs/every required step,
+  existing invalid queue24:00 assertion/new regressions and both pending source
+  startup cases; fix actual diagnostics retaining assertions. Pending-only handoff/
+  no duplicate implementation/long polling. Then conversation controller/App source
+  binding/UI/explicit same-event recovery/reconciliation/new-round policy. Keep41
+  draft/issues open/AI flags off/all14 hosted pending/human gates. No merge/close/
+  deploy/release/Auth strategy/provider/collection/spend/security/schedule action
+  or Personal Alpha claim; fixtures/builds are not hosted JWT/provider/voice/
+  learner/physical launch proof.
