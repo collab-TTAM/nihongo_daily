@@ -2479,6 +2479,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "Two new mounted host cases authored/not locally executed; TEST ONLY Auth/vault/profile/HTTP ports and unsigned JWT over actual SDK/journal are not hosted identity/provider/receipts/voice/learner proof. No conversation UI/default activation; all14 hosted groups pending."
+    },
+    {
+      "id": "conversation-session-panel",
+      "status": "automated-baseline",
+      "scope": "Guarded read-only conversation panel owns only view controller/subscription; literal assistant/summary rendering, unavailable/uncertain/empty states and lifecycle redaction.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_session_panel_test.dart",
+          "contains": "owner revocation redacts retained text and queued hints cannot restore it"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_session_panel_test.dart",
+          "contains": "binding replacement and disposal preserve borrowed flows without stale publication"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_session_panel_test.dart",
+          "contains": "320px large text summary scrolls without overflow"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_session_panel_test.dart",
+      "limitation": "Eight authored widget cases not locally executed. Read-only reusable panel not a routed conversation mutation UI/scenario source/recovery policy or hosted JWT/provider/voice/learner proof. No default activation; all14 live groups pending."
     }
   ],
   "findings": [
