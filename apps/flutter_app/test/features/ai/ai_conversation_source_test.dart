@@ -209,10 +209,20 @@ void main() {
     () async {
       final source = _Source();
       source.session = source.fresh();
+      // Notify while the constructor is acquiring, with its listener installed
+      // but no broadcast event currently being delivered. Adding recursively
+      // from inside a sync broadcast delivery is forbidden by Dart itself.
+      source.onAcquire = () => source.events.add(null);
       final n = AiConversationBindingNotifier(source);
       final binding = n.state;
-      source.onAcquire = () => source.events.add(null);
+      expect(binding, isNotNull);
+      expect(source.acquisitions, 1); // Nested hint must not reacquire.
+      source.onAcquire = null;
       source.events.add(null);
+      expect(
+        source.acquisitions,
+        2,
+      ); // A later ordinary hint still checks ready.
       expect(n.state, same(binding));
       expect(source.port.calls, 0);
       n.dispose();
