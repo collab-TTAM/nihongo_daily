@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
+import 'package:nihongo_daily/features/curriculum/application/curriculum_provider.dart';
+import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/features/home/application/study_preview_provider.dart';
 import 'package:nihongo_daily/features/home/data/demo_study_preview_repository.dart';
 import 'package:nihongo_daily/features/home/domain/study_preview.dart';
@@ -76,17 +78,37 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('home CTA and study card open the vocabulary placeholder', (
+  testWidgets('home CTA opens original vocabulary and returns to study', (
     tester,
   ) async {
-    await mountApp(tester);
+    final container = await mountApp(tester);
+    // Run the actual asset-backed provider in the real async zone. A cached
+    // rootBundle future alone does not drain its provider's async work under
+    // the widget test's fake clock. Keep it observed until route navigation.
+    final content = curriculumProvider(CurriculumKind.vocabulary);
+    final subscription = await tester.runAsync(() async {
+      final listener = container.listen(content, (_, _) {});
+      try {
+        await container.read(content.future);
+        return listener;
+      } catch (_) {
+        listener.close();
+        rethrow;
+      }
+    });
+    addTearDown(() => subscription?.close());
     await tester.pumpAndSettle();
     await tester.tap(find.text('Khám phá các phần học'));
     await tester.pumpAndSettle();
     expect(find.text('Không gian học tập'), findsOneWidget);
     await tester.tap(find.text('Từ vựng'));
     await tester.pumpAndSettle();
-    expect(find.text('Đang xây dựng'), findsOneWidget);
+    expect(find.text('私'), findsOneWidget);
+    await tester.tap(find.text('私'));
+    await tester.pumpAndSettle();
+    expect(find.text('わたし'), findsOneWidget);
+    expect(find.text('Chưa có âm thanh cho mục này.'), findsOneWidget);
+    await tester.ensureVisible(find.text('Về các phần học'));
     await tester.tap(find.text('Về các phần học'));
     await tester.pumpAndSettle();
     expect(find.text('Không gian học tập'), findsOneWidget);

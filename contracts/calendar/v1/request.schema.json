@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nihongo-daily:profile-study-day:1:request",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 0
+}

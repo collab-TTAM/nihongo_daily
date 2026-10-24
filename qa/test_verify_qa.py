@@ -80,6 +80,79 @@ class QaEvidenceTests(unittest.TestCase):
         self.evidence["jobs"]["jobs"][0]["steps"].pop(0)
         self.rejected()
 
+    def test_each_missing_skipped_failed_or_pending_deno_gate_rejects_green_job(self):
+        # Synthetic metadata only: new runtime gates cannot disappear behind a green job.
+        for name, gate in (
+            ("database", "Verify AI PostgreSQL adapters with pinned Deno"),
+            ("ai-boundary", "Check AI modules with pinned Deno"),
+            ("ai-boundary", "Verify AI boundary with pinned Deno"),
+            ("ai-boundary", "Verify Deno native HTTP and permission boundaries"),
+        ):
+            self.assertIn(gate, self.matrix["ci_gates"][name])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(job=name, gate=gate, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == name)
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_missing_skipped_failed_or_pending_edge_user_worker_gate_rejects_green_job(self):
+        for gate in ("Verify bundled Supabase Edge user worker",
+                     "Publish Edge user-worker compatibility evidence"):
+            self.assertIn(gate, self.matrix["ci_gates"]["ai-boundary"])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "ai-boundary")
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+
+    def test_missing_skipped_failed_or_pending_native_assembly_gate_rejects_green_job(self):
+        gate = "Verify trusted AI assembly with native PostgreSQL"
+        self.assertIn(gate, self.matrix["ci_gates"]["database"])
+        for mode in ("missing", "skipped", "failure", "pending"):
+            with self.subTest(mode=mode):
+                evidence = deepcopy(self.evidence)
+                job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "database")
+                step = next(s for s in job["steps"] if s["name"] == gate)
+                if mode == "missing":
+                    job["steps"].remove(step)
+                else:
+                    step.update(status="pending" if mode == "pending" else "completed",
+                                conclusion=None if mode == "pending" else mode)
+                with self.assertRaises(ValueError):
+                    qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_missing_skipped_failed_or_pending_edge_postgres_gate_rejects_green_job(self):
+        for gate in ("Verify bundled Edge PostgreSQL assembly",
+                     "Publish Edge PostgreSQL assembly evidence"):
+            self.assertIn(gate, self.matrix["ci_gates"]["database"])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(gate=gate, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "database")
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
     def test_mixed_run_attempt_head_or_repository_is_rejected(self):
         for key, value in (("run_id", 124), ("run_attempt", 1), ("head_sha", "b" * 40)):
             evidence = deepcopy(self.evidence)

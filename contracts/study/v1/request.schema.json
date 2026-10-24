@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nihongo-daily:study-submit:1:request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["client_event_id", "plan_date", "session_type", "started_at", "ended_at"],
+  "properties": {
+    "client_event_id": {
+      "type": "string", "format": "uuid", "minLength": 36, "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "plan_date": {
+      "type": "string", "format": "date", "minLength": 10, "maxLength": 10,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "session_type": {
+      "type": "string",
+      "enum": ["SRS", "VOCABULARY", "KANJI", "GRAMMAR", "LISTENING_READING", "AI_CONVERSATION", "QUIZ_REVIEW"]
+    },
+    "started_at": {"$ref": "#/$defs/utc_instant"},
+    "ended_at": {"$ref": "#/$defs/utc_instant"}
+  },
+  "$defs": {
+    "utc_instant": {
+      "type": "string", "format": "date-time", "minLength": 20, "maxLength": 27,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,6})?Z$"
+    }
+  }
+}

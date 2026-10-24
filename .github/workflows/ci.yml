@@ -72,7 +72,7 @@ jobs:
           python3 -m unittest discover -s qa -p 'test_*.py' -v
 
   flutter:
-    needs: repo-sanity
+    needs: [repo-sanity, database]
     if: needs.repo-sanity.outputs.has_flutter == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -87,9 +87,60 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - run: dart format --output=none --set-exit-if-changed .
+      - name: Run dart format --output=none --set-exit-if-changed .
+        run: |
+          if dart format --output=none --set-exit-if-changed .; then
+            exit 0
+          fi
+          dart format .
+          git diff --exit-code -- .
+          exit 1
       - run: flutter analyze
       - run: flutter test
+      - name: Verify owned persistent session lifecycle
+        run: dart run tool/verify_session_lifecycle.dart
+      - name: Verify credential vault validation and ordering
+        run: dart run tool/verify_session_vault.dart
+      - name: Verify account profile readiness
+        run: dart run tool/verify_account.dart
+      - name: Verify real IndexedDB transactions in Chrome
+        run: flutter test --platform chrome test/features/srs/browser_review_store_check.dart
+      - name: Verify browser review page reload
+        run: |
+          mkdir -p build/browser-restart
+          dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js
+          python3 ../../scripts/verify_browser_review_restart.py build/browser-restart
+      - name: Verify native receipt cache retention
+        run: dart run tool/verify_receipt_retention.dart
+      - name: Verify lossless native journal compaction
+        run: dart run tool/verify_journal_compaction.dart
+      - name: Verify native durable review restart
+        run: dart run tool/verify_durable_review.dart
+      - name: Verify durable study recovery with real disk
+        run: dart run tool/verify_study_recovery.dart
+      - name: Verify completed-study events across process restart
+        run: dart run tool/verify_study_session_recovery.dart
+      - name: Verify captured-connection lifecycle with explicit fixture dispatch
+        run: dart run tool/verify_review_connection.dart
+      - name: Download same-run native profile bootstrap projections
+        uses: actions/download-artifact@v4
+        with:
+          name: profile-bootstrap-sql
+          path: apps/flutter_app/build/profile-native-input
+      - name: Decode native profile projections with captured-session Dart adapter
+        run: dart run tool/verify_own_profile.dart build/profile-native-input/profile-bootstrap-sql.json
+      - name: Download same-run native SQL queue projections
+        uses: actions/download-artifact@v4
+        with:
+          name: review-queue-sql
+          path: apps/flutter_app/build/queue-native-input
+      - name: Decode native SQL queue projections with Dart adapter
+        run: dart run tool/verify_review_queue.dart build/queue-native-input/review-queue-sql.json build/review-queue-dart.json
+      - name: Validate decoded native queue wire output
+        working-directory: .
+        run: |
+          python3 -m pip install -r contracts/requirements.txt
+          python3 -m contracts.validate_review_queue apps/flutter_app/build/review-queue-dart.json
       - name: Verify pure SRS golden cases and emit actual wire payloads
         run: |
           mkdir -p build
@@ -99,6 +150,16 @@ jobs:
         run: |
           python3 -m pip install -r contracts/requirements.txt
           python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-wire-output.json
+      - name: Verify typed review adapter using explicit fixture ports
+        run: dart run tool/verify_review_adapter.dart build/review-adapter-output.json
+      - name: Validate typed review adapter wire encodings
+        working-directory: .
+        run: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json
+      - name: Verify SRS study controller using explicit fixture ports
+        run: dart run tool/verify_srs_study.dart build/srs-study-output.json
+      - name: Validate SRS study controller wire encodings
+        working-directory: .
+        run: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-study-output.json
       - name: Verify actual Kanji capture wire payloads
         run: dart run tool/verify_kanji.dart build/kanji-wire-output.json
       - name: Validate actual Dart Kanji output against frozen contracts
@@ -128,7 +189,34 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
+      - name: Build TEST ONLY Dart-to-Windows vault bridge
+        run: flutter build windows --release --target tool/windows_vault_bridge.dart
+      - name: Verify actual Dart-to-Windows vault bridge across processes
+        shell: pwsh
+        run: ./tool/verify_windows_vault_bridge.ps1
+      - name: Build configured staging Windows entrypoint with TEST ONLY settings
+        run: flutter build windows --release --dart-define=ND_MODE=staging --dart-define=ND_SUPABASE_URL=https://example.supabase.invalid --dart-define=ND_SUPABASE_PUBLIC_KEY=sb_publishable_TEST_ONLY_1234567890
+      # Rebuild preview without defines; never publish synthetic/staging settings.
       - run: flutter build windows --release
+      - name: Verify actual Windows credential store across processes
+        shell: pwsh
+        run: |
+          cmake -S tool/windows_session_vault -B build/session-vault-probe -G "Visual Studio 17 2022" -A x64
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build build/session-vault-probe --config Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./build/session-vault-probe/Release/session_vault_probe.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify native receipt cache retention
+        run: dart run tool/verify_receipt_retention.dart
+      - name: Verify lossless native journal compaction
+        run: dart run tool/verify_journal_compaction.dart
+      - name: Verify native durable review restart
+        run: dart run tool/verify_durable_review.dart
+      - name: Verify durable study recovery with real disk
+        run: dart run tool/verify_study_recovery.dart
+      - name: Verify completed-study events across process restart
+        run: dart run tool/verify_study_session_recovery.dart
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-windows-preview
@@ -159,8 +247,68 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install PostgreSQL client
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Install review parity validator
+        run: python3 -m pip install -r contracts/requirements.txt
       - name: Migration, grants, RLS, replay and concurrent uniqueness
         run: bash scripts/test_database.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/ai/package-lock.json
+      - name: Install pinned AI PostgreSQL adapter dependencies
+        working-directory: backend/ai
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify committed AI quota adapter with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-quota
+      - name: Verify text context adapter with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-text
+      - name: Verify atomic conversation adapter with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-conversation
+      - name: Verify trusted AI assembly with native PostgreSQL
+        working-directory: backend/ai
+        run: npm run test:postgres-assembly
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 'v2.9.6'
+      - name: Verify AI PostgreSQL adapters with pinned Deno
+        working-directory: backend/ai
+        run: |
+          deno --version
+          deno task test:postgres
+      - name: Verify bundled Edge PostgreSQL assembly
+        working-directory: backend/ai
+        run: |
+          deno fmt --check edge
+          deno task bundle:edge-postgres
+          mkdir -p ../../build/edge-postgres/main
+          cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts
+          python3 ../../scripts/verify_edge_postgres.py
+      - name: Publish Edge PostgreSQL assembly evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-edge-postgres-assembly
+          path: build/edge-postgres/evidence.json
+          if-no-files-found: error
+      - name: Validate profile bootstrap and observed concurrent creation
+        run: |
+          python3 scripts/export_profiles.py build/profile-bootstrap-sql.json
+          python3 scripts/test_profile_concurrency.py
+      - name: Publish actual native SQL profile projections
+        uses: actions/upload-artifact@v4
+        with:
+          name: profile-bootstrap-sql
+          path: build/profile-bootstrap-sql.json
+          if-no-files-found: error
+      - name: Publish actual native SQL queue projections
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-queue-sql
+          path: build/review-queue-sql.json
+          if-no-files-found: error
 
   ai-boundary:
     runs-on: ubuntu-latest
@@ -180,6 +328,31 @@ jobs:
       - run: npm run format:check
       - run: npm run check
       - run: npm test
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 'v2.9.6'
+      - name: Check AI modules with pinned Deno
+        run: |
+          deno --version
+          deno fmt --check deno deno.json
+          deno task check
+      - name: Verify AI boundary with pinned Deno
+        run: deno task test
+      - name: Verify Deno native HTTP and permission boundaries
+        run: deno task test:web
+      - name: Verify bundled Supabase Edge user worker
+        run: |
+          deno fmt --check edge
+          deno task bundle:edge
+          mkdir -p ../../build/edge/main
+          cp edge/main.ts ../../build/edge/main/index.ts
+          python3 ../../scripts/verify_edge_user_worker.py
+      - name: Publish Edge user-worker compatibility evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-edge-user-worker
+          path: build/edge/evidence.json
+          if-no-files-found: error
       - name: Verify schema-generated TypeScript projections
         working-directory: .
         run: |

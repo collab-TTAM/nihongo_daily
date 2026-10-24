@@ -10,15 +10,45 @@
       "Validate QA inventory and evidence regressions"
     ],
     "database": [
-      "Migration, grants, RLS, replay and concurrent uniqueness"
+      "Install review parity validator",
+      "Migration, grants, RLS, replay and concurrent uniqueness",
+      "Verify atomic conversation adapter with native PostgreSQL",
+      "Validate profile bootstrap and observed concurrent creation",
+      "Publish actual native SQL profile projections",
+      "Publish actual native SQL queue projections",
+      "Verify committed AI quota adapter with native PostgreSQL",
+      "Verify text context adapter with native PostgreSQL",
+      "Verify AI PostgreSQL adapters with pinned Deno",
+      "Verify trusted AI assembly with native PostgreSQL",
+      "Verify bundled Edge PostgreSQL assembly",
+      "Publish Edge PostgreSQL assembly evidence"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify owned persistent session lifecycle",
+      "Verify credential vault validation and ordering",
+      "Verify account profile readiness",
+      "Verify real IndexedDB transactions in Chrome",
+      "Verify browser review page reload",
+      "Verify native receipt cache retention",
+      "Verify lossless native journal compaction",
+      "Verify native durable review restart",
+      "Verify durable study recovery with real disk",
+      "Verify captured-connection lifecycle with explicit fixture dispatch",
+      "Download same-run native profile bootstrap projections",
+      "Decode native profile projections with captured-session Dart adapter",
+      "Download same-run native SQL queue projections",
+      "Decode native SQL queue projections with Dart adapter",
+      "Validate decoded native queue wire output",
       "Verify pure SRS golden cases and emit actual wire payloads",
       "Validate actual Dart SRS output against frozen wire contracts",
+      "Verify typed review adapter using explicit fixture ports",
+      "Validate typed review adapter wire encodings",
+      "Verify SRS study controller using explicit fixture ports",
+      "Validate SRS study controller wire encodings",
       "Verify actual Kanji capture wire payloads",
       "Validate actual Dart Kanji output against frozen contracts",
       "Run flutter build web --release",
@@ -26,7 +56,15 @@
     ],
     "windows": [
       "Run flutter pub get --enforce-lockfile",
+      "Build TEST ONLY Dart-to-Windows vault bridge",
+      "Verify actual Dart-to-Windows vault bridge across processes",
+      "Build configured staging Windows entrypoint with TEST ONLY settings",
       "Run flutter build windows --release",
+      "Verify actual Windows credential store across processes",
+      "Verify native receipt cache retention",
+      "Verify lossless native journal compaction",
+      "Verify native durable review restart",
+      "Verify durable study recovery with real disk",
       "Run actions/upload-artifact@v4"
     ],
     "ai-boundary": [
@@ -35,10 +73,451 @@
       "Run npm run format:check",
       "Run npm run check",
       "Run npm test",
-      "Verify schema-generated TypeScript projections"
+      "Verify schema-generated TypeScript projections",
+      "Check AI modules with pinned Deno",
+      "Verify AI boundary with pinned Deno",
+      "Verify Deno native HTTP and permission boundaries",
+      "Verify bundled Supabase Edge user worker",
+      "Publish Edge user-worker compatibility evidence"
     ]
   },
   "cases": [
+    {
+      "id": "manual-owned-session-refresh",
+      "status": "automated-baseline",
+      "scope": "Credential-free active-owner refresh capability; explicit account UI, duplicate-click prevention, delayed own-profile readiness and stale error suppression across logout/account/action change/unmount",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/manual_session_refresh_test.dart",
+          "contains": "manual refresh dispatches once and waits for profile readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/manual_session_refresh_test.dart",
+          "contains": "logout during manual refresh rejects late error display"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "final AccountSessionRefreshAction refreshAction = runtime;"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "flutter test test/features/srs/manual_session_refresh_test.dart test/features/srs/persistent_supabase_runtime_test.dart; flutter analyze; full retained CI",
+      "limitation": "New source CI pending. UI/Auth/profile fixtures and pinned SDK/mock HTTP/OS cases do not prove hosted identity or actual learner Windows UI rotation. Default action is null; only an owned configured startup can publish it. Existing persistence/profile gate grants readiness, never the action/UI state. Fixed stale-safe display errors, no automatic retry or timer/provider/schema/dependency/N4 changes. All live acceptance groups remain pending."
+    },
+    {
+      "id": "cancelable-window-exit",
+      "status": "automated-baseline",
+      "scope": "Owned startup host awaits cancelable framework/Windows window exit cleanup; retained router/form listeners, null account publication, hidden disabled cleared fields, delayed/concurrent drain and redacted explicit same-owner retry",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "cancelable exit awaits owned drain and coalesces requests"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_exit_fixture.dart",
+          "contains": "Normal close must release the actual native journal lease before exit."
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows actual cancelable window close and owned drain verification passed"
+        }
+      ],
+      "issues": [
+        20,
+        15,
+        22
+      ],
+      "reproduce": "flutter test test/features/srs/account_startup_widget_test.dart; on Windows flutter build windows --release --target tool/windows_vault_bridge.dart then ./tool/verify_windows_vault_bridge.ps1",
+      "limitation": "Four framework/widget fixtures with retained router/form identity, null account provider and disabled/empty fields; actual OS CloseMainWindow with an empty-vault staging owner, real app-data journal lease reopen and synthetic delay/one-shot cleanup failure. No hosted Auth or logged-in learner rotation/shutdown proof. Task Manager kill, uncancelable OS logoff and power loss can bypass the hook; persistence remains write-before-dispatch. Cleanup failure never reopens Auth and a retained failing owner is not assumed repaired. Preview/N4/provider/schema/security unchanged."
+    },
+    {
+      "id": "windows-staging-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Trusted build mode/URL/public-key selection, owned Windows runtime plus project-scoped OS app-data journal, configured main build and ordinary preview preservation",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/staging_bootstrap_test.dart",
+          "contains": "configured Windows selects owned startup"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_review_directory_test.dart",
+          "contains": "preserves Unicode OS path"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "app-data and staging factory verification passed"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "flutter test test/features/srs/staging_bootstrap_test.dart test/features/srs/windows_review_directory_test.dart; on Windows build tool/windows_vault_bridge.dart and execute tool/verify_windows_vault_bridge.ps1; compile selected staging main then rebuild preview",
+      "limitation": "Config/Auth owner fixtures, actual OS path/factory empty-vault process assembly and configured build; no hosted project/login/JWT/learner or full configured GUI/OS shutdown proof. Build mode cannot prove project is non-production; operator supplies intended trusted staging values. Default preview, no private credentials in build. Same OS user can access files/credentials; unusual OS roots fail without fallback."
+    },
+    {
+      "id": "account-session-notice",
+      "status": "automated-baseline",
+      "scope": "Display-only checking/failure messages, credential clearing, owned-source wiring/replacement and fixed login recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_session_notice_test.dart",
+          "contains": "clearing display notice never grants study access"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_session_notice_test.dart",
+          "contains": "configured startup forwards only its owned display source"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "explicit login clears failed display notice"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/account_session_notice_test.dart test/features/srs/persistent_supabase_runtime_test.dart",
+      "limitation": "Explicit display/Auth/profile/HTTP fixtures and actual pinned SDK/unsigned JWTs; not hosted learner or UI-to-OS expiry/rotation/suspension proof. Notices do not authorize. Default source/main null; configured owner only. Raw error/token/path data never displayed; all live acceptance remains pending."
+    },
+    {
+      "id": "owned-session-refresh",
+      "status": "automated-baseline",
+      "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed/expired resume fencing and active-owned foreground forwarding",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_refresh_scheduler_test.dart",
+          "contains": "failure has no timer or resume retry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "opt-in automatic refresh saves rotation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "foreground resume forwards only after startup"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/session_refresh_scheduler_test.dart test/features/srs/persistent_supabase_runtime_test.dart test/features/srs/account_startup_widget_test.dart",
+      "limitation": "Clock/timer/lease fixtures and actual pinned SDK with mock Auth HTTP/unsigned JWTs; not hosted refresh/expiry or OS suspension/device proof. automaticRefresh opt-in, default false/main unconfigured. SDK internal retry policy unchanged. One attempt per lease, no scheduler failure retry; caller must respect owned lifecycle/journal requirements."
+    },
+    {
+      "id": "account-startup-host",
+      "status": "automated-baseline",
+      "scope": "Owned factory/start/close, loading/error/fenced-login/retry UI, close-before-replacement and late-owner cleanup",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_test.dart",
+          "contains": "close during pending factory"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "startup loading hides account"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/account_startup_test.dart test/features/srs/account_startup_widget_test.dart",
+      "limitation": "Explicit owner/Auth/profile fixtures, not hosted Auth or UI-to-OS learner acceptance. Opt-in configured host only; default main/provider unconfigured. Factory owns partial-failure cleanup, supplied journal remains caller-owned, caller must await close before replacement. No automatic refresh scheduler."
+    },
+    {
+      "id": "persistent-session-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Exclusively owned SDK/vault lifecycle, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_test.dart",
+          "contains": "persistent session lifecycle"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK startup server refresh persists rotation before own profile"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
+          "contains": "verifyWindowsRuntimePhase"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_lifecycle.dart; flutter test",
+      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof."
+    },
+    {
+      "id": "windows-session-vault",
+      "status": "automated-baseline",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen and explicit unsupported-platform failure",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_credential_vault_test.dart",
+          "contains": "credential vault"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart",
+          "contains": "Windows method channel"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "actual Windows Credential Manager"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "runtime-restore"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe",
+      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-OS-user processes can access generic credentials. Single-isolate queue is not interprocess CAS; non-Windows/web unsupported."
+    },
+    {
+      "id": "account-profile-readiness",
+      "status": "automated-baseline",
+      "scope": "Configured credential UI, own-profile barrier, synchronous study invalidation and late-session/logout recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_controller_test.dart",
+          "contains": "account readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_widget_test.dart",
+          "contains": "credential buffers clear"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "SDK account runtime waits for own profile"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_account.dart; flutter test",
+      "limitation": "TEST ONLY Auth/profile/SDK HTTP fixtures, not hosted login/JWT signatures/secure token restore. Default account runtime null; no provider configuration or production deployment."
+    },
+    {
+      "id": "own-profile-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Additive caller-derived idempotent own-profile bootstrap, preserved settings, unchanged grants/RLS, rollback/observed concurrent uniqueness and same-run actual SQL to captured-session Dart projection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/own_profile_repository_test.dart",
+          "contains": "own profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "profile bootstrap uses captured SDK token"
+        },
+        {
+          "path": "scripts/test_profile_concurrency.py",
+          "contains": "observed native bootstrap lock wait"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "python3 scripts/export_profiles.py build/profile-bootstrap-sql.json && python3 scripts/test_profile_concurrency.py with disposable TEST_DATABASE_URL; flutter test; dart run tool/verify_own_profile.dart build/profile-native-input/profile-bootstrap-sql.json",
+      "limitation": "Auth SQL-role and unsigned SDK HTTP fixtures; not hosted JWT/login/profile restoration proof. Default runtime null; no login/token persistence/provider choice/deployment. Frozen v0.1 operations untouched; new scoped bootstrap documented separately."
+    },
+    {
+      "id": "receipt-cache-retention",
+      "status": "automated-baseline",
+      "scope": "Opt-in owner-scoped confirmed-success cache trim with pending/rejection/other-owner preservation, original RPC replay, >512 reviews, atomic failure and native restart/actual IndexedDB concurrency",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/receipt_retention_test.dart",
+          "contains": "receipt retention"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_receipt_retention.dart",
+          "contains": "failed replacement deleted authoritative cache"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "receipt retention preserves pending"
+        }
+      ],
+      "issues": [
+        15,
+        22,
+        20
+      ],
+      "reproduce": "flutter test test/features/srs/receipt_retention_test.dart && dart run tool/verify_receipt_retention.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart",
+      "limitation": "Explicit opt-in cache policy; default disabled/runtime null. Replay Auth/server is TEST ONLY, no hosted receipt-retention/learner proof. Real file/process/IndexedDB checks do not certify power-loss/eviction; global pending/rejected/multi-account cap remains."
+    },
+    {
+      "id": "browser-transactional-review",
+      "status": "automated-baseline",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, immutable original outcomes and page reload/second-tab persistence",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/transactional_review_store_test.dart",
+          "contains": "transactional ledger"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "two connections serialize"
+        },
+        {
+          "path": "scripts/verify_browser_review_restart.py",
+          "contains": "await_status(\"RECEIPT_COMMITTED\")"
+        }
+      ],
+      "issues": [
+        15,
+        22,
+        20
+      ],
+      "reproduce": "flutter test test/features/srs/transactional_review_store_test.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart; dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js; python3 ../../scripts/verify_browser_review_restart.py build/browser-restart (from apps/flutter_app, ChromeDriver required)",
+      "limitation": "Actual Chrome IndexedDB/reloads with TEST ONLY Auth/RPC. Not hosted learner acceptance, real browser power-loss/quota/eviction, secure token persistence, other browsers or terminal retention. Default runtime null."
+    },
+    {
+      "id": "native-journal-compaction",
+      "status": "automated-baseline",
+      "scope": "Explicit lossless flushed-sibling replacement, exact owner-scoped pending/receipt/rejection, legacy read, serialized writes and safe temporary failure",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/journal_compaction_test.dart",
+          "contains": "lossless journal compaction"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_journal_compaction.dart",
+          "contains": "compaction lost immutable event conflict"
+        }
+      ],
+      "issues": [
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/journal_compaction_test.dart && dart run tool/verify_journal_compaction.dart; required on Linux and Windows",
+      "limitation": "Actual disposable native files/processes; no hosted Auth/RPC, automatic retention, history deletion, increased event cap, web store or hardware-power-loss proof."
+    },
+    {
+      "id": "durable-study-recovery",
+      "status": "automated-baseline",
+      "scope": "Opt-in controller/notifier/UI restore, manual exact-event replay before due cards, durable definitive rejection, safe storage retry, account clearing and authoritative queue reload",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/study_recovery_test.dart",
+          "contains": "pending blocks queue new IDs rating and reload"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/study_recovery_widget_test.dart",
+          "contains": "recovery at 320px and 200 percent text"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_study_recovery.dart",
+          "contains": "old receipt replaced authoritative queue/current progress"
+        }
+      ],
+      "issues": [
+        22,
+        15,
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/study_recovery_test.dart test/features/srs/study_recovery_widget_test.dart && dart run tool/verify_study_recovery.dart",
+      "limitation": "Real disposable native files with TEST ONLY Auth/RPC/queue; explicit supplied store required, default runtime null. No browser journal, configured Auth/profile/secure sessions, power-loss or hosted/two-client acceptance."
+    },
+    {
+      "id": "native-durable-review",
+      "status": "automated-baseline",
+      "scope": "Real native disk/subprocess restart, single-isolate/process writer lease, immutable account-scoped pending and original receipt, write-before-dispatch, corrupt-tail and late-account rejection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/durable_review_repository_test.dart",
+          "contains": "receipt write failure retains exact pending event for manual replay"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_durable_review.dart",
+          "contains": "process restart lost pending"
+        }
+      ],
+      "issues": [
+        22,
+        15,
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/durable_review_repository_test.dart && dart run tool/verify_durable_review.dart; verifier required on Linux and Windows CI",
+      "limitation": "Native opt-in library with real disposable files/processes but TEST ONLY Auth/RPC. Default runtime remains null; controller/UI restore, secure session storage, web journal, compaction, power-loss/multi-isolate and hosted/two-client sync not certified."
+    },
+    {
+      "id": "supabase-sdk-binding",
+      "status": "automated-baseline",
+      "scope": "Concrete SDK Auth events and captured-token PostgREST POST, lifecycle isolation, safe HTTP failures/limits and suppressed unsafe SDK logs",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "in-flight refresh never changes dispatched Authorization header"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/supabase_review_binding_test.dart",
+      "limitation": "Actual SDK with TEST ONLY unsigned JWTs and mocked Auth/RPC HTTP. No real gateway/JWT signature/RLS, login UI, profile provisioning, secure storage or durable learner journey; default runtime null."
+    },
+    {
+      "id": "review-connection-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Synchronous captured-connection lifecycle, same-user refresh, expiry, logout/A-B-A, immutable ownerless dispatch and old-result rejection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/review_connection_registry_test.dart",
+          "contains": "old success and failure are suppressed after logout or A B A"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_review_connection.dart",
+          "contains": "captured-connection lifecycle/refresh/expiry/immutable envelope/revoked-result checks"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/review_connection_registry_test.dart; dart run tool/verify_review_connection.dart",
+      "limitation": "TEST ONLY captured dispatch closures. No concrete SDK/JWT/HTTP, sign-in/profile provisioning, credential storage or durable restart evidence. Default runtime remains null."
+    },
     {
       "id": "wire-validation",
       "status": "automated-baseline",
@@ -110,6 +589,128 @@
       ],
       "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
       "limitation": "Storage helper race is not an atomic submit_review endpoint or updated scheduler counters."
+    },
+    {
+      "id": "review-transaction",
+      "status": "automated-baseline",
+      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; five native race scenarios",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/review_rpc.sql",
+          "contains": "first authenticated review schedules"
+        },
+        {
+          "path": "scripts/verify_review_parity.py",
+          "contains": "actual SQL scheduler matches"
+        },
+        {
+          "path": "scripts/test_submit_review_concurrency.py",
+          "contains": "different_item"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        18
+      ],
+      "reproduce": "On a new empty disposable PostgreSQL 17 database: install contracts/requirements.txt; bash scripts/test_database.sh",
+      "limitation": "SQL role/auth.uid fixtures are not real Supabase JWT/PostgREST or typed Flutter/UI evidence; full #22 remains open."
+    },
+    {
+      "id": "review-adapter",
+      "status": "automated-baseline",
+      "scope": "Typed Dart strict response/error decoding, immutable event retries, timeout uncertainty and session lifecycle isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/review_repository_test.dart",
+          "contains": "in-flight old-user success is discarded after account switch"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_review_adapter.dart",
+          "contains": "TEST ONLY transport/Auth fixtures"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "From apps/flutter_app: flutter test test/features/srs/review_repository_test.dart; dart run tool/verify_review_adapter.dart build/review-adapter-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json",
+      "limitation": "Injected Auth/transport and server responses are TEST ONLY; no concrete Supabase SDK, verified JWT/PostgREST, UI, SQL-to-Dart transaction or durable queue integration."
+    },
+    {
+      "id": "srs-study-ui",
+      "status": "automated-baseline",
+      "scope": "Unconfigured default, reveal/rating, receipt-only advancement, uncertain immutable retry, route retention and session clearing",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_study_widget_test.dart",
+          "contains": "default SRS route is unconfigured and cannot fabricate a saved review"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_study_controller_test.dart",
+          "contains": "uncertain network retry retains exact timestamp rating duration and ID"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_srs_study.dart",
+          "contains": "TEST ONLY queue/Auth/server-response fixtures"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/srs_study_controller_test.dart test/features/srs/srs_study_widget_test.dart; dart run tool/verify_srs_study.dart build/srs-study-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-study-output.json",
+      "limitation": "Fixture queue/Auth/RPC replies are TEST ONLY. No real SDK/due queue/JWT/PostgREST, persisted learner journey, disk queue, restart or multi-device evidence. Default app runtime remains null."
+    },
+    {
+      "id": "queue-sql-read",
+      "status": "automated-baseline",
+      "scope": "Stable invoker read preserving RLS, provisioned owner, due/active/level/order/limit filters and read-only state",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/review_queue.sql",
+          "contains": "A receives four active own due N5 items"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        18
+      ],
+      "reproduce": "On a new empty disposable PostgreSQL 17: bash scripts/test_database.sh; actual SQL responses are exported by scripts/export_review_queue.py",
+      "limitation": "SQL SET ROLE/sub-claim fixtures do not verify JWT/PostgREST or hosted profile provisioning. No new enrollment or write occurs."
+    },
+    {
+      "id": "queue-sql-dart-bridge",
+      "status": "automated-baseline",
+      "scope": "Same-run native SQL artifact -> strict Dart queue DTO/RPC projection -> versioned schema validation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/verify_review_queue.dart",
+          "contains": "CI passes actual native SQL fixture-role output"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/rpc_srs_study_queue_test.dart",
+          "contains": "RPC envelope is immutable ownerless and bound to captured session"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "Download current-run review-queue-sql artifact; from apps/flutter_app run dart run tool/verify_review_queue.dart INPUT.json build/review-queue-dart.json; at root python3 -m contracts.validate_review_queue apps/flutter_app/build/review-queue-dart.json",
+      "limitation": "SQL-to-Dart fixture data flow is not a concrete SDK/HTTP call, real Auth/JWT/expired token, persisted UI or durable queue. Hand-authored fixtures.json is TEST ONLY and not SQL evidence."
     },
     {
       "id": "ai-sql-receipts",
@@ -295,7 +896,7 @@
         18
       ],
       "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
-      "limitation": "Only pure Dart and storage helper tests currently exist."
+      "limitation": "Local atomic SQL RPC, typed Dart repository and SRS controller/screen have executable fixture tests; real JWT/PostgREST, concrete SDK/Auth/due queue, persisted learner UI journey and durable retries remain pending."
     },
     {
       "id": "daily-plan",
@@ -409,7 +1010,7 @@
         18
       ],
       "reproduce": "Submit correct/wrong/repeated/duplicate attempts; verify owner history/counters, empty state and recommendations referencing curriculum; inspect dashboard.",
-      "limitation": "No quiz/mastery/progress service; reserved MASTERED cannot substitute for mastery evidence."
+      "limitation": "Configured local quiz save/history is component-tested; current-source practice/needs-review dashboard is authored and needs new-head CI. Hosted attempts/sync, reviewed mastery and learner acceptance remain unverified; reserved MASTERED cannot substitute for evidence."
     },
     {
       "id": "browser-windows-smoke",
@@ -430,6 +1031,1369 @@
       ],
       "reproduce": "Exact tested commit: login -> plan -> study -> review -> quiz -> Kanji -> conversation/voice -> progress; restart/two-device sync, no critical defects; preserve rollback/recovery and evidence.",
       "limitation": "Eight starter issues closing is not a release. Production/App Store gates remain separate."
+    },
+    {
+      "id": "vocabulary-quiz-local",
+      "status": "automated-baseline",
+      "scope": "Deterministic original N5/N4 reading choices, first-answer dedup and route-local results",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_test.dart",
+          "contains": "duplicate first answer and stale next"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_widget_test.dart",
+          "contains": "actual bundled quiz retains owned exit"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz",
+      "limitation": "Authored tests require exact-head CI. Public process-local practice only; no saved attempts, mastery, progress, attention or study credit."
+    },
+    {
+      "id": "vocabulary-quiz-history-model",
+      "status": "automated-baseline",
+      "scope": "Immutable completed-round attempts and owner-isolated deduplicated current-source error projection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_history_test.dart",
+          "contains": "foreign owner is rejected before dedup and level filtering"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_history_test.dart",
+          "contains": "wrong correct wrong preserves counts"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart",
+          "contains": "dedup repeated errors and later correct clear review candidate"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart",
+          "contains": "held read cannot publish after replacement"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/vocabulary_quiz_history_test.dart",
+      "limitation": "Client-report models and configured local history/progress UI have component CI evidence. Simulated Auth/storage UI ports do not prove hosted attempts, multi-device sync, mastery, native file faults or study credit."
+    },
+    {
+      "id": "quiz-native-ui-restart",
+      "status": "automated-baseline",
+      "scope": "Owned SDK-to-native-file quiz save, history and progress through graceful reopen and account replacement",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "real disk quiz save history progress survives owned restart and A B A"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(bytesAfterAccounts, bytesBeforeRestart)"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/quiz_disk_journey_widget_test.dart",
+      "limitation": "Composed local SDK/native-file UI journey passed at49ee8fb9 CI39733485647. TEST ONLY unsigned JWT/HTTP/memory vault does not prove hosted identity/RLS/sync, real Windows credential vault, forced-process restart or hardware power-loss resilience."
+    },
+    {
+      "id": "ai-http-resource-boundary",
+      "status": "automated-baseline",
+      "scope": "Fixed-operation HTTP envelope, bounded UTF-8 streaming and overall deadline/client cancellation through the AI service",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/http.test.ts",
+          "contains": "HTTP actual stream byte limit ignores absent or forged length"
+        },
+        {
+          "path": "backend/ai/test/http.test.ts",
+          "contains": "HTTP deadline retains uncertain receipt and never redispatches late result"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test",
+      "limitation": "Node24 native HTTP APIs with TEST ONLY Auth/limiter/context/provider/receipts; no deployed endpoint, real identity/distributed transactions/provider, Deno/Edge compatibility or hosted learner proof. New exact-head CI remains required."
+    },
+    {
+      "id": "ai-supabase-auth-adapter",
+      "status": "automated-baseline",
+      "scope": "Fixed-project Supabase user lookup adapter with bounded response/deadline/cancellation and verified-server-UUID service ownership",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/supabase_auth.test.ts",
+          "contains": "fixed project GET sends only configured public key and caller token; returns only server identity"
+        },
+        {
+          "path": "backend/ai/test/supabase_auth.test.ts",
+          "contains": "Auth timeout and malformed response cannot advance service or dispatch after late HTTP"
+        }
+      ],
+      "issues": [
+        31,
+        20,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test",
+      "limitation": "Actual Node24 adapter/Response/streams/service with TEST ONLY HTTP/Auth and limiter/context/provider/receipt ports. Not hosted signature/issuer/expiry/other-project JWT, Deno/Edge, distributed quota/transactions or learner acceptance. Full exact-head CI still required."
+    },
+    {
+      "id": "ai-postgres-quota",
+      "status": "automated-baseline",
+      "scope": "Private shared per-user AI burst/daily quota with SQL security and observed native row/key-lock commit/rollback contention",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_rate_limits.sql",
+          "contains": "eleventh burst reservation denied"
+        },
+        {
+          "path": "scripts/test_ai_quota_concurrency.py",
+          "contains": "Second quota worker was not observed waiting on the held row/key lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_quota_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "Local PGlite SQL-role/quota tests are component evidence only. Native PostgreSQL17 lock/reconnect checks require exact-head CI; actual committed runtime transport, hosted Auth/Edge/provider and learner acceptance remain pending."
+    },
+    {
+      "id": "ai-committed-postgres-limiter",
+      "status": "automated-baseline",
+      "scope": "Real-driver owned PostgreSQL quota with committed-before-provider and fail-closed cancellation/uncertainty guards",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_quota.native.ts",
+          "contains": "native quota COMMIT barrier prevents provider dispatch and serializes the last slot"
+        },
+        {
+          "path": "backend/ai/test/postgres_quota.native.ts",
+          "contains": "actual committed debit with injected lost COMMIT delivery never dispatches or retries"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-quota",
+      "limitation": "Exact source cdae78b54d14c7aadff5e4a849adafa3452c47c5 passed all five native driver cases in CI39763102669 attempt1. Plaintext fixture transport and Auth/context/provider/receipt ports TEST ONLY. No hosted TLS/CA/Edge/Deno/learner or real network-partition proof; future heads require their own exact checks."
+    },
+    {
+      "id": "ai-text-context",
+      "status": "automated-baseline",
+      "scope": "Private read-only tutor/correction profile-level and active curriculum projection with bounded whole-entry allowlists and fresh post-provider revalidation",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_text_context.sql",
+          "contains": "late provider result cannot reuse changed curriculum snapshot"
+        },
+        {
+          "path": "supabase/tests/ai_text_context.sql",
+          "contains": "large multibyte catalog has deterministic whole-entry bounded allowlist"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "supabase/tests/ai_text_context.sql"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "Exact parent a16bdb4a03b16f1d01dabfcf89961a2d5cde18d9 passed all 59 native SQL assertions and all five jobs in CI39770572353 attempt1. This is private SQL-role component proof, not hosted Auth/Edge/Deno/provider, conversation serialization or learner proof. Future heads require their own exact checks."
+    },
+    {
+      "id": "ai-postgres-text-runtime",
+      "status": "automated-baseline",
+      "scope": "Owned read-only PostgreSQL text context prepare/revalidation composed with AiService and confirmed COMMIT/cancellation guards",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_text_context.native.ts",
+          "contains": "native text service composes real quota/context/validation for both frozen text operations"
+        },
+        {
+          "path": "backend/ai/test/postgres_text_context.native.ts",
+          "contains": "native text COMMIT barriers fence both provider dispatch and final success"
+        },
+        {
+          "path": "backend/ai/test/postgres_text_context.native.ts",
+          "contains": "native actual text COMMIT with injected lost delivery never returns success or retries"
+        },
+        {
+          "path": "backend/ai/test/postgres_text_context.test.ts",
+          "contains": "text abort during SELECT or COMMIT rejects late completion and cleans listeners"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-text",
+      "limitation": "Exact parent c8d66f43273aa5c7f5cc8202cc64e12628f0a27e passed all nine native text driver cases and all five jobs in CI39778434269 attempt1. Plaintext/Auth/provider/receipts/lost-delivery fixtures are not hosted TLS/CA/JWT/Edge/Deno/conversation/learner or real partition proof. Future heads require their own exact checks."
+    },
+    {
+      "id": "ai-conversation-reservation",
+      "status": "automated-baseline",
+      "scope": "Private atomic server context/identity reservation plus receipt claim with one pending session and native owner-lock commit/rollback/restart probes",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_conversation_reservations.sql",
+          "contains": "storage failure leaves no orphan receipt token or reservation"
+        },
+        {
+          "path": "scripts/test_ai_conversation_concurrency.py",
+          "contains": "Second conversation worker was not observed waiting on the held owner lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_conversation_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "Exact parent007b2d49587f5e7979a5acee8913521f17efeac2 passed all68 native SQL assertions, five native races and allfive jobs/every step in CI39787225163 attempt1. Reservation alone does not install runtime/completion/recovery. SQL-role fixtures are not hosted JWT/Edge/provider/learner proof; future heads require exact checks."
+    },
+    {
+      "id": "ai-conversation-completion",
+      "status": "automated-baseline",
+      "scope": "Strict captured-context/token-bound atomic conversation session/messages receipt and guarded release with native completion/source-lock rollback and restart probes",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_conversation_completion.sql",
+          "contains": "release fault rolls back messages and completed receipt"
+        },
+        {
+          "path": "scripts/test_ai_completion_concurrency.py",
+          "contains": "Second completion worker was not observed waiting on the held transaction lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_completion_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "Exact parent e621c9d074bdcbc8f8c551433e7e7f67dfb5183b passed all99 SQL completion assertions, all8 native SQL races and allfive jobs/every step in CI39795974325 attempt1. SQL-role/model fixtures are not hosted Auth/Edge/provider/learner evidence. Runtime changes require their own exact-head CI; correlated recovery/all14 release groups pending."
+    },
+    {
+      "id": "ai-conversation-runtime",
+      "status": "automated-baseline",
+      "scope": "Opt-in coherent owned PostgreSQL conversation lookup/acquire/complete with confirmed COMMIT dispatch/success gates, bounded cancellation and no pending redispatch fallback",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_conversation.test.ts",
+          "contains": "pending from lookup or acquire never invokes provider or legacy recovery even when configured"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "Actual conversation adapter was not observed waiting on PostgreSQL lock"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/postgres_conversation.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
+      "limitation": "Exact parent014bee0087ac197774efbac89a2ac4ec32898e09 passed all138 Node tests,10 actual pg runtime native cases and allfive jobs/every step in CI39805367641 attempt1. Plaintext/Auth/provider/injected delivery fixtures are not hosted TLS/CA/JWT/Edge/Deno/real partition/provider/learner proof. Future heads need their own checks; trusted upstream lookup-only reconciliation/all14 hosted groups remain pending."
+    },
+    {
+      "id": "ai-conversation-reconciliation-sql",
+      "status": "automated-baseline",
+      "scope": "Private STABLE saved receipt/canonical-key/context lookup without token and original-bound atomic SQL reconciliation without creating or renewing dispatch claims",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/ai_conversation_reconciliation.sql",
+          "contains": "storage failure rolls back all sessions messages receipt and release state"
+        },
+        {
+          "path": "scripts/test_ai_reconciliation_concurrency.py",
+          "contains": "Second reconciliation worker was not observed waiting on the held owner lock"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_ai_reconciliation_concurrency.py"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "bash scripts/test_database.sh",
+      "limitation": "Exact parent9b9283f1c8ae0f2bcd59a0f5633b52d238efe62b passed all72 reconciliation SQL assertions/eight native SQL races and allfive jobs/every step in CI39813007245/latest attempt1. Database association is not upstream authentication; trusted lookup-only verifier/runtime/hosted evidence remains pending. New heads need their own checks."
+    },
+    {
+      "id": "ai-conversation-recovery-driver",
+      "status": "automated-baseline",
+      "scope": "Host-only strict original-bound PostgreSQL recovery lookup/reconcile with confirmed COMMIT and cancellation fences; not an activated provider recovery flow",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/postgres_conversation.test.ts",
+          "contains": "recovery driver all mutations use exact original correlation and context without dispatch token or claim"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "native recovery observed blocked reconciliation cancellation cannot persist after lock release"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/postgres_conversation.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
+      "limitation": "Exact parentd8eeebc6a616a7f347e9c0358f3baaeece356bb5 passed allfive jobs/every step and18 native pg cases (including all eight recovery-driver cases) in CI39822068710/latest attempt1. Plaintext/generated result/delivery injection fixtures are not authenticated upstream or hosted learner proof; new optional runtime source requires own-head checks. All14 release groups remain pending."
+    },
+    {
+      "id": "ai-conversation-correlated-recovery",
+      "status": "automated-baseline",
+      "scope": "Explicit same-store lookup-only runtime with immutable original association and strict output validation, confirmed reconciliation COMMIT and bounded cancellation; authentic upstream adapter remains required",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/conversation_recovery.test.ts",
+          "contains": "correlated runtime recovers all three original mutations with frozen original association and no dispatch"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "native correlated runtime cancelled upstream ignores late result without SQL reconciliation or claim"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/postgres_conversation.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && npm run test:postgres-conversation",
+      "limitation": "Local Node24 format/typecheck/168 tests/audit0 passed; ten additional real pg runtime cases authored/typechecked require exact-head CI (28 total). An injected AuthenticatedConversationLookup contract/JSON metadata equality is not genuine upstream authenticity. No real upstream adapter/default/endpoint is configured. Hosted TLS/CA/JWT/PostgREST/Edge/Deno/real partition/learner evidence and all14 release groups remain pending."
+    },
+    {
+      "id": "ai-deno-compatibility",
+      "status": "automated-baseline",
+      "scope": "Pinned standalone Deno2.9.6 strict type checks, full existing168 fixture tests, actual loopback HTTP disconnect/deadline and bounded permissions, plus retained real PostgreSQL adapters under Deno; not Supabase Edge deployment",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/deno/runtime_test.ts",
+          "contains": "actual Deno client disconnect aborts captured provider signal and fences late completion"
+        },
+        {
+          "path": "backend/ai/deno/runtime_test.ts",
+          "contains": "pinned Deno denies external network secrets arbitrary files writes subprocess FFI and system permissions"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "--allow-net=localhost:5432"
+        },
+        {
+          "path": "backend/ai/test/postgres_conversation.native.ts",
+          "contains": "native correlated runtime actual reconciliation COMMIT lost delivery returns failure then fresh original replay without upstream"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task test && deno task test:web; fixed disposable CI database: deno task test:postgres",
+      "limitation": "Local actual Deno2.9.6 strict check/all168 retained tests/six Deno loopback+permission tests passed; no test/production assertion or TLS policy weakened. Deno pg42 (quota5/text9/conversation28) requires exact-head CI because local PostgreSQL is unavailable. Standalone Deno/npm manual-resolution/loopback/Auth/provider fixtures are not deployed Supabase Edge runtime-version, bundling, JWT/TLS/CA/PostgREST/real upstream/learner proof. All14 release groups remain pending."
+    },
+    {
+      "id": "ai-edge-user-worker",
+      "status": "automated-baseline",
+      "scope": "TEST ONLY self-contained schema/service/HTTP bundle in official pinned Supabase Edge Runtime main-to-user-worker bridge; fixture ports, not hosted Auth/provider or learner acceptance",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/main.ts",
+          "contains": "runtime.userWorkers.create"
+        },
+        {
+          "path": "backend/ai/edge/worker.ts",
+          "contains": "TEST ONLY. Fixture ports"
+        },
+        {
+          "path": "scripts/verify_edge_user_worker.py",
+          "contains": "deadline-private-abort-late-result-no-redispatch"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "deno bundle --check --no-remote --packages=bundle"
+        },
+        {
+          "path": "qa/test_edge_runtime_identity.py",
+          "contains": "test_wrong_runtime_rejects_before_any_ai_request_or_docker_call"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task bundle:edge && mkdir -p ../../build/edge/main && cp edge/main.ts ../../build/edge/main/index.ts && python3 ../../scripts/verify_edge_user_worker.py",
+      "limitation": "Local Docker absent; the mandatory exact-head CI step must execute the actual pinned container/user worker before claiming Edge compatibility. Local strict checks or standalone Deno do not prove user-isolate execution. All ports/receipts are TEST ONLY; no hosted runtime equivalence, real JWT, TLS/CA, PostgREST, distributed memory receipt, authenticated upstream, learner/release evidence or deployment. Existing all14 release groups remain pending."
+    },
+    {
+      "id": "ai-trusted-postgres-assembly",
+      "status": "automated-baseline",
+      "scope": "Explicit trusted server composition of SupabaseAuthVerifier, PostgreSQL quota/text/atomic conversation and same-store recovery into five fixed HTTP handlers; no default endpoint/provider",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/trusted_runtime.test.ts",
+          "contains": "assembled same-store recovery uses captured lookup without new acquisition or provider"
+        },
+        {
+          "path": "backend/ai/test/trusted_runtime.test.ts",
+          "contains": "assembled cancelled quota commit closes once and ignores late result before provider"
+        },
+        {
+          "path": "backend/ai/src/trusted_runtime.ts",
+          "contains": "createTrustedPostgresAiHandlers"
+        },
+        {
+          "path": "backend/ai/src/trusted_runtime.ts",
+          "contains": "store: conversations"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test && deno task check && deno task test",
+      "limitation": "Local180 Node/Deno tests (168 retained+12 new) use TEST ONLY Auth HTTP/SQL protocol/provider. Trusted construction opens no connection and retains verified-TLS factories; no native assembled TLS/PostgreSQL/Edge/PostgREST/hosted identity/provider or learner proof. Parent15896c5 Edge7 fixture probe/allfive jobs passed, not this full new assembly. Defaults unconfigured/all14 release groups remain pending; exact-head full CI required."
+    },
+    {
+      "id": "ai-native-trusted-assembly",
+      "status": "automated-baseline",
+      "scope": "Full fixed Request/Response handler composition over actual PostgreSQL quota, text and atomic conversation SQL on Node24 and pinned Deno; TEST ONLY Auth HTTP/provider/plaintext transport",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/trusted_runtime.native.ts",
+          "contains": "native assembled five operations persist full lifecycle and fresh closure retirement replay"
+        },
+        {
+          "path": "backend/ai/test/trusted_runtime.native.ts",
+          "contains": "native assembled independent instances cannot redispatch same event or overtake reserved session"
+        },
+        {
+          "path": "backend/ai/test/trusted_runtime.native.ts",
+          "contains": "COMMIT lost delivery is conservative across fresh handler restart"
+        },
+        {
+          "path": "backend/ai/package.json",
+          "contains": "node --test test/trusted_runtime.native.ts"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "test/postgres_conversation.native.ts test/trusted_runtime.native.ts"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "Fixed disposable CI PostgreSQL17 with all existing migrations: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run test:postgres-assembly && deno task test:postgres",
+      "limitation": "Eight new actual native assembly cases must pass in exact-head Actions (Deno native42 retained +8 =50); local SDK checks without PostgreSQL do not execute these assertions. Auth HTTP, provider, localhost plaintext and lost-delivery injection are TEST ONLY. No PostgreSQL-inside-Edge, real TLS/CA, PostgREST/JWT/provider or learner acceptance. All14 release groups pending; default bindings remain unconfigured."
+    },
+    {
+      "id": "ai-edge-postgres-assembly",
+      "status": "automated-baseline",
+      "scope": "Pinned actual Supabase main-to-user isolates over full trusted assembly and real disposable PostgreSQL SQL/COMMIT; two instances, ambiguity and fresh-container restart",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_worker.ts",
+          "contains": "assemblePostgresAiHandlers"
+        },
+        {
+          "path": "backend/ai/edge/postgres_probe.ts",
+          "contains": "getTransactionStatus"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "actual-concurrent-isolates-one-dispatch-no-open-transaction"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "fresh-container-restart-original-replay-pending-no-redispatch"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "bundle:edge-postgres"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_wrong_runtime_cannot_reach_sql_or_post"
+        }
+      ],
+      "issues": [
+        31,
+        17,
+        18
+      ],
+      "reproduce": "Fixed disposable CI PostgreSQL17/all retained migrations + Docker: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task bundle:edge-postgres && mkdir -p ../../build/edge-postgres/main && cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts && python3 ../../scripts/verify_edge_postgres.py",
+      "limitation": "New seven-group probe requires observed exact-head mandatory container execution/evidence artifact; local checks/bundle/QA do not prove Edge/PostgreSQL execution. TEST ONLY Auth HTTP/provider/plaintext/faults; fixed local CI database and capped containers/loopback host network. No production TLS weakening, hosted JWT/signature/expiry/PostgREST, real provider/lookup or learner proof. All14 release groups remain pending/default bindings unconfigured."
+    },
+    {
+      "id": "ai-edge-postgres-node-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Explicit actual Node Buffer/process initialization before bundled pg CommonJS evaluation; cold pinned dependency reproduction and existing-runtime binding preservation",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_bootstrap.ts",
+          "contains": "await import(\"./postgres_worker.ts\")"
+        },
+        {
+          "path": "backend/ai/edge/postgres_node_globals.ts",
+          "contains": "Reflect.get(target, name) === undefined"
+        },
+        {
+          "path": "backend/ai/test/postgres_node_globals.test.ts",
+          "contains": "cold bundled CommonJS pg graph needs real Node globals before evaluation and preserves runtime bindings"
+        },
+        {
+          "path": "backend/ai/deno.json",
+          "contains": "edge/postgres_bootstrap.ts"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm run format:check && npm run check && npm test && deno task check && deno task test && deno task bundle:edge-postgres; actual disposable DB/Edge probe remains mandatory in CI",
+      "limitation": "Cold module test uses actual pinned pg/postgres-bytea plus real node:buffer/process, not hosted/Edge SQL proof. Parent8ef704f CI39877892790 fails before seeding at Buffer undefined/GET metadata502; native8/50 passed but Flutter/artifact/profile gates skipped. All original actual seven-group assertions/runtime limits/permissions unchanged and must pass at NEW exact head. No production Auth/TLS/default/provider change or release acceptance; all14 integrations pending."
+    },
+    {
+      "id": "ai-edge-postgres-transport-diagnostics",
+      "status": "automated-baseline",
+      "scope": "Fixed actual SELECT1/ReadyForQuery-idle preflight in fixture user isolates before SQL seeding; bounded allowlisted connection phases/failure categories and validated failure snapshots",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_probe.ts",
+          "contains": "SELECT 1 AS probe"
+        },
+        {
+          "path": "backend/ai/edge/postgres_probe.ts",
+          "contains": "metrics.failures.length < 8"
+        },
+        {
+          "path": "backend/ai/test/postgres_probe.test.ts",
+          "contains": "fixture transport preflight never queries after connect failure and closes on query failure without success"
+        },
+        {
+          "path": "backend/ai/test/postgres_probe.test.ts",
+          "contains": "fixture PostgreSQL diagnostic ledger is bounded deduplicated and never returns raw exception fields"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_phase_snapshots_reject_raw_unknown_fields_unbounded_values_and_categories"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && npm test && deno task check && deno task test && deno task bundle:edge-postgres; fixed disposable DB and actual Edge CI required",
+      "limitation": "Parent d875fd3 CI39882989584 proves both actual user isolates now boot/pinned metadata succeeds, but first tutor request503 remains undiagnosed. Native8/50 passed; new full Edge SQL groups/artifact/Flutter not passed. New preflight and fixed category snapshots aid diagnosis without raw token/URL/message/SQL logs; do not claim root cause or transport success until actual exact-head CI. Original seven full-handler groups and security/permission gates remain; no real JWT/TLS/provider/learner proof/all14 pending."
+    },
+    {
+      "id": "ai-edge-postgres-distinct-events",
+      "status": "automated-baseline",
+      "scope": "Actual two Edge user isolates: held turn reservation rejects distinct turn/finish without provider or orphan writes, explicit same-ID retry preserves order and fresh worker replays committed originals",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/edge/postgres_worker.ts",
+          "contains": "handlers.set(\"/held_turn\", bound.conversation_turn)"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "actual-distinct-events-pending-fence-rollback-ordered-retry"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "Rejected distinct event left receipt or public mutation"
+        },
+        {
+          "path": "scripts/verify_edge_postgres.py",
+          "contains": "Distinct-event final committed state differs"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_distinct_events_reject_orphan_receipt_and_release_held_provider"
+        },
+        {
+          "path": "qa/test_edge_postgres.py",
+          "contains": "test_distinct_events_reject_wrong_committed_order_or_pending_reservation"
+        }
+      ],
+      "issues": [
+        31,
+        18
+      ],
+      "reproduce": "Fixed disposable CI PostgreSQL17/all migrations + Docker: cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task bundle:edge-postgres && mkdir -p ../../build/edge-postgres/main && cp edge/postgres_main.ts ../../build/edge-postgres/main/index.ts && python3 ../../scripts/verify_edge_postgres.py && cd ../.. && python3 -m unittest discover -s qa -p test_*.py",
+      "limitation": "Adds ninth mandatory group; parent2cc9987 CI39894048642 allfive jobs/every step and original eight actual Edge SQL groups succeeded. New group requires new exact-head Edge execution; local negative oracle tests do not prove native concurrency. Fixed fixture Auth/provider/plaintext only; no hosted JWT/TLS/PostgREST/provider/learner acceptance. Quota remains unchanged, nine serial-owner attempts including restart replay, no reset/refill timing. All14 release groups pending/default bindings unconfigured."
+    },
+    {
+      "id": "reading-material-domain",
+      "status": "automated-baseline",
+      "scope": "Pure reading import/model and deterministic first-answer comprehension, strict catalog validation before N5/N4 filtering and immutable versioned snapshot identity; no study write/audio/default lesson",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/domain/reading_material.dart",
+          "contains": "decodeReadingMaterial"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/reading/domain/reading_material.dart",
+          "contains": "snapshotKey != passage.snapshotKey"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_material_test.dart",
+          "contains": "snapshot version passage and level prevent stale callback answers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_material_test.dart",
+          "contains": "duplicate passage and malformed hidden level fail before filtering"
+        }
+      ],
+      "issues": [
+        34,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading/reading_material_test.dart",
+      "limitation": "New pure domain/tests only, no reviewed reading assets, curriculum changes, source-license verification, UI/loading/offline flow, playable audio, study-session write/history/sync or learner acceptance. Model score does not prove comprehension/mastery/attention. New exact-head Flutter format/analyze/tests/build must be observed; previous AI/Edge CI is not Dart execution evidence. Pro N4 scope untouched; all14 release cases pending/default lessons unconfigured."
+    },
+    {
+      "id": "reading-local-repository",
+      "status": "automated-baseline",
+      "scope": "Bounded trusted-local-source reading repository, exact version lookup, coalesced bounded reads and atomic in-memory content-version fences before N5/N4 exposure",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/data/local_reading_repository.dart",
+          "contains": "_known = next"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/local_reading_repository_test.dart",
+          "contains": "rejected catalogs publish none of their otherwise valid changes"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/local_reading_repository_test.dart",
+          "contains": "timed out source cannot publish late results over a later load"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/local_reading_repository_test.dart",
+          "contains": "concurrent levels and lookups share one pending source read"
+        }
+      ],
+      "issues": [
+        34,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading",
+      "limitation": "Local read-only component and TEST ONLY source fixtures; host must supply reviewed trusted material. In-memory version fences reset with repository replacement; no cryptographic source authenticity, durable offline cache, UI, audio, study reports or learner acceptance. Exact-head CI still required; all14 release groups remain pending and defaults unchanged."
+    },
+    {
+      "id": "reading-widget-flow",
+      "status": "automated-baseline",
+      "scope": "Opt-in read-only reading list/passage/first-answer feedback/result UI, nullable default source and explicit missing audio, loading/error/empty/manual reload states with level/source/round identity barriers",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/application/reading_provider.dart",
+          "contains": "Provider<ReadingRepository?>((ref) => null)"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/reading/presentation/reading_screen.dart",
+          "contains": "skipLoadingOnRefresh: false"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_widget_test.dart",
+          "contains": "immediate reload of an identical list still resets the round"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_widget_test.dart",
+          "contains": "level change during loading consumes late old-level errors"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_widget_test.dart",
+          "contains": "200 percent controls and answers remain accessible"
+        }
+      ],
+      "issues": [
+        34,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading/reading_widget_test.dart",
+      "limitation": "Widget cases authored using actual router/providers/parser/local repository and TEST ONLY source material; full new-head Flutter execution/build still required. No reviewed default lesson or playable audio, account-owned study report/minutes/mastery/persistence/sync or hosted learner acceptance. All14 release groups pending; unconfigured source remains unavailable."
+    },
+    {
+      "id": "reading-study-recorder",
+      "status": "automated-baseline",
+      "scope": "Opt-in selected-profile reading through one captured durable study recorder, unchanged authoritative plan gate, lifecycle interruption and exact immutable recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/reading/application/reading_provider.dart",
+          "contains": "readingSelectedPassageProvider"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_study_recorder_test.dart",
+          "contains": "uncertain reading commit survives journal reopen and exact manual replay"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_study_widget_test.dart",
+          "contains": "blocked authoritative reading plan refuses timing even when text is selected"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_study_widget_test.dart",
+          "contains": "old reading finish callback cannot finish a restarted interval"
+        }
+      ],
+      "issues": [
+        34,
+        11,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading",
+      "limitation": "Current SQL still BLOCKS LISTENING_READING; local text cannot grant availability or credit. TEST ONLY permissive plan/Auth/RPC/source/clock;5 actual-file core cases and12 widget cases require exact-head Flutter evidence. Core close/reopen is one-process, not new Windows crash/hosted JWT proof. No default source/audio activation or scored completion; all14 hosted release groups pending."
+    },
+    {
+      "id": "quiz-study-recorder",
+      "status": "automated-baseline",
+      "scope": "Opt-in current-profile quiz elapsed time through the shared captured-owner durable recorder, immutable recovery and round/lifecycle guards",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_recorder_test.dart",
+          "contains": "uncertain quiz commit reopens and replays once with original identity"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_widget_test.dart",
+          "contains": "blocked quiz server plan overrides loaded eligible questions"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_widget_test.dart",
+          "contains": "frozen quiz report retries unchanged through SRS"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_study_widget_test.dart",
+          "contains": "quiz date editor is retained and cleared on logout during save"
+        }
+      ],
+      "issues": [
+        11,
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz",
+      "limitation": "Current server QUIZ_REVIEW remains zero-resource/BLOCKED. TEST ONLY permissive plans/Auth/RPC/clock, original curriculum unchanged. Four actual-file core cases and11 widgets need exact-head Flutter proof; native close/reopen is one process, not Windows crash/hosted learner or synced quiz-attempt acceptance. Elapsed self-report is separate from scores/history/mastery; all14 hosted groups pending."
+    },
+    {
+      "id": "focused-quiz-review",
+      "status": "automated-baseline",
+      "scope": "Explicit current-source needs-review practice using unchanged canonical choices and captured local quiz save, fenced by projection/source/level/owner",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_review_quiz_test.dart",
+          "contains": "saved focused correction clears only its current-source review targets"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/focused_quiz_review_widget_test.dart",
+          "contains": "focused review preserves priority choices and explicit save clears candidates"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/focused_quiz_review_widget_test.dart",
+          "contains": "source replacement rejects retained review before the next frame"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/focused_quiz_review_widget_test.dart",
+          "contains": "focused save remains original-owner only after logout and late completion"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz",
+      "limitation": "Six pure selection cases use TEST ONLY synthetic metadata and actual domain builder/projection; nine widget cases use original N5 and simulated Auth/memory/clock, requiring new exact-head Flutter proof. Dedicated /quiz timer remains separate; no implicit save/minutes/mastery or hosted sync/learner acceptance. All14 release groups remain pending."
+    },
+    {
+      "id": "focused-quiz-native-correction-restart",
+      "status": "automated-baseline",
+      "scope": "Explicit focused correction through actual SDK/native journal/UI, preserving the original event and corrected history across a second owned restart and A/B/A isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "Focused correction survives a second owned restart"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(correction.answers.single.itemId, questions.first.target.id)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(third.store.appends, 0)"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/quiz/quiz_disk_journey_widget_test.dart",
+      "limitation": "New continuation adds58 assertions and requires exact-head execution. Production capture/source/journal/owned SDK lifecycle are composed, but HTTP/unsigned JWT/vault remain TEST ONLY. Same-process graceful reopen is not hosted identity/RLS/sync, physical Windows launch/vault, forced-process/power-loss or authoritative mastery/study credit proof. All14 release groups remain pending."
+    },
+    {
+      "id": "ai-dart-text-contract-models",
+      "status": "automated-baseline",
+      "scope": "Pure immutable Dart tutor/correction request and response models preserving frozen v0.1 fields, Unicode bounds, nested validation and original fixture encodings",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "both request encoders match untouched frozen v0.1 fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "both response decoders round trip untouched frozen v0.1 fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "requests count Unicode code points and retain boundary text"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "correction deep copies nested refs and freezes both error arrays"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_models_test.dart",
+          "contains": "malformed output exposes only a constant format error with no payload echo"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_text_models_test.dart",
+      "limitation": "Seventeen cases passed with identical pure-Dart source/test graph and original fixtures in a disposable strict harness; only flutter_test import adapted to package:test1.26.2. New exact-head Flutter proof required. No transport, session/identity, raw byte/duplicate-key/deadline guard, UI activation, storage, provider call, voice, live learner or mastery/study-credit acceptance. All14 hosted release groups pending."
+    },
+    {
+      "id": "ai-dart-captured-text-repository",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured-ready-session text repository with strict frozen decoding, safe errors, immutable fixed dispatch and single-flight lock retained through late timeout settlement",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "both fixed text methods preserve frozen bodies and captured identity"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "same-user session replacement never retargets or revives a captured repository"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "timeout keeps busy through late success and never automatically redispatches"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_ai_text_repository_test.dart",
+          "contains": "late timeout error is consumed without publication or an unhandled exception"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "Twenty-two cases authored with original frozen fixtures and TEST ONLY Auth/readiness/transport; no local runtime/format/analyze/test/build execution available. New exact-head CI required. No concrete SDK/HTTP credential capture, raw body/JSON/deadline/cancellation guard, provider call, owned UI/runtime activation, hosted identity/voice/learner or mastery/study credit proof. Timeout is not rollback/cancellation and text calls have no idempotency key. All14 release groups pending."
+    },
+    {
+      "id": "ai-dart-captured-http-text",
+      "status": "automated-baseline",
+      "scope": "Explicit captured SDK-session fixed-operation text HTTP component with byte/JSON/redirect/deadline/abort/late-work guards and drain isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "fixed text endpoints use captured SDK bearer and exact original frozen bodies"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "header timeout retains lock through late settlement error=$lateError"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "uncooperative stream cancellation retains busy until cleanup settles"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "cancellation failure permanently revokes without exposing raw detail"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "28 new cases plus22 unchanged repository cases passed in identical seven-library/two-test pure Dart graph with actual pinned Supabase/http libraries, original fixtures, TEST ONLY Auth/streamed HTTP and only flutter_test import adapted. New exact-head full CI required. No real network/TLS/hosted JWT verification/provider/voice, owned runtime/UI activation, rollout or learner proof. Abort/cancel is not remote rollback or zero-cost proof; ignored abort/cleanup can keep busy/drain pending; cancellation failure revokes. No automatic text retry or receipt. All14 hosted release gates pending."
+    },
+    {
+      "id": "ai-dart-owned-ready-runtime",
+      "status": "automated-baseline",
+      "scope": "One owner-held captured text repository per ready generation with synchronous revoke, transport drain before reuse/SDK shutdown and default-disabled actual owned runtime factory",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_runtime_owner_test.dart",
+          "contains": "new generation waits for old close and cannot revive the retired generation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_runtime_owner_test.dart",
+          "contains": "close during construction waits for orphan cleanup and is idempotent"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "AI factory waits for persisted rotation and own profile then caches one capability"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "refresh revokes AI synchronously and holds new generation until old headers drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "shutdown revokes AI immediately and waits for ignored abort before SDK disposal"
+        }
+      ],
+      "issues": [
+        17,
+        20,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "19 new owner cases plus50 retained repository/actual SDK-streamed HTTP cases passed in identical eight-library/three-test pure Dart graph with only flutter_test import adapted. Eight new actual PersistentSupabaseRuntime/SDK/vault/profile/AI HTTP assembly cases authored and require new exact-head Flutter CI; builds/native/hosted proof unrun locally. Default main/staging AI stays disabled. Simulated Auth/vault/HTTP and unsigned JWTs do not establish hosted identity/provider/voice/learner acceptance. No automatic text retry or receipt; ignored transport/cancel may keep replacement/close pending. All14 live release gates pending."
+    },
+    {
+      "id": "ai-text-view-controller",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured-ready-generation text view controller: explicit N5/N4 explain/correct; safe unavailable/idle/loading/success/error/pending state; cross-method and reentrant duplicate guards, no automatic replay, read-time and owner invalidation clearing, ignored late response, timeout wire-busy fence and borrowed resource lifetime. No UI route/provider activation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "loading blocks cross-method duplicate taps and clearing without resending"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "timeout retains wire busy until late error settles then requires manual submit"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "logout clears immediately and ignores late old response error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_text_controller_test.dart",
+          "contains": "dispose clears synchronously with held work and paused notification listener"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai",
+      "limitation": "Pure controller tests use actual repository/strict DTOs with TEST ONLY Auth/readiness/held transport and frozen fixtures, not hosted identity/provider/learner proof. Caller must synchronously invalidate on readiness loss and mount a fresh controller for a fresh ready capability; notifications are availability hints and views must read current state. No SDK/HTTP ownership, input persistence, automatic retry, voice, server credit, UI/provider/default activation or live endpoint configuration. Late/canceled HTTP is not remote rollback or zero-cost proof. Full new-head Flutter/build proof requires CI; all14 hosted release groups remain pending."
+    },
+    {
+      "id": "ai-tutor-screen",
+      "status": "automated-baseline",
+      "scope": "Injectable null-default Riverpod /ai tutor/correction view with explicit N5/N4 send, bounded exact text, plain typed results, empty corrections, safe loading/error/pending/manual recheck, binding/draft/result isolation and request-revision-bound callbacks. Existing default preview and route/mobile tests unchanged.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "null default keeps original unavailable preview and no input"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "binding replacement fences retained actions and late old result error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "readiness revocation clears editor and private result"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_tutor_screen_test.dart",
+          "contains": "tutor controls results and safe errors fit large text"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_tutor_screen_test.dart test/app_test.dart",
+      "limitation": "15 new widgets authored, unrun locally; full new-head analyzer/Flutter/platform/build requires CI. TEST ONLY captured Auth/readiness/port/DTOs and injected view binding are not hosted identity/provider/voice/learner proof. Actual owned-startup ready-generation factory-to-provider bridge remains next work; host must synchronously revoke/remove or replace binding on readiness loss. Main/staging AI remains disabled. No simulated default Auth/save, automatic retry, transcript storage, mastery/SRS/plan write, live provider/collection/spend activation or remote rollback/cost guarantee. All14 hosted release groups pending."
+    },
+    {
+      "id": "ai-owned-startup-tutor-journey",
+      "status": "automated-baseline",
+      "scope": "Actual pinned SDK/native journal/WindowsStagingOwner/startup/Riverpod/router/mounted tutor with TEST ONLY service and vault ports: persisted rotation/profile barriers, explicit request wire, refresh late success/error drain, A-B-A callback isolation, storage/profile failure recovery, disabled host and owned shutdown.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "Windows owner startup waits for rotation and profile before first tutor binding"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted tutor refresh fences old callback and ignored HTTP abort error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted tutor A B A clears results and never retargets old callbacks"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted tutor stays unavailable after failed barrier storage="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "owned startup close removes tutor and drains ignored HTTP without closing borrowed client"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart test/features/ai/ai_text_source_test.dart test/features/ai/persistent_ai_text_runtime_test.dart",
+      "limitation": "Eight new expanded widget cases authored, unrun locally; exact new-head full CI must confirm execution. Actual Windows owner now forwards the captured AI source/factory but default preview/staging AI remain disabled. Simulated service/vault/unsigned JWT and native-file fixtures are not hosted identity, real OS vault, provider, voice, physical launch, learner or release evidence. No automatic retry/dispatch, transcript/progress/SRS writes, provider/Auth strategy/collection/spend activation. All14 hosted release groups remain pending."
+    },
+    {
+      "id": "conversation-mutation-requests",
+      "status": "automated-baseline",
+      "scope": "Pure immutable frozen v0.1 start/turn/finish request encoders and strict decoders; preserved client event/session/scenario identity, fresh maps, UUID/Unicode limits and safe errors.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_requests_test.dart",
+          "contains": "three requests round trip unchanged frozen fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_requests_test.dart",
+          "contains": "retry exports are fresh maps without mutating captured event identity"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_requests_test.dart",
+          "contains": "decoders reject missing extra null wrong typed and authority fields"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_requests_test.dart",
+      "limitation": "Pure request/fixture validation is not hosted Auth, scenario existence/ownership, provider, durable receipt/retry, conversation response/transport/UI or voice proof. No dispatch/UUID generation/retention/default activation or Auth strategy change. Full exact-head Flutter/platform CI and hosted learner gates remain required; all14 release groups stay pending."
+    },
+    {
+      "id": "conversation-mutation-responses",
+      "status": "automated-baseline",
+      "scope": "Strict immutable frozen conversation start/turn/finish responses, assistant role/message/nullable fields, optional feedback presence, bounded score/list/text validation and fresh immutable nested snapshots.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "three strict responses round trip unchanged frozen fixtures"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "optional feedback omitted and empty remain distinct and null is invalid"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "input aliases exports and every nested list cannot mutate captured responses"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_responses_test.dart",
+          "contains": "nested corrections references and mixed error success fail closed without echo"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_responses_test.dart",
+      "limitation": "Pure shape/fixture validation does not verify hosted identity/session ownership/message correlation/provider authenticity/durable receipts/retry/conversation UI/audio safety/playback. Opaque audio references are never activated; recommendations authorize no SRS/progress write. Exact new-head Flutter/platform CI and all14 pending hosted learner release gates remain required. No provider/Auth strategy/default activation."
+    },
+    {
+      "id": "captured-conversation-mutation",
+      "status": "automated-baseline",
+      "scope": "One immutable captured ready-session conversation mutation with typed start/turn/finish factories, same-wire manual retry, local accepted cache, reentrant singleflight, timeout-held injected-future drain and permanent late identity fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "three typed mutations send exact frozen requests and cache success without redispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "singleflight registers before synchronous port reentry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "timeout holds actual drain and late response cannot cache success error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "account identity replacement rejects late result and returning A cannot revive error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_mutation_test.dart",
+          "contains": "new same-user identity never inherits the captured operation"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_mutation_test.dart",
+      "limitation": "Injected port/session/readiness fixtures are not actual SDK/HTTP, hosted Auth/provider/receipts or remote drain proof. This is per-event only: global coordination/event uniqueness/sequence correlation/restart persistence/UI/voice and SDK transport remain next work. Server must authorize owner/receipt replay; no new ID/automatic retry/default/provider activation. Borrowed resources untouched/all14 hosted release groups pending."
+    },
+    {
+      "id": "conversation-mutation-lane",
+      "status": "automated-baseline",
+      "scope": "One captured ready-owner in-memory lane serializes typed mutation events, retains exact immutable operation-scoped wire identity and unresolved same-event reservation after injected-future drain, bounds registry without eviction and revokes all publication on lifecycle loss.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "different typed operations cannot overlap a held start"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "uncertain timeout keeps same event reservation even after wire drain error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "changed replay body scenario level session and UUID case are rejected before dispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "capacity is bounded without eviction while existing replay still works"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "synchronous port and readiness reentry cannot dispatch another operation"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_mutation_lane_test.dart",
+      "limitation": "Pure injected-port tests are not SDK/HTTP/hosted receipts/remote drain evidence. One host must reuse one lane; separate lanes/devices/processes/session progression/message correlation/scenario ownership/durable restart/UI/provider/voice remain open. No automatic retry/fresh event ID/reset/eviction/default activation; server owns authorization/idempotency, all14 hosted release groups pending."
+    },
+    {
+      "id": "captured-conversation-session",
+      "status": "automated-baseline",
+      "scope": "One captured ready-owner conversation enforces explicit start/turn/finish progression, matching session, immutable nonduplicated message projection, monotonic sequence, exact replay without rollback, unresolved event fencing and terminal owner/correlation revocation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "explicit progression captures session and finishes without derived writes"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "pre-start foreign-session and post-finish operations never dispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "identical replay cannot append twice or roll back later progress"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "terminally clears publication"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "keeps exact retry and projection"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "port and readiness reentry cannot overlap and nested read is redacted"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "retains drain"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_session_test.dart",
+      "limitation": "Pure injected-port component tests do not prove SDK/HTTP/hosted receipts/remote drain, server ownership or scenario/message context, cross-device/restart recovery, UI or voice. Host must revoke every lifecycle barrier; separate instances are not coordinated. No new IDs/reset/automatic retry/derived writes/default activation; all14 hosted release groups pending."
+    },
+    {
+      "id": "conversation-sdk-http",
+      "status": "automated-baseline",
+      "scope": "Captured actual Supabase SDK HTTP capability exposes a closed conversation operation set with strict DTOs and shares text/conversation actual HTTP busy-drain lease, exact event retries and safe identity/401 fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation fixed endpoints preserve captured bearer event and exact wire"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation operation allowlist and strict bodies reject before HTTP"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "text and conversation share one actual HTTP busy lease"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "captured conversation progression uses SDK HTTP and replays locally without redispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation timeout fences ignored abort then exact event retry after actual drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "conversation 401 and SDK session replacement permanently fence old capability"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
+      "limitation": "Actual pinned SDK with TEST ONLY unsigned JWT/Auth and streamed AI HTTP responses; no hosted signature/provider/receipt/learner/voice proof. Runtime conversation factory/UI/reconciliation/restart remain open. No default activation, wider Auth/REST grants, credential writers, automatic retry or provider change; all14 hosted gates pending."
+    },
+    {
+      "id": "conversation-runtime-owner",
+      "status": "automated-baseline",
+      "scope": "One retained captured conversation per existing AI owner lease/shared transport, synchronous lifecycle revoke and generation drain, separate default-off runtime factory gated by persisted rotation and own-profile readiness.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_runtime_owner_test.dart",
+          "contains": "one retained conversation shares owner transport and completed session cannot reset"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_runtime_owner_test.dart",
+          "contains": "fresh generation waits for drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_runtime_owner_test.dart",
+          "contains": "failed shared cleanup cannot authorize replacement conversation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "conversation factory waits for vault and profile then retains one session without text exposure"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "conversation refresh revokes before rotation and waits for old ignored-abort HTTP drain"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "conversation owned close clears publication immediately and drains held HTTP preserving vault"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_runtime_owner_test.dart test/features/ai/ai_text_runtime_owner_test.dart test/features/ai/persistent_ai_text_runtime_test.dart",
+      "limitation": "Pure owner cases and separately executed TEST ONLY SDK/vault/HTTP runtime cases are not hosted JWT/provider/receipt/voice/learner proof. One retained session is not reset; durable restart/server reconciliation/new-round policy/startup UI source remain open. Default flags off/all14 hosted gates pending; no new credential writer/provider/Auth strategy/derived writes."
+    },
+    {
+      "id": "conversation-startup-source",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured conversation factory and void availability hints forward through owned runtime/PersistentAccountStartup/WindowsStagingOwner and active-only startup controller with default-off readiness/lifecycle fencing.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "conversation source forwards actual startup owner readiness refresh and close"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "default-off conversation source stays unavailable through Windows startup"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "each fixture must release its real exclusive vault owner"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "Auth/vault/HTTP ports and unsigned JWT are TEST ONLY; real SDK/native journal/owned startup assertions are not hosted provider/JWT/receipt/voice/learner proof. No conversation App provider/binding/UI/source default activation; new cases require actual exact-head Flutter execution. All14 hosted gates pending; no resource lifetime or Auth strategy/collection/spend changes."
     }
   ],
   "findings": [
@@ -452,8 +2416,8 @@
         "ai-runtime",
         "ai-live"
       ],
-      "description": "Distributed limits, trusted message/session transactions and upstream reconciliation are not bound in the runtime. Fixture success cannot authorize real provider calls.",
-      "action": "Complete #31/#17 with durable commit-before-dispatch and correlated lookup-only recovery; retain safe pending state."
+      "description": "Provider-neutral opt-in Auth/quota/conversation/recovery components and strict correlation checks lack an approved real authenticated upstream adapter and deployed Edge evidence. Fixture or echoed metadata success cannot authorize real provider calls.",
+      "action": "Complete #31 hosted/Edge/Deno proof and #17 approved live provider/lookup authentication; retain default fail-closed pending, no legacy fallback or redispatch."
     },
     {
       "id": "SEC-03",
@@ -463,7 +2427,7 @@
         "review-rpc",
         "offline-sync"
       ],
-      "description": "Authoritative review endpoint and durable retry queue are missing; storage uniqueness alone does not protect scheduling counters.",
+      "description": "Local atomic SQL RPC is tested, but real identity/transport, integrated review UI and durable retry queue remain unverified. SQL fixture success alone does not establish an end-to-end review flow.",
       "action": "Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts."
     },
     {
