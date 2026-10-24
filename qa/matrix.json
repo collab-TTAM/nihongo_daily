@@ -2211,6 +2211,41 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_mutation_test.dart",
       "limitation": "Injected port/session/readiness fixtures are not actual SDK/HTTP, hosted Auth/provider/receipts or remote drain proof. This is per-event only: global coordination/event uniqueness/sequence correlation/restart persistence/UI/voice and SDK transport remain next work. Server must authorize owner/receipt replay; no new ID/automatic retry/default/provider activation. Borrowed resources untouched/all14 hosted release groups pending."
+    },
+    {
+      "id": "conversation-mutation-lane",
+      "status": "automated-baseline",
+      "scope": "One captured ready-owner in-memory lane serializes typed mutation events, retains exact immutable operation-scoped wire identity and unresolved same-event reservation after injected-future drain, bounds registry without eviction and revokes all publication on lifecycle loss.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "different typed operations cannot overlap a held start"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "uncertain timeout keeps same event reservation even after wire drain error="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "changed replay body scenario level session and UUID case are rejected before dispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "capacity is bounded without eviction while existing replay still works"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_mutation_lane_test.dart",
+          "contains": "synchronous port and readiness reentry cannot dispatch another operation"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_mutation_lane_test.dart",
+      "limitation": "Pure injected-port tests are not SDK/HTTP/hosted receipts/remote drain evidence. One host must reuse one lane; separate lanes/devices/processes/session progression/message correlation/scenario ownership/durable restart/UI/provider/voice remain open. No automatic retry/fresh event ID/reset/eviction/default activation; server owns authorization/idempotency, all14 hosted release groups pending."
     }
   ],
   "findings": [

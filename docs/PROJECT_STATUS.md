@@ -5775,3 +5775,60 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   provider/voice/learner/physical launch and human gates remain. No merge/close/
   deploy/release/provider/Auth strategy/collection/spend/security/schedule action
   or Personal Alpha claim.
+
+
+## Captured owner conversation mutation lane — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0909-conversation-lane; resume draft41 branch
+  automation/issue-11-plan-sdk-integration at15f0eb14d6ebd020853a8a314fe6ef868d3daf25
+  /treee58bef36fbd31dd6ad1d47c7eb65dd98f8c69488. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; prior marker released08:17:47 UTC.
+- Parent CI40077403342 raw exact15f0eb1/latest attempt1 completed success:
+  allfive jobs/every required step/no skips. Log120824005867 confirms952 Flutter/
+  all13 captured mutation cases and five Chrome; native/Windows/SQL/Edge/builds
+  passed. Component evidence, not hosted identity/provider/learner acceptance.
+- New ConversationMutationLane captures one ready-owner identity and serializes
+  typed start/turn/finish using actual CapturedConversationMutation and strict
+  DTOs. Reserve before supplied getters/factory/port reentry. Bounded immutable
+  operation+lowercase-event-ID registry binds exact wire fingerprint; identical
+  reconstructed requests reuse mutation/cache, changed text/scenario/level/session/
+  UUID wire spelling rejects SYNC_CONFLICT/no dispatch. Distinct operations keep
+  separate event scope. No generated IDs or automatic dispatch/retry.
+- Failure/timeout retains unresolved original key even after injected-future
+  drain. Different operation/fresh event/older cached replay cannot bypass it;
+  explicit same-event same-wire retry resolves only on accepted typed success.
+  isBusy differs from hasUnresolvedMutation. Default100 slots/trusted1..1000 bound;
+  full registry rejects new events/nonretryable local RATE_LIMITED without eviction,
+  existing replay remains valid. Permanent readiness/getter/identity/unauthorized
+  revoke clears registry/publication, retains observable late held drain; A-B-A
+  cannot revive. Borrowed resources untouched; host must reuse one lane and revoke
+  every lifecycle barrier. Separate lanes/devices/processes not coordinated.
+- 13/13 pure injected-port tests passed: typed serial/cache operations; held start/
+  other operation; changed replay fields/UUID case; operation-scoped IDs; timeout
+  late success/error and reservation after drain; provider failure/old-cache bypass;
+  capacity/no eviction; port/getter reentry; revoked A-B-A late success/error;
+  getter/unauthorized invalidation; same-user/explicit revoke/limits. Fresh official
+  Dart3.9.2 checksum verified; exact nine-file production/test graph and unchanged
+  fixture in disposable harness, only Flutter runner import adapted to test1.26.2.
+  Strict casts/inference/raw types+lints6 analyze no issues. Pure evidence is not
+  SDK/HTTP/server receipt/remote drain proof.
+- Pinned format/inventory90/46 QA regressions/whitespace passed; separate exact
+  wire/scope/uncertainty/cache/reentry/drain/lifecycle/capacity/diff review. All89
+  old QA cases/findings/gates retained/all14 hosted pending. No old source/test,
+  default flag/Auth strategy/provider/SDK/vault/RLS/contract/CI/dependency/Pro/content
+  edits, new local full Flutter/analyzer/build or denied bootstrap retry/bypass.
+- Five paths: new lib/features/ai/data/conversation_mutation_lane.dart,
+  test/features/ai/conversation_mutation_lane_test.dart and
+  docs/CONVERSATION_MUTATION_LANE.md; docs/PROJECT_STATUS.md and qa/matrix.json.
+  Publish actual parent base_tree/full recursive tree/local equality/unaffected
+  mode-type-blob proof, five exact UTF8/blobSHA/single parent/tree readbacks then
+  fresh own marker/head expected-head non-force update. Final commit/tree/new
+  exact workflow/latest attempt/released handoff in41/17/37.
+- Next exact new-head/latest-attempt allfive jobs/every required step; fix real
+  diagnostics retaining assertions. Pending-only handoff/no duplicate code/long
+  polling. Then actual conversation progression/message correlation and owned
+  fixed-endpoint SDK/HTTP/recovery/UI. Lane is not server ownership/receipt quota,
+  cross-device/restart persistence, real I/O drain/rollback or voice proof. Keep41
+  draft/issues open/AI defaults off/all14 hosted pending; hosted identity/provider/
+  voice/learner/physical launch/human gates remain. No merge/close/deploy/release/
+  Auth strategy/provider/collection/spend/security/schedule action or Alpha claim.
