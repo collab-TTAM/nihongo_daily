@@ -2425,6 +2425,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_controller_test.dart test/features/ai/captured_conversation_session_test.dart",
       "limitation": "Pure injected Auth/port tests use the actual captured flow but do not prove HTTP/native/UI/hosted JWT/receipts/provider/voice. No scenario catalog, App/Riverpod binding, default activation, durable recovery or new-round/reset policy; all14 hosted gates pending."
+    },
+    {
+      "id": "conversation-view-binding",
+      "status": "automated-baseline",
+      "scope": "Default-null Riverpod borrowed conversation binding with source hints/account readiness and explicit startup host override; no dispatch or flag activation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_source_test.dart",
+          "contains": "same ready session preserves binding identity without request"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_source_test.dart",
+          "contains": "Riverpod default is unavailable and override replacement stays borrowed"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_conversation_source_test.dart",
+          "contains": "reentrant source notification does not reacquire or dispatch"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_source_test.dart",
+      "limitation": "Ten authored TEST ONLY source/real-flow cases require exact-head Flutter execution. No mounted conversation route/UI or hosted provider/JWT/voice/learner proof, no default activation; all14 hosted gates pending."
     }
   ],
   "findings": [
