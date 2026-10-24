@@ -2367,6 +2367,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_runtime_owner_test.dart test/features/ai/ai_text_runtime_owner_test.dart test/features/ai/persistent_ai_text_runtime_test.dart",
       "limitation": "Pure owner cases and separately executed TEST ONLY SDK/vault/HTTP runtime cases are not hosted JWT/provider/receipt/voice/learner proof. One retained session is not reset; durable restart/server reconciliation/new-round policy/startup UI source remain open. Default flags off/all14 hosted gates pending; no new credential writer/provider/Auth strategy/derived writes."
+    },
+    {
+      "id": "conversation-startup-source",
+      "status": "automated-baseline",
+      "scope": "Borrowed captured conversation factory and void availability hints forward through owned runtime/PersistentAccountStartup/WindowsStagingOwner and active-only startup controller with default-off readiness/lifecycle fencing.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "conversation source forwards actual startup owner readiness refresh and close"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "default-off conversation source stays unavailable through Windows startup"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "each fixture must release its real exclusive vault owner"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "Auth/vault/HTTP ports and unsigned JWT are TEST ONLY; real SDK/native journal/owned startup assertions are not hosted provider/JWT/receipt/voice/learner proof. No conversation App provider/binding/UI/source default activation; new cases require actual exact-head Flutter execution. All14 hosted gates pending; no resource lifetime or Auth strategy/collection/spend changes."
     }
   ],
   "findings": [

@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
 import '../../ai/application/ai_text_runtime_owner.dart';
 import '../../ai/data/ai_text_repository_source.dart';
+import '../../ai/data/ai_conversation_source.dart';
 import '../../ai/data/captured_ai_text_repository.dart';
 import '../../ai/data/captured_conversation_session.dart';
 import '../../ai/data/supabase_ai_text_transport.dart';
@@ -34,7 +35,8 @@ final class PersistentSupabaseRuntime
     implements
         AccountSessionNoticeSource,
         AccountSessionRefreshAction,
-        AiTextRepositorySource {
+        AiTextRepositorySource,
+        AiConversationSource {
   PersistentSupabaseRuntime({
     required String projectUrl,
     required String publishableKey,
@@ -189,6 +191,8 @@ final class PersistentSupabaseRuntime
   bool get isAiConversationEnabled => _aiConversationEnabled;
   @override
   Stream<void> get aiTextChanges => _aiOwner.changes;
+  @override
+  Stream<void> get aiConversationChanges => _aiOwner.changes;
 
   void _syncAiReadiness() {
     final ready = _closing == null ? account.readyRuntime : null;
@@ -223,6 +227,7 @@ final class PersistentSupabaseRuntime
 
   /// Separate trusted opt-in, not exposed by default startup/UI. Uses the same
   /// owner/transport/drain as text, after persisted rotation and own profile.
+  @override
   CapturedConversationSession? createAiConversationSession() {
     if (!_aiConversationEnabled || _closing != null) return null;
     _syncAiReadiness();

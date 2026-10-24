@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/ai/data/ai_text_repository_source.dart';
+import '../features/ai/data/ai_conversation_source.dart';
 import '../features/ai/data/captured_ai_text_repository.dart';
+import '../features/ai/data/captured_conversation_session.dart';
 import '../features/auth/application/account_controller.dart';
 import '../features/auth/application/account_startup_controller.dart';
 import '../features/auth/application/account_session_notice.dart';
@@ -151,7 +153,8 @@ final class WindowsStagingOwner
         DailyPlanRepositorySource,
         DurableStudySessionSource,
         VocabularyQuizHistorySource,
-        AiTextRepositorySource {
+        AiTextRepositorySource,
+        AiConversationSource {
   WindowsStagingOwner(
     this.session,
     this.journal, {
@@ -168,6 +171,11 @@ final class WindowsStagingOwner
       _closing == null ? session.createAiTextRepository() : null;
   @override
   Stream<void> get aiTextChanges => session.aiTextChanges;
+  @override
+  CapturedConversationSession? createAiConversationSession() =>
+      _closing == null ? session.createAiConversationSession() : null;
+  @override
+  Stream<void> get aiConversationChanges => session.aiConversationChanges;
   @override
   VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() =>
       _closing == null ? session.createVocabularyQuizHistoryRepository() : null;

@@ -6055,3 +6055,61 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Keep41 draft/issues open/AI flags off/all14 hosted pending/human gates intact;
   TEST ONLY Auth/vault/HTTP and builds are not hosted provider/JWT/voice/learner/
   physical launch or Personal Alpha proof.
+
+
+## Borrowed conversation source through owned startup — #17, 2026-10-24 UTC
+
+- Marker core-20261024T1411-conversation-source; draft41 branch
+  automation/issue-11-plan-sdk-integration, parentf0d43bf1b9e80de7efab85a7f81941a046d5c719
+  /treeaf57c26640b8a1e932b9e86ac2eb83603707ba2e. Main78a44fa/source37afa572a/
+  Pro14/38 unchanged; previous marker released13:11:19 UTC.
+- Parent CI40097022865 raw exactf0d43bf/latest attempt1 completed success:
+  complete allfive jobs/every required step/no skips observed. Flutter log
+  120881644764 confirms1005 Flutter/five Chrome and allfour actual runtime cases:
+  separate default-off flag, vault/profile barrier/conversation-only cache,
+  refresh/rotated bearer/ignored-abort HTTP drain/replacement/logout, close with
+  held HTTP/preserved vault/borrowed clients. Prior lint correction now verified;
+  analyzer/Web/Windows/native/SQL/Edge builds passed. Component, not hosted proof.
+- New AiConversationSource exposes borrowed captured-session factory and void
+  availability hints only; construction/forwarding sends nothing. Runtime uses
+  existing default-off factory and same AI owner stream; PersistentAccountStartup
+  and WindowsStagingOwner forward exact same capability/stream, Windows factory
+  unavailable once close starts. AccountStartupController publishes source only
+  while active/not closed; active source may still return null before Auth/vault/
+  profile readiness or when disabled. Captured generation/drain guard unchanged.
+- No App provider override, Riverpod conversation binding/controller/view/route,
+  learner endpoint/key, provider/default/staging activation or automatic dispatch.
+  Source is borrowed: consumers recheck authority/captured identity, never reset
+  uncertainty or close owner resources. No wider Auth/REST privileges, credential
+  writer, separate SDK/HTTP, resource-lifetime or model-driven writes.
+- Two actual-owned-startup tests AUTHORED, NOT run locally: TEST ONLY conversation
+  opt-in through real SDK/native journal/Windows wrapper/startup controller checks
+  idle unavailable/active-unready null, same stream/session identity across all
+  layers/no factory HTTP, explicit start, refresh/rotated secret/fresh generation/
+  hints/logout/closed-source fences. Default-off ready Windows source returns null
+  with original text factory available/no HTTP. Existing9 mounted journeys and
+  assertions are exact; only fixture helper accepts optional conversationEnabled
+  false. Reuse actual real-loop finally cleanup/target-release assertion; no new
+  conversation UI mounted and no synthetic saved rows.
+- Fresh official Dart3.9.2 SHA matched; six edited/new Dart files format zero
+  changes. Inventory94/46 QA regressions/whitespace passed; all93 prior QA cases/
+  gates/findings exact/all14 hosted pending. Separate source/owner/phase/factory/
+  stream identity/refresh/close/default/fixture/diff review done. No new full local
+  Flutter/analyzer/platform/build execution or prior denied bootstrap retry/bypass;
+  new exact-head CI must confirm two startup cases/full checks.
+- Nine paths: new ai/data/ai_conversation_source.dart; existing runtime,
+  PersistentAccountStartup, AccountStartupController, staging_bootstrap.dart;
+  extended ai_owned_startup_journey_test.dart; new docs/CONVERSATION_STARTUP_SOURCE.md;
+  PROJECT_STATUS/qa matrix. Publish actual parent base_tree/full recursive tree/
+  local equality/unaffected path-type-mode-blob proof, nine exact UTF8/blobSHA/
+  single parent/tree readbacks before fresh own marker/head expected-head non-force
+  ref update. Final commit/tree/new CI/latest attempt/released handoff in41/17/37.
+- Next inspect exact-head/latest-attempt complete allfive jobs/every required step
+  and both new owned-startup source cases; fix actual diagnostics retaining all
+  assertions. Pending-only handoff/no duplicate implementation/long polling.
+  Then conversation controller/guarded App-source binding/UI and explicit same-event
+  recovery/reconciliation/new-round policy. Keep41 draft/issues open/AI flags off/
+  all14 hosted pending/human gates. TEST ONLY Auth/vault/HTTP/native/builds are not
+  hosted JWT/provider/receipt/voice/learner/physical launch or Alpha proof. No
+  merge/close/deploy/release/Auth strategy/provider/collection/spend/security/
+  schedule action.

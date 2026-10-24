@@ -1,5 +1,6 @@
 import 'dart:async';
 import '../../ai/data/ai_text_repository_source.dart';
+import '../../ai/data/ai_conversation_source.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
@@ -48,6 +49,19 @@ final class AccountStartupController<T> {
   bool _closed = false;
   T? get account =>
       _phase == AccountStartupPhase.active ? _runtime?.account : null;
+
+  /// Available only while this startup owner is active. Readiness/opt-in and
+  /// captured-session identity remain enforced by the borrowed source factory.
+  AiConversationSource? get aiConversationSource {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is AiConversationSource) {
+      return runtime as AiConversationSource;
+    }
+    return null;
+  }
+
   AiTextRepositorySource? get aiTextSource {
     final runtime = _runtime;
     if (!_closed &&

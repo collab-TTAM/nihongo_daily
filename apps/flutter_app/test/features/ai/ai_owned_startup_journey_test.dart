@@ -15,6 +15,8 @@ import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_controller.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_view_binding.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
@@ -190,7 +192,10 @@ final class _App {
   }
 }
 
-Future<_App> _open({bool enabled = true}) async {
+Future<_App> _open({
+  bool enabled = true,
+  bool conversationEnabled = false,
+}) async {
   final directory = await Directory.systemTemp.createTemp('nd-ai-startup-');
   final journal = await NativeReviewJournal.open(directory);
   final server = _Server();
@@ -206,6 +211,7 @@ Future<_App> _open({bool enabled = true}) async {
     aiHttpClient: ai,
     now: () => server.now,
     aiTextEnabled: enabled, // TEST ONLY opt-in, never build/default activation.
+    aiConversationEnabled: conversationEnabled,
   );
   final owner = WindowsStagingOwner(PersistentAccountStartup(runtime), journal);
   final controller =
@@ -246,9 +252,12 @@ void _ownedTest(String description, Future<void> Function(WidgetTester) body) {
 Future<_App> _fixture(
   WidgetTester tester, {
   bool enabled = true,
+  bool conversationEnabled = false,
   bool start = true,
 }) async {
-  final app = (await tester.runAsync(() => _open(enabled: enabled)))!;
+  final app = (await tester.runAsync(
+    () => _open(enabled: enabled, conversationEnabled: conversationEnabled),
+  ))!;
   _activeApp = app;
   if (start) {
     await tester.runAsync(app.controller.start);
@@ -751,6 +760,100 @@ void main() {
       expect(find.byKey(const Key('ai-result')), findsOneWidget);
       expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
       expect(tester.takeException(), isNull);
+    },
+  );
+  _ownedTest(
+    'conversation source forwards actual startup owner readiness refresh and close',
+    (tester) async {
+      final app = await _fixture(
+        tester,
+        enabled: false,
+        conversationEnabled: true,
+        start: false,
+      );
+      expect(app.controller.aiConversationSource, isNull);
+      expect(app.owner.createAiConversationSession(), isNull);
+      expect(app.ai.requests, isEmpty);
+      await tester.runAsync(app.controller.start);
+      final source = app.controller.aiConversationSource!;
+      expect(identical(source, app.owner), isTrue);
+      expect(
+        identical(
+          source.aiConversationChanges,
+          app.runtime.aiConversationChanges,
+        ),
+        isTrue,
+      );
+      expect(
+        identical(
+          app.owner.session.aiConversationChanges,
+          source.aiConversationChanges,
+        ),
+        isTrue,
+      );
+      expect(source.createAiConversationSession(), isNull);
+      var hints = 0;
+      final listener = source.aiConversationChanges.listen((_) {
+        hints++;
+      });
+      try {
+        await tester.runAsync(app.login);
+        final flow = source.createAiConversationSession()!;
+        expect(
+          identical(app.owner.session.createAiConversationSession(), flow),
+          isTrue,
+        );
+        expect(
+          identical(app.runtime.createAiConversationSession(), flow),
+          isTrue,
+        );
+        expect(identical(source.createAiConversationSession(), flow), isTrue);
+        expect(app.owner.createAiTextRepository(), isNull);
+        expect(app.ai.requests, isEmpty);
+        await tester.runAsync(
+          () => flow.start(
+            StartConversationRequest.fromJson(
+              _fixtures['start_conversation_request'],
+            ),
+          ),
+        );
+        expect(flow.snapshot.phase, ConversationSessionPhase.active);
+        expect(app.ai.requests, hasLength(1));
+        final oldSecret = app.vault.secret;
+        await tester.runAsync(() async {
+          await app.owner.refresh();
+          await app.ready();
+        });
+        expect(flow.snapshot.messages, isEmpty);
+        expect(app.vault.secret, isNot(oldSecret));
+        final next = source.createAiConversationSession()!;
+        expect(identical(next, flow), isFalse);
+        expect(next.snapshot.phase, ConversationSessionPhase.notStarted);
+        await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+        expect(hints, greaterThan(0));
+        await tester.runAsync(app.runtime.account.signOut);
+        expect(next.snapshot.messages, isEmpty);
+        expect(source.createAiConversationSession(), isNull);
+        await tester.runAsync(app.controller.close);
+        expect(app.controller.aiConversationSource, isNull);
+        expect(app.owner.createAiConversationSession(), isNull);
+      } finally {
+        await listener.cancel();
+      }
+    },
+  );
+  _ownedTest(
+    'default-off conversation source stays unavailable through Windows startup',
+    (tester) async {
+      final app = await _fixture(tester);
+      await tester.runAsync(app.login);
+      final source = app.controller.aiConversationSource!;
+      expect(identical(source, app.owner), isTrue);
+      expect(app.runtime.isAiConversationEnabled, isFalse);
+      expect(source.createAiConversationSession(), isNull);
+      expect(app.owner.session.createAiConversationSession(), isNull);
+      expect(app.owner.createAiTextRepository(), isNotNull);
+      expect(app.ai.requests, isEmpty);
     },
   );
 }
