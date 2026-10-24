@@ -881,10 +881,12 @@ void main() {
       AiConversationController? view;
       ProviderSubscription<AiConversationViewBinding?>? subscription;
       try {
-        app.vault.secret = 'TEST_ONLY_SAVED';
-        app.vault.writeWait = Completer<void>();
-        app.server.profileWait = Completer<http.Response>();
         await tester.runAsync(() async {
+          // The SDK awaits these futures in the real event loop. Constructing
+          // them in FakeAsync can queue completion behind the blocked widget zone.
+          app.vault.secret = 'TEST_ONLY_SAVED';
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
           app.starting = app.controller.start();
           await lifecycle.flush();
         });
@@ -955,10 +957,10 @@ void main() {
           expect(sent.headers['authorization'], 'Bearer $oldBearer');
           expect(jsonDecode(sent.body), request.toJson());
         });
-        app.vault.writeWait = Completer<void>();
-        app.server.profileWait = Completer<http.Response>();
         Future<void>? refreshing;
         await tester.runAsync(() async {
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
           refreshing = app.owner.refresh();
           expect(old.session.isCurrent, isFalse);
           expect(view!.state.phase, AiConversationPhase.unavailable);
