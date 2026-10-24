@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
 import '../../ai/application/ai_text_runtime_owner.dart';
+import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/captured_ai_text_repository.dart';
 import '../../ai/data/supabase_ai_text_transport.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
@@ -29,7 +30,10 @@ import 'account_session_refresh.dart';
 /// persistence. Caller installs [account] only after [start] settles. The default
 /// application never invokes this assembly or supplies project configuration.
 final class PersistentSupabaseRuntime
-    implements AccountSessionNoticeSource, AccountSessionRefreshAction {
+    implements
+        AccountSessionNoticeSource,
+        AccountSessionRefreshAction,
+        AiTextRepositorySource {
   PersistentSupabaseRuntime({
     required String projectUrl,
     required String publishableKey,
@@ -178,6 +182,7 @@ final class PersistentSupabaseRuntime
 
   /// Trusted owner availability only; default and staging startup leave it off.
   bool get isAiTextEnabled => _aiTextEnabled;
+  @override
   Stream<void> get aiTextChanges => _aiOwner.changes;
 
   void _syncAiReadiness() {
@@ -192,6 +197,7 @@ final class PersistentSupabaseRuntime
 
   /// Explicit opt-in; no HTTP call occurs until a caller submits text. One
   /// capability per ready generation, with no replacement during old I/O drain.
+  @override
   CapturedAiTextRepository? createAiTextRepository() {
     if (!_aiTextEnabled || _closing != null) return null;
     _syncAiReadiness();

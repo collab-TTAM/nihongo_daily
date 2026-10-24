@@ -5439,3 +5439,49 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Keep41 draft/issues open/defaults off/all14 hosted pending. No merge/deploy/
   release/provider/Auth strategy/collection/spend/security reduction/schedule change
   or Personal Alpha claim.
+
+
+## Owned AI source/startup/provider bridge — Issue #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0211-ai-source; resumed draft41 branch
+  automation/issue-11-plan-sdk-integration at1f18fa1c20755f7c347eea92c4afeb3b1b060421
+  /treeb6aa1d4f5b64d39a5175a1af10b3a34bd5729d1a. Fresh main78a44fa/source37afa572a
+  unchanged; prior released01:13:15 UTC. Pro14/38/content remains reserved.
+- Parent CI40048725761 raw exact head/latest attempt1 completed success: complete
+  allfive jobs/every required step/no skips. Prior dependency audit fix is verified;
+  existing906 Flutter/five Chrome/15 tutor widget and owned SDK/native/Windows/
+  SQL/Edge component evidence retained, not hosted acceptance.
+- Add pure AiTextRepositorySource: captured no-request factory +credential-free
+  availability. Existing PersistentSupabaseRuntime implements; owned startup
+  forwards; startup controller exposes only active/not-closing source. Startup
+  ProviderScope overrides null-default source provider. No SDK/token/HTTP exposed,
+  no change to aiTextEnabled=false/main/staging/provider/Auth strategy.
+- Public view-binding Provider override API retained. Internal notifier watches
+  account state and borrowed source availability, preserving binding for identical
+  current repo; clears/replaces on missing/revoked/new generation. Account changes
+  trigger acquisition even before any AI lease exists. Factory retains actual
+  persisted/profile readiness/drain guards. Getter/stream error/done fail closed;
+  factory exceptions return null, no raw detail. Reentry guarded; disposal cancels
+  only owned subscription, never borrowed source/repository/resources. No text
+  dispatch/retry or timer introduced. Runtime synchronous revoke remains required.
+- Nine source/notifier/startup cases authored UNRUN locally: null/default, cached
+  identity/no request, null/new-account transitions, revoked/failing factory,
+  broken stream getter, stream error/done, disposal/borrowed lifetime and source
+  hidden before held startup/after close. Full new-head Flutter/analyze/build
+  required; actual SDK-to-mounted-tutor lifecycle journey remains next validation.
+- Fresh official Dart3.9.2 archive/checksum matched; changed Dart pinned format
+  clean (unresolved Flutter lint include warning, not full analyzer proof).
+  Inventory85/46 QA regressions/whitespace passed. Separate interface/forwarding/
+  identity/ownership/reentry/failure diff review; original app/widget/SDK tests,
+  security/QA gates/CI/dependencies/content/manifests/Pro branch untouched.
+- Nine paths: new ai/data/ai_text_repository_source.dart and ai_text_source_test.dart;
+  ai_text_view_binding.dart, persistent_supabase_runtime.dart,
+  persistent_account_startup.dart, account_startup_controller.dart,
+  account_startup_app.dart, docs/AI_TUTOR_SCREEN.md, docs/PROJECT_STATUS.md.
+- Publish actual parent base_tree/full recursive tree/local equality/unchanged
+  blob-type-mode proof, nine UTF8/SHA readbacks/single parent and fresh own marker/
+  head expected-head non-force update. Final commit/tree/new exact CI/latest
+  attempt/released checkpoint in41/17/37. Keep41 draft/issues open/defaults off/
+  all14 hosted pending; no merge/deploy/release/provider/collection/spend/security/
+  schedule action or Personal Alpha claim. Next exact CI then actual owned SDK/
+  vault/profile/startup/mounted UI refresh/logout/A-B-A/drain journey fixtures.

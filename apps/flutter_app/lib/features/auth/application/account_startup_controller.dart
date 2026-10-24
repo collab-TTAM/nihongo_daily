@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../ai/data/ai_text_repository_source.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
@@ -47,6 +48,16 @@ final class AccountStartupController<T> {
   bool _closed = false;
   T? get account =>
       _phase == AccountStartupPhase.active ? _runtime?.account : null;
+  AiTextRepositorySource? get aiTextSource {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is AiTextRepositorySource) {
+      return runtime as AiTextRepositorySource;
+    }
+    return null;
+  }
+
   DailyPlanRepositorySource? get dailyPlanSource {
     final runtime = _runtime;
     if (!_closed &&

@@ -71,3 +71,35 @@ full green, connect the explicit startup/ready-generation source to this binding
 with actual owned SDK/vault/profile/UI fixtures covering refresh/logout/A-B-A/drain.
 Keep defaults off and retain hosted Auth/provider/collection/spend/security gates;
 no approval or live credentials can be inferred from an injected successful widget.
+
+## Owned startup source bridge
+
+AiTextRepositorySource now exposes the existing no-request captured factory and
+credential-free availability stream. PersistentSupabaseRuntime implements it;
+PersistentAccountStartup forwards it without exposing SDK/HTTP/tokens. Startup
+controller publishes this borrowed source only while active and not closing, and
+AccountStartupApp overrides a null-default aiTextRepositorySourceProvider.
+The existing aiTextEnabled=false default/main/staging settings remain unchanged.
+
+The public view-binding Provider retains its previous override API. Internally a
+StateNotifier listens to the borrowed source stream and account-state changes.
+Account changes independently retry acquisition because the first ready runtime
+may have no AI lease to notify yet. The actual factory still enforces persisted
+session/own-profile readiness, generation and old-work drain. Same current
+repository identity preserves the binding/editor across unrelated availability
+hints. A missing/revoked/replaced capability clears/replaces the binding, causing
+the keyed screen to dispose old private state. No factory event sends text.
+
+Stream subscription/getter failures and stream termination fail closed; factory
+exceptions expose null with no raw details. Subscription is owned by the notifier,
+while SDK/source/repository remain borrowed. Reentry is guarded and notifications
+are sampled against the current captured capability. This bridge does not replace
+the runtime's synchronous revocation fence or prove a hosted service is configured.
+
+Nine source/notifier/startup fixture cases are authored, unrun locally. They cover
+missing source, cached identity/no request, ready-null/new-account transitions,
+revoked/failing factory, broken stream getter, stream error/done, borrowed disposal
+and active-only startup exposure before/after held start/close. Full new-head
+Flutter analyzer/test/build is required. Next add actual owned SDK/vault/profile
+startup-to-mounted-tutor refresh/logout/A-B-A/drain journey tests. Defaults remain
+off and all hosted/Auth/provider/collection/spend/voice gates stay open.

@@ -1,4 +1,6 @@
 import 'dart:async';
+import '../../ai/data/ai_text_repository_source.dart';
+import '../../ai/data/captured_ai_text_repository.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
@@ -19,9 +21,15 @@ final class PersistentAccountStartup
         AccountSessionRefreshAction,
         DailyPlanRepositorySource,
         DurableStudySessionSource,
-        VocabularyQuizHistorySource {
+        VocabularyQuizHistorySource,
+        AiTextRepositorySource {
   PersistentAccountStartup(this.runtime);
   final PersistentSupabaseRuntime runtime;
+  @override
+  CapturedAiTextRepository? createAiTextRepository() =>
+      runtime.createAiTextRepository();
+  @override
+  Stream<void> get aiTextChanges => runtime.aiTextChanges;
   @override
   VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() =>
       runtime.createVocabularyQuizHistoryRepository();
