@@ -20,6 +20,7 @@ import 'package:nihongo_daily/features/auth/application/account_startup_controll
 import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
+import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_runtime.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -214,18 +215,41 @@ Future<_App> _open({bool enabled = true}) async {
   return _App(directory, server, vault, auth, ai, runtime, owner, controller);
 }
 
+// Complete real-loop owned cleanup before the widget-test body finishes,
+// before the binding's automatic disposal can initiate it from FakeAsync.
+_App? _activeApp;
+void _ownedTest(String description, Future<void> Function(WidgetTester) body) {
+  testWidgets(description, (tester) async {
+    _activeApp = null;
+    try {
+      await body(tester);
+    } finally {
+      final app = _activeApp;
+      if (app != null) {
+        await tester.runAsync(() async {
+          await app.close();
+          expect(
+            PersistentAccountAccess.isTargetOwned(
+              app.runtime.persistence.vault.target,
+            ),
+            isFalse,
+            reason: 'each fixture must release its real exclusive vault owner',
+          );
+        });
+      }
+      await tester.pumpWidget(const SizedBox());
+      _activeApp = null;
+    }
+  });
+}
+
 Future<_App> _fixture(
   WidgetTester tester, {
   bool enabled = true,
   bool start = true,
 }) async {
   final app = (await tester.runAsync(() => _open(enabled: enabled)))!;
-  addTearDown(() async {
-    // Start native/SDK cleanup on the real loop before widget disposal can
-    // initiate the same owned close from FakeAsync.
-    await tester.runAsync(app.close);
-    await tester.pumpWidget(const SizedBox());
-  });
+  _activeApp = app;
   if (start) {
     await tester.runAsync(app.controller.start);
   }
@@ -287,7 +311,7 @@ void main() {
             as Map<String, Object?>;
   });
 
-  testWidgets(
+  _ownedTest(
     'Windows owner startup waits for rotation and profile before first tutor binding',
     (tester) async {
       final app = await _fixture(tester, start: false);
@@ -369,7 +393,7 @@ void main() {
     },
   );
 
-  testWidgets(
+  _ownedTest(
     'disabled owned runtime never activates tutor by mounting or navigation',
     (tester) async {
       final app = await _fixture(tester, enabled: false);
@@ -384,7 +408,7 @@ void main() {
   );
 
   for (final error in [false, true]) {
-    testWidgets(
+    _ownedTest(
       'mounted tutor refresh fences old callback and ignored HTTP abort error=$error',
       (tester) async {
         final app = await _fixture(tester);
@@ -483,7 +507,7 @@ void main() {
     );
   }
 
-  testWidgets(
+  _ownedTest(
     'mounted tutor A B A clears results and never retargets old callbacks',
     (tester) async {
       final app = await _fixture(tester);
@@ -559,7 +583,7 @@ void main() {
   );
 
   for (final storage in [true, false]) {
-    testWidgets(
+    _ownedTest(
       'mounted tutor stays unavailable after failed barrier storage=$storage',
       (tester) async {
         final app = await _fixture(tester);
@@ -610,7 +634,7 @@ void main() {
     );
   }
 
-  testWidgets(
+  _ownedTest(
     'owned startup close removes tutor and drains ignored HTTP without closing borrowed client',
     (tester) async {
       final app = await _fixture(tester);

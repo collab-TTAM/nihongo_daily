@@ -146,3 +146,23 @@ Windows credential storage or physical app launch. Main/staging AI remain off,
 voice unavailable and all14 hosted release groups pending. After exact new-head
 CI, continue reviewed remaining #17 integration gaps without inferring live
 provider/collection/spend approval or bypassing Auth/release gates.
+
+
+## Owned journey fixture cleanup correction
+
+Exact12e8de5 CI40058196322 attempt1 passed format/analyze and allfour other
+jobs/every step, but Flutter tests reported916 passed/seven failed. The first
+actual SDK/Windows-owner/startup-to-mounted-tutor rotation/profile/explain case
+passed. Each following journey failed at runtime construction because the shared
+fixture project still had an exclusive vault owner. Those seven paths were not
+executed successfully; downstream Flutter/Chrome/native/Web steps were skipped.
+
+The fixture now uses a widget-test-body try/finally wrapper for every case. It
+awaits real-loop owned runtime/journal cleanup before returning from that body and
+before automatic widget disposal can initiate close from FakeAsync. It additionally
+asserts PersistentAccountAccess.isTargetOwned is false after cleanup. All eight
+expanded cases, operations, service ports and existing assertions are preserved.
+Production lifetime/locking, default AI flags, scope and security are unchanged;
+no unique-project workaround, owner-set reset, skipped test or timeout increase.
+New exact-head Flutter CI must verify corrected cleanup and all eight journeys.
+The correction is formatted locally; no new local Flutter execution is claimed.

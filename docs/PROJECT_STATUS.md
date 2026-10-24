@@ -5534,3 +5534,44 @@ Only six intended files differ; new actual ninth-group pass awaits exact-head CI
   Auth/provider/voice/learner/physical launch and applicable release/security/
   collection/spend gates remain; no merge/close/deploy/release/schedule action or
   Personal Alpha claim.
+
+
+## Owned AI widget fixture cleanup — #17, 2026-10-24 UTC
+
+- Sole marker core-20261024T0416-ai-fixture; resume draft41 branch
+  automation/issue-11-plan-sdk-integration at exact
+  12e8de5e93c1a7ed3584494ecec48a03ec42fccc/treee6710e13140e057e1c0f35d4c4197fa84e866d59.
+  Main78a44fa/source37afa572a/Pro14/38 unchanged; previous marker released03:25:48 UTC.
+- Parent CI40058196322 raw exact12e8de5/latest attempt1 completed failure.
+  Complete allfive jobs observed: database/repo-sanity/ai-boundary/Windows every
+  required step success/no skips; Flutter format/analyze pass, full tests fail.
+  Log120766098664:916 passed/seven failed. First new actual SDK/Windows owner/
+  startup/rotation/profile/mounted-explain case passed; seven later journeys
+  failed constructing runtime with SessionVaultFailure(unavailable) at exclusive
+  target check. Flutter's downstream SDK/Chrome/native/Web steps skipped, not pass.
+- Fix fixture cleanup ordering: all cases run inside widget-body try/finally;
+  await tester.runAsync owned close/journal cleanup before body return/automatic
+  widget disposal. New assertion checks actual target no longer owned after close.
+  Remove deferred addTearDown callback that left target held between cases.
+  Six original declarations/two boolean loops still expand to eight cases;
+  complete original main bodies/assertions preserved except wrapper name.
+  No production lock reset/unique project bypass/timeout extension/test skip or
+  weakened assertion. Existing source forwarding/default flags/SDK/vault/RLS/
+  provider/content/Pro/QA cases/gates/dependencies/workflows unchanged.
+- Fresh official Dart3.9.2 archive checksum verified, changed fixture formatted
+  (unresolved Flutter lint include warning, not full analyzer proof). Inventory86,
+  46 QA regressions and whitespace passed. Separate lifecycle/diff/byte comparison
+  confirms all original test bodies and assertions retained. No new local Flutter/
+  analyzer/build run or previously denied bootstrap retry/bypass.
+- Three paths only: ai_owned_startup_journey_test.dart, docs/AI_TUTOR_SCREEN.md and
+  PROJECT_STATUS.md. Publish correct parent base_tree/full recursive tree/local
+  tree equality/unchanged blob/type/mode proof, three exact UTF8/blobSHA readbacks,
+  single parent/tree and fresh own marker/head expected-head non-force update.
+  Final commit/new exact workflow/latest attempt/released checkpoint in41/17/37.
+- Next inspect complete exact new-head/latest-attempt allfive jobs/every required
+  step and actual eight journey logs; fix remaining real diagnostics retaining
+  assertions. Pending-only handoff/no duplicate code/long polling. Keep41 draft,
+  issues open/default AI off/all14 hosted release groups pending. Hosted identity/
+  provider/voice/learner/physical launch and human gates remain; no merge/closure/
+  deployment/release/provider/Auth strategy/collection/spend/security/schedule
+  change or Personal Alpha claim.
