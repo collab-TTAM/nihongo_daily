@@ -34,12 +34,13 @@ final class Port implements ConversationMutationTransport {
     required Map<String, Object> body,
   }) async {
     calls++;
-    if (uncertain)
+    if (uncertain) {
       return {
         'code': 'PROVIDER_UNAVAILABLE',
         'message_vi': 'PRIVATE_TOKEN_DETAIL',
         'retryable': true,
       };
+    }
     final json =
         jsonDecode(jsonEncode(fixtures['${operation}_response']))
             as Map<String, Object?>;
