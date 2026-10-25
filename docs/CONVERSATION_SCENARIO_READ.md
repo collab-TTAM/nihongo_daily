@@ -80,3 +80,28 @@ See current PROJECT_STATUS/PR41 for execution results. This adapter is not wired
 into runtime/source/UI; no default activation or authored scenario provisioning.
 Next bind one retained catalog to owned readiness generations, with source/App
 and real mounted host lifecycle tests, before selector/mutation/recovery UI.
+
+## Retained runtime-owner lease
+
+AiTextRuntimeOwner.acquireScenarios borrows the same owned ready generation,
+Auth/session, text repository and transport as acquire/acquireConversation. One
+CapturedConversationScenarios is retained in that lease; repeated acquisition
+returns it without reading or replacing a completed/uncertain conversation.
+If the transport lacks the optional read interface, return null and preserve the
+text lease. No separate transport/cache/SDK or implicit readiness transition.
+
+Register creation before supplied getters can reenter. The reader captures an
+epoch/lease/repository/transport current guard and is only published after both
+readiness checks. Orphans are revoked. check also checks the retained reader;
+revocation retires the entire shared lease. invalidate revokes the reader before
+conversation/text and transport callbacks; old generations stay retired. Transport
+close/drain blocks all replacement acquisition, including ignored late reads;
+failed cleanup permanently blocks fresh capabilities. close drains retained work.
+Previously returned projection lists still require host generation discard.
+
+This increment is only the reusable runtime owner and injected lifecycle tests.
+PersistentSupabaseAccountRuntime/startup/source/Riverpod/App/UI do not yet call
+this acquisition API. Existing opt-in flags/default-off behavior remain exact.
+Next wire those host boundaries and test persisted rotation/profile barriers,
+refresh/logout/account replacement on actual SDK/mounted app before selection UI.
+No hosted catalog/JWT/RLS/learner acceptance is inferred from owner tests.

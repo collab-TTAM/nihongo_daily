@@ -2552,6 +2552,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
       "limitation": "Actual SDK with TEST ONLY HTTP/unsigned JWT; not hosted JWT/PostgREST/RLS/provider/voice/learner proof or runtime/source/UI activation. All14 hosted groups pending."
+    },
+    {
+      "id": "conversation-scenario-runtime-owner",
+      "status": "automated-baseline",
+      "scope": "Retained scenario repository shares the existing runtime owner lease; synchronous revocation, orphan fencing and replacement wait for actual transport drain.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/scenario_runtime_owner_test.dart",
+          "contains": "one retained catalog shares lease without dispatch or resetting finished conversation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/scenario_runtime_owner_test.dart",
+          "contains": "invalidate revokes catalog before transport callbacks and new generation waits for actual read drain"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/scenario_runtime_owner_test.dart test/features/ai/ai_text_runtime_owner_test.dart test/features/ai/ai_conversation_runtime_owner_test.dart",
+      "limitation": "Injected lifecycle/read ports only; runtime-owner API is not yet forwarded through persistent startup/source/App/UI. No default activation/hosted SDK/JWT/RLS/provider/voice/learner proof. All14 hosted groups pending."
     }
   ],
   "findings": [

@@ -4,6 +4,7 @@ import '../../srs/data/review_repository.dart';
 import '../data/captured_ai_text_repository.dart';
 import '../data/captured_conversation_mutation.dart';
 import '../data/captured_conversation_session.dart';
+import '../data/captured_conversation_scenarios.dart';
 
 /// One owner-created ready generation. Never reuse after a readiness barrier.
 final class AiTextGeneration {}
@@ -40,6 +41,71 @@ final class AiTextRuntimeOwner {
 
   bool get isDraining => _retiring != null || _creating != null;
   bool get isFailed => _failed;
+
+  /// One retained public scenario reader per lease on the shared transport.
+  /// Acquisition reads nothing and never resets the sibling conversation lane.
+  CapturedConversationScenarios? acquireScenarios({
+    required ReviewAuth auth,
+    required AiTextGeneration generation,
+    required bool Function() isReady,
+  }) {
+    final repository = acquire(
+      auth: auth,
+      generation: generation,
+      isReady: isReady,
+    );
+    final lease = _lease;
+    if (repository == null ||
+        lease == null ||
+        !identical(repository, lease.repository) ||
+        isDraining ||
+        _closed ||
+        _failed) {
+      return null;
+    }
+    final creating = Completer<void>();
+    _creating =
+        creating; // Before supplied readiness/transport getters reenter.
+    CapturedConversationScenarios? orphan;
+    try {
+      final existing = lease.scenarios;
+      if (existing != null) {
+        if (existing.isCurrent) return existing;
+        invalidate();
+        return null;
+      }
+      final transport = lease.transport;
+      if (transport is! ConversationScenarioReadPort) return null;
+      final epoch = _epoch;
+      bool ready() =>
+          !_closed &&
+          !_failed &&
+          epoch == _epoch &&
+          identical(_lease, lease) &&
+          repository.isCurrent &&
+          transport.isCurrent;
+      orphan = CapturedConversationScenarios(
+        auth: lease.auth,
+        port: transport as ConversationScenarioReadPort,
+        isReady: ready,
+      );
+      if (!ready() || !orphan.isCurrent) {
+        invalidate();
+        return null;
+      }
+      lease.scenarios = orphan;
+      orphan = null;
+      _notify();
+      return lease.scenarios;
+    } on Object {
+      invalidate(); // Availability only, never expose supplied getter details.
+      return null;
+    } finally {
+      orphan?.revoke();
+      _creating = null;
+      creating.complete();
+    }
+  }
 
   /// One retained conversation per lease, on the exact shared text transport.
   /// An uncertain/finished session is never replaced by another factory call.
@@ -183,7 +249,8 @@ final class AiTextRuntimeOwner {
     try {
       if (lease.repository.isCurrent &&
           lease.transport.isCurrent &&
-          (lease.conversation?.isCurrent ?? true)) {
+          (lease.conversation?.isCurrent ?? true) &&
+          (lease.scenarios?.isCurrent ?? true)) {
         return;
       }
     } on Object {
@@ -198,6 +265,7 @@ final class AiTextRuntimeOwner {
     if (lease == null) return;
     _lease = null;
     _retired[lease.generation] = true;
+    lease.scenarios?.revoke();
     lease.conversation?.revoke();
     lease.repository.revoke();
     _retire(lease.transport);
@@ -266,6 +334,7 @@ final class _Lease {
   final OwnedAiTextTransport transport;
   final CapturedAiTextRepository repository;
   CapturedConversationSession? conversation;
+  CapturedConversationScenarios? scenarios;
 }
 
 final class _Drain {
