@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../../srs/data/review_repository.dart';
 import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
@@ -45,6 +46,56 @@ final class CapturedConversationSession {
   var _snapshot = ConversationSessionSnapshot._(
     ConversationSessionPhase.notStarted,
   );
+  // One immutable command in this captured generation only. No disk/token data.
+  Future<void> Function()? _retainedRetry;
+  String? _retainedFingerprint;
+  bool _retainedRetryable = false;
+
+  /// Explicit host capability; legacy view remount policy stays unchanged.
+  bool get canRetryRetained {
+    if (_executing || _checking || !isCurrent) return false;
+    return _retainedRetry != null &&
+        _retainedRetryable &&
+        _lane.hasUnresolvedMutation &&
+        !isBusy;
+  }
+
+  /// No caller payload/event and no automatic replay. Existing lane still checks
+  /// captured identity, phase, original fingerprint and actual wire drain.
+  Future<void> retryRetained() async {
+    if (!canRetryRetained) return;
+    final retry = _retainedRetry;
+    if (retry != null) await retry();
+  }
+
+  Future<T> _remember<T>(
+    String operation,
+    Map<String, Object> body,
+    Future<void> Function() retry,
+    Future<T> Function() dispatch,
+  ) async {
+    final fingerprint = '$operation:${jsonEncode(body)}';
+    if (_retainedRetry == null) {
+      _retainedRetry = retry;
+      _retainedFingerprint = fingerprint;
+    }
+    final original = fingerprint == _retainedFingerprint;
+    try {
+      return await dispatch();
+    } on AiTextFailure catch (failure) {
+      if (original) _retainedRetryable = failure.retryable;
+      rethrow;
+    } finally {
+      if (!_lane.hasUnresolvedMutation || _revoked) _clearRetained();
+    }
+  }
+
+  void _clearRetained() {
+    _retainedRetry = null;
+    _retainedFingerprint = null;
+    _retainedRetryable = false;
+  }
+
   bool _executing = false;
   bool _checking = false;
   bool _revoked = false;
@@ -75,6 +126,7 @@ final class CapturedConversationSession {
   void revoke() {
     _revoked = true;
     _lane.revoke();
+    _clearRetained();
     _turns.clear();
     _startEvent = null;
     _finishEvent = null;
@@ -89,7 +141,14 @@ final class CapturedConversationSession {
         (_startEvent != null && _startEvent != event)) {
       throw const AiTextFailure(AiTextErrorCode.syncConflict);
     }
-    final response = await _lane.start(request);
+    final response = await _remember(
+      'start_conversation',
+      request.toJson(),
+      () async {
+        await start(request);
+      },
+      () => _lane.start(request),
+    );
     _requireCurrent();
     if (_startEvent == null) {
       _startEvent = event;
@@ -105,7 +164,14 @@ final class CapturedConversationSession {
   Future<ConversationTurnResponse> turn(ConversationTurnRequest request) =>
       _run(() async {
         _requireActive(request.sessionId);
-        final response = await _lane.turn(request);
+        final response = await _remember(
+          'conversation_turn',
+          request.toJson(),
+          () async {
+            await turn(request);
+          },
+          () => _lane.turn(request),
+        );
         _requireCurrent();
         final event = request.clientEventId.toLowerCase();
         if (!_turns.contains(event)) {
@@ -140,7 +206,14 @@ final class CapturedConversationSession {
     } else {
       _requireActive(request.sessionId);
     }
-    final response = await _lane.finish(request);
+    final response = await _remember(
+      'finish_conversation',
+      request.toJson(),
+      () async {
+        await finish(request);
+      },
+      () => _lane.finish(request),
+    );
     _requireCurrent();
     if (_finishEvent == null) {
       _finishEvent = event;

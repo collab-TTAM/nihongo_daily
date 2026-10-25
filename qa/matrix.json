@@ -2874,6 +2874,41 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "Six cases authored not locally run. TEST ONLY Auth/vault/profile/HTTP; not hosted JWT/RLS/provider/voice/physical learner proof. Remount deliberately cannot reconstruct discarded DTO; durable command recovery/newround policy pending; all14 release groups pending."
+    },
+    {
+      "id": "retained-original-conversation-command",
+      "status": "automated-baseline",
+      "scope": "Captured-generation single original immutable command retained privately; explicit no-payload retry after safe error/drain without identity/reset/new event bypass.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/retained_conversation_command_test.dart",
+          "contains": "retained original retries exact $operation once without view or new event"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/retained_conversation_command_test.dart",
+          "contains": "retained host retry survives disposed view while legacy remount stays blocked"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/retained_conversation_command_test.dart",
+          "contains": "foreign pending event cannot replace retained original command"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/retained_conversation_command_test.dart",
+          "contains": "timed-out command waits for actual wire drain before retained retry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/retained_conversation_command_test.dart",
+          "contains": "reentrant readiness and concurrent host retry cannot dispatch twice"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/retained_conversation_command_test.dart test/features/ai/captured_conversation_session_test.dart",
+      "limitation": "Nine pure cases plus20 original session cases pass via test1.26.2/fixture-path adaptation in fresh graph; not full Flutter/SDK/hosted proof. No UI activation/disk persistence/process restart recovery/newround policy; all14 hosted release groups pending."
     }
   ],
   "findings": [
