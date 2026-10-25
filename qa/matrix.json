@@ -2656,6 +2656,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_scenario_controller_test.dart test/features/ai/conversation_scenario_panel_test.dart",
       "limitation": "13 pure controller cases and7 authored widget cases; reusable unrouted component, no mutation/recovery/provider/default activation or hosted JWT/RLS/voice/learner proof. All14 hosted gates pending."
+    },
+    {
+      "id": "conversation-workspace-composition",
+      "status": "automated-baseline",
+      "scope": "Pure selected-scenario and retained conversation composition; explicit immutable commands, event factory reentry, unresolved/finished and owner fencing.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_controller_test.dart",
+          "contains": "disposed uncertain workspace cannot recover its event by remount or reset"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_controller_test.dart",
+          "contains": "event factory synchronous reentry cannot dispatch twice or replace selected scenario"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_controller_test.dart",
+          "contains": "readiness loss in later capability checks cannot expose an earlier projection"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_controller_test.dart",
+      "limitation": "22 pure injected-port cases; trusted same-generation host pairing and secure event factory are preconditions, not established by this component. No mounted workspace UI, durable client recovery/new-round policy, live provider/voice/hosted learner proof. All14 hosted gates pending."
     }
   ],
   "findings": [

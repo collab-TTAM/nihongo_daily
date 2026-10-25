@@ -60,6 +60,10 @@ final class CapturedConversationScenarios {
   bool _revoked = false;
   bool _checking = false;
   bool _busy = false;
+
+  /// Redact nested UI reads while a supplied readiness getter is running.
+  /// This hint grants no authority; isCurrent still guards every operation.
+  bool get isCheckingAvailability => _checking;
   bool get isBusy => _busy;
   bool get isCurrent {
     if (_revoked || _checking) return false;
