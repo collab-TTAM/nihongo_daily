@@ -5,6 +5,8 @@ if(NOT WIN32)
 endif()
 add_executable(session_vault_probe
   "session_vault_probe.cpp"
+  "receipt_vault_probe.cpp"
+  "../../windows/runner/receipt_credential_vault.cpp"
   "../../windows/runner/session_credential_vault.cpp"
 )
 target_compile_features(session_vault_probe PRIVATE cxx_std_17)

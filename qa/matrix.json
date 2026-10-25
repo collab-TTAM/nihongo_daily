@@ -3035,6 +3035,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/windows_conversation_receipt_store_test.dart",
       "limitation": "17 mock-channel cases authored not locally executed. Native receiver/OS storage/process proof/app activation absent; no secure persistence or hosted learner claim. AI off; all14 release groups pending."
+    },
+    {
+      "id": "native-receipt-credential",
+      "status": "automated-baseline",
+      "scope": "Independent scope-bound native receipt Credential Manager primitive and mandatory Windows probe retaining Auth allowlist; portable validation checked locally.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/receipt_vault_probe.cpp",
+          "contains": "bool ProbeReceiptCredentials()"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && cmake -S tool/windows_session_vault -B build/session-vault-probe -G \"Visual Studio 17 2022\" -A x64 && cmake --build build/session-vault-probe --config Release && build/session-vault-probe/Release/session_vault_probe.exe",
+      "limitation": "Portable validation passed; new Windows OS checks authored unrun locally. No MethodChannel receiver/app wiring/fresh-process/Dart-to-OS/hosted learner proof; all14 hosted gates pending."
     }
   ],
   "findings": [

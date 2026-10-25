@@ -9,6 +9,8 @@
 
 #include "session_credential_vault.h"
 
+bool ProbeReceiptCredentials();
+
 namespace {
 void Check(bool ok) {
   if (!ok) throw std::runtime_error("credential probe assertion failed");
@@ -119,6 +121,8 @@ int wmain(int argc, wchar_t* argv[]) {
     Check(nihongo::ClearRefreshCredential(a) == VaultStatus::success);
     Check(nihongo::ReadRefreshCredential(a).status == VaultStatus::not_found);
     Check(nihongo::ReadRefreshCredential(b).token == "TEST_ONLY_OTHER_PROJECT");
+    Check(ProbeReceiptCredentials());
+    std::cout << "PASS: actual Windows receipt credential metadata isolation/corruption/clear (TEST ONLY)\n";
     passed = true;
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.
