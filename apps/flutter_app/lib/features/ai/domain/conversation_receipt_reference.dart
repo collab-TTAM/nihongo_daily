@@ -108,6 +108,9 @@ final class ConversationReceiptReference {
   final ConversationReceiptOperation operation;
   final String clientEventId;
 
+  ConversationReceiptScope get scope =>
+      ConversationReceiptScope._(projectOrigin, ownerId.toLowerCase());
+
   static ConversationReceiptReference _create(
     String projectUrl,
     String ownerId,
@@ -143,6 +146,28 @@ final class ConversationReceiptReference {
 
   @override
   String toString() => 'ConversationReceiptReference';
+}
+
+/// Canonical local partition only, never authenticated identity or authority.
+final class ConversationReceiptScope {
+  factory ConversationReceiptScope({
+    required String projectUrl,
+    required String ownerId,
+  }) => ConversationReceiptScope._(
+    _origin(projectUrl),
+    _uuid(ownerId).toLowerCase(),
+  );
+
+  const ConversationReceiptScope._(this.projectOrigin, this.ownerId);
+  final String projectOrigin;
+  final String ownerId;
+
+  bool contains(ConversationReceiptReference reference) =>
+      projectOrigin == reference.projectOrigin &&
+      ownerId == reference.ownerId.toLowerCase();
+
+  @override
+  String toString() => 'ConversationReceiptScope';
 }
 
 const _invalid = FormatException('Invalid conversation receipt reference');

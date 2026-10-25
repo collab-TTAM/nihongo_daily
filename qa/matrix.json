@@ -2997,6 +2997,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_receipt_reference_test.dart",
       "limitation": "Identification only, not authentication, server receipt proof, mutation retry or restart recovery. No storage/HTTP/default integration or tokens/transcript; secure persistence and authenticated lookup still pending; all14 hosted gates remain pending."
+    },
+    {
+      "id": "conversation-receipt-store",
+      "status": "automated-baseline",
+      "scope": "Caller-owned pending metadata reference store: exact project/account partition, no overwrite/eviction, serialized secure port, fixed errors, exclusive isolate owner, signout/close and actual late-I/O ordering.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_receipt_store_test.dart",
+          "contains": "reserve keeps one exact original reference and never overwrites uncertainty"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_receipt_store_test.dart",
+      "limitation": "TEST ONLY injected backend/state-machine proof, no production secure OS backend/native namespace/app activation/restart/Auth/lookup proof. No plaintext fallback or metadata-based dispatch authority; current recovery memory-only; all14 hosted groups pending."
     }
   ],
   "findings": [
