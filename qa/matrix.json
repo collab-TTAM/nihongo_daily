@@ -2529,6 +2529,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_scenarios_test.dart",
       "limitation": "Injected read port only; no concrete SDK/public catalog provisioning/runtime/UI/default activation or hosted JWT/provider/voice/learner proof. All14 live groups pending."
+    },
+    {
+      "id": "conversation-scenario-sdk-read",
+      "status": "automated-baseline",
+      "scope": "Fixed public scenario GET through captured SDK credentials and shared bounded HTTP lease, repository decoding and late lifecycle fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "scenario GET uses fixed public query and captured SDK bearer without provider call"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "scenario response chunk byte limit and read budget are enforced"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
+      "limitation": "Actual SDK with TEST ONLY HTTP/unsigned JWT; not hosted JWT/PostgREST/RLS/provider/voice/learner proof or runtime/source/UI activation. All14 hosted groups pending."
     }
   ],
   "findings": [

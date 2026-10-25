@@ -11,6 +11,7 @@ import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart'
 import 'package:nihongo_daily/features/ai/data/supabase_ai_text_transport.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
@@ -1232,4 +1233,270 @@ void main() {
       expect(sdk.auth.currentSession, isNotNull);
     },
   );
+
+  Map<String, Object> scenarioRow([String level = 'N5']) => {
+    'id': userA,
+    'jlpt_level': level,
+    'title_vi': 'Tình huống',
+    'title_ja': '会話',
+    'description_vi': 'Mô tả',
+    'content_version': 1,
+    'is_active': true,
+  };
+  CapturedConversationScenarios catalog(SupabaseAiTextTransport t) =>
+      CapturedConversationScenarios(auth: auth, port: t, isReady: () => ready);
+
+  test(
+    'scenario GET uses fixed public query and captured SDK bearer without provider call',
+    () async {
+      final t = make();
+      final r = catalog(t);
+      expect(network.requests, isEmpty);
+      for (final level in [AiTextLevel.n5, AiTextLevel.n4]) {
+        network.onSend = (_) async =>
+            response(jsonEncode([scenarioRow(level.wireName)]));
+        expect((await r.load(level)).single.level, level);
+        final sent = network.requests.last as http.AbortableRequest;
+        expect(sent.method, 'GET');
+        expect(sent.url.path, '/rest/v1/conversation_scenarios');
+        expect(sent.url.origin, origin);
+        expect(sent.url.queryParameters, {
+          'select':
+              'id,jlpt_level,title_vi,title_ja,description_vi,content_version,is_active',
+          'is_active': 'eq.true',
+          'jlpt_level': 'eq.${level.wireName}',
+          'order': 'id.asc',
+          'limit': '101',
+        });
+        expect(sent.bodyBytes, isEmpty);
+        expect(sent.followRedirects, isFalse);
+        expect(sent.maxRedirects, 0);
+        expect(sent.headers['authorization'], 'Bearer ${token(now, userA, 0)}');
+        expect(sent.headers['apikey'], key);
+        expect(sent.headers['cache-control'], 'no-store');
+      }
+      expect(network.requests, hasLength(2));
+    },
+  );
+  test(
+    'scenario read rejects unsupported level foreign owner and operation injection before HTTP',
+    () async {
+      final t = make();
+      await expectLater(
+        t.read(capturedSession: auth.currentSession!, level: AiTextLevel.n3),
+        throwsA(failure(AiTextErrorCode.validationFailure)),
+      );
+      await expectLater(
+        t.read(
+          capturedSession: ReviewSession(userId: userA),
+          level: AiTextLevel.n5,
+        ),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      await expectLater(
+        t.invoke(
+          capturedSession: auth.currentSession!,
+          operation: 'conversation_scenarios',
+          body: {'jlpt_level': 'N5'},
+        ),
+        throwsA(failure(AiTextErrorCode.validationFailure)),
+      );
+      expect(network.requests, isEmpty);
+    },
+  );
+  test(
+    'scenario pipeline rejects private mixed duplicate and overflow rows without partial publication',
+    () async {
+      final t = make();
+      final r = catalog(t);
+      for (final rows in <Object>[
+        [
+          scenarioRow(),
+          {...scenarioRow(), 'system_context': 'PRIVATE'},
+        ],
+        [scenarioRow('N4')],
+        [scenarioRow(), scenarioRow()],
+        List.generate(101, (_) => scenarioRow()),
+        List.generate(102, (_) => scenarioRow()),
+      ]) {
+        network.onSend = (_) async => response(jsonEncode(rows));
+        await expectLater(
+          r.load(AiTextLevel.n5),
+          throwsA(failure(AiTextErrorCode.internalError)),
+        );
+        expect(t.isBusy, isFalse);
+      }
+      network.onSend = (_) async => response('[]');
+      expect(await r.load(AiTextLevel.n5), isEmpty);
+    },
+  );
+  test(
+    'scenario HTTP preserves bounded headers UTF8 duplicate-key and JSON defenses',
+    () async {
+      final t = make();
+      final r = catalog(t);
+      for (final reply in <http.StreamedResponse>[
+        response(
+          '[]',
+          status: 302,
+          headers: {'location': 'https://private.invalid'},
+        ),
+        response('[]', headers: {'content-type': 'text/html'}),
+        response(
+          '[]',
+          headers: {
+            'content-type': 'application/json',
+            'content-length': '1048577',
+          },
+        ),
+        response('[]', length: 3),
+        response('\ufeff[]'),
+        response('[{"id":"one","id":"two"}]'),
+        response(List.filled(17, '[').join() + List.filled(17, ']').join()),
+        http.StreamedResponse(
+          Stream.value([255]),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      ]) {
+        network.onSend = (_) async => reply;
+        await expectLater(
+          r.load(AiTextLevel.n5),
+          throwsA(isA<AiTextFailure>()),
+        );
+        expect(t.isBusy, isFalse);
+      }
+      expect(network.requests, hasLength(8));
+    },
+  );
+  test(
+    'scenario response chunk byte limit and read budget are enforced',
+    () async {
+      final t = make();
+      final r = catalog(t);
+      network.onSend = (_) async => http.StreamedResponse(
+        Stream.value(
+          List.filled(SupabaseAiTextTransport.maxResponseBytes + 1, 32),
+        ),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+      await expectLater(
+        r.load(AiTextLevel.n5),
+        throwsA(failure(AiTextErrorCode.internalError)),
+      );
+      network.onSend = (_) async => http.StreamedResponse(
+        Stream.fromIterable(
+          List.generate(
+            SupabaseAiTextTransport.maxResponseReads + 1,
+            (_) => <int>[],
+          ),
+        ),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+      await expectLater(
+        r.load(AiTextLevel.n5),
+        throwsA(failure(AiTextErrorCode.internalError)),
+      );
+      expect(network.requests, hasLength(2));
+    },
+  );
+  for (final lateError in [false, true]) {
+    test(
+      'scenario timeout holds shared text/conversation busy lease until late header drains error=$lateError',
+      () async {
+        final t = make(timeout: const Duration(milliseconds: 10));
+        final r = catalog(t);
+        final held = Completer<http.StreamedResponse>();
+        network.onSend = (_) => held.future;
+        await expectLater(
+          r.load(AiTextLevel.n5),
+          throwsA(failure(AiTextErrorCode.networkUnavailable)),
+        );
+        expect(t.isBusy, isTrue);
+        await expectLater(invoke(t), throwsA(isA<AiTextRequestPending>()));
+        await expectLater(
+          t.invoke(
+            capturedSession: auth.currentSession!,
+            operation: 'start_conversation',
+            body: request('start_conversation'),
+          ),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+        expect(network.requests, hasLength(1));
+        if (lateError) {
+          held.completeError(StateError('PRIVATE'));
+        } else {
+          held.complete(response('[]'));
+        }
+        await Future<void>.delayed(Duration.zero);
+        expect(t.isBusy, isFalse);
+        network.onSend = (_) async => response('[]');
+        expect(await r.load(AiTextLevel.n5), isEmpty);
+        expect(network.requests, hasLength(2));
+      },
+    );
+  }
+  test(
+    'held text blocks scenario dispatch and close preserves borrowed SDK and HTTP',
+    () async {
+      final t = make();
+      final held = Completer<http.StreamedResponse>();
+      network.onSend = (_) => held.future;
+      final first = invoke(t);
+      await expectLater(
+        t.read(capturedSession: auth.currentSession!, level: AiTextLevel.n5),
+        throwsA(isA<AiTextRequestPending>()),
+      );
+      held.complete(response(output()));
+      await first;
+      await t.close();
+      expect(network.requests, hasLength(1));
+      expect(network.closed, isFalse);
+      expect(sdk.auth.currentSession, isNotNull);
+    },
+  );
+  for (final mode in ['ready', 'session', '401']) {
+    test(
+      'scenario read fences ready SDK replacement and unauthorized mode=$mode',
+      () async {
+        final t = make();
+        final r = catalog(t);
+        final held = Completer<http.StreamedResponse>();
+        network.onSend = (_) => held.future;
+        final work = r.load(AiTextLevel.n5);
+        final checked = expectLater(
+          work,
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        if (mode == 'ready') {
+          ready = false;
+          t.revoke();
+        }
+        if (mode == 'session') {
+          generation++;
+          await login();
+        }
+        held.complete(
+          mode == '401'
+              ? response(
+                  'PRIVATE',
+                  status: 401,
+                  headers: {'content-type': 'text/plain'},
+                )
+              : response(jsonEncode([scenarioRow()])),
+        );
+        await checked;
+        expect(t.isCurrent, isFalse);
+        expect(r.isCurrent, isFalse);
+        expect(network.requests, hasLength(1));
+        ready = true;
+        await expectLater(
+          r.load(AiTextLevel.n5),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+      },
+    );
+  }
 }

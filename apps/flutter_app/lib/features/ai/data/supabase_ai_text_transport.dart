@@ -13,12 +13,16 @@ import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
+import 'captured_conversation_scenarios.dart';
 
 /// Explicit owner-created capability, never installed by the default app.
 /// Borrows SDK/Auth and captures one exact SDK Session/token plus ready generation.
 /// The server still verifies the JWT; local claims are only fail-closed hints.
 final class SupabaseAiTextTransport
-    implements OwnedAiTextTransport, ConversationMutationTransport {
+    implements
+        OwnedAiTextTransport,
+        ConversationMutationTransport,
+        ConversationScenarioReadPort {
   SupabaseAiTextTransport({
     required SupabaseClient client,
     required ReviewAuth auth,
@@ -151,6 +155,22 @@ final class SupabaseAiTextTransport
     return _send(operation, capturedSession, body);
   }
 
+  /// Fixed public-column read; shares text/conversation HTTP exclusion/drain.
+  /// This is not an AI invocation or a caller-selectable table/query/endpoint.
+  @override
+  Future<Object?> read({
+    required ReviewSession capturedSession,
+    required AiTextLevel level,
+  }) async {
+    _requireCurrent();
+    if (level != AiTextLevel.n5 && level != AiTextLevel.n4) {
+      throw const AiTextFailure(AiTextErrorCode.validationFailure);
+    }
+    return _send('conversation_scenarios', capturedSession, {
+      'jlpt_level': level.wireName,
+    });
+  }
+
   void _requireCurrent() {
     if (!isCurrent) throw const AiTextFailure(AiTextErrorCode.unauthorized);
   }
@@ -183,14 +203,28 @@ final class SupabaseAiTextTransport
     }
 
     try {
-      final requestBody = _requestBody(operation, body);
+      final scenarios = operation == 'conversation_scenarios';
+      final requestBody = scenarios ? <int>[] : _requestBody(operation, body);
       if (requestBody.length > maxRequestBytes) {
         throw const AiTextFailure(AiTextErrorCode.validationFailure);
       }
       final request =
           http.AbortableRequest(
-              'POST',
-              Uri.parse('$_origin/functions/v1/$operation'),
+              scenarios ? 'GET' : 'POST',
+              scenarios
+                  ? Uri.parse(
+                      '$_origin/rest/v1/conversation_scenarios',
+                    ).replace(
+                      queryParameters: {
+                        'select':
+                            'id,jlpt_level,title_vi,title_ja,description_vi,content_version,is_active',
+                        'is_active': 'eq.true',
+                        'jlpt_level': 'eq.${body['jlpt_level']}',
+                        'order': 'id.asc',
+                        'limit': '101',
+                      },
+                    )
+                  : Uri.parse('$_origin/functions/v1/$operation'),
               abortTrigger: attempt.abort.future,
             )
             ..followRedirects = false
@@ -280,7 +314,13 @@ final class SupabaseAiTextTransport
       if (response.statusCode != 200) {
         throw _httpFailure(response.statusCode, raw);
       }
+      // Repository validates exact public row shape/level/version/uniqueness.
+      // 101 is an overflow sentinel, never a silently truncated selectable list.
+      if (scenarios && (raw is! List || raw.length > 101)) {
+        throw const FormatException();
+      }
       final result = switch (operation) {
+        'conversation_scenarios' => raw,
         'tutor_explain' => TutorExplanation.fromJson(raw).toJson(),
         'correct_sentence' => SentenceCorrection.fromJson(raw).toJson(),
         'start_conversation' => StartConversationResponse.fromJson(

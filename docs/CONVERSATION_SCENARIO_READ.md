@@ -51,3 +51,32 @@ Next: concrete caller-owned bounded SDK public-column read, runtime/source
 lifecycle wiring and actual HTTP/mounted host tests before trusted selection UI.
 Only then compose explicit start/send/finish and retained uncertain-event recovery;
 never allow arbitrary learner scenario UUIDs/endpoints/keys as a substitute.
+
+## SDK-bound fixed HTTP read
+
+SupabaseAiTextTransport now implements ConversationScenarioReadPort with explicit
+read(capturedSession, level), N5/N4 only. The private dispatcher constructs GET
+on the same fixed SDK-validated project /rest/v1/conversation_scenarios, with
+exact seven-column select, is_active=eq.true, jlpt_level=eq.N5/N4, order=id.asc,
+limit101 and empty body. The query accepts no learner table/columns/URL/key or
+system prompt. This is public-curriculum PostgREST reading, not an AI provider call.
+
+The existing captured SDK Session/token/local owner/expiry/readiness checks,
+no redirects/no-store, abort/deadline/late-header discard/cancel-drain, one shared
+HTTP busy slot across all text/conversation/read operations, and safe errors
+apply unchanged. Body<=1MiB/<=4096 reads, strict JSON UTF8/content headers/length,
+duplicate escaped keys and nesting16 defenses apply before repository decoding.
+Non-array/>101 results fail at the port;101-row sentinel fails in the repository,
+never silently truncates a selectable catalog. Repository validates every row.
+Borrowed HTTP/SDK resources stay caller-owned, no auto retry or new SDK instance.
+
+Existing text/conversation assertions are retained. Additional actual SDK tests
+with TEST ONLY unsigned JWT/Auth HTTP/read responses exercise exact GET/query/
+headers, unsupported/foreign owner/operation injection, malformed/private/mixed/
+duplicate/overflow rows, header/redirect/UTF8/JSON/chunk/read limits, timeout late
+success/error +cross-operation exclusion, SDK replacement/readiness/401 and owned
+close preserving borrowed clients. They are not hosted JWT/PostgREST/RLS evidence.
+See current PROJECT_STATUS/PR41 for execution results. This adapter is not wired
+into runtime/source/UI; no default activation or authored scenario provisioning.
+Next bind one retained catalog to owned readiness generations, with source/App
+and real mounted host lifecycle tests, before selector/mutation/recovery UI.
