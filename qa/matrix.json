@@ -2506,6 +2506,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_session_panel_test.dart",
       "limitation": "Eight authored widget cases not locally executed. Read-only reusable panel not a routed conversation mutation UI/scenario source/recovery policy or hosted JWT/provider/voice/learner proof. No default activation; all14 live groups pending."
+    },
+    {
+      "id": "conversation-scenario-read",
+      "status": "automated-baseline",
+      "scope": "Captured public scenario read with exact owner/readiness fences, immutable bounded rows and held timeout drain.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_scenarios_test.dart",
+          "contains": "reject all malformed/extra/private/duplicate/mismatched rows atomically"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_scenarios_test.dart",
+          "contains": "held read excludes duplicate and port reentry until drained"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/captured_conversation_scenarios_test.dart",
+      "limitation": "Injected read port only; no concrete SDK/public catalog provisioning/runtime/UI/default activation or hosted JWT/provider/voice/learner proof. All14 live groups pending."
     }
   ],
   "findings": [
