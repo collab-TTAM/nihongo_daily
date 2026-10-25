@@ -131,3 +131,34 @@ SDK/native wrapper tests require Flutter CI; authored cases are not passed proof
 No Riverpod/App override, selector/read UI or mutation/recovery UI is enabled yet;
 next add guarded App binding and mounted lifecycle coverage before those controls.
 No actual scenario provisioning/hosted JWT/PostgREST/RLS/learner claim.
+
+## Borrowed Riverpod/App binding
+
+AiConversationScenarioBinding contains a retained reader plus optional void owner
+hints. The source provider defaults null. A private notifier observes independent
+account state and owner hints, acquires only current readers and preserves binding
+identity for repeated same-reader hints. Readiness/identity loss or a revoked reader
+clears binding; source getter failures expose only null. Stream error/closure
+permanently disables that notifier. Reentrant source hints cannot recursively
+acquire. Disposal cancels only its own subscription, never the borrowed reader,
+SDK/transport or conversation receipts. No catalog rows/text/requests are queued
+in a hint or cached in the binding; consumers recheck reader authority on reads.
+
+AccountStartupApp overrides the optional source from its active startup controller,
+alongside unchanged text/conversation bindings. Existing conversation opt-in stays
+false by default; acquisition itself makes no HTTP call. No route, read control,
+selector, mutation/retry/reset/new-round UI or data provisioning is added.
+
+Eleven source/binding cases authored cover null/default/broken stream, identity
+preservation, ready loss/new owner, revoked/getter failure, stream error/closure,
+borrowed disposal/override replacement, reentry and same-user replacement/A/B/A.
+Two actual mounted AccountStartupApp/Windows owner/native journal/SDK journeys
+are authored: held persisted rotation +own-profile barriers, explicit fixed GET,
+refresh redaction/new generation +new bearer/no auto reload/logout; ready default
+off/no HTTP. SDK barriers are created inside the same real-loop runAsync as the
+operations, retaining prior proven cleanup and all old journey assertions.
+These Flutter/Riverpod/mounted tests are NOT locally executed; exact-head CI is
+required. Pinned format/QA results and CI observations are recorded in PR/status.
+They do not establish hosted JWT/RLS/PostgREST or real catalog/learner acceptance.
+Next inspect CI before adding an explicit guarded scenario loading/selection view
+and mutation/recovery policy; no arbitrary learner UUID/endpoint/key fallback.

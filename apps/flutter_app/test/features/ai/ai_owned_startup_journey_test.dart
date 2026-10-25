@@ -15,6 +15,7 @@ import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_controller.dart';
 import 'package:nihongo_daily/features/ai/application/ai_conversation_controller.dart';
 import 'package:nihongo_daily/features/ai/application/ai_conversation_view_binding.dart';
+import 'package:nihongo_daily/features/ai/application/ai_conversation_scenario_binding.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_view_binding.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
@@ -1032,4 +1033,173 @@ void main() {
     });
     expect(tester.takeException(), isNull);
   });
+
+  _ownedTest(
+    'mounted scenario binding waits for owned barriers and fences refresh logout',
+    (tester) async {
+      final app = await _fixture(
+        tester,
+        start: false,
+        enabled: false,
+        conversationEnabled: true,
+      );
+      ProviderSubscription<AiConversationScenarioBinding?>? subscription;
+      try {
+        await tester.runAsync(() async {
+          // Keep barriers in the real SDK event loop, as in the conversation case.
+          app.vault.secret = 'TEST_ONLY_SAVED';
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
+          app.starting = app.controller.start();
+          await lifecycle.flush();
+        });
+        await tester.pumpWidget(AccountStartupApp(controller: app.controller));
+        await tester.pump();
+        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
+        expect(app.controller.aiConversationScenarioSource, isNull);
+        expect(app.ai.requests, isEmpty);
+        await tester.runAsync(() async {
+          app.vault.writeWait!.complete();
+          await app.starting;
+          await lifecycle.flush();
+        });
+        expect(app.vault.secret, app.server.secret);
+        expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+        final container = await _mount(tester, app);
+        await tester.runAsync(() async {
+          expect(
+            container.read(aiConversationScenarioSourceProvider),
+            same(app.owner),
+          );
+          subscription = container.listen(
+            aiConversationScenarioBindingProvider,
+            (_, _) {},
+          );
+          expect(container.read(aiConversationScenarioBindingProvider), isNull);
+          expect(app.owner.createAiConversationScenarios(), isNull);
+          expect(app.ai.requests, isEmpty);
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        late AiConversationScenarioBinding old;
+        late String oldBearer;
+        await tester.runAsync(() async {
+          old = container.read(aiConversationScenarioBindingProvider)!;
+          expect(old.reader, same(app.owner.createAiConversationScenarios()));
+          expect(
+            old.availabilityChanges,
+            same(app.owner.aiConversationScenarioChanges),
+          );
+          expect(container.read(aiTextViewBindingProvider), isNull);
+          expect(app.ai.requests, isEmpty);
+          oldBearer = app.server.bearer;
+          app.ai.onSend = (_) async => http.StreamedResponse(
+            Stream.value(
+              utf8.encode(
+                jsonEncode([
+                  {
+                    'id': wire.a,
+                    'jlpt_level': 'N5',
+                    'title_vi': 'Tình huống',
+                    'title_ja': '会話',
+                    'description_vi': 'Mô tả',
+                    'content_version': 1,
+                    'is_active': true,
+                  },
+                ]),
+              ),
+            ),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+          expect((await old.reader.load(AiTextLevel.n5)).single.id, wire.a);
+          expect(app.ai.requests.single.method, 'GET');
+          expect(
+            app.ai.requests.single.url.path,
+            '/rest/v1/conversation_scenarios',
+          );
+          expect(
+            app.ai.requests.single.headers['authorization'],
+            'Bearer $oldBearer',
+          );
+        });
+        Future<void>? refreshing;
+        await tester.runAsync(() async {
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
+          refreshing = app.owner.refresh();
+          expect(old.reader.isCurrent, isFalse);
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          expect(container.read(aiConversationScenarioBindingProvider), isNull);
+          expect(app.ai.requests, hasLength(1));
+          app.vault.writeWait!.complete();
+          await refreshing;
+          await lifecycle.flush();
+          expect(app.vault.secret, app.server.secret);
+          expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+          expect(container.read(aiConversationScenarioBindingProvider), isNull);
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          final fresh = container.read(aiConversationScenarioBindingProvider)!;
+          expect(fresh.reader, isNot(same(old.reader)));
+          expect(fresh.reader, same(app.owner.createAiConversationScenarios()));
+          expect(old.reader.isCurrent, isFalse);
+          expect(app.server.bearer, isNot(oldBearer));
+          expect(app.ai.requests, hasLength(1));
+          await fresh.reader.load(AiTextLevel.n5);
+          expect(app.ai.requests, hasLength(2));
+          expect(
+            app.ai.requests.last.headers['authorization'],
+            'Bearer ${app.server.bearer}',
+          );
+          await app.runtime.account.signOut();
+          await lifecycle.flush();
+          expect(fresh.reader.isCurrent, isFalse);
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          expect(container.read(aiConversationScenarioBindingProvider), isNull);
+          expect(app.owner.createAiConversationScenarios(), isNull);
+          expect(app.ai.requests, hasLength(2));
+        });
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.runAsync(() async {
+          subscription?.close();
+        });
+      }
+    },
+  );
+  _ownedTest(
+    'mounted App scenario binding remains off by default without HTTP',
+    (tester) async {
+      final app = await _fixture(tester);
+      await tester.runAsync(app.login);
+      final container = await _mount(tester, app);
+      await tester.runAsync(() async {
+        expect(
+          container.read(aiConversationScenarioSourceProvider),
+          same(app.owner),
+        );
+        expect(container.read(aiConversationScenarioBindingProvider), isNull);
+        expect(app.owner.createAiConversationScenarios(), isNull);
+        expect(app.owner.createAiTextRepository(), isNotNull);
+        expect(app.ai.requests, isEmpty);
+      });
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

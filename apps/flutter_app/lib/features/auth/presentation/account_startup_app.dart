@@ -9,6 +9,7 @@ import '../../daily_plan/application/daily_plan_provider.dart';
 import '../../quiz/application/quiz_history_provider.dart';
 import '../../ai/application/ai_text_view_binding.dart';
 import '../../ai/application/ai_conversation_view_binding.dart';
+import '../../ai/application/ai_conversation_scenario_binding.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../application/account_controller.dart';
 import '../application/account_provider.dart';
@@ -98,6 +99,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
     if (account != null || (_publishedApp && _exitStarted)) {
       return ProviderScope(
         overrides: [
+          aiConversationScenarioSourceProvider.overrideWithValue(
+            _controller.aiConversationScenarioSource,
+          ),
           aiConversationSourceProvider.overrideWithValue(
             _controller.aiConversationSource,
           ),
