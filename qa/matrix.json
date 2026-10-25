@@ -2978,6 +2978,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "Two SDK route cases authored not locally run; TEST ONLY Auth/profile/vault/HTTP, not hosted JWT/RLS/provider/voice/physical learner proof. Recovery remains memory-only/same ready generation, no persisted restart/newround policy; all14 release groups pending."
+    },
+    {
+      "id": "conversation-receipt-reference",
+      "status": "automated-baseline",
+      "scope": "Pure metadata-only local receipt reference v1: typed operation/event identity, project/account partitions, canonical bounded codec, payload/token rejection and fixed errors.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_receipt_reference_test.dart",
+          "contains": "typed start turn finish references contain only receipt metadata"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_receipt_reference_test.dart",
+      "limitation": "Identification only, not authentication, server receipt proof, mutation retry or restart recovery. No storage/HTTP/default integration or tokens/transcript; secure persistence and authenticated lookup still pending; all14 hosted gates remain pending."
     }
   ],
   "findings": [
