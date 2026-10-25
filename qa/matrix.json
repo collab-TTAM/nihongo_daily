@@ -2798,6 +2798,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_screen_test.dart test/features/ai/conversation_workspace_panel_test.dart test/features/ai/conversation_session_panel_test.dart",
       "limitation": "Seven actual App/router widget cases authored, not locally run. Paired-binding/Auth/read/mutation fixture ports; actual owned SDK-to-route controls/summary journey still pending. No hosted JWT/RLS/provider/voice/physical learner proof, client durable recovery or new-round policy. All14 release groups pending."
+    },
+    {
+      "id": "owned-sdk-conversation-route",
+      "status": "automated-baseline",
+      "scope": "Actual owned App/SDK /conversation controls, captured wire/events, accepted summary, finished remount and logout redaction.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "owned SDK conversation route sends explicit controls renders summary and logout redacts"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "One new actual owned App/SDK route case authored not locally run. TEST ONLY Auth/vault/profile/AI HTTP, no hosted JWT/RLS/provider/voice/physical learner proof. Route refresh/account replacement/uncertainty and durable client recovery remain pending; all14 release groups pending."
     }
   ],
   "findings": [

@@ -63,3 +63,41 @@ assertions; after green extend actual owned SDK/App journey through this route,
 explicit controls/summary and refresh/logout barriers. Keep41 draft/17open/AIoff/
 all14 hosted learner gates pending. No merge/deploy/release/provider/Auth strategy/
 collection/spend/security reduction or Alpha acceptance.
+
+## Owned SDK-to-route journey — core-20261025T1415-owned-route
+
+Parent f233b30 CI40197060772/latest attempt1 completed SUCCESS, allfive jobs/every
+required step/no skips. Flutter log121180444406 confirms1174 Flutter/five Chrome
+including allseven route cases. Retained Web/Windows/native/SQL/Edge gates pass;
+component proof only, not hosted learner acceptance.
+
+One new owned journey AUTHORED, NOT locally run, uses actual AccountStartupApp,
+Windows owner/persistent startup/native journal/pinned Supabase SDK and unchanged
+unoverridden composed provider/event factory/router /conversation. Only TEST ONLY
+Auth/profile/vault/AI HTTP ports injected. Explicit actual widget taps load/select/
+start/send/finish; SDK actions/taps await in real tester.runAsync event loop as the
+existing tutor helper, frames outside. No added helper/source/default overrides.
+Reader/session/factory identities match owner; navigation/typing sends nothing.
+Accepted start/turn/finish use captured bearer/fixed endpoints/exact wire fields,
+secure distinct UUIDv4 events and unchanged Unicode/whitespace. The illustrative
+turn fixture repeats start sequence0/ID: this test alone deep-copies response and
+sets distinct assistant ID/sequence2 plus explicit marker, preserving strict
+correlation rather than weakening decoder. Canonical fixture file unchanged.
+
+Actual route renders accepted next assistant/summary scores/strength/not-saved
+notice; finished has no editor. Leave/reopen retains summary/disabled start/no
+extra HTTP. Actual owned logout synchronously revokes both capabilities; UI removes
+assistant/summary, provider null/no further AI calls. Original real-loop owned
+cleanup/exclusive vault-target release assertion and every old helper/test/assertion
+body retained exactly before appended case. No production change, reset/newround,
+durable client recovery/progress save/provider/voice or live Auth activation.
+
+Official Dart3.9.2 SHA verified; format1/0changes,46 QA/inventory110/whitespace and
+separate event-loop/SDK wire/lifecycle/assertion review PASS. All109 old QA cases/
+findings/gates unchanged; all14 hosted groups pending. Full local Flutter/analyzer/
+new journey/native/build UNRUN/no denied bootstrap retry/bypass. New exact-head
+CI must run allfive/latest attempt/every required step/new journey. After green
+extend actual owned route refresh/held rotation/profile/account replacement and
+uncertainty UI cases before reviewed durable client recovery/new-round policy.
+Keep41draft/17open/AIoff; no merge/deploy/release/provider/Auth strategy/security/
+collection/spend/Pro/schedule action or Alpha claim.
