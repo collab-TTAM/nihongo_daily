@@ -190,11 +190,17 @@ void main() {
       final original = auth.currentSession;
       auth.currentSession = ReviewSession(userId: original!.userId);
       hints.add(null);
+      // The async controller hint schedules the frame in a microtask. Flush it
+      // before pump checks hasScheduledFrame; do not inspect the old render tree.
+      await tester.idle();
       await tester.pump();
       expect(find.text(port.marker), findsNothing);
       expect(find.byKey(const Key('conversation-unavailable')), findsOneWidget);
       auth.currentSession = original;
       hints.add(null);
+      // The async controller hint schedules the frame in a microtask. Flush it
+      // before pump checks hasScheduledFrame; do not inspect the old render tree.
+      await tester.idle();
       await tester.pump();
       expect(find.text(port.marker), findsNothing);
       expect(port.calls, 1);

@@ -47,3 +47,27 @@ receipt/voice/learner or physical launch proof. All14 hosted release groups and
 Auth/provider/collection/spend/security/release approval gates remain pending.
 Next inspect exact new-head CI then compose trusted scenario/read capability and
 explicit safe mutation controls with real mounted host/lifecycle coverage.
+
+
+## Revocation widget frame correction — 2026-10-25
+
+Exact adc2b97 CI40141452588/latest attempt1 completed failure: all four
+non-Flutter jobs/every required step succeeded. Flutter format/analyze passed;
+1047 tests passed and one panel revocation case failed at line194. Seven other
+panel cases passed. All downstream Flutter native/browser/wire/Web steps were
+skipped, not passed. See job121014247792.
+
+The controller deliberately emits asynchronous void hints. In pinned Flutter
+3.35.4, AutomatedTestWidgetsFlutterBinding.pump checks hasScheduledFrame before
+flushing microtasks; if no frame was scheduled yet, that pump can deliver the
+hint/setState without drawing the newly scheduled frame. The failed assertion
+therefore can inspect the preceding render tree. The test now calls tester.idle
+before each existing pump after the same-user replacement and A/B/A hint. This
+flushes the asynchronous notification before the frame check. All eight test
+bodies, original pumps and assertions otherwise remain exact; no production
+controller/panel change, longer deadline, retry, catch, fake success or disabled
+assertion. The fixed case still needs new exact-head Flutter execution.
+
+Framework source inspected at the exact pinned tag:
+https://github.com/flutter/flutter/blob/3.35.4/packages/flutter_test/lib/src/binding.dart
+(pump and idle). No local Flutter/bootstrap bypass or hosted proof is claimed.
