@@ -2741,6 +2741,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_provider_test.dart",
       "limitation": "Eleven cases pass in a portable core Riverpod2.6.1 graph with Flutter runner/import adaptation; actual Flutter new-head CI still required. Test hint stream now models production cached identity; raw equal wrappers remain rejected. Source/stream identity is not authentication of an arbitrary in-process host. Actual owned mounted SDK/panel/route/hosted learner proof and all14 release groups pending."
+    },
+    {
+      "id": "owned-composed-workspace-journey",
+      "status": "automated-baseline",
+      "scope": "Actual mounted App/startup/Windows owner/SDK composed workspace binding with persisted rotation and profile barriers, explicit selected start/secure UUID, refresh/logout/default-off.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted workspace pair binds actual owner and secure start after barriers then fences refresh logout"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "mounted App workspace pair remains off by default without HTTP"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "Two owned mounted App/SDK cases authored, not locally run. Injected TEST ONLY Auth/profile/vault/HTTP, not hosted JWT/physical Windows/provider/voice/learner proof. Actual workspace command/summary route not yet mounted; all14 release groups pending."
     }
   ],
   "findings": [

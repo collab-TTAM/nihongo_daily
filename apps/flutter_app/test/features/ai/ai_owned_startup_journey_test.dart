@@ -12,6 +12,9 @@ import 'package:http/testing.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
+import 'package:nihongo_daily/features/ai/application/conversation_workspace_provider.dart';
+import 'package:nihongo_daily/features/ai/application/conversation_workspace_binding.dart';
+import 'package:nihongo_daily/features/ai/application/conversation_workspace_controller.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_controller.dart';
 import 'package:nihongo_daily/features/ai/application/ai_conversation_controller.dart';
 import 'package:nihongo_daily/features/ai/application/ai_conversation_view_binding.dart';
@@ -1202,4 +1205,230 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  _ownedTest(
+    'mounted workspace pair binds actual owner and secure start after barriers then fences refresh logout',
+    (tester) async {
+      final app = await _fixture(
+        tester,
+        start: false,
+        enabled: false,
+        conversationEnabled: true,
+      );
+      ProviderSubscription<ConversationWorkspaceBinding?>? subscription;
+      ConversationWorkspaceController? view;
+      try {
+        await tester.runAsync(() async {
+          // Keep barriers in the real SDK event loop, as in the conversation case.
+          app.vault.secret = 'TEST_ONLY_SAVED';
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
+          app.starting = app.controller.start();
+          await lifecycle.flush();
+        });
+        await tester.pumpWidget(AccountStartupApp(controller: app.controller));
+        await tester.pump();
+        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
+        expect(app.controller.aiConversationScenarioSource, isNull);
+        expect(app.ai.requests, isEmpty);
+        await tester.runAsync(() async {
+          app.vault.writeWait!.complete();
+          await app.starting;
+          await lifecycle.flush();
+        });
+        expect(app.vault.secret, app.server.secret);
+        expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+        final container = await _mount(tester, app);
+        await tester.runAsync(() async {
+          expect(
+            container.read(aiConversationScenarioSourceProvider),
+            same(app.owner),
+          );
+          subscription = container.listen(
+            conversationWorkspaceBindingProvider,
+            (_, _) {},
+          );
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          expect(app.owner.createAiConversationScenarios(), isNull);
+          expect(app.ai.requests, isEmpty);
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        late ConversationWorkspaceBinding old;
+        late String oldBearer;
+        await tester.runAsync(() async {
+          old = container.read(conversationWorkspaceBindingProvider)!;
+          expect(old.reader, same(app.owner.createAiConversationScenarios()));
+          expect(
+            old.availabilityChanges,
+            same(app.owner.aiConversationScenarioChanges),
+          );
+          expect(container.read(aiTextViewBindingProvider), isNull);
+          expect(app.ai.requests, isEmpty);
+          expect(container.read(aiConversationSourceProvider), same(app.owner));
+          expect(old.session, same(app.owner.createAiConversationSession()));
+          expect(
+            old.createEventId,
+            same(container.read(conversationEventFactoryProvider)),
+          );
+          view = ConversationWorkspaceController(
+            reader: old.reader,
+            session: old.session,
+            availabilityChanges: old.availabilityChanges,
+            createEventId: old.createEventId,
+          );
+          expect(app.ai.requests, isEmpty);
+          oldBearer = app.server.bearer;
+          app.ai.onSend = (request) async => request.method == 'GET'
+              ? http.StreamedResponse(
+                  Stream.value(
+                    utf8.encode(
+                      jsonEncode([
+                        {
+                          'id': wire.a,
+                          'jlpt_level': 'N5',
+                          'title_vi': 'Tình huống',
+                          'title_ja': '会話',
+                          'description_vi': 'Mô tả',
+                          'content_version': 1,
+                          'is_active': true,
+                        },
+                      ]),
+                    ),
+                  ),
+                  200,
+                  headers: {'content-type': 'application/json'},
+                )
+              : _answer(request.url.path.split('/').last);
+          await view!.loadScenarios();
+          final row = view!.state.scenarios!.rows.single;
+          expect(row.id, wire.a);
+          expect(view!.select(row), isTrue);
+          expect(app.ai.requests, hasLength(1));
+          await view!.startSelected();
+          expect(
+            view!.state.conversation!.conversation!.phase,
+            ConversationSessionPhase.active,
+          );
+          final sent = app.ai.requests.last as http.Request;
+          expect(sent.method, 'POST');
+          expect(sent.url.path, '/functions/v1/start_conversation');
+          expect(sent.headers['authorization'], 'Bearer $oldBearer');
+          final body = jsonDecode(sent.body) as Map<String, Object?>;
+          expect(body.keys.toSet(), {
+            'scenario_id',
+            'jlpt_level',
+            'client_event_id',
+          });
+          expect(body['scenario_id'], row.id);
+          expect(body['jlpt_level'], 'N5');
+          expect(
+            RegExp(
+              r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+            ).hasMatch(body['client_event_id']! as String),
+            isTrue,
+          );
+          expect(app.ai.requests.first.method, 'GET');
+          expect(
+            app.ai.requests.first.url.path,
+            '/rest/v1/conversation_scenarios',
+          );
+          expect(
+            app.ai.requests.first.headers['authorization'],
+            'Bearer $oldBearer',
+          );
+        });
+        Future<void>? refreshing;
+        await tester.runAsync(() async {
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
+          refreshing = app.owner.refresh();
+          expect(old.reader.isCurrent, isFalse);
+          expect(old.session.isCurrent, isFalse);
+          expect(view!.state.isAvailable, isFalse);
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          expect(app.ai.requests, hasLength(2));
+          app.vault.writeWait!.complete();
+          await refreshing;
+          await lifecycle.flush();
+          expect(app.vault.secret, app.server.secret);
+          expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          final fresh = container.read(conversationWorkspaceBindingProvider)!;
+          expect(fresh.reader, isNot(same(old.reader)));
+          expect(fresh.session, isNot(same(old.session)));
+          expect(fresh.session, same(app.owner.createAiConversationSession()));
+          expect(
+            fresh.session.snapshot.phase,
+            ConversationSessionPhase.notStarted,
+          );
+          expect(view!.state.isAvailable, isFalse);
+          expect(fresh.reader, same(app.owner.createAiConversationScenarios()));
+          expect(old.reader.isCurrent, isFalse);
+          expect(app.server.bearer, isNot(oldBearer));
+          expect(app.ai.requests, hasLength(2));
+          await view!.startSelected();
+          await view!.turn('TEST_ONLY_OLD_DRAFT');
+          expect(app.ai.requests, hasLength(2));
+          await fresh.reader.load(AiTextLevel.n5);
+          expect(app.ai.requests, hasLength(3));
+          expect(
+            app.ai.requests.last.headers['authorization'],
+            'Bearer ${app.server.bearer}',
+          );
+          await app.runtime.account.signOut();
+          await lifecycle.flush();
+          expect(fresh.reader.isCurrent, isFalse);
+          expect(fresh.session.isCurrent, isFalse);
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          expect(app.owner.createAiConversationScenarios(), isNull);
+          expect(app.ai.requests, hasLength(3));
+        });
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.runAsync(() async {
+          view?.dispose();
+          subscription?.close();
+        });
+      }
+    },
+  );
+  _ownedTest('mounted App workspace pair remains off by default without HTTP', (
+    tester,
+  ) async {
+    final app = await _fixture(tester);
+    await tester.runAsync(app.login);
+    final container = await _mount(tester, app);
+    await tester.runAsync(() async {
+      expect(container.read(aiConversationSourceProvider), same(app.owner));
+      expect(
+        container.read(aiConversationScenarioSourceProvider),
+        same(app.owner),
+      );
+      expect(container.read(conversationWorkspaceBindingProvider), isNull);
+      expect(app.owner.createAiConversationSession(), isNull);
+      expect(app.owner.createAiConversationScenarios(), isNull);
+      expect(app.owner.createAiTextRepository(), isNotNull);
+      expect(app.ai.requests, isEmpty);
+    });
+    expect(tester.takeException(), isNull);
+  });
 }
