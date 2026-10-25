@@ -6,6 +6,8 @@ import '../application/conversation_scenario_controller.dart';
 import '../application/ai_conversation_controller.dart';
 import '../data/captured_conversation_session.dart';
 import '../domain/ai_text_models.dart';
+import '../domain/conversation_responses.dart'
+    show ConversationAssistantMessage;
 
 /// Reusable opt-in commands. No route/default activation, durable drafts, voice,
 /// new-round reset or client receipt reconstruction is installed here.
@@ -245,7 +247,9 @@ class _WorkspacePanelState extends State<ConversationWorkspacePanel> {
                 child: const Text('Kết thúc hội thoại'),
               ),
             ],
-            for (final message in snapshot?.messages ?? []) ...[
+            for (final message
+                in snapshot?.messages ??
+                    const <ConversationAssistantMessage>[]) ...[
               Text(message.textJa),
               Text(message.textVi ?? 'Chưa có bản dịch.'),
             ],

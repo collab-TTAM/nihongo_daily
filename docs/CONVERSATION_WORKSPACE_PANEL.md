@@ -53,3 +53,21 @@ new-head allfive/latest-attempt/new7widget cases, fix actual diagnostics retaini
 assertions, then guarded actual owned host pairing/secure ID factory/route integration
 with explicit opt-in only. Keep41 draft/17 open/AI off/all14 hosted gates pending;
 no deployment/merge/provider/Auth strategy/collection/spend/security/release change.
+
+## Exact-head analyzer correction — 2026-10-25
+
+CI40176232761 at d496440/latest attempt1 completed with allfour non-Flutter jobs
+successful, every required step. Flutter formatting passed but strict analysis
+failed at panel249/250: the untyped nullable-list fallback inferred dynamic message
+values, which cannot be passed to Text under strict casts. All Flutter tests,
+including the seven widgets, Chrome/Web and downstream Flutter checks were skipped.
+Windows success does not substitute for those results.
+
+The panel now imports ConversationAssistantMessage and explicitly types only the
+const empty fallback. The real snapshot list and literal Japanese/nullable Vietnamese
+rendering are unchanged; no cast/dynamic allowance/lint suppression or runtime
+fallback conversion. Every existing widget case/assertion remains byte-identical.
+Pinned Dart3.9.2 format1/0changes and46QA/inventory106 passed. Full corrected-head
+Flutter analyze/widgets/build still require exact-head CI; no local Flutter claim
+or retry of a denied bootstrap. Inspect allfive latest-attempt jobs first, then
+continue host integration only after actual new-panel evidence is observed.
