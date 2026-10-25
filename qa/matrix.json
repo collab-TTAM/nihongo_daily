@@ -2629,6 +2629,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_conversation_scenario_binding_test.dart test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "11 source/Riverpod and2 mounted SDK/Windows-wrapper cases authored, not locally executed. No scenario selector/mutation/recovery UI/default activation or hosted JWT/RLS/provider/voice/learner proof; all14 hosted gates pending."
+    },
+    {
+      "id": "conversation-scenario-selector",
+      "status": "automated-baseline",
+      "scope": "Explicit read-only scenario loading/selection controller and panel, exact current row identity, captured owner fencing and no auto read/mutation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_scenario_controller_test.dart",
+          "contains": "reload clears selection and rejects stale equal-ID row without optimistic success"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_scenario_panel_test.dart",
+          "contains": "replacement fences retained old load callback and preserves borrowed readers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_scenario_panel_test.dart",
+          "contains": "320px 200 percent text selector scrolls without overflow"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_scenario_controller_test.dart test/features/ai/conversation_scenario_panel_test.dart",
+      "limitation": "13 pure controller cases and7 authored widget cases; reusable unrouted component, no mutation/recovery/provider/default activation or hosted JWT/RLS/voice/learner proof. All14 hosted gates pending."
     }
   ],
   "findings": [

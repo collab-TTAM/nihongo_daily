@@ -162,3 +162,40 @@ required. Pinned format/QA results and CI observations are recorded in PR/status
 They do not establish hosted JWT/RLS/PostgREST or real catalog/learner acceptance.
 Next inspect CI before adding an explicit guarded scenario loading/selection view
 and mutation/recovery policy; no arbitrary learner UUID/endpoint/key fallback.
+
+## Explicit read-only selector component
+
+ConversationScenarioController borrows one retained reader and optional void
+availability hints. Construction, state read/recheck and level choice issue no
+read. Explicit load selects N5/N4 only, reserves one view load, clears old rows/
+selection/error before dispatch and publishes only after current epoch/owner
+checks. Immutable rows remain exact repository objects. Selection accepts only an
+identical object in the currently loaded list, not arbitrary UUID or an equal-ID
+old/foreign object. Level change/reload clears choice. No caller-supplied session,
+owner, endpoint, key, event generator, provider operation or persistence.
+
+Loading/busy blocks level, load and selection changes. Timeout/error does not
+release the reader's underlying busy lease; explicit recheck can refresh controls
+after actual drain, with no automatic reload, poll or retry. Empty stays empty;
+malformed/error never creates scenarios. Observed owner/readiness loss, same-user
+replacement/A/B/A, hint error/closure or dispose permanently redacts this view's
+rows/selection/error. Nested readiness reads are redacted without revoking a
+healthy borrowed reader. Late response/error cannot publish into a revoked view.
+Dispose owns only view data/subscription; runtime still owns reader/SDK cleanup.
+Already returned snapshots cannot be externally erased; hosts must discard them.
+
+ConversationScenarioPanel is a reusable, unrouted read-only component. Explicit
+load, N5/N4 dropdown, fixed safe errors, unavailable/idle/loading/empty states,
+literal Japanese/Vietnamese/description, local choice and explicit voice/start
+unavailability. No HTML/audio/URL actions, imaginary progress or start/send/finish/
+reset/new-round UI. Callback closures retain their own view controller; replaced/
+disposed callbacks cannot dispatch on a new account. Narrow/large-text scrolls.
+No default route/flags/App/provider/SDK/Auth/RLS/contract change or data provision.
+
+13 pure controller cases passed with the identical production graph and only test
+runner import adaptation; seven widget cases are authored for exact-head CI.
+These are component/fixture results, not mounted production selector, hosted
+JWT/PostgREST/RLS/provider/voice/learner acceptance. Next inspect CI, then compose
+selector with retained conversation/mutation/recovery policy and actual owned
+mounted host tests. A selected descriptor is not server authorization or a safe
+way to bypass old unresolved conversation receipts.
