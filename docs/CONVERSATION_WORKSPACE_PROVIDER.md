@@ -53,3 +53,33 @@ Next exact new-head allfive/latest-attempt/new10cases, then actual owned host
 journeys and opt-in route+summary composition with pending/manual retry/finished
 fences. Keep41 draft/17open/AIoff/all14 hosted human gates pending. No merge/deploy/
 release/provider/Auth strategy/collection/spend/security reduction/schedule action.
+
+## Stable test hint identity — 2026-10-25
+
+Exact84ecab7 CI40184370857/latest attempt1 passed format/analyze and allfour
+non-Flutter jobs/every required step, but five of the ten new provider tests
+failed because ready pairs were unexpectedly null. Downstream Flutter native/
+Chrome/Web steps were skipped. Flutter log121142246582 observed; no full-CI pass.
+
+The original test Source returned StreamController.stream on each getter. Dart
+returns equal but nonidentical wrapper objects there. This did not model the
+production AiTextRuntimeOwner's late-final cached changes stream, forwarded by
+both runtime source getters. A standalone Dart probe confirms wrapper identity;
+the unchanged original35-file graph reproduced the same five failures on core
+Riverpod2.6.1 with only Flutter import/runner adaptation.
+
+Test-only _Hints now captures one stream and forwards void/addError/close to its
+original synchronous broadcast controller. All10 original test bodies/assertions
+remain exact, including identity and closure/borrowed-resource assertions. A new
+case intentionally returns uncached equal wrappers and still requires null/no
+HTTP. Production provider/source/SDK/identity guards are byte-identical; no switch
+to equality, assertion removal or weaker security behavior.
+
+All11 cases passed after correction in that same graph. Strict casts/inference/
+raw-types analysis of provider/test clean. Official Dart3.9.2 SHA verified; pinned
+riverpod2.6.1/http/logging/supabase version+archive-hash records match repository
+(direct/transitive classification differs). The portable harness substitutes
+flutter_test->test1.26.2 and flutter_riverpod->core riverpod2.6.1 only; it is not
+actual Flutter/SDK/hosted execution. New-head full Flutter/CI remains required.
+Format1/0changes,46QA/inventory107/whitespace/separate original-body/graph parity
+review passed. Keep all default flags/routes/gates and pending host work unchanged.

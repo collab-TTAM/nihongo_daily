@@ -13,18 +13,30 @@ import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.d
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'conversation_workspace_controller_test.dart' as fixture;
 
+// Match the production owner's cached broadcast stream identity. Raw
+// StreamController.stream accesses return equal but nonidentical wrappers.
+final class _Hints {
+  final _controller = StreamController<void>.broadcast(sync: true);
+  late final Stream<void> stream = _controller.stream;
+  Stream<void> get uncached => _controller.stream;
+  void add(Object? _) => _controller.add(null);
+  void addError(Object error) => _controller.addError(error);
+  Future<void> close() => _controller.close();
+}
+
 final class Source
     implements AiConversationSource, AiConversationScenarioSource {
   final h = fixture.Harness();
-  final hints = StreamController<void>.broadcast(sync: true);
-  final otherHints = StreamController<void>.broadcast(sync: true);
-  bool split = false, broken = false, available = true;
+  final hints = _Hints();
+  final otherHints = _Hints();
+  bool split = false, broken = false, available = true, unstable = false;
   int acquisitions = 0;
   @override
-  Stream<void> get aiConversationChanges => hints.stream;
+  Stream<void> get aiConversationChanges =>
+      unstable ? hints.uncached : hints.stream;
   @override
   Stream<void> get aiConversationScenarioChanges =>
-      split ? otherHints.stream : hints.stream;
+      split ? otherHints.stream : (unstable ? hints.uncached : hints.stream);
   @override
   CapturedConversationSession? createAiConversationSession() {
     acquisitions++;
@@ -208,6 +220,26 @@ void main() {
         expect(ids.add(id), isTrue);
       }
       // Shape/collision smoke is not a statistical proof of entropy or hosted auth.
+    },
+  );
+  test(
+    'uncached equal stream wrappers remain rejected while owner guard is retained',
+    () async {
+      final s = Source()..unstable = true;
+      expect(
+        s.aiConversationChanges == s.aiConversationScenarioChanges,
+        isTrue,
+      );
+      expect(
+        identical(s.aiConversationChanges, s.aiConversationScenarioChanges),
+        isFalse,
+      );
+      final c = container(s);
+      expect(c.read(conversationWorkspaceBindingProvider), isNull);
+      expect(s.h.port.calls, isEmpty);
+      expect(s.h.readPort.calls, 0);
+      c.dispose();
+      await s.close();
     },
   );
 }

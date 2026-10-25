@@ -2728,6 +2728,10 @@
         {
           "path": "apps/flutter_app/test/features/ai/conversation_workspace_provider_test.dart",
           "contains": "same user replacement permanently fences old pair and identity return does not revive"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_provider_test.dart",
+          "contains": "uncached equal stream wrappers remain rejected while owner guard is retained"
         }
       ],
       "issues": [
@@ -2736,7 +2740,7 @@
         20
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_provider_test.dart",
-      "limitation": "Ten source/Riverpod cases authored, not locally run. Source/stream identity checks are not authentication of an arbitrary in-process host; actual same-generation owned mounted SDK/panel/route proof remains next. UUID shape/unique smoke is not statistical entropy assurance. All14 hosted release groups pending."
+      "limitation": "Eleven cases pass in a portable core Riverpod2.6.1 graph with Flutter runner/import adaptation; actual Flutter new-head CI still required. Test hint stream now models production cached identity; raw equal wrappers remain rejected. Source/stream identity is not authentication of an arbitrary in-process host. Actual owned mounted SDK/panel/route/hosted learner proof and all14 release groups pending."
     }
   ],
   "findings": [
