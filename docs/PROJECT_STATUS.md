@@ -6712,3 +6712,39 @@ allfive/every step/new6+3, extend actual owned recovery loss/replacement/late-re
 UI coverage; secure persistence/restart recovery remains outstanding. Keep41draft/
 17open/AIoff/no merge/deploy/release/Auth strategy/provider/collection/spend/security/
 schedule change or Alpha acceptance.
+
+## Recovery action account and late-response fences — core-20261026-recovery-account-fences
+
+Parent2f6ca69 CI40217442842/latest attempt1 SUCCESS allfive/every required step/no
+skips. Flutter log121241960413 confirms1202Flutter/fiveChrome/all3 actual owned
+retained-recovery route actions plus6 new pure cases; Web/Windows/native/SQL/Edge
+passed. Prior UI integration is now verified; not hosted learner acceptance.
+
+Two appended actual owned App/Windows owner/persistent startup/native journal/
+pinned SDK /conversation journeys AUTHORED locally UNRUN: ignored-abort recovery
+success/error across A/B/A. First explicit start gets TEST ONLY503 retryable failure;
+leave/reopen exposes recovery. Actual recovery tap sends identical original body/
+URL/captured bearer, then its real HTTP is held. Owned logout must revoke both
+capabilities, clear vault and signal abort. B login ready still cannot allocate a
+combined pair until old actual I/O drains; old recovery callback before next frame
+cannot send. Valid late start response or raw private error cannot restore old
+button/text/summary or cross account. B and returningA get distinct notStarted
+pairs, no retained recovery button/no automatic AI call; explicit catalog GETs use
+the corresponding new captured bearer. Old callback remains inert in both accounts.
+
+Held completer/taps/SDK/logout/login/abort/release all use original real runAsync
+loop, frames outside. Global owned finally/drain/exclusive-vault-release assertion
+and every old helper/test/assertion body unchanged. Only TEST ONLY Auth/profile/
+vault/AI HTTP ports; real source/provider/event-factory/router not overridden. No
+production/default/Auth strategy/provider/SDK/API/schema/RLS/CI/dependency/content/
+Pro edits. No reset/new round/receipt abandonment/disk persistence or voice claim.
+
+Official Dart3.9.2 SHA verified; format1/0changes,46QA/inventory116/whitespace and
+separate original-body/callback/event-loop/drain/account/bearer review PASS. All115
+prior QA objects/findings/gates exact/all14 hosted pending. Full local Flutter/
+analyzer/new2SDK journeys/native/build UNRUN/no denied bootstrap retry/bypass.
+New exact-head/latest-attempt allfive/every step/new2 cases required. After green
+assess secure persistence/restart recovery with explicit data/identity/lifetime/
+platform constraints; current recovery stays memory-only/same generation. Continue
+other independent ready acceptance gaps without claiming hosted Alpha. Keep41draft/
+17open/AIoff/no merge/deploy/release/security/spend/collection/schedule action.
