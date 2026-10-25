@@ -20,11 +20,18 @@ final class ConversationWorkspaceState {
     this.canTurn = false,
     this.canFinish = false,
     this.canRetry = false,
+    this.canRecoverRetained = false,
   });
   final ConversationScenarioState? scenarios;
   final AiConversationState? conversation;
   final AiTextFailure? failure;
-  final bool canChoose, canLoad, canStart, canTurn, canFinish, canRetry;
+  final bool canChoose,
+      canLoad,
+      canStart,
+      canTurn,
+      canFinish,
+      canRetry,
+      canRecoverRetained;
   bool get isAvailable => scenarios != null && conversation != null;
 }
 
@@ -84,6 +91,7 @@ final class ConversationWorkspaceController {
       final canTurn = _conversation.canTurn;
       final canFinish = _conversation.canFinish;
       final canRetry = _conversation.canRetry;
+      final canRecoverRetained = _conversation.canRecoverRetained;
       // Capability getters themselves call supplied readiness code. Re-read
       // projections afterward so a loss discovered there cannot publish old text.
       final latestScenarios = _scenarios.state;
@@ -101,6 +109,7 @@ final class ConversationWorkspaceController {
         canTurn,
         canFinish,
         canRetry,
+        canRecoverRetained,
       );
     } on Object {
       invalidate();
@@ -127,6 +136,8 @@ final class ConversationWorkspaceController {
       canFinish: writable && view.canFinish && view.scenarios.canLoad,
       // Original pending DTO already has an event; factory is not required.
       canRetry: idle && view.canRetry && view.scenarios.canLoad,
+      canRecoverRetained:
+          idle && view.canRecoverRetained && view.scenarios.canLoad,
     );
   }
 
@@ -227,6 +238,12 @@ final class ConversationWorkspaceController {
     (_) => _conversation.retryPending(),
   );
 
+  /// Same captured original, both capabilities current; no event factory call.
+  Future<void> recoverRetained() => _run(
+    (v) => v.canRecoverRetained && v.scenarios.canLoad,
+    (_) => _conversation.recoverRetained(),
+  );
+
   Future<void> _run(
     bool Function(_View) allowed,
     Future<void> Function(_View) command,
@@ -307,8 +324,9 @@ final class _View {
     this.canTurn,
     this.canFinish,
     this.canRetry,
+    this.canRecoverRetained,
   );
   final ConversationScenarioState scenarios;
   final AiConversationState conversation;
-  final bool canStart, canTurn, canFinish, canRetry;
+  final bool canStart, canTurn, canFinish, canRetry, canRecoverRetained;
 }

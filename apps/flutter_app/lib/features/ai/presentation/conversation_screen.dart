@@ -17,6 +17,10 @@ class ConversationScreen extends ConsumerWidget {
             title: 'Hội thoại AI',
             description: 'Luyện hội thoại theo tình huống.',
           )
-        : ConversationWorkspacePanel(key: ObjectKey(binding), binding: binding);
+        : ConversationWorkspacePanel(
+            key: ObjectKey(binding),
+            binding: binding,
+            enableRetainedRecovery: true,
+          );
   }
 }

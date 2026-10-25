@@ -2909,6 +2909,37 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/retained_conversation_command_test.dart test/features/ai/captured_conversation_session_test.dart",
       "limitation": "Nine pure cases plus20 original session cases pass via test1.26.2/fixture-path adaptation in fresh graph; not full Flutter/SDK/hosted proof. No UI activation/disk persistence/process restart recovery/newround policy; all14 hosted release groups pending."
+    },
+    {
+      "id": "conversation-retained-recovery-ui",
+      "status": "automated-baseline",
+      "scope": "Explicit same-generation retained-original recovery via guarded conversation/workspace controller and optional route button; old DTO retry unchanged.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_retained_recovery_test.dart",
+          "contains": "workspace explicit retained recovery reuses $operation after old view disposal"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_retained_recovery_test.dart",
+          "contains": "either capability loss fences retained recovery reader=$loseReader"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_retained_recovery_test.dart",
+          "contains": "disposed and concurrent recovery controls cannot replay twice"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "owned SDK route retained recovery explicitly replays original $failedOperation"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_retained_recovery_test.dart test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "Six pure cases+43old pass via test1.26.2/fixture path adaptation; three owned SDK route cases authored not locally run. Same process/generation only, no disk/restart recovery/hosted JWT/RLS/provider/voice/physical learner proof; all14 release groups pending."
     }
   ],
   "findings": [

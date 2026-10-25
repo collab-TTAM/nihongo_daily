@@ -13,8 +13,13 @@ import '../domain/conversation_responses.dart'
 /// Reusable opt-in commands. No route/default activation, durable drafts, voice,
 /// new-round reset or client receipt reconstruction is installed here.
 class ConversationWorkspacePanel extends StatefulWidget {
-  const ConversationWorkspacePanel({super.key, this.binding});
+  const ConversationWorkspacePanel({
+    super.key,
+    this.binding,
+    this.enableRetainedRecovery = false,
+  });
   final ConversationWorkspaceBinding? binding;
+  final bool enableRetainedRecovery;
   @override
   State<ConversationWorkspacePanel> createState() => _WorkspacePanelState();
 }
@@ -217,6 +222,16 @@ class _WorkspacePanelState extends State<ConversationWorkspacePanel> {
                   : null,
               child: const Text('Thử lại yêu cầu gốc'),
             ),
+            if (widget.enableRetainedRecovery && state.canRecoverRetained)
+              OutlinedButton(
+                key: const Key('workspace-recover'),
+                onPressed: () {
+                  if (_current(c) && widget.enableRetainedRecovery) {
+                    unawaited(c.recoverRetained());
+                  }
+                },
+                child: const Text('Thử lại yêu cầu trước'),
+              ),
             if (snapshot?.phase == ConversationSessionPhase.active) ...[
               TextField(
                 key: const Key('workspace-editor'),

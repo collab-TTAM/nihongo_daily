@@ -98,6 +98,56 @@ final class AiConversationController {
         !_session.isBusy;
   }
 
+  /// Separate explicit host action after a view discarded its local DTO.
+  /// Does not reconstruct a command or change legacy canRetry semantics.
+  bool get canRecoverRetained {
+    if (_checking ||
+        _submitting ||
+        _revoked ||
+        _session?.isCheckingAvailability == true) {
+      return false;
+    }
+    checkAvailability();
+    if (_revoked || _pending != null) return false;
+    final allowed = _session!.canRetryRetained;
+    checkAvailability();
+    return allowed && !_revoked && _pending == null;
+  }
+
+  Future<void> recoverRetained() async {
+    if (!canRecoverRetained) return;
+    _submitting = true;
+    final epoch = _epoch;
+    bool current() {
+      checkAvailability();
+      return !_revoked && epoch == _epoch;
+    }
+
+    try {
+      if (!current()) return;
+      _failure = null;
+      _phase = AiConversationPhase.loading;
+      _notify();
+      await _session!.retryRetained();
+      if (current()) {
+        _phase = _session.hasUnresolvedMutation
+            ? AiConversationPhase.pending
+            : AiConversationPhase.ready;
+      }
+    } on AiTextRequestPending {
+      if (current()) _phase = AiConversationPhase.pending;
+    } on AiTextFailure catch (failure) {
+      if (failure.code == AiTextErrorCode.unauthorized) invalidate();
+      if (current()) _error(failure);
+    } on Object {
+      if (current()) _error(const AiTextFailure(AiTextErrorCode.internalError));
+    } finally {
+      _submitting = false;
+      if (!_revoked) checkAvailability();
+      _notify();
+    }
+  }
+
   bool get _retryAllowed =>
       _failure?.retryable == true ||
       (_failure == null && _phase == AiConversationPhase.pending);
