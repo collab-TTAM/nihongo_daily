@@ -2710,6 +2710,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_panel_test.dart",
       "limitation": "Seven widget cases authored, not locally run. Reusable unrouted component; trusted same-generation host pair and secure event factory are not installed. No actual mounted startup/SDK/hosted provider/voice/learner proof or durable client recovery/new-round policy; all14 hosted gates pending."
+    },
+    {
+      "id": "conversation-workspace-provider",
+      "status": "automated-baseline",
+      "scope": "Composed same-owner retained workspace binding and explicit secure UUID factory; no automatic dispatch or default activation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_provider_test.dart",
+          "contains": "different source objects rejected before acquisition even for same user"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_provider_test.dart",
+          "contains": "same owner ready pair preserves binding identity and never generates or dispatches"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_provider_test.dart",
+          "contains": "same user replacement permanently fences old pair and identity return does not revive"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_provider_test.dart",
+      "limitation": "Ten source/Riverpod cases authored, not locally run. Source/stream identity checks are not authentication of an arbitrary in-process host; actual same-generation owned mounted SDK/panel/route proof remains next. UUID shape/unique smoke is not statistical entropy assurance. All14 hosted release groups pending."
     }
   ],
   "findings": [
