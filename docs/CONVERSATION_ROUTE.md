@@ -101,3 +101,36 @@ extend actual owned route refresh/held rotation/profile/account replacement and
 uncertainty UI cases before reviewed durable client recovery/new-round policy.
 Keep41draft/17open/AIoff; no merge/deploy/release/provider/Auth strategy/security/
 collection/spend/Pro/schedule action or Alpha claim.
+
+## Owned route refresh barriers — core-20261025T1512-route-refresh
+
+Parent f488b9b CI40201684602/latest attempt1 completed SUCCESS, allfive jobs/every
+required step/no skips; Flutter log121194430353 confirms1175Flutter/fiveChrome
+including prior owned route command/summary/logout case. Component proof only.
+
+One appended actual App/Windows owner/pinned SDK/native journal /conversation
+journey AUTHORED, NOT locally run. Existing fixture/helper/test/assertion bytes
+unchanged. Real UI load/select/start/send establish accepted reply; second private
+draft/captured old send callback precede same-user refresh. Actual owner refresh
+revokes both captured capabilities immediately. Held token-rotation write then
+held own-profile readiness keep combined provider null and no editor/old reply/
+draft or automatic request. All barriers/callbacks/SDK actions share existing real
+tester.runAsync event loop; frames outside, same prior tap helper body reused.
+
+After persisted rotation and profile complete, route sees distinct exact owner
+reader/session/notStarted and new bearer. Old send callback cannot retarget fresh
+workspace through either barrier or afterward. No auto start/replay; explicit
+fresh catalog tap uses new bearer. Logout revokes fresh pair; old callback stays
+inert/no extra HTTP. Refreshed notStarted does NOT grant permission to abandon an
+uncertain receipt or reset a round; test dispatches no replacement start. No
+production/default/Auth strategy/provider/SDK/source/CI/dependency/content/Pro
+change, no plaintext fallback/token logging/persistence/voice/hosted learner proof.
+
+Official Dart3.9.2 SHA verified, format1/0changes,46QA/inventory111/whitespace and
+separate old-body/event-loop/callback/barrier/wire review PASS. All110 previous
+QA objects/findings/gates retained/all14 hosted pending. Local full Flutter/
+analyzer/new journey/native/build UNRUN/no denied bootstrap retry/bypass. New
+exact-head/latest-attempt allfive/every required step/newcase remain required.
+After green actual account replacement and uncertain/late-response route cases;
+reviewed durable client recovery/new-round policy still pending. Keep41draft/
+17open/AIoff/no merge/deploy/release/collection/spend/security/schedule/Alpha claim.
