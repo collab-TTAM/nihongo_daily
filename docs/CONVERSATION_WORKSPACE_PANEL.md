@@ -71,3 +71,14 @@ Pinned Dart3.9.2 format1/0changes and46QA/inventory106 passed. Full corrected-he
 Flutter analyze/widgets/build still require exact-head CI; no local Flutter claim
 or retry of a denied bootstrap. Inspect allfive latest-attempt jobs first, then
 continue host integration only after actual new-panel evidence is observed.
+
+## Guarded route composition — 2026-10-25
+
+The earlier route/summary integration limit above is superseded by
+CONVERSATION_ROUTE.md: /conversation consumes the existing optional combined
+binding, default unavailable. ConversationSummary preserves the original summary
+column for both panels; workspace uses only its current guarded snapshot and no
+second view/controller. Old tests/assertions unchanged; seven additional actual
+App/router fixture cases authored, awaiting exact new-head CI. No default flag,
+owned source, receipt/recovery policy, live provider/voice or persistence change.
+Actual owned SDK-to-route command/summary journey remains next after CI passes.

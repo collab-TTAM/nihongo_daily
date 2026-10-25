@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'conversation_summary.dart';
 import '../application/conversation_workspace_binding.dart';
 import '../application/conversation_workspace_controller.dart';
 import '../application/conversation_scenario_controller.dart';
@@ -252,6 +253,10 @@ class _WorkspacePanelState extends State<ConversationWorkspacePanel> {
                     const <ConversationAssistantMessage>[]) ...[
               Text(message.textJa),
               Text(message.textVi ?? 'Chưa có bản dịch.'),
+            ],
+            if (snapshot?.summary case final summary?) ...[
+              const SizedBox(height: 20),
+              ConversationSummary(summary: summary),
             ],
             if (snapshot?.phase == ConversationSessionPhase.finished)
               const Text(

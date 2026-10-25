@@ -71,3 +71,14 @@ assertion. The fixed case still needs new exact-head Flutter execution.
 Framework source inspected at the exact pinned tag:
 https://github.com/flutter/flutter/blob/3.35.4/packages/flutter_test/lib/src/binding.dart
 (pump and idle). No local Flutter/bootstrap bypass or hosted proof is claimed.
+
+## Guarded route composition — 2026-10-25
+
+The earlier route/summary integration limit above is superseded by
+CONVERSATION_ROUTE.md: /conversation consumes the existing optional combined
+binding, default unavailable. ConversationSummary preserves the original summary
+column for both panels; workspace uses only its current guarded snapshot and no
+second view/controller. Old tests/assertions unchanged; seven additional actual
+App/router fixture cases authored, awaiting exact new-head CI. No default flag,
+owned source, receipt/recovery policy, live provider/voice or persistence change.
+Actual owned SDK-to-route command/summary journey remains next after CI passes.

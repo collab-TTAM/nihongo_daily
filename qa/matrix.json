@@ -2764,6 +2764,40 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "Two owned mounted App/SDK cases authored, not locally run. Injected TEST ONLY Auth/profile/vault/HTTP, not hosted JWT/physical Windows/provider/voice/learner proof. Actual workspace command/summary route not yet mounted; all14 release groups pending."
+    },
+    {
+      "id": "guarded-conversation-route",
+      "status": "automated-baseline",
+      "scope": "Actual App/router opt-in paired workspace, same guarded shared summary, active/finished/pending remount and old callback/late response/identity loss fences; default unavailable.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_screen_test.dart",
+          "contains": "actual conversation route default remains unavailable without input"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_screen_test.dart",
+          "contains": "actual route explicit commands render shared summary and finished remount never resets"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_screen_test.dart",
+          "contains": "route pending remount cannot reconstruct retry or abandon receipt"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_screen_test.dart",
+          "contains": "route replacement fences held finish summary and retired callbacks"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_screen_test.dart",
+          "contains": "actual route empty summary fits 320px at 200 percent text"
+        }
+      ],
+      "issues": [
+        17,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_screen_test.dart test/features/ai/conversation_workspace_panel_test.dart test/features/ai/conversation_session_panel_test.dart",
+      "limitation": "Seven actual App/router widget cases authored, not locally run. Paired-binding/Auth/read/mutation fixture ports; actual owned SDK-to-route controls/summary journey still pending. No hosted JWT/RLS/provider/voice/physical learner proof, client durable recovery or new-round policy. All14 release groups pending."
     }
   ],
   "findings": [
