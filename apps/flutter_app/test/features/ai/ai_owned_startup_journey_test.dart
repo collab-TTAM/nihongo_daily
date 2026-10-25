@@ -2727,4 +2727,271 @@ void main() {
       },
     );
   }
+  for (final error in [false, true]) {
+    _ownedTest(
+      'owned retained recovery same account refresh gates late response error=$error',
+      (tester) async {
+        final app = await _fixture(
+          tester,
+          enabled: false,
+          conversationEnabled: true,
+        );
+        await tester.runAsync(() async {
+          await app.login();
+          app.ai.onSend = (request) async {
+            Object? body;
+            if (request.method == 'GET') {
+              body = [
+                {
+                  'id': wire.a,
+                  'jlpt_level': 'N5',
+                  'title_vi': 'Tình huống',
+                  'title_ja': '会話',
+                  'description_vi': 'Mô tả',
+                  'content_version': 1,
+                  'is_active': true,
+                },
+              ];
+            } else {
+              final operation = request.url.path.split('/').last;
+              final decoded =
+                  jsonDecode(jsonEncode(_fixtures['${operation}_response']))
+                      as Map<String, Object?>;
+              if (operation == 'conversation_turn') {
+                // Distinct accepted assistant sequence; original illustrative turn
+                // fixture repeats the start message and is not a valid next turn.
+                final message =
+                    decoded['assistant_message']! as Map<String, Object?>;
+                message['id'] = '33333333-3333-4333-8333-333333333333';
+                message['sequence_no'] = 2;
+                message['text_ja'] = 'TEST_ONLY_ROUTE_REPLY';
+              }
+              body = decoded;
+            }
+            return http.StreamedResponse(
+              Stream.value(utf8.encode(jsonEncode(body))),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          };
+        });
+        final container = await _mount(tester, app);
+        container.read(routerProvider).go('/conversation');
+        await tester.pumpAndSettle();
+        late ConversationWorkspaceBinding pair;
+        await tester.runAsync(() async {
+          pair = container.read(conversationWorkspaceBindingProvider)!;
+          expect(pair.session, same(app.owner.createAiConversationSession()));
+          expect(pair.reader, same(app.owner.createAiConversationScenarios()));
+          expect(
+            pair.createEventId,
+            same(container.read(conversationEventFactoryProvider)),
+          );
+          expect(app.ai.requests, isEmpty);
+        });
+        Future<void> press(String name) async {
+          final button = find.byKey(Key('workspace-$name'));
+          await tester.ensureVisible(button);
+          expect(button.hitTestable(), findsOneWidget);
+          await tester.runAsync(() async {
+            await tester.tap(button);
+            await lifecycle.flush();
+          });
+          await tester.pumpAndSettle();
+        }
+
+        var failed = false;
+        await tester.runAsync(() async {
+          final respond = app.ai.onSend!;
+          app.ai.onSend = (request) async {
+            if (request.url.path == '/functions/v1/start_conversation' &&
+                !failed) {
+              failed = true;
+              return http.StreamedResponse(
+                Stream.value(
+                  utf8.encode(
+                    jsonEncode({
+                      'code': 'PROVIDER_UNAVAILABLE',
+                      'message_vi': 'TEST_ONLY_PRIVATE_RECOVERY',
+                      'retryable': true,
+                    }),
+                  ),
+                ),
+                503,
+                headers: {'content-type': 'application/json'},
+              );
+            }
+            return respond(request);
+          };
+        });
+        await press('load');
+        await press('scenario-${wire.a}');
+        await press('start');
+        expect(failed, isTrue);
+        expect(app.ai.requests, hasLength(2));
+        final original = app.ai.requests.last as http.Request;
+        expect(find.byKey(const Key('workspace-pending')), findsOneWidget);
+        container.read(routerProvider).go('/ai');
+        await tester.pumpAndSettle();
+        container.read(routerProvider).go('/conversation');
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('workspace-recover')), findsOneWidget);
+        final staleA = tester
+            .widget<OutlinedButton>(find.byKey(const Key('workspace-recover')))
+            .onPressed!;
+        final respond = app.ai.onSend;
+        await tester.runAsync(() async {
+          app.ai.hold();
+        });
+        await press('recover');
+        expect(app.ai.requests, hasLength(3));
+        final replay = app.ai.requests.last as http.Request;
+        expect(replay.body, original.body);
+        expect(replay.url, original.url);
+        expect(
+          replay.headers['authorization'],
+          original.headers['authorization'],
+        );
+        final oldRequest = app.ai.requests.last as http.AbortableRequest;
+        late String oldBearer;
+        late String oldSecret;
+        Future<void>? refreshing;
+        final profilesBefore = app.server.requests
+            .where((r) => r.url.path.contains('ensure_profile'))
+            .length;
+        await tester.runAsync(() async {
+          oldBearer = app.server.bearer;
+          oldSecret = app.vault.secret!;
+          app.vault.writeWait = Completer<void>();
+          app.server.profileWait = Completer<http.Response>();
+          refreshing = app.owner.refresh();
+          // Same user is insufficient: rotation must retire the captured pair
+          // before any async credential/profile result can arrive.
+          expect(pair.reader.isCurrent, isFalse);
+          expect(pair.session.isCurrent, isFalse);
+          await oldRequest.abortTrigger;
+          await lifecycle.flush();
+          expect(app.server.user, wire.a);
+          expect(app.server.bearer, isNot(oldBearer));
+          expect(app.vault.secret, oldSecret);
+          expect(
+            app.server.requests
+                .where((r) => r.url.path.contains('ensure_profile'))
+                .length,
+            profilesBefore,
+          );
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          staleA();
+          expect(app.ai.requests, hasLength(3));
+        });
+        await tester.pumpAndSettle();
+        expect(find.byType(TextField), findsNothing);
+        expect(find.byKey(const Key('workspace-recover')), findsNothing);
+        expect(find.byKey(const Key('workspace-pending')), findsNothing);
+        expect(find.byKey(const Key('conversation-summary')), findsNothing);
+        expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+        await tester.runAsync(() async {
+          app.vault.writeWait!.complete();
+          await refreshing;
+          await lifecycle.flush();
+          expect(app.vault.secret, app.server.secret);
+          expect(app.vault.secret, isNot(oldSecret));
+          expect(app.runtime.account.state.phase, AccountPhase.loadingProfile);
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          staleA();
+          expect(app.ai.requests, hasLength(3));
+        });
+        await tester.pumpAndSettle();
+        expect(find.byType(TextField), findsNothing);
+        expect(find.byKey(const Key('workspace-recover')), findsNothing);
+        await tester.runAsync(() async {
+          app.server.profileWait!.complete(
+            _json(profile.profile(app.server.user)),
+          );
+          await app.ready();
+          await lifecycle.flush();
+          expect(app.runtime.account.state.phase, AccountPhase.ready);
+          // Even after both Auth barriers, the transport lease still belongs
+          // to the ignored-abort request until actual I/O completion.
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          staleA();
+          expect(app.ai.requests, hasLength(3));
+        });
+        await tester.pumpAndSettle();
+        expect(find.byType(TextField), findsNothing);
+        expect(find.byKey(const Key('workspace-recover')), findsNothing);
+        await tester.runAsync(() async {
+          if (error) {
+            app.ai.release(error: true);
+          } else {
+            final decoded =
+                jsonDecode(jsonEncode(_fixtures['start_conversation_response']))
+                    as Map<String, Object?>;
+            final message =
+                decoded['assistant_message']! as Map<String, Object?>;
+            message['id'] = '33333333-3333-4333-8333-333333333333';
+            message['sequence_no'] = 0;
+            message['text_ja'] = 'TEST_ONLY_LATE_OLD_GENERATION';
+            app.ai.held!.complete(
+              http.StreamedResponse(
+                Stream.value(utf8.encode(jsonEncode(decoded))),
+                200,
+                headers: {'content-type': 'application/json'},
+              ),
+            );
+          }
+          app.ai.onSend = respond;
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        container.read(routerProvider).go('/conversation');
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          final fresh = container.read(conversationWorkspaceBindingProvider)!;
+          expect(fresh.reader, same(app.owner.createAiConversationScenarios()));
+          expect(fresh.session, same(app.owner.createAiConversationSession()));
+          expect(fresh.reader, isNot(same(pair.reader)));
+          expect(fresh.session, isNot(same(pair.session)));
+          expect(
+            fresh.session.snapshot.phase,
+            ConversationSessionPhase.notStarted,
+          );
+          expect(pair.reader.isCurrent, isFalse);
+          expect(pair.session.isCurrent, isFalse);
+          expect(app.server.user, wire.a);
+          staleA();
+          expect(app.ai.requests, hasLength(3));
+          expect(oldRequest.headers['authorization'], 'Bearer $oldBearer');
+          expect(replay.body, original.body);
+        });
+        expect(find.byType(TextField), findsNothing);
+        expect(find.byKey(const Key('workspace-recover')), findsNothing);
+        expect(find.byKey(const Key('workspace-pending')), findsNothing);
+        expect(find.byKey(const Key('conversation-summary')), findsNothing);
+        expect(find.text('TEST_ONLY_LATE_OLD_GENERATION'), findsNothing);
+        expect(find.text('こんにちは。'), findsNothing);
+        expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+        expect(
+          tester
+              .widget<FilledButton>(find.byKey(const Key('workspace-start')))
+              .onPressed,
+          isNull,
+        );
+        await press('load');
+        await tester.runAsync(() async {
+          expect(app.ai.requests, hasLength(4));
+          expect(app.ai.requests.last.method, 'GET');
+          expect(
+            app.ai.requests.last.headers['authorization'],
+            'Bearer ${app.server.bearer}',
+          );
+          expect(app.server.bearer, isNot(oldBearer));
+          expect(app.vault.secret, app.server.secret);
+          staleA();
+          expect(app.ai.requests, hasLength(4));
+        });
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }

@@ -92,3 +92,49 @@ assess secure persistence/restart recovery with explicit data/identity/lifetime/
 platform constraints; current recovery stays memory-only/same generation. Continue
 other independent ready acceptance gaps without claiming hosted Alpha. Keep41draft/
 17open/AIoff/no merge/deploy/release/security/spend/collection/schedule action.
+
+## Retained recovery during same-account refresh
+
+Parent6b87720 CI40218052666/latest attempt1 passed allfive jobs/every required
+step/no skips. Completed Flutter log121243824146 confirms1204Flutter/fiveChrome
+and both actual owned recovery A-B-A ignored-abort late success/error variants.
+Web/Windows/native/SQL/Edge passed; TEST ONLY component proof, not hosted learner
+acceptance. Earlier authored/unrun labels above are historical for that source.
+
+Two additional actual owned App/Windows owner/persistent startup/native journal/
+pinned SDK /conversation journeys AUTHORED locally UNRUN: retained recovery
+interrupted by same-account refresh, ignored-abort late success/error. First
+explicit start503retryable -> leave/reopen -> actual recovery tap repeats exact
+original body/URL/captured bearer. Refresh immediately revokes old reader/flow
+and signals abort. While rotated-secret write is held, no new profile request or
+combined capability is allowed and the previous vault secret is unchanged.
+After write completion the exact new secret is saved but held own-profile still
+blocks access. Even after profile ready, old actual HTTP must drain before a
+fresh combined pair can be created. Same user identity cannot restore old flow.
+
+Old recovery callback is invoked during each barrier and after replacement;
+request count stays unchanged. Valid late start response or private error never
+publishes old text/pending/recovery/summary or enables start. Fresh pair is
+notStarted with distinct reader/flow, no automatic AI request. Only explicit
+catalog GET sends its new captured bearer; original request keeps original body/
+bearer. Held completers and SDK actions stay in the original real runAsync zone,
+frames outside; every prior helper/test/assertion and global finally/drain/vault
+owner-release assertion remains byte-identical.
+
+No production/default/Auth strategy/provider/SDK/API/schema/RLS/CI/dependency/
+content/Pro edits, disk/transcript storage, receipt abandonment/new round, voice
+or hosted acceptance. Current recovery remains memory-only/same generation.
+Full local Flutter/analyzer/new2SDK/native/build UNRUN; exact new-head CI must
+verify them. After green assess secure persisted restart recovery with explicit
+identity/platform/data/lifetime constraints or another independent ready gap.
+Keep41draft/17open/AIoff/all14 hosted gates pending; no merge/release/Alpha claim.
+
+Local checks this increment: fresh official Dart3.9.2 archive SHA256 verified;
+formatter one file/zero changes, QA inventory117 and46 QA tests passed; whitespace
+and separate event-loop/rotation/profile/drain/callback/bearer diff review passed.
+All116 previous QA objects/findings/gates remain exact, all14 hosted gates pending.
+Original test/helper/assertion prefix is byte-identical. Full local Flutter/SDK/
+analyzer/native/build unrun; no denied Flutter bootstrap retry or bypass. Four
+existing edited paths: ai_owned_startup_journey_test.dart, this document,
+PROJECT_STATUS.md and qa/matrix.json. Branch automation/issue-11-plan-sdk-integration,
+parent6b87720adfe1bb48f63e0fb923180dadf13d76fb; new commit/CI handoff in PR41/Issue17.
