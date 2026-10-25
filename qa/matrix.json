@@ -2683,6 +2683,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_controller_test.dart",
       "limitation": "22 pure injected-port cases; trusted same-generation host pairing and secure event factory are preconditions, not established by this component. No mounted workspace UI, durable client recovery/new-round policy, live provider/voice/hosted learner proof. All14 hosted gates pending."
+    },
+    {
+      "id": "conversation-workspace-panel",
+      "status": "automated-baseline",
+      "scope": "Opt-in reusable command panel; explicit frozen commands, process-local editor redaction, captured callbacks and manual original retry.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_panel_test.dart",
+          "contains": "replacement and unmount fence retained send callback and preserve borrowed flow"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_panel_test.dart",
+          "contains": "safe retry preserves original request and clears locked draft without edited resend"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_workspace_panel_test.dart",
+          "contains": "320px 200 percent command panel scrolls without overflow"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_workspace_panel_test.dart",
+      "limitation": "Seven widget cases authored, not locally run. Reusable unrouted component; trusted same-generation host pair and secure event factory are not installed. No actual mounted startup/SDK/hosted provider/voice/learner proof or durable client recovery/new-round policy; all14 hosted gates pending."
     }
   ],
   "findings": [
