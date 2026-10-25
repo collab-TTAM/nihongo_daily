@@ -3016,6 +3016,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/conversation_receipt_store_test.dart",
       "limitation": "TEST ONLY injected backend/state-machine proof, no production secure OS backend/native namespace/app activation/restart/Auth/lookup proof. No plaintext fallback or metadata-based dispatch authority; current recovery memory-only; all14 hosted groups pending."
+    },
+    {
+      "id": "windows-receipt-channel",
+      "status": "automated-baseline",
+      "scope": "Opt-in Windows-only fixed-channel receipt backend facade: exact scoped metadata, strict acknowledgments, corrupt/foreign values and safe missing-native errors.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/windows_conversation_receipt_store_test.dart",
+          "contains": "fixed receipt channel sends scoped metadata only and strict confirmed actions"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/windows_conversation_receipt_store_test.dart",
+      "limitation": "17 mock-channel cases authored not locally executed. Native receiver/OS storage/process proof/app activation absent; no secure persistence or hosted learner claim. AI off; all14 release groups pending."
     }
   ],
   "findings": [
