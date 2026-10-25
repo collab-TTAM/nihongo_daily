@@ -1984,4 +1984,235 @@ void main() {
       },
     );
   }
+  for (final failedOperation in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    for (final remount in [false, true]) {
+      _ownedTest(
+        'owned SDK route original retry preserves $failedOperation remount=$remount',
+        (tester) async {
+          final app = await _fixture(
+            tester,
+            enabled: false,
+            conversationEnabled: true,
+          );
+          await tester.runAsync(() async {
+            await app.login();
+            app.ai.onSend = (request) async {
+              Object? body;
+              if (request.method == 'GET') {
+                body = [
+                  {
+                    'id': wire.a,
+                    'jlpt_level': 'N5',
+                    'title_vi': 'Tình huống',
+                    'title_ja': '会話',
+                    'description_vi': 'Mô tả',
+                    'content_version': 1,
+                    'is_active': true,
+                  },
+                ];
+              } else {
+                final operation = request.url.path.split('/').last;
+                final decoded =
+                    jsonDecode(jsonEncode(_fixtures['${operation}_response']))
+                        as Map<String, Object?>;
+                if (operation == 'conversation_turn') {
+                  // Distinct accepted assistant sequence; original illustrative turn
+                  // fixture repeats the start message and is not a valid next turn.
+                  final message =
+                      decoded['assistant_message']! as Map<String, Object?>;
+                  message['id'] = '33333333-3333-4333-8333-333333333333';
+                  message['sequence_no'] = 2;
+                  message['text_ja'] = 'TEST_ONLY_ROUTE_REPLY';
+                }
+                body = decoded;
+              }
+              return http.StreamedResponse(
+                Stream.value(utf8.encode(jsonEncode(body))),
+                200,
+                headers: {'content-type': 'application/json'},
+              );
+            };
+          });
+          final container = await _mount(tester, app);
+          container.read(routerProvider).go('/conversation');
+          await tester.pumpAndSettle();
+          late ConversationWorkspaceBinding pair;
+          await tester.runAsync(() async {
+            pair = container.read(conversationWorkspaceBindingProvider)!;
+            expect(pair.session, same(app.owner.createAiConversationSession()));
+            expect(
+              pair.reader,
+              same(app.owner.createAiConversationScenarios()),
+            );
+            expect(
+              pair.createEventId,
+              same(container.read(conversationEventFactoryProvider)),
+            );
+            expect(app.ai.requests, isEmpty);
+          });
+          Future<void> press(String name) async {
+            final button = find.byKey(Key('workspace-$name'));
+            await tester.ensureVisible(button);
+            expect(button.hitTestable(), findsOneWidget);
+            await tester.runAsync(() async {
+              await tester.tap(button);
+              await lifecycle.flush();
+            });
+            await tester.pumpAndSettle();
+          }
+
+          var failed = false;
+          await tester.runAsync(() async {
+            final respond = app.ai.onSend!;
+            app.ai.onSend = (request) async {
+              if (request.url.path == '/functions/v1/$failedOperation' &&
+                  !failed) {
+                failed = true;
+                return http.StreamedResponse(
+                  Stream.value(
+                    utf8.encode(
+                      jsonEncode({
+                        'code': 'PROVIDER_UNAVAILABLE',
+                        'message_vi': 'TEST_ONLY_PRIVATE_PROVIDER_DETAIL',
+                        'retryable': true,
+                      }),
+                    ),
+                  ),
+                  503,
+                  headers: {'content-type': 'application/json'},
+                );
+              }
+              return respond(request);
+            };
+          });
+          await press('load');
+          await press('scenario-${wire.a}');
+          await press('start');
+          if (failedOperation == 'conversation_turn') {
+            final editor = find.byKey(const Key('workspace-editor'));
+            await tester.ensureVisible(editor);
+            await tester.enterText(editor, '  日\u3099😀  ');
+            await press('send');
+            expect(tester.widget<TextField>(editor).controller!.text, isEmpty);
+            expect(tester.widget<TextField>(editor).enabled, isFalse);
+          } else if (failedOperation == 'finish_conversation') {
+            await press('finish');
+          }
+          expect(failed, isTrue);
+          final count = app.ai.requests.length;
+          expect(count, failedOperation == 'start_conversation' ? 2 : 3);
+          final original = app.ai.requests.last as http.Request;
+          final originalBody = original.body;
+          final originalBearer = original.headers['authorization'];
+          final decoded = jsonDecode(originalBody) as Map<String, Object?>;
+          expect(
+            RegExp(
+              r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+            ).hasMatch(decoded['client_event_id']! as String),
+            isTrue,
+          );
+          expect(find.byKey(const Key('workspace-pending')), findsOneWidget);
+          expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+          expect(
+            tester
+                .widget<FilledButton>(find.byKey(const Key('workspace-start')))
+                .onPressed,
+            isNull,
+          );
+          expect(
+            tester
+                .widget<FilledButton>(find.byKey(const Key('workspace-load')))
+                .onPressed,
+            isNull,
+          );
+          final retry = find.byKey(const Key('workspace-retry'));
+          final oldRetry = tester.widget<OutlinedButton>(retry).onPressed;
+          expect(oldRetry, isNotNull);
+          await press('recheck');
+          expect(app.ai.requests, hasLength(count));
+          if (remount) {
+            container.read(routerProvider).go('/ai');
+            await tester.pumpAndSettle();
+            container.read(routerProvider).go('/conversation');
+            await tester.pumpAndSettle();
+            await tester.runAsync(() async {
+              oldRetry!();
+              await lifecycle.flush();
+              expect(pair.session.hasUnresolvedMutation, isTrue);
+              expect(
+                pair.session,
+                same(app.owner.createAiConversationSession()),
+              );
+            });
+            expect(find.byKey(const Key('workspace-pending')), findsOneWidget);
+            expect(tester.widget<OutlinedButton>(retry).onPressed, isNull);
+            expect(
+              tester
+                  .widget<FilledButton>(
+                    find.byKey(const Key('workspace-start')),
+                  )
+                  .onPressed,
+              isNull,
+            );
+            expect(
+              tester
+                  .widget<FilledButton>(find.byKey(const Key('workspace-load')))
+                  .onPressed,
+              isNull,
+            );
+            await press('recheck');
+            expect(app.ai.requests, hasLength(count));
+            expect(find.byKey(const Key('conversation-summary')), findsNothing);
+          } else {
+            await press('retry');
+            expect(app.ai.requests, hasLength(count + 1));
+            final retried = app.ai.requests.last as http.Request;
+            expect(retried.method, original.method);
+            expect(retried.url, original.url);
+            expect(retried.body, originalBody);
+            expect(retried.headers['authorization'], originalBearer);
+            expect(
+              retried.headers['authorization'],
+              'Bearer ${app.server.bearer}',
+            );
+            await tester.runAsync(() async {
+              expect(pair.session.hasUnresolvedMutation, isFalse);
+              expect(
+                pair.session.snapshot.phase,
+                failedOperation == 'finish_conversation'
+                    ? ConversationSessionPhase.finished
+                    : ConversationSessionPhase.active,
+              );
+              expect(
+                pair.session.snapshot.messages,
+                hasLength(failedOperation == 'conversation_turn' ? 2 : 1),
+              );
+            });
+            expect(find.byKey(const Key('workspace-pending')), findsNothing);
+            expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+            if (failedOperation == 'conversation_turn') {
+              expect(find.text('TEST_ONLY_ROUTE_REPLY'), findsOneWidget);
+              expect(decoded['text_ja'], '  日\u3099😀  ');
+            } else if (failedOperation == 'finish_conversation') {
+              expect(
+                find.byKey(const Key('conversation-summary')),
+                findsOneWidget,
+              );
+              expect(
+                find.text('Chưa lưu vào tiến độ hoặc SRS.'),
+                findsOneWidget,
+              );
+            }
+            await press('recheck');
+            expect(app.ai.requests, hasLength(count + 1));
+          }
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
 }

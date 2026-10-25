@@ -6559,3 +6559,42 @@ every required step/both variants; after green current-session uncertain/manual
 original retry/remount route coverage, reviewed durable client recovery/new-round
 policy. Keep41draft/17open/AIoff/no merge/deploy/release/security/spend/schedule/
 Alpha claim. Actual hosted configuration/human release gates remain pending.
+
+## Owned route original retry and remount fences — core-20261026-owned-route-retry
+
+Parent bc2a86b CI40210453315/latest attempt1 SUCCESS allfive/every required step/no
+skips. Flutter log121220804663 confirms1178Flutter/fiveChrome/both actual owned
+A/B/A ignored-abort late success/error journeys. Component proof only.
+
+Six appended actual owned App/Windows owner/persistent startup/native journal/
+pinned SDK /conversation journeys AUTHORED, locally UNRUN. Three operations
+start_conversation/conversation_turn/finish_conversation each receive one explicit
+TEST ONLY503 PROVIDER_UNAVAILABLE/retryable response with private detail. Actual
+route taps and unchanged paired provider/secure UUID callable are used, no source
+or binding override. TEST ONLY Auth/vault/profile/HTTP ports, no hosted service.
+
+In-place variants require unresolved notice, fixed safe error/no private detail,
+locked load/start/editor, no HTTP on recheck, and enabled explicit original retry.
+Retry must send byte-identical body/event, identical URL/method/captured bearer,
+then clear uncertainty and publish only accepted active/finished state. Exact
+Unicode draft retained on wire; accepted turn appears once, accepted finish summary
+remains not-saved. No new-ID/text substitution or automatic resend.
+
+Remount variants leave/reopen /conversation, retain unresolved runtime receipt,
+but discard view-owned DTO; old retry callback is inert. New retry/start/catalog
+remain disabled; recheck sends nothing and no summary is fabricated. This honest
+block is NOT durable recovery or permission to abandon uncertainty/new round.
+Future safe persisted command recovery remains outstanding. All SDK/tap/response
+and capability assertions use existing real tester.runAsync loop, frames outside.
+Global owned cleanup/exclusive vault release and all old helpers/tests/assertions
+stay byte-identical. Original canonical fixtures/strict decoder/production/defaults/
+Auth strategy/provider/source/SDK/API/schema/RLS/CI/dependencies/content/Pro unchanged.
+
+Official Dart3.9.2 SHA verified; format1/0changes,46QA/inventory113/whitespace and
+separate event-loop/receipt/body/bearer/old-callback review PASS. All112 prior QA
+objects/findings/gates exact/all14 hosted pending. Full local Flutter/analyzer/new6
+journeys/native/build UNRUN/no denied bootstrap retry/bypass. Next exact newhead/
+latest attempt/allfive/every required step/all6 then reviewed durable client
+command recovery without reset/automatic replay. Live Auth/JWT/RLS/provider/voice/
+physical learner acceptance remain pending. Keep41draft/17open/AIoff/no merge/
+deploy/release/collection/spend/security/schedule action or Alpha claim.
