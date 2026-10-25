@@ -7,6 +7,8 @@ import 'package:supabase/supabase.dart';
 import '../../ai/application/ai_text_runtime_owner.dart';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/ai_conversation_source.dart';
+import '../../ai/data/ai_conversation_scenario_source.dart';
+import '../../ai/data/captured_conversation_scenarios.dart';
 import '../../ai/data/captured_ai_text_repository.dart';
 import '../../ai/data/captured_conversation_session.dart';
 import '../../ai/data/supabase_ai_text_transport.dart';
@@ -36,7 +38,8 @@ final class PersistentSupabaseRuntime
         AccountSessionNoticeSource,
         AccountSessionRefreshAction,
         AiTextRepositorySource,
-        AiConversationSource {
+        AiConversationSource,
+        AiConversationScenarioSource {
   PersistentSupabaseRuntime({
     required String projectUrl,
     required String publishableKey,
@@ -245,6 +248,30 @@ final class PersistentSupabaseRuntime
           identical(_aiGeneration, generation),
     );
   }
+
+  /// Public scenario reader shares conversation opt-in/owned ready generation.
+  /// Acquisition sends nothing; old transport drain still blocks replacement.
+  @override
+  CapturedConversationScenarios? createAiConversationScenarios() {
+    if (!_aiConversationEnabled || _closing != null) return null;
+    _syncAiReadiness();
+    final ready = _aiReadyRuntime;
+    final generation = _aiGeneration;
+    final session = account.readySession;
+    if (ready == null || generation == null || session == null) return null;
+    return _aiOwner.acquireScenarios(
+      auth: ready.auth,
+      generation: generation,
+      isReady: () =>
+          _closing == null &&
+          identical(account.readyRuntime, ready) &&
+          identical(account.readySession, session) &&
+          identical(_aiGeneration, generation),
+    );
+  }
+
+  @override
+  Stream<void> get aiConversationScenarioChanges => _aiOwner.changes;
 
   Future<void> start() async {
     try {

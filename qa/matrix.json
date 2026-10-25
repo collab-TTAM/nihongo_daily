@@ -2575,6 +2575,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/scenario_runtime_owner_test.dart test/features/ai/ai_text_runtime_owner_test.dart test/features/ai/ai_conversation_runtime_owner_test.dart",
       "limitation": "Injected lifecycle/read ports only; runtime-owner API is not yet forwarded through persistent startup/source/App/UI. No default activation/hosted SDK/JWT/RLS/provider/voice/learner proof. All14 hosted groups pending."
+    },
+    {
+      "id": "conversation-scenario-startup-source",
+      "status": "automated-baseline",
+      "scope": "Optional scenario source forwarded through owned persistent runtime, startup, Windows owner and active-only startup controller with existing conversation opt-in and readiness barriers.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "scenario factory waits for persisted vault and profile then retains no-dispatch reader"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "scenario source forwards through real Windows startup only while controller active"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/scenario_startup_source_test.dart",
+          "contains": "optional scenario source hidden before during and after active startup"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/persistent_ai_text_runtime_test.dart test/features/ai/scenario_startup_source_test.dart",
+      "limitation": "Actual SDK/native wrapper cases authored for CI, two pure controller cases; no Riverpod/App binding/UI/default activation or hosted JWT/PostgREST/RLS/provider/voice/learner proof. All14 hosted groups pending."
     }
   ],
   "findings": [

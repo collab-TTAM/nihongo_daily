@@ -105,3 +105,29 @@ this acquisition API. Existing opt-in flags/default-off behavior remain exact.
 Next wire those host boundaries and test persisted rotation/profile barriers,
 refresh/logout/account replacement on actual SDK/mounted app before selection UI.
 No hosted catalog/JWT/RLS/learner acceptance is inferred from owner tests.
+
+## Optional owned startup source
+
+AiConversationScenarioSource is a separate optional interface, preserving legacy
+text/conversation sources. PersistentSupabaseRuntime exposes its retained reader
+only under the existing aiConversationEnabled opt-in (default false) and exact
+owned ready-runtime/session/generation after persisted rotation/own-profile.
+Factory sends nothing and uses AiTextRuntimeOwner.acquireScenarios; all readiness
+transitions already revoke/drain the shared owner before a replacement is exposed.
+The source's void hints are the existing owner.changes stream, not authority.
+
+PersistentAccountStartup forwards the same source without another SDK/store owner.
+WindowsStagingOwner forwards it only until close starts. AccountStartupController
+exposes the optional source only in active phase while not closed; idle/loading/
+failed/closing/closed or legacy runtimes cannot invent availability. Borrowed
+source consumers must still use the guarded factory, discard stale projections
+and never reset old pending/finished conversation receipts or close SDK resources.
+
+Two pure controller lifetime cases and six authored actual-SDK/runtime cases cover
+active-only forwarding/default-off, persisted vault/profile barriers +failures,
+retained/no-dispatch factory, refresh fencing/ignored HTTP drain/fresh bearer and
+logout, plus real WindowsStagingOwner/PersistentAccountStartup forwarding/close.
+SDK/native wrapper tests require Flutter CI; authored cases are not passed proof.
+No Riverpod/App override, selector/read UI or mutation/recovery UI is enabled yet;
+next add guarded App binding and mounted lifecycle coverage before those controls.
+No actual scenario provisioning/hosted JWT/PostgREST/RLS/learner claim.

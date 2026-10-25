@@ -10,6 +10,9 @@ import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart'
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
+import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
+import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
+import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
@@ -571,6 +574,173 @@ void main() {
       expect(drained, isTrue);
       expect(backend.secret, saved);
       expect(aiHttp.closed, isFalse);
+    },
+  );
+
+  http.StreamedResponse scenarioAnswer() => http.StreamedResponse(
+    Stream.value(
+      utf8.encode(
+        jsonEncode([
+          {
+            'id': wire.a,
+            'jlpt_level': 'N5',
+            'title_vi': 'Tình huống',
+            'title_ja': '会話',
+            'description_vi': 'Mô tả',
+            'content_version': 1,
+            'is_active': true,
+          },
+        ]),
+      ),
+    ),
+    200,
+    headers: {'content-type': 'application/json'},
+  );
+
+  test(
+    'scenario factory waits for persisted vault and profile then retains no-dispatch reader',
+    () async {
+      await runtime.close();
+      runtime = build(enabled: false, conversationEnabled: true);
+      backend.secret = 'TEST_ONLY_SAVED';
+      backend.writeWait = Completer<void>();
+      profileWait = Completer<http.Response>();
+      final starting = runtime.start();
+      await lifecycle.flush();
+      expect(runtime.createAiConversationScenarios(), isNull);
+      backend.writeWait!.complete();
+      await starting;
+      await lifecycle.flush();
+      expect(runtime.createAiConversationScenarios(), isNull);
+      expect(aiHttp.requests, isEmpty);
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(user)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await ready();
+      final reader = runtime.createAiConversationScenarios()!;
+      expect(
+        identical(reader, runtime.createAiConversationScenarios()),
+        isTrue,
+      );
+      expect(runtime.createAiTextRepository(), isNull);
+      expect(aiHttp.requests, isEmpty);
+      aiHttp.onSend = (_) async => scenarioAnswer();
+      expect((await reader.load(AiTextLevel.n5)).single.id, wire.a);
+      expect(aiHttp.requests.single.method, 'GET');
+      expect(
+        aiHttp.requests.single.url.path,
+        '/rest/v1/conversation_scenarios',
+      );
+    },
+  );
+  test('scenario factory remains off with ready text-only account', () async {
+    await runtime.start();
+    await login();
+    expect(runtime.createAiTextRepository(), isNotNull);
+    expect(runtime.createAiConversationScenarios(), isNull);
+    expect(aiHttp.requests, isEmpty);
+  });
+  for (final barrier in ['vault', 'profile']) {
+    test('scenario reader cannot bypass failed $barrier barrier', () async {
+      await runtime.close();
+      runtime = build(conversationEnabled: true);
+      if (barrier == 'vault') {
+        backend.failWrite = true;
+      } else {
+        profileStatus = 500;
+      }
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await lifecycle.flush();
+      expect(runtime.createAiConversationScenarios(), isNull);
+      expect(runtime.createAiConversationSession(), isNull);
+      expect(aiHttp.requests, isEmpty);
+    });
+  }
+  test(
+    'scenario refresh retires reader before rotation and blocks fresh read until old HTTP drains',
+    () async {
+      await runtime.close();
+      runtime = build(conversationEnabled: true);
+      await runtime.start();
+      await login();
+      final old = runtime.createAiConversationScenarios()!;
+      final held = Completer<http.StreamedResponse>();
+      aiHttp.onSend = (_) => held.future;
+      final rejected = expectLater(
+        old.load(AiTextLevel.n5),
+        throwsA(unauthorized),
+      );
+      generation++;
+      secret = 'TEST_ONLY_SCENARIO_ROTATED';
+      final refreshing = runtime.refresh();
+      expect(old.isCurrent, isFalse);
+      try {
+        await rejected;
+        await refreshing;
+        await ready();
+        expect(backend.secret, secret);
+        expect(runtime.createAiConversationScenarios(), isNull);
+        expect(aiHttp.requests, hasLength(1));
+      } finally {
+        if (!held.isCompleted) {
+          held.completeError(StateError('TEST_ONLY_LATE_SCENARIO'));
+        }
+      }
+      await lifecycle.flush();
+      final fresh = runtime.createAiConversationScenarios()!;
+      expect(identical(old, fresh), isFalse);
+      aiHttp.onSend = (_) async => scenarioAnswer();
+      expect(await fresh.load(AiTextLevel.n5), hasLength(1));
+      expect(
+        aiHttp.requests.last.headers['authorization'],
+        'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+      );
+      await runtime.account.signOut();
+      expect(fresh.isCurrent, isFalse);
+      expect(runtime.createAiConversationScenarios(), isNull);
+    },
+  );
+  test(
+    'scenario source forwards through real Windows startup only while controller active',
+    () async {
+      await runtime.close();
+      runtime = build(conversationEnabled: true);
+      final session = PersistentAccountStartup(runtime);
+      final owner = WindowsStagingOwner(session, journal);
+      final controller = AccountStartupController(() async => owner);
+      expect(controller.aiConversationScenarioSource, isNull);
+      final starting = controller.start();
+      expect(controller.aiConversationScenarioSource, isNull);
+      await starting;
+      expect(identical(controller.aiConversationScenarioSource, owner), isTrue);
+      expect(owner.createAiConversationScenarios(), isNull);
+      expect(
+        identical(
+          owner.aiConversationScenarioChanges,
+          runtime.aiConversationScenarioChanges,
+        ),
+        isTrue,
+      );
+      await login();
+      final reader = controller.aiConversationScenarioSource!
+          .createAiConversationScenarios()!;
+      expect(
+        identical(reader, session.createAiConversationScenarios()),
+        isTrue,
+      );
+      expect(aiHttp.requests, isEmpty);
+      await controller.close();
+      expect(controller.aiConversationScenarioSource, isNull);
+      expect(owner.createAiConversationScenarios(), isNull);
+      expect(reader.isCurrent, isFalse);
     },
   );
 }

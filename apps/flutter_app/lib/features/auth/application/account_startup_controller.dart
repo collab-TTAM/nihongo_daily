@@ -1,6 +1,7 @@
 import 'dart:async';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/ai_conversation_source.dart';
+import '../../ai/data/ai_conversation_scenario_source.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
@@ -58,6 +59,16 @@ final class AccountStartupController<T> {
         _phase == AccountStartupPhase.active &&
         runtime is AiConversationSource) {
       return runtime as AiConversationSource;
+    }
+    return null;
+  }
+
+  AiConversationScenarioSource? get aiConversationScenarioSource {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is AiConversationScenarioSource) {
+      return runtime as AiConversationScenarioSource;
     }
     return null;
   }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/ai_conversation_source.dart';
+import '../../ai/data/ai_conversation_scenario_source.dart';
+import '../../ai/data/captured_conversation_scenarios.dart';
 import '../../ai/data/captured_ai_text_repository.dart';
 import '../../ai/data/captured_conversation_session.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
@@ -25,9 +27,16 @@ final class PersistentAccountStartup
         DurableStudySessionSource,
         VocabularyQuizHistorySource,
         AiTextRepositorySource,
-        AiConversationSource {
+        AiConversationSource,
+        AiConversationScenarioSource {
   PersistentAccountStartup(this.runtime);
   final PersistentSupabaseRuntime runtime;
+  @override
+  CapturedConversationScenarios? createAiConversationScenarios() =>
+      runtime.createAiConversationScenarios();
+  @override
+  Stream<void> get aiConversationScenarioChanges =>
+      runtime.aiConversationScenarioChanges;
   @override
   CapturedConversationSession? createAiConversationSession() =>
       runtime.createAiConversationSession();

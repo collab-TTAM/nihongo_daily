@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/ai/data/ai_text_repository_source.dart';
 import '../features/ai/data/ai_conversation_source.dart';
+import '../features/ai/data/ai_conversation_scenario_source.dart';
+import '../features/ai/data/captured_conversation_scenarios.dart';
 import '../features/ai/data/captured_ai_text_repository.dart';
 import '../features/ai/data/captured_conversation_session.dart';
 import '../features/auth/application/account_controller.dart';
@@ -154,7 +156,8 @@ final class WindowsStagingOwner
         DurableStudySessionSource,
         VocabularyQuizHistorySource,
         AiTextRepositorySource,
-        AiConversationSource {
+        AiConversationSource,
+        AiConversationScenarioSource {
   WindowsStagingOwner(
     this.session,
     this.journal, {
@@ -171,6 +174,12 @@ final class WindowsStagingOwner
       _closing == null ? session.createAiTextRepository() : null;
   @override
   Stream<void> get aiTextChanges => session.aiTextChanges;
+  @override
+  CapturedConversationScenarios? createAiConversationScenarios() =>
+      _closing == null ? session.createAiConversationScenarios() : null;
+  @override
+  Stream<void> get aiConversationScenarioChanges =>
+      session.aiConversationScenarioChanges;
   @override
   CapturedConversationSession? createAiConversationSession() =>
       _closing == null ? session.createAiConversationSession() : null;
