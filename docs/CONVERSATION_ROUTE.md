@@ -134,3 +134,40 @@ exact-head/latest-attempt allfive/every required step/newcase remain required.
 After green actual account replacement and uncertain/late-response route cases;
 reviewed durable client recovery/new-round policy still pending. Keep41draft/
 17open/AIoff/no merge/deploy/release/collection/spend/security/schedule/Alpha claim.
+
+## Owned route account replacement and late I/O — core-20261025T1609-route-accounts
+
+Parent f4df8fb CI40205962436/latest attempt1 completed SUCCESS: allfive/every
+required step/no skips; log121207282900 confirms1176Flutter/fiveChrome/new owned
+route refresh barrier case. Retained Web/Windows/native/SQL/Edge gates passed.
+
+Two actual owned /conversation A/B/A journeys AUTHORED, locally UNRUN, parameterized
+by ignored-abort old turn success/error. Existing actual App/Windows owner/persistent
+startup/native journal/pinned SDK/unoverridden combined provider/event factory/router
+and TEST ONLY Auth/profile/vault/AI HTTP ports. Explicit route taps load/select/start;
+private A turn is held in the real SDK event loop. Logout revokes both and clears
+vault; B login reaches ready but combined pair remains null until actual old HTTP
+drains. Before new frame, retired A callback cannot send. After late valid assistant
+or raw private error completes, no old text/error/summary appears; B pair is distinct,
+notStarted, and explicit catalog tap uses captured B bearer. Return to A allocates
+another distinct ready pair, old A/B stay revoked and retired callback remains inert.
+Explicit catalog read uses new A bearer; navigation/login create no AI call. No
+post-retirement mutation or uncertain receipt abandonment/new-round authorization.
+
+Held completer creation/taps/logout/login/abort/release/SDK assertions use same real
+tester.runAsync loop, frames outside; global owned finally drains HTTP/SDK/native
+resources and asserts exclusive vault release. Both late response variants use
+strict decoder; success explicitly sets distinct assistant ID/sequence2/marker in
+a deep-copied TEST ONLY turn response, never edits frozen fixture or decoder.
+All earlier helper/test/assertion bodies and all production/default/SDK/source/
+Auth strategy/provider/CI/dependency/content/Pro bytes unchanged.
+
+Official Dart3.9.2 archive SHA verified; format1/0changes,46QA/inventory112/whitespace
+and separate callback/event-loop/drain/bearer/old-body review PASS. All111 old QA
+objects/findings/gates retained/all14 hosted pending. Local full Flutter/analyzer/
+new2journeys/native/build UNRUN/no denied bootstrap retry/bypass. Not hosted JWT/
+RLS/provider/voice/physical learner proof. Next exact new-head/latest-attempt allfive/
+every required step/both variants; after green current-session uncertain/manual
+original retry/remount route coverage, reviewed durable client recovery/new-round
+policy. Keep41draft/17open/AIoff/no merge/deploy/release/security/spend/schedule/
+Alpha claim. Actual hosted configuration/human release gates remain pending.

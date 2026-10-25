@@ -2836,6 +2836,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
       "limitation": "New owned route case authored not locally run; TEST ONLY Auth/vault/profile/HTTP ports. No hosted identity/RLS/provider/voice/physical learner proof or new-round/uncertain receipt abandonment permission. Account replacement/uncertainty and durable client recovery pending; all14 release groups pending."
+    },
+    {
+      "id": "owned-conversation-route-account-drain",
+      "status": "automated-baseline",
+      "scope": "Actual owned App/SDK route A B A, held old turn ignored-abort late success/error, null new pair until I/O drain, retired callback and captured bearer fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/ai_owned_startup_journey_test.dart",
+          "contains": "owned conversation route A B A drains late old turn without revival error=$error"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && flutter analyze && flutter test test/features/ai/ai_owned_startup_journey_test.dart",
+      "limitation": "Two real owned App/SDK route cases authored not locally run; TEST ONLY Auth/vault/profile/HTTP, not hosted identity/RLS/provider/voice/physical learner proof. Current-session uncertainty UI and reviewed durable client recovery/newround policy pending; all14 release groups pending."
     }
   ],
   "findings": [

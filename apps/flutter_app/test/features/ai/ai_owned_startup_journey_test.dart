@@ -1775,4 +1775,213 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  for (final error in [false, true]) {
+    _ownedTest(
+      'owned conversation route A B A drains late old turn without revival error=$error',
+      (tester) async {
+        final app = await _fixture(
+          tester,
+          enabled: false,
+          conversationEnabled: true,
+        );
+        await tester.runAsync(() async {
+          await app.login();
+          app.ai.onSend = (request) async {
+            Object? body;
+            if (request.method == 'GET') {
+              body = [
+                {
+                  'id': wire.a,
+                  'jlpt_level': 'N5',
+                  'title_vi': 'Tình huống',
+                  'title_ja': '会話',
+                  'description_vi': 'Mô tả',
+                  'content_version': 1,
+                  'is_active': true,
+                },
+              ];
+            } else {
+              final operation = request.url.path.split('/').last;
+              final decoded =
+                  jsonDecode(jsonEncode(_fixtures['${operation}_response']))
+                      as Map<String, Object?>;
+              if (operation == 'conversation_turn') {
+                // Distinct accepted assistant sequence; original illustrative turn
+                // fixture repeats the start message and is not a valid next turn.
+                final message =
+                    decoded['assistant_message']! as Map<String, Object?>;
+                message['id'] = '33333333-3333-4333-8333-333333333333';
+                message['sequence_no'] = 2;
+                message['text_ja'] = 'TEST_ONLY_ROUTE_REPLY';
+              }
+              body = decoded;
+            }
+            return http.StreamedResponse(
+              Stream.value(utf8.encode(jsonEncode(body))),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          };
+        });
+        final container = await _mount(tester, app);
+        container.read(routerProvider).go('/conversation');
+        await tester.pumpAndSettle();
+        late ConversationWorkspaceBinding pair;
+        await tester.runAsync(() async {
+          pair = container.read(conversationWorkspaceBindingProvider)!;
+          expect(pair.session, same(app.owner.createAiConversationSession()));
+          expect(pair.reader, same(app.owner.createAiConversationScenarios()));
+          expect(
+            pair.createEventId,
+            same(container.read(conversationEventFactoryProvider)),
+          );
+          expect(app.ai.requests, isEmpty);
+        });
+        Future<void> press(String name) async {
+          final button = find.byKey(Key('workspace-$name'));
+          await tester.ensureVisible(button);
+          expect(button.hitTestable(), findsOneWidget);
+          await tester.runAsync(() async {
+            await tester.tap(button);
+            await lifecycle.flush();
+          });
+          await tester.pumpAndSettle();
+        }
+
+        await press('load');
+        await press('scenario-${wire.a}');
+        await press('start');
+        expect(pair.session.snapshot.phase, ConversationSessionPhase.active);
+        final editor = find.byKey(const Key('workspace-editor'));
+        await tester.ensureVisible(editor);
+        await tester.enterText(editor, 'TEST_ONLY_PRIVATE_ACCOUNT_A');
+        final staleA = tester
+            .widget<FilledButton>(find.byKey(const Key('workspace-send')))
+            .onPressed!;
+        final respond = app.ai.onSend;
+        await tester.runAsync(() async {
+          app.ai.hold();
+        });
+        await press('send');
+        expect(app.ai.requests, hasLength(3));
+        final oldRequest = app.ai.requests.last as http.AbortableRequest;
+        late String aBearer;
+        await tester.runAsync(() async {
+          aBearer = app.server.bearer;
+          await app.runtime.account.signOut();
+          await oldRequest.abortTrigger;
+          expect(pair.reader.isCurrent, isFalse);
+          expect(pair.session.isCurrent, isFalse);
+          expect(app.vault.secret, isNull);
+          app.server.user = wire.b;
+          await app.login();
+          await lifecycle.flush();
+          expect(app.runtime.account.state.phase, AccountPhase.ready);
+          expect(container.read(conversationWorkspaceBindingProvider), isNull);
+          staleA();
+          expect(app.ai.requests, hasLength(3));
+        });
+        await tester.pumpAndSettle();
+        expect(find.byType(TextField), findsNothing);
+        expect(find.text('TEST_ONLY_PRIVATE_ACCOUNT_A'), findsNothing);
+        expect(find.text('TEST_ONLY_ROUTE_REPLY'), findsNothing);
+        await tester.runAsync(() async {
+          if (error) {
+            app.ai.release(error: true);
+          } else {
+            final decoded =
+                jsonDecode(jsonEncode(_fixtures['conversation_turn_response']))
+                    as Map<String, Object?>;
+            final message =
+                decoded['assistant_message']! as Map<String, Object?>;
+            message['id'] = '33333333-3333-4333-8333-333333333333';
+            message['sequence_no'] = 2;
+            message['text_ja'] = 'TEST_ONLY_LATE_ACCOUNT_A';
+            app.ai.held!.complete(
+              http.StreamedResponse(
+                Stream.value(utf8.encode(jsonEncode(decoded))),
+                200,
+                headers: {'content-type': 'application/json'},
+              ),
+            );
+          }
+          app.ai.onSend = respond;
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        container.read(routerProvider).go('/conversation');
+        await tester.pumpAndSettle();
+        late ConversationWorkspaceBinding pairB;
+        await tester.runAsync(() async {
+          pairB = container.read(conversationWorkspaceBindingProvider)!;
+          expect(pairB.reader, same(app.owner.createAiConversationScenarios()));
+          expect(pairB.session, same(app.owner.createAiConversationSession()));
+          expect(pairB.session, isNot(same(pair.session)));
+          expect(pairB.reader, isNot(same(pair.reader)));
+          expect(
+            pairB.session.snapshot.phase,
+            ConversationSessionPhase.notStarted,
+          );
+          expect(app.server.user, wire.b);
+          expect(app.server.bearer, isNot(aBearer));
+          staleA();
+          expect(app.ai.requests, hasLength(3));
+        });
+        expect(find.text('TEST_ONLY_LATE_ACCOUNT_A'), findsNothing);
+        expect(find.text('こんにちは。'), findsNothing);
+        expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+        expect(find.byType(TextField), findsNothing);
+        await press('load');
+        await tester.runAsync(() async {
+          expect(app.ai.requests, hasLength(4));
+          expect(app.ai.requests.last.method, 'GET');
+          expect(
+            app.ai.requests.last.headers['authorization'],
+            'Bearer ${app.server.bearer}',
+          );
+          expect(oldRequest.headers['authorization'], 'Bearer $aBearer');
+          await app.runtime.account.signOut();
+          expect(pairB.reader.isCurrent, isFalse);
+          expect(pairB.session.isCurrent, isFalse);
+          app.server.user = wire.a;
+          await app.login();
+          await lifecycle.flush();
+        });
+        await tester.pumpAndSettle();
+        container.read(routerProvider).go('/conversation');
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          final secondA = container.read(conversationWorkspaceBindingProvider)!;
+          expect(secondA.session, isNot(same(pair.session)));
+          expect(secondA.session, isNot(same(pairB.session)));
+          expect(secondA.reader, isNot(same(pair.reader)));
+          expect(secondA.reader, isNot(same(pairB.reader)));
+          expect(
+            secondA.session.snapshot.phase,
+            ConversationSessionPhase.notStarted,
+          );
+          expect(pair.session.isCurrent, isFalse);
+          expect(app.server.user, wire.a);
+          expect(app.server.bearer, isNot(aBearer));
+          staleA();
+          expect(app.ai.requests, hasLength(4));
+        });
+        expect(find.byType(TextField), findsNothing);
+        expect(find.text('TEST_ONLY_LATE_ACCOUNT_A'), findsNothing);
+        expect(find.text('こんにちは。'), findsNothing);
+        expect(find.textContaining('TEST_ONLY_PRIVATE'), findsNothing);
+        expect(find.byKey(const Key('conversation-summary')), findsNothing);
+        await press('load');
+        await tester.runAsync(() async {
+          expect(app.ai.requests, hasLength(5));
+          expect(app.ai.requests.last.method, 'GET');
+          expect(
+            app.ai.requests.last.headers['authorization'],
+            'Bearer ${app.server.bearer}',
+          );
+        });
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }
