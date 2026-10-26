@@ -3,6 +3,40 @@
 Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
+
+## Core checkpoint — full original-command receipt association, 2026-10-27
+
+- Branch `automation/issue-11-plan-sdk-integration`, draft PR #41 / issue #17;
+  parent `ecb50960814df6892f0a15a44569800747a24378`. Main78a44fa/source37afa572a/
+  Pro38at28c20cb unchanged. Core marker, published commit and new CI in PR41.
+- Parent [CI40357884098](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40357884098)
+  exact source/latest attempt1 SUCCESS: all5 jobs and every step, no skips.
+  Windows121695205220 confirms BOTH native lookup and original OWNED markers;
+  Flutter121696095677 confirms the same-event conflict/different-event busy
+  regression. Earlier native-read failure is fixed with full current-head proof.
+- Added pure ConversationReceiptCommandMatch for all3 retained original DTOs:
+  exact full request_json association before existing strict typed receipt decode,
+  six-field/zero-or-one/1MiB bound, no field/type/value substitution, preserve
+  UUID request casing/text/Unicode/whitespace, row UUID comparison unchanged.
+  Fixed safe errors/no source; no input mutation/raw map retention.
+- Twelve new malformed/association/immutability tests plus retained request/
+  response tests use original frozen fixtures. Source/test/QA validation results
+  are appended below after execution; new full Flutter/SDK/native/build locally
+  UNRUN. No denied Flutter bootstrap retry/bypass. This is a pure prerequisite,
+  NOT hosted RLS/provider proof, durable full-command recovery or release authority.
+- Five paths: new domain/conversation_receipt_command_match.dart and
+  test/features/ai/conversation_receipt_command_match_test.dart (Flutter app),
+  docs/CONVERSATION_RECEIPT_LOOKUP.md, this status, qa/matrix.json. Existing app/
+  SDK five-field read, captured guards, Auth/vault/journal/lane/storage/default/
+  API/SQL/RLS/CI/dependencies/Pro/content unchanged. No new command/text on disk.
+- Next exact new-head/latest attempt all5/every step; then authenticated original-
+  bound read/capture integration and reviewed conditional release. Empty, pending,
+  metadata or stored-command association NEVER grants clear/replay/redispatch/new
+  event. Learner recovery memory-only/one pending mutation, #41draft/#17open/AIoff,
+  all14 hosted release groups pending. No merge/closure/deploy/release/security/
+  Auth strategy/provider/collection/spend/schedule/Alpha action.
+
+
 ## Core checkpoint — sửa analyzer của Windows receipt probe, 2026-10-26
 
 - Branch `automation/issue-11-plan-sdk-integration`, PR #41 draft; parent
@@ -7332,3 +7366,13 @@ this is not full analysis or execution of the new native assertions.
 - Added1 regression actual session/lane/decorator/store with preexisting metadata, three repeats both denials/unresolved+current/zero inner send/metadata unchanged. Fresh18-file pure harness, ONLY flutter_test->test1.26.2/exact fixture copy;13/13 cases (12old+1new) PASS/no skips, strict casts/inference/raw graph analysis CLEAN;6 direct-source denials also reproduced. Fresh officialDart3.9.2 SHA verified. Format2/46QA/inventory140/whitespace/separate exact-denial/no-dispatch/no-weakening/preservation review in PR41. Full local Flutter/SDK/native/build UNRUN/no denied bootstrap retry/bypass.
 - Five paths: apps/flutter_app/tool/windows_sdk_receipt_fixture.dart; apps/flutter_app/test/features/ai/receipt_guarded_ai_transport_test.dart; docs/CONVERSATION_RECEIPT_LOOKUP.md; this status; qa/matrix.json. All139prior QA/findings/gates and every old test body retained. No native read success until new exact-head CI.
 - NEXT exact new-head/latestattempt complete all5/every required step/new regression plus BOTH native lookup/original OWNED markers; fix real diagnostics preserving guards. Pending-only handoff/no duplicate code/long polling. Then hosted RLS/full retained command-result correlation/verified conditional release; unknown/metadata never dispatch/replay/new-event authority.41draft/17open/AIoff/learner memory-only/onepending/all14hosted/no merge/closure/deploy/release/provider/Auth strategy/collection/spend/security/Pro/schedule/Alpha action.
+
+
+Observed local for original-command matcher: fresh official Dart3.9.2 archive
+SHA256 verified. Actual9-file source/test graph, only flutter_test -> test1.26.2
+runner import and exact fixture copy; all27 cases PASS/no skips (12new +15 retained
+request/response), strict casts/inference/raw types +lints6 analysis No issues.
+Format2 zerochanges,46 QA PASS, inventory141 valid (not141executed), whitespace
+and separate association/bounds/safe-error/immutability/no-authority diff review
+PASS. All140 previous QA objects/findings/gates exact/all14 hosted pending.
+Full Flutter/SDK/native/build new-head checks UNRUN locally; CI still required.

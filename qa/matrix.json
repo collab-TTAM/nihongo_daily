@@ -3502,6 +3502,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_guarded_ai_transport_test.dart",
       "limitation": "Pure18-file harness/13 tests and strict analysis do not replace native Windows bridge/new-head full CI. Exact event-specific denial expectations only; zero mutation HTTP/native metadata guards retained, no production/RLS/default change/all14 release gates pending."
+    },
+    {
+      "id": "conversation-receipt-original-command-match",
+      "status": "automated-baseline",
+      "scope": "Pure bounded six-field receipt decoder requires exact full original start/turn/finish request association before strict status/result decoding; unknown remains ambiguous and matching grants no storage release or dispatch authority.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/domain/conversation_receipt_command_match.dart",
+          "contains": "abstract final class ConversationReceiptCommandMatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_receipt_command_match_test.dart",
+          "contains": "changed original scenario level session event and text fail closed"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/conversation_receipt_command_match_test.dart",
+      "limitation": "Pure decoder only, not Auth/project/upstream provenance or current phase/generation proof. Existing SDK read remains five-field; no integration/command persistence/conditional clear/reset/retry/new event/default activation. Full current-head CI and all14 hosted gates remain required."
     }
   ],
   "findings": [

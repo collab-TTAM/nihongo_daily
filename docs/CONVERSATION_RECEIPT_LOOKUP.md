@@ -152,3 +152,62 @@ This is not Flutter/SDK/native Windows execution; new exact-head CI must prove
 both lookup and original OWNED Windows markers and every required step. No new
 hosted Auth/JWT/RLS/provider proof/default activation/security change. All14 gates
 remain pending; next retained-command correlation and conditional receipt release.
+
+## Full original-command association prerequisite — 2026-10-27
+
+`ConversationReceiptCommandMatch.forStart/forTurn/forFinish` is a pure decoder
+for a prospective SIX-field projection: the five existing receipt columns plus
+`request_json`. The trusted host must supply its retained immutable original
+request DTO and the exact reference captured for that command. It cannot rebuild
+that DTO from the five-scalar Windows metadata. No original text/command is added
+to disk, logs, defaults, transport or UI. Existing five-column SDK/owned-reader
+lookup remains unchanged; it cannot satisfy this new decoder for an existing row.
+A future separately reviewed reader must retain the same authenticated session,
+trusted project, own-profile, bounds, busy/deadline/abort/drain and stale guards.
+
+Before interpreting an existing row, require exact operation and reference event,
+zero/one row, <=1MiB UTF-8 JSON, exactly six row keys and every original request
+key/value with no extras or missing fields. JSON member order is immaterial.
+UUID spelling in request_json, Japanese code points, whitespace, level, scenario,
+session and event remain EXACT; database row UUID association retains the existing
+case-insensitive rule. A valid-looking response or matching event alone cannot
+substitute a changed original request. Reuse the original five-field decoder for
+owner/operation/event/status and strict typed start/turn/finish results. Failure
+returns only fixed `FormatException('Invalid receipt command projection')`, with
+no raw source/offset. No row/request map is retained, and decoded output remains
+immutable. Empty/invisible is UNKNOWN, not proof of a matched command or absence
+of dispatch; pending requires the full original even when response_json is null.
+
+This establishes only stored-JSON association given a caller-supplied original.
+It does not authenticate the row's origin/project/upstream provider, prove the
+server has released its reservation or identify which caller retained the DTO.
+It does not make a response safe to apply to a newer transcript/phase/generation.
+It supplies NO clear/reset/retry/dispatch/new-event/store/UI capability. Conditional
+release, original command capture across restart, authenticated hosted RLS proof
+and integration with current captured runtime still require reviewed work. Read
+absence, metadata and successful association must never unlock a pending slot.
+
+Twelve new tests cover all3 completed operations, unknown/pending, key reordering,
+changed scenario/level/session/event/text, exact Unicode/whitespace and UUID case,
+reference mismatch even for empty rows, missing/extra/wrong-type requests, foreign
+rows/duplicates, strict status/result rejection, bounded safe errors and immutable
+results/no input mutation. Frozen request/response fixtures are unchanged. Local
+results and exact new-head CI are recorded in PROJECT_STATUS/PR41 checkpoint.
+
+Parent `ecb50960814df6892f0a15a44569800747a24378` is now verified by
+[CI40357884098](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40357884098),
+latest attempt1: all5 jobs and EVERY step SUCCESS, no skips. Windows121695205220
+explicitly records BOTH native lookup and original OWNED production runtime
+markers; Flutter121696095677 explicitly passes the pending-event regression.
+This supersedes that source's pending handoff, not any hosted acceptance gate.
+New matcher/native/full Flutter checks need their own exact-head evidence.
+
+
+Observed local for original-command matcher: fresh official Dart3.9.2 archive
+SHA256 verified. Actual9-file source/test graph, only flutter_test -> test1.26.2
+runner import and exact fixture copy; all27 cases PASS/no skips (12new +15 retained
+request/response), strict casts/inference/raw types +lints6 analysis No issues.
+Format2 zerochanges,46 QA PASS, inventory141 valid (not141executed), whitespace
+and separate association/bounds/safe-error/immutability/no-authority diff review
+PASS. All140 previous QA objects/findings/gates exact/all14 hosted pending.
+Full Flutter/SDK/native/build new-head checks UNRUN locally; CI still required.
