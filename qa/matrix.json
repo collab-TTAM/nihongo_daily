@@ -3096,6 +3096,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/conversation_receipt_dispatch_test.dart",
       "limitation": "Pure TEST ONLY ports, not application/runtime wiring, hosted Auth, Windows-backed gate, authenticated reconciliation or learner restart proof. One pending command only; no retries/clear/default activation/all14 hosted gates pending."
+    },
+    {
+      "id": "receipt-owned-ai-transport",
+      "status": "automated-baseline",
+      "scope": "Opt-in owned AI transport composes immutable typed mutation wire with persisted receipt barrier and real runtime-owner retirement drain.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/receipt_guarded_ai_transport_test.dart",
+          "contains": "runtime invalidation waits storage and prevents late first HTTP"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_guarded_ai_transport_test.dart",
+      "limitation": "Actual owner/session with TEST ONLY storage/transport ports; no SDK/Windows-backed runtime/default activation/authenticated reconciliation/hosted learner or cross-process ownership proof. One mutation only; all14 release groups pending."
     }
   ],
   "findings": [
