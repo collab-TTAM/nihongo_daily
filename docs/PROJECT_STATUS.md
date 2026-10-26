@@ -7549,3 +7549,42 @@ no bootstrap retry/bypass. Source remains TEST ONLY/no hosted acceptance. Five
 paths: windows_sdk_receipt_fixture.dart, verify_windows_vault_bridge.ps1 (Flutter
 tool), docs/CONVERSATION_RECEIPT_LOOKUP.md, docs/PROJECT_STATUS.md, qa/matrix.json.
 Published commit/new CI/next action in PR41 checkpoint; all14 hosted gates pending.
+
+
+## Proposed bounded pending-command codec — 2026-10-27
+
+- Resume draft41/issue17, branch automation/issue-11-plan-sdk-integration, parent
+  b2db5f2009b36a1530b127b71535e9891ec7d59f (other released worker retained DTO
+  access preserved). Fresh main78a44fa/source37afa572a/Pro38at28c20cb unchanged.
+- Parent CI40400812089 exacthead/latestattempt1 SUCCESS all5/EVERY step/no skips;
+  Flutter121846625907 confirms3 owned retained lookup cases and Windows121845926431
+  all3 native OWNED markers. Source b2db5f2 full suite now verified, not hosted proof.
+- Pure proposed PendingConversationCommandEnvelope codec carries one complete
+  original typed command+existing reference; strict exact schema/version/op/event,
+  expected local scope, canonical bytes/no duplicate aliases,32KiB UTF-8/fixed safe
+  errors/immutable data. No existing retained DTO serialization, file/backend/
+  runtime/default/native namespace or collection/lifetime change. Encoding is
+  sensitive PLAINTEXT, not encryption or a storage fallback; actual secure backend,
+  atomic capture, retention policy and any applicable human gates remain separate.
+- Ten new pure cases plus old request/reference tests; observed execution/format/
+  QA/review appended after checks. Full new Flutter/native/build UNRUN locally.
+- Five paths: new AI domain/pending_conversation_command_envelope.dart, new
+  test/features/ai/pending_conversation_command_envelope_test.dart (Flutter app),
+  new docs/PENDING_CONVERSATION_COMMAND_FORMAT.md, this status, qa/matrix.json.
+  All old Auth/SDK/HTTP/store/dispatch/RLS/SQL/default/API/CI/Pro/content unchanged.
+- Next exact new-head all5/EVERY step/new10, then reviewed secure OS protection/
+  atomic full-command+reference design, hosted RLS and verified conditional release.
+  Validation/decoded DTO/status never grants clear/reset/replay/redispatch/new event.
+  Learner memory-only/onepending/AIoff/#41draft/#17open/all14hosted pending; no
+  merge/closure/deploy/release/provider/Auth strategy/security/spend/schedule action.
+
+
+Observed local: fresh officialDart3.9.2 SHA256 verified. Fresh seven-file actual
+pure source/test graph ONLY flutter_test->test1.26.2/exact fixtures:27/27 PASS
+(10new+17retained reference/request), no skips; strict casts/inference/raw+lints6
+analysis No issues. Format2/46QA/inventory146/whitespace/separate bounded-schema/
+canonical identity/partition/immutability/no-storage/no-authority review PASS.
+All145priorQA/findings/gates exact; source and fixture parity verified. Full new
+Flutter/native/build unrun locally/no bootstrap retry/bypass. This is NOT secure
+persistence/OS crypto/hosted/release proof; codec unused and encoding sensitive
+plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.

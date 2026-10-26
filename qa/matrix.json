@@ -3621,6 +3621,29 @@
       ],
       "reproduce": "Run session, retained recovery and persistent_ai_text_runtime Flutter tests; require exact-head latest-attempt CI all5 jobs/every step.",
       "limitation": "153 pure tests/analyzer locally pass in standalone test1.26.2 harness; full Flutter/owned SDK/native tests locally unrun. TEST ONLY Auth/HTTP is not hosted RLS or learner proof. No disk retention, automatic lookup or release; all14 hosted gates pending."
+    },
+    {
+      "id": "pending-command-envelope-codec",
+      "status": "automated-baseline",
+      "scope": "Pure proposed bounded full original command envelope requires strict typed request/reference event association, expected scope and canonical32KiB bytes; no encryption/storage/replay/release claim.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/domain/pending_conversation_command_envelope.dart",
+          "contains": "final class PendingConversationCommandEnvelope"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/pending_conversation_command_envelope_test.dart",
+          "contains": "duplicates key order whitespace and escape aliases are noncanonical"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/pending_conversation_command_envelope_test.dart",
+      "limitation": "Unused pure codec returns sensitive plaintext; no backend, current retained-command serialization, disk/default/collection/lifetime activation or Auth/provenance/retry/release authority. Secure OS protection and reviewed retention remain required/all14 hosted groups pending."
     }
   ],
   "findings": [
