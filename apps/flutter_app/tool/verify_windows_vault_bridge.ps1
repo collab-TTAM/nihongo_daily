@@ -101,6 +101,11 @@ try {
     Invoke-Bridge 'clear'
     Invoke-Bridge 'absent'
     Write-Output 'Windows Dart/native bridge cross-process verification passed'
+    Invoke-Bridge 'receipt-write'
+    Invoke-Bridge 'receipt-reopen'
+    Invoke-Bridge 'receipt-clear'
+    Invoke-Bridge 'receipt-absent'
+    Write-Output 'Windows receipt Dart/native bridge metadata isolation/reopen/conflict/clear verification passed (TEST ONLY)'
     Invoke-Bridge 'runtime-login'
     Invoke-Bridge 'runtime-restore'
     Invoke-Bridge 'runtime-logout'
@@ -112,5 +117,9 @@ try {
     Write-Output 'Windows actual cancelable window close and owned drain verification passed'
 } finally {
     # Cleanup runs on failure too; cleanup errors fail CI instead of being hidden.
-    Invoke-Bridge 'clear'
+    try {
+        Invoke-Bridge 'clear'
+    } finally {
+        Invoke-Bridge 'receipt-cleanup'
+    }
 }

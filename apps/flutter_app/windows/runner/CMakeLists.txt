@@ -10,6 +10,8 @@ add_executable(${BINARY_NAME} WIN32
   "flutter_window.cpp"
   "session_credential_vault.cpp"
   "session_vault_channel.cpp"
+  "receipt_credential_vault.cpp"
+  "receipt_vault_channel.cpp"
   "review_data_directory.cpp"
   "main.cpp"
   "utils.cpp"

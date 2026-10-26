@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'windows_runtime_fixture.dart';
 import 'windows_exit_fixture.dart';
+import 'windows_receipt_fixture.dart';
 import 'package:nihongo_daily/features/auth/data/windows_review_directory.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -38,11 +39,17 @@ Future<void> main(List<String> arguments) async {
             'directory-clear',
           }.contains(phase) ||
           runtimePhases.contains(phase) ||
-          exitPhases.contains(phase),
+          exitPhases.contains(phase) ||
+          receiptPhases.contains(phase),
     );
     if (exitPhases.contains(phase)) {
       await startWindowsExitFixture(phase, scope);
       return; // OS/framework close decides exit; no dart:io exit shortcut.
+    }
+    if (receiptPhases.contains(phase)) {
+      await verifyWindowsReceiptPhase(phase, scope);
+      stdout.writeln('Windows receipt Dart/native bridge phase passed');
+      exit(0);
     }
     final vault = createWindowsSessionCredentialVault('https://$scope.invalid');
     final other = createWindowsSessionCredentialVault(

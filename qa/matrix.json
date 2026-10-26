@@ -3054,6 +3054,29 @@
       ],
       "reproduce": "cd apps/flutter_app && cmake -S tool/windows_session_vault -B build/session-vault-probe -G \"Visual Studio 17 2022\" -A x64 && cmake --build build/session-vault-probe --config Release && build/session-vault-probe/Release/session_vault_probe.exe",
       "limitation": "Portable validation passed; new Windows OS checks authored unrun locally. No MethodChannel receiver/app wiring/fresh-process/Dart-to-OS/hosted learner proof; all14 hosted gates pending."
+    },
+    {
+      "id": "native-receipt-channel-bridge",
+      "status": "automated-baseline",
+      "scope": "Separate exact-argument Windows receipt receiver/runner registration plus additive actual facade/native/OS process-reopen, isolation, invalid-input preservation, conflict and clear probes.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_receipt_fixture.dart",
+          "contains": "Future<void> verifyWindowsReceiptPhase"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows receipt Dart/native bridge metadata isolation/reopen/conflict/clear verification passed (TEST ONLY)"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
+      "limitation": "New real Windows bridge/process checks authored, unrun locally; exact-head CI required. No cross-process ownership, learner recovery, hosted Auth/provider/lookup or release proof; AI off/all14 hosted gates pending."
     }
   ],
   "findings": [

@@ -1,5 +1,11 @@
 # Native Windows receipt credential primitive — Issue #17
 
+Current continuation: parent516f809 Windows probe passed CI40243813552. The
+separate receiver/normal runner registration and actual Dart/process probe are
+now authored in WINDOWS_RECEIPT_CHANNEL.md; their new-head execution is pending.
+The original increment/evidence below is historical. Learner recovery is still
+memory-only; no Auth/dispatch authority follows from stored metadata.
+
 Independent receipt_credential_vault.cpp/.h uses Windows Credential Manager generic
 credentials for bounded metadata, under NihongoDaily.ConversationReceipt.v1 only.
 Auth refresh vault source/allowlist/namespace remains untouched. Targets bind one

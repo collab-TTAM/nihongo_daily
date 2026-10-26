@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import '../domain/conversation_receipt_reference.dart';
 import 'conversation_receipt_store.dart';
 
-/// Optional facade only. The native receiver is not yet installed; missing
-/// support fails unavailable. No default wiring, Auth channel or fallback.
+/// Optional Windows facade. Missing native support fails unavailable.
+/// No default application wiring, Auth channel or fallback.
 ConversationReceiptStore createWindowsConversationReceiptStore({
   required ConversationReceiptScope scope,
 }) => ConversationReceiptStore(

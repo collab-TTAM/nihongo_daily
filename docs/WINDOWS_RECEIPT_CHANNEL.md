@@ -1,33 +1,64 @@
-# Windows receipt channel facade — Issue #17
+# Windows receipt MethodChannel — Issue #17
 
-Optional createWindowsConversationReceiptStore binds the existing caller-owned
-store to a separate fixed nihongo_daily/conversation_receipts_v1 MethodChannel.
-Only Windows/non-web may invoke it; no app/default assembly is changed. Each
-backend instance accepts only its exact canonical project/account target and
-validates canonical metadata/scope on write and read. Mutation acknowledgment
-must be boolean true; absent/wrong values fail, never simulated success. Native
-messages/details are replaced by fixed failures; no logging or plaintext fallback.
-The existing store keeps exclusive isolate ownership/serialization/late-I/O guards.
+Optional createWindowsConversationReceiptStore now has a separate native receiver
+registered in the normal Windows runner, on the fixed channel
+nihongo_daily/conversation_receipts_v1. Runner CMake compiles the existing receipt
+Credential Manager primitive and new receipt_vault_channel.cpp. FlutterWindow
+retains both channels independently and removes the receipt handler before engine
+destruction. The existing Auth receiver, allowlist and refresh namespace are unchanged.
 
-IMPORTANT: native receiver and OS backend are NOT implemented/registered by this
-increment. MissingPlugin fails unavailable. The Auth vault channel, native target
-allowlist, credential namespace and all old tests are untouched. This facade is
-not proof of secure storage, encryption, actual Windows bridge or restart recovery.
-No new endpoint, Auth strategy, collection, provider, default or Pro change.
+Receiver accepts only read/clear with the exact target key, or write with exact
+target/reference keys. Map cardinality, key names, scalar types, target namespace,
+bounded metadata and owner/project matching validate before storage access.
+Unknown methods are NotImplemented. Only confirmed OS success returns true;
+only actual not_found returns null. Invalid/corrupt/unavailable/exception paths
+return fixed receipt_storage_unavailable / Receipt storage unavailable, no details.
+No input echo/logging, synthetic success, secret field, plaintext/file fallback,
+arbitrary directory or network capability is introduced. The Dart facade retains
+canonical scope/reference validation, Windows-only guard and strict acknowledgments.
 
-17 mock-channel cases AUTHORED locally UNRUN cover exact method/arguments/scoped
-metadata, non-Windows no-I/O, missing receiver, private errors, strict write/clear
-acknowledgments, malformed/noncanonical and foreign-owner values. Full Flutter/
-analyze/native/build await exact-head CI; no denied Flutter bootstrap workaround.
-Parent38171ff CI40221667135/latest attempt1 allfive/every step success/no skips;
-Flutter log121254760462 confirms1227Flutter/fiveChrome/all11 store cases. This is
-component evidence, not hosted learner acceptance. All14 hosted gates pending.
+The channel is a process-local storage capability, NOT an Auth check. Credential
+Manager is OS-user scoped; other same-user processes and callers with this channel
+are not excluded. The raw write primitive can replace a slot. The caller-owned
+store's serialization/no-overwrite and isolate-only ownership rules remain required;
+no cross-process CAS/mutex or application lifecycle ownership is claimed.
 
-Next implement a reviewed independent native receipt channel/namespace with
-Credential Manager and bounded process probes, retaining Auth allowlist. Then
-actual Dart-to-OS wiring and captured runtime write-before-dispatch, fresh Auth/
-profile, real I/O drain and authenticated lookup/verified conditional release.
-Metadata/missing/unknown result never authorizes redispatch/new event. Existing
-route recovery remains memory-only; keep41draft/17open/AIoff/no release claim.
+## Actual bridge probe (authored, execution pending CI)
 
-Local: fresh official Dart3.9.2 SHA verified/format2/46QA/inventory120/whitespace and separate scope/channel/ack/error/no-activation review PASS. All119 old QA objects/findings/gates and old source/tests exact; full local Flutter/analyze/new17/native/build UNRUN. Prior usage review failure was not bypassed; fresh git-version preflight and new clone succeeded.
+The existing mandatory Windows bridge build/PowerShell step now runs additive
+receipt-write/reopen/clear/absent phases in separate real Flutter processes. The
+new windows_receipt_fixture.dart imports the actual facade/store/codec and uses
+the real runner/channel/OS (no mock messenger/storage). Unique invocation .invalid
+origins and fixed TEST ONLY UUIDs only; no learner input/service/network/credentials.
+
+Write confirms three initially empty account/project slots, exact reserve/read and
+idempotent same-reference reserve. Raw codec calls reject null/non-map/wrong-key/
+wrong-type/extra arguments, refresh namespace, malformed target, token field,
+oversized/noncanonical/foreign metadata; all original slots remain exact. Unknown
+method is unavailable. Fresh-process reopen reads all exact original metadata,
+rejects a different pending event without overwrite, and preserves on close.
+Clear A twice leaves B/other-project intact, then clears them; a fourth process
+confirms absence. Synthetic refresh marker remains intact throughout. Finally
+cleanup attempts all three receipt slots plus that separate synthetic Auth slot,
+even if old bridge cleanup fails. Cleanup failure fails CI. All original Auth,
+runtime, directory, owned window-exit probes and assertions remain mandatory.
+
+This is a component process persistence probe, NOT learner restart recovery,
+server receipt reconciliation, actual Auth/JWT/RLS, live provider or voice proof.
+No app composition creates this store yet. Current route recovery remains
+memory-only. Captured runtime persist-before-send, fresh Auth/profile/generation,
+old actual-I/O drain, authenticated lookup and verified conditional release are
+still required. Metadata/null/unknown receipt never permits a new event/provider
+redispatch. AI stays off/default unavailable; all14 hosted release gates pending.
+
+## Observed evidence
+
+Parent516f809 CI40243813552 exact head/latest attempt1 completed success: all five
+jobs/every required step/no skips. Windows121321113833 logs include actual receipt
+Credential Manager metadata isolation/corruption/clear PASS. Existing 17 mock-channel
+cases and full Flutter/platform suite passed the parent; these do not execute the
+new receiver/probe. New receiver and process phases are authored, locally UNRUN:
+no local Flutter SDK/Windows OS. Official Dart3.9.2 archive SHA verified; formatter
+passed, with unresolved Flutter lint include warning (not analyzer proof). Portable
+original C++17 validation passed, not new channel/Windows execution. New exact-head
+CI must build/run all retained and added probes before claiming bridge success.
