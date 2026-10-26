@@ -3334,6 +3334,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt'",
       "limitation": "New actual runtime/SDK cases authored locally unrun; exact-head CI required. Auth/JWT/vault/profile/HTTP/receipt ports TEST ONLY, not combined native owned host or hosted learner proof. Fixed AI source terminal after logout/one pending mutation/no default activation/all14 gates pending."
+    },
+    {
+      "id": "windows-owned-runtime-receipt-process",
+      "status": "automated-baseline",
+      "scope": "Mandatory fresh Windows runner processes compose the actual PersistentSupabaseRuntime, native refresh vault, private SDK/profile barrier, native review journal and receipt Credential Manager lifecycle.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "Future<void> verifyWindowsOwnedReceiptPhase("
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_vault_bridge.dart",
+          "contains": "await verifyWindowsOwnedReceiptPhase(phase, scope)"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Invoke-Bridge 'receipt-owned-held-logout'"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && powershell -ExecutionPolicy Bypass -File tool/verify_windows_vault_bridge.ps1",
+      "limitation": "New five journey phases plus finally cleanup authored locally unrun; exact-head Windows marker required. Real native storage/SDK/owned runtime, synthetic Auth/JWT/profile/AI HTTP; no hosted learner proof, cross-process CAS or authenticated reconciliation/new-command authority. Default unchanged/all14 gates pending."
     }
   ],
   "findings": [

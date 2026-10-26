@@ -229,3 +229,52 @@ Auth/JWT/vault/profile/AI HTTP/receipt backend are TEST ONLY; full Flutter/nativ
 execution needs exact-head CI. This is an opt-in production assembly change, not
 installed startup configuration, native combined-host proof or hosted learner
 acceptance. All14 release gates/default AI unavailable remain.
+
+## Windows owned production-runtime receipt probe
+
+The existing mandatory Windows bridge now also runs receipt-owned-write/reopen/
+logout/held-logout/absent as fresh runner/engine/isolate processes. These phases
+construct the actual PersistentSupabaseRuntime with its PRIVATE SDK, production
+refresh adapter, real Windows refresh vault, NativeReviewJournal and optional
+Windows receipt store. No parallel component assembly or duplicate SDK adapter.
+The bridge GUID derives two separate .invalid project origins and temporary
+journal directories; only synthetic fixed account/event/secrets are accepted.
+
+First write seeds a TEST ONLY native refresh secret. Startup must send exactly
+one refresh grant with the saved secret, save its rotated replacement to actual
+Credential Manager BEFORE ensure_profile dispatch, and block AI acquisition while
+the profile HTTP response is held. After own-profile readiness, captured AI HTTP
+checks exact original request/endpoint/key/bearer/no redirects and reads back the
+real receipt already stored. Preserve-close aborts synchronously but must wait
+for an HTTP response that deliberately ignores abort. Before release, readiness
+is fenced, metadata and exclusive partition ownership remain. Release a late
+private error: consume it as unauthorized, finish close, preserve both native
+refresh and receipt records and leave borrowed HTTP open until fixture cleanup.
+
+Second process restores the exact first rotated secret, persists the next rotation
+and rejects the original event with SYNC_CONFLICT and ZERO AI HTTP. Close preserves
+both records. Third process restores that new secret, rotates again and logs out
+through runtime.account.signOut; successful logout must clear BOTH native stores.
+A separate unique project exercises logout DURING actual held HTTP: Auth vault
+clears while receipt remains owned/present and logout stays pending; only actual
+late-response drain permits receipt deletion and signedOut. Fifth process checks
+both project partitions absent and starts the actual runtime with ZERO Auth,
+profile or AI dispatch. Native SRS journal remains empty throughout.
+
+Every held response is finally released and cleanup failures fail CI. The outer
+PowerShell finally attempts the new receipt-owned-cleanup even if earlier cleanup
+fails; it clears both exact synthetic namespaces and both unique directories,
+without enumeration or foreign targets. Existing 60-second process bounds, all
+older phases/assertions and the normal learner rebuild remain required.
+
+Parent source388588f CI40307092083/latestattempt1 is observed SUCCESS in all5
+jobs/every required step/no skips. Flutter log121519501294 explicitly confirms all8
+owned-runtime cases; Windows121518849339 confirms the prior combined component
+marker. This new native owned-host journey is AUTHORED locally UNRUN; new exact-
+head CI must print the OWNED production runtime/vault/receipt marker. Local Dart
+format/QA inventory/regressions are distinct from Flutter/native execution.
+Auth endpoint/JWT/rotation/profile/AI HTTP remain TEST ONLY. No hosted identity,
+provider, learner activation, cross-process CAS, hardware-loss or reconciliation
+proof. One pending mutation/default AI unavailable/all14 release gates remain;
+next storage-failure/account-change cases and authenticated lookup/verified
+conditional release before sequential conversation commands.

@@ -121,6 +121,12 @@ try {
     Invoke-Bridge 'receipt-persist-clear'
     Invoke-Bridge 'receipt-persist-absent'
     Write-Output 'Windows persistent vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout passed (TEST ONLY Auth/HTTP)'
+    Invoke-Bridge 'receipt-owned-write'
+    Invoke-Bridge 'receipt-owned-reopen'
+    Invoke-Bridge 'receipt-owned-logout'
+    Invoke-Bridge 'receipt-owned-held-logout'
+    Invoke-Bridge 'receipt-owned-absent'
+    Write-Output 'Windows OWNED production runtime/vault/receipt restore/preserve/reopen/no-redispatch/held-logout passed (TEST ONLY Auth/HTTP)'
     Invoke-Bridge 'runtime-login'
     Invoke-Bridge 'runtime-restore'
     Invoke-Bridge 'runtime-logout'
@@ -144,7 +150,11 @@ try {
                 try {
                     Invoke-Bridge 'receipt-sdk-cleanup'
                 } finally {
-                    Invoke-Bridge 'receipt-persist-cleanup'
+                    try {
+                        Invoke-Bridge 'receipt-persist-cleanup'
+                    } finally {
+                        Invoke-Bridge 'receipt-owned-cleanup'
+                    }
                 }
             }
         }

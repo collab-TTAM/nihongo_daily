@@ -2,6 +2,7 @@
 // Auth/JWT/profile/HTTP are synthetic; no hosted service or learner credential.
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -15,12 +16,14 @@ import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/auth/data/supabase_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/supabase_refreshable_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
+import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
 
 const sdkReceiptPhases = {
@@ -360,5 +363,313 @@ Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
     await sdk.dispose();
     authHttp.close();
     network.close();
+  }
+}
+
+// A separate production-host journey; all older component phases stay required.
+const ownedReceiptPhases = {
+  'receipt-owned-write',
+  'receipt-owned-reopen',
+  'receipt-owned-logout',
+  'receipt-owned-held-logout',
+  'receipt-owned-absent',
+  'receipt-owned-cleanup',
+};
+
+String _ownedOrigin(String scope, bool heldLogout) => heldLogout
+    ? 'https://$scope-owned-logout-receipt.invalid'
+    : 'https://$scope-owned-receipt.invalid';
+Directory _ownedDirectory(String scope, bool heldLogout) => Directory(
+  '${Directory.systemTemp.path}${Platform.pathSeparator}nd-$scope-owned-receipt${heldLogout ? '-logout' : ''}',
+);
+
+Future<void> verifyWindowsOwnedReceiptPhase(
+  String phase,
+  String runScope,
+) async {
+  _check(
+    Platform.isWindows &&
+        RegExp(r'^bridge-[a-f0-9]{32}$').hasMatch(runScope) &&
+        ownedReceiptPhases.contains(phase),
+  );
+  if (phase == 'receipt-owned-cleanup') {
+    var failed = false;
+    for (final held in [false, true]) {
+      final origin = _ownedOrigin(runScope, held);
+      final scope = ConversationReceiptScope(
+        projectUrl: origin,
+        ownerId: _user,
+      );
+      try {
+        final store = createWindowsConversationReceiptStore(scope: scope);
+        await store.clearForSignOut();
+        await store.close();
+        _check(await _read(scope) == null);
+      } on Object {
+        failed = true;
+      }
+      // Attempt BOTH namespaces and both unique directories even after failure.
+      try {
+        final vault = createWindowsSessionCredentialVault(origin);
+        await vault.clear();
+        _check(await vault.readRefreshToken() == null);
+      } on Object {
+        failed = true;
+      }
+      try {
+        final directory = _ownedDirectory(runScope, held);
+        if (await directory.exists()) {
+          await directory.delete(recursive: true);
+        }
+      } on Object {
+        failed = true;
+      }
+    }
+    _check(!failed);
+    return;
+  }
+  final heldLogout = phase == 'receipt-owned-held-logout';
+  final origin = _ownedOrigin(runScope, heldLogout);
+  final scope = ConversationReceiptScope(projectUrl: origin, ownerId: _user);
+  final vault = createWindowsSessionCredentialVault(origin);
+  final incoming = phase == 'receipt-owned-reopen'
+      ? 'TEST_ONLY_OWNED_ROTATED_1'
+      : phase == 'receipt-owned-logout'
+      ? 'TEST_ONLY_OWNED_ROTATED_2'
+      : 'TEST_ONLY_OWNED_SAVED';
+  final rotated = phase == 'receipt-owned-reopen'
+      ? 'TEST_ONLY_OWNED_ROTATED_2'
+      : phase == 'receipt-owned-logout'
+      ? 'TEST_ONLY_OWNED_ROTATED_3'
+      : 'TEST_ONLY_OWNED_ROTATED_1';
+  if (phase == 'receipt-owned-write' || heldLogout) {
+    _check(
+      await vault.readRefreshToken() == null && await _read(scope) == null,
+    );
+    await vault.writeRefreshToken(incoming); // Synthetic seed, unique OS slot.
+  }
+  if (phase == 'receipt-owned-absent') {
+    for (final held in [false, true]) {
+      final otherOrigin = _ownedOrigin(runScope, held);
+      _check(
+        await createWindowsSessionCredentialVault(
+                  otherOrigin,
+                ).readRefreshToken() ==
+                null &&
+            await _read(
+                  ConversationReceiptScope(
+                    projectUrl: otherOrigin,
+                    ownerId: _user,
+                  ),
+                ) ==
+                null,
+      );
+    }
+  }
+  final now = DateTime.now().toUtc();
+  final bearer =
+      '${_part({'alg': 'HS256', 'typ': 'JWT'})}.${_part({'sub': _user, 'session_id': _event, 'role': 'authenticated', 'exp': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000})}.${_part('TEST ONLY NOT A SIGNATURE')}';
+  var refreshCalls = 0;
+  var profileCalls = 0;
+  var logoutCalls = 0;
+  final profileEntered = Completer<void>();
+  final profileRelease = Completer<void>();
+  final authHttp = MockClient((r) async {
+    _check(r.url.origin == origin && !r.followRedirects);
+    if (r.url.path == '/auth/v1/logout') {
+      logoutCalls++;
+      return http.Response('', 204);
+    }
+    if (r.url.path == '/rest/v1/rpc/ensure_profile') {
+      profileCalls++;
+      _check(profileCalls == 1 && await vault.readRefreshToken() == rotated);
+      profileEntered.complete();
+      await profileRelease.future;
+      return http.Response(
+        jsonEncode({
+          'id': _user,
+          'display_name': 'TEST ONLY',
+          'preferred_jlpt': 'N5',
+          'daily_target_minutes': 120,
+          'timezone': 'Asia/Saigon',
+        }),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+    }
+    _check(r.url.path == '/auth/v1/token');
+    refreshCalls++;
+    _check(refreshCalls == 1);
+    _check(r.url.queryParameters['grant_type'] == 'refresh_token');
+    final body = jsonDecode(r.body) as Map<String, Object?>;
+    _check(body.length == 1 && body['refresh_token'] == incoming);
+    return http.Response(
+      jsonEncode({
+        'access_token': bearer,
+        'refresh_token': rotated,
+        'token_type': 'bearer',
+        'expires_in': 3600,
+        'user': {
+          'id': _user,
+          'aud': 'authenticated',
+          'role': 'authenticated',
+          'created_at': '2026-10-26T00:00:00Z',
+          'app_metadata': <String, Object>{},
+          'user_metadata': <String, Object>{},
+        },
+      }),
+      200,
+      headers: {'content-type': 'application/json'},
+    );
+  });
+  final journal = await NativeReviewJournal.open(
+    _ownedDirectory(runScope, heldLogout),
+  );
+  final store = createWindowsConversationReceiptStore(scope: scope);
+  final network = _Http(scope, bearer);
+  final runtime = PersistentSupabaseRuntime(
+    projectUrl: origin,
+    publishableKey: _key,
+    vault: vault,
+    store: journal,
+    conversationReceiptStore: store,
+    httpClient: authHttp,
+    aiHttpClient: network,
+    aiTextEnabled: true,
+    aiConversationEnabled: true,
+    now: () => now,
+  );
+  try {
+    _check(runtime.createAiConversationSession() == null && network.sends == 0);
+    await runtime.start();
+    if (phase == 'receipt-owned-absent') {
+      _check(
+        refreshCalls == 0 &&
+            profileCalls == 0 &&
+            runtime.account.readyRuntime == null &&
+            runtime.createAiConversationSession() == null &&
+            network.sends == 0,
+      );
+      return;
+    }
+    await profileEntered.future.timeout(const Duration(seconds: 5));
+    _check(
+      refreshCalls == 1 &&
+          await vault.readRefreshToken() == rotated &&
+          runtime.account.state.phase == AccountPhase.loadingProfile &&
+          runtime.createAiConversationSession() == null &&
+          network.sends == 0,
+    );
+    final ready = runtime.account.changes.firstWhere(
+      (s) => s.phase == AccountPhase.ready,
+    );
+    profileRelease.complete();
+    await ready.timeout(const Duration(seconds: 5));
+    _check(runtime.account.readySession?.userId == _user);
+    final session = runtime.createAiConversationSession()!;
+    if (phase == 'receipt-owned-write' || heldLogout) {
+      _check(await _read(scope) == null);
+      final rejected = session
+          .start(_request)
+          .then<void>(
+            (_) => throw const FormatException('Retired owned result accepted'),
+            onError: (Object error, StackTrace _) {
+              _check(
+                error is AiTextFailure &&
+                    error.code == AiTextErrorCode.unauthorized,
+              );
+            },
+          );
+      await Future.any<void>([network.entered.future, rejected]);
+      _check(network.entered.isCompleted && network.sends == 1);
+      var done = false;
+      final draining =
+          (heldLogout ? runtime.account.signOut() : runtime.close()).then(
+            (_) => done = true,
+          );
+      await network.aborted.future;
+      if (heldLogout) {
+        // Observe actual native Auth clear while receipt HTTP still ignores abort.
+        final end = DateTime.now().add(const Duration(seconds: 5));
+        while (await vault.readRefreshToken() != null &&
+            DateTime.now().isBefore(end)) {
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+        }
+        _check(await vault.readRefreshToken() == null && logoutCalls == 1);
+      }
+      _check(
+        !done &&
+            !session.isCurrent &&
+            runtime.account.readyRuntime == null &&
+            runtime.createAiConversationSession() == null &&
+            await _read(scope) == _expected(scope),
+      );
+      try {
+        final unexpected = createWindowsConversationReceiptStore(scope: scope);
+        await unexpected.close();
+        throw const FormatException(
+          'Owned partition released before HTTP drain',
+        );
+      } on ConversationReceiptStoreFailure catch (error) {
+        _check(error.code == ConversationReceiptStoreError.owned);
+      }
+      network.reply.completeError(StateError('TEST_ONLY_OWNED_LATE_HTTP'));
+      await rejected;
+      await draining;
+      _check(done && network.sends == 1 && !network.closed);
+      _check(
+        await _read(scope) == (heldLogout ? null : _expected(scope)) &&
+            store.phase == ConversationReceiptStorePhase.closed,
+      );
+      if (heldLogout) {
+        _check(runtime.account.state.phase == AccountPhase.signedOut);
+        _check(await vault.readRefreshToken() == null);
+      } else {
+        _check(await vault.readRefreshToken() == rotated);
+      }
+    } else {
+      _check(await _read(scope) == _expected(scope));
+      var blocked = false;
+      try {
+        await session.start(_request);
+      } on AiTextFailure catch (error) {
+        blocked = error.code == AiTextErrorCode.syncConflict;
+      }
+      _check(blocked && network.sends == 0);
+      if (phase == 'receipt-owned-logout') {
+        await runtime.account.signOut();
+        _check(
+          runtime.account.state.phase == AccountPhase.signedOut &&
+              await vault.readRefreshToken() == null &&
+              await _read(scope) == null &&
+              logoutCalls == 1,
+        );
+      } else {
+        _check(phase == 'receipt-owned-reopen');
+        await runtime.close();
+        _check(
+          await vault.readRefreshToken() == rotated &&
+              await _read(scope) == _expected(scope),
+        );
+      }
+    }
+    _check((await journal.list(_user)).isEmpty && !network.closed);
+  } finally {
+    if (!profileRelease.isCompleted) {
+      profileRelease.complete();
+    }
+    if (network.sends > 0 && !network.reply.isCompleted) {
+      network.reply.completeError(StateError('TEST_ONLY_OWNED_CLEANUP'));
+    }
+    try {
+      await runtime.close();
+    } finally {
+      try {
+        await journal.close();
+      } finally {
+        authHttp.close();
+        network.close();
+      }
+    }
   }
 }

@@ -44,7 +44,8 @@ Future<void> main(List<String> arguments) async {
           exitPhases.contains(phase) ||
           receiptPhases.contains(phase) ||
           receiptLifecyclePhases.contains(phase) ||
-          sdkReceiptPhases.contains(phase),
+          sdkReceiptPhases.contains(phase) ||
+          ownedReceiptPhases.contains(phase),
     );
     if (exitPhases.contains(phase)) {
       await startWindowsExitFixture(phase, scope);
@@ -58,6 +59,13 @@ Future<void> main(List<String> arguments) async {
     if (receiptLifecyclePhases.contains(phase)) {
       await verifyWindowsReceiptLifecyclePhase(phase, scope);
       stdout.writeln('Windows receipt lifecycle phase passed (TEST ONLY)');
+      exit(0);
+    }
+    if (ownedReceiptPhases.contains(phase)) {
+      await verifyWindowsOwnedReceiptPhase(phase, scope);
+      stdout.writeln(
+        'Windows OWNED production runtime/vault/receipt phase passed (TEST ONLY Auth/HTTP)',
+      );
       exit(0);
     }
     if (sdkReceiptPhases.contains(phase)) {
