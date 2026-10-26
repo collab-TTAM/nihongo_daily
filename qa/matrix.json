@@ -3525,6 +3525,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/conversation_receipt_command_match_test.dart",
       "limitation": "Pure decoder only, not Auth/project/upstream provenance or current phase/generation proof. Existing SDK read remains five-field; no integration/command persistence/conditional clear/reset/retry/new event/default activation. Full current-head CI and all14 hosted gates remain required."
+    },
+    {
+      "id": "original-bound-sdk-receipt-read",
+      "status": "automated-baseline",
+      "scope": "Explicit original-bound start/turn/finish receipt GET shares captured SDK lane; full request projection matching, preflight scope/event denial and ignored-abort close drain, no dispatch/release authority.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/supabase_ai_text_transport.dart",
+          "contains": "Future<ConversationReceiptSnapshot> lookupStartReceipt("
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "original-bound receipt late result cannot survive revoke or release busy lane early"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
+      "limitation": "TEST ONLY SDK Auth/JWT/HTTP, no hosted RLS/upstream/learner proof; no runtime/default activation, full-command persistence, clear/release/new-event authority. All14 hosted groups pending."
     }
   ],
   "findings": [

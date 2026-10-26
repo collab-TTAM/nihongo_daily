@@ -211,3 +211,59 @@ Format2 zerochanges,46 QA PASS, inventory141 valid (not141executed), whitespace
 and separate association/bounds/safe-error/immutability/no-authority diff review
 PASS. All140 previous QA objects/findings/gates exact/all14 hosted pending.
 Full Flutter/SDK/native/build new-head checks UNRUN locally; CI still required.
+
+
+## Original-bound SDK receipt reads — 2026-10-27
+
+SupabaseAiTextTransport.lookupStartReceipt/lookupTurnReceipt/lookupFinishReceipt
+now explicitly bind a supplied FULL original typed DTO to an own-account receipt
+read. Trusted host must retain that DTO; five-scalar vault metadata cannot restore
+it. The existing five-field lookupReceipt stays unchanged. No runtime/default/UI
+reader is enabled by this increment; same-owned reader forwarding/capture remains
+next. No commands or text are added to disk/logs or learner configuration.
+
+Before HTTP: current captured SDK Session/token/profile generation and trusted
+project/owner match, then operation/event association via strict matcher preflight.
+Foreign scope maps UNAUTHORIZED; inconsistent original reference maps fixed
+VALIDATION_FAILURE without HTTP. Fixed GET /rest/v1/operation_receipts with ONLY
+user_id,operation,client_event_id,request_json,status,response_json, captured owner/
+operation/event filters and limit2. Original DTO/text is NEVER in URL/query/body;
+only original association is checked locally against the response. No caller table,
+column/endpoint override, provider call, mutation, token writer or storage owner.
+
+Use the SAME private _send/captured bearer/key/shared busy lane/deadline/abort/
+1MiB/stream limits/no redirects/no-store/actual close drain as retained reads and
+text/mutations. A private boolean selects exactly one of TWO fixed projections;
+all prior operations keep their original request/response behavior. Pre/post read
+and post strict decode current checks suppress late results. Six-field original
+mismatch/legacy five-field row/malformed projection maps fixed INTERNAL_ERROR.
+Unknown remains ambiguous, and even exact stored association proves neither
+upstream provenance nor server reservation release/current transcript applicability.
+No clear/reset/retry/redispatch/new-event or recovered conversation authority.
+
+Twelve SDK cases authored: nine operation/status combinations check exact six-field
+captured GET/empty body/bearer/key/no-store/no redirects/typed result; foreign scope/
+original op/event before HTTP; changed/missing/extra request fields, foreign rows,
+duplicates and legacy projection; held GET blocks both text/legacy lookup and close
+waits actual ignored-abort HTTP while late completed data is suppressed. All prior
+test bodies are retained. Local/CI execution results in PR41 and PROJECT_STATUS.
+
+Parente36ab681997515bd798f449c91152e5744ffaa1d CI40367461388/latestattempt1 now
+SUCCESS all5 jobs/EVERY step/no skips. Flutter121731441493 explicitly all12 matcher
+cases; Windows121730946426 BOTH native lookup and original OWNED markers. This is
+TEST ONLY Auth/HTTP component proof, not hosted RLS/JWT/provider/learner proof.
+All14 hosted gates pending; keep draft41/17open/AI default off. Next exact-head CI,
+same-owned captured port binding, hosted RLS and reviewed conditional release.
+
+
+Observed local: fresh officialDart3.9.2 SHA verified. Fresh34-file actual SDK/source/
+test graph with ONLY flutter_test -> test1.26.2 runner import/exact fixture bytes;
+original pinned supabase2.16.5/http1.6/logging1.3 and ALL shared lock versions exact
+except harness-only lints5.1.1->6.0.0/new test deps. All86 SDK cases (12new+74old)
+PASS/no skips. Strict casts/inference/raw+lints6 analysis of two changed files
+CLEAN. Original old test bodies byte-identical. Initial disposable SDK execute-bit
+setup and test-boundary verifier selection corrected; no production diagnostic
+or failed case suppressed. Format2/46QA/inventory142/whitespace/source parity/
+separate captured authority/fixed query/old-lane parity/no-release diff review PASS.
+All141 prior QA/findings/gates exact/all14hosted pending. Not actual Flutter runner,
+Windows/hosted evidence; new full Flutter/analyze/build/native CI still required.

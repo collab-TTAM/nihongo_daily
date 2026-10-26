@@ -306,6 +306,226 @@ void main() {
         : null,
   };
 
+  Future<ConversationReceiptSnapshot> originalLookup(
+    SupabaseAiTextTransport t,
+    String op, {
+    ConversationReceiptReference? ref,
+    Map<String, Object>? original,
+  }) {
+    final r = ref ?? receiptReference(op);
+    final body = original ?? request(op);
+    return switch (op) {
+      'start_conversation' => t.lookupStartReceipt(
+        r,
+        StartConversationRequest.fromJson(body),
+      ),
+      'conversation_turn' => t.lookupTurnReceipt(
+        r,
+        ConversationTurnRequest.fromJson(body),
+      ),
+      'finish_conversation' => t.lookupFinishReceipt(
+        r,
+        FinishConversationRequest.fromJson(body),
+      ),
+      _ => throw StateError('Unexpected TEST ONLY operation'),
+    };
+  }
+
+  Map<String, Object?> originalRow(String op, String status) => {
+    ...receiptRow(op, status),
+    'request_json': request(op),
+  };
+
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+      test('original-bound receipt GET $op $status', () async {
+        final t = make();
+        network.onSend = (r) async {
+          expect(r.method, 'GET');
+          expect(r.url.origin, origin);
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          expect(r.url.queryParameters, {
+            'select':
+                'user_id,operation,client_event_id,request_json,status,response_json',
+            'user_id': 'eq.$userA',
+            'operation': 'eq.$op',
+            'client_event_id': 'eq.${receiptReference(op).clientEventId}',
+            'limit': '2',
+          });
+          expect((r as http.Request).body, isEmpty);
+          expect(
+            r.headers['authorization'],
+            'Bearer ${token(now, userA, generation)}',
+          );
+          expect(r.headers['apikey'], key);
+          expect(r.headers['cache-control'], 'no-store');
+          expect(r.followRedirects, isFalse);
+          expect(r.maxRedirects, 0);
+          return response(
+            jsonEncode(status == 'UNKNOWN' ? [] : [originalRow(op, status)]),
+          );
+        };
+        final result = await originalLookup(t, op);
+        expect(result.status.name, status.toLowerCase());
+        expect(
+          result.start != null,
+          status == 'COMPLETED' && op == 'start_conversation',
+        );
+        expect(
+          result.turn != null,
+          status == 'COMPLETED' && op == 'conversation_turn',
+        );
+        expect(
+          result.finish != null,
+          status == 'COMPLETED' && op == 'finish_conversation',
+        );
+        expect(network.requests.length, 1);
+        expect(t.isCurrent, isTrue);
+        expect(network.closed, isFalse);
+      });
+    }
+  }
+
+  test(
+    'original-bound receipt rejects foreign scope and command before HTTP',
+    () async {
+      final t = make();
+      for (final op in [
+        'start_conversation',
+        'conversation_turn',
+        'finish_conversation',
+      ]) {
+        for (final ref in [
+          receiptReference(op, owner: userB),
+          receiptReference(op, project: 'https://foreign.invalid'),
+        ]) {
+          await expectLater(
+            originalLookup(t, op, ref: ref),
+            throwsA(failure(AiTextErrorCode.unauthorized)),
+          );
+        }
+        await expectLater(
+          originalLookup(
+            t,
+            op,
+            original: {...request(op), 'client_event_id': sid},
+          ),
+          throwsA(failure(AiTextErrorCode.validationFailure)),
+        );
+        final wrong = op == 'start_conversation'
+            ? 'finish_conversation'
+            : 'start_conversation';
+        await expectLater(
+          originalLookup(t, op, ref: receiptReference(wrong)),
+          throwsA(failure(AiTextErrorCode.validationFailure)),
+        );
+      }
+      expect(network.requests, isEmpty);
+    },
+  );
+
+  test(
+    'original-bound receipt refuses changed request and legacy projection',
+    () async {
+      final t = make();
+      for (final op in [
+        'start_conversation',
+        'conversation_turn',
+        'finish_conversation',
+      ]) {
+        for (final status in ['PENDING', 'COMPLETED']) {
+          for (final bad in [
+            [receiptRow(op, status)],
+            [
+              originalRow(op, status)
+                ..['request_json'] = {...request(op), 'client_event_id': sid},
+            ],
+            [
+              originalRow(op, status)
+                ..['request_json'] = {...request(op), 'extra': true},
+            ],
+            [originalRow(op, status)..['user_id'] = userB],
+            [originalRow(op, status), originalRow(op, status)],
+            for (final field in request(op).keys)
+              [
+                originalRow(op, status)
+                  ..['request_json'] = (Map.of(request(op))..remove(field)),
+              ],
+          ]) {
+            network.onSend = (_) async => response(jsonEncode(bad));
+            await expectLater(
+              originalLookup(t, op),
+              throwsA(failure(AiTextErrorCode.internalError)),
+            );
+          }
+        }
+      }
+      expect(
+        network.requests.every(
+          (r) => r.method == 'GET' && (r as http.Request).body.isEmpty,
+        ),
+        isTrue,
+      );
+    },
+  );
+
+  test(
+    'original-bound receipt late result cannot survive revoke or release busy lane early',
+    () async {
+      final t = make();
+      final held = Completer<http.StreamedResponse>();
+      final entered = Completer<void>();
+      final aborted = Completer<void>();
+      network.onSend = (r) {
+        unawaited(
+          (r as http.AbortableRequest).abortTrigger!.then(
+            (_) => aborted.complete(),
+          ),
+        );
+        entered.complete();
+        return held.future;
+      };
+      const op = 'conversation_turn';
+      final result = expectLater(
+        originalLookup(t, op),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      try {
+        await entered.future;
+        await expectLater(invoke(t), throwsA(isA<AiTextRequestPending>()));
+        await expectLater(
+          t.lookupReceipt(receiptReference(op)),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+        var closed = false;
+        final closing = t.close().then((_) => closed = true);
+        await aborted.future;
+        await result;
+        expect(closed, isFalse);
+        expect(network.closed, isFalse);
+        held.complete(response(jsonEncode([originalRow(op, 'COMPLETED')])));
+        await closing;
+        expect(closed, isTrue);
+        expect(network.requests.length, 1);
+        await expectLater(
+          originalLookup(t, op),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        expect(network.requests.length, 1);
+      } finally {
+        if (!held.isCompleted) {
+          held.complete(response('[]'));
+        }
+        await result;
+        await t.close();
+      }
+    },
+  );
+
   for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
     test('receipt lookup fixed captured GET status=$status', () async {
       const op = 'start_conversation';

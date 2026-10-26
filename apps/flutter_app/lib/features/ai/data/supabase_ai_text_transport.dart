@@ -12,6 +12,7 @@ import '../domain/ai_text_models.dart';
 import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
 import '../domain/conversation_receipt_reference.dart';
+import '../domain/conversation_receipt_command_match.dart';
 import '../domain/conversation_receipt_snapshot.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
@@ -202,6 +203,66 @@ final class SupabaseAiTextTransport
     }
   }
 
+  /// Explicit original-bound reads only; no original text is sent or stored.
+  /// These methods do not release receipts or restore a conversation projection.
+  Future<ConversationReceiptSnapshot> lookupStartReceipt(
+    ConversationReceiptReference reference,
+    StartConversationRequest original,
+  ) => _lookupOriginal(
+    reference,
+    (rows) =>
+        ConversationReceiptCommandMatch.forStart(reference, original, rows),
+  );
+
+  Future<ConversationReceiptSnapshot> lookupTurnReceipt(
+    ConversationReceiptReference reference,
+    ConversationTurnRequest original,
+  ) => _lookupOriginal(
+    reference,
+    (rows) =>
+        ConversationReceiptCommandMatch.forTurn(reference, original, rows),
+  );
+
+  Future<ConversationReceiptSnapshot> lookupFinishReceipt(
+    ConversationReceiptReference reference,
+    FinishConversationRequest original,
+  ) => _lookupOriginal(
+    reference,
+    (rows) =>
+        ConversationReceiptCommandMatch.forFinish(reference, original, rows),
+  );
+
+  Future<ConversationReceiptSnapshot> _lookupOriginal(
+    ConversationReceiptReference reference,
+    ConversationReceiptSnapshot Function(Object?) decode,
+  ) async {
+    _requireCurrent();
+    if (!reference.matchesScope(
+      projectUrl: _origin,
+      ownerId: _session.userId,
+    )) {
+      throw const AiTextFailure(AiTextErrorCode.unauthorized);
+    }
+    // Reject original operation/event mismatch even if the server has no row.
+    try {
+      decode(<Object?>[]);
+    } on FormatException {
+      throw const AiTextFailure(AiTextErrorCode.validationFailure);
+    }
+    final rows = await _send('operation_receipts', _session, {
+      'operation': reference.operation.wireName,
+      'client_event_id': reference.clientEventId,
+    }, originalReceipt: true);
+    _requireCurrent();
+    try {
+      final result = decode(rows);
+      _requireCurrent();
+      return result;
+    } on FormatException {
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    }
+  }
+
   void _requireCurrent() {
     if (!isCurrent) throw const AiTextFailure(AiTextErrorCode.unauthorized);
   }
@@ -209,8 +270,9 @@ final class SupabaseAiTextTransport
   Future<Object?> _send(
     String operation,
     ReviewSession session,
-    Map<String, Object> body,
-  ) async {
+    Map<String, Object> body, {
+    bool originalReceipt = false,
+  }) async {
     _requireCurrent();
     if (!identical(session, _session)) {
       throw const AiTextFailure(AiTextErrorCode.unauthorized);
@@ -248,8 +310,9 @@ final class SupabaseAiTextTransport
               receipts
                   ? Uri.parse('$_origin/rest/v1/operation_receipts').replace(
                       queryParameters: {
-                        'select':
-                            'user_id,operation,client_event_id,status,response_json',
+                        'select': originalReceipt
+                            ? 'user_id,operation,client_event_id,request_json,status,response_json'
+                            : 'user_id,operation,client_event_id,status,response_json',
                         'user_id': 'eq.${_session.userId}',
                         'operation': 'eq.${body['operation']}',
                         'client_event_id': 'eq.${body['client_event_id']}',
