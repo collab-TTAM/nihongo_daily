@@ -5,6 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:supabase/supabase.dart';
 import '../../ai/application/ai_text_runtime_owner.dart';
+import '../../ai/application/receipt_ai_runtime_owner.dart';
+import '../../ai/data/conversation_receipt_store.dart';
+import '../../ai/data/receipt_guarded_ai_transport.dart';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/ai_conversation_source.dart';
 import '../../ai/data/ai_conversation_scenario_source.dart';
@@ -47,6 +50,7 @@ final class PersistentSupabaseRuntime
     required DurableReviewStore store,
     StudySessionStore? studyStore,
     VocabularyQuizAttemptStore? quizStore,
+    ConversationReceiptStore? conversationReceiptStore,
     http.Client? httpClient,
     http.Client? aiHttpClient,
     DateTime Function()? now,
@@ -67,6 +71,15 @@ final class PersistentSupabaseRuntime
     final key = SupabaseReviewBinding.validatePublicKey(publishableKey);
     if (vault.target !=
         '${SessionCredentialVault.targetPrefix}${Uri.parse(url).origin.toLowerCase()}') {
+      throw const SessionVaultFailure(SessionVaultError.invalidInput);
+    }
+    // Reject before SDK creation/receipt ownership transfer.
+    if (conversationReceiptStore != null &&
+        (!aiConversationEnabled ||
+            conversationReceiptStore.scope.projectOrigin !=
+                Uri.parse(url).origin.toLowerCase() ||
+            conversationReceiptStore.phase !=
+                ConversationReceiptStorePhase.open)) {
       throw const SessionVaultFailure(SessionVaultError.invalidInput);
     }
     if (requestTimeout <= Duration.zero ||
@@ -104,21 +117,56 @@ final class PersistentSupabaseRuntime
     account = createSupabaseAccountRuntime(
       _binding,
       store: store,
-      access: persistence,
+      access: conversationReceiptStore == null
+          ? persistence
+          : _ReceiptAccountAccess(persistence, _signOutWithReceipt),
     );
-    _aiOwner = AiTextRuntimeOwner(
-      createTransport: ({required auth, required isReady}) =>
-          SupabaseAiTextTransport(
-            client: _client,
+    if (conversationReceiptStore == null) {
+      _aiOwner = AiTextRuntimeOwner(
+        createTransport: ({required auth, required isReady}) =>
+            SupabaseAiTextTransport(
+              client: _client,
+              auth: auth,
+              isReady: isReady,
+              projectUrl: url,
+              publishableKey: key,
+              httpClient: aiHttpClient,
+              now: now,
+              timeout: requestTimeout,
+            ),
+      );
+    } else {
+      final receiptOwner = ReceiptAiRuntimeOwner(
+        store: conversationReceiptStore,
+        createTransport: ({required auth, required isReady, required store}) {
+          final session = auth.currentSession;
+          if (session == null ||
+              session.userId != store.scope.ownerId ||
+              !isReady()) {
+            throw const AiTextFailure(AiTextErrorCode.unauthorized);
+          }
+          return ReceiptGuardedAiTransport(
+            inner: SupabaseAiTextTransport(
+              client: _client,
+              auth: auth,
+              isReady: isReady,
+              projectUrl: url,
+              publishableKey: key,
+              httpClient: aiHttpClient,
+              now: now,
+              timeout: requestTimeout,
+            ),
+            store: store,
             auth: auth,
+            capturedSession: session,
             isReady: isReady,
-            projectUrl: url,
-            publishableKey: key,
-            httpClient: aiHttpClient,
-            now: now,
-            timeout: requestTimeout,
-          ),
-    );
+          );
+        },
+      );
+      _receiptOwner = receiptOwner;
+      _aiOwner =
+          receiptOwner.runtime; // One shared text/conversation/scenario lane.
+    }
     _aiSubscription = account.changes.listen(
       (_) => _syncAiReadiness(),
       onError: (Object _, StackTrace _) => _aiOwner.invalidate(),
@@ -153,6 +201,8 @@ final class PersistentSupabaseRuntime
   final bool _aiTextEnabled;
   final bool _aiConversationEnabled;
   late final AiTextRuntimeOwner _aiOwner;
+  ReceiptAiRuntimeOwner? _receiptOwner;
+  Future<void>? _receiptLogout;
   StreamSubscription<AccountState>? _aiSubscription;
   SrsStudyRuntime? _aiReadyRuntime;
   AiTextGeneration? _aiGeneration;
@@ -355,6 +405,32 @@ final class PersistentSupabaseRuntime
     }
   }
 
+  Future<void> _signOutWithReceipt() {
+    if (_receiptLogout != null) return _receiptLogout!;
+    final done = Completer<void>();
+    _receiptLogout = done.future; // Before revocation or SDK callbacks reenter.
+    final receipt = _receiptOwner!;
+    // Both revoke immediately; attempt Auth cleanup even if receipt cleanup fails.
+    final clearing = receipt.signOut();
+    final signingOut = Future<void>.sync(persistence.signOut);
+    unawaited(
+      Future.wait<void>([clearing, signingOut]).then<void>(
+        (_) {
+          _receiptLogout = null;
+          done.complete();
+        },
+        onError: (Object _, StackTrace _) {
+          _receiptLogout =
+              null; // Only another explicit logout retries failed clear.
+          done.completeError(
+            const ReviewTransportFailure(ReviewErrorCode.internalError),
+          );
+        },
+      ),
+    );
+    return done.future;
+  }
+
   @override
   Future<void> refresh() {
     _aiOwner.invalidate(); // Revoke synchronously before the vault/SDK barrier.
@@ -363,7 +439,9 @@ final class PersistentSupabaseRuntime
 
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.
   Future<void> close() => _closing ??= () async {
-    final aiClosing = _aiOwner.close(); // Revoke before the first await.
+    final aiClosing =
+        _receiptOwner?.close() ??
+        _aiOwner.close(); // Revoke before first await.
     account.dispose();
     _refreshScheduler?.dispose();
     await _noticeSubscription?.cancel();
@@ -451,4 +529,21 @@ final class _BoundedSessionHttp extends http.BaseClient {
   void close() {
     if (owns) inner.close();
   }
+}
+
+/// Optional receipt lifetime adds cleanup to the existing Auth port only.
+/// Account readiness, login and persistence behavior remain in their owners.
+final class _ReceiptAccountAccess implements AccountAccess {
+  _ReceiptAccountAccess(this._auth, this._logout);
+  final PersistentAccountAccess _auth;
+  final Future<void> Function() _logout;
+  @override
+  ReviewSession? get currentSession => _auth.currentSession;
+  @override
+  Stream<void> get sessionChanges => _auth.sessionChanges;
+  @override
+  Future<void> signIn(String email, String password) =>
+      _auth.signIn(email, password);
+  @override
+  Future<void> signOut() => _logout();
 }

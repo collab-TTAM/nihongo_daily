@@ -1,5 +1,7 @@
 // TEST ONLY actual pinned SDK/runtime with simulated Auth/vault/HTTP. No hosted
 // JWT verification, provider activation or live learner acceptance.
+import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -54,6 +56,34 @@ final class _AiHttp extends http.BaseClient {
   }
 }
 
+final class _ReceiptBackend implements SecureConversationReceiptBackend {
+  Object? value;
+  bool failClear = false;
+  Completer<void>? writeWait;
+  final entered = Completer<void>();
+  final calls = <String>[];
+  @override
+  Future<Object?> read(String target) async {
+    calls.add('read');
+    return value;
+  }
+
+  @override
+  Future<void> write(String target, String encoded) async {
+    entered.complete();
+    await writeWait?.future;
+    value = encoded;
+    calls.add('write');
+  }
+
+  @override
+  Future<void> clear(String target) async {
+    calls.add('clear');
+    if (failClear) throw StateError('TEST_ONLY_PRIVATE_CLEAR');
+    value = null;
+  }
+}
+
 void main() {
   late lifecycle.MemoryVault backend;
   late SessionCredentialVault vault;
@@ -73,11 +103,13 @@ void main() {
   PersistentSupabaseRuntime build({
     bool enabled = true,
     bool conversationEnabled = false,
+    ConversationReceiptStore? receiptStore,
   }) => PersistentSupabaseRuntime(
     projectUrl: wire.origin,
     publishableKey: wire.key,
     vault: vault,
     store: journal,
+    conversationReceiptStore: receiptStore,
     httpClient: authHttp,
     aiHttpClient: aiHttp,
     now: () => now,
@@ -182,6 +214,295 @@ void main() {
     authHttp.close();
     aiHttp.close();
   });
+
+  late ConversationReceiptStore receiptStore;
+  Future<_ReceiptBackend> openReceiptRuntime() async {
+    await runtime.close();
+    final receipts = _ReceiptBackend();
+    receiptStore = ConversationReceiptStore(
+      scope: ConversationReceiptScope(projectUrl: wire.origin, ownerId: wire.a),
+      backend: receipts,
+    );
+    runtime = build(conversationEnabled: true, receiptStore: receiptStore);
+    return receipts;
+  }
+
+  StartConversationRequest startRequest() =>
+      StartConversationRequest.fromJson(fixtures['start_conversation_request']);
+  Matcher aiCode(AiTextErrorCode code) =>
+      isA<AiTextFailure>().having((e) => e.code, 'code', code);
+
+  test(
+    'owned receipt startup waits rotated refresh vault and own profile',
+    () async {
+      final receipts = await openReceiptRuntime();
+      backend.secret = 'TEST_ONLY_SAVED';
+      backend.writeWait = Completer<void>();
+      profileWait = Completer<http.Response>();
+      final starting = runtime.start();
+      try {
+        await lifecycle.flush();
+        expect(runtime.persistence.currentSession, isNull);
+        expect(runtime.createAiConversationSession(), isNull);
+        expect(
+          authRequests.where((r) => r.url.path.contains('ensure_profile')),
+          isEmpty,
+        );
+        expect(aiHttp.requests, isEmpty);
+        backend.writeWait!.complete();
+        await starting;
+        await lifecycle.flush();
+        expect(backend.secret, secret);
+        expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+        expect(runtime.createAiConversationSession(), isNull);
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(user)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+        await ready();
+        expect(runtime.createAiConversationSession(), isNotNull);
+        expect(receipts.calls, isEmpty);
+        final authRequest = authRequests.firstWhere(
+          (r) => r.url.path == '/auth/v1/token',
+        );
+        expect(authRequest.url.queryParameters['grant_type'], 'refresh_token');
+        expect(
+          (jsonDecode(authRequest.body)
+              as Map<String, Object?>)['refresh_token'],
+          'TEST_ONLY_SAVED',
+        );
+      } finally {
+        if (!backend.writeWait!.isCompleted) {
+          backend.writeWait!.complete();
+        }
+        if (!profileWait!.isCompleted) {
+          profileWait!.complete(
+            http.Response(
+              jsonEncode(profile.profile(user)),
+              200,
+              headers: {'content-type': 'application/json'},
+            ),
+          );
+        }
+        await starting;
+      }
+    },
+  );
+
+  test(
+    'owned receipt command persists before SDK HTTP and close preserves metadata',
+    () async {
+      final receipts = await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      aiHttp.onSend = (r) async {
+        expect(receipts.calls.last, 'write');
+        expect(receipts.value, isA<String>());
+        expect(
+          r.headers['authorization'],
+          'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+        );
+        return answer('start_conversation');
+      };
+      await runtime.createAiConversationSession()!.start(startRequest());
+      expect(aiHttp.requests.length, 1);
+      await runtime.close();
+      expect(receiptStore.phase, ConversationReceiptStorePhase.closed);
+      expect(receipts.value, isNotNull);
+      final reopened = ConversationReceiptStore(
+        scope: receiptStore.scope,
+        backend: receipts,
+      );
+      try {
+        expect(
+          (await reopened.read())!.clientEventId,
+          startRequest().clientEventId,
+        );
+      } finally {
+        await reopened.close();
+      }
+      expect(aiHttp.closed, isFalse);
+    },
+  );
+
+  for (final error in [false, true]) {
+    test(
+      'owned receipt logout drains actual HTTP before clear error=$error',
+      () async {
+        final receipts = await openReceiptRuntime();
+        await runtime.start();
+        await login();
+        final held = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        final aborted = Completer<void>();
+        aiHttp.onSend = (r) {
+          unawaited(
+            (r as http.AbortableRequest).abortTrigger!.then(
+              (_) => aborted.complete(),
+            ),
+          );
+          entered.complete();
+          return held.future;
+        };
+        final session = runtime.createAiConversationSession()!;
+        final result = expectLater(
+          session.start(startRequest()),
+          throwsA(unauthorized),
+        );
+        try {
+          await entered.future;
+          var done = false;
+          final logout = runtime.account.signOut().then((_) => done = true);
+          await aborted.future;
+          await lifecycle.flush();
+          expect(done, isFalse);
+          expect(backend.secret, isNull);
+          expect(receipts.value, isNotNull);
+          expect(receipts.calls, isNot(contains('clear')));
+          expect(runtime.createAiConversationSession(), isNull);
+          if (error) {
+            held.completeError(StateError('TEST_ONLY_LATE_PRIVATE'));
+          } else {
+            held.complete(answer('start_conversation'));
+          }
+          await result;
+          await logout;
+          expect(runtime.account.state.phase, AccountPhase.signedOut);
+          expect(receipts.value, isNull);
+          expect(receipts.calls.last, 'clear');
+          expect(aiHttp.requests.length, 1);
+          expect(aiHttp.closed, isFalse);
+        } finally {
+          if (!held.isCompleted) {
+            held.completeError(StateError('TEST_ONLY_CLEANUP'));
+          }
+        }
+      },
+    );
+  }
+
+  test(
+    'owned receipt failed clear reports logout error and explicit retry retains partition',
+    () async {
+      final receipts = await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      await runtime.createAiConversationSession()!.start(startRequest());
+      receipts.failClear = true;
+      try {
+        await runtime.account.signOut();
+        expect(runtime.account.state.phase, AccountPhase.signOutError);
+        expect(backend.secret, isNull);
+        expect(receipts.value, isNotNull);
+        expect(
+          () => ConversationReceiptStore(
+            scope: receiptStore.scope,
+            backend: receipts,
+          ),
+          throwsA(isA<ConversationReceiptStoreFailure>()),
+        );
+        expect(runtime.createAiConversationSession(), isNull);
+        receipts.failClear = false;
+        await runtime.account.signOut();
+        expect(runtime.account.state.phase, AccountPhase.signedOut);
+        expect(receipts.value, isNull);
+        expect(receipts.calls.where((c) => c == 'clear').length, 2);
+      } finally {
+        receipts.failClear = false;
+        await runtime.account.signOut();
+      }
+    },
+  );
+
+  test(
+    'owned receipt refresh during held write never dispatches old command',
+    () async {
+      final receipts = await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      receipts.writeWait = Completer<void>();
+      final old = runtime.createAiConversationSession()!;
+      final result = expectLater(
+        old.start(startRequest()),
+        throwsA(unauthorized),
+      );
+      try {
+        await receipts.entered.future;
+        secret = 'TEST_ONLY_REFRESH_ROTATED';
+        generation++;
+        await runtime.refresh();
+        await lifecycle.flush();
+        await ready();
+        expect(runtime.createAiConversationSession(), isNull);
+        expect(aiHttp.requests, isEmpty);
+        receipts.writeWait!.complete();
+        await result;
+        await lifecycle.flush();
+        expect(old.isCurrent, isFalse);
+        final fresh = runtime.createAiConversationSession()!;
+        await expectLater(
+          fresh.start(startRequest()),
+          throwsA(aiCode(AiTextErrorCode.syncConflict)),
+        );
+        expect(aiHttp.requests, isEmpty);
+        expect(receipts.value, isNotNull);
+      } finally {
+        if (!receipts.writeWait!.isCompleted) {
+          receipts.writeWait!.complete();
+        }
+      }
+    },
+  );
+
+  test(
+    'owned receipt source stays retired after logout and another account login',
+    () async {
+      final receipts = await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      await runtime.createAiConversationSession()!.start(startRequest());
+      await runtime.account.signOut();
+      user = wire.b;
+      generation++;
+      secret = 'TEST_ONLY_OTHER_REFRESH';
+      await login();
+      expect(runtime.account.readySession!.userId, wire.b);
+      expect(runtime.createAiConversationSession(), isNull);
+      expect(runtime.createAiTextRepository(), isNull);
+      expect(receiptStore.phase, ConversationReceiptStorePhase.closed);
+      expect(receipts.value, isNull);
+      expect(aiHttp.requests.length, 1);
+    },
+  );
+
+  test(
+    'owned receipt foreign project rejected before SDK ownership transfer',
+    () async {
+      await runtime.close();
+      final receipts = _ReceiptBackend();
+      final foreign = ConversationReceiptStore(
+        scope: ConversationReceiptScope(
+          projectUrl: 'https://other.invalid',
+          ownerId: wire.a,
+        ),
+        backend: receipts,
+      );
+      try {
+        expect(
+          () => build(conversationEnabled: true, receiptStore: foreign),
+          throwsA(isA<SessionVaultFailure>()),
+        );
+        expect(foreign.phase, ConversationReceiptStorePhase.open);
+        expect(receipts.calls, isEmpty);
+        expect(authRequests, isEmpty);
+      } finally {
+        await foreign.close();
+      }
+    },
+  );
 
   test(
     'AI owner flag defaults off even with an authenticated ready runtime',

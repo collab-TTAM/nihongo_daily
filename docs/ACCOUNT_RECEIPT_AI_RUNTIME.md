@@ -211,3 +211,16 @@ New exact-head CI must re-run the combined Windows marker and existing owned
 persistent runtime/account/late-response suites. This removes a fixture-port gap;
 it does not install the receipt source in the production startup host or prove
 hosted Auth/JWT/RLS/provider/learner flows. All14 release gates remain pending.
+
+## Existing owned runtime integration
+
+PersistentSupabaseRuntime can now receive an explicit conversationReceiptStore;
+see PERSISTENT_SESSION_LIFECYCLE.md for validation, fixed-account ownership,
+shared ONE AI owner, logout join/failed-clear retry and preserve-close ordering.
+It reuses the existing private SDK/production persistence adapter and account
+profile barrier. No second AI lane or default factory is installed. The optional
+source retires permanently on logout; a host must close/replace it before another
+receipt lifetime. Auth/SRS re-login alone cannot retarget/renew that AI capability.
+Eight owned-runtime/SDK cases require new exact-head Flutter/Windows CI. Hosted
+identity/provider, default learner activation and authenticated reconciliation
+are still missing; metadata never grants replay or a new event.

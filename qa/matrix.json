@@ -3307,6 +3307,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart --plain-name 'shared SDK Auth port'",
       "limitation": "SDK Auth HTTP/JWT TEST ONLY; native combined probe and whole owned runtime require exact-head CI. Shared production adapter is not installed receipt startup host or hosted learner proof; all14 gates pending/default unchanged."
+    },
+    {
+      "id": "owned-runtime-receipt-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Opt-in receipt store in existing PersistentSupabaseRuntime/shared AI lane: persisted Auth/profile barrier, write-before-SDK dispatch, preserve-close, actual drain before logout clear, failure/explicit retry and fixed-account retirement.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart",
+          "contains": "Future<void> _signOutWithReceipt()"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned receipt logout drains actual HTTP before clear"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned receipt source stays retired after logout"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt'",
+      "limitation": "New actual runtime/SDK cases authored locally unrun; exact-head CI required. Auth/JWT/vault/profile/HTTP/receipt ports TEST ONLY, not combined native owned host or hosted learner proof. Fixed AI source terminal after logout/one pending mutation/no default activation/all14 gates pending."
     }
   ],
   "findings": [

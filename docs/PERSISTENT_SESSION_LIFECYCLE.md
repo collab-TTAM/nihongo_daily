@@ -183,3 +183,49 @@ and native component checks still do not prove a deployed learner journey. Actua
 same-session SDK refresh signal, safe restore/refresh failures and borrowed SDK
 lifetime have focused SDK regressions; full old owned-runtime/Windows checks remain
 mandatory exact-head CI. No Auth strategy/provider/storage policy change.
+
+## Optional owned conversation receipt store
+
+PersistentSupabaseRuntime now optionally accepts conversationReceiptStore. The
+trusted host must explicitly enable conversation, supply the same project origin,
+an OPEN fixed-account secure store, and keep exclusive ownership. Invalid scope/
+mode fails before SDK construction or store ownership transfer. A successful
+constructor owns this store. Default/staging builders supply none and are unchanged.
+No learner URL/key form, fake Auth/save success or extra SDK/token writer.
+
+The existing ONE AI owner is backed by ReceiptAiRuntimeOwner in this opt-in mode;
+text/conversation/scenarios still share the same generation/transport/drain. The
+store's owner must match the exact accepted Auth hint before inner SDK transport
+allocation. Existing persisted-refresh/own-profile readiness gates still apply.
+The decorator writes metadata before mutation dispatch; existing pending metadata
+blocks even identical events. No metadata-derived replay or later-command grant.
+
+Account logout revokes the account gate first, then starts BOTH receipt retirement/
+clear and existing persistence SDK logout/refresh-vault cleanup. Both attempts are
+observed even if one fails. Receipt clear waits actual storage/HTTP and owned
+transport drain; logout succeeds only after both operations. Receipt failure maps
+to the existing fixed account signOutError, retains partition ownership and needs
+an explicit account logout retry. Use account.signOut, not direct manipulation of
+runtime.persistence/SDK. Sign-in/readiness/refresh logic is otherwise unchanged.
+
+Runtime close retires the same AI owner, drains actual work, preserves receipt
+metadata/releases the partition, then follows existing SDK disposal ordering.
+Failed receipt cleanup blocks SDK teardown success; close cannot bypass/retry a
+failed explicit clear. Host must observe failures. No remote logout guarantee or
+server receipt deletion is inferred. A failed overall close remains failed.
+
+This fixed-partition receipt source is terminal after explicit logout. Auth/SRS
+can sign in again, but AI remains unavailable until host closes/replaces the owned
+runtime with a fresh explicit receipt store/lifecycle. It never retargets the old
+partition to B or clears ambiguous state to manufacture new command permission.
+One pending mutation still requires authenticated lookup/verified conditional
+release before sequential conversation can be enabled for learners.
+
+Eight new actual owned-runtime/SDK tests are authored for startup rotation/profile,
+persistence-before-HTTP/preserve-close, held ignored-abort logout late success/error,
+failed clear/claim/explicit retry, refresh during held receipt write, post-logout
+other-account source retirement, and foreign project pre-ownership rejection.
+Auth/JWT/vault/profile/AI HTTP/receipt backend are TEST ONLY; full Flutter/native
+execution needs exact-head CI. This is an opt-in production assembly change, not
+installed startup configuration, native combined-host proof or hosted learner
+acceptance. All14 release gates/default AI unavailable remain.
