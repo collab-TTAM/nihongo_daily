@@ -6,6 +6,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <dpapi.h>
+#include <bcrypt.h>
 #endif
 namespace {
 using nihongo::CommandProtectionStatus;
@@ -37,6 +38,80 @@ void InvalidInputs() {
 }
 }  // namespace
 #ifdef _WIN32
+namespace {
+// TEST ONLY independent producer: hashes malformed frames BEFORE OS protection.
+// This deliberately models valid DPAPI/CNG from another same-user writer.
+void Put32(std::vector<uint8_t>* bytes, size_t offset, uint32_t value) {
+  for (unsigned i = 0; i < 4; ++i)
+    (*bytes)[offset + i] = static_cast<uint8_t>((value >> (8 * i)) & 255);
+}
+std::vector<uint8_t> FixtureProtect(std::vector<uint8_t> frame,
+    const std::string& context) {
+  BCRYPT_ALG_HANDLE algorithm = nullptr;
+  Check(BCryptOpenAlgorithmProvider(&algorithm, BCRYPT_SHA256_ALGORITHM, nullptr, 0) >= 0);
+  uint8_t digest[32]{};
+  const auto status = BCryptHash(algorithm, nullptr, 0, frame.data(),
+      static_cast<ULONG>(frame.size()), digest, sizeof(digest));
+  BCryptCloseAlgorithmProvider(algorithm, 0);
+  Check(status >= 0);
+  frame.insert(frame.end(), digest, digest + sizeof(digest));
+  SecureZeroMemory(digest, sizeof(digest));
+  DATA_BLOB input{static_cast<DWORD>(frame.size()), frame.data()};
+  DATA_BLOB entropy{static_cast<DWORD>(context.size()),
+      reinterpret_cast<BYTE*>(const_cast<char*>(context.data()))};
+  struct Output {
+    DATA_BLOB blob{};
+    ~Output() {
+      if (blob.pbData) {
+        SecureZeroMemory(blob.pbData, blob.cbData);
+        LocalFree(blob.pbData);
+      }
+    }
+  } output;
+  Check(CryptProtectData(&input, nullptr, &entropy, nullptr, nullptr,
+      CRYPTPROTECT_UI_FORBIDDEN, &output.blob) != FALSE);
+  Check(output.blob.pbData && output.blob.cbData > 0);
+  return {output.blob.pbData, output.blob.pbData + output.blob.cbData};
+}
+void ValidlyProtectedMalformedFrames(const std::string& target) {
+  const auto context = "NihongoDaily.PendingCommandProtection.v1|" + target;
+  std::vector<uint8_t> control = {'N', 'D', 'P', 'C', 1, 0, 0, 0};
+  control.resize(16, 0);
+  Put32(&control, 8, static_cast<uint32_t>(context.size()));
+  Put32(&control, 12, 3);
+  control.insert(control.end(), context.begin(), context.end());
+  control.insert(control.end(), {0, 255, 1});
+  const auto accepted = nihongo::UnprotectPendingCommand(target, FixtureProtect(control, context));
+  Check(accepted.status == CommandProtectionStatus::success);
+  Check(accepted.bytes == std::vector<uint8_t>({0, 255, 1}));
+  // Control proves the helper is valid; every mutation gets a FRESH valid digest.
+  for (unsigned variant = 0; variant < 12; ++variant) {
+    auto frame = control;
+    switch (variant) {
+      case 0: frame[0] ^= 1; break; // Magic.
+      case 1: frame[4] = 2; break; // Unknown version.
+      case 2: frame[7] = 1; break; // Reserved byte.
+      case 3: Put32(&frame, 8, 0); break;
+      case 4: Put32(&frame, 8, 0xffffffffu); break;
+      case 5: // Actually empty payload, with otherwise consistent lengths.
+        Put32(&frame, 12, 0);
+        frame.resize(16 + context.size());
+        break;
+      case 6: Put32(&frame, 12, 32769); break;
+      case 7: Put32(&frame, 12, 0xffffffffu); break;
+      case 8: frame[16] ^= 1; break; // Correct entropy, wrong embedded context.
+      case 9: frame.push_back(0); break; // Trailing byte before valid digest.
+      case 10: frame.pop_back(); break; // Truncated payload, fresh valid digest.
+      case 11: // Actual oversized decrypted output, not merely bad length.
+        Put32(&frame, 12, 32769);
+        frame.resize(16 + context.size() + 32769, 1);
+        break;
+    }
+    const auto rejected = nihongo::UnprotectPendingCommand(target, FixtureProtect(frame, context));
+    Check(rejected.status == CommandProtectionStatus::unavailable && rejected.bytes.empty());
+  }
+}
+}  // namespace
 bool ProbePendingCommandProtection() {
   try {
     InvalidInputs();
@@ -96,6 +171,7 @@ bool ProbePendingCommandProtection() {
       const auto rejected = nihongo::UnprotectPendingCommand(target, raw);
       Check(rejected.status == CommandProtectionStatus::unavailable && rejected.bytes.empty());
     }
+    ValidlyProtectedMalformedFrames(target);
     return true;
   } catch (...) { return false; } // Fixed marker only; no OS detail/payload output.
 }

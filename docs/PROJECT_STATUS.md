@@ -5,6 +5,36 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — validly protected malformed frames, 2026-10-27
+
+- Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
+  b1d5309826242c92a9b73485105136309dc17b49. New commit/CI in first PR checkpoint.
+  main78a44fa/source37afa572a/Pro38at28c20cb unchanged; reserved N4 untouched.
+- Parent CI40411455251 raw exact source/latestattempt1 SUCCESS all5 jobs/EVERY
+  step/no skips. Windows121882987114 actual command-protection marker and all3
+  OWNED runtime/lookup/original-read markers observed. Previous component verified.
+- TEST ONLY independent producer creates correctly hashed/DPAPI-protected binary
+  valid control plus12 malformed frames. Exact control bytes required; bad magic,
+  version/reserved/context/length/empty/oversize/trailing/truncated data must fail
+  with empty bytes even though SHA256 and DPAPI are valid. Required fixed marker
+  follows original probe only after success. Existing tests/assertions retained.
+- Same-user writer can create valid control: this is explicitly NOT writer
+  authentication/rollback/Auth isolation. No production source, channel/backend,
+  storage/retention/collection/default/Auth/provider/CI/contract/Pro change.
+- Final Linux C++17 warnings-as-errors compile/input-validation probe PASS; this
+  does NOT execute Windows-only cases. New native/MSVC/DPAPI/full Flutter/builds
+  locally UNRUN. QA46/46/inventory148/whitespace/separate diff review recorded in
+  PR; all147 prior QA objects/findings/gates exact. Windows execution awaits CI.
+- Five paths: command_protection_probe.cpp, session_vault_probe.cpp,
+  WINDOWS_PENDING_COMMAND_PROTECTION.md, this status, qa/matrix.json.
+- NEXT exact new-head/latest-attempt all5 jobs/EVERY required step/new matrix
+  marker +old protection/all3 OWNED markers. Fix actual diagnostics without
+  weakening assertions. Then trusted-writer/key/ACL/integrity and atomic bounded
+  command+reference write-before-send/restore/logout policy before activation.
+  Keep41 draft/17 open/AIoff/all14 hosted release groups pending. No merge, issue
+  closure, deployment, release or schedule action; not Personal Alpha proof.
+
+
 ## Core checkpoint — Windows command byte protection, 2026-10-26 UTC
 
 - Draft PR #41 / issue #17, branch `automation/issue-11-plan-sdk-integration`;

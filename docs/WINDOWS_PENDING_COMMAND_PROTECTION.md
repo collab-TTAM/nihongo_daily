@@ -89,3 +89,25 @@ nor learner restart/recovery acceptance; all14 hosted release groups remain open
 - [Microsoft CryptProtectData](https://learn.microsoft.com/en-us/windows/win32/api/dpapi/nf-dpapi-cryptprotectdata): user context, entropy, UI flags, LocalFree and Crypt32.
 - [Microsoft CryptUnprotectData](https://learn.microsoft.com/en-us/windows/win32/api/dpapi/nf-dpapi-cryptunprotectdata): exact entropy and additional integrity-check guidance; corruption can return success with corrupted output.
 - [Microsoft BCryptHash](https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcrypthash): unkeyed SHA-256 via null secret, Windows 10 / Server 2016 minimum and Bcrypt.
+
+## Independently produced protected frame matrix — 2026-10-27
+
+The TEST ONLY producer now hashes a synthetic frame independently with CNG and
+protects it directly with DPAPI, without calling production ProtectPendingCommand.
+A valid binary control must decode to exactly 00 ff 01, proving the helper's
+format/entropy/digest are usable. Twelve individually rehashed mutations must
+return unavailable and empty bytes: magic, version, reserved byte, zero/uint32-max
+context length, actually empty payload, oversized/uint32-max declared payload,
+wrong embedded context under correct entropy, extra/truncated payload, and actual
+32769-byte decrypted payload. These cases exercise parser checks independently
+of a DPAPI or SHA-256 failure. A fixed extra marker follows only after the entire
+existing probe (including this matrix) succeeds:
+
+`PASS: validly protected malformed command frames/control (TEST ONLY, no persistence)`
+
+The valid independent control also demonstrates the security limit: other code
+running as the same OS user can produce an accepted frame. Neither a valid digest
+nor DPAPI success authenticates the original writer. No durable storage, actual
+learner input, new collection, default behavior or Auth strategy is activated.
+Native Windows cases are authored but locally unrun; latest exact-head CI is the
+required execution evidence. Local Linux compile/validation does not execute them.

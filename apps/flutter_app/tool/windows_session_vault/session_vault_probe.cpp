@@ -126,6 +126,7 @@ int wmain(int argc, wchar_t* argv[]) {
     std::cout << "PASS: actual Windows receipt credential metadata isolation/corruption/clear (TEST ONLY)\n";
     Check(ProbePendingCommandProtection());
     std::cout << "PASS: actual Windows user-context command protection bounds/roundtrip/scope/corruption (TEST ONLY, no persistence)\n";
+    std::cout << "PASS: validly protected malformed command frames/control (TEST ONLY, no persistence)\n";
     passed = true;
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.

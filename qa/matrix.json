@@ -3671,6 +3671,29 @@
       ],
       "reproduce": "Build/run existing Windows session_vault_probe via required credential-store CI step; require new command protection PASS marker and all5 jobs/every step at exact head/latest attempt. Linux COMMAND_PROTECTION_VALIDATION_MAIN exercises input validation and unsupported-platform fail-closed only.",
       "limitation": "Local Linux C++17 compile/validation PASS; Windows DPAPI/MSVC/full builds locally UNRUN. Same OS user is not Supabase isolation; public context/internal SHA256 is not writer authentication/rollback protection. No backend, Dart channel, file/vault payload write, retention/collection activation or hosted/restart acceptance; all14 hosted groups pending."
+    },
+    {
+      "id": "windows-validly-protected-malformed-command-frames",
+      "status": "automated-baseline",
+      "scope": "Independent TEST ONLY correct CNG hash and DPAPI wrapper control plus12 malformed command frames enforce parser rejection independently of crypto failure.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/command_protection_probe.cpp",
+          "contains": "void ValidlyProtectedMalformedFrames(const std::string& target)"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "PASS: validly protected malformed command frames/control"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "Run required Windows credential-store probe; require new malformed-frame/control marker and all old markers at exact-head latest-attempt CI all5 jobs/every step.",
+      "limitation": "Windows-only new control/12 cases locally UNRUN; Linux C++17 compile and input-validation probe PASS only. Same-user writer valid control is not original-writer authentication, Auth/account isolation or rollback protection. No actual learner storage/collection/default activation; all14 hosted groups pending."
     }
   ],
   "findings": [
