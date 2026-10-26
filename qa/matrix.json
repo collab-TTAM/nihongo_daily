@@ -3077,6 +3077,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
       "limitation": "New real Windows bridge/process checks authored, unrun locally; exact-head CI required. No cross-process ownership, learner recovery, hosted Auth/provider/lookup or release proof; AI off/all14 hosted gates pending."
+    },
+    {
+      "id": "receipt-dispatch-barrier",
+      "status": "automated-baseline",
+      "scope": "Caller-owned first-attempt persisted metadata gate with captured Auth/readiness checks, terminal store identity claim, late-response and actual drain guards.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/conversation_receipt_dispatch_test.dart",
+          "contains": "two gates borrowing one store cannot both pass an empty read"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/conversation_receipt_dispatch_test.dart",
+      "limitation": "Pure TEST ONLY ports, not application/runtime wiring, hosted Auth, Windows-backed gate, authenticated reconciliation or learner restart proof. One pending command only; no retries/clear/default activation/all14 hosted gates pending."
     }
   ],
   "findings": [
