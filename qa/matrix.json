@@ -3115,6 +3115,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_guarded_ai_transport_test.dart",
       "limitation": "Actual owner/session with TEST ONLY storage/transport ports; no SDK/Windows-backed runtime/default activation/authenticated reconciliation/hosted learner or cross-process ownership proof. One mutation only; all14 release groups pending."
+    },
+    {
+      "id": "receipt-runtime-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Owned receipt store/runtime lifecycle: actual drain before preserve-close or explicit signout clear, retained claim on failure, explicit retry, and opt-in Windows facade factory.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/receipt_ai_runtime_owner_test.dart",
+          "contains": "failed clear keeps claim and explicit retry cannot be bypassed by close"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/windows_receipt_ai_runtime_test.dart",
+          "contains": "Windows failed clear requires explicit retry and no synthetic success"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_ai_runtime_owner_test.dart test/features/ai/windows_receipt_ai_runtime_test.dart",
+      "limitation": "Pure storage/transport ports and mock Windows channel; no actual Windows-backed lifecycle/SDK/account journey/hosted logout or authenticated reconciliation proof. No default activation/all14 release groups pending."
     }
   ],
   "findings": [
