@@ -13,6 +13,7 @@ import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
+import 'package:nihongo_daily/features/ai/domain/retained_conversation_command.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
@@ -422,6 +423,68 @@ void main() {
       expect(aiHttp.requests, isEmpty);
     },
   );
+  for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+    test('owned retained command lookup $status never releases pending', () async {
+      final receipts = await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      final flow = runtime.createAiConversationSession()!;
+      final original = startRequest();
+      aiHttp.onSend = (r) async {
+        expect(r.method, 'POST');
+        throw StateError('TEST ONLY uncertain network result');
+      };
+      await expectLater(flow.start(original), throwsA(isA<AiTextFailure>()));
+      expect(aiHttp.requests, hasLength(1));
+      expect(receipts.value, receiptReference().encode());
+      final retained = flow.retainedCommand! as RetainedConversationStart;
+      expect(identical(retained.request, original), isTrue);
+      expect(identical(flow, runtime.createAiConversationSession()), isTrue);
+      aiHttp.onSend = (r) async {
+        expect(r.method, 'GET');
+        expect(r.url.path, '/rest/v1/operation_receipts');
+        expect(
+          r.url.queryParameters['select'],
+          'user_id,operation,client_event_id,request_json,status,response_json',
+        );
+        expect(
+          r.headers['authorization'],
+          'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+        );
+        return originalAnswer('start_conversation', status);
+      };
+      final result = await runtime
+          .createConversationReceiptLookup()!
+          .lookupStart(receiptReference(), retained.request);
+      expect(result.status.name, status.toLowerCase());
+      expect(flow.snapshot.phase, ConversationSessionPhase.notStarted);
+      expect(flow.hasUnresolvedMutation, isTrue);
+      expect(identical(flow.retainedCommand, retained), isTrue);
+      await expectLater(
+        flow.start(retained.request),
+        throwsA(aiCode(AiTextErrorCode.syncConflict)),
+      );
+      await expectLater(
+        flow.start(
+          StartConversationRequest(
+            scenarioId: original.scenarioId,
+            level: original.level,
+            clientEventId: '44444444-4444-4444-8444-444444444444',
+          ),
+        ),
+        throwsA(isA<AiTextRequestPending>()),
+      );
+      expect(identical(flow.retainedCommand, retained), isTrue);
+      expect(aiHttp.requests.map((r) => r.method), ['POST', 'GET']);
+      expect(receipts.calls, isNot(contains('clear')));
+      expect(receipts.value, receiptReference().encode());
+      await runtime.account.signOut();
+      expect(flow.retainedCommand, isNull);
+      expect(receipts.value, isNull);
+      expect(backend.secret, isNull);
+      expect(aiHttp.requests, hasLength(2));
+    });
+  }
   for (final logout in [false, true]) {
     test(
       'owned original receipt reader actual drain on transition logout=$logout',

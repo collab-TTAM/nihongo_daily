@@ -2,6 +2,7 @@ import 'dart:convert';
 import '../../srs/data/review_repository.dart';
 import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
+import '../domain/retained_conversation_command.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
 import 'conversation_mutation_lane.dart';
@@ -48,8 +49,19 @@ final class CapturedConversationSession {
   );
   // One immutable command in this captured generation only. No disk/token data.
   Future<void> Function()? _retainedRetry;
+  RetainedConversationCommand? _retainedCommand;
   String? _retainedFingerprint;
   bool _retainedRetryable = false;
+
+  /// Original input for an idle, unresolved command in this ready generation.
+  /// Never reconstructed from receipt metadata. Reading grants no retry/clear
+  /// authority, performs no I/O and does not change the existing pending slot.
+  /// In-flight/reentrant/stale reads are redacted, including after a timeout
+  /// until the actual wire request drains. The caller must not persist this data.
+  RetainedConversationCommand? get retainedCommand {
+    if (_executing || _checking || !isCurrent || isBusy) return null;
+    return _lane.hasUnresolvedMutation ? _retainedCommand : null;
+  }
 
   /// Explicit host capability; legacy view remount policy stays unchanged.
   bool get canRetryRetained {
@@ -71,12 +83,14 @@ final class CapturedConversationSession {
   Future<T> _remember<T>(
     String operation,
     Map<String, Object> body,
+    RetainedConversationCommand command,
     Future<void> Function() retry,
     Future<T> Function() dispatch,
   ) async {
     final fingerprint = '$operation:${jsonEncode(body)}';
     if (_retainedRetry == null) {
       _retainedRetry = retry;
+      _retainedCommand = command;
       _retainedFingerprint = fingerprint;
     }
     final original = fingerprint == _retainedFingerprint;
@@ -92,6 +106,7 @@ final class CapturedConversationSession {
 
   void _clearRetained() {
     _retainedRetry = null;
+    _retainedCommand = null;
     _retainedFingerprint = null;
     _retainedRetryable = false;
   }
@@ -144,6 +159,7 @@ final class CapturedConversationSession {
     final response = await _remember(
       'start_conversation',
       request.toJson(),
+      RetainedConversationStart(request),
       () async {
         await start(request);
       },
@@ -167,6 +183,7 @@ final class CapturedConversationSession {
         final response = await _remember(
           'conversation_turn',
           request.toJson(),
+          RetainedConversationTurn(request),
           () async {
             await turn(request);
           },
@@ -209,6 +226,7 @@ final class CapturedConversationSession {
     final response = await _remember(
       'finish_conversation',
       request.toJson(),
+      RetainedConversationFinish(request),
       () async {
         await finish(request);
       },

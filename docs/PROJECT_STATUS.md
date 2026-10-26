@@ -4,37 +4,45 @@ Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
 
-## Core checkpoint — full original-command receipt association, 2026-10-27
+## Core checkpoint — retained original-command access, 2026-10-26 UTC
 
 - Branch `automation/issue-11-plan-sdk-integration`, draft PR #41 / issue #17;
-  parent `ecb50960814df6892f0a15a44569800747a24378`. Main78a44fa/source37afa572a/
-  Pro38at28c20cb unchanged. Core marker, published commit and new CI in PR41.
-- Parent [CI40357884098](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40357884098)
+  parent `f2fb287203ab9d540fa19120ddba05322aeb6df3`. Published commit and new CI
+  are recorded in the first PR41 checkpoint. Main/source37/Pro38 unchanged.
+- Parent [CI40393598539](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40393598539)
   exact source/latest attempt1 SUCCESS: all5 jobs and every step, no skips.
-  Windows121695205220 confirms BOTH native lookup and original OWNED markers;
-  Flutter121696095677 confirms the same-event conflict/different-event busy
-  regression. Earlier native-read failure is fixed with full current-head proof.
-- Added pure ConversationReceiptCommandMatch for all3 retained original DTOs:
-  exact full request_json association before existing strict typed receipt decode,
-  six-field/zero-or-one/1MiB bound, no field/type/value substitution, preserve
-  UUID request casing/text/Unicode/whitespace, row UUID comparison unchanged.
-  Fixed safe errors/no source; no input mutation/raw map retention.
-- Twelve new malformed/association/immutability tests plus retained request/
-  response tests use original frozen fixtures. Source/test/QA validation results
-  are appended below after execution; new full Flutter/SDK/native/build locally
-  UNRUN. No denied Flutter bootstrap retry/bypass. This is a pure prerequisite,
-  NOT hosted RLS/provider proof, durable full-command recovery or release authority.
-- Five paths: new domain/conversation_receipt_command_match.dart and
-  test/features/ai/conversation_receipt_command_match_test.dart (Flutter app),
-  docs/CONVERSATION_RECEIPT_LOOKUP.md, this status, qa/matrix.json. Existing app/
-  SDK five-field read, captured guards, Auth/vault/journal/lane/storage/default/
-  API/SQL/RLS/CI/dependencies/Pro/content unchanged. No new command/text on disk.
-- Next exact new-head/latest attempt all5/every step; then authenticated original-
-  bound read/capture integration and reviewed conditional release. Empty, pending,
-  metadata or stored-command association NEVER grants clear/replay/redispatch/new
-  event. Learner recovery memory-only/one pending mutation, #41draft/#17open/AIoff,
-  all14 hosted release groups pending. No merge/closure/deploy/release/security/
-  Auth strategy/provider/collection/spend/schedule/Alpha action.
+  Windows121820783323 confirms all3 OWNED runtime/lookup/original-read markers;
+  Flutter121821574373 confirms all13 owned original receipt reader cases.
+  TEST ONLY Auth/HTTP/native evidence is not hosted learner or RLS proof.
+- CapturedConversationSession now exposes the full immutable original Start/Turn/
+  Finish DTO only while current, idle and unresolved. It shares the existing
+  in-memory retry slot; preserves exact UUID/text/Unicode and never reconstructs
+  from metadata. In-flight/timeouts before actual drain/reentrant/stale reads
+  return null; settled/revoked sessions drop their retained reference. No storage,
+  serialization, automatic lookup/replay, result application or release authority.
+- Nine new pure regression cases plus assertions in all6 existing late-result
+  cases cover exact original preservation, changed input/new event denial,
+  nonretryable failures, success, readiness/getter failure, same-user replacement,
+  logout/A-B-A and reentry. Three new actual owned-runtime tests connect the
+  retained Start DTO to authenticated original lookup for UNKNOWN/PENDING/
+  COMPLETED, preserving metadata/pending/no-redispatch and logout cleanup.
+- Observed local: fresh official Dart3.9.2 archive SHA256 verified; pure-source
+  standalone harness (only flutter_test import replaced by test1.26.2) analyzer
+  clean and 153/153 tests PASS. This is not full Flutter analysis/test evidence.
+  Format4 files unchanged; QA46/46 PASS, inventory145 valid (not145 executed).
+  Separate diff review and whitespace checks PASS; all144 prior QA cases/gates/
+  findings preserved exactly. Seven-path scope contains no Pro/content changes.
+  Full Flutter/SDK runtime tests, builds and native Windows locally UNRUN; require
+  new exact-head/latest-attempt CI, all5 jobs/every step and Windows markers.
+- Seven paths: Flutter AI session + retained domain type + session/owned-runtime
+  tests; docs/CONVERSATION_RECEIPT_LOOKUP.md, this status and qa/matrix.json.
+  App defaults, retry policy, deadlines, SDK/Auth/HTTP/storage/SQL/RLS/CI/dependency
+  contracts and protected Pro content remain unchanged.
+- Next: exact new-head CI, then design/review secure full-command retention and
+  verified conditional result application/release with hosted RLS evidence.
+  An acquired DTO is data only and cannot be recalled from caller memory on
+  revocation. Learner recovery remains memory-only/one pending mutation blocks
+  new events. #41 draft/#17 open/AI off/all14 hosted release groups pending.
 
 
 ## Core checkpoint — sửa analyzer của Windows receipt probe, 2026-10-26

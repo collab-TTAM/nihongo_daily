@@ -3594,6 +3594,33 @@
       ],
       "reproduce": "Run the existing Windows Dart-to-vault bridge workflow; require original-read marker plus both retained lookup/OWNED markers on exact head.",
       "limitation": "New native phase assertions locally UNRUN; format/QA are not Windows proof. TEST ONLY Auth/HTTP, not hosted RLS/provider/learner proof or full-command persistence/release authority. All14 hosted groups pending."
+    },
+    {
+      "id": "conversation-retained-original-access",
+      "status": "automated-baseline",
+      "scope": "Memory-only typed original command access shares captured session pending slot; no authority for replay, application or release.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/captured_conversation_session.dart",
+          "contains": "RetainedConversationCommand? get retainedCommand"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/captured_conversation_session_test.dart",
+          "contains": "retained read redacts readiness and transport reentry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned retained command lookup $status never releases pending"
+        }
+      ],
+      "issues": [
+        17,
+        20,
+        31
+      ],
+      "reproduce": "Run session, retained recovery and persistent_ai_text_runtime Flutter tests; require exact-head latest-attempt CI all5 jobs/every step.",
+      "limitation": "153 pure tests/analyzer locally pass in standalone test1.26.2 harness; full Flutter/owned SDK/native tests locally unrun. TEST ONLY Auth/HTTP is not hosted RLS or learner proof. No disk retention, automatic lookup or release; all14 hosted gates pending."
     }
   ],
   "findings": [

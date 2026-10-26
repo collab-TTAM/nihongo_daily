@@ -376,3 +376,42 @@ no bootstrap retry/bypass. Source remains TEST ONLY/no hosted acceptance. Five
 paths: windows_sdk_receipt_fixture.dart, verify_windows_vault_bridge.ps1 (Flutter
 tool), docs/CONVERSATION_RECEIPT_LOOKUP.md, docs/PROJECT_STATUS.md, qa/matrix.json.
 Published commit/new CI/next action in PR41 checkpoint; all14 hosted gates pending.
+
+
+## Retained original-command access — 2026-10-26 UTC
+
+`CapturedConversationSession.retainedCommand` exposes a sealed typed Start/Turn/
+Finish wrapper around the exact immutable request already captured by its retry
+closure. The first unresolved input wins; a changed body, event or operation
+cannot replace it. UUID casing, level, Japanese code points and whitespace are
+preserved. Hosts can pass that DTO to the existing current authenticated
+`lookupStart`/`lookupTurn`/`lookupFinish` capability without reconstructing payload
+from the five scalar receipt fields. No lookup is triggered by reading the getter.
+
+Read availability is independent of retryability: a nonretryable uncertain command
+still needs investigation. The getter redacts during execution, readiness reentry,
+actual wire drain after timeout, or revoked/unready ownership. Success or revocation
+clears the session reference. Same-user replacement and host A-B-A barriers cannot
+restore it. Existing retry, one-pending-slot, receipt and SDK owner guards remain.
+
+The returned value is sensitive data, NOT a capability: it carries no account,
+result-application, replay or receipt-clear authority. Its safe string projection
+contains no payload. Callers must not log/persist it and must recheck the current
+reader/owner before I/O. Revocation cannot erase a previously acquired value from
+caller memory; this is not zeroization or durable full-command recovery. Nothing
+is written to disk or exposed through the learner/default app in this increment.
+
+Nine added pure cases and all6 existing late-result cases exercise the read fence;
+three added owned PersistentSupabaseRuntime cases use the exact captured Start DTO
+for UNKNOWN/PENDING/COMPLETED original lookup, then prove no optimistic application,
+no metadata clear, same-event conflict/different-event busy and logout redaction.
+The latter require CI; Auth/HTTP are TEST ONLY even when the real SDK executes.
+Local standalone pure graph: analyzer clean,153/153 tests PASS with fresh official
+Dart3.9.2 (SHA256 verified), test1.26.2 and only flutter_test imports substituted.
+Full Flutter/owned SDK/native/build locally UNRUN. New-head evidence and commit are
+in PR41. Secure full-command retention, verified conditional release and hosted RLS
+remain outstanding; missing/pending/completed association never grants new events.
+
+Observed final local review: format4 unchanged, QA46/46 PASS/inventory145 valid,
+whitespace clean, all144 prior QA cases/findings/gates exact. Independent diff
+review confirmed no changed dispatch/clear/deadline/default/storage behavior.

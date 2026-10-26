@@ -8,6 +8,7 @@ import 'package:nihongo_daily/features/ai/data/captured_conversation_mutation.da
 import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
+import 'package:nihongo_daily/features/ai/domain/retained_conversation_command.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 
 const owner = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
@@ -87,6 +88,14 @@ Future<void> settle() async {
     await Future<void>.value();
   }
 }
+
+Map<String, Object>? retainedBody(RetainedConversationCommand? command) =>
+    switch (command) {
+      RetainedConversationStart(:final request) => request.toJson(),
+      RetainedConversationTurn(:final request) => request.toJson(),
+      RetainedConversationFinish(:final request) => request.toJson(),
+      null => null,
+    };
 
 void main() {
   setUpAll(() {
@@ -338,6 +347,7 @@ void main() {
             _ => flow.finish(finish()),
           };
           final request = send();
+          expect(flow.retainedCommand, isNull);
           await expectLater(send(), throwsA(isA<AiTextRequestPending>()));
           await expectLater(
             request,
@@ -345,6 +355,7 @@ void main() {
           );
           expect(identical(flow.snapshot, before), isTrue);
           expect(flow.isBusy, isTrue);
+          expect(flow.retainedCommand, isNull);
           expect(flow.hasUnresolvedMutation, isTrue);
           final count = port.calls.length;
           await expectLater(send(), throwsA(isA<AiTextRequestPending>()));
@@ -355,6 +366,8 @@ void main() {
           }
           await settle();
           expect(flow.isBusy, isFalse);
+          final retained = flow.retainedCommand;
+          expect(retainedBody(retained), port.calls.last.body);
           expect(flow.hasUnresolvedMutation, isTrue);
           expect(identical(flow.snapshot, before), isTrue);
           final Future<Object> fresh = switch (operation) {
@@ -370,10 +383,12 @@ void main() {
             );
           }
           expect(port.calls, hasLength(count));
+          expect(identical(flow.retainedCommand, retained), isTrue);
           port.reply = (op) => response(op);
           await send();
           expect(port.calls.last.body, port.calls[count - 1].body);
           expect(flow.hasUnresolvedMutation, isFalse);
+          expect(flow.retainedCommand, isNull);
           expect(
             flow.snapshot.phase,
             operation == 'finish_conversation'
@@ -588,8 +603,163 @@ void main() {
       );
       expect(identical(flow.snapshot, state), isTrue);
       expect(flow.hasUnresolvedMutation, isFalse);
+      expect(flow.retainedCommand, isNull);
       await flow.turn(turn());
       expect(port.calls, hasLength(2));
     },
   );
+
+  for (final operation in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    test(
+      'retained $operation preserves full original without authority',
+      () async {
+        final port = Port();
+        final flow = CapturedConversationSession(
+          auth: Auth(),
+          transport: port,
+          isReady: () => true,
+        );
+        expect(flow.retainedCommand, isNull);
+        if (operation != 'start_conversation') await flow.start(start());
+        final originalStart = StartConversationRequest(
+          scenarioId: owner.toUpperCase(),
+          level: AiTextLevel.n5,
+          clientEventId: startEvent,
+        );
+        final originalTurn = turn(text: '  か\u3099\n日本語 😀  ');
+        final originalFinish = finish(sessionId: session.toUpperCase());
+        Future<Object> send() => switch (operation) {
+          'start_conversation' => flow.start(originalStart),
+          'conversation_turn' => flow.turn(originalTurn),
+          _ => flow.finish(originalFinish),
+        };
+        port.reply = (_) =>
+            throw const AiTextFailure(AiTextErrorCode.providerUnavailable);
+        await expectLater(
+          send(),
+          throwsA(code(AiTextErrorCode.providerUnavailable)),
+        );
+        final retained = flow.retainedCommand;
+        final Object? original = switch (retained) {
+          RetainedConversationStart(:final request) => request,
+          RetainedConversationTurn(:final request) => request,
+          RetainedConversationFinish(:final request) => request,
+          null => null,
+        };
+        expect(
+          identical(original, switch (operation) {
+            'start_conversation' => originalStart,
+            'conversation_turn' => originalTurn,
+            _ => originalFinish,
+          }),
+          isTrue,
+        );
+        final sentBody = Map<String, Object>.of(port.calls.last.body);
+        expect(retainedBody(retained), sentBody);
+        expect(retained.toString(), 'RetainedConversationCommand');
+        // A caller-owned projection cannot replace the frozen original DTO.
+        retainedBody(retained)!.clear();
+        expect(retainedBody(flow.retainedCommand), sentBody);
+        expect(flow.canRetryRetained, isFalse);
+        final count = port.calls.length;
+        await flow.retryRetained();
+        final Future<Object> changed = switch (operation) {
+          'start_conversation' => flow.start(start()),
+          'conversation_turn' => flow.turn(turn(text: 'different')),
+          _ => flow.finish(finish()),
+        };
+        await expectLater(changed, throwsA(code(AiTextErrorCode.syncConflict)));
+        final Future<Object> fresh = switch (operation) {
+          'start_conversation' => flow.start(start(otherEvent)),
+          'conversation_turn' => flow.turn(turn(event: otherEvent)),
+          _ => flow.finish(finish(event: otherEvent)),
+        };
+        await expectLater(fresh, throwsA(isA<AiTextRequestPending>()));
+        expect(identical(flow.retainedCommand, retained), isTrue);
+        expect(flow.canRetryRetained, isFalse);
+        expect(flow.hasUnresolvedMutation, isTrue);
+        expect(port.calls, hasLength(count));
+        // Existing explicit exact-input submission remains the only action here.
+        port.reply = (op) => response(op);
+        await send();
+        expect(port.calls.last.body, sentBody);
+        expect(port.calls, hasLength(count + 1));
+        expect(flow.retainedCommand, isNull);
+        expect(flow.hasUnresolvedMutation, isFalse);
+      },
+    );
+  }
+
+  for (final loss in ['readiness', 'getter', 'refresh', 'logout', 'A B A']) {
+    test('retained command redacted permanently after $loss', () async {
+      final auth = Auth();
+      final originalSession = auth.currentSession;
+      final port = Port();
+      var ready = true;
+      var getterThrows = false;
+      final flow = CapturedConversationSession(
+        auth: auth,
+        transport: port,
+        isReady: () {
+          if (getterThrows) throw StateError('private readiness detail');
+          return ready;
+        },
+      );
+      await flow.start(start());
+      port.reply = (_) => throw const AiTextFailure(
+        AiTextErrorCode.providerUnavailable,
+        retryable: true,
+      );
+      await expectLater(flow.turn(turn()), throwsA(isA<AiTextFailure>()));
+      expect(flow.retainedCommand, isA<RetainedConversationTurn>());
+      if (loss == 'readiness') ready = false;
+      if (loss == 'getter') getterThrows = true;
+      if (loss == 'refresh') {
+        auth.currentSession = ReviewSession(userId: owner);
+      }
+      if (loss == 'logout') auth.currentSession = null;
+      if (loss == 'A B A') {
+        auth.currentSession = ReviewSession(userId: otherEvent);
+        flow.revoke();
+        auth.currentSession = originalSession;
+      }
+      expect(flow.retainedCommand, isNull);
+      ready = true;
+      getterThrows = false;
+      auth.currentSession = originalSession;
+      expect(flow.retainedCommand, isNull);
+      expect(flow.canRetryRetained, isFalse);
+      await flow.retryRetained();
+      expect(port.calls, hasLength(2));
+    });
+  }
+
+  test('retained read redacts readiness and transport reentry', () async {
+    late CapturedConversationSession flow;
+    final port = Port();
+    var inspect = false;
+    final nested = <RetainedConversationCommand?>[];
+    flow = CapturedConversationSession(
+      auth: Auth(),
+      transport: port,
+      isReady: () {
+        if (inspect) nested.add(flow.retainedCommand);
+        return true;
+      },
+    );
+    port.reply = (_) {
+      nested.add(flow.retainedCommand);
+      throw const AiTextFailure(AiTextErrorCode.providerUnavailable);
+    };
+    await expectLater(flow.start(start()), throwsA(isA<AiTextFailure>()));
+    inspect = true;
+    expect(flow.retainedCommand, isA<RetainedConversationStart>());
+    expect(nested.length, greaterThan(1));
+    expect(nested.every((value) => value == null), isTrue);
+    expect(port.calls, hasLength(1));
+  });
 }
