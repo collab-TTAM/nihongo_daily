@@ -3161,6 +3161,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
       "limitation": "New actual Windows process phases authored locally unrun; exact-head CI required. Auth/mutation ports TEST ONLY/no actual HTTP/JWT/SDK/hosted provider or learner restoration/cross-process ownership proof. All14 hosted gates pending/no default activation."
+    },
+    {
+      "id": "receipt-sdk-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Actual pinned SDK/Auth binding/AI HTTP transport plus receipt owner/decorator/store/session: persistence before wire, reopened pending block, storage failure, ignored-abort drain and refresh/account fences.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "SDK receipt signout drains ignored-abort HTTP before clear"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "SDK receipt late write cannot send under"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
+      "limitation": "Unsigned TEST ONLY Auth/AI HTTP/storage ports, not hosted JWT/provider/RLS, Windows-backed SDK startup/profile or learner recovery proof; no app/default activation/authenticated reconciliation/all14 hosted gates pending."
     }
   ],
   "findings": [

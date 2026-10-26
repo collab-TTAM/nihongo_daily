@@ -4,6 +4,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:nihongo_daily/features/ai/application/ai_text_runtime_owner.dart';
+import 'package:nihongo_daily/features/ai/application/receipt_ai_runtime_owner.dart';
+import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
+import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -69,6 +75,38 @@ http.StreamedResponse response(
   headers: headers ?? {'content-type': 'application/json; charset=utf-8'},
   contentLength: length,
 );
+
+// TEST ONLY secure-storage port. No production plaintext fallback.
+final class _ReceiptBackend implements SecureConversationReceiptBackend {
+  Object? value;
+  bool failRead = false;
+  bool failWrite = false;
+  Completer<void>? writeWait;
+  final entered = Completer<void>();
+  final calls = <String>[];
+  @override
+  Future<Object?> read(String target) async {
+    calls.add('read');
+    if (failRead) throw StateError('TEST_ONLY_PRIVATE_RECEIPT_READ');
+    return value;
+  }
+
+  @override
+  Future<void> write(String target, String encoded) async {
+    calls.add('write-begin');
+    entered.complete();
+    await writeWait?.future;
+    value = encoded; // Deliberately ambiguous write failure retains metadata.
+    if (failWrite) throw StateError('TEST_ONLY_PRIVATE_RECEIPT_WRITE');
+    calls.add('write-end');
+  }
+
+  @override
+  Future<void> clear(String target) async {
+    calls.add('clear');
+    value = null;
+  }
+}
 
 void main() {
   late DateTime now;
@@ -1496,6 +1534,252 @@ void main() {
           r.load(AiTextLevel.n5),
           throwsA(failure(AiTextErrorCode.unauthorized)),
         );
+      },
+    );
+  }
+  // TEST ONLY storage ports; actual pinned SDK/Auth binding/HTTP transport and
+  // receipt lifecycle composition. No hosted JWT/provider/native storage proof.
+  ReceiptAiRuntimeOwner receiptOwner(_ReceiptBackend backend) {
+    final store = ConversationReceiptStore(
+      scope: ConversationReceiptScope(projectUrl: origin, ownerId: userA),
+      backend: backend,
+    );
+    addTearDown(store.close);
+    final owner = ReceiptAiRuntimeOwner(
+      store: store,
+      createTransport: ({required auth, required isReady, required store}) =>
+          ReceiptGuardedAiTransport(
+            inner: make(readiness: isReady),
+            store: store,
+            auth: auth,
+            capturedSession: auth.currentSession!,
+            isReady: isReady,
+          ),
+    );
+    addTearDown(owner.close);
+    return owner;
+  }
+
+  test(
+    'SDK receipt confirmed before exact captured wire and reopen never redispatches',
+    () async {
+      final backend = _ReceiptBackend()..writeWait = Completer<void>();
+      final owner = receiptOwner(backend);
+      final command = StartConversationRequest.fromJson(
+        request('start_conversation'),
+      );
+      final session = owner.runtime.acquireConversation(
+        auth: auth,
+        generation: AiTextGeneration(),
+        isReady: () => ready,
+      )!;
+      network.onSend = (sent) async {
+        expect(
+          backend.value,
+          ConversationReceiptReference.fromStart(
+            projectUrl: origin,
+            ownerId: userA,
+            request: command,
+          ).encode(),
+        );
+        expect(backend.calls.last, 'write-end');
+        return response(output('start_conversation'));
+      };
+      try {
+        final accepted = session.start(command);
+        await backend.entered.future;
+        expect(network.requests, isEmpty);
+        backend.writeWait!.complete();
+        expect((await accepted).sessionId, isNotEmpty);
+        final wire = network.requests.single as http.AbortableRequest;
+        expect(wire.url.toString(), '$origin/functions/v1/start_conversation');
+        expect(wire.headers['authorization'], 'Bearer ${token(now, userA, 0)}');
+        expect(wire.headers['apikey'], key);
+        expect(wire.followRedirects, false);
+        expect(jsonDecode(wire.body), command.toJson());
+        final saved = backend.value;
+        await owner.close();
+        expect(backend.value, saved);
+        expect(backend.calls.contains('clear'), false);
+        final reopened = receiptOwner(backend);
+        final fresh = reopened.runtime.acquireConversation(
+          auth: auth,
+          generation: AiTextGeneration(),
+          isReady: () => ready,
+        )!;
+        await expectLater(
+          fresh.start(command),
+          throwsA(failure(AiTextErrorCode.syncConflict)),
+        );
+        expect(network.requests, hasLength(1));
+        await reopened.signOut();
+        expect(backend.value, isNull);
+        expect(
+          sdk.auth.currentUser!.id,
+          userA,
+        ); // Local receipt clear is not Auth logout.
+      } finally {
+        if (!backend.writeWait!.isCompleted) backend.writeWait!.complete();
+        await owner.close();
+      }
+    },
+  );
+
+  for (final write in [false, true]) {
+    test(
+      'SDK receipt storage failure blocks HTTP even after ambiguous write=$write',
+      () async {
+        final backend = _ReceiptBackend()
+          ..failRead = !write
+          ..failWrite = write;
+        final owner = receiptOwner(backend);
+        final session = owner.runtime.acquireConversation(
+          auth: auth,
+          generation: AiTextGeneration(),
+          isReady: () => ready,
+        )!;
+        await expectLater(
+          session.start(
+            StartConversationRequest.fromJson(request('start_conversation')),
+          ),
+          throwsA(failure(AiTextErrorCode.internalError)),
+        );
+        expect(network.requests, isEmpty);
+        if (write) {
+          expect(
+            backend.value,
+            isNotNull,
+          ); // Ambiguous failure remains pending.
+        }
+        await owner.signOut();
+        expect(backend.value, isNull);
+        expect(backend.calls.last, 'clear');
+        expect(sdk.auth.currentUser!.id, userA);
+      },
+    );
+  }
+
+  for (final error in [false, true]) {
+    test(
+      'SDK receipt signout drains ignored-abort HTTP before clear error=$error',
+      () async {
+        final backend = _ReceiptBackend();
+        final owner = receiptOwner(backend);
+        final pending = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        network.onSend = (_) {
+          expect(backend.value, isNotNull);
+          entered.complete();
+          return pending
+              .future; // Deliberately ignores the actual abort signal.
+        };
+        final session = owner.runtime.acquireConversation(
+          auth: auth,
+          generation: AiTextGeneration(),
+          isReady: () => ready,
+        )!;
+        final rejected = expectLater(
+          session.start(
+            StartConversationRequest.fromJson(request('start_conversation')),
+          ),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        try {
+          await entered.future;
+          final wire = network.requests.single as http.AbortableRequest;
+          var ended = false;
+          final signingOut = owner.signOut().then((_) {
+            ended = true;
+          });
+          await expectLater(wire.abortTrigger, completes);
+          await Future<void>.delayed(Duration.zero);
+          expect(ended, false);
+          expect(backend.value, isNotNull);
+          expect(backend.calls.contains('clear'), false);
+          expect(
+            wire.headers['authorization'],
+            'Bearer ${token(now, userA, 0)}',
+          );
+          if (error) {
+            pending.completeError(StateError('TEST_ONLY_PRIVATE_OLD_HTTP'));
+          } else {
+            pending.complete(response(output('start_conversation')));
+          }
+          await rejected;
+          await signingOut;
+          expect(backend.value, isNull);
+          expect(backend.calls.last, 'clear');
+          expect(network.requests, hasLength(1));
+          expect(
+            network.closed,
+            false,
+          ); // SDK transport borrows this HTTP client.
+          await sdk.auth.signOut(
+            scope: SignOutScope.local,
+          ); // Host-controlled Auth logout.
+          expect(sdk.auth.currentSession, isNull);
+        } finally {
+          if (!pending.isCompleted) {
+            pending.completeError(StateError('TEST_ONLY_CLEANUP'));
+          }
+          await owner.close();
+        }
+      },
+    );
+  }
+
+  for (final change in ['refresh', 'account', 'A-B-A']) {
+    test(
+      'SDK receipt late write cannot send under $change credentials',
+      () async {
+        final backend = _ReceiptBackend()..writeWait = Completer<void>();
+        final owner = receiptOwner(backend);
+        final session = owner.runtime.acquireConversation(
+          auth: auth,
+          generation: AiTextGeneration(),
+          isReady: () => ready,
+        )!;
+        final rejected = expectLater(
+          session.start(
+            StartConversationRequest.fromJson(request('start_conversation')),
+          ),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        try {
+          await backend.entered.future;
+          expect(network.requests, isEmpty);
+          generation++;
+          if (change == 'refresh') {
+            await sdk.auth.refreshSession();
+          } else {
+            nextUser = userB;
+            await login();
+            if (change == 'A-B-A') {
+              generation++;
+              nextUser = userA;
+              await login();
+            }
+          }
+          await Future<void>.delayed(Duration.zero);
+          owner.runtime.check();
+          expect(owner.runtime.isDraining, true);
+          var closed = false;
+          final closing = owner.close().then((_) {
+            closed = true;
+          });
+          await Future<void>.delayed(Duration.zero);
+          expect(closed, false);
+          backend.writeWait!.complete();
+          await rejected;
+          await closing;
+          expect(network.requests, isEmpty);
+          expect(backend.value, isNotNull);
+          expect(backend.calls.contains('clear'), false);
+          expect(session.isCurrent, false);
+        } finally {
+          if (!backend.writeWait!.isCompleted) backend.writeWait!.complete();
+          await owner.close();
+        }
       },
     );
   }
