@@ -3361,6 +3361,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && powershell -ExecutionPolicy Bypass -File tool/verify_windows_vault_bridge.ps1",
       "limitation": "New five journey phases plus finally cleanup authored locally unrun; exact-head Windows marker required. Real native storage/SDK/owned runtime, synthetic Auth/JWT/profile/AI HTTP; no hosted learner proof, cross-process CAS or authenticated reconciliation/new-command authority. Default unchanged/all14 gates pending."
+    },
+    {
+      "id": "owned-runtime-receipt-storage-failures",
+      "status": "automated-baseline",
+      "scope": "Owned persistent runtime receipt read/corrupt/failed and ambiguous write barriers, Auth rotation cannot renew attempted dispatch, logout waits actual held successful/failed storage before clear.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned receipt storage failure blocks dispatch mode="
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned receipt logout waits actual held storage error="
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt'",
+      "limitation": "Six new owned SDK/runtime cases authored locally unrun; exact-head Flutter CI required. Auth/JWT/vault/profile/receipt backend/HTTP TEST ONLY; no native storage fault injection, hosted learner proof or authenticated pending release. Defaults unchanged/all14 release gates pending."
     }
   ],
   "findings": [

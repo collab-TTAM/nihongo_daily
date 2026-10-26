@@ -278,3 +278,37 @@ provider, learner activation, cross-process CAS, hardware-loss or reconciliation
 proof. One pending mutation/default AI unavailable/all14 release gates remain;
 next storage-failure/account-change cases and authenticated lookup/verified
 conditional release before sequential conversation commands.
+
+## Owned receipt storage failure regressions
+
+Source94e0343 CI40314676148/latestattempt1 now passed all5 jobs and every required
+step without skips. Windows121544248148 explicitly printed the OWNED production
+runtime/vault/receipt restore/preserve/reopen/no-redispatch/held-logout marker.
+That verifies the previous native host probe with TEST ONLY Auth/HTTP, not hosted
+identity/provider or live learner acceptance.
+
+Six additional tests now exercise the actual PersistentSupabaseRuntime/private
+SDK/production receipt chain using controllable TEST ONLY receipt storage. Four
+cases inject read failure, corrupt stored data, failure before write, and an
+ambiguous write that saves metadata then throws. All require fixed non-retryable
+INTERNAL_ERROR without private details, failed-store state and ZERO AI HTTP.
+Auth remains separately valid. Repairing the storage port and refreshing Auth
+cannot renew the attempted command; fresh generation still conflicts without
+reading/overwriting/clearing the original metadata. Only explicit account logout
+clears receipt plus refresh vault; no plaintext fallback or replay grant.
+
+Two more cases hold an actual receipt write through account logout, then release
+either success or an error AFTER saving metadata. Logout revokes readiness and
+clears Auth immediately, but must stay pending with the receipt partition claimed
+and no clear/AI HTTP until storage really settles. The late result is consumed as
+UNAUTHORIZED; confirmed metadata clear follows write, then logout is signedOut,
+store closed and borrowed HTTP remains open. Every held write is released and
+logout awaited in finally. Existing failed-clear/explicit retry tests remain.
+
+The new six are authored locally UNRUN; formatting/QA checks do not replace new
+exact-head Flutter analysis/test/build evidence. No OS fault injection or hosted
+JWT/provider/RLS proof. Native host tests and all old assertions stay required;
+production code/defaults/CI/Auth strategy/security/Pro content are unchanged.
+Next remaining account-change/failure journeys and authenticated receipt lookup/
+verified conditional release. One pending mutation/learner memory-only/default
+AI unavailable/all14 hosted gates remain.

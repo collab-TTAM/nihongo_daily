@@ -59,12 +59,16 @@ final class _AiHttp extends http.BaseClient {
 final class _ReceiptBackend implements SecureConversationReceiptBackend {
   Object? value;
   bool failClear = false;
+  bool failRead = false;
+  bool failBeforeWrite = false;
+  bool failAfterWrite = false;
   Completer<void>? writeWait;
   final entered = Completer<void>();
   final calls = <String>[];
   @override
   Future<Object?> read(String target) async {
     calls.add('read');
+    if (failRead) throw StateError('TEST_ONLY_PRIVATE_RECEIPT_READ');
     return value;
   }
 
@@ -72,8 +76,10 @@ final class _ReceiptBackend implements SecureConversationReceiptBackend {
   Future<void> write(String target, String encoded) async {
     entered.complete();
     await writeWait?.future;
+    if (failBeforeWrite) throw StateError('TEST_ONLY_PRIVATE_RECEIPT_WRITE');
     value = encoded;
     calls.add('write');
+    if (failAfterWrite) throw StateError('TEST_ONLY_PRIVATE_RECEIPT_WRITE');
   }
 
   @override
@@ -231,6 +237,134 @@ void main() {
       StartConversationRequest.fromJson(fixtures['start_conversation_request']);
   Matcher aiCode(AiTextErrorCode code) =>
       isA<AiTextFailure>().having((e) => e.code, 'code', code);
+
+  for (final mode in ['read', 'corrupt', 'write-before', 'write-after']) {
+    test('owned receipt storage failure blocks dispatch mode=$mode', () async {
+      final receipts = await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      receipts.failRead = mode == 'read';
+      receipts.failBeforeWrite = mode == 'write-before';
+      receipts.failAfterWrite = mode == 'write-after';
+      if (mode == 'corrupt') {
+        receipts.value = 'TEST_ONLY_PRIVATE_CORRUPT';
+      }
+      final session = runtime.createAiConversationSession()!;
+      await expectLater(
+        session.start(startRequest()),
+        throwsA(
+          isA<AiTextFailure>()
+              .having((e) => e.code, 'code', AiTextErrorCode.internalError)
+              .having((e) => e.retryable, 'retryable', false)
+              .having(
+                (e) => e.toString(),
+                'redacted',
+                isNot(contains('TEST_ONLY_PRIVATE')),
+              ),
+        ),
+      );
+      expect(receiptStore.phase, ConversationReceiptStorePhase.failed);
+      expect(aiHttp.requests, isEmpty);
+      expect(backend.secret, secret);
+      if (mode == 'write-after') {
+        final saved = ConversationReceiptReference.decode(
+          receipts.value! as String,
+        );
+        expect(saved.clientEventId, startRequest().clientEventId);
+        expect(saved.ownerId, wire.a);
+      } else if (mode != 'corrupt') {
+        expect(receipts.value, isNull);
+      }
+      final savedValue = receipts.value;
+      receipts.failRead = false;
+      receipts.failBeforeWrite = false;
+      receipts.failAfterWrite = false;
+      // Fixing the port and rotating Auth cannot renew an attempted command.
+      secret = 'TEST_ONLY_ROTATED_AFTER_STORAGE_FAILURE';
+      generation++;
+      await runtime.refresh();
+      await lifecycle.flush();
+      await ready();
+      final fresh = runtime.createAiConversationSession()!;
+      await expectLater(
+        fresh.start(startRequest()),
+        throwsA(aiCode(AiTextErrorCode.syncConflict)),
+      );
+      expect(aiHttp.requests, isEmpty);
+      expect(receipts.value, savedValue);
+      expect(receipts.calls, isNot(contains('clear')));
+      await runtime.account.signOut();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(backend.secret, isNull);
+      expect(receipts.value, isNull);
+      expect(receiptStore.phase, ConversationReceiptStorePhase.closed);
+      expect(aiHttp.requests, isEmpty);
+    });
+  }
+
+  for (final lateWriteError in [false, true]) {
+    test(
+      'owned receipt logout waits actual held storage error=$lateWriteError',
+      () async {
+        final receipts = await openReceiptRuntime();
+        await runtime.start();
+        await login();
+        receipts.writeWait = Completer<void>();
+        receipts.failAfterWrite = lateWriteError;
+        final session = runtime.createAiConversationSession()!;
+        final result = expectLater(
+          session.start(startRequest()),
+          throwsA(unauthorized),
+        );
+        Future<void>? logout;
+        try {
+          await receipts.entered.future;
+          var done = false;
+          logout = runtime.account.signOut().then((_) => done = true);
+          await lifecycle.flush();
+          expect(runtime.account.readyRuntime, isNull);
+          expect(runtime.createAiConversationSession(), isNull);
+          expect(backend.secret, isNull);
+          expect(done, isFalse);
+          expect(receipts.value, isNull);
+          expect(receipts.calls, isNot(contains('clear')));
+          expect(aiHttp.requests, isEmpty);
+          expect(
+            () => ConversationReceiptStore(
+              scope: receiptStore.scope,
+              backend: receipts,
+            ),
+            throwsA(
+              isA<ConversationReceiptStoreFailure>().having(
+                (e) => e.code,
+                'held partition',
+                ConversationReceiptStoreError.owned,
+              ),
+            ),
+          );
+          receipts.writeWait!.complete();
+          await result;
+          await logout;
+          expect(done, isTrue);
+          expect(runtime.account.state.phase, AccountPhase.signedOut);
+          expect(receipts.value, isNull);
+          expect(
+            receipts.calls.indexOf('write'),
+            lessThan(receipts.calls.indexOf('clear')),
+          );
+          expect(receiptStore.phase, ConversationReceiptStorePhase.closed);
+          expect(aiHttp.requests, isEmpty);
+          expect(aiHttp.closed, isFalse);
+        } finally {
+          if (!receipts.writeWait!.isCompleted) {
+            receipts.writeWait!.complete();
+          }
+          await result;
+          await logout;
+        }
+      },
+    );
+  }
 
   test(
     'owned receipt startup waits rotated refresh vault and own profile',
