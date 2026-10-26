@@ -113,3 +113,36 @@ fiveChrome/all14 account-source cases explicitly passed. New source requires its
 own exact-head CI. Next combined owned persistence +same SDK +actual Windows store
 host/process proof, and authenticated lookup/verified conditional release before
 sequential conversation commands. All14 hosted gates remain pending/AI off.
+
+## Windows same-SDK/profile process probe
+
+The mandatory existing Windows bridge now adds four new runner processes:
+receipt-sdk-write/reopen/clear/absent, with receipt-sdk-cleanup attempted in the
+outer finally even after any earlier cleanup fails. Each invocation uses the
+validated unique bridge GUID origin suffixed -sdk-receipt.invalid and one fixed
+synthetic account/event. No learner target or service connection is accepted.
+
+The new TEST ONLY fixture composes actual Supabase client/binding/AccountController,
+held own-profile readiness, same-SDK receipt factory, actual captured HTTP transport
+and Windows facade/MethodChannel/Credential Manager. Auth HTTP/JWT/profile and AI
+HTTP are synthetic. This does not run persistent refresh-token startup or verify
+hosted identity/provider/RLS. Existing persistent runtime and all older probes
+remain required and unchanged; separate evidence is not a combined journey.
+
+Write checks the slot initially absent/profile blocks acquisition. At actual HTTP
+send verify original body/fixed endpoint/captured bearer/key/no redirects and read
+back the real native receipt already present. Hold an HTTP response that ignores
+abort. Preserve-close must signal actual abort, revoke session, retain native
+metadata and exclusive store claim, leave SDK/client borrowed and remain pending.
+Release late error; it must be consumed as unauthorized before close completes.
+New process reopen sees the exact metadata; same-event start conflicts with ZERO
+HTTP and close preserves. Clear process confirms exact local deletion without SDK
+logout, then separately logs out Auth. Fourth process confirms absence/no HTTP.
+Every held callback is finally released; early send failure is observed instead
+of hanging only on port entry. Fixed errors and no token/metadata logs.
+
+These new process phases are authored, locally UNRUN (no Windows/Flutter here).
+Exact-head Windows CI must observe the explicit same-SDK/profile receipt marker;
+no build/OS pass is claimed before that. Still no cross-process CAS, replay grant,
+authenticated lookup, pending release or default activation. Next combined owned
+persistent startup/refresh vault and these components, plus real hosted gates.

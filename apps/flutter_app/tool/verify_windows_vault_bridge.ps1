@@ -111,6 +111,11 @@ try {
     Invoke-Bridge 'receipt-life-logout'
     Invoke-Bridge 'receipt-life-absent'
     Write-Output 'Windows actual receipt lifecycle preserve/reopen/no-redispatch/drain/signout/isolation passed (TEST ONLY ports)'
+    Invoke-Bridge 'receipt-sdk-write'
+    Invoke-Bridge 'receipt-sdk-reopen'
+    Invoke-Bridge 'receipt-sdk-clear'
+    Invoke-Bridge 'receipt-sdk-absent'
+    Write-Output 'Windows same SDK/profile receipt preserve/reopen/no-redispatch/clear passed (TEST ONLY Auth/HTTP)'
     Invoke-Bridge 'runtime-login'
     Invoke-Bridge 'runtime-restore'
     Invoke-Bridge 'runtime-logout'
@@ -128,7 +133,11 @@ try {
         try {
             Invoke-Bridge 'receipt-cleanup'
         } finally {
-            Invoke-Bridge 'receipt-life-cleanup'
+            try {
+                Invoke-Bridge 'receipt-life-cleanup'
+            } finally {
+                Invoke-Bridge 'receipt-sdk-cleanup'
+            }
         }
     }
 }

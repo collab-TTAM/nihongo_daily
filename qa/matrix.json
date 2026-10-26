@@ -3234,6 +3234,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart --plain-name 'same SDK receipt'",
       "limitation": "Unsigned TEST ONLY Auth/HTTP/profile/receipt storage; actual SDK/account/profile chain, not combined persistent startup/refresh vault/Windows OS or hosted identity/provider proof. No default activation/authenticated receipt replay/all14 hosted gates pending."
+    },
+    {
+      "id": "windows-same-sdk-receipt-process",
+      "status": "automated-baseline",
+      "scope": "Mandatory Windows runner processes compose same SDK/account/profile/receipt factory with actual Credential Manager: persisted-before-wire, ignored-abort preserve drain, reopened no-redispatch, exact local clear/absence.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "verifyWindowsSdkReceiptPhase"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows same SDK/profile receipt preserve/reopen/no-redispatch/clear passed"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
+      "limitation": "New actual Windows/SDK process phases authored locally unrun; CI required. Auth/JWT/profile/AI HTTP TEST ONLY, no hosted learner proof or combined persistent refresh-secret startup. No replay/default activation/all14 hosted groups pending."
     }
   ],
   "findings": [
