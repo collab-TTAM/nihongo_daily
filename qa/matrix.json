@@ -3571,6 +3571,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart",
       "limitation": "13 new owned Flutter-dependent cases require exact-head CI. Synthetic Auth/vault/HTTP not hosted RLS/provider/learner proof; no full-command persistence/receipt reset/release/replay/new-event/default activation. All14 hosted groups pending."
+    },
+    {
+      "id": "windows-owned-original-receipt-read",
+      "status": "automated-baseline",
+      "scope": "Actual Windows owned-reopen probe adds full original Start receipt association, status/mismatch/legacy/stale/no-redispatch checks while preserving native metadata and original five-field probes.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "_check(changedOriginalRejected && network.originalReceiptReads == 4);"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows OWNED original receipt match/status/mismatch/legacy/stale/no-redispatch passed (TEST ONLY Auth/HTTP)"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "Run the existing Windows Dart-to-vault bridge workflow; require original-read marker plus both retained lookup/OWNED markers on exact head.",
+      "limitation": "New native phase assertions locally UNRUN; format/QA are not Windows proof. TEST ONLY Auth/HTTP, not hosted RLS/provider/learner proof or full-command persistence/release authority. All14 hosted groups pending."
     }
   ],
   "findings": [

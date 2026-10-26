@@ -7489,3 +7489,55 @@ new nested loop; corrected boundary confirms ALL old owned tests/helpers byte-
 identical. All142 priorQA/findings/gates retained/all14hosted pending. Seven paths:
 three AI data files +persistent_ai_text_runtime_test.dart, this status/lookup doc
 and qa/matrix.json. Published source/CI/next action in PR41 checkpoint.
+
+
+## Native original-command read extension — 2026-10-27
+
+The existing receipt-owned-reopen Windows bridge phase now explicitly supplies
+its immutable TEST ONLY original Start DTO to the SAME captured production runtime
+reader. It never reconstructs a full command from Credential Manager metadata.
+After all original five-field lookup assertions, perform UNKNOWN/PENDING/COMPLETED
+six-field GET reads, check strict typed completion, real native receipt bytes and
+rotated Auth token unchanged. Each status repeats exact same-event SYNC_CONFLICT
+and different-event AiTextRequestPending denials with ZERO mutation HTTP.
+
+TEST ONLY _Http mode defaults false so old phases/reads retain their exact
+five-field response and counter. Original reads have an independent counter;
+validate fixed six-column GET and original owner/op/event/limit2/captured bearer/
+key/no-store/no redirects/empty body/native metadata BEFORE returning synthetic
+rows. Include original request_json ONLY in that mode. Wrong original event fails
+before GET; changed scenario with the same event and valid result fails association;
+legacy five-field response under original-read mode fails without fallback. Require
+exact original GET counts3/4/5 and unchanged native metadata/zero mutation HTTP.
+After actual runtime close both legacy and original reader calls are unauthorized
+without more HTTP; rotation and receipt persist for the unchanged logout process.
+
+All previous owned write/reopen/logout/held-logout/absent/cleanup phases, deadlines,
+partition checks, Auth rotation/profile barrier, legacy read checks and zero-I/O
+assertions remain. PowerShell adds a marker only after successful owned-reopen:
+`Windows OWNED original receipt match/status/mismatch/legacy/stale/no-redispatch passed (TEST ONLY Auth/HTTP)`.
+Three markers (this +legacy lookup+original OWNED runtime) and EVERY required CI
+step must be observed on the new source. No production/default/store/protocol/SDK/
+SQL/RLS/Auth strategy/Pro/content changes. Synthetic Auth/JWT/profile/AI HTTP is
+not hosted RLS/upstream/learner proof or full-command durable recovery. Association
+never grants clear/reset/replay/redispatch/new event; all14 hosted gates pending.
+
+Parent579970d42ff422cb09f822c2e361ed948442123f is verified in CI40385964541,
+latestattempt1 all5/EVERY step SUCCESS/no skips. Flutter121795067754 explicitly
+all13 owned original-read cases; Windows121794255029 legacy lookup+OWNED markers.
+New Windows/Flutter/analyzer/build checks locally UNRUN/await new exact-head CI.
+Local fresh officialDart3.9.2 SHA verified; formatting/QA/separate preservation/
+no-dispatch/error-pair/count/native metadata review in PR41. Full-command secure
+retention, hosted RLS and reviewed conditional release remain next; draft41/17open.
+
+
+Observed local: fresh officialDart3.9.2 archive SHA256 verified; format1 zerochanges
+(unresolved Flutter lint include warning, NOT analyzer proof). 46/46 QA PASS,
+inventory144 valid (not144executed). All143 old QA/findings/gates exact; original
+owned fixture/PowerShell lines retained in order. Whitespace/separate query/mode/
+exact denial-pair/GET-count/metadata preservation/stale/rotation/cleanup review PASS.
+Native Windows, PowerShell execution, full Flutter/analyzer/build locally UNRUN;
+no bootstrap retry/bypass. Source remains TEST ONLY/no hosted acceptance. Five
+paths: windows_sdk_receipt_fixture.dart, verify_windows_vault_bridge.ps1 (Flutter
+tool), docs/CONVERSATION_RECEIPT_LOOKUP.md, docs/PROJECT_STATUS.md, qa/matrix.json.
+Published commit/new CI/next action in PR41 checkpoint; all14 hosted gates pending.

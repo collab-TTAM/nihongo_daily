@@ -79,6 +79,9 @@ final class _Http extends http.BaseClient {
   final aborted = Completer<void>();
   int sends = 0;
   int receiptReads = 0;
+  int originalReceiptReads = 0;
+  bool originalReceipt = false;
+  bool omitOriginalRequest = false;
   String? receiptStatus;
   bool closed = false;
   @override
@@ -92,7 +95,9 @@ final class _Http extends http.BaseClient {
             r.url.path == '/rest/v1/operation_receipts' &&
             query.length == 5 &&
             query['select'] ==
-                'user_id,operation,client_event_id,status,response_json' &&
+                (originalReceipt
+                    ? 'user_id,operation,client_event_id,request_json,status,response_json'
+                    : 'user_id,operation,client_event_id,status,response_json') &&
             query['user_id'] == 'eq.$_user' &&
             query['operation'] == 'eq.start_conversation' &&
             query['client_event_id'] == 'eq.$_event' &&
@@ -105,7 +110,11 @@ final class _Http extends http.BaseClient {
             r.headers['cache-control'] == 'no-store',
       );
       _check(await _read(scope) == _expected(scope));
-      receiptReads++;
+      if (originalReceipt) {
+        originalReceiptReads++;
+      } else {
+        receiptReads++;
+      }
       // TEST ONLY response; actual owned SDK transport and native store remain.
       return http.StreamedResponse(
         Stream.value(
@@ -118,6 +127,8 @@ final class _Http extends http.BaseClient {
                         'user_id': _user,
                         'operation': 'start_conversation',
                         'client_event_id': _event,
+                        if (originalReceipt && !omitOriginalRequest)
+                          'request_json': _request.toJson(),
                         'status': receiptStatus,
                         'response_json': receiptStatus == 'COMPLETED'
                             ? {
@@ -757,6 +768,100 @@ Future<void> verifyWindowsOwnedReceiptPhase(
           _check(await _read(scope) == _expected(scope));
         }
         _check(network.receiptReads == 3 && refreshCalls == 1);
+        // Native metadata is not the full command. Supply the immutable TEST
+        // ONLY original explicitly; no command reconstruction or persistence.
+        network.originalReceipt = true;
+        for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+          network.receiptStatus = status;
+          final snapshot = await reader.lookupStart(reference, _request);
+          _check(snapshot.status.name == status.toLowerCase());
+          _check(
+            (snapshot.start != null) == (status == 'COMPLETED') &&
+                snapshot.turn == null &&
+                snapshot.finish == null,
+          );
+          if (status == 'COMPLETED') {
+            _check(
+              snapshot.start!.sessionId == _event &&
+                  snapshot.start!.assistantMessage.textJa == 'TEST ONLY',
+            );
+          }
+          _check(
+            await vault.readRefreshToken() == rotated &&
+                await _read(scope) == _expected(scope),
+          );
+          // Neither replay nor a different event becomes authorized by a read.
+          for (final event in [
+            _event,
+            'b2000000-0000-4000-8000-000000000002',
+          ]) {
+            var rejected = false;
+            try {
+              await session.start(
+                StartConversationRequest(
+                  scenarioId: _user,
+                  level: AiTextLevel.n5,
+                  clientEventId: event,
+                ),
+              );
+            } on AiTextRequestPending {
+              // The retained lane rejects another event before transport I/O.
+              rejected = event != _event;
+            } on AiTextFailure catch (error) {
+              rejected =
+                  event == _event && error.code == AiTextErrorCode.syncConflict;
+            }
+            _check(rejected && network.sends == 0);
+          }
+          _check(await _read(scope) == _expected(scope));
+        }
+        _check(network.originalReceiptReads == 3 && network.receiptReads == 3);
+        // A different event must fail before GET; changed original payload must
+        // fail full server-request association, even with a valid typed output.
+        var wrongEventRejected = false;
+        try {
+          await reader.lookupStart(
+            reference,
+            StartConversationRequest(
+              scenarioId: _user,
+              level: AiTextLevel.n5,
+              clientEventId: 'b2000000-0000-4000-8000-000000000002',
+            ),
+          );
+        } on AiTextFailure catch (error) {
+          wrongEventRejected = error.code == AiTextErrorCode.validationFailure;
+        }
+        _check(wrongEventRejected && network.originalReceiptReads == 3);
+        var changedOriginalRejected = false;
+        try {
+          await reader.lookupStart(
+            reference,
+            StartConversationRequest(
+              scenarioId: _event,
+              level: AiTextLevel.n5,
+              clientEventId: _event,
+            ),
+          );
+        } on AiTextFailure catch (error) {
+          changedOriginalRejected = error.code == AiTextErrorCode.internalError;
+        }
+        _check(changedOriginalRejected && network.originalReceiptReads == 4);
+        network.omitOriginalRequest = true;
+        var legacyRejected = false;
+        try {
+          await reader.lookupStart(reference, _request);
+        } on AiTextFailure catch (error) {
+          legacyRejected = error.code == AiTextErrorCode.internalError;
+        }
+        _check(
+          legacyRejected &&
+              network.originalReceiptReads == 5 &&
+              network.sends == 0 &&
+              refreshCalls == 1 &&
+              await _read(scope) == _expected(scope),
+        );
+        network.omitOriginalRequest = false;
+        network.originalReceipt = false;
         await runtime.close();
         _check(!reader.isCurrent);
         var staleRejected = false;
@@ -767,6 +872,18 @@ Future<void> verifyWindowsOwnedReceiptPhase(
         }
         _check(
           staleRejected && network.receiptReads == 3 && network.sends == 0,
+        );
+        var staleOriginalRejected = false;
+        try {
+          await reader.lookupStart(reference, _request);
+        } on AiTextFailure catch (error) {
+          staleOriginalRejected = error.code == AiTextErrorCode.unauthorized;
+        }
+        _check(
+          staleOriginalRejected &&
+              network.originalReceiptReads == 5 &&
+              network.receiptReads == 3 &&
+              network.sends == 0,
         );
         _check(
           await vault.readRefreshToken() == rotated &&
