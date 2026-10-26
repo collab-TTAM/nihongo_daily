@@ -123,6 +123,7 @@ try {
     Write-Output 'Windows persistent vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout passed (TEST ONLY Auth/HTTP)'
     Invoke-Bridge 'receipt-owned-write'
     Invoke-Bridge 'receipt-owned-reopen'
+    Write-Output 'Windows OWNED receipt lookup unknown/pending/completed preserve/no-redispatch/stale-reader passed (TEST ONLY Auth/HTTP)'
     Invoke-Bridge 'receipt-owned-logout'
     Invoke-Bridge 'receipt-owned-held-logout'
     Invoke-Bridge 'receipt-owned-absent'

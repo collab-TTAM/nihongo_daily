@@ -78,9 +78,69 @@ final class _Http extends http.BaseClient {
   final reply = Completer<http.StreamedResponse>();
   final aborted = Completer<void>();
   int sends = 0;
+  int receiptReads = 0;
+  String? receiptStatus;
   bool closed = false;
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    if (request.method == 'GET' && receiptStatus != null) {
+      _check(request is http.AbortableRequest);
+      final r = request as http.AbortableRequest;
+      final query = r.url.queryParameters;
+      _check(
+        r.url.origin == scope.projectOrigin &&
+            r.url.path == '/rest/v1/operation_receipts' &&
+            query.length == 5 &&
+            query['select'] ==
+                'user_id,operation,client_event_id,status,response_json' &&
+            query['user_id'] == 'eq.$_user' &&
+            query['operation'] == 'eq.start_conversation' &&
+            query['client_event_id'] == 'eq.$_event' &&
+            query['limit'] == '2' &&
+            r.bodyBytes.isEmpty &&
+            !r.followRedirects &&
+            r.maxRedirects == 0 &&
+            r.headers['authorization'] == 'Bearer $bearer' &&
+            r.headers['apikey'] == _key &&
+            r.headers['cache-control'] == 'no-store',
+      );
+      _check(await _read(scope) == _expected(scope));
+      receiptReads++;
+      // TEST ONLY response; actual owned SDK transport and native store remain.
+      return http.StreamedResponse(
+        Stream.value(
+          utf8.encode(
+            jsonEncode(
+              receiptStatus == 'UNKNOWN'
+                  ? []
+                  : [
+                      {
+                        'user_id': _user,
+                        'operation': 'start_conversation',
+                        'client_event_id': _event,
+                        'status': receiptStatus,
+                        'response_json': receiptStatus == 'COMPLETED'
+                            ? {
+                                'session_id': _event,
+                                'assistant_message': {
+                                  'id': _user,
+                                  'role': 'assistant',
+                                  'text_ja': 'TEST ONLY',
+                                  'text_vi': null,
+                                  'audio_ref': null,
+                                  'sequence_no': 0,
+                                },
+                              }
+                            : null,
+                      },
+                    ],
+            ),
+          ),
+        ),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+    }
     sends++;
     _check(request is http.AbortableRequest);
     final r = request as http.AbortableRequest;
@@ -541,6 +601,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
   );
   try {
     _check(runtime.createAiConversationSession() == null && network.sends == 0);
+    _check(runtime.createConversationReceiptLookup() == null);
     await runtime.start();
     if (phase == 'receipt-owned-absent') {
       _check(
@@ -560,6 +621,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
           runtime.createAiConversationSession() == null &&
           network.sends == 0,
     );
+    _check(runtime.createConversationReceiptLookup() == null);
     final ready = runtime.account.changes.firstWhere(
       (s) => s.phase == AccountPhase.ready,
     );
@@ -646,7 +708,62 @@ Future<void> verifyWindowsOwnedReceiptPhase(
         );
       } else {
         _check(phase == 'receipt-owned-reopen');
+        // Fresh process restores metadata written by receipt-owned-write.
+        final reader = runtime.createConversationReceiptLookup()!;
+        _check(identical(reader, runtime.createConversationReceiptLookup()));
+        _check(network.receiptReads == 0);
+        final reference = ConversationReceiptReference.fromStart(
+          projectUrl: origin,
+          ownerId: _user,
+          request: _request,
+        );
+        for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+          network.receiptStatus = status;
+          final snapshot = await reader.lookup(reference);
+          _check(snapshot.status.name == status.toLowerCase());
+          _check(
+            (snapshot.start != null) == (status == 'COMPLETED') &&
+                snapshot.turn == null &&
+                snapshot.finish == null,
+          );
+          if (status == 'COMPLETED') {
+            _check(snapshot.start!.sessionId == _event);
+            _check(snapshot.start!.assistantMessage.textJa == 'TEST ONLY');
+          }
+          _check(await _read(scope) == _expected(scope));
+          // Neither replay nor a different event becomes authorized by a read.
+          for (final event in [
+            _event,
+            'b2000000-0000-4000-8000-000000000002',
+          ]) {
+            var rejected = false;
+            try {
+              await session.start(
+                StartConversationRequest(
+                  scenarioId: _user,
+                  level: AiTextLevel.n5,
+                  clientEventId: event,
+                ),
+              );
+            } on AiTextFailure catch (error) {
+              rejected = error.code == AiTextErrorCode.syncConflict;
+            }
+            _check(rejected && network.sends == 0);
+          }
+          _check(await _read(scope) == _expected(scope));
+        }
+        _check(network.receiptReads == 3 && refreshCalls == 1);
         await runtime.close();
+        _check(!reader.isCurrent);
+        var staleRejected = false;
+        try {
+          await reader.lookup(reference);
+        } on AiTextFailure catch (error) {
+          staleRejected = error.code == AiTextErrorCode.unauthorized;
+        }
+        _check(
+          staleRejected && network.receiptReads == 3 && network.sends == 0,
+        );
         _check(
           await vault.readRefreshToken() == rotated &&
               await _read(scope) == _expected(scope),

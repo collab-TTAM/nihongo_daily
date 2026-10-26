@@ -3455,6 +3455,30 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt reader'",
       "limitation": "Eight new actual owned-runtime/SDK cases locally unrun; exact-head CI required. TEST ONLY Auth/JWT/profile/vault/receipt/HTTP. No default UI activation, hosted RLS proof, full command correlation or verified conditional release; one pending mutation/all14 hosted gates remain."
+    },
+    {
+      "id": "windows-owned-receipt-read-reopen",
+      "status": "automated-baseline",
+      "scope": "Fresh Windows process uses owned persistent SDK runtime and real Credential Manager metadata for explicit read-only receipt statuses without redispatch or release.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "// Fresh process restores metadata written by receipt-owned-write."
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows OWNED receipt lookup unknown/pending/completed preserve/no-redispatch/stale-reader passed"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20,
+        31
+      ],
+      "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
+      "limitation": "New native read assertions authored locally unrun; exact-head Windows CI required. TEST ONLY Auth/JWT/profile/HTTP, not hosted RLS or full-command correlation/conditional release; defaults and all14 release gates unchanged."
     }
   ],
   "findings": [

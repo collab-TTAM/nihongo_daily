@@ -7287,3 +7287,39 @@ Observed local: 27 real-source Dart receipt projection checks PASS across all3 o
 -9paths: new data/captured_conversation_receipt_lookup.dart; existing application/ai_text_runtime_owner.dart, data/receipt_guarded_ai_transport.dart, data/supabase_ai_text_transport.dart (AI); auth/application/persistent_supabase_runtime.dart; test/features/ai/persistent_ai_text_runtime_test.dart; docs/CONVERSATION_RECEIPT_LOOKUP.md; this status; qa/matrix.json. All137 old QA/findings/gates exact/all14 hosted pending.
 - Fresh officialDart3.9.2 SHA verified;4 real-source wrapper/owner-graph checks PASS; initial temporary verifier missing error-type import corrected only in harness. Format6/46QA/inventory138/whitespace/separate shared-lease/captured identity/busy/actual drain/no-release/diff review recorded in PR41. New8/fullFlutter/analyze/native/build locally UNRUN/no denied bootstrap retry/bypass. No hosted PostgREST/JWT/RLS proof.
 - NEXT exact new-head/latestattempt complete all5/every required step/new8 owned reader cases +retained8 SDK/native OWNED marker; fix real diagnostics preserving assertions, pending-only handoff/no duplicate code/long polling. Then native same-runtime read process journey/hosted RLS proof/full retained command/result correlation/verified conditional release.41draft/17open/AIoff/learner memory-only/onepending/no merge/closure/deploy/release/Auth strategy/provider/collection/spend/security/Pro/schedule/Alpha action.
+
+
+## Native owned-runtime receipt read — 2026-10-26
+
+- Branch `automation/issue-11-plan-sdk-integration`, parent
+  `f8e773e87a9f4ce005f948f7412aab5159e65fe8`, draft PR #41 / issue #17.
+  CI [40348831434](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40348831434)
+  đúng head/latest attempt 1 đã đạt đủ 5 jobs và mọi step, không skip.
+  Log Flutter121663951669 xác nhận 8 owned reader +8 SDK lookup cases;
+  Windows121663118915 xác nhận native OWNED production runtime marker.
+- Mở rộng `receipt-owned-reopen` trong Windows probe hiện có: tiến trình mới
+  dùng production PersistentSupabaseRuntime, SDK và Credential Manager thật,
+  phục hồi token rotation/own profile rồi lấy cached reader cùng AI lease.
+  Trước startup/own-profile readiness không cấp reader; acquisition không I/O.
+- Ba GET TEST ONLY trả UNKNOWN/PENDING/COMPLETED kiểm tra endpoint, năm query
+  fields, captured bearer/key, empty body, no redirects/no-store và native
+  metadata trước gửi. Kiểm tra typed completed response, metadata không đổi
+  sau mỗi read, cả cùng event và event khác vẫn bị chặn với zero mutation HTTP.
+  Sau close reader cũ bị từ chối không thêm HTTP; token/receipt vẫn giữ nguyên.
+  Các phase logout/absent/cleanup gốc vẫn chạy, không đổi deadlines/assertions.
+- Marker mới: `Windows OWNED receipt lookup unknown/pending/completed preserve/no-redispatch/stale-reader passed (TEST ONLY Auth/HTTP)`.
+  Auth/JWT/profile/HTTP synthetic; không phải hosted RLS/PostgREST/provider proof.
+  Không thay production code, default UI, Auth strategy, SQL/RLS hoặc Pro scope.
+- Native Windows/Flutter tests/analyze/build của thay đổi mới chưa chạy local;
+  phải kiểm tra CI exact-head/latest-attempt và marker mới. Format/QA/review và
+  commit/CI mới được ghi ở checkpoint đầu PR #41. Inventory không thay thế test.
+- Next: kiểm tra CI; sau green kiểm chứng hosted RLS, full retained-command/result
+  correlation và verified conditional release. Read không cấp quyền clear,
+  restore/replay hoặc lệnh mới. Learner memory-only/một pending mutation;
+  cả 14 release groups chưa nghiệm thu, PR vẫn draft, không đổi lịch.
+
+Local: official Dart3.9.2 SHA256 verified; formatter applied only new-line layout;
+strict format check zero changes. 46/46 QA regressions PASS, inventory139 valid;
+all138 old QA cases/findings/gates exact. Separate diff review confirms all old
+fixture/PowerShell lines retained in order. Flutter lint include unresolved locally;
+this is not full analysis or execution of the new native assertions.
