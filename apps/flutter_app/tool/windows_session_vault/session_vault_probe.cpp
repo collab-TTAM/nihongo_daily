@@ -10,6 +10,7 @@
 #include "session_credential_vault.h"
 
 bool ProbeReceiptCredentials();
+bool ProbePendingCommandProtection();
 
 namespace {
 void Check(bool ok) {
@@ -123,6 +124,8 @@ int wmain(int argc, wchar_t* argv[]) {
     Check(nihongo::ReadRefreshCredential(b).token == "TEST_ONLY_OTHER_PROJECT");
     Check(ProbeReceiptCredentials());
     std::cout << "PASS: actual Windows receipt credential metadata isolation/corruption/clear (TEST ONLY)\n";
+    Check(ProbePendingCommandProtection());
+    std::cout << "PASS: actual Windows user-context command protection bounds/roundtrip/scope/corruption (TEST ONLY, no persistence)\n";
     passed = true;
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.

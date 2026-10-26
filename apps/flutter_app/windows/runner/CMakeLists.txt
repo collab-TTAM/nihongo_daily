@@ -11,6 +11,7 @@ add_executable(${BINARY_NAME} WIN32
   "session_credential_vault.cpp"
   "session_vault_channel.cpp"
   "receipt_credential_vault.cpp"
+  "pending_command_protection.cpp"
   "receipt_vault_channel.cpp"
   "review_data_directory.cpp"
   "main.cpp"
@@ -39,7 +40,7 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "NOMINMAX")
 # dependencies here.
 target_link_libraries(${BINARY_NAME} PRIVATE flutter flutter_wrapper_app)
 target_link_libraries(${BINARY_NAME} PRIVATE "dwmapi.lib")
-target_link_libraries(${BINARY_NAME} PRIVATE "advapi32.lib" "shell32.lib" "ole32.lib" "bcrypt.lib" "uuid.lib")
+target_link_libraries(${BINARY_NAME} PRIVATE "advapi32.lib" "crypt32.lib" "shell32.lib" "ole32.lib" "bcrypt.lib" "uuid.lib")
 target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # Run the Flutter tool portions of the build. This must not be removed.

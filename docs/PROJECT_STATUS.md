@@ -4,6 +4,49 @@ Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
 
+
+## Core checkpoint — Windows command byte protection, 2026-10-26 UTC
+
+- Draft PR #41 / issue #17, branch `automation/issue-11-plan-sdk-integration`;
+  exact parent `e75b9b0d43b88d92f1495041e28c84622b848b62`, base tree
+  `ceba81223834813da1e74294e75315e1e537aeb1`. Published commit/new CI and
+  worker release are recorded in the first PR41 checkpoint. main/source37/Pro38
+  unchanged; protected N4 scope untouched.
+- Parent [CI40402634842](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40402634842)
+  exact source/latest attempt1 SUCCESS: all5 jobs/every step/no skips. Windows
+  job121852294777 confirms all3 OWNED runtime/lookup/original-read markers;
+  Flutter121853105153 confirms all10 new envelope cases. Prior codec increment
+  verified; TEST ONLY Auth/HTTP/native evidence is not hosted acceptance.
+- Added unused native opaque byte protection/unprotection using Windows user-
+  context DPAPI, canonical receipt target as public entropy/context, strict
+  magic/length/context/SHA256 frame, 32KiB plaintext/64KiB ciphertext limits,
+  fixed statuses/empty failure bytes and zeroed temporary buffers. Unsupported
+  platforms fail closed; no plaintext fallback or raw error/payload logs.
+- Same OS user is not Supabase Auth/account isolation. Public context/digest is
+  not writer authentication, protection-flag provenance or rollback protection.
+  See WINDOWS_PENDING_COMMAND_PROTECTION.md for limits/primary Microsoft sources.
+  No Dart binding, backend/file/vault payload write, retention/collection/default
+  activation, automatic replay/application/release, Auth/provider/security change.
+- Existing mandatory native credential-store probe now requires new synthetic
+  binary bounds/roundtrip/project+owner/corruption/truncation cases and rejection
+  of valid DPAPI containing unframed or wrong-digest frames. App/probe CMake link
+  production source; original assertions/cleanup/CI gates unchanged.
+- Local final C++17 `-Wall -Wextra -Werror` compilation + Linux input validation/
+  unsupported-platform probe PASS. Windows DPAPI/MSVC/full Flutter/builds locally
+  UNRUN; require new exact-head/latest-attempt CI and actual new marker. QA46/46,
+  inventory147 (not147 executed), whitespace and separate diff review recorded
+  in PR checkpoint. All146 original QA objects/findings/gates retained exactly.
+- Nine paths: new native pending_command_protection.h/.cpp and TEST ONLY
+  command_protection_probe.cpp; runner/probe CMake and session_vault_probe.cpp;
+  new WINDOWS_PENDING_COMMAND_PROTECTION.md, this status and qa/matrix.json.
+- Next: verify new exact-head all5 jobs/every step/native marker; fix diagnostics
+  preserving assertions. Then review secure bounded command+reference backend,
+  trusted writer/key/ACL, atomic write-before-send, captured-generation restore
+  and logout/retention before any activation. Keep41 draft/17 open/AIoff/all14
+  hosted release groups pending. No merge/closure/deployment/release/schedule
+  action or Personal Alpha claim.
+
+
 ## Core checkpoint — retained original-command access, 2026-10-26 UTC
 
 - Branch `automation/issue-11-plan-sdk-integration`, draft PR #41 / issue #17;

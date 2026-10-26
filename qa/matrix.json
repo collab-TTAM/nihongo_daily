@@ -3644,6 +3644,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/pending_conversation_command_envelope_test.dart",
       "limitation": "Unused pure codec returns sensitive plaintext; no backend, current retained-command serialization, disk/default/collection/lifetime activation or Auth/provenance/retry/release authority. Secure OS protection and reviewed retention remain required/all14 hosted groups pending."
+    },
+    {
+      "id": "windows-pending-command-protection",
+      "status": "automated-baseline",
+      "scope": "Unused bounded Windows DPAPI byte component with public receipt-context binding and strict frame/SHA256 consistency checks; no disk/default activation.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/command_protection_probe.cpp",
+          "contains": "bool ProbePendingCommandProtection()"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "Check(ProbePendingCommandProtection());"
+        },
+        {
+          "path": "apps/flutter_app/windows/runner/pending_command_protection.cpp",
+          "contains": "CRYPTPROTECT_UI_FORBIDDEN, &output.value)"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "Build/run existing Windows session_vault_probe via required credential-store CI step; require new command protection PASS marker and all5 jobs/every step at exact head/latest attempt. Linux COMMAND_PROTECTION_VALIDATION_MAIN exercises input validation and unsupported-platform fail-closed only.",
+      "limitation": "Local Linux C++17 compile/validation PASS; Windows DPAPI/MSVC/full builds locally UNRUN. Same OS user is not Supabase isolation; public context/internal SHA256 is not writer authentication/rollback protection. No backend, Dart channel, file/vault payload write, retention/collection activation or hosted/restart acceptance; all14 hosted groups pending."
     }
   ],
   "findings": [
