@@ -1,5 +1,10 @@
 // TEST ONLY unsigned JWT/Auth HTTP and streamed AI responses. Actual SDK session,
 // http request/abort/stream behavior; no hosted Auth, provider or learner proof.
+import 'package:nihongo_daily/features/ai/application/account_receipt_ai_runtime.dart';
+import 'package:nihongo_daily/features/ai/application/supabase_account_receipt_ai_runtime.dart';
+import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
+import 'package:nihongo_daily/features/auth/data/supabase_account_access.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -230,6 +235,222 @@ void main() {
     authHttp.close();
     network.close();
   });
+
+  AccountReceiptAiRuntime<ReviewAuth> accountReceipt(
+    _ReceiptBackend backend, {
+    Completer<OwnProfile>? profileWait,
+    String project = origin,
+    String publicKey = key,
+  }) {
+    final account = AccountController<ReviewAuth>(
+      access: SupabaseAccountAccess(auth),
+      ensureProfile: () =>
+          profileWait?.future ??
+          Future.value(
+            decodeOwnProfile({
+              'id': auth.currentSession!.userId,
+              'display_name': 'TEST ONLY',
+              'preferred_jlpt': 'N5',
+              'daily_target_minutes': 120,
+              'timezone': 'Asia/Saigon',
+            }, auth.currentSession!.userId),
+          ),
+      buildStudyRuntime: (readyAuth, changes) => readyAuth,
+    );
+    addTearDown(account.dispose);
+    final store = ConversationReceiptStore(
+      scope: ConversationReceiptScope(projectUrl: origin, ownerId: userA),
+      backend: backend,
+    );
+    addTearDown(store.close); // Test cleanup also covers rejected ownership.
+    final owner = createSupabaseAccountReceiptAiRuntime(
+      client: sdk,
+      account: account,
+      authForRuntime: (ready) => ready,
+      projectUrl: project,
+      publishableKey: publicKey,
+      store: store,
+      httpClient: network,
+      now: () => now,
+    );
+    addTearDown(owner.close);
+    return owner;
+  }
+
+  Future<void> settleAccount() async {
+    for (var i = 0; i < 8; i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+  }
+
+  test(
+    'same SDK receipt factory waits own profile before exact captured HTTP',
+    () async {
+      final backend = _ReceiptBackend();
+      final profile = Completer<OwnProfile>();
+      final owner = accountReceipt(backend, profileWait: profile);
+      expect(owner.createAiConversationSession(), isNull);
+      expect(owner.createAiTextRepository(), isNull);
+      expect(network.requests, isEmpty);
+      expect(backend.calls, isEmpty);
+      profile.complete(
+        decodeOwnProfile({
+          'id': userA,
+          'display_name': 'TEST ONLY',
+          'preferred_jlpt': 'N5',
+          'daily_target_minutes': 120,
+          'timezone': 'Asia/Saigon',
+        }, userA),
+      );
+      await settleAccount();
+      final session = owner.createAiConversationSession()!;
+      network.onSend = (r) async {
+        expect(backend.calls.last, 'write-end');
+        expect(
+          ConversationReceiptReference.decode(backend.value! as String).ownerId,
+          userA,
+        );
+        return response(output('start_conversation'));
+      };
+      await session.start(
+        StartConversationRequest.fromJson(request('start_conversation')),
+      );
+      final sent = network.requests.single as http.AbortableRequest;
+      expect(sent.url.toString(), '$origin/functions/v1/start_conversation');
+      expect(sent.headers['authorization'], 'Bearer ${token(now, userA, 0)}');
+      expect(sent.headers['apikey'], key);
+      expect(sent.followRedirects, isFalse);
+      expect(jsonDecode(sent.body), request('start_conversation'));
+      await owner.close();
+      expect(backend.value, isNotNull);
+      expect(sdk.auth.currentSession, isNotNull);
+      expect(network.closed, isFalse);
+    },
+  );
+
+  for (final bad in ['project', 'key']) {
+    test(
+      'same SDK receipt factory rejects $bad mismatch before store ownership transfer',
+      () async {
+        final backend = _ReceiptBackend();
+        expect(
+          () => accountReceipt(
+            backend,
+            project: bad == 'project'
+                ? 'https://other.supabase.invalid'
+                : origin,
+            publicKey: bad == 'key'
+                ? 'sb_publishable_TEST_ONLY_0987654321'
+                : key,
+          ),
+          throwsA(failure(AiTextErrorCode.validationFailure)),
+        );
+        expect(backend.calls, isEmpty);
+        expect(network.requests, isEmpty);
+        expect(sdk.auth.currentSession, isNotNull);
+      },
+    );
+  }
+
+  test(
+    'same SDK receipt profile binding drains late write across A-B-A',
+    () async {
+      final backend = _ReceiptBackend()..writeWait = Completer<void>();
+      final owner = accountReceipt(backend);
+      await settleAccount();
+      final old = owner.createAiConversationSession()!;
+      final result = expectLater(
+        old.start(
+          StartConversationRequest.fromJson(request('start_conversation')),
+        ),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      try {
+        await backend.entered.future;
+        nextUser = userB;
+        await login();
+        await settleAccount();
+        expect(owner.createAiConversationSession(), isNull);
+        nextUser = userA;
+        generation++;
+        await login();
+        await settleAccount();
+        expect(owner.createAiConversationSession(), isNull);
+        expect(network.requests, isEmpty);
+        backend.writeWait!.complete();
+        await result;
+        await settleAccount();
+        final next = owner.createAiConversationSession()!;
+        expect(identical(next, old), isFalse);
+        await expectLater(
+          next.start(
+            StartConversationRequest.fromJson(request('start_conversation')),
+          ),
+          throwsA(failure(AiTextErrorCode.syncConflict)),
+        );
+        expect(network.requests, isEmpty);
+        expect(backend.value, isNotNull);
+      } finally {
+        if (!backend.writeWait!.isCompleted) {
+          backend.writeWait!.complete();
+        }
+      }
+    },
+  );
+
+  for (final error in [false, true]) {
+    test(
+      'same SDK receipt local clear drains actual ignored abort error=$error',
+      () async {
+        final backend = _ReceiptBackend();
+        final owner = accountReceipt(backend);
+        await settleAccount();
+        final held = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        final aborted = Completer<void>();
+        network.onSend = (r) {
+          final req = r as http.AbortableRequest;
+          unawaited(req.abortTrigger!.then((_) => aborted.complete()));
+          entered.complete();
+          return held.future;
+        };
+        final session = owner.createAiConversationSession()!;
+        final result = expectLater(
+          session.start(
+            StartConversationRequest.fromJson(request('start_conversation')),
+          ),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        try {
+          await entered.future;
+          var done = false;
+          final clearing = owner.clearForSignOut().then((_) => done = true);
+          await aborted.future;
+          await auth.signOutLocally(); // Host separately owns SDK logout.
+          await settleAccount();
+          expect(done, isFalse);
+          expect(backend.calls, isNot(contains('clear')));
+          expect(backend.value, isNotNull);
+          expect(sdk.auth.currentSession, isNull);
+          if (error) {
+            held.completeError(StateError('TEST_ONLY_PRIVATE_LATE'));
+          } else {
+            held.complete(response(output('start_conversation')));
+          }
+          await result;
+          await clearing;
+          expect(backend.value, isNull);
+          expect(backend.calls.last, 'clear');
+          expect(network.requests.length, 1);
+          expect(network.closed, isFalse);
+        } finally {
+          if (!held.isCompleted) {
+            held.completeError(StateError('TEST_ONLY_CLEANUP'));
+          }
+        }
+      },
+    );
+  }
 
   test(
     'fixed text endpoints use captured SDK bearer and exact original frozen bodies',

@@ -3211,6 +3211,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/account_receipt_ai_runtime_test.dart",
       "limitation": "Actual persistence/account/profile/receipt components with TEST ONLY SDK/vault/profile/mutation ports, not combined real SDK/Windows startup, hosted JWT/RLS/provider or learner proof; same-project factory binding remains host obligation; no default activation/replay authority/all14 hosted gates pending."
+    },
+    {
+      "id": "receipt-same-sdk-profile-factory",
+      "status": "automated-baseline",
+      "scope": "Same caller-owned SDK/account receipt factory: pre-ownership origin/key/scope validation, own-profile acquisition, persisted-before-HTTP, A-B-A and actual ignored-abort drain before local clear.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/application/supabase_account_receipt_ai_runtime.dart",
+          "contains": "createSupabaseAccountReceiptAiRuntime"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "same SDK receipt local clear drains actual ignored abort"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart --plain-name 'same SDK receipt'",
+      "limitation": "Unsigned TEST ONLY Auth/HTTP/profile/receipt storage; actual SDK/account/profile chain, not combined persistent startup/refresh vault/Windows OS or hosted identity/provider proof. No default activation/authenticated receipt replay/all14 hosted gates pending."
     }
   ],
   "findings": [

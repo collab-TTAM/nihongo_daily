@@ -77,3 +77,39 @@ lookup endpoint or reset is invented here. Learner route remains memory-only;
 one pending mutation/default AI unavailable/all14 hosted release groups pending.
 No Auth strategy/provider/collection/spend/security/API/SQL/RLS/dependency/CI/
 content/Pro/merge/release change or Personal Alpha acceptance.
+
+## Same caller-owned Supabase factory
+
+createSupabaseAccountReceiptAiRuntime<T> now binds the source to the supplied
+actual Supabase client and existing captured HTTP transport. Before taking store
+ownership, validate trusted URL/public key, SDK REST origin/key, store project
+origin and timeout in(0,15seconds]. Failure is fixed VALIDATION_FAILURE; caller
+still owns the untouched store. Per-lease factory checks accepted session/store
+owner/readiness BEFORE constructing the inner transport. Its known mutation/read
+interfaces and captured owner satisfy every receipt decorator constructor check;
+no asynchronous orphan is created on a rejected decorator. Account source keeps
+its original exact runtime/session/generation and actual drain barriers.
+
+Successful factory transfers store ownership only, borrows SDK/account/supplied
+HTTP, and allocates no transport/storage read/request until explicit acquisition
+and command. Host still supplies the same account persistence/profile barrier,
+keeps SDK alive through receipt drain and separately signs out Auth. No public SDK
+or URL/key learner form/default activation is added. Existing Windows secure store
+can be explicitly supplied, but its use is NOT yet observed with this factory.
+
+Six new SDK cases in the existing transport suite cover held own-profile gating
+then exact captured bearer/endpoint/key/body and persistence-before-send; project
+and key mismatch before ownership; actual SDK A-B-A during held write with zero
+HTTP/reopened-pending conflict; actual ignored AbortableRequest abort with late
+success/error, separate host SDK logout, metadata retained until drain then exact
+clear and borrowed HTTP left open. Every old SDK assertion/setup line retained.
+Auth JWT/HTTP, own-profile response and receipt backend are TEST ONLY. The actual
+SDK/binding/account/profile/source/transport/receipt chain executes, but NOT the
+owned persistent startup/refresh-secret vault or Windows OS in one journey.
+No hosted JWT/RLS/provider proof or authenticated receipt lookup/replay grant.
+
+Parent4cee07d CI40279612687/attempt1 all5/every required step SUCCESS;1308Flutter/
+fiveChrome/all14 account-source cases explicitly passed. New source requires its
+own exact-head CI. Next combined owned persistence +same SDK +actual Windows store
+host/process proof, and authenticated lookup/verified conditional release before
+sequential conversation commands. All14 hosted gates remain pending/AI off.
