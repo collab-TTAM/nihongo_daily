@@ -18,7 +18,8 @@ final class ReceiptGuardedAiTransport
         OwnedAiTextTransport,
         ConversationMutationTransport,
         ConversationScenarioReadPort,
-        ConversationReceiptReadPort {
+        ConversationReceiptReadPort,
+        ConversationOriginalReceiptReadPort {
   ReceiptGuardedAiTransport({
     required OwnedAiTextTransport inner,
     required ConversationReceiptStore store,
@@ -188,6 +189,41 @@ final class ReceiptGuardedAiTransport
     final result = await (inner as ConversationReceiptReadPort).lookupReceipt(
       reference,
     );
+    _check(_session);
+    return result;
+  }
+
+  // Read forwarding cannot consume/reset _attempted or touch the secure store.
+  @override
+  Future<ConversationReceiptSnapshot> lookupStartReceipt(
+    ConversationReceiptReference reference,
+    StartConversationRequest original,
+  ) => _readOriginal((port) => port.lookupStartReceipt(reference, original));
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupTurnReceipt(
+    ConversationReceiptReference reference,
+    ConversationTurnRequest original,
+  ) => _readOriginal((port) => port.lookupTurnReceipt(reference, original));
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupFinishReceipt(
+    ConversationReceiptReference reference,
+    FinishConversationRequest original,
+  ) => _readOriginal((port) => port.lookupFinishReceipt(reference, original));
+
+  Future<ConversationReceiptSnapshot> _readOriginal(
+    Future<ConversationReceiptSnapshot> Function(
+      ConversationOriginalReceiptReadPort,
+    )
+    read,
+  ) async {
+    _check(_session);
+    final inner = _inner;
+    if (inner is! ConversationOriginalReceiptReadPort) {
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    }
+    final result = await read(inner as ConversationOriginalReceiptReadPort);
     _check(_session);
     return result;
   }

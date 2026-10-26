@@ -267,3 +267,60 @@ or failed case suppressed. Format2/46QA/inventory142/whitespace/source parity/
 separate captured authority/fixed query/old-lane parity/no-release diff review PASS.
 All141 prior QA/findings/gates exact/all14hosted pending. Not actual Flutter runner,
 Windows/hosted evidence; new full Flutter/analyze/build/native CI still required.
+
+
+## Same-owned original receipt reader — 2026-10-27
+
+ConversationOriginalReceiptReadPort is an optional three-method typed capability
+implemented by the existing Supabase transport and ReceiptGuardedAiTransport.
+CapturedConversationReceiptLookup.lookupStart/lookupTurn/lookupFinish forward the
+FULL immutable DTO on the SAME cached AiTextRuntimeOwner lease already exposed by
+PersistentSupabaseRuntime.createConversationReceiptLookup. Existing factory/profile/
+persisted-refresh/explicit-conversation flag/generation readiness and actual drain
+remain unchanged. No additional SDK/token writer/store/busy owner or acquisition
+I/O. Legacy five-field reader remains available; a port without original-read
+support fails fixed INTERNAL_ERROR, never falls back to metadata-only matching.
+
+Captured reader reuses original lookup pre/post readiness/exact Auth hint checks,
+owner preflight, busy propagation, safe error normalization and permanent revoke.
+Receipt decorator checks its captured readiness before/after read and requires the
+optional inner port. It never consumes/resets _attempted, calls receipt storage or
+permits another mutation. SDK still checks trusted project/original op/event and
+strict six-field original result. Original command/text is not persisted or sent
+in GET parameters/body. Missing/unknown/pending/completed association grants NO
+clear/reset/retry/replay/new-event/provider/UI state authority. No default or route
+auto-acquires/calls it; host must supply its retained full DTO in the SAME generation.
+
+Thirteen actual owned-runtime/private SDK cases authored: all3operations x3statuses
+with cached acquisition/no I/O/captured bearer/fixed six-column GET/empty body and
+no storage calls; completed association leaves existing pending metadata and
+mutation rejection unchanged; foreign owner no HTTP; refresh/logout during held
+ignored-abort GET revoke immediately, shared text busy, no early metadata cleanup
+or replacement capability until actual drain. Refresh preserves receipt and yields
+fresh reader; logout clears after drain, source terminal. Original fixture/helpers/
+test bodies retained. These new Flutter-dependent cases require exact-head CI;
+no local execution is inferred from pure SDK tests.
+
+Parentae35117a881d78910886e272ecb10f09b00abe7e CI40375805507/latestattempt1 now
+SUCCESS all5/EVERY step/no skips. Flutter121759316396 explicitly all12 original-bound
+SDK reads; Windows121758533456 BOTH native lookup and original OWNED markers.
+TEST ONLY Auth/HTTP, not hosted RLS/JWT/provider/learner proof. New full Flutter/
+owned13/native build checks pending new exact-head CI. Next native original-read
+journey, full-command secure retention design, hosted RLS and reviewed conditional
+release; do not infer recovery/dispatch permission from a stored association.
+Draft41/17open/defaultAIoff/all14hosted pending; Pro/Auth/SQL/RLS/CI/deps unchanged.
+
+
+Observed local: fresh officialDart3.9.2 SHA256 verified; actual34-file SDK graph,
+ONLY flutter_test -> test1.26.2/exact fixtures. All86 retained SDK cases PASS/no
+skips; three changed production files strict casts/inference/raw+lints6 analysis
+CLEAN. Pinned SDK2.16.5/http1.6/logging1.3 and all shared lock versions exact except
+harness-only lints6/new test deps. Source parity verified. The owned runtime test
+graph includes Flutter (137 files); no framework stubs or full Flutter bootstrap
+retry. NEW13 owned cases and full analyzer/native/build locally UNRUN/require CI.
+Format4zerochanges/46QA/inventory143/whitespace/separate port/lease/readiness/error/
+no-storage/no-authority diff review PASS. Initial preservation verifier chose a
+new nested loop; corrected boundary confirms ALL old owned tests/helpers byte-
+identical. All142 priorQA/findings/gates retained/all14hosted pending. Seven paths:
+three AI data files +persistent_ai_text_runtime_test.dart, this status/lookup doc
+and qa/matrix.json. Published source/CI/next action in PR41 checkpoint.

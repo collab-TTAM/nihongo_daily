@@ -27,7 +27,8 @@ final class SupabaseAiTextTransport
         OwnedAiTextTransport,
         ConversationMutationTransport,
         ConversationScenarioReadPort,
-        ConversationReceiptReadPort {
+        ConversationReceiptReadPort,
+        ConversationOriginalReceiptReadPort {
   SupabaseAiTextTransport({
     required SupabaseClient client,
     required ReviewAuth auth,
@@ -205,6 +206,7 @@ final class SupabaseAiTextTransport
 
   /// Explicit original-bound reads only; no original text is sent or stored.
   /// These methods do not release receipts or restore a conversation projection.
+  @override
   Future<ConversationReceiptSnapshot> lookupStartReceipt(
     ConversationReceiptReference reference,
     StartConversationRequest original,
@@ -214,6 +216,7 @@ final class SupabaseAiTextTransport
         ConversationReceiptCommandMatch.forStart(reference, original, rows),
   );
 
+  @override
   Future<ConversationReceiptSnapshot> lookupTurnReceipt(
     ConversationReceiptReference reference,
     ConversationTurnRequest original,
@@ -223,6 +226,7 @@ final class SupabaseAiTextTransport
         ConversationReceiptCommandMatch.forTurn(reference, original, rows),
   );
 
+  @override
   Future<ConversationReceiptSnapshot> lookupFinishReceipt(
     ConversationReceiptReference reference,
     FinishConversationRequest original,

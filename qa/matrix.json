@@ -3548,6 +3548,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
       "limitation": "TEST ONLY SDK Auth/JWT/HTTP, no hosted RLS/upstream/learner proof; no runtime/default activation, full-command persistence, clear/release/new-event authority. All14 hosted groups pending."
+    },
+    {
+      "id": "owned-original-receipt-reader",
+      "status": "automated-baseline",
+      "scope": "Optional original-command receipt port forwards through same owned captured lease/SDK/decorator with readiness and stale-result fences; status/owner/refresh/logout actual-drain tests retain metadata/no mutation authority.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/captured_conversation_receipt_lookup.dart",
+          "contains": "abstract interface class ConversationOriginalReceiptReadPort"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned original receipt reader completed projection never clears pending"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart",
+      "limitation": "13 new owned Flutter-dependent cases require exact-head CI. Synthetic Auth/vault/HTTP not hosted RLS/provider/learner proof; no full-command persistence/receipt reset/release/replay/new-event/default activation. All14 hosted groups pending."
     }
   ],
   "findings": [

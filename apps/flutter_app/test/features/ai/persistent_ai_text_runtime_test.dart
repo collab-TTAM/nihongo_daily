@@ -1,6 +1,7 @@
 // TEST ONLY actual pinned SDK/runtime with simulated Auth/vault/HTTP. No hosted
 // JWT verification, provider activation or live learner acceptance.
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_receipt_lookup.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_receipt_snapshot.dart';
 import 'dart:async';
@@ -268,6 +269,230 @@ void main() {
     200,
     headers: {'content-type': 'application/json'},
   );
+
+  ConversationReceiptReference originalReference(String op) =>
+      ConversationReceiptReference.fromJson({
+        'version': 1,
+        'project_origin': wire.origin,
+        'owner_id': wire.a,
+        'operation': op,
+        'client_event_id':
+            (fixtures['${op}_request']!
+                as Map<String, Object?>)['client_event_id'],
+      });
+  Future<ConversationReceiptSnapshot> originalRead(
+    CapturedConversationReceiptLookup reader,
+    String op,
+  ) => switch (op) {
+    'start_conversation' => reader.lookupStart(
+      originalReference(op),
+      StartConversationRequest.fromJson(fixtures['${op}_request']),
+    ),
+    'conversation_turn' => reader.lookupTurn(
+      originalReference(op),
+      ConversationTurnRequest.fromJson(fixtures['${op}_request']),
+    ),
+    'finish_conversation' => reader.lookupFinish(
+      originalReference(op),
+      FinishConversationRequest.fromJson(fixtures['${op}_request']),
+    ),
+    _ => throw StateError('TEST ONLY operation'),
+  };
+  http.StreamedResponse originalAnswer(String op, String status) =>
+      http.StreamedResponse(
+        Stream.value(
+          utf8.encode(
+            jsonEncode(
+              status == 'UNKNOWN'
+                  ? []
+                  : [
+                      {
+                        'user_id': wire.a,
+                        'operation': op,
+                        'client_event_id': originalReference(op).clientEventId,
+                        'request_json': fixtures['${op}_request'],
+                        'status': status,
+                        'response_json': status == 'COMPLETED'
+                            ? fixtures['${op}_response']
+                            : null,
+                      },
+                    ],
+            ),
+          ),
+        ),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+      test('owned original receipt reader shared SDK $op $status', () async {
+        final receipts = await openReceiptRuntime();
+        await runtime.start();
+        expect(runtime.createConversationReceiptLookup(), isNull);
+        await login();
+        final reader = runtime.createConversationReceiptLookup()!;
+        expect(
+          identical(reader, runtime.createConversationReceiptLookup()),
+          isTrue,
+        );
+        expect(aiHttp.requests, isEmpty);
+        aiHttp.onSend = (r) async {
+          expect(r.method, 'GET');
+          expect(r.url.origin, wire.origin);
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          expect(r.url.queryParameters, {
+            'select':
+                'user_id,operation,client_event_id,request_json,status,response_json',
+            'user_id': 'eq.${wire.a}',
+            'operation': 'eq.$op',
+            'client_event_id': 'eq.${originalReference(op).clientEventId}',
+            'limit': '2',
+          });
+          expect((r as http.Request).body, isEmpty);
+          expect(
+            r.headers['authorization'],
+            'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+          );
+          expect(r.headers['cache-control'], 'no-store');
+          expect(r.followRedirects, isFalse);
+          return originalAnswer(op, status);
+        };
+        final result = await originalRead(reader, op);
+        expect(result.status.name, status.toLowerCase());
+        expect(
+          result.start != null,
+          status == 'COMPLETED' && op == 'start_conversation',
+        );
+        expect(
+          result.turn != null,
+          status == 'COMPLETED' && op == 'conversation_turn',
+        );
+        expect(
+          result.finish != null,
+          status == 'COMPLETED' && op == 'finish_conversation',
+        );
+        expect(receipts.calls, isEmpty);
+        expect(receipts.value, isNull);
+        expect(aiHttp.requests.length, 1);
+      });
+    }
+  }
+
+  test(
+    'owned original receipt reader completed projection never clears pending',
+    () async {
+      final receipts = await openReceiptRuntime();
+      receipts.value = receiptReference().encode();
+      await runtime.start();
+      await login();
+      aiHttp.onSend = (_) async =>
+          originalAnswer('start_conversation', 'COMPLETED');
+      final reader = runtime.createConversationReceiptLookup()!;
+      expect(
+        (await originalRead(reader, 'start_conversation')).status,
+        ConversationReceiptStatus.completed,
+      );
+      expect(receipts.value, receiptReference().encode());
+      await expectLater(
+        runtime.createAiConversationSession()!.start(startRequest()),
+        throwsA(aiCode(AiTextErrorCode.syncConflict)),
+      );
+      expect(aiHttp.requests.length, 1);
+      expect(receipts.calls, isNot(contains('clear')));
+      expect(receipts.value, receiptReference().encode());
+    },
+  );
+  test(
+    'owned original receipt reader rejects foreign owner without HTTP',
+    () async {
+      await openReceiptRuntime();
+      await runtime.start();
+      await login();
+      await expectLater(
+        runtime.createConversationReceiptLookup()!.lookupStart(
+          receiptReference(owner: wire.b),
+          startRequest(),
+        ),
+        throwsA(unauthorized),
+      );
+      expect(aiHttp.requests, isEmpty);
+    },
+  );
+  for (final logout in [false, true]) {
+    test(
+      'owned original receipt reader actual drain on transition logout=$logout',
+      () async {
+        final receipts = await openReceiptRuntime();
+        receipts.value = receiptReference().encode();
+        await runtime.start();
+        await login();
+        final reader = runtime.createConversationReceiptLookup()!;
+        final held = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        final aborted = Completer<void>();
+        aiHttp.onSend = (r) {
+          unawaited(
+            (r as http.AbortableRequest).abortTrigger!.then(
+              (_) => aborted.complete(),
+            ),
+          );
+          entered.complete();
+          return held.future;
+        };
+        final result = expectLater(
+          originalRead(reader, 'start_conversation'),
+          throwsA(unauthorized),
+        );
+        Future<void>? transition;
+        try {
+          await entered.future;
+          await expectLater(
+            runtime.createAiTextRepository()!.explain(question),
+            throwsA(isA<AiTextRequestPending>()),
+          );
+          var done = false;
+          transition = (logout ? runtime.account.signOut() : runtime.refresh())
+              .then((_) => done = true);
+          await aborted.future;
+          await result;
+          await lifecycle.flush();
+          expect(reader.isCurrent, isFalse);
+          expect(runtime.createConversationReceiptLookup(), isNull);
+          expect(receipts.value, receiptReference().encode());
+          expect(receipts.calls, isNot(contains('clear')));
+          if (logout) {
+            expect(done, isFalse);
+            expect(backend.secret, isNull);
+          }
+          held.complete(originalAnswer('start_conversation', 'COMPLETED'));
+          await transition;
+          await lifecycle.flush();
+          if (logout) {
+            expect(runtime.account.state.phase, AccountPhase.signedOut);
+            expect(receipts.value, isNull);
+            expect(runtime.createConversationReceiptLookup(), isNull);
+          } else {
+            await ready();
+            final fresh = runtime.createConversationReceiptLookup()!;
+            expect(identical(fresh, reader), isFalse);
+            expect(receipts.value, receiptReference().encode());
+          }
+          expect(aiHttp.requests.length, 1);
+          expect(aiHttp.closed, isFalse);
+        } finally {
+          if (!held.isCompleted) {
+            held.complete(originalAnswer('start_conversation', 'PENDING'));
+          }
+          await result;
+          await transition;
+        }
+      },
+    );
+  }
 
   for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
     test('owned receipt reader shared SDK status=$status', () async {
