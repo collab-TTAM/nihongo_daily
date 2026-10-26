@@ -106,6 +106,11 @@ try {
     Invoke-Bridge 'receipt-clear'
     Invoke-Bridge 'receipt-absent'
     Write-Output 'Windows receipt Dart/native bridge metadata isolation/reopen/conflict/clear verification passed (TEST ONLY)'
+    Invoke-Bridge 'receipt-life-write'
+    Invoke-Bridge 'receipt-life-reopen'
+    Invoke-Bridge 'receipt-life-logout'
+    Invoke-Bridge 'receipt-life-absent'
+    Write-Output 'Windows actual receipt lifecycle preserve/reopen/no-redispatch/drain/signout/isolation passed (TEST ONLY ports)'
     Invoke-Bridge 'runtime-login'
     Invoke-Bridge 'runtime-restore'
     Invoke-Bridge 'runtime-logout'
@@ -120,6 +125,10 @@ try {
     try {
         Invoke-Bridge 'clear'
     } finally {
-        Invoke-Bridge 'receipt-cleanup'
+        try {
+            Invoke-Bridge 'receipt-cleanup'
+        } finally {
+            Invoke-Bridge 'receipt-life-cleanup'
+        }
     }
 }

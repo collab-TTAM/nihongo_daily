@@ -6,6 +6,7 @@ import 'package:nihongo_daily/features/auth/data/windows_session_credential_vaul
 import 'windows_runtime_fixture.dart';
 import 'windows_exit_fixture.dart';
 import 'windows_receipt_fixture.dart';
+import 'windows_receipt_lifecycle_fixture.dart';
 import 'package:nihongo_daily/features/auth/data/windows_review_directory.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -40,7 +41,8 @@ Future<void> main(List<String> arguments) async {
           }.contains(phase) ||
           runtimePhases.contains(phase) ||
           exitPhases.contains(phase) ||
-          receiptPhases.contains(phase),
+          receiptPhases.contains(phase) ||
+          receiptLifecyclePhases.contains(phase),
     );
     if (exitPhases.contains(phase)) {
       await startWindowsExitFixture(phase, scope);
@@ -49,6 +51,11 @@ Future<void> main(List<String> arguments) async {
     if (receiptPhases.contains(phase)) {
       await verifyWindowsReceiptPhase(phase, scope);
       stdout.writeln('Windows receipt Dart/native bridge phase passed');
+      exit(0);
+    }
+    if (receiptLifecyclePhases.contains(phase)) {
+      await verifyWindowsReceiptLifecyclePhase(phase, scope);
+      stdout.writeln('Windows receipt lifecycle phase passed (TEST ONLY)');
       exit(0);
     }
     final vault = createWindowsSessionCredentialVault('https://$scope.invalid');
