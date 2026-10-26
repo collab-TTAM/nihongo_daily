@@ -3384,6 +3384,25 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt'",
       "limitation": "Six new owned SDK/runtime cases authored locally unrun; exact-head Flutter CI required. Auth/JWT/vault/profile/receipt backend/HTTP TEST ONLY; no native storage fault injection, hosted learner proof or authenticated pending release. Defaults unchanged/all14 release gates pending."
+    },
+    {
+      "id": "owned-runtime-receipt-account-switch",
+      "status": "automated-baseline",
+      "scope": "Owned SDK/runtime A-B-A logout fencing during held receipt storage success/ambiguous failure; no replacement Auth before drain, no stale AI revival or journal/metadata leakage.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned receipt A-B-A logout fence during storage error="
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt A-B-A'",
+      "limitation": "Two new cases authored locally unrun; exact-head Flutter CI required. Actual production owned runtime/SDK with TEST ONLY Auth/JWT/vault/profile/receipt/HTTP. No hosted A/B identity or cross-device proof, default unchanged, one pending mutation/no authenticated reconciliation/all14 gates pending."
     }
   ],
   "findings": [

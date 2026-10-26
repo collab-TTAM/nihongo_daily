@@ -238,6 +238,100 @@ void main() {
   Matcher aiCode(AiTextErrorCode code) =>
       isA<AiTextFailure>().having((e) => e.code, 'code', code);
 
+  for (final lateWriteError in [false, true]) {
+    test(
+      'owned receipt A-B-A logout fence during storage error=$lateWriteError',
+      () async {
+        final receipts = await openReceiptRuntime();
+        await runtime.start();
+        await login();
+        final original = runtime.createAiConversationSession()!;
+        receipts.writeWait = Completer<void>();
+        receipts.failAfterWrite = lateWriteError;
+        final result = expectLater(
+          original.start(startRequest()),
+          throwsA(unauthorized),
+        );
+        Future<void>? logout;
+        try {
+          await receipts.entered.future;
+          logout = runtime.account.signOut();
+          await lifecycle.flush();
+          final tokensBeforeBlockedLogin = authRequests
+              .where((r) => r.url.path == '/auth/v1/token')
+              .length;
+          user = wire.b;
+          generation++;
+          secret = 'TEST_ONLY_ACCOUNT_B';
+          // Caller cannot race a replacement login against the old owned drain.
+          await runtime.account.signIn(
+            'fixture@example.invalid',
+            'TEST_ONLY_PASSWORD',
+          );
+          expect(
+            authRequests.where((r) => r.url.path == '/auth/v1/token').length,
+            tokensBeforeBlockedLogin,
+          );
+          expect(runtime.account.readyRuntime, isNull);
+          expect(runtime.createAiConversationSession(), isNull);
+          expect(backend.secret, isNull);
+          expect(receipts.calls, isNot(contains('clear')));
+          expect(aiHttp.requests, isEmpty);
+          receipts.writeWait!.complete();
+          await result;
+          await logout;
+          expect(runtime.account.state.phase, AccountPhase.signedOut);
+          expect(receipts.value, isNull);
+          expect(receiptStore.scope.ownerId, wire.a);
+          expect(receiptStore.phase, ConversationReceiptStorePhase.closed);
+          await login();
+          expect(runtime.account.readySession!.userId, wire.b);
+          expect(backend.secret, secret);
+          expect(runtime.createAiConversationSession(), isNull);
+          expect(runtime.createAiTextRepository(), isNull);
+          expect(original.isCurrent, isFalse);
+          await expectLater(
+            original.start(startRequest()),
+            throwsA(unauthorized),
+          );
+          await runtime.account.signOut();
+          user = wire.a;
+          generation++;
+          secret = 'TEST_ONLY_ACCOUNT_A_RETURN';
+          await login();
+          expect(runtime.account.readySession!.userId, wire.a);
+          expect(backend.secret, secret);
+          expect(runtime.createAiConversationSession(), isNull);
+          expect(runtime.createAiTextRepository(), isNull);
+          await expectLater(
+            original.start(startRequest()),
+            throwsA(unauthorized),
+          );
+          expect(receipts.value, isNull);
+          expect(aiHttp.requests, isEmpty);
+          expect(await journal.list(wire.a), isEmpty);
+          expect(await journal.list(wire.b), isEmpty);
+          // Metadata remains absent after the original claim has been released.
+          final reopened = ConversationReceiptStore(
+            scope: receiptStore.scope,
+            backend: receipts,
+          );
+          try {
+            expect(await reopened.read(), isNull);
+          } finally {
+            await reopened.close();
+          }
+        } finally {
+          if (!receipts.writeWait!.isCompleted) {
+            receipts.writeWait!.complete();
+          }
+          await result;
+          await logout;
+        }
+      },
+    );
+  }
+
   for (final mode in ['read', 'corrupt', 'write-before', 'write-after']) {
     test('owned receipt storage failure blocks dispatch mode=$mode', () async {
       final receipts = await openReceiptRuntime();

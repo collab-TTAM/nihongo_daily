@@ -312,3 +312,30 @@ production code/defaults/CI/Auth strategy/security/Pro content are unchanged.
 Next remaining account-change/failure journeys and authenticated receipt lookup/
 verified conditional release. One pending mutation/learner memory-only/default
 AI unavailable/all14 hosted gates remain.
+
+## Held receipt write and account A-B-A
+
+Sourceb4d4e68 CI40321214507/latestattempt1 passed all5 jobs/every required step,
+with all6 storage-failure cases explicitly observed in Flutter121567036723 and
+retained OWNED native Windows marker121566412769. New regressions below require
+their own exact-head CI; none are claimed locally executed.
+
+Two additional tests hold A's receipt write through logout, releasing either
+success or an ambiguous failure AFTER metadata was saved. While logout drains,
+trying B's login must produce ZERO additional SDK token requests: account/profile
+and AI readiness stay fenced, Auth vault empty, no receipt clear or AI HTTP.
+Only after actual write drains and both cleanup paths finish may B log in.
+B's own profile and persisted refresh secret become ready, while the fixed A
+receipt source remains terminal. The original A capability stays unauthorized.
+After B logout and A login again, new A Auth/profile/refresh are ready but neither
+text nor conversation AI revives. Both journals remain empty, metadata stays absent
+and the released A receipt partition can be reopened read-only without a record.
+No stale transport dispatch, transcript leak, retarget or new-event permission.
+Held writes/results/logout are awaited in finally; all old assertions retained.
+
+Actual private SDK and production owned runtime/account/store lifecycle are used;
+Auth/JWT/vault/profile/receipt backend/HTTP are TEST ONLY. No hosted user A/B,
+native fault injection, two-device or default activation proof. Host must still
+close/replace a terminal AI runtime to start a new explicit store lifetime, and
+needs authenticated receipt lookup/verified conditional release before enabling
+sequential conversation. All14 hosted gates/learner memory-only limit remain.
