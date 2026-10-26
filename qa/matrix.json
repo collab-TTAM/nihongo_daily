@@ -3184,6 +3184,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart",
       "limitation": "Unsigned TEST ONLY Auth/AI HTTP/storage ports, not hosted JWT/provider/RLS, Windows-backed SDK startup/profile or learner recovery proof; no app/default activation/authenticated reconciliation/all14 hosted gates pending."
+    },
+    {
+      "id": "receipt-account-profile-runtime",
+      "status": "automated-baseline",
+      "scope": "Explicit account/profile-gated receipt source with exact ready-runtime/session/generation and store owner, synchronous retirement, actual drain/preserve or explicit local clear.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/application/account_receipt_ai_runtime.dart",
+          "contains": "final class AccountReceiptAiRuntime"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/account_receipt_ai_runtime_test.dart",
+          "contains": "receipt account startup waits persisted rotation then exact own profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/account_receipt_ai_runtime_test.dart",
+          "contains": "receipt account logout waits actual callback before clear"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/account_receipt_ai_runtime_test.dart",
+      "limitation": "Actual persistence/account/profile/receipt components with TEST ONLY SDK/vault/profile/mutation ports, not combined real SDK/Windows startup, hosted JWT/RLS/provider or learner proof; same-project factory binding remains host obligation; no default activation/replay authority/all14 hosted gates pending."
     }
   ],
   "findings": [
