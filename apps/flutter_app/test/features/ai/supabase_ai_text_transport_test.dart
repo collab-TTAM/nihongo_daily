@@ -15,6 +15,7 @@ import 'package:nihongo_daily/features/ai/application/receipt_ai_runtime_owner.d
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_receipt_snapshot.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -283,6 +284,175 @@ void main() {
       await Future<void>.delayed(Duration.zero);
     }
   }
+
+  ConversationReceiptReference receiptReference(
+    String operation, {
+    String owner = userA,
+    String project = origin,
+  }) => ConversationReceiptReference.fromJson({
+    'version': 1,
+    'project_origin': project,
+    'owner_id': owner,
+    'operation': operation,
+    'client_event_id': request(operation)['client_event_id'],
+  });
+  Map<String, Object?> receiptRow(String operation, String status) => {
+    'user_id': userA,
+    'operation': operation,
+    'client_event_id': request(operation)['client_event_id'],
+    'status': status,
+    'response_json': status == 'COMPLETED'
+        ? fixture(operation, 'response')
+        : null,
+  };
+
+  for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+    test('receipt lookup fixed captured GET status=$status', () async {
+      const op = 'start_conversation';
+      final ref = receiptReference(op);
+      final t = make();
+      network.onSend = (r) async {
+        expect(r.method, 'GET');
+        expect(r.url.origin, origin);
+        expect(r.url.path, '/rest/v1/operation_receipts');
+        expect(r.url.queryParameters, {
+          'select': 'user_id,operation,client_event_id,status,response_json',
+          'user_id': 'eq.$userA',
+          'operation': 'eq.$op',
+          'client_event_id': 'eq.${ref.clientEventId}',
+          'limit': '2',
+        });
+        expect((r as http.Request).body, isEmpty);
+        expect(
+          r.headers['authorization'],
+          'Bearer ${token(now, userA, generation)}',
+        );
+        expect(r.headers['apikey'], key);
+        expect(r.headers['cache-control'], 'no-store');
+        expect(r.followRedirects, isFalse);
+        return response(
+          jsonEncode(status == 'UNKNOWN' ? [] : [receiptRow(op, status)]),
+        );
+      };
+      final result = await t.lookupReceipt(ref);
+      expect(result.status.name, status.toLowerCase());
+      expect(result.start != null, status == 'COMPLETED');
+      expect(result.turn, isNull);
+      expect(result.finish, isNull);
+      expect(result.toString(), isNot(contains('TEST ONLY')));
+      expect(network.requests.length, 1);
+      expect(network.closed, isFalse);
+    });
+  }
+  for (final op in ['conversation_turn', 'finish_conversation']) {
+    test('receipt lookup validates completed $op', () async {
+      network.onSend = (_) async =>
+          response(jsonEncode([receiptRow(op, 'COMPLETED')]));
+      final result = await make().lookupReceipt(receiptReference(op));
+      expect(result.status, ConversationReceiptStatus.completed);
+      expect(result.turn != null, op == 'conversation_turn');
+      expect(result.finish != null, op == 'finish_conversation');
+      expect(network.requests.single.method, 'GET');
+    });
+  }
+  test('receipt lookup rejects foreign scope before HTTP', () async {
+    final t = make();
+    for (final ref in [
+      receiptReference('start_conversation', owner: userB),
+      receiptReference('start_conversation', project: 'https://other.invalid'),
+    ]) {
+      await expectLater(
+        t.lookupReceipt(ref),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+    }
+    expect(network.requests, isEmpty);
+  });
+  test(
+    'receipt lookup rejects malformed or misassociated projection',
+    () async {
+      const op = 'start_conversation';
+      final good = receiptRow(op, 'COMPLETED');
+      final bad = <Object?>[
+        {},
+        [good, good],
+        [
+          {...good, 'user_id': userB},
+        ],
+        [
+          {...good, 'operation': 'conversation_turn'},
+        ],
+        [
+          {...good, 'client_event_id': sid},
+        ],
+        [
+          {...good, 'extra': true},
+        ],
+        [
+          {...good, 'status': 'PENDING'},
+        ],
+        [
+          {...good, 'response_json': null},
+        ],
+        [
+          {
+            ...good,
+            'response_json': {'TEST_ONLY_PRIVATE': true},
+          },
+        ],
+      ];
+      final t = make();
+      for (final value in bad) {
+        network.onSend = (_) async => response(jsonEncode(value));
+        await expectLater(
+          t.lookupReceipt(receiptReference(op)),
+          throwsA(failure(AiTextErrorCode.internalError)),
+        );
+      }
+      expect(network.requests.every((r) => r.method == 'GET'), isTrue);
+    },
+  );
+  test('receipt lookup revoked late HTTP drains shared lane', () async {
+    final t = make();
+    final held = Completer<http.StreamedResponse>();
+    final entered = Completer<void>();
+    final aborted = Completer<void>();
+    network.onSend = (r) {
+      unawaited(
+        (r as http.AbortableRequest).abortTrigger!.then(
+          (_) => aborted.complete(),
+        ),
+      );
+      entered.complete();
+      return held.future;
+    };
+    final result = expectLater(
+      t.lookupReceipt(receiptReference('start_conversation')),
+      throwsA(failure(AiTextErrorCode.unauthorized)),
+    );
+    try {
+      await entered.future;
+      await expectLater(invoke(t), throwsA(isA<AiTextRequestPending>()));
+      var closed = false;
+      final closing = t.close().then((_) => closed = true);
+      await aborted.future;
+      await result;
+      expect(closed, isFalse);
+      expect(network.closed, isFalse);
+      held.complete(
+        response(jsonEncode([receiptRow('start_conversation', 'COMPLETED')])),
+      );
+      await closing;
+      expect(closed, isTrue);
+      expect(network.requests.length, 1);
+    } finally {
+      if (!held.isCompleted) {
+        held.complete(response('[]'));
+      }
+      await result;
+      await t.close();
+    }
+  });
 
   test(
     'shared SDK Auth port observes same-session rotation and borrows SDK lifetime',

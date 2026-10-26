@@ -11,6 +11,8 @@ import '../application/ai_text_runtime_owner.dart';
 import '../domain/ai_text_models.dart';
 import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
+import '../domain/conversation_receipt_reference.dart';
+import '../domain/conversation_receipt_snapshot.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
 import 'captured_conversation_scenarios.dart';
@@ -171,6 +173,32 @@ final class SupabaseAiTextTransport
     });
   }
 
+  /// Existing owner-only SELECT RLS; no provider, mutation or receipt release.
+  /// Uses this same captured token, busy lane, bounds, abort and actual drain.
+  Future<ConversationReceiptSnapshot> lookupReceipt(
+    ConversationReceiptReference reference,
+  ) async {
+    _requireCurrent();
+    if (!reference.matchesScope(
+      projectUrl: _origin,
+      ownerId: _session.userId,
+    )) {
+      throw const AiTextFailure(AiTextErrorCode.unauthorized);
+    }
+    final rows = await _send('operation_receipts', _session, {
+      'operation': reference.operation.wireName,
+      'client_event_id': reference.clientEventId,
+    });
+    _requireCurrent();
+    try {
+      final result = ConversationReceiptSnapshot.fromRows(reference, rows);
+      _requireCurrent();
+      return result;
+    } on FormatException {
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    }
+  }
+
   void _requireCurrent() {
     if (!isCurrent) throw const AiTextFailure(AiTextErrorCode.unauthorized);
   }
@@ -204,14 +232,28 @@ final class SupabaseAiTextTransport
 
     try {
       final scenarios = operation == 'conversation_scenarios';
-      final requestBody = scenarios ? <int>[] : _requestBody(operation, body);
+      final receipts = operation == 'operation_receipts';
+      final requestBody = scenarios || receipts
+          ? <int>[]
+          : _requestBody(operation, body);
       if (requestBody.length > maxRequestBytes) {
         throw const AiTextFailure(AiTextErrorCode.validationFailure);
       }
       final request =
           http.AbortableRequest(
-              scenarios ? 'GET' : 'POST',
-              scenarios
+              scenarios || receipts ? 'GET' : 'POST',
+              receipts
+                  ? Uri.parse('$_origin/rest/v1/operation_receipts').replace(
+                      queryParameters: {
+                        'select':
+                            'user_id,operation,client_event_id,status,response_json',
+                        'user_id': 'eq.${_session.userId}',
+                        'operation': 'eq.${body['operation']}',
+                        'client_event_id': 'eq.${body['client_event_id']}',
+                        'limit': '2',
+                      },
+                    )
+                  : scenarios
                   ? Uri.parse(
                       '$_origin/rest/v1/conversation_scenarios',
                     ).replace(
@@ -320,6 +362,7 @@ final class SupabaseAiTextTransport
         throw const FormatException();
       }
       final result = switch (operation) {
+        'operation_receipts' => raw,
         'conversation_scenarios' => raw,
         'tutor_explain' => TutorExplanation.fromJson(raw).toJson(),
         'correct_sentence' => SentenceCorrection.fromJson(raw).toJson(),

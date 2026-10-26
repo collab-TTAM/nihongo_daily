@@ -3403,6 +3403,30 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt A-B-A'",
       "limitation": "Two new cases authored locally unrun; exact-head Flutter CI required. Actual production owned runtime/SDK with TEST ONLY Auth/JWT/vault/profile/receipt/HTTP. No hosted A/B identity or cross-device proof, default unchanged, one pending mutation/no authenticated reconciliation/all14 gates pending."
+    },
+    {
+      "id": "captured-receipt-read-lookup",
+      "status": "automated-baseline",
+      "scope": "Fixed owner/operation/event receipt SELECT using existing captured Supabase HTTP lane, strict unknown/pending/completed projection, typed outputs, shared busy/abort/actual-drain guards.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/supabase_ai_text_transport.dart",
+          "contains": "Future<ConversationReceiptSnapshot> lookupReceipt("
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "receipt lookup revoked late HTTP drains shared lane"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20,
+        31
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart --plain-name 'receipt lookup'",
+      "limitation": "Eight new SDK cases locally unrun/exact-head CI required. Existing SELECT RLS unchanged; TEST ONLY Auth/JWT/HTTP, no hosted lookup proof. Read projection is never release/replay/new-event/provider authority; not installed in runtime/UI/default; all14 hosted gates pending."
     }
   ],
   "findings": [
