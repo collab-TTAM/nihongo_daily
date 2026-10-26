@@ -17,6 +17,8 @@ import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/auth/data/supabase_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
 
@@ -26,6 +28,11 @@ const sdkReceiptPhases = {
   'receipt-sdk-clear',
   'receipt-sdk-absent',
   'receipt-sdk-cleanup',
+  'receipt-persist-write',
+  'receipt-persist-reopen',
+  'receipt-persist-clear',
+  'receipt-persist-absent',
+  'receipt-persist-cleanup',
 };
 const _user = 'a1000000-0000-4000-8000-000000000001';
 const _event = 'b1000000-0000-4000-8000-000000000001';
@@ -54,6 +61,47 @@ String _expected(ConversationReceiptScope scope) =>
       ownerId: _user,
       request: _request,
     ).encode();
+
+// TEST ONLY ownership adapter around the real SDK/binding. Mirrors the private
+// production port's dual lifecycle signals; not an alternate production Auth.
+final class _PersistentSdk implements RefreshableAccountAccess {
+  _PersistentSdk(this.client, this.binding) {
+    _binding = binding.sessionChanges.listen((_) => _events.add(null));
+    _auth = client.auth.onAuthStateChange.listen((_) => _events.add(null));
+  }
+  final SupabaseClient client;
+  final SupabaseReviewBinding binding;
+  final _events = StreamController<void>.broadcast();
+  late final StreamSubscription<void> _binding;
+  late final StreamSubscription<AuthState> _auth;
+  @override
+  ReviewSession? get currentSession => binding.currentSession;
+  @override
+  String? get currentRefreshToken =>
+      currentSession == null ? null : client.auth.currentSession?.refreshToken;
+  @override
+  Stream<void> get sessionChanges => _events.stream;
+  @override
+  Future<void> signIn(String email, String password) =>
+      SupabaseAccountAccess(binding).signIn(email, password);
+  @override
+  Future<void> signOut() => binding.signOutLocally();
+  @override
+  Future<void> restore(String token) async {
+    await client.auth.setSession(token);
+  }
+
+  @override
+  Future<void> refresh() async {
+    await client.auth.refreshSession();
+  }
+
+  Future<void> close() async {
+    await _binding.cancel();
+    await _auth.cancel();
+    await _events.close();
+  }
+}
 
 final class _Http extends http.BaseClient {
   _Http(this.scope, this.bearer) {
@@ -95,26 +143,79 @@ final class _Http extends http.BaseClient {
 
 Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
   _check(RegExp(r'^bridge-[a-f0-9]{32}$').hasMatch(runScope));
-  final origin = 'https://$runScope-sdk-receipt.invalid';
+  final persistent = phase.startsWith('receipt-persist-');
+  if (persistent)
+    phase = phase.replaceFirst('receipt-persist-', 'receipt-sdk-');
+  final origin = persistent
+      ? 'https://$runScope-persistent-receipt.invalid'
+      : 'https://$runScope-sdk-receipt.invalid';
+  final vault = createWindowsSessionCredentialVault(origin);
+  final incoming = switch (phase) {
+    'receipt-sdk-write' => 'TEST_ONLY_SAVED',
+    'receipt-sdk-reopen' => 'TEST_ONLY_ROTATED_1',
+    _ => 'TEST_ONLY_ROTATED_2',
+  };
+  final rotated = phase == 'receipt-sdk-write'
+      ? 'TEST_ONLY_ROTATED_1'
+      : phase == 'receipt-sdk-reopen'
+      ? 'TEST_ONLY_ROTATED_2'
+      : 'TEST_ONLY_ROTATED_3';
   final scope = ConversationReceiptScope(projectUrl: origin, ownerId: _user);
   if (phase == 'receipt-sdk-cleanup') {
     final store = createWindowsConversationReceiptStore(scope: scope);
-    await store.clearForSignOut();
-    await store.close();
+    var failed = false;
+    try {
+      await store.clearForSignOut();
+      await store.close();
+    } on Object {
+      failed = true;
+    }
+    if (persistent) {
+      try {
+        await vault.clear();
+      } on Object {
+        failed = true;
+      }
+    }
+    _check(!failed);
     _check(await _read(scope) == null);
     return;
+  }
+  if (persistent && phase == 'receipt-sdk-absent') {
+    _check(
+      await vault.readRefreshToken() == null && await _read(scope) == null,
+    );
+    final empty = createWindowsConversationReceiptStore(scope: scope);
+    await empty.close();
+    return;
+  }
+  if (persistent && phase == 'receipt-sdk-write') {
+    _check(
+      await vault.readRefreshToken() == null && await _read(scope) == null,
+    );
+    await vault.writeRefreshToken(
+      incoming,
+    ); // Only synthetic seed, unique test scope.
   }
   final now = DateTime.now().toUtc();
   final bearer =
       '${_part({'alg': 'HS256', 'typ': 'JWT'})}.${_part({'sub': _user, 'session_id': _event, 'role': 'authenticated', 'exp': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000})}.${_part('TEST ONLY NOT A SIGNATURE')}';
+  var refreshCalls = 0;
   final authHttp = MockClient((r) async {
     _check(r.url.origin == origin);
     if (r.url.path == '/auth/v1/logout') return http.Response('', 204);
     _check(r.url.path == '/auth/v1/token');
+    if (persistent) {
+      refreshCalls++;
+      _check(refreshCalls == 1);
+      _check(r.url.queryParameters['grant_type'] == 'refresh_token');
+      final body = jsonDecode(r.body) as Map<String, Object?>;
+      _check(body['refresh_token'] == incoming);
+    }
     return http.Response(
       jsonEncode({
         'access_token': bearer,
-        'refresh_token': 'TEST_ONLY_REFRESH',
+        'refresh_token': persistent ? rotated : 'TEST_ONLY_REFRESH',
         'token_type': 'bearer',
         'expires_in': 3600,
         'user': {
@@ -147,16 +248,33 @@ Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
   AccountController<ReviewAuth>? account;
   AccountReceiptAiRuntime<ReviewAuth>? owner;
   ConversationReceiptStore? store;
+  _PersistentSdk? port;
+  PersistentAccountAccess? persistence;
   try {
-    await sdk.auth.signInWithPassword(
-      email: 'fixture@example.invalid',
-      password: 'TEST_ONLY_PASSWORD',
-    );
+    if (persistent) {
+      port = _PersistentSdk(sdk, binding);
+      persistence = PersistentAccountAccess(sdk: port, vault: vault);
+      _check(persistence.currentSession == null);
+      await persistence.start();
+      _check(await vault.readRefreshToken() == rotated);
+      _check(persistence.currentSession != null && refreshCalls == 1);
+    } else {
+      await sdk.auth.signInWithPassword(
+        email: 'fixture@example.invalid',
+        password: 'TEST_ONLY_PASSWORD',
+      );
+    }
     await Future<void>.delayed(Duration.zero);
     final profile = Completer<OwnProfile>();
     final controller = AccountController<ReviewAuth>(
-      access: SupabaseAccountAccess(binding),
-      ensureProfile: () => profile.future,
+      access: persistence ?? SupabaseAccountAccess(binding),
+      ensureProfile: () async {
+        if (persistent) {
+          _check(await vault.readRefreshToken() == rotated);
+          _check(persistence!.currentSession != null);
+        }
+        return profile.future;
+      },
       buildStudyRuntime: (auth, changes) => auth,
     );
     account = controller;
@@ -249,6 +367,9 @@ Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
         _check(sdk.auth.currentSession != null); // Local metadata clear only.
         await controller.signOut();
         _check(sdk.auth.currentSession == null);
+        if (persistent) {
+          _check(await vault.readRefreshToken() == null);
+        }
       case 'receipt-sdk-absent':
         _check(await _read(scope) == null && network.sends == 0);
         await source.close();
@@ -256,6 +377,9 @@ Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
         throw const FormatException('Invalid SDK receipt phase');
     }
     _check(!network.closed);
+    if (persistent && phase != 'receipt-sdk-clear') {
+      _check(await vault.readRefreshToken() == rotated);
+    }
   } finally {
     if (network.sends > 0 && !network.reply.isCompleted) {
       network.reply.completeError(StateError('TEST_ONLY_CLEANUP'));
@@ -266,6 +390,11 @@ Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
       await store.close();
     }
     account?.dispose();
+    await persistence?.close();
+    if (persistent && phase != 'receipt-sdk-clear') {
+      _check(await vault.readRefreshToken() == rotated);
+    }
+    await port?.close();
     binding.dispose();
     await sdk.dispose();
     authHttp.close();

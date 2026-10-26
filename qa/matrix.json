@@ -3257,6 +3257,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
       "limitation": "New actual Windows/SDK process phases authored locally unrun; CI required. Auth/JWT/profile/AI HTTP TEST ONLY, no hosted learner proof or combined persistent refresh-secret startup. No replay/default activation/all14 hosted groups pending."
+    },
+    {
+      "id": "windows-persistent-sdk-receipt-process",
+      "status": "automated-baseline",
+      "scope": "Mandatory native process startup combines Windows refresh vault, PersistentAccountAccess, actual same SDK/profile/receipt factory and native receipt storage: exact rotated token before profile, preserve/reopen pending block and explicit both-vault logout.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "receipt-persist-reopen"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows persistent vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout passed"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
+      "limitation": "New native combined phases authored locally unrun; CI required. Actual SDK/persistence/Windows stores but TEST ONLY ownership adapter/Auth JWT/rotation/profile/AI HTTP, not installed production host or hosted learner proof. No replay/default activation/all14 hosted gates pending."
     }
   ],
   "findings": [

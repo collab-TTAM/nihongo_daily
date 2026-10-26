@@ -146,3 +146,33 @@ Exact-head Windows CI must observe the explicit same-SDK/profile receipt marker;
 no build/OS pass is claimed before that. Still no cross-process CAS, replay grant,
 authenticated lookup, pending release or default activation. Next combined owned
 persistent startup/refresh vault and these components, plus real hosted gates.
+
+## Combined persistent-vault Windows phases
+
+Separate receipt-persist-write/reopen/clear/absent/cleanup phases now extend the
+same mandatory probe without replacing any original receipt-sdk phase. They use
+a different GUID-derived -persistent-receipt.invalid origin. The first process
+seeds a fixed TEST ONLY refresh secret into actual Windows Credential Manager.
+Actual PersistentAccountAccess.start reads it and calls actual SDK setSession;
+Auth HTTP must see exactly one refresh_token grant with the original secret.
+Each fresh process returns a different fixed synthetic rotated secret. Verify the
+rotated secret in actual native vault before profile publication and after
+persistence close; the next process must present that exact saved secret.
+
+The profile account uses actual PersistentAccountAccess as Auth, and the receipt
+source uses that SAME SDK via the existing factory. The existing held own-profile,
+persisted-before-HTTP, actual ignored-abort drain/claim/preserve and fresh-process
+pending block assertions still execute. Local receipt clear leaves the SDK logged
+in; separate account.signOut must then clear SDK AND actual Auth vault. The fourth
+process checks both real vault partitions absent; finally cleanup attempts both
+partitions even after a receipt failure. No enumeration/foreign learner target.
+
+A TEST ONLY RefreshableAccountAccess adapter wraps the actual SDK/binding and dual
+Auth/binding lifecycle streams. This is a fixture ownership adapter, not the
+private production PersistentSupabaseRuntime port or installed application host.
+Auth endpoint/JWT/rotation/profile/AI HTTP remain synthetic. The new combined
+process phases require exact-head CI: no local Windows/Flutter/PowerShell
+execution or hosted identity/rotation/learner restoration claim. Default app and
+all14 hosted gates remain unchanged. Next production-host ownership/integration,
+storage failure/account-change journeys and authenticated receipt reconciliation;
+unknown metadata never grants provider redispatch or a new command.
