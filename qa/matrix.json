@@ -3479,6 +3479,29 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
       "limitation": "New native read assertions authored locally unrun; exact-head Windows CI required. TEST ONLY Auth/JWT/profile/HTTP, not hosted RLS or full-command correlation/conditional release; defaults and all14 release gates unchanged."
+    },
+    {
+      "id": "receipt-pending-native-expectations",
+      "status": "automated-baseline",
+      "scope": "Retained conversation pending lane rejects same event as SYNC_CONFLICT and different event as AiTextRequestPending, with zero inner dispatch and unchanged receipt metadata across repeated probes.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/ai/receipt_guarded_ai_transport_test.dart",
+          "contains": "pending receipt retains original conflict and different event busy"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "rejected = event != _event;"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_guarded_ai_transport_test.dart",
+      "limitation": "Pure18-file harness/13 tests and strict analysis do not replace native Windows bridge/new-head full CI. Exact event-specific denial expectations only; zero mutation HTTP/native metadata guards retained, no production/RLS/default change/all14 release gates pending."
     }
   ],
   "findings": [

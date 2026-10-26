@@ -745,8 +745,12 @@ Future<void> verifyWindowsOwnedReceiptPhase(
                   clientEventId: event,
                 ),
               );
+            } on AiTextRequestPending {
+              // The retained lane rejects another event before transport I/O.
+              rejected = event != _event;
             } on AiTextFailure catch (error) {
-              rejected = error.code == AiTextErrorCode.syncConflict;
+              rejected =
+                  event == _event && error.code == AiTextErrorCode.syncConflict;
             }
             _check(rejected && network.sends == 0);
           }

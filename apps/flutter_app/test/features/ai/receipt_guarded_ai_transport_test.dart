@@ -8,6 +8,7 @@ import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_mutation.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
@@ -151,6 +152,43 @@ void main() {
       clientEventId: event,
     ).toJson(),
   };
+  test(
+    'pending receipt retains original conflict and different event busy',
+    () async {
+      final reference = ConversationReceiptReference.fromStart(
+        projectUrl: scope.projectOrigin,
+        ownerId: owner,
+        request: start,
+      );
+      backend.value = reference.encode();
+      final t = open();
+      addTearDown(t.close);
+      final session = CapturedConversationSession(
+        auth: auth,
+        transport: t,
+        isReady: () => true,
+      );
+      final other = StartConversationRequest(
+        scenarioId: owner,
+        level: AiTextLevel.n5,
+        clientEventId: 'b2000000-0000-4000-8000-000000000002',
+      );
+      for (var i = 0; i < 3; i++) {
+        await expectLater(
+          session.start(start),
+          throwsA(code(AiTextErrorCode.syncConflict)),
+        );
+        await expectLater(
+          session.start(other),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+        expect(session.hasUnresolvedMutation, isTrue);
+        expect(session.isCurrent, isTrue);
+        expect(inner.sends, 0);
+        expect(backend.value, reference.encode());
+      }
+    },
+  );
   for (final entry in requests.entries) {
     test(
       'typed ${entry.key} persists metadata before immutable exact wire',

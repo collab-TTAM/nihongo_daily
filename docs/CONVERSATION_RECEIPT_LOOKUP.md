@@ -121,3 +121,34 @@ strict format check zero changes. 46/46 QA regressions PASS, inventory139 valid;
 all138 old QA cases/findings/gates exact. Separate diff review confirms all old
 fixture/PowerShell lines retained in order. Flutter lint include unresolved locally;
 this is not full analysis or execution of the new native assertions.
+
+## Correct native pending expectation after observed CI failure
+
+CI40354457697/sourcee3bb21f/latestattempt1 FAILED Windows121683163897 in actual
+Dart/native bridge verification. Four other jobs/every step succeeded; downstream
+Windows staging/release/native journal/artifact checks were SKIPPED, not passes.
+The new lookup marker was never observed. Parentf8e773e CI40348831434 remains prior
+historical successful evidence only. Do not claim this failed run as full/native
+read proof.
+
+The added native loop wrongly required SYNC_CONFLICT for both event IDs. Existing
+ConversationMutationLane deliberately retains _pendingKey after the original
+receipt conflict; a DIFFERENT event is denied before transport as
+AiTextRequestPending. The fixture caught only AiTextFailure, so this expected
+pending denial escaped and failed the process. Production behavior is unchanged.
+The loop now requires exact original-event SYNC_CONFLICT and exact different-event
+AiTextRequestPending. The opposite pairing fails. Every zero mutation HTTP, native
+metadata-before/after-read, three lookup statuses, stale reader, native rotation,
+logout/absent/cleanup/deadline assertion remains; no success/fallback/reset added.
+
+One regression composes actual CapturedConversationSession/lane/receipt decorator/
+store with preexisting metadata and repeats the two exact denials three times,
+requiring unresolved/current session, zero inner dispatch and unchanged metadata.
+Fresh official Dart3.9.2 SHA verified; fresh18-file pure harness adapts ONLY
+flutter_test import to test1.26.2 and copies exact original fixture bytes. All13
+cases (12 old+1new) PASS, strict casts/inference/raw analysis of that graph CLEAN.
+A direct real-source verifier independently reproduced all6 exact denials.
+This is not Flutter/SDK/native Windows execution; new exact-head CI must prove
+both lookup and original OWNED Windows markers and every required step. No new
+hosted Auth/JWT/RLS/provider proof/default activation/security change. All14 gates
+remain pending; next retained-command correlation and conditional receipt release.
