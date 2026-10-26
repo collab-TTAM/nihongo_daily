@@ -144,8 +144,9 @@ final class _Http extends http.BaseClient {
 Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
   _check(RegExp(r'^bridge-[a-f0-9]{32}$').hasMatch(runScope));
   final persistent = phase.startsWith('receipt-persist-');
-  if (persistent)
+  if (persistent) {
     phase = phase.replaceFirst('receipt-persist-', 'receipt-sdk-');
+  }
   final origin = persistent
       ? 'https://$runScope-persistent-receipt.invalid'
       : 'https://$runScope-sdk-receipt.invalid';

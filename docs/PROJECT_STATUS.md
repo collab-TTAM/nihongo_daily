@@ -3,6 +3,40 @@
 Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
+## Core checkpoint — sửa analyzer của Windows receipt probe, 2026-10-26
+
+- Branch `automation/issue-11-plan-sdk-integration`, PR #41 draft; parent
+  `932929221df326dae025904b94cd4aa3425f0803`. Main vẫn `78a44fa`.
+- Đã đọc CI [40292719170](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40292719170),
+  đúng source head trên, latest attempt 1: đủ 5 jobs. Database, ai-boundary,
+  repo-sanity và Windows có mọi step thành công. Flutter format đạt nhưng
+  analyzer lỗi duy nhất `curly_braces_in_flow_control_structures` tại
+  `tool/windows_sdk_receipt_fixture.dart:148:5`; test/build và các bước sau
+  analyzer bị skip, không được tính là đạt.
+- Log Windows job `121471411984` lúc `2026-10-26T08:33:53.3751018Z` xác nhận:
+  `Windows persistent vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout passed (TEST ONLY Auth/HTTP)`.
+  Đây là bằng chứng native probe với Auth/JWT/rotation/profile/AI HTTP và ownership
+  adapter TEST ONLY, chưa phải production PersistentSupabaseRuntime host hoặc
+  đăng nhập learner trên hosted Supabase.
+- Sửa duy nhất mã nguồn: thêm block `{ }` quanh phép chuẩn hóa tên phase khi
+  `persistent`. Giữ nguyên điều kiện, assignment, assertions, deadlines, cleanup,
+  PowerShell, workflow, security gates và mọi test hiện có; không suppression.
+- Paths: `apps/flutter_app/tool/windows_sdk_receipt_fixture.dart`,
+  `docs/ACCOUNT_RECEIPT_AI_RUNTIME.md`, `docs/PROJECT_STATUS.md`.
+- Không có Flutter/Dart SDK hoặc Windows native ở môi trường hiện tại: format,
+  analyze, Flutter tests và build của source mới phải được xác minh bằng CI.
+  Local: 46/46 QA regression tests đạt, inventory 131 cases hợp lệ (không phải
+  chạy 131 tests), `git diff --check` đạt. Commit và CI mới được ghi ở checkpoint
+  đầu PR #41; không suy kết quả source mới từ CI của parent.
+- Tiếp theo: kiểm tra exact-head/latest-attempt đủ 5 jobs, mọi required step và
+  marker Windows trước khi ghép ownership/lifecycle vào production host do caller
+  sở hữu. Sau đó storage failure/refresh/late response/logout/account-change,
+  authenticated receipt lookup và verified conditional release trước lệnh tiếp.
+  Learner recovery vẫn memory-only, một pending mutation chặn lệnh mới; không
+  suy quyền gửi lại từ receipt missing/unknown/metadata. #17 mở, AI default tắt,
+  cả 14 release groups chưa nghiệm thu. Không đổi Pro #14/#38, main, nhánh #37,
+  Auth strategy/provider/RLS/spend/schedule; không merge hoặc release.
+
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |

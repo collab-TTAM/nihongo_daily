@@ -176,3 +176,19 @@ execution or hosted identity/rotation/learner restoration claim. Default app and
 all14 hosted gates remain unchanged. Next production-host ownership/integration,
 storage failure/account-change journeys and authenticated receipt reconciliation;
 unknown metadata never grants provider redispatch or a new command.
+
+### CI đã quan sát và sửa analyzer — 2026-10-26
+
+CI [40292719170](https://github.com/collab-TTAM/nihongo_daily/actions/runs/40292719170)
+tại source `932929221df326dae025904b94cd4aa3425f0803`, latest attempt 1, đã chạy
+đạt toàn bộ Windows job `121471411984`, bao gồm marker chính xác
+`Windows persistent vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout passed (TEST ONLY Auth/HTTP)`.
+Database, ai-boundary và repo-sanity cũng đạt. Tuy nhiên Flutter analyzer dừng ở
+lint thiếu block `if` tại `windows_sdk_receipt_fixture.dart:148:5`; các bước Flutter
+test/build phía sau bị skip. Tổng CI chưa đạt.
+
+Bản sửa chỉ thêm `{ }` cho phép đổi tên phase có điều kiện; mọi assertion,
+deadline, cleanup và security gate giữ nguyên. Source mới cần CI riêng; không
+có full Flutter/Dart/Windows SDK để xác minh local. Bằng chứng probe trên không
+thay thế production host, hosted learner Auth/RLS/provider hoặc acceptance của
+14 nhóm release; learner recovery và quyền gửi lệnh tiếp không thay đổi.
