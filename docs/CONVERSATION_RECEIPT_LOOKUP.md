@@ -44,3 +44,44 @@ PostgREST/JWT/provider/learner proof or Personal Alpha acceptance. All14 hosted
 gates remain pending; defaults/Pro/provider/Auth strategy/security unchanged.
 
 Observed local: 27 real-source Dart receipt projection checks PASS across all3 operations (unknown/pending/completed, duplicate/foreign/extra/inconsistent responses and fixed FormatException with no source). This is model execution only, not SDK/Flutter/RLS/hosted proof. Format3 zerochanges and46 QA PASS; eight new SDK cases locally UNRUN.
+
+## Owned runtime read binding
+
+PersistentSupabaseRuntime.createConversationReceiptLookup now exposes an explicit
+borrowed CapturedConversationReceiptLookup only under existing conversation opt-in,
+persisted refresh and own-profile readiness. Default/staging configuration is
+unchanged and UI does not acquire it. AiTextRuntimeOwner caches one reader on the
+SAME lease used by text/conversation/scenarios. No SDK/transport/token writer/store
+owner or independent busy lane is added. Acquisition sends no HTTP/storage call.
+Lease creation/orphan/reentry guards mirror the retained scenario reader; account
+invalidation synchronously revokes the read capability, then original transport
+actual drain blocks another generation. Repeated acquisition retains same reader.
+
+The read-only port is implemented by the existing SDK transport and forwarded
+through ReceiptGuardedAiTransport with pre/post-session checks; forwarding does
+not consume/reset its mutation attempt or call receipt storage. Reader captures
+exact Auth hint/ready generation, checks before/after I/O and suppresses stale
+success/error, maps unknown/private errors to fixed safe codes. Busy errors stay
+busy; wrapper owns no shutdown or transport. Host owns original runtime close.
+Read results still cannot clear metadata/restore conversation/grant another event.
+
+Eight actual owned-runtime/SDK cases are authored locally UNRUN: unknown/pending/
+completed fixed captured GET with cached reader and no storage; held own profile/
+explicit flag; completed lookup leaves pending mutation blocked; foreign owner
+no HTTP; shared text busy and refresh/logout during ignored-abort GET. Original
+lease is revoked immediately; no replacement or receipt clear until real HTTP
+drains. Refresh permits a new reader after drain while metadata remains; logout
+clears only after drain and keeps source terminal. Auth/JWT/profile/vault/storage/
+HTTP are TEST ONLY. No hosted RLS/PostgREST/provider proof or default activation.
+
+Parentd36d6d6 CI40338776513/latestattempt1 observed all5/every required step SUCCESS;
+all8 lookup SDK cases in Flutter121628430241, native OWNED marker121627494082.
+New8/fullFlutter/analyze/native/build require new exact-head CI. Fresh official
+Dart3.9.2 SHA verified;4 real-source wrapper/owner-graph checks PASS (no-I/O capture,
+unknown read and same-user new-session late-result revocation), not SDK/Flutter
+proof. Initial disposable verifier lacked its error-type import; adding ONLY that
+harness import fixed it, no repository diagnostic or test weakened. Formatting/
+46 QA/inventory138/whitespace/separate review recorded in PR41. All137 previous
+QA/findings/gates retained/all14 hosted pending. Next host/native read journey,
+retained full-command/result correlation and verified conditional release; missing
+or unknown never grants provider redispatch or a new event.

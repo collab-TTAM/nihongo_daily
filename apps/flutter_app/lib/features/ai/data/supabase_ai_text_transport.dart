@@ -16,6 +16,7 @@ import '../domain/conversation_receipt_snapshot.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
 import 'captured_conversation_scenarios.dart';
+import 'captured_conversation_receipt_lookup.dart';
 
 /// Explicit owner-created capability, never installed by the default app.
 /// Borrows SDK/Auth and captures one exact SDK Session/token plus ready generation.
@@ -24,7 +25,8 @@ final class SupabaseAiTextTransport
     implements
         OwnedAiTextTransport,
         ConversationMutationTransport,
-        ConversationScenarioReadPort {
+        ConversationScenarioReadPort,
+        ConversationReceiptReadPort {
   SupabaseAiTextTransport({
     required SupabaseClient client,
     required ReviewAuth auth,
@@ -175,6 +177,7 @@ final class SupabaseAiTextTransport
 
   /// Existing owner-only SELECT RLS; no provider, mutation or receipt release.
   /// Uses this same captured token, busy lane, bounds, abort and actual drain.
+  @override
   Future<ConversationReceiptSnapshot> lookupReceipt(
     ConversationReceiptReference reference,
   ) async {

@@ -5,6 +5,7 @@ import '../data/captured_ai_text_repository.dart';
 import '../data/captured_conversation_mutation.dart';
 import '../data/captured_conversation_session.dart';
 import '../data/captured_conversation_scenarios.dart';
+import '../data/captured_conversation_receipt_lookup.dart';
 
 /// One owner-created ready generation. Never reuse after a readiness barrier.
 final class AiTextGeneration {}
@@ -41,6 +42,71 @@ final class AiTextRuntimeOwner {
 
   bool get isDraining => _retiring != null || _creating != null;
   bool get isFailed => _failed;
+
+  /// One retained read-only receipt reader per lease on the shared transport.
+  /// Acquisition reads nothing and never resets the sibling conversation lane.
+  CapturedConversationReceiptLookup? acquireReceiptLookup({
+    required ReviewAuth auth,
+    required AiTextGeneration generation,
+    required bool Function() isReady,
+  }) {
+    final repository = acquire(
+      auth: auth,
+      generation: generation,
+      isReady: isReady,
+    );
+    final lease = _lease;
+    if (repository == null ||
+        lease == null ||
+        !identical(repository, lease.repository) ||
+        isDraining ||
+        _closed ||
+        _failed) {
+      return null;
+    }
+    final creating = Completer<void>();
+    _creating =
+        creating; // Before supplied readiness/transport getters reenter.
+    CapturedConversationReceiptLookup? orphan;
+    try {
+      final existing = lease.receipts;
+      if (existing != null) {
+        if (existing.isCurrent) return existing;
+        invalidate();
+        return null;
+      }
+      final transport = lease.transport;
+      if (transport is! ConversationReceiptReadPort) return null;
+      final epoch = _epoch;
+      bool ready() =>
+          !_closed &&
+          !_failed &&
+          epoch == _epoch &&
+          identical(_lease, lease) &&
+          repository.isCurrent &&
+          transport.isCurrent;
+      orphan = CapturedConversationReceiptLookup(
+        auth: lease.auth,
+        port: transport as ConversationReceiptReadPort,
+        isReady: ready,
+      );
+      if (!ready() || !orphan.isCurrent) {
+        invalidate();
+        return null;
+      }
+      lease.receipts = orphan;
+      orphan = null;
+      _notify();
+      return lease.receipts;
+    } on Object {
+      invalidate(); // Availability only, never expose supplied getter details.
+      return null;
+    } finally {
+      orphan?.revoke();
+      _creating = null;
+      creating.complete();
+    }
+  }
 
   /// One retained public scenario reader per lease on the shared transport.
   /// Acquisition reads nothing and never resets the sibling conversation lane.
@@ -250,7 +316,8 @@ final class AiTextRuntimeOwner {
       if (lease.repository.isCurrent &&
           lease.transport.isCurrent &&
           (lease.conversation?.isCurrent ?? true) &&
-          (lease.scenarios?.isCurrent ?? true)) {
+          (lease.scenarios?.isCurrent ?? true) &&
+          (lease.receipts?.isCurrent ?? true)) {
         return;
       }
     } on Object {
@@ -265,6 +332,7 @@ final class AiTextRuntimeOwner {
     if (lease == null) return;
     _lease = null;
     _retired[lease.generation] = true;
+    lease.receipts?.revoke();
     lease.scenarios?.revoke();
     lease.conversation?.revoke();
     lease.repository.revoke();
@@ -335,6 +403,7 @@ final class _Lease {
   final CapturedAiTextRepository repository;
   CapturedConversationSession? conversation;
   CapturedConversationScenarios? scenarios;
+  CapturedConversationReceiptLookup? receipts;
 }
 
 final class _Drain {

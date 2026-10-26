@@ -8,6 +8,8 @@ import 'captured_conversation_mutation.dart';
 import 'captured_conversation_scenarios.dart';
 import 'conversation_receipt_dispatch.dart';
 import 'conversation_receipt_store.dart';
+import 'captured_conversation_receipt_lookup.dart';
+import '../domain/conversation_receipt_snapshot.dart';
 
 /// Transfers transport ownership; borrows the secure store. Explicit factory
 /// composition only, never a default. One mutation until future reconciliation.
@@ -15,7 +17,8 @@ final class ReceiptGuardedAiTransport
     implements
         OwnedAiTextTransport,
         ConversationMutationTransport,
-        ConversationScenarioReadPort {
+        ConversationScenarioReadPort,
+        ConversationReceiptReadPort {
   ReceiptGuardedAiTransport({
     required OwnedAiTextTransport inner,
     required ConversationReceiptStore store,
@@ -171,6 +174,22 @@ final class ReceiptGuardedAiTransport
       capturedSession: capturedSession,
       level: level,
     );
+  }
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupReceipt(
+    ConversationReceiptReference reference,
+  ) async {
+    _check(_session);
+    final inner = _inner;
+    if (inner is! ConversationReceiptReadPort) {
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    }
+    final result = await (inner as ConversationReceiptReadPort).lookupReceipt(
+      reference,
+    );
+    _check(_session);
+    return result;
   }
 
   @override

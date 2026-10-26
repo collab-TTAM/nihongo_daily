@@ -3427,6 +3427,34 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart --plain-name 'receipt lookup'",
       "limitation": "Eight new SDK cases locally unrun/exact-head CI required. Existing SELECT RLS unchanged; TEST ONLY Auth/JWT/HTTP, no hosted lookup proof. Read projection is never release/replay/new-event/provider authority; not installed in runtime/UI/default; all14 hosted gates pending."
+    },
+    {
+      "id": "owned-runtime-receipt-read-binding",
+      "status": "automated-baseline",
+      "scope": "Captured receipt reader on original shared AI lease/decorator/private SDK/owned runtime after persistence and own profile; shared busy/refresh/logout actual drain and no pending release.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/application/ai_text_runtime_owner.dart",
+          "contains": "CapturedConversationReceiptLookup? acquireReceiptLookup("
+        },
+        {
+          "path": "apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart",
+          "contains": "createConversationReceiptLookup()"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned receipt reader actual drain on transition logout="
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20,
+        31
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/persistent_ai_text_runtime_test.dart --plain-name 'owned receipt reader'",
+      "limitation": "Eight new actual owned-runtime/SDK cases locally unrun; exact-head CI required. TEST ONLY Auth/JWT/profile/vault/receipt/HTTP. No default UI activation, hosted RLS proof, full command correlation or verified conditional release; one pending mutation/all14 hosted gates remain."
     }
   ],
   "findings": [

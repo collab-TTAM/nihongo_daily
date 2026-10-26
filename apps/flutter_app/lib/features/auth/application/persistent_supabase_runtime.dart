@@ -13,6 +13,7 @@ import '../../ai/data/ai_conversation_source.dart';
 import '../../ai/data/ai_conversation_scenario_source.dart';
 import '../../ai/data/captured_conversation_scenarios.dart';
 import '../../ai/data/captured_ai_text_repository.dart';
+import '../../ai/data/captured_conversation_receipt_lookup.dart';
 import '../../ai/data/captured_conversation_session.dart';
 import '../../ai/data/supabase_ai_text_transport.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
@@ -289,6 +290,25 @@ final class PersistentSupabaseRuntime
     final session = account.readySession;
     if (ready == null || generation == null || session == null) return null;
     return _aiOwner.acquireConversation(
+      auth: ready.auth,
+      generation: generation,
+      isReady: () =>
+          _closing == null &&
+          identical(account.readyRuntime, ready) &&
+          identical(account.readySession, session) &&
+          identical(_aiGeneration, generation),
+    );
+  }
+
+  /// Explicit read capability; shares the original AI owner and ready generation.
+  CapturedConversationReceiptLookup? createConversationReceiptLookup() {
+    if (!_aiConversationEnabled || _closing != null) return null;
+    _syncAiReadiness();
+    final ready = _aiReadyRuntime;
+    final generation = _aiGeneration;
+    final session = account.readySession;
+    if (ready == null || generation == null || session == null) return null;
+    return _aiOwner.acquireReceiptLookup(
       auth: ready.auth,
       generation: generation,
       isReady: () =>
