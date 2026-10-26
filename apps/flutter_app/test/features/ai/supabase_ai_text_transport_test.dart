@@ -5,6 +5,7 @@ import 'package:nihongo_daily/features/ai/application/supabase_account_receipt_a
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/auth/data/supabase_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/supabase_refreshable_account_access.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -281,6 +282,91 @@ void main() {
     for (var i = 0; i < 8; i++) {
       await Future<void>.delayed(Duration.zero);
     }
+  }
+
+  test(
+    'shared SDK Auth port observes same-session rotation and borrows SDK lifetime',
+    () async {
+      final port = SupabaseRefreshableAccountAccess(sdk, auth);
+      var closed = false;
+      addTearDown(() async {
+        if (!closed) {
+          await port.close();
+        }
+      });
+      var events = 0;
+      final subscription = port.sessionChanges.listen((_) => events++);
+      final original = port.currentSession;
+      await settleAccount();
+      events = 0;
+      generation++;
+      await port.refresh();
+      await settleAccount();
+      expect(identical(port.currentSession, original), isTrue);
+      expect(port.currentRefreshToken, 'TEST_ONLY_REFRESH');
+      expect(
+        events,
+        greaterThan(0),
+      ); // SDK rotation signal despite stable binding identity.
+      await port.close();
+      closed = true;
+      await subscription.cancel();
+      final stopped = events;
+      generation++;
+      await sdk.auth.refreshSession();
+      await settleAccount();
+      expect(events, stopped);
+      expect(sdk.auth.currentSession, isNotNull);
+    },
+  );
+
+  for (final operation in ['restore', 'refresh']) {
+    test('shared SDK Auth port redacts $operation failure', () async {
+      var requests = 0;
+      final failedHttp = MockClient((r) async {
+        requests++;
+        return http.Response(
+          '{"error":"invalid_grant","error_description":"TEST_ONLY_PRIVATE_REFRESH"}',
+          400,
+          headers: {'content-type': 'application/json'},
+        );
+      });
+      final failedSdk = SupabaseClient(
+        origin,
+        key,
+        httpClient: failedHttp,
+        authOptions: const AuthClientOptions(autoRefreshToken: false),
+      );
+      final failedBinding = SupabaseReviewBinding(
+        client: failedSdk,
+        projectUrl: origin,
+        publishableKey: key,
+        httpClient: failedHttp,
+        now: () => now,
+      );
+      final port = SupabaseRefreshableAccountAccess(failedSdk, failedBinding);
+      try {
+        final result = operation == 'restore'
+            ? port.restore('TEST_ONLY_REFRESH')
+            : port.refresh();
+        await expectLater(
+          result,
+          throwsA(
+            isA<ReviewTransportFailure>()
+                .having((e) => e.code, 'code', ReviewErrorCode.unauthorized)
+                .having((e) => e.toString().contains('PRIVATE'), 'safe', false),
+          ),
+        );
+        expect(port.currentSession, isNull);
+        expect(port.currentRefreshToken, isNull);
+        expect(requests, operation == 'restore' ? 1 : 0);
+      } finally {
+        await port.close();
+        failedBinding.dispose();
+        await failedSdk.dispose();
+        failedHttp.close();
+      }
+    });
   }
 
   test(

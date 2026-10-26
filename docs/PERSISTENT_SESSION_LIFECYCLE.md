@@ -165,3 +165,21 @@ SDK test's fixed event-turn readiness heuristic were corrected without changing
 production logic or original ready/non-null expectations. Source evidence is
 historical for later documentation commits; next startup/error UI and explicit
 refresh scheduling, then configured hosted learner acceptance.
+
+## Shared production SDK persistence port
+
+The unchanged private SDK persistence adapter is extracted as internal host
+component SupabaseRefreshableAccountAccess. PersistentSupabaseRuntime still
+constructs the same port around its private SDK/binding and closes it in the same
+order, after persistence/AI drains and before binding/SDK disposal. No caller-facing
+runtime SDK handle or automatic activation is added. The component owns only its
+two lifecycle subscriptions; host must supply matching binding/client, retain sole
+Auth mutation ownership, disable SDK logs/auto-refresh and keep refresh secrets
+out of UI/state/logging. Its secret getter belongs only to persistence machinery.
+
+The Windows combined receipt probe now uses this SAME production port instead of
+a TEST ONLY duplicate. Auth/JWT/profile/HTTP remain simulated; production runtime
+and native component checks still do not prove a deployed learner journey. Actual
+same-session SDK refresh signal, safe restore/refresh failures and borrowed SDK
+lifetime have focused SDK regressions; full old owned-runtime/Windows checks remain
+mandatory exact-head CI. No Auth strategy/provider/storage policy change.

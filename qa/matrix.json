@@ -3280,6 +3280,33 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter build windows --release --target tool/windows_vault_bridge.dart && pwsh -File tool/verify_windows_vault_bridge.ps1",
       "limitation": "New native combined phases authored locally unrun; CI required. Actual SDK/persistence/Windows stores but TEST ONLY ownership adapter/Auth JWT/rotation/profile/AI HTTP, not installed production host or hosted learner proof. No replay/default activation/all14 hosted gates pending."
+    },
+    {
+      "id": "shared-production-sdk-persistence-port",
+      "status": "automated-baseline",
+      "scope": "Shared original production SDK Auth persistence port used by owned runtime and mandatory combined Windows receipt probe; same-session rotation notification, safe restore/refresh errors and borrowed SDK close ownership.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/auth/data/supabase_refreshable_account_access.dart",
+          "contains": "final class SupabaseRefreshableAccountAccess"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/supabase_ai_text_transport_test.dart",
+          "contains": "shared SDK Auth port observes same-session rotation"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_sdk_receipt_fixture.dart",
+          "contains": "port = SupabaseRefreshableAccountAccess(sdk, binding)"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/supabase_ai_text_transport_test.dart --plain-name 'shared SDK Auth port'",
+      "limitation": "SDK Auth HTTP/JWT TEST ONLY; native combined probe and whole owned runtime require exact-head CI. Shared production adapter is not installed receipt startup host or hosted learner proof; all14 gates pending/default unchanged."
     }
   ],
   "findings": [

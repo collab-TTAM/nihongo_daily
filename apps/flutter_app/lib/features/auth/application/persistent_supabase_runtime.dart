@@ -23,7 +23,7 @@ import '../../srs/data/review_repository.dart';
 import '../../srs/data/supabase_review_binding.dart';
 import '../data/persistent_account_access.dart';
 import '../data/session_credential_vault.dart';
-import '../data/supabase_account_access.dart';
+import '../data/supabase_refreshable_account_access.dart';
 import 'account_controller.dart';
 import 'account_provider.dart';
 import 'session_refresh_scheduler.dart';
@@ -99,7 +99,7 @@ final class PersistentSupabaseRuntime
       httpClient: _network,
       now: now,
     );
-    _port = _OwnedSdkAccess(_client, _binding);
+    _port = SupabaseRefreshableAccountAccess(_client, _binding);
     persistence = PersistentAccountAccess(sdk: _port, vault: vault);
     account = createSupabaseAccountRuntime(
       _binding,
@@ -161,7 +161,7 @@ final class PersistentSupabaseRuntime
   late final SupabaseClient _client;
   late final _BoundedSessionHttp _network;
   late final SupabaseReviewBinding _binding;
-  late final _OwnedSdkAccess _port;
+  late final SupabaseRefreshableAccountAccess _port;
   late final PersistentAccountAccess persistence;
   late final AccountController<SrsStudyRuntime> account;
   Future<void>? _closing;
@@ -450,62 +450,5 @@ final class _BoundedSessionHttp extends http.BaseClient {
   @override
   void close() {
     if (owns) inner.close();
-  }
-}
-
-final class _OwnedSdkAccess implements RefreshableAccountAccess {
-  _OwnedSdkAccess(this.client, this.binding) {
-    _bindingSubscription = binding.sessionChanges.listen(
-      (_) => _events.add(null),
-      onError: (Object _, StackTrace __) => _events.addError(_failure()),
-    );
-    // Binding retains ReviewSession identity on same-lifecycle refresh and does
-    // not emit a review invalidation. Persistence also needs every SDK rotation.
-    _authSubscription = client.auth.onAuthStateChange.listen(
-      (_) => _events.add(null),
-      onError: (Object _, StackTrace __) => _events.addError(_failure()),
-    );
-  }
-  final SupabaseClient client;
-  final SupabaseReviewBinding binding;
-  final _events = StreamController<void>.broadcast();
-  late final StreamSubscription<void> _bindingSubscription;
-  late final StreamSubscription<AuthState> _authSubscription;
-  static ReviewTransportFailure _failure() =>
-      const ReviewTransportFailure(ReviewErrorCode.unauthorized);
-  @override
-  Stream<void> get sessionChanges => _events.stream;
-  @override
-  ReviewSession? get currentSession => binding.currentSession;
-  @override
-  String? get currentRefreshToken =>
-      currentSession == null ? null : client.auth.currentSession?.refreshToken;
-  @override
-  Future<void> signIn(String email, String password) =>
-      SupabaseAccountAccess(binding).signIn(email, password);
-  @override
-  Future<void> signOut() => binding.signOutLocally();
-  @override
-  Future<void> restore(String refreshToken) async {
-    try {
-      await client.auth.setSession(refreshToken);
-    } on Object {
-      throw _failure();
-    }
-  }
-
-  @override
-  Future<void> refresh() async {
-    try {
-      await client.auth.refreshSession();
-    } on Object {
-      throw _failure();
-    }
-  }
-
-  Future<void> close() async {
-    await _bindingSubscription.cancel();
-    await _authSubscription.cancel();
-    await _events.close();
   }
 }

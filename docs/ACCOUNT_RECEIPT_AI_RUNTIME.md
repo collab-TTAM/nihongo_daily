@@ -192,3 +192,22 @@ deadline, cleanup và security gate giữ nguyên. Source mới cần CI riêng;
 có full Flutter/Dart/Windows SDK để xác minh local. Bằng chứng probe trên không
 thay thế production host, hosted learner Auth/RLS/provider hoặc acceptance của
 14 nhóm release; learner recovery và quyền gửi lệnh tiếp không thay đổi.
+
+## Shared production persistence adapter
+
+The combined Windows probe now uses SupabaseRefreshableAccountAccess, extracted
+from the original production PersistentSupabaseRuntime adapter, replacing only the
+duplicate TEST ONLY ownership adapter. Production runtime imports the same shared
+class. Exact original methods, dual binding+SDK rotation signals, fixed errors,
+subscription close order and borrowed SDK/binding ownership remain; only class/
+private-field names and unused wildcard spelling change. SDK/binding fields are
+private and no learner configuration or token-state surface is added.
+
+All native probe assertions, process phases and original SDK assertions remain.
+Three direct SDK cases cover same-session refresh notification even while the
+binding hint identity is stable, closed subscription with borrowed SDK still usable,
+and safe restore/refresh error redaction with no accepted hint/refresh token.
+New exact-head CI must re-run the combined Windows marker and existing owned
+persistent runtime/account/late-response suites. This removes a fixture-port gap;
+it does not install the receipt source in the production startup host or prove
+hosted Auth/JWT/RLS/provider/learner flows. All14 release gates remain pending.

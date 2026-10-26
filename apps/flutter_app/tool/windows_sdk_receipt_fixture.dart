@@ -17,6 +17,7 @@ import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/auth/data/supabase_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/supabase_refreshable_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
@@ -61,47 +62,6 @@ String _expected(ConversationReceiptScope scope) =>
       ownerId: _user,
       request: _request,
     ).encode();
-
-// TEST ONLY ownership adapter around the real SDK/binding. Mirrors the private
-// production port's dual lifecycle signals; not an alternate production Auth.
-final class _PersistentSdk implements RefreshableAccountAccess {
-  _PersistentSdk(this.client, this.binding) {
-    _binding = binding.sessionChanges.listen((_) => _events.add(null));
-    _auth = client.auth.onAuthStateChange.listen((_) => _events.add(null));
-  }
-  final SupabaseClient client;
-  final SupabaseReviewBinding binding;
-  final _events = StreamController<void>.broadcast();
-  late final StreamSubscription<void> _binding;
-  late final StreamSubscription<AuthState> _auth;
-  @override
-  ReviewSession? get currentSession => binding.currentSession;
-  @override
-  String? get currentRefreshToken =>
-      currentSession == null ? null : client.auth.currentSession?.refreshToken;
-  @override
-  Stream<void> get sessionChanges => _events.stream;
-  @override
-  Future<void> signIn(String email, String password) =>
-      SupabaseAccountAccess(binding).signIn(email, password);
-  @override
-  Future<void> signOut() => binding.signOutLocally();
-  @override
-  Future<void> restore(String token) async {
-    await client.auth.setSession(token);
-  }
-
-  @override
-  Future<void> refresh() async {
-    await client.auth.refreshSession();
-  }
-
-  Future<void> close() async {
-    await _binding.cancel();
-    await _auth.cancel();
-    await _events.close();
-  }
-}
 
 final class _Http extends http.BaseClient {
   _Http(this.scope, this.bearer) {
@@ -249,11 +209,11 @@ Future<void> verifyWindowsSdkReceiptPhase(String phase, String runScope) async {
   AccountController<ReviewAuth>? account;
   AccountReceiptAiRuntime<ReviewAuth>? owner;
   ConversationReceiptStore? store;
-  _PersistentSdk? port;
+  SupabaseRefreshableAccountAccess? port;
   PersistentAccountAccess? persistence;
   try {
     if (persistent) {
-      port = _PersistentSdk(sdk, binding);
+      port = SupabaseRefreshableAccountAccess(sdk, binding);
       persistence = PersistentAccountAccess(sdk: port, vault: vault);
       _check(persistence.currentSession == null);
       await persistence.start();
