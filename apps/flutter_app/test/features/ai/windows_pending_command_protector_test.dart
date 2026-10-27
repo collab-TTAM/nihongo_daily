@@ -351,7 +351,7 @@ void main() {
     final nested = <bool>[];
     final result = open(
       check: () {
-        if (p != null) nested.add(p!.isCurrent);
+        if (p != null) nested.add(p.isCurrent);
         return true;
       },
     );

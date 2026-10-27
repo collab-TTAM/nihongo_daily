@@ -5,6 +5,39 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — readiness reentry test analyzer fix, 2026-10-27
+
+- Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
+  ddf49926c01e025c79737b4a69d61d6d143d6136/tree845bd855954deb27eb02fb218456c1cfd95cabf4.
+  Published new commit/CI and release in first PR41 checkpoint. Main78a44fa,
+  source37afa572a and Pro38at28c20cb unchanged/protected content untouched.
+- Observed CI40440684744 raw exact source/latestattempt1 completed FAILURE:
+  complete5 jobs, Flutter format success; analyzer exactly1 warning
+  unnecessary_non_null_assertion at windows_pending_command_protector_test.dart
+  :354:36. p is already promoted by p!=null. All15 current facade tests/full suite
+  and later Flutter/Chrome/Web checks SKIPPED, not passed. Other4 jobs and EVERY
+  step success. Windows121980125888 actual bridge/protection/malformed/control/
+  all3OWNED markers observed, not execution proof for new mock regressions.
+- Removed only that redundant ! in nested availability test. Exact original-byte
+  comparison proves every other test byte unchanged. Production _checking/busy/
+  captured readiness/identity/revoke/actual-drain guards entirely unchanged.
+  Existing15 cases/assertions remain, no new mirrored test for one-character lint.
+- Local source/diff/whitespace/inventory150/46QA review recorded in PR. QA matrix,
+  lints, dependencies, CI and contracts untouched. Formatter/Flutter analyzer/
+  tests/builds locally UNRUN; appropriate pinned format/analyzer/full15 regressions
+  delegated to new exact-head/latestattempt CI. No stubs/bootstrap retry/bypass.
+- Only2 paths: test/features/ai/windows_pending_command_protector_test.dart under
+  Flutter app, and this status. No native/Auth/RLS/runtime/default/storage/
+  retention/collection/content/Pro behavior change, no secret or strategy change.
+- NEXT all5 exact-head/latestattempt jobs/EVERY required step/actual15 facade
+  cases +retained native bridge/protection/malformed/all3OWNED markers. Fix real
+  diagnostics without weakening assertions. Pending-only handoff/no duplicate
+  implementation/long polling. After green: same-owned SDK/profile assembly and
+  lifecycle proof; reviewed atomic bounded backend/key/ACL/integrity/logout/
+  retention before activation.41draft/17open/AIoff/learner memory-only/one pending/
+  all14hosted pending/no merge/closure/deploy/release/schedule/Alpha claim.
+
+
 ## Core checkpoint — command protection availability reentry, 2026-10-27
 
 - Draft41 / issue17, branch automation/issue-11-plan-sdk-integration; parent
