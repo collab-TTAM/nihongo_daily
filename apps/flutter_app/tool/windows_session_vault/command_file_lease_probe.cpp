@@ -138,6 +138,27 @@ void PrivatePolicyMatrix(const std::wstring& root) {
   const auto user = FixtureUserSid();
   const auto current = L"(A;OICI;FA;;;" + user + L")";
   const std::wstring system = user == L"S-1-5-18" ? L"" : L"(A;OICI;FA;;;SY)";
+  // TEST ONLY: no inheritable parent ACEs, so enabling inheritance on case 2
+  // changes its protection bit without adding another reason for rejection.
+  const auto parent = root + L"\\acl-parent";
+  struct ParentCleanup {
+    const std::wstring& path;
+    bool created = false;
+    ~ParentCleanup() { if (created) RemoveDirectoryW(path.c_str()); }
+  } parentCleanup{parent};
+  struct ParentSecurity {
+    PSECURITY_DESCRIPTOR value = nullptr;
+    ~ParentSecurity() { if (value) LocalFree(value); }
+  } parentSecurity;
+  const auto parentPolicy = L"O:" + user + L"D:P(A;;FA;;;" + user + L")" +
+      (user == L"S-1-5-18" ? L"" : L"(A;;FA;;;SY)");
+  Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(parentPolicy.c_str(),
+      SDDL_REVISION_1, &parentSecurity.value, nullptr) != FALSE);
+  SECURITY_ATTRIBUTES parentAttributes{};
+  parentAttributes.nLength = sizeof(parentAttributes);
+  parentAttributes.lpSecurityDescriptor = parentSecurity.value;
+  Check(CreateDirectoryW(parent.c_str(), &parentAttributes) != FALSE);
+  parentCleanup.created = true;
   const std::vector<std::wstring> policies = {
       L"O:" + user + L"D:P" + current + system,
       L"O:" + user + L"D:P" + current + system + L"(A;OICI;GR;;;WD)",
@@ -145,7 +166,7 @@ void PrivatePolicyMatrix(const std::wstring& root) {
       L"O:" + user + L"D:P" + current + system + L"(A;OICI;GR;;;BA)"};
   for (size_t i = 0; i < policies.size(); ++i) {
     std::cout << "CHECK: command ACL case " << i << " descriptor-create" << std::endl;
-    const auto directory = root + L"\\acl-" + std::to_wstring(i);
+    const auto directory = parent + L"\\acl-" + std::to_wstring(i);
     struct Security {
       PSECURITY_DESCRIPTOR value = nullptr;
       ~Security() { if (value) LocalFree(value); }
@@ -156,9 +177,47 @@ void PrivatePolicyMatrix(const std::wstring& root) {
     attributes.nLength = sizeof(attributes);
     attributes.lpSecurityDescriptor = security.value;
     Check(CreateDirectoryW(directory.c_str(), &attributes) != FALSE);
-    DescribeFixturePolicy(directory, user);
     bool passed = false;
     try {
+      if (i == 2) {
+        // Omitting P from creation SDDL did not clear protection on the CI
+        // filesystem. Explicitly set the documented inheritance flag instead.
+        BOOL present = FALSE;
+        BOOL defaulted = FALSE;
+        PACL expected = nullptr;
+        Check(GetSecurityDescriptorDacl(security.value, &present, &expected,
+            &defaulted) != FALSE);
+        Check(present && expected && IsValidAcl(expected));
+        auto name = directory;
+        Check(SetNamedSecurityInfoW(name.data(), SE_FILE_OBJECT,
+            DACL_SECURITY_INFORMATION | UNPROTECTED_DACL_SECURITY_INFORMATION,
+            nullptr, nullptr, expected, nullptr) == ERROR_SUCCESS);
+        struct ActualSecurity {
+          PSECURITY_DESCRIPTOR value = nullptr;
+          ~ActualSecurity() { if (value) LocalFree(value); }
+        } actual;
+        PACL actualDacl = nullptr;
+        Check(GetNamedSecurityInfoW(name.data(), SE_FILE_OBJECT,
+            DACL_SECURITY_INFORMATION, nullptr, nullptr, &actualDacl, nullptr,
+            &actual.value) == ERROR_SUCCESS);
+        SECURITY_DESCRIPTOR_CONTROL control = 0;
+        DWORD revision = 0;
+        Check(GetSecurityDescriptorControl(actual.value, &control, &revision) != FALSE);
+        Check((control & SE_DACL_PRESENT) != 0 && (control & SE_DACL_PROTECTED) == 0);
+        Check(actualDacl && IsValidAcl(actualDacl) &&
+            actualDacl->AceCount == expected->AceCount);
+        for (DWORD at = 0; at < expected->AceCount; ++at) {
+          void* want = nullptr;
+          void* got = nullptr;
+          Check(GetAce(expected, at, &want) != FALSE);
+          Check(GetAce(actualDacl, at, &got) != FALSE);
+          const auto bytes = static_cast<ACE_HEADER*>(want)->AceSize;
+          Check(static_cast<ACE_HEADER*>(got)->AceSize == bytes &&
+              std::memcmp(want, got, bytes) == 0);
+        }
+        std::cout << "CHECK: command ACL unprotected fixture exact ACEs verified" << std::endl;
+      }
+      DescribeFixturePolicy(directory, user);
       std::cout << "CHECK: command ACL case " << i << " acquire" << std::endl;
       auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
       Check(lease != nullptr);
@@ -180,6 +239,8 @@ void PrivatePolicyMatrix(const std::wstring& root) {
     Check(passed && fileRemoved && dirRemoved);
     std::cout << "CHECK: command ACL case " << i << " complete" << std::endl;
   }
+  Check(RemoveDirectoryW(parent.c_str()) != FALSE);
+  parentCleanup.created = false;
 }
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
