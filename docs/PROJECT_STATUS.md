@@ -5,6 +5,40 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — command facade analyzer import fix, 2026-10-27
+
+- Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
+  f04a49e27b9bb2c0733ebf8756cccce1ee2ef2e1 / treee34188812d49c0df402971bf2f4c64326e0cbf02.
+  New commit/CI+worker release recorded in first PR41 checkpoint. Main78a44fa/
+  source37afa572a/Pro38at28c20cb unchanged; protected content untouched.
+- Observed CI40432100454 raw exact source/latestattempt1 FAILED: complete5 jobs,
+  Flutter formatting PASS; analyzer reports exactly2 unnecessary_import infos at
+  windows_pending_command_protector.dart:2 and its test:5. flutter/foundation.dart
+  already supplies all referenced typed-data symbols. All Flutter tests/new12 and
+  later Flutter/Chrome/Web steps SKIPPED, not executed/passed. Other4 jobs and
+  EVERY step success; this is not a successful full-CI/Personal Alpha result.
+- Windows121952058205 actual command bridge/protection/malformed/control and all3
+  OWNED markers observed. They test retained native components; optional captured
+  facade12 cases still require actual execution, not inferred from Windows build.
+- Removed exactly the two redundant dart:typed_data import lines. Exact original
+  file-byte comparison proves all remaining production/test bytes unchanged.
+  No assertion, lint configuration, dependency, CI gate, native/Auth/transport/
+  metadata/default/storage/retention/collection/Pro behavior change.
+- Local source/diff/whitespace/inventory150/46QA review recorded in PR. Existing
+  QA matrix/tests untouched; no new mirrored tests for import-only fix. Formatter/
+  Flutter analyzer/tests/builds locally UNRUN; appropriate full pinned checks are
+  delegated to new exact-head CI. No Flutter bootstrap retry/stubs/bypass.
+- Three paths only: AI data/windows_pending_command_protector.dart, its test,
+  this status. All12 authored tests and captured scope/readiness/generation/busy/
+  revoke/late-result guards retained exactly. No factory/runtime activation.
+- NEXT new exact-head/latestattempt all5 jobs/EVERY step, actual12 new mock tests
+  plus retained native/OWNED markers. Fix actual diagnostics preserving assertions;
+  pending-only handoff/no duplicate implementation/long polling. After green: same-
+  owned SDK/profile factory/lifecycle evidence and reviewed atomic bounded backend/
+  key/ACL/integrity/logout/retention before activation. Keep41draft/17open/AIoff/
+  all14hosted pending/no merge/closure/deploy/release/schedule/Alpha claim.
+
+
 ## Core checkpoint — captured command protection facade, 2026-10-27
 
 - Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
