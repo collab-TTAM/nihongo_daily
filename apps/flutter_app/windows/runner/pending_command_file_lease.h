@@ -12,6 +12,9 @@ class PendingCommandFileLease final {
       const std::wstring& trusted_directory) noexcept;
   // Read-only strict leaf-directory policy, NOT ancestor/sentinel ACL assurance.
   bool HasPrivateDirectoryAccessPolicy() const noexcept;
+  // Read-only held sentinel policy: explicit non-inheritable user/SYSTEM ACEs.
+  // Snapshot only, never payload permission or protection from later mutation.
+  bool HasPrivateSentinelAccessPolicy() const noexcept;
   ~PendingCommandFileLease();
   PendingCommandFileLease(const PendingCommandFileLease&) = delete;
   PendingCommandFileLease& operator=(const PendingCommandFileLease&) = delete;

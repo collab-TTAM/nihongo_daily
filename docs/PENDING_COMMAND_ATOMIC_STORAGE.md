@@ -208,3 +208,30 @@ Primary references reviewed 2026-10-27:
 - https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-getsecurityinfo
 - https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-getsecuritydescriptorcontrol
 - https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-getace
+
+
+## Held sentinel access-policy snapshot — 2026-10-27
+
+HasPrivateSentinelAccessPolicy reads owner/DACL from the already-held empty
+sentinel handle. It shares the existing bounded token/descriptor/ACE checker,
+with expected ACE flags zero for explicit non-inheritable user/LocalSystem
+full-control entries. The leaf-directory method retains its exact OI/CI policy.
+Require owner equal process user, protected present non-null valid DACL, exactly
+user/System trustees (one if identical), exact masks/flags and no extra ACEs.
+All failures return false, no ACL repair, privileges, path/SID/raw errors or
+payload I/O. Acquire still does not automatically grant a private-storage claim.
+
+Mandatory native matrix precreates only synthetic empty sentinels with private
+or extra Everyone-read policies; checks positive/rejection twice, after release/
+reacquire, and preserved zero length. Cleanup is required. Existing probe bytes
+are unchanged except the new matrix/call. New marker follows successful matrix:
+`PASS: Windows command held sentinel private ACL/rejection/reacquire (TEST ONLY)`.
+
+This snapshot neither proves later ACL immutability nor validates payload files,
+trusted writer identity, rollback or atomic commit. Existing same-OS-user limits
+and explicit learner retention approval remain. Native Windows cases locally
+UNRUN; Linux C++17 warnings-as-errors/fail-closed probe and QA46 are not Windows
+proof. New exact-head CI all5/EVERY step is required. Microsoft GetSecurityInfo
+reference above confirms handle/READ_CONTROL/LocalFree contract and warns about
+concurrent descriptor mutation. Next payload/ACL-mutation and namespace checks,
+then bounded encrypted-record commit/flush/crash proof before activation.

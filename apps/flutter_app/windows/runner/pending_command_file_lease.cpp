@@ -35,10 +35,11 @@ bool Ordinary(HANDLE handle, bool directory) {
 }
 #endif
 }  // namespace
-bool PendingCommandFileLease::HasPrivateDirectoryAccessPolicy() const noexcept {
+namespace {
 #ifdef _WIN32
+bool PrivatePolicy(HANDLE handle, BYTE expectedFlags) noexcept {
   try {
-    if (directories_.empty() || !directories_.back()) return false;
+    if (!handle) return false;
     struct Token {
       HANDLE value = nullptr;
       ~Token() { if (value) CloseHandle(value); }
@@ -57,7 +58,7 @@ bool PendingCommandFileLease::HasPrivateDirectoryAccessPolicy() const noexcept {
     } security;
     PSID owner = nullptr;
     PACL dacl = nullptr;
-    if (GetSecurityInfo(static_cast<HANDLE>(directories_.back()), SE_FILE_OBJECT,
+    if (GetSecurityInfo(handle, SE_FILE_OBJECT,
         OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION, &owner, nullptr,
         &dacl, nullptr, &security.value) != ERROR_SUCCESS) return false;
     SECURITY_DESCRIPTOR_CONTROL control = 0;
@@ -77,7 +78,7 @@ bool PendingCommandFileLease::HasPrivateDirectoryAccessPolicy() const noexcept {
       if (!GetAce(dacl, i, &raw)) return false;
       const auto ace = static_cast<ACCESS_ALLOWED_ACE*>(raw);
       if (ace->Header.AceType != ACCESS_ALLOWED_ACE_TYPE ||
-          ace->Header.AceFlags != (OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE) ||
+          ace->Header.AceFlags != expectedFlags ||
           static_cast<size_t>(ace->Header.AceSize) < sizeof(ACCESS_ALLOWED_ACE) || ace->Mask != FILE_ALL_ACCESS) return false;
       const auto sid = static_cast<PSID>(&ace->SidStart);
       if (!IsValidSid(sid) || GetLengthSid(sid) >
@@ -88,6 +89,20 @@ bool PendingCommandFileLease::HasPrivateDirectoryAccessPolicy() const noexcept {
     }
     return sawUser && sawSystem;
   } catch (...) { return false; }
+}
+#endif
+}  // namespace
+bool PendingCommandFileLease::HasPrivateDirectoryAccessPolicy() const noexcept {
+#ifdef _WIN32
+  return !directories_.empty() && PrivatePolicy(
+      static_cast<HANDLE>(directories_.back()), OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE);
+#else
+  return false;
+#endif
+}
+bool PendingCommandFileLease::HasPrivateSentinelAccessPolicy() const noexcept {
+#ifdef _WIN32
+  return PrivatePolicy(static_cast<HANDLE>(file_), 0);
 #else
   return false;
 #endif

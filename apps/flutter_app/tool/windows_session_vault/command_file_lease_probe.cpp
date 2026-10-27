@@ -242,6 +242,53 @@ void PrivatePolicyMatrix(const std::wstring& root) {
   Check(RemoveDirectoryW(parent.c_str()) != FALSE);
   parentCleanup.created = false;
 }
+void SentinelPolicyMatrix(const std::wstring& root) {
+  const auto directory = root + L"\\sentinel-acl";
+  const auto sentinel = directory + L"\\pending-command.lock";
+  Check(CreateDirectoryW(directory.c_str(), nullptr) != FALSE);
+  bool passed = false;
+  try {
+    const auto user = FixtureUserSid();
+    for (const bool broad : {false, true}) {
+      const auto policy = L"O:" + user + L"D:P(A;;FA;;;" + user + L")" +
+          (user == L"S-1-5-18" ? L"" : L"(A;;FA;;;SY)") +
+          (broad ? L"(A;;GR;;;WD)" : L"");
+      struct Security {
+        PSECURITY_DESCRIPTOR value = nullptr;
+        ~Security() { if (value) LocalFree(value); }
+      } security;
+      Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(policy.c_str(),
+          SDDL_REVISION_1, &security.value, nullptr) != FALSE);
+      SECURITY_ATTRIBUTES attributes{};
+      attributes.nLength = sizeof(attributes);
+      attributes.lpSecurityDescriptor = security.value;
+      const auto file = CreateFileW(sentinel.c_str(), GENERIC_READ | GENERIC_WRITE,
+          0, &attributes, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+      Check(file != INVALID_HANDLE_VALUE);
+      CloseHandle(file);
+      {
+        auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(lease != nullptr);
+        Check(lease->HasPrivateSentinelAccessPolicy() == !broad);
+        Check(lease->HasPrivateSentinelAccessPolicy() == !broad);
+      }
+      {
+        auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(lease != nullptr);
+        Check(lease->HasPrivateSentinelAccessPolicy() == !broad);
+      }
+      WIN32_FILE_ATTRIBUTE_DATA info{};
+      Check(GetFileAttributesExW(sentinel.c_str(), GetFileExInfoStandard, &info) != FALSE);
+      Check(info.nFileSizeLow == 0 && info.nFileSizeHigh == 0);
+      Check(DeleteFileW(sentinel.c_str()) != FALSE);
+    }
+    passed = true;
+  } catch (...) { /* cleanup synthetic sentinel, no production ACL repair */ }
+  DeleteFileW(sentinel.c_str());
+  const bool removed = RemoveDirectoryW(directory.c_str()) != FALSE;
+  Check(passed && removed);
+  std::cout << "PASS: Windows command held sentinel private ACL/rejection/reacquire (TEST ONLY)" << std::endl;
+}
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
   const auto length = GetModuleFileNameW(nullptr, executable, 32768);
@@ -316,6 +363,7 @@ bool ProbePendingCommandFileLease() {
     AncestorMatrix(directory);
     std::cout << "CHECK: command lease ACL matrix" << std::endl;
     PrivatePolicyMatrix(directory);
+    SentinelPolicyMatrix(directory);
     std::cout << "CHECK: command lease all matrices complete" << std::endl;
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }

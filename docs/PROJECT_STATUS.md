@@ -12,50 +12,31 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — construct actual unprotected ACL negative fixture, 2026-10-27
+## Core checkpoint — held sentinel ACL policy, 2026-10-27
 
-- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
-  e70e9f09a834d9ca1b6a3301aac5e3e964fc8058. Commit/tree/new CI/released marker
-  recorded in PR41. main78a44fa/source37afa572a/Pro38 unchanged/N4 reserved.
-- CI40502325417 exact parent/latestattempt1 FAILURE; all5 jobs/every step read.
-  Repo/DB/AI/Flutter every step SUCCESS. Windows bridge/staging/release builds
-  and native MSVC compile/link SUCCESS. Original process/ancestor matrices and
-  ACL cases0/1 completed. Case2 intended unprotected DACL actually reported
-  protected=1/owner-match=1/present=1/two exact fullcontrol ACEs; first negative
-  policy assertion failed. Later native/artifact steps SKIPPED, not passes.
-- TEST ONLY fixture fix: dedicated temporary protected parent grants only process
-  user/SYSTEM fullcontrol WITHOUT inheritance. Existing four child policies,
-  production checker and all original positive/negative/repeat/reacquire/assertions
-  remain. For case2 explicitly apply DACL_SECURITY_INFORMATION plus
-  UNPROTECTED_DACL_SECURITY_INFORMATION to that unique synthetic child, then
-  independently read descriptor: require present/unprotected and exact ACE count/
-  each ACE byte-for-byte equal to requested ACL before running old assertions.
-  This isolates the protection-bit negative from inherited extra ACEs. No null
-  DACL, privilege changes, real-user ACL changes or production security edits.
-  All child cleanup remains mandatory; parent cleanup required and RAII retries
-  on failure. Fixed diagnostic marker reports verified fixture, no SID/SDDL/path/
-  token/OS details. Windows behavior still requires actual new-head CI execution.
-- Microsoft API references (checked 2026-10-27):
-  https://learn.microsoft.com/en-us/windows/win32/secauthz/security-information
-  https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-setnamedsecurityinfow
-  https://learn.microsoft.com/en-us/windows/win32/secauthz/automatic-propagation-of-inheritable-aces
-  The observed protected flag is CI evidence; no unsupported reason for creation
-  behavior is inferred from the documentation.
-- Two paths: apps/flutter_app/tool/windows_session_vault/command_file_lease_probe.cpp
-  and this status. Local C++17 warnings-as-errors compile/nonWindows failclosed,
-  46 QA/inventory151/whitespace PASS; all original Check statements retained in
-  order and production files byte-identical. Separate diff review covered
-  descriptor ownership, exact negative preconditions, inheritance, handle/parent
-  cleanup and safe diagnostics. Exact-head CI observation in PR41;
-  Windows/MSVC/ACL execution/fullFlutter/analyzer/build UNRUN locally. Linux
-  compile/failclosed is not Windows proof. CI/QA/default/Auth/frozenAPI/schema/RLS/
-  Pro unchanged.41draft/17open/AIoff/memory-only/all14hosted gates pending.
-- NEXT inspect exact-head/latestattempt all5/every step and all four ACL completion
-  markers plus original native markers. Fix actual failures without weakening
-  policy/assertions; pending-only handoff/no duplicate implementation/longpoll.
-  Then sentinel/payload ACL/mutation/namespace and encrypted atomic record/crash
-  backend before learner retention approval/activation. No merge/issue closure/
-  release/deploy/provider/collection/security/spend/schedule/Alpha acceptance.
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  5546832f6b8944c5a3ea9f5d8aae4e39cf1411c2. New commit/CI/release in PR41.
+- Parent CI40510575153 exact/latestattempt1 SUCCESS all5/EVERYstep. Windows
+  122211168951 actual unprotected exact-ACEs marker and all4 ACL completions,
+  original process/ancestor/native/OWNED markers observed. TEST ONLY, not hosted.
+- Added read-only HasPrivateSentinelAccessPolicy on held file handle. Existing
+  leaf checker factored into shared helper; leaf expected flags OI/CI unchanged,
+  sentinel requires zero flags, same exact owner/protected DACL/user+SYSTEM/
+  fullcontrol/ACE validation. No ACL repair, permission or payload activation.
+- New mandatory synthetic native matrix: private positive/Everyone-read negative,
+  repeat/reacquire, unchanged empty bytes and required cleanup. Existing probe
+  bytes unchanged outside matrix+call. Extra marker after complete new matrix.
+- Five paths: pending_command_file_lease.cpp/.h (Windows runner), native
+  command_file_lease_probe.cpp, PENDING_COMMAND_ATOMIC_STORAGE.md and this status.
+  Local C++17 -Wall -Wextra -Werror/failclosed, QA46/46, inventory151, whitespace
+  and independent diff/policy/handle/cleanup review PASS. Full native Windows/
+  MSVC/Flutter/build locally UNRUN; new-head CI required, no Linux-native claim.
+- Snapshot is NOT later-ACL-mutation/payload/atomic-write/crash/rollback/writer
+  assurance. Next new exact CI all5/EVERYstep/new marker, then payload/ACL mutation/
+  namespace/atomic record/flush/crash work before learner retention approval.
+ 41draft/17open/AIoff/memory-only/onepending/all14hosted pending. Main/Pro/source37
+  unchanged; no default/Auth/RLS/CI/security reduction/storage activation.
+
 
 ## Core checkpoint — diagnose actual Windows ACL probe failure, 2026-10-27
 
