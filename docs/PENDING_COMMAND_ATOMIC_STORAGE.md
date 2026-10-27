@@ -168,3 +168,43 @@ Linux compile/fail-closed and Python QA do not execute those cases.
 Additional primary references reviewed 2026-10-27:
 - https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/ns-ntifs-_reparse_data_buffer
 - https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ni-winioctl-fsctl_set_reparse_point
+
+## Read-only strict leaf-directory access policy — 2026-10-27
+
+The isolated lease exposes HasPrivateDirectoryAccessPolicy on its already-held
+leaf directory. Acquire additionally requests READ_CONTROL for that leaf; it
+still does not call the policy method automatically or grant payload-write
+permission. A future backend must explicitly require the reviewed checks before
+any payload I/O. No production/default/channel caller is introduced here.
+
+The checker reads owner/DACL through GetSecurityInfo on the held handle, captures
+the process TokenUser SID, and requires owner equality, a present non-null valid
+protected DACL and exactly the explicit inheritable full-control allow ACEs for
+that user and LocalSystem (one ACE if the process user itself is LocalSystem).
+Other trustees, duplicate/object/deny/inherited ACEs, unexpected inheritance flags,
+weaker/different masks or any token/descriptor/ACL query failure return false.
+It never repairs ACLs, adjusts privileges, logs a SID/path or falls back to broad
+permissions. Token handles and returned descriptors are owned with RAII.
+
+This is a deliberately narrow proposed local policy, NOT a general Windows
+AccessCheck/effective-access evaluator or Supabase identity check. It does not
+validate ancestor or sentinel/payload ACLs, prevent later owner/ACL modification,
+recognize an expected application directory identity, isolate code running as the
+same OS user, protect against administrators/SYSTEM, or provide atomic/durable
+record guarantees. Existing Acquire without an explicit positive policy check
+must not be described as secure private data storage. Learner retention stays off.
+
+The mandatory native probe creates only unique synthetic child directories with
+explicit TEST ONLY descriptors. It requires the narrow positive descriptor to
+pass, and Everyone-read, unprotected-DACL and extra-Administrators-read variants
+to fail. Repeated checks and release/reacquire must preserve those decisions;
+all synthetic sentinel/directory cleanup succeeds. Existing lease/process/junction
+cases and markers stay mandatory. An additional policy marker is emitted only
+after the complete extended probe succeeds. No real user directory ACL is edited.
+Native Windows checks are locally unrun; require exact-head CI. Linux compile/
+fail-closed and Python QA are separate evidence, not Windows access-policy proof.
+
+Primary references reviewed 2026-10-27:
+- https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-getsecurityinfo
+- https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-getsecuritydescriptorcontrol
+- https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-getace

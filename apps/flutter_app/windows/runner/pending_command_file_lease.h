@@ -10,6 +10,8 @@ class PendingCommandFileLease final {
  public:
   static std::unique_ptr<PendingCommandFileLease> Acquire(
       const std::wstring& trusted_directory) noexcept;
+  // Read-only strict leaf-directory policy, NOT ancestor/sentinel ACL assurance.
+  bool HasPrivateDirectoryAccessPolicy() const noexcept;
   ~PendingCommandFileLease();
   PendingCommandFileLease(const PendingCommandFileLease&) = delete;
   PendingCommandFileLease& operator=(const PendingCommandFileLease&) = delete;

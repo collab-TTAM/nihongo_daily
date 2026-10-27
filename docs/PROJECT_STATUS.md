@@ -10,6 +10,46 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — read-only private leaf-directory policy, 2026-10-27
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  6e957024d60bc7beca581a963509ea5277c1e324. Published commit/tree/newCI/released
+  marker in PR41. main78a44fa/source37afa572a/Pro38 unchanged/N4 untouched.
+- CI40486757568 raw exact6e95702/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122130436428 actualancestor/junction+sentinel/OWNED/native markers;
+  Flutter122131026350 actual1440tests/fiveChrome. Not hosted learner/Auth/RLS proof.
+- Lease now offers read-only HasPrivateDirectoryAccessPolicy on held leaf handle,
+  requested READ_CONTROL. Strict processTokenUser owner equality/present valid
+  non-null protectedDACL/exact user+SYSTEM inheritable fullcontrol allowlist,
+  rejecting other trustees/ACE types/flags/masks/duplicates/queryfailure. RAII
+  handles/token/descriptor cleanup; no privilege/ACL edits/logs/broad fallback.
+- Acquire does NOT automatically require that new check and grants NO payload
+  authority. Future backend must explicitly enforce reviewed policy before data
+  IO. This is not effectiveAccessCheck, expectednamespace/Supabase Auth/writer
+  isolation/ancestor or sentinel ACL validation/later ACLmutation defense/atomic
+  record durability. Component only; learner/default/storage activation unchanged.
+- Mandatory native probe adds four unique synthetic descriptor directories:
+  strict positive vsEveryone-read/unprotectedDACL/extraAdministrators-read false.
+  Repeat and release/reacquire decisions and all cleanup required. No real-user
+  ACL edited; all original process/junction/lease assertions and markers retained.
+  New privateleaf marker after entireprobe. NewWindows/MSVC/accesspolicy checks
+  locally UNRUN and require exact-head CI; no skipped/faked native proof.
+- Six edited paths: windows/runner/pending_command_file_lease.h/.cpp and native
+  tool command_file_lease_probe.cpp/session_vault_probe.cpp under apps/flutter_app;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md and this status. C++17 warnings-as-errors
+  compile/nonWindows lease failclosed/46QA/inventory151/whitespace/probe-original
+  line preservation/separate owner/mask/ACL/cleanup/diff review PASS. FullFlutter/
+  analyzer/Windows/build locally UNRUN; no SDK bypass/test/security weakening.
+- NEXT exact-head/latestattempt all5/EVERYstep/newprivateleafmarker+oldmarkers,
+  fixactualdiagnostics preservingassertions; pending-onlyhandoff/no duplicatework/
+  longpoll. Then sentinel/payload ACL+mutation/namespace policy, encrypted record
+  commit/flush/crash backend+faultmatrix before retentionapproval/activation.
+ 41draft/17open/AIoff/memory-only/all14hostedpending/no merge/closure/Authstrategy/
+  provider/Pro/deploy/release/collection/security/spend/schedule/Alpha action.
+  Frozen API/schema/RLS/QA/CI/dependencies unchanged.
+
+
 ## Core checkpoint — command lease ancestor handles/junction rejection, 2026-10-27
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

@@ -134,6 +134,7 @@ int wmain(int argc, wchar_t* argv[]) {
     Check(ProbePendingCommandFileLease());
     std::cout << "PASS: Windows command sentinel exclusive process lease/abrupt-exit/reacquire/rejection (TEST ONLY, no payload storage)\n";
     std::cout << "PASS: Windows command lease ancestor handles/junction rejection/release cleanup (TEST ONLY, no payload storage)\n";
+    std::cout << "PASS: Windows command lease private leaf owner/protected DACL/allowlist/rejection (TEST ONLY, no payload storage)\n";
     passed = true;
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.

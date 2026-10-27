@@ -6,6 +6,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <winioctl.h>
+#include <sddl.h>
 namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command lease probe failed");
@@ -68,6 +69,63 @@ void AncestorMatrix(const std::wstring& root) {
   const bool leafRemoved = RemoveDirectoryW(leaf.c_str()) != FALSE;
   const bool realRemoved = RemoveDirectoryW(real.c_str()) != FALSE;
   Check(passed && unlinked && leafRemoved && realRemoved);
+}
+std::wstring FixtureUserSid() {
+  struct Token {
+    HANDLE value = nullptr;
+    ~Token() { if (value) CloseHandle(value); }
+  } token;
+  Check(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token.value) != FALSE);
+  DWORD size = 0;
+  GetTokenInformation(token.value, TokenUser, nullptr, 0, &size);
+  Check(size > 0 && size <= 65536);
+  std::vector<unsigned char> data(size);
+  Check(GetTokenInformation(token.value, TokenUser, data.data(), size, &size) != FALSE);
+  struct SidText {
+    LPWSTR value = nullptr;
+    ~SidText() { if (value) LocalFree(value); }
+  } text;
+  Check(ConvertSidToStringSidW(reinterpret_cast<TOKEN_USER*>(data.data())->User.Sid,
+      &text.value) != FALSE);
+  return std::wstring(text.value);
+}
+void PrivatePolicyMatrix(const std::wstring& root) {
+  const auto user = FixtureUserSid();
+  const auto current = L"(A;OICI;FA;;;" + user + L")";
+  const std::wstring system = user == L"S-1-5-18" ? L"" : L"(A;OICI;FA;;;SY)";
+  const std::vector<std::wstring> policies = {
+      L"O:" + user + L"D:P" + current + system,
+      L"O:" + user + L"D:P" + current + system + L"(A;OICI;GR;;;WD)",
+      L"O:" + user + L"D:" + current + system,
+      L"O:" + user + L"D:P" + current + system + L"(A;OICI;GR;;;BA)"};
+  for (size_t i = 0; i < policies.size(); ++i) {
+    const auto directory = root + L"\\acl-" + std::to_wstring(i);
+    struct Security {
+      PSECURITY_DESCRIPTOR value = nullptr;
+      ~Security() { if (value) LocalFree(value); }
+    } security;
+    Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(policies[i].c_str(),
+        SDDL_REVISION_1, &security.value, nullptr) != FALSE);
+    SECURITY_ATTRIBUTES attributes{};
+    attributes.nLength = sizeof(attributes);
+    attributes.lpSecurityDescriptor = security.value;
+    Check(CreateDirectoryW(directory.c_str(), &attributes) != FALSE);
+    bool passed = false;
+    try {
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      Check(lease->HasPrivateDirectoryAccessPolicy() == (i == 0));
+      Check(lease->HasPrivateDirectoryAccessPolicy() == (i == 0)); // Read only/idempotent.
+      lease.reset();
+      auto again = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(again != nullptr);
+      Check(again->HasPrivateDirectoryAccessPolicy() == (i == 0));
+      passed = true;
+    } catch (...) { /* clean synthetic entries even on policy failure */ }
+    const bool fileRemoved = DeleteFileW((directory + L"\\pending-command.lock").c_str()) != FALSE;
+    const bool dirRemoved = RemoveDirectoryW(directory.c_str()) != FALSE;
+    Check(passed && fileRemoved && dirRemoved);
+  }
 }
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
@@ -139,6 +197,7 @@ bool ProbePendingCommandFileLease() {
     Check(RemoveDirectoryW(sentinel.c_str()) != FALSE);
     Check(nihongo::PendingCommandFileLease::Acquire(directory) != nullptr);
     AncestorMatrix(directory);
+    PrivatePolicyMatrix(directory);
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }
   DeleteFileW(alias.c_str());
