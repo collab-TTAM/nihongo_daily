@@ -403,6 +403,108 @@ void HeldPolicyMutationMatrix(const std::wstring& root) {
   std::cout << "PASS: Windows command held directory/sentinel ACL mutation snapshots (TEST ONLY)" << std::endl;
   std::cout << "PASS: Windows command lease sticky policy failure fence (TEST ONLY)" << std::endl;
 }
+// TEST ONLY opaque synthetic bytes; no learner text or valid-command assertion.
+void CandidateReadMatrix(const std::wstring& root) {
+  using State = nihongo::PendingCommandCandidateState;
+  const auto directory = root + L"\\candidate-read";
+  const auto sentinel = directory + L"\\pending-command.lock";
+  const auto candidate = directory + L"\\pending-command.bin";
+  const auto alias = directory + L"\\candidate-alias";
+  const auto target = directory + L"\\target";
+  const auto user = FixtureUserSid();
+  struct Security {
+    PSECURITY_DESCRIPTOR value = nullptr;
+    ~Security() { if (value) LocalFree(value); }
+  } folderSecurity, fileSecurity, broadSecurity;
+  const auto descriptor = [&](Security& out, bool folder, bool broad) {
+    const std::wstring flags = folder ? L"OICI" : L"";
+    const auto policy = L"O:" + user + L"D:P(A;" + flags + L";FA;;;" + user + L")" +
+        (user == L"S-1-5-18" ? L"" : L"(A;" + flags + L";FA;;;SY)") +
+        (broad ? L"(A;" + flags + L";GR;;;WD)" : L"");
+    Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(policy.c_str(),
+        SDDL_REVISION_1, &out.value, nullptr) != FALSE);
+  };
+  descriptor(folderSecurity, true, false);
+  descriptor(fileSecurity, false, false);
+  descriptor(broadSecurity, false, true);
+  SECURITY_ATTRIBUTES folderAttributes{};
+  folderAttributes.nLength = sizeof(folderAttributes);
+  folderAttributes.lpSecurityDescriptor = folderSecurity.value;
+  const auto create = [&](const std::wstring& path, DWORD size, bool broad) {
+    SECURITY_ATTRIBUTES attributes{};
+    attributes.nLength = sizeof(attributes);
+    attributes.lpSecurityDescriptor = broad ? broadSecurity.value : fileSecurity.value;
+    const std::vector<unsigned char> bytes(size, 0xa5);
+    const auto handle = CreateFileW(path.c_str(), GENERIC_WRITE, 0, &attributes,
+        CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+    Check(handle != INVALID_HANDLE_VALUE);
+    DWORD written = 0;
+    const bool ok = size == 0 || WriteFile(handle, bytes.data(), size, &written, nullptr) != FALSE;
+    CloseHandle(handle);
+    Check(ok && written == size);
+  };
+  Check(CreateDirectoryW(directory.c_str(), &folderAttributes) != FALSE);
+  bool passed = false;
+  try {
+    create(sentinel, 0, false);
+    for (unsigned kind = 0; kind < 9; ++kind) {
+      std::cout << "CHECK: ciphertext candidate case " << kind << std::endl;
+      // absent, min, max, empty, oversized, broad ACL, hardlink, directory, junction.
+      const DWORD size = kind == 2 ? 65536 : kind == 3 ? 0 : kind == 4 ? 65537 : 1;
+      if (kind >= 1 && kind <= 6) create(candidate, size, kind == 5);
+      if (kind == 6) Check(CreateHardLinkW(alias.c_str(), candidate.c_str(), nullptr) != FALSE);
+      if (kind == 7) Check(CreateDirectoryW(candidate.c_str(), nullptr) != FALSE);
+      if (kind == 8) {
+        Check(CreateDirectoryW(target.c_str(), nullptr) != FALSE);
+        Junction(candidate, target);
+      }
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      const auto result = lease->ReadCiphertextCandidate();
+      if (kind == 0) {
+        Check(result.state == State::absent && result.bytes.empty());
+        Check(lease->ReadCiphertextCandidate().state == State::absent);
+        Check(lease->CheckPrivateAccessPolicy());
+      } else if (kind <= 2) {
+        Check(result.state == State::present);
+        Check(result.bytes == std::vector<unsigned char>(size, 0xa5));
+        const auto repeat = lease->ReadCiphertextCandidate();
+        Check(repeat.state == State::present && repeat.bytes == result.bytes);
+        Check(lease->CheckPrivateAccessPolicy());
+      } else {
+        Check(result.state == State::unavailable && result.bytes.empty());
+        Check(!lease->CheckPrivateAccessPolicy());
+      }
+      if (kind >= 1 && kind <= 6) {
+        WIN32_FILE_ATTRIBUTE_DATA info{};
+        Check(GetFileAttributesExW(candidate.c_str(), GetFileExInfoStandard, &info) != FALSE);
+        Check(info.nFileSizeHigh == 0 && info.nFileSizeLow == size); // Never truncated.
+      }
+      if (kind == 6) Check(DeleteFileW(alias.c_str()) != FALSE);
+      if (kind >= 1 && kind <= 6) Check(DeleteFileW(candidate.c_str()) != FALSE);
+      if (kind >= 7) Check(RemoveDirectoryW(candidate.c_str()) != FALSE);
+      if (kind == 8) {
+        Check(GetFileAttributesW((target + L"\\pending-command.bin").c_str()) == INVALID_FILE_ATTRIBUTES);
+        Check(RemoveDirectoryW(target.c_str()) != FALSE);
+      }
+      if (kind >= 3) {
+        create(candidate, 1, false); // Repair synthetic fixture, NEVER reset lease.
+        const auto denied = lease->ReadCiphertextCandidate();
+        Check(denied.state == State::unavailable && denied.bytes.empty());
+        Check(DeleteFileW(candidate.c_str()) != FALSE);
+      }
+    }
+    passed = true;
+  } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
+  DeleteFileW(alias.c_str());
+  DeleteFileW(candidate.c_str());
+  RemoveDirectoryW(candidate.c_str());
+  RemoveDirectoryW(target.c_str());
+  const bool fileRemoved = DeleteFileW(sentinel.c_str()) != FALSE;
+  const bool dirRemoved = RemoveDirectoryW(directory.c_str()) != FALSE;
+  Check(passed && fileRemoved && dirRemoved);
+  std::cout << "PASS: Windows bounded ciphertext candidate read/ACL/link/reparse/sticky failure (TEST ONLY)" << std::endl;
+}
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
   const auto length = GetModuleFileNameW(nullptr, executable, 32768);
@@ -479,6 +581,7 @@ bool ProbePendingCommandFileLease() {
     PrivatePolicyMatrix(directory);
     SentinelPolicyMatrix(directory);
     HeldPolicyMutationMatrix(directory);
+    CandidateReadMatrix(directory);
     std::cout << "CHECK: command lease all matrices complete" << std::endl;
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }

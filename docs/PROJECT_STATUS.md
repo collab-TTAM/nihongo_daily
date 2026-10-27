@@ -12,6 +12,41 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — bounded opaque ciphertext candidate read, 2026-10-27
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  6c855917691f06981742caf00247a17777899f8d. Commit/tree/newCI/released marker in PR41.
+  main/source37/Pro38 unchanged; N4 reserved.
+- CI40526219145 raw exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122269490435 actual sticky fence/held ACL/sentinel/leaf/process/junction
+  markers observed. TEST ONLY component proof, not hosted learner acceptance.
+- Add read-only ReadCiphertextCandidate under same lease: fixed basename,
+  combined sticky policy before/after, ordinary disk/single-link/nonreparse file,
+  strict protected owner/ACL, 1..65536 before allocation, exact read/repeated
+  metadata/ACL before returning bytes. Missing-file absence distinct from safe
+  unavailable; every uncertainty fences lease. RAII/no partial bytes/raw errors.
+  Present is unauthenticated opaque candidate, absent never new-mutation/dispatch
+  authority; no write/create/delete/decrypt/dispatch/default caller. Future
+  namespace/durable uncertainty/atomiccommit/flush/crash/receipt gates unchanged.
+- Mandatory native synthetic nine-case matrix: absent/min/max/repeat, empty/
+  oversized/broad ACL/hardlink/directory/junction rejection, bytes empty on failure,
+  original length preserved, no target payload, repair stays fenced, cleanup. All
+  prior probe lines/assertions retained in order. Local C++17 warnings-as-errors/
+  nonWindows failclosed,46QA/inventory151/whitespace PASS. Separate review checked
+  size-before-allocation/short-read suppression/RAII/fixture handle ownership/
+  failure latch/absence limits/no write path. Actual new native checks locally
+  UNRUN; local checks/review and new CI in PR41. Not short-read/sharing/race proof.
+- Five paths: Windows pending_command_file_lease.cpp/.h, native
+  command_file_lease_probe.cpp, PENDING_COMMAND_ATOMIC_STORAGE.md and this status.
+  FullFlutter/analyzer/Windows/MSVC locally UNRUN; no SDK bypass/security/test/
+  schema/API/RLS/Authstrategy/Pro/default/retention activation.41draft/17open/
+  AIoff/memory-only/onepending/all14hosted groups pending.
+- NEXT exacthead/latestattempt all5/EVERYstep/new candidate marker + retained
+  native markers. Fix actual failures without weakening assertions. Pending-only
+  handoff/no duplicate implementation/longpoll. Then fault/sharing/concurrent
+  mutation+namespace/durable uncertainty and encrypted-record atomic commit/flush/
+  crash before retention approval; no merge/closure/release/Alpha acceptance.
+
 ## Core checkpoint — sticky lease policy fence, 2026-10-27
 
 - PR41/issue17 branch automation/issue-11-plan-sdk-integration; parent

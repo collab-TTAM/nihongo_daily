@@ -281,3 +281,37 @@ races, and does not establish namespace/payload/writer/rollback/durability trust
 No learner retention or default activation; approved retention, persistent
 uncertainty/reconciliation, namespace validation and atomic encrypted-record
 commit/flush/crash testing remain required.
+
+## Bounded opaque ciphertext candidate read — 2026-10-27
+
+ReadCiphertextCandidate is an isolated read-only prerequisite, compiled only in
+the TEST ONLY native probe. No app/channel/default invokes it. Serialized owner
+first passes the sticky leaf/sentinel policy check. The fixed pending-command.bin
+basename under the captured directory is opened existing/read-only/exclusive with
+OPEN_REPARSE_POINT and READ_CONTROL. Disk, non-directory/non-reparse, one link,
+size 1..65536 and strict protected owner/user+SYSTEM zero-ACE-flags policy are
+required BEFORE buffer allocation. Exact synchronous read length, repeated size/
+link/ACL and final combined policy checks precede publication. RAII closes all
+handles; no partial bytes or OS/path diagnostics escape. Any uncertainty latches
+the existing per-lease fence; later fixture repair cannot reset it.
+
+Result present means opaque CANDIDATE ONLY: arbitrary bytes still need bounded
+DPAPI/frame/canonical envelope/scope/hosted receipt validation. Error-file-not-found
+with positive post-policy returns absent/empty; every other error returns
+unavailable/empty. Absent is NOT no-dispatch, new-event, legacy-reference clearing
+or restart reconciliation authority. No file creation/truncation/write/deletion/
+decryption/automatic retry/collection/default activation is added by the reader.
+This does not establish trusted namespace identity, immutable ACL, writer/rollback
+trust, persistent uncertainty, atomic commit/flush or hardware power-loss safety.
+An owner must retain unresolved state beyond lease lifetime; reacquiring is not
+authorization. Actual learner retention remains behind human approval.
+
+Mandatory native synthetic cases: absent/repeated absent, exact minimum and maximum
+bytes/repeated reads, zero/oversized/broad ACL/hardlink/directory/junction rejection,
+no returned partial bytes, unchanged fixture length, no target payload access,
+sticky rejection even after fixture replacement, mandatory cleanup. New marker
+requires all nine cases; actual Windows execution remains exact-head CI evidence.
+Short-read/fault injection, sharing failure and concurrent mutation remain further
+regressions, not claimed here. Official references checked 2026-10-27:
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileinformationbyhandle

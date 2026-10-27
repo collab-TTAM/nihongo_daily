@@ -122,12 +122,56 @@ PendingCommandFileLease::~PendingCommandFileLease() {
     if (*it) CloseHandle(static_cast<HANDLE>(*it));
 #endif
 }
+PendingCommandCandidate PendingCommandFileLease::ReadCiphertextCandidate() noexcept {
+  const auto fail = [&]() {
+    policy_failed_ = true;
+    return PendingCommandCandidate{};
+  };
+  try {
+    if (!CheckPrivateAccessPolicy()) return fail();
+#ifdef _WIN32
+    struct File {
+      HANDLE value = INVALID_HANDLE_VALUE;
+      ~File() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+    } file;
+    const auto path = directory_ + L"\\pending-command.bin";
+    file.value = CreateFileW(path.c_str(), GENERIC_READ | READ_CONTROL, 0, nullptr,
+        OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    if (file.value == INVALID_HANDLE_VALUE) {
+      const auto error = GetLastError();
+      if (error != ERROR_FILE_NOT_FOUND || !CheckPrivateAccessPolicy()) return fail();
+      return {PendingCommandCandidateState::absent, {}};
+    }
+    const auto bounded = [&](BY_HANDLE_FILE_INFORMATION& info) {
+      return GetFileType(file.value) == FILE_TYPE_DISK &&
+          GetFileInformationByHandle(file.value, &info) &&
+          (info.dwFileAttributes & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT)) == 0 &&
+          info.nNumberOfLinks == 1 && info.nFileSizeHigh == 0 &&
+          info.nFileSizeLow > 0 && info.nFileSizeLow <= 65536 &&
+          PrivatePolicy(file.value, 0);
+    };
+    BY_HANDLE_FILE_INFORMATION before{}, after{};
+    if (!bounded(before)) return fail(); // Before allocating the candidate buffer.
+    PendingCommandCandidate result;
+    result.bytes.resize(before.nFileSizeLow);
+    DWORD read = 0;
+    if (!ReadFile(file.value, result.bytes.data(), before.nFileSizeLow, &read, nullptr) ||
+        read != before.nFileSizeLow || !bounded(after) ||
+        after.nFileSizeLow != before.nFileSizeLow || !CheckPrivateAccessPolicy()) return fail();
+    result.state = PendingCommandCandidateState::present;
+    return result;
+#else
+    return fail();
+#endif
+  } catch (...) { return fail(); } // Never publish partial bytes or raw OS errors.
+}
 std::unique_ptr<PendingCommandFileLease> PendingCommandFileLease::Acquire(
     const std::wstring& trusted_directory) noexcept {
   try {
     if (!ValidDirectory(trusted_directory)) return nullptr;
 #ifdef _WIN32
     auto lease = std::unique_ptr<PendingCommandFileLease>(new PendingCommandFileLease());
+    lease->directory_ = trusted_directory;
     // Open each ancestor itself (never follow its final reparse point), from
     // drive root downwards. Keep every validated name pinned against rename
     // until the sentinel closes. This does NOT validate ACLs or writer identity.
