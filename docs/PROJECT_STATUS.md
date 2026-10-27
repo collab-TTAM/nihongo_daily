@@ -6,6 +6,43 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — actual Windows owned typed command probe, 2026-10-27
+
+- Draft41/issue17, branch automation/issue-11-plan-sdk-integration; parent
+  78f0f078afd2dd665a968aded5aef5e05d760cb3. Published commit/tree/new CI and released
+  worker marker in first PR41 checkpoint. Fresh main78a44fa/source37afa572a/Pro38
+  unchanged; N4 reserved and untouched.
+- CI40459656313 raw exact78f0f07/latestattempt1 SUCCESS: complete5 jobs/EVERYstep
+  success/no skips. Flutter122041537506 log1438 tests/fiveChrome/all8 SDK command
+  cases passed. Windows122041038607 log native bridge/DPAPI/malformed/control/all3
+  originalOWNED markers observed. This does not establish hosted learner acceptance.
+- Extend existing mandatory receipt-owned-reopen process with SAME owned SDK/
+  rotated native refresh vault/held own-profile/actual channel/DPAPI typed facade.
+  Null before startup/profile, cached ready capability; synthetic all3 command
+  roundtrips exact including Japanese/whitespace; copied corrupt ciphertext fixed
+  unavailable, foreign-owner command invalidInput, valid ciphertext still usable.
+  Roundtrips preserve native token+pending metadata and send zero AI/lookup HTTP.
+  Original reader tests then execute; after original close stale protect/unprotect
+  unauthorized and factory null; original metadata/token/reader/journal assertions
+  and cleanup retained. No payload file write/restart recovery/automatic replay.
+- Four paths: tool/windows_sdk_receipt_fixture.dart, tool/verify_windows_vault_bridge.ps1
+  under apps/flutter_app; docs/WINDOWS_PENDING_COMMAND_PROTECTION.md and this status.
+  All original Dart/PowerShell lines retained in order; separate diff/lifecycle/
+  channel/scope/metadata/marker review PASS. Actual added native assertions locally
+  UNRUN; no local Windows/PowerShell/full Flutter/analyzer/build claim.
+- Official Dart3.9.2 ZIP SHA256 verified; formatter then recheck zero changes;
+  unresolved Flutter lint include warning is not analysis proof.46QA PASS,
+  inventory151 valid(not151 executed), whitespace PASS; no SDK bootstrap bypass.
+  Production/CI/QA/frozen API/schema/RLS/Auth/default/content unchanged.
+- NEXT new exact-head/latestattempt all5/EVERYstep and required new OWNED typed
+  command marker; fix actual diagnostics preserving assertions, pending-only
+  handoff/no duplicate work/long polling. Then reviewed atomic bounded backend/
+  trusted writer/key/ACL/integrity/retention/logout before payload persistence.
+ 41draft/17open/AIoff/learner memory-only/all14hosted pending; no merge/closure/
+  production release/deploy/provider/Auth strategy/collection/security/Pro action.
+
+
 ## Core checkpoint — start owned SDK fixture before login, 2026-10-27
 
 - Draft41/issue17, automation/issue-11-plan-sdk-integration, actual parent

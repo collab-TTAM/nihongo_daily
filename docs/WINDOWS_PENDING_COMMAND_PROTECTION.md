@@ -259,3 +259,42 @@ serialization, disk backend, new collection/retention, Auth strategy/provider ch
 or hosted learner acceptance. Reviewed atomic command+reference storage, trusted
 writer/key/ACL/integrity, logout/retention policy and original receipt conditional
 application/release remain outstanding. All14 hosted release groups remain pending.
+
+
+## Actual Windows owned-runtime composition probe — 2026-10-27
+
+The existing mandatory receipt-owned-reopen process phase now acquires the typed
+protector from the SAME PersistentSupabaseRuntime after native refresh-secret
+rotation and held own-profile readiness settle. Before startup and during held
+profile loading, acquisition must remain null. After readiness, acquisition must
+return the same cached instance. No mock MethodChannel or replacement factory is
+installed: synthetic typed start/turn/finish envelopes cross the actual Flutter
+Windows channel and user-context DPAPI and decode to byte-exact canonical input,
+including Japanese text, leading space and newline. Synthetic payload bytes stay
+in memory; they are neither written to a file nor restored across processes.
+
+A copied ciphertext with a flipped middle byte must fail with fixed unavailable;
+a foreign-owner envelope must fail invalidInput; both leave the valid capability
+current and the original ciphertext usable. Every successful roundtrip verifies
+the rotated refresh marker and pending receipt unchanged, zero AI mutation/lookup
+HTTP. Existing original receipt UNKNOWN/PENDING/COMPLETED/mismatch/legacy tests
+still run afterward. After the original awaited runtime.close, both protect and
+unprotect using the old instance must fail unauthorized, acquisition stays null,
+and original stale-reader/token/receipt/no-redispatch/journal assertions still run.
+All older fixture and PowerShell lines are retained in order.
+
+The existing outer process verifier emits this extra marker only after the whole
+receipt-owned-reopen process succeeds (including old assertions and final cleanup):
+
+`Windows OWNED SDK/profile command protection all3/corrupt/foreign/stale-close/preserve/no-redispatch passed (TEST ONLY, no payload persistence)`
+
+Parent78f0f07 CI40459656313/latestattempt1 all5/EVERYstep succeeded; observed1438
+Flutter/fiveChrome, all8 mocked-native owned lifecycle cases and native bridge/
+DPAPI/malformed/oldOWNED markers. New composition assertions are authored and
+locally unrun: require new exact-head Windows process marker and all required CI.
+Local official Dart3.9.2 formatting and46QA are separate evidence. Synthetic
+Auth/profile/HTTP/JWT are not hosted Auth/RLS/provider/learner proof. No production
+code/default activation, payload backend, new collection/retention, security/Auth
+strategy/provider change or receipt release/replay authority introduced. Reviewed
+atomic backend/writer/key/ACL/integrity/logout/retention remain next; all14 hosted
+gates stay pending and the draft stays open.

@@ -14,6 +14,8 @@ import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/windows_conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
+import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
+import 'package:nihongo_daily/features/ai/data/windows_pending_command_protector.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
@@ -613,6 +615,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
   try {
     _check(runtime.createAiConversationSession() == null && network.sends == 0);
     _check(runtime.createConversationReceiptLookup() == null);
+    _check(runtime.createWindowsPendingCommandProtector() == null);
     await runtime.start();
     if (phase == 'receipt-owned-absent') {
       _check(
@@ -633,6 +636,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
           network.sends == 0,
     );
     _check(runtime.createConversationReceiptLookup() == null);
+    _check(runtime.createWindowsPendingCommandProtector() == null);
     final ready = runtime.account.changes.firstWhere(
       (s) => s.phase == AccountPhase.ready,
     );
@@ -719,6 +723,76 @@ Future<void> verifyWindowsOwnedReceiptPhase(
         );
       } else {
         _check(phase == 'receipt-owned-reopen');
+        // Actual Windows MethodChannel/DPAPI through the SAME owned SDK/profile.
+        // Synthetic bytes stay in memory; no command backend or auto replay.
+        final protector = runtime.createWindowsPendingCommandProtector()!;
+        _check(
+          identical(protector, runtime.createWindowsPendingCommandProtector()),
+        );
+        final commands = [
+          PendingConversationCommandEnvelope.fromStart(
+            projectUrl: origin,
+            ownerId: _user,
+            request: _request,
+          ),
+          PendingConversationCommandEnvelope.fromTurn(
+            projectUrl: origin,
+            ownerId: _user,
+            request: ConversationTurnRequest(
+              sessionId: _event,
+              clientEventId: _event,
+              textJa: ' TEST ONLY 日本語\n',
+            ),
+          ),
+          PendingConversationCommandEnvelope.fromFinish(
+            projectUrl: origin,
+            ownerId: _user,
+            request: FinishConversationRequest(
+              sessionId: _event,
+              clientEventId: _event,
+            ),
+          ),
+        ];
+        final ciphertext = await protector.protect(commands.first);
+        for (final command in commands) {
+          final encrypted = await protector.protect(command);
+          final restored = await protector.unprotect(encrypted);
+          _check(restored.encode() == command.encode());
+          _check(
+            protector.isCurrent &&
+                await vault.readRefreshToken() == rotated &&
+                await _read(scope) == _expected(scope) &&
+                network.sends == 0 &&
+                network.receiptReads == 0 &&
+                network.originalReceiptReads == 0,
+          );
+        }
+        final corrupt = ciphertext.sublist(0);
+        corrupt[corrupt.length ~/ 2] ^= 0xff;
+        var corruptRejected = false;
+        try {
+          await protector.unprotect(corrupt);
+        } on CommandProtectionFailure catch (error) {
+          corruptRejected = error.code == CommandProtectionError.unavailable;
+        }
+        _check(corruptRejected && protector.isCurrent);
+        var foreignRejected = false;
+        try {
+          await protector.protect(
+            PendingConversationCommandEnvelope.fromStart(
+              projectUrl: origin,
+              ownerId: _event,
+              request: _request,
+            ),
+          );
+        } on CommandProtectionFailure catch (error) {
+          foreignRejected = error.code == CommandProtectionError.invalidInput;
+        }
+        _check(foreignRejected && protector.isCurrent);
+        _check(
+          (await protector.unprotect(ciphertext)).encode() ==
+              commands.first.encode(),
+        );
         // Fresh process restores metadata written by receipt-owned-write.
         final reader = runtime.createConversationReceiptLookup()!;
         _check(identical(reader, runtime.createConversationReceiptLookup()));
@@ -863,6 +937,23 @@ Future<void> verifyWindowsOwnedReceiptPhase(
         network.omitOriginalRequest = false;
         network.originalReceipt = false;
         await runtime.close();
+        _check(!protector.isCurrent);
+        _check(runtime.createWindowsPendingCommandProtector() == null);
+        var staleProtectRejected = false;
+        try {
+          await protector.protect(commands.first);
+        } on CommandProtectionFailure catch (error) {
+          staleProtectRejected =
+              error.code == CommandProtectionError.unauthorized;
+        }
+        var staleUnprotectRejected = false;
+        try {
+          await protector.unprotect(ciphertext);
+        } on CommandProtectionFailure catch (error) {
+          staleUnprotectRejected =
+              error.code == CommandProtectionError.unauthorized;
+        }
+        _check(staleProtectRejected && staleUnprotectRejected);
         _check(!reader.isCurrent);
         var staleRejected = false;
         try {
