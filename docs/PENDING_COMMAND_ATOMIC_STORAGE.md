@@ -258,3 +258,26 @@ protocol. No production ACL changes, repair, payload I/O or new default caller.
 API references checked 2026-10-27:
 - https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-setsecurityinfo
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+
+## Sticky per-lease policy fence — 2026-10-27
+
+CheckPrivateAccessPolicy is an explicit serialized-owner operation over the held
+leaf and sentinel snapshots. Any false result permanently latches failure in that
+lease; later ACL restoration and raw positive snapshots cannot clear it. There is
+no reset method, ACL repair, payload IO or runtime caller. Existing raw policy
+methods remain diagnostic snapshots and do not update the latch themselves. A
+future owner must consistently use the combined check, serialize calls/lifetime,
+and fence its own operation state. Acquire alone is never payload permission.
+
+Native synthetic mutation tests now exercise initially positive repeated checks,
+leaf-triggered failure and a separate lease for sentinel-triggered failure, then
+require repeated denial after each ACL restoration while raw snapshots are true.
+Existing checks and cleanup remain. Marker after complete matrix:
+`PASS: Windows command lease sticky policy failure fence (TEST ONLY)`.
+
+The latch lasts only for the current object; reacquisition/restart is not reviewed
+reconciliation. It cannot detect changes between snapshots or prevent check/use
+races, and does not establish namespace/payload/writer/rollback/durability trust.
+No learner retention or default activation; approved retention, persistent
+uncertainty/reconciliation, namespace validation and atomic encrypted-record
+commit/flush/crash testing remain required.

@@ -15,6 +15,9 @@ class PendingCommandFileLease final {
   // Read-only held sentinel policy: explicit non-inheritable user/SYSTEM ACEs.
   // Snapshot only, never payload permission or protection from later mutation.
   bool HasPrivateSentinelAccessPolicy() const noexcept;
+  // Serialized-owner check: any observed failure permanently fences this lease.
+  // No reset, payload authority, cross-restart persistence or check/use guarantee.
+  bool CheckPrivateAccessPolicy() noexcept;
   ~PendingCommandFileLease();
   PendingCommandFileLease(const PendingCommandFileLease&) = delete;
   PendingCommandFileLease& operator=(const PendingCommandFileLease&) = delete;
@@ -22,6 +25,7 @@ class PendingCommandFileLease final {
   PendingCommandFileLease() = default;
   std::vector<void*> directories_;
   void* file_ = nullptr;
+  bool policy_failed_ = false;
 };
 }  // namespace nihongo
 #endif

@@ -107,6 +107,14 @@ bool PendingCommandFileLease::HasPrivateSentinelAccessPolicy() const noexcept {
   return false;
 #endif
 }
+bool PendingCommandFileLease::CheckPrivateAccessPolicy() noexcept {
+  if (policy_failed_) return false;
+  if (!HasPrivateDirectoryAccessPolicy() || !HasPrivateSentinelAccessPolicy()) {
+    policy_failed_ = true;
+    return false;
+  }
+  return true;
+}
 PendingCommandFileLease::~PendingCommandFileLease() {
 #ifdef _WIN32
   if (file_) CloseHandle(static_cast<HANDLE>(file_));

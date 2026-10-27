@@ -353,13 +353,18 @@ void HeldPolicyMutationMatrix(const std::wstring& root) {
     Check(lease != nullptr);
     Check(lease->HasPrivateDirectoryAccessPolicy());
     Check(lease->HasPrivateSentinelAccessPolicy());
+    Check(lease->CheckPrivateAccessPolicy());
+    Check(lease->CheckPrivateAccessPolicy());
     std::cout << "CHECK: held ACL mutation directory broad" << std::endl;
     apply(folder.value, true, true);
     Check(!lease->HasPrivateDirectoryAccessPolicy());
+    Check(!lease->CheckPrivateAccessPolicy());
     Check(!lease->HasPrivateDirectoryAccessPolicy());
+    Check(!lease->CheckPrivateAccessPolicy());
     Check(lease->HasPrivateSentinelAccessPolicy()); // Protected file stays separate.
     apply(folder.value, true, false);
     Check(lease->HasPrivateDirectoryAccessPolicy()); // Snapshot, not sticky authority.
+    Check(!lease->CheckPrivateAccessPolicy());
     std::cout << "CHECK: held ACL mutation sentinel broad" << std::endl;
     apply(file.value, false, true);
     Check(!lease->HasPrivateSentinelAccessPolicy());
@@ -371,12 +376,32 @@ void HeldPolicyMutationMatrix(const std::wstring& root) {
     WIN32_FILE_ATTRIBUTE_DATA info{};
     Check(GetFileAttributesExW(sentinel.c_str(), GetFileExInfoStandard, &info) != FALSE);
     Check(info.nFileSizeLow == 0 && info.nFileSizeHigh == 0);
+    Check(!lease->CheckPrivateAccessPolicy());
+    // Fresh synthetic lease isolates sentinel-triggered failure from leaf failure.
+    // Reacquiring is NOT a production reconciliation or restart permission.
+    lease.reset();
+    lease = nihongo::PendingCommandFileLease::Acquire(directory);
+    Check(lease != nullptr);
+    Check(lease->CheckPrivateAccessPolicy());
+    apply(file.value, false, true);
+    Check(lease->HasPrivateDirectoryAccessPolicy());
+    Check(!lease->CheckPrivateAccessPolicy());
+    Check(!lease->CheckPrivateAccessPolicy());
+    apply(file.value, false, false);
+    Check(lease->HasPrivateSentinelAccessPolicy());
+    Check(lease->HasPrivateDirectoryAccessPolicy());
+    Check(!lease->CheckPrivateAccessPolicy());
+    Check(!lease->CheckPrivateAccessPolicy());
+    Check(!nihongo::PendingCommandFileLease::Acquire(directory));
+    Check(GetFileAttributesExW(sentinel.c_str(), GetFileExInfoStandard, &info) != FALSE);
+    Check(info.nFileSizeLow == 0 && info.nFileSizeHigh == 0);
     passed = true;
   } catch (...) { /* RAII closes lease/control handles before synthetic cleanup */ }
   const bool fileRemoved = DeleteFileW(sentinel.c_str()) != FALSE;
   const bool dirRemoved = RemoveDirectoryW(directory.c_str()) != FALSE;
   Check(passed && fileRemoved && dirRemoved);
   std::cout << "PASS: Windows command held directory/sentinel ACL mutation snapshots (TEST ONLY)" << std::endl;
+  std::cout << "PASS: Windows command lease sticky policy failure fence (TEST ONLY)" << std::endl;
 }
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
