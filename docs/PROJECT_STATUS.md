@@ -12,6 +12,39 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — real candidate sharing failure, 2026-10-27
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  3332af1529fc03c5d5c5a9e5ff965e689796cc8e. Published commit/tree/newCI and released
+  marker in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40529600253 raw exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122278558202 logs all9candidate CHECK stages/new candidate success marker
+  plus sticky/heldACL/sentinel/leaf/process/junction/native retained markers.
+  TEST ONLY component proof, not hosted learner acceptance.
+- Add mandatory native sharing-error regression after existing nine cases: same
+  lease successfully reads one private candidate, then independent second handle
+  produces sharing conflict. Separate exclusive-open control must observe actual
+  ERROR_SHARING_VIOLATION; raw leaf/sentinel ACL snapshots still positive. Reader
+  unavailable+empty and terminal fence required; closing blocker cannot revive
+  lease. TEST ONLY fresh object reads unchanged original bytes, cleanup mandatory.
+  Real OS/same process, not cross-process or short-read injection proof. No error
+  details logged; fixed stage/success marker. No production reader/lease/header/
+  API/default/permission changes. All original probe lines retained in order.
+- Three paths: native command_file_lease_probe.cpp,
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md and this status. Local checks/review and
+  CI in PR41. C++17 warnings-as-errors/nonWindows failclosed,46QA/inventory151/
+  whitespace/original-line preservation PASS. Separate diff review checked
+  blocker/control RAII, immediate error capture, safe result/latch assertions,
+  release/fresh-control isolation and unchanged bytes/mandatory cleanup.
+  Actual new Windows/MSVC/Flutter/analyzer/build locally UNRUN.
+  No SDK bypass/CI/QA/security/RLS/schema/Authstrategy/Pro/content changes.
+- NEXT exacthead/latestattempt all5/EVERYstep/newsharing+originalcandidate and
+  retained native markers. Fix observed failures preserving assertions; pending
+  handoff/no duplicate code/longpoll. Then readfault/concurrentmutation/trusted
+  namespace/durable uncertainty and atomic encrypted-record/flush/crash backend.
+ 41draft/17open/AIoff/memory-only/all14hostedpending/no merge/closure/retention/
+  provider/deploy/release/collection/security/spend/schedule/Alpha action.
+
 ## Core checkpoint — bounded opaque ciphertext candidate read, 2026-10-27
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

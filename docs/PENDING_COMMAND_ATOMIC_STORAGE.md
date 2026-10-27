@@ -315,3 +315,24 @@ Short-read/fault injection, sharing failure and concurrent mutation remain furth
 regressions, not claimed here. Official references checked 2026-10-27:
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileinformationbyhandle
+
+## Actual sharing failure regression — 2026-10-27
+
+The mandatory native candidate matrix adds a same-process, second-handle sharing
+conflict using real CreateFileW semantics, not an injected error. First a private
+one-byte candidate reads successfully through the same lease. A separate borrowed
+read handle stays open; an independent exclusive-open control must fail with
+ERROR_SHARING_VIOLATION before the reader is called. Raw directory/sentinel ACL
+snapshots remain positive, isolating sharing from the permission-negative cases.
+The reader must return unavailable/empty (never absent or prior successful bytes)
+and latch failure. Closing the blocker must not revive the old lease. A TEST ONLY
+fresh lease then reads the exact original bytes, proving the fixture is unchanged
+and every transient reader handle closed; cleanup must succeed. No retry/renewal
+or new-lease reconciliation authority is supplied to application code.
+
+This is real OS sharing behavior within one process; it is not a cross-process
+reader/crash proof or a ReadFile short-read/fault injection. Existing nine native
+cases and all production methods remain unchanged. New marker is required in
+exact-head Windows CI; local Linux compilation does not execute Win32 branches.
+No learner/default/backend activation or retention approval. Reference checked
+2026-10-27: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew

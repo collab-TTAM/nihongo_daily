@@ -494,6 +494,47 @@ void CandidateReadMatrix(const std::wstring& root) {
         Check(DeleteFileW(candidate.c_str()) != FALSE);
       }
     }
+    {
+      std::cout << "CHECK: ciphertext candidate sharing failure" << std::endl;
+      create(candidate, 1, false);
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      const auto initial = lease->ReadCiphertextCandidate();
+      Check(initial.state == State::present && initial.bytes ==
+          std::vector<unsigned char>(1, 0xa5));
+      struct Handle {
+        HANDLE value = INVALID_HANDLE_VALUE;
+        ~Handle() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+      } blocker, control;
+      blocker.value = CreateFileW(candidate.c_str(), GENERIC_READ,
+          FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr,
+          OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      Check(blocker.value != INVALID_HANDLE_VALUE);
+      // Independently prove the real OS failure condition before reader checks.
+      control.value = CreateFileW(candidate.c_str(), GENERIC_READ | READ_CONTROL,
+          0, nullptr, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      const auto error = GetLastError();
+      Check(control.value == INVALID_HANDLE_VALUE && error == ERROR_SHARING_VIOLATION);
+      Check(lease->HasPrivateDirectoryAccessPolicy());
+      Check(lease->HasPrivateSentinelAccessPolicy());
+      const auto denied = lease->ReadCiphertextCandidate();
+      Check(denied.state == State::unavailable && denied.bytes.empty());
+      Check(!lease->CheckPrivateAccessPolicy());
+      Check(CloseHandle(blocker.value) != FALSE);
+      blocker.value = INVALID_HANDLE_VALUE;
+      const auto afterRelease = lease->ReadCiphertextCandidate();
+      Check(afterRelease.state == State::unavailable && afterRelease.bytes.empty());
+      Check(!lease->CheckPrivateAccessPolicy());
+      lease.reset();
+      // TEST ONLY fresh-object control, never restart/reconciliation authority.
+      lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      const auto fresh = lease->ReadCiphertextCandidate();
+      Check(fresh.state == State::present && fresh.bytes == initial.bytes);
+      Check(lease->CheckPrivateAccessPolicy());
+      Check(DeleteFileW(candidate.c_str()) != FALSE);
+      std::cout << "PASS: Windows ciphertext candidate sharing failure/sticky release/control (TEST ONLY)" << std::endl;
+    }
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());
