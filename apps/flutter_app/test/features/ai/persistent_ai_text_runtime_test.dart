@@ -310,8 +310,9 @@ void main() {
         expect(await p!.protect(protectedCommand()), [1, 2]);
         expect(aiHttp.requests, isEmpty);
       } finally {
-        if (!profileWait!.isCompleted)
+        if (!profileWait!.isCompleted) {
           profileWait!.complete(http.Response('{}', 500));
+        }
         await signing;
       }
     },

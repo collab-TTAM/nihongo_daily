@@ -5,6 +5,36 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — owned profile fixture cleanup braces, 2026-10-27
+
+- Draft41/issue17, automation/issue-11-plan-sdk-integration, exact parent
+  56cae8ed3062e786b20b135c066fcb326d0e4312/tree9a7a506b317dac581463b19ed1d059c157485dd0.
+  Published commit/newCI/worker release in first PR41 checkpoint. Main78a44fa/
+  source37afa572a/Pro38at28c20cb unchanged; protected N4 untouched.
+- CI40448868662 raw exact source/latestattempt1 FAILED: complete5 jobs, Flutter
+  format success; analyzer exactly1 curly_braces_in_flow_control_structures info
+  at persistent_ai_text_runtime_test.dart:314:11. Full Flutter/new8 owned SDK cases
+  and downstream Flutter/Chrome/Web steps SKIPPED, not passed. Other4 jobs/EVERY
+  step success. Windows122006630257 actual bridge/protection/malformed/control/
+  all3OWNED markers observed; not proof that new runtime SDK cases executed.
+- Added explicit braces around existing profileWait cleanup if. Condition, exact
+  HTTP500 completion, await signing and every assertion/helper/production byte
+  unchanged. Exact test-byte comparison verifies only this brace insertion.
+  No new mirrored test for lint-only correction; all8 authored cases retained.
+- Local source/diff/whitespace/inventory151/46QA review recorded in PR. Formatter/
+  Flutter analyzer/tests/builds locally UNRUN; appropriate pinned full checks
+  delegated to new exact-head/latestattempt CI. No lint suppression, test removal,
+  dependency/CI/security/Auth/runtime/default/storage/retention/collection/Pro
+  change; no stubs/Flutter bootstrap retry/bypass. QA matrix/tests unchanged.
+- Two paths only: apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart
+  and this status. NEXT all5 exact-head/latestattempt jobs/EVERY step/new8 SDK
+  cases +old21 facade/native markers; fix actual diagnostics preserving assertions.
+  Pending-only handoff/no duplicate work/long polling. Then actual Windows SDK+
+  typed facade composition and reviewed atomic bounded backend/key/ACL/integrity/
+  retention/logout policy before payload persistence.41draft/17open/AIoff/learner
+  memory-only/all14hosted pending/no merge/closure/deploy/release/schedule/Alpha claim.
+
+
 ## Core checkpoint — owned SDK command protection, 2026-10-27
 
 - Draft41/issue17, automation/issue-11-plan-sdk-integration, parent
