@@ -7,6 +7,8 @@
 #include <windows.h>
 #include <winioctl.h>
 #include <sddl.h>
+#include <aclapi.h>
+#include <iostream>
 namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command lease probe failed");
@@ -89,6 +91,49 @@ std::wstring FixtureUserSid() {
       &text.value) != FALSE);
   return std::wstring(text.value);
 }
+// TEST ONLY bounded classification of our synthetic descriptor, never a SID,
+// path, SDDL, token, raw OS error or production failure detail. No assertion uses
+// this diagnostic snapshot; the original exact checker remains authoritative.
+void DescribeFixturePolicy(const std::wstring& directory, const std::wstring& user) {
+  struct Local {
+    void* value = nullptr;
+    ~Local() { if (value) LocalFree(value); }
+  } expected, descriptor;
+  if (!ConvertStringSidToSidW(user.c_str(), &expected.value)) {
+    std::cout << "CHECK: command ACL snapshot unavailable" << std::endl;
+    return;
+  }
+  PSID owner = nullptr;
+  PACL dacl = nullptr;
+  auto name = directory;
+  if (GetNamedSecurityInfoW(name.data(), SE_FILE_OBJECT,
+      OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION, &owner, nullptr,
+      &dacl, nullptr, &descriptor.value) != ERROR_SUCCESS) {
+    std::cout << "CHECK: command ACL snapshot unavailable" << std::endl;
+    return;
+  }
+  SECURITY_DESCRIPTOR_CONTROL control = 0;
+  DWORD revision = 0;
+  const bool queried = GetSecurityDescriptorControl(descriptor.value, &control, &revision) != FALSE;
+  bool flags = dacl && IsValidAcl(dacl);
+  bool masks = flags;
+  if (flags) {
+    for (DWORD i = 0; i < dacl->AceCount; ++i) {
+      void* raw = nullptr;
+      if (!GetAce(dacl, i, &raw)) { flags = false; masks = false; break; }
+      const auto ace = static_cast<ACCESS_ALLOWED_ACE*>(raw);
+      flags = flags && ace->Header.AceType == ACCESS_ALLOWED_ACE_TYPE &&
+          ace->Header.AceFlags == (OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE);
+      masks = masks && ace->Mask == FILE_ALL_ACCESS;
+    }
+  }
+  std::cout << "CHECK: command ACL snapshot query=" << queried
+      << " owner-match=" << (owner && IsValidSid(owner) && EqualSid(owner, expected.value))
+      << " present=" << ((control & SE_DACL_PRESENT) != 0)
+      << " protected=" << ((control & SE_DACL_PROTECTED) != 0)
+      << " ace-count=" << (dacl ? dacl->AceCount : 0)
+      << " exact-flags=" << flags << " full-control=" << masks << std::endl;
+}
 void PrivatePolicyMatrix(const std::wstring& root) {
   const auto user = FixtureUserSid();
   const auto current = L"(A;OICI;FA;;;" + user + L")";
@@ -99,6 +144,7 @@ void PrivatePolicyMatrix(const std::wstring& root) {
       L"O:" + user + L"D:" + current + system,
       L"O:" + user + L"D:P" + current + system + L"(A;OICI;GR;;;BA)"};
   for (size_t i = 0; i < policies.size(); ++i) {
+    std::cout << "CHECK: command ACL case " << i << " descriptor-create" << std::endl;
     const auto directory = root + L"\\acl-" + std::to_wstring(i);
     struct Security {
       PSECURITY_DESCRIPTOR value = nullptr;
@@ -110,21 +156,29 @@ void PrivatePolicyMatrix(const std::wstring& root) {
     attributes.nLength = sizeof(attributes);
     attributes.lpSecurityDescriptor = security.value;
     Check(CreateDirectoryW(directory.c_str(), &attributes) != FALSE);
+    DescribeFixturePolicy(directory, user);
     bool passed = false;
     try {
+      std::cout << "CHECK: command ACL case " << i << " acquire" << std::endl;
       auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
       Check(lease != nullptr);
+      std::cout << "CHECK: command ACL case " << i << " policy-first" << std::endl;
       Check(lease->HasPrivateDirectoryAccessPolicy() == (i == 0));
+      std::cout << "CHECK: command ACL case " << i << " policy-repeat" << std::endl;
       Check(lease->HasPrivateDirectoryAccessPolicy() == (i == 0)); // Read only/idempotent.
       lease.reset();
+      std::cout << "CHECK: command ACL case " << i << " reacquire" << std::endl;
       auto again = nihongo::PendingCommandFileLease::Acquire(directory);
       Check(again != nullptr);
+      std::cout << "CHECK: command ACL case " << i << " policy-after-reacquire" << std::endl;
       Check(again->HasPrivateDirectoryAccessPolicy() == (i == 0));
       passed = true;
     } catch (...) { /* clean synthetic entries even on policy failure */ }
+    std::cout << "CHECK: command ACL case " << i << " cleanup" << std::endl;
     const bool fileRemoved = DeleteFileW((directory + L"\\pending-command.lock").c_str()) != FALSE;
     const bool dirRemoved = RemoveDirectoryW(directory.c_str()) != FALSE;
     Check(passed && fileRemoved && dirRemoved);
+    std::cout << "CHECK: command ACL case " << i << " complete" << std::endl;
   }
 }
 void Child(const std::wstring& directory, DWORD expected) {
@@ -165,6 +219,7 @@ bool ProbePendingCommandFileLease() {
   const auto alias = directory + L"\\alias.lock";
   bool passed = false;
   try {
+    std::cout << "CHECK: command lease original process matrix" << std::endl;
     auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
     Check(lease != nullptr);
     Check(!nihongo::PendingCommandFileLease::Acquire(directory));
@@ -196,8 +251,11 @@ bool ProbePendingCommandFileLease() {
     Check(!nihongo::PendingCommandFileLease::Acquire(directory));
     Check(RemoveDirectoryW(sentinel.c_str()) != FALSE);
     Check(nihongo::PendingCommandFileLease::Acquire(directory) != nullptr);
+    std::cout << "CHECK: command lease ancestor matrix" << std::endl;
     AncestorMatrix(directory);
+    std::cout << "CHECK: command lease ACL matrix" << std::endl;
     PrivatePolicyMatrix(directory);
+    std::cout << "CHECK: command lease all matrices complete" << std::endl;
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }
   DeleteFileW(alias.c_str());

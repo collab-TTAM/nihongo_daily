@@ -11,6 +11,44 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — diagnose actual Windows ACL probe failure, 2026-10-27
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  0c6f477b99d56fd37e8fd8f9be82559a16796d1a. Published commit/tree/newCI/released
+  marker in PR41. main78a44fa/source37afa572a/Pro38 unchanged/N4 untouched.
+- CI40495301073 raw exact0c6f477/latestattempt1 completed FAILURE, complete5 jobs.
+  repo/database/AI/Flutter EVERYstep SUCCESS. Windows122159219957 app bridge/
+  staging/release builds success, native probe MSVC /W4 /WX compile+link success;
+  execution FAIL at generic actual-Windows-credential-probe. Earlier crypto/
+  malformed/control markers printed; combined lease/ancestor/privateACL markers
+  absent. Native retention/compaction/restart/study/artifact steps SKIPPED, NOT
+  passes. Current log does not locate exact failing assertion; no guessed fix or
+  successful privateACL/complete native claim. Keep failclosed policy unchanged.
+- Add TEST ONLY fixed matrix/case0..3/stage markers around unchanged original
+  checks (create/acquire/first/repeat/reacquire/cleanup), flushed for failure logs.
+  Independent read-only synthetic descriptor snapshot reports ONLY booleans
+  query/owner-match/present/protected/exact-flags/full-control plus ACE count.
+  No SID, SDDL, path, token, raw OS error or production detail emitted. Snapshot
+  is diagnostic only, never supplies an assertion or substitutes checker output.
+  All original test lines/assertions/timeouts/cleanup retained in order. No
+  production/native API/default/Auth/security/permission/CI/QA/Pro change.
+- Two paths: apps/flutter_app/tool/windows_session_vault/command_file_lease_probe.cpp
+  and this status. Local C++17 warnings-as-errors compile/nonWindowsfailclosed,
+  46QA/inventory151/whitespace/all-original-line preservation/separate output/
+  descriptor ownership/failure-flow/diff review PASS. NewWin32/MSVC/probe diagnostic
+  execution/fullFlutter/analyzer/build locally UNRUN; require exact-head CI.
+  Linux execution is not Windows access-policy proof. No SDK bootstrap bypass.
+- NEXT inspect exact-head/latestattempt all5/EVERYstep and actual CHECK stages
+  before changing checker/fixture. Fix only observed cause, retaining positive
+  and broad/unprotected/extra-principal negatives. Pending-onlyhandoff/no duplicate
+  implementation/longpoll. Then require all native success markers/retained tests,
+  complete sentinel/payloadACL+mutation/namespace and atomicbackend/crash work
+  before learner retention approval/activation.41draft/17open/AIoff/memory-only/
+  all14hosted pending/no merge/closure/provider/Pro/Authstrategy/deploy/release/
+  collection/security/spend/schedule/Alpha claim; frozenAPI/schema/RLS unchanged.
+
+
 ## Core checkpoint — read-only private leaf-directory policy, 2026-10-27
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent
