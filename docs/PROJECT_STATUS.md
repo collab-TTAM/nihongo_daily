@@ -8,6 +8,25 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — direct Auth getter regressions, 2026-10-27
+
+- PR41/issue17, branch automation/issue-11-plan-sdk-integration, parent
+  d058ef21809c67f0d7d4b2c412dd741a9424642c. Published commit/CI in PR41.
+- Parent CI40472435207 exact/latestattempt1 all5/EVERY step SUCCESS, native
+  OWNED logout marker verified. TEST ONLY, not hosted learner acceptance.
+- Added two direct Auth getter regressions to optional Windows protector suite:
+  nested current read false/native operation busy without dispatch; synchronous
+  Auth getter revocation after held native unprotect suppresses plaintext result
+  and permanently rejects further work. Existing readiness cases remain.
+- Test-only Auth callback defaults null. No production/native/storage/runtime/
+  default/Pro content changes. Two paths: this status and Flutter AI
+  windows_pending_command_protector_test.dart. Local format/QA/diff results in PR;
+  Flutter tests/analyzer/native/build locally UNRUN, require new exact-head CI.
+- Next all5/every step/23 facade cases, then isolated synthetic-only encrypted
+  backend per PENDING_COMMAND_ATOMIC_STORAGE.md: actual Windows lease/ACL/reparse/
+  flush/crash review and tests before learner retention activation. Keep41draft,
+  17open/AIoff/memory-only/onepending/all14hosted pending; no release/merge.
+
 ## Core checkpoint — native logout fence and atomic-storage handoff, 2026-10-27
 
 - Draft41/issue17, automation/issue-11-plan-sdk-integration, actual parent

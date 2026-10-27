@@ -20,8 +20,10 @@ final scope = ConversationReceiptScope(projectUrl: origin, ownerId: owner);
 final class Auth implements ReviewAuth {
   ReviewSession? session = ReviewSession(userId: owner);
   bool fail = false;
+  void Function()? onRead;
   @override
   ReviewSession? get currentSession {
+    onRead?.call();
     if (fail) throw StateError('PRIVATE_AUTH');
     return session;
   }
@@ -499,4 +501,55 @@ void main() {
       expect(calls, isEmpty);
     },
   );
+  test(
+    'Auth getter reentry cannot read current or dispatch native work',
+    () async {
+      mock((_) async => Uint8List(1));
+      final p = open();
+      final nested = <bool>[];
+      final assertions = <Future<void>>[];
+      auth.onRead = () {
+        nested.add(p.isCurrent);
+        assertions.add(
+          expectLater(
+            p.protect(command()),
+            throwsA(failure(CommandProtectionError.busy)),
+          ),
+        );
+      };
+      expect(p.isCurrent, true);
+      await Future.wait(assertions);
+      expect(nested, [false, false]);
+      expect(calls, isEmpty);
+      auth.onRead = null;
+      await p.protect(command());
+      expect(calls.length, 1);
+    },
+  );
+  test('Auth getter revocation suppresses accepted native result', () async {
+    final entered = Completer<void>();
+    final held = Completer<Object?>();
+    mock((_) {
+      entered.complete();
+      return held.future;
+    });
+    final p = open();
+    final work = p.unprotect(Uint8List(1));
+    final rejected = expectLater(
+      work,
+      throwsA(failure(CommandProtectionError.unauthorized)),
+    );
+    await entered.future;
+    auth.onRead = p.revoke;
+    held.complete(Uint8List.fromList(utf8.encode(command().encode())));
+    await rejected;
+    auth.onRead = null;
+    await p.revokeAndDrain();
+    expect(p.isCurrent, false);
+    await expectLater(
+      p.protect(command()),
+      throwsA(failure(CommandProtectionError.unauthorized)),
+    );
+    expect(calls.length, 1);
+  });
 }
