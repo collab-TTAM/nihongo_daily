@@ -12,6 +12,36 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — native quota failure diagnosis, 2026-10-28
+
+- PR41/issue17, automation/issue-11-plan-sdk-integration; exact parent
+  22cfddae542bc23222c614a43a723c976b8f8689. New commit/tree/CI and released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40585544542 exact parent/latestattempt1: Windows/repo/AI SUCCESS, database
+  FAILURE, Flutter SKIPPED. All5 jobs/every step read. Windows122475968355 new
+  directory/junction stage-collision +retained subprocess/staging/native markers
+  passed. This is not full CI or hosted learner acceptance.
+- Database122475858326 quota first4 passed; fifth Query read timeout at fixture
+  owner auth.users INSERT before TLS assertion. Root cause unknown, not repaired
+  or assumed transient. Add bounded read-only fixed-boolean failure snapshot;
+  no SQL/parameters/IDs/PIDs/config/raw diagnostic errors logged, no retry, no
+  existing timeout extension. Original error rethrown; production byte-identical.
+- Same snapshot gains mandatory actual blocked-limiter/idle-blocker assertions
+  in existing native abort case. All5 original tests/assertions/TLS/no-fallback/
+  rollback/no-dispatch checks retained. Three paths: backend/ai/test/
+  postgres_quota.native.ts; docs/AI_POSTGRES_RUNTIME.md; this status.
+- Local pinned install/format/strict types/185Node/46QA/inventory151/whitespace
+  passed; inventory is not executed native tests. Separate diff review covers
+  diagnostic bounds/redaction/late completion/error propagation/owned cleanup/
+  unchanged production and original assertions. Native PostgreSQL/Windows/full
+  Flutter/analyzer/build locally UNRUN; exact-head CI required.
+- NEXT complete exacthead/latestattempt all5/EVERYstep/new diagnostic marker. If
+  failure recurs use snapshot to diagnose without weakening tests; passing rerun
+  alone does not prove original cause. Pending-only handoff/no duplicate code.
+  Then staging write/flush/close faults and atomic publication/reconciliation.
+  41draft/17open/AIoff/memory-only/all14hostedpending; no merge/closure/Pro/
+  provider/Authstrategy/deploy/release/collection/security/spend/Alpha action.
+
 ## Core checkpoint — resume stage namespace collision scope, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

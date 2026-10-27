@@ -111,3 +111,41 @@ adapter can reuse its exact URL/TLS/client lifetime configuration. QuotaConnecti
 QuotaResult remain compatible type aliases; quota transaction logic and every
 original test remain unchanged. New text phases are specified separately in
 AI_TEXT_CONTEXT_RUNTIME.md and cannot consume or refund quota themselves.
+
+## Native fixture failure diagnostics — 2026-10-28
+
+CI40585544542 attempt1 at exact22cfddae542bc23222c614a43a723c976b8f8689
+passed Windows/repo/AI but failed database; Flutter was skipped. Windows logs
+confirmed the new real directory/junction stage-collision cases and retained
+subprocess/staging/native markers. This is not an overall CI pass.
+
+The quota native suite passed its first four cases. The fifth failed with Query
+read timeout in owner()'s disposable auth.users INSERT, before the production TLS
+factory assertion. The log does not establish the cause; this change does not
+claim to repair a production quota/TLS bug or classify the failure as transient.
+
+Each native admin call now has a unique internal application name. On failure a
+separate read-only connection projects only fixed booleans: probe availability,
+target visibility/activity/lock wait/blockers/idle transaction and another named
+quota fixture's idle transaction. No SQL text/parameters, identity, backend PID,
+connection settings or raw diagnostic errors enter this output. Connect/query/
+statement limits are500ms with a separate1500ms diagnostic ceiling; failure or
+late completion returns unavailable and initiates private connection termination.
+The original error is rethrown, without retry, fallback or timeout extension. The
+original admin closure and production connection/limiter are unchanged. These
+settings are only for the existing fixed disposable CI database, not hosted use.
+
+The existing native locked-abort case additionally requires this same projection
+to observe the actual active blocked limiter and idle lock-holding fixture before
+abort. All original five cases, assertions, query deadlines, TLS refusal, commit/
+no-dispatch and rollback checks remain. The required new marker is
+`PASS: native quota bounded boolean lock diagnostic (TEST ONLY)`. A later timeout
+may occur after its server query completed/cancelled, so even an available all-
+false snapshot cannot by itself prove the historical cause or remote rollback.
+
+Local pinned install, Prettier, strict TypeScript,185 Node unit tests,46 QA
+regressions and inventory151 passed. Inventory is not151 executed tests. No local
+native PostgreSQL server/Windows/Flutter SDK execution; actual new diagnostic/
+TLS/native behavior needs exact-head Actions/latest-attempt complete jobs/steps.
+Do not infer success from a missing/skipped job. Hosted learner/provider gates
+remain pending; this test-only diagnostic does not activate any learner storage.

@@ -33,11 +33,87 @@ function client(name = "nd-quota-native-admin") {
   c.on("error", () => {});
   return c;
 }
+// Fixed boolean projection only: never log SQL, parameters, IDs, backend PIDs,
+// connection settings or driver errors, even when this diagnostic itself fails.
+async function quotaWaitSnapshot(name: string) {
+  const unavailable = {
+    available: false,
+    targetVisible: false,
+    targetActive: false,
+    targetLockWait: false,
+    targetBlocked: false,
+    targetIdleTransaction: false,
+    otherQuotaIdleTransaction: false,
+  };
+  const c = new Client({
+    connectionString: databaseUrl,
+    ssl: false,
+    application_name: "nd-quota-native-diagnostics",
+    connectionTimeoutMillis: 500,
+    query_timeout: 500,
+    statement_timeout: 500,
+    pipeline: false,
+  });
+  c.on("error", () => {});
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const work = async () => {
+      await c.connect();
+      const result = await c.query(
+        `SELECT
+          EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name=$1) AS visible,
+          EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND state='active') AS active,
+          EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock') AS waiting,
+          EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND cardinality(pg_blocking_pids(pid))>0) AS blocked,
+          EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND state IN ('idle in transaction','idle in transaction (aborted)')) AS idle,
+          EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name LIKE 'nd-quota-native%' AND application_name<>$1 AND state IN ('idle in transaction','idle in transaction (aborted)')) AS other_idle`,
+        [name],
+      );
+      const row = result.rows[0];
+      if (
+        result.rows.length !== 1 ||
+        !row ||
+        ["visible", "active", "waiting", "blocked", "idle", "other_idle"].some(
+          (key) => typeof row[key] !== "boolean",
+        )
+      )
+        return unavailable;
+      return {
+        available: true,
+        targetVisible: row.visible as boolean,
+        targetActive: row.active as boolean,
+        targetLockWait: row.waiting as boolean,
+        targetBlocked: row.blocked as boolean,
+        targetIdleTransaction: row.idle as boolean,
+        otherQuotaIdleTransaction: row.other_idle as boolean,
+      };
+    };
+    return await Promise.race([
+      work(),
+      new Promise<typeof unavailable>((resolve) => {
+        timer = setTimeout(() => resolve(unavailable), 1500);
+      }),
+    ]);
+  } catch {
+    return unavailable;
+  } finally {
+    if (timer) clearTimeout(timer);
+    // Diagnostic close cannot delay/recover the original failing operation.
+    void c.end().catch(() => {});
+  }
+}
 async function admin(text: string, values?: string[]) {
-  const c = client();
+  const name = "nd-quota-native-admin-" + randomUUID();
+  const c = client(name);
   try {
     await c.connect();
     return await c.query(text, values);
+  } catch (error) {
+    console.error(
+      "TEST ONLY native quota admin failure state: " +
+        JSON.stringify(await quotaWaitSnapshot(name)),
+    );
+    throw error;
   } finally {
     await c.end();
   }
@@ -220,6 +296,18 @@ test("native abort while locked rolls back and cannot debit after late lock rele
   const rejected = assert.rejects(result, safeFailure);
   try {
     await observeWait(name);
+    assert.deepEqual(await quotaWaitSnapshot(name), {
+      available: true,
+      targetVisible: true,
+      targetActive: true,
+      targetLockWait: true,
+      targetBlocked: true,
+      targetIdleTransaction: false,
+      otherQuotaIdleTransaction: true,
+    });
+    console.log(
+      "PASS: native quota bounded boolean lock diagnostic (TEST ONLY)",
+    );
     parent.abort("TEST_ONLY");
     await rejected;
   } finally {
