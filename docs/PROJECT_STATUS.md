@@ -12,6 +12,41 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — held ACL mutation regression, 2026-10-27
+
+- PR41/issue17, automation/issue-11-plan-sdk-integration; parent
+  9bf4d2bdf727f76f84dc5787ef0a4cb6c4daf261. Published commit/tree/newCI and released
+  marker recorded in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40516130475 raw exact parent/latestattempt1 SUCCESS: all5 jobs/every step,
+  no skip. Windows122230524405 log confirms held-sentinel/private leaf/all4 ACL
+  fixtures/process/junction/native markers. Component proof, not hosted learner.
+- TEST ONLY mandatory native regression: pre-opened READ_CONTROL|WRITE_DAC handles
+  mutate unique empty synthetic directory/sentinel while SAME lease is held.
+  Private -> extra Everyone-read -> restored snapshots; repeated broad rejection,
+  independent leaf/file decisions, second lease exclusion, unchanged zero bytes
+  and mandatory cleanup. RAII closes lease before control handles and cleanup.
+  All old assertions retained; production lease/checker byte-identical. Fixed
+  stage/PASS markers only, no SID/SDDL/path/token/rawOS logs. No null DACL or
+  privilege modification. Restore is TEST ONLY fixture behavior, never production
+  repair or resumption authority. Future owner needs sticky fencing/reconciliation;
+  snapshots do not prevent check/use races or same-user mutation.
+- Three paths: apps/flutter_app/tool/windows_session_vault/command_file_lease_probe.cpp;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. Local checks/review recorded
+  in PR41: C++17 warnings-as-errors/nonWindows failclosed,46QA/inventory151/
+  whitespace/all original probe lines preserved in order PASS. Separate review
+  confirmed explicit process-user owner at creation, descriptor/handle lifetime,
+  protected-file isolation, no null DACL, fixed logs and mandatory cleanup.
+  Actual Windows/MSVC/new native assertions/fullFlutter/analyzer/build
+  locally UNRUN; exact-head CI required. No SDK bypass/default/Auth/schema/API/
+  RLS/CI/QA/content/Pro/production storage change.
+- NEXT inspect new exact-head/latestattempt all5/every step/new held-mutation
+  marker plus retained native markers. Fix actual failures preserving assertions;
+  pending-only handoff/no duplicate implementation/longpoll. Then reviewed sticky
+  ACL/namespace policy and bounded encrypted record/flush/commit/crash backend
+  before learner retention approval.41draft/17open/AIoff/memory-only/all14hosted
+  gates pending; no merge/closure/deploy/release/provider/collection/security/
+  spend/schedule/Personal Alpha acceptance.
+
 ## Core checkpoint — held sentinel ACL policy, 2026-10-27
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

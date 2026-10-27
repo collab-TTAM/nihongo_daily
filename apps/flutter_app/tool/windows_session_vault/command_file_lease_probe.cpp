@@ -289,6 +289,95 @@ void SentinelPolicyMatrix(const std::wstring& root) {
   Check(passed && removed);
   std::cout << "PASS: Windows command held sentinel private ACL/rejection/reacquire (TEST ONLY)" << std::endl;
 }
+// TEST ONLY: a pre-opened security-control handle deliberately outlives lease
+// acquisition. Sharing excludes data writers, not an already authorized owner.
+void HeldPolicyMutationMatrix(const std::wstring& root) {
+  const auto directory = root + L"\\acl-mutation";
+  const auto sentinel = directory + L"\\pending-command.lock";
+  const auto user = FixtureUserSid();
+  const auto policy = [&](bool folder, bool broad) {
+    const std::wstring flags = folder ? L"OICI" : L"";
+    return L"O:" + user + L"D:P(A;" + flags + L";FA;;;" + user + L")" +
+        (user == L"S-1-5-18" ? L"" : L"(A;" + flags + L";FA;;;SY)") +
+        (broad ? L"(A;" + flags + L";GR;;;WD)" : L"");
+  };
+  const auto apply = [&](HANDLE handle, bool folder, bool broad) {
+    struct Security {
+      PSECURITY_DESCRIPTOR value = nullptr;
+      ~Security() { if (value) LocalFree(value); }
+    } security;
+    Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(
+        policy(folder, broad).c_str(), SDDL_REVISION_1, &security.value, nullptr) != FALSE);
+    BOOL present = FALSE;
+    BOOL defaulted = FALSE;
+    PACL dacl = nullptr;
+    Check(GetSecurityDescriptorDacl(security.value, &present, &dacl, &defaulted) != FALSE);
+    Check(present && dacl && IsValidAcl(dacl)); // Never install a null DACL.
+    Check(SetSecurityInfo(handle, SE_FILE_OBJECT,
+        DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION,
+        nullptr, nullptr, dacl, nullptr) == ERROR_SUCCESS);
+  };
+  struct InitialSecurity {
+    PSECURITY_DESCRIPTOR value = nullptr;
+    ~InitialSecurity() { if (value) LocalFree(value); }
+  } initialDirectory, initialFile;
+  Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(policy(true, false).c_str(),
+      SDDL_REVISION_1, &initialDirectory.value, nullptr) != FALSE);
+  Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(policy(false, false).c_str(),
+      SDDL_REVISION_1, &initialFile.value, nullptr) != FALSE);
+  SECURITY_ATTRIBUTES directoryAttributes{};
+  directoryAttributes.nLength = sizeof(directoryAttributes);
+  directoryAttributes.lpSecurityDescriptor = initialDirectory.value;
+  SECURITY_ATTRIBUTES fileAttributes{};
+  fileAttributes.nLength = sizeof(fileAttributes);
+  fileAttributes.lpSecurityDescriptor = initialFile.value;
+  Check(CreateDirectoryW(directory.c_str(), &directoryAttributes) != FALSE);
+  bool passed = false;
+  try {
+    struct Handle {
+      HANDLE value = INVALID_HANDLE_VALUE;
+      ~Handle() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+    } folder, file;
+    folder.value = CreateFileW(directory.c_str(), READ_CONTROL | WRITE_DAC,
+        FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
+        FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    Check(folder.value != INVALID_HANDLE_VALUE);
+    apply(folder.value, true, false);
+    file.value = CreateFileW(sentinel.c_str(), READ_CONTROL | WRITE_DAC,
+        FILE_SHARE_READ | FILE_SHARE_WRITE, &fileAttributes, CREATE_NEW,
+        FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    Check(file.value != INVALID_HANDLE_VALUE);
+    apply(file.value, false, false);
+    std::cout << "CHECK: held ACL mutation acquire" << std::endl;
+    auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+    Check(lease != nullptr);
+    Check(lease->HasPrivateDirectoryAccessPolicy());
+    Check(lease->HasPrivateSentinelAccessPolicy());
+    std::cout << "CHECK: held ACL mutation directory broad" << std::endl;
+    apply(folder.value, true, true);
+    Check(!lease->HasPrivateDirectoryAccessPolicy());
+    Check(!lease->HasPrivateDirectoryAccessPolicy());
+    Check(lease->HasPrivateSentinelAccessPolicy()); // Protected file stays separate.
+    apply(folder.value, true, false);
+    Check(lease->HasPrivateDirectoryAccessPolicy()); // Snapshot, not sticky authority.
+    std::cout << "CHECK: held ACL mutation sentinel broad" << std::endl;
+    apply(file.value, false, true);
+    Check(!lease->HasPrivateSentinelAccessPolicy());
+    Check(!lease->HasPrivateSentinelAccessPolicy());
+    Check(lease->HasPrivateDirectoryAccessPolicy());
+    apply(file.value, false, false);
+    Check(lease->HasPrivateSentinelAccessPolicy());
+    Check(!nihongo::PendingCommandFileLease::Acquire(directory));
+    WIN32_FILE_ATTRIBUTE_DATA info{};
+    Check(GetFileAttributesExW(sentinel.c_str(), GetFileExInfoStandard, &info) != FALSE);
+    Check(info.nFileSizeLow == 0 && info.nFileSizeHigh == 0);
+    passed = true;
+  } catch (...) { /* RAII closes lease/control handles before synthetic cleanup */ }
+  const bool fileRemoved = DeleteFileW(sentinel.c_str()) != FALSE;
+  const bool dirRemoved = RemoveDirectoryW(directory.c_str()) != FALSE;
+  Check(passed && fileRemoved && dirRemoved);
+  std::cout << "PASS: Windows command held directory/sentinel ACL mutation snapshots (TEST ONLY)" << std::endl;
+}
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
   const auto length = GetModuleFileNameW(nullptr, executable, 32768);
@@ -364,6 +453,7 @@ bool ProbePendingCommandFileLease() {
     std::cout << "CHECK: command lease ACL matrix" << std::endl;
     PrivatePolicyMatrix(directory);
     SentinelPolicyMatrix(directory);
+    HeldPolicyMutationMatrix(directory);
     std::cout << "CHECK: command lease all matrices complete" << std::endl;
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }

@@ -235,3 +235,26 @@ proof. New exact-head CI all5/EVERY step is required. Microsoft GetSecurityInfo
 reference above confirms handle/READ_CONTROL/LocalFree contract and warns about
 concurrent descriptor mutation. Next payload/ACL-mutation and namespace checks,
 then bounded encrypted-record commit/flush/crash proof before activation.
+
+## Held ACL mutation regression — 2026-10-27
+
+The mandatory native probe adds a synthetic directory/sentinel whose security-
+control handles are opened before acquiring the unchanged exclusive data lease.
+Through those same handles it changes only the synthetic protected DACL: private
+user/SYSTEM to an extra Everyone-read ACE and back. The same held lease must read
+current leaf/sentinel policy each time, reject the broadened descriptor repeatedly,
+and observe the restored snapshot. Protected sentinel and leaf decisions remain
+independent. Sentinel bytes stay empty; a second lease stays excluded; every
+control/lease handle and synthetic file/directory must clean up. A success marker
+is emitted only after all assertions. New actual Windows execution requires CI.
+
+This deliberately tests an authorized same-user mutator, not a sandbox or a
+malicious race guarantee. ACL snapshots do not freeze permissions between check
+and use. Restoring a snapshot is NOT permission for a future backend to resume
+previously fenced work. That owner must retain a terminal/uncertain state after
+observed policy failure and define an independently reviewed reconciliation
+protocol. No production ACL changes, repair, payload I/O or new default caller.
+
+API references checked 2026-10-27:
+- https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-setsecurityinfo
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
