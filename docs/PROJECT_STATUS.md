@@ -9,6 +9,47 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — command lease ancestor handles/junction rejection, 2026-10-27
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  86fa35a09cf72088728ca37dc0b972fa31eaa79b. Published commit/tree/newCI/released
+  marker in PR41. main78a44fa/source37afa572a/Pro38 unchanged/N4 untouched.
+- CI40479238757 raw exact86fa35a/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122105149960 actual sentinel exclusive/process/abrupt-exit/reacquire
+  marker+OWNED/native markers; Flutter122105789657 actual1440tests/fiveChrome.
+  TEST ONLY component proof, not hosted Auth/RLS/provider/learner acceptance.
+- Lease opens/validates every drive-root-to-leaf directory prefix, each with
+  OPEN_REPARSE_POINT/no delete sharing, retains handles until file close then
+  reverse releases. Reserve ownership slot before CreateFile for exception-safe
+  handle ownership; failed walk closes earlier handles. Reject observed ancestor
+  reparse before sentinel IO. No payload read/write/ACL modification/default call.
+- Actual synthetic native mount-point producer tests finaljunction+ancestorjunction
+  rejection before target sentinel creation, directpath positive control/nonleaf
+  parent rename blocked during lease then succeeds after release. Failed-walk
+  junction rename/restore and all cleanup required. All original probe lines/
+  process/abrupt-exit/hardlink/nonempty/cleanup assertions and markers retained;
+  new ancestor marker after whole extended matrix. No skips/fallback/privilege
+  adjustment. Windows/MSVC/junction execution locally UNRUN; require exact CI.
+- Explicit limits: ACL/expected namespace identity/trusted writer and hostile
+  concurrent reparse mutation remain unproved; this is not sandboxing, encrypted
+  record backend/flush/power-loss/rollback/retention approval. Existing human
+  collection gates remain; default/learner recovery stays memory-only.
+- Six edited paths: windows/runner/pending_command_file_lease.h/.cpp, native tool
+  command_file_lease_probe.cpp/session_vault_probe.cpp under apps/flutter_app;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md and this status. Local C++17 warnings-
+  as-errors compile/nonWindows failclosed,46QA/inventory151/whitespace/probe-line
+  preservation/separate ownership/path/cleanup/diff review PASS. FullFlutter/
+  analyzer/Windows/native/build locally UNRUN. No SDK bypass/security weakening.
+- NEXT exact-head/latestattempt all5/EVERYstep/new ancestor marker+old markers;
+  fix actual diagnostics preserving assertions, pending-only handoff/no duplicate
+  work/longpoll. Then concrete trusted namespace ACL and hostile mutation review,
+  encrypted record commit/flush/crash backend+fault matrix before learner retention
+  approval/activation.41draft/17open/AIoff/memory-only/all14hosted pending/no merge/
+  closure/Authstrategy/provider/Pro/deploy/release/collection/security/spend/schedule/
+  Alpha claim. Frozen API/schema/RLS/QA/CI/dependencies unchanged.
+
+
 ## Core checkpoint — native exclusive command sentinel prerequisite, 2026-10-27
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; fresh parent

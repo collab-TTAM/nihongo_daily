@@ -135,3 +135,36 @@ process semantics require new exact-head CI and marker, not a Linux claim.
 Implementation references reviewed 2026-10-27:
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/ns-fileapi-by_handle_file_information
+
+## Ancestor handle walk and junction probe — 2026-10-27
+
+The isolated lease now opens every absolute directory prefix from the drive root
+through the supplied leaf with OPEN_REPARSE_POINT and no delete sharing. Each
+opened handle must be an ordinary disk directory; all handles remain owned until
+the sentinel closes, then release in reverse order. A reserved null ownership
+slot precedes CreateFile so vector allocation cannot leak a new OS handle. Failure
+at any prefix closes earlier handles through the same RAII owner. No new payload
+read/write or directory/ACL modification is introduced by Acquire.
+
+The TEST ONLY native matrix constructs an actual mount-point junction with a
+direct FSCTL_SET_REPARSE_POINT buffer (no shell/privilege adjustment/fallback/skip).
+Both a final junction and a junction ancestor to an ordinary leaf must fail
+before creating a sentinel at the target. Direct ordinary path is a positive
+control. Its non-leaf parent cannot be renamed while leased; after release it
+can be renamed and restored. Failed walks must allow junction rename/cleanup;
+all synthetic directories and sentinel cleanup must succeed. Existing process/
+abrupt-exit/hardlink/nonempty tests and markers remain mandatory. The extra
+ancestor marker appears only after the entire extended matrix succeeds.
+
+This rejects observed reparse prefixes and pins opened directory names; it does
+not establish ACL trust, validate the expected directory identity before opening,
+block a same-user actor with other privileges/handles, or prove hostile concurrent
+reparse mutation impossible. In particular, no ACL/secure backend/Auth/atomic
+commit/flush/power-loss/rollback/retention guarantee follows. Caller still must
+establish a trusted namespace and access policy; learner activation remains off.
+New Win32/junction/process cases are locally unrun and require exact-head CI;
+Linux compile/fail-closed and Python QA do not execute those cases.
+
+Additional primary references reviewed 2026-10-27:
+- https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/ns-ntifs-_reparse_data_buffer
+- https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ni-winioctl-fsctl_set_reparse_point

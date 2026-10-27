@@ -2,9 +2,10 @@
 #define NIHONGO_PENDING_COMMAND_FILE_LEASE_H_
 #include <memory>
 #include <string>
+#include <vector>
 namespace nihongo {
 // Exclusive empty sentinel only. NOT a payload backend, ACL or writer identity
-// proof. Host must supply an already trusted, ancestor-protected local directory.
+// proof. Host must establish trusted local directory ownership/ACL first.
 class PendingCommandFileLease final {
  public:
   static std::unique_ptr<PendingCommandFileLease> Acquire(
@@ -14,7 +15,7 @@ class PendingCommandFileLease final {
   PendingCommandFileLease& operator=(const PendingCommandFileLease&) = delete;
  private:
   PendingCommandFileLease() = default;
-  void* directory_ = nullptr;
+  std::vector<void*> directories_;
   void* file_ = nullptr;
 };
 }  // namespace nihongo

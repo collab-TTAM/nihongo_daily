@@ -1,11 +1,73 @@
 // TEST ONLY: unique temporary directories and empty sentinel; no payloads.
 #include "pending_command_file_lease.h"
 #include <stdexcept>
+#include <cstring>
+#include <vector>
 #ifdef _WIN32
 #include <windows.h>
+#include <winioctl.h>
 namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command lease probe failed");
+}
+// TEST ONLY direct mount-point producer, no shell or symlink fallback/skip.
+void Junction(const std::wstring& name, const std::wstring& target) {
+  Check(CreateDirectoryW(name.c_str(), nullptr) != FALSE);
+  const auto substitute = L"\\??\\" + target;
+  const auto subBytes = static_cast<USHORT>(substitute.size() * sizeof(wchar_t));
+  const auto printBytes = static_cast<USHORT>(target.size() * sizeof(wchar_t));
+  std::vector<unsigned char> bytes(size_t{16} + subBytes + 2 + printBytes + 2, 0);
+  const auto put16 = [&](size_t at, unsigned value) {
+    bytes[at] = static_cast<unsigned char>(value & 255);
+    bytes[at + 1] = static_cast<unsigned char>((value >> 8) & 255);
+  };
+  const DWORD tag = IO_REPARSE_TAG_MOUNT_POINT;
+  std::memcpy(bytes.data(), &tag, sizeof(tag));
+  put16(4, static_cast<unsigned>(bytes.size() - 8));
+  put16(10, subBytes);
+  put16(12, static_cast<unsigned>(subBytes) + 2u);
+  put16(14, printBytes);
+  std::memcpy(bytes.data() + 16, substitute.data(), subBytes);
+  std::memcpy(bytes.data() + 16 + subBytes + 2, target.data(), printBytes);
+  const auto handle = CreateFileW(name.c_str(), GENERIC_WRITE, 0, nullptr,
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+  Check(handle != INVALID_HANDLE_VALUE);
+  DWORD returned = 0;
+  const bool set = DeviceIoControl(handle, FSCTL_SET_REPARSE_POINT, bytes.data(),
+      static_cast<DWORD>(bytes.size()), nullptr, 0, &returned, nullptr) != FALSE;
+  CloseHandle(handle);
+  Check(set);
+}
+void AncestorMatrix(const std::wstring& root) {
+  const auto real = root + L"\\real";
+  const auto leaf = real + L"\\leaf";
+  const auto link = root + L"\\junction";
+  const auto moved = root + L"\\moved";
+  bool passed = false;
+  try {
+    Check(CreateDirectoryW(real.c_str(), nullptr) != FALSE);
+    Check(CreateDirectoryW(leaf.c_str(), nullptr) != FALSE);
+    Junction(link, real);
+    Check(!nihongo::PendingCommandFileLease::Acquire(link)); // Final reparse.
+    Check(!nihongo::PendingCommandFileLease::Acquire(link + L"\\leaf")); // Ancestor.
+    Check(GetFileAttributesW((leaf + L"\\pending-command.lock").c_str()) == INVALID_FILE_ATTRIBUTES);
+    // Failed walks release every prior ancestor; junction can still be renamed.
+    Check(MoveFileW(link.c_str(), moved.c_str()) != FALSE);
+    Check(MoveFileW(moved.c_str(), link.c_str()) != FALSE);
+    auto lease = nihongo::PendingCommandFileLease::Acquire(leaf);
+    Check(lease != nullptr); // Direct non-reparse control.
+    Check(MoveFileW(real.c_str(), moved.c_str()) == FALSE);
+    Check(DeleteFileW((leaf + L"\\pending-command.lock").c_str()) == FALSE);
+    lease.reset();
+    Check(MoveFileW(real.c_str(), moved.c_str()) != FALSE);
+    Check(MoveFileW(moved.c_str(), real.c_str()) != FALSE);
+    passed = true;
+  } catch (...) { /* cleanup only the synthetic names, never follow junction */ }
+  const bool unlinked = RemoveDirectoryW(link.c_str()) != FALSE;
+  DeleteFileW((leaf + L"\\pending-command.lock").c_str());
+  const bool leafRemoved = RemoveDirectoryW(leaf.c_str()) != FALSE;
+  const bool realRemoved = RemoveDirectoryW(real.c_str()) != FALSE;
+  Check(passed && unlinked && leafRemoved && realRemoved);
 }
 void Child(const std::wstring& directory, DWORD expected) {
   wchar_t executable[32768]{};
@@ -76,6 +138,7 @@ bool ProbePendingCommandFileLease() {
     Check(!nihongo::PendingCommandFileLease::Acquire(directory));
     Check(RemoveDirectoryW(sentinel.c_str()) != FALSE);
     Check(nihongo::PendingCommandFileLease::Acquire(directory) != nullptr);
+    AncestorMatrix(directory);
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }
   DeleteFileW(alias.c_str());

@@ -36,7 +36,8 @@ bool Ordinary(HANDLE handle, bool directory) {
 PendingCommandFileLease::~PendingCommandFileLease() {
 #ifdef _WIN32
   if (file_) CloseHandle(static_cast<HANDLE>(file_));
-  if (directory_) CloseHandle(static_cast<HANDLE>(directory_));
+  for (auto it = directories_.rbegin(); it != directories_.rend(); ++it)
+    if (*it) CloseHandle(static_cast<HANDLE>(*it));
 #endif
 }
 std::unique_ptr<PendingCommandFileLease> PendingCommandFileLease::Acquire(
@@ -45,19 +46,30 @@ std::unique_ptr<PendingCommandFileLease> PendingCommandFileLease::Acquire(
     if (!ValidDirectory(trusted_directory)) return nullptr;
 #ifdef _WIN32
     auto lease = std::unique_ptr<PendingCommandFileLease>(new PendingCommandFileLease());
-    const auto dir = CreateFileW(trusted_directory.c_str(), FILE_READ_ATTRIBUTES,
-        FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
-        FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
-    if (dir == INVALID_HANDLE_VALUE) return nullptr;
-    lease->directory_ = dir;
-    if (!Ordinary(dir, true)) return nullptr;
+    // Open each ancestor itself (never follow its final reparse point), from
+    // drive root downwards. Keep every validated name pinned against rename
+    // until the sentinel closes. This does NOT validate ACLs or writer identity.
+    for (size_t end = 3; end <= trusted_directory.size(); ++end) {
+      if (end != 3 && end != trusted_directory.size() &&
+          trusted_directory[end] != L'\\') continue;
+      const auto ancestor = trusted_directory.substr(0, end);
+      // Reserve ownership before CreateFile: vector allocation cannot leak a
+      // newly opened handle, including failures part-way through the walk.
+      lease->directories_.push_back(nullptr);
+      const auto dir = CreateFileW(ancestor.c_str(), FILE_READ_ATTRIBUTES,
+          FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
+          FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      if (dir == INVALID_HANDLE_VALUE) return nullptr;
+      lease->directories_.back() = dir;
+      if (!Ordinary(dir, true)) return nullptr;
+    }
     const auto path = trusted_directory + L"\\pending-command.lock";
     const auto file = CreateFileW(path.c_str(), GENERIC_READ | GENERIC_WRITE,
         0, nullptr, OPEN_ALWAYS, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
     if (file == INVALID_HANDLE_VALUE) return nullptr;
     lease->file_ = file;
     if (!Ordinary(file, false)) return nullptr;
-    // Never truncate, write, delete, or inherit either handle. Keep the stable
+    // Never truncate, write, delete, or inherit any handle. Keep the stable
     // sentinel after release/crash; deleting it could split competing writers.
     return lease;
 #else

@@ -133,6 +133,7 @@ int wmain(int argc, wchar_t* argv[]) {
     std::cout << "PASS: validly protected malformed command frames/control (TEST ONLY, no persistence)\n";
     Check(ProbePendingCommandFileLease());
     std::cout << "PASS: Windows command sentinel exclusive process lease/abrupt-exit/reacquire/rejection (TEST ONLY, no payload storage)\n";
+    std::cout << "PASS: Windows command lease ancestor handles/junction rejection/release cleanup (TEST ONLY, no payload storage)\n";
     passed = true;
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.
