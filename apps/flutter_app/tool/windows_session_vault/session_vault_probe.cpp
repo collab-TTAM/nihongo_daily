@@ -11,6 +11,8 @@
 
 bool ProbeReceiptCredentials();
 bool ProbePendingCommandProtection();
+bool ProbePendingCommandFileLease();
+int CommandLeaseChild(const std::wstring& directory);
 
 namespace {
 void Check(bool ok) {
@@ -59,6 +61,8 @@ void ChildWrite(const std::string& target) {
 
 int wmain(int argc, wchar_t* argv[]) {
   using nihongo::VaultStatus;
+  if (argc == 3 && std::wstring(argv[1]) == L"--command-lease-child")
+    return CommandLeaseChild(argv[2]);
   if (argc == 3 && std::wstring(argv[1]) == L"--child-write") {
     const std::wstring name(argv[2]);
     const std::wstring prefix = L"NihongoDaily.Refresh.v1|https://ci-vault-a-";
@@ -127,6 +131,8 @@ int wmain(int argc, wchar_t* argv[]) {
     Check(ProbePendingCommandProtection());
     std::cout << "PASS: actual Windows user-context command protection bounds/roundtrip/scope/corruption (TEST ONLY, no persistence)\n";
     std::cout << "PASS: validly protected malformed command frames/control (TEST ONLY, no persistence)\n";
+    Check(ProbePendingCommandFileLease());
+    std::cout << "PASS: Windows command sentinel exclusive process lease/abrupt-exit/reacquire/rejection (TEST ONLY, no payload storage)\n";
     passed = true;
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.

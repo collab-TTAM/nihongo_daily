@@ -8,6 +8,48 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — native exclusive command sentinel prerequisite, 2026-10-27
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; fresh parent
+  708370a65763b346bfbc3c7ed58411e1be9eea2b (other released core checkpoint retained).
+  Published commit/tree/newCI/released marker in PR41. main78a44fa/source37afa572a/
+  Pro38 unchanged/N4 untouched. All14 hosted release gates remain pending.
+- CI40476953028 raw exact708370a/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Flutter122098149163 actual1440tests/5Chrome/23 facade cases; Windows122097497639
+  actual OWNED command composition/logout/native/malformed markers observed.
+  Synthetic SDK/JWT/profile/HTTP/native component proof is not hosted learner proof.
+- Add isolated PendingCommandFileLease prerequisite: fixed empty lock sentinel,
+  bounded host-selected absolute local directory; non-inheritable directory/file
+  handles, no delete sharing on directory, zero file sharing, no truncate/delete/
+  payload IO. Reject final reparse/directory/nonempty/multiple-link sentinel and
+  invalid path forms; retain stable empty sentinel after release/crash. Unsupported
+  OS/failure returns null/no raw OS/path error. RAII owns both handles.
+- NOT a secure payload backend/ACL/Auth/writer/ancestor/atomicity/power-loss proof.
+  Caller must first establish trusted ancestor/ACL boundary; no app/channel/default
+  caller or account/payload storage enabled. Document those concrete limits in
+  PENDING_COMMAND_ATOMIC_STORAGE.md; broader learner retention remains gated.
+- Extend existing mandatory native executable, preserving every old assertion:
+  actual child/process conflict, deletion/parent rename denial during lease,
+  abrupt child ExitProcess/no destructor+reacquire, hardlink/nonempty/directory
+  rejection/unknown content unchanged/cleanup. Added marker only after full probe.
+  New Win32/MSVC/process cases locally UNRUN, delegated exact-head Windows CI.
+- Local C++17 -Wall -Wextra -Werror compile +nonWindows failclosed probe PASS;
+  46QA/inventory151/whitespace/original-line preservation/separate lifetime/path/
+  sharing/cleanup/diff review PASS. Not Windows execution. No Flutter/analyzer/
+  Windowsbuild/PowerShell local claim; no CI/QA/security weakening or SDK bypass.
+- Seven paths: windows/runner/pending_command_file_lease.h/.cpp; native tool
+  command_file_lease_probe.cpp, session_vault_probe.cpp, CMakeLists.txt under
+  apps/flutter_app/tool/windows_session_vault; atomic-storage design and this status.
+- NEXT exact newhead/latestattempt all5/EVERYstep/new sentinel marker+retained
+  native/SDK markers. Fix actual diagnostics preserving assertions; pending-only
+  handoff/no duplicate work/longpoll. Then trusted directory ACL/ancestor handling,
+  encrypted record commit/flush/crash backend and full fault matrix before any
+  actual learner retention approval/activation.41draft/17open/AIoff/memory-only/
+  no merge/closure/default/Authstrategy/provider/Pro/release/deploy/collection/
+  security/spend/schedule/Alpha action.
+
+
 ## Core checkpoint — direct Auth getter regressions, 2026-10-27
 
 - PR41/issue17, branch automation/issue-11-plan-sdk-integration, parent

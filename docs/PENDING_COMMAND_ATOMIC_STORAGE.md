@@ -95,3 +95,43 @@ must remain exact and cleanups must be account-isolated.
 Activation additionally requires approved retention/collection, exact-head CI,
 separate security/diff review, hosted Auth/receipt correlation and actual learner
 restart/recovery evidence. All14 Personal Alpha release gates remain pending.
+
+## Isolated exclusive sentinel primitive — 2026-10-27
+
+`windows/runner/pending_command_file_lease.{h,cpp}` is a first OS prerequisite,
+NOT the encrypted record backend. Acquire accepts a bounded absolute drive-local
+host-selected existing directory and fixed `pending-command.lock` basename. It
+rejects relative/UNC/device/ADS/dot/empty/trailing-dot-or-space path forms. The
+opened directory is held without delete sharing and checked as disk/directory,
+not a reparse point. The sentinel is opened READ|WRITE with share mode zero,
+OPEN_ALWAYS (never truncate), OPEN_REPARSE_POINT and non-inheritable handles.
+Handle metadata must identify a non-directory, non-reparse, single-link empty
+file. Unsupported OS and every failure return null without path/OS diagnostics.
+RAII closes file before directory; the empty sentinel remains after release or
+crash to avoid deleting/replacing a live lock identity. No payload bytes are read,
+written, protected, restored or dispatched. No runtime/channel/default uses it.
+
+This primitive deliberately does not validate/create directory ACLs, bind the
+path to Auth/project/account, walk/protect all ancestor directories or authenticate
+a writer. A trusted host must establish that boundary BEFORE using it; an ancestor
+junction or attacker-controlled parent is NOT made safe by checking final handles.
+The default inherited sentinel security descriptor is not a reviewed data ACL.
+No atomic record replace/flush/power-loss/freshness/rollback/retention guarantee
+follows. Same-OS-user code can participate; file sharing is cooperating-writer
+exclusion, not sandboxing. The component is compiled only into the TEST ONLY
+native executable in this increment, never activated in the learner app.
+
+The existing mandatory Windows credential probe retains all original checks and
+now additionally tests same-process and actual child contention, inability to
+delete sentinel/rename its containing directory while leased, abrupt ExitProcess
+without C++ destruction followed by reacquisition, hard-link/nonempty/directory
+sentinel rejection, preservation of unknown file content, stable reacquisition
+and cleanup in a unique synthetic temporary directory. It emits a required extra
+success marker only after the complete new matrix succeeds. Reparse/ancestor/ACL
+and power-loss cases are explicitly not covered; they remain backend prerequisites.
+Linux C++17 warnings-as-errors compile/fail-closed checks pass; actual Windows
+process semantics require new exact-head CI and marker, not a Linux claim.
+
+Implementation references reviewed 2026-10-27:
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/ns-fileapi-by_handle_file_information
