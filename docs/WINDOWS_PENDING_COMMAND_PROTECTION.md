@@ -1,7 +1,7 @@
 # Windows pending-command protection component
 
-Status: unused native component, not a durable conversation backend. Draft PR #41,
-issue #17. No Dart channel, file, Credential Manager payload write, startup restore,
+Status: explicit native byte component/channel, not a durable conversation backend.
+Draft PR #41 / issue #17. No default caller, file, Credential Manager payload write, startup restore,
 retention, collection or default AI activation is added. Existing receipt metadata
 and refresh-token vault targets/limits remain unchanged.
 
@@ -111,3 +111,34 @@ nor DPAPI success authenticates the original writer. No durable storage, actual
 learner input, new collection, default behavior or Auth strategy is activated.
 Native Windows cases are authored but locally unrun; latest exact-head CI is the
 required execution evidence. Local Linux compile/validation does not execute them.
+
+## Explicit Dart/native byte operations — 2026-10-27
+
+Existing `nihongo_daily/conversation_receipts_v1` now accepts `protectCommand` and
+`unprotectCommand`. Each requires exactly `target` (canonical receipt-scope string)
+and `bytes` (StandardMethodCodec uint8 list / Dart Uint8List). Plain int lists,
+other typed arrays, null/wrong types/missing/extra keys are rejected. The existing
+component enforces 32KiB plaintext/64KiB ciphertext bounds after channel decoding.
+On success the channel returns Uint8List; every input/OS/parse failure returns
+the existing fixed receipt_storage_unavailable error, fixed message and no details.
+No plaintext fallback, raw OS error or payload is returned on failure. Unknown
+methods still NotImplemented; read/write/clear metadata behavior is unchanged.
+
+These operations neither read/write/clear Credential Manager nor dispatch HTTP.
+Their target is public context, not Auth or proof of a trusted configured endpoint.
+No production Dart facade/current-session caller, filesystem backend or startup
+restore is wired. Future caller must enforce trusted project/owner, captured SDK
+generation/readiness, strict envelope decode and result suppression after logout.
+Native/Dart/codec plaintext copies have caller-controlled lifetimes; no guarantee
+of erasing all copies. The same-OS-user/writer/rollback limits above still apply.
+
+Mandatory existing Windows receipt-write phase now exercises actual MethodChannel
+roundtrip of synthetic binary 1/256/32768-byte values, unchanged input, strict map/
+type/namespace/empty/oversize rejection, wrong owner/project decrypt, corrupt and
+truncated ciphertext with fixed errors. Reads then verify all three preexisting
+metadata partitions are exact, and the original outer fixture verifies the refresh
+marker and later reopen/clear/absence/cleanup unchanged. PowerShell emits the new
+command-protection Dart/native marker only after all four required phases succeed.
+No real learner payload, file write, broader collection or retention is activated.
+New platform cases locally unrun; exact-head/latest-attempt CI and actual marker
+required before claiming execution. This is not hosted Auth/RLS or learner proof.

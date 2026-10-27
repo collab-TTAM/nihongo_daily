@@ -106,6 +106,7 @@ try {
     Invoke-Bridge 'receipt-clear'
     Invoke-Bridge 'receipt-absent'
     Write-Output 'Windows receipt Dart/native bridge metadata isolation/reopen/conflict/clear verification passed (TEST ONLY)'
+    Write-Output 'Windows command protection Dart/native roundtrip/bounds/scope/metadata preservation passed (TEST ONLY, no payload persistence)'
     Invoke-Bridge 'receipt-life-write'
     Invoke-Bridge 'receipt-life-reopen'
     Invoke-Bridge 'receipt-life-logout'

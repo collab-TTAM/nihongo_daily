@@ -3694,6 +3694,33 @@
       ],
       "reproduce": "Run required Windows credential-store probe; require new malformed-frame/control marker and all old markers at exact-head latest-attempt CI all5 jobs/every step.",
       "limitation": "Windows-only new control/12 cases locally UNRUN; Linux C++17 compile and input-validation probe PASS only. Same-user writer valid control is not original-writer authentication, Auth/account isolation or rollback protection. No actual learner storage/collection/default activation; all14 hosted groups pending."
+    },
+    {
+      "id": "windows-command-protection-method-channel",
+      "status": "automated-baseline",
+      "scope": "Explicit bounded native command protect/unprotect channel with strict Uint8List map boundary; real Windows synthetic Dart roundtrip/rejection preserves metadata/token slots.",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/windows/runner/receipt_vault_channel.cpp",
+          "contains": "std::get_if<std::vector<uint8_t>>(&entry->second)"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_receipt_fixture.dart",
+          "contains": "await _commandProtection(scopes);"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows command protection Dart/native roundtrip/bounds/scope/metadata preservation passed"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "Run mandatory Windows Dart-to-native vault bridge phases via existing PowerShell verifier; require new command protection marker and all5 exact-head/latest-attempt CI jobs/every step.",
+      "limitation": "New actual Windows/MethodChannel/native execution locally UNRUN; local pinned Dart formatting/46QA only. Native syntax/context is not Auth/writer/rollback proof. No production Dart caller/storage/backend/retention/collection/default activation or hosted learner recovery; all14 hosted release groups pending."
     }
   ],
   "findings": [

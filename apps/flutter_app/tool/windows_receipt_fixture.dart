@@ -1,4 +1,6 @@
 // TEST ONLY real runner/MethodChannel/Credential Manager fixture. No network.
+import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/windows_conversation_receipt_store.dart';
@@ -109,6 +111,89 @@ Future<void> _invalidArguments(ConversationReceiptScope scope) async {
   throw const FormatException('Unknown receipt method was accepted');
 }
 
+bool _sameBytes(Uint8List a, Uint8List b) {
+  if (a.length != b.length) {
+    return false;
+  }
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+Future<void> _commandProtection(List<ConversationReceiptScope> scopes) async {
+  final target = _target(scopes.first);
+  for (final method in ['protectCommand', 'unprotectCommand']) {
+    for (final arguments in <Object?>[
+      null,
+      true,
+      <Object?>[target, Uint8List(1)],
+      <String, Object?>{},
+      {'target': target},
+      {'target': 1, 'bytes': Uint8List(1)},
+      {'target': target, 'bytes': Uint8List(1), 'extra': true},
+      {'target': target, 'reference': Uint8List(1)},
+      {'target': 'NihongoDaily.Refresh.v1|PRIVATE', 'bytes': Uint8List(1)},
+      {'target': '${target}PRIVATE', 'bytes': Uint8List(1)},
+    ]) {
+      await _invalid(method, arguments);
+    }
+    for (final bytes in <Object?>[
+      null,
+      true,
+      'PRIVATE',
+      <int>[0, 1],
+      Int32List(1),
+      Uint8List(0),
+      Uint8List(method == 'protectCommand' ? 32769 : 65537),
+    ]) {
+      await _invalid(method, {'target': target, 'bytes': bytes});
+    }
+  }
+  for (final size in [1, 256, 32768]) {
+    final plain = Uint8List.fromList(List.generate(size, (i) => i % 256));
+    final before = Uint8List.fromList(plain);
+    final protected = await _channel.invokeMethod<Object?>('protectCommand', {
+      'target': target,
+      'bytes': plain,
+    });
+    _require(protected is Uint8List);
+    final sealed = protected as Uint8List;
+    _require(sealed.isNotEmpty && sealed.length <= 65536);
+    _require(!_sameBytes(sealed, plain) && _sameBytes(plain, before));
+    final restored = await _channel.invokeMethod<Object?>('unprotectCommand', {
+      'target': target,
+      'bytes': sealed,
+    });
+    _require(restored is Uint8List && _sameBytes(restored, plain));
+    for (final scope in scopes.skip(1)) {
+      await _invalid('unprotectCommand', {
+        'target': _target(scope),
+        'bytes': sealed,
+      });
+    }
+    final corrupt = Uint8List.fromList(sealed);
+    corrupt[corrupt.length - 1] ^= 128;
+    await _invalid('unprotectCommand', {'target': target, 'bytes': corrupt});
+    await _invalid('unprotectCommand', {
+      'target': target,
+      'bytes': Uint8List.fromList(sealed.sublist(0, sealed.length ~/ 2)),
+    });
+    _require(_sameBytes(plain, before));
+  }
+  // Transform operations cannot replace or erase the three metadata partitions.
+  for (final scope in scopes) {
+    _require(
+      await _channel.invokeMethod<Object?>('read', {
+            'target': _target(scope),
+          }) ==
+          _reference(scope).encode(),
+    );
+  }
+}
+
 Future<void> verifyWindowsReceiptPhase(String phase, String runScope) async {
   final origin = 'https://$runScope-receipt.invalid';
   final scopes = [
@@ -157,6 +242,7 @@ Future<void> verifyWindowsReceiptPhase(String phase, String runScope) async {
       }
       // Raw receiver rejects bad maps/types/fields/scope without erasing A/B/C.
       await _invalidArguments(scopes.first);
+      await _commandProtection(scopes);
     } else if (phase == 'receipt-reopen') {
       for (var i = 0; i < stores.length; i++) {
         _require(

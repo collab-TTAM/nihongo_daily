@@ -2,6 +2,7 @@
 
 #include <flutter/standard_method_codec.h>
 #include "receipt_credential_vault.h"
+#include "pending_command_protection.h"
 
 namespace {
 void Fail(flutter::MethodResult<flutter::EncodableValue>* result) {
@@ -19,7 +20,8 @@ RegisterReceiptVaultChannel(flutter::BinaryMessenger* messenger) {
       const flutter::MethodCall<flutter::EncodableValue>& call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
     const auto& method = call.method_name();
-    if (method != "read" && method != "write" && method != "clear") {
+    const bool transform = method == "protectCommand" || method == "unprotectCommand";
+    if (method != "read" && method != "write" && method != "clear" && !transform) {
       result->NotImplemented();
       return;
     }
@@ -27,7 +29,7 @@ RegisterReceiptVaultChannel(flutter::BinaryMessenger* messenger) {
       const auto* args = call.arguments()
                              ? std::get_if<flutter::EncodableMap>(call.arguments())
                              : nullptr;
-      if (!args || args->size() != (method == "write" ? 2u : 1u)) {
+      if (!args || args->size() != ((method == "write" || transform) ? 2u : 1u)) {
         Fail(result.get());
         return;
       }
@@ -39,7 +41,24 @@ RegisterReceiptVaultChannel(flutter::BinaryMessenger* messenger) {
         Fail(result.get());
         return;
       }
-      if (method == "read") {
+      if (transform) {
+        const auto entry = args->find(flutter::EncodableValue("bytes"));
+        const auto* bytes = entry == args->end()
+                                ? nullptr
+                                : std::get_if<std::vector<uint8_t>>(&entry->second);
+        if (!bytes) {
+          Fail(result.get());
+          return;
+        }
+        const auto value = method == "protectCommand"
+            ? nihongo::ProtectPendingCommand(*target, *bytes)
+            : nihongo::UnprotectPendingCommand(*target, *bytes);
+        if (value.status == nihongo::CommandProtectionStatus::success) {
+          result->Success(flutter::EncodableValue(value.bytes));
+        } else {
+          Fail(result.get());
+        }
+      } else if (method == "read") {
         const auto read = nihongo::ReadReceiptCredential(*target);
         if (read.status == nihongo::ReceiptVaultStatus::not_found) {
           result->Success(flutter::EncodableValue());

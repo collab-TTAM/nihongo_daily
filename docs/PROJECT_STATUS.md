@@ -5,6 +5,46 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — explicit Windows command byte channel, 2026-10-27
+
+- Draft41 / issue17, automation/issue-11-plan-sdk-integration; exact parent
+  1bf53c29423549f93e08db878ac7ec887586051e, tree56cb89adceb06cccb0a49b139b99d78e9a4bbba9.
+  New commit/CI and worker release in first PR41 checkpoint. Main78a44fa, source37
+  afa572a, Pro38at28c20cb unchanged; protected N4 scope untouched.
+- Parent CI40417969783 raw exact source/latestattempt1 SUCCESS all5 jobs/EVERY
+  step/no skips. Windows121904995525 confirms protection +malformed-frame/control
+  +all3 OWNED runtime/lookup/original-read markers. Previous12 native cases verified.
+- Existing receipt MethodChannel now exposes explicit protectCommand/unprotectCommand
+  with exactly canonical target +typed uint8 bytes, bounded by production component.
+  Returns typed bytes only on success; all invalid input/OS/parse failures map to
+  same fixed receipt error/no details. Unknown methods/metadata methods unchanged.
+  No vault/file write/read/clear or HTTP from new operations, no plaintext fallback.
+- Added mandatory actual Dart/native Windows fixture for 1/256/32768-byte binary
+  roundtrip/input preservation, malformed maps/types/namespace/missing/extra fields,
+  empty/oversize values, foreign project/owner, corrupt/truncated bytes and fixed
+  safe errors. All3 metadata partitions and original refresh marker/reopen/clear/
+  absence/cleanup checks retained; PowerShell marker only after all4 phases pass.
+- Optional byte capability only: no production Dart facade/current-session caller,
+  backend/disk storage/retention/collection/default activation/Auth/provider change.
+  Public scope/DPAPI/hash is not Auth/writer/rollback isolation; future captured SDK
+  generation/readiness+strict envelope decode and atomic storage still required.
+- Local fresh official Dart3.9.2 archive SHA256 verified, one fixture formatted and
+  final format unchanged; unresolved Flutter lint include warns because Flutter
+  packages unavailable. Full Flutter analyzer/tests/C++ channel/MSVC/DPAPI/PowerShell
+  execution/builds locally UNRUN, require new exact-head/latestattempt CI. QA46/46,
+  inventory149/whitespace/separate diff review recorded in PR. Prior148 QA cases/
+  findings/gates and old fixture/PowerShell checks preserved exactly.
+- Six paths: runner/receipt_vault_channel.cpp; tool/windows_receipt_fixture.dart,
+  tool/verify_windows_vault_bridge.ps1; WINDOWS_PENDING_COMMAND_PROTECTION.md,
+  this status, qa/matrix.json. No dependencies/contract/RLS/CI/Pro edits.
+- NEXT verify all5 exact new-head jobs/EVERY step/new Dart-native marker +old native
+  protection/malformed/all3 OWNED markers. Fix real diagnostics preserving tests.
+  Then typed trusted/captured-session facade and secure atomic bounded command+
+  reference backend/key/ACL/integrity/logout/retention review before activation.
+  Keep41draft/17open/AIoff/all14 hosted pending/no merge/closure/deployment/release/
+  schedule action/Alpha claim. Fixtures/unsigned JWT/native build are not hosted proof.
+
+
 ## Core checkpoint — validly protected malformed frames, 2026-10-27
 
 - Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
