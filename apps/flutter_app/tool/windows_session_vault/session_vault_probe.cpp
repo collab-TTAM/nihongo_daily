@@ -13,6 +13,7 @@ bool ProbeReceiptCredentials();
 bool ProbePendingCommandProtection();
 bool ProbePendingCommandFileLease();
 int CommandLeaseChild(const std::wstring& directory);
+int CommandStageExitChild(const std::wstring& directory, const std::wstring& mode);
 
 namespace {
 void Check(bool ok) {
@@ -61,6 +62,8 @@ void ChildWrite(const std::string& target) {
 
 int wmain(int argc, wchar_t* argv[]) {
   using nihongo::VaultStatus;
+  if (argc == 4 && std::wstring(argv[1]) == L"--command-stage-exit-child")
+    return CommandStageExitChild(argv[2], argv[3]);
   if (argc == 3 && std::wstring(argv[1]) == L"--command-lease-child")
     return CommandLeaseChild(argv[2]);
   if (argc == 3 && std::wstring(argv[1]) == L"--child-write") {

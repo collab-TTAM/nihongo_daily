@@ -377,3 +377,28 @@ reviewed 2026-10-28:
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers
 - https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-setentriesinaclw
 - https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-setsecuritydescriptorcontrol
+
+## Subprocess stage preservation — 2026-10-28
+
+A TEST ONLY child mode now exits via ExitProcess without C++ lease destruction
+after actual StageCiphertextCandidate succeeds with a 65536-byte synthetic input.
+A separate explicit partial-fixture mode creates a private stage, writes three
+synthetic bytes, and exits with its file/lease still held and no explicit flush.
+The partial producer is NOT fault injection inside production Stage; neither
+mode represents a Windows/kernel/hardware power failure. No production method
+or default entrypoint changes. Child flags exist only in the native probe.
+
+Parent uses CreateProcess without a shell/inherited handles, a 10-second wait/
+fixed expected exit code and bounded termination cleanup. It must reacquire the
+lease, independently read exact stage bytes/owner/protected/exact ACL, observe
+no .bin publication, and refuse a new stage without altering old bytes. Rejected
+lease stays fenced. Only unique synthetic fixture cleanup deletes those files.
+Both partial and complete abandoned stages remain unresolved; never adopt,
+rename, overwrite, discard or infer no-dispatch from them automatically. New
+marker appears only after both child cases complete. Actual execution requires
+new exact-head Windows CI; Linux compile is not subprocess/Win32 evidence.
+
+Remaining: short-write/flush/close fault injection inside actual staging and
+crash boundaries during actual atomic publication, namespace/durable uncertainty/
+reconciliation and approved retention. API reference checked 2026-10-28:
+https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess

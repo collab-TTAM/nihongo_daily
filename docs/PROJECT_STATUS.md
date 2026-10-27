@@ -12,6 +12,41 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — subprocess stage preservation, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  86ef453e53ea5972086e3d73c25e8286d8c5fed9. Commit/tree/newCI/released marker in PR41.
+  main/source37/Pro38 unchanged; N4 reserved.
+- CI40548807234 raw exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122346745961 actualstage bound0/65537/1/65536+privateACL/nooverwrite/
+  nopublish marker, sharing/candidate/sticky/native retained tests verified.
+  TEST ONLY component proof, not hosted learner acceptance.
+- Add TEST ONLY native child modes: actual Stage(max synthetic bytes) then
+  ExitProcess bypasses lease destruction; separate explicit three-byte unflushed
+  partial-stage fixture producer exits with raw file/lease held. Partial mode
+  is NOT injected failure inside production Stage. Parent shell-free/noinherit/
+  bounded10s wait/exitcode/termination cleanup, reacquire+private policy, exact
+  bytes/owner/protected/exact ACL/no .bin, refuse newstage+sticky failure and
+  unchanged original stage, mandatory synthetic cleanup. Both modes required
+  before new success marker. Not kernel/crash/powerloss/atomicpublish proof.
+- Four paths: native command_file_lease_probe.cpp and session_vault_probe.cpp
+  under apps/flutter_app/tool/windows_session_vault;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. All original lines/tests
+  retained; production lease/reader/staging/header/default byte-identical.
+  C++17 warnings-as-errors/nonWindows failclosed,46QA/inventory151/whitespace/
+  both original native-file line preservation PASS. Separate diff review covered
+  child dispatch/whitelist/no-shell quoting/exit-code/wait/handle cleanup, exact
+  stage preservation, no publication and partial-fixture evidence limits.
+  Local checks/review and CI recorded in PR41. Actual new Windows/MSVC/Flutter/
+  analyzer/build locally UNRUN; no SDK bypass/security/RLS/CI/QA/API/schema/
+  Authstrategy/Pro/retention activation.
+- NEXT exacthead/latestattempt all5/EVERYstep/newchild+stage+retainedmarkers,
+  fix actual failures retaining assertions, pending-only handoff/no duplicatecode/
+  longpoll. Then actual stage write/flush/close faults and atomicpublish/crash/
+  namespace/durable uncertainty/reconciliation before retentionapproval.
+ 41draft/17open/AIoff/memory-only/all14hostedpending/no merge/closure/provider/
+  deploy/release/collection/security/spend/schedule/Alpha acceptance.
+
 ## Core checkpoint — private create-new ciphertext staging, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

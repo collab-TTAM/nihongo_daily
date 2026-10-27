@@ -403,6 +403,30 @@ void HeldPolicyMutationMatrix(const std::wstring& root) {
   std::cout << "PASS: Windows command held directory/sentinel ACL mutation snapshots (TEST ONLY)" << std::endl;
   std::cout << "PASS: Windows command lease sticky policy failure fence (TEST ONLY)" << std::endl;
 }
+// TEST ONLY subprocess, explicit whitelist and bounded wait, never a shell.
+void StageExitProcess(const std::wstring& directory, const std::wstring& mode) {
+  Check(mode == L"partial" || mode == L"flushed");
+  wchar_t executable[32768]{};
+  const auto length = GetModuleFileNameW(nullptr, executable, 32768);
+  Check(length > 0 && length < 32768);
+  std::wstring command = L"\"" + std::wstring(executable) +
+      L"\" --command-stage-exit-child \"" + directory + L"\" " + mode;
+  STARTUPINFOW startup{};
+  startup.cb = sizeof(startup);
+  PROCESS_INFORMATION process{};
+  Check(CreateProcessW(nullptr, command.data(), nullptr, nullptr, FALSE,
+      CREATE_NO_WINDOW, nullptr, nullptr, &startup, &process) != FALSE);
+  const auto wait = WaitForSingleObject(process.hProcess, 10000);
+  DWORD code = 1;
+  const bool queried = wait == WAIT_OBJECT_0 && GetExitCodeProcess(process.hProcess, &code) != FALSE;
+  if (wait != WAIT_OBJECT_0) {
+    TerminateProcess(process.hProcess, 1);
+    WaitForSingleObject(process.hProcess, 5000);
+  }
+  CloseHandle(process.hThread);
+  CloseHandle(process.hProcess);
+  Check(wait == WAIT_OBJECT_0 && queried && code == 0);
+}
 // TEST ONLY opaque synthetic bytes; no learner text or valid-command assertion.
 void CandidateReadMatrix(const std::wstring& root) {
   using State = nihongo::PendingCommandCandidateState;
@@ -636,6 +660,23 @@ void CandidateReadMatrix(const std::wstring& root) {
       Check(DeleteFileW(candidate.c_str()) != FALSE);
     }
     std::cout << "PASS: Windows ciphertext create-new private stage/flush/bounds/no-overwrite/no-publish (TEST ONLY)" << std::endl;
+    for (const auto& mode : {std::wstring(L"partial"), std::wstring(L"flushed")}) {
+      std::cout << "CHECK: ciphertext stage child exit " << (mode == L"partial" ? "partial-fixture" : "real-flushed-stage") << std::endl;
+      StageExitProcess(directory, mode);
+      const std::vector<unsigned char> expected(mode == L"partial" ? size_t{3} : size_t{65536}, 0xa5);
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr); // Child ExitProcess released lease without C++ destruction.
+      Check(lease->CheckPrivateAccessPolicy());
+      readStage(expected); // Same exact bytes, owner and ACL after subprocess exit.
+      Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+      const auto unpublished = lease->ReadCiphertextCandidate();
+      Check(unpublished.state == State::absent && unpublished.bytes.empty());
+      Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+      Check(!lease->CheckPrivateAccessPolicy());
+      readStage(expected); // Neither complete nor partial abandoned stage is replaced.
+      Check(DeleteFileW(stage.c_str()) != FALSE); // Unique synthetic cleanup ONLY.
+    }
+    std::cout << "PASS: Windows ciphertext stage subprocess abrupt-exit/preserve/no-publish (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());
@@ -672,6 +713,40 @@ int CommandLeaseChild(const std::wstring& directory) {
   const auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
   // Bypass C++ destruction deliberately: OS must reclaim handles on process exit.
   ExitProcess(lease ? 0 : 3);
+}
+// TEST ONLY: flushed mode uses actual production staging. Partial mode is an
+// explicit synthetic incomplete-stage producer, NOT a Stage() fault injection.
+int CommandStageExitChild(const std::wstring& directory, const std::wstring& mode) {
+  try {
+    if (mode != L"partial" && mode != L"flushed") ExitProcess(5);
+    const auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+    if (!lease || !lease->CheckPrivateAccessPolicy()) ExitProcess(5);
+    if (mode == L"flushed") {
+      const bool staged = lease->StageCiphertextCandidate(std::vector<unsigned char>(65536, 0xa5));
+      ExitProcess(staged ? 0 : 5); // Deliberately bypass lease's C++ destructor.
+    }
+    const auto user = FixtureUserSid();
+    const auto policy = L"O:" + user + L"D:P(A;;FA;;;" + user + L")" +
+        (user == L"S-1-5-18" ? L"" : L"(A;;FA;;;SY)");
+    struct Security {
+      PSECURITY_DESCRIPTOR value = nullptr;
+      ~Security() { if (value) LocalFree(value); }
+    } security;
+    if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(policy.c_str(),
+        SDDL_REVISION_1, &security.value, nullptr)) ExitProcess(5);
+    SECURITY_ATTRIBUTES attributes{};
+    attributes.nLength = sizeof(attributes);
+    attributes.lpSecurityDescriptor = security.value;
+    const auto path = directory + L"\\pending-command.stage";
+    const auto file = CreateFileW(path.c_str(), GENERIC_WRITE, 0, &attributes,
+        CREATE_NEW, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    if (file == INVALID_HANDLE_VALUE) ExitProcess(5);
+    const unsigned char bytes[3] = {0xa5, 0xa5, 0xa5};
+    DWORD written = 0;
+    const bool partial = WriteFile(file, bytes, static_cast<DWORD>(sizeof(bytes)), &written, nullptr) != FALSE;
+    // No explicit flush or CloseHandle, no C++ destruction: OS exit cleanup.
+    ExitProcess(partial && written == sizeof(bytes) ? 0 : 5);
+  } catch (...) { ExitProcess(5); }
 }
 bool ProbePendingCommandFileLease() {
   wchar_t temp[MAX_PATH]{};
