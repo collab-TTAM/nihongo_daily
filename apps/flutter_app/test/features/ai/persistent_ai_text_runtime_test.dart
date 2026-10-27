@@ -275,6 +275,7 @@ void main() {
   );
   test('owned command factory unavailable without receipt opt-in', () async {
     nativeProtection((_) async => Uint8List(1));
+    await runtime.start();
     await login();
     expect(runtime.createWindowsPendingCommandProtector(), isNull);
     expect(protectionCalls, isEmpty);
@@ -284,6 +285,7 @@ void main() {
     () async {
       nativeProtection((_) async => Uint8List.fromList([1, 2]));
       await openReceiptRuntime();
+      await runtime.start();
       expect(runtime.createWindowsPendingCommandProtector(), isNull);
       profileWait = Completer<http.Response>();
       final signing = runtime.account.signIn(
@@ -329,6 +331,7 @@ void main() {
             return held.future;
           });
           await openReceiptRuntime();
+          await runtime.start();
           await login();
           final p = runtime.createWindowsPendingCommandProtector()!;
           final operation = p.protect(protectedCommand());

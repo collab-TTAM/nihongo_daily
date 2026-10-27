@@ -5,6 +5,45 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — start owned SDK fixture before login, 2026-10-27
+
+- Draft41/issue17, automation/issue-11-plan-sdk-integration, actual parent
+  3734a208b9dc6925562db01b68663cf825193bef/tree8251072a656a8d5179a3d1085e00830a8925b91b.
+  Published commit/new CI/released marker recorded in first PR41 checkpoint.
+  Fresh main78a44fa/source37afa572a/Pro38at28c20cb unchanged; N4 reserved.
+- CI40453764510 raw exact3734a20/latestattempt1 completed FAILURE; all5 jobs
+  fetched. Other4 jobs/EVERY step SUCCESS. Flutter format/analyze SUCCESS;
+  full Flutter suite failed exactly8 new owned command cases, each five-second
+  readiness timeout. Downstream Flutter/Chrome/Web checks SKIPPED, not passed.
+  Windows122022292458 actual native bridge/protection/malformed/control and all3
+  OWNED markers observed. Those do not prove the8 SDK tests or hosted acceptance.
+- The3 initial test entry sites (expanding to8 cases) omitted runtime.start()
+  before signIn. PersistentAccountAccess intentionally rejects signIn until its
+  caller-owned startup vault/restore barrier settles. Account starts signedOut;
+  without startup the test waits for readiness it cannot obtain. Add an explicit
+  awaited start at each of these3 sites, following all existing SDK fixtures.
+  Startup remains once per runtime; B/A re-login still uses the already started
+  instance. No helper globally changed, extra login, timeout increase, artificial
+  readiness, assertion removal, fake Auth success or production fix introduced.
+- Exact original-source comparison proves only3 awaited startup lines added;
+  every test/helper/assertion/timeout/cleanup and all production code retained.
+  Separate diff and startup/signIn/retirement ordering review PASS. Local46/46QA,
+  inventory151 and git diff --check PASS; inventory is not151 tests. Local Dart/
+  Flutter SDK unavailable: formatter/analyzer/full Flutter/new8/platform builds
+  UNRUN and delegated to exact new-head CI. No denied bootstrap retry or stubs.
+- Two edited paths: apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart
+  and this status. Correct-base complete recursive tree, unchanged files, exact
+  blob/commit readbacks and expected-head non-force publication required.
+- NEXT inspect all5 exact-head/latestattempt jobs/EVERY step and actual8 command
+  SDK cases; fix any further real diagnostic preserving assertions. Pending-only
+  handoff, no duplicate implementation/long polling. After green, actual Windows
+  SDK+typed facade composition and reviewed atomic bounded backend/writer/key/ACL/
+  integrity/retention/logout before payload persistence.41draft/17open/AIoff/
+  learner memory-only/all14hosted gates pending; no merge/closure/default/Pro/
+  collection/security/Auth strategy/provider/deploy/release/schedule/Alpha claim.
+
+
 ## Core checkpoint — owned profile fixture cleanup braces, 2026-10-27
 
 - Draft41/issue17, automation/issue-11-plan-sdk-integration, exact parent
