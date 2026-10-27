@@ -178,3 +178,22 @@ and QA evidence are separate from exact-head CI. Mocked Auth/bytes are not nativ
 DPAPI/SDK/hosted learner proof. Existing real native bridge evidence remains a
 separate prerequisite. No default/runtime wiring, backend/disk/retention/collection
 activation, Auth strategy/provider or policy change; human gates remain unchanged.
+
+
+## Availability reentry fence — 2026-10-27
+
+The captured facade reserves a separate availability-check flag before invoking
+caller-supplied readiness/Auth getters. Nested isCurrent reads return false without
+recursing or revoking a valid outer owner. protect/unprotect called inside a
+standalone availability read fail busy before any MethodChannel I/O. Previously
+only operations reserved _busy, so a standalone read could launch work through a
+reentrant callback. The flag is released in finally; revocation remains sticky,
+including synchronous callback revocation and every existing late-result fence.
+
+Three additional mock-channel cases cover recursive reads and both native methods
+attempted from a standalone readiness callback. They require zero nested channel
+calls and allow a subsequent explicit protection operation. Original12 tests are
+unchanged. Parent08b2a2b CI40437029165/latestattempt1 passed all5/EVERY step, all12
+facade tests and retained native markers. New15/full Flutter/native checks need
+new-head CI; local formatting/QA are not execution evidence for these cases.
+No factory, disk storage, retention, default activation or release authority added.

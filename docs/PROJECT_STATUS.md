@@ -5,38 +5,40 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — command facade analyzer import fix, 2026-10-27
+## Core checkpoint — command protection availability reentry, 2026-10-27
 
-- Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
-  f04a49e27b9bb2c0733ebf8756cccce1ee2ef2e1 / treee34188812d49c0df402971bf2f4c64326e0cbf02.
-  New commit/CI+worker release recorded in first PR41 checkpoint. Main78a44fa/
-  source37afa572a/Pro38at28c20cb unchanged; protected content untouched.
-- Observed CI40432100454 raw exact source/latestattempt1 FAILED: complete5 jobs,
-  Flutter formatting PASS; analyzer reports exactly2 unnecessary_import infos at
-  windows_pending_command_protector.dart:2 and its test:5. flutter/foundation.dart
-  already supplies all referenced typed-data symbols. All Flutter tests/new12 and
-  later Flutter/Chrome/Web steps SKIPPED, not executed/passed. Other4 jobs and
-  EVERY step success; this is not a successful full-CI/Personal Alpha result.
-- Windows121952058205 actual command bridge/protection/malformed/control and all3
-  OWNED markers observed. They test retained native components; optional captured
-  facade12 cases still require actual execution, not inferred from Windows build.
-- Removed exactly the two redundant dart:typed_data import lines. Exact original
-  file-byte comparison proves all remaining production/test bytes unchanged.
-  No assertion, lint configuration, dependency, CI gate, native/Auth/transport/
-  metadata/default/storage/retention/collection/Pro behavior change.
-- Local source/diff/whitespace/inventory150/46QA review recorded in PR. Existing
-  QA matrix/tests untouched; no new mirrored tests for import-only fix. Formatter/
-  Flutter analyzer/tests/builds locally UNRUN; appropriate full pinned checks are
-  delegated to new exact-head CI. No Flutter bootstrap retry/stubs/bypass.
-- Three paths only: AI data/windows_pending_command_protector.dart, its test,
-  this status. All12 authored tests and captured scope/readiness/generation/busy/
-  revoke/late-result guards retained exactly. No factory/runtime activation.
-- NEXT new exact-head/latestattempt all5 jobs/EVERY step, actual12 new mock tests
-  plus retained native/OWNED markers. Fix actual diagnostics preserving assertions;
-  pending-only handoff/no duplicate implementation/long polling. After green: same-
-  owned SDK/profile factory/lifecycle evidence and reviewed atomic bounded backend/
-  key/ACL/integrity/logout/retention before activation. Keep41draft/17open/AIoff/
-  all14hosted pending/no merge/closure/deploy/release/schedule/Alpha claim.
+- Draft41 / issue17, branch automation/issue-11-plan-sdk-integration; parent
+  08b2a2bc54b9f8323e9f72971268f02ce15f1d6e. Published commit/CI in PR41 checkpoint.
+  Latest main78a44fa/source37afa572a/Pro38at28c20cb unchanged; N4 untouched.
+- Parent CI40437029165 exact source/latestattempt1 SUCCESS: all5 jobs and EVERY
+  step, no skips. Flutter121968581348 explicitly executed all12 facade cases;
+  Windows121968126237 confirms persistent rotation/receipt marker, all3 OWNED
+  markers and command bridge/protection/malformed-control markers. TEST ONLY
+  Auth/HTTP/native evidence is not hosted learner, RLS or restoration proof.
+- Independent review found standalone isCurrent called supplied readiness/Auth
+  getters with no reentry reservation. Such a callback could recursively read
+  isCurrent or start protect/unprotect while no operation held _busy. Added a
+  separate _checking guard: nested reads return false, nested operations fail
+  busy before native dispatch; finally releases checking on all exits. Existing
+  revoked/identity/pre-post I/O/error/actual-drain guards remain unchanged.
+- Three new Flutter regressions: recursive readiness read returns two false hints
+  without revoking valid outer owner; standalone readiness cannot launch protect
+  or unprotect, with zero channel calls, and subsequent explicit protect succeeds.
+  All12 previous tests/assertions and deadlines retained. No platform stubs used.
+- Local fresh official Dart3.9.2 SHA256 verified; format2 unchanged, QA46/46
+  PASS/inventory150 valid (not150 executed), whitespace/separate diff review PASS.
+  All12 prior test bytes retained exactly. Flutter SDK/native Windows
+  unavailable, so new regressions/full analyzer/tests/builds locally UNRUN and
+  require exact new-head/latestattempt CI. No pass inferred from parent evidence.
+- Four paths: AI data/windows_pending_command_protector.dart and its test;
+  docs/WINDOWS_PENDING_COMMAND_PROTECTION.md and this status. No runtime/default,
+  backend/storage/retention, codec, native, Auth strategy, HTTP/SQL/RLS, CI or
+  protected content changes. No durable payload or new dispatch/release authority.
+- Next verify new head all5/EVERY step and15 facade cases/native markers, then
+  same-owned SDK/profile factory and lifecycle evidence before activation;
+  reviewed atomic bounded storage/key/ACL/integrity/logout/retention and hosted
+  receipt association/conditional release remain outstanding. #41draft/#17open,
+  AIoff/learner memory-only/one pending/all14 hosted groups pending.
 
 
 ## Core checkpoint — captured command protection facade, 2026-10-27

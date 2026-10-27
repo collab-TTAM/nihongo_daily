@@ -39,12 +39,16 @@ final class WindowsPendingCommandProtector {
   late final ReviewSession _session;
   bool _revoked = false;
   bool _busy = false;
+  bool _checking = false;
   static const _channel = MethodChannel(
     'nihongo_daily/conversation_receipts_v1',
   );
 
   bool get isCurrent {
-    if (_revoked) return false;
+    // Supplied readiness/Auth getters may reenter. A nested read cannot establish
+    // readiness or open a native operation while the outer check is unresolved.
+    if (_revoked || _checking) return false;
+    _checking = true;
     try {
       if (_ready() &&
           identical(_auth.currentSession, _session) &&
@@ -55,6 +59,8 @@ final class WindowsPendingCommandProtector {
       }
     } on Object {
       // Fixed failure below, never a callback's private exception.
+    } finally {
+      _checking = false;
     }
     revoke();
     return false;
@@ -68,7 +74,7 @@ final class WindowsPendingCommandProtector {
   }
 
   Future<T> _run<T>(Future<T> Function() action) async {
-    if (_busy) {
+    if (_busy || _checking) {
       throw const CommandProtectionFailure(CommandProtectionError.busy);
     }
     _busy =

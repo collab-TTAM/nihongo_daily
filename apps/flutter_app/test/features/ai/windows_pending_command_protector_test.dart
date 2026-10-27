@@ -346,4 +346,53 @@ void main() {
     await nestedAssertion!;
     expect(calls.length, 1);
   });
+  test('nested availability read is redacted without revoking outer owner', () {
+    WindowsPendingCommandProtector? p;
+    final nested = <bool>[];
+    final result = open(
+      check: () {
+        if (p != null) nested.add(p!.isCurrent);
+        return true;
+      },
+    );
+    p = result;
+    expect(result.isCurrent, true);
+    expect(nested, [false, false]);
+    expect(calls, isEmpty);
+    result.revoke();
+    expect(result.isCurrent, false);
+    expect(nested, [false, false]);
+  });
+  for (final decrypt in [false, true]) {
+    test(
+      'standalone readiness read blocks native reentry decrypt=$decrypt',
+      () async {
+        mock((_) async => Uint8List(1));
+        WindowsPendingCommandProtector? p;
+        Future<void>? nestedAssertion;
+        var trigger = false;
+        final result = open(
+          check: () {
+            if (trigger) {
+              trigger = false;
+              nestedAssertion = expectLater(
+                decrypt ? p!.unprotect(Uint8List(1)) : p!.protect(command()),
+                throwsA(failure(CommandProtectionError.busy)),
+              );
+            }
+            return true;
+          },
+        );
+        p = result;
+        trigger = true;
+        expect(result.isCurrent, true);
+        await nestedAssertion!;
+        expect(calls, isEmpty);
+        // The denied callback did not poison readiness or reserve the wire lease.
+        await result.protect(command());
+        expect(calls.length, 1);
+        expect(result.isCurrent, true);
+      },
+    );
+  }
 }
