@@ -7,6 +7,49 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — native logout fence and atomic-storage handoff, 2026-10-27
+
+- Draft41/issue17, automation/issue-11-plan-sdk-integration, actual parent
+  3ba17346d7b9d2e347998f9971a19644317c8981; published commit/tree/newCI/released
+  worker marker in first PR41 checkpoint. main78a44fa/source37afa572a/Pro38
+  unchanged/N4 reserved untouched. All14 hosted acceptance gates remain pending.
+- CI40465655338 raw exact3ba1734/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Flutter122060843135 actual1438tests/fiveChrome; Windows122060358673 actual
+  OWNED SDK/profile command all3/corrupt/foreign/stale-close marker and original
+  native/OWNED/malformed probes passed. TEST ONLY is not hosted learner proof.
+- Existing mandatory receipt-owned-logout now roundtrips synthetic command with
+  actual Windows DPAPI through same owned SDK/profile; token/metadata unchanged
+  and zero mutation/lookupHTTP. Capture original one-call signOut future to assert
+  immediate old protector revoked/factorynull, then await completion and require
+  stale protect/unprotect unauthorized; original signedOut/token-null/receipt-null/
+  exactlogout-count checks retained. New outer marker only after wholephase.
+- Proposed single encrypted envelope record contains reference+request together;
+  separate metadata index cannot establish atomic durable reservation. Concrete
+  backend/OS lock/ACL/reparse/flush/crash/trusted-writer/rollback proof still needed.
+  Legacy metadata-only remains pending, never recreated/cleared automatically;
+  uncertain write blocks dispatch; close preserves; logout drains before exact
+  clear/retry. No TTL/eviction/newID/replay or COMPLETED-only release authority.
+  This is design handoff, not implemented storage/retention approval. Actual
+  learner-text persistence remains behind broader-collection approval.
+- Five paths: apps/flutter_app/tool/windows_sdk_receipt_fixture.dart and
+  tool/verify_windows_vault_bridge.ps1; docs/PENDING_COMMAND_ATOMIC_STORAGE.md,
+  WINDOWS_PENDING_COMMAND_PROTECTION.md and this status. Original assertions/
+  cleanup retained; only old await signOut split into samecall future+await for
+  immediate checks. Separate lifecycle/typed error/storage-policy/diff review PASS.
+- Official Dart3.9.2 ZIP SHA verified/format+recheck unchanged; unresolved Flutter
+  lint include warning is not analysis proof.46QA/inventory151/whitespace PASS;
+  local full Flutter/analyzer/Windows/PowerShell/newnative assertions/build UNRUN,
+  delegated exact-head CI. No stubs/bootstrap bypass/production/API/schema/RLS/
+  SDK/Auth strategy/default/CI/QA/content changes.
+- NEXT exact-head/latestattempt all5/EVERYstep/newlogoutmarker+oldmarkers; fix
+  actual diagnostics preserving assertions; pending-onlyhandoff/no duplicatecode/
+  longpoll. Then implement synthetic-only isolated bounded encrypted-record OS
+  backend after concrete ownership/ACL/atomicity review and process-fault tests.
+ 41draft/17open/AIoff/memory-only/all14hosted pending/no merge/closure/activation/
+  deploy/release/provider/spend/collection/security/Pro/schedule/Alpha action.
+
+
 ## Core checkpoint — actual Windows owned typed command probe, 2026-10-27
 
 - Draft41/issue17, branch automation/issue-11-plan-sdk-integration; parent

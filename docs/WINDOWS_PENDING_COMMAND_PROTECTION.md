@@ -298,3 +298,27 @@ code/default activation, payload backend, new collection/retention, security/Aut
 strategy/provider change or receipt release/replay authority introduced. Reviewed
 atomic backend/writer/key/ACL/integrity/logout/retention remain next; all14 hosted
 gates stay pending and the draft stays open.
+
+
+## Native owned logout fence — 2026-10-27
+
+The mandatory receipt-owned-logout phase now captures the production typed lease,
+roundtrips a synthetic original through actual Windows DPAPI, checks unchanged
+rotated token/pending reference and zero mutation/receipt HTTP, then invokes the
+original account.signOut once. Its returned future is captured so immediate old
+lease revocation/null factory can be checked BEFORE awaiting completion. After
+await, both old protect and unprotect must fail unauthorized, all three HTTP counts
+stay zero and the unchanged original signedOut/token-null/receipt-null/logout-count
+assertions still execute. All other original fixture/cleanup lines are retained.
+The outer verifier emits the new logout marker only after the entire phase exits
+successfully. No native cancellation or held-native ordering proof is inferred;
+held-success/error quiescence still comes from the separately executed SDK tests.
+
+Parent3ba1734 CI40465655338/latestattempt1 all5/EVERYstep passed,1438Flutter/
+fiveChrome and actual OWNED SDK/profile all3/corrupt/foreign/stale-close marker
+observed. New logout assertions locally unrun; require new-head CI/actual marker.
+Proposed next atomic storage, legacy pending handling, OS ownership/crash tests,
+writer/rollback limitations and activation gates are specified in
+[PENDING_COMMAND_ATOMIC_STORAGE.md](PENDING_COMMAND_ATOMIC_STORAGE.md).
+That document is a design handoff, not an implemented backend, retained learner
+payload or permission to broaden collection. Default/memory recovery unchanged.

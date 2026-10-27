@@ -128,6 +128,7 @@ try {
     Write-Output 'Windows OWNED original receipt match/status/mismatch/legacy/stale/no-redispatch passed (TEST ONLY Auth/HTTP)'
     Write-Output 'Windows OWNED SDK/profile command protection all3/corrupt/foreign/stale-close/preserve/no-redispatch passed (TEST ONLY, no payload persistence)'
     Invoke-Bridge 'receipt-owned-logout'
+    Write-Output 'Windows OWNED SDK command logout immediate-revoke/stale-protect-unprotect/token-receipt-clear/no-redispatch passed (TEST ONLY, no payload persistence)'
     Invoke-Bridge 'receipt-owned-held-logout'
     Invoke-Bridge 'receipt-owned-absent'
     Write-Output 'Windows OWNED production runtime/vault/receipt restore/preserve/reopen/no-redispatch/held-logout passed (TEST ONLY Auth/HTTP)'

@@ -714,7 +714,46 @@ Future<void> verifyWindowsOwnedReceiptPhase(
       }
       _check(blocked && network.sends == 0);
       if (phase == 'receipt-owned-logout') {
-        await runtime.account.signOut();
+        final protector = runtime.createWindowsPendingCommandProtector()!;
+        final command = PendingConversationCommandEnvelope.fromStart(
+          projectUrl: origin,
+          ownerId: _user,
+          request: _request,
+        );
+        final encrypted = await protector.protect(command);
+        _check(
+          (await protector.unprotect(encrypted)).encode() == command.encode(),
+        );
+        _check(
+          protector.isCurrent &&
+              await vault.readRefreshToken() == rotated &&
+              await _read(scope) == _expected(scope) &&
+              network.sends == 0 &&
+              network.receiptReads == 0 &&
+              network.originalReceiptReads == 0,
+        );
+        // Account sign-out must synchronously retire this exact cached lease.
+        final signingOut = runtime.account.signOut();
+        _check(!protector.isCurrent);
+        _check(runtime.createWindowsPendingCommandProtector() == null);
+        await signingOut;
+        for (final operation in [
+          () => protector.protect(command),
+          () => protector.unprotect(encrypted),
+        ]) {
+          var denied = false;
+          try {
+            await operation();
+          } on CommandProtectionFailure catch (error) {
+            denied = error.code == CommandProtectionError.unauthorized;
+          }
+          _check(denied);
+        }
+        _check(
+          network.sends == 0 &&
+              network.receiptReads == 0 &&
+              network.originalReceiptReads == 0,
+        );
         _check(
           runtime.account.state.phase == AccountPhase.signedOut &&
               await vault.readRefreshToken() == null &&
