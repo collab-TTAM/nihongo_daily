@@ -8,6 +8,7 @@ add_executable(session_vault_probe
   "receipt_vault_probe.cpp"
   "command_protection_probe.cpp"
   "command_file_lease_probe.cpp"
+  "command_stage_fault_probe.cpp"
   "../../windows/runner/pending_command_file_lease.cpp"
   "../../windows/runner/pending_command_protection.cpp"
   "../../windows/runner/receipt_credential_vault.cpp"

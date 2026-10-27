@@ -9,6 +9,7 @@
 #include <sddl.h>
 #include <aclapi.h>
 #include <iostream>
+bool ProbeCommandStageFault(const std::wstring& directory, int mode);
 namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command lease probe failed");
@@ -570,7 +571,9 @@ void CandidateReadMatrix(const std::wstring& root) {
       Check(file.value != INVALID_HANDLE_VALUE);
       std::vector<unsigned char> actual(expected.size());
       DWORD read = 0;
-      Check(ReadFile(file.value, actual.data(), static_cast<DWORD>(actual.size()), &read, nullptr) != FALSE);
+      unsigned char emptyBuffer = 0;
+      Check(ReadFile(file.value, expected.empty() ? &emptyBuffer : actual.data(),
+          static_cast<DWORD>(actual.size()), &read, nullptr) != FALSE);
       Check(read == expected.size() && actual == expected);
       unsigned char extra = 0;
       Check(ReadFile(file.value, &extra, 1, &read, nullptr) != FALSE && read == 0);
@@ -729,6 +732,23 @@ void CandidateReadMatrix(const std::wstring& root) {
       }
     }
     std::cout << "PASS: Windows ciphertext stage directory/junction collision preserve/sticky rejection (TEST ONLY)" << std::endl;
+    for (int mode = 1; mode <= 4; ++mode) {
+      std::cout << "CHECK: ciphertext stage injected fault " << mode << std::endl;
+      Check(ProbeCommandStageFault(directory, mode));
+      const size_t size = mode == 1 ? 32u : (mode == 2 ? 0u : 64u);
+      readStage(std::vector<unsigned char>(size, 0xa5));
+      Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+      // A fresh normal (non-injected) lease still refuses the uncertain stage.
+      auto control = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(control != nullptr && control->CheckPrivateAccessPolicy());
+      Check(!control->StageCiphertextCandidate(std::vector<unsigned char>(64, 0x5a)));
+      Check(!control->CheckPrivateAccessPolicy());
+      readStage(std::vector<unsigned char>(size, 0xa5));
+      Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+      control.reset();
+      Check(DeleteFileW(stage.c_str()) != FALSE); // Unique TEST ONLY fixture cleanup.
+    }
+    std::cout << "PASS: Windows ciphertext stage write/short-write/flush/close faults preserve/fence/no-publish (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());

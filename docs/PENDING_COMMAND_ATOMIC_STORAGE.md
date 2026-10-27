@@ -425,3 +425,36 @@ need separate implementation/tests before learner retention approval. References
 checked 2026-10-28:
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
+
+## TEST ONLY staging syscall faults — 2026-10-28
+
+The native probe now compiles the unchanged pending_command_file_lease.cpp a
+second time under a distinct test class name. Only that translation unit maps
+WriteFile/FlushFileBuffers/CloseHandle to serialized fixture wrappers; the normal
+probe and app runner keep the actual class and APIs. No production seam, runtime
+flag, caller activation, retention permission or dependency is introduced.
+
+Four required cases use the existing private directory/sentinel fixture and64
+synthetic0xa5 bytes: actual half WriteFile with successful short count; injected
+WriteFile failure before any write; injected flush failure after real full write;
+injected first stage close failure leaving the real handle open for RAII's real
+second close. Other operations delegate to actual Win32; counters require exactly
+one intended fault/one write, correct flush count and one close (two for close
+failure). The same compiled staging method must return false and latch, exposing
+no candidate bytes and refusing another attempt without another syscall write.
+
+After all real handles close, the independent normal probe reads exactly32/0/64/
+64 bytes plus EOF and the existing exact owner/protected ACL/size/link checks.
+A fresh non-injected lease also rejects that uncertain stage and leaves bytes
+unchanged. No .bin may appear. Mandatory deletion is limited to the unique
+synthetic stage after inspection; no cleanup/retry/reconciliation API is added.
+The original read assertion now passes a valid dummy buffer for a zero-byte read;
+all original comparisons and other native cases remain. Required fixed marker:
+`PASS: Windows ciphertext stage write/short-write/flush/close faults preserve/fence/no-publish (TEST ONLY)`.
+
+These are injected API outcomes around actual OS files and unchanged source, not
+observed physical disk failure, hostile races, process crash during flush or
+power-loss proof. Flush/close faults cannot establish durable success. Atomic
+publication, trusted partition namespace, durable uncertainty/reconciliation and
+learner retention approval remain missing. New MSVC/Win32 execution needs exact-
+head Actions; Linux only verifies the unsupported-OS branch.

@@ -12,6 +12,37 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — staging syscall failure matrix, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  103c77e82a1e21d5668134461ce863fcd991ba0c. Commit/tree/CI/released marker in41.
+  main/source37/Pro38 unchanged; N4 reserved.
+- CI40593119689 exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  DB122502140279 actual boolean diagnostic +TLS refusal pass on Node/Deno;
+  Windows122502242754 retained collision/subprocess/staging/native markers pass.
+  Prior timeout cause unknown; passing source does not establish original cause.
+- Add required TEST ONLY second renamed compilation of unchanged lease source,
+  targeted write/short-write/flush/close failures on actual private synthetic
+  files. Exactlyone fault/one write/correctflush/real close counts; failed result/
+  sticky refusal/no read bytes; normal independent exact32/0/64/64byte/EOF/ACL/
+  owner/link check; fresh unmodified lease refuses uncertain stage unchanged, no
+  .bin. Unique test cleanup required. No production runtime flag/seam/caller.
+- Paths: tool/windows_session_vault CMakeLists.txt, command_file_lease_probe.cpp,
+  new command_stage_fault_probe.cpp; docs/PENDING_COMMAND_ATOMIC_STORAGE.md;
+  this status. Existing stage read passes dummy buffer on zero-byte read; all
+  original assertions retained. Production header/cpp/app entrypoint unchanged.
+- Local C++17 warnings-as-errors/nonWindows failclosed,46QA/inventory151 and
+  whitespace passed. Inventory is not151 executed tests; new Win32/MSVC/full
+  Flutter/analyzer/build locally UNRUN. Separate diff review: macro isolation,
+  target handle/counters/RAII, exact stage preservation/ACL/no publication, old
+  assertions and no app wiring. Actual Windows requires exact-head CI.
+- NEXT all5/EVERYstep/newfault+retained markers; fix actual failures, pending-only
+  handoff/no duplicatecode. Then atomic publication/trustednamespace/durable
+  uncertainty/crash/reconciliation. API fault injection is not physical disk or
+  powerloss proof.41draft/17open/AIoff/memory-only/all14hostedpending, retention
+  approval required before learner activation. No merge/closure/Pro/Authstrategy/
+  provider/deploy/release/collection/security/spend/Alpha action.
+
 ## Core checkpoint — native quota failure diagnosis, 2026-10-28
 
 - PR41/issue17, automation/issue-11-plan-sdk-integration; exact parent
