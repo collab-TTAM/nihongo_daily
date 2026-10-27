@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +41,7 @@ final class WindowsPendingCommandProtector {
   bool _revoked = false;
   bool _busy = false;
   bool _checking = false;
+  Completer<void>? _drain;
   static const _channel = MethodChannel(
     'nihongo_daily/conversation_receipts_v1',
   );
@@ -67,6 +69,15 @@ final class WindowsPendingCommandProtector {
   }
 
   void revoke() => _revoked = true;
+
+  /// Revoke synchronously and wait for accepted native work to actually settle.
+  /// This does not cancel OS work, clear storage or swallow the operation's
+  /// result/error; its original caller must still observe that future.
+  Future<void> revokeAndDrain() {
+    revoke();
+    return _drain?.future ?? Future<void>.value();
+  }
+
   void _check() {
     if (!isCurrent) {
       throw const CommandProtectionFailure(CommandProtectionError.unauthorized);
@@ -79,6 +90,8 @@ final class WindowsPendingCommandProtector {
     }
     _busy =
         true; // Before callbacks/encoding/dispatch; release only on actual drain.
+    final drain = Completer<void>();
+    _drain = drain; // Publish before supplied readiness/Auth callbacks run.
     try {
       _check();
       if (kIsWeb || defaultTargetPlatform != TargetPlatform.windows) {
@@ -97,6 +110,8 @@ final class WindowsPendingCommandProtector {
       throw const CommandProtectionFailure(CommandProtectionError.unavailable);
     } finally {
       _busy = false;
+      _drain = null;
+      drain.complete();
     }
   }
 

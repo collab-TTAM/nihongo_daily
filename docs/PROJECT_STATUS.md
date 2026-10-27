@@ -5,37 +5,39 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — readiness reentry test analyzer fix, 2026-10-27
+## Core checkpoint — explicit native protector drain, 2026-10-27
 
-- Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
-  ddf49926c01e025c79737b4a69d61d6d143d6136/tree845bd855954deb27eb02fb218456c1cfd95cabf4.
-  Published new commit/CI and release in first PR41 checkpoint. Main78a44fa,
-  source37afa572a and Pro38at28c20cb unchanged/protected content untouched.
-- Observed CI40440684744 raw exact source/latestattempt1 completed FAILURE:
-  complete5 jobs, Flutter format success; analyzer exactly1 warning
-  unnecessary_non_null_assertion at windows_pending_command_protector_test.dart
-  :354:36. p is already promoted by p!=null. All15 current facade tests/full suite
-  and later Flutter/Chrome/Web checks SKIPPED, not passed. Other4 jobs and EVERY
-  step success. Windows121980125888 actual bridge/protection/malformed/control/
-  all3OWNED markers observed, not execution proof for new mock regressions.
-- Removed only that redundant ! in nested availability test. Exact original-byte
-  comparison proves every other test byte unchanged. Production _checking/busy/
-  captured readiness/identity/revoke/actual-drain guards entirely unchanged.
-  Existing15 cases/assertions remain, no new mirrored test for one-character lint.
-- Local source/diff/whitespace/inventory150/46QA review recorded in PR. QA matrix,
-  lints, dependencies, CI and contracts untouched. Formatter/Flutter analyzer/
-  tests/builds locally UNRUN; appropriate pinned format/analyzer/full15 regressions
-  delegated to new exact-head/latestattempt CI. No stubs/bootstrap retry/bypass.
-- Only2 paths: test/features/ai/windows_pending_command_protector_test.dart under
-  Flutter app, and this status. No native/Auth/RLS/runtime/default/storage/
-  retention/collection/content/Pro behavior change, no secret or strategy change.
-- NEXT all5 exact-head/latestattempt jobs/EVERY required step/actual15 facade
-  cases +retained native bridge/protection/malformed/all3OWNED markers. Fix real
-  diagnostics without weakening assertions. Pending-only handoff/no duplicate
-  implementation/long polling. After green: same-owned SDK/profile assembly and
-  lifecycle proof; reviewed atomic bounded backend/key/ACL/integrity/logout/
-  retention before activation.41draft/17open/AIoff/learner memory-only/one pending/
-  all14hosted pending/no merge/closure/deploy/release/schedule/Alpha claim.
+- Draft41/issue17, branch automation/issue-11-plan-sdk-integration; parent
+  df41515db46b97c99e5574e4039e06b3f46d0c29. Published commit/CI in PR41 checkpoint.
+  Fresh main78a44fa/source37afa572a/Pro38at28c20cb unchanged; N4 untouched.
+- Parent CI40443265071 exact source/latestattempt1 SUCCESS: all5/EVERY step,
+  no skips. Flutter121988867181 explicitly all15 facade cases, including all3
+  availability reentry regressions. Windows121988422995 persistent rotation/
+  receipt marker, all3 OWNED and command bridge/protection markers observed.
+  TEST ONLY native/Auth/HTTP evidence is not hosted learner/RLS/recovery proof.
+- Added WindowsPendingCommandProtector.revokeAndDrain: revoke immediately and
+  await actual accepted work completion. Per-operation completion is reserved
+  before supplied callbacks and completed in finally on every success/error path.
+  Concurrent drain calls share the outstanding future; external timeout does not
+  cancel or release it. Idle drain performs no callbacks/native I/O. No OS cancel,
+  receipt clear, storage deletion, plaintext publication or operation-error swallow.
+- Six new mock-channel regression cases cover protect/unprotect with held late
+  success/error, repeated drain, immediate revoke, timeout/continued busy, no
+  reactivation or extra native calls, idle drain and synchronous readiness drain.
+  Existing15 tests/assertions/deadlines retained exactly. New21/full Flutter tests,
+  analyzer and Windows/build locally UNRUN; exact new-head CI required.
+- Four paths: AI data/windows_pending_command_protector.dart and its test;
+  docs/WINDOWS_PENDING_COMMAND_PROTECTION.md and this status. Source/format/QA/
+  separate review PASS: fresh official Dart3.9.2 SHA256 verified, format2 unchanged,
+  QA46/46 PASS/inventory150 valid, whitespace clean, all15 old tests byte-identical.
+  No Flutter stubs or bootstrap. Full new21 tests/analyzer/builds locally UNRUN.
+- This is an optional lifecycle prerequisite, NOT runtime factory integration or
+  durable storage. Next exact-head/latestattempt all5/EVERY step/new21+native
+  markers; then wire same-owned SDK/profile factory to immediate revoke/actual
+  drain on refresh/logout/close/account change. Atomic bounded command/reference
+  storage/key/ACL/integrity/retention and hosted verified conditional release remain.
+  Keep41draft/17open/AIoff/learner memory-only/one pending/all14hosted pending;
+  no default/Pro/Auth/provider/security/CI/retention/collection/schedule changes.
 
 
 ## Core checkpoint — command protection availability reentry, 2026-10-27

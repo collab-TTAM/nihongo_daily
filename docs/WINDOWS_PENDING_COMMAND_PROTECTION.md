@@ -197,3 +197,26 @@ unchanged. Parent08b2a2b CI40437029165/latestattempt1 passed all5/EVERY step, al
 facade tests and retained native markers. New15/full Flutter/native checks need
 new-head CI; local formatting/QA are not execution evidence for these cases.
 No factory, disk storage, retention, default activation or release authority added.
+
+
+## Explicit revoke and actual-operation drain — 2026-10-27
+
+The optional facade now provides revokeAndDrain for a future caller-owned host.
+It revokes synchronously and returns completion only after accepted native work
+actually settles, including error paths. Repeated calls during the same operation
+share its drain future. A caller timeout does not cancel OS work or release the
+busy reservation; a late payload is still rejected by captured lifecycle checks.
+The completion slot is installed before readiness/Auth callbacks, so synchronous
+callback revocation cannot miss accepted work. Idle calls do not invoke readiness
+or the channel. Ordinary revoke stays synchronous and non-waiting.
+
+Drain reports quiescence only, not protection success. The original operation's
+caller must still observe its result/error; drain neither swallows it nor clears
+receipt metadata or erases caller-owned bytes. No runtime factory wiring, native
+cancellation, backend persistence, retention or default behavior is added here.
+Six new mock-channel cases exercise both methods with held late success/error,
+repeated drains, external timeout/actual busy, idle and readiness-callback drain.
+All15 prior tests remain unchanged. New21 tests/full native/build require new-head
+CI; parentdf41515 CI40443265071/latestattempt1 all5/EVERY step passed. Hosted
+Auth/RLS and learner restore proof remain outstanding. Next integrate this barrier
+with the same owned SDK/profile generation before any persistence activation.

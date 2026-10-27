@@ -395,4 +395,108 @@ void main() {
       },
     );
   }
+  for (final decrypt in [false, true]) {
+    for (final lateError in [false, true]) {
+      test(
+        'drain waits for native work decrypt=$decrypt error=$lateError',
+        () async {
+          final entered = Completer<void>();
+          final held = Completer<Object?>();
+          mock((_) {
+            entered.complete();
+            return held.future;
+          });
+          final p = open();
+          final work = decrypt
+              ? p.unprotect(Uint8List(1))
+              : p.protect(command());
+          final rejected = expectLater(
+            work,
+            throwsA(failure(CommandProtectionError.unauthorized)),
+          );
+          await entered.future;
+          final drain = p.revokeAndDrain();
+          expect(identical(drain, p.revokeAndDrain()), true);
+          expect(p.isCurrent, false);
+          var settled = false;
+          unawaited(
+            drain.then((_) {
+              settled = true;
+            }),
+          );
+          await expectLater(
+            drain.timeout(Duration.zero),
+            throwsA(isA<TimeoutException>()),
+          );
+          expect(settled, false);
+          await expectLater(
+            p.protect(command()),
+            throwsA(failure(CommandProtectionError.busy)),
+          );
+          expect(calls.length, 1);
+          if (lateError) {
+            held.completeError(StateError('PRIVATE_NATIVE_LATE'));
+          } else {
+            held.complete(
+              decrypt
+                  ? Uint8List.fromList(utf8.encode(command().encode()))
+                  : Uint8List(1),
+            );
+          }
+          await rejected;
+          await drain;
+          expect(settled, true);
+          await p.revokeAndDrain();
+          await expectLater(
+            p.unprotect(Uint8List(1)),
+            throwsA(failure(CommandProtectionError.unauthorized)),
+          );
+          expect(calls.length, 1);
+        },
+      );
+    }
+  }
+  test('idle drain revokes without callbacks or native work', () async {
+    var checks = 0;
+    final p = open(
+      check: () {
+        checks++;
+        return true;
+      },
+    );
+    final before = checks;
+    final drain = p.revokeAndDrain();
+    expect(p.isCurrent, false);
+    await drain;
+    await p.revokeAndDrain();
+    expect(checks, before);
+    expect(calls, isEmpty);
+    await expectLater(
+      p.protect(command()),
+      throwsA(failure(CommandProtectionError.unauthorized)),
+    );
+    expect(calls, isEmpty);
+  });
+  test(
+    'readiness drain observes reserved work before any native dispatch',
+    () async {
+      WindowsPendingCommandProtector? p;
+      Future<void>? drain;
+      final result = open(
+        check: () {
+          drain = p?.revokeAndDrain();
+          return true;
+        },
+      );
+      p = result;
+      await expectLater(
+        result.protect(command()),
+        throwsA(failure(CommandProtectionError.unauthorized)),
+      );
+      expect(drain, isNotNull);
+      await drain;
+      expect(result.isCurrent, false);
+      expect(calls, isEmpty);
+    },
+  );
 }
