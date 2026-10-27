@@ -165,6 +165,81 @@ PendingCommandCandidate PendingCommandFileLease::ReadCiphertextCandidate() noexc
 #endif
   } catch (...) { return fail(); } // Never publish partial bytes or raw OS errors.
 }
+bool PendingCommandFileLease::StageCiphertextCandidate(
+    const std::vector<unsigned char>& bytes) noexcept {
+  const auto fail = [&]() { policy_failed_ = true; return false; };
+  try {
+    if (bytes.empty() || bytes.size() > 65536 || !CheckPrivateAccessPolicy()) return fail();
+    if (ReadCiphertextCandidate().state != PendingCommandCandidateState::absent) return fail();
+#ifdef _WIN32
+    const auto captured = bytes; // Bounded copy before creating any stage file.
+    struct Token {
+      HANDLE value = nullptr;
+      ~Token() { if (value) CloseHandle(value); }
+    } token;
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token.value)) return fail();
+    DWORD length = 0;
+    GetTokenInformation(token.value, TokenUser, nullptr, 0, &length);
+    if (length == 0 || length > 65536) return fail();
+    std::vector<unsigned char> data(length);
+    if (!GetTokenInformation(token.value, TokenUser, data.data(), length, &length)) return fail();
+    const auto user = reinterpret_cast<TOKEN_USER*>(data.data())->User.Sid;
+    if (!IsValidSid(user)) return fail();
+    BYTE system[SECURITY_MAX_SID_SIZE]{};
+    DWORD systemSize = sizeof(system);
+    if (!CreateWellKnownSid(WinLocalSystemSid, nullptr, system, &systemSize)) return fail();
+    EXPLICIT_ACCESSW entries[2]{};
+    const ULONG count = EqualSid(user, system) ? 1UL : 2UL;
+    for (ULONG i = 0; i < count; ++i) {
+      entries[i].grfAccessPermissions = FILE_ALL_ACCESS;
+      entries[i].grfAccessMode = SET_ACCESS;
+      entries[i].grfInheritance = NO_INHERITANCE;
+      BuildTrusteeWithSidW(&entries[i].Trustee, i == 0 ? user : system);
+    }
+    struct Acl {
+      PACL value = nullptr;
+      ~Acl() { if (value) LocalFree(value); }
+    } acl;
+    if (SetEntriesInAclW(count, entries, nullptr, &acl.value) != ERROR_SUCCESS ||
+        !acl.value || !IsValidAcl(acl.value)) return fail();
+    SECURITY_DESCRIPTOR descriptor{};
+    if (!InitializeSecurityDescriptor(&descriptor, SECURITY_DESCRIPTOR_REVISION) ||
+        !SetSecurityDescriptorOwner(&descriptor, user, FALSE) ||
+        !SetSecurityDescriptorDacl(&descriptor, TRUE, acl.value, FALSE) ||
+        !SetSecurityDescriptorControl(&descriptor, SE_DACL_PROTECTED, SE_DACL_PROTECTED)) return fail();
+    SECURITY_ATTRIBUTES attributes{};
+    attributes.nLength = sizeof(attributes);
+    attributes.lpSecurityDescriptor = &descriptor;
+    if (!CheckPrivateAccessPolicy()) return fail();
+    struct File {
+      HANDLE value = INVALID_HANDLE_VALUE;
+      ~File() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+    } file;
+    const auto path = directory_ + L"\\pending-command.stage";
+    file.value = CreateFileW(path.c_str(), GENERIC_READ | GENERIC_WRITE | READ_CONTROL,
+        0, &attributes, CREATE_NEW, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    if (file.value == INVALID_HANDLE_VALUE) return fail(); // Preserve any existing stage.
+    if (!Ordinary(file.value, false) || !PrivatePolicy(file.value, 0) ||
+        !CheckPrivateAccessPolicy()) return fail(); // Leave uncertain stage, never delete.
+    DWORD written = 0;
+    const auto size = static_cast<DWORD>(captured.size());
+    if (!WriteFile(file.value, captured.data(), size, &written, nullptr) ||
+        written != size || !FlushFileBuffers(file.value)) return fail();
+    BY_HANDLE_FILE_INFORMATION info{};
+    if (GetFileType(file.value) != FILE_TYPE_DISK ||
+        !GetFileInformationByHandle(file.value, &info) ||
+        (info.dwFileAttributes & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT)) != 0 ||
+        info.nNumberOfLinks != 1 || info.nFileSizeHigh != 0 || info.nFileSizeLow != size ||
+        !PrivatePolicy(file.value, 0) || !CheckPrivateAccessPolicy()) return fail();
+    const bool closed = CloseHandle(file.value) != FALSE;
+    if (closed) file.value = INVALID_HANDLE_VALUE;
+    if (!closed || !CheckPrivateAccessPolicy()) return fail();
+    return true; // Flushed STAGING ONLY. No rename, publish, commit or dispatch.
+#else
+    return fail();
+#endif
+  } catch (...) { return fail(); }
+}
 std::unique_ptr<PendingCommandFileLease> PendingCommandFileLease::Acquire(
     const std::wstring& trusted_directory) noexcept {
   try {

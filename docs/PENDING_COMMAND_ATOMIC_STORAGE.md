@@ -336,3 +336,44 @@ cases and all production methods remain unchanged. New marker is required in
 exact-head Windows CI; local Linux compilation does not execute Win32 branches.
 No learner/default/backend activation or retention approval. Reference checked
 2026-10-27: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+
+## Create-new private staging prerequisite — 2026-10-28
+
+StageCiphertextCandidate is an isolated synthetic-only component, compiled into
+the mandatory native probe only; no app/channel/default calls it. It accepts
+1..65536 opaque ciphertext bytes (caller must supply actual protector output),
+requires the combined sticky policy and prior absence of pending-command.bin,
+and takes a bounded copy before creating a file. It creates only the fixed
+pending-command.stage with CREATE_NEW, share zero, non-inheritable handle and an
+explicit process-user owner/protected DACL. Exactly user/LocalSystem fullcontrol
+allow ACEs with zero inheritance flags are built from SIDs; duplicate SYSTEM
+entry is omitted when identical. No privilege adjustment or inherited fallback.
+
+Before data I/O, the held empty stage must pass ordinary-file/single-link and
+strict private policy. Exact WriteFile count, successful FlushFileBuffers, final
+ordinary/single-link/exact size/private ACL and combined checks plus successful
+close are required for true. Any failure (including input, existing candidate or
+existing stage) latches failure. Never truncate, overwrite, delete, rename, repair
+or auto retry. A possibly partial stage stays as uncertainty and blocks future
+CREATE_NEW attempts even on another lease. Explicit retention reconciliation is
+not implemented. Existing original candidate/receipt/refresh slots are untouched.
+
+True means flushed STAGING ONLY: not atomic publication, durable reservation,
+dispatch/replay permission or hardware-power-loss proof. Reader still reads only
+.bin, so absent can coexist with a .stage and remains NO mutation authority. No
+automatic stage adoption or cleanup; future reviewed owner must inspect both
+slots, retain persistent uncertainty, validate DPAPI/envelope/scope/receipts, and
+prove atomic publication/flush/crash behavior. Same-user/namespace/ACL-race/writer/
+rollback limits remain. Actual learner retention still needs human approval.
+
+Native synthetic tests require zero/oversize rejection before file creation,
+minimum/maximum exact bytes and independently queried owner/protected/exact ACL
+ACE contents, no .bin publication, duplicate-stage failure/preservation, stage
+preservation across release/reacquisition, and existing-candidate rejection.
+All original reader/probe assertions remain; test-only cleanup removes stages.
+New Windows execution requires exact-head CI; short-write/flush/close failure
+injection/process crashes/power loss are not yet demonstrated. Primary APIs
+reviewed 2026-10-28:
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers
+- https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-setentriesinaclw
+- https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-setsecuritydescriptorcontrol

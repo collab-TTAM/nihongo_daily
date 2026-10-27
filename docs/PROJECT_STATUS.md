@@ -12,6 +12,42 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — private create-new ciphertext staging, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  3276248aba61a188223f70897f524805633e60b6. Commit/tree/newCI/released marker in PR41.
+  main/source37/Pro38 unchanged; N4 reserved.
+- CI40539582869 raw exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122314116178 actual sharing/candidate/sticky/held ACL/process/junction
+  markers observed. TEST ONLY component proof, not hosted learner acceptance.
+- Add isolated StageCiphertextCandidate: 1..65536 opaque ciphertext, bounded copy,
+  same private lease + prior .bin absence, fixed .stage CREATE_NEW/sharezero,
+  explicit process-user owner/protected exact userSYSTEM/noninheritable ACL,
+  ordinary empty stage/private policy before write. Exact count+FlushFileBuffers+
+  final metadata/ACL/policy+close success required. Failure latches, stage remains
+  untouched/uncertain, never overwrite/delete/rename/auto retry. No plaintext
+  fallback or app/default/channel invocation. True is STAGED ONLY, never atomic
+  commit/durable reservation/dispatch/power-loss authority. Read .bin absent can
+  coexist with .stage; future owner must reconcile both, never infer new-mutation.
+- Native synthetic tests: zero/oversize/min/max, independently read exact bytes/
+  owner/protected ACL/exact unordered ACEs, no publication, duplicate and
+  release/reacquire stage preservation, existing candidate rejection. All old
+  probe lines/assertions retained. No injected shortwrite/flush/close/crash proof
+  claimed. Local checks/review and actual newCI in PR41; Windows/MSVC/fullFlutter/
+  analyzer/build locally UNRUN. C++17 warnings-as-errors/nonWindows failclosed,
+  46QA/inventory151/whitespace/original-probe-line preservation PASS; separate
+  diff review covered bounds/descriptor/SID/ACL/handle ownership, no-overwrite,
+  close-failure RAII, untouched original candidate, stage-vs-commit semantics.
+- Five paths: pending_command_file_lease.cpp/.h and native command_file_lease_probe.cpp
+  under apps/flutter_app; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status.
+  No CI/QA/schema/frozenAPI/RLS/Authstrategy/Pro/default/retention activation.
+- NEXT exacthead/latestattempt all5/EVERYstep/newstage+retainednative markers; fix
+  actual diagnostics preserving assertions/security, pending-only handoff/no
+  duplicate code/longpoll. Then write/flush/close faults and process crashes,
+  namespace/durable uncertainty/reconciliation/atomic publication before retention
+  approval.41draft/17open/AIoff/memory-only/all14hostedpending/no merge/closure/
+  deploy/release/provider/collection/security/spend/schedule/Alpha acceptance.
+
 ## Core checkpoint — real candidate sharing failure, 2026-10-27
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

@@ -9,7 +9,7 @@ struct PendingCommandCandidate {
   PendingCommandCandidateState state = PendingCommandCandidateState::unavailable;
   std::vector<unsigned char> bytes;
 };
-// Exclusive sentinel/read-only opaque candidate. NOT a payload backend or writer identity
+// Exclusive sentinel + opaque candidate staging. NOT an atomic backend or writer identity
 // proof. Host must establish trusted local directory ownership/ACL first.
 class PendingCommandFileLease final {
  public:
@@ -26,6 +26,10 @@ class PendingCommandFileLease final {
   // Opaque candidate only, never authenticated/decrypted/committed authority.
   // Fixed basename, 1..65536 bytes; any read uncertainty fences this lease.
   PendingCommandCandidate ReadCiphertextCandidate() noexcept;
+  // Synthetic-only prerequisite: create+flush fixed .stage, never publish/commit.
+  // Caller supplies opaque ciphertext; true is NOT dispatch/durability authority.
+  // Existing/uncertain stage is preserved; any failure fences this lease.
+  bool StageCiphertextCandidate(const std::vector<unsigned char>& bytes) noexcept;
   ~PendingCommandFileLease();
   PendingCommandFileLease(const PendingCommandFileLease&) = delete;
   PendingCommandFileLease& operator=(const PendingCommandFileLease&) = delete;

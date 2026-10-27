@@ -409,6 +409,7 @@ void CandidateReadMatrix(const std::wstring& root) {
   const auto directory = root + L"\\candidate-read";
   const auto sentinel = directory + L"\\pending-command.lock";
   const auto candidate = directory + L"\\pending-command.bin";
+  const auto stage = directory + L"\\pending-command.stage";
   const auto alias = directory + L"\\candidate-alias";
   const auto target = directory + L"\\target";
   const auto user = FixtureUserSid();
@@ -535,9 +536,110 @@ void CandidateReadMatrix(const std::wstring& root) {
       Check(DeleteFileW(candidate.c_str()) != FALSE);
       std::cout << "PASS: Windows ciphertext candidate sharing failure/sticky release/control (TEST ONLY)" << std::endl;
     }
+    const auto readStage = [&](const std::vector<unsigned char>& expected) {
+      struct Handle {
+        HANDLE value = INVALID_HANDLE_VALUE;
+        ~Handle() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+      } file;
+      file.value = CreateFileW(stage.c_str(), GENERIC_READ | READ_CONTROL, 0, nullptr,
+          OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      Check(file.value != INVALID_HANDLE_VALUE);
+      std::vector<unsigned char> actual(expected.size());
+      DWORD read = 0;
+      Check(ReadFile(file.value, actual.data(), static_cast<DWORD>(actual.size()), &read, nullptr) != FALSE);
+      Check(read == expected.size() && actual == expected);
+      unsigned char extra = 0;
+      Check(ReadFile(file.value, &extra, 1, &read, nullptr) != FALSE && read == 0);
+      BY_HANDLE_FILE_INFORMATION info{};
+      Check(GetFileInformationByHandle(file.value, &info) != FALSE);
+      Check(info.nNumberOfLinks == 1 && info.nFileSizeHigh == 0 && info.nFileSizeLow == expected.size());
+      struct SecuritySnapshot {
+        PSECURITY_DESCRIPTOR value = nullptr;
+        ~SecuritySnapshot() { if (value) LocalFree(value); }
+      } snapshot;
+      PSID owner = nullptr;
+      PACL dacl = nullptr;
+      Check(GetSecurityInfo(file.value, SE_FILE_OBJECT, OWNER_SECURITY_INFORMATION |
+          DACL_SECURITY_INFORMATION, &owner, nullptr, &dacl, nullptr, &snapshot.value) == ERROR_SUCCESS);
+      SECURITY_DESCRIPTOR_CONTROL control = 0;
+      DWORD revision = 0;
+      Check(GetSecurityDescriptorControl(snapshot.value, &control, &revision) != FALSE);
+      Check((control & SE_DACL_PRESENT) != 0 && (control & SE_DACL_PROTECTED) != 0);
+      PSID expectedOwner = nullptr;
+      BOOL defaulted = FALSE;
+      Check(GetSecurityDescriptorOwner(fileSecurity.value, &expectedOwner, &defaulted) != FALSE);
+      Check(owner && IsValidSid(owner) && EqualSid(owner, expectedOwner));
+      PACL expectedDacl = nullptr;
+      BOOL present = FALSE;
+      Check(GetSecurityDescriptorDacl(fileSecurity.value, &present, &expectedDacl, &defaulted) != FALSE);
+      Check(present && expectedDacl && dacl && IsValidAcl(dacl) && dacl->AceCount == expectedDacl->AceCount);
+      for (DWORD i = 0; i < expectedDacl->AceCount; ++i) {
+        void* want = nullptr;
+        Check(GetAce(expectedDacl, i, &want) != FALSE);
+        const auto size = static_cast<ACE_HEADER*>(want)->AceSize;
+        bool found = false;
+        for (DWORD j = 0; j < dacl->AceCount; ++j) {
+          void* got = nullptr;
+          Check(GetAce(dacl, j, &got) != FALSE);
+          found = found || (static_cast<ACE_HEADER*>(got)->AceSize == size &&
+              std::memcmp(want, got, size) == 0);
+        }
+        Check(found); // Exact explicit ACEs, order independent of SetEntriesInAcl.
+      }
+    };
+    for (const size_t size : {size_t{0}, size_t{65537}, size_t{1}, size_t{65536}}) {
+      std::cout << "CHECK: ciphertext stage bound " << size << std::endl;
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      const std::vector<unsigned char> bytes(size, 0xa5);
+      const bool staged = lease->StageCiphertextCandidate(bytes);
+      Check(staged == (size > 0 && size <= 65536));
+      Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES); // Not published.
+      if (!staged) {
+        Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+        Check(!lease->CheckPrivateAccessPolicy());
+        Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+      } else {
+        readStage(bytes); // Independently read exact bytes and owner/DACL.
+        Check(lease->CheckPrivateAccessPolicy());
+        Check(lease->ReadCiphertextCandidate().state == State::absent); // No commit authority.
+        Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+        Check(!lease->CheckPrivateAccessPolicy());
+        readStage(bytes); // Duplicate attempt never overwrites the first stage.
+        lease.reset();
+        lease = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(lease != nullptr);
+        Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+        Check(!lease->CheckPrivateAccessPolicy());
+        readStage(bytes); // Abandoned stage remains a conflict across objects.
+        Check(DeleteFileW(stage.c_str()) != FALSE); // Synthetic cleanup only.
+      }
+    }
+    {
+      create(candidate, 1, false);
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+      Check(!lease->CheckPrivateAccessPolicy());
+      Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      WIN32_FILE_ATTRIBUTE_DATA info{};
+      Check(GetFileAttributesExW(candidate.c_str(), GetFileExInfoStandard, &info) != FALSE);
+      Check(info.nFileSizeHigh == 0 && info.nFileSizeLow == 1);
+      const auto original = CreateFileW(candidate.c_str(), GENERIC_READ, 0, nullptr,
+          OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      Check(original != INVALID_HANDLE_VALUE);
+      unsigned char byte = 0;
+      DWORD read = 0;
+      const bool unchanged = ReadFile(original, &byte, 1, &read, nullptr) != FALSE;
+      const bool closed = CloseHandle(original) != FALSE;
+      Check(unchanged && read == 1 && byte == 0xa5 && closed);
+      Check(DeleteFileW(candidate.c_str()) != FALSE);
+    }
+    std::cout << "PASS: Windows ciphertext create-new private stage/flush/bounds/no-overwrite/no-publish (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());
+  DeleteFileW(stage.c_str());
   DeleteFileW(candidate.c_str());
   RemoveDirectoryW(candidate.c_str());
   RemoveDirectoryW(target.c_str());
