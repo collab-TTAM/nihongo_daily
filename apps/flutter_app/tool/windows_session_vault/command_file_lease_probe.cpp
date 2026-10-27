@@ -677,10 +677,69 @@ void CandidateReadMatrix(const std::wstring& root) {
       Check(DeleteFileW(stage.c_str()) != FALSE); // Unique synthetic cleanup ONLY.
     }
     std::cout << "PASS: Windows ciphertext stage subprocess abrupt-exit/preserve/no-publish (TEST ONLY)" << std::endl;
+    const auto checkCollisionMarker = [&](const std::wstring& path) {
+      struct Handle {
+        HANDLE value = INVALID_HANDLE_VALUE;
+        ~Handle() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+      } file;
+      file.value = CreateFileW(path.c_str(), GENERIC_READ, 0, nullptr,
+          OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+      Check(file.value != INVALID_HANDLE_VALUE);
+      BY_HANDLE_FILE_INFORMATION info{};
+      Check(GetFileInformationByHandle(file.value, &info) != FALSE);
+      Check(info.nFileSizeHigh == 0 && info.nFileSizeLow == 1 && info.nNumberOfLinks == 1);
+      unsigned char byte = 0;
+      DWORD read = 0;
+      Check(ReadFile(file.value, &byte, 1, &read, nullptr) != FALSE);
+      Check(read == 1 && byte == 0xa5);
+    };
+    for (const bool reparse : {false, true}) {
+      std::cout << "CHECK: ciphertext stage collision " << (reparse ? "junction" : "directory") << std::endl;
+      const auto keep = (reparse ? target : stage) + L"\\collision-marker";
+      if (reparse) {
+        Check(CreateDirectoryW(target.c_str(), nullptr) != FALSE);
+        create(keep, 1, false);
+        Junction(stage, target);
+      } else {
+        Check(CreateDirectoryW(stage.c_str(), nullptr) != FALSE);
+        create(keep, 1, false);
+      }
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      Check(lease->CheckPrivateAccessPolicy());
+      Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+      Check(!lease->CheckPrivateAccessPolicy());
+      const auto attributes = GetFileAttributesW(stage.c_str());
+      Check(attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+      Check(((attributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0) == reparse);
+      checkCollisionMarker(keep); // Exact original bytes remain in the collision/target.
+      Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+      const auto collisionTarget = reparse ? target : stage;
+      Check(GetFileAttributesW((collisionTarget + L"\\pending-command.stage").c_str()) == INVALID_FILE_ATTRIBUTES);
+      Check(GetFileAttributesW((collisionTarget + L"\\pending-command.bin").c_str()) == INVALID_FILE_ATTRIBUTES);
+      if (!reparse) Check(DeleteFileW(keep.c_str()) != FALSE);
+      Check(RemoveDirectoryW(stage.c_str()) != FALSE); // Unlink junction itself, no traversal.
+      if (reparse) checkCollisionMarker(keep); // Target survives unlinking.
+      Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+      Check(!lease->CheckPrivateAccessPolicy());
+      Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      if (reparse) {
+        Check(DeleteFileW(keep.c_str()) != FALSE);
+        Check(RemoveDirectoryW(target.c_str()) != FALSE);
+      }
+    }
+    std::cout << "PASS: Windows ciphertext stage directory/junction collision preserve/sticky rejection (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());
+  const auto stageAttributes = GetFileAttributesW(stage.c_str());
+  if (stageAttributes != INVALID_FILE_ATTRIBUTES &&
+      (stageAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 &&
+      (stageAttributes & FILE_ATTRIBUTE_REPARSE_POINT) == 0)
+    DeleteFileW((stage + L"\\collision-marker").c_str());
   DeleteFileW(stage.c_str());
+  RemoveDirectoryW(stage.c_str());
+  DeleteFileW((target + L"\\collision-marker").c_str());
   DeleteFileW(candidate.c_str());
   RemoveDirectoryW(candidate.c_str());
   RemoveDirectoryW(target.c_str());

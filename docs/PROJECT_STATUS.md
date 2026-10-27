@@ -12,6 +12,40 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — resume stage namespace collision scope, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  0058fdfa1e6eb5b2d15c4dc0de62bdb65f119a1f. Commit/tree/newCI/released marker in PR41.
+  main/source37/Pro38 unchanged; N4 reserved. Resumed core-stage-namespace after
+  marker exceeded90min: PR/head/comment/workflow reads showed no later activity;
+  original incomplete checkpoint retained as superseded text in PR41.
+- CI40558979549 raw exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Actual subprocess/stage/native success markers previously verified; not hosted
+  learner/Auth/provider proof.
+- Completed original TEST ONLY scope: .stage collision with real directory and
+  mount-point junction, exact independent marker/length/type/reparse preservation,
+  no .bin publication/no target .stage/.bin, sticky denial after fixture unlink,
+  junction target survives unlink, mandatory unique synthetic cleanup. Failure
+  cleanup does not traverse stage junction. All original probe lines retained;
+  production reader/staging/lease/header/default byte-identical. No new runtime
+  storage/retention/collection/permission/Authstrategy/RLS/schema/API/CI/QA/Pro
+  change. Not concurrent namespace/race/identity/atomic/crash/powerloss proof.
+- Three paths: native command_file_lease_probe.cpp under apps/flutter_app/tool/
+  windows_session_vault; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status.
+  C++17 warnings-as-errors/nonWindows failclosed,46QA/inventory151/whitespace/
+  old-probe-line preservation PASS; production and child-entrypoint byte-identical.
+  Separate diff review covered collision object/target preservation, direct target
+  reads, no publication/no replacement, sticky denial and nonrecursive cleanup.
+  Local checks/review and newCI in PR41; actual new Windows/MSVC/Flutter/analyzer/
+  build locally UNRUN. No SDK bypass or skipped-test success claim.
+- NEXT exacthead/latestattempt all5/EVERYstep/new collision+subprocess/stage/
+  retained markers; fix real failures retaining assertions/security, pending-only
+  handoff/no duplicate code/longpoll. Then actual write/flush/close faults and
+  namespace/durable uncertainty/atomic publication/crash/reconciliation before
+  learner retentionapproval.41draft/17open/AIoff/memory-only/all14hostedpending/
+  no merge/closure/Pro/provider/deploy/release/collection/security/spend/schedule/
+  Personal Alpha acceptance.
+
 ## Core checkpoint — subprocess stage preservation, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

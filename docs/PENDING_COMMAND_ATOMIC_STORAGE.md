@@ -402,3 +402,26 @@ Remaining: short-write/flush/close fault injection inside actual staging and
 crash boundaries during actual atomic publication, namespace/durable uncertainty/
 reconciliation and approved retention. API reference checked 2026-10-28:
 https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
+
+## Stage directory/junction collision regression — 2026-10-28
+
+The mandatory native candidate probe adds actual directory and mount-point
+junction collisions at pending-command.stage. Both contain an independent
+synthetic marker (junction target referenced directly, never through the alias).
+The unchanged staging method must fail and latch denial, preserve the existing
+object type/reparse bit and exact marker bytes/length, and create neither a .bin
+in the lease partition nor a .stage/.bin inside the collision target. Unlinking
+the collision fixture cannot revive that lease or create a replacement stage.
+The target marker survives junction unlink; only explicit unique synthetic
+cleanup deletes it. Failure cleanup avoids traversing the stage junction.
+
+This completes the stale core-stage-namespace checkpoint's stated scope. It is
+TEST ONLY evidence after actual Windows execution, not hostile concurrent
+namespace/ACL mutation protection, trusted application partition identity or
+atomic publication/durable reservation/retention authority. Production reader/
+staging/lease/defaults remain unchanged. Prior assertions remain mandatory.
+Short-write/flush/close injection and atomic commit/crash/reconciliation still
+need separate implementation/tests before learner retention approval. References
+checked 2026-10-28:
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw
