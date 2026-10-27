@@ -3721,6 +3721,33 @@
       ],
       "reproduce": "Run mandatory Windows Dart-to-native vault bridge phases via existing PowerShell verifier; require new command protection marker and all5 exact-head/latest-attempt CI jobs/every step.",
       "limitation": "New actual Windows/MethodChannel/native execution locally UNRUN; local pinned Dart formatting/46QA only. Native syntax/context is not Auth/writer/rollback proof. No production Dart caller/storage/backend/retention/collection/default activation or hosted learner recovery; all14 hosted release groups pending."
+    },
+    {
+      "id": "captured-windows-pending-command-protection",
+      "status": "automated-baseline",
+      "scope": "Optional captured ReviewSession/trusted-scope Windows typed command protection facade; busy/revoke/late response/readiness guards without storage or runtime/default activation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/windows_pending_command_protector.dart",
+          "contains": "final class WindowsPendingCommandProtector"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/windows_pending_command_protector_test.dart",
+          "contains": "external timeout retains actual busy lease and immutable input snapshot"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/windows_pending_command_protector_test.dart",
+          "contains": "synchronous readiness revocation prevents native dispatch"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "flutter test test/features/ai/windows_pending_command_protector_test.dart; require exact-head latest-attempt CI all5 jobs/every step plus retained real native bridge markers.",
+      "limitation": "12 mock-channel cases authored locally UNRUN; pinned formatting/46QA only. ReviewSession/scope/readiness hints require future same-owned SDK/profile assembly; mocks are not DPAPI/Auth/RLS/learner proof. No runtime/default/backend/retention/collection activation or receipt release; all14 hosted groups pending."
     }
   ],
   "findings": [

@@ -5,6 +5,43 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — captured command protection facade, 2026-10-27
+
+- Draft41 / issue17, automation/issue-11-plan-sdk-integration, exact parent
+  5e46629bb083a2dfe7c2984acfb039e9162b95f7, tree51269cb546da44344404d5d800638b4c04a1b0ef.
+  New commit/CI+worker release in first PR41 checkpoint. Main78a44fa/source37
+  afa572a/Pro38at28c20cb unchanged; protected N4 untouched.
+- Parent CI40425260472 raw exact source/latestattempt1 SUCCESS all5 jobs/EVERY
+  step/no skips. Windows121929348988 confirms new Dart/native command protection
+  +old native/malformed/control/all3 OWNED markers. Prior bridge verified.
+- Added OPTIONAL WindowsPendingCommandProtector, captured ReviewSession identity/
+  trusted fixed scope+owner/readiness; typed strict UTF8/canonical envelope methods,
+  bounded Uint8List-only responses/input copies and fixed safe errors. Sticky
+  revoke, pre/post I/O/error checks and busy-before-callback/actual-drain ordering
+  suppress late/reentrant results across same-user replacement/logout/A-B-A.
+  External timeout cannot release busy; synchronous readiness revoke blocks sends.
+- Twelve mock-channel regression cases authored:3 typed ops, bounds/scope/no send,
+  unsupported/missing platform, private errors/malformed output, strict plaintext
+  decode, constructor/readiness/identity, sticky revoke, late success/error,
+  timeout/input snapshot/reentry/synchronous revoke. New Flutter tests/analyzer
+  locally UNRUN, require exact new-head latestattempt CI. Fixtures are not SDK/
+  native/hosted Auth or learner restore proof. Existing old tests unchanged.
+- Fresh official Dart3.9.2 SHA256 verified; new2 files formatted/final unchanged.
+  Missing Flutter lint include warns because dependencies unresolved locally; no
+  Flutter bootstrap retry/stubs/bypass. QA46/46/inventory150/whitespace/separate
+  diff review recorded in PR. All149 prior QA objects/gates/findings exact.
+- Five paths: new AI data/windows_pending_command_protector.dart +new test file;
+  WINDOWS_PENDING_COMMAND_PROTECTION.md, this status, qa/matrix.json.
+  No existing production runtime/native/Auth/RLS/CI/contract/Pro files changed.
+- NEXT all5 exact-head/latestattempt CI jobs/EVERY step/new12 mock cases and old
+  real native/OWNED markers; fix real diagnostics preserving assertions. Then
+  actual same-owned-SDK/profile assembly/lifecycle evidence and reviewed atomic
+  bounded command+reference backend/key/ACL/integrity/retention/logout policy.
+  Scope/ReviewAuth hint is not hosted identity; no default wiring/storage/collection/
+  provider/Auth strategy activation or replay/release authority. Keep41draft/17open/
+  AIoff/all14hosted pending/no merge/closure/deploy/release/schedule/Alpha claim.
+
+
 ## Core checkpoint — explicit Windows command byte channel, 2026-10-27
 
 - Draft41 / issue17, automation/issue-11-plan-sdk-integration; exact parent

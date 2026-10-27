@@ -126,8 +126,8 @@ methods still NotImplemented; read/write/clear metadata behavior is unchanged.
 
 These operations neither read/write/clear Credential Manager nor dispatch HTTP.
 Their target is public context, not Auth or proof of a trusted configured endpoint.
-No production Dart facade/current-session caller, filesystem backend or startup
-restore is wired. Future caller must enforce trusted project/owner, captured SDK
+The optional captured Dart facade below remains unwired to any runtime factory,
+filesystem backend or startup restore. Future caller must enforce trusted project/owner, captured SDK
 generation/readiness, strict envelope decode and result suppression after logout.
 Native/Dart/codec plaintext copies have caller-controlled lifetimes; no guarantee
 of erasing all copies. The same-OS-user/writer/rollback limits above still apply.
@@ -142,3 +142,39 @@ command-protection Dart/native marker only after all four required phases succee
 No real learner payload, file write, broader collection or retention is activated.
 New platform cases locally unrun; exact-head/latest-attempt CI and actual marker
 required before claiming execution. This is not hosted Auth/RLS or learner proof.
+
+## Optional captured-session Dart facade — 2026-10-27
+
+WindowsPendingCommandProtector accepts host-owned ReviewAuth, canonical trusted
+ConversationReceiptScope and readiness callback. Construction requires the current
+ReviewSession identity, matching owner and readiness. This is an identity/lifecycle
+hint, not verified Auth; future assembly must pass the SAME owned SDK Auth/profile
+barrier. No factory/global current client or learner endpoint/key is selected here.
+
+protect accepts only the immutable typed command envelope in its fixed scope and
+sends strict UTF8 bytes via protectCommand. unprotect accepts nonempty <=64KiB
+ciphertext, validates native Uint8List output <=32KiB, strictly decodes UTF8 and the
+canonical envelope in the fixed expected scope. Native protect output must be a
+nonempty <=64KiB Uint8List. Input/output byte copies prevent mutable aliasing; they
+do not prove crypto provenance or erase all plaintext copies. Safe fixed failures
+contain only unauthorized/invalidInput/unavailable/busy, never private exceptions.
+
+Every operation claims busy before readiness/callback/encoding and releases only
+when the actual future drains. Caller timeout cannot open another native operation.
+Captured identity/readiness and sticky revoke are checked before work, after the
+channel future (before plaintext decode) and before result publication, including
+error paths. Same-owner replacement/A-B-A cannot revive a capability. Readiness
+exceptions/loss permanently revoke; synchronous callback revoke is checked again.
+Revoke is immediate but does not cancel OS work, erase acquired caller data or
+release any pending conversation metadata. No automatic retry/lookup/application.
+
+Twelve TEST ONLY mock-channel cases cover all3 typed requests, strict bytes/scope,
+foreign commands/input bounds/no dispatch, unsupported/missing platform, private
+errors/bad output types, oversized/nonUTF8/noncanonical/foreign decoded data,
+constructor/session/readiness guards, sticky revoke, late A-B-A success+error,
+actual-I/O busy beyond external timeout/input snapshots, readiness reentry and
+synchronous readiness revoke. New Flutter tests/analyzer locally unrun; formatter
+and QA evidence are separate from exact-head CI. Mocked Auth/bytes are not native
+DPAPI/SDK/hosted learner proof. Existing real native bridge evidence remains a
+separate prerequisite. No default/runtime wiring, backend/disk/retention/collection
+activation, Auth strategy/provider or policy change; human gates remain unchanged.
