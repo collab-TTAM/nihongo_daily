@@ -7,6 +7,8 @@ import 'package:supabase/supabase.dart';
 import '../../ai/application/ai_text_runtime_owner.dart';
 import '../../ai/application/receipt_ai_runtime_owner.dart';
 import '../../ai/data/conversation_receipt_store.dart';
+import '../../ai/data/windows_pending_command_protector.dart';
+import '../../ai/domain/conversation_receipt_reference.dart';
 import '../../ai/data/receipt_guarded_ai_transport.dart';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/ai_conversation_source.dart';
@@ -59,7 +61,8 @@ final class PersistentSupabaseRuntime
     bool aiTextEnabled = false,
     bool aiConversationEnabled = false,
     Duration requestTimeout = const Duration(seconds: 15),
-  }) : _studyStore = studyStore,
+  }) : _commandScope = conversationReceiptStore?.scope,
+       _studyStore = studyStore,
        _quizStore = quizStore,
        _aiTextEnabled = aiTextEnabled,
        _aiConversationEnabled = aiConversationEnabled {
@@ -170,8 +173,8 @@ final class PersistentSupabaseRuntime
     }
     _aiSubscription = account.changes.listen(
       (_) => _syncAiReadiness(),
-      onError: (Object _, StackTrace _) => _aiOwner.invalidate(),
-      onDone: _aiOwner.invalidate,
+      onError: (Object _, StackTrace _) => _invalidateAiCapabilities(),
+      onDone: _invalidateAiCapabilities,
     );
     _noticeSubscription = persistence.sessionChanges.listen(
       (_) => _publishNotice(),
@@ -197,6 +200,72 @@ final class PersistentSupabaseRuntime
       );
     }
   }
+  final ConversationReceiptScope? _commandScope;
+  WindowsPendingCommandProtector? _commandProtector;
+  Future<void>? _commandDraining;
+  Future<void>? _commandRefresh;
+  bool _commandTerminal = false;
+
+  Future<void> _drainCommandProtection() {
+    if (_commandDraining != null) return _commandDraining!;
+    final old = _commandProtector;
+    _commandProtector = null;
+    if (old == null) return Future<void>.value();
+    final done = Completer<void>();
+    _commandDraining =
+        done.future; // Before synchronous revoke can be observed.
+    unawaited(
+      old.revokeAndDrain().then<void>((_) {
+        _commandDraining = null;
+        done.complete();
+      }),
+    );
+    return done.future;
+  }
+
+  void _invalidateAiCapabilities() {
+    _aiOwner.invalidate();
+    unawaited(_drainCommandProtection());
+  }
+
+  /// Explicit byte capability only; no persistence, dispatch or default wiring.
+  WindowsPendingCommandProtector? createWindowsPendingCommandProtector() {
+    if (!_aiConversationEnabled ||
+        _commandScope == null ||
+        _closing != null ||
+        _receiptLogout != null ||
+        _commandRefresh != null ||
+        _commandTerminal ||
+        kIsWeb ||
+        defaultTargetPlatform != TargetPlatform.windows) {
+      return null;
+    }
+    _syncAiReadiness();
+    if (_commandDraining != null) return null;
+    final ready = _aiReadyRuntime;
+    final generation = _aiGeneration;
+    final session = account.readySession;
+    if (ready == null || generation == null || session == null) return null;
+    final existing = _commandProtector;
+    if (existing != null) return existing.isCurrent ? existing : null;
+    try {
+      return _commandProtector = WindowsPendingCommandProtector(
+        auth: ready.auth,
+        scope: _commandScope,
+        isReady: () =>
+            _closing == null &&
+            !_commandTerminal &&
+            _commandRefresh == null &&
+            _receiptLogout == null &&
+            identical(account.readyRuntime, ready) &&
+            identical(account.readySession, session) &&
+            identical(_aiGeneration, generation),
+      );
+    } on CommandProtectionFailure {
+      return null;
+    }
+  }
+
   final StudySessionStore? _studyStore;
   final VocabularyQuizAttemptStore? _quizStore;
   final bool _aiTextEnabled;
@@ -251,7 +320,7 @@ final class PersistentSupabaseRuntime
   void _syncAiReadiness() {
     final ready = _closing == null ? account.readyRuntime : null;
     if (!identical(ready, _aiReadyRuntime)) {
-      _aiOwner.invalidate();
+      _invalidateAiCapabilities();
       _aiReadyRuntime = ready;
       _aiGeneration = ready == null ? null : AiTextGeneration();
     }
@@ -429,12 +498,14 @@ final class PersistentSupabaseRuntime
     if (_receiptLogout != null) return _receiptLogout!;
     final done = Completer<void>();
     _receiptLogout = done.future; // Before revocation or SDK callbacks reenter.
+    _commandTerminal = true;
+    final commandDraining = _drainCommandProtection();
     final receipt = _receiptOwner!;
     // Both revoke immediately; attempt Auth cleanup even if receipt cleanup fails.
     final clearing = receipt.signOut();
     final signingOut = Future<void>.sync(persistence.signOut);
     unawaited(
-      Future.wait<void>([clearing, signingOut]).then<void>(
+      Future.wait<void>([clearing, signingOut, commandDraining]).then<void>(
         (_) {
           _receiptLogout = null;
           done.complete();
@@ -453,12 +524,35 @@ final class PersistentSupabaseRuntime
 
   @override
   Future<void> refresh() {
+    if (_commandRefresh != null) return _commandRefresh!;
+    final done = Completer<void>();
+    _commandRefresh =
+        done.future; // Fence acquisition before callbacks reenter.
     _aiOwner.invalidate(); // Revoke synchronously before the vault/SDK barrier.
-    return persistence.refresh();
+    final draining = _drainCommandProtection();
+    final refreshing = Future<void>.sync(persistence.refresh);
+    unawaited(
+      Future.wait<void>([refreshing, draining]).then<void>(
+        (_) {
+          _commandRefresh = null;
+          done.complete();
+        },
+        onError: (Object error, StackTrace stack) {
+          _commandRefresh = null;
+          done.completeError(
+            error,
+            stack,
+          ); // Preserve the existing safe Auth failure.
+        },
+      ),
+    );
+    return done.future;
   }
 
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.
   Future<void> close() => _closing ??= () async {
+    _commandTerminal = true;
+    final commandClosing = _drainCommandProtection();
     final aiClosing =
         _receiptOwner?.close() ??
         _aiOwner.close(); // Revoke before first await.
@@ -477,6 +571,7 @@ final class PersistentSupabaseRuntime
       _studyOperations.revokeAndDrain(),
       _quizOperations.revokeAndDrain(),
       aiClosing,
+      commandClosing,
     ]);
     await _port.close();
     _binding.dispose();

@@ -8,6 +8,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:nihongo_daily/features/ai/data/windows_pending_command_protector.dart';
+import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
@@ -94,6 +98,7 @@ final class _ReceiptBackend implements SecureConversationReceiptBackend {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late lifecycle.MemoryVault backend;
   late SessionCredentialVault vault;
   late Directory directory;
@@ -234,6 +239,164 @@ void main() {
     );
     runtime = build(conversationEnabled: true, receiptStore: receiptStore);
     return receipts;
+  }
+
+  const protectionChannel = MethodChannel(
+    'nihongo_daily/conversation_receipts_v1',
+  );
+  final protectionCalls = <MethodCall>[];
+  void nativeProtection(Future<Object?> Function(MethodCall) handler) {
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+    protectionCalls.clear();
+    messenger.setMockMethodCallHandler(protectionChannel, (call) {
+      protectionCalls.add(call);
+      return handler(call);
+    });
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(protectionChannel, null);
+      debugDefaultTargetPlatformOverride = null;
+    });
+  }
+
+  PendingConversationCommandEnvelope protectedCommand() =>
+      PendingConversationCommandEnvelope.fromStart(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: StartConversationRequest.fromJson(
+          fixtures['start_conversation_request'],
+        ),
+      );
+  Matcher getProtectionUnauthorized() => isA<CommandProtectionFailure>().having(
+    (e) => e.code,
+    'code',
+    CommandProtectionError.unauthorized,
+  );
+  test('owned command factory unavailable without receipt opt-in', () async {
+    nativeProtection((_) async => Uint8List(1));
+    await login();
+    expect(runtime.createWindowsPendingCommandProtector(), isNull);
+    expect(protectionCalls, isEmpty);
+  });
+  test(
+    'owned command factory waits for persisted token own profile and caches generation',
+    () async {
+      nativeProtection((_) async => Uint8List.fromList([1, 2]));
+      await openReceiptRuntime();
+      expect(runtime.createWindowsPendingCommandProtector(), isNull);
+      profileWait = Completer<http.Response>();
+      final signing = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      try {
+        await Future<void>.delayed(Duration.zero);
+        expect(runtime.createWindowsPendingCommandProtector(), isNull);
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(user)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+        await signing;
+        await ready();
+        expect(await vault.readRefreshToken(), secret);
+        final p = runtime.createWindowsPendingCommandProtector();
+        expect(p, isNotNull);
+        expect(runtime.createWindowsPendingCommandProtector(), same(p));
+        expect(protectionCalls, isEmpty);
+        expect(await p!.protect(protectedCommand()), [1, 2]);
+        expect(aiHttp.requests, isEmpty);
+      } finally {
+        if (!profileWait!.isCompleted)
+          profileWait!.complete(http.Response('{}', 500));
+        await signing;
+      }
+    },
+  );
+  for (final action in ['refresh', 'logout', 'close']) {
+    for (final error in [false, true]) {
+      test(
+        'owned command $action waits for actual native drain error=$error',
+        () async {
+          final held = Completer<Object?>();
+          final entered = Completer<void>();
+          nativeProtection((_) {
+            entered.complete();
+            return held.future;
+          });
+          await openReceiptRuntime();
+          await login();
+          final p = runtime.createWindowsPendingCommandProtector()!;
+          final operation = p.protect(protectedCommand());
+          final rejected = expectLater(
+            operation,
+            throwsA(getProtectionUnauthorized()),
+          );
+          await entered.future;
+          generation++;
+          secret = 'TEST_ONLY_COMMAND_REFRESH_2';
+          final Future<void> ending;
+          if (action == 'refresh') {
+            ending = runtime.refresh();
+            expect(runtime.refresh(), same(ending));
+          } else if (action == 'logout') {
+            ending = runtime.account.signOut();
+          } else {
+            ending = runtime.close();
+            expect(runtime.close(), same(ending));
+          }
+          var settled = false;
+          final observed = ending.then<void>((_) {
+            settled = true;
+          });
+          try {
+            expect(p.isCurrent, false);
+            expect(runtime.createWindowsPendingCommandProtector(), isNull);
+            await Future<void>.delayed(Duration.zero);
+            expect(settled, false);
+            if (action == 'logout') {
+              expect(await vault.readRefreshToken(), isNull);
+            }
+            expect(protectionCalls.length, 1);
+            if (error) {
+              held.completeError(StateError('PRIVATE_NATIVE_LATE'));
+            } else {
+              held.complete(Uint8List.fromList([7, 8]));
+            }
+            await rejected;
+            await observed;
+            expect(settled, true);
+            expect(p.isCurrent, false);
+            if (action == 'refresh') {
+              await ready();
+              final next = runtime.createWindowsPendingCommandProtector();
+              expect(next, isNotNull);
+              expect(next, isNot(same(p)));
+              expect(await vault.readRefreshToken(), secret);
+            } else {
+              expect(runtime.createWindowsPendingCommandProtector(), isNull);
+              if (action == 'logout') {
+                user = wire.b;
+                await login();
+                expect(runtime.createWindowsPendingCommandProtector(), isNull);
+                await runtime.account.signOut();
+                user = wire.a;
+                await login();
+                expect(runtime.createWindowsPendingCommandProtector(), isNull);
+              }
+            }
+            expect(aiHttp.requests, isEmpty);
+          } finally {
+            if (!held.isCompleted) held.complete(Uint8List(1));
+            await rejected;
+            await observed;
+          }
+        },
+      );
+    }
   }
 
   StartConversationRequest startRequest() =>

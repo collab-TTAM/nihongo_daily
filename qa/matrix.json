@@ -3748,6 +3748,33 @@
       ],
       "reproduce": "flutter test test/features/ai/windows_pending_command_protector_test.dart; require exact-head latest-attempt CI all5 jobs/every step plus retained real native bridge markers.",
       "limitation": "12 mock-channel cases authored locally UNRUN; pinned formatting/46QA only. ReviewSession/scope/readiness hints require future same-owned SDK/profile assembly; mocks are not DPAPI/Auth/RLS/learner proof. No runtime/default/backend/retention/collection activation or receipt release; all14 hosted groups pending."
+    },
+    {
+      "id": "owned-sdk-windows-command-protection",
+      "status": "automated-baseline",
+      "scope": "Explicit Windows protector shares owned persistent SDK/profile/receipt ready generation; immediate retirement/actual native drain on refresh/logout/close; no payload storage/default activation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart",
+          "contains": "WindowsPendingCommandProtector? createWindowsPendingCommandProtector()"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned command $action waits for actual native drain error=$error"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/persistent_ai_text_runtime_test.dart",
+          "contains": "owned command factory waits for persisted token own profile and caches generation"
+        }
+      ],
+      "issues": [
+        17,
+        18,
+        20
+      ],
+      "reproduce": "Run persistent_ai_text_runtime_test.dart full Flutter suite; require new8 SDK cases plus old21 facade/native Windows markers and all5 exact-head latest-attempt jobs/every step.",
+      "limitation": "New8 actual pinned-SDK +TEST ONLY Auth/HTTP/vault/mock native cases locally UNRUN; formatting/46QA only. Not actual Windows SDK-facade composition, hosted Auth/RLS/provider or learner restart proof. No default/storage/retention/collection activation; all14 hosted groups pending."
     }
   ],
   "findings": [

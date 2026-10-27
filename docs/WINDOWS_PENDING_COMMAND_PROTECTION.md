@@ -220,3 +220,42 @@ All15 prior tests remain unchanged. New21 tests/full native/build require new-he
 CI; parentdf41515 CI40443265071/latestattempt1 all5/EVERY step passed. Hosted
 Auth/RLS and learner restore proof remain outstanding. Next integrate this barrier
 with the same owned SDK/profile generation before any persistence activation.
+
+## Owned persistent SDK assembly — 2026-10-27
+
+PersistentSupabaseRuntime now offers explicit createWindowsPendingCommandProtector.
+It is unavailable off Windows, with conversation disabled, without the validated
+owned receipt partition, before stored-token/own-profile readiness, during refresh/
+logout/close, after terminal retirement or while an old native operation drains.
+One cached protector uses the SAME ready.auth, readySession, readyRuntime and AI
+generation as conversation and original receipt lookup. The project partition was
+already validated against the owned SDK URL; no learner endpoint/key is accepted.
+Acquisition performs no channel/HTTP/storage call. A revoked cached instance is
+not silently replaced within the same generation.
+
+Ready-runtime replacement/error/done immediately revokes the old protector and
+blocks replacement until actual drain. Refresh installs an acquisition fence before
+callbacks, revokes now, runs existing Auth refresh/persistence and native drain
+in parallel, and completes only after both settle. Repeated refresh shares the
+active future. Auth rotation/profile readiness never publishes an old native result.
+Logout terminally retires command acquisition, starts original Auth/receipt cleanup
+without waiting for native work and joins its actual drain before completion. Close
+likewise retires synchronously, preserves existing credential-close policy and
+waits native drain before disposing SDK/network. The byte capability writes no
+metadata/payload, so no new storage cleanup or deletion policy is introduced.
+
+Eight new TEST ONLY actual pinned-SDK runtime cases use simulated Auth/profile/
+vault/HTTP and mock native channel: absent receipt opt-in; pending profile, saved
+refresh token, same-generation cache and explicit bytes; refresh/logout/close each
+with ignored late native success/error. They assert immediate old revocation, no
+replacement while held, actual completion barrier, refresh future identity/new
+lease only afterward, Auth clear during logout and terminal B/A re-login denial.
+No AI HTTP is dispatched. Original runtime test bodies remain exact. Local new
+Flutter/analyzer/native tests/builds unrun; exact-head CI required. Actual native
+DPAPI remains separately evidenced by the existing Windows bridge.
+
+This composes optional components only: no default UI/staging activation, automatic
+serialization, disk backend, new collection/retention, Auth strategy/provider change
+or hosted learner acceptance. Reviewed atomic command+reference storage, trusted
+writer/key/ACL/integrity, logout/retention policy and original receipt conditional
+application/release remain outstanding. All14 hosted release groups remain pending.

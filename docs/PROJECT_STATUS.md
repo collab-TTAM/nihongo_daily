@@ -5,6 +5,46 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — owned SDK command protection, 2026-10-27
+
+- Draft41/issue17, automation/issue-11-plan-sdk-integration, parent
+  b2c4421dfe3acfbec3e3a16a0c2099200c6fa4bb/treeaa5423e15f36aa507222e3d5890bfeb3bf78388f.
+  Published commit/newCI/release in first PR41 checkpoint. Main78a44fa/source37
+  afa572a/Pro38at28c20cb unchanged; protected content untouched.
+- Parent CI40447077741 raw exact source/latestattempt1 SUCCESS all5/EVERY step
+  no skips. Flutter122001264546 actual21 facade cases; Windows122000872375 actual
+  bridge/protection/malformed/all3OWNED markers observed. TEST ONLY component
+  evidence is not hosted Auth/RLS/provider/learner proof.
+- Explicit cached Windows protector factory uses SAME ready.auth/session/runtime/
+  AI generation and already validated receipt partition. Conversation+receipt opt-in,
+  platform/persisted token/own-profile readiness required. No acquisition I/O, no
+  new default caller/config/secret/SDK client. Revoked cached generation not replaced.
+- Ready replacement/error/done revokes immediately/blocks next acquisition during
+  actual drain. Refresh fences factory before callbacks and joins existing Auth
+  refresh+persistence/native drain; repeated calls share promise. Logout/close
+  terminally retire protection and join actual drain while original Auth cleanup/
+  credential-close policy proceeds. No metadata/payload write/deletion from bytes.
+- Eight TEST ONLY pinned-SDK+mock native cases authored: no receipt opt-in; pending
+  profile/saved token/cached generation/explicit operation; refresh/logout/close
+  x late success/error. Assert immediate revocation/no early replacement/actual
+  completion barrier, refresh new lease after saved rotation, logout token clear,
+  terminal B/A re-login denial and no AI HTTP. Existing test bodies retained.
+  New full Flutter/analyzer/native/8cases/builds locally UNRUN; require exact CI.
+- Fresh official Dart3.9.2 ZIP SHA256 verified/format2 final unchanged (unresolved
+  Flutter lint include warning, not analysis proof).46QA/inventory151/whitespace/
+  separate lifecycle/diff review recorded in PR. All150 prior QA objects/gates/
+  findings exact. No stubs/Flutter bootstrap retry/bypass.
+- Five edits: persistent_supabase_runtime.dart, persistent_ai_text_runtime_test.dart,
+  WINDOWS_PENDING_COMMAND_PROTECTION.md, this status, qa/matrix.json.
+- NEXT all5 exact-head/latestattempt jobs/EVERY step/new8 SDK cases/old21 facade
+  +native markers. Fix actual diagnostics preserving assertions; pending-only
+  handoff/no duplicate work/long polling. Then real Windows SDK+typed facade
+  composition and reviewed atomic bounded backend/key/ACL/integrity/retention/
+  logout policy before payload persistence. No default/collection/Auth strategy/
+  provider/Pro activation.41draft/17open/AIoff/all14hosted pending/no merge/closure/
+  deploy/release/schedule/Alpha claim.
+
+
 ## Core checkpoint — explicit native protector drain, 2026-10-27
 
 - Draft41/issue17, branch automation/issue-11-plan-sdk-integration; parent
