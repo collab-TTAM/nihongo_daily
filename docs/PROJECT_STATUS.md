@@ -12,6 +12,32 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — protected process boundary, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  cb4e63161d9ff6af0cc9df98d820bc9b40a716f1. New commit/tree/CI/released marker in PR41.
+- Parent CI40670788991 raw exact/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows122756818273 protected9/partition/revoke/ownedSDK markers verified.
+  MSVC shadow repair confirmed. TEST ONLY component proof, not hosted acceptance.
+- Add native TEST ONLY protected child whitelist write/read min/max, fixed synthetic
+  target/payload; actual writer ExitProcess while lease owned after DPAPI stage/
+  publish, parent reacquire/decode, actual reader contention then success after
+  release. Independent raw ciphertext snapshots identical/no-stage; exact min1/
+  max32768 bytes, reader revoke/nooutput, mandatory exit/handles/cleanup checks.
+  No shell, credential/payload argument, inherited handles, timeout pass or skip.
+- Four paths: tool/windows_session_vault/{command_partition_probe.cpp,
+  session_vault_probe.cpp}; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status.
+  All previous source/assertions retained. Production/runner/default/CI unchanged.
+  Linux C++17 warnings-as-errors/-Wshadow/failclosed/46QA/inventory151/diffcheck
+  passed; inventory not151executedtests. Separate child routing/ownership/timeout/
+  status/preservation/cleanup/diff review. New Win32/MSVC/fullFlutter locallyUNRUN.
+- NEXT exacthead/latestattempt all5/EVERYstep/new process marker+all oldmarkers;
+  then strict fullDTO/capturedSDK lifecycle/trustedroot/durableuncertainty/receipt
+  conditional application-release/retentionapproval. Process exit is not physical
+  powerloss/durable reservation/dispatch/hosted learner proof.41draft/17open/AIoff/
+  memory-only/all14hostedpending; main/source37/Pro/N4 unchanged; no merge/closure/
+  provider/Authstrategy/schema/RLS/security/collection/spend/release/schedule action.
+
 ## Core checkpoint — MSVC protected fixture rename, 2026-10-28
 
 - PR41/issue17 branch automation/issue-11-plan-sdk-integration; exact parent

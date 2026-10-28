@@ -11,7 +11,60 @@ namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command partition probe failed");
 }
+// TEST ONLY explicit modes, no target/payload arguments or shell.
+void ProtectedChild(const std::wstring& root, const std::wstring& mode, DWORD expected) {
+  Check(mode == L"write-min" || mode == L"write-max" ||
+        mode == L"read-min" || mode == L"read-max");
+  wchar_t executable[32768]{};
+  const DWORD length = GetModuleFileNameW(nullptr, executable, 32768);
+  Check(length > 0 && length < 32768);
+  auto command = L"\"" + std::wstring(executable) +
+      L"\" --protected-command-child \"" + root + L"\" " + mode;
+  STARTUPINFOW startup{};
+  startup.cb = sizeof(startup);
+  PROCESS_INFORMATION process{};
+  Check(CreateProcessW(nullptr, command.data(), nullptr, nullptr, FALSE,
+      CREATE_NO_WINDOW, nullptr, nullptr, &startup, &process) != FALSE);
+  const DWORD waited = WaitForSingleObject(process.hProcess, 10000);
+  DWORD code = 5;
+  const bool exited = waited == WAIT_OBJECT_0 &&
+      GetExitCodeProcess(process.hProcess, &code) != FALSE;
+  if (!exited) {
+    TerminateProcess(process.hProcess, 5);
+    WaitForSingleObject(process.hProcess, 5000);
+  }
+  const bool threadClosed = CloseHandle(process.hThread) != FALSE;
+  const bool processClosed = CloseHandle(process.hProcess) != FALSE;
+  Check(exited && threadClosed && processClosed && code == expected);
+}
 }  // namespace
+int ProtectedCommandChild(const std::wstring& root, const std::wstring& mode) {
+  if (mode != L"write-min" && mode != L"write-max" &&
+      mode != L"read-min" && mode != L"read-max") return 5;
+  try {
+    const std::string target = "NihongoDaily.ConversationReceipt.v1|https://partition-a.invalid|11111111-1111-4111-8111-111111111111";
+    const bool writing = mode == L"write-min" || mode == L"write-max";
+    const bool maximum = mode == L"write-max" || mode == L"read-max";
+    const std::vector<unsigned char> expectedBytes(maximum ? 32768 : 1, 0x91);
+    auto partition = nihongo::ProtectedPendingCommandPartition::Acquire(root, target);
+    if (!partition) return 3; // Explicit contention result, never success.
+    if (writing) {
+      const auto empty = partition->ReadRecovery(target);
+      if (empty.state != nihongo::PendingCommandCandidateState::absent ||
+          !empty.plaintext.empty() || !partition->Stage(target, expectedBytes) ||
+          !partition->Publish(target)) return 5;
+      ExitProcess(0); // Actual abrupt writer exit: no C++ destructor/lease release.
+    }
+    const auto decoded = partition->ReadRecovery(target);
+    if (decoded.state != nihongo::PendingCommandCandidateState::present ||
+        decoded.plaintext != expectedBytes) return 5;
+    partition->Revoke();
+    const auto denied = partition->ReadRecovery(target);
+    if (denied.state != nihongo::PendingCommandCandidateState::unavailable ||
+        !denied.plaintext.empty()) return 5;
+    return 0;
+  } catch (...) { return 5; } // No path, scope, payload or OS diagnostics.
+}
 bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
   using Partition = nihongo::PendingCommandPartition;
   using State = nihongo::PendingCommandCandidateState;
@@ -253,6 +306,38 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
       if (!originalCipher.empty())
         Check(DeleteFileW((paths[0] + L"\\pending-command.bin").c_str()) != FALSE);
     }
+    // Actual writer ExitProcess -> parent restore -> independent reader process.
+    for (unsigned boundary = 0; boundary < 2; ++boundary) {
+      const auto writeMode = boundary == 0 ? L"write-min" : L"write-max";
+      const auto readMode = boundary == 0 ? L"read-min" : L"read-max";
+      const std::vector<unsigned char> expectedBytes(boundary == 0 ? 1 : 32768, 0x91);
+      ProtectedChild(base, writeMode, 0);
+      std::vector<unsigned char> beforeRead;
+      {
+        auto raw = Partition::Acquire(base, targets[0]);
+        Check(raw != nullptr);
+        const auto stored = raw->ReadRecoveryCiphertextCandidate(targets[0]);
+        Check(stored.state == State::present && !stored.bytes.empty() &&
+            stored.bytes.size() <= 65536 && stored.bytes != expectedBytes);
+        beforeRead = stored.bytes;
+      }
+      {
+        auto owner = Protected::Acquire(base, targets[0]);
+        Check(owner != nullptr);
+        const auto recovered = owner->ReadRecovery(targets[0]);
+        Check(recovered.state == State::present && recovered.plaintext == expectedBytes);
+        ProtectedChild(base, readMode, 3); // Real child cannot bypass held lease.
+      }
+      ProtectedChild(base, readMode, 0); // Fresh process, real DPAPI user context.
+      {
+        auto raw = Partition::Acquire(base, targets[0]);
+        Check(raw != nullptr);
+        const auto afterRead = raw->ReadRecoveryCiphertextCandidate(targets[0]);
+        Check(afterRead.state == State::present && afterRead.bytes == beforeRead);
+      }
+      Check(GetFileAttributesW((paths[0] + L"\\pending-command.stage").c_str()) == INVALID_FILE_ATTRIBUTES);
+      Check(DeleteFileW((paths[0] + L"\\pending-command.bin").c_str()) != FALSE);
+    }
     passed = true;
   } catch (...) { /* Fixed failure only; clean our explicit synthetic names. */ }
   for (auto& partition : partitions) partition.reset();
@@ -272,6 +357,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     std::cout << "PASS: Windows command partition revoke/retain-lease/preserve/isolate (TEST ONLY)" << std::endl;
   if (passed && cleaned)
     std::cout << "PASS: Windows protected command partition DPAPI/disk/restore/rejection/preservation (TEST ONLY)" << std::endl;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows protected command abrupt writer/fresh reader/lease/preservation (TEST ONLY)" << std::endl;
   return passed && cleaned;
 }
 #endif

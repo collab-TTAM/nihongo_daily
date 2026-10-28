@@ -802,3 +802,35 @@ No warning suppression or weakening of compiler/test/security gates. Separate
 reverse-substitution review verifies exact original fixture bytes are recoverable.
 Linux C++17/QA cannot prove MSVC success: new exact-head CI must confirm compile,
 all nine native modes/marker and every retained job/step before a Windows pass.
+
+## Protected process boundary probe — 2026-10-28
+
+The TEST ONLY credential executable now has a separate four-mode child entrypoint:
+write-min/write-max/read-min/read-max, with only a synthetic root argument and
+fixed .invalid project/account/payload inside the child. Invalid modes fail before
+I/O. It never accepts a credential, target or plaintext command argument. The
+existing learner executable/runner/channel and every production source are unchanged.
+
+For1 and32768 bytes, a real child acquires the protected partition, confirms empty,
+protects/stages/publishes, then calls ExitProcess(0) while still owning its lease;
+no C++ destructors execute. Parent requires actual zero exit, reacquires and reads
+the original plaintext, with independent raw ciphertext snapshot !=plaintext and
+<=65536 bytes. While parent holds that owner, a second real reader child must
+exit3 (acquisition denied). After release, a fresh reader child must decrypt the
+exact original bytes and verify terminal revocation/no output. Independent raw
+readback must equal the entire prior ciphertext snapshot, stage must be absent,
+and unique synthetic cleanup must succeed. No result permits redispatch or deletion
+of actual learner data. Parent uses non-inheritable CreateProcess without shell,
+checked exit/status/handle close,10s timeout plus terminate/reap failure handling.
+Timeout/missing/abnormal child is failure, never a skipped/positive test.
+
+Required new marker:
+`PASS: Windows protected command abrupt writer/fresh reader/lease/preservation (TEST ONLY)`.
+All earlier assertions remain, including nine protected modes. Parent cb4e631
+CI40670788991 attempt1 passed all5 jobs/EVERYstep and Windows122756818273 confirms
+that earlier matrix; it does not execute this new process probe. Linux compilation
+is unsupported-OS proof only; actual Win32/MSVC/process behavior needs exact-head CI.
+This tests process exit with OS still running, not kernel/physical power loss,
+strict full command DTOs, captured SDK lifecycle/root provisioning/durable failure
+fencing/authenticated receipt reconciliation or hosted learner acceptance. Learner
+retention/default activation remains off; all14 hosted release groups pending.
