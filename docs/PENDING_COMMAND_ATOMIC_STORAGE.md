@@ -726,3 +726,22 @@ the prior interleave marker; that does not execute this new component.
 Primary references reviewed2026-10-28:
 - https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcrypthash
 - https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcryptopenalgorithmprovider
+
+## Explicit partition revocation — 2026-10-28
+
+Revoke is an idempotent serialized-owner operation: permanently deny subsequent
+read/stage/publish through this object while retaining its exclusive lease and
+all bytes until destruction. No file I/O, deletion, reset or lease release occurs
+in Revoke. The existing failure latch is reused. Other partitions stay separate.
+The owner must serialize all methods and destruction; this is not thread-safe
+cancellation of concurrent accepted I/O, SDK-generation binding or logout cleanup.
+A later owner still needs reviewed drain/reconciliation and authenticated receipt
+application/release; reacquisition is never dispatch permission.
+
+Mandatory synthetic native coverage revokes empty, staged and published states,
+checks repeated revocation/no returned bytes/no stage or publish, held same-scope
+exclusion and independent account availability. After destruction, independent
+raw reads verify exact original candidate/absence and exact64-byte staged content.
+Cleanup is mandatory. New marker requires exact-head Windows execution:
+`PASS: Windows command partition revoke/retain-lease/preserve/isolate (TEST ONLY)`.
+No app/channel/default/learner-retention activation or hosted Auth proof.

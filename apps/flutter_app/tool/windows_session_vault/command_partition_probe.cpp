@@ -128,6 +128,45 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     Check(reopened != nullptr);
     const auto restored = reopened->ReadRecoveryCiphertextCandidate(targets[0]);
     Check(restored.state == State::present && restored.bytes == values[0]);
+    // Revoke empty, staged and published partitions without releasing ownership.
+    reopened.reset();
+    unresolved.reset();
+    for (size_t i = 0; i < paths.size(); ++i) {
+      partitions[i] = Partition::Acquire(base, targets[i]);
+      Check(partitions[i] != nullptr);
+    }
+    Check(partitions[2]->StageCiphertextCandidate(targets[2], values[2]));
+    for (size_t i = 0; i < paths.size(); ++i) {
+      partitions[i]->Revoke();
+      partitions[i]->Revoke(); // Idempotent and terminal for the captured object.
+      const auto denied = partitions[i]->ReadRecoveryCiphertextCandidate(targets[i]);
+      Check(denied.state == State::unavailable && denied.bytes.empty());
+      Check(!partitions[i]->StageCiphertextCandidate(targets[i], values[i]));
+      Check(!partitions[i]->PublishStagedCiphertextCandidate(targets[i]));
+      Check(!Partition::Acquire(base, targets[i])); // Revocation must NOT release lease.
+      if (i == 0) { // Revoking A does not revoke the independently owned B partition.
+        const auto other = partitions[1]->ReadRecoveryCiphertextCandidate(targets[1]);
+        Check(other.state == State::absent && other.bytes.empty());
+      }
+      partitions[i].reset();
+      auto raw = nihongo::PendingCommandFileLease::Acquire(paths[i]);
+      Check(raw && raw->CheckPrivateAccessPolicy());
+      const auto preserved = raw->ReadCiphertextCandidate();
+      Check(preserved.state == (i == 0 ? State::present : State::absent));
+      Check(preserved.bytes == (i == 0 ? values[0] : std::vector<unsigned char>{}));
+      if (i != 2)
+        Check(GetFileAttributesW((paths[i] + L"\\pending-command.stage").c_str()) == INVALID_FILE_ATTRIBUTES);
+    }
+    // Independently inspect the unpromoted stage after revocation/destruction.
+    std::vector<unsigned char> retainedBytes(65);
+    const auto retained = CreateFileW((paths[2] + L"\\pending-command.stage").c_str(),
+        GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    Check(retained != INVALID_HANDLE_VALUE);
+    DWORD retainedCount = 0;
+    const bool retainedRead = ReadFile(retained, retainedBytes.data(), 65, &retainedCount, nullptr) != FALSE;
+    const bool retainedClosed = CloseHandle(retained) != FALSE;
+    retainedBytes.resize(retainedCount <= 65 ? retainedCount : 65);
+    Check(retainedRead && retainedClosed && retainedCount == 64 && retainedBytes == values[2]);
     passed = true;
   } catch (...) { /* Fixed failure only; clean our explicit synthetic names. */ }
   for (auto& partition : partitions) partition.reset();
@@ -143,6 +182,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
   cleaned = RemoveDirectoryW(base.c_str()) != FALSE && cleaned;
   if (passed && cleaned)
     std::cout << "PASS: Windows command partition account/project isolation/scope fence/preservation (TEST ONLY)" << std::endl;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows command partition revoke/retain-lease/preserve/isolate (TEST ONLY)" << std::endl;
   return passed && cleaned;
 }
 #endif

@@ -48,6 +48,9 @@ std::unique_ptr<PendingCommandPartition> PendingCommandPartition::Acquire(
 #endif
   } catch (...) { return nullptr; } // No scope/path/OS diagnostics.
 }
+void PendingCommandPartition::Revoke() noexcept {
+  failed_ = true; // Keep exclusive ownership and uncertain data until owner closes.
+}
 bool PendingCommandPartition::Current(const std::string& expected_target) noexcept {
   // Exact captured canonical target. A mismatch never opens another partition
   // and permanently fences this object, including its originally valid target.

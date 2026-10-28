@@ -14,6 +14,9 @@ class PendingCommandPartition final {
   bool StageCiphertextCandidate(const std::string& expected_target,
       const std::vector<unsigned char>& bytes) noexcept;
   bool PublishStagedCiphertextCandidate(const std::string& expected_target) noexcept;
+  // Serialized owner only: deny future operations, retain lease/data until destruction.
+  // Idempotent; not cancellation of concurrent I/O, logout deletion or reconciliation.
+  void Revoke() noexcept;
   ~PendingCommandPartition() = default;
   PendingCommandPartition(const PendingCommandPartition&) = delete;
   PendingCommandPartition& operator=(const PendingCommandPartition&) = delete;
