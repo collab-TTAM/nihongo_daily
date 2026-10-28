@@ -9,6 +9,7 @@ import '../../ai/application/receipt_ai_runtime_owner.dart';
 import '../../ai/data/conversation_receipt_store.dart';
 import '../../ai/data/windows_pending_command_protector.dart';
 import '../../ai/domain/conversation_receipt_reference.dart';
+import '../../ai/domain/conversation_receipt_snapshot.dart';
 import '../../ai/data/receipt_guarded_ai_transport.dart';
 import '../../ai/data/ai_text_repository_source.dart';
 import '../../ai/data/ai_conversation_source.dart';
@@ -386,6 +387,39 @@ final class PersistentSupabaseRuntime
           identical(account.readySession, session) &&
           identical(_aiGeneration, generation),
     );
+  }
+
+  /// Explicit read-only composition, never storage/replay/release authority.
+  /// Both capabilities are captured from this owner's current ready generation.
+  Future<ConversationReceiptSnapshot> lookupProtectedConversationReceipt(
+    Uint8List ciphertext,
+  ) async {
+    final protector = createWindowsPendingCommandProtector();
+    if (protector == null) {
+      throw const AiTextFailure(AiTextErrorCode.unauthorized);
+    }
+    final reader = createConversationReceiptLookup();
+    if (reader == null) {
+      throw const AiTextFailure(AiTextErrorCode.unauthorized);
+    }
+
+    void check() {
+      if (!protector.isCurrent || !reader.isCurrent) {
+        throw const AiTextFailure(AiTextErrorCode.unauthorized);
+      }
+    }
+
+    check();
+    try {
+      final command = await protector.unprotect(ciphertext);
+      check(); // Never start receipt HTTP after stale/malformed decryption.
+      final result = await reader.lookupCommand(command);
+      check(); // Never publish a snapshot after either lifecycle retired.
+      return result;
+    } on Object {
+      check();
+      rethrow; // Existing capabilities already expose fixed safe typed errors.
+    }
   }
 
   /// Public scenario reader shares conversation opt-in/owned ready generation.

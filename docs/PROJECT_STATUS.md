@@ -12,6 +12,36 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — owned protected receipt lookup, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  f784b0b4c7b394a07bb315c1b2b9a0d48719ddbe. Commit/tree/CI/released marker in PR41.
+- Parent CI40712778351 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter122903356266 explicitly all11owned envelope SDK cases passed; retained
+  Windows122902334955 protected process/scope markers verified. Not hosted proof.
+- Explicit PersistentSupabaseRuntime.lookupProtectedConversationReceipt captures
+  existing same-owner protector/reader, unprotects strict full envelope then reads
+  original receipt. Both current before/between/after awaits; no fresh acquisition
+  after await, retired lifecycle fixed unauthorized, existing safe errors retained.
+  No storage/replay/clear/application/default or new transport owner.
+- Seven actual-owned runtime/pinnedSDK TEST ONLY native/Auth/vault/HTTP cases:
+  all3ops exact GET/bearer/typed response/metadata-tokenpreserve; no optin/readiness
+  noI/O; malformed plaintext noHTTP; held native logout no receipt dispatch; held
+  receipt close late suppression/actual drain/metadata+borrowed HTTP preserve.
+  All old source/test bodies retained. New Dart format/analyze/7tests/build locally
+  UNRUN (SDK missing);46QA/inventory151(not151executedtests)/diffcheck passed
+  separately. Separate capability capture/current/error/await/drain/sideeffect/
+  ownership/diff review. No local actualWindows claim.
+- Four paths: lib/features/auth/application/persistent_supabase_runtime.dart;
+  test/features/ai/persistent_ai_text_runtime_test.dart;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. Native/backend/CI/API/schema/
+  RLS/Authstrategy/provider/Pro unchanged; no retention/collection activation.
+- NEXT all5/EVERYstep/new7+old tests; fix actual diagnostics, pending-onlyhandoff/
+  no duplicatecode. Then concrete file backend/trustedroot/captured storage lifecycle/
+  durableuncertainty/authenticated receipt conditional application-release/retention
+  approval.41draft/17open/AIoff/memory-only/all14hostedpending; no merge/closure/
+  security/spend/release/schedule/Alpha acceptance.
+
 ## Core checkpoint — owned SDK exact formatter repair, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

@@ -478,3 +478,36 @@ Local file hash matches the formatter's output; this is not a local formatter
 execution claim. QA46/inventory151/diffcheck are separate checks. New exact-head
 CI must confirm formatting, analyzer and all eleven owned SDK cases plus every
 retained required job/step. No learner/release/retention acceptance follows.
+
+## Owned protected-envelope receipt lookup — 2026-10-28
+
+PersistentSupabaseRuntime.lookupProtectedConversationReceipt is an explicit read
+composition. It captures this owner's existing Windows command protector and
+original-receipt reader only after the existing conversation opt-in, token
+persistence and own-profile readiness. It unprotects/strictly decodes a supplied
+bounded ciphertext in memory, then passes the immutable full original envelope to
+lookupCommand. Both captured capabilities must still be current before native
+work, between native completion and receipt HTTP, and before result/error return.
+It does not reacquire a fresh capability after an await or reconstruct a request
+from metadata. Retired generation errors become fixed unauthorized; current native
+validation/unavailability and receipt errors retain their existing safe typed
+failure categories. No token/log/URL/key input, new client/store owner, storage
+read/write/delete, release, replay or automatic activation is introduced.
+
+The returned UNKNOWN/PENDING/COMPLETED is a read snapshot only. This method does
+not establish original writer/freshness/durable reservation or allow local result
+application/receipt release. Actual native protected file backend binding, trusted
+root provisioning, serialized captured storage drain and approved retention remain
+separate. No learner payload is retained by calling this method.
+
+Seven authored owned-runtime/pinned SDK cases with TEST ONLY native channel/Auth/
+vault/HTTP: all3 operations decrypt then exact original receipt GET and typed
+COMPLETED with metadata/token unchanged; missing opt-in/readiness does no native/
+HTTP; malformed plaintext does no HTTP; logout while native response is held never
+starts receipt GET; close during held receipt HTTP suppresses late snapshot and
+joins actual work while preserving metadata and borrowed HTTP ownership. All old
+11 decoded-envelope SDK cases/fixtures/timeouts/assertions remain unchanged.
+Local46QA/inventory151/diffcheck pass separately; new7 Dart format/analyzer/tests/
+build locally UNRUN, no SDK. Require new exact-head CI. Parent f784b0b
+CI40712778351 all5/EVERYstep passed, all11 prior owned cases observed in Flutter
+122903356266. No hosted Auth/RLS/provider/learner acceptance or retention approval.

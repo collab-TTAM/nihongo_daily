@@ -521,6 +521,197 @@ void main() {
         200,
         headers: {'content-type': 'application/json'},
       );
+  Uint8List protectedLookupPlain(String op) {
+    final command = switch (op) {
+      'start_conversation' => PendingConversationCommandEnvelope.fromStart(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: StartConversationRequest.fromJson(fixtures['${op}_request']),
+      ),
+      'conversation_turn' => PendingConversationCommandEnvelope.fromTurn(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: ConversationTurnRequest.fromJson(fixtures['${op}_request']),
+      ),
+      _ => PendingConversationCommandEnvelope.fromFinish(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: FinishConversationRequest.fromJson(fixtures['${op}_request']),
+      ),
+    };
+    return Uint8List.fromList(utf8.encode(command.encode()));
+  }
+
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    test('owned protected receipt read $op', () async {
+      nativeProtection((call) async {
+        expect(call.method, 'unprotectCommand');
+        final args = call.arguments as Map<Object?, Object?>;
+        expect(args['bytes'], [4, 5, 6]);
+        expect(
+          args['target'],
+          '${ConversationReceiptStore.targetPrefix}${wire.origin}|${wire.a}',
+        );
+        return protectedLookupPlain(op);
+      });
+      final receipts = await openReceiptRuntime();
+      receipts.value = originalReference(op).encode();
+      await runtime.start();
+      await login();
+      aiHttp.onSend = (r) async {
+        expect(r.method, 'GET');
+        expect(r.url.origin, wire.origin);
+        expect(r.url.path, '/rest/v1/operation_receipts');
+        expect(r.url.queryParameters['operation'], 'eq.$op');
+        expect(r.url.queryParameters['user_id'], 'eq.${wire.a}');
+        expect(
+          r.url.queryParameters['client_event_id'],
+          'eq.${originalReference(op).clientEventId}',
+        );
+        expect((r as http.Request).body, isEmpty);
+        expect(
+          r.headers['authorization'],
+          'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+        );
+        return originalAnswer(op, 'COMPLETED');
+      };
+      final snapshot = await runtime.lookupProtectedConversationReceipt(
+        Uint8List.fromList([4, 5, 6]),
+      );
+      expect(snapshot.status, ConversationReceiptStatus.completed);
+      expect(snapshot.start != null, op == 'start_conversation');
+      expect(snapshot.turn != null, op == 'conversation_turn');
+      expect(snapshot.finish != null, op == 'finish_conversation');
+      expect(protectionCalls.length, 1);
+      expect(aiHttp.requests.length, 1);
+      expect(receipts.calls, isNot(contains('clear')));
+      expect(receipts.value, originalReference(op).encode());
+      expect(await vault.readRefreshToken(), secret);
+    });
+  }
+
+  test('owned protected read requires opt-in and ready account', () async {
+    nativeProtection((_) async => protectedLookupPlain('start_conversation'));
+    await expectLater(
+      runtime.lookupProtectedConversationReceipt(Uint8List.fromList([4])),
+      throwsA(unauthorized),
+    );
+    await runtime.start();
+    await login();
+    await expectLater(
+      runtime.lookupProtectedConversationReceipt(Uint8List.fromList([4])),
+      throwsA(unauthorized),
+    );
+    expect(protectionCalls, isEmpty);
+    expect(aiHttp.requests, isEmpty);
+  });
+
+  test('owned protected malformed plaintext never reads HTTP', () async {
+    nativeProtection((_) async => Uint8List.fromList(utf8.encode('{}')));
+    final receipts = await openReceiptRuntime();
+    await runtime.start();
+    await login();
+    await expectLater(
+      runtime.lookupProtectedConversationReceipt(Uint8List.fromList([4])),
+      throwsA(
+        isA<CommandProtectionFailure>().having(
+          (e) => e.code,
+          'code',
+          CommandProtectionError.unavailable,
+        ),
+      ),
+    );
+    expect(aiHttp.requests, isEmpty);
+    expect(receipts.calls, isNot(contains('clear')));
+  });
+
+  test('owned protected native logout prevents receipt dispatch', () async {
+    final held = Completer<Object?>();
+    final entered = Completer<void>();
+    nativeProtection((_) {
+      entered.complete();
+      return held.future;
+    });
+    final receipts = await openReceiptRuntime();
+    receipts.value = receiptReference().encode();
+    await runtime.start();
+    await login();
+    final result = expectLater(
+      runtime.lookupProtectedConversationReceipt(Uint8List.fromList([4])),
+      throwsA(unauthorized),
+    );
+    Future<void>? transition;
+    try {
+      await entered.future;
+      transition = runtime.account.signOut();
+      await lifecycle.flush();
+      expect(runtime.createWindowsPendingCommandProtector(), isNull);
+      expect(aiHttp.requests, isEmpty);
+      held.complete(protectedLookupPlain('start_conversation'));
+      await result;
+      await transition;
+      expect(aiHttp.requests, isEmpty);
+      expect(receipts.value, isNull);
+    } finally {
+      if (!held.isCompleted) {
+        held.complete(protectedLookupPlain('start_conversation'));
+      }
+      await result;
+      await transition;
+    }
+  });
+
+  test('owned protected HTTP close suppresses late snapshot', () async {
+    nativeProtection((_) async => protectedLookupPlain('start_conversation'));
+    final receipts = await openReceiptRuntime();
+    receipts.value = receiptReference().encode();
+    await runtime.start();
+    await login();
+    final held = Completer<http.StreamedResponse>();
+    final entered = Completer<void>();
+    final aborted = Completer<void>();
+    aiHttp.onSend = (r) {
+      unawaited(
+        (r as http.AbortableRequest).abortTrigger!.then(
+          (_) => aborted.complete(),
+        ),
+      );
+      entered.complete();
+      return held.future;
+    };
+    final result = expectLater(
+      runtime.lookupProtectedConversationReceipt(Uint8List.fromList([4])),
+      throwsA(unauthorized),
+    );
+    Future<void>? closing;
+    var drained = false;
+    try {
+      await entered.future;
+      closing = runtime.close().then((_) => drained = true);
+      await aborted.future;
+      await result;
+      expect(drained, isFalse);
+      expect(aiHttp.closed, isFalse);
+      expect(receipts.value, receiptReference().encode());
+      held.complete(originalAnswer('start_conversation', 'COMPLETED'));
+      await closing;
+      expect(drained, isTrue);
+      expect(aiHttp.closed, isFalse);
+      expect(aiHttp.requests.length, 1);
+      expect(receipts.value, receiptReference().encode());
+    } finally {
+      if (!held.isCompleted) {
+        held.complete(originalAnswer('start_conversation', 'PENDING'));
+      }
+      await result;
+      await closing;
+    }
+  });
+
   for (final op in [
     'start_conversation',
     'conversation_turn',
