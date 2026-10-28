@@ -32,10 +32,8 @@ class QuizHistoryScreen extends ConsumerWidget {
           _HistoryPanel(
             key: ObjectKey(repository),
             repository: repository,
-            isCurrent: () => identical(
-              ref.read(quizHistoryRepositoryProvider),
-              repository,
-            ),
+            isCurrent: () =>
+                identical(ref.read(quizHistoryRepositoryProvider), repository),
           ),
         TextButton(
           onPressed: () => context.go('/quiz'),

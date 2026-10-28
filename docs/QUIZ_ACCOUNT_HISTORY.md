@@ -194,3 +194,20 @@ assertions and cleanup are unchanged. Parent fddf56f CI40752649494 attempt1 pass
 all5/every step and retained Windows markers. New2 widgets/format/analyze/build
 locally UNRUN: no Dart/Flutter SDK; QA46/inventory151/diffcheck pass separately.
 Require own exact-head CI; TEST ONLY ports are not hosted learner evidence.
+
+
+## Exact formatter correction — 2026-10-28
+
+CI40757797643, exact93f62b8/latestattempt1, passed repo/AI/database/Windows
+with every step successful. Flutter123062214330 stopped at strict formatting;
+analyzer, two new history widgets/full tests and later Flutter checks were skipped,
+not passed. The pinned formatter emits only a line-wrap change to the isCurrent
+closure supplied to _HistoryPanel. Apply that exact diff; the resulting source
+blob is debcacc647906c5b1077c5837a08f9ee455eaaf5, matching the logged prefix.
+Reverse replacement reproduces the entire original source byte-for-byte.
+
+Captured repository/mounted checks, all test bodies/assertions/deadlines/cleanup
+and CI/security gates remain unchanged. Local QA46/inventory151/whitespace pass;
+there is no local Dart/Flutter SDK, so new-head format/analyzer/history widgets/
+build evidence must come from exact-head Actions. No new test is invented for a
+layout-only fix. #13 stays open/#41 draft and all14 hosted release groups pending.
