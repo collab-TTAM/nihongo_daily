@@ -12,6 +12,38 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — recovery interleaving, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  751a47ddccf567e7b729f4a578c993ec8867f8c0. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40625687956 raw exact parent/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows122609974096 all6recovery states+retained child/fault markers passed.
+  Component proof, not hosted learner/physicalpowerloss acceptance.
+- Add TEST ONLY real ReadFile/candidate-open hooks after normal lease/policy.
+  Actual stage arrival after first data read before EOF/postchecks; actual stage
+  arrival after real candidate missing-open with original error restored; injected
+  ACCESS_DENIED only on second actual stage-absence probe. Unchanged recovery
+  must return unavailable/no bytes, latch, deny repeat raw/recovery/stage/publish.
+  Exact1candidateopen/2stageprobes/2data+EOFreads(or0absent)/1trigger, zero
+  recovery writes/renames; callbacks counted only after real fixture completion.
+- Independent normal reader stage64/privateACL/EOF +candidate64/absence preserved;
+  no stage in finalerror case, clean fresh read remains data only; unchanged
+  re-read and unique cleanup required. Controlled same-thread interleaving is
+  not hostile/concurrent kernel I/O or durable failure fencing proof.
+- Four paths: tool/windows_session_vault/{command_stage_fault_probe.cpp,
+  command_file_lease_probe.cpp}; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this
+  status. Production header/cpp/runner/default byte-identical; old probe lines/
+  test bodies retained. Separate hook targeting/error preservation/counters/
+  suppressbytes/sticky/preservation/diff review. Local C++17 warnings-as-errors/
+  nonWindowsfailclosed/46QA/inventory151/whitespace PASS; inventory not151 executed
+  tests. New MSVC/Win32/fullFlutter/analyzer/build locally UNRUN; CI required.
+- NEXT all5/EVERYstep/new3interleave+retained markers; fix actual failures,
+  pending-onlyhandoff/no duplicatecode. Then trustednamespace/durableuncertainty/
+  authenticated exactreceipt reconciliation/retentionapproval.41draft/17open/
+  AIoff/memory-only/all14hostedpending/no merge/closure/Pro/Authstrategy/API/
+  schema/RLS/provider/deploy/release/collection/security/spend/Alpha action.
+
 ## Core checkpoint — recovery candidate stage fence, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

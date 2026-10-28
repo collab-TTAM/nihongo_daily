@@ -608,3 +608,38 @@ OS compilation. Next include injected stage appearance during candidate I/O,
 trusted namespace/partition binding and durable uncertainty/authenticated exact
 receipt reconciliation. No learner retention approval, clearing/migration/retry/
 dispatch authority or hosted learner acceptance is conferred by this method.
+
+## TEST ONLY recovery interleaving — 2026-10-28
+
+The renamed-source test compilation now intercepts real candidate ReadFile and
+its real CreateFileW result, with modes13..15 armed only after ordinary lease
+acquisition/policy. Unchanged recovery code is required to suppress its result:
+- Existing64-byte candidate: after the first successful real ReadFile returns,
+  create a real private64-byte stage before EOF/final stage/policy checks.
+- Missing candidate: create the stage after the actual failed candidate open,
+  preserving FILE_NOT_FOUND when returning to the low-level reader.
+- Valid candidate/no stage: the first real stage absence probe succeeds; only
+  the second actual FILE_NOT_FOUND observation is replaced with ACCESS_DENIED.
+
+Open/error and read/count results remain real except that explicitly injected
+final error. The callback completes through normal native fixture APIs and its
+completion is counted once; target writes are never production recovery writes.
+Require one candidate open, two stage probes, two real candidate reads (data+EOF)
+or zero for absent candidate, and exactly one trigger (one fault only for mode15).
+Repeated recovery/raw reads, stage and publish on the same failed lease must
+remain denied with no bytes and no additional open/read/write/rename.
+
+Independent unmodified readers verify stage64 remains for the two arrival cases,
+original candidate64/absence is preserved, and no stage is created in error mode.
+They retain exact private ACL/owner/link/bounds/EOF checks and re-read unchanged
+bytes before mandatory unique fixture cleanup. A fresh reader still refuses
+unresolved stage; after injected-error-only mode the clean original is readable
+data, never revived dispatch authority for the failed object.
+Required marker: `PASS: Windows recovery during-read stage arrival/final-probe uncertainty suppresses bytes (TEST ONLY)`.
+
+These are controlled same-thread API interleavings, not concurrent kernel disk
+reads or proof against hostile writers. Production source/header/app/default
+remain unchanged; all previous fault/child/recovery cases remain mandatory.
+Actual new Win32 behavior requires exact-head CI. Linux verifies only unsupported
+OS compilation. Trusted namespace, durable uncertainty and authenticated receipt
+reconciliation/retention approval remain separate prerequisites for learner use.

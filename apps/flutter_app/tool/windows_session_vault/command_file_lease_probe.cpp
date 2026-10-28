@@ -11,6 +11,8 @@
 #include <aclapi.h>
 #include <iostream>
 bool ProbeCommandStageFault(const std::wstring& directory, int mode);
+bool ProbeCommandRecoveryInterleave(const std::wstring& directory, int mode,
+                                    const std::function<void()>& unresolvedStage);
 bool ProbeCommandPublishFault(const std::wstring& directory, int mode,
                              const std::function<void()>& racingTarget);
 namespace {
@@ -943,6 +945,40 @@ void CandidateReadMatrix(const std::wstring& root) {
       }
     }
     std::cout << "PASS: Windows recovery candidate stage absence/preservation/sticky fence (TEST ONLY)" << std::endl;
+    for (int mode = 13; mode <= 15; ++mode) {
+      std::cout << "CHECK: ciphertext recovery interleave " << mode << std::endl;
+      if (mode != 14) create(candidate, 64, false);
+      unsigned created = 0;
+      Check(ProbeCommandRecoveryInterleave(directory, mode, [&]() {
+        ++created;
+        create(stage, 64, false);
+      }));
+      Check(created == (mode == 15 ? 0u : 1u));
+      if (mode != 15) readStage(std::vector<unsigned char>(64, 0xa5));
+      else Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      auto reader = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(reader != nullptr && reader->CheckPrivateAccessPolicy());
+      const auto original = reader->ReadCiphertextCandidate();
+      if (mode == 14) Check(original.state == State::absent && original.bytes.empty());
+      else Check(original.state == State::present && original.bytes == std::vector<unsigned char>(64, 0xa5));
+      const auto recovery = reader->ReadRecoveryCiphertextCandidate();
+      if (mode == 15) Check(recovery.state == State::present && recovery.bytes == original.bytes);
+      else Check(recovery.state == State::unavailable && recovery.bytes.empty());
+      reader.reset();
+      if (mode != 15) {
+        readStage(std::vector<unsigned char>(64, 0xa5));
+        Check(DeleteFileW(stage.c_str()) != FALSE);
+      }
+      if (mode != 14) {
+        auto verifier = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(verifier != nullptr);
+        const auto preserved = verifier->ReadCiphertextCandidate();
+        Check(preserved.state == State::present && preserved.bytes == original.bytes);
+        verifier.reset();
+        Check(DeleteFileW(candidate.c_str()) != FALSE);
+      } else Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+    }
+    std::cout << "PASS: Windows recovery during-read stage arrival/final-probe uncertainty suppresses bytes (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());

@@ -14,6 +14,9 @@ struct FaultState {
   unsigned renames = 0;
   bool renamed = false;
   std::function<void()> racingTarget;
+  HANDLE candidate = INVALID_HANDLE_VALUE;
+  unsigned candidateOpens = 0, candidateReads = 0, stageProbes = 0, recoveryTriggers = 0;
+  std::function<void()> unresolvedStage;
 } fault;
 BOOL WINAPI FaultWriteFile(HANDLE file, LPCVOID bytes, DWORD size,
                           LPDWORD written, LPOVERLAPPED overlapped) {
@@ -65,9 +68,46 @@ BOOL WINAPI FaultCloseHandle(HANDLE file) {
 HANDLE WINAPI FaultCreateFileW(LPCWSTR path, DWORD access, DWORD share,
     LPSECURITY_ATTRIBUTES attributes, DWORD creation, DWORD flags, HANDLE templateFile) {
   const auto handle = ::CreateFileW(path, access, share, attributes, creation, flags, templateFile);
+  const auto error = GetLastError();
+  if (fault.mode >= 13 && fault.mode <= 15 && creation == OPEN_EXISTING) {
+    if (access == (GENERIC_READ | READ_CONTROL)) {
+      ++fault.candidateOpens;
+      if (fault.mode == 14 && handle == INVALID_HANDLE_VALUE && error == ERROR_FILE_NOT_FOUND) {
+        fault.unresolvedStage(); // Insert real .stage before candidate absence returns.
+        ++fault.recoveryTriggers;
+      }
+      if (handle != INVALID_HANDLE_VALUE) fault.candidate = handle;
+    }
+    if (access == FILE_READ_ATTRIBUTES && (flags & FILE_FLAG_BACKUP_SEMANTICS) != 0) {
+      ++fault.stageProbes;
+      if (fault.mode == 15 && fault.stageProbes == 2 &&
+          handle == INVALID_HANDLE_VALUE && error == ERROR_FILE_NOT_FOUND) {
+        ++fault.recoveryTriggers;
+        ++fault.faults;
+        SetLastError(ERROR_ACCESS_DENIED); // Only the final stage absence probe fails.
+        return INVALID_HANDLE_VALUE;
+      }
+    }
+  }
+
   if (fault.mode >= 5 && (access & DELETE) != 0 && handle != INVALID_HANDLE_VALUE)
     fault.stage = handle;
+  SetLastError(error); // Fixture callbacks must not change the real open outcome.
   return handle;
+}
+BOOL WINAPI FaultReadFile(HANDLE file, LPVOID bytes, DWORD size,
+                         LPDWORD read, LPOVERLAPPED overlapped) {
+  const auto result = ::ReadFile(file, bytes, size, read, overlapped);
+  const auto error = GetLastError();
+  if ((fault.mode == 13 || fault.mode == 15) && file == fault.candidate) {
+    ++fault.candidateReads;
+    if (fault.mode == 13 && fault.recoveryTriggers == 0 && result != FALSE && *read > 0) {
+      fault.unresolvedStage(); // Real stage appears before the reader completes EOF/postchecks.
+      ++fault.recoveryTriggers;
+    }
+  }
+  SetLastError(error);
+  return result;
 }
 BOOL WINAPI FaultSetFileInformationByHandle(HANDLE file, FILE_INFO_BY_HANDLE_CLASS kind,
                                            LPVOID info, DWORD size) {
@@ -95,6 +135,7 @@ BOOL WINAPI FaultSetFileInformationByHandle(HANDLE file, FILE_INFO_BY_HANDLE_CLA
 }  // namespace
 #define PendingCommandFileLease FaultPendingCommandFileLease
 #define WriteFile FaultWriteFile
+#define ReadFile FaultReadFile
 #define FlushFileBuffers FaultFlushFileBuffers
 #define CloseHandle FaultCloseHandle
 #define CreateFileW FaultCreateFileW
@@ -104,6 +145,7 @@ BOOL WINAPI FaultSetFileInformationByHandle(HANDLE file, FILE_INFO_BY_HANDLE_CLA
 #undef CreateFileW
 #undef CloseHandle
 #undef FlushFileBuffers
+#undef ReadFile
 #undef WriteFile
 #undef PendingCommandFileLease
 // One serialized synthetic invocation. No flags/ports in the production class.
@@ -148,6 +190,31 @@ bool ProbeCommandPublishFault(const std::wstring& directory, int mode,
   return fault.faults == 1 && fault.renames == 1 && fault.writes == 0 &&
       fault.flushes == (mode >= 7 ? 2u : 1u) &&
       fault.closes == (mode == 8 ? 2u : 1u);
+}
+// Real candidate data/absence is observed between the two stage probes. The
+// callback writes only a unique synthetic stage through the normal probe API.
+bool ProbeCommandRecoveryInterleave(const std::wstring& directory, int mode,
+                                    const std::function<void()>& unresolvedStage) {
+  if (mode < 13 || mode > 15 || fault.mode != 0) return false;
+  struct Reset { ~Reset() { fault = {}; } } reset;
+  auto lease = nihongo::FaultPendingCommandFileLease::Acquire(directory);
+  if (!lease || !lease->CheckPrivateAccessPolicy()) return false;
+  fault = {};
+  fault.mode = mode;
+  fault.unresolvedStage = unresolvedStage;
+  const auto result = lease->ReadRecoveryCiphertextCandidate();
+  if (result.state != nihongo::PendingCommandCandidateState::unavailable ||
+      !result.bytes.empty() || lease->CheckPrivateAccessPolicy()) return false;
+  const auto repeated = lease->ReadRecoveryCiphertextCandidate();
+  const auto raw = lease->ReadCiphertextCandidate();
+  if (repeated.state != nihongo::PendingCommandCandidateState::unavailable ||
+      !repeated.bytes.empty() || raw.state != nihongo::PendingCommandCandidateState::unavailable ||
+      !raw.bytes.empty() || lease->StageCiphertextCandidate(std::vector<unsigned char>(64, 0x5a)) ||
+      lease->PublishStagedCiphertextCandidate()) return false;
+  lease.reset();
+  return fault.recoveryTriggers == 1 && fault.candidateOpens == 1 &&
+      fault.candidateReads == (mode == 14 ? 0u : 2u) && fault.stageProbes == 2 &&
+      fault.faults == (mode == 15 ? 1u : 0u) && fault.writes == 0 && fault.renames == 0;
 }
 // TEST ONLY child entry: successful exits occur solely inside the selected real
 // syscall boundary above. ExitProcess deliberately bypasses C++ lease cleanup.
