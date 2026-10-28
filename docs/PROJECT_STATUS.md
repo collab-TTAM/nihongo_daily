@@ -13,31 +13,26 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — original review context, 2026-10-28 UTC
+## Core checkpoint — exact review-context formatter repair, 2026-10-28 UTC
 
-- Resume PR41 automation/issue-11-plan-sdk-integration, parent
-  e38f0bd29dbe10c78e726e22107048195698240a. New commit/tree/CI in PR41 checkpoint.
-- Parent CI40767557557/latestattempt1 all5/EVERYstep SUCCESS/no skips. #13 actual
-  acceptance/local practice rules and #2/#3/#4/#5 merged prerequisites read.
-  Main/source37/Pro38 unchanged; N4 content/manifest/tests/docs reserved.
-- Needs-review rows expand to current immutable original usage context and exact
-  Japanese/kana/Vietnamese examples; selectable text, explicit empty examples and
-  unavailable audio. Existing heading/reading/meaning/error counts/practice action/
-  twenty-item cap/projection identity stay. No new content/network/storage read/
-  write/timer/mastery/SRS/credit/default activation. Reload removes expanded rows;
-  same-item redisplay starts collapsed, no persisted/PageStorage expansion.
-- Three widget cases: exact original text/no additional I/O; empty-reload and
-  same-item fresh collapse; expanded320px/200-percent no layout exception. All
-  original widget bytes/assertions/cleanup retained. Separate snapshot/version/
-  no-I/O/reload/layout/diff review. Four paths progress screen/test under
-  apps/flutter_app; docs/QUIZ_PROGRESS_VIEW.md; this status. QA46/inventory151/
-  diffcheck PASS; new3 Flutter/format/analyze/build locally UNRUN(noSDK).
-- NEXT exact-head/latestattempt all5/EVERYstep/new3+retained tests; fix actual
-  diagnostics without weaker checks, pending-only handoff/no duplication.
-  Remaining13/hosted proof and root/backend/captured storage lifecycle/durable
-  uncertainty/authenticated conditional release/retentionapproval still open.
- 41draft/13+17open/AIoff/memory-only/all14hostedpending; no Pro/API/RLS/Authstrategy/
-  provider/collection/spend/security/merge/deploy/release/schedule/Alpha acceptance.
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  0b4cbfd20746e48f825ec48337023a1d695bf26a. New commit/tree/CI in PR41 checkpoint.
+- CI40770080521/latestattempt1 FAILURE: other4 jobs/every step SUCCESS; Flutter
+  123105427842 strict formatter failed on one long audio-unavailable assertion.
+  Analyzer/new3 widgets/fullFlutter/downstream SKIPPED, not passed.
+- Apply EXACT formatter four-line wrap. Result blob starts557b7ca matching CI;
+  reverse replacement equals entire original test. Assertions/inputs/bodies/
+  controlflow/deadlines/cleanup/security/CI gates unchanged. Layout-only fix,
+  no redundant test. Separate diff/hash/preservation review complete.
+- Three paths apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart;
+  docs/QUIZ_PROGRESS_VIEW.md; this status. QA46/inventory151/diffcheck PASS;
+  local Dart/Flutter SDK absent, new-head format/analyze/widget/build UNRUN.
+- NEXT exact-head/latestattempt all5/every step/new3 context widgets+retained
+  tests; fix actual diagnostics without weaker checks; pending-only handoff/
+  no duplicate work. Then remaining13 and root/backend/captured lifecycle/durable
+  uncertainty/authenticated conditional release/retentionapproval.41draft/13+17open/
+  AIoff/memory-only/all14hostedpending; no Pro/API/RLS/Authstrategy/provider/
+  collection/spend/security/merge/deploy/release/schedule/Alpha acceptance.
 
 ## Core checkpoint — progress selector callback fence, 2026-10-28 UTC
 

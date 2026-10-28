@@ -444,7 +444,10 @@ void main() {
       expect(find.text(example.reading), findsOneWidget);
       expect(find.text(example.vietnamese), findsOneWidget);
     }
-    expect(find.text('Âm thanh chưa khả dụng trong phần ôn này.'), findsOneWidget);
+    expect(
+      find.text('Âm thanh chưa khả dụng trong phần ôn này.'),
+      findsOneWidget,
+    );
     expect(find.text('N5 · 1 bộ đã lưu'), findsOneWidget);
     expect(ports.contentReads, 1);
     expect(ports.reads, 1);

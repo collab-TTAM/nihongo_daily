@@ -143,3 +143,15 @@ whitespace passed locally; new3 Flutter/format/analyze/build locally UNRUN(noSDK
 require exact-head CI. Parent e38f0bd CI40767557557/latestattempt1 all5/EVERYstep
 SUCCESS/no skips. This is local practice assistance, not hosted mastery/learner
 acceptance; #13 remains open/#41 draft/all14 hosted release groups pending.
+
+## Exact assertion formatter repair — 2026-10-28 UTC
+
+CI40770080521 exact0b4cbfd/latestattempt1 passed repo/AI/database/Windows, but
+Flutter123105427842 failed strict formatting on one long audio-unavailable
+assertion in quiz_progress_widget_test.dart. Analyzer/new3 context widget cases/
+fullFlutter/downstream were skipped, not passed. Apply the exact formatter's
+four-line wrap; resulting blob starts557b7ca as logged. Reverse replacement equals
+the full original test file. All assertions/inputs/test bodies/control flow remain
+identical; no test added for this layout-only correction and no gate weakened.
+QA46/inventory151/diffcheck pass separately; no local Dart/Flutter SDK, formatter/
+analyzer/widget/build execution claim. Require own exact-head CI before pass.
