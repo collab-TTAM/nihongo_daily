@@ -116,3 +116,30 @@ widget bodies/assertions/cleanup remain. Parent aa7d7cd CI40761864119 attempt1
 passed all5/every step and retained Windows markers. New2 widget/format/analyze/
 build locally UNRUN (no Dart/Flutter SDK); QA46/inventory151/diffcheck pass
 separately. Exact-head CI required. No hosted learner/mastery/release acceptance.
+
+
+## Review original usage in place — 2026-10-28
+
+Each displayed needs-review row can now expand to show its already captured
+current curriculum entry's usage context and every original Japanese example,
+kana reading and Vietnamese translation. Text is selectable; missing examples
+have an explicit empty message and audio remains unavailable in this review view.
+The heading/reading/meaning/error counts and existing focused-practice action are
+unchanged. No synthetic example, alternate reading or new curriculum is authored.
+
+Expansion uses only the immutable entry already accepted by the owner-bound
+progress projection: no network/history/content read, save, recorder, score,
+mastery/SRS/profile mutation or study credit. Existing twenty-row display cap and
+current-version/choice matching still apply. Reload clears the projection and
+removes expanded rows; redisplaying the same item starts collapsed. No PageStorage
+key or persisted expansion is used. Owner/source/level/route replacement continues
+to dispose the captured panel and its public context together.
+
+Three added widget cases show exact original usage/examples and unchanged
+read/write counters; reload to empty then back to the same recommendation without
+restoring expansion; and320px/200-percent expanded text without layout exception.
+All original widget bodies/assertions/cleanup remain unchanged. QA46/inventory151/
+whitespace passed locally; new3 Flutter/format/analyze/build locally UNRUN(noSDK),
+require exact-head CI. Parent e38f0bd CI40767557557/latestattempt1 all5/EVERYstep
+SUCCESS/no skips. This is local practice assistance, not hosted mastery/learner
+acceptance; #13 remains open/#41 draft/all14 hosted release groups pending.

@@ -254,13 +254,38 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
           if (progress.needsReview.length > 20)
             const Text('Hiển thị tối đa 20 từ cần ôn.'),
           for (final item in progress.needsReview.take(20))
-            ListTile(
+            ExpansionTile(
               key: ValueKey('quiz-progress-item-${item.entry.id}'),
               title: Text(item.entry.heading),
               subtitle: Text(
                 '${item.entry.reading} · ${item.entry.meaningVi}\n'
-                'Sai ${item.incorrectCount} lần; câu trả lời gần nhất chưa đúng.',
+                'Sai ${item.incorrectCount} lần; câu trả lời gần nhất chưa đúng.\n'
+                'Mở để xem cách dùng và ví dụ gốc.',
               ),
+              childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Cách dùng'),
+                SelectableText(item.entry.explanationVi),
+                if (item.entry.examples.isEmpty)
+                  const Text('Bài gốc chưa có ví dụ cho từ này.')
+                else ...[
+                  const Text('Ví dụ gốc'),
+                  for (final example in item.entry.examples)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SelectableText(example.japanese),
+                          SelectableText(example.reading),
+                          SelectableText(example.vietnamese),
+                        ],
+                      ),
+                    ),
+                ],
+                const Text('Âm thanh chưa khả dụng trong phần ôn này.'),
+              ],
             ),
         ],
       ],

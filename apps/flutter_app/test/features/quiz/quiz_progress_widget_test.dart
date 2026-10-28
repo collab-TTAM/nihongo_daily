@@ -425,6 +425,84 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('review context shows original usage and examples without I/O', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    final entry = question.target;
+    expect(entry.examples, isNotEmpty);
+    expect(find.text(entry.explanationVi), findsNothing);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('quiz-progress-item-${entry.id}')),
+    );
+    expect(find.text(entry.explanationVi), findsOneWidget);
+    for (final example in entry.examples) {
+      expect(find.text(example.japanese), findsOneWidget);
+      expect(find.text(example.reading), findsOneWidget);
+      expect(find.text(example.vietnamese), findsOneWidget);
+    }
+    expect(find.text('Âm thanh chưa khả dụng trong phần ôn này.'), findsOneWidget);
+    expect(find.text('N5 · 1 bộ đã lưu'), findsOneWidget);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(ports.writes, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('reload discards expanded review context and never saves', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    final entry = question.target;
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('quiz-progress-item-${entry.id}')),
+    );
+    expect(find.text(entry.explanationVi), findsOneWidget);
+    ports.records = [];
+    await load(tester);
+    expect(find.text(entry.explanationVi), findsNothing);
+    expect(find.text(entry.examples.first.japanese), findsNothing);
+    expect(find.text('N5 · 0 bộ đã lưu'), findsOneWidget);
+    ports.records = [report(1)];
+    await load(tester);
+    expect(find.text(entry.heading), findsOneWidget);
+    expect(find.text(entry.explanationVi), findsNothing);
+    expect(ports.contentReads, 3);
+    expect(ports.reads, 3);
+    expect(ports.writes, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('expanded original review context fits narrow large text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 700);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('quiz-progress-item-${question.target.id}')),
+    );
+    expect(find.text(question.target.explanationVi), findsOneWidget);
+    expect(find.text(question.target.examples.first.japanese), findsOneWidget);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(ports.writes, 0);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('route exit fences late history failure', (tester) async {
     final ports = _Ports(original);
     final container = await mount(tester, ports);
