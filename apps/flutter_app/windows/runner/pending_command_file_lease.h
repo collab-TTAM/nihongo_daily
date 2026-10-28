@@ -26,6 +26,9 @@ class PendingCommandFileLease final {
   // Opaque candidate only, never authenticated/decrypted/committed authority.
   // Fixed basename, 1..65536 bytes; any read uncertainty fences this lease.
   PendingCommandCandidate ReadCiphertextCandidate() noexcept;
+  // Recovery snapshot: .stage must be absent before AND after candidate read.
+  // Any stage/uncertainty fences; result never authorizes replay/new dispatch.
+  PendingCommandCandidate ReadRecoveryCiphertextCandidate() noexcept;
   // Synthetic-only prerequisite: create+flush fixed .stage, never publish/commit.
   // Caller supplies opaque ciphertext; true is NOT dispatch/durability authority.
   // Existing/uncertain stage is preserved; any failure fences this lease.

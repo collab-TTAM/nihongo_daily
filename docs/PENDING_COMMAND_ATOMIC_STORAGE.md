@@ -570,3 +570,41 @@ Trusted partition namespace, durable uncertainty/reconciliation and learner
 retention approval remain required. New native execution needs exact-head CI;
 Linux only verifies the unsupported-OS branch. No hosted learner proof or release
 acceptance is claimed by this probe.
+
+## Recovery read with unresolved-stage fence — 2026-10-28
+
+ReadRecoveryCiphertextCandidate is an isolated read-only snapshot method. It
+requires the same held private leaf/sentinel policy, positively observes fixed
+.stage absence before AND after the existing bounded .bin read, and rechecks
+policy before returning. The stage probe opens only file attributes with zero
+sharing, OPEN_EXISTING, OPEN_REPARSE_POINT and BACKUP_SEMANTICS; any successfully
+opened object (including directory/junction) is unresolved. Only FILE_NOT_FOUND
+passes; sharing/access/other uncertainty fails closed. It never reads/adopts/
+repairs/deletes stage contents or follows a stage reparse target. Any stage or
+read/policy uncertainty permanently fences the lease and returns unavailable
+with no bytes, suppressing even an otherwise valid .bin.
+
+Both absent returns absent; candidate-only returns the original opaque candidate
+under all existing size/link/type/private-ACL checks. These are snapshots only:
+absence is NOT no-dispatch/legacy resolution/new command authorization, and bytes
+are NOT authenticated receipt/replay authority. Sequential observations cannot
+prove absence of hostile concurrent mutation or durable rollback protection.
+The existing low-level ReadCiphertextCandidate stays unchanged for staging and
+explicit diagnostics; recovery callers must not substitute it for this guard.
+No app/native channel/default automatically calls the new component.
+
+Native matrix covers empty, candidate-only, stage-only, both, stage-directory and
+stage-junction. Positive snapshots are then invalidated by a later synthetic
+stage; removing that fixture cannot un-fence the same lease. Exact64byte stage/
+candidate/owner/ACL/EOF are retained; junction itself is unlinked without traversal
+and the independently accessed one-byte target marker survives. Existing real
+publication-child exit cases now additionally call recovery read: before-rename
+stage blocks with zero bytes; the three post-rename candidates remain readable
+data only. Old assertions and publication/fault/subprocess probes remain.
+Required new marker: `PASS: Windows recovery candidate stage absence/preservation/sticky fence (TEST ONLY)`.
+
+New Win32/MSVC execution needs exact-head Actions. Linux checks only unsupported
+OS compilation. Next include injected stage appearance during candidate I/O,
+trusted namespace/partition binding and durable uncertainty/authenticated exact
+receipt reconciliation. No learner retention approval, clearing/migration/retry/
+dispatch authority or hosted learner acceptance is conferred by this method.

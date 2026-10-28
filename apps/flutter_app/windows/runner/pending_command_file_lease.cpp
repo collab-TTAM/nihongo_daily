@@ -166,6 +166,37 @@ PendingCommandCandidate PendingCommandFileLease::ReadCiphertextCandidate() noexc
 #endif
   } catch (...) { return fail(); } // Never publish partial bytes or raw OS errors.
 }
+PendingCommandCandidate PendingCommandFileLease::ReadRecoveryCiphertextCandidate() noexcept {
+  const auto fail = [&]() {
+    policy_failed_ = true;
+    return PendingCommandCandidate{};
+  };
+  try {
+    if (!CheckPrivateAccessPolicy()) return fail();
+#ifdef _WIN32
+    const auto stageAbsent = [&]() {
+      struct File {
+        HANDLE value = INVALID_HANDLE_VALUE;
+        ~File() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+      } file;
+      const auto path = directory_ + L"\\pending-command.stage";
+      file.value = CreateFileW(path.c_str(), FILE_READ_ATTRIBUTES, 0, nullptr,
+          OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, nullptr);
+      // Any object, including directory/reparse, is unresolved. Never follow,
+      // read, repair, adopt or delete it. Only definite filename absence passes.
+      if (file.value != INVALID_HANDLE_VALUE) return false;
+      return GetLastError() == ERROR_FILE_NOT_FOUND && CheckPrivateAccessPolicy();
+    };
+    if (!stageAbsent()) return fail();
+    auto candidate = ReadCiphertextCandidate();
+    if (candidate.state == PendingCommandCandidateState::unavailable ||
+        !stageAbsent() || !CheckPrivateAccessPolicy()) return fail();
+    return candidate; // Opaque snapshot only; no durable reservation/replay authority.
+#else
+    return fail();
+#endif
+  } catch (...) { return fail(); }
+}
 bool PendingCommandFileLease::StageCiphertextCandidate(
     const std::vector<unsigned char>& bytes) noexcept {
   const auto fail = [&]() { policy_failed_ = true; return false; };

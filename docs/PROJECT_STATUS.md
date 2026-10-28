@@ -12,6 +12,40 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — recovery candidate stage fence, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  93425e810fc8b7147dc203dc011dd8ff947d8705. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40619563477 raw exact parent/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows122590058045 all4 actual publicationchild exits+retained markers passed.
+  Component proof, not hosted learner/physical powerloss acceptance.
+- New isolated ReadRecoveryCiphertextCandidate requires stageabsence before AND
+  after existing bounded candidate read/policy. Open attributes/sharezero/
+  nofollow/directory-aware, only FILE_NOT_FOUND passes; any object/uncertainty
+  returns unavailable/zero bytes and sticky fence, suppressing valid.bin too.
+  No stage contents read/adoption/repair/delete. Old low-level reader unchanged.
+  Absent/present only snapshot, never no-dispatch/newreservation/replay authority.
+- Six native states empty/binonly/stageonly/both/stagedirectory/stagejunction;
+  late stage invalidates previous clean snapshots, unlink cannot revive old
+  lease. Exact stage/bin data/EOF/ACL preserved; direct junction target marker
+  byte+length survives unlink. Extend existing4child cases: before-rename stage
+  blocks recovery, after-rename opaque data read, old assertions retained.
+- Five paths: runner pending_command_file_lease.{h,cpp}; tool/
+  windows_session_vault/command_file_lease_probe.cpp;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. Separate handle/policy/
+  before-after check/bounds/emptydata/preservation/nonrecursivecleanup review.
+  Local C++17 warnings-as-errors/nonWindowsfailclosed/46QA/inventory151/
+  whitespace passed; inventory not151 executed tests. New MSVC/Win32/fullFlutter/
+  analyzer/build locally UNRUN; exact-head CI needed. No SDK bypass/CI weakening.
+- NEXT all5/EVERYstep/newrecovery+retainedchild/fault/native markers. Fix actual
+  failures; pending-onlyhandoff/no duplicatecode. Then stage appearance DURING
+  candidate I/O, trustednamespace/durableuncertainty/receipt reconciliation/
+  retentionapproval. Sequential snapshot not hostile-race/durablefencing proof.
+  41draft/17open/AIoff/memory-only/all14hostedpending; no app/channel/default
+  wiring/Pro/Authstrategy/API/schema/RLS/provider/deploy/release/collection/
+  security/spend/merge/closure/Alpha action.
+
 ## Core checkpoint — publication subprocess exits, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

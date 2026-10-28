@@ -859,6 +859,9 @@ void CandidateReadMatrix(const std::wstring& root) {
       const auto result = reader->ReadCiphertextCandidate();
       if (before) Check(result.state == State::absent && result.bytes.empty());
       else Check(result.state == State::present && result.bytes == std::vector<unsigned char>(64, 0xa5));
+      const auto recovery = reader->ReadRecoveryCiphertextCandidate();
+      if (before) Check(recovery.state == State::unavailable && recovery.bytes.empty());
+      else Check(recovery.state == State::present && recovery.bytes == result.bytes);
       Check(!reader->PublishStagedCiphertextCandidate()); // No captured authority after restart.
       Check(!reader->CheckPrivateAccessPolicy());
       Check(!reader->StageCiphertextCandidate(std::vector<unsigned char>(64, 0x5a)));
@@ -878,6 +881,68 @@ void CandidateReadMatrix(const std::wstring& root) {
       }
     }
     std::cout << "PASS: Windows publication subprocess pre/post-rename/flush/close exit preservation (TEST ONLY)" << std::endl;
+    for (int kind = 0; kind < 6; ++kind) {
+      std::cout << "CHECK: ciphertext recovery stage fence " << kind << std::endl;
+      // empty, candidate-only, stage-only, both, stage-directory, stage-junction.
+      if (kind == 1 || kind == 3) create(candidate, 64, false);
+      if (kind == 2 || kind == 3) create(stage, 64, false);
+      if (kind == 4) Check(CreateDirectoryW(stage.c_str(), &folderAttributes) != FALSE);
+      if (kind == 5) {
+        Check(CreateDirectoryW(target.c_str(), &folderAttributes) != FALSE);
+        create(target + L"\\collision-marker", 1, false);
+        Junction(stage, target);
+      }
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      const auto recovered = lease->ReadRecoveryCiphertextCandidate();
+      if (kind <= 1) {
+        Check(recovered.state == (kind == 0 ? State::absent : State::present));
+        Check(recovered.bytes == std::vector<unsigned char>(kind == 0 ? 0 : 64, 0xa5));
+        create(stage, 64, false); // Later unresolved stage must revoke even a prior clean read.
+        const auto late = lease->ReadRecoveryCiphertextCandidate();
+        Check(late.state == State::unavailable && late.bytes.empty());
+      } else Check(recovered.state == State::unavailable && recovered.bytes.empty());
+      Check(!lease->CheckPrivateAccessPolicy());
+      if (kind <= 3) {
+        readStage(std::vector<unsigned char>(64, 0xa5));
+        Check(DeleteFileW(stage.c_str()) != FALSE);
+      } else {
+        const auto attributes = GetFileAttributesW(stage.c_str());
+        Check(attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        Check(((attributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0) == (kind == 5));
+        Check(RemoveDirectoryW(stage.c_str()) != FALSE); // Unlink only, never traverse.
+      }
+      const auto stillBlocked = lease->ReadRecoveryCiphertextCandidate();
+      Check(stillBlocked.state == State::unavailable && stillBlocked.bytes.empty());
+      Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(64, 0x5a)));
+      Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      lease.reset();
+      auto verifier = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(verifier != nullptr);
+      const auto original = verifier->ReadCiphertextCandidate();
+      if (kind == 1 || kind == 3) Check(original.state == State::present &&
+          original.bytes == std::vector<unsigned char>(64, 0xa5));
+      else Check(original.state == State::absent && original.bytes.empty());
+      verifier.reset();
+      if (kind == 1 || kind == 3) Check(DeleteFileW(candidate.c_str()) != FALSE);
+      if (kind == 5) {
+        const auto marker = target + L"\\collision-marker";
+        WIN32_FILE_ATTRIBUTE_DATA markerInfo{};
+        Check(GetFileAttributesExW(marker.c_str(), GetFileExInfoStandard, &markerInfo) != FALSE);
+        Check(markerInfo.nFileSizeHigh == 0 && markerInfo.nFileSizeLow == 1);
+        const auto file = CreateFileW(marker.c_str(), GENERIC_READ, 0, nullptr,
+            OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+        Check(file != INVALID_HANDLE_VALUE);
+        unsigned char value = 0;
+        DWORD read = 0;
+        const bool intact = ReadFile(file, &value, 1, &read, nullptr) != FALSE && read == 1 && value == 0xa5;
+        const bool closed = CloseHandle(file) != FALSE;
+        Check(intact && closed);
+        Check(DeleteFileW(marker.c_str()) != FALSE);
+        Check(RemoveDirectoryW(target.c_str()) != FALSE);
+      }
+    }
+    std::cout << "PASS: Windows recovery candidate stage absence/preservation/sticky fence (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());
