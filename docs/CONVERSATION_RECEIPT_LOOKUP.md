@@ -530,3 +530,38 @@ Dart cases/format/analyze/build locally UNRUN (no SDK); QA46/inventory151/diffch
 pass separately. Require new exact-head CI. No production/default/CI/security or
 retention change. Concrete file backend/root/storage lifecycle/durable uncertainty/
 authenticated conditional release and all14 hosted learner groups remain open.
+
+## Native owned protected-receipt composition — 2026-10-28
+
+The mandatory Windows receipt-owned-reopen phase now calls the production
+PersistentSupabaseRuntime.lookupProtectedConversationReceipt with a synthetic
+start envelope encrypted through the SAME owned native MethodChannel/DPAPI
+protector after refresh-token rotation and own-profile readiness. It checks
+UNKNOWN/PENDING/COMPLETED typed snapshots via the original-bound captured SDK
+GET. Existing fixed query, captured bearer/key, empty body, no redirects/no-store
+and native pending metadata checks execute before every synthetic HTTP response.
+
+The new path rejects corrupted native ciphertext before receipt HTTP; an actually
+encrypted envelope with the same event but changed scenario fails original-request
+association despite a valid completed response. After awaited close it rejects
+stale protected lookup without more HTTP. Independent protected-read counters
+require exactly3 status reads, then4 after the mismatch and unchanged4 after close;
+all original five-field/original-bound counters and assertions remain intact.
+Every status preserves token/reference and repeats same-event conflict/different-
+event pending denials with zero mutation HTTP. Original finally/cleanup/deadlines
+and all write/reopen/logout/held-logout/absent phases remain mandatory.
+
+The outer verifier prints the additional marker only after the whole reopen phase
+succeeds:
+`Windows OWNED protected receipt start/status/corrupt/mismatch/stale/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)`.
+
+This tests native start composition only; mocked-native SDK tests separately
+cover all3 operations and held success/error lifecycle guards. New Windows phase,
+Dart formatter/analyzer and builds are locally UNRUN (no SDK/native Windows);
+require the new exact-head CI and marker. Parent b65e17d CI40730790570/latestattempt1
+has all5 jobs/EVERY step SUCCESS; its Flutter log122967308434 confirms protected
+reads/refresh late cases and Windows122966318109 confirms all prior owned markers.
+Synthetic Auth/JWT/profile/receipt HTTP is not hosted learner/RLS/provider proof.
+No payload file persistence, collection approval, application/release/replay
+permission or default activation follows. Trusted root/backend/uncertainty,
+authenticated conditional application-release and retention approval remain open.

@@ -12,6 +12,35 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+
+## Core checkpoint — native protected receipt composition, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  b65e17dbe6982428d339e15eb90bb054499969ed. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40730790570/latestattempt1 all5/EVERY step SUCCESS/no skips; Flutter
+  122967308434 protected read/late refresh cases and Windows122966318109 prior
+  owned SDK/profile/DPAPI/receipt markers observed. TEST ONLY, not hosted proof.
+- Extend mandatory receipt-owned-reopen Windows journey through production
+  lookupProtectedConversationReceipt: actual DPAPI start ciphertext +same owned
+  SDK UNKNOWN/PENDING/COMPLETED; corrupt ciphertext noHTTP, encrypted changed
+  original fails strict association, stale close noHTTP. Four exact protected GETs;
+  old counters/assertions/deadlines/cleanup retained. Each status preserves native
+  token/reference and both exact mutation denials/zero sends. Independent counter
+  avoids resetting or weakening original five-field/original-bound evidence.
+- Four paths: tool/windows_sdk_receipt_fixture.dart and
+  tool/verify_windows_vault_bridge.ps1 under apps/flutter_app;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. New native marker only after
+  whole phase succeeds. Separate diff/count/authority/preservation review done.
+- New native Windows/Dart format/analyze/build locally UNRUN: no SDK/native OS.
+  Local QA/inventory/whitespace results and published exact source in PR41.
+  Next inspect new exact-head/latestattempt all5/EVERYstep plus added native marker;
+  fix actual diagnostics preserving assertions. Pending-only handoff/no duplication.
+- Then concrete trusted root/file backend/captured storage lifecycle/durable
+  uncertainty/authenticated conditional application-release/retention approval.
+  PR41draft/17open/defaultAIoff/memory-only/all14hostedpending. Production/default/
+  API/RLS/Pro/N4 unchanged; no merge/closure/deploy/provider/Authstrategy/collection/
+  spend/security/release/schedule action or Alpha acceptance.
+
 ## Core checkpoint — protected lookup late errors, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

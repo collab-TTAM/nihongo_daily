@@ -83,6 +83,8 @@ final class _Http extends http.BaseClient {
   int receiptReads = 0;
   int originalReceiptReads = 0;
   bool originalReceipt = false;
+  bool protectedReceipt = false;
+  int protectedReceiptReads = 0;
   bool omitOriginalRequest = false;
   String? receiptStatus;
   bool closed = false;
@@ -112,7 +114,10 @@ final class _Http extends http.BaseClient {
             r.headers['cache-control'] == 'no-store',
       );
       _check(await _read(scope) == _expected(scope));
-      if (originalReceipt) {
+      if (protectedReceipt) {
+        _check(originalReceipt);
+        protectedReceiptReads++;
+      } else if (originalReceipt) {
         originalReceiptReads++;
       } else {
         receiptReads++;
@@ -974,6 +979,93 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               await _read(scope) == _expected(scope),
         );
         network.omitOriginalRequest = false;
+        // Exercise the production composition with actual native decryption;
+        // this separate counter leaves every original reader assertion intact.
+        network.protectedReceipt = true;
+        for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+          network.receiptStatus = status;
+          final snapshot = await runtime.lookupProtectedConversationReceipt(
+            ciphertext,
+          );
+          _check(snapshot.status.name == status.toLowerCase());
+          _check(
+            (snapshot.start != null) == (status == 'COMPLETED') &&
+                snapshot.turn == null &&
+                snapshot.finish == null,
+          );
+          if (status == 'COMPLETED') {
+            _check(
+              snapshot.start!.sessionId == _event &&
+                  snapshot.start!.assistantMessage.textJa == 'TEST ONLY',
+            );
+          }
+          _check(
+            protector.isCurrent &&
+                reader.isCurrent &&
+                await vault.readRefreshToken() == rotated &&
+                await _read(scope) == _expected(scope),
+          );
+          for (final event in [
+            _event,
+            'b2000000-0000-4000-8000-000000000002',
+          ]) {
+            var rejected = false;
+            try {
+              await session.start(
+                StartConversationRequest(
+                  scenarioId: _user,
+                  level: AiTextLevel.n5,
+                  clientEventId: event,
+                ),
+              );
+            } on AiTextRequestPending {
+              rejected = event != _event;
+            } on AiTextFailure catch (error) {
+              rejected =
+                  event == _event && error.code == AiTextErrorCode.syncConflict;
+            }
+            _check(rejected && network.sends == 0);
+          }
+          _check(await _read(scope) == _expected(scope));
+        }
+        _check(network.protectedReceiptReads == 3);
+        var protectedCorruptRejected = false;
+        try {
+          await runtime.lookupProtectedConversationReceipt(corrupt);
+        } on CommandProtectionFailure catch (error) {
+          protectedCorruptRejected =
+              error.code == CommandProtectionError.unavailable;
+        }
+        _check(protectedCorruptRejected && network.protectedReceiptReads == 3);
+        final changedCiphertext = await protector.protect(
+          PendingConversationCommandEnvelope.fromStart(
+            projectUrl: origin,
+            ownerId: _user,
+            request: StartConversationRequest(
+              scenarioId: _event,
+              level: AiTextLevel.n5,
+              clientEventId: _event,
+            ),
+          ),
+        );
+        var protectedMismatchRejected = false;
+        try {
+          await runtime.lookupProtectedConversationReceipt(changedCiphertext);
+        } on AiTextFailure catch (error) {
+          protectedMismatchRejected =
+              error.code == AiTextErrorCode.internalError;
+        }
+        _check(
+          protectedMismatchRejected &&
+              network.protectedReceiptReads == 4 &&
+              network.originalReceiptReads == 5 &&
+              network.receiptReads == 3 &&
+              network.sends == 0 &&
+              refreshCalls == 1 &&
+              await vault.readRefreshToken() == rotated &&
+              await _read(scope) == _expected(scope),
+        );
+        network.protectedReceipt = false;
         network.originalReceipt = false;
         await runtime.close();
         _check(!protector.isCurrent);
@@ -993,6 +1085,20 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               error.code == CommandProtectionError.unauthorized;
         }
         _check(staleProtectRejected && staleUnprotectRejected);
+        var staleProtectedReadRejected = false;
+        try {
+          await runtime.lookupProtectedConversationReceipt(ciphertext);
+        } on AiTextFailure catch (error) {
+          staleProtectedReadRejected =
+              error.code == AiTextErrorCode.unauthorized;
+        }
+        _check(
+          staleProtectedReadRejected &&
+              network.protectedReceiptReads == 4 &&
+              network.originalReceiptReads == 5 &&
+              network.receiptReads == 3 &&
+              network.sends == 0,
+        );
         _check(!reader.isCurrent);
         var staleRejected = false;
         try {
