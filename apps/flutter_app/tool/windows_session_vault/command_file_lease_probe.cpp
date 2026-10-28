@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <vector>
+#include <functional>
 #ifdef _WIN32
 #include <windows.h>
 #include <winioctl.h>
@@ -10,6 +11,8 @@
 #include <aclapi.h>
 #include <iostream>
 bool ProbeCommandStageFault(const std::wstring& directory, int mode);
+bool ProbeCommandPublishFault(const std::wstring& directory, int mode,
+                             const std::function<void()>& racingTarget);
 namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command lease probe failed");
@@ -805,6 +808,39 @@ void CandidateReadMatrix(const std::wstring& root) {
       if (kind != 0) Check(DeleteFileW(stage.c_str()) != FALSE);
     }
     std::cout << "PASS: Windows same-lease candidate publication bounds/no-adoption/no-replace/sticky rejection (TEST ONLY)" << std::endl;
+    for (int mode = 5; mode <= 8; ++mode) {
+      std::cout << "CHECK: ciphertext publication injected fault " << mode << std::endl;
+      unsigned targetCreates = 0;
+      Check(ProbeCommandPublishFault(directory, mode, [&]() {
+        ++targetCreates;
+        create(candidate, 1, false);
+      }));
+      Check(targetCreates == (mode == 6 ? 1u : 0u));
+      if (mode <= 6) readStage(std::vector<unsigned char>(64, 0xa5));
+      else Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      auto reader = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(reader != nullptr && reader->CheckPrivateAccessPolicy());
+      const auto result = reader->ReadCiphertextCandidate();
+      if (mode == 5) Check(result.state == State::absent && result.bytes.empty());
+      else Check(result.state == State::present && result.bytes ==
+          std::vector<unsigned char>(mode == 6 ? 1 : 64, 0xa5));
+      // A fresh read is DATA ONLY: it never revives the failed object's permission.
+      Check(!reader->PublishStagedCiphertextCandidate());
+      Check(!reader->StageCiphertextCandidate(std::vector<unsigned char>(64, 0x5a)));
+      reader.reset();
+      if (mode <= 6) readStage(std::vector<unsigned char>(64, 0xa5));
+      else Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      if (mode != 5) {
+        auto verifier = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(verifier != nullptr);
+        const auto preserved = verifier->ReadCiphertextCandidate();
+        Check(preserved.state == State::present && preserved.bytes == result.bytes);
+        verifier.reset();
+        Check(DeleteFileW(candidate.c_str()) != FALSE);
+      } else Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+      if (mode <= 6) Check(DeleteFileW(stage.c_str()) != FALSE);
+    }
+    std::cout << "PASS: Windows candidate rename refusal/racing target/post-rename flush/close uncertainty (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());

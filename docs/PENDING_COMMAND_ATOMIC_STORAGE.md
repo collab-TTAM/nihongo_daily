@@ -498,3 +498,40 @@ Pro/provider/retention/collection/spend/default change.
 Primary Microsoft API references checked2026-10-28:
 - https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_rename_info
 - https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileinformationbyhandle
+
+## TEST ONLY publication failure matrix — 2026-10-28
+
+The separate renamed-source fault translation unit now arms only AFTER a real
+successful stage. It tracks the actual reopened DELETE-capable source handle.
+Four mandatory cases exercise unchanged PublishStagedCiphertextCandidate:
+- Inject SetFileInformationByHandle refusal before real rename.
+- Create a real private one-byte .bin target inside the wrapper, after production
+  absence/policy/content prechecks, then call the REAL no-replace rename; it must
+  fail. This is controlled interleaving on one test thread, not an OS scheduler
+  or hostile multi-process race certificate. No fake rename success is returned.
+- Perform real rename, inject failure at the second (post-rename) flush.
+- Perform real rename and both flushes, inject the first post-rename close
+  failure while retaining the handle; RAII must execute the actual second close.
+
+Exact counters require one fault/one rename/zero writes during publication, one
+pre-rename flush for refused cases or two for post-rename cases, and one actual
+close (two calls for close failure). Read/stage/publish remain denied on the same
+lease with no additional writes/rename. Non-targeted Win32 calls remain real;
+existing four staging faults retain their original behavior and assertions.
+The extra wrappers are confined to the test compilation, never the normal class.
+
+Independent unmodified readers inspect actual file results after handles close:
+refusal retains64-byte stage and no .bin; racing target retains64-byte stage and
+original one-byte target; post-rename faults leave no stage but exact64-byte .bin.
+Existing strict owner/protected ACL/size/link/read bounds apply. Fresh reader's
+missing stage capture cannot adopt publication; repeated attempts must preserve
+the same files. Only unique synthetic fixture entries are deleted by the probe.
+A readable candidate after uncertainty is DATA ONLY, not revived dispatch or
+restart authority. All cases are required for the new fixed marker
+`PASS: Windows candidate rename refusal/racing target/post-rename flush/close uncertainty (TEST ONLY)`.
+
+No production source/header/default/retention behavior changes. New Win32 native
+cases require exact-head MSVC/Actions execution. Linux checks only unsupported-
+OS compilation. Physical disk failure/power loss, process exit DURING publication,
+trusted partition namespace, durable uncertainty and authenticated reconciliation
+remain unverified; pending learner release gates and retention approval remain.

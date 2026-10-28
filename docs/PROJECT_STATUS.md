@@ -12,6 +12,38 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — publication fault matrix, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  32027d4898826f73b4796c3006a3ab833ff4a018. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40607323753 exact parent/latestattempt1 SUCCESS all5/EVERYstep/no skips.
+  Windows122550030561 publication2bounds/5negative+old4fault/native markers passed.
+  Not hosted learner/physical powerloss evidence.
+- Extend TEST ONLY renamed-source TU: arm after real staging, track actual opened
+  DELETE source; refusal before rename, actual target insertion AFTER prechecks
+  with real no-replace rename refusal, real rename then postflush failure, real
+  rename/flush then close failure with real RAII secondclose. Exact counters
+  onefault/onerename/zerowrites/correctflushes/closes; samelease permanently
+  denies read/stage/publish. Old staging fault assertions remain.
+- Unmodified independent reader verifies stage64/no.bin, stage64/original.bin1,
+  no.stage/bin64 for two postrename cases; exact content/ACL/owner/links, no
+  adoption or repeated mutation, preserve results and mandatory unique cleanup.
+  Controlled singlethread interleaving is not hostile multi-process race proof.
+  Readable uncertain candidate is data only, not restart/dispatch authority.
+- Four paths: tool/windows_session_vault/{command_stage_fault_probe.cpp,
+  command_file_lease_probe.cpp}; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this
+  status. Production cpp/header/runner/default byte-identical. Separate macro/
+  arming/handle/counters/lateuncertainty/preservation/assertion diff review; local
+  C++17 -Wall -Wextra -Werror/nonWindowsfailclosed/46QA/inventory151/whitespace
+  passed. Inventory not151 executed tests. New MSVC/Win32/fullFlutter/analyzer/
+  build locally UNRUN; exact-head CI required. No SDK bypass or CI weakening.
+- NEXT all5/EVERYstep/new4publicationfault +retained markers. Fix actual errors,
+  pending-only handoff/no duplicatecode. Then actual process exit at publication
+  boundaries, trustednamespace/durableuncertainty/reconciliation/retentionapproval.
+  41draft/17open/AIoff/memory-only/all14hostedpending; no merge/closure/Pro/
+  Authstrategy/provider/deploy/release/collection/security/spend/Alpha action.
+
 ## Core checkpoint — same-lease candidate publication, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent
