@@ -204,7 +204,6 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-
   testWidgets('history summary follows loaded snapshot', (tester) async {
     final h = Harness();
     final source = _Source(h)

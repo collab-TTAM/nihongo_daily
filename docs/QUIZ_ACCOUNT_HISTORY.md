@@ -257,3 +257,15 @@ All previous widget bodies/assertions/cleanup remain. Local QA46/inventory151/
 whitespace pass; new Flutter/format/analyze/build locally UNRUN(noSDK), require
 exact-head CI. Parent83f26c6 CI40782950867/latestattempt1 all5/EVERYstep SUCCESS.
 Hosted ownership/sync/mastery/learner proof remains pending; #13open/#41draft.
+
+## Exact filter-test formatter repair — 2026-10-28 UTC
+
+CI40786318774 exactad66993/latestattempt1 passed repo/AI/database/Windows with
+every step successful, but Flutter123160988236 strict formatting removed one
+extra blank line before the existing summary test. Analyzer/new2filter widgets/
+fullFlutter/downstream were skipped, not passed. Apply exactly that deletion;
+resulting blob starts57a3ee6 as logged. Reverse insertion reproduces the complete
+original fixture. No assertion/input/test body/deadline/production/gate change,
+and no redundant test for whitespace. QA46/inventory151/diffcheck pass separately;
+no local Dart/Flutter SDK or formatter/analyzer/widget/build execution claim.
+New exact-head CI must verify format/analyze/new2filter and retained tests.
