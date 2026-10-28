@@ -374,6 +374,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     std::cout << "PASS: Windows protected command account/project read-publish scope fence (TEST ONLY)" << std::endl;
   if (passed && cleaned)
     std::cout << "PASS: Windows protected command post-decrypt recheck/stage/replacement/preserve (TEST ONLY)" << std::endl;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows protected command post-decrypt deletion/sharing-denial/terminal (TEST ONLY)" << std::endl;
   return passed && cleaned;
 }
 #endif

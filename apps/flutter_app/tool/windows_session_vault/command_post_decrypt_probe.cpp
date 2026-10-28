@@ -55,7 +55,7 @@ void VerifyCommandPostDecryptGuard(const std::wstring& root,
   const auto replacement = nihongo::ProtectPendingCommand(target,
       std::vector<unsigned char>(64, 0x92));
   CheckPostDecrypt(replacement.status == nihongo::CommandProtectionStatus::success);
-  for (unsigned mode = 0; mode < 3; ++mode) {
+  for (unsigned mode = 0; mode < 5; ++mode) {
     auto owner = Owner::Acquire(root, target);
     CheckPostDecrypt(owner && owner->Stage(target, plain) && owner->Publish(target));
     owner.reset();
@@ -71,10 +71,20 @@ void VerifyCommandPostDecryptGuard(const std::wstring& root,
     CheckPostDecrypt(owner != nullptr);
     unsigned callbacks = 0;
     bool mutationSucceeded = false;
+    struct HeldFile {
+      HANDLE value = INVALID_HANDLE_VALUE;
+      ~HeldFile() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+    } heldFile;
     afterDecode = [&]() {
       ++callbacks;
       if (mode == 1) WriteProbeFile(stagePath, replacement.bytes, CREATE_NEW);
       if (mode == 2) WriteProbeFile(dataPath, replacement.bytes, OPEN_EXISTING);
+      if (mode == 3) CheckPostDecrypt(DeleteFileW(dataPath.c_str()) != FALSE);
+      if (mode == 4) {
+        heldFile.value = CreateFileW(dataPath.c_str(), GENERIC_READ, 0, nullptr,
+            OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+        CheckPostDecrypt(heldFile.value != INVALID_HANDLE_VALUE);
+      }
       mutationSucceeded = true;
     };
     const auto recovered = owner->ReadRecovery(target);
@@ -91,13 +101,22 @@ void VerifyCommandPostDecryptGuard(const std::wstring& root,
     CheckPostDecrypt(!owner->Stage(target, plain) && !owner->Publish(target));
     CheckPostDecrypt(!Owner::Acquire(root, target)); // Rejection retains the lease.
     owner.reset();
+    if (heldFile.value != INVALID_HANDLE_VALUE) {
+      const bool closed = CloseHandle(heldFile.value) != FALSE;
+      heldFile.value = INVALID_HANDLE_VALUE;
+      CheckPostDecrypt(closed);
+    }
     { // Independent raw read checks the exact bytes; never adopt unresolved stage.
       auto raw = nihongo::PendingCommandFileLease::Acquire(directory);
       CheckPostDecrypt(raw && raw->CheckPrivateAccessPolicy());
       const auto stored = raw->ReadCiphertextCandidate();
-      CheckPostDecrypt(stored.state == State::present);
+      if (mode == 3) {
+        CheckPostDecrypt(stored.state == State::absent && stored.bytes.empty());
+      } else {
+        CheckPostDecrypt(stored.state == State::present);
+      }
       if (mode == 2) CheckPostDecrypt(stored.bytes == replacement.bytes);
-      else {
+      else if (mode != 3) {
         CheckPostDecrypt(stored.bytes == originalCipher);
         const auto decoded = nihongo::UnprotectPendingCommand(target, stored.bytes);
         CheckPostDecrypt(decoded.status == nihongo::CommandProtectionStatus::success &&
@@ -106,7 +125,11 @@ void VerifyCommandPostDecryptGuard(const std::wstring& root,
     }
     if (mode == 1) CheckPostDecrypt(DeleteFileW(stagePath.c_str()) != FALSE);
     else CheckPostDecrypt(GetFileAttributesW(stagePath.c_str()) == INVALID_FILE_ATTRIBUTES);
-    CheckPostDecrypt(DeleteFileW(dataPath.c_str()) != FALSE);
+    if (mode == 3) {
+      CheckPostDecrypt(GetFileAttributesW(dataPath.c_str()) == INVALID_FILE_ATTRIBUTES);
+    } else {
+      CheckPostDecrypt(DeleteFileW(dataPath.c_str()) != FALSE);
+    }
   }
 }
 #endif

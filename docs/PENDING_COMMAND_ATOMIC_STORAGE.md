@@ -896,3 +896,26 @@ proof. New exact-head Windows MSVC/native marker and complete CI remain required
 Parent4d7aa86 CI40740040477/latestattempt1 passed all5/EVERYstep/no skips. Synthetic
 namespace/protection tests never establish hosted learner readiness or retention
 approval. PR41 stays draft, issue17 open, learner recovery memory-only/AI off.
+
+## Post-decrypt missing/unreadable snapshot — 2026-10-28 UTC
+
+Two additional TEST ONLY after-real-DPAPI-decode modes successfully delete the
+synthetic published file or acquire a real nonsharing read handle before the
+production recovery recheck. Independent callback count/mutation success checks
+prevent failed setup from masquerading as rejection. Both must return unavailable
+with empty plaintext, remain terminal for read/stage/publish, and retain exclusive
+partition ownership until destruction. The deletion case requires independent
+absent/empty readback and no file recreation. After the nonsharing handle closes,
+independent readback must preserve the entire original ciphertext and decode to
+the original bytes. Handle-close success and unique cleanup are mandatory, with
+RAII fallback on a failing assertion. Existing three modes retain their behavior.
+
+The success marker after full probe and cleanup is:
+`PASS: Windows protected command post-decrypt deletion/sharing-denial/terminal (TEST ONLY)`.
+Parent50ccff4 CI40743459703 attempt1 passed all5/every step and post-decrypt marker
+in Windows123010983519. New2 actual Win32/MSVC tests locally UNRUN; Linux C++17
+warnings-as-errors compilation excludes Windows. QA46/inventory151/diffcheck pass
+separately. No production hook/default/storage activation, deletion authority,
+durable reservation/dispatch or hosted learner proof. Concrete trusted root/backend,
+captured lifecycle/durable uncertainty/authenticated conditional release/retention
+approval and all14 hosted release groups remain open.

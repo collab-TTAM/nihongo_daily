@@ -13,33 +13,29 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — post-decrypt recovery recheck, 2026-10-28 UTC
+## Core checkpoint — post-decrypt storage failures, 2026-10-28 UTC
 
-- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
-  4d7aa8674932b8260f4d05e4a105ca263eba5fc9; new commit/tree/CI in PR41 checkpoint.
-- Parent CI40740040477/latestattempt1 all5/EVERYstep SUCCESS/no skips. Current
-  main78a44fa/source37afa572a/Pro38at28c20cb unchanged; Pro N4 scope reserved.
-- Protected native ReadRecovery now rechecks bounded ciphertext/stage/private
-  policy AFTER actual DPAPI decode. Changed/missing/uncertain record or stage
-  rejects unavailable/empty, wipes decoded Windows buffer, revokes and retains
-  lease/data. No recovery file writes/deletes, default activation or release grant.
-- Add TEST ONLY source-copy class rename/shim AFTER real native decode: unchanged
-  positive control, actual new staging, valid different ciphertext replacement.
-  Independent successful-mutation/callback assertions; terminal denial/content
-  preservation/exclusive lease/cleanup required. Normal production symbol remains
-  unchanged; existing native tests/assertions/deadlines and compiler flags retained.
-- Six paths: runner/pending_command_partition.cpp; native tool new
-  command_post_decrypt_probe.cpp plus CMakeLists.txt/command_partition_probe.cpp;
-  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. Separate diff/failure/wipe/
-  hook isolation/no-authority review done. Linux C++17 -Wall -Wextra -Werror compile
-  (changed source/new test TU), QA46/inventory151/diffcheck PASS. Native Windows
-  branch/new3 cases/MSVC/build locally UNRUN; no SDK/native OS. CI marker required.
-- NEXT exact-head/latestattempt all5/EVERYstep plus post-decrypt marker; fix actual
-  diagnostics without weaker checks, pending-only handoff/no duplicate code.
-  Then concrete backend/root/captured storage lifecycle/durable uncertainty/
-  authenticated conditional release/retention approval.41draft/17open/AIoff/
-  memory-only/all14hostedpending; no merge/closure/Pro/provider/Authstrategy/
-  collection/spend/security/deploy/release/schedule change/Alpha acceptance.
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  50ccff46da28f456a8aa4b86aca5e5e4788cd327. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40743459703/latestattempt1 all5/every step SUCCESS/no skips; Windows
+  123010983519 post-decrypt/native persistent SDK markers verified. TEST ONLY.
+- Add2 after-real-decode native storage cases: successful synthetic file deletion
+  or real nonsharing read handle. Unavailable/empty, terminal read/stage/publish,
+  retained exclusive lease; independent deletion remains absent/no recreation,
+  sharing case preserves exact ciphertext/plaintext after checked handle close.
+  Independent callback/mutation success/RAII cleanup required. Original3 unchanged.
+- Four paths: tool/windows_session_vault/{command_post_decrypt_probe.cpp,
+  command_partition_probe.cpp}; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status.
+  Separate failure/setup/lease/readback/handle/cleanup/diff review complete.
+  Linux C++17 -Wall -Wextra -Werror -Wshadow changed TUs compile PASS (Win32 excluded),
+  QA46/inventory151/diffcheck PASS. Actual new2 Win32/MSVC/build locally UNRUN.
+- NEXT exact-head/latestattempt all5/every step/new deletion/sharing marker plus
+  retained markers; fix actual diagnostics without weaker assertions/deadlines;
+  pending-only handoff/no duplication. Then trustedroot/backend/captured storage
+  lifecycle/durable uncertainty/authenticated conditional release/retentionapproval.
+  PR41draft/17open/defaultAIoff/memory-only/all14hostedpending. Production/default/
+  CI/API/RLS/Pro/N4 unchanged; no merge/closure/deploy/Authstrategy/provider/
+  collection/spend/security/release/schedule change or hosted learner acceptance.
 
 ## Core checkpoint — native foreign envelope fence, 2026-10-28 UTC
 
