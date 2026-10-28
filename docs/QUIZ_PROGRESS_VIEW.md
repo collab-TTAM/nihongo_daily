@@ -155,3 +155,25 @@ the full original test file. All assertions/inputs/test bodies/control flow rema
 identical; no test added for this layout-only correction and no gate weakened.
 QA46/inventory151/diffcheck pass separately; no local Dart/Flutter SDK, formatter/
 analyzer/widget/build execution claim. Require own exact-head CI before pass.
+
+
+## Narrow context header tap — 2026-10-28
+
+CI40775250696 exact038a1d4/latestattempt1 passed strict format and analyzer;
+full Flutter recorded1481 passed/one failure. Original-context/no-I/O and reload-
+collapse cases passed. The sole failure was the320px/200-percent case BEFORE any
+tap: tapQuiz's hitTestable check found zero at the whole ExpansionTile's center.
+Later Flutter checks were skipped; allfour other jobs/every step passed.
+
+Target the exact original heading descended from the recommendation's keyed row.
+The same tapQuiz still ensures visibility, asserts hit-testability and performs
+an actual tap; no callback invocation, warning suppression, resize or bypass.
+The original320x700/200-percent settings, exact usage/Japanese example, one-read/
+no-write and no-exception assertions/teardown/deadlines are unchanged. All other
+fixture bytes and production code are unchanged. This separates an oversized
+container's center from the actual title users tap; successful new-head execution
+is still required to verify expansion and layout. No new layout success claim.
+
+QA46/inventory151/whitespace pass; local Flutter/format/analyze/widget/build remain
+UNRUN without SDK. Keep PR41 draft/#13 open/all14 hosted pending; no security,
+Auth/provider/content/retention/default/credit or CI gate change.

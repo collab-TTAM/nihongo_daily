@@ -494,10 +494,12 @@ void main() {
     final ports = _Ports(original)..records = [report(1)];
     await mount(tester, ports);
     await load(tester);
-    await tapQuiz(
-      tester,
-      find.byKey(ValueKey('quiz-progress-item-${question.target.id}')),
+    final itemKey = ValueKey('quiz-progress-item-${question.target.id}');
+    final heading = find.descendant(
+      of: find.byKey(itemKey),
+      matching: find.text(question.target.heading),
     );
+    await tapQuiz(tester, heading);
     expect(find.text(question.target.explanationVi), findsOneWidget);
     expect(find.text(question.target.examples.first.japanese), findsOneWidget);
     expect(ports.contentReads, 1);

@@ -13,6 +13,31 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — narrow review heading tap, 2026-10-28 UTC
+
+- Resume PR41 automation/issue-11-plan-sdk-integration, exact parent
+  038a1d4198ff5c0900a4128c6f58ec317f53459f. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40775250696/latestattempt1 FAILURE: other4 jobs/EVERYstep SUCCESS;
+  Flutter123123553440 format/analyze PASS,1481 tests passed/one failure. Sole
+  narrow320px/200-percent case fails hitTestable BEFOREtap at whole ExpansionTile
+  center. Exact-context/no-I/O and reload-collapse cases passed. Later Flutter
+  gates SKIPPED, no fullpass claim.
+- Only narrow fixture tap target now exact heading descended from keyed row.
+  Same tapQuiz ensureVisible/hitTestable/actualtap; no directcallback/skip/warning
+  suppression/resize. Keep320x700/200%, all usage/example/read-write/no-exception
+  assertions, teardown/deadlines and other test bodies. Reverse replacement equals
+  whole prior fixture. Production/default/canonical/Pro/Auth/API/RLS/CI unchanged.
+- Three paths apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart;
+  docs/QUIZ_PROGRESS_VIEW.md; this status. Separate exactdiff/target-vs-container/
+  preservation review. QA46/inventory151/diffcheck PASS; new-head Flutter/format/
+  analyze/widget/build locally UNRUN(noSDK); CI still required.
+- NEXT exact-head/latestattempt all5/EVERYstep/narrow+retained context/widgets;
+  fix actual diagnostics without weakerchecks, pending-only handoff/no duplication.
+  Then remaining13/backend/root/captured lifecycle/durable uncertainty/authenticated
+  conditional release/retentionapproval.41draft/13+17open/AIoff/memory-only/
+  all14hostedpending; no merge/close/deploy/provider/Authstrategy/collection/spend/
+  security/release/schedule/Alpha acceptance.
+
 ## Core checkpoint — exact review-context formatter repair, 2026-10-28 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
