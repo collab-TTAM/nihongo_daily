@@ -29,7 +29,14 @@ class QuizHistoryScreen extends ConsumerWidget {
             child: const Text('Mở tài khoản'),
           ),
         ] else
-          _HistoryPanel(key: ObjectKey(repository), repository: repository),
+          _HistoryPanel(
+            key: ObjectKey(repository),
+            repository: repository,
+            isCurrent: () => identical(
+              ref.read(quizHistoryRepositoryProvider),
+              repository,
+            ),
+          ),
         TextButton(
           onPressed: () => context.go('/quiz'),
           child: const Text('Về kiểm tra nhanh'),
@@ -40,8 +47,13 @@ class QuizHistoryScreen extends ConsumerWidget {
 }
 
 class _HistoryPanel extends StatefulWidget {
-  const _HistoryPanel({super.key, required this.repository});
+  const _HistoryPanel({
+    super.key,
+    required this.repository,
+    required this.isCurrent,
+  });
   final VocabularyQuizHistoryRepository repository;
+  final bool Function() isCurrent;
 
   @override
   State<_HistoryPanel> createState() => _HistoryPanelState();
@@ -53,7 +65,7 @@ class _HistoryPanelState extends State<_HistoryPanel> {
   bool _failed = false;
 
   Future<void> _load() async {
-    if (_loading) return;
+    if (!mounted || !widget.isCurrent() || _loading) return;
     setState(() {
       _loading = true;
       _failed = false;
@@ -61,13 +73,15 @@ class _HistoryPanelState extends State<_HistoryPanel> {
     });
     try {
       final records = await widget.repository.load();
-      if (!mounted) return;
+      if (!mounted || !widget.isCurrent()) return;
       setState(() => _records = records);
     } on Object {
-      if (!mounted) return;
+      if (!mounted || !widget.isCurrent()) return;
       setState(() => _failed = true);
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted && widget.isCurrent()) {
+        setState(() => _loading = false);
+      }
     }
   }
 

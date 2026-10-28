@@ -176,3 +176,21 @@ Web/Windows builds. New save source/tests require their own exact-head CI.
 Keep #13 open/#41 draft,
 default preview and all14 hosted acceptance groups pending. No dependency,
 workflow, wire/schema/RLS, live activation, deployment, merge or schedule change.
+
+## History view captured read fence — 2026-10-28 UTC
+
+History load now checks mounted state and the exact currently supplied repository
+before any view mutation/storage call, after its await, and before error/finally
+publication. Repository replacement invalidates an old retained load callback even
+before the widget replacement frame; disposal makes it inert before setState or
+provider access. Existing repository Auth/storage/drain guards remain authoritative
+and accepted borrowed I/O is not cancelled or reassigned. No data write/credit,
+mastery, retention, new SDK owner or default activation is introduced.
+
+Two regression widgets retire the supplied repository before a frame or invoke
+the callback after route disposal. Both require zero old storage reads/no widget
+exception and a working fresh explicit load afterward. Original fixture bodies,
+assertions and cleanup are unchanged. Parent fddf56f CI40752649494 attempt1 passed
+all5/every step and retained Windows markers. New2 widgets/format/analyze/build
+locally UNRUN: no Dart/Flutter SDK; QA46/inventory151/diffcheck pass separately.
+Require own exact-head CI; TEST ONLY ports are not hosted learner evidence.

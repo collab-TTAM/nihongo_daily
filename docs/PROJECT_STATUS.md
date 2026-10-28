@@ -13,33 +13,29 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — quiz progress captured read fence, 2026-10-28 UTC
+## Core checkpoint — quiz history captured read fence, 2026-10-28 UTC
 
-- Resume PR41 automation/issue-11-plan-sdk-integration, parent
-  b83d2fabf58917a6c71a6b4bc5d75fc1dfc20fe6. New commit/tree/CI in PR41 checkpoint.
-  #13 bounded UI/account-isolation fix; #2/#3/#4/#5 baseline dependencies merged.
-- Parent CI40749444718/latestattempt1 all5/EVERYstep SUCCESS/no skips; new native
-  deletion/sharing and previous post-decrypt/owned markers verified. Main/source37/
-  Pro38 unchanged, #14 scope reserved. No hosted learner/retention proof inferred.
-- Found mounted-only progress load could read after selected view replacement
-  before rebuild. Guard existing captured owner/repository/source/level readiness
-  before load, after each await, before errors/finally publication. Add view-only
-  level revision to key/current guard so before-frame N5-N4-N5 cannot revive old
-  panel/callback. Accepted borrowed I/O/drain untouched; no cancellation claims.
-- Three added widgets: retained load before level rebuild zero content/history;
-  held content continuation before rebuild zero old private history; before-frame
-  level A-B-A old callback remains inert. Fresh explicit load still works with
-  exact level/counters. Original widget tests/assertions/cleanup retained.
-- Four paths quiz_progress_screen.dart, quiz_progress_widget_test.dart under
-  apps/flutter_app; docs/QUIZ_PROGRESS_VIEW.md; this status. Separate captured
-  lifetime/async boundary/revision/diff review. QA46/inventory151/diffcheck PASS;
-  new3 Flutter/format/analyze/build locally UNRUN(noSDK), exact-head CI required.
-- NEXT new-head/latestattempt all5/EVERYstep/new3 widgets; fix actual diagnostics
-  without weakening checks; pending-only handoff/no duplication. Then resume
-  concrete backend/root/captured storage lifecycle/durable uncertainty/authenticated
-  conditional release/retentionapproval and remaining #13 acceptance. #13/#17open,
-  #41draft/defaultAIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/Auth
-  strategy/provider/collection/spend/security/merge/deploy/release/schedule action.
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  fddf56f05fff2ba493bd0c4556d6bd041b880a42. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40752649494/latestattempt1 all5/every step SUCCESS/no skips; Windows
+  123043260945 persistent SDK/post-decrypt markers verified. TEST ONLY.
+- History load previously checked mounted only after awaiting. Retained callbacks
+  could load through replaced repository before a frame or call setState after
+  disposal. Check mounted/current supplied repository before load and across
+  success/error/finally. Existing Auth/store/drain/ownership unchanged.
+- Add2 widget regressions: repository replacement before frame, route disposal;
+  zero old storage reads/no exception, fresh explicit load still works. Original
+  test bodies/assertions/cleanup unchanged. Separate async/callback/ref/diff review.
+- Four paths quiz/presentation/quiz_history_screen.dart;
+  test/features/quiz/quiz_history_widget_test.dart under apps/flutter_app;
+  docs/QUIZ_ACCOUNT_HISTORY.md; this status. QA46/inventory151/diffcheck PASS;
+  new2 widgets/Dart format/analyze/build locally UNRUN(noSDK). CI required.
+- NEXT exact-head/latestattempt all5/every step/new2+retained tests; fix actual
+  diagnostics without weaker assertions; pending-only handoff/no duplication.
+  Then remaining13 and trustedroot/backend/captured storage lifecycle/durable
+  uncertainty/authenticated conditional release/retentionapproval.41draft/13+17open/
+  AIoff/memory-only/all14hostedpending. CI/API/RLS/Pro/N4 unchanged; no merge/close/
+  deploy/Authstrategy/provider/collection/spend/security/release/schedule change.
 
 ## Core checkpoint — post-decrypt storage failures, 2026-10-28 UTC
 

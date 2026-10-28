@@ -113,6 +113,47 @@ Future<void> _load(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('retired history callback cannot read', (tester) async {
+    final h = Harness();
+    final source = _Source(h);
+    final container = await _mount(tester, harness: h, source: source);
+    final button = find.byKey(const Key('quiz-history-load'));
+    final stale = tester.widget<OutlinedButton>(button).onPressed!;
+    final old = container.read(quizHistoryRepositoryProvider);
+    container.invalidate(quizHistoryRepositoryProvider);
+    expect(container.read(quizHistoryRepositoryProvider), isNot(same(old)));
+    stale(); // No replacement frame yet; old repository itself is still ready.
+    await tester.pumpAndSettle();
+    expect(source.reads, 0);
+    expect(find.byKey(const Key('quiz-history-error')), findsNothing);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(source.reads, 1);
+    expect(find.textContaining('Chưa có kết quả quiz'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('disposed history load callback stays inert', (tester) async {
+    final h = Harness();
+    final source = _Source(h);
+    final container = await _mount(tester, harness: h, source: source);
+    final button = find.byKey(const Key('quiz-history-load'));
+    final stale = tester.widget<OutlinedButton>(button).onPressed!;
+    container.read(routerProvider).go('/quiz');
+    await tester.pumpAndSettle();
+    stale();
+    await tester.pumpAndSettle();
+    expect(source.reads, 0);
+    expect(tester.takeException(), isNull);
+    container.read(routerProvider).go('/quiz/history');
+    await tester.pumpAndSettle();
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(source.reads, 1);
+    expect(find.textContaining('Chưa có kết quả quiz'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('preview history never invents a source', (tester) async {
     await _mount(tester);
     expect(find.text('Mở tài khoản'), findsOneWidget);
