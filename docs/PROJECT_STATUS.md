@@ -12,6 +12,35 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — protected partition composition, 2026-10-28
+
+- PR41/issue17 branch automation/issue-11-plan-sdk-integration; exact parent
+  12c1a152f41f7c1075c4a923aaf49b0121e5e007. Commit/tree/CI/released marker in PR41.
+- Parent CI40646170501 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows122675446315 partition revoke/isolation and owned persistent SDK markers
+  observed. TEST ONLY, not hosted learner acceptance.
+- New isolated ProtectedPendingCommandPartition owns scoped partition +same-target
+  DPAPI protect-before-stage/unprotect-after-guarded-recovery. No exposed raw
+  stage/accessor; bounds1..32768 plain/65536cipher retained. Failure/scope/revoke
+  yields zero plaintext/terminal fence/retained lease+evidence, no deletion/fallback.
+- Nine mandatory real-DPAPI+disk synthetic modes: min/max publish/destroy/reopen,
+  independent ciphertext readback; empty/oversize, foreign protected/corrupt bytes,
+  wrong scope, revoke and unresolved stage. Safe denial/sticky exclusion/exact
+  candidate preservation/stage independent decryption. All old assertions retained.
+- Five paths: windows/runner/pending_command_partition.{h,cpp}; tool/
+  windows_session_vault/command_partition_probe.cpp; docs/PENDING_COMMAND_ATOMIC_STORAGE.md;
+  this status. Linux C++17 warnings-as-errors/failclosed/46QA/inventory151/diffcheck
+  passed; inventory not151executedtests. Separate bounds/scope/lifetime/failure/
+  native fixture cleanup/diff review. Windows/MSVC/fullFlutter/analyzer/build locally
+  UNRUN; exact-head CI required. App/default/low-level lease/DPAPI source unchanged.
+- NEXT all5/EVERYstep/new protected partition+retained markers, then strict full
+  envelope DTO/captured SDK lifecycle/trusted root provisioning/durable uncertainty/
+  authenticated receipt conditional application-release. Arbitrary byte protection
+  is not DTO validation/writer authentication/durable reservation/dispatch grant.
+  Learner retention approval still required. PR41draft/17open/memory-only/AIoff/
+  all14hostedpending; main/source37/Pro/N4 unchanged. No security/collection/provider/
+  Authstrategy/schema/RLS/spend/release/schedule/Alpha acceptance change.
+
 ## Core checkpoint — explicit partition revocation, 2026-10-28
 
 - PR41/issue17 branch automation/issue-11-plan-sdk-integration; parent

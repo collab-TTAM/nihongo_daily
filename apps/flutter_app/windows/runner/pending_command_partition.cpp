@@ -1,5 +1,6 @@
 #include "pending_command_partition.h"
 #include "receipt_credential_vault.h"
+#include "pending_command_protection.h"
 #include <utility>
 #ifdef _WIN32
 #include <windows.h>
@@ -79,5 +80,61 @@ bool PendingCommandPartition::PublishStagedCiphertextCandidate(
   if (!Current(expected_target)) return false;
   if (!lease_->PublishStagedCiphertextCandidate()) { failed_ = true; return false; }
   return true; // Namespace publication only, NOT durable success before dispatch.
+}
+ProtectedPendingCommandPartition::ProtectedPendingCommandPartition(
+    std::unique_ptr<PendingCommandPartition> partition, const std::string& target)
+    : target_(target), partition_(std::move(partition)) {}
+std::unique_ptr<ProtectedPendingCommandPartition> ProtectedPendingCommandPartition::Acquire(
+    const std::wstring& trusted_root, const std::string& receipt_target) noexcept {
+  try {
+    auto partition = PendingCommandPartition::Acquire(trusted_root, receipt_target);
+    if (!partition) return nullptr;
+    return std::unique_ptr<ProtectedPendingCommandPartition>(
+        new ProtectedPendingCommandPartition(std::move(partition), receipt_target));
+  } catch (...) { return nullptr; }
+}
+void ProtectedPendingCommandPartition::Revoke() noexcept {
+  failed_ = true;
+  partition_->Revoke(); // Retain exclusive ownership/data; never delete on error.
+}
+bool ProtectedPendingCommandPartition::Current(const std::string& expected_target) noexcept {
+  if (failed_) return false;
+  if (expected_target != target_) { Revoke(); return false; }
+  return true;
+}
+bool ProtectedPendingCommandPartition::Stage(const std::string& expected_target,
+    const std::vector<unsigned char>& plaintext) noexcept {
+  try {
+    if (!Current(expected_target)) return false;
+    // Existing protection bounds input before frame allocation; no plaintext I/O.
+    const auto protectedBytes = ProtectPendingCommand(target_, plaintext);
+    if (protectedBytes.status != CommandProtectionStatus::success ||
+        !partition_->StageCiphertextCandidate(target_, protectedBytes.bytes)) {
+      Revoke();
+      return false;
+    }
+    return true; // Staging only, NOT durable reservation/dispatch permission.
+  } catch (...) { Revoke(); return false; }
+}
+bool ProtectedPendingCommandPartition::Publish(const std::string& expected_target) noexcept {
+  if (!Current(expected_target)) return false;
+  if (!partition_->PublishStagedCiphertextCandidate(target_)) { Revoke(); return false; }
+  return true; // Namespace publication only, not power-loss durability.
+}
+PendingCommandPlaintextCandidate ProtectedPendingCommandPartition::ReadRecovery(
+    const std::string& expected_target) noexcept {
+  try {
+    if (!Current(expected_target)) return {};
+    const auto candidate = partition_->ReadRecoveryCiphertextCandidate(target_);
+    if (candidate.state == PendingCommandCandidateState::absent)
+      return {PendingCommandCandidateState::absent, {}};
+    if (candidate.state == PendingCommandCandidateState::unavailable) {
+      Revoke();
+      return {};
+    }
+    auto decoded = UnprotectPendingCommand(target_, candidate.bytes);
+    if (decoded.status != CommandProtectionStatus::success) { Revoke(); return {}; }
+    return {PendingCommandCandidateState::present, std::move(decoded.bytes)};
+  } catch (...) { Revoke(); return {}; } // Fixed unavailable/zero plaintext.
 }
 }  // namespace nihongo

@@ -745,3 +745,46 @@ raw reads verify exact original candidate/absence and exact64-byte staged conten
 Cleanup is mandatory. New marker requires exact-head Windows execution:
 `PASS: Windows command partition revoke/retain-lease/preserve/isolate (TEST ONLY)`.
 No app/channel/default/learner-retention activation or hosted Auth proof.
+
+## Protected partition composition — 2026-10-28
+
+ProtectedPendingCommandPartition is a synthetic-only serialized-owner facade over
+one existing scope-bound partition and the existing DPAPI byte component. It
+exposes Stage(plaintext), Publish and ReadRecovery with an exact expected target,
+plus terminal Revoke. No raw lease/ciphertext stage/accessor is exposed through
+this facade. The old explicit low-level diagnostic component remains separate.
+No app/channel/default or actual learner retention is activated.
+
+Stage checks exact captured scope before crypto, protects the complete supplied
+byte buffer under that same canonical receipt target, and forwards ONLY successful
+bounded ciphertext to the existing create-new stage protocol. Empty/>32768 input
+and protection failure revoke without a stage write or plaintext fallback. Publish
+uses the same scoped publication protocol; success is namespace-only, never a
+power-loss/durable-reservation/dispatch guarantee. ReadRecovery first requires the
+existing double stage-absence/size/ACL/lease checks, then DPAPI-unprotects with the
+same immutable target. Only successful decoding returns sensitive in-memory
+plaintext; absent returns no plaintext. Corruption/foreign protection/uncertainty
+returns unavailable with zero plaintext and permanently revokes all methods while
+retaining lease/evidence until destruction. Nothing repairs, deletes or retries.
+Caller owns returned plaintext lifetime and must never log or persist it directly.
+
+DPAPI framing is NOT complete command DTO validation: arbitrary synthetic bytes
+are deliberately used here. Before use, the captured host still must encode/decode
+the strict PendingConversationCommandEnvelope and compare trusted scope/original
+request, bind current SDK/profile/generation, establish trusted root provenance,
+and implement durable uncertainty/receipt conditional application-release. DPAPI
+context/checksum does not authenticate the original writer or provide freshness.
+Revoke is serialized only, not concurrent cancellation or logout cleanup. Actual
+learner payload retention still requires approval under AUTOMATION.md.
+
+Mandatory native matrix composes REAL DPAPI and disk: min1/max32768 plaintext
+stage/publish/destroy/reopen roundtrips; independent raw reader confirms persisted
+bytes differ from plaintext and fit65536. Empty/oversize input, scope mismatch,
+explicit revocation, foreign-scope DPAPI ciphertext and corrupted ciphertext all
+return safe denial, stay fenced and retain same-scope exclusion. Independent raw
+readback preserves even foreign/corrupt candidate bytes. Unresolved protected
+stage suppresses output/publication and remains independently decryptable, never
+adopted. All previous tests remain. New required marker:
+`PASS: Windows protected command partition DPAPI/disk/restore/rejection/preservation (TEST ONLY)`.
+Linux C++17 warnings-as-errors verifies unsupported-platform compilation only;
+actual Windows/MSVC matrix requires exact-head CI. No hosted learner proof follows.

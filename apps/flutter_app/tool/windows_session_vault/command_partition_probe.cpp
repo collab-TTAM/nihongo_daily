@@ -1,5 +1,6 @@
 // TEST ONLY synthetic namespaces/opaque bytes. No learner or hosted Auth proof.
 #include "pending_command_partition.h"
+#include "pending_command_protection.h"
 #ifdef _WIN32
 #include <windows.h>
 #include <sddl.h>
@@ -167,6 +168,91 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     const bool retainedClosed = CloseHandle(retained) != FALSE;
     retainedBytes.resize(retainedCount <= 65 ? retainedCount : 65);
     Check(retainedRead && retainedClosed && retainedCount == 64 && retainedBytes == values[2]);
+    // Compose real user-context DPAPI and real scoped file storage, synthetic only.
+    using Protected = nihongo::ProtectedPendingCommandPartition;
+    for (const auto& path : paths) {
+      DeleteFileW((path + L"\\pending-command.bin").c_str());
+      DeleteFileW((path + L"\\pending-command.stage").c_str());
+    }
+    for (unsigned mode = 0; mode < 9; ++mode) {
+      // min/max roundtrip, empty/oversize, foreign/corrupt ciphertext, wrong
+      // scope, explicit revoke, and unresolved stage suppression.
+      const std::vector<unsigned char> plain(mode == 1 ? 32768 : mode == 2 ? 0 :
+          mode == 3 ? 32769 : 1, 0x91);
+      std::vector<unsigned char> originalCipher;
+      if (mode == 4 || mode == 5) {
+        auto encoded = nihongo::ProtectPendingCommand(mode == 4 ? targets[1] : targets[0], plain);
+        Check(encoded.status == nihongo::CommandProtectionStatus::success);
+        if (mode == 5) encoded.bytes[encoded.bytes.size() / 2] ^= 1;
+        originalCipher = encoded.bytes;
+        auto fixture = Partition::Acquire(base, targets[0]);
+        Check(fixture && fixture->StageCiphertextCandidate(targets[0], originalCipher));
+        Check(fixture->PublishStagedCiphertextCandidate(targets[0]));
+      }
+      auto protectedPartition = Protected::Acquire(base, targets[0]);
+      Check(protectedPartition != nullptr);
+      if (mode < 2 || mode == 8) {
+        const auto empty = protectedPartition->ReadRecovery(targets[0]);
+        Check(empty.state == State::absent && empty.plaintext.empty());
+        Check(protectedPartition->Stage(targets[0], plain));
+        if (mode < 2) {
+          Check(protectedPartition->Publish(targets[0]));
+          protectedPartition.reset();
+          { // Inspect actual persisted bytes without a decrypting facade.
+            auto raw = Partition::Acquire(base, targets[0]);
+            Check(raw != nullptr);
+            const auto cipher = raw->ReadRecoveryCiphertextCandidate(targets[0]);
+            Check(cipher.state == State::present && cipher.bytes != plain &&
+                !cipher.bytes.empty() && cipher.bytes.size() <= 65536);
+            originalCipher = cipher.bytes;
+          }
+          protectedPartition = Protected::Acquire(base, targets[0]);
+          Check(protectedPartition != nullptr);
+          const auto restored = protectedPartition->ReadRecovery(targets[0]);
+          Check(restored.state == State::present && restored.plaintext == plain);
+          protectedPartition->Revoke();
+        }
+      } else if (mode == 2 || mode == 3) {
+        Check(!protectedPartition->Stage(targets[0], plain));
+      } else if (mode == 6) {
+        Check(!protectedPartition->Stage(targets[1], plain));
+      } else if (mode == 7) {
+        protectedPartition->Revoke();
+        protectedPartition->Revoke();
+      }
+      const auto denied = protectedPartition->ReadRecovery(targets[0]);
+      Check(denied.state == State::unavailable && denied.plaintext.empty());
+      Check(!protectedPartition->Stage(targets[0], plain));
+      Check(!protectedPartition->Publish(targets[0]));
+      Check(!Protected::Acquire(base, targets[0])); // Failure/revoke retains lease.
+      protectedPartition.reset();
+      {
+        auto raw = nihongo::PendingCommandFileLease::Acquire(paths[0]);
+        Check(raw && raw->CheckPrivateAccessPolicy());
+        const auto preserved = raw->ReadCiphertextCandidate();
+        Check(preserved.state == (originalCipher.empty() ? State::absent : State::present));
+        Check(preserved.bytes == originalCipher); // Corrupt/foreign bytes also preserved.
+      }
+      if (mode == 8) {
+        // Staged ciphertext remains decryptable but is never adopted/published.
+        std::vector<unsigned char> staged(65537);
+        const auto fileHandle = CreateFileW((paths[0] + L"\\pending-command.stage").c_str(),
+            GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+        Check(fileHandle != INVALID_HANDLE_VALUE);
+        DWORD got = 0;
+        const bool readStage = ReadFile(fileHandle, staged.data(), 65537, &got, nullptr) != FALSE;
+        const bool closedStage = CloseHandle(fileHandle) != FALSE;
+        Check(readStage && closedStage && got > 0 && got <= 65536);
+        staged.resize(got);
+        const auto decoded = nihongo::UnprotectPendingCommand(targets[0], staged);
+        Check(decoded.status == nihongo::CommandProtectionStatus::success && decoded.bytes == plain);
+        Check(DeleteFileW((paths[0] + L"\\pending-command.stage").c_str()) != FALSE);
+      } else {
+        Check(GetFileAttributesW((paths[0] + L"\\pending-command.stage").c_str()) == INVALID_FILE_ATTRIBUTES);
+      }
+      if (!originalCipher.empty())
+        Check(DeleteFileW((paths[0] + L"\\pending-command.bin").c_str()) != FALSE);
+    }
     passed = true;
   } catch (...) { /* Fixed failure only; clean our explicit synthetic names. */ }
   for (auto& partition : partitions) partition.reset();
@@ -184,6 +270,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     std::cout << "PASS: Windows command partition account/project isolation/scope fence/preservation (TEST ONLY)" << std::endl;
   if (passed && cleaned)
     std::cout << "PASS: Windows command partition revoke/retain-lease/preserve/isolate (TEST ONLY)" << std::endl;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows protected command partition DPAPI/disk/restore/rejection/preservation (TEST ONLY)" << std::endl;
   return passed && cleaned;
 }
 #endif

@@ -28,5 +28,33 @@ class PendingCommandPartition final {
   std::unique_ptr<PendingCommandFileLease> lease_;
   bool failed_ = false;
 };
+// Sensitive in-memory bytes only. Caller must validate the complete command DTO;
+// successful DPAPI decoding is not Auth, original-writer or receipt proof.
+struct PendingCommandPlaintextCandidate {
+  PendingCommandCandidateState state = PendingCommandCandidateState::unavailable;
+  std::vector<unsigned char> plaintext;
+};
+// Synthetic-only composition. No raw staging/decryption bypass is exposed here.
+// Same serialized-owner/root preconditions as PendingCommandPartition.
+class ProtectedPendingCommandPartition final {
+ public:
+  static std::unique_ptr<ProtectedPendingCommandPartition> Acquire(
+      const std::wstring& trusted_root, const std::string& receipt_target) noexcept;
+  bool Stage(const std::string& expected_target,
+      const std::vector<unsigned char>& plaintext) noexcept;
+  bool Publish(const std::string& expected_target) noexcept;
+  PendingCommandPlaintextCandidate ReadRecovery(const std::string& expected_target) noexcept;
+  void Revoke() noexcept;
+  ~ProtectedPendingCommandPartition() = default;
+  ProtectedPendingCommandPartition(const ProtectedPendingCommandPartition&) = delete;
+  ProtectedPendingCommandPartition& operator=(const ProtectedPendingCommandPartition&) = delete;
+ private:
+  ProtectedPendingCommandPartition(std::unique_ptr<PendingCommandPartition> partition,
+      const std::string& target);
+  bool Current(const std::string& expected_target) noexcept;
+  const std::string target_;
+  std::unique_ptr<PendingCommandPartition> partition_;
+  bool failed_ = false;
+};
 }  // namespace nihongo
 #endif
