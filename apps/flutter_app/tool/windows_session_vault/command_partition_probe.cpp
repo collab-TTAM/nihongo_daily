@@ -227,13 +227,14 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
       DeleteFileW((path + L"\\pending-command.bin").c_str());
       DeleteFileW((path + L"\\pending-command.stage").c_str());
     }
-    for (unsigned mode = 0; mode < 9; ++mode) {
+    for (unsigned mode = 0; mode < 13; ++mode) {
       // min/max roundtrip, empty/oversize, foreign/corrupt ciphertext, wrong
-      // scope, explicit revoke, and unresolved stage suppression.
+      // scope, explicit revoke, unresolved stage suppression, and account/project
+      // read/publish mismatch with real ciphertext preservation.
       const std::vector<unsigned char> plain(mode == 1 ? 32768 : mode == 2 ? 0 :
           mode == 3 ? 32769 : 1, 0x91);
       std::vector<unsigned char> originalCipher;
-      if (mode == 4 || mode == 5) {
+      if (mode == 4 || mode == 5 || mode == 9 || mode == 10) {
         auto encoded = nihongo::ProtectPendingCommand(mode == 4 ? targets[1] : targets[0], plain);
         Check(encoded.status == nihongo::CommandProtectionStatus::success);
         if (mode == 5) encoded.bytes[encoded.bytes.size() / 2] ^= 1;
@@ -244,7 +245,7 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
       }
       auto protectedPartition = Protected::Acquire(base, targets[0]);
       Check(protectedPartition != nullptr);
-      if (mode < 2 || mode == 8) {
+      if (mode < 2 || mode == 8 || mode == 11 || mode == 12) {
         const auto empty = protectedPartition->ReadRecovery(targets[0]);
         Check(empty.state == State::absent && empty.plaintext.empty());
         Check(protectedPartition->Stage(targets[0], plain));
@@ -265,6 +266,9 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
           Check(protectedRestored.state == State::present && protectedRestored.plaintext == plain);
           protectedPartition->Revoke();
         }
+        if (mode == 11 || mode == 12) {
+          Check(!protectedPartition->Publish(targets[mode == 11 ? 1 : 2]));
+        }
       } else if (mode == 2 || mode == 3) {
         Check(!protectedPartition->Stage(targets[0], plain));
       } else if (mode == 6) {
@@ -272,6 +276,10 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
       } else if (mode == 7) {
         protectedPartition->Revoke();
         protectedPartition->Revoke();
+      }
+      if (mode == 9 || mode == 10) {
+        const auto wrongScope = protectedPartition->ReadRecovery(targets[mode == 9 ? 1 : 2]);
+        Check(wrongScope.state == State::unavailable && wrongScope.plaintext.empty());
       }
       const auto denied = protectedPartition->ReadRecovery(targets[0]);
       Check(denied.state == State::unavailable && denied.plaintext.empty());
@@ -286,7 +294,7 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
         Check(preserved.state == (originalCipher.empty() ? State::absent : State::present));
         Check(preserved.bytes == originalCipher); // Corrupt/foreign bytes also preserved.
       }
-      if (mode == 8) {
+      if (mode == 8 || mode == 11 || mode == 12) {
         // Staged ciphertext remains decryptable but is never adopted/published.
         std::vector<unsigned char> staged(65537);
         const auto fileHandle = CreateFileW((paths[0] + L"\\pending-command.stage").c_str(),
@@ -359,6 +367,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     std::cout << "PASS: Windows protected command partition DPAPI/disk/restore/rejection/preservation (TEST ONLY)" << std::endl;
   if (passed && cleaned)
     std::cout << "PASS: Windows protected command abrupt writer/fresh reader/lease/preservation (TEST ONLY)" << std::endl;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows protected command account/project read-publish scope fence (TEST ONLY)" << std::endl;
   return passed && cleaned;
 }
 #endif

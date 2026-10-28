@@ -834,3 +834,26 @@ This tests process exit with OS still running, not kernel/physical power loss,
 strict full command DTOs, captured SDK lifecycle/root provisioning/durable failure
 fencing/authenticated receipt reconciliation or hosted learner acceptance. Learner
 retention/default activation remains off; all14 hosted release groups pending.
+
+## Protected read/publish scope fence — 2026-10-28
+
+Four additional TEST ONLY native matrix cases exercise both wrong account and
+wrong project at the protected facade, retaining all previous nine cases and the
+abrupt writer/fresh reader process checks. Read cases use actual valid DPAPI
+ciphertext already published for the captured target; the foreign lookup must
+return unavailable with empty plaintext. Publish cases stage actual protected
+bytes for that target, then reject publication with a foreign target. Each failed
+owner must also reject subsequent correct-target read/stage/publish and retain
+its exclusive lease until destruction. Independent raw readback requires exact
+original ciphertext preservation (read cases), or no published file plus retained,
+exactly decryptable staged bytes (publish cases). No failed operation grants retry,
+redispatch, abandonment or a new owner before destruction.
+
+Required marker after all assertions and unique cleanup succeed:
+`PASS: Windows protected command account/project read-publish scope fence (TEST ONLY)`.
+Parent e1dee503 / CI40678149811 attempt1 passed all five jobs/every step with
+persistent vault/same SDK/profile/receipt and protected process markers observed.
+The four new native cases require their own exact-head Windows CI; Linux excludes
+the Win32 fixture. This remains synthetic component evidence, not a full command
+DTO, authenticated receipt, captured SDK lifecycle, trusted-root provenance,
+retention approval, application activation or hosted learner acceptance.
