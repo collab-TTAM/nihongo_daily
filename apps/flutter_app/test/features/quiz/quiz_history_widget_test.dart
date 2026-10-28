@@ -113,6 +113,41 @@ Future<void> _load(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('history summary follows loaded snapshot', (tester) async {
+    final h = Harness();
+    final source = _Source(h)
+      ..response = (owner) async => [
+        OwnedVocabularyQuizAttempt(owner, quizReport(1, correct: true)),
+        OwnedVocabularyQuizAttempt(owner, quizReport(2)),
+        OwnedVocabularyQuizAttempt(owner, quizReport(1, correct: true)),
+      ];
+    await _mount(tester, harness: h, source: source);
+    expect(find.byKey(const Key('quiz-history-summary')), findsNothing);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('2 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 2'), findsOneWidget);
+    expect(source.reads, 1);
+    source.response = (_) async => throw StateError('PRIVATE SUMMARY');
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-history-summary')), findsNothing);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 2'), findsNothing);
+    expect(find.byKey(const Key('quiz-history-error')), findsOneWidget);
+    expect(find.textContaining('PRIVATE'), findsNothing);
+    source.response = (_) async => [];
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('0 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 0 / 0'), findsOneWidget);
+    expect(source.reads, 3);
+    await h.runtime.signOut();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-history-summary')), findsNothing);
+    expect(source.reads, 3);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('retired history callback cannot read', (tester) async {
     final h = Harness();
     final source = _Source(h);

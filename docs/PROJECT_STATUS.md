@@ -13,30 +13,28 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — narrow review heading tap, 2026-10-28 UTC
+## Core checkpoint — loaded quiz history totals, 2026-10-28 UTC
 
-- Resume PR41 automation/issue-11-plan-sdk-integration, exact parent
-  038a1d4198ff5c0900a4128c6f58ec317f53459f. New commit/tree/CI in PR41 checkpoint.
-- Parent CI40775250696/latestattempt1 FAILURE: other4 jobs/EVERYstep SUCCESS;
-  Flutter123123553440 format/analyze PASS,1481 tests passed/one failure. Sole
-  narrow320px/200-percent case fails hitTestable BEFOREtap at whole ExpansionTile
-  center. Exact-context/no-I/O and reload-collapse cases passed. Later Flutter
-  gates SKIPPED, no fullpass claim.
-- Only narrow fixture tap target now exact heading descended from keyed row.
-  Same tapQuiz ensureVisible/hitTestable/actualtap; no directcallback/skip/warning
-  suppression/resize. Keep320x700/200%, all usage/example/read-write/no-exception
-  assertions, teardown/deadlines and other test bodies. Reverse replacement equals
-  whole prior fixture. Production/default/canonical/Pro/Auth/API/RLS/CI unchanged.
-- Three paths apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart;
-  docs/QUIZ_PROGRESS_VIEW.md; this status. Separate exactdiff/target-vs-container/
-  preservation review. QA46/inventory151/diffcheck PASS; new-head Flutter/format/
-  analyze/widget/build locally UNRUN(noSDK); CI still required.
-- NEXT exact-head/latestattempt all5/EVERYstep/narrow+retained context/widgets;
-  fix actual diagnostics without weakerchecks, pending-only handoff/no duplication.
-  Then remaining13/backend/root/captured lifecycle/durable uncertainty/authenticated
-  conditional release/retentionapproval.41draft/13+17open/AIoff/memory-only/
-  all14hostedpending; no merge/close/deploy/provider/Authstrategy/collection/spend/
-  security/release/schedule/Alpha acceptance.
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  78cab2418ae1eeaf0b905aef5f6f685facc0a8b8. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40778521899/latestattempt1 all5/every step SUCCESS/no skips; narrow
+  context fix verified, Windows123134040758 persistent SDK/post-decrypt markers.
+- Learner history adds loaded round count and original correct/all-answer totals
+  from current validated/deduplicated owner-bound snapshot. No extra I/O/derived
+  writes/unique-item/mastery/SRS/study-time credit. Empty0of0, loading/error/owner
+  replacement hide old totals via existing captured repository lifecycle.
+- One added widget: duplicate history2 rounds/1of2, absent before load, error
+  redaction/removal, empty0of0, logout removal/exact read counts. All original
+  widget bodies/assertions/cleanup retained. Separate counts/dedup/snapshot/no-I/O/
+  error/lifecycle/diff review complete. Four paths historyscreen/historywidgettest
+  under apps/flutter_app; docs/QUIZ_ACCOUNT_HISTORY.md; this status.
+- QA46/inventory151/diffcheck PASS; new widget/Dart format/analyze/build locally
+  UNRUN(noSDK). NEXT exact-head/latestattempt all5/every step/new+retained widgets/
+  native markers; fix actual diagnostics without weaker checks; pending-only
+  handoff/no duplication. Remaining13 and root/backend/captured lifecycle/durable
+  uncertainty/authenticated conditional release/retentionapproval open.41draft/
+  13+17open/AIoff/memory-only/all14hostedpending; no Pro/API/RLS/Authstrategy/
+  provider/collection/spend/security/merge/deploy/release/schedule/Alpha acceptance.
 
 ## Core checkpoint — exact review-context formatter repair, 2026-10-28 UTC
 

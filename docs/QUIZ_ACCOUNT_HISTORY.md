@@ -211,3 +211,23 @@ and CI/security gates remain unchanged. Local QA46/inventory151/whitespace pass;
 there is no local Dart/Flutter SDK, so new-head format/analyzer/history widgets/
 build evidence must come from exact-head Actions. No new test is invented for a
 layout-only fix. #13 stays open/#41 draft and all14 hosted release groups pending.
+
+## Loaded local-history totals — 2026-10-28 UTC
+
+History shows the number of saved rounds and original correct answers / all
+answered questions only after an explicit successful load. Totals use exactly the
+validated owner-bound repository snapshot, including its existing event dedup;
+repeated practice rounds each contribute their original score. They are not
+unique vocabulary counts, current-content correctness, study time or mastery.
+No extra source/store/network read, write or persistent derived counter is added.
+Empty history shows0 rounds/0of0; loading, failure and owner replacement remove
+the prior summary through the same existing captured-repository view lifecycle.
+Two separate text rows wrap naturally with the existing narrow/large-text layout.
+
+One added widget checks duplicate events become2 rounds/1of2, no summary before
+load, failure redaction/removal, empty reload0of0 and logout removal with exact
+read counts. All original widget bodies/assertions/cleanup remain. Parent78cab24
+CI40778521899 attempt1 passed all5/every step, including narrow context fix and
+retained Windows markers. New widget/format/analyze/build locally UNRUN(no SDK);
+QA46/inventory151/diffcheck pass separately. Require own exact-head CI. TEST ONLY
+Auth/read ports do not establish hosted learner acceptance or full sync.

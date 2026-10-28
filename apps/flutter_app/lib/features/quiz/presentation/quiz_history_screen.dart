@@ -86,6 +86,14 @@ class _HistoryPanelState extends State<_HistoryPanel> {
   @override
   Widget build(BuildContext context) {
     final records = _records;
+    var correct = 0;
+    var answers = 0;
+    if (records != null) {
+      for (final record in records) {
+        correct += record.attempt.score;
+        answers += record.attempt.answers.length;
+      }
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -103,6 +111,13 @@ class _HistoryPanelState extends State<_HistoryPanel> {
             'Không thể đọc lịch sử. Bạn có thể thử tải lại.',
             key: Key('quiz-history-error'),
           ),
+        if (records != null) ...[
+          Text(
+            '${records.length} bộ đã lưu',
+            key: const Key('quiz-history-summary'),
+          ),
+          Text('Câu đúng theo bài gốc: $correct / $answers'),
+        ],
         if (records != null && records.isEmpty)
           const Text('Chưa có kết quả quiz được lưu trên thiết bị này.'),
         if (records != null)
