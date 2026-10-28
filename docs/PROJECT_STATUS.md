@@ -13,28 +13,30 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — exact history formatter repair, 2026-10-28 UTC
+## Core checkpoint — progress selector callback fence, 2026-10-28 UTC
 
-- Resume PR41 automation/issue-11-plan-sdk-integration, exact parent
-  93f62b805aaa3a535ff0cf4cacfea9fa2ad7c121. New commit/tree/CI in PR41 checkpoint.
-- Parent CI40757797643/latestattempt1 FAILURE: repo/AI/database/Windows every
-  step SUCCESS; Flutter123062214330 strict formatter failed. Analyzer/new2history
-  widgets/full Flutter/downstream SKIPPED, not passed. Read actual formatter diff.
-- Apply exact line-wrap output to history isCurrent closure only; formatted blob
-  debcacc647906c5b1077c5837a08f9ee455eaaf5 matches CI prefix. Reverse replacement
-  equals whole original source. Guards/controlflow/tests/assertions/deadlines/
-  cleanup/security/compiler/CI gates unchanged. No test added for layout-only fix.
-- Three paths apps/flutter_app/lib/features/quiz/presentation/quiz_history_screen.dart;
-  docs/QUIZ_ACCOUNT_HISTORY.md; this status. Separate exact-diff/hash/lifecycle/
-  preservation review complete. QA46/inventory151/diffcheck PASS. Dart/Flutter
-  SDK absent: new-head format/analyze/new2widget/build locally UNRUN. CI required.
-- NEXT exact-head/latestattempt all5/EVERYstep/new2 history regressions+retained
-  tests; fix actual diagnostics without weaker checks, pending-only handoff/no
-  duplicate code. Then remaining13 and concrete root/backend/captured storage
-  lifecycle/uncertainty/authenticated conditional release/retentionapproval.
-  #41draft/13+17open/defaultAIoff/memory-only/all14hostedpending. Main/source37/
-  Pro/N4 untouched; no merge/close/deploy/Authstrategy/provider/collection/spend/
-  security/release/schedule action or Alpha acceptance.
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  aa7d7cd90110b0f6715c3f45c2b324f3f4502293. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40761864119/latestattempt1 all5/every step SUCCESS/no skips; Windows
+  123075714082 persistent SDK/post-decrypt markers verified. Prior history fix
+  formatting/analyze/tests now verified. TEST ONLY, not hosted learner evidence.
+- Guard progress selector before ref/setState using mounted and same captured
+  history repository/curriculum source. Old callback cannot alter replacement
+  view before frame or call setState after disposal. Current-view repeated
+  selections/level revision remain; no Auth/profile/storage/credit change.
+- Two added widget cases: retire repository before selector invocation; invoke
+  after route disposal. Both zero content/history reads/no exception, fresh N5
+  load still works with exact counts. All original widget bodies/cleanup/assertions
+  retained. Separate mounted/ref/identity/revision/no-I/O/diff review complete.
+- Four paths quiz_progress_screen.dart, quiz_progress_widget_test.dart under
+  apps/flutter_app; docs/QUIZ_PROGRESS_VIEW.md; this status. QA46/inventory151/
+  diffcheck PASS; new2 Flutter/format/analyze/build locally UNRUN(noSDK).
+- NEXT exact-head/latestattempt all5/every step/new2+retained tests/markers;
+  fix actual diagnostics without weaker assertions/deadlines; pending-onlyhandoff/
+  no duplication. Then remaining13 and root/backend/captured storage lifecycle/
+  uncertainty/authenticated conditional release/retentionapproval.41draft/13+17open/
+  AIoff/memory-only/all14hostedpending; no merge/close/Pro/deploy/Authstrategy/
+  provider/collection/spend/security/release/schedule change or Alpha acceptance.
 
 ## Core checkpoint — quiz history captured read fence, 2026-10-28 UTC
 

@@ -98,3 +98,21 @@ These are TEST ONLY Auth/profile/local ports; new Flutter cases/analyzer/format/
 build are locally UNRUN (no SDK), require exact-head CI. Local QA46, inventory151
 and whitespace passed. No new default/Auth/storage/retention/mastery/SRS/server
 credit or Pro content change. #13 remains open and #41 draft; hosted gates pending.
+
+## Captured selector callback — 2026-10-28 UTC
+
+The view-level selector now checks mounted state before provider access/setState,
+and requires the same captured history repository and curriculum source. A
+retired callback cannot alter a replacement view before its frame or call
+setState after disposal. This does not invalidate repeated selections within the
+same current view: existing before-frame N5-N4-N5 revision/load guards remain.
+No history read/write is triggered by selection, and no Auth/profile level or
+study credit changes. Accepted borrowed work retains its existing owner/drain.
+
+Two regression widgets retire the history repository before invoking the old
+selector, or invoke it after route disposal. Both require zero content/history
+reads, no exception, and a fresh explicit N5 load with exact counts. All original
+widget bodies/assertions/cleanup remain. Parent aa7d7cd CI40761864119 attempt1
+passed all5/every step and retained Windows markers. New2 widget/format/analyze/
+build locally UNRUN (no Dart/Flutter SDK); QA46/inventory151/diffcheck pass
+separately. Exact-head CI required. No hosted learner/mastery/release acceptance.

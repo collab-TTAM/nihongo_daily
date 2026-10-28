@@ -57,6 +57,11 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
                 DropdownMenuItem(value: level, child: Text(level.label)),
             ],
             onChanged: (level) {
+              if (!mounted) return;
+              final history = ref.read(quizHistoryRepositoryProvider);
+              if (!identical(history, repository)) return;
+              final curriculum = ref.read(curriculumRepositoryProvider);
+              if (!identical(curriculum, source)) return;
               if (level != null) {
                 setState(() {
                   _level = level;

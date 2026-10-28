@@ -298,6 +298,52 @@ void main() {
     },
   );
 
+  testWidgets('retired selector keeps new view level', (tester) async {
+    final ports = _Ports(original);
+    final container = await mount(tester, ports);
+    final selector = tester.widget<DropdownButton<PreviewLevel>>(
+      find.byKey(const Key('quiz-progress-level')),
+    );
+    final old = container.read(quizHistoryRepositoryProvider);
+    container.invalidate(quizHistoryRepositoryProvider);
+    expect(container.read(quizHistoryRepositoryProvider), isNot(same(old)));
+    selector.onChanged!(PreviewLevel.n4);
+    await tester.pumpAndSettle();
+    final fresh = tester.widget<DropdownButton<PreviewLevel>>(
+      find.byKey(const Key('quiz-progress-level')),
+    );
+    expect(fresh.value, PreviewLevel.n5);
+    expect(ports.contentReads, 0);
+    expect(ports.reads, 0);
+    await load(tester);
+    expect(find.text('N5 · 0 bộ đã lưu'), findsOneWidget);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('disposed progress selector stays inert', (tester) async {
+    final ports = _Ports(original);
+    final container = await mount(tester, ports);
+    final selector = tester.widget<DropdownButton<PreviewLevel>>(
+      find.byKey(const Key('quiz-progress-level')),
+    );
+    container.read(routerProvider).go('/settings');
+    await tester.pumpAndSettle();
+    selector.onChanged!(PreviewLevel.n4);
+    await tester.pumpAndSettle();
+    expect(ports.contentReads, 0);
+    expect(ports.reads, 0);
+    expect(tester.takeException(), isNull);
+    container.read(routerProvider).go('/progress');
+    await tester.pumpAndSettle();
+    await load(tester);
+    expect(find.text('N5 · 0 bộ đã lưu'), findsOneWidget);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('retained progress load is inert before level rebuild', (
     tester,
   ) async {
