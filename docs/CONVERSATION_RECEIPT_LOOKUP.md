@@ -511,3 +511,22 @@ Local46QA/inventory151/diffcheck pass separately; new7 Dart format/analyzer/test
 build locally UNRUN, no SDK. Require new exact-head CI. Parent f784b0b
 CI40712778351 all5/EVERYstep passed, all11 prior owned cases observed in Flutter
 122903356266. No hosted Auth/RLS/provider/learner acceptance or retention approval.
+
+## Protected lookup late lifecycle failures — 2026-10-28
+
+Three additional TEST ONLY owned-runtime/pinned SDK cases retain every previous
+assertion and deadline. During held native unprotect, refresh must revoke old
+capabilities, suppress both late success and private error as fixed unauthorized,
+and send no receipt HTTP. Metadata survives unchanged/no clear; after drain and
+readiness a fresh protector is available and the retained refresh token is intact.
+During held receipt HTTP, close signals abort and returns unauthorized; a late
+private HTTP error must drain without escaping, preserve metadata, and leave the
+borrowed HTTP client open. Finally blocks settle outstanding fixture work.
+Native channel/Auth/vault/HTTP are simulated, not hosted/native-file evidence.
+
+Parent d414f81 / CI40724115717 attempt1 passed all5/every step, including formatter,
+analyzer/fullFlutter and required Windows persistent SDK/protected markers. New3
+Dart cases/format/analyze/build locally UNRUN (no SDK); QA46/inventory151/diffcheck
+pass separately. Require new exact-head CI. No production/default/CI/security or
+retention change. Concrete file backend/root/storage lifecycle/durable uncertainty/
+authenticated conditional release and all14 hosted learner groups remain open.
