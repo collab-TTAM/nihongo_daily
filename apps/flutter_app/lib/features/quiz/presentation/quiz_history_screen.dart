@@ -57,8 +57,19 @@ class _HistoryPanel extends StatefulWidget {
   State<_HistoryPanel> createState() => _HistoryPanelState();
 }
 
+enum _HistoryLevel {
+  all('Tất cả cấp độ', null),
+  n5('N5', PreviewLevel.n5),
+  n4('N4', PreviewLevel.n4);
+
+  const _HistoryLevel(this.label, this.level);
+  final String label;
+  final PreviewLevel? level;
+}
+
 class _HistoryPanelState extends State<_HistoryPanel> {
   List<OwnedVocabularyQuizAttempt>? _records;
+  _HistoryLevel _level = _HistoryLevel.all;
   bool _loading = false;
   bool _failed = false;
 
@@ -85,7 +96,11 @@ class _HistoryPanelState extends State<_HistoryPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final records = _records;
+    final records = _records
+        ?.where((record) {
+          return _level.level == null || record.attempt.level == _level.level;
+        })
+        .toList(growable: false);
     var correct = 0;
     var answers = 0;
     if (records != null) {
@@ -97,6 +112,19 @@ class _HistoryPanelState extends State<_HistoryPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        DropdownButton<_HistoryLevel>(
+          key: const Key('quiz-history-level'),
+          value: _level,
+          isExpanded: true,
+          items: [
+            for (final level in _HistoryLevel.values)
+              DropdownMenuItem(value: level, child: Text(level.label)),
+          ],
+          onChanged: (level) {
+            if (!mounted || !widget.isCurrent() || level == null) return;
+            setState(() => _level = level);
+          },
+        ),
         OutlinedButton(
           key: const Key('quiz-history-load'),
           onPressed: _loading ? null : () => unawaited(_load()),
@@ -119,7 +147,11 @@ class _HistoryPanelState extends State<_HistoryPanel> {
           Text('Câu đúng theo bài gốc: $correct / $answers'),
         ],
         if (records != null && records.isEmpty)
-          const Text('Chưa có kết quả quiz được lưu trên thiết bị này.'),
+          Text(
+            _level == _HistoryLevel.all
+                ? 'Chưa có kết quả quiz được lưu trên thiết bị này.'
+                : 'Chưa có kết quả quiz đã lưu cho cấp độ này.',
+          ),
         if (records != null)
           for (final record in records.reversed)
             ListTile(

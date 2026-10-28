@@ -112,7 +112,99 @@ Future<void> _load(WidgetTester tester) async {
   await tester.pump();
 }
 
+Future<void> _filterHistory(WidgetTester tester, String label) async {
+  final selector = find.byKey(const Key('quiz-history-level'));
+  await tester.ensureVisible(selector);
+  await tester.pumpAndSettle();
+  await tester.tap(selector);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(label).last);
+  await tester.pumpAndSettle();
+}
+
 void main() {
+  testWidgets('history level filters rows and totals without another read', (
+    tester,
+  ) async {
+    final h = Harness();
+    final n5 = quizReport(1);
+    final n4 = VocabularyQuizAttempt.fromJson({
+      ...quizReport(2, correct: true).toJson(),
+      'level': 'N4',
+    });
+    final source = _Source(h)
+      ..response = (owner) async => [
+        OwnedVocabularyQuizAttempt(owner, n5),
+        OwnedVocabularyQuizAttempt(owner, n4),
+        OwnedVocabularyQuizAttempt(owner, n5),
+      ];
+    await _mount(tester, harness: h, source: source);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('2 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 2'), findsOneWidget);
+    await _filterHistory(tester, 'N4');
+    expect(find.text('1 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 1'), findsOneWidget);
+    expect(find.byKey(ValueKey('quiz-history-${n4.eventId}')), findsOneWidget);
+    expect(find.byKey(ValueKey('quiz-history-${n5.eventId}')), findsNothing);
+    await _filterHistory(tester, 'N5');
+    expect(find.text('Câu đúng theo bài gốc: 0 / 1'), findsOneWidget);
+    expect(find.byKey(ValueKey('quiz-history-${n5.eventId}')), findsOneWidget);
+    expect(find.byKey(ValueKey('quiz-history-${n4.eventId}')), findsNothing);
+    await _filterHistory(tester, 'Tất cả cấp độ');
+    expect(find.text('2 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 2'), findsOneWidget);
+    expect(source.reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('history filter is local across empty reload and owner reset', (
+    tester,
+  ) async {
+    final h = Harness();
+    final source = _Source(h)
+      ..response = (owner) async => [
+        OwnedVocabularyQuizAttempt(owner, quizReport(1)),
+      ];
+    await _mount(tester, harness: h, source: source);
+    await _filterHistory(tester, 'N4');
+    expect(source.reads, 0);
+    expect(find.byKey(const Key('quiz-history-summary')), findsNothing);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('0 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 0 / 0'), findsOneWidget);
+    expect(
+      find.text('Chưa có kết quả quiz đã lưu cho cấp độ này.'),
+      findsOneWidget,
+    );
+    final n4 = VocabularyQuizAttempt.fromJson({
+      ...quizReport(2, correct: true).toJson(),
+      'level': 'N4',
+    });
+    source.response = (owner) async => [OwnedVocabularyQuizAttempt(owner, n4)];
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('1 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 1'), findsOneWidget);
+    expect(source.reads, 2);
+    await h.runtime.signOut();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-history-level')), findsNothing);
+    expect(find.byKey(const Key('quiz-history-summary')), findsNothing);
+    h.access.change(fixture.other);
+    await tester.pumpAndSettle();
+    expect(find.text('Tất cả cấp độ'), findsOneWidget);
+    expect(find.byKey(const Key('quiz-history-summary')), findsNothing);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('1 bộ đã lưu'), findsOneWidget);
+    expect(source.reads, 3);
+    expect(tester.takeException(), isNull);
+  });
+
+
   testWidgets('history summary follows loaded snapshot', (tester) async {
     final h = Harness();
     final source = _Source(h)

@@ -13,6 +13,31 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — history N5/N4 filter, 2026-10-28 UTC
+
+- Resume PR41 automation/issue-11-plan-sdk-integration, exact parent
+  83f26c6cfe803f923dc89a96c8f778a9f66aa9a0. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40782950867/latestattempt1 all5/EVERYstep SUCCESS/no skips. #13 actual
+  criteria/local snapshot rules and merged #2/#3/#4/#5 prerequisites read; Pro14
+  reserved. Main/source37/Pro38 unchanged. No hosted learner acceptance inferred.
+- History now filters All/N5/N4 rows AND original round/correct/answer totals from
+  SAME validated/deduplicated owner snapshot. Explicit selected-level empty0of0,
+  no extra I/O/save/content/profile/preview level/mastery/SRS/timecredit change.
+  Before-load selection no read; explicit reload retains filter, owner/repository/
+  route replacement resets All/empty. Selector mounted/current guard retained.
+- Two widget cases: mixed-level duplicate events/rows/totals/filter roundtrip with
+  exactly1 read; pre-load/selectedempty/reload/logout/new-owner reset exact counts.
+  Append test port always fails; all original widget bodies/assertions/cleanup
+  unchanged. Separate filter/dedup/snapshot/lifecycle/no-I/O/diff review complete.
+- Four paths history screen/test under apps/flutter_app; docs/QUIZ_ACCOUNT_HISTORY.md;
+  this status. QA46/inventory151/diffcheck PASS; new2 Flutter/format/analyze/build
+  locally UNRUN(noSDK). NEXT exact-head/latestattempt all5/EVERYstep/new2+retained
+  tests; fix actual diagnostics without weaker checks, pending-onlyhandoff/no
+  duplication. Then remaining13 and root/backend/captured storage lifecycle/durable
+  uncertainty/authenticated conditional release/retentionapproval.41draft/13+17open/
+  AIoff/memory-only/all14hostedpending; no Pro/API/RLS/Authstrategy/provider/collection/
+  spend/security/merge/deploy/release/schedule/Alpha acceptance.
+
 ## Core checkpoint — loaded quiz history totals, 2026-10-28 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent

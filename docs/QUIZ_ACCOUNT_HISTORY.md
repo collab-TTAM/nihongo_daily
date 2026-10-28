@@ -231,3 +231,29 @@ CI40778521899 attempt1 passed all5/every step, including narrow context fix and
 retained Windows markers. New widget/format/analyze/build locally UNRUN(no SDK);
 QA46/inventory151/diffcheck pass separately. Require own exact-head CI. TEST ONLY
 Auth/read ports do not establish hosted learner acceptance or full sync.
+
+
+## View-only history level filter — 2026-10-28
+
+The history panel offers All/N5/N4, initially All. Both displayed round rows and
+correct/answer totals use the same selected subset of the already validated,
+owner-bound, deduplicated loaded snapshot. Empty selected-level history shows0
+rounds/0of0 with an explicit message; it is not a storage error or invented result.
+Duplicate events still deduplicate before any view filtering. Original attempts,
+UTC ordering, score semantics and all-level default totals remain unchanged.
+
+Selection may precede explicit load and never triggers storage/network/content
+reads or writes. Explicit reload preserves this view selection and filters the
+fresh snapshot. Owner/repository/route replacement creates a fresh panel with All
+and no loaded totals. Selection checks mounted/current repository before setState;
+no account/profile/preview level is changed. Existing load guards/drain/error
+redaction and no mastery/time/SRS credit rules remain intact.
+
+Two new widgets use TEST ONLY structurally valid N5/N4 reports to verify mixed-
+level duplicate totals/rows and roundtrip filters with exactly one read; pre-load
+selection/empty selected level, explicit fresh reload and logout/new-owner All
+reset with exact read counts. Store append remains an unconditional test failure.
+All previous widget bodies/assertions/cleanup remain. Local QA46/inventory151/
+whitespace pass; new Flutter/format/analyze/build locally UNRUN(noSDK), require
+exact-head CI. Parent83f26c6 CI40782950867/latestattempt1 all5/EVERYstep SUCCESS.
+Hosted ownership/sync/mastery/learner proof remains pending; #13open/#41draft.
