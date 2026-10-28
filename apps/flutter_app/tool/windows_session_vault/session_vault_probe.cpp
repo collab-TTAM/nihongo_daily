@@ -14,6 +14,7 @@ bool ProbePendingCommandProtection();
 bool ProbePendingCommandFileLease();
 int CommandLeaseChild(const std::wstring& directory);
 int CommandStageExitChild(const std::wstring& directory, const std::wstring& mode);
+int CommandPublishExitChild(const std::wstring& directory, const std::wstring& mode);
 
 namespace {
 void Check(bool ok) {
@@ -61,6 +62,8 @@ void ChildWrite(const std::string& target) {
 }  // namespace
 
 int wmain(int argc, wchar_t* argv[]) {
+  if (argc == 4 && std::wstring(argv[1]) == L"--command-publish-exit-child")
+    return CommandPublishExitChild(argv[2], argv[3]);
   using nihongo::VaultStatus;
   if (argc == 4 && std::wstring(argv[1]) == L"--command-stage-exit-child")
     return CommandStageExitChild(argv[2], argv[3]);

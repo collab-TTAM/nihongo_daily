@@ -535,3 +535,38 @@ cases require exact-head MSVC/Actions execution. Linux checks only unsupported-
 OS compilation. Physical disk failure/power loss, process exit DURING publication,
 trusted partition namespace, durable uncertainty and authenticated reconciliation
 remain unverified; pending learner release gates and retention approval remain.
+
+## TEST ONLY publication subprocess exits — 2026-10-28
+
+A separate child argument selects exactly one of before-rename, after-rename,
+after-flush and after-close. The renamed-source test compilation stages64
+synthetic0xa5 bytes with real APIs, then arms the selected publication boundary.
+The wrappers call ExitProcess directly before the real rename, directly after a
+successful real rename, after the real second/post-rename flush, or after the real
+first close. A success exit requires expected syscall counters and successful
+real outcomes; returning from Publish without reaching the boundary exits5.
+ExitProcess bypasses C++ lease/handle destructors; OS process cleanup releases
+remaining handles. Original failure modes1..8 are unaffected. Production source/
+header/default/runner have no exit hooks or new arguments.
+
+Parent uses the existing shell-free non-inheriting child helper, extended with a
+separate explicit whitelist and flag. Existing partial/flushed modes still use
+the original flag/default branch. Retained10s wait/exit-code check, timeout
+termination/reap and handle cleanup are mandatory. All four publication modes
+must complete successfully; there is no skip or simulated child result.
+
+After child exit, the normal unmodified lease must reacquire and pass policy.
+Before-rename requires exact64-byte private stage/EOF and no candidate; the three
+later points require no stage and exact64-byte candidate under existing strict
+reader ACL/owner/size/link checks. Fresh objects cannot publish without capture;
+failed publish latches and prevents new staging. Independent re-reads verify
+original files remain unchanged, with mandatory unique fixture cleanup afterward.
+Success marker: `PASS: Windows publication subprocess pre/post-rename/flush/close exit preservation (TEST ONLY)`.
+
+These are actual controlled user-process exits at syscall boundaries, not a
+kernel crash, power interruption or proof of persistent failure fencing. Readable
+candidate bytes still grant no dispatch/replay/release authority after restart.
+Trusted partition namespace, durable uncertainty/reconciliation and learner
+retention approval remain required. New native execution needs exact-head CI;
+Linux only verifies the unsupported-OS branch. No hosted learner proof or release
+acceptance is claimed by this probe.

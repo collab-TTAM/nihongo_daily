@@ -41,7 +41,10 @@ BOOL WINAPI FaultFlushFileBuffers(HANDLE file) {
       return FALSE;
     }
   }
-  return ::FlushFileBuffers(file);
+  const auto result = ::FlushFileBuffers(file);
+  if (fault.mode == 11 && file == fault.stage && fault.renamed && fault.flushes == 2)
+    ExitProcess(result != FALSE && fault.renames == 1 && fault.writes == 0 ? 0 : 5);
+  return result;
 }
 BOOL WINAPI FaultCloseHandle(HANDLE file) {
   if (fault.mode != 0 && file == fault.stage) {
@@ -52,7 +55,10 @@ BOOL WINAPI FaultCloseHandle(HANDLE file) {
       return FALSE; // Leave actual handle open: RAII must retry the real close.
     }
   }
-  return ::CloseHandle(file);
+  const auto result = ::CloseHandle(file);
+  if (fault.mode == 12 && file == fault.stage && fault.renamed && fault.closes == 1)
+    ExitProcess(result != FALSE && fault.flushes == 2 && fault.renames == 1 && fault.writes == 0 ? 0 : 5);
+  return result;
 }
 // Arm only after successful Stage. Record the actual reopened DELETE handle so
 // the pre-rename flush and post-rename operations belong to the same source.
@@ -67,6 +73,8 @@ BOOL WINAPI FaultSetFileInformationByHandle(HANDLE file, FILE_INFO_BY_HANDLE_CLA
                                            LPVOID info, DWORD size) {
   if (fault.mode >= 5 && file == fault.stage && kind == FileRenameInfo) {
     ++fault.renames;
+    if (fault.mode == 9)
+      ExitProcess(fault.renames == 1 && fault.flushes == 1 && fault.writes == 0 ? 0 : 5);
     if (fault.mode == 5) {
       ++fault.faults;
       SetLastError(ERROR_ACCESS_DENIED);
@@ -78,6 +86,8 @@ BOOL WINAPI FaultSetFileInformationByHandle(HANDLE file, FILE_INFO_BY_HANDLE_CLA
     }
     const auto result = ::SetFileInformationByHandle(file, kind, info, size);
     fault.renamed = result != FALSE;
+    if (fault.mode == 10)
+      ExitProcess(fault.renamed && fault.renames == 1 && fault.flushes == 1 && fault.writes == 0 ? 0 : 5);
     return result; // Race case must be rejected by the real no-replace syscall.
   }
   return ::SetFileInformationByHandle(file, kind, info, size);
@@ -138,6 +148,24 @@ bool ProbeCommandPublishFault(const std::wstring& directory, int mode,
   return fault.faults == 1 && fault.renames == 1 && fault.writes == 0 &&
       fault.flushes == (mode >= 7 ? 2u : 1u) &&
       fault.closes == (mode == 8 ? 2u : 1u);
+}
+// TEST ONLY child entry: successful exits occur solely inside the selected real
+// syscall boundary above. ExitProcess deliberately bypasses C++ lease cleanup.
+int CommandPublishExitChild(const std::wstring& directory, const std::wstring& mode) {
+  try {
+    int point = 0;
+    if (mode == L"before-rename") point = 9;
+    else if (mode == L"after-rename") point = 10;
+    else if (mode == L"after-flush") point = 11;
+    else if (mode == L"after-close") point = 12;
+    else ExitProcess(5);
+    auto lease = nihongo::FaultPendingCommandFileLease::Acquire(directory);
+    if (!lease || !lease->StageCiphertextCandidate(std::vector<unsigned char>(64, 0xa5))) ExitProcess(5);
+    fault = {};
+    fault.mode = point; // Arm only after real Stage and its checked close.
+    (void)lease->PublishStagedCiphertextCandidate();
+    ExitProcess(5); // Returning without reaching the selected boundary is failure.
+  } catch (...) { ExitProcess(5); }
 }
 #else
 bool ProbeCommandStageFault(const std::wstring&, int) { return false; }

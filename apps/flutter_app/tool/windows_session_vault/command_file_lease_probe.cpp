@@ -408,13 +408,17 @@ void HeldPolicyMutationMatrix(const std::wstring& root) {
   std::cout << "PASS: Windows command lease sticky policy failure fence (TEST ONLY)" << std::endl;
 }
 // TEST ONLY subprocess, explicit whitelist and bounded wait, never a shell.
-void StageExitProcess(const std::wstring& directory, const std::wstring& mode) {
-  Check(mode == L"partial" || mode == L"flushed");
+void StageExitProcess(const std::wstring& directory, const std::wstring& mode,
+                      bool publication = false) {
+  Check(publication ? (mode == L"before-rename" || mode == L"after-rename" ||
+      mode == L"after-flush" || mode == L"after-close") :
+      (mode == L"partial" || mode == L"flushed"));
   wchar_t executable[32768]{};
   const auto length = GetModuleFileNameW(nullptr, executable, 32768);
   Check(length > 0 && length < 32768);
   std::wstring command = L"\"" + std::wstring(executable) +
-      L"\" --command-stage-exit-child \"" + directory + L"\" " + mode;
+      L"\" " + std::wstring(publication ? L"--command-publish-exit-child" :
+          L"--command-stage-exit-child") + L" \"" + directory + L"\" " + mode;
   STARTUPINFOW startup{};
   startup.cb = sizeof(startup);
   PROCESS_INFORMATION process{};
@@ -841,6 +845,39 @@ void CandidateReadMatrix(const std::wstring& root) {
       if (mode <= 6) Check(DeleteFileW(stage.c_str()) != FALSE);
     }
     std::cout << "PASS: Windows candidate rename refusal/racing target/post-rename flush/close uncertainty (TEST ONLY)" << std::endl;
+    for (const auto& mode : {L"before-rename", L"after-rename", L"after-flush", L"after-close"}) {
+      std::cout << "CHECK: ciphertext publication child exit " <<
+          (std::wstring(mode) == L"before-rename" ? "before-rename" :
+           std::wstring(mode) == L"after-rename" ? "after-rename" :
+           std::wstring(mode) == L"after-flush" ? "after-flush" : "after-close") << std::endl;
+      StageExitProcess(directory, mode, true);
+      const bool before = std::wstring(mode) == L"before-rename";
+      if (before) readStage(std::vector<unsigned char>(64, 0xa5));
+      else Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      auto reader = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(reader != nullptr && reader->CheckPrivateAccessPolicy());
+      const auto result = reader->ReadCiphertextCandidate();
+      if (before) Check(result.state == State::absent && result.bytes.empty());
+      else Check(result.state == State::present && result.bytes == std::vector<unsigned char>(64, 0xa5));
+      Check(!reader->PublishStagedCiphertextCandidate()); // No captured authority after restart.
+      Check(!reader->CheckPrivateAccessPolicy());
+      Check(!reader->StageCiphertextCandidate(std::vector<unsigned char>(64, 0x5a)));
+      reader.reset();
+      if (before) {
+        readStage(std::vector<unsigned char>(64, 0xa5));
+        Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+        Check(DeleteFileW(stage.c_str()) != FALSE);
+      } else {
+        Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+        auto verifier = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(verifier != nullptr);
+        const auto preserved = verifier->ReadCiphertextCandidate();
+        Check(preserved.state == State::present && preserved.bytes == result.bytes);
+        verifier.reset();
+        Check(DeleteFileW(candidate.c_str()) != FALSE);
+      }
+    }
+    std::cout << "PASS: Windows publication subprocess pre/post-rename/flush/close exit preservation (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());

@@ -12,6 +12,39 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — publication subprocess exits, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  8524686a06321f9584a55b942ed7600a1244f02e. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40614030286 raw exact parent/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows122572241817 all4publicationfault+retained stage/native markers passed.
+  Component proof only, not hosted learner/physical powerloss acceptance.
+- Add explicit child whitelist before/after rename, after real postflush, after
+  real close. Real successful Stage precedes arming; selected syscall wrapper
+  ExitProcess0 only on exact real outcomes/counters, otherwise5. Returning without
+  selected boundary fails. No C++ cleanup; actual OS process release. Old modes
+  unchanged; no production method/header/default/runner hooks.
+- Parent shell-free/noinherit/existing10s wait/code/timeout cleanup, separate
+  child flag/whitelist; all4 required. Normal lease reacquires private policy,
+  exact64byte/EOF/ACL stage+no.bin before rename, no.stage+exact64byte private
+  candidate afterward; no captured authority/new publication/staging, preserve
+  original via independent re-read and mandatory unique fixture cleanup.
+- Five paths: tool/windows_session_vault/{command_stage_fault_probe.cpp,
+  command_file_lease_probe.cpp,session_vault_probe.cpp};
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. All old assertion bodies
+  retained; helper only adds explicit publication flag/whitelist. Separate phase/
+  realcall/childdispatch/no-shell/exitcode/handle/data/ACL/uncertainty review.
+  Local C++17 -Wall -Wextra -Werror/nonWindowsfailclosed/46QA/inventory151/
+  whitespace passed; inventory not151 executed tests. New MSVC/Win32/fullFlutter/
+  analyzer/build locally UNRUN; exact-head CI needed. No SDK bypass/test weakening.
+- NEXT all5/EVERYstep/new4child+retained fault/publication/native markers; fix
+  actual failures retaining assertions, pending-onlyhandoff/no duplicatecode.
+  Then trustednamespace/durableuncertainty/reconciliation/retentionapproval.
+  Controlled process exit not kernel crash/powerloss or durable fencing proof.
+  41draft/17open/AIoff/memory-only/all14hostedpending/no merge/closure/Pro/
+  Authstrategy/provider/deploy/release/collection/security/spend/Alpha action.
+
 ## Core checkpoint — publication fault matrix, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent
