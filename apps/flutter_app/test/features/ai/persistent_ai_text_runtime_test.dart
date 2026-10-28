@@ -466,6 +466,35 @@ void main() {
     ),
     _ => throw StateError('TEST ONLY operation'),
   };
+  Future<ConversationReceiptSnapshot> recoveredRead(
+    CapturedConversationReceiptLookup reader,
+    String op,
+  ) {
+    final command = switch (op) {
+      'start_conversation' => PendingConversationCommandEnvelope.fromStart(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: StartConversationRequest.fromJson(fixtures['${op}_request']),
+      ),
+      'conversation_turn' => PendingConversationCommandEnvelope.fromTurn(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: ConversationTurnRequest.fromJson(fixtures['${op}_request']),
+      ),
+      'finish_conversation' => PendingConversationCommandEnvelope.fromFinish(
+        projectUrl: wire.origin,
+        ownerId: wire.a,
+        request: FinishConversationRequest.fromJson(fixtures['${op}_request']),
+      ),
+      _ => throw StateError('TEST ONLY operation'),
+    };
+    final recovered = PendingConversationCommandEnvelope.decode(
+      command.encode(),
+      expectedScope: command.reference.scope,
+    );
+    expect(recovered.encode(), command.encode());
+    return reader.lookupCommand(recovered);
+  }
   http.StreamedResponse originalAnswer(String op, String status) =>
       http.StreamedResponse(
         Stream.value(
@@ -491,6 +520,138 @@ void main() {
         200,
         headers: {'content-type': 'application/json'},
       );
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+      test('owned decoded envelope reader shared SDK $op $status', () async {
+        final receipts = await openReceiptRuntime();
+        receipts.value = originalReference(op).encode();
+        await runtime.start();
+        expect(runtime.createConversationReceiptLookup(), isNull);
+        await login();
+        final reader = runtime.createConversationReceiptLookup()!;
+        expect(
+          identical(reader, runtime.createConversationReceiptLookup()),
+          isTrue,
+        );
+        expect(aiHttp.requests, isEmpty);
+        aiHttp.onSend = (r) async {
+          expect(r.method, 'GET');
+          expect(r.url.origin, wire.origin);
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          expect(r.url.queryParameters, {
+            'select':
+                'user_id,operation,client_event_id,request_json,status,response_json',
+            'user_id': 'eq.${wire.a}',
+            'operation': 'eq.$op',
+            'client_event_id': 'eq.${originalReference(op).clientEventId}',
+            'limit': '2',
+          });
+          expect((r as http.Request).body, isEmpty);
+          expect(
+            r.headers['authorization'],
+            'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+          );
+          expect(r.headers['cache-control'], 'no-store');
+          expect(r.followRedirects, isFalse);
+          return originalAnswer(op, status);
+        };
+        final result = await recoveredRead(reader, op);
+        expect(result.status.name, status.toLowerCase());
+        expect(
+          result.start != null,
+          status == 'COMPLETED' && op == 'start_conversation',
+        );
+        expect(
+          result.turn != null,
+          status == 'COMPLETED' && op == 'conversation_turn',
+        );
+        expect(
+          result.finish != null,
+          status == 'COMPLETED' && op == 'finish_conversation',
+        );
+        expect(receipts.calls, isNot(contains('clear')));
+        expect(receipts.value, originalReference(op).encode());
+        expect(aiHttp.requests.length, 1);
+      });
+    }
+  }
+
+  for (final logout in [false, true]) {
+    test(
+      'owned decoded envelope reader actual drain on transition logout=$logout',
+      () async {
+        final receipts = await openReceiptRuntime();
+        receipts.value = receiptReference().encode();
+        await runtime.start();
+        await login();
+        final reader = runtime.createConversationReceiptLookup()!;
+        final held = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        final aborted = Completer<void>();
+        aiHttp.onSend = (r) {
+          unawaited(
+            (r as http.AbortableRequest).abortTrigger!.then(
+              (_) => aborted.complete(),
+            ),
+          );
+          entered.complete();
+          return held.future;
+        };
+        final result = expectLater(
+          recoveredRead(reader, 'start_conversation'),
+          throwsA(unauthorized),
+        );
+        Future<void>? transition;
+        try {
+          await entered.future;
+          await expectLater(
+            runtime.createAiTextRepository()!.explain(question),
+            throwsA(isA<AiTextRequestPending>()),
+          );
+          var done = false;
+          transition = (logout ? runtime.account.signOut() : runtime.refresh())
+              .then((_) => done = true);
+          await aborted.future;
+          await result;
+          await lifecycle.flush();
+          expect(reader.isCurrent, isFalse);
+          expect(runtime.createConversationReceiptLookup(), isNull);
+          expect(receipts.value, receiptReference().encode());
+          expect(receipts.calls, isNot(contains('clear')));
+          if (logout) {
+            expect(done, isFalse);
+            expect(backend.secret, isNull);
+          }
+          held.complete(originalAnswer('start_conversation', 'COMPLETED'));
+          await transition;
+          await lifecycle.flush();
+          if (logout) {
+            expect(runtime.account.state.phase, AccountPhase.signedOut);
+            expect(receipts.value, isNull);
+            expect(runtime.createConversationReceiptLookup(), isNull);
+          } else {
+            await ready();
+            final fresh = runtime.createConversationReceiptLookup()!;
+            expect(identical(fresh, reader), isFalse);
+            expect(receipts.value, receiptReference().encode());
+          }
+          expect(aiHttp.requests.length, 1);
+          expect(aiHttp.closed, isFalse);
+        } finally {
+          if (!held.isCompleted) {
+            held.complete(originalAnswer('start_conversation', 'PENDING'));
+          }
+          await result;
+          await transition;
+        }
+      },
+    );
+  }
+
   for (final op in [
     'start_conversation',
     'conversation_turn',

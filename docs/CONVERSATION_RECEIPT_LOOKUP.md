@@ -444,3 +444,24 @@ these new tests. Require exact-head CI before pass. Native parent6de953e
 CI40683551755 all5/EVERYstep passed, including process/read-publish scope markers;
 that is not new Dart routing or hosted learner proof. Remaining backend/captured
 lifecycle/root/durable uncertainty/conditional-release/retention gates stay open.
+
+## Decoded envelope through owned SDK — 2026-10-28
+
+Eleven added TEST ONLY cases use the actual PersistentSupabaseRuntime and pinned
+SDK, with simulated Auth/vault/HTTP. Canonical scope-bound decode feeds the new
+lookupCommand adapter for all three operations and UNKNOWN/PENDING/COMPLETED.
+Assert exact GET origin/path/filter/projection, empty body, captured bearer,
+no-store/no redirects, one request, correct typed response and byte-identical
+pending receipt retained without clear. No lookup grants mutation or release.
+Two held-I/O cases exercise refresh/logout: shared SDK busy exclusion, actual
+abort, old reader revoked, receipt retained until drain, late COMPLETED ignored,
+logout vault clear before receipt clear and fresh reader only after refresh.
+Original direct-lookup tests, timeouts, ownership and finally cleanup remain.
+
+Parent28c13d1 CI40685977469 attempt1 passed all5 jobs/every step, including
+format/analyze/full tests and required Windows persistent SDK/protected markers.
+New11 SDK cases, Dart formatter/analyzer/fullFlutter/build locally UNRUN (SDK
+unavailable); QA46/inventory151/diffcheck pass separately. Require new exact-head
+CI. This is not hosted JWT/RLS/provider, native full-command persistence, verified
+conditional release or learner proof. Secure backend/root/lifecycle/uncertainty/
+retention approval and all14 hosted release groups remain open; default unchanged.
