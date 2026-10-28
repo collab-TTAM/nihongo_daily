@@ -134,6 +134,18 @@ PendingCommandPlaintextCandidate ProtectedPendingCommandPartition::ReadRecovery(
     }
     auto decoded = UnprotectPendingCommand(target_, candidate.bytes);
     if (decoded.status != CommandProtectionStatus::success) { Revoke(); return {}; }
+    // Decryption happens after the first file handle closes. Recheck the same
+    // bounded recovery snapshot before exposing plaintext: a stage, policy loss,
+    // missing/replaced/corrupt candidate or read uncertainty is still unresolved.
+    const auto confirmed = partition_->ReadRecoveryCiphertextCandidate(target_);
+    if (confirmed.state != PendingCommandCandidateState::present ||
+        confirmed.bytes != candidate.bytes) {
+#ifdef _WIN32
+      SecureZeroMemory(decoded.bytes.data(), decoded.bytes.size());
+#endif
+      Revoke();
+      return {};
+    }
     return {PendingCommandCandidateState::present, std::move(decoded.bytes)};
   } catch (...) { Revoke(); return {}; } // Fixed unavailable/zero plaintext.
 }

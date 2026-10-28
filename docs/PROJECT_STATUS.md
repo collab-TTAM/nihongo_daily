@@ -13,6 +13,34 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — post-decrypt recovery recheck, 2026-10-28 UTC
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  4d7aa8674932b8260f4d05e4a105ca263eba5fc9; new commit/tree/CI in PR41 checkpoint.
+- Parent CI40740040477/latestattempt1 all5/EVERYstep SUCCESS/no skips. Current
+  main78a44fa/source37afa572a/Pro38at28c20cb unchanged; Pro N4 scope reserved.
+- Protected native ReadRecovery now rechecks bounded ciphertext/stage/private
+  policy AFTER actual DPAPI decode. Changed/missing/uncertain record or stage
+  rejects unavailable/empty, wipes decoded Windows buffer, revokes and retains
+  lease/data. No recovery file writes/deletes, default activation or release grant.
+- Add TEST ONLY source-copy class rename/shim AFTER real native decode: unchanged
+  positive control, actual new staging, valid different ciphertext replacement.
+  Independent successful-mutation/callback assertions; terminal denial/content
+  preservation/exclusive lease/cleanup required. Normal production symbol remains
+  unchanged; existing native tests/assertions/deadlines and compiler flags retained.
+- Six paths: runner/pending_command_partition.cpp; native tool new
+  command_post_decrypt_probe.cpp plus CMakeLists.txt/command_partition_probe.cpp;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. Separate diff/failure/wipe/
+  hook isolation/no-authority review done. Linux C++17 -Wall -Wextra -Werror compile
+  (changed source/new test TU), QA46/inventory151/diffcheck PASS. Native Windows
+  branch/new3 cases/MSVC/build locally UNRUN; no SDK/native OS. CI marker required.
+- NEXT exact-head/latestattempt all5/EVERYstep plus post-decrypt marker; fix actual
+  diagnostics without weaker checks, pending-only handoff/no duplicate code.
+  Then concrete backend/root/captured storage lifecycle/durable uncertainty/
+  authenticated conditional release/retention approval.41draft/17open/AIoff/
+  memory-only/all14hostedpending; no merge/closure/Pro/provider/Authstrategy/
+  collection/spend/security/deploy/release/schedule change/Alpha acceptance.
+
 ## Core checkpoint — native foreign envelope fence, 2026-10-28 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

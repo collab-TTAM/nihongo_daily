@@ -10,6 +10,7 @@ add_executable(session_vault_probe
   "command_file_lease_probe.cpp"
   "command_stage_fault_probe.cpp"
   "command_partition_probe.cpp"
+  "command_post_decrypt_probe.cpp"
   "../../windows/runner/pending_command_partition.cpp"
   "../../windows/runner/pending_command_file_lease.cpp"
   "../../windows/runner/pending_command_protection.cpp"

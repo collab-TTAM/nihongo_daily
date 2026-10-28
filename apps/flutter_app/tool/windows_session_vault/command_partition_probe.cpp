@@ -7,6 +7,8 @@
 #include <array>
 #include <iostream>
 #include <stdexcept>
+void VerifyCommandPostDecryptGuard(const std::wstring& root,
+    const std::string& target, const std::wstring& directory);
 namespace {
 void Check(bool value) {
   if (!value) throw std::runtime_error("command partition probe failed");
@@ -314,6 +316,7 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
       if (!originalCipher.empty())
         Check(DeleteFileW((paths[0] + L"\\pending-command.bin").c_str()) != FALSE);
     }
+    VerifyCommandPostDecryptGuard(base, targets[0], paths[0]);
     // Actual writer ExitProcess -> parent restore -> independent reader process.
     for (unsigned boundary = 0; boundary < 2; ++boundary) {
       const auto writeMode = boundary == 0 ? L"write-min" : L"write-max";
@@ -369,6 +372,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
     std::cout << "PASS: Windows protected command abrupt writer/fresh reader/lease/preservation (TEST ONLY)" << std::endl;
   if (passed && cleaned)
     std::cout << "PASS: Windows protected command account/project read-publish scope fence (TEST ONLY)" << std::endl;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows protected command post-decrypt recheck/stage/replacement/preserve (TEST ONLY)" << std::endl;
   return passed && cleaned;
 }
 #endif

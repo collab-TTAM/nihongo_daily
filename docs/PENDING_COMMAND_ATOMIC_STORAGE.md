@@ -857,3 +857,42 @@ The four new native cases require their own exact-head Windows CI; Linux exclude
 the Win32 fixture. This remains synthetic component evidence, not a full command
 DTO, authenticated receipt, captured SDK lifecycle, trusted-root provenance,
 retention approval, application activation or hosted learner acceptance.
+
+## Protected recovery recheck after DPAPI — 2026-10-28
+
+ProtectedPendingCommandPartition.ReadRecovery now takes a second bounded recovery
+snapshot after successful DPAPI decode, before returning plaintext. It must still
+be PRESENT with byte-exact original ciphertext, no unresolved stage and valid
+sticky private access policy. Any uncertainty or change revokes the facade and
+underlying owner, returns unavailable/zero plaintext and retains the lease/data.
+On Windows the decoded buffer is explicitly wiped with SecureZeroMemory before
+this failure returns. Unchanged records still return the original decoded bytes.
+
+The two reads are snapshots, not atomic isolation against same-user code, durable
+freshness/rollback proof or power-loss reservation/dispatch permission. No file is
+repaired, adopted, overwritten or deleted by production recovery. Empty recovery
+still follows the original lower-level stage/policy checks. Trusted root, durable
+uncertainty, hosted original receipt correlation, conditional application-release
+and approved learner retention remain separate gates; no default uses this API.
+
+A TEST ONLY translation unit compiles the same partition source with distinct
+class names, replacing only the Unprotect call with a shim that first runs the
+actual production user-context DPAPI decoder. After that successful decode it
+injects either an actual fixed stage creation or a different valid DPAPI record
+into the synthetic directory. No production hook is introduced. Both must return
+unavailable/empty, reject later read/stage/publish and keep a second owner excluded.
+An unchanged positive control must decode. Mutation success and exactly one shim
+call are independently required so injected I/O failures cannot fake a rejection.
+After release, raw native reads compare the exact original/replacement ciphertext;
+synthetic cleanup is mandatory. Existing native process/scope/fault cases remain.
+
+The existing native probe emits this extra marker only after all cases and cleanup:
+`PASS: Windows protected command post-decrypt recheck/stage/replacement/preserve (TEST ONLY)`.
+
+Linux C++17 warnings-as-errors compilation of the changed partition and new test
+translation unit, QA46, inventory151 and whitespace checks passed. Linux excludes
+the Windows branch, so these are NOT execution of the new native cases or wipe
+proof. New exact-head Windows MSVC/native marker and complete CI remain required.
+Parent4d7aa86 CI40740040477/latestattempt1 passed all5/EVERYstep/no skips. Synthetic
+namespace/protection tests never establish hosted learner readiness or retention
+approval. PR41 stays draft, issue17 open, learner recovery memory-only/AI off.
