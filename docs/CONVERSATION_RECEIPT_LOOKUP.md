@@ -465,3 +465,16 @@ unavailable); QA46/inventory151/diffcheck pass separately. Require new exact-hea
 CI. This is not hosted JWT/RLS/provider, native full-command persistence, verified
 conditional release or learner proof. Secure backend/root/lifecycle/uncertainty/
 retention approval and all14 hosted release groups remain open; default unchanged.
+
+## Owned SDK formatter repair — 2026-10-28
+
+CI40690942981 exact79e8817/latestattempt1 passed repo/AI/database/Windows but
+Flutter122826040014 stopped at dart format; analyzer/new11 SDK tests/build were
+SKIPPED, not passes. The workflow printed the actual pinned formatter diff and
+output blob prefix f9254f0: one blank line between recoveredRead and originalAnswer.
+Apply that exact output; reverse substitution restores the previous fixture bytes.
+No assertion/input/test/deadline/controlflow/production/default/security/CI change.
+Local file hash matches the formatter's output; this is not a local formatter
+execution claim. QA46/inventory151/diffcheck are separate checks. New exact-head
+CI must confirm formatting, analyzer and all eleven owned SDK cases plus every
+retained required job/step. No learner/release/retention acceptance follows.

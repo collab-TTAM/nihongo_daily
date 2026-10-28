@@ -12,6 +12,30 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — owned SDK exact formatter repair, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  79e8817d505d0ab27391ddd16d99df39afaaebe2. New commit/tree/CI/released marker in PR41.
+- Resume stale core-20261028T1248-envelope-sdk >90minutes: PR/head unchanged,
+  no newer comments/workflow attempts or observed active evidence. Fresh own marker
+  before edits. Main/source37/Pro/N4 unchanged; one core writer/advisory only.
+- Parent CI40690942981/latestattempt1 FAILURE: repo/AI/database/Windows EVERYstep
+  SUCCESS; Flutter122826040014 formatter failed, analyzer/new11SDK/tests/build
+  SKIPPED. Actual pinned formatter diff adds only blank line after recoveredRead.
+- Apply exact formatter output; file hash matches logged f9254f0 prefix. Reverse
+  substitution equals original fixture bytes. All11 SDK/old test assertions/inputs/
+  timeouts/controlflow/cleanup intact; no production/default/CI/compiler/security
+  change. Three paths fixture persistent_ai_text_runtime_test.dart, receipt lookup
+  doc, this status. Separate exact diff/hash/whitespace/security review.
+- Local QA46/inventory151(not151executedtests)/diffcheck passed separately. No local
+  Dart/Flutter SDK/formatter/analyzer/new11 execution claim. CI supplies formatter
+  output, not actual new-head test success. NEXT all5/EVERYstep/new11SDK+retained
+  tests; fix actual diagnostics, pending-onlyhandoff/no duplicatecode. Backend/root/
+  captured lifecycle/uncertainty/authenticated receipt conditional application-release/
+  retentionapproval remain open.41draft/17open/AIoff/memory-only/all14hostedpending;
+  no merge/closure/Pro/provider/Authstrategy/schema/RLS/security/collection/spend/
+  release/schedule/Alpha action.
+
 ## Core checkpoint — decoded envelope owned SDK tests, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

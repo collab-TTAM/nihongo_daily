@@ -495,6 +495,7 @@ void main() {
     expect(recovered.encode(), command.encode());
     return reader.lookupCommand(recovered);
   }
+
   http.StreamedResponse originalAnswer(String op, String status) =>
       http.StreamedResponse(
         Stream.value(
