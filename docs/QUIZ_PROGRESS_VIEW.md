@@ -33,8 +33,10 @@ notice. No owner/event IDs, filesystem paths or token text appear.
 ## Replacement and late work
 
 State is keyed by the exact captured history repository, curriculum repository,
-owner and selected level. Account/readiness/source/level replacement disposes the
-old panel and clears its counters. Every await checks mounted state; repository
+owner, selected level and a monotonically changing view-level revision. Account/
+readiness/source/level replacement disposes the old panel and clears its counters.
+Every load start and await checks mounted state AND the captured owner/history/
+source/level/revision before further reads or publication; repository
 history reads additionally enforce the original ready lifecycle before and after
 storage. Late success/error or stale callbacks cannot publish into a new panel.
 Loading is single-flight, and a disposed load callback is a no-op. Route return
@@ -73,3 +75,26 @@ canonical full-source choices and verification limits. Statistics loading still
 never saves. The learner separately completes and explicitly saves a new local
 attempt, then reloads statistics to include it. Default account absence, projection
 rules, no mastery/time credit and all hosted acceptance limits remain unchanged.
+
+
+## Before-frame read fence — 2026-10-28
+
+The previous mounted-only UI check could start public content from a retained load
+callback after a level change, or start old private history when held public
+content completed before the replacement frame. The repository still enforced
+its own Auth readiness, but the view must also enforce its narrower captured
+selection and source lifetime. _load now checks the existing isCurrent closure
+before starting, after content/history awaits, in error publication and finally.
+A level-change revision is captured in the panel key and closure: N5 -> N4 -> N5
+before any frame cannot revive the original N5 panel or retained load callback.
+No I/O is cancelled or storage ownership replaced; accepted reads retain existing
+repository drain, and old abandoned panels publish neither totals nor errors.
+
+Three widget regressions exercise retained load after selection but before frame,
+held public content continuation before frame (zero old private history reads),
+and level A-B-A without a frame. Each fresh panel must still support explicit
+normal load with exact counters/selected level; all old widget bodies remain.
+These are TEST ONLY Auth/profile/local ports; new Flutter cases/analyzer/format/
+build are locally UNRUN (no SDK), require exact-head CI. Local QA46, inventory151
+and whitespace passed. No new default/Auth/storage/retention/mastery/SRS/server
+credit or Pro content change. #13 remains open and #41 draft; hosted gates pending.

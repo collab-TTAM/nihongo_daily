@@ -13,6 +13,34 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — quiz progress captured read fence, 2026-10-28 UTC
+
+- Resume PR41 automation/issue-11-plan-sdk-integration, parent
+  b83d2fabf58917a6c71a6b4bc5d75fc1dfc20fe6. New commit/tree/CI in PR41 checkpoint.
+  #13 bounded UI/account-isolation fix; #2/#3/#4/#5 baseline dependencies merged.
+- Parent CI40749444718/latestattempt1 all5/EVERYstep SUCCESS/no skips; new native
+  deletion/sharing and previous post-decrypt/owned markers verified. Main/source37/
+  Pro38 unchanged, #14 scope reserved. No hosted learner/retention proof inferred.
+- Found mounted-only progress load could read after selected view replacement
+  before rebuild. Guard existing captured owner/repository/source/level readiness
+  before load, after each await, before errors/finally publication. Add view-only
+  level revision to key/current guard so before-frame N5-N4-N5 cannot revive old
+  panel/callback. Accepted borrowed I/O/drain untouched; no cancellation claims.
+- Three added widgets: retained load before level rebuild zero content/history;
+  held content continuation before rebuild zero old private history; before-frame
+  level A-B-A old callback remains inert. Fresh explicit load still works with
+  exact level/counters. Original widget tests/assertions/cleanup retained.
+- Four paths quiz_progress_screen.dart, quiz_progress_widget_test.dart under
+  apps/flutter_app; docs/QUIZ_PROGRESS_VIEW.md; this status. Separate captured
+  lifetime/async boundary/revision/diff review. QA46/inventory151/diffcheck PASS;
+  new3 Flutter/format/analyze/build locally UNRUN(noSDK), exact-head CI required.
+- NEXT new-head/latestattempt all5/EVERYstep/new3 widgets; fix actual diagnostics
+  without weakening checks; pending-only handoff/no duplication. Then resume
+  concrete backend/root/captured storage lifecycle/durable uncertainty/authenticated
+  conditional release/retentionapproval and remaining #13 acceptance. #13/#17open,
+  #41draft/defaultAIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/Auth
+  strategy/provider/collection/spend/security/merge/deploy/release/schedule action.
+
 ## Core checkpoint — post-decrypt storage failures, 2026-10-28 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

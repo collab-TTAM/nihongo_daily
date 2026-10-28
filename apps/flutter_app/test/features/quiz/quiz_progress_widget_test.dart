@@ -298,6 +298,87 @@ void main() {
     },
   );
 
+  testWidgets('retained progress load is inert before level rebuild', (
+    tester,
+  ) async {
+    final ports = _Ports(original);
+    final container = await mount(tester, ports);
+    final button = find.byKey(const Key('quiz-progress-load'));
+    final stale = tester.widget<OutlinedButton>(button).onPressed!;
+    final selector = tester.widget<DropdownButton<PreviewLevel>>(
+      find.byKey(const Key('quiz-progress-level')),
+    );
+    selector.onChanged!(PreviewLevel.n4);
+    stale(); // Deliberately invoke before pumping the replacement panel.
+    expect(ports.contentReads, 0);
+    expect(ports.reads, 0);
+    await tester.pumpAndSettle();
+    await load(tester);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(find.text('N4 · 0 bộ đã lưu'), findsOneWidget);
+    expect(container.read(previewLevelProvider), PreviewLevel.n5);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('held progress content cannot start history before rebuild', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    final held = Completer<List<CurriculumEntry>>();
+    ports.contentWaiting = held;
+    final button = find.byKey(const Key('quiz-progress-load'));
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pump();
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 0);
+    final selector = tester.widget<DropdownButton<PreviewLevel>>(
+      find.byKey(const Key('quiz-progress-level')),
+    );
+    selector.onChanged!(PreviewLevel.n4);
+    held.complete(original);
+    await tester.idle(); // Flush continuation without a replacement frame.
+    expect(ports.reads, 0);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+    expect(find.byKey(const Key('quiz-progress-error')), findsNothing);
+    expect(find.text(question.target.heading), findsNothing);
+    ports.contentWaiting = null;
+    await load(tester);
+    expect(ports.contentReads, 2);
+    expect(ports.reads, 1);
+    expect(find.text('N4 · 0 bộ đã lưu'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('level A-B-A before a frame never revives old progress load', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    final button = find.byKey(const Key('quiz-progress-load'));
+    final stale = tester.widget<OutlinedButton>(button).onPressed!;
+    final selector = tester.widget<DropdownButton<PreviewLevel>>(
+      find.byKey(const Key('quiz-progress-level')),
+    );
+    selector.onChanged!(PreviewLevel.n4);
+    selector.onChanged!(PreviewLevel.n5);
+    stale();
+    expect(ports.contentReads, 0);
+    expect(ports.reads, 0);
+    await tester.pumpAndSettle();
+    stale();
+    expect(ports.contentReads, 0);
+    expect(ports.reads, 0);
+    await load(tester);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(find.text('N5 · 1 bộ đã lưu'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('route exit fences late history failure', (tester) async {
     final ports = _Ports(original);
     final container = await mount(tester, ports);

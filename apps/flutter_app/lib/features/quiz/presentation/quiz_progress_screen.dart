@@ -24,6 +24,7 @@ class QuizProgressScreen extends ConsumerStatefulWidget {
 
 class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
   PreviewLevel _level = PreviewLevel.n5;
+  int _levelRevision = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
     final owner = ref.watch(accountStateProvider).profile?.id;
     final source = ref.watch(curriculumRepositoryProvider);
     final level = _level;
+    final levelRevision = _levelRevision;
     return PageBody(
       children: [
         const PageHeading(
@@ -55,11 +57,16 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
                 DropdownMenuItem(value: level, child: Text(level.label)),
             ],
             onChanged: (level) {
-              if (level != null) setState(() => _level = level);
+              if (level != null) {
+                setState(() {
+                  _level = level;
+                  _levelRevision++;
+                });
+              }
             },
           ),
           _ProgressPanel(
-            key: ValueKey((repository, source, owner, _level)),
+            key: ValueKey((repository, source, owner, _level, levelRevision)),
             repository: repository,
             source: source,
             owner: owner,
@@ -67,6 +74,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
             isCurrent: () =>
                 mounted &&
                 _level == level &&
+                _levelRevision == levelRevision &&
                 ref.read(accountStateProvider).profile?.id == owner &&
                 identical(
                   ref.read(quizHistoryRepositoryProvider),
@@ -111,7 +119,7 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
   bool _failed = false;
 
   Future<void> _load() async {
-    if (!mounted || _loading) return;
+    if (!mounted || !widget.isCurrent() || _loading) return;
     setState(() {
       _loading = true;
       _failed = false;
@@ -124,11 +132,11 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
         CurriculumKind.vocabulary,
         widget.level,
       );
-      if (!mounted) return;
+      if (!mounted || !widget.isCurrent()) return;
       // Read owner-bound history last so its session fence also follows the
       // public curriculum await. Replaced/closed panels cannot publish results.
       final records = await widget.repository.load();
-      if (!mounted) return;
+      if (!mounted || !widget.isCurrent()) return;
       final progress = deriveVocabularyQuizProgress(
         ownerId: widget.owner,
         level: widget.level,
@@ -144,10 +152,12 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
         _review = review;
       });
     } on Object {
-      if (!mounted) return;
+      if (!mounted || !widget.isCurrent()) return;
       setState(() => _failed = true);
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted && widget.isCurrent()) {
+        setState(() => _loading = false);
+      }
     }
   }
 
