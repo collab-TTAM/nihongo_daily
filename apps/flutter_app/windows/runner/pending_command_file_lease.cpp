@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <aclapi.h>
 #include <cstddef>
+#include <cstring>
 #endif
 namespace nihongo {
 namespace {
@@ -234,7 +235,63 @@ bool PendingCommandFileLease::StageCiphertextCandidate(
     const bool closed = CloseHandle(file.value) != FALSE;
     if (closed) file.value = INVALID_HANDLE_VALUE;
     if (!closed || !CheckPrivateAccessPolicy()) return fail();
+    staged_bytes_ = captured; // Only this successful lease may propose publication.
     return true; // Flushed STAGING ONLY. No rename, publish, commit or dispatch.
+#else
+    return fail();
+#endif
+  } catch (...) { return fail(); }
+}
+bool PendingCommandFileLease::PublishStagedCiphertextCandidate() noexcept {
+  const auto fail = [&]() { policy_failed_ = true; return false; };
+  try {
+    if (staged_bytes_.empty() || staged_bytes_.size() > 65536 ||
+        !CheckPrivateAccessPolicy() ||
+        ReadCiphertextCandidate().state != PendingCommandCandidateState::absent) return fail();
+#ifdef _WIN32
+    struct File {
+      HANDLE value = INVALID_HANDLE_VALUE;
+      ~File() { if (value != INVALID_HANDLE_VALUE) CloseHandle(value); }
+    } file;
+    const auto source = directory_ + L"\\pending-command.stage";
+    const auto target = directory_ + L"\\pending-command.bin";
+    file.value = CreateFileW(source.c_str(), GENERIC_READ | GENERIC_WRITE |
+        READ_CONTROL | DELETE, 0, nullptr, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    if (file.value == INVALID_HANDLE_VALUE) return fail();
+    const auto valid = [&]() {
+      BY_HANDLE_FILE_INFORMATION info{};
+      return GetFileType(file.value) == FILE_TYPE_DISK &&
+          GetFileInformationByHandle(file.value, &info) &&
+          (info.dwFileAttributes & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT)) == 0 &&
+          info.nNumberOfLinks == 1 && info.nFileSizeHigh == 0 &&
+          info.nFileSizeLow == staged_bytes_.size() && PrivatePolicy(file.value, 0) &&
+          CheckPrivateAccessPolicy();
+    };
+    if (!valid()) return fail();
+    std::vector<unsigned char> bytes(staged_bytes_.size());
+    DWORD read = 0;
+    if (!ReadFile(file.value, bytes.data(), static_cast<DWORD>(bytes.size()), &read, nullptr) ||
+        read != bytes.size() || bytes != staged_bytes_) return fail();
+    unsigned char extra = 0;
+    if (!ReadFile(file.value, &extra, 1, &read, nullptr) || read != 0 ||
+        !valid() || !FlushFileBuffers(file.value)) return fail();
+    const auto nameBytes = target.size() * sizeof(wchar_t);
+    const auto total = sizeof(FILE_RENAME_INFO) + nameBytes;
+    std::vector<ULONG_PTR> storage((total + sizeof(ULONG_PTR) - 1) / sizeof(ULONG_PTR), 0);
+    const auto rename = reinterpret_cast<FILE_RENAME_INFO*>(storage.data());
+    rename->ReplaceIfExists = FALSE;
+    rename->RootDirectory = nullptr;
+    rename->FileNameLength = static_cast<DWORD>(nameBytes);
+    std::memcpy(rename->FileName, target.data(), nameBytes);
+    if (!CheckPrivateAccessPolicy() || !SetFileInformationByHandle(file.value,
+        FileRenameInfo, rename, static_cast<DWORD>(total))) return fail();
+    // Any failure AFTER rename is uncertain publication, never rollback/delete/retry.
+    if (!valid() || !FlushFileBuffers(file.value)) return fail();
+    const bool closed = CloseHandle(file.value) != FALSE;
+    if (closed) file.value = INVALID_HANDLE_VALUE;
+    if (!closed || !CheckPrivateAccessPolicy()) return fail();
+    staged_bytes_.clear();
+    return true; // Namespace candidate ONLY, not authenticated/durable dispatch authority.
 #else
     return fail();
 #endif

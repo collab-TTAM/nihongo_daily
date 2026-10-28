@@ -30,6 +30,9 @@ class PendingCommandFileLease final {
   // Caller supplies opaque ciphertext; true is NOT dispatch/durability authority.
   // Existing/uncertain stage is preserved; any failure fences this lease.
   bool StageCiphertextCandidate(const std::vector<unsigned char>& bytes) noexcept;
+  // Synthetic-only namespace publication of this lease's exact staged bytes.
+  // No replacement/adoption; NOT durable reservation or dispatch authority.
+  bool PublishStagedCiphertextCandidate() noexcept;
   ~PendingCommandFileLease();
   PendingCommandFileLease(const PendingCommandFileLease&) = delete;
   PendingCommandFileLease& operator=(const PendingCommandFileLease&) = delete;
@@ -39,6 +42,7 @@ class PendingCommandFileLease final {
   void* file_ = nullptr;
   bool policy_failed_ = false;
   std::wstring directory_;
+  std::vector<unsigned char> staged_bytes_;
 };
 }  // namespace nihongo
 #endif

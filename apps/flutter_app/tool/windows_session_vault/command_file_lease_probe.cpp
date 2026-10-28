@@ -749,6 +749,62 @@ void CandidateReadMatrix(const std::wstring& root) {
       Check(DeleteFileW(stage.c_str()) != FALSE); // Unique TEST ONLY fixture cleanup.
     }
     std::cout << "PASS: Windows ciphertext stage write/short-write/flush/close faults preserve/fence/no-publish (TEST ONLY)" << std::endl;
+    for (const size_t size : {size_t{1}, size_t{65536}}) {
+      std::cout << "CHECK: ciphertext candidate publication bound " << size << std::endl;
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      const std::vector<unsigned char> bytes(size, 0xa5);
+      Check(lease->StageCiphertextCandidate(bytes));
+      Check(lease->PublishStagedCiphertextCandidate());
+      Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      const auto result = lease->ReadCiphertextCandidate();
+      Check(result.state == State::present && result.bytes == bytes);
+      Check(!lease->PublishStagedCiphertextCandidate());
+      Check(!lease->CheckPrivateAccessPolicy());
+      lease.reset();
+      auto reader = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(reader != nullptr);
+      const auto retained = reader->ReadCiphertextCandidate();
+      Check(retained.state == State::present && retained.bytes == bytes);
+      reader.reset();
+      Check(DeleteFileW(candidate.c_str()) != FALSE);
+    }
+    for (int kind = 0; kind < 5; ++kind) {
+      std::cout << "CHECK: ciphertext candidate publication rejection " << kind << std::endl;
+      auto lease = nihongo::PendingCommandFileLease::Acquire(directory);
+      Check(lease != nullptr);
+      if (kind != 0) Check(lease->StageCiphertextCandidate(std::vector<unsigned char>(64, kind == 4 ? 0x5a : 0xa5)));
+      if (kind == 1) {
+        lease.reset(); // A new object must not adopt even identical staged bytes.
+        lease = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(lease != nullptr);
+      }
+      if (kind == 2) create(candidate, 1, false); // Preserve existing target.
+      if (kind == 3) {
+        Check(DeleteFileW(stage.c_str()) != FALSE);
+        create(stage, 32, false); // Truncated replacement must not be published.
+      }
+      if (kind == 4) {
+        Check(DeleteFileW(stage.c_str()) != FALSE);
+        create(stage, 64, false); // Same length but different bytes.
+      }
+      Check(!lease->PublishStagedCiphertextCandidate());
+      Check(!lease->CheckPrivateAccessPolicy());
+      Check(!lease->StageCiphertextCandidate(std::vector<unsigned char>(1, 0x5a)));
+      if (kind != 0) readStage(std::vector<unsigned char>(kind == 3 ? 32 : 64, 0xa5));
+      else Check(GetFileAttributesW(stage.c_str()) == INVALID_FILE_ATTRIBUTES);
+      lease.reset();
+      if (kind == 2) {
+        auto reader = nihongo::PendingCommandFileLease::Acquire(directory);
+        Check(reader != nullptr);
+        const auto result = reader->ReadCiphertextCandidate();
+        Check(result.state == State::present && result.bytes == std::vector<unsigned char>(1, 0xa5));
+        reader.reset();
+        Check(DeleteFileW(candidate.c_str()) != FALSE);
+      } else Check(GetFileAttributesW(candidate.c_str()) == INVALID_FILE_ATTRIBUTES);
+      if (kind != 0) Check(DeleteFileW(stage.c_str()) != FALSE);
+    }
+    std::cout << "PASS: Windows same-lease candidate publication bounds/no-adoption/no-replace/sticky rejection (TEST ONLY)" << std::endl;
     passed = true;
   } catch (...) { /* cleanup only unique synthetic entries, never follow junction */ }
   DeleteFileW(alias.c_str());

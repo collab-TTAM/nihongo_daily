@@ -12,6 +12,39 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — same-lease candidate publication, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  bd3eba72ee0a9bab9dcd4879d41623b67854b913. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40600737938 raw exact parent/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows122528016530 all4 actual fault cases +retained stage/native markers
+  passed. Component proof only, not hosted learner/physical powerloss proof.
+- Add isolated PublishStagedCiphertextCandidate: capture exact successful stage
+  bytes on same lease; bound1..65536, reject missing/foreign capture/existing.bin,
+  reopen stage read/write/DELETE sharezero/nofollow; ordinary/link/size/private
+  ACL plus exact bytes/EOF/policy/flush before handle rename, no-replace fixed
+  absolute target. Post-rename metadata/ACL/flush/checked close/policy; clear
+  capture on success. Any uncertainty latches; no delete/rollback/auto retry.
+  True is namespace candidate only, not durable reservation/dispatch authority.
+- Native2 bounds +5 rejection cases: absent capture/foreign abandoned stage/
+  target exists/truncated/same-length changed bytes; exact data/ACL/EOF readback,
+  no stage after success/duplicate fences/fresh reader/no unintended.bin, unique
+  fixture cleanup. All old native cases/assertions retained. Five paths: runner
+  pending_command_file_lease.{h,cpp}; tool/windows_session_vault/
+  command_file_lease_probe.cpp; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status.
+- Local C++17 -Wall -Wextra -Werror/nonWindows failclosed,46QA/inventory151/
+  whitespace passed. Inventory not151 executed tests. Separate bounded-buffer/
+  handle lifetime/rename no-replace/capture/late uncertainty/security/diff review;
+  primary Microsoft APIs checked. New Win32/MSVC/fullFlutter/analyzer/build
+  locally UNRUN; exact-head CI required. No app/runtime channel/default wiring.
+- NEXT all5/EVERYstep/new publication+oldfault/native markers; fix actual errors
+  retaining assertions. Then rename-race/failure/post-rename flush/close/crash
+  injections/trustednamespace/durable uncertainty/reconciliation. Retention
+  approval required before learner activation; all14hosted pending/41draft/17open/
+  AIoff/memory-only. No merge/closure/Pro/Authstrategy/provider/deploy/release/
+  collection/security/spend/Alpha acceptance.
+
 ## Core checkpoint — staging syscall failure matrix, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent

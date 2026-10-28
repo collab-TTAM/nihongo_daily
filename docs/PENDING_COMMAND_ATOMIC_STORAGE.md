@@ -458,3 +458,43 @@ power-loss proof. Flush/close faults cannot establish durable success. Atomic
 publication, trusted partition namespace, durable uncertainty/reconciliation and
 learner retention approval remain missing. New MSVC/Win32 execution needs exact-
 head Actions; Linux only verifies the unsupported-OS branch.
+
+## Same-lease candidate namespace publication — 2026-10-28
+
+PublishStagedCiphertextCandidate is an isolated synthetic-only component method,
+not wired to app/learner/runtime channels. A successful Stage now retains a
+bounded opaque ciphertext copy in that lease. Publish refuses missing capture,
+failed policy or an existing .bin; it never adopts another object's abandoned
+.stage. The reopened source has read/write/DELETE access, zero sharing, reparse-
+point open semantics and ordinary/single-link/exact-size/private-ACL checks.
+Before rename it reads exactly the captured bytes plus EOF, rechecks policy and
+flushes. Same-size changed bytes are rejected too; equality is not provenance.
+
+A bounded aligned FILE_RENAME_INFO uses the fixed absolute .bin path, null root
+and ReplaceIfExists=false through SetFileInformationByHandle on the still-held
+source. The rename itself must refuse an existing target, including a target
+created after the preliminary absence check. No replace/copy/delete fallback.
+After rename, held metadata/ACL/policy, flush and checked close must succeed.
+The capture is then cleared so the same object cannot publish twice. Any failure
+latches the lease; uncertain rename/post-rename outcomes never cause rollback,
+deletion, automatic retry or new dispatch. A true result is only namespace
+candidate publication, NOT durable reservation, authenticated command or proof
+of power-loss recovery. Parent-directory durability and durable failure fencing
+across restart are unresolved. Stored bytes are still unauthenticated until the
+separate scope-bound protection/receipt/reconciliation protocol validates them.
+
+Required native cases:1 and65536-byte stages publish to exact readable .bin,
+.stage disappears, duplicate publish fences, fresh normal reader sees exact
+bytes. Five negative cases preserve absent/no-stage, abandoned stage on new
+lease, preexisting target, truncated stage and same-size changed stage. Exact
+stage bytes/ACL/EOF and prior target are retained; no unintended .bin, no retry,
+mandatory unique test cleanup. All previous native tests/markers remain required.
+Rename-race/failure/post-rename flush/close/crash injections, namespace trust and
+reconciliation remain next; the initial target-conflict case is not a race test.
+New method/Win32 native behavior requires exact-head CI. Linux only checks the
+unsupported-OS build; no local Windows/Flutter claim. No API/schema/RLS/Auth/
+Pro/provider/retention/collection/spend/default change.
+
+Primary Microsoft API references checked2026-10-28:
+- https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_rename_info
+- https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileinformationbyhandle
