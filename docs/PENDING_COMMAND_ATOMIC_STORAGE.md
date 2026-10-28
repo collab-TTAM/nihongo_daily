@@ -615,7 +615,7 @@ The renamed-source test compilation now intercepts real candidate ReadFile and
 its real CreateFileW result, with modes13..15 armed only after ordinary lease
 acquisition/policy. Unchanged recovery code is required to suppress its result:
 - Existing64-byte candidate: after the first successful real ReadFile returns,
-  create a real private64-byte stage before EOF/final stage/policy checks.
+  create a real private64-byte stage before metadata/final stage/policy checks.
 - Missing candidate: create the stage after the actual failed candidate open,
   preserving FILE_NOT_FOUND when returning to the low-level reader.
 - Valid candidate/no stage: the first real stage absence probe succeeds; only
@@ -624,14 +624,17 @@ acquisition/policy. Unchanged recovery code is required to suppress its result:
 Open/error and read/count results remain real except that explicitly injected
 final error. The callback completes through normal native fixture APIs and its
 completion is counted once; target writes are never production recovery writes.
-Require one candidate open, two stage probes, two real candidate reads (data+EOF)
-or zero for absent candidate, and exactly one trigger (one fault only for mode15).
+Require one candidate open, two stage probes and one real64-byte candidate read
+(or zero calls/bytes for absent candidate), and exactly one trigger (one fault
+only for mode15). The low-level reader rechecks size/ACL after that data read;
+it does not issue a separate EOF call. The original two-read expectation was a
+fixture error, corrected after CI40631214343 failed interleave13.
 Repeated recovery/raw reads, stage and publish on the same failed lease must
 remain denied with no bytes and no additional open/read/write/rename.
 
 Independent unmodified readers verify stage64 remains for the two arrival cases,
 original candidate64/absence is preserved, and no stage is created in error mode.
-They retain exact private ACL/owner/link/bounds/EOF checks and re-read unchanged
+They retain exact private ACL/owner/link/bounds and stage-EOF checks, re-reading unchanged
 bytes before mandatory unique fixture cleanup. A fresh reader still refuses
 unresolved stage; after injected-error-only mode the clean original is readable
 data, never revived dispatch authority for the failed object.
@@ -643,3 +646,21 @@ remain unchanged; all previous fault/child/recovery cases remain mandatory.
 Actual new Win32 behavior requires exact-head CI. Linux verifies only unsupported
 OS compilation. Trusted namespace, durable uncertainty and authenticated receipt
 reconciliation/retention approval remain separate prerequisites for learner use.
+
+## Interleave fixture read-count repair — 2026-10-28
+
+CI40631214343 attempt1 exacta4ebcfd9110226d43156b106825403ad8b1f22ef passed
+repo/AI/database/Flutter, but Windows122627839240 failed at interleave13 after all
+older stage/publication/child/recovery markers. Later Windows native jobs/upload
+were skipped, not passed. The existing source ReadCiphertextCandidate performs
+one exact-size ReadFile followed by metadata/size/ACL/policy checks; the new
+fixture incorrectly required two ReadFile calls (assuming an EOF read).
+
+Correct only that call count to1 (0 for missing candidate) AND require exactly
+64 actual bytes read (0 for missing). Preserve one open/two stage probes/one
+trigger/expected fault count/zero writes and renames, unavailable/no output,
+sticky denial and every independent data/ACL/preservation assertion. Add a fixed
+TEST ONLY snapshot line containing booleans and numeric counters only: no path,
+IDs, payload bytes, token, raw OS error or secrets. CI must verify those actual
+counts and all three interleaves; a source-based diagnosis alone is not a new
+Windows pass claim. Production reader/header/runner/default remain byte-identical.

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <iostream>
 #ifdef _WIN32
 #include <windows.h>
 #include <aclapi.h>
@@ -16,6 +17,7 @@ struct FaultState {
   std::function<void()> racingTarget;
   HANDLE candidate = INVALID_HANDLE_VALUE;
   unsigned candidateOpens = 0, candidateReads = 0, stageProbes = 0, recoveryTriggers = 0;
+  unsigned candidateBytes = 0;
   std::function<void()> unresolvedStage;
 } fault;
 BOOL WINAPI FaultWriteFile(HANDLE file, LPCVOID bytes, DWORD size,
@@ -101,8 +103,9 @@ BOOL WINAPI FaultReadFile(HANDLE file, LPVOID bytes, DWORD size,
   const auto error = GetLastError();
   if ((fault.mode == 13 || fault.mode == 15) && file == fault.candidate) {
     ++fault.candidateReads;
+    if (result != FALSE) fault.candidateBytes += *read;
     if (fault.mode == 13 && fault.recoveryTriggers == 0 && result != FALSE && *read > 0) {
-      fault.unresolvedStage(); // Real stage appears before the reader completes EOF/postchecks.
+      fault.unresolvedStage(); // Real stage appears before the reader completes metadata/postchecks.
       ++fault.recoveryTriggers;
     }
   }
@@ -203,6 +206,12 @@ bool ProbeCommandRecoveryInterleave(const std::wstring& directory, int mode,
   fault.mode = mode;
   fault.unresolvedStage = unresolvedStage;
   const auto result = lease->ReadRecoveryCiphertextCandidate();
+  std::cout << "CHECK: recovery interleave snapshot mode=" << mode
+      << " unavailable=" << (result.state == nihongo::PendingCommandCandidateState::unavailable)
+      << " empty=" << result.bytes.empty()
+      << " reads=" << fault.candidateReads << " read-bytes=" << fault.candidateBytes
+      << " opens=" << fault.candidateOpens << " probes=" << fault.stageProbes
+      << " triggers=" << fault.recoveryTriggers << " faults=" << fault.faults << std::endl;
   if (result.state != nihongo::PendingCommandCandidateState::unavailable ||
       !result.bytes.empty() || lease->CheckPrivateAccessPolicy()) return false;
   const auto repeated = lease->ReadRecoveryCiphertextCandidate();
@@ -213,7 +222,10 @@ bool ProbeCommandRecoveryInterleave(const std::wstring& directory, int mode,
       lease->PublishStagedCiphertextCandidate()) return false;
   lease.reset();
   return fault.recoveryTriggers == 1 && fault.candidateOpens == 1 &&
-      fault.candidateReads == (mode == 14 ? 0u : 2u) && fault.stageProbes == 2 &&
+      // The production reader uses one exact-size ReadFile, then size/ACL recheck;
+      // it has no separate EOF read. Require the actual complete64-byte data read.
+      fault.candidateReads == (mode == 14 ? 0u : 1u) &&
+      fault.candidateBytes == (mode == 14 ? 0u : 64u) && fault.stageProbes == 2 &&
       fault.faults == (mode == 15 ? 1u : 0u) && fault.writes == 0 && fault.renames == 0;
 }
 // TEST ONLY child entry: successful exits occur solely inside the selected real

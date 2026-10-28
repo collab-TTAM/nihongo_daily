@@ -12,6 +12,36 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — interleave fixture read-count repair, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  a4ebcfd9110226d43156b106825403ad8b1f22ef. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- CI40631214343 exact parent/latestattempt1 FAILURE: repo/AI/DB/Flutter passed
+  every step; Windows122627839240 failed interleave13 after every older native
+  marker. Later Windows native steps/upload SKIPPED, not passes. All5/jobs/steps
+  observed. New3interleave completion not verified.
+- Source reader performs ONE exact-size ReadFile +metadata/size/ACL/policy
+  recheck, no EOF call. Fixture wrongly demanded2. Correct expected count1 (0
+  missing) AND require actual64-byte read (0 missing); add fixed snapshot
+  booleans/counters, never paths/payload/IDs/token/raw OS errors. Root inference
+  from exact source/log; actual new counters still require native CI.
+- All1open/2stageprobes/1trigger/fault/zerowritesrenames, unavailable/empty/sticky
+  and independent real data/ACL/targetpreservation assertions retained. All3
+  interleaves still mandatory; no timeout increase, fallback or skip. Production
+  cpp/header/runner/default byte-identical. Three paths: tool/windows_session_vault/
+  command_stage_fault_probe.cpp; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status.
+- Local C++17 warnings-as-errors/nonWindowsfailclosed/46QA/inventory151/whitespace
+  passed; inventory not151 executed tests. Separate one-read/byte-count/
+  diagnostics privacy/assertion diff review. New MSVC/Win32/fullFlutter/analyzer/
+  build locally UNRUN; exact-head CI required. No SDK bypass/CI weakening.
+- NEXT all5/EVERYstep/actual counters+new3interleave+oldmarkers; fix actual errors
+  retaining security and rejection assertions. Pending-onlyhandoff/no duplicate
+  code. Then trustednamespace/durableuncertainty/exactreceipt reconciliation/
+  retentionapproval.41draft/17open/AIoff/memory-only/all14hostedpending, no
+  merge/closure/Pro/Authstrategy/API/schema/RLS/provider/deploy/release/collection/
+  security/spend/Alpha action.
+
 ## Core checkpoint — recovery interleaving, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; parent
@@ -25,7 +55,8 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
   arrival after real candidate missing-open with original error restored; injected
   ACCESS_DENIED only on second actual stage-absence probe. Unchanged recovery
   must return unavailable/no bytes, latch, deny repeat raw/recovery/stage/publish.
-  Exact1candidateopen/2stageprobes/2data+EOFreads(or0absent)/1trigger, zero
+  Original fixture wrongly required2data+EOFreads; latest checkpoint repairs it.
+  Exact1candidateopen/2stageprobes/1trigger, zero
   recovery writes/renames; callbacks counted only after real fixture completion.
 - Independent normal reader stage64/privateACL/EOF +candidate64/absence preserved;
   no stage in finalerror case, clean fresh read remains data only; unchanged
