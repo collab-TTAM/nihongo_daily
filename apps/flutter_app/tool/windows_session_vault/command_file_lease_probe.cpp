@@ -1,5 +1,6 @@
 // TEST ONLY: unique temporary directories and empty sentinel; no payloads.
 #include "pending_command_file_lease.h"
+#include "pending_command_partition.h"
 #include <stdexcept>
 #include <cstring>
 #include <vector>
@@ -11,6 +12,7 @@
 #include <aclapi.h>
 #include <iostream>
 bool ProbeCommandStageFault(const std::wstring& directory, int mode);
+bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user);
 bool ProbeCommandRecoveryInterleave(const std::wstring& directory, int mode,
                                     const std::function<void()>& unresolvedStage);
 bool ProbeCommandPublishFault(const std::wstring& directory, int mode,
@@ -1109,6 +1111,7 @@ bool ProbePendingCommandFileLease() {
     SentinelPolicyMatrix(directory);
     HeldPolicyMutationMatrix(directory);
     CandidateReadMatrix(directory);
+    Check(ProbeCommandPartition(directory, FixtureUserSid()));
     std::cout << "CHECK: command lease all matrices complete" << std::endl;
     passed = true;
   } catch (...) { /* fixed outer failure, still clean synthetic namespace */ }
@@ -1122,6 +1125,8 @@ bool ProbePendingCommandFileLease() {
 int main() {
   for (const auto& path : {L"", L"relative", L"C:\\safe", L"C:\\safe\\..", L"C:\\safe:ads", L"\\\\server\\path"})
     if (nihongo::PendingCommandFileLease::Acquire(path)) return 1;
+  const std::string scope = "NihongoDaily.ConversationReceipt.v1|https://partition-a.invalid|11111111-1111-4111-8111-111111111111";
+  if (nihongo::PendingCommandPartition::Acquire(L"C:\\synthetic", scope)) return 1;
   return 0;
 }
 #endif

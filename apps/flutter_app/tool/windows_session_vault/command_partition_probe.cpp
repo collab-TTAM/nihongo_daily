@@ -1,0 +1,148 @@
+// TEST ONLY synthetic namespaces/opaque bytes. No learner or hosted Auth proof.
+#include "pending_command_partition.h"
+#ifdef _WIN32
+#include <windows.h>
+#include <sddl.h>
+#include <array>
+#include <iostream>
+#include <stdexcept>
+namespace {
+void Check(bool value) {
+  if (!value) throw std::runtime_error("command partition probe failed");
+}
+}  // namespace
+bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
+  using Partition = nihongo::PendingCommandPartition;
+  using State = nihongo::PendingCommandCandidateState;
+  const auto base = root + L"\\scoped";
+  const auto version = base + L"\\pending-command-v1";
+  const std::array<std::string, 3> targets = {
+      "NihongoDaily.ConversationReceipt.v1|https://partition-a.invalid|11111111-1111-4111-8111-111111111111",
+      "NihongoDaily.ConversationReceipt.v1|https://partition-a.invalid|22222222-2222-4222-8222-222222222222",
+      "NihongoDaily.ConversationReceipt.v1|https://partition-b.invalid|11111111-1111-4111-8111-111111111111"};
+  // Independent Python hashlib SHA256 known answers, not the production resolver.
+  const std::array<std::wstring, 3> keys = {
+      L"bc0232dc847d5294acbf15acf03f831aea3674b95be126b27deb7bf5c60290ca",
+      L"af68999521a78f7fdbeb8d8b476bed7197ac8c990cc65bfc238bb4df9d3524f0",
+      L"e938cc1065905bd4b615dfe53721953cedb6b82217c71a2855a2a4aa066aac84"};
+  std::array<std::wstring, 3> paths;
+  std::array<std::unique_ptr<Partition>, 3> partitions;
+  const std::array<std::vector<unsigned char>, 3> values = {
+      std::vector<unsigned char>(64, 0xa1), std::vector<unsigned char>(64, 0xb2),
+      std::vector<unsigned char>(64, 0xc3)};
+  struct Security {
+    PSECURITY_DESCRIPTOR value = nullptr;
+    ~Security() { if (value) LocalFree(value); }
+  } folder, file;
+  const auto descriptor = [&](Security& out, const std::wstring& flags) {
+    const auto sddl = L"O:" + user + L"D:P(A;" + flags + L";FA;;;" + user + L")" +
+        (user == L"S-1-5-18" ? L"" : L"(A;" + flags + L";FA;;;SY)");
+    Check(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl.c_str(),
+        SDDL_REVISION_1, &out.value, nullptr) != FALSE);
+  };
+  bool passed = false;
+  try {
+    descriptor(folder, L"OICI");
+    descriptor(file, L"");
+    SECURITY_ATTRIBUTES attributes{sizeof(SECURITY_ATTRIBUTES), folder.value, FALSE};
+    Check(CreateDirectoryW(base.c_str(), &attributes) != FALSE);
+    Check(CreateDirectoryW(version.c_str(), &attributes) != FALSE);
+    // Invalid canonical scopes cannot create a leaf or fall back to this root.
+    for (const auto& bad : {std::string(), std::string("OtherApplication|scope"),
+        targets[0] + "/../other", targets[0] + std::string(1, '\0')})
+      Check(!Partition::Acquire(base, bad));
+    for (const auto& bad : {L"", L"relative", L"C:\\safe\\..", L"\\\\server\\path"})
+      Check(!Partition::Acquire(bad, targets[0]));
+    Check(!Partition::Acquire(std::wstring(137, L'x'), targets[0]));
+    Check(GetFileAttributesW((base + L"\\pending-command.lock").c_str()) == INVALID_FILE_ATTRIBUTES);
+    for (size_t i = 0; i < paths.size(); ++i) {
+      paths[i] = version + L"\\" + keys[i];
+      // Resolver must NOT create missing directories or use a different partition.
+      Check(!Partition::Acquire(base, targets[i]));
+      Check(GetFileAttributesW(paths[i].c_str()) == INVALID_FILE_ATTRIBUTES);
+      Check(CreateDirectoryW(paths[i].c_str(), &attributes) != FALSE);
+      SECURITY_ATTRIBUTES lockAttributes{sizeof(SECURITY_ATTRIBUTES), file.value, FALSE};
+      const auto lock = CreateFileW((paths[i] + L"\\pending-command.lock").c_str(),
+          GENERIC_WRITE, 0, &lockAttributes, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+      Check(lock != INVALID_HANDLE_VALUE);
+      Check(CloseHandle(lock) != FALSE);
+      partitions[i] = Partition::Acquire(base, targets[i]);
+      Check(partitions[i] != nullptr);
+      Check(!Partition::Acquire(base, targets[i])); // Same-scope contention.
+      Check(partitions[i]->ReadRecoveryCiphertextCandidate(targets[i]).state == State::absent);
+      Check(partitions[i]->StageCiphertextCandidate(targets[i], values[i]));
+      Check(partitions[i]->PublishStagedCiphertextCandidate(targets[i]));
+    }
+    // Different account AND project coexist under separate held leases/data.
+    for (size_t i = 0; i < paths.size(); ++i) {
+      const auto result = partitions[i]->ReadRecoveryCiphertextCandidate(targets[i]);
+      Check(result.state == State::present && result.bytes == values[i]);
+      partitions[i].reset();
+      Check(DeleteFileW((paths[i] + L"\\pending-command.bin").c_str()) != FALSE);
+      partitions[i] = Partition::Acquire(base, targets[i]);
+      Check(partitions[i] != nullptr);
+    }
+    Check(partitions[0]->StageCiphertextCandidate(targets[0], values[0]));
+    Check(partitions[0]->PublishStagedCiphertextCandidate(targets[0]));
+    Check(partitions[2]->StageCiphertextCandidate(targets[2], values[2]));
+    const auto wrongRead = partitions[0]->ReadRecoveryCiphertextCandidate(targets[1]);
+    Check(wrongRead.state == State::unavailable && wrongRead.bytes.empty());
+    Check(!partitions[1]->StageCiphertextCandidate(targets[0], values[0]));
+    Check(!partitions[2]->PublishStagedCiphertextCandidate(targets[0]));
+    for (size_t i = 0; i < paths.size(); ++i) {
+      const auto blocked = partitions[i]->ReadRecoveryCiphertextCandidate(targets[i]);
+      Check(blocked.state == State::unavailable && blocked.bytes.empty());
+      Check(!partitions[i]->StageCiphertextCandidate(targets[i], values[i]));
+      Check(!partitions[i]->PublishStagedCiphertextCandidate(targets[i]));
+      partitions[i].reset();
+      auto raw = nihongo::PendingCommandFileLease::Acquire(paths[i]);
+      Check(raw && raw->CheckPrivateAccessPolicy());
+      const auto original = raw->ReadCiphertextCandidate();
+      Check(original.state == (i == 0 ? State::present : State::absent));
+      Check(original.bytes == (i == 0 ? values[0] : std::vector<unsigned char>{}));
+      if (i != 2)
+        Check(GetFileAttributesW((paths[i] + L"\\pending-command.stage").c_str()) == INVALID_FILE_ATTRIBUTES);
+    }
+    // Wrong-scope publish must leave the complete original stage unpromoted.
+    const auto stage = CreateFileW((paths[2] + L"\\pending-command.stage").c_str(),
+        GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
+    Check(stage != INVALID_HANDLE_VALUE);
+    std::vector<unsigned char> bytes(64);
+    DWORD count = 0;
+    const bool read = ReadFile(stage, bytes.data(), 64, &count, nullptr) != FALSE && count == 64;
+    unsigned char extra = 0;
+    const bool eof = ReadFile(stage, &extra, 1, &count, nullptr) != FALSE && count == 0;
+    const bool closed = CloseHandle(stage) != FALSE;
+    Check(read && eof && closed && bytes == values[2]);
+    auto unresolved = Partition::Acquire(base, targets[2]);
+    Check(unresolved != nullptr);
+    const auto uncertain = unresolved->ReadRecoveryCiphertextCandidate(targets[2]);
+    Check(uncertain.state == State::unavailable && uncertain.bytes.empty());
+    Check(DeleteFileW((paths[2] + L"\\pending-command.stage").c_str()) != FALSE);
+    const auto stillBlocked = unresolved->ReadRecoveryCiphertextCandidate(targets[2]);
+    Check(stillBlocked.state == State::unavailable && stillBlocked.bytes.empty());
+    Check(!unresolved->StageCiphertextCandidate(targets[2], values[2]));
+    Check(!unresolved->PublishStagedCiphertextCandidate(targets[2]));
+    // Reopening is a clean object/data snapshot, never permission to redispatch.
+    auto reopened = Partition::Acquire(base, targets[0]);
+    Check(reopened != nullptr);
+    const auto restored = reopened->ReadRecoveryCiphertextCandidate(targets[0]);
+    Check(restored.state == State::present && restored.bytes == values[0]);
+    passed = true;
+  } catch (...) { /* Fixed failure only; clean our explicit synthetic names. */ }
+  for (auto& partition : partitions) partition.reset();
+  bool cleaned = true;
+  for (const auto& path : paths) {
+    if (path.empty()) continue;
+    DeleteFileW((path + L"\\pending-command.bin").c_str());
+    DeleteFileW((path + L"\\pending-command.stage").c_str());
+    DeleteFileW((path + L"\\pending-command.lock").c_str());
+    cleaned = RemoveDirectoryW(path.c_str()) != FALSE && cleaned;
+  }
+  cleaned = RemoveDirectoryW(version.c_str()) != FALSE && cleaned;
+  cleaned = RemoveDirectoryW(base.c_str()) != FALSE && cleaned;
+  if (passed && cleaned)
+    std::cout << "PASS: Windows command partition account/project isolation/scope fence/preservation (TEST ONLY)" << std::endl;
+  return passed && cleaned;
+}
+#endif

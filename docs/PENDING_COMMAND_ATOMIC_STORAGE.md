@@ -664,3 +664,65 @@ TEST ONLY snapshot line containing booleans and numeric counters only: no path,
 IDs, payload bytes, token, raw OS error or secrets. CI must verify those actual
 counts and all three interleaves; a source-based diagnosis alone is not a new
 Windows pass claim. Production reader/header/runner/default remain byte-identical.
+
+## Isolated scope-bound partition — 2026-10-28
+
+`pending_command_partition.{h,cpp}` owns one lower-level lease without exposing
+its raw directory/handle or unscoped methods. Acquire accepts only a host-trusted
+existing root and the existing validated canonical receipt target captured from
+configured project/verified account. The caller must never source either from a
+learner-entered path, URL, key or owner. This is an explicit component precondition,
+not proof that a string came from Auth. No app/channel/default uses this component.
+
+The fixed directory is `root\pending-command-v1\<64 lowercase hex characters>`.
+The key is SHA256 of ASCII `NihongoDaily.PendingCommandPartition.v1|` followed by
+the exact canonical receipt target, using Windows BCrypt. No alias normalization
+or caller-selected leaf/basename is accepted. Root length is bounded to136 so
+the complete path fits the existing220-character lease bound. Unsupported OS,
+invalid target/root, hash/open/policy failure returns null, without diagnostics or
+fallback. It creates no directories, migrates no data and never probes another
+partition. The lower-level Acquire may create its fixed empty sentinel; the
+already-held leaf and sentinel must pass the existing strict private policy
+before a scoped object is returned. Ancestor no-reparse/no-delete-sharing checks
+and the same-partition exclusive sentinel remain mandatory.
+
+Read-recovery, stage and publish require exact equality with the object's immutable
+captured receipt target BEFORE consulting the lease or performing file I/O.
+A mismatch permanently fences all three operations, including later calls with
+the originally valid target. Underlying unavailable/read/write/publication failure
+also fences. No unscoped raw reader/lease accessor or reset is exposed. Destruction
+releases ownership without clearing candidate/stage. Fresh acquisition is a data
+snapshot only; it never reconciles an earlier uncertain operation or grants replay.
+
+The native TEST ONLY matrix uses three independent Python hashlib known answers:
+same project/two accounts and second project/original account. All three held
+partitions can stage/publish/read distinct opaque64-byte values; same-scope
+contention fails. Missing leaves are not created. Invalid scope/path/length
+inputs fail without a root-level sentinel fallback. Wrong-scope read suppresses
+all bytes; wrong-scope stage on an empty partition creates no stage; wrong-scope
+publish leaves its complete stage unpromoted. All original-scope calls then remain
+blocked. Independent unscoped readers verify original candidate/absence and a
+direct exact-length/EOF stage read verifies preservation. An unresolved stage
+fences a fresh scoped reader even after test-only stage removal. Reopen preserves
+the original candidate, and all unique synthetic directories/files must clean up.
+Required marker: `PASS: Windows command partition account/project isolation/scope fence/preservation (TEST ONLY)`.
+
+This adds logical scope-to-namespace binding, not a trusted OS root provisioner,
+captured SDK/generation binding, writer authentication, freshness/rollback
+protection or cryptographic collision impossibility. Hashes are not secrets or
+ACLs. The root's provenance/identity/access policy still needs reviewed host
+selection/provisioning; leaf checks do not validate every ancestor ACL. Same-user
+actors/administrators remain outside that isolation claim. Opaque bytes are not
+validated DPAPI command envelopes, and publication is not durable reservation
+success. Cross-restart uncertainty fencing, exact authenticated receipt correlation,
+conditional result application/release and learner retention approval remain open.
+Learner recovery remains memory-only; all14 hosted release groups remain pending.
+
+Local C++17 warnings-as-errors/unsupported-OS fail-closed and46 Python QA passed;
+native Windows/MSVC/new matrix require exact-head CI. Parent b1dbaee CI40637254521
+attempt1 passed all5 jobs/EVERY step, including actual modes13/14/15 counters and
+the prior interleave marker; that does not execute this new component.
+
+Primary references reviewed2026-10-28:
+- https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcrypthash
+- https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcryptopenalgorithmprovider

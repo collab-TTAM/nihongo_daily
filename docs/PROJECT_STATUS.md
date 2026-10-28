@@ -12,6 +12,41 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — scope-bound command partition, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  b1dbaee570ebd5c89b19ecc6260c74dabc1c041b. New commit/tree/CI/released marker
+  in PR41. main/source37/Pro38 unchanged; N4 reserved.
+- Parent CI40637254521 raw exact parent/latestattempt1 completed SUCCESS:
+  all5 jobs/EVERY step success/no skips. Windows122647022633 confirms actual
+  modes13/14/15 reads1/0/1, bytes64/0/64, all3 interleaves and retained native
+  stage/publication/fault/process/recovery/ownedSDK markers. Prior fixture fixed.
+- New isolated PendingCommandPartition owns a lease, fixed version/domain-SHA256
+  namespace from existing validated canonical receipt target under host-trusted
+  existing root; no arbitrary leaf/basename, no directory creation or fallback.
+  Strict leaf/sentinel policy before publication. Every read/stage/publish first
+  requires exact immutable scope; mismatch/underlying uncertainty fences forever.
+  No raw lease/unscoped reader accessor/reset. No component in app runner/channel.
+- New mandatory TEST ONLY native matrix: independent3 known hash answers, simultaneous
+  two-account/two-project distinct64-byte publication/read, same-scope contention,
+  invalid/missing path/scope/no-directory-create; wrong-scope read/stage/publish
+  then original-scope denial, independent original candidate/absence/stage/EOF
+  preservation, unresolved-stage sticky denial and clean reopen/synthetic cleanup.
+  Native Win32/MSVC matrix locally UNRUN, not proof yet. Linux C++17 warnings-as-
+  errors/unsupportedOSfailclosed/46QA/inventory151(not151executedtests)/diffcheck
+  PASS. Separate mapping/bounds/ownership/shortcircuit/latch/preservation/diff review.
+- Seven paths: windows/runner/pending_command_partition.{h,cpp}; tool/
+  windows_session_vault/{command_partition_probe.cpp,command_file_lease_probe.cpp,
+  CMakeLists.txt}; docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. Old lease/
+  protection/fixture bodies/CI/API/schema/RLS/Authstrategy/default/Pro unchanged.
+- NEXT exacthead/latestattempt all5/EVERYstep/new partition+retained markers; fix
+  actual failures, pending-onlyhandoff/no duplicatecode. Logical mapping does not
+  prove OS-root provenance or captured SDK generation: reviewed root provisioning,
+  full protected-envelope composition, durable uncertainty and authenticated exact
+  receipt/conditional application/release remain open before retention approval.
+  41draft/17open/AIoff/memory-only/all14hostedpending/no merge/closure/provider/
+  deploy/release/collection/security/spend/Alpha acceptance.
+
 ## Core checkpoint — interleave fixture read-count repair, 2026-10-28
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
