@@ -788,3 +788,17 @@ adopted. All previous tests remain. New required marker:
 `PASS: Windows protected command partition DPAPI/disk/restore/rejection/preservation (TEST ONLY)`.
 Linux C++17 warnings-as-errors verifies unsupported-platform compilation only;
 actual Windows/MSVC matrix requires exact-head CI. No hosted learner proof follows.
+
+## MSVC fixture shadow repair — 2026-10-28
+
+CI40649295250 exact3adae6f/latestattempt1 passed repo/AI/database/Flutter, but
+Windows122685408988 failed to compile the mandatory credential probe: C4456 at
+command_partition_probe.cpp211, promoted to C2220 by unchanged /W4 /WX. The inner
+protected-recovery variable restored hid the earlier raw-recovery variable at130.
+Later Windows native steps/upload were skipped; the nine new native modes had
+not executed. Rename only the inner binding/references to protectedRestored.
+All inputs, assertions, control flow, scopes and production code remain identical.
+No warning suppression or weakening of compiler/test/security gates. Separate
+reverse-substitution review verifies exact original fixture bytes are recoverable.
+Linux C++17/QA cannot prove MSVC success: new exact-head CI must confirm compile,
+all nine native modes/marker and every retained job/step before a Windows pass.

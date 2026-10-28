@@ -208,8 +208,8 @@ bool ProbeCommandPartition(const std::wstring& root, const std::wstring& user) {
           }
           protectedPartition = Protected::Acquire(base, targets[0]);
           Check(protectedPartition != nullptr);
-          const auto restored = protectedPartition->ReadRecovery(targets[0]);
-          Check(restored.state == State::present && restored.plaintext == plain);
+          const auto protectedRestored = protectedPartition->ReadRecovery(targets[0]);
+          Check(protectedRestored.state == State::present && protectedRestored.plaintext == plain);
           protectedPartition->Revoke();
         }
       } else if (mode == 2 || mode == 3) {

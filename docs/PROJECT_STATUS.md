@@ -12,6 +12,29 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — MSVC protected fixture rename, 2026-10-28
+
+- PR41/issue17 branch automation/issue-11-plan-sdk-integration; exact parent
+  3adae6f23a73806d9a93b1d02a2e5194d34963fb. New commit/tree/CI in PR41.
+- Resume core-msvc-shadow-fix after marker07:50Z exceeded90minutes: PR/head unchanged,
+  no newer PR comments/workflow attempt or other observed active evidence. Fresh
+  advisory marker before implementation; expected-head nonforce publication required.
+- Parent CI40649295250/latestattempt1 FAILURE: other4 jobs/EVERYstep SUCCESS;
+  Windows122685408988 C4456/C2220 inner restored at211 shadows raw restored at130.
+  Later native steps/upload SKIPPED; nine protected cases not executed.
+- Rename only inner protected recovery binding/references to protectedRestored.
+  Reverse substitution equals original fixture exactly. All assertions/inputs/
+  scopes/control flow preserved; production/header/default/CI /W4 /WX unchanged.
+  Three paths: tool/windows_session_vault/command_partition_probe.cpp;
+  docs/PENDING_COMMAND_ATOMIC_STORAGE.md; this status. Local C++17 warnings-as-
+  errors/unsupportedOSfailclosed/46QA/inventory151/diffcheck; new Windows/MSVC/full
+  Flutter locally UNRUN, exact-head CI pending. Separate diff/security review.
+- NEXT all5/EVERYstep/new protected9+old markers; fix actual diagnostics, no duplicate
+  implementation while pending. Captured lifecycle/fullDTO/root/durable uncertainty/
+  authenticated exact receipt conditional application-release/retention approval
+  still required.41draft/17open/AIoff/memory-only/all14hostedpending; main/source37/
+  Pro/N4 unchanged. No merge/closure/provider/security/collection/release/schedule action.
+
 ## Core checkpoint — protected partition composition, 2026-10-28
 
 - PR41/issue17 branch automation/issue-11-plan-sdk-integration; exact parent
