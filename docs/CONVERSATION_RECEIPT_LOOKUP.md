@@ -415,3 +415,32 @@ remain outstanding; missing/pending/completed association never grants new event
 Observed final local review: format4 unchanged, QA46/46 PASS/inventory145 valid,
 whitespace clean, all144 prior QA cases/findings/gates exact. Independent diff
 review confirmed no changed dispatch/clear/deadline/default/storage behavior.
+
+## Decoded recovered command routing — 2026-10-28
+
+CapturedConversationReceiptLookup.lookupCommand accepts only the existing immutable
+PendingConversationCommandEnvelope. A host may explicitly pass the result of strict
+scope-bound decode/unprotect; no bytes, map, event override or reconstructed DTO
+is accepted by this method. Its exhaustive operation switch forwards the SAME
+reference and typed start/turn/finish request objects to the existing original
+lookup methods. It cannot fall back to metadata-only lookup when an original-read
+port is absent. Existing captured session/owner/readiness, post-I/O stale result/
+error rejection and fixed error mapping remain the only read path; actual project/
+request equality is enforced by the existing concrete original-receipt transport.
+
+This is an optional read adapter, not automatic disk recovery, authenticated local
+provenance, receipt clearing, conditional application, replay permission or a new
+SDK/HTTP owner. UNKNOWN remains ambiguous; COMPLETED remains a read snapshot.
+No default/runtime/UI/storage activation or retention approval is introduced.
+Existing legacy and typed individual lookup APIs remain unchanged.
+
+Eleven authored TEST ONLY port/Auth cases cover canonical decode then exact3
+operation DTO/reference identity and pending/completed snapshot forwarding (6),
+legacy port no-fallback, foreign-account/revoked refusal, late success/error after
+same-owner new session (2), and unknown/readiness loss. No mutation/storage port
+exists in this adapter. New Dart format/analyze/tests/build locally UNRUN (SDK
+unavailable);46 Python QA/inventory151/diffcheck are separate from execution of
+these new tests. Require exact-head CI before pass. Native parent6de953e
+CI40683551755 all5/EVERYstep passed, including process/read-publish scope markers;
+that is not new Dart routing or hosted learner proof. Remaining backend/captured
+lifecycle/root/durable uncertainty/conditional-release/retention gates stay open.

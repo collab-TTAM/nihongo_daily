@@ -2,6 +2,7 @@ import '../../srs/data/review_repository.dart';
 import '../domain/conversation_receipt_reference.dart';
 import '../domain/conversation_receipt_snapshot.dart';
 import '../domain/conversation_requests.dart';
+import '../domain/pending_conversation_command_envelope.dart';
 import 'captured_ai_text_repository.dart';
 
 abstract interface class ConversationReceiptReadPort {
@@ -73,6 +74,25 @@ final class CapturedConversationReceiptLookup {
     }
     return port as ConversationOriginalReceiptReadPort;
   }
+
+  /// Read-only correlation of a fully decoded original command. Never falls back
+  /// to metadata-only lookup and never authorizes replay, deletion or application.
+  Future<ConversationReceiptSnapshot> lookupCommand(
+    PendingConversationCommandEnvelope command,
+  ) => switch (command.reference.operation) {
+    ConversationReceiptOperation.start => lookupStart(
+      command.reference,
+      command.start!,
+    ),
+    ConversationReceiptOperation.turn => lookupTurn(
+      command.reference,
+      command.turn!,
+    ),
+    ConversationReceiptOperation.finish => lookupFinish(
+      command.reference,
+      command.finish!,
+    ),
+  };
 
   Future<ConversationReceiptSnapshot> lookupStart(
     ConversationReceiptReference reference,

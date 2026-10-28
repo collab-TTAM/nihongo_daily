@@ -12,6 +12,34 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
+## Core checkpoint — recovered envelope receipt routing, 2026-10-28
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  6de953e6d6dd889dfe23294e54bf3dcc9a89029f. New commit/tree/CI/released marker in PR41.
+- Parent CI40683551755 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Windows122800185092 confirms protected process/read-publish wrong-scope markers;
+  TEST ONLY, not hosted learner proof. N4 remains reserved to Pro.
+- Add lookupCommand(existing immutable PendingConversationCommandEnvelope) on the
+  captured original receipt reader. Exhaustive3operation routing forwards SAME
+  reference+typed DTO through existing original lookup/session/owner/readiness/
+  late-error guards; no metadata fallback, new transport owner, replay/clear/write.
+- Eleven port/Auth cases authored: canonical decode/exact identity/PENDING/COMPLETED
+  all3ops(6), legacy nofallback, foreign/revoked, stale sameowner success/error(2),
+  unknown/readinessloss. Existing source/test bodies retained. New Dart format/
+  analyze/11tests/fullFlutter/build locallyUNRUN: no Dart/Flutter SDK. QA46/
+  inventory151(not151executedtests)/diffcheck passed separately. Separate method/
+  DTO identity/guard/no-fallback/sideeffect/diff review. No runtime/storage default.
+- Four paths: lib/features/ai/data/captured_conversation_receipt_lookup.dart;
+  test/features/ai/recovered_command_receipt_lookup_test.dart;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. Contracts/API/schema/RLS/native/
+  provider/Authstrategy/Pro/CI unchanged. No collection/retention activation.
+- NEXT exacthead/latestattempt all5/EVERYstep/format/analyze/new11+retainedtests;
+  fix actual diagnostics, pending-onlyhandoff/no duplicatecode. Then concrete
+  protected backend/capturedSDK lifecycle/root/durableuncertainty/authenticated
+  receipt conditional application-release/retentionapproval. Codec syntax/local
+  DTO routing is not Auth/local-writer/dispatch proof.41draft/17open/AIoff/memory-
+  only/all14hostedpending; no merge/closure/release/security/spend/schedule action.
+
 ## Core checkpoint — protected read/publish scope fence, 2026-10-28
 
 - PR41/issue17 branch automation/issue-11-plan-sdk-integration; exact parent
