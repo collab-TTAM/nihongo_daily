@@ -13,33 +13,30 @@ Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner f
 
 
 
-## Core checkpoint — native protected receipt composition, 2026-10-28
+## Core checkpoint — native foreign envelope fence, 2026-10-28 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
-  b65e17dbe6982428d339e15eb90bb054499969ed. New commit/tree/CI in PR41 checkpoint.
-- Parent CI40730790570/latestattempt1 all5/EVERY step SUCCESS/no skips; Flutter
-  122967308434 protected read/late refresh cases and Windows122966318109 prior
-  owned SDK/profile/DPAPI/receipt markers observed. TEST ONLY, not hosted proof.
-- Extend mandatory receipt-owned-reopen Windows journey through production
-  lookupProtectedConversationReceipt: actual DPAPI start ciphertext +same owned
-  SDK UNKNOWN/PENDING/COMPLETED; corrupt ciphertext noHTTP, encrypted changed
-  original fails strict association, stale close noHTTP. Four exact protected GETs;
-  old counters/assertions/deadlines/cleanup retained. Each status preserves native
-  token/reference and both exact mutation denials/zero sends. Independent counter
-  avoids resetting or weakening original five-field/original-bound evidence.
-- Four paths: tool/windows_sdk_receipt_fixture.dart and
-  tool/verify_windows_vault_bridge.ps1 under apps/flutter_app;
-  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. New native marker only after
-  whole phase succeeds. Separate diff/count/authority/preservation review done.
-- New native Windows/Dart format/analyze/build locally UNRUN: no SDK/native OS.
-  Local QA/inventory/whitespace results and published exact source in PR41.
-  Next inspect new exact-head/latestattempt all5/EVERYstep plus added native marker;
-  fix actual diagnostics preserving assertions. Pending-only handoff/no duplication.
-- Then concrete trusted root/file backend/captured storage lifecycle/durable
-  uncertainty/authenticated conditional application-release/retention approval.
-  PR41draft/17open/defaultAIoff/memory-only/all14hostedpending. Production/default/
-  API/RLS/Pro/N4 unchanged; no merge/closure/deploy/provider/Authstrategy/collection/
-  spend/security/release/schedule action or Alpha acceptance.
+  57ff52681f10c25bb6965119acaa73bca1d7392d. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40734041937/latestattempt1 all5/every step SUCCESS/no skips; Windows
+  122977784908 persistent vault/same SDK/profile/receipt and protected read marker
+  verified. TEST ONLY, not hosted learner proof. Pro/N4 reserved.
+- Four mandatory real-native encryption cases: foreign account/project target
+  entropy with own DTO, or current target entropy with foreign account/project
+  DTO. Production protected receipt lookup must reject unavailable before HTTP;
+  counters3/5/3, zero mutation sends, token/reference and current capabilities intact.
+  All original fixture/verifier lines/assertions/deadlines retained; only additions.
+- Four paths: tool/windows_sdk_receipt_fixture.dart;
+  tool/verify_windows_vault_bridge.ps1; docs/CONVERSATION_RECEIPT_LOOKUP.md;
+  this status. Separate entropy/DTO/scope/counters/preservation/diff review complete.
+  QA46/inventory151/diffcheck PASS; inventory is not executed test evidence.
+  New native4/Dart format/analyze/build locally UNRUN: no SDK/Windows. CI required.
+- NEXT exact-head/latestattempt all5/every step/new native foreign-scope marker
+  plus retained markers; fix real diagnostics without weaker assertions; pending-
+  only handoff/no duplication. Then backend/trustedroot/captured storage lifecycle/
+  durable uncertainty/authenticated conditional release/retentionapproval.
+  PR41draft/17open/defaultAIoff/memory-only/all14hostedpending. Production/CI/API/
+  RLS/Pro/N4 unchanged; no merge/close/deploy/provider/Authstrategy/security/
+  collection/spend/release/schedule change.
 
 ## Core checkpoint — protected lookup late errors, 2026-10-28
 

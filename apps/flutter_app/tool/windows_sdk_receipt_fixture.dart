@@ -1037,6 +1037,56 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               error.code == CommandProtectionError.unavailable;
         }
         _check(protectedCorruptRejected && network.protectedReceiptReads == 3);
+        // TEST ONLY cross-scope ciphertext minted by the actual native bridge.
+        // Separate entropy mismatch from valid decryption/foreign DTO rejection.
+        for (final foreignProject in [false, true]) {
+          final foreignOrigin = foreignProject
+              ? 'https://foreign.invalid'
+              : origin;
+          final foreignOwner = foreignProject ? _user : _event;
+          final foreignCommand = PendingConversationCommandEnvelope.fromStart(
+            projectUrl: foreignOrigin,
+            ownerId: foreignOwner,
+            request: _request,
+          );
+          for (final foreignEntropy in [false, true]) {
+            final encrypted = await _channel.invokeMethod<Uint8List>(
+              'protectCommand',
+              {
+                'target': foreignEntropy
+                    ? '${ConversationReceiptStore.targetPrefix}$foreignOrigin|$foreignOwner'
+                    : '${ConversationReceiptStore.targetPrefix}$origin|$_user',
+                'bytes': Uint8List.fromList(
+                  utf8.encode(
+                    foreignEntropy
+                        ? commands.first.encode()
+                        : foreignCommand.encode(),
+                  ),
+                ),
+              },
+            );
+            _check(encrypted != null && encrypted.isNotEmpty);
+            var foreignCipherRejected = false;
+            try {
+              await runtime.lookupProtectedConversationReceipt(encrypted!);
+            } on CommandProtectionFailure catch (error) {
+              foreignCipherRejected =
+                  error.code == CommandProtectionError.unavailable;
+            }
+            _check(
+              foreignCipherRejected &&
+                  protector.isCurrent &&
+                  reader.isCurrent &&
+                  network.protectedReceiptReads == 3 &&
+                  network.originalReceiptReads == 5 &&
+                  network.receiptReads == 3 &&
+                  network.sends == 0 &&
+                  refreshCalls == 1 &&
+                  await vault.readRefreshToken() == rotated &&
+                  await _read(scope) == _expected(scope),
+            );
+          }
+        }
         final changedCiphertext = await protector.protect(
           PendingConversationCommandEnvelope.fromStart(
             projectUrl: origin,

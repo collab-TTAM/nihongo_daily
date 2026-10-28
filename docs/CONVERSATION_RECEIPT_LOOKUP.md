@@ -565,3 +565,26 @@ Synthetic Auth/JWT/profile/receipt HTTP is not hosted learner/RLS/provider proof
 No payload file persistence, collection approval, application/release/replay
 permission or default activation follows. Trusted root/backend/uncertainty,
 authenticated conditional application-release and retention approval remain open.
+
+## Native foreign ciphertext and envelope scope — 2026-10-28 UTC
+
+Four additional mandatory receipt-owned-reopen checks use the actual native
+protectCommand bridge. For both a foreign account and a foreign project, test
+(1) own valid envelope encrypted under foreign DPAPI target entropy, and (2) foreign
+scope envelope encrypted under the current target entropy. Production owned
+lookupProtectedConversationReceipt must reject each with fixed unavailable before
+any receipt HTTP. Independent counters remain3 protected/5 original/3 metadata,
+mutation sends remain0, refresh count1, token/native receipt unchanged and both
+captured capabilities current. The latter pair exercises strict decoded scope,
+not merely cryptographic mismatch. No real learner payload or file is persisted.
+
+All prior assertions/counters/deadlines/process phases remain intact. PowerShell
+prints the new foreign account/project entropy/envelope/no-HTTP/preserve marker
+only after the entire reopen succeeds. Parent57ff526 / CI40734041937 attempt1
+passed all5/every step and original protected lookup marker observed in Windows
+122977784908. New4 native cases/Dart formatter/analyzer/build locally UNRUN: no
+Dart/Flutter/native Windows. QA46/inventory151/diffcheck pass separately. Require
+new exact-head CI. TEST ONLY Auth/JWT/profile/HTTP remain synthetic; no hosted
+learner proof, retention activation, replay/release authority or default change.
+Concrete backend/trusted root/storage lifecycle/durable uncertainty/authenticated
+conditional release and all14 hosted release groups remain open.
