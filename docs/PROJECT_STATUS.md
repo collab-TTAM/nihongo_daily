@@ -1,30 +1,33 @@
 # PROJECT STATUS
 
-## Core checkpoint — quiz readiness reentry guard, 2026-10-29 UTC
+## Core checkpoint — typed receipt snapshot lookup binding, 2026-10-29 UTC
 
-- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
-  808d530030903f297b94c4bf803fc1c5e99f1da0. Commit/tree/CI in PR41 checkpoint.
-- Parent CI40826030053/latestattempt1 all5/EVERYstep SUCCESS/no skips;
-  Flutter123289650123 clean analyze/1523full+fiveChrome/Web, prior8storage tests;
-  Windows123289210787 persistent SDK/post-decrypt markers verified.
-- Add synchronous checking guard around quiz history currentness, finally reset.
-  Supplied readiness/Auth getter nested save/load fails fixed session-changed
-  before operation registration/storage I/O without revoking healthy outer work.
-  Existing final session/drain/revoked/terminal mismatch/replay behavior retained.
-- Two actual-native-journal regressions readiness/Auth getter nested save+load,
-  healthy outer save/read exactly once/immutable owner event/foreignempty/open
-  drain. Entire original fixture recovered after removing insertions/optional
-  test-only Auth hook; all assertions/timeouts/cleanup unchanged. Four paths quiz
-  history repository/test under apps/flutter_app; QUIZ_ACCOUNT_HISTORY; this
-  status. Separate checking/finally/registration/drain/preservation diff review.
-- QA46/inventory152/diffcheck in PR; new2/format/analyze/build locally UNRUN(noSDK).
-  NEXT exact-head/latestattempt all5/EVERYstep/new2+retained native/SDK markers;
-  fix diagnostics with assertions/gates intact. Pending-onlyhandoff/no duplicate
-  code/longpolling. Remaining reviewed integration/trustedroot/backend/captured
-  lifecycle/uncertainty/authenticated conditional release/retentionapproval open.
- 41draft/13open/AIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/
-  Authstrategy/provider/collection/spend/security/merge/closure/deploy/release/
-  schedule change or Personal Alpha acceptance.
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  9b3643c31fe72b2daa7c0a15f179b4102718faf4. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40827527934/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows123293941022 required persistent SDK/profile/receipt marker verified.
+  Component TEST ONLY evidence, not hosted learner acceptance.
+- Every typed receipt snapshot retains immutable query reference including UNKNOWN/
+  PENDING. Association checks project/operation exact, owner/event UUID insensitive
+  to case. Captured lookup rejects wrong reference after lifecycle check before
+  publication with safe internalError; no fallback/retry/revoke of healthy reader.
+  Local metadata binding is not Auth, original-command match or release authority.
+- Thirteen regressions AUTHORED: all3statuses x four foreign identity fields plus
+  equivalent UUID case; exact read counts/no legacy fallback/healthy subsequent
+  explicit read/UNKNOWN/status-only text. All original fixture bytes retained.
+- Five paths AI domain/conversation_receipt_snapshot.dart;
+  data/captured_conversation_receipt_lookup.dart; test/features/ai/
+  recovered_command_receipt_lookup_test.dart under apps/flutter_app;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. Separate identity/case/immutable/
+  no-authority/preservation review. QA/inventory152/diffcheck in PR.
+  No local Dart/Flutter SDK: new13/format/analyze/build UNRUN; Actions required.
+- NEXT exact-head/latestattempt all5/EVERYstep/new13+retained native/SDK markers;
+  fix real diagnostics preserving assertions/deadlines/security. Pending-only
+  handoff/no duplication/longpolling. Continue trustedroot/backend/captured storage
+  lifecycle/durable uncertainty/authenticated conditional release/retentionapproval.
+  41draft/17open/defaultAIoff/memory-only/singlepending/all14hostedpending; no Pro/
+  content/API/RLS/Authstrategy/provider/collection/spend/security/merge/closure/
+  deploy/release/schedule change or Personal Alpha acceptance.
 
 ## Core checkpoint — exact quiz storage-test formatter repair, 2026-10-29 UTC
 

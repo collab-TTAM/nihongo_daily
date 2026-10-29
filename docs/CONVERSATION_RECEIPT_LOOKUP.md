@@ -619,3 +619,36 @@ Auth strategy/provider/API/RLS or Pro content change. UNKNOWN/missing remains
 ambiguous, one pending mutation stays blocking, all14 hosted gates remain pending.
 Concrete trusted storage root/backend/lifecycle/durable uncertainty and approved
 retention plus authenticated conditional application-release remain outstanding.
+
+## Preserve lookup identity in typed snapshots — 2026-10-29 UTC
+
+ConversationReceiptSnapshot now retains its immutable local lookup reference for
+UNKNOWN, PENDING and each COMPLETED operation. matchesReference compares exact
+canonical project origin/operation and case-insensitive owner/event UUIDs. It
+exposes no raw projection or authority and toString still prints only status.
+The reference identifies the query context, not authenticated provenance: UNKNOWN
+remains absent/invisible/ambiguous, and metadata cannot authenticate a result.
+
+CapturedConversationReceiptLookup checks the returned snapshot against the
+requested reference after the existing post-await lifecycle check. A borrowed
+port accidentally returning a valid snapshot from another project, owner,
+operation or event now fails with fixed internalError before response publication.
+Previously the typed status/response lost that query identity after row decode.
+A mismatched result does not trigger fallback/retry or revoke a healthy reader;
+an explicit fresh read can still succeed. Existing concrete SDK row validation,
+original-request correlation, readiness, shared busy/abort/drain and safe errors
+remain required; matching references alone prove neither those checks nor RLS.
+
+Thirteen TEST ONLY regressions cover all3 statuses x all4 differing reference
+fields and equivalent UUID spelling. Require rejection/no legacy fallback/exact
+port counts/healthy later explicit read/UNKNOWN and status-only formatting.
+All original test bodies/assertions remain unchanged. No local Dart/Flutter SDK:
+new13/format/analyze/build UNRUN; new exact-head Actions required. QA46/inventory152/
+whitespace and separate identity/case/immutability/no-authority/preservation review
+are recorded in PR41. Parent9b3643c CI40827527934/latestattempt1 all5/EVERYstep
+SUCCESS; Windows123293941022 required persistent SDK/profile/receipt marker seen.
+Parent evidence is TEST ONLY, not new-head or hosted learner proof. No default,
+payload retention, API/RLS/Authstrategy/provider/Pro/content or release policy
+change. Trustedroot/backend/captured lifecycle/durable uncertainty/authenticated
+conditional application-release/retentionapproval and all14 hosted groups remain
+pending; learner recovery memory-only/single pending mutation/AI off unchanged.

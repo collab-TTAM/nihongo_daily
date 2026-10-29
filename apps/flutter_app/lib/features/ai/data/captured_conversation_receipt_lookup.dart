@@ -143,6 +143,9 @@ final class CapturedConversationReceiptLookup {
     try {
       final result = await read();
       _check();
+      if (!result.matchesReference(reference)) {
+        throw const AiTextFailure(AiTextErrorCode.internalError);
+      }
       return result;
     } on AiTextRequestPending {
       _check();

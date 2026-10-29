@@ -331,4 +331,71 @@ void main() {
       expect(port.calls, 2);
     });
   }
+  for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+    for (final field in [
+      'project_origin',
+      'owner_id',
+      'operation',
+      'client_event_id',
+    ]) {
+      test('snapshot mismatch $status/$field', () async {
+        final original = command('start');
+        final changed = <String, Object>{
+          ...original.reference.toJson(),
+          field: switch (field) {
+            'project_origin' => 'https://foreign.test',
+            'operation' => 'conversation_turn',
+            _ => other,
+          },
+        };
+        final foreign = ConversationReceiptReference.fromJson(changed);
+        port.result = ConversationReceiptSnapshot.fromRows(
+          foreign,
+          status == 'UNKNOWN'
+              ? <Object?>[]
+              : [
+                  {
+                    'user_id': foreign.ownerId,
+                    'operation': foreign.operation.wireName,
+                    'client_event_id': foreign.clientEventId,
+                    'status': status,
+                    'response_json': status == 'COMPLETED'
+                        ? fixtures['${foreign.operation.wireName}_response']
+                        : null,
+                  },
+                ],
+        );
+        expect(port.result.matchesReference(original.reference), isFalse);
+        await expectLater(
+          reader.lookupCommand(original),
+          throwsA(failure(AiTextErrorCode.internalError)),
+        );
+        expect(port.calls, 1);
+        expect(port.legacyCalls, 0);
+        expect(reader.isCurrent, isTrue);
+        port.result = ConversationReceiptSnapshot.fromRows(
+          original.reference,
+          [],
+        );
+        expect(await reader.lookupCommand(original), same(port.result));
+        expect(port.calls, 2);
+      });
+    }
+  }
+
+  test('snapshot binding accepts equivalent UUID spelling', () async {
+    final original = command('start');
+    final equivalent = ConversationReceiptReference.fromJson({
+      ...original.reference.toJson(),
+      'owner_id': original.reference.ownerId.toUpperCase(),
+      'client_event_id': original.reference.clientEventId.toUpperCase(),
+    });
+    port.result = ConversationReceiptSnapshot.fromRows(equivalent, []);
+    expect(port.result.matchesReference(original.reference), isTrue);
+    expect(await reader.lookupCommand(original), same(port.result));
+    expect(port.result.status, ConversationReceiptStatus.unknown);
+    expect(port.result.toString(), 'ConversationReceiptSnapshot(unknown)');
+    expect(port.calls, 1);
+    expect(port.legacyCalls, 0);
+  });
 }

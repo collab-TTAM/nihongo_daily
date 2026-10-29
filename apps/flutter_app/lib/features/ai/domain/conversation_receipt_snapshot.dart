@@ -8,12 +8,23 @@ enum ConversationReceiptStatus { unknown, pending, completed }
 /// Unknown includes an absent/invisible row; it does not prove non-dispatch.
 final class ConversationReceiptSnapshot {
   const ConversationReceiptSnapshot._(
+    this._reference,
     this.status, {
     this.start,
     this.turn,
     this.finish,
   });
+  final ConversationReceiptReference _reference;
   final ConversationReceiptStatus status;
+
+  /// Local result association only, never authentication or release authority.
+  bool matchesReference(ConversationReceiptReference reference) =>
+      _reference.projectOrigin == reference.projectOrigin &&
+      _reference.ownerId.toLowerCase() == reference.ownerId.toLowerCase() &&
+      _reference.operation == reference.operation &&
+      _reference.clientEventId.toLowerCase() ==
+          reference.clientEventId.toLowerCase();
+
   final StartConversationResponse? start;
   final ConversationTurnResponse? turn;
   final FinishConversationResponse? finish;
@@ -29,7 +40,8 @@ final class ConversationReceiptSnapshot {
         throw const FormatException();
       }
       if (value.isEmpty) {
-        return const ConversationReceiptSnapshot._(
+        return ConversationReceiptSnapshot._(
+          reference,
           ConversationReceiptStatus.unknown,
         );
       }
@@ -54,7 +66,8 @@ final class ConversationReceiptSnapshot {
         throw const FormatException();
       }
       if (row['status'] == 'PENDING' && row['response_json'] == null) {
-        return const ConversationReceiptSnapshot._(
+        return ConversationReceiptSnapshot._(
+          reference,
           ConversationReceiptStatus.pending,
         );
       }
@@ -64,14 +77,17 @@ final class ConversationReceiptSnapshot {
       final result = row['response_json'];
       return switch (reference.operation) {
         ConversationReceiptOperation.start => ConversationReceiptSnapshot._(
+          reference,
           ConversationReceiptStatus.completed,
           start: StartConversationResponse.fromJson(result),
         ),
         ConversationReceiptOperation.turn => ConversationReceiptSnapshot._(
+          reference,
           ConversationReceiptStatus.completed,
           turn: ConversationTurnResponse.fromJson(result),
         ),
         ConversationReceiptOperation.finish => ConversationReceiptSnapshot._(
+          reference,
           ConversationReceiptStatus.completed,
           finish: FinishConversationResponse.fromJson(result),
         ),
