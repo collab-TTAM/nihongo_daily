@@ -6,6 +6,49 @@ GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
 
+## Grammar attempt data model — 2026-10-29 UTC
+
+Pre-code scoring/identity/scope rules were recorded in PR41 and issue13 before
+implementation. GrammarQuizAttempt is a separate immutable local format1 data
+model, not a repository or save action. Capture requires a completed nonempty
+GrammarQuizRound of at most10 unique targets, exact accepted first answers,
+original question/choice order and content versions. Every answer has four
+unique canonical UUID choices including target and selection; versions are
+positive signed32bit integers. N5/N4 and canonical UTC time(year2000..2100) only.
+Exact keys reject unknown/missing/type-invalid fields. Errors contain fixed text.
+
+quiz_type=grammar_meaning distinguishes this from vocabulary reports. Required
+practice_kind=primary/correction keeps their scores in separate records; this
+classification is caller-reported, not proof of its source round or server credit.
+Score is derived from accepted target IDs, never supplied JSON. No copied source
+texts, credentials, owner field, study minutes or mastery. Nested lists are
+immutable; input/output JSON copies cannot mutate the snapshot. Exact canonical
+content equality includes event/time/kind/order/answers for future idempotency;
+it does not implement deduplication or authorize a write. Structural validation
+is not curriculum membership or evidence that the learner answered honestly.
+
+Twelve synthetic unit cases authored for capture/first-answer/versions/order,
+both levels+practice kinds, incomplete/empty, missing/unknown/derived/owner fields,
+vocabulary type separation, versions/count/level, duplicate targets/answer shape,
+choice membership, identity/time, detached immutable lists, exact equality, and
+10targets/maxversion. Old tests/vocabulary model/grammar UI remain unchanged.
+Official fresh Dart3.9.2 archive SHA256 verified/strict format2files zerochanges
+PASS(unresolved Flutter lint include warning, not analyzer). An assertion-enabled
+pure Dart smoke executes the actual model across four level/kind combinations
+and16 rejection/immutability checks; PASS, not Flutter execution. QA55 PASS/
+inventory155 valid(not155executed)/diffcheck PASS. New12/full Flutter/analyze/
+Web/Windows locally UNRUN(noFlutter); exact-head Actions required.
+
+Parentcf51ab4 CI40944034220/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+Flutter123695470637 both accepted-answer review widgets and Windows123694648581
+required persistent vault/sameSDK/profile/receipt marker observed. TEST ONLY,
+not hosted learner acceptance. This increment has no I/O, storage, Auth, UI save,
+mastery, SRS, shared API/schema/RLS, default, retention or Pro/content changes.
+Grammar persistence still absent. Next after new exact-head CI: review/wire a
+separate owner-captured grammar store and explicit save UI, keeping corrections
+separate and vocabulary history untouched. PR41 draft/13 open/all14 hosted gates
+pending. Commit/tree/new CI in PR checkpoint; no merge/deploy/release acceptance.
+
 ## Accepted-answer review — 2026-10-29 UTC
 
 Completed rounds now show the accepted choice meaning, original target meaning
