@@ -290,3 +290,28 @@ passed. Raw exact-head/every-critical-step QA passed; following metadata success
 has separate CI. New cancelable-window-exit case brings inventory to 48.
 All 14 live release groups remain pending; no hosted/logged-in learner or
 uncancelable logoff/power-loss proof. This hook does not replace persistence.
+
+## Reproducible native receipt rerun evidence — 2026-10-29 UTC
+
+Source9c986e0401d37ee13cee139280ecd23b33ce077d CI40840683867 latestattempt2
+passed all5 jobs/EVERYstep/no skips, including audit. Attempt1 failed the npm
+advisory endpoint read ECONNRESET; its skipped AI steps are not passes. Save the
+unmodified workflow-run and complete attempt2 jobs in
+qa/evidence/20261029-native-receipts-9c986e0-attempt2.json. Reproduce using:
+
+```bash
+python3 scripts/verify_qa.py --evidence qa/evidence/20261029-native-receipts-9c986e0-attempt2.json --head 9c986e0401d37ee13cee139280ecd23b33ce077d
+python3 -m unittest discover -s qa -p 'test_*.py' -v
+```
+
+The new QA regression accepts this actual API-shaped rerun snapshot and rejects
+an attempt1 job substituted into each of its five job slots. Original synthetic
+negative cases remain. New matrix group anchors the mandatory native all-operation
+protected receipt status/binding/preservation/no-redispatch/stale-close checks.
+Windows123349945245 logs contain both persistent vault/same SDK/profile/receipt
+and new protected turn/finish markers. Snapshot validation checks correlation and
+completeness, not cryptographic authenticity, marker contents or hosted acceptance.
+Auth/JWT/profile/receipt HTTP remain TEST ONLY; payloads remain in memory. No
+server receipt release, durable payload retention, hosted learner/provider/RLS or
+all14 Personal Alpha acceptance follows. Saved evidence verifies its parent source
+only; the new QA/docs successor needs its own exact-head/latest-attempt CI.

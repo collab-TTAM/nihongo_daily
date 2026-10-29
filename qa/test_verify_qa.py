@@ -50,6 +50,22 @@ class QaEvidenceTests(unittest.TestCase):
         self.assertEqual(qa.validate_ci(self.matrix, self.evidence, HEAD),
                          f"https://github.com/{qa.REPOSITORY}/actions/runs/123")
 
+    def test_saved_native_rerun_snapshot_has_one_complete_latest_attempt(self):
+        # Captured Actions metadata, not generated success or hosted acceptance.
+        evidence = qa.read_json(
+            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
+        self.assertEqual(evidence["run"]["run_attempt"], 2)
+        self.assertEqual(qa.validate_ci(self.matrix, evidence, head),
+                         "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40840683867")
+        for job in evidence["jobs"]["jobs"]:
+            with self.subTest(job=job["name"]):
+                mixed = deepcopy(evidence)
+                next(j for j in mixed["jobs"]["jobs"]
+                     if j["name"] == job["name"])["run_attempt"] = 1
+                with self.assertRaisesRegex(ValueError, "mixed run/head/attempt"):
+                    qa.validate_ci(self.matrix, mixed, head)
+
     def test_rejects_stale_head(self):
         self.evidence["run"]["head_sha"] = "b" * 40
         self.rejected()
