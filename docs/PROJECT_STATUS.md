@@ -1,36 +1,35 @@
 # PROJECT STATUS
 
-## Core checkpoint — original receipt input preflight, 2026-10-29 UTC
+## Core checkpoint — native protected turn/finish receipt journey, 2026-10-29 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
-  e7f6bec2e00c9eba9145d57e37e4c82846f3c87a. Commit/tree/new CI in PR41 checkpoint.
-- Parent CI40831580950/latestattempt1 all5/EVERYstep SUCCESS/no skips; previous13
-  snapshot tests and Windows123306846378 persistent vault/same SDK/profile/receipt
-  markers observed. TEST ONLY component evidence, not hosted learner acceptance.
-- Direct captured start/turn/finish receipt reads now reject operation/event input
-  mismatch before borrowed original-read port using existing strict decoder's
-  empty-projection preflight. Existing lifecycle/owner checks precede validation;
-  fixed validationFailure, no fallback/retry or healthy-reader revocation. Valid
-  input preserves exact reference/DTO objects and UUID association semantics.
-- Nine authored TEST ONLY cases: all3methods x wrong operation/event, zero reads,
-  healthy later explicit command read, equivalent UUID case/exact DTO forwarding.
-  All original fixture bytes retained; separate input/error/lifecycle/no-authority/
-  preservation review complete. QA46 PASS/inventory152 valid (not executed)/
-  diffcheck PASS. No local Dart/Flutter SDK: new9/format/analyze/build UNRUN.
-- Four paths apps/flutter_app/lib/features/ai/data/
-  captured_conversation_receipt_lookup.dart; test/features/ai/
-  recovered_command_receipt_lookup_test.dart; docs/CONVERSATION_RECEIPT_LOOKUP.md;
-  this status. Full tree/blob/CAS evidence in PR41.
-- NEXT exact-head/latestattempt all5/EVERYstep/new9 and retained native SDK markers;
+  2cfa2ac26c22fd71b5df22a403a7986661cc8d2b. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40835008092/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows123317681567 required persistent SDK/profile/receipt marker verified.
+  TEST ONLY component evidence, not hosted learner acceptance.
+- Extend mandatory owned-reopen native DPAPI/protected lookup with turn+finish
+  x all3statuses on SAME runtime/private SDK/profile. Separate exact GET/counter
+  checks fixed six-column query/filter/bearer/no-store/no redirects/native metadata;
+  full original DTO/typed snapshot binding, turn text/finish summary, pending
+  no-redispatch denials/token+receipt preservation/current capabilities. After
+  original close both extra ciphertexts unauthorized/no new reads.
+- Keep every original fixture/PowerShell line/assertion/counter/phase/60s deadline/
+  cleanup unchanged; reverse inserted blocks recovers entire originals. Six new
+  GETs, independent final6/4/5/3 read counters/one refresh/zero mutation checks.
+  Extra marker only after entire reopen succeeds; no payload file persists.
+- Four paths tool/windows_sdk_receipt_fixture.dart; tool/
+  verify_windows_vault_bridge.ps1 under apps/flutter_app;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. Separate original-preservation/
+  request/counter/binding/late-close/no-redispatch/cleanup review. QA/inventory152/
+  diffcheck in PR. Local SDK/native Windows absent: new cases/format/analyze/build
+  UNRUN; exact-head Actions/marker required.
+- NEXT latestattempt all5/EVERYstep/new turn-finish marker+retained native/SDK;
   fix actual diagnostics preserving assertions/deadlines/security. Pending-only
-  handoff/no duplication/longpolling. Real stored request_json/authenticated scope/
-  RLS still required; preflight is not stored-command provenance or release right.
-  Trustedroot/backend/captured storage lifecycle/durable uncertainty/authenticated
-  conditional application-release/retentionapproval/all14hosted gates remain open.
-  PR41draft/17open/defaultAIoff/memory-only/singlepending unchanged. No Pro/content/
-  API/RLS/Authstrategy/provider/collection/spend/security/merge/closure/deploy/release/
-  schedule change or Personal Alpha acceptance.
-
+  handoff/no duplication/longpolling. Trustedroot/backend/captured storage lifecycle/
+  durable uncertainty/authenticated conditional application-release/retentionapproval
+  and all14 hosted groups remain.41draft/17open/defaultAIoff/memory-only/singlepending;
+  no Pro/content/API/RLS/Authstrategy/provider/collection/spend/security/merge/
+  closure/deploy/release/schedule change or Personal Alpha acceptance.
 
 ## Core checkpoint — typed receipt snapshot lookup binding, 2026-10-29 UTC
 

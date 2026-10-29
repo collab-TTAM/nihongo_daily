@@ -683,3 +683,41 @@ separately; no local Dart/Flutter SDK, so new9/format/analyze/build UNRUN until
 new exact-head Actions. All14 hosted release gates, retention approval and
 trusted-root/backend/captured storage/uncertainty/conditional application-release
 remain open. No default/collection/Authstrategy/provider/API/RLS/Pro change.
+
+## Native owned protected turn/finish lookup — 2026-10-29 UTC
+
+The mandatory receipt-owned-reopen Windows phase now extends the existing start
+journey with turn and finish envelopes already constructed in that same phase.
+Each crosses the actual production runtime's cached protector/native DPAPI and
+lookupProtectedConversationReceipt on its SAME private SDK/profile/generation.
+The synthetic original turn retains its leading space/Japanese/newline; neither
+command is persisted as a payload. Existing native token/receipt targets remain.
+
+Six additional GETs (turn/finish x UNKNOWN/PENDING/COMPLETED) have a separate
+checked HTTP path/counter. Each requires the fixed project/path/six-column original
+projection, exact owner/operation/event filters, limit2, empty body, captured
+bearer/key, no redirects/no-store and actual pending native reference before
+reply. TEST ONLY original request_json and typed responses exercise production
+full-command association. Require matching snapshot reference/status/exclusive
+typed response, actual turn text/finish summary, no SRS recommendations, unchanged
+rotated token/pending metadata/current capabilities. After every status repeat
+original-event conflict/different-event pending denial with zero mutation HTTP.
+
+All original start/corruption/mismatch/foreign/stale counters and assertions stay
+byte-identical. Independent final counters require six new reads plus unchanged
+4 protected/5 original/3 metadata reads/one refresh/zero mutations. After the
+original awaited close, both new ciphertext lookups must reject unauthorized
+without another read. Original process phases/60s deadlines/finally/synthetic
+cleanup and normal learner rebuild are retained. Added success marker appears
+only after the complete reopen phase succeeds:
+`Windows OWNED protected receipt turn/finish/status/binding/stale/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)`.
+
+Parent2cfa2ac CI40835008092/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+Windows123317681567 required persistent SDK/receipt marker observed. New Windows
+cases/Dart format/analyze/build locally UNRUN (no SDK/native Windows). QA46/
+inventory152/whitespace and separate original-preservation/counter/request/binding/
+no-redispatch/close/cleanup review recorded in PR41. New exact-head CI/marker
+required. Auth/JWT/profile/receipt HTTP are TEST ONLY; no hosted Auth/RLS/provider/
+learner proof, actual durable payload storage, retention or release authority.
+All14 hosted groups/trustedroot/backend/captured storage lifecycle/uncertainty/
+authenticated conditional application-release/retentionapproval remain open.

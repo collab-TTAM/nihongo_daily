@@ -88,8 +88,86 @@ final class _Http extends http.BaseClient {
   bool omitOriginalRequest = false;
   String? receiptStatus;
   bool closed = false;
+  PendingConversationCommandEnvelope? additionalCommand;
+  int additionalReceiptReads = 0;
+
+  Future<http.StreamedResponse> _readAdditional(
+    http.BaseRequest request,
+    PendingConversationCommandEnvelope command,
+  ) async {
+    _check(request is http.AbortableRequest && request.method == 'GET');
+    final r = request as http.AbortableRequest;
+    final ref = command.reference;
+    final query = r.url.queryParameters;
+    _check(
+      r.url.origin == scope.projectOrigin &&
+          r.url.path == '/rest/v1/operation_receipts' &&
+          query.length == 5 &&
+          query['select'] ==
+              'user_id,operation,client_event_id,request_json,status,response_json' &&
+          query['user_id'] == 'eq.$_user' &&
+          query['operation'] == 'eq.${ref.operation.wireName}' &&
+          query['client_event_id'] == 'eq.${ref.clientEventId}' &&
+          query['limit'] == '2' &&
+          r.bodyBytes.isEmpty &&
+          !r.followRedirects &&
+          r.maxRedirects == 0 &&
+          r.headers['authorization'] == 'Bearer $bearer' &&
+          r.headers['apikey'] == _key &&
+          r.headers['cache-control'] == 'no-store' &&
+          command.start == null &&
+          await _read(scope) == _expected(scope),
+    );
+    additionalReceiptReads++;
+    final original = command.turn?.toJson() ?? command.finish!.toJson();
+    final response = command.turn != null
+        ? <String, Object?>{
+            'assistant_message': {
+              'id': _user,
+              'role': 'assistant',
+              'text_ja': 'TEST ONLY TURN',
+              'text_vi': null,
+              'audio_ref': null,
+              'sequence_no': 1,
+            },
+          }
+        : <String, Object?>{
+            'scores': {'grammar': 0, 'vocabulary': 0, 'fluency': 0},
+            'errors': <Object?>[],
+            'strengths_vi': ['TEST ONLY FINISH'],
+            'focus_next_vi': <Object?>[],
+            'srs_recommendations': <Object?>[],
+          };
+    return http.StreamedResponse(
+      Stream.value(
+        utf8.encode(
+          jsonEncode(
+            receiptStatus == 'UNKNOWN'
+                ? <Object?>[]
+                : [
+                    {
+                      'user_id': _user,
+                      'operation': ref.operation.wireName,
+                      'client_event_id': ref.clientEventId,
+                      'request_json': original,
+                      'status': receiptStatus,
+                      'response_json': receiptStatus == 'COMPLETED'
+                          ? response
+                          : null,
+                    },
+                  ],
+          ),
+        ),
+      ),
+      200,
+      headers: {'content-type': 'application/json'},
+    );
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    final command = additionalCommand;
+    if (command != null) return _readAdditional(request, command);
     if (request.method == 'GET' && receiptStatus != null) {
       _check(request is http.AbortableRequest);
       final r = request as http.AbortableRequest;
@@ -1115,6 +1193,73 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               await vault.readRefreshToken() == rotated &&
               await _read(scope) == _expected(scope),
         );
+        final additionalCiphertexts = <Uint8List>[];
+        for (final command in commands.skip(1)) {
+          final encrypted = await protector.protect(command);
+          additionalCiphertexts.add(encrypted);
+          network.additionalCommand = command;
+          for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+            network.receiptStatus = status;
+            final snapshot = await runtime.lookupProtectedConversationReceipt(
+              encrypted,
+            );
+            _check(snapshot.matchesReference(command.reference));
+            _check(snapshot.status.name == status.toLowerCase());
+            _check(snapshot.start == null);
+            _check(
+              (snapshot.turn != null) ==
+                  (command.turn != null && status == 'COMPLETED') &&
+                  (snapshot.finish != null) ==
+                      (command.finish != null && status == 'COMPLETED'),
+            );
+            if (snapshot.turn != null) {
+              _check(
+                snapshot.turn!.assistantMessage.textJa == 'TEST ONLY TURN',
+              );
+            }
+            if (snapshot.finish != null) {
+              _check(snapshot.finish!.strengthsVi.single == 'TEST ONLY FINISH');
+              _check(snapshot.finish!.srsRecommendations.isEmpty);
+            }
+            _check(
+              protector.isCurrent &&
+                  reader.isCurrent &&
+                  await vault.readRefreshToken() == rotated &&
+                  await _read(scope) == _expected(scope),
+            );
+            for (final event in [
+              _event,
+              'b2000000-0000-4000-8000-000000000002',
+            ]) {
+              var rejected = false;
+              try {
+                await session.start(
+                  StartConversationRequest(
+                    scenarioId: _user,
+                    level: AiTextLevel.n5,
+                    clientEventId: event,
+                  ),
+                );
+              } on AiTextRequestPending {
+                rejected = event != _event;
+              } on AiTextFailure catch (error) {
+                rejected =
+                    event == _event &&
+                    error.code == AiTextErrorCode.syncConflict;
+              }
+              _check(rejected && network.sends == 0);
+            }
+          }
+        }
+        network.additionalCommand = null;
+        _check(
+          network.additionalReceiptReads == 6 &&
+              network.protectedReceiptReads == 4 &&
+              network.originalReceiptReads == 5 &&
+              network.receiptReads == 3 &&
+              network.sends == 0 &&
+              refreshCalls == 1,
+        );
         network.protectedReceipt = false;
         network.originalReceipt = false;
         await runtime.close();
@@ -1171,6 +1316,17 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               network.receiptReads == 3 &&
               network.sends == 0,
         );
+        for (final encrypted in additionalCiphertexts) {
+          var staleAdditionalRejected = false;
+          try {
+            await runtime.lookupProtectedConversationReceipt(encrypted);
+          } on AiTextFailure catch (error) {
+            staleAdditionalRejected =
+                error.code == AiTextErrorCode.unauthorized;
+          }
+          _check(staleAdditionalRejected);
+        }
+        _check(network.additionalReceiptReads == 6 && network.sends == 0);
         _check(
           await vault.readRefreshToken() == rotated &&
               await _read(scope) == _expected(scope),
