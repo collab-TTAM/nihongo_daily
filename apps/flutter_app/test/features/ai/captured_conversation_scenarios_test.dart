@@ -43,6 +43,47 @@ final class Port implements ConversationScenarioReadPort {
 Matcher failure(AiTextErrorCode code) =>
     throwsA(isA<AiTextFailure>().having((e) => e.code, 'code', code));
 void main() {
+  for (final afterDecode in [false, true]) {
+    test(
+      'scenario final readiness session replacement afterDecode=$afterDecode',
+      () async {
+        final auth = Auth();
+        final original = auth.currentSession!;
+        final port = Port();
+        var armed = false;
+        var checks = 0;
+        final scenarios = CapturedConversationScenarios(
+          auth: auth,
+          port: port,
+          isReady: () {
+            // Two checks per boundary: entry, pre-port, post-read, post-decode.
+            if (armed && ++checks == (afterDecode ? 8 : 4)) {
+              armed = false;
+              auth.currentSession = ReviewSession(userId: original.userId);
+            }
+            return true;
+          },
+        );
+        armed = true;
+        await expectLater(
+          scenarios.load(AiTextLevel.n5),
+          failure(AiTextErrorCode.unauthorized),
+        );
+        expect(checks, afterDecode ? 8 : 4);
+        expect(port.calls, afterDecode ? 1 : 0);
+        expect(scenarios.isBusy, isFalse);
+        expect(scenarios.isCheckingAvailability, isFalse);
+        auth.currentSession = original;
+        expect(scenarios.isCurrent, isFalse);
+        await expectLater(
+          scenarios.load(AiTextLevel.n4),
+          failure(AiTextErrorCode.unauthorized),
+        );
+        expect(port.calls, afterDecode ? 1 : 0);
+      },
+    );
+  }
+
   test(
     'no auto read, exact captured level, immutable detached literal projection',
     () async {

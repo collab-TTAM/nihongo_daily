@@ -1,5 +1,28 @@
 # Captured conversation scenario read prerequisite — Issue #17
 
+## Final readiness identity fence — 2026-10-29
+
+Currentness already rejected reentry and final callback revocation, but only
+checked session identity before the second readiness callback. Re-read the exact
+captured session after that callback as well. Synchronous same-user replacement
+must not authorize one last borrowed-port read or post-decode catalog publication.
+Observed replacement permanently retires the capability, even if the old session
+hint later returns. Existing checking/finally/busy/timeout/drain/error semantics
+and active/level/public-column decoder remain unchanged.
+
+Two TEST ONLY Auth/read-port cases target the final pre-port boundary and the
+final post-decode boundary (four/eight readiness calls after construction). Both
+must fail unauthorized with exactly0/1 port reads, idle busy/checking flags and
+terminal denial after restoring the old hint. Without the identity recheck the
+first can dispatch one read and the second can publish a result. Original test
+bodies/assertions/timeouts/cleanup are byte-identical. This is not hosted Auth.
+
+Parentd4c6fa1 CI40814863902/latestattempt1 all5/EVERYstep SUCCESS/no skips,
+1509Flutter/fiveChrome/Web/Windows/native markers verified. New2/format/analyze/
+build locally UNRUN(noSDK); exact-head CI required. QA46/inventory152/diffcheck
+recorded separately.41draft/17open/defaultAIoff/all14hostedpending; no provider/
+Authstrategy/API/RLS/Pro/content/collection/spend/security/retention activation.
+
 CapturedConversationScenarios borrows Auth, a fixed read port and the caller's
 vault/profile/runtime generation readiness fence. Construction does not dispatch.
 Only explicit load(N5/N4) reads; no SDK/global client, cache, route, provider,

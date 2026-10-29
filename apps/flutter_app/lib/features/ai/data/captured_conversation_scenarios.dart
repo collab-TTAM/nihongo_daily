@@ -72,6 +72,7 @@ final class CapturedConversationScenarios {
       if (_ready() &&
           identical(_auth.currentSession, _session) &&
           _ready() &&
+          identical(_auth.currentSession, _session) &&
           !_revoked) {
         return true;
       }

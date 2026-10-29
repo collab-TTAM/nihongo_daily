@@ -1,5 +1,30 @@
 # PROJECT STATUS
 
+## Core checkpoint — scenario final readiness identity, 2026-10-29 UTC
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  d4c6fa14f714a8b4ede1e5dfbc7f57cfa1ef1775. Commit/tree/CI in PR41 checkpoint.
+- Parent CI40814863902/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter123253971752 clean analyze/1509full+fiveChrome/Web; previous6mutation
+  cases and Windows123253513685 persistent SDK/post-decrypt markers verified.
+- CapturedConversationScenarios final readiness callback could replace the exact
+  session after last identity read. Add exact captured-session check after it,
+  before dispatch/publication; retain checking/revoke/busy/error/drain semantics.
+- Two new regressions target last pre-port and post-decode checks, same-user
+  session replacement, exact0/1 reads/unauthorized/idle busy+checking/terminal
+  denial after old hint restored. Entire original fixture byte-identical after
+  removing additions; assertions/timeouts/cleanup retained. Four paths scenario
+  reader/test under apps/flutter_app; docs/CONVERSATION_SCENARIO_READ.md; this
+  status. Separate boundaries/call-count/terminal/lifecycle/diff review complete.
+- QA46/inventory152/diffcheck in PR; new2/format/analyze/build locally UNRUN(noSDK).
+  NEXT exact-head/latestattempt all5/EVERYstep/new2+retained native/SDK markers;
+  fix diagnostics preserving assertions/gates. Pending-onlyhandoff/no duplicate
+  code/longpolling. Trustedroot/backend/storage lifecycle/durable uncertainty/
+  authenticated conditional application-release/retentionapproval remain open.
+ 41draft/17open/AIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/
+  Authstrategy/provider/collection/spend/security/merge/close/deploy/release/
+  schedule change or Personal Alpha acceptance.
+
 ## Core checkpoint — mutation readiness callback fence, 2026-10-29 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
