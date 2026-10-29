@@ -1,5 +1,33 @@
 # Local quiz disk/UI integration — Issues #13 and #18
 
+## Restored history filters and mounted account replacement — 2026-10-29
+
+Extend the existing composed journey after every original assertion. The third
+owned runtime reads the actual journal's original9/10 event and saved1/1 correction.
+Errors-only must hide only the correction and produce1round/9of10; N4 produces
+explicit0round/0of0 with no range, and switching back to N5 restores the original
+incorrect round. Explicit reload preserves both filter selections. A forwarding
+store counter proves filter taps make no additional list call; no rows or success
+responses are supplied by the observer. These filters do not classify mastery.
+
+Keep history mounted while SDK logout/login replaces A with B. Invoke the old
+checkbox callback before the replacement frame and again after B's explicit read.
+B starts without totals, with All/unchecked defaults; its actual journal read is
+empty and cannot show either A row. Returning to A again starts without cached
+totals and recovers both exact rows/10of11 only on explicit read. Require exactly
+four added list calls, zero appends, no HTTP from filters/history, complete journal
+bytes unchanged and no owner/token text. Existing bounded real-loop diskAction,
+SDK/profile readiness, actual hit-tested controls and final owned cleanup remain.
+
+The extension adds44 assertions. All pre-existing fixture bytes are recovered by
+removing this continuation and the forwarding read counter; all original tests,
+checks, timeouts and production paths are unchanged. Parentc2911f4 CI40803396330
+latestattempt1 passed all5 jobs/every step,1491Flutter/fiveChrome/Web/Windows,
+including both prior errors-filter widgets. New composed execution/format/analyze/
+build remain locally UNRUN without SDK; exact-head CI required. HTTP/JWT/vault
+are TEST ONLY and same-process graceful reopen is not hosted learner, physical
+Windows restart, multi-device sync or power-loss proof. All14 release gates pending.
+
 The new quiz_disk_journey_widget_test.dart exercises an actual composed local
 path, extending the separate memory-port widget and SDK/native-file tests. It
 uses production UUID/UTC capture, bundled original N5 vocabulary, the pinned

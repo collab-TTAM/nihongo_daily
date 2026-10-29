@@ -1,5 +1,32 @@
 # PROJECT STATUS
 
+## Core checkpoint — real-journal history filter journey, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  c2911f41764b9ab94321eaca5fc3500e3ef03598. Commit/tree/CI in PR41 checkpoint.
+- Parent CI40803396330/latestattempt1 all5 jobs/EVERYstep SUCCESS/no skips.
+  Flutter123217061480 clean analyze/1491full+fiveChrome/Web; both errors-filter
+  widgets passed. Windows123216593231 persistent SDK/post-decrypt markers verified.
+- Extend actual SDK/owned runtime/native-journal journey after all original
+  assertions: original9/10+correction1/1, errors-only/N5/N4 exact rows/totals/empty,
+  reload selection retention, four list calls/no filter I/O; mounted history A/B/A
+  reset and stale callback before frame, explicit B empty/A restoration. Zero
+  appends/full journal bytes unchanged/no HTTP beyond Auth/profile/no owner text.
+- Add44 assertions plus forwarding-store reads counter, never substitute records
+  or success. Existing real-loop diskAction/timeout/readiness/actualtap/cleanup
+  retained; reverse additions recovers entire original fixture byte-for-byte.
+  Three paths quiz_disk_journey_widget_test.dart under apps/flutter_app/test;
+  docs/QUIZ_DISK_JOURNEY.md; this status. Separate original-preservation/lifecycle/
+  filter/counter/real-loop/storage/diff review. QA46/inventory151/diffcheck recorded
+  in PR; new Flutter/format/analyze/build locally UNRUN(noSDK), exact-head CI needed.
+- NEXT all5/EVERYstep/extended actual-disk journey+retained tests/native markers;
+  fix real diagnostics without weaker assertions/gates; pending-onlyhandoff/no
+  duplicatecode/longpolling. Remaining13 and trustedroot/backend/captured lifecycle/
+  uncertainty/authenticated conditional release/retentionapproval remain open.
+  Same-process/simulated HTTP/JWT/vault is not hosted learner proof.41draft/13+17open/
+  AIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/Authstrategy/provider/
+  collection/spend/security/merge/closure/deploy/release/schedule/Alpha acceptance.
+
 ## Core checkpoint — errors-only quiz history, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent

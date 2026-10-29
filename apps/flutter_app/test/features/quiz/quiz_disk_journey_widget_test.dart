@@ -82,6 +82,7 @@ final class _ObservedStore implements VocabularyQuizAttemptStore {
   _ObservedStore(this.journal);
   final NativeVocabularyQuizJournal journal;
   int appends = 0;
+  int reads = 0;
   Completer<void>? settled;
 
   Future<T> observe<T>(Future<T> Function() action) async {
@@ -103,8 +104,10 @@ final class _ObservedStore implements VocabularyQuizAttemptStore {
   }
 
   @override
-  Future<List<OwnedVocabularyQuizAttempt>> list(String ownerId) =>
-      observe(() => journal.list(ownerId));
+  Future<List<OwnedVocabularyQuizAttempt>> list(String ownerId) {
+    reads++;
+    return observe(() => journal.list(ownerId));
+  }
 }
 
 final class _DiskApp {
@@ -552,6 +555,97 @@ void main() {
       );
       expect(third.store.appends, 0);
       expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining('TEST_ONLY'), findsNothing);
+      expect(tester.takeException(), isNull);
+
+      // Filter the actual restored journal, then replace its captured account
+      // while history is mounted. No synthetic rows or saved UI are injected.
+      Future<void> chooseHistoryLevel(String label) async {
+        await tapQuiz(tester, find.byKey(const Key('quiz-history-level')));
+        await tapQuiz(tester, find.text(label).last);
+      }
+
+      final readsBeforeFilters = third.store.reads;
+      final requestsBeforeFilters = server.paths.length;
+      final errorsOnly = find.byKey(const Key('quiz-history-errors-only'));
+      final summary = find.byKey(const Key('quiz-history-summary'));
+      container.read(routerProvider).go('/quiz/history');
+      await tester.pumpAndSettle();
+      expect(summary, findsNothing);
+      await diskAction(third, 'quiz-history-load');
+      expect(find.text('2 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      await tapQuiz(tester, errorsOnly);
+      expect(find.text('1 bộ đã lưu'), findsOneWidget);
+      expect(find.text('N5 · 9 / 10'), findsOneWidget);
+      expect(find.text('N5 · 1 / 1'), findsNothing);
+      expect(find.text('Câu đúng theo bài gốc: 9 / 10'), findsOneWidget);
+      await chooseHistoryLevel('N4');
+      expect(find.text('0 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 0 / 0'), findsOneWidget);
+      expect(find.text('N5 · 9 / 10'), findsNothing);
+      expect(find.byKey(const Key('quiz-history-range')), findsNothing);
+      expect(third.store.reads, readsBeforeFilters + 1);
+      await diskAction(third, 'quiz-history-load');
+      expect(tester.widget<CheckboxListTile>(errorsOnly).value, isTrue);
+      expect(find.text('N4'), findsOneWidget);
+      expect(find.text('0 bộ đã lưu'), findsOneWidget);
+      await chooseHistoryLevel('N5');
+      expect(find.text('1 bộ đã lưu'), findsOneWidget);
+      expect(find.text('N5 · 9 / 10'), findsOneWidget);
+      expect(find.text('N5 · 1 / 1'), findsNothing);
+      expect(third.store.reads, readsBeforeFilters + 2);
+      expect(server.paths.length, requestsBeforeFilters);
+      await chooseHistoryLevel('N4');
+      final staleFilter = tester
+          .widget<CheckboxListTile>(errorsOnly)
+          .onChanged!;
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.b;
+        await third.login();
+      });
+      staleFilter(true); // Old capability, before the replacement frame.
+      await tester.pumpAndSettle();
+      expect(summary, findsNothing);
+      expect(tester.widget<CheckboxListTile>(errorsOnly).value, isFalse);
+      expect(find.text('Tất cả cấp độ'), findsOneWidget);
+      final requestsBeforeBHistory = server.paths.length;
+      await diskAction(third, 'quiz-history-load');
+      expect(find.text('0 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 0 / 0'), findsOneWidget);
+      expect(find.text('N5 · 9 / 10'), findsNothing);
+      expect(find.text('N5 · 1 / 1'), findsNothing);
+      staleFilter(true);
+      await tester.pumpAndSettle();
+      expect(tester.widget<CheckboxListTile>(errorsOnly).value, isFalse);
+      expect(server.paths.length, requestsBeforeBHistory);
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.a;
+        await third.login();
+      });
+      await tester.pumpAndSettle();
+      expect(summary, findsNothing);
+      expect(tester.widget<CheckboxListTile>(errorsOnly).value, isFalse);
+      expect(find.text('Tất cả cấp độ'), findsOneWidget);
+      final requestsBeforeAHistory = server.paths.length;
+      await diskAction(third, 'quiz-history-load');
+      expect(find.text('2 bộ đã lưu'), findsOneWidget);
+      expect(find.text('N5 · 9 / 10'), findsOneWidget);
+      expect(find.text('N5 · 1 / 1'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      expect(third.store.reads, readsBeforeFilters + 4);
+      expect(third.store.appends, 0);
+      expect(server.paths.length, requestsBeforeAHistory);
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        correctedBytes,
+      );
+      expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining(wire.b), findsNothing);
       expect(find.textContaining('TEST_ONLY'), findsNothing);
       expect(tester.takeException(), isNull);
     },
