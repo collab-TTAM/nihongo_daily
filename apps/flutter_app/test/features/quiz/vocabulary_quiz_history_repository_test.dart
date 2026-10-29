@@ -66,60 +66,57 @@ void main() {
   for (final save in [false, true]) {
     for (final afterIO in [false, true]) {
       for (final closing in [false, true]) {
-        test(
-          'quiz final readiness retirement save=$save afterIO=$afterIO '
-          'closing=$closing',
-          () async {
-            final original = auth.session!;
-            final event = quizReport(1);
-            if (!save) {
-              await journal.append(quizOwner, event);
-            }
-            var armed = false;
-            var checks = 0;
-            final service = VocabularyQuizHistoryRepository(
-              auth: auth,
-              store: store,
-              operations: operations,
-              isReady: () {
-                // Entry, pre-storage, post-storage, final result publication.
-                if (armed && ++checks == (afterIO ? 8 : 4)) {
-                  armed = false;
-                  if (closing) {
-                    unawaited(operations.revokeAndDrain());
-                  } else {
-                    auth.session = ReviewSession(userId: quizOwner);
-                  }
+        test('quiz final readiness retirement save=$save afterIO=$afterIO '
+            'closing=$closing', () async {
+          final original = auth.session!;
+          final event = quizReport(1);
+          if (!save) {
+            await journal.append(quizOwner, event);
+          }
+          var armed = false;
+          var checks = 0;
+          final service = VocabularyQuizHistoryRepository(
+            auth: auth,
+            store: store,
+            operations: operations,
+            isReady: () {
+              // Entry, pre-storage, post-storage, final result publication.
+              if (armed && ++checks == (afterIO ? 8 : 4)) {
+                armed = false;
+                if (closing) {
+                  unawaited(operations.revokeAndDrain());
+                } else {
+                  auth.session = ReviewSession(userId: quizOwner);
                 }
-                return true;
-              },
+              }
+              return true;
+            },
+          );
+          armed = true;
+          await expectLater(
+            save ? service.save(event) : service.load(),
+            changed,
+          );
+          expect(checks, afterIO ? 8 : 4);
+          expect(store.appends, save && afterIO ? 1 : 0);
+          expect(store.loads, !save && afterIO ? 1 : 0);
+          auth.session = original;
+          await expectLater(service.save(event), changed);
+          await expectLater(service.load(), changed);
+          expect(store.appends, save && afterIO ? 1 : 0);
+          expect(store.loads, !save && afterIO ? 1 : 0);
+          await operations.revokeAndDrain();
+          final records = await journal.list(quizOwner);
+          expect(records, hasLength(!save || afterIO ? 1 : 0));
+          if (records.isNotEmpty) {
+            expect(records.single.ownerId, quizOwner);
+            expect(
+              sameVocabularyQuizAttempt(records.single.attempt, event),
+              isTrue,
             );
-            armed = true;
-            await expectLater(
-              save ? service.save(event) : service.load(),
-              changed,
-            );
-            expect(checks, afterIO ? 8 : 4);
-            expect(store.appends, save && afterIO ? 1 : 0);
-            expect(store.loads, !save && afterIO ? 1 : 0);
-            auth.session = original;
-            await expectLater(service.save(event), changed);
-            await expectLater(service.load(), changed);
-            expect(store.appends, save && afterIO ? 1 : 0);
-            expect(store.loads, !save && afterIO ? 1 : 0);
-            await operations.revokeAndDrain();
-            final records = await journal.list(quizOwner);
-            expect(records, hasLength(!save || afterIO ? 1 : 0));
-            if (records.isNotEmpty) {
-              expect(records.single.ownerId, quizOwner);
-              expect(
-                sameVocabularyQuizAttempt(records.single.attempt, event),
-                isTrue,
-              );
-            }
-            expect(await journal.list(quizOther), isEmpty);
-          },
-        );
+          }
+          expect(await journal.list(quizOther), isEmpty);
+        });
       }
     }
   }

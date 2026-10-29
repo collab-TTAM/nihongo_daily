@@ -382,3 +382,22 @@ All old fixture bodies/assertions/cleanup are unchanged. Parentca8bc36
 CI40799400532 attempt1 passed all5/every step and retained Windows markers.
 New2 Flutter/format/analyze/build locally UNRUN(noSDK); QA46/inventory151/diffcheck
 pass separately. Require own exact-head CI. Hosted learner acceptance remains open.
+
+## Exact storage-test formatter repair — 2026-10-29 UTC
+
+CI40822052733 exact4e79d8f/latestattempt1 passed repo/AI/database/Windows with
+EVERY required step successful. Flutter123277093421 stopped at strict formatting:
+the new parameterized native-journal test's adjacent string title and callback
+must use the logged compact test call layout. Analyzer/new8tests/fullFlutter/
+downstream were SKIPPED, not passed. Apply EXACT logged diff; resulting blob
+41b90cc4180fda7d96d71ba89f0eeec731987b0a matches the formatter output prefix.
+Reverse hunk replacement reconstructs the complete original fixture byte-for-byte.
+All test strings/inputs/assertions/bodies/deadlines/cleanup and production code
+remain unchanged; no redundant whitespace test or weakened security/CI gate.
+
+QA46/inventory152/whitespace/separate exact-diff/hash/preservation review recorded
+in PR41. No local Dart/Flutter SDK/new-head format/analyze/test/build pass claim;
+require own exact-head/latestattempt all5/EVERYstep/new8 and retained native/SDK
+markers. Parent Windows123276582571 required persistent SDK/profile/receipt marker
+passed, but this is TEST ONLY component proof, not hosted learner acceptance.
+PR41 draft/13open/defaultAIoff/memory-only/all14 hosted release groups pending.
