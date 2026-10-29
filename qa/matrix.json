@@ -3878,6 +3878,48 @@
       ],
       "reproduce": "From apps/flutter_app run flutter test test/features/quiz/grammar_quiz_test.dart test/features/quiz/grammar_quiz_widget_test.dart; require exact-head all5 jobs/every step.",
       "limitation": "New eight TEST ONLY source/widget cases authored locally UNRUN without Flutter; not corpus/linguistic review, grammar persistence, mastery, study credit, hosted Auth/sync/learner acceptance. All14 hosted release groups pending."
+    },
+    {
+      "id": "owned-session-http-cancellation-recovery",
+      "status": "automated-baseline",
+      "scope": "Bounded session HTTP cancellation and actual owned pinned-SDK explicit login recovery without stale vault/profile readiness.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/bounded_session_http_test.dart",
+          "contains": "session deadline ignores held and rejected cancellation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/bounded_session_http_test.dart",
+          "contains": "late session response cancellation errors are consumed"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/bounded_session_http_test.dart",
+          "contains": "session transport preserves bounded bytes and borrowed ownership"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/bounded_session_http_test.dart",
+          "contains": "session transport rejects foreign origin and path before dispatch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK login recovers after held stream cancellation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "expect(cancellation.isCompleted, isFalse)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "expect(transport.closed, isFalse)"
+        }
+      ],
+      "issues": [
+        18,
+        20
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/srs/bounded_session_http_test.dart test/features/srs/persistent_supabase_runtime_test.dart. Run python3 scripts/verify_qa.py --head 39b96576fab842585b00d5ef9505dde2043a923f --evidence qa/evidence/20261029-session-cancellation-39b9657.json; require exact-head latest-attempt all5 jobs/every returned step.",
+      "limitation": "Observed39b9657 CI40928842980/latestattempt1 all5/EVERYstep SUCCESS and raw Flutter123642555655 both stalled/oversized SDK recovery cases. Snapshot is unmodified GitHub run/jobs; verifier checks correlation/completeness, not authenticity. Simulated HTTP/OS/unsigned tokens with actual SDK/real journal; no hosted Auth/RLS/learner, physical Windows cancellation or cross-device proof. Existing SDK retries unchanged; no whole-operation deadline/guaranteed cleanup completion. All14 hosted release groups pending."
     }
   ],
   "findings": [

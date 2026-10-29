@@ -1,11 +1,42 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-153 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+155 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
 synthetic evidence or fixture may be promoted to real integration evidence.
+
+## Observed session cancellation and SDK recovery — 2026-10-29 UTC
+
+Saved qa/evidence/20261029-session-cancellation-39b9657.json contains the unmodified
+workflow run and COMPLETE latestattempt1 jobs fetched from GitHub for exact
+39b96576fab842585b00d5ef9505dde2043a923f, CI40928842980. All5 jobs/EVERY returned
+step SUCCESS/no skips. Raw Flutter123642555655 shows all6 direct cancellation
+cases and both actual pinned-SDK stalled/oversized login recovery tests passing.
+Windows123641690643 required persistent vault/sameSDK/profile/receipt rotation
+and persistent runtime cross-process markers observed. Web/Windows builds pass.
+This completes verification of the recent HTTP cancellation increment, not issue20
+or Personal Alpha acceptance. No new runtime code or duplicate test is introduced.
+
+One QA inventory case anchors the existing eight tests: held/rejected cleanup,
+late response, bounded byte/redirect/scope/ownership, failed login fences vault+
+profile, same-owner explicit login recovers and logout clears readiness. All154
+prior case objects, findings and release groups remain unchanged. Inventory155
+is not155 executed tests. Snapshot verifier/QA suite/whitespace checks recorded
+in PR. Source39b9657 evidence is historical for later heads, not new-head CI.
+
+```bash
+python3 scripts/verify_qa.py --head 39b96576fab842585b00d5ef9505dde2043a923f --evidence qa/evidence/20261029-session-cancellation-39b9657.json
+```
+
+HTTP/OS/unsigned JWT are TEST ONLY, SDK/journal/native probes are actual
+components; no hosted learner/Auth/RLS/provider/cross-device acceptance or physical
+Windows cancellation proof. Existing retry policy unchanged, no whole-SDK deadline
+or cleanup completion guarantee. All14 hosted groups remain pending and --release
+must fail. PR41 draft/issue18+20 open. No Pro/content/Authstrategy/API/RLS/default/
+retention/merge/deploy/release/schedule changes. Next verify new exact head CI;
+then continue independent app/quiz work while hosted prerequisites remain open.
 
 ## Step resource correlation — 2026-10-29
 

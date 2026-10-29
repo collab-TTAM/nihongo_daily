@@ -1,0 +1,1259 @@
+{
+  "run": {
+    "id": 40928842980,
+    "name": "CI",
+    "node_id": "WFR_kwLOVHYJ7c8AAAAJh4yU5A",
+    "head_branch": "automation/issue-11-plan-sdk-integration",
+    "head_sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+    "path": ".github/workflows/ci.yml",
+    "display_title": "Integrate N5/N4 study flows, Kanji practice and vocabulary quizzes",
+    "run_number": 546,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow_id": 383205594,
+    "check_suite_id": 110948348705,
+    "check_suite_node_id": "CS_kwDOVHYJ7c8AAAAZ1QlzIQ",
+    "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+    "html_url": "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+    "pull_requests": [
+      {
+        "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/pulls/41",
+        "id": 4926314143,
+        "number": 41,
+        "head": {
+          "ref": "automation/issue-11-plan-sdk-integration",
+          "sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+          "repo": {
+            "id": 1417021933,
+            "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily",
+            "name": "nihongo_daily"
+          }
+        },
+        "base": {
+          "ref": "main",
+          "sha": "78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c",
+          "repo": {
+            "id": 1417021933,
+            "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily",
+            "name": "nihongo_daily"
+          }
+        }
+      }
+    ],
+    "created_at": "2026-10-29T18:13:59Z",
+    "updated_at": "2026-10-29T18:21:21Z",
+    "actor": {
+      "login": "collab-TTAM",
+      "id": 304745447,
+      "node_id": "U_kgDOEioL5w",
+      "avatar_url": "https://avatars.githubusercontent.com/u/304745447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/collab-TTAM",
+      "html_url": "https://github.com/collab-TTAM",
+      "followers_url": "https://api.github.com/users/collab-TTAM/followers",
+      "following_url": "https://api.github.com/users/collab-TTAM/following{/other_user}",
+      "gists_url": "https://api.github.com/users/collab-TTAM/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/collab-TTAM/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/collab-TTAM/subscriptions",
+      "organizations_url": "https://api.github.com/users/collab-TTAM/orgs",
+      "repos_url": "https://api.github.com/users/collab-TTAM/repos",
+      "events_url": "https://api.github.com/users/collab-TTAM/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/collab-TTAM/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "run_attempt": 1,
+    "referenced_workflows": [],
+    "run_started_at": "2026-10-29T18:13:59Z",
+    "triggering_actor": {
+      "login": "collab-TTAM",
+      "id": 304745447,
+      "node_id": "U_kgDOEioL5w",
+      "avatar_url": "https://avatars.githubusercontent.com/u/304745447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/collab-TTAM",
+      "html_url": "https://github.com/collab-TTAM",
+      "followers_url": "https://api.github.com/users/collab-TTAM/followers",
+      "following_url": "https://api.github.com/users/collab-TTAM/following{/other_user}",
+      "gists_url": "https://api.github.com/users/collab-TTAM/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/collab-TTAM/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/collab-TTAM/subscriptions",
+      "organizations_url": "https://api.github.com/users/collab-TTAM/orgs",
+      "repos_url": "https://api.github.com/users/collab-TTAM/repos",
+      "events_url": "https://api.github.com/users/collab-TTAM/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/collab-TTAM/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "jobs_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980/jobs",
+    "logs_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980/logs",
+    "check_suite_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/check-suites/110948348705",
+    "artifacts_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980/artifacts",
+    "cancel_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980/cancel",
+    "rerun_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980/rerun",
+    "previous_attempt_url": null,
+    "workflow_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/workflows/383205594",
+    "head_commit": {
+      "id": "39b96576fab842585b00d5ef9505dde2043a923f",
+      "tree_id": "3aeb408caf2859001d210d5edab3961c184d2a09",
+      "message": "Verify owned SDK login recovery after stalled stream cancellation",
+      "timestamp": "2026-10-29T18:13:51Z",
+      "author": {
+        "name": "collab-TTAM",
+        "email": "trungtin0410@gmail.com"
+      },
+      "committer": {
+        "name": "collab-TTAM",
+        "email": "trungtin0410@gmail.com"
+      }
+    },
+    "repository": {
+      "id": 1417021933,
+      "node_id": "R_kgDOVHYJ7Q",
+      "name": "nihongo_daily",
+      "full_name": "collab-TTAM/nihongo_daily",
+      "private": false,
+      "owner": {
+        "login": "collab-TTAM",
+        "id": 304745447,
+        "node_id": "U_kgDOEioL5w",
+        "avatar_url": "https://avatars.githubusercontent.com/u/304745447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/collab-TTAM",
+        "html_url": "https://github.com/collab-TTAM",
+        "followers_url": "https://api.github.com/users/collab-TTAM/followers",
+        "following_url": "https://api.github.com/users/collab-TTAM/following{/other_user}",
+        "gists_url": "https://api.github.com/users/collab-TTAM/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/collab-TTAM/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/collab-TTAM/subscriptions",
+        "organizations_url": "https://api.github.com/users/collab-TTAM/orgs",
+        "repos_url": "https://api.github.com/users/collab-TTAM/repos",
+        "events_url": "https://api.github.com/users/collab-TTAM/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/collab-TTAM/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/collab-TTAM/nihongo_daily",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily",
+      "forks_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/forks",
+      "keys_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/teams",
+      "hooks_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/hooks",
+      "issue_events_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/events",
+      "assignees_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/tags",
+      "blobs_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/languages",
+      "stargazers_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/stargazers",
+      "contributors_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/contributors",
+      "subscribers_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/subscribers",
+      "subscription_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/subscription",
+      "commits_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/merges",
+      "archive_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/downloads",
+      "issues_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/labels{/name}",
+      "releases_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/deployments"
+    },
+    "head_repository": {
+      "id": 1417021933,
+      "node_id": "R_kgDOVHYJ7Q",
+      "name": "nihongo_daily",
+      "full_name": "collab-TTAM/nihongo_daily",
+      "private": false,
+      "owner": {
+        "login": "collab-TTAM",
+        "id": 304745447,
+        "node_id": "U_kgDOEioL5w",
+        "avatar_url": "https://avatars.githubusercontent.com/u/304745447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/collab-TTAM",
+        "html_url": "https://github.com/collab-TTAM",
+        "followers_url": "https://api.github.com/users/collab-TTAM/followers",
+        "following_url": "https://api.github.com/users/collab-TTAM/following{/other_user}",
+        "gists_url": "https://api.github.com/users/collab-TTAM/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/collab-TTAM/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/collab-TTAM/subscriptions",
+        "organizations_url": "https://api.github.com/users/collab-TTAM/orgs",
+        "repos_url": "https://api.github.com/users/collab-TTAM/repos",
+        "events_url": "https://api.github.com/users/collab-TTAM/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/collab-TTAM/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/collab-TTAM/nihongo_daily",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily",
+      "forks_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/forks",
+      "keys_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/teams",
+      "hooks_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/hooks",
+      "issue_events_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/events",
+      "assignees_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/tags",
+      "blobs_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/languages",
+      "stargazers_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/stargazers",
+      "contributors_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/contributors",
+      "subscribers_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/subscribers",
+      "subscription_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/subscription",
+      "commits_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/merges",
+      "archive_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/downloads",
+      "issues_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/labels{/name}",
+      "releases_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/deployments"
+    }
+  },
+  "jobs": {
+    "total_count": 5,
+    "jobs": [
+      {
+        "id": 123641560669,
+        "run_id": 40928842980,
+        "workflow_name": "CI",
+        "head_branch": "automation/issue-11-plan-sdk-integration",
+        "run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVHYJ7c8AAAAcyZx-XQ",
+        "head_sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+        "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/jobs/123641560669",
+        "html_url": "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40928842980/job/123641560669",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-29T18:14:00Z",
+        "started_at": "2026-10-29T18:14:02Z",
+        "completed_at": "2026-10-29T18:14:45Z",
+        "name": "ai-boundary",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-29T18:14:03Z",
+            "completed_at": "2026-10-29T18:14:05Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-29T18:14:05Z",
+            "completed_at": "2026-10-29T18:14:06Z"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-29T18:14:06Z",
+            "completed_at": "2026-10-29T18:14:09Z"
+          },
+          {
+            "name": "Run npm ci --ignore-scripts --no-audit --no-fund",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-29T18:14:09Z",
+            "completed_at": "2026-10-29T18:14:10Z"
+          },
+          {
+            "name": "Run npm audit --omit=dev --audit-level=moderate",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-29T18:14:10Z",
+            "completed_at": "2026-10-29T18:14:10Z"
+          },
+          {
+            "name": "Run npm run format:check",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-29T18:14:10Z",
+            "completed_at": "2026-10-29T18:14:12Z"
+          },
+          {
+            "name": "Run npm run check",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-29T18:14:12Z",
+            "completed_at": "2026-10-29T18:14:15Z"
+          },
+          {
+            "name": "Run npm test",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-29T18:14:15Z",
+            "completed_at": "2026-10-29T18:14:18Z"
+          },
+          {
+            "name": "Run denoland/setup-deno@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-29T18:14:18Z",
+            "completed_at": "2026-10-29T18:14:20Z"
+          },
+          {
+            "name": "Check AI modules with pinned Deno",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-29T18:14:20Z",
+            "completed_at": "2026-10-29T18:14:22Z"
+          },
+          {
+            "name": "Verify AI boundary with pinned Deno",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-29T18:14:22Z",
+            "completed_at": "2026-10-29T18:14:27Z"
+          },
+          {
+            "name": "Verify Deno native HTTP and permission boundaries",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-29T18:14:27Z",
+            "completed_at": "2026-10-29T18:14:28Z"
+          },
+          {
+            "name": "Verify bundled Supabase Edge user worker",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-29T18:14:28Z",
+            "completed_at": "2026-10-29T18:14:39Z"
+          },
+          {
+            "name": "Publish Edge user-worker compatibility evidence",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-29T18:14:39Z",
+            "completed_at": "2026-10-29T18:14:40Z"
+          },
+          {
+            "name": "Verify schema-generated TypeScript projections",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-29T18:14:40Z",
+            "completed_at": "2026-10-29T18:14:42Z"
+          },
+          {
+            "name": "Post Run denoland/setup-deno@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-29T18:14:42Z",
+            "completed_at": "2026-10-29T18:14:42Z"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-29T18:14:42Z",
+            "completed_at": "2026-10-29T18:14:42Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30,
+            "started_at": "2026-10-29T18:14:42Z",
+            "completed_at": "2026-10-29T18:14:42Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31,
+            "started_at": "2026-10-29T18:14:42Z",
+            "completed_at": "2026-10-29T18:14:42Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/check-runs/123641560669",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000002373,
+        "runner_name": "GitHub Actions 1000002373",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 123641560870,
+        "run_id": 40928842980,
+        "workflow_name": "CI",
+        "head_branch": "automation/issue-11-plan-sdk-integration",
+        "run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVHYJ7c8AAAAcyZx_Jg",
+        "head_sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+        "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/jobs/123641560870",
+        "html_url": "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40928842980/job/123641560870",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-29T18:14:00Z",
+        "started_at": "2026-10-29T18:14:02Z",
+        "completed_at": "2026-10-29T18:15:48Z",
+        "name": "database",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-29T18:14:03Z",
+            "completed_at": "2026-10-29T18:14:05Z"
+          },
+          {
+            "name": "Initialize containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-29T18:14:05Z",
+            "completed_at": "2026-10-29T18:14:19Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-29T18:14:19Z",
+            "completed_at": "2026-10-29T18:14:21Z"
+          },
+          {
+            "name": "Install PostgreSQL client",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-29T18:14:21Z",
+            "completed_at": "2026-10-29T18:14:28Z"
+          },
+          {
+            "name": "Install review parity validator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-29T18:14:28Z",
+            "completed_at": "2026-10-29T18:14:29Z"
+          },
+          {
+            "name": "Migration, grants, RLS, replay and concurrent uniqueness",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-29T18:14:29Z",
+            "completed_at": "2026-10-29T18:14:56Z"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-29T18:14:56Z",
+            "completed_at": "2026-10-29T18:14:58Z"
+          },
+          {
+            "name": "Install pinned AI PostgreSQL adapter dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-29T18:14:58Z",
+            "completed_at": "2026-10-29T18:14:59Z"
+          },
+          {
+            "name": "Verify committed AI quota adapter with native PostgreSQL",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-29T18:14:59Z",
+            "completed_at": "2026-10-29T18:15:00Z"
+          },
+          {
+            "name": "Verify text context adapter with native PostgreSQL",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-29T18:15:00Z",
+            "completed_at": "2026-10-29T18:15:02Z"
+          },
+          {
+            "name": "Verify atomic conversation adapter with native PostgreSQL",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-29T18:15:02Z",
+            "completed_at": "2026-10-29T18:15:06Z"
+          },
+          {
+            "name": "Verify trusted AI assembly with native PostgreSQL",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-29T18:15:06Z",
+            "completed_at": "2026-10-29T18:15:08Z"
+          },
+          {
+            "name": "Run denoland/setup-deno@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-29T18:15:08Z",
+            "completed_at": "2026-10-29T18:15:10Z"
+          },
+          {
+            "name": "Verify AI PostgreSQL adapters with pinned Deno",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-29T18:15:10Z",
+            "completed_at": "2026-10-29T18:15:19Z"
+          },
+          {
+            "name": "Verify bundled Edge PostgreSQL assembly",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-29T18:15:19Z",
+            "completed_at": "2026-10-29T18:15:39Z"
+          },
+          {
+            "name": "Publish Edge PostgreSQL assembly evidence",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16,
+            "started_at": "2026-10-29T18:15:39Z",
+            "completed_at": "2026-10-29T18:15:40Z"
+          },
+          {
+            "name": "Validate profile bootstrap and observed concurrent creation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17,
+            "started_at": "2026-10-29T18:15:40Z",
+            "completed_at": "2026-10-29T18:15:41Z"
+          },
+          {
+            "name": "Publish actual native SQL profile projections",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-29T18:15:41Z",
+            "completed_at": "2026-10-29T18:15:42Z"
+          },
+          {
+            "name": "Publish actual native SQL queue projections",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-10-29T18:15:42Z",
+            "completed_at": "2026-10-29T18:15:44Z"
+          },
+          {
+            "name": "Post Run denoland/setup-deno@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 35,
+            "started_at": "2026-10-29T18:15:44Z",
+            "completed_at": "2026-10-29T18:15:44Z"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 36,
+            "started_at": "2026-10-29T18:15:44Z",
+            "completed_at": "2026-10-29T18:15:44Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 37,
+            "started_at": "2026-10-29T18:15:44Z",
+            "completed_at": "2026-10-29T18:15:44Z"
+          },
+          {
+            "name": "Stop containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 38,
+            "started_at": "2026-10-29T18:15:44Z",
+            "completed_at": "2026-10-29T18:15:44Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 39,
+            "started_at": "2026-10-29T18:15:44Z",
+            "completed_at": "2026-10-29T18:15:45Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/check-runs/123641560870",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000002371,
+        "runner_name": "GitHub Actions 1000002371",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 123641560963,
+        "run_id": 40928842980,
+        "workflow_name": "CI",
+        "head_branch": "automation/issue-11-plan-sdk-integration",
+        "run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVHYJ7c8AAAAcyZx_gw",
+        "head_sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+        "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/jobs/123641560963",
+        "html_url": "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40928842980/job/123641560963",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-29T18:14:00Z",
+        "started_at": "2026-10-29T18:14:02Z",
+        "completed_at": "2026-10-29T18:14:14Z",
+        "name": "repo-sanity",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-29T18:14:03Z",
+            "completed_at": "2026-10-29T18:14:03Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-29T18:14:03Z",
+            "completed_at": "2026-10-29T18:14:05Z"
+          },
+          {
+            "name": "Detect Flutter project after checkout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-29T18:14:05Z",
+            "completed_at": "2026-10-29T18:14:05Z"
+          },
+          {
+            "name": "Check forbidden secret-like files",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-29T18:14:05Z",
+            "completed_at": "2026-10-29T18:14:05Z"
+          },
+          {
+            "name": "Validate project manifest and content JSON",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-29T18:14:05Z",
+            "completed_at": "2026-10-29T18:14:05Z"
+          },
+          {
+            "name": "Install contract validator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-29T18:14:05Z",
+            "completed_at": "2026-10-29T18:14:10Z"
+          },
+          {
+            "name": "Validate authored curriculum exports",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-29T18:14:10Z",
+            "completed_at": "2026-10-29T18:14:10Z"
+          },
+          {
+            "name": "Validate frozen contracts and regression cases",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-29T18:14:10Z",
+            "completed_at": "2026-10-29T18:14:11Z"
+          },
+          {
+            "name": "Validate QA inventory and evidence regressions",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-29T18:14:11Z",
+            "completed_at": "2026-10-29T18:14:12Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-29T18:14:12Z",
+            "completed_at": "2026-10-29T18:14:12Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-10-29T18:14:12Z",
+            "completed_at": "2026-10-29T18:14:12Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/check-runs/123641560963",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000002372,
+        "runner_name": "GitHub Actions 1000002372",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 123641690643,
+        "run_id": 40928842980,
+        "workflow_name": "CI",
+        "head_branch": "automation/issue-11-plan-sdk-integration",
+        "run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVHYJ7c8AAAAcyZ56Ew",
+        "head_sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+        "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/jobs/123641690643",
+        "html_url": "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40928842980/job/123641690643",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-29T18:14:14Z",
+        "started_at": "2026-10-29T18:14:16Z",
+        "completed_at": "2026-10-29T18:19:51Z",
+        "name": "windows",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-29T18:14:17Z",
+            "completed_at": "2026-10-29T18:14:18Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-29T18:14:18Z",
+            "completed_at": "2026-10-29T18:14:25Z"
+          },
+          {
+            "name": "Run subosito/flutter-action@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-29T18:14:25Z",
+            "completed_at": "2026-10-29T18:16:08Z"
+          },
+          {
+            "name": "Run flutter pub get --enforce-lockfile",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-29T18:16:08Z",
+            "completed_at": "2026-10-29T18:16:15Z"
+          },
+          {
+            "name": "Build TEST ONLY Dart-to-Windows vault bridge",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-29T18:16:15Z",
+            "completed_at": "2026-10-29T18:17:42Z"
+          },
+          {
+            "name": "Verify actual Dart-to-Windows vault bridge across processes",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-29T18:17:42Z",
+            "completed_at": "2026-10-29T18:17:53Z"
+          },
+          {
+            "name": "Build configured staging Windows entrypoint with TEST ONLY settings",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-29T18:17:53Z",
+            "completed_at": "2026-10-29T18:18:24Z"
+          },
+          {
+            "name": "Run flutter build windows --release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-29T18:18:24Z",
+            "completed_at": "2026-10-29T18:18:54Z"
+          },
+          {
+            "name": "Verify actual Windows credential store across processes",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-29T18:18:54Z",
+            "completed_at": "2026-10-29T18:19:12Z"
+          },
+          {
+            "name": "Verify native receipt cache retention",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-29T18:19:12Z",
+            "completed_at": "2026-10-29T18:19:28Z"
+          },
+          {
+            "name": "Verify lossless native journal compaction",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-29T18:19:28Z",
+            "completed_at": "2026-10-29T18:19:36Z"
+          },
+          {
+            "name": "Verify native durable review restart",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-29T18:19:36Z",
+            "completed_at": "2026-10-29T18:19:37Z"
+          },
+          {
+            "name": "Verify durable study recovery with real disk",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-29T18:19:37Z",
+            "completed_at": "2026-10-29T18:19:38Z"
+          },
+          {
+            "name": "Verify completed-study events across process restart",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-29T18:19:38Z",
+            "completed_at": "2026-10-29T18:19:45Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-29T18:19:45Z",
+            "completed_at": "2026-10-29T18:19:47Z"
+          },
+          {
+            "name": "Post Run subosito/flutter-action@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-29T18:19:47Z",
+            "completed_at": "2026-10-29T18:19:48Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30,
+            "started_at": "2026-10-29T18:19:48Z",
+            "completed_at": "2026-10-29T18:19:50Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31,
+            "started_at": "2026-10-29T18:19:50Z",
+            "completed_at": "2026-10-29T18:19:50Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/check-runs/123641690643",
+        "labels": [
+          "windows-2022"
+        ],
+        "runner_id": 1000002374,
+        "runner_name": "GitHub Actions 1000002374",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 123642555655,
+        "run_id": 40928842980,
+        "workflow_name": "CI",
+        "head_branch": "automation/issue-11-plan-sdk-integration",
+        "run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/runs/40928842980",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVHYJ7c8AAAAcyautBw",
+        "head_sha": "39b96576fab842585b00d5ef9505dde2043a923f",
+        "url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/actions/jobs/123642555655",
+        "html_url": "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40928842980/job/123642555655",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-29T18:15:48Z",
+        "started_at": "2026-10-29T18:15:51Z",
+        "completed_at": "2026-10-29T18:21:20Z",
+        "name": "flutter",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-29T18:15:52Z",
+            "completed_at": "2026-10-29T18:15:54Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-29T18:15:54Z",
+            "completed_at": "2026-10-29T18:15:55Z"
+          },
+          {
+            "name": "Run subosito/flutter-action@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-29T18:15:55Z",
+            "completed_at": "2026-10-29T18:16:21Z"
+          },
+          {
+            "name": "Run flutter pub get --enforce-lockfile",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-29T18:16:21Z",
+            "completed_at": "2026-10-29T18:16:23Z"
+          },
+          {
+            "name": "Run dart format --output=none --set-exit-if-changed .",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-29T18:16:23Z",
+            "completed_at": "2026-10-29T18:16:26Z"
+          },
+          {
+            "name": "Run flutter analyze",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-29T18:16:26Z",
+            "completed_at": "2026-10-29T18:16:44Z"
+          },
+          {
+            "name": "Run flutter test",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-29T18:16:44Z",
+            "completed_at": "2026-10-29T18:19:51Z"
+          },
+          {
+            "name": "Verify owned persistent session lifecycle",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-29T18:19:51Z",
+            "completed_at": "2026-10-29T18:19:51Z"
+          },
+          {
+            "name": "Verify credential vault validation and ordering",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-29T18:19:51Z",
+            "completed_at": "2026-10-29T18:19:52Z"
+          },
+          {
+            "name": "Verify account profile readiness",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-29T18:19:52Z",
+            "completed_at": "2026-10-29T18:19:52Z"
+          },
+          {
+            "name": "Verify real IndexedDB transactions in Chrome",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-29T18:19:52Z",
+            "completed_at": "2026-10-29T18:20:15Z"
+          },
+          {
+            "name": "Verify browser review page reload",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-29T18:20:15Z",
+            "completed_at": "2026-10-29T18:20:17Z"
+          },
+          {
+            "name": "Verify native receipt cache retention",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-29T18:20:17Z",
+            "completed_at": "2026-10-29T18:20:20Z"
+          },
+          {
+            "name": "Verify lossless native journal compaction",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-29T18:20:20Z",
+            "completed_at": "2026-10-29T18:20:24Z"
+          },
+          {
+            "name": "Verify native durable review restart",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-29T18:20:24Z",
+            "completed_at": "2026-10-29T18:20:25Z"
+          },
+          {
+            "name": "Verify durable study recovery with real disk",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16,
+            "started_at": "2026-10-29T18:20:25Z",
+            "completed_at": "2026-10-29T18:20:26Z"
+          },
+          {
+            "name": "Verify completed-study events across process restart",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17,
+            "started_at": "2026-10-29T18:20:26Z",
+            "completed_at": "2026-10-29T18:20:28Z"
+          },
+          {
+            "name": "Verify captured-connection lifecycle with explicit fixture dispatch",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-29T18:20:28Z",
+            "completed_at": "2026-10-29T18:20:29Z"
+          },
+          {
+            "name": "Download same-run native profile bootstrap projections",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-10-29T18:20:29Z",
+            "completed_at": "2026-10-29T18:20:30Z"
+          },
+          {
+            "name": "Decode native profile projections with captured-session Dart adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-10-29T18:20:30Z",
+            "completed_at": "2026-10-29T18:20:30Z"
+          },
+          {
+            "name": "Download same-run native SQL queue projections",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-29T18:20:30Z",
+            "completed_at": "2026-10-29T18:20:31Z"
+          },
+          {
+            "name": "Decode native SQL queue projections with Dart adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22,
+            "started_at": "2026-10-29T18:20:31Z",
+            "completed_at": "2026-10-29T18:20:32Z"
+          },
+          {
+            "name": "Validate decoded native queue wire output",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23,
+            "started_at": "2026-10-29T18:20:32Z",
+            "completed_at": "2026-10-29T18:20:33Z"
+          },
+          {
+            "name": "Verify pure SRS golden cases and emit actual wire payloads",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-29T18:20:33Z",
+            "completed_at": "2026-10-29T18:20:33Z"
+          },
+          {
+            "name": "Validate actual Dart SRS output against frozen wire contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25,
+            "started_at": "2026-10-29T18:20:33Z",
+            "completed_at": "2026-10-29T18:20:34Z"
+          },
+          {
+            "name": "Verify typed review adapter using explicit fixture ports",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26,
+            "started_at": "2026-10-29T18:20:34Z",
+            "completed_at": "2026-10-29T18:20:34Z"
+          },
+          {
+            "name": "Validate typed review adapter wire encodings",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-10-29T18:20:34Z",
+            "completed_at": "2026-10-29T18:20:34Z"
+          },
+          {
+            "name": "Verify SRS study controller using explicit fixture ports",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-29T18:20:34Z",
+            "completed_at": "2026-10-29T18:20:35Z"
+          },
+          {
+            "name": "Validate SRS study controller wire encodings",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-29T18:20:35Z",
+            "completed_at": "2026-10-29T18:20:35Z"
+          },
+          {
+            "name": "Verify actual Kanji capture wire payloads",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30,
+            "started_at": "2026-10-29T18:20:35Z",
+            "completed_at": "2026-10-29T18:20:36Z"
+          },
+          {
+            "name": "Validate actual Dart Kanji output against frozen contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31,
+            "started_at": "2026-10-29T18:20:36Z",
+            "completed_at": "2026-10-29T18:20:36Z"
+          },
+          {
+            "name": "Run flutter build web --release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 32,
+            "started_at": "2026-10-29T18:20:36Z",
+            "completed_at": "2026-10-29T18:21:14Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 33,
+            "started_at": "2026-10-29T18:21:14Z",
+            "completed_at": "2026-10-29T18:21:17Z"
+          },
+          {
+            "name": "Post Run subosito/flutter-action@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 65,
+            "started_at": "2026-10-29T18:21:17Z",
+            "completed_at": "2026-10-29T18:21:17Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 66,
+            "started_at": "2026-10-29T18:21:17Z",
+            "completed_at": "2026-10-29T18:21:17Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 67,
+            "started_at": "2026-10-29T18:21:17Z",
+            "completed_at": "2026-10-29T18:21:17Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/collab-TTAM/nihongo_daily/check-runs/123642555655",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000002375,
+        "runner_name": "GitHub Actions 1000002375",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      }
+    ]
+  }
+}
