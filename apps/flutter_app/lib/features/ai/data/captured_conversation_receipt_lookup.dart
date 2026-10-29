@@ -1,4 +1,5 @@
 import '../../srs/data/review_repository.dart';
+import '../domain/conversation_receipt_command_match.dart';
 import '../domain/conversation_receipt_reference.dart';
 import '../domain/conversation_receipt_snapshot.dart';
 import '../domain/conversation_requests.dart';
@@ -107,26 +108,47 @@ final class CapturedConversationReceiptLookup {
   Future<ConversationReceiptSnapshot> lookupStart(
     ConversationReceiptReference reference,
     StartConversationRequest original,
-  ) => _lookup(
+  ) => _lookupOriginal(
     reference,
+    (rows) =>
+        ConversationReceiptCommandMatch.forStart(reference, original, rows),
     () => _originalPort.lookupStartReceipt(reference, original),
   );
 
   Future<ConversationReceiptSnapshot> lookupTurn(
     ConversationReceiptReference reference,
     ConversationTurnRequest original,
-  ) => _lookup(
+  ) => _lookupOriginal(
     reference,
+    (rows) =>
+        ConversationReceiptCommandMatch.forTurn(reference, original, rows),
     () => _originalPort.lookupTurnReceipt(reference, original),
   );
 
   Future<ConversationReceiptSnapshot> lookupFinish(
     ConversationReceiptReference reference,
     FinishConversationRequest original,
-  ) => _lookup(
+  ) => _lookupOriginal(
     reference,
+    (rows) =>
+        ConversationReceiptCommandMatch.forFinish(reference, original, rows),
     () => _originalPort.lookupFinishReceipt(reference, original),
   );
+
+  Future<ConversationReceiptSnapshot> _lookupOriginal(
+    ConversationReceiptReference reference,
+    ConversationReceiptSnapshot Function(Object?) decode,
+    Future<ConversationReceiptSnapshot> Function() read,
+  ) => _lookup(reference, () {
+    // Validate even when a borrowed port would return UNKNOWN for no row.
+    // This checks input association only, never stored-command provenance.
+    try {
+      decode(<Object?>[]);
+    } on FormatException {
+      throw const AiTextFailure(AiTextErrorCode.validationFailure);
+    }
+    return read();
+  });
 
   Future<ConversationReceiptSnapshot> lookup(
     ConversationReceiptReference reference,

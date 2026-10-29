@@ -398,4 +398,71 @@ void main() {
     expect(port.calls, 1);
     expect(port.legacyCalls, 0);
   });
+
+  for (final operation in ['start', 'turn', 'finish']) {
+    for (final field in ['operation', 'client_event_id']) {
+      test('original input mismatch $operation/$field does no read', () async {
+        final original = command(operation);
+        final wrongOperation = operation == 'start'
+            ? 'conversation_turn'
+            : 'start_conversation';
+        final invalid = ConversationReceiptReference.fromJson({
+          ...original.reference.toJson(),
+          field: field == 'operation' ? wrongOperation : other,
+        });
+        port.result = ConversationReceiptSnapshot.fromRows(invalid, []);
+        final pending = switch (operation) {
+          'start' => reader.lookupStart(invalid, original.start!),
+          'turn' => reader.lookupTurn(invalid, original.turn!),
+          _ => reader.lookupFinish(invalid, original.finish!),
+        };
+        await expectLater(
+          pending,
+          throwsA(failure(AiTextErrorCode.validationFailure)),
+        );
+        expect(port.calls, 0);
+        expect(port.legacyCalls, 0);
+        expect(reader.isCurrent, isTrue);
+        port.result = ConversationReceiptSnapshot.fromRows(
+          original.reference,
+          [],
+        );
+        expect(await reader.lookupCommand(original), same(port.result));
+        expect(port.calls, 1);
+        expect(port.legacyCalls, 0);
+        expect(identical(port.reference, original.reference), isTrue);
+        final expected = original.start ?? original.turn ?? original.finish;
+        expect(identical(port.request, expected), isTrue);
+      });
+    }
+
+    test('original input UUID association ignores case $operation', () async {
+      final wire = command(operation).reference.operation.wireName;
+      final key = '${wire}_request';
+      final request = Map<String, Object?>.from(
+        fixtures[key]! as Map<String, Object?>,
+      );
+      request['client_event_id'] = 'abcdefab-abcd-4abc-8abc-abcdefabcdef';
+      fixtures[key] = request;
+      final original = command(operation);
+      final equivalent = ConversationReceiptReference.fromJson({
+        ...original.reference.toJson(),
+        'client_event_id': original.reference.clientEventId.toUpperCase(),
+      });
+      port.result = ConversationReceiptSnapshot.fromRows(equivalent, []);
+      final result = await switch (operation) {
+        'start' => reader.lookupStart(equivalent, original.start!),
+        'turn' => reader.lookupTurn(equivalent, original.turn!),
+        _ => reader.lookupFinish(equivalent, original.finish!),
+      };
+      expect(equivalent.clientEventId, isNot(original.reference.clientEventId));
+      expect(result, same(port.result));
+      expect(result.status, ConversationReceiptStatus.unknown);
+      expect(port.calls, 1);
+      expect(port.legacyCalls, 0);
+      expect(identical(port.reference, equivalent), isTrue);
+      final expected = original.start ?? original.turn ?? original.finish;
+      expect(identical(port.request, expected), isTrue);
+    });
+  }
 }

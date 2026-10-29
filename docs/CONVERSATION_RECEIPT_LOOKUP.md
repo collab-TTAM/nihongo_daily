@@ -652,3 +652,34 @@ payload retention, API/RLS/Authstrategy/provider/Pro/content or release policy
 change. Trustedroot/backend/captured lifecycle/durable uncertainty/authenticated
 conditional application-release/retentionapproval and all14 hosted groups remain
 pending; learner recovery memory-only/single pending mutation/AI off unchanged.
+
+
+## Original input preflight before borrowed read — 2026-10-29 UTC
+
+CapturedConversationReceiptLookup now validates the direct lookupStart/lookupTurn/
+lookupFinish reference against the supplied original DTO before invoking the
+borrowed original-read port. Reuse ConversationReceiptCommandMatch with an empty
+projection solely to check method operation and event UUID association, matching
+the concrete SDK transport's existing preflight. Invalid input fails with fixed
+validationFailure even when a permissive port would return UNKNOWN for that
+reference. No legacy fallback or automatic retry is attempted. Existing lifecycle
+and owner checks run first; rejected input does not revoke a healthy reader.
+
+This does not prove a stored original command matches. The real original-read
+transport must still validate full request_json, scope, response, authenticated
+session and RLS; UNKNOWN remains ambiguous. No empty preflight projection is
+published or used as release/application/replay authority. Valid input forwards
+the identical reference and original DTO, preserving case-insensitive UUID
+association and exact original request spelling for subsequent stored-row checks.
+
+Nine TEST ONLY borrowed-port regressions cover all three direct methods with
+wrong operation/event, zero original/legacy reads, a healthy later explicit read,
+and equivalent event UUID case with identical DTO forwarding. Removing only the
+new block reproduces the entire original fixture byte-for-byte. Parent e7f6bec
+CI40831580950/latestattempt1 all5/EVERYstep SUCCESS; prior13 snapshot regressions
+and native Windows persistent SDK/receipt markers observed. That evidence is
+component-only, not hosted learner proof. Local46QA/inventory152/diffcheck pass
+separately; no local Dart/Flutter SDK, so new9/format/analyze/build UNRUN until
+new exact-head Actions. All14 hosted release gates, retention approval and
+trusted-root/backend/captured storage/uncertainty/conditional application-release
+remain open. No default/collection/Authstrategy/provider/API/RLS/Pro change.
