@@ -34,9 +34,34 @@ warning. QA55/inventory154/whitespace checked separately; new exact-head Actions
 required. Default AI off/all14 hosted groups pending; not hosted learner proof.
 
 
+## Original usage and examples after answering — 2026-10-29
+
+After a valid current answer, a collapsed Cách dùng và ví dụ theo bài gốc panel
+shows the target's original usage notes, common mistakes and every Japanese /
+reading / Vietnamese example. Wrong answers still show the correct target's
+material, not the selected distractor. Empty note/mistake sections are omitted;
+missing examples explicitly say Bài gốc chưa có ví dụ. No examples are generated.
+The existing explanation remains visible without opening the panel.
+
+The panel is keyed to the exact question identity and exists only after answering.
+Advancing/reloading removes it; the next answered question starts collapsed.
+Existing source/level/generation/round guards remain unchanged. Expanding/collapsing
+uses the loaded immutable entry and performs no extra repository read or write.
+It does not change scoring, vocabulary persistence, study time or mastery.
+
+Three synthetic widget cases cover hidden-before-answer/collapsed state, wrong/
+correct target material including two complete example triples, next-question
+reset, empty sections/reload and actual title/next taps at320px/200% text. Every
+original test fixture byte is retained after removing the new helper/cases.
+Parentfa5da1a CI40876848905/latestattempt1 all5/EVERYstep succeeded, including
+all8 prior grammar widgets and Windows persistent SDK/profile/receipt rotation.
+New3 widgets/format/analyze/build locally UNRUN(no SDK); QA55/inventory154/diffcheck
+are separate checks. No content/Pro/Auth/API/RLS/retention/default policy change;
+all14 hosted learner release groups remain pending and PR41 stays draft.
+
 ## Reviewed selection and scoring rules
 
-A future UI asks: Chọn nghĩa tiếng Việt theo bài gốc for target.heading (the
+The UI asks: Chọn nghĩa tiếng Việt theo bài gốc for target.heading (the
 existing grammar pattern). Choice labels are original meaningVi values. This is
 source association, not proof that other grammar patterns are semantically wrong
 or that original explanations are complete. Linguistic review remains required.

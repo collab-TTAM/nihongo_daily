@@ -165,6 +165,31 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
             ),
             Text('Nghĩa theo bài gốc: ${question.target.meaningVi}'),
             Text(question.target.explanationVi),
+            ExpansionTile(
+              key: ValueKey('grammar-source-${question.id}'),
+              title: const Text('Cách dùng và ví dụ theo bài gốc'),
+              childrenPadding: const EdgeInsets.all(12),
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (question.target.notes.isNotEmpty) ...[
+                  const Text('Cách dùng'),
+                  for (final note in question.target.notes) Text(note),
+                ],
+                if (question.target.mistakes.isNotEmpty) ...[
+                  const Text('Lỗi thường gặp'),
+                  for (final mistake in question.target.mistakes) Text(mistake),
+                ],
+                const Text('Ví dụ theo bài gốc'),
+                if (question.target.examples.isEmpty)
+                  const Text('Bài gốc chưa có ví dụ.'),
+                for (final example in question.target.examples) ...[
+                  const SizedBox(height: 8),
+                  Text(example.japanese),
+                  Text(example.reading),
+                  Text(example.vietnamese),
+                ],
+              ],
+            ),
           ],
           FilledButton(
             key: const Key('grammar-quiz-next'),

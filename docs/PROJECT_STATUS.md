@@ -1,5 +1,34 @@
 # PROJECT STATUS
 
+## Core checkpoint — grammar original-source feedback, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; parent
+  fa5da1a3c3c9725051b3ff3fab68ea1bb0b2a4be. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40876848905/latestattempt1 all5/EVERYstep SUCCESS/no skips; all8 grammar
+  widgets in Flutter123458577809 and Windows123457861240 persistent SDK/profile/
+  receipt rotation marker observed. TEST ONLY component, not hosted learner proof.
+- After answering, collapsed question-keyed panel reveals original target usage/
+  mistakes/Japanese-reading-Vietnamese examples. Wrong choice uses target material;
+  empty note/mistake sections omitted, missing example explicit. Existing plain
+  explanation/score/source+round guards intact. Next/reload removes panel; next
+  answered question collapsed. No extra I/O/generated content/save/mastery credit.
+- Three synthetic widgets AUTHORED locally UNRUN(noSDK): hidden/collapsed/wrong+
+  correct identity/two example triples/next reset, empty sections/reload,320px200%
+  actual header/next taps. Removing added helper/cases recovers ENTIRE original
+  fixture byte-for-byte. Separate target identity/keyed state/no-read/layout/
+  preservation review complete. QA55 PASS/inventory154 valid(not154executed)/
+  diffcheck PASS; new3/format/analyze/build require exact-head Actions.
+- Four paths apps/flutter_app/lib/features/quiz/presentation/grammar_quiz_screen.dart;
+  apps/flutter_app/test/features/quiz/grammar_quiz_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; this status. No content/Pro/Auth/API/RLS/recorder/storage/
+  default/retention-policy change. Grammar-specific persistence remains absent.
+- NEXT latestattempt all5/EVERYstep/new3 +retained native/SDK markers; fix actual
+  diagnostics preserving assertions/deadlines/security. Pending-only handoff/no
+  duplication/longpolling. Hosted learner/production ownership/durable uncertainty/
+  conditional release/retention gates remain.41draft/13open/defaultAIoff/memory-only/
+  all14hostedpending; no merge/closure/deploy/spend/collection/schedule/Alpha action.
+
+
 ## Core checkpoint — local grammar quiz screen, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; parent

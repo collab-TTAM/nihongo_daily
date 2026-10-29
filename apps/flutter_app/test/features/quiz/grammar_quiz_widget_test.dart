@@ -24,7 +24,129 @@ Future<void> tap(WidgetTester tester, Finder finder) async {
   await tester.pumpAndSettle();
 }
 
+const feedbackTitle = 'Cách dùng và ví dụ theo bài gốc';
+
+List<CurriculumEntry> contextSource(PreviewLevel level) => [
+  for (final entry in source(level))
+    CurriculumEntry(
+      id: entry.id,
+      kind: entry.kind,
+      level: entry.level,
+      contentVersion: entry.contentVersion,
+      heading: entry.heading,
+      caption: entry.caption,
+      reading: entry.reading,
+      meaningVi: entry.meaningVi,
+      explanationVi: entry.explanationVi,
+      hasAudioReference: entry.hasAudioReference,
+      notes: ['TEST ONLY note ${entry.id}'],
+      mistakes: ['TEST ONLY mistake ${entry.id}'],
+      examples: [
+        for (var i = 0; i < 2; i++)
+          CurriculumExample(
+            japanese: 'TEST ONLY 日本語 ${entry.id} $i',
+            reading: 'TEST ONLY よみ ${entry.id} $i',
+            vietnamese: 'TEST ONLY Việt ${entry.id} $i',
+          ),
+      ],
+    ),
+];
+
 void main() {
+  testWidgets('grammar source feedback follows the answered target only', (
+    tester,
+  ) async {
+    var reads = 0;
+    await mountCurriculum(
+      tester,
+      FixtureCurriculumRepository((_, level) async {
+        reads++;
+        return contextSource(level);
+      }),
+      '/quiz/grammar',
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(feedbackTitle), findsNothing);
+    expect(find.text('TEST ONLY note grammar-0'), findsNothing);
+    await tap(tester, find.byKey(const ValueKey('grammar-choice-grammar-1')));
+    expect(find.text('Chưa đúng theo bài gốc.'), findsOneWidget);
+    expect(find.text('TEST ONLY note grammar-0'), findsNothing);
+    await tap(tester, find.text(feedbackTitle));
+    expect(find.text('TEST ONLY note grammar-0'), findsOneWidget);
+    expect(find.text('TEST ONLY mistake grammar-0'), findsOneWidget);
+    for (var i = 0; i < 2; i++) {
+      expect(find.text('TEST ONLY 日本語 grammar-0 $i'), findsOneWidget);
+      expect(find.text('TEST ONLY よみ grammar-0 $i'), findsOneWidget);
+      expect(find.text('TEST ONLY Việt grammar-0 $i'), findsOneWidget);
+    }
+    expect(find.text('TEST ONLY note grammar-1'), findsNothing);
+    await tap(tester, find.byKey(const Key('grammar-quiz-next')));
+    expect(find.text(feedbackTitle), findsNothing);
+    expect(find.text('TEST ONLY note grammar-0'), findsNothing);
+    await tap(tester, find.byKey(const ValueKey('grammar-choice-grammar-1')));
+    expect(find.text('Đúng theo bài gốc.'), findsOneWidget);
+    expect(find.text('TEST ONLY note grammar-1'), findsNothing);
+    await tap(tester, find.text(feedbackTitle));
+    expect(find.text('TEST ONLY note grammar-1'), findsOneWidget);
+    expect(find.text('TEST ONLY note grammar-0'), findsNothing);
+    expect(reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('grammar feedback marks missing examples and clears on reload', (
+    tester,
+  ) async {
+    var reads = 0;
+    await mountCurriculum(
+      tester,
+      FixtureCurriculumRepository((_, level) async {
+        reads++;
+        return source(level);
+      }),
+      '/quiz/grammar',
+    );
+    await tester.pumpAndSettle();
+    await tap(tester, find.byKey(const ValueKey('grammar-choice-grammar-0')));
+    await tap(tester, find.text(feedbackTitle));
+    expect(find.text('Bài gốc chưa có ví dụ.'), findsOneWidget);
+    expect(find.text('Cách dùng'), findsNothing);
+    expect(find.text('Lỗi thường gặp'), findsNothing);
+    expect(reads, 1);
+    await tap(tester, find.byKey(const Key('grammar-quiz-reload')));
+    expect(find.text(feedbackTitle), findsNothing);
+    expect(find.text('Bài gốc chưa có ví dụ.'), findsNothing);
+    expect(reads, 2);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('grammar feedback expands at 320px and 200 percent text', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    var reads = 0;
+    await mountCurriculum(
+      tester,
+      FixtureCurriculumRepository((_, level) async {
+        reads++;
+        return contextSource(level);
+      }),
+      '/quiz/grammar',
+      size: const Size(320, 900),
+    );
+    await tester.pumpAndSettle();
+    await tap(tester, find.byKey(const ValueKey('grammar-choice-grammar-0')));
+    await tap(tester, find.text(feedbackTitle));
+    expect(find.text('TEST ONLY note grammar-0'), findsOneWidget);
+    expect(find.text('TEST ONLY よみ grammar-0 1'), findsOneWidget);
+    expect(find.text('TEST ONLY Việt grammar-0 1'), findsOneWidget);
+    await tap(tester, find.byKey(const Key('grammar-quiz-next')));
+    expect(find.text('Câu 2 / 4'), findsOneWidget);
+    expect(find.text('TEST ONLY note grammar-0'), findsNothing);
+    expect(reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('grammar route scores first answers and batches without reads', (
     tester,
   ) async {
