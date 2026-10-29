@@ -1,9 +1,38 @@
 # Grammar quiz core — Issue #13
 
-This is a pure process-local model, not a routed or persisted grammar quiz.
+The grammar quiz now has an explicit process-local route at /quiz/grammar,
+linked from /quiz. It does not persist grammar attempts.
 GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
+
+## Local screen and source integration — 2026-10-29
+
+The fixed curriculum repository grammar/selected-level read feeds an autoDispose
+provider and the existing bounded core. Vietnamese loading, safe redacted error,
+manual reload and insufficient-content states do not invent data. Each visible
+round has at most10 questions; next batch and restart are explicit. Feedback and
+incorrect review retain original meaning/explanation; score is integer correct/
+round total. No grammar data enters vocabulary history or progress/save paths.
+
+Every action checks the exact provider snapshot, repository, level and screen
+generation. Manual listeners retire level/source callbacks before the next frame,
+including ABA. Provider invalidation immediately retires old actions; a keyed new
+panel discards answers on reload/source/level replacement. Round identity fences
+old answer/advance/restart/batch closures even for identical question IDs. Route
+exit disposes the panel; no stale callback may trigger a read or answer.
+
+Eight synthetic widget cases cover real route/link/provider/core, wrong/correct/
+duplicate answers, ten-question scoring/review/restart/next batch with one source
+read, safe errors/retry/empty, pending old-level success/error, level ABA/reload/
+disposal, repository replacement before a frame and320px/200% actual buttons.
+No corpus files/tests or Pro scope modified. Parent465b17a CI40872072420/latest
+attempt1 all5/EVERYstep succeeded; all10 core cases and native persistent SDK
+marker observed. New widgets/analyze/platform builds locally UNRUN(no Flutter);
+Dart3.9.2 archive SHA256 verified/format clean, with unresolved Flutter lint include
+warning. QA55/inventory154/whitespace checked separately; new exact-head Actions
+required. Default AI off/all14 hosted groups pending; not hosted learner proof.
+
 
 ## Reviewed selection and scoring rules
 
@@ -33,8 +62,8 @@ A new round starts empty. Callers must still replace rounds on source/route chan
 
 No grammar results are passed to vocabulary history/progress. No minutes, server
 credit, mastery threshold, account cache or saved-success behavior is introduced.
-UI loading/error/empty states, actual curriculum integration, reviewed language
-coverage, grammar-specific persistence and learner acceptance remain later work.
+Reviewed language coverage, grammar-specific persistence and learner acceptance
+remain later work.
 This increment does not complete issue13 or any Personal Alpha release gate.
 
 ## Verification

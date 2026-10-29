@@ -1,36 +1,35 @@
 # PROJECT STATUS
 
-## Core checkpoint — deterministic grammar quiz core, 2026-10-29 UTC
+## Core checkpoint — local grammar quiz screen, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; parent
-  e9f6adcad8338a25473cf850338243af9c177f3b. Commit/tree/new CI in PR41 checkpoint.
-- Parent CI40868376520/latestattempt1 all5/EVERYstep SUCCESS/no skips; Flutter
-  123429527111 restored-history journey and Windows123428910630 persistent SDK/
-  protected original-mismatch markers seen. TEST ONLY, not hosted learner proof.
-- Pre-code rules persisted in PR41/issue13. Separate GrammarQuizQuestion/Round
-  cannot enter vocabulary attempt capture. Validate complete selected-level
-  grammar source <=5000 with bounded IDs/patterns/meanings, positive versions and
-  unique IDs. Skip repeated trimmed patterns; require4 distinct source meanings;
-  deterministic original entries/rotating correct slot, immutable lists.
-- Question identity grammar/level/id/version; <=10 same-level unique targets per
-  round. First valid current-question choice only, no early/stale advance, score
-  1/0, immutable incorrect/answer snapshots. Source association only, not semantic
-  equivalence/mastery. No UI/provider/storage/Auth/SRS/recorder/default activation.
-- Ten synthetic core tests AUTHORED locally UNRUN(noSDK): original options/slots,
-  diversity/duplicate prompts/invalid bounds, repeated meaning, immutable lists,
-  first answer/stale callbacks, level/version identity, round bounds and scoring.
-  QA55 PASS/inventory153 valid(not153executed)/diffcheck PASS. Separate type-safety/
-  source-validation/ambiguity/identity/round/bounds/no-write diff review complete.
-- Four paths new apps/flutter_app/lib/features/quiz/domain/grammar_quiz.dart;
-  new apps/flutter_app/test/features/quiz/grammar_quiz_test.dart; new
-  docs/GRAMMAR_QUIZ.md; this status. Full tree/blob/CAS evidence in PR41.
-- NEXT exact-head/latestattempt all5/EVERYstep/new10/format/analyze; fix actual
-  diagnostics preserving tests/security. Then review grammar UI/source integration
-  with explicit local-only limits; grammar persistence remains separate. Pending-
-  only handoff/no duplication/longpolling. Hosted Auth/sync/AI/voice/learner and
-  conditional release/retention gates remain.41draft/13open/defaultAIoff/memory-only/
-  all14hostedpending; no Pro/content/API/RLS/Authstrategy/provider/spend/collection/
-  security/merge/closure/deploy/release/schedule/Personal Alpha acceptance change.
+  465b17aa43bea41d8341543e45fe43b83e26de1c. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40872072420/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter123442077279 all10 grammar core tests and Windows123441466080 persistent
+  SDK/profile/receipt rotation marker observed. TEST ONLY, not hosted learner.
+- Explicit /quiz/grammar route/link/fixed grammar+level repository provider with
+  safe loading/error/manual reload/insufficient content. <=10question rounds,
+  explicit batch/restart, first answer/source feedback/incorrect review/integer
+  score. No vocabulary history/recorder/SRS/mastery/progress/save capability.
+- Snapshot/repository/level/generation guards, synchronous level/source listeners
+  and keyed panel reset fence old callbacks through ABA/reload/source replacement/
+  route exit; exact round identity fences restart/batch stale answer/advance.
+- Eight synthetic widget cases AUTHORED locally UNRUN(noFlutter). Actual route/
+  provider/core, batch/score/duplicate/no extra reads, safe retry/empty, late level
+  success/error, ABA/reload/disposal, source replacement,320px200% buttons.
+  Official Dart3.9.2 SHA256 verified/format clean (unresolved Flutter lint include
+  warning); QA55/inventory154/diffcheck in PR. New analyze/widgets/build require CI.
+- Eight paths new quiz/application/grammar_quiz_provider.dart +presentation/
+  grammar_quiz_screen.dart +test/features/quiz/grammar_quiz_widget_test.dart under
+  apps/flutter_app; app/router.dart +quiz/presentation/vocabulary_quiz_screen.dart;
+  docs/GRAMMAR_QUIZ.md; this status; qa/matrix.json. Prior153QA/findings/gates intact.
+- NEXT exact-head/latestattempt all5/EVERYstep/new8; fix diagnostics retaining
+  assertions/deadlines/security. Pending-only handoff/no duplicate code/longpolling.
+  Grammar-specific persistence/linguistic review/hosted learner and production
+  ownership/durable uncertainty/authenticated conditional release/retention remain.
+ 41draft/13open/defaultAIoff/memory-only/all14hostedpending; no Pro/content/API/RLS/
+  Authstrategy/provider/collection/spend/security/merge/closure/deploy/release/
+  schedule/Personal Alpha acceptance change.
 
 
 ## Core checkpoint — CI step resource validation, 2026-10-29 UTC

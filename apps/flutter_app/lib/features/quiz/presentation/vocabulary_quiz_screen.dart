@@ -30,6 +30,10 @@ class VocabularyQuizScreen extends ConsumerWidget {
           onPressed: () => context.go('/quiz/history'),
           child: const Text('Xem lịch sử đã lưu'),
         ),
+        OutlinedButton(
+          onPressed: () => context.go('/quiz/grammar'),
+          child: const Text('Luyện quiz ngữ pháp'),
+        ),
         DropdownButton<PreviewLevel>(
           key: const Key('quiz-level'),
           value: level,

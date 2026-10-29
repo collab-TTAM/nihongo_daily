@@ -3853,6 +3853,31 @@
       ],
       "reproduce": "Require mandatory Windows receipt-owned-reopen phase/new turn-finish marker and every CI job/step. Run python3 scripts/verify_qa.py --evidence qa/evidence/20261029-native-receipts-9c986e0-attempt2.json --head 9c986e0401d37ee13cee139280ecd23b33ce077d; run qa regression suite.",
       "limitation": "Observed source9c986e0 CI40840683867 latestattempt2 all5/EVERYstep success after attempt1 npm audit ECONNRESET; raw snapshots check correlation/completeness, not authenticity. Native SDK/DPAPI/vault are actual components; Auth/JWT/profile/receipt HTTP are TEST ONLY, payload memory-only. No hosted learner/Auth/RLS/provider, durable payload, release/replay authority or approved retention; all14 release groups pending."
+    },
+    {
+      "id": "grammar-quiz-local-screen",
+      "status": "automated-baseline",
+      "scope": "Explicit local grammar route with captured source/level/provider generation and first-answer round, safe states and bounded batches.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/grammar_quiz_widget_test.dart",
+          "contains": "grammar route scores first answers and batches without reads"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/grammar_quiz_widget_test.dart",
+          "contains": "replaced grammar source retires old answer before a frame"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/grammar_quiz_widget_test.dart",
+          "contains": "grammar level ABA reload and disposed callbacks cannot answer"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/quiz/grammar_quiz_test.dart test/features/quiz/grammar_quiz_widget_test.dart; require exact-head all5 jobs/every step.",
+      "limitation": "New eight TEST ONLY source/widget cases authored locally UNRUN without Flutter; not corpus/linguistic review, grammar persistence, mastery, study credit, hosted Auth/sync/learner acceptance. All14 hosted release groups pending."
     }
   ],
   "findings": [
