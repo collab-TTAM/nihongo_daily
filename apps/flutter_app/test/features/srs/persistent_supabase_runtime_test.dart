@@ -21,6 +21,17 @@ import 'session_lifecycle_fixtures.dart' as fixture;
 import 'supabase_review_binding_test.dart' as wire;
 import 'own_profile_fixtures.dart' as profile;
 
+final class _StreamClient extends http.BaseClient {
+  _StreamClient(this.handler);
+  final Future<http.StreamedResponse> Function(http.BaseRequest) handler;
+  var closed = false;
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) =>
+      handler(request);
+  @override
+  void close() => closed = true;
+}
+
 void main() {
   late fixture.MemoryVault backend;
   late SessionCredentialVault vault;
@@ -466,4 +477,86 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
     },
   );
+  for (final mode in ['stalled', 'oversized']) {
+    test('SDK login recovers after held stream cancellation: $mode', () async {
+      await runtime.close();
+      final cancellation = Completer<void>();
+      var cancelCalls = 0;
+      var authCalls = 0;
+      final responseStream = StreamController<List<int>>(
+        onCancel: () {
+          cancelCalls++;
+          return cancellation.future;
+        },
+      );
+      final transport = _StreamClient((request) async {
+        if (request.url.path == '/auth/v1/token') {
+          authCalls++;
+          if (authCalls == 1) {
+            expect(request.followRedirects, isFalse);
+            return http.StreamedResponse(
+              responseStream.stream,
+              200,
+              contentLength: mode == 'oversized' ? 1024 * 1024 + 1 : null,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+        }
+        return network.send(request);
+      });
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: transport,
+        now: () => now,
+        requestTimeout: const Duration(milliseconds: 30),
+      );
+      try {
+        await runtime.start();
+        await runtime.account
+            .signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD')
+            .timeout(const Duration(seconds: 2));
+        expect(authCalls, 1);
+        expect(cancelCalls, 1);
+        expect(cancellation.isCompleted, isFalse);
+        expect(runtime.account.state.phase, AccountPhase.signInError);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.secret, isNull);
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')),
+          isEmpty,
+        );
+        cancellation.completeError(
+          StateError('TEST ONLY private cancel error'),
+        );
+        await fixture.flush();
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.secret, isNull);
+        await runtime.account.signIn(
+          'fixture@example.invalid',
+          'TEST_ONLY_PASSWORD',
+        );
+        await waitForReady();
+        expect(authCalls, 2);
+        expect(backend.secret, secret);
+        expect(runtime.account.readyRuntime, isNotNull);
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')).length,
+          1,
+        );
+        await runtime.account.signOut();
+        expect(backend.secret, isNull);
+        expect(runtime.account.readyRuntime, isNull);
+        await runtime.close();
+        expect(transport.closed, isFalse);
+      } finally {
+        if (!cancellation.isCompleted) cancellation.complete();
+        unawaited(responseStream.close());
+        await runtime.close();
+        transport.close();
+      }
+    });
+  }
 }

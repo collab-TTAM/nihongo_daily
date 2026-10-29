@@ -382,3 +382,32 @@ no local Flutter/analyzer/build claim. Parent Windows success is component
 TEST ONLY evidence, not hosted learner proof. New exact-head Actions required.
 PR41 draft/issue20 open/all14 hosted groups pending. Commit/tree/CI in PR handoff;
 next inspect latest attempt/all5/EVERYstep and six tests, fix real diagnostics.
+
+## Owned SDK login after stream cancellation — 2026-10-29 UTC
+
+Parent6916f0b CI40919294051/latestattempt1 all5 jobs/EVERYstep SUCCESS, including
+format/analyze/Flutter tests/Web/Windows. Raw Flutter123608850119 confirms all6
+new direct cancellation tests and retained SDK lifecycle tests; Windows123607948471
+required persistent vault/sameSDK/profile/receipt rotation markers observed.
+This closes the previous import/analyzer verification gap, not a hosted gate.
+
+Two new actual pinned-SDK/owned-runtime tests authored for stalled and oversized
+Auth response streams. Cancellation stays held while account.signIn must settle
+within2seconds with signInError, no ready runtime, no saved secret and no profile
+request. Rejected cancellation is consumed; no old readiness/secret appears.
+An explicit second login on the same owner must save the rotated secret and
+load exactly one own profile; logout clears readiness/vault. Closing the runtime
+must preserve borrowed HTTP ownership. Original entire fixture byte-for-byte
+preserved after removing added helper/two parameterized cases; all old assertions,
+cleanup and timeout bounds intact. No production changes or new default policy.
+
+Official fresh Dart3.9.2 SHA256 verified; strict format1file zerochanges PASS
+(unresolved Flutter lint include warning, not analyzer). Local QA55 PASS/
+inventory154 valid(not154executed)/diffcheck PASS. New2 Flutter/
+analyze/build locally UNRUN(no Flutter); exact-head Actions required. TEST ONLY
+simulated HTTP/OS/unsigned token plus actual SDK/real journal, not hosted learner,
+physical Windows cancellation or server identity proof. No content/Pro/Authstrategy/
+API/RLS/storage policy/default activation change. PR41 draft/issue20 open/all14
+hosted groups pending. Commit/tree/new CI in PR checkpoint. Next inspect exact
+head/latestattempt all5/EVERYstep/new2 and retained SDK/native markers; fix actual
+diagnostics preserving assertions. Pending-only handoff/no duplication/longpolling.
