@@ -1,5 +1,33 @@
 # PROJECT STATUS
 
+## Session HTTP cancellation deadline — 2026-10-29
+
+Recovered the abandoned Issue20 checkpoint after its ACTIVE marker exceeded90
+minutes without a new head, heartbeat, comments or CI. The existing bounded
+transport is extracted to auth/data/bounded_session_http.dart and still used
+by the same owned Supabase runtime. Origin/Auth+REST scope, redirect denial,
+1MiB limit, configured <=15second attempt deadline, fixed safe errors and
+borrowed/owned network close remain unchanged. Cancellation now runs as
+best-effort cleanup with synchronous/asynchronous failures consumed; a held
+cancellation cannot extend a timed-out or oversized request. Late header/body
+bytes never reach the SDK. This does not promise cleanup completion or a
+whole-SDK-operation deadline; existing SDK retry behavior is unchanged.
+
+Six direct transport tests authored: stalled body, declared/streamed oversize
+with held then rejected cancellation, late response with rejected cancellation,
+bounded successful bytes/headers/request/redirect/ownership, and origin/path
+rejection before dispatch. No old fixture/assertion changed. New Flutter tests,
+analyze and platform builds UNRUN locally (no Flutter SDK); exact-head Actions
+required. Official fresh Dart3.9.2 SHA256 verified, strict format3files clean
+(unresolved Flutter lint include warning, not analyzer). QA55 PASS/inventory154
+valid (not154executed), diffcheck PASS. Separate extraction/guards/bounds/late
+cleanup/no-logging/ownership review complete. No content/Pro/Authstrategy/API/
+RLS/default activation/retention policy change. Hosted learner proof and all14
+release groups remain pending; PR41 draft/issue20 open. Commit/tree/new CI in
+PR41 checkpoint. Next inspect exact head/latest attempt all5/EVERYstep and new
+six tests; fix actual diagnostics without weakening assertions/security.
+
+
 ## Core checkpoint — focused grammar correction round, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; parent

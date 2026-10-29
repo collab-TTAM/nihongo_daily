@@ -29,6 +29,7 @@ import '../../srs/data/durable_review_repository.dart';
 import '../../srs/data/review_repository.dart';
 import '../../srs/data/supabase_review_binding.dart';
 import '../data/persistent_account_access.dart';
+import '../data/bounded_session_http.dart';
 import '../data/session_credential_vault.dart';
 import '../data/supabase_refreshable_account_access.dart';
 import 'account_controller.dart';
@@ -94,7 +95,7 @@ final class PersistentSupabaseRuntime
     if (PersistentAccountAccess.isTargetOwned(vault.target)) {
       throw const SessionVaultFailure(SessionVaultError.unavailable);
     }
-    _network = _BoundedSessionHttp(
+    _network = BoundedSessionHttp(
       httpClient ?? http.Client(),
       httpClient == null,
       Uri.parse(url),
@@ -280,7 +281,7 @@ final class PersistentSupabaseRuntime
   final _quizOperations = VocabularyQuizOperationDrain();
   final _studyOperations = StudySessionOperationDrain();
   late final SupabaseClient _client;
-  late final _BoundedSessionHttp _network;
+  late final BoundedSessionHttp _network;
   late final SupabaseReviewBinding _binding;
   late final SupabaseRefreshableAccountAccess _port;
   late final PersistentAccountAccess persistence;
@@ -612,72 +613,6 @@ final class PersistentSupabaseRuntime
     await _client.dispose();
     _network.close();
   }();
-}
-
-/// One bounded attempt; timed-out responses cannot reach the SDK later.
-final class _BoundedSessionHttp extends http.BaseClient {
-  _BoundedSessionHttp(this.inner, this.owns, this.origin, this.timeout);
-  final http.Client inner;
-  final bool owns;
-  final Uri origin;
-  final Duration timeout;
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    if (request.url.origin != origin.origin ||
-        !request.url.path.startsWith('/auth/v1/') &&
-            !request.url.path.startsWith('/rest/v1/')) {
-      throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
-    }
-    request.followRedirects = false;
-    final elapsed = Stopwatch()..start();
-    var timedOut = false;
-    final pending = inner.send(request);
-    unawaited(
-      pending.then<void>((response) async {
-        if (timedOut) await response.stream.listen((_) {}).cancel();
-      }, onError: (Object _, StackTrace __) {}),
-    );
-    try {
-      final response = await pending.timeout(
-        timeout,
-        onTimeout: () {
-          timedOut = true;
-          throw TimeoutException('Session request unavailable');
-        },
-      );
-      const maximum = 1024 * 1024;
-      if ((response.contentLength ?? 0) > maximum) {
-        await response.stream.listen((_) {}).cancel();
-        throw const ReviewTransportFailure(ReviewErrorCode.internalError);
-      }
-      final bytes = BytesBuilder(copy: false);
-      final iterator = StreamIterator(response.stream);
-      try {
-        while (await iterator.moveNext().timeout(timeout - elapsed.elapsed)) {
-          final chunk = iterator.current;
-          if (bytes.length + chunk.length > maximum) {
-            throw const ReviewTransportFailure(ReviewErrorCode.internalError);
-          }
-          bytes.add(chunk);
-        }
-      } finally {
-        await iterator.cancel();
-      }
-      return http.StreamedResponse(
-        Stream.value(bytes.takeBytes()),
-        response.statusCode,
-        headers: response.headers,
-        request: request,
-      );
-    } on Object {
-      throw const ReviewTransportFailure(ReviewErrorCode.networkUnavailable);
-    }
-  }
-
-  @override
-  void close() {
-    if (owns) inner.close();
-  }
 }
 
 /// Optional receipt lifetime adds cleanup to the existing Auth port only.
