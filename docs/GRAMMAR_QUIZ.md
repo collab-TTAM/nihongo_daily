@@ -6,6 +6,38 @@ GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
 
+## Focused correction round — 2026-10-29
+
+After a completed original round containing errors, Luyện riêng câu sai starts a
+separate round from exactly its incorrect original question objects, in original
+order. Choices, source versions, explanations and examples are reused unchanged;
+no new curriculum read or generated material. It retains first-answer scoring and
+source/level/provider/generation guards. The original integer score stays visible
+as Bộ gốc and cannot be raised by correction answers. This is practice feedback,
+not repeated-error persistence, mastery or server study credit.
+
+Làm lại câu sai resets only the correction subset. Làm lại bộ gốc explicitly
+starts the entire original batch with empty answers and removes the frozen score.
+Bộ câu hỏi tiếp theo always advances by the original batch length, even after
+reviewing only one or two mistakes; no original questions repeat or disappear.
+Perfect primary rounds and correction rounds offer no nested review action.
+Every transition constructs a fresh round identity, so captured original/focused
+answer/advance/review/restart/batch callbacks cannot revive through an ABA cycle.
+Reload, level/source change and route exit discard both scopes as before.
+
+Four synthetic widget cases cover8/10 original +2/2 correction, preserved score,
+exact subset order/one source read, duplicate/stale actions, subset restart,
+original restart/perfect round, original10-row next-batch offset, reload/level/
+disposal and320px200% actual controls. All original fixture bytes/assertions/
+timeouts/cleanup are retained. Parent504e157 CI40880006535/latestattempt1 all5/
+EVERYstep SUCCESS and native persistent SDK marker observed; TEST ONLY component,
+not hosted learner proof. Fresh Dart3.9.2 archive SHA256 verified/strict format
+clean (unresolved Flutter lint include warning); QA55/inventory154/whitespace
+checked separately. New4/full Flutter/analyze/build locally UNRUN(noFlutter),
+require new exact-head Actions. No storage/Auth/SRS/vocabulary history/content/
+Pro/default/retention policy change; all14 hosted release groups remain pending.
+
+
 ## Local screen and source integration — 2026-10-29
 
 The fixed curriculum repository grammar/selected-level read feeds an autoDispose

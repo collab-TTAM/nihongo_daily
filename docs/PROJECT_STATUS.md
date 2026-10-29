@@ -1,32 +1,37 @@
 # PROJECT STATUS
 
-## Core checkpoint — grammar original-source feedback, 2026-10-29 UTC
+## Core checkpoint — focused grammar correction round, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; parent
-  fa5da1a3c3c9725051b3ff3fab68ea1bb0b2a4be. Commit/tree/new CI in PR41 checkpoint.
-- Parent CI40876848905/latestattempt1 all5/EVERYstep SUCCESS/no skips; all8 grammar
-  widgets in Flutter123458577809 and Windows123457861240 persistent SDK/profile/
-  receipt rotation marker observed. TEST ONLY component, not hosted learner proof.
-- After answering, collapsed question-keyed panel reveals original target usage/
-  mistakes/Japanese-reading-Vietnamese examples. Wrong choice uses target material;
-  empty note/mistake sections omitted, missing example explicit. Existing plain
-  explanation/score/source+round guards intact. Next/reload removes panel; next
-  answered question collapsed. No extra I/O/generated content/save/mastery credit.
-- Three synthetic widgets AUTHORED locally UNRUN(noSDK): hidden/collapsed/wrong+
-  correct identity/two example triples/next reset, empty sections/reload,320px200%
-  actual header/next taps. Removing added helper/cases recovers ENTIRE original
-  fixture byte-for-byte. Separate target identity/keyed state/no-read/layout/
-  preservation review complete. QA55 PASS/inventory154 valid(not154executed)/
-  diffcheck PASS; new3/format/analyze/build require exact-head Actions.
+  504e1572537aa1a144e71a13c5073e128f3d3e4a. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40880006535/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter123469550471 grammar feedback widgets and Windows123468815677 required
+  persistent SDK/profile/receipt rotation marker observed. TEST ONLY, not hosted.
+- Pre-code rules persisted in PR41+issue13. Explicit correction round selects
+  exact original incorrect questions/order/choices after primary completion;
+  preserve original integer score separately, independent first-answer correction
+  score. No extra repository reads, generated material, persistence or credit.
+- Subset replay resets only subset; explicit original restart resets full batch.
+  Next batch advances ORIGINAL batch length, never mistake count. Perfect primary/
+  correction rounds have no nested review. All transitions create fresh round
+  identity; original source/level/provider/generation/route guards unchanged.
+- Four new synthetic widgets AUTHORED locally UNRUN(noFlutter): original8/10 and
+  correction2/2/subset order/frozen score/no extra reads; stale controls/restarts;
+  original restart/perfect; next batch10offset; reload/level/disposal;320px200%.
+  Entire old fixture bytes retained after removing insertions. Separate scope/
+  original-score/offset/round-identity/no-write/old-tests diff review complete.
+  Official fresh Dart3.9.2 SHA256 verified/strict format clean (unresolved Flutter
+  lint include warning). QA55/inventory154/diffcheck in PR; new4/analyze/build CI.
 - Four paths apps/flutter_app/lib/features/quiz/presentation/grammar_quiz_screen.dart;
   apps/flutter_app/test/features/quiz/grammar_quiz_widget_test.dart;
-  docs/GRAMMAR_QUIZ.md; this status. No content/Pro/Auth/API/RLS/recorder/storage/
-  default/retention-policy change. Grammar-specific persistence remains absent.
-- NEXT latestattempt all5/EVERYstep/new3 +retained native/SDK markers; fix actual
+  docs/GRAMMAR_QUIZ.md; this status. QA matrix/default/Pro/content/Auth/API/RLS/
+  storage/recorder/SRS/retention policy unchanged. Grammar persistence absent.
+- NEXT exact-head/latestattempt all5/EVERYstep/new4 and native markers; fix real
   diagnostics preserving assertions/deadlines/security. Pending-only handoff/no
-  duplication/longpolling. Hosted learner/production ownership/durable uncertainty/
-  conditional release/retention gates remain.41draft/13open/defaultAIoff/memory-only/
-  all14hostedpending; no merge/closure/deploy/spend/collection/schedule/Alpha action.
+  duplication/longpolling. Hosted learner/grammar persistence/linguistic review/
+  production ownership/durable uncertainty/verified conditional release/retention
+  gates remain.41draft/13open/defaultAIoff/memory-only/all14hostedpending; no merge/
+  closure/deploy/spend/collection/security/schedule/Personal Alpha acceptance.
 
 
 ## Core checkpoint — local grammar quiz screen, 2026-10-29 UTC

@@ -52,7 +52,198 @@ List<CurriculumEntry> contextSource(PreviewLevel level) => [
     ),
 ];
 
+Future<void> finishGrammar(
+  WidgetTester tester,
+  List<int> ids, {
+  Set<int> wrong = const {},
+}) async {
+  for (final id in ids) {
+    final choice = wrong.contains(id) ? id + 1 : id;
+    await tap(tester, find.byKey(ValueKey('grammar-choice-grammar-$choice')));
+    await tap(tester, find.byKey(const Key('grammar-quiz-next')));
+  }
+}
+
 void main() {
+  testWidgets('grammar focused review keeps original score and batch offset', (
+    tester,
+  ) async {
+    var reads = 0;
+    await mountCurriculum(
+      tester,
+      FixtureCurriculumRepository((_, level) async {
+        reads++;
+        return source(level, 11);
+      }),
+      '/quiz/grammar',
+    );
+    await tester.pumpAndSettle();
+    await finishGrammar(tester, List.generate(10, (i) => i), wrong: {0, 2});
+    expect(find.text('Kết quả theo bài gốc: 8 / 10'), findsOneWidget);
+    final focus = find.byKey(const Key('grammar-review-errors'));
+    final staleFocus = tester.widget<OutlinedButton>(focus).onPressed!;
+    final staleBatch = tester
+        .widget<OutlinedButton>(find.byKey(const Key('grammar-quiz-batch')))
+        .onPressed!;
+    await tap(tester, focus);
+    staleFocus();
+    staleBatch();
+    await tester.pumpAndSettle();
+    expect(find.text('Bộ gốc: 8 / 10'), findsOneWidget);
+    expect(find.text('Câu 1 / 2'), findsOneWidget);
+    final oldAnswer = tester
+        .widget<OutlinedButton>(
+          find.byKey(const ValueKey('grammar-choice-grammar-0')),
+        )
+        .onPressed!;
+    await finishGrammar(tester, [0, 2]);
+    expect(find.text('Kết quả theo bài gốc: 2 / 2'), findsOneWidget);
+    expect(find.byKey(const Key('grammar-review-errors')), findsNothing);
+    final repeat = find.byKey(const Key('grammar-quiz-restart'));
+    final staleRepeat = tester.widget<OutlinedButton>(repeat).onPressed!;
+    await tap(tester, repeat);
+    oldAnswer();
+    staleRepeat();
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<FilledButton>(find.byKey(const Key('grammar-quiz-next')))
+          .onPressed,
+      isNull,
+    );
+    expect(find.text('Bộ gốc: 8 / 10'), findsOneWidget);
+    await finishGrammar(tester, [0, 2]);
+    await tap(tester, find.byKey(const Key('grammar-quiz-batch')));
+    expect(find.text('Câu 1 / 1'), findsOneWidget);
+    expect(find.text('TEST ONLY pattern 10'), findsOneWidget);
+    expect(find.textContaining('Bộ gốc:'), findsNothing);
+    expect(reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'grammar focused restart restores whole original batch and perfect hides review',
+    (tester) async {
+      await mountCurriculum(
+        tester,
+        FixtureCurriculumRepository((_, level) async => source(level)),
+        '/quiz/grammar',
+      );
+      await tester.pumpAndSettle();
+      await finishGrammar(tester, [0, 1, 2, 3], wrong: {0});
+      await tap(tester, find.byKey(const Key('grammar-review-errors')));
+      expect(find.text('Câu 1 / 1'), findsOneWidget);
+      final oldAnswer = tester
+          .widget<OutlinedButton>(
+            find.byKey(const ValueKey('grammar-choice-grammar-0')),
+          )
+          .onPressed!;
+      final original = find.byKey(const Key('grammar-review-original'));
+      final oldOriginal = tester.widget<OutlinedButton>(original).onPressed!;
+      await tap(tester, original);
+      oldAnswer();
+      oldOriginal();
+      await tester.pumpAndSettle();
+      expect(find.text('Câu 1 / 4'), findsOneWidget);
+      expect(find.textContaining('Bộ gốc:'), findsNothing);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const Key('grammar-quiz-next')))
+            .onPressed,
+        isNull,
+      );
+      await finishGrammar(tester, [0, 1, 2, 3]);
+      expect(find.text('Kết quả theo bài gốc: 4 / 4'), findsOneWidget);
+      expect(find.byKey(const Key('grammar-review-errors')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'grammar focused callbacks retire on reload level and route exit',
+    (tester) async {
+      var reads = 0;
+      final container = await mountCurriculum(
+        tester,
+        FixtureCurriculumRepository((_, level) async {
+          reads++;
+          return source(level);
+        }),
+        '/quiz/grammar',
+      );
+      await tester.pumpAndSettle();
+      await finishGrammar(tester, [0, 1, 2, 3], wrong: {0});
+      final staleFocus = tester
+          .widget<OutlinedButton>(
+            find.byKey(const Key('grammar-review-errors')),
+          )
+          .onPressed!;
+      await tap(tester, find.byKey(const Key('grammar-review-errors')));
+      final oldOriginal = tester
+          .widget<OutlinedButton>(
+            find.byKey(const Key('grammar-review-original')),
+          )
+          .onPressed!;
+      final oldAnswer = tester
+          .widget<OutlinedButton>(
+            find.byKey(const ValueKey('grammar-choice-grammar-0')),
+          )
+          .onPressed!;
+      final reload = tester
+          .widget<OutlinedButton>(find.byKey(const Key('grammar-quiz-reload')))
+          .onPressed!;
+      reload();
+      oldAnswer();
+      oldOriginal();
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Bộ gốc:'), findsNothing);
+      expect(
+        tester
+            .widget<FilledButton>(find.byKey(const Key('grammar-quiz-next')))
+            .onPressed,
+        isNull,
+      );
+      container.read(previewLevelProvider.notifier).state = PreviewLevel.n4;
+      staleFocus();
+      oldOriginal();
+      await tester.pumpAndSettle();
+      expect(find.text('Câu 1 / 4'), findsOneWidget);
+      expect(find.byKey(const Key('grammar-review-original')), findsNothing);
+      final beforeExit = reads;
+      container.read(routerProvider).go('/settings');
+      await tester.pumpAndSettle();
+      staleFocus();
+      oldAnswer();
+      oldOriginal();
+      await tester.pumpAndSettle();
+      expect(reads, beforeExit);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('grammar focused review controls usable at narrow large text', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await mountCurriculum(
+      tester,
+      FixtureCurriculumRepository((_, level) async => source(level)),
+      '/quiz/grammar',
+      size: const Size(320, 900),
+    );
+    await tester.pumpAndSettle();
+    await finishGrammar(tester, [0, 1, 2, 3], wrong: {0});
+    await tap(tester, find.byKey(const Key('grammar-review-errors')));
+    expect(find.text('Bộ gốc: 3 / 4'), findsOneWidget);
+    await finishGrammar(tester, [0]);
+    expect(find.text('Kết quả theo bài gốc: 1 / 1'), findsOneWidget);
+    await tap(tester, find.byKey(const Key('grammar-quiz-restart')));
+    await tap(tester, find.byKey(const Key('grammar-review-original')));
+    expect(find.text('Câu 1 / 4'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('grammar source feedback follows the answered target only', (
     tester,
   ) async {

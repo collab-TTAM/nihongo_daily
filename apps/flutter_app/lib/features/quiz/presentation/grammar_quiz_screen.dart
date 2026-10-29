@@ -115,6 +115,8 @@ class _GrammarRoundPanel extends StatefulWidget {
 class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
   int _offset = 0;
   late GrammarQuizRound _round;
+  late List<GrammarQuizQuestion> _batch;
+  int? _originalScore;
 
   @override
   void initState() {
@@ -123,7 +125,9 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
   }
 
   void _replace() {
-    _round = GrammarQuizRound(widget.questions.skip(_offset).take(10).toList());
+    _batch = widget.questions.skip(_offset).take(10).toList(growable: false);
+    _originalScore = null;
+    _round = GrammarQuizRound(_batch);
   }
 
   bool _current(GrammarQuizRound round) =>
@@ -133,9 +137,23 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
   Widget build(BuildContext context) {
     final round = _round;
     final question = round.current;
+    final originalScore = _originalScore;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (originalScore != null) ...[
+          const Text('Ôn riêng câu sai — chưa lưu kết quả'),
+          Text('Bộ gốc: $originalScore / ${_batch.length}'),
+          OutlinedButton(
+            key: const Key('grammar-review-original'),
+            onPressed: () {
+              if (_current(round)) {
+                setState(_replace);
+              }
+            },
+            child: const Text('Làm lại bộ gốc'),
+          ),
+        ],
         if (question != null) ...[
           Text(
             'Câu ${round.answeredCount + (round.answered ? 0 : 1)} / ${round.questions.length}',
@@ -214,22 +232,43 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
             Text(entry.heading),
             Text('Ôn lại theo bài gốc: ${entry.meaningVi}'),
           ],
+          if (originalScore == null && round.incorrect.isNotEmpty)
+            OutlinedButton(
+              key: const Key('grammar-review-errors'),
+              onPressed: () {
+                if (_current(round)) {
+                  final ids = round.incorrect.map((entry) => entry.id).toSet();
+                  final questions = round.questions
+                      .where((question) => ids.contains(question.target.id))
+                      .toList(growable: false);
+                  setState(() {
+                    _originalScore = round.score;
+                    _round = GrammarQuizRound(questions);
+                  });
+                }
+              },
+              child: const Text('Luyện riêng câu sai'),
+            ),
           OutlinedButton(
             key: const Key('grammar-quiz-restart'),
             onPressed: () {
               if (_current(round)) {
-                setState(_replace);
+                setState(() {
+                  _round = GrammarQuizRound(round.questions);
+                });
               }
             },
-            child: const Text('Làm lại bộ này'),
+            child: Text(
+              originalScore == null ? 'Làm lại bộ này' : 'Làm lại câu sai',
+            ),
           ),
-          if (_offset + round.questions.length < widget.questions.length)
+          if (_offset + _batch.length < widget.questions.length)
             OutlinedButton(
               key: const Key('grammar-quiz-batch'),
               onPressed: () {
                 if (_current(round)) {
                   setState(() {
-                    _offset += round.questions.length;
+                    _offset += _batch.length;
                     _replace();
                   });
                 }
