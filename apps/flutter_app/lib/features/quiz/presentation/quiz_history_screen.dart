@@ -72,6 +72,7 @@ class _HistoryPanelState extends State<_HistoryPanel> {
   List<OwnedVocabularyQuizAttempt>? _records;
   _HistoryLevel _level = _HistoryLevel.all;
   bool _errorsOnly = false;
+  bool _oldestFirst = false;
   int _pageStart = 0;
   int _pageRevision = 0;
   bool _loading = false;
@@ -125,8 +126,9 @@ class _HistoryPanelState extends State<_HistoryPanel> {
               (!_errorsOnly || attempt.score < attempt.answers.length);
         })
         .toList(growable: false);
-    final visible = records?.reversed
-        .skip(_pageStart)
+    final ordered = _oldestFirst ? records : records?.reversed;
+    final visible = ordered
+        ?.skip(_pageStart)
         .take(_pageSize)
         .toList(growable: false);
     final pageRevision = _pageRevision;
@@ -174,6 +176,21 @@ class _HistoryPanelState extends State<_HistoryPanel> {
             });
           },
         ),
+        CheckboxListTile(
+          key: const Key('quiz-history-oldest-first'),
+          value: _oldestFirst,
+          title: const Text('Cũ nhất trước'),
+          controlAffinity: ListTileControlAffinity.leading,
+          contentPadding: EdgeInsets.zero,
+          onChanged: (value) {
+            if (!mounted || !widget.isCurrent() || value == null) return;
+            setState(() {
+              _oldestFirst = value;
+              _pageStart = 0;
+              _pageRevision++;
+            });
+          },
+        ),
         OutlinedButton(
           key: const Key('quiz-history-load'),
           onPressed: _loading ? null : () => unawaited(_load()),
@@ -206,7 +223,8 @@ class _HistoryPanelState extends State<_HistoryPanel> {
         if (records != null && visible != null && visible.isNotEmpty) ...[
           Text(
             'Hiển thị ${pageStart + 1}–${pageStart + visible.length} / '
-            '${records.length} bộ (mới nhất trước)',
+            '${records.length} bộ '
+            '(${_oldestFirst ? 'cũ nhất trước' : 'mới nhất trước'})',
             key: const Key('quiz-history-range'),
           ),
           if (records.length > _pageSize) ...[
@@ -215,14 +233,14 @@ class _HistoryPanelState extends State<_HistoryPanel> {
               onPressed: pageStart == 0
                   ? null
                   : () => _movePage(pageRevision, pageStart - _pageSize),
-              child: const Text('Kết quả mới hơn'),
+              child: Text(_oldestFirst ? 'Kết quả cũ hơn' : 'Kết quả mới hơn'),
             ),
             OutlinedButton(
               key: const Key('quiz-history-older'),
               onPressed: pageStart + visible.length >= records.length
                   ? null
                   : () => _movePage(pageRevision, pageStart + _pageSize),
-              child: const Text('Kết quả cũ hơn'),
+              child: Text(_oldestFirst ? 'Kết quả mới hơn' : 'Kết quả cũ hơn'),
             ),
           ],
           for (final record in visible)

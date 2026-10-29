@@ -1,5 +1,31 @@
 # Captured local quiz-history repository — Issue #13
 
+## Local history order — 2026-10-29
+
+History now offers an explicit Cũ nhất trước checkbox. Unchecked remains the
+existing newest-first default. Ordering uses the validated loaded repository
+snapshot (completion UTC, then event ID for ties) and does not read or append
+anything. Level/errors filters and totals still cover the full matching subset;
+only the visible20-row page is reversed. Range text and previous/next labels
+follow the selected order. No mastery, attention or server-credit claim changes.
+
+Changing order returns to page1 and advances the existing page revision, so
+captured page callbacks cannot move the new order, including order ABA. Explicit
+reload keeps the order while resetting pagination. The panel's repository key
+resets order/results on owner or route replacement; retained sort callbacks check
+mounted/current ownership before touching state. No new persistence preference.
+
+Three authored TEST ONLY widget cases exercise actual checkbox taps, equal-time
+stable ordering,41-row bounds/directional labels/filter totals/no extra reads,
+stale navigation across order ABA, explicit reload, replacement owner/stale sort
+callback and320px/200% text. All original test fixture bytes are preserved after
+removing the new helper/cases. New Flutter/format/analyze/build checks locally
+UNRUN (SDK unavailable); QA51/inventory153/diffcheck are separate observations.
+Parent3bd671d CI40852557987/latestattempt1 all5/EVERYstep SUCCESS and native
+persistent SDK/original-mismatch markers passed; this is not new UI or hosted
+learner proof. All14 hosted release gates remain pending, PR41draft/13open.
+
+
 ## Readiness/Auth getter reentry — 2026-10-29
 
 A synchronous checking guard now rejects save/load invoked by supplied readiness

@@ -1,5 +1,36 @@
 # PROJECT STATUS
 
+## Core checkpoint — local quiz history order, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; parent
+  3bd671d873d28b1b129c643869047207488ded73. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40852557987/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows123375483767 persistent SDK/profile/receipt and protected original-
+  mismatch markers observed. TEST ONLY component evidence, not hosted proof.
+- Add Cũ nhất trước checkbox on loaded validated history. Default newest remains;
+  stable UTC/event ordering, filters/full-subset totals/20-row bounds unchanged.
+  Order change resets page/revision; old navigation including ABA stays inert.
+  Direction/range labels follow order, reload retains order, owner/route reset
+  restores newest/empty. Stale sort callbacks mounted/current guarded. No extra
+  I/O, preference persistence, append, server credit, SRS or mastery mutation.
+- Three authored widgets: actual toggles/pages/filters/41 equal-time records/
+  totals/no extra reads/stale order ABA; reload/owner reset/stale sort;320px200%.
+  Removing new helper/cases restores entire original fixture byte-for-byte.
+  Separate order/nullable list/page revision/account/default/old-tests diff review.
+  QA51 PASS/inventory153 valid(not153executed)/diffcheck PASS. New3Flutter/format/
+  analyze/build locally UNRUN(noSDK); exact-head Actions required.
+- Four paths apps/flutter_app/lib/features/quiz/presentation/quiz_history_screen.dart;
+  apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart;
+  docs/QUIZ_ACCOUNT_HISTORY.md; this status. Full tree/blob/CAS evidence in PR41.
+- NEXT exact-head/latestattempt all5/EVERYstep/new3 and retained native/SDK markers;
+  fix actual diagnostics without weakening assertions/deadlines/security. Pending-
+  only handoff/no duplication/longpolling. Hosted Auth/sync/AI/voice/learner gates,
+  trustedroot/backend/captured lifecycle/uncertainty/conditional release/retention
+  approval remain.41draft/13open/AIoff/memory-only/all14hostedpending; no Pro/content/
+  API/RLS/Authstrategy/provider/collection/spend/security/merge/closure/deploy/release/
+  schedule change or Personal Alpha acceptance.
+
+
 ## Core checkpoint — native original receipt mismatch denial, 2026-10-29 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
