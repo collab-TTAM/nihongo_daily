@@ -1,5 +1,29 @@
 # Captured local quiz-history repository — Issue #13
 
+## Final readiness storage fence — 2026-10-29
+
+The owner-bound repository now rechecks exact captured session identity, open
+operation drain and nonrevoked state after the final readiness callback. A
+callback can synchronously replace even the same user's session or begin drain;
+its true return must not authorize one last read/write or result publication.
+Observed invalidation remains terminal. Accepted original-owner storage may still
+complete; its event remains recoverable, while its old caller receives only the
+fixed session-changed failure. No storage cancellation or rollback is invented.
+
+Eight regressions use the existing actual disposable native journal: save/load
+at last pre-storage/final publication boundaries, each with same-user replacement
+or synchronous revokeAndDrain. Require exactly0/1 underlying calls, terminal
+read/write rejection after old hint restoration, complete drain and only the
+original immutable owner event persisted when accepted; foreign owner stays
+empty. All original fixture bytes, assertions, timeouts and cleanup are retained.
+No Auth/SDK/queue/replay/ownership/retention/default policy is replaced.
+
+Parent676e384 CI40819991565/latestattempt1 all5/EVERYstep SUCCESS/no skips,
+1515Flutter/fiveChrome/Web/Windows/native markers verified. New8/format/analyze/
+build locally UNRUN(noSDK); QA46/inventory152/diffcheck recorded separately and
+exact-head CI required. This is native-file/callback TEST ONLY Auth evidence,
+not hosted learner/JWT/RLS/sync proof.41draft/13open/all14hostedpending.
+
 ## Disposal fixture destination — 2026-10-29
 
 Exact6ef3397 CI40796249563/latestattempt1 passed format/analyze and allfour new

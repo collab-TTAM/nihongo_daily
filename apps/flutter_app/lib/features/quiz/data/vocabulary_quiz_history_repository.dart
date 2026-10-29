@@ -101,7 +101,10 @@ final class VocabularyQuizHistoryRepository {
       try {
         if (_isReady() &&
             identical(_auth.currentSession, _captured) &&
-            _isReady()) {
+            _isReady() &&
+            identical(_auth.currentSession, _captured) &&
+            !_operations.isClosing &&
+            !_revoked) {
           return;
         }
       } on Object {

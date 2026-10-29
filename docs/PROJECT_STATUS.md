@@ -1,5 +1,29 @@
 # PROJECT STATUS
 
+## Core checkpoint — quiz storage final readiness fence, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  676e3848cca9a9e92f68b87da16032848a1bd922. Commit/tree/CI in PR41 checkpoint.
+- Parent CI40819991565/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter123270427280 clean analyze/1515full+fiveChrome/Web; Windows123270013101
+  persistent SDK/post-decrypt markers and previous4dispatch cases verified.
+- Quiz history readiness checked session/drain before last callback only. Add
+  final exact session/open drain/nonrevoked checks after it before storage/result
+  publication. Same-user replacement/drain closure now terminal; accepted original
+  events remain under original owner, no cancellation/rollback/fake save claim.
+- Eight actual-native-journal regressions save/load x pre-I/O/final result x
+  replacement/closure: exact0/1calls/safe changed/terminal old-hint return/drain/
+  original immutable persistence/foreignempty. Entire original fixture unchanged.
+  Four paths vocabulary_quiz_history_repository.dart +test under apps/flutter_app;
+  docs/QUIZ_ACCOUNT_HISTORY.md; this status. Separate lifecycle/callback/callcount/
+  persistence/drain/preservation review. QA46/inventory152/diffcheck in PR.
+- SDK unavailable: new8/format/analyze/build locally UNRUN; require exact-head
+  latestattempt all5/EVERYstep/new8+retained native/SDK markers. Pending-onlyhandoff/
+  no duplicatecode/longpolling. Continue remaining reviewed integration gaps.
+ 41draft/13+20+15open/AIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/
+  Authstrategy/provider/collection/spend/security/merge/closure/deploy/release/
+  schedule change or hosted learner/Personal Alpha acceptance.
+
 ## Core checkpoint — receipt dispatch final identity, 2026-10-29 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
