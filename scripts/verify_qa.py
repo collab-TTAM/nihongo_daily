@@ -101,10 +101,19 @@ def validate_ci(matrix, evidence, expected_head):
     names = [job["name"] for job in jobs]
     require(len(names) == len(set(names)), "duplicate job names/attempts")
     require(set(names) == set(matrix["ci_gates"]), "missing or unreviewed CI jobs")
+    job_ids = [job["id"] for job in jobs]
+    require(all(type(job_id) is int and job_id > 0 for job_id in job_ids),
+            "invalid job resource identity")
+    require(len(job_ids) == len(set(job_ids)), "duplicate job resource identity")
     for job in jobs:
         name = job["name"]
-        require(job["run_id"] == run_id and job["run_attempt"] == attempt and
+        require(type(job["run_id"]) is int and type(job["run_attempt"]) is int and
+                job["run_id"] == run_id and job["run_attempt"] == attempt and
                 job["head_sha"] == expected_head, f"mixed run/head/attempt: {name}")
+        require(job["run_url"] == f"https://api.github.com/repos/{REPOSITORY}/actions/runs/{run_id}",
+                f"wrong job run URL: {name}")
+        require(job["html_url"] == f"https://github.com/{REPOSITORY}/actions/runs/{run_id}/job/{job['id']}",
+                f"wrong job evidence URL: {name}")
         require(job["status"] == "completed" and job["conclusion"] == "success", f"job not successful: {name}")
         steps = job["steps"]
         step_names = [step["name"] for step in steps]

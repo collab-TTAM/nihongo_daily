@@ -1,11 +1,32 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-152 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+153 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
 synthetic evidence or fixture may be promoted to real integration evidence.
+
+## Job resource correlation — 2026-10-29
+
+The CI evidence verifier now requires unique positive integer job IDs, strict
+integer run/attempt fields, the exact repository/run API run_url and the exact
+repository/run/job browser html_url. A green job whose resource link points at
+another repository, run or job cannot count as correlated evidence. All previous
+head, latest-attempt, completeness, job, step and pending release checks remain.
+These are consistency checks, not cryptographic authentication: a fabricated
+self-consistent document is still not observed GitHub evidence. Continue fetching
+fresh workflow metadata and all latest-attempt jobs from the connected service.
+
+Four regression groups exercise invalid/duplicate IDs, resource link substitution,
+numeric aliases and each of five swapped job links in the actual saved native
+attempt2 snapshot. That last regression reproduced five missed rejections before
+the change and passes after it. All original test methods are unchanged; the
+synthetic fixture adds API-shaped resource fields only. Both saved native and
+quiz-history snapshots still pass their exact-head baseline checks. --release
+still fails with all14 integration groups pending. QA51 pass locally; inventory153
+is not153 executed integration cases. No application/runtime/CI/security policy
+or live learner acceptance change follows.
 
 ## Observed quiz history component evidence — 2026-10-29
 

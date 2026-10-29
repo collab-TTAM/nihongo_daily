@@ -1,5 +1,32 @@
 # PROJECT STATUS
 
+## Core checkpoint — CI job resource correlation, 2026-10-29 UTC
+
+- PR41/issue18 automation/issue-11-plan-sdk-integration; parent
+  15852750fa6b936c67a37f428f5b93914f5694ee. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40845892811/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows123353243227 persistent SDK/profile/receipt and protected turn/finish
+  markers observed. Component TEST ONLY, not hosted learner proof.
+- QA verifier now requires unique positive integer job IDs, strict integer run/
+  attempt fields, exact repository/run API URL and repository/run/job browser URL.
+  Reject mixed resource links before accepting green metadata. Consistency only,
+  not authenticity; retain fresh service reads/all existing step/head/release gates.
+- Four new regression groups cover invalid/duplicate IDs, foreign resource URLs,
+  numeric aliases and all5 swapped links in actual saved native attempt2 snapshot.
+  Red-before: five missing rejections reproduced. Green-after: QA51 PASS; original
+  test method ASTs unchanged, fixture only enriched with API-shaped resource fields.
+  Both saved exact-head snapshots accepted; --release still rejects all14pending.
+  Inventory153 valid (not153executed), diffcheck PASS; separate diff review done.
+- Four paths scripts/verify_qa.py; qa/test_verify_qa.py; docs/QA_SECURITY_MATRIX.md;
+  this status. No app/backend/CI/content/Auth/RLS/default/retention change. New
+  Flutter/SDK/native tests not claimed; new exact-head Actions still required.
+- NEXT latestattempt all5/EVERYstep; pending-only handoff/no duplication/longpolling.
+  Continue trustedroot/backend/captured storage lifecycle/durable uncertainty/
+  authenticated conditional application-release/retentionapproval.41draft/18open/
+  AIoff/memory-only/all14hostedpending; no merge/closure/deploy/spend/collection/
+  security/Pro/schedule/Alpha action.
+
+
 ## Core checkpoint — native receipt rerun QA evidence, 2026-10-29 UTC
 
 - PR41/issue18+17 automation/issue-11-plan-sdk-integration; exact parent

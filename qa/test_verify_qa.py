@@ -25,11 +25,13 @@ def fixture(matrix):
         "html_url": f"https://github.com/{qa.REPOSITORY}/actions/runs/123",
         "status": "completed", "conclusion": "success",
     }, "jobs": {"total_count": len(matrix["ci_gates"]), "jobs": [
-        {"name": name, "run_id": 123, "run_attempt": 2, "head_sha": HEAD,
+        {"id": index, "name": name, "run_id": 123, "run_attempt": 2, "head_sha": HEAD,
+         "run_url": f"https://api.github.com/repos/{qa.REPOSITORY}/actions/runs/123",
+         "html_url": f"https://github.com/{qa.REPOSITORY}/actions/runs/123/job/{index}",
          "status": "completed", "conclusion": "success", "steps": [
              {"name": step, "status": "completed", "conclusion": "success"}
              for step in steps]}
-        for name, steps in matrix["ci_gates"].items()]}}
+        for index, (name, steps) in enumerate(matrix["ci_gates"].items(), start=1)]}}
 
 
 class QaEvidenceTests(unittest.TestCase):
@@ -64,6 +66,54 @@ class QaEvidenceTests(unittest.TestCase):
                 next(j for j in mixed["jobs"]["jobs"]
                      if j["name"] == job["name"])["run_attempt"] = 1
                 with self.assertRaisesRegex(ValueError, "mixed run/head/attempt"):
+                    qa.validate_ci(self.matrix, mixed, head)
+
+    def test_job_resource_ids_are_positive_integers_and_unique(self):
+        for slot in range(5):
+            for value in (None, False, 0, -1, 1.0, "1"):
+                with self.subTest(slot=slot, value=value):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot]["id"] = value
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+        self.evidence["jobs"]["jobs"][1]["id"] = self.evidence["jobs"]["jobs"][0]["id"]
+        self.rejected()
+
+    def test_job_resource_links_bind_repository_run_and_job(self):
+        for slot in range(5):
+            for key, value in (
+                ("run_url", "https://api.github.com/repos/foreign/repo/actions/runs/123"),
+                ("run_url", f"https://api.github.com/repos/{qa.REPOSITORY}/actions/runs/124"),
+                ("html_url", f"https://github.com/{qa.REPOSITORY}/actions/runs/123/job/999"),
+                ("html_url", f"https://github.com/{qa.REPOSITORY}/actions/runs/124/job/{slot + 1}"),
+                ("html_url", "https://github.com/foreign/repo/actions/runs/123/job/1"),
+            ):
+                with self.subTest(slot=slot, field=key, value=value):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot][key] = value
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_job_run_identity_rejects_numeric_aliases(self):
+        for slot in range(5):
+            for key, value in (("run_id", 123.0), ("run_attempt", 2.0)):
+                with self.subTest(slot=slot, field=key):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot][key] = value
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_saved_native_snapshot_rejects_mixed_job_resource_links(self):
+        evidence = qa.read_json(
+            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
+        qa.validate_ci(self.matrix, evidence, head)
+        for slot in range(5):
+            with self.subTest(slot=slot):
+                mixed = deepcopy(evidence)
+                mixed["jobs"]["jobs"][slot]["html_url"] = (
+                    evidence["jobs"]["jobs"][(slot + 1) % 5]["html_url"])
+                with self.assertRaisesRegex(ValueError, "wrong job evidence URL"):
                     qa.validate_ci(self.matrix, mixed, head)
 
     def test_rejects_stale_head(self):
