@@ -1,5 +1,30 @@
 # PROJECT STATUS
 
+## Core checkpoint — native turn/finish formatter repair, 2026-10-29 UTC
+
+- PR41/issue17 automation/issue-11-plan-sdk-integration; parent
+  05310a86e79b184f6a83e792ab32228c79bc4884. Commit/tree/new CI in PR41 checkpoint.
+- CI40839001594/latestattempt1 FAILED strict Flutter formatter123331211573;
+  analyze/full tests/later Flutter gates SKIPPED. Other4 jobs/EVERYstep SUCCESS.
+  Windows123330631528 printed new turn/finish protected lookup marker plus all
+  retained persistent SDK/profile/receipt markers. TEST ONLY, not hosted proof.
+- Apply exact logged one-line indentation diff only; blob e2883d3 matches CI.
+  Reverse substitution restores entire original fixture byte-for-byte. No inputs/
+  assertions/logic/deadlines/cleanup/PowerShell/production/default/security change.
+  No redundant format test. Separate exact-diff/hash/preservation review complete.
+- Three paths apps/flutter_app/tool/windows_sdk_receipt_fixture.dart;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. QA46/inventory152/diffcheck
+  recorded in PR41. No local Dart/Flutter/native Windows SDK: new-head format/
+  analyze/tests/build UNRUN; exact-head latest-attempt Actions required.
+- NEXT all5/EVERYstep/new native turn-finish and retained SDK markers. Fix real
+  diagnostics preserving assertions/security; pending-only handoff/no duplication/
+  longpolling. Trustedroot/backend/captured storage lifecycle/durable uncertainty/
+  authenticated conditional application-release/retentionapproval and all14 hosted
+  groups remain open. PR41draft/17open/defaultAIoff/memory-only/singlepending.
+  No Pro/content/API/RLS/Authstrategy/provider/collection/spend/security/merge/
+  closure/deploy/release/schedule change or Personal Alpha acceptance.
+
+
 ## Core checkpoint — native protected turn/finish receipt journey, 2026-10-29 UTC
 
 - PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent

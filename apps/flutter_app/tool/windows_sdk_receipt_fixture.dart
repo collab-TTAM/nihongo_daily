@@ -1208,7 +1208,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
             _check(snapshot.start == null);
             _check(
               (snapshot.turn != null) ==
-                  (command.turn != null && status == 'COMPLETED') &&
+                      (command.turn != null && status == 'COMPLETED') &&
                   (snapshot.finish != null) ==
                       (command.finish != null && status == 'COMPLETED'),
             );

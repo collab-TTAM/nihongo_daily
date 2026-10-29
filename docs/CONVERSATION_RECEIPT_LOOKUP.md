@@ -721,3 +721,24 @@ required. Auth/JWT/profile/receipt HTTP are TEST ONLY; no hosted Auth/RLS/provid
 learner proof, actual durable payload storage, retention or release authority.
 All14 hosted groups/trustedroot/backend/captured storage lifecycle/uncertainty/
 authenticated conditional application-release/retentionapproval remain open.
+
+
+## Native turn/finish formatter repair — 2026-10-29 UTC
+
+CI40839001594 exact05310a8/latestattempt1 failed only the Flutter formatter:
+Flutter123331211573 logged one continuation-line indentation change in
+windows_sdk_receipt_fixture.dart. Analyzer/tests/downstream Flutter gates were
+SKIPPED. All other four jobs and every returned step succeeded. Windows123330631528
+actually printed the new turn/finish/status/binding/stale/preserve/no-redispatch
+marker and retained persistent SDK/profile/receipt markers. This is TEST ONLY
+native composition evidence, not hosted learner acceptance.
+
+Apply exactly that logged whitespace diff; resulting blob begins e2883d3 as in
+CI. Reversing it reproduces the entire original fixture byte-for-byte. Inputs,
+assertions, control flow, deadlines, PowerShell phases, cleanup and production
+code remain unchanged. No redundant test is added for indentation. Local QA46,
+inventory152 and diffcheck are separate checks. No local Dart/Flutter/native
+Windows SDK: new-head formatter/analyzer/full tests/builds remain UNRUN and must
+be checked in exact-head/latest-attempt Actions. All14 hosted release gates and
+trusted root/backend/storage lifecycle/uncertainty/conditional release/retention
+approval remain open; default AI off and learner recovery memory-only unchanged.
