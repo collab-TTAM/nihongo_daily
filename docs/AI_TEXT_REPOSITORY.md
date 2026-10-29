@@ -1,5 +1,29 @@
 # Captured AI text repository — Issue #17
 
+## Readiness callback lifecycle fence — 2026-10-29
+
+Currentness now rejects nested readiness/Auth getter checks without dispatching
+or permanently retiring a healthy outer check. A checking flag is restored in
+finally. After the final readiness callback, re-read the exact captured session
+identity and revoked state before authorizing send or result publication. A
+same-user replacement is still a different session; restoring the old hint after
+observed invalidation cannot revive the repository. Raw callback errors remain
+fixed unauthorized failures; no callbacks grant hosted identity authority.
+
+Six TEST ONLY regressions cover explicit revoke and same-user replacement from
+the second readiness callback before send or after a transport response, plus
+nested readiness/Auth getter calls. Require0/1 port calls at retirement, terminal
+unauthorized and idle drain; nested calls must make no transport call, while the
+healthy outer explain and subsequent correction retain original frozen output.
+All original fixture bodies/assertions/timeouts/cleanup remain unchanged. No
+single-flight/timeout/transport/default/provider/Auth/retention policy changes.
+
+Parent140afb0 CI40809615439/latestattempt1 passed all5/EVERYstep,1497Flutter/
+fiveChrome/Web/Windows and prior six receipt-readiness cases/native markers.
+New6/format/analyze/build locally UNRUN(noSDK), require exact-head Actions. QA46/
+inventory152/diffcheck recorded separately. This is captured-port safety work,
+not hosted Auth/provider/learner proof.41draft/17open/all14hostedpending.
+
 CapturedAiTextRepository borrows ReviewAuth, one exact ReviewSession identity hint,
 a trusted owner readiness callback and an AiTextTransport. It implements explicit
 explain/correct calls using the strict frozen models in AI_TEXT_MODELS.md. This

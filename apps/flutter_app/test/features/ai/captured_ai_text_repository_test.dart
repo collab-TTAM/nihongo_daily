@@ -28,10 +28,12 @@ Matcher failure(AiTextErrorCode code, {bool retryable = false}) =>
 final class _Auth implements ReviewAuth {
   ReviewSession? session = ReviewSession(userId: owner);
   bool broken = false;
+  void Function()? onRead;
 
   @override
   ReviewSession? get currentSession {
     if (broken) throw StateError('TEST_ONLY_AUTH_SECRET');
+    onRead?.call();
     return session;
   }
 }
@@ -89,6 +91,103 @@ void main() {
             )
             as Map<String, Object?>;
   });
+
+  for (final afterRead in [false, true]) {
+    for (final replaceSession in [false, true]) {
+      test(
+        'text final readiness retirement after=$afterRead replace=$replaceSession',
+        () async {
+          final auth = _Auth();
+          final original = auth.session;
+          final transport = _Transport();
+          late CapturedAiTextRepository repository;
+          var armed = false;
+          var checks = 0;
+          repository = CapturedAiTextRepository(
+            auth: auth,
+            transport: transport,
+            isReady: () {
+              if (armed && ++checks == 2) {
+                armed = false;
+                if (replaceSession) {
+                  auth.session = ReviewSession(userId: owner);
+                } else {
+                  repository.revoke();
+                }
+              }
+              return true;
+            },
+          );
+          if (afterRead) {
+            transport.onCall = (operation) {
+              checks = 0;
+              armed = true;
+              return response(operation);
+            };
+          } else {
+            armed = true;
+          }
+          await expectLater(
+            repository.explain(explainRequest()),
+            throwsA(failure(AiTextErrorCode.unauthorized)),
+          );
+          expect(transport.calls, hasLength(afterRead ? 1 : 0));
+          expect(repository.isBusy, isFalse);
+          auth.session = original;
+          expect(repository.isCurrent, isFalse);
+          await expectLater(
+            repository.correct(correctRequest()),
+            throwsA(failure(AiTextErrorCode.unauthorized)),
+          );
+          expect(transport.calls, hasLength(afterRead ? 1 : 0));
+        },
+      );
+    }
+  }
+
+  for (final throughAuth in [false, true]) {
+    test('text readiness reentry has no dispatch auth=$throughAuth', () async {
+      final auth = _Auth();
+      final transport = _Transport();
+      late CapturedAiTextRepository repository;
+      var armed = false;
+      Future<void>? nested;
+      void reenter() {
+        if (!armed) return;
+        armed = false;
+        expect(repository.isCurrent, isFalse);
+        nested = expectLater(
+          repository.correct(correctRequest()),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+      }
+
+      repository = CapturedAiTextRepository(
+        auth: auth,
+        transport: transport,
+        isReady: () {
+          if (!throughAuth) {
+            reenter();
+          }
+          return true;
+        },
+      );
+      if (throughAuth) {
+        auth.onRead = reenter;
+      }
+      armed = true;
+      final result = await repository.explain(explainRequest());
+      expect(nested, isNotNull);
+      await nested;
+      expect(result.toJson(), fixtures['tutor_explain_response']);
+      expect(transport.calls.map((c) => c.operation), ['tutor_explain']);
+      expect(repository.isCurrent, isTrue);
+      expect(repository.isBusy, isFalse);
+      final correction = await repository.correct(correctRequest());
+      expect(correction.toJson(), fixtures['correct_sentence_response']);
+      expect(transport.calls, hasLength(2));
+    });
+  }
 
   test(
     'both fixed text methods preserve frozen bodies and captured identity',

@@ -90,17 +90,25 @@ final class CapturedAiTextRepository {
   final Duration _timeout;
   Object? _inFlight;
   bool _revoked = false;
+  bool _checking = false;
 
   bool get isBusy => _inFlight != null;
 
   bool get isCurrent {
-    if (_revoked) return false;
+    if (_revoked || _checking) return false;
+    _checking = true;
     try {
-      if (_ready() && identical(_auth.currentSession, _session) && _ready()) {
+      if (_ready() &&
+          identical(_auth.currentSession, _session) &&
+          _ready() &&
+          identical(_auth.currentSession, _session) &&
+          !_revoked) {
         return true;
       }
     } on Object {
       // Readiness/Auth getter failures permanently fence this capability.
+    } finally {
+      _checking = false;
     }
     _revoked = true;
     return false;
