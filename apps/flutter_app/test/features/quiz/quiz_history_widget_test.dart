@@ -158,60 +158,72 @@ Future<void> _oldestHistory(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('oldest order pages filters and stale navigation reuse snapshot', (
-    tester,
-  ) async {
-    final h = Harness();
-    final source = _Source(h)
-      ..response = (owner) async => [
-        for (var i = 41; i >= 1; i--)
-          OwnedVocabularyQuizAttempt(owner, quizReport(i, correct: i.isEven)),
+  testWidgets(
+    'oldest order pages filters and stale navigation reuse snapshot',
+    (tester) async {
+      final h = Harness();
+      final source = _Source(h)
+        ..response = (owner) async => [
+          for (var i = 41; i >= 1; i--)
+            OwnedVocabularyQuizAttempt(owner, quizReport(i, correct: i.isEven)),
+        ];
+      await _mount(tester, harness: h, source: source);
+      await _load(tester);
+      await tester.pumpAndSettle();
+      await _pageHistory(tester, 'older');
+      final older = find.byKey(const Key('quiz-history-older'));
+      final stale = tester.widget<OutlinedButton>(older).onPressed!;
+      await _oldestHistory(tester);
+      List<String> keys(int first, int last) => [
+        for (var i = first; i <= last; i++)
+          'quiz-history-${quizReport(i).eventId}',
       ];
-    await _mount(tester, harness: h, source: source);
-    await _load(tester);
-    await tester.pumpAndSettle();
-    await _pageHistory(tester, 'older');
-    final older = find.byKey(const Key('quiz-history-older'));
-    final stale = tester.widget<OutlinedButton>(older).onPressed!;
-    await _oldestHistory(tester);
-    List<String> keys(int first, int last) => [
-      for (var i = first; i <= last; i++) 'quiz-history-${quizReport(i).eventId}',
-    ];
-    expect(_shownHistory(tester), keys(1, 20));
-    expect(find.text('Hiển thị 1–20 / 41 bộ (cũ nhất trước)'), findsOneWidget);
-    expect(find.text('Câu đúng theo bài gốc: 20 / 41'), findsOneWidget);
-    stale();
-    await tester.pumpAndSettle();
-    expect(_shownHistory(tester), keys(1, 20));
-    await _oldestHistory(tester);
-    expect(_shownHistory(tester).first, 'quiz-history-${quizReport(41).eventId}');
-    await _oldestHistory(tester);
-    stale();
-    await tester.pumpAndSettle();
-    expect(_shownHistory(tester), keys(1, 20));
-    expect(
-      tester.widget<OutlinedButton>(older).child,
-      isA<Text>().having((text) => text.data, 'label', 'Kết quả mới hơn'),
-    );
-    await _pageHistory(tester, 'older');
-    expect(_shownHistory(tester), keys(21, 40));
-    await _pageHistory(tester, 'older');
-    expect(_shownHistory(tester), keys(41, 41));
-    expect(tester.widget<OutlinedButton>(older).onPressed, isNull);
-    await _pageHistory(tester, 'newer');
-    expect(_shownHistory(tester), keys(21, 40));
-    await _errorsHistory(tester);
-    expect(_shownHistory(tester), [
-      for (var i = 1; i <= 39; i += 2) 'quiz-history-${quizReport(i).eventId}',
-    ]);
-    expect(find.text('Câu đúng theo bài gốc: 0 / 21'), findsOneWidget);
-    await _filterHistory(tester, 'N4');
-    expect(_shownHistory(tester), isEmpty);
-    await _filterHistory(tester, 'N5');
-    expect(_shownHistory(tester).first, 'quiz-history-${quizReport(1).eventId}');
-    expect(source.reads, 1);
-    expect(tester.takeException(), isNull);
-  });
+      expect(_shownHistory(tester), keys(1, 20));
+      expect(
+        find.text('Hiển thị 1–20 / 41 bộ (cũ nhất trước)'),
+        findsOneWidget,
+      );
+      expect(find.text('Câu đúng theo bài gốc: 20 / 41'), findsOneWidget);
+      stale();
+      await tester.pumpAndSettle();
+      expect(_shownHistory(tester), keys(1, 20));
+      await _oldestHistory(tester);
+      expect(
+        _shownHistory(tester).first,
+        'quiz-history-${quizReport(41).eventId}',
+      );
+      await _oldestHistory(tester);
+      stale();
+      await tester.pumpAndSettle();
+      expect(_shownHistory(tester), keys(1, 20));
+      expect(
+        tester.widget<OutlinedButton>(older).child,
+        isA<Text>().having((text) => text.data, 'label', 'Kết quả mới hơn'),
+      );
+      await _pageHistory(tester, 'older');
+      expect(_shownHistory(tester), keys(21, 40));
+      await _pageHistory(tester, 'older');
+      expect(_shownHistory(tester), keys(41, 41));
+      expect(tester.widget<OutlinedButton>(older).onPressed, isNull);
+      await _pageHistory(tester, 'newer');
+      expect(_shownHistory(tester), keys(21, 40));
+      await _errorsHistory(tester);
+      expect(_shownHistory(tester), [
+        for (var i = 1; i <= 39; i += 2)
+          'quiz-history-${quizReport(i).eventId}',
+      ]);
+      expect(find.text('Câu đúng theo bài gốc: 0 / 21'), findsOneWidget);
+      await _filterHistory(tester, 'N4');
+      expect(_shownHistory(tester), isEmpty);
+      await _filterHistory(tester, 'N5');
+      expect(
+        _shownHistory(tester).first,
+        'quiz-history-${quizReport(1).eventId}',
+      );
+      expect(source.reads, 1);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('order survives reload and resets for a replacement owner', (
     tester,
@@ -230,7 +242,10 @@ void main() {
     final stale = tester.widget<CheckboxListTile>(toggle).onChanged!;
     await _load(tester);
     await tester.pumpAndSettle();
-    expect(_shownHistory(tester).first, 'quiz-history-${quizReport(1).eventId}');
+    expect(
+      _shownHistory(tester).first,
+      'quiz-history-${quizReport(1).eventId}',
+    );
     expect(source.reads, 2);
     await h.runtime.signOut();
     await tester.pumpAndSettle();
@@ -243,7 +258,10 @@ void main() {
     expect(source.reads, 2);
     await _load(tester);
     await tester.pumpAndSettle();
-    expect(_shownHistory(tester).first, 'quiz-history-${quizReport(2).eventId}');
+    expect(
+      _shownHistory(tester).first,
+      'quiz-history-${quizReport(2).eventId}',
+    );
     expect(source.reads, 3);
     expect(tester.takeException(), isNull);
   });

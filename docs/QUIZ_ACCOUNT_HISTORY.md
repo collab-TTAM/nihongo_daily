@@ -1,5 +1,25 @@
 # Captured local quiz-history repository — Issue #13
 
+## History order formatter correction — 2026-10-29
+
+Exact head19efbbbf CI40855789999/latest attempt1 returned all five jobs.
+Database, AI boundary, repo sanity and Windows passed every step; Flutter stopped
+at strict formatting of quiz_history_widget_test.dart, with all later required
+Flutter steps skipped. They are not passing evidence. Windows123386387302 logs
+include the mandatory persistent SDK/profile/receipt rotation marker and the
+protected turn/finish original-mismatch rejection marker (TEST ONLY Auth/HTTP).
+
+Apply exactly the logged three-hunk formatting diff: multi-line testWidgets
+callback layout, line wrapping and indentation only. Formatted blob
+92f7e890ad3e716fbfd649bdd91b26da38ec024b matches the CI diff prefix. Reverse patch
+reconstructs the entire original fixture; all strings, test bodies, assertions,
+deadlines and cleanup remain unchanged. No duplicate test for a formatting-only
+repair. QA51/inventory153/whitespace are checked independently; local Dart/Flutter
+SDK/native Windows unavailable, so repaired format/analyze/widgets/build still
+require the new exact-head latest-attempt Actions. PR41draft/13open/all14 hosted
+gates pending; no production/default/security/retention/content change.
+
+
 ## Local history order — 2026-10-29
 
 History now offers an explicit Cũ nhất trước checkbox. Unchecked remains the
