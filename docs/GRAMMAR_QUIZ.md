@@ -6,6 +6,26 @@ GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
 
+## Native grammar test interpolation correction — 2026-10-29 UTC
+
+Parentb4aed8a CI40964232310/latestattempt1 all5/EVERYstep inspected: database,
+AI,repo-sanity,Windows SUCCESS. Flutter format SUCCESS, analyze failed sole
+prefer_interpolation_to_compose_strings at native_grammar_quiz_journal_test.dart:204.
+Nine new tests/integration/Web skipped, not passed. Build the identical512row
+newline-joined string in rows, then interpolate its one trailing newline into
+committed. Same row loop/codec/order/contents/terminator/assertions/caps/cleanup;
+no production change. Reverse patch must restore entire parent test file.
+No duplicate test for syntax-only correction. QA55/inventory155/whitespace and
+official fresh Dart3.9.2 SHA256 verified/strict format1file zerochanges PASS
+(unresolved Flutter lint include warning, not analyzer). New9/fullFlutter/analyze/
+build still need new exact-head
+Actions. No local Flutter/Windows execution claim; parent smoke is parent proof.
+No content/Pro/Auth/API/RLS/default/storage/retention change. Journal remains
+unwired; captured-session repository and explicit save UI still absent. PR41
+stays draft/issue13 open/all14 hosted groups pending. Commit/tree/CI in PR handoff;
+next all5/EVERYstep/new9 and retained SDK/native markers, fix real diagnostics
+without weakening assertions. No incomplete merge/deploy/release acceptance.
+
 ## Native grammar journal component — 2026-10-29 UTC
 
 Pre-code rules saved PR41+issue13. Separate GrammarQuizAttemptStore and

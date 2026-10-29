@@ -200,12 +200,11 @@ void main() {
         throwsA(isA<GrammarQuizStorageFailure>()),
       );
       expect(await data.readAsBytes(), oversized);
-      final committed =
-          [
-            for (var i = 0; i < NativeGrammarQuizJournal.maxEvents; i++)
-              line(ownerA, attempt(i)),
-          ].join('\n') +
-          '\n';
+      final rows = [
+        for (var i = 0; i < NativeGrammarQuizJournal.maxEvents; i++)
+          line(ownerA, attempt(i)),
+      ].join('\n');
+      final committed = '$rows\n';
       await data.writeAsString(committed, flush: true);
       journal = await NativeGrammarQuizJournal.open(directory);
       expect(
