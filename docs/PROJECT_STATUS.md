@@ -1,5 +1,22 @@
 # PROJECT STATUS
 
+## Session transport analyzer correction — 2026-10-29 UTC
+
+Parent1d9b5d4 CI40910403951/latestattempt1: all5 jobs/EVERYstep inspected.
+Repo-sanity/AI/database/Windows SUCCESS; Flutter format SUCCESS, analyzer failed
+sole unnecessary_import dart:typed_data in persistent_supabase_runtime.dart:2.
+Flutter tests/integration/Web build skipped: no pass claim for six new cases.
+Remove exactly that redundant import; flutter/foundation.dart already exports
+all used typed-data symbols. No transport behavior, test body/assertion/deadline,
+ownership/bounds/cleanup/security/default/content/Pro change. Separate one-line
+reverse-patch review restores entire parent production file; six-test file and
+extracted transport remain byte-identical. QA55/inventory154/diffcheck checked;
+no local Flutter/analyzer/build claim. Parent Windows success is component
+TEST ONLY evidence, not hosted learner proof. New exact-head Actions required.
+PR41 draft/issue20 open/all14 hosted groups pending. Commit/tree/CI in PR handoff;
+next inspect latest attempt/all5/EVERYstep and six tests, fix real diagnostics.
+
+
 ## Session HTTP cancellation deadline — 2026-10-29
 
 Recovered the abandoned Issue20 checkpoint after its ACTIVE marker exceeded90
