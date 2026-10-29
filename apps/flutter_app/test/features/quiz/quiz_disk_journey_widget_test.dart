@@ -648,6 +648,94 @@ void main() {
       expect(find.textContaining(wire.b), findsNothing);
       expect(find.textContaining('TEST_ONLY'), findsNothing);
       expect(tester.takeException(), isNull);
+
+      // Order the actual restored events without replacing their stored reports.
+      final orderToggle = find.byKey(const Key('quiz-history-oldest-first'));
+      final readsBeforeOrder = third.store.reads;
+      final requestsBeforeOrder = server.paths.length;
+      final chronological = [original, correction]
+        ..sort((left, right) {
+          final time = left.completedAt.compareTo(right.completedAt);
+          return time == 0 ? left.eventId.compareTo(right.eventId) : time;
+        });
+      final oldestKeys = [
+        for (final attempt in chronological) 'quiz-history-${attempt.eventId}',
+      ];
+      List<String> shownEvents() => tester
+          .widgetList<ListTile>(find.byType(ListTile))
+          .map((tile) => tile.key)
+          .whereType<ValueKey<String>>()
+          .map((key) => key.value)
+          .where((key) => key.startsWith('quiz-history-'))
+          .toList();
+      expect(tester.widget<CheckboxListTile>(orderToggle).value, isFalse);
+      expect(shownEvents(), oldestKeys.reversed.toList());
+      await tapQuiz(tester, orderToggle);
+      expect(tester.widget<CheckboxListTile>(orderToggle).value, isTrue);
+      expect(shownEvents(), oldestKeys);
+      expect(find.text('Hiển thị 1–2 / 2 bộ (cũ nhất trước)'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      await chooseHistoryLevel('N4');
+      expect(shownEvents(), isEmpty);
+      await chooseHistoryLevel('N5');
+      expect(shownEvents(), oldestKeys);
+      expect(third.store.reads, readsBeforeOrder);
+      expect(server.paths.length, requestsBeforeOrder);
+      await diskAction(third, 'quiz-history-load');
+      expect(tester.widget<CheckboxListTile>(orderToggle).value, isTrue);
+      expect(shownEvents(), oldestKeys);
+      expect(third.store.reads, readsBeforeOrder + 1);
+      final staleOrder = tester
+          .widget<CheckboxListTile>(orderToggle)
+          .onChanged!;
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.b;
+        await third.login();
+      });
+      staleOrder(true); // Captured A control, before B's replacement frame.
+      await tester.pumpAndSettle();
+      expect(summary, findsNothing);
+      expect(tester.widget<CheckboxListTile>(orderToggle).value, isFalse);
+      expect(shownEvents(), isEmpty);
+      final requestsBeforeOrderedB = server.paths.length;
+      await diskAction(third, 'quiz-history-load');
+      expect(find.text('0 bộ đã lưu'), findsOneWidget);
+      expect(shownEvents(), isEmpty);
+      staleOrder(true);
+      await tester.pumpAndSettle();
+      expect(tester.widget<CheckboxListTile>(orderToggle).value, isFalse);
+      expect(third.store.reads, readsBeforeOrder + 2);
+      expect(server.paths.length, requestsBeforeOrderedB);
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.a;
+        await third.login();
+      });
+      await tester.pumpAndSettle();
+      expect(summary, findsNothing);
+      expect(tester.widget<CheckboxListTile>(orderToggle).value, isFalse);
+      final requestsBeforeOrderedA = server.paths.length;
+      await diskAction(third, 'quiz-history-load');
+      expect(shownEvents(), oldestKeys.reversed.toList());
+      expect(find.text('Câu đúng theo bài gốc: 10 / 11'), findsOneWidget);
+      await tapQuiz(tester, orderToggle);
+      expect(shownEvents(), oldestKeys);
+      await tapQuiz(tester, orderToggle);
+      expect(shownEvents(), oldestKeys.reversed.toList());
+      expect(third.store.reads, readsBeforeOrder + 3);
+      expect(third.store.appends, 0);
+      expect(server.paths.length, requestsBeforeOrderedA);
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        correctedBytes,
+      );
+      expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining(wire.b), findsNothing);
+      expect(find.textContaining('TEST_ONLY'), findsNothing);
+      expect(tester.takeException(), isNull);
     },
   );
 }

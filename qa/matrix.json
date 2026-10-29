@@ -3779,7 +3779,7 @@
     {
       "id": "local-quiz-history-filter-recovery",
       "status": "automated-baseline",
-      "scope": "Loaded owner-bound history level/errors filters, bounded newest-first pages and real-journal restored history A/B/A isolation; explicit reads only, no filter writes or mastery credit.",
+      "scope": "Loaded owner-bound history level/errors filters, newest/oldest order, bounded pages and real-journal restored history A/B/A isolation; explicit reads only, no filter/order writes or mastery credit.",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -3801,6 +3801,18 @@
         {
           "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
           "contains": "staleFilter(true); // Old capability, before the replacement frame."
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(third.store.reads, readsBeforeOrder + 3);"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "staleOrder(true); // Captured A control, before B's replacement frame."
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart",
+          "contains": "expect(shownEvents(), oldestKeys);"
         }
       ],
       "issues": [
@@ -3809,7 +3821,7 @@
         20
       ],
       "reproduce": "In apps/flutter_app run flutter test test/features/quiz/quiz_history_widget_test.dart test/features/quiz/quiz_disk_journey_widget_test.dart. From root verify qa/evidence/20261029-quiz-history-c0039dd.json with scripts/verify_qa.py --head c0039dd94cd23b7685c16036b7a11ae95af719b8 --evidence <file>. Require all5 jobs/every step for any newer reviewed head.",
-      "limitation": "Observed at c0039dd CI40805010560 latest attempt1:1491 full Flutter/five Chrome/Web/Windows and extended actual-file journey passed. Saved run/jobs prove correlation/completeness, not cryptographic authenticity. HTTP/unsigned JWT/vault are TEST ONLY; same-process graceful reopen is not hosted identity/RLS, physical Windows restart, power-loss, multi-device sync or Personal Alpha acceptance. All14 hosted release cases remain pending."
+      "limitation": "Observed at c0039dd CI40805010560 latest attempt1:1491 full Flutter/five Chrome/Web/Windows and extended actual-file journey passed. Saved run/jobs prove correlation/completeness, not cryptographic authenticity. HTTP/unsigned JWT/vault are TEST ONLY; same-process graceful reopen is not hosted identity/RLS, physical Windows restart, power-loss, multi-device sync or Personal Alpha acceptance. All14 hosted release cases remain pending. Oldest/newest order continuation is authored after258c386; new exact-head CI required before claiming the extended real-file journey passed."
     },
     {
       "id": "windows-owned-protected-receipt-all-operations",

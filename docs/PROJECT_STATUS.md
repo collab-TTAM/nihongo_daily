@@ -1,5 +1,33 @@
 # PROJECT STATUS
 
+## Core checkpoint — restored real-journal quiz order journey, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; parent
+  258c386356052fdb1f95c0e417834b42961687f0. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40861677014/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter123406936468 all3 order widgets and Windows123406291869 persistent SDK/
+  protected original-mismatch markers observed. Component TEST ONLY, not hosted.
+- Extend existing actual-file/pinned SDK/owned restart quiz journey AFTER every
+  old assertion: order actual original+correction reports both ways, level filter/
+  range/totals, explicit reload retaining order, captured stale order before/after
+  B frame and A-B-A newest/empty reset. Exactly3 added explicit native reads;
+  toggles add0reads/0appends/0HTTP, final journal bytes unchanged/owner text absent.
+- Existing real runAsync disk barrier/deadlines/finally/cleanup/input/assertions
+  unchanged. Remove insertion to recover entire original fixture. Existing QA
+  case gains order/callback/counter anchors; other152 cases/findings/gates intact.
+  Separate snapshot/row identity/read count/account/callback/preservation review.
+  QA51 PASS/inventory153 valid(not153executed)/diffcheck PASS. New extended Flutter
+  journey/format/analyze/build locally UNRUN(noSDK); new exact-head CI required.
+- Four paths apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart;
+  qa/matrix.json; docs/QUIZ_ACCOUNT_HISTORY.md; this status. No production source/
+  default/Authstrategy/provider/API/RLS/security/content/Pro/retention activation.
+- NEXT latestattempt all5/EVERYstep/extended real-file journey/native SDK markers;
+  fix actual diagnostics preserving assertions/deadlines/security. Pending-only
+  handoff/no duplication/longpolling. Hosted learner/Auth/sync/AI/voice/verified
+  conditional release/retention gates remain.41draft/13open/defaultAIoff/memory-only/
+  all14hostedpending; no merge/closure/deploy/spend/collection/schedule/Alpha action.
+
+
 ## Core checkpoint — quiz history formatter repair, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; expected parent

@@ -1,5 +1,34 @@
 # Captured local quiz-history repository — Issue #13
 
+## Restored journal ordering journey — 2026-10-29
+
+The actual-file/owned-startup/pinned SDK quiz journey now continues after all
+original assertions with the existing restored original and correction reports.
+Tap the real history order checkbox in both directions, check actual event keys,
+range/score/filter compatibility and retained order after explicit disk reload.
+Observe zero extra list calls for order/filter actions, no append and no HTTP.
+
+Capture A's order callback, perform actual owned logout/B login, invoke the old
+callback before the replacement frame and again after B's explicit empty load.
+B must start newest/empty with no A rows; returning A also starts newest/empty
+until explicit load, then the original exact reports reorder in both directions.
+The three explicit added loads require exactly three extra native-journal reads;
+all toggles cause zero reads/writes. The journal file must remain byte-identical
+to the previously corrected bytes, with owner/token text absent from the UI.
+
+This extends the existing real runAsync disk completion barrier without changing
+original input/assertions/timeouts/cleanup or replacing rows, runtime or factory.
+Removing only the inserted continuation recovers the complete original fixture.
+The existing QA case gains precise order/stale-callback/read-count anchors; other
+152 cases/findings/gates remain unchanged. Parent258c386 CI40861677014/latest1
+all5/EVERYstep passed and all3 prior order widgets/native markers were observed.
+New journey continuation/format/analyze/build locally UNRUN(noSDK); QA51 and
+inventory153 are separate checks. Auth/HTTP/unsigned JWT/vault remain TEST ONLY,
+graceful same-process reopen is not hosted learner/RLS/physical restart/sync proof.
+PR41draft/13open/all14 release groups remain pending; no default/Pro/security or
+learner retention activation is introduced.
+
+
 ## History order formatter correction — 2026-10-29
 
 Exact head19efbbbf CI40855789999/latest attempt1 returned all five jobs.
