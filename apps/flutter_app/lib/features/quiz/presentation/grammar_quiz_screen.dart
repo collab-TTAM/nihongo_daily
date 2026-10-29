@@ -138,6 +138,7 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
     final round = _round;
     final question = round.current;
     final originalScore = _originalScore;
+    final answers = round.acceptedAnswers;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -228,10 +229,15 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
           Text(
             'Kết quả theo bài gốc: ${round.score} / ${round.questions.length}',
           ),
-          for (final entry in round.incorrect) ...[
-            Text(entry.heading),
-            Text('Ôn lại theo bài gốc: ${entry.meaningVi}'),
-          ],
+          for (final item in round.questions)
+            if (answers[item.id] != item.target.id) ...[
+              Text(item.target.heading),
+              Text(
+                'Bạn đã chọn: ${item.choices.singleWhere((choice) => choice.id == answers[item.id]).meaningVi}',
+              ),
+              Text('Ôn lại theo bài gốc: ${item.target.meaningVi}'),
+              Text(item.target.explanationVi),
+            ],
           if (originalScore == null && round.incorrect.isNotEmpty)
             OutlinedButton(
               key: const Key('grammar-review-errors'),

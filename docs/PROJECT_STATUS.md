@@ -1,35 +1,28 @@
 # PROJECT STATUS
 
-## Observed session cancellation and SDK recovery — 2026-10-29 UTC
+## Grammar accepted-answer review — 2026-10-29 UTC
 
-Saved qa/evidence/20261029-session-cancellation-39b9657.json contains the unmodified
-workflow run and COMPLETE latestattempt1 jobs fetched from GitHub for exact
-39b96576fab842585b00d5ef9505dde2043a923f, CI40928842980. All5 jobs/EVERY returned
-step SUCCESS/no skips. Raw Flutter123642555655 shows all6 direct cancellation
-cases and both actual pinned-SDK stalled/oversized login recovery tests passing.
-Windows123641690643 required persistent vault/sameSDK/profile/receipt rotation
-and persistent runtime cross-process markers observed. Web/Windows builds pass.
-This completes verification of the recent HTTP cancellation increment, not issue20
-or Personal Alpha acceptance. No new runtime code or duplicate test is introduced.
-
-One QA inventory case anchors the existing eight tests: held/rejected cleanup,
-late response, bounded byte/redirect/scope/ownership, failed login fences vault+
-profile, same-owner explicit login recovers and logout clears readiness. All154
-prior case objects, findings and release groups remain unchanged. Inventory155
-is not155 executed tests. Snapshot verifier/QA suite/whitespace checks recorded
-in PR. Source39b9657 evidence is historical for later heads, not new-head CI.
-
-```bash
-python3 scripts/verify_qa.py --head 39b96576fab842585b00d5ef9505dde2043a923f --evidence qa/evidence/20261029-session-cancellation-39b9657.json
-```
-
-HTTP/OS/unsigned JWT are TEST ONLY, SDK/journal/native probes are actual
-components; no hosted learner/Auth/RLS/provider/cross-device acceptance or physical
-Windows cancellation proof. Existing retry policy unchanged, no whole-SDK deadline
-or cleanup completion guarantee. All14 hosted groups remain pending and --release
-must fail. PR41 draft/issue18+20 open. No Pro/content/Authstrategy/API/RLS/default/
-retention/merge/deploy/release/schedule changes. Next verify new exact head CI;
-then continue independent app/quiz work while hosted prerequisites remain open.
+- Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent
+  b2eb7127132c580e6712b537c87630fb71e91f2b. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40938897234/latestattempt1 all5/EVERYstep SUCCESS/no skips. Windows
+  123676780218 required persistent vault/sameSDK/profile/receipt marker observed;
+  TEST ONLY Auth/HTTP, not hosted acceptance.
+- Completed incorrect grammar questions now show accepted choice meaning plus
+  original target meaning/explanation, exact original objects/order and no extra
+  reads. Correct answers omitted; focused round uses its own answers with original
+  score frozen. Restart removes summary. Existing guards/scoring unchanged.
+- Two new synthetic widgets cover normal/320px200%, exact choice/target explanations,
+  correct-question omission, focused isolation/frozen score/restart/one read.
+  Prior fixture bytes/assertions retained. Separate diff/identity/scope review.
+- Paths apps/flutter_app/lib/features/quiz/presentation/grammar_quiz_screen.dart;
+  apps/flutter_app/test/features/quiz/grammar_quiz_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; this file. Local checks and new CI in PR checkpoint.
+  Full Flutter/analyze/native Windows locally unavailable; no new-head pass claim.
+- NEXT exact-head/latestattempt all5/EVERYstep/new2; retain assertions/deadlines/
+  security if diagnostics. Pending-only handoff/no duplicate code/longpolling.
+  Grammar persistence/linguistic review/hosted learner/Auth/sync/provider/voice/
+  conditional receipt release remain; all14 pending. No Pro/content/API/RLS/Auth/
+  storage/default/retention/merge/closure/deploy/release/schedule change.41draft.
 
 
 ## Owned SDK login after stream cancellation — 2026-10-29 UTC

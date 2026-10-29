@@ -65,6 +65,83 @@ Future<void> finishGrammar(
 }
 
 void main() {
+  for (final narrow in [false, true]) {
+    testWidgets(
+      'grammar mistake summary preserves accepted choices narrow=$narrow',
+      (tester) async {
+        if (narrow) {
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        }
+        var reads = 0;
+        final entries = [
+          for (final entry in source(PreviewLevel.n5))
+            CurriculumEntry(
+              id: entry.id,
+              kind: entry.kind,
+              level: entry.level,
+              contentVersion: entry.contentVersion,
+              heading: entry.heading,
+              caption: entry.caption,
+              reading: entry.reading,
+              meaningVi: entry.meaningVi,
+              explanationVi: 'TEST ONLY explanation ${entry.id}',
+              hasAudioReference: false,
+              notes: const [],
+              mistakes: const [],
+              examples: const [],
+            ),
+        ];
+        await mountCurriculum(
+          tester,
+          FixtureCurriculumRepository((_, level) async {
+            reads++;
+            return entries;
+          }),
+          '/quiz/grammar',
+          size: narrow ? const Size(320, 900) : const Size(1200, 900),
+        );
+        await tester.pumpAndSettle();
+        expect(find.textContaining('Bạn đã chọn:'), findsNothing);
+        await finishGrammar(tester, [0, 1, 2, 3], wrong: {0, 2});
+        expect(find.text('Kết quả theo bài gốc: 2 / 4'), findsOneWidget);
+        for (final id in [0, 2]) {
+          expect(
+            find.text('Bạn đã chọn: ${entries[id + 1].meaningVi}'),
+            findsOneWidget,
+          );
+          expect(
+            find.text('Ôn lại theo bài gốc: ${entries[id].meaningVi}'),
+            findsOneWidget,
+          );
+          expect(find.text(entries[id].explanationVi), findsOneWidget);
+        }
+        expect(find.textContaining('Bạn đã chọn:'), findsNWidgets(2));
+        expect(find.text(entries[1].explanationVi), findsNothing);
+        await tap(tester, find.byKey(const Key('grammar-review-errors')));
+        expect(find.textContaining('Bạn đã chọn:'), findsNothing);
+        // Correction answers belong only to the new subset; original score is fixed.
+        await finishGrammar(tester, [0, 2], wrong: {2});
+        expect(find.text('Bộ gốc: 2 / 4'), findsOneWidget);
+        expect(find.text('Kết quả theo bài gốc: 1 / 2'), findsOneWidget);
+        expect(find.textContaining('Bạn đã chọn:'), findsOneWidget);
+        expect(
+          find.text('Bạn đã chọn: ${entries[3].meaningVi}'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Ôn lại theo bài gốc: ${entries[0].meaningVi}'),
+          findsNothing,
+        );
+        await tap(tester, find.byKey(const Key('grammar-review-original')));
+        expect(find.textContaining('Bạn đã chọn:'), findsNothing);
+        expect(find.text('Câu 1 / 4'), findsOneWidget);
+        expect(reads, 1);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets('grammar focused review keeps original score and batch offset', (
     tester,
   ) async {

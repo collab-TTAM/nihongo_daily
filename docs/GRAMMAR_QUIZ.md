@@ -6,6 +6,24 @@ GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
 
+## Accepted-answer review — 2026-10-29 UTC
+
+Completed rounds now show the accepted choice meaning, original target meaning
+and original target explanation for each incorrect answer, in question order.
+The display reads the completed round's immutable accepted-answer snapshot and
+exact question choices. No invented explanation or additional curriculum request.
+Correct answers are omitted. Focused correction summaries use only that subset's
+answers while the original score remains frozen; restart removes the old summary.
+Existing first-answer, round/source/level lifecycle guards remain unchanged.
+
+Two synthetic widget cases exercise normal and320px/200% layouts, selected vs
+correct meanings, distinct target explanations, omission of correct questions,
+subset isolation, frozen original score, full restart and a single source read.
+Existing tests/assertions remain untouched. Local format/QA and exact-head CI are
+recorded in PR41; Flutter/analyze/native builds locally unavailable. This remains
+process-local feedback, not grammar persistence/mastery or hosted learner proof.
+
+
 ## Focused correction round — 2026-10-29
 
 After a completed original round containing errors, Luyện riêng câu sai starts a
