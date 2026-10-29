@@ -1,5 +1,50 @@
 # PROJECT STATUS
 
+## Native grammar journal component — 2026-10-29 UTC
+
+Pre-code rules saved PR41+issue13. Separate GrammarQuizAttemptStore and
+OwnedGrammarQuizAttempt carry explicit structural owner keys; these are NOT
+Auth or write authorization. NativeGrammarQuizJournal is an opt-in component
+for a caller-owned trusted private directory, never installed by current runtime
+or quiz UI. No URL/key, token, source text, auto-save or server credit is added.
+Later captured-session repository must fence every await before exposing it.
+
+Uses separate grammar-quiz-attempts.lock and grammar-quiz-attempts.ndjson, leaving
+vocabulary storage untouched. Existing vocabulary journal algorithm retained
+except typed names/filenames and formatter whitespace (normalized-source equality
+checked separately): serialized append/list, in-isolate ownership plus OS exclusive
+lease, link rejection,1MiB/512events, flush-before-success, immutable snapshots,
+owner+event exact replay/no bytes written; any changed payload including primary/
+correction kind conflicts. Full canonical complete lines validate before EOF-tail
+truncation; invalid committed/cross-type/conflicting rows preserve all bytes and
+failed open releases ownership. Uncertain write sticks until close/reopen. Close
+drains accepted writes and immediately rejects new work. No delete/compaction or
+retention-policy change. Same UUID reused across owners is isolated; correction
+requires its own event ID when saving a separate record. Listing is insertion
+order, not trusted chronology. Plain local learning records are not a secret vault.
+
+Nine new real-file Flutter unit cases authored: owner+primary/correction reopen,
+exact replay+conflicts/healthy continuation, close drain/rejection,exclusive writer,
+valid EOF repair,corrupt/noncanonical/vocabulary/conflicting complete-line preserve+
+failed-open recovery,file/event caps,invalid owners/safe errors,data+lock symlinks.
+Existing tests/vocabulary implementation remain unchanged. Official fresh Dart3.9.2
+SHA256 verified/strict format4files zerochanges PASS (unresolved Flutter lint include
+warning, not analyzer). Actual native Dart assertion-enabled smoke PASS for real-file
+replay/conflict/owner isolation/exclusive writer/reopen/EOF recovery/corrupt bytes/
+failed-open lease/closed rejection; NOT9Flutter test execution. QA55 PASS/inventory155
+valid(not155executed)/diffcheck PASS. New9/fullFlutter/analyze/Web/Windows UNRUN locally.
+
+Parentea5fa48 CI40955343076/latestattempt1 all5/EVERYstep SUCCESS; raw Flutter
+123734800006 all12 grammar model tests and Windows123733971319 retained persistent
+vault/sameSDK/profile/receipt marker observed. TEST ONLY component proof; not hosted
+learner, new-journal Windows cross-process or hardware power-loss certification.
+UI save/history, trusted owner/session repository and runtime/journal disposal
+composition remain absent. No default/retention/Authstrategy/API/RLS/content/Pro
+change; all14 hosted groups pending. PR41 draft/13 open; commit/tree/new CI in PR
+checkpoint. Next exact-head all5/EVERYstep/new9, then guarded repository before UI
+activation; no incomplete merge/deploy/release acceptance.
+
+
 ## Grammar attempt test lint correction — 2026-10-29 UTC
 
 Parent5d7f414 CI40947859746/latestattempt1 all5/EVERYstep inspected. Database,

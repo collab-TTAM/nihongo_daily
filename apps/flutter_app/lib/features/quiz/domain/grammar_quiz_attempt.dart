@@ -208,3 +208,14 @@ bool sameGrammarQuizAttempt(
   GrammarQuizAttempt left,
   GrammarQuizAttempt right,
 ) => jsonEncode(left.toJson()) == jsonEncode(right.toJson());
+
+/// Structural local key only, never authentication or write authorization.
+String grammarHistoryUuid(Object? value) => _identity(value);
+
+/// A trusted session repository must supply this owner, not a learner field.
+final class OwnedGrammarQuizAttempt {
+  OwnedGrammarQuizAttempt(String ownerId, this.attempt)
+    : ownerId = _identity(ownerId);
+  final String ownerId;
+  final GrammarQuizAttempt attempt;
+}
