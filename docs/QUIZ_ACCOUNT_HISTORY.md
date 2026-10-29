@@ -1,5 +1,27 @@
 # Captured local quiz-history repository — Issue #13
 
+## Disposal fixture destination — 2026-10-29
+
+Exact6ef3397 CI40796249563/latestattempt1 passed format/analyze and allfour new
+paging widgets. Full Flutter recorded1488 passing/one failing test; allfour
+other jobs/every step succeeded. The sole failure was pumpAndSettle timeout at
+line505 in disposed history load callback stays inert after navigating to /quiz.
+Later Flutter SDK/Chrome/Web checks were skipped and are not passing evidence.
+
+The destination quiz watches an asynchronous curriculum provider and renders an
+indeterminate progress indicator while loading. This is an unrelated settlement
+dependency for a callback-disposal test; the log does not prove an asset failure.
+Use the existing synchronous /settings route instead, still via the actual router,
+and assert the old load button is absent before invoking its captured callback.
+Keep every original no-read/no-exception/fresh-return/load assertion, timeout and
+cleanup. Dedicated quiz tests and the paging callback case still navigate to
+/quiz; no production provider, asset loader, lifecycle or CI gate changes.
+
+Local SDK unavailable: corrected Flutter/format/analyze/build require exact-head
+CI. QA46/inventory151/whitespace and separate exact fixture review are recorded
+in the PR checkpoint. No new mirrored test for this narrow fixture correction.
+PR41 stays draft/Issue13 open/all14 hosted release groups pending.
+
 ## Bounded history pages — 2026-10-29
 
 The history view now constructs at most20 result rows, newest first, instead of

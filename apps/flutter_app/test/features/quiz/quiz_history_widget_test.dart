@@ -501,8 +501,10 @@ void main() {
     final container = await _mount(tester, harness: h, source: source);
     final button = find.byKey(const Key('quiz-history-load'));
     final stale = tester.widget<OutlinedButton>(button).onPressed!;
-    container.read(routerProvider).go('/quiz');
+    // Disposal does not depend on the quiz route's async asset loading.
+    container.read(routerProvider).go('/settings');
     await tester.pumpAndSettle();
+    expect(button, findsNothing);
     stale();
     await tester.pumpAndSettle();
     expect(source.reads, 0);

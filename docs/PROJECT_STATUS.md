@@ -1,5 +1,29 @@
 # PROJECT STATUS
 
+## Core checkpoint — isolate disposed-history fixture, 2026-10-29 UTC
+
+- PR41/issue13 branch automation/issue-11-plan-sdk-integration; exact parent
+  6ef339791586f4310f2859262005d9d582e0d057. Commit/tree/CI in PR41 checkpoint.
+- CI40796249563/latestattempt1 FAILURE: other4jobs/EVERYstep SUCCESS; Flutter
+  123193974682 strict format/analyze SUCCESS,1488tests passed/1failed. All4new
+  paging widgets passed. Sole failure line505 pumpAndSettle after /quiz navigation
+  in disposed history load callback stays inert; downstream SKIPPED, not passed.
+- Actual /quiz has async curriculum loading/indeterminate indicator. Avoid this
+  unrelated settlement dependency by using synchronous /settings via real router;
+  assert old load button absent, then invoke same captured callback. Log proves
+  timeout, not asset failure. Every original assertion/readcount/return/freshload/
+  deadline/cleanup retained. Other quiz navigation and all4paging tests unchanged.
+- Three paths apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart;
+  docs/QUIZ_ACCOUNT_HISTORY.md; this status. Separate exact fixture/lifecycle/diff
+  review complete. QA46/inventory151/diffcheck recorded in PR; new Flutter/format/
+  analyze/build locally UNRUN(no SDK). No redundant test/no weakened CI gate.
+- NEXT exact-head/latestattempt all5/EVERYstep/corrected disposal+retained paging/
+  native markers; fix actual diagnostics preserving assertions. Pending-only
+  handoff/no duplicatecode/longpolling. Remaining13 and trustedroot/backend/
+  captured lifecycle/uncertainty/authenticated conditional release/retentionapproval
+  open.41draft/13+17open/AIoff/memory-only/all14hostedpending. No Pro/content/Auth/
+  API/RLS/provider/collection/spend/security/merge/close/deploy/release/schedule change.
+
 Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
