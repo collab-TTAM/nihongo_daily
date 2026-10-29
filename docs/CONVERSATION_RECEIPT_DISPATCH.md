@@ -51,3 +51,34 @@ conditional release before permitting later commands. The single pending slot
 currently blocks the next command until reconciliation exists. Current learner
 route remains memory-only, AI off/default unavailable. No frozen API/SQL/RLS/Auth
 strategy/provider/collection/spend/content/Pro/default/CI/dependency change.
+
+## Final readiness identity at persistence boundaries — 2026-10-29 UTC
+
+ConversationReceiptDispatch now rechecks exact captured Auth session identity
+AFTER the final supplied readiness callback, before accepting each lifecycle
+check. The callback could previously return true while replacing even the same
+user's session after the last identity read. That could allow an old gate to
+start storage, reserve metadata, invoke dispatch or publish an old response.
+The existing terminal revoke/error behavior now catches that replacement at the
+same check. The store/gate claims still precede callbacks; no new owner/slot,
+I/O, retry, cleanup or cancellation policy is introduced.
+
+Four TEST ONLY cases replace the session at the final callback before read,
+before reserve, before dispatch and after response (readiness calls2/4/6/8).
+They require fixed unauthorized, exact0/1 wires and exact backend call sequences.
+Before reservation, no metadata is added; after reservation, exact original
+metadata survives close. Returning the old session cannot retry through either
+the same gate or a fresh gate on that store. No clear occurs and the borrowed
+store remains open. All original cases/assertions/deadlines remain byte-identical.
+This is injected Auth/storage/dispatch evidence, not hosted or native-file proof.
+
+Parent8393149 CI40816845575/latestattempt1 passed all5 jobs/EVERYstep/no skips;
+Windows123259855433 required persistent vault/same SDK/profile/receipt marker
+observed. New4/formatter/analyzer/Flutter/builds locally UNRUN (no SDK); require
+new exact-head Actions. QA46/inventory152/whitespace and separate boundary/count/
+metadata/terminal/preservation review are recorded in PR41. Parent success is not
+new-head validation or hosted learner acceptance. Learner AI stays off/memory-only,
+single pending mutation blocking; trustedroot/backend/captured storage lifecycle/
+durable uncertainty/authenticated conditional application-release/retentionapproval
+and all14 hosted release groups remain outstanding. No default, Pro/content,
+Auth strategy/provider/API/RLS/collection/retention/security-policy change.

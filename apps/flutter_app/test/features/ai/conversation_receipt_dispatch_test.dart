@@ -309,4 +309,47 @@ void main() {
     expect(backend.calls, isEmpty);
     expect(wires, 0);
   });
+  for (final boundary in [2, 4, 6, 8]) {
+    test('last readiness fences receipt boundary $boundary', () async {
+      final captured = auth.currentSession;
+      var checks = 0;
+      final g = gate(
+        check: () {
+          if (++checks == boundary) {
+            auth.currentSession = ReviewSession(userId: owner);
+          }
+          return true;
+        },
+      );
+      await expectLater(
+        g.submit(),
+        throwsA(failure(ReceiptDispatchError.unauthorized)),
+      );
+      expect(checks, boundary);
+      expect(wires, boundary == 8 ? 1 : 0);
+      final expectedCalls = boundary == 2
+          ? <String>[]
+          : boundary == 4
+          ? ['read']
+          : ['read', 'read', 'write-begin', 'write-end'];
+      expect(backend.calls, expectedCalls);
+      final expectedValue = boundary >= 6 ? reference.encode() : null;
+      expect(backend.value, expectedValue);
+      auth.currentSession = captured;
+      await g.close();
+      await expectLater(
+        g.submit(),
+        throwsA(failure(ReceiptDispatchError.conflict)),
+      );
+      await expectLater(
+        gate().submit(),
+        throwsA(failure(ReceiptDispatchError.conflict)),
+      );
+      expect(checks, boundary);
+      expect(wires, boundary == 8 ? 1 : 0);
+      expect(backend.calls, expectedCalls);
+      expect(backend.value, expectedValue);
+      expect(store.phase, ConversationReceiptStorePhase.open);
+    });
+  }
 }

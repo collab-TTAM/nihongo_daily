@@ -58,7 +58,10 @@ final class ConversationReceiptDispatch<T> {
     if (!_revoked) {
       try {
         current =
-            _ready() && identical(_auth.currentSession, _session) && _ready();
+            _ready() &&
+            identical(_auth.currentSession, _session) &&
+            _ready() &&
+            identical(_auth.currentSession, _session);
       } on Object {
         // Supplied getters never leak details and cannot restore a retired gate.
       }
