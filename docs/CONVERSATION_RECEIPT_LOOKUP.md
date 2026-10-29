@@ -742,3 +742,37 @@ Windows SDK: new-head formatter/analyzer/full tests/builds remain UNRUN and must
 be checked in exact-head/latest-attempt Actions. All14 hosted release gates and
 trusted root/backend/storage lifecycle/uncertainty/conditional release/retention
 approval remain open; default AI off and learner recovery memory-only unchanged.
+
+## Native turn/finish original mismatch and legacy denial — 2026-10-29 UTC
+
+Five additional mandatory owned-reopen cases use the SAME production runtime,
+private SDK/profile and native DPAPI turn/finish ciphertexts as the positive
+status journey. For both commands the TEST ONLY receipt HTTP response retains a
+valid typed COMPLETED output but changes the original session_id or omits
+request_json; turn additionally changes original text by one trailing space.
+These are stored-row response faults, not a malformed caller DTO or fake lookup
+success. Existing exact fixed GET/query/bearer/no-store/redirect/native pending
+checks run before every response. Separate failure counter increments only after
+those assertions pass, so failed setup cannot masquerade as a matching rejection.
+
+Every case must return fixed internalError, increment exactly one mismatch read,
+retain current reader/protector, rotated token and original pending native
+reference. After each failure, explicit original-event conflict and different-
+event pending denials must still prevent mutation HTTP. Counter5 is independent
+of the original six successful turn/finish reads and all old4/5/3 read counters;
+all remain exact, including after awaited close/stale lookups. Flags reset before
+the next positive command. Every original assertion/phase/deadline/finally/cleanup
+is retained; only the fixture response shaping/counter selection is extended.
+New marker after the entire reopened process succeeds:
+`Windows OWNED protected receipt turn/finish original-mismatch/legacy/rejection/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)`.
+
+Parent2bc3053 CI40847539101/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+Windows123358699621 persistent SDK/receipt +positive turn/finish markers observed.
+New native cases/Dart format/analyze/build locally UNRUN (no SDK/native Windows).
+QA51/inventory153/whitespace and separate faulty-row/counter/old-assertion/pending/
+cleanup review recorded in PR41. Require exact-head CI/new marker before pass.
+Auth/JWT/profile/HTTP remain TEST ONLY; native components do not prove hosted
+learner/Auth/RLS/provider, durable payload storage or conditional release. Default
+AI off/memory-only/singlepending/all14 hosted groups unchanged; trustedroot/backend/
+captured storage lifecycle/uncertainty/application-release/retentionapproval open.
+No production source/Authstrategy/API/RLS/content/Pro/retention-policy change.

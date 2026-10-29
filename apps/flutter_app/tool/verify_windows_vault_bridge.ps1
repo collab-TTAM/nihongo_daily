@@ -130,6 +130,7 @@ try {
     Write-Output 'Windows OWNED protected receipt start/status/corrupt/mismatch/stale/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)'
     Write-Output 'Windows OWNED protected receipt foreign account/project entropy/envelope/no-HTTP/preserve passed (TEST ONLY Auth/HTTP, no payload persistence)'
     Write-Output 'Windows OWNED protected receipt turn/finish/status/binding/stale/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)'
+    Write-Output 'Windows OWNED protected receipt turn/finish original-mismatch/legacy/rejection/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)'
     Invoke-Bridge 'receipt-owned-logout'
     Write-Output 'Windows OWNED SDK command logout immediate-revoke/stale-protect-unprotect/token-receipt-clear/no-redispatch passed (TEST ONLY, no payload persistence)'
     Invoke-Bridge 'receipt-owned-held-logout'

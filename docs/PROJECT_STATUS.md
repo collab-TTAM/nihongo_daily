@@ -1,31 +1,34 @@
 # PROJECT STATUS
 
-## Core checkpoint — CI job resource correlation, 2026-10-29 UTC
+## Core checkpoint — native original receipt mismatch denial, 2026-10-29 UTC
 
-- PR41/issue18 automation/issue-11-plan-sdk-integration; parent
-  15852750fa6b936c67a37f428f5b93914f5694ee. Commit/tree/new CI in PR41 checkpoint.
-- Parent CI40845892811/latestattempt1 all5/EVERYstep SUCCESS/no skips;
-  Windows123353243227 persistent SDK/profile/receipt and protected turn/finish
-  markers observed. Component TEST ONLY, not hosted learner proof.
-- QA verifier now requires unique positive integer job IDs, strict integer run/
-  attempt fields, exact repository/run API URL and repository/run/job browser URL.
-  Reject mixed resource links before accepting green metadata. Consistency only,
-  not authenticity; retain fresh service reads/all existing step/head/release gates.
-- Four new regression groups cover invalid/duplicate IDs, foreign resource URLs,
-  numeric aliases and all5 swapped links in actual saved native attempt2 snapshot.
-  Red-before: five missing rejections reproduced. Green-after: QA51 PASS; original
-  test method ASTs unchanged, fixture only enriched with API-shaped resource fields.
-  Both saved exact-head snapshots accepted; --release still rejects all14pending.
-  Inventory153 valid (not153executed), diffcheck PASS; separate diff review done.
-- Four paths scripts/verify_qa.py; qa/test_verify_qa.py; docs/QA_SECURITY_MATRIX.md;
-  this status. No app/backend/CI/content/Auth/RLS/default/retention change. New
-  Flutter/SDK/native tests not claimed; new exact-head Actions still required.
-- NEXT latestattempt all5/EVERYstep; pending-only handoff/no duplication/longpolling.
-  Continue trustedroot/backend/captured storage lifecycle/durable uncertainty/
-  authenticated conditional application-release/retentionapproval.41draft/18open/
-  AIoff/memory-only/all14hostedpending; no merge/closure/deploy/spend/collection/
-  security/Pro/schedule/Alpha action.
-
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  2bc3053e203dd2c7db703e0d1789aacaed96fab3. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40847539101/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows123358699621 persistent SDK/receipt +positive turn/finish markers seen.
+  TEST ONLY component evidence, not hosted learner acceptance.
+- Five new mandatory Windows owned-reopen cases: turn/finish stored session_id
+  mismatch or missing request_json; turn text differs by one trailing space.
+  Actual native protected lookup uses same runtime/private SDK/profile and valid
+  typed COMPLETED outputs; exact GET/query/bearer/native metadata checks retained.
+- Separate5 failure reads leave original6 successful and4/5/3 old read counters
+  exact. Every rejection safe internalError/current leases/token+pending reference
+  preserved, explicit same/different event denials and zero mutation HTTP. Reset
+  fault flags before next positive command; counter5 stays exact after close.
+  All old assertions/phases/deadlines/finally/cleanup retained, new success marker
+  only after entire reopen passes. No production/default/payload storage change.
+- Four paths tool/windows_sdk_receipt_fixture.dart +tool/verify_windows_vault_bridge.ps1
+  under apps/flutter_app; docs/CONVERSATION_RECEIPT_LOOKUP.md; this status.
+  Separate fault-setup/counter/pending/old-assertion/cleanup diff review complete.
+  QA51/inventory153/diffcheck in PR; new native/format/analyze/build locally UNRUN
+  (no SDK/native Windows), require own exact-head Actions/marker.
+- NEXT latestattempt all5/EVERYstep/new mismatch marker+retained native/SDK;
+  fix diagnostics preserving assertions/deadlines/security. Pending-onlyhandoff/
+  no duplication/longpolling. Trustedroot/backend/captured storage lifecycle/durable
+  uncertainty/authenticated conditional application-release/retentionapproval and
+  all14 hosted groups remain.41draft/17open/defaultAIoff/memory-only/singlepending;
+  no Pro/content/API/RLS/Authstrategy/provider/collection/spend/security/merge/
+  closure/deploy/release/schedule change or Personal Alpha acceptance.
 
 ## Core checkpoint — native receipt rerun QA evidence, 2026-10-29 UTC
 

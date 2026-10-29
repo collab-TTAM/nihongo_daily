@@ -90,6 +90,9 @@ final class _Http extends http.BaseClient {
   bool closed = false;
   PendingConversationCommandEnvelope? additionalCommand;
   int additionalReceiptReads = 0;
+  int additionalMismatchReads = 0;
+  Map<String, Object>? additionalStoredRequest;
+  bool omitAdditionalOriginal = false;
 
   Future<http.StreamedResponse> _readAdditional(
     http.BaseRequest request,
@@ -118,7 +121,11 @@ final class _Http extends http.BaseClient {
           command.start == null &&
           await _read(scope) == _expected(scope),
     );
-    additionalReceiptReads++;
+    if (additionalStoredRequest != null || omitAdditionalOriginal) {
+      additionalMismatchReads++;
+    } else {
+      additionalReceiptReads++;
+    }
     final original = command.turn?.toJson() ?? command.finish!.toJson();
     final response = command.turn != null
         ? <String, Object?>{
@@ -149,7 +156,8 @@ final class _Http extends http.BaseClient {
                       'user_id': _user,
                       'operation': ref.operation.wireName,
                       'client_event_id': ref.clientEventId,
-                      'request_json': original,
+                      if (!omitAdditionalOriginal)
+                        'request_json': additionalStoredRequest ?? original,
                       'status': receiptStatus,
                       'response_json': receiptStatus == 'COMPLETED'
                           ? response
@@ -1194,6 +1202,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               await _read(scope) == _expected(scope),
         );
         final additionalCiphertexts = <Uint8List>[];
+        var mismatches = 0;
         for (final command in commands.skip(1)) {
           final encrypted = await protector.protect(command);
           additionalCiphertexts.add(encrypted);
@@ -1250,7 +1259,65 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               _check(rejected && network.sends == 0);
             }
           }
+          for (final mode in [
+            'session',
+            if (command.turn != null) 'text',
+            'missing',
+          ]) {
+            final original = command.turn?.toJson() ?? command.finish!.toJson();
+            network.additionalStoredRequest = mode == 'missing'
+                ? null
+                : {
+                    ...original,
+                    if (mode == 'session') 'session_id': _user,
+                    if (mode == 'text') 'text_ja': '${original['text_ja']} ',
+                  };
+            network.omitAdditionalOriginal = mode == 'missing';
+            network.receiptStatus = 'COMPLETED';
+            var mismatchRejected = false;
+            try {
+              await runtime.lookupProtectedConversationReceipt(encrypted);
+            } on AiTextFailure catch (error) {
+              mismatchRejected = error.code == AiTextErrorCode.internalError;
+            }
+            mismatches++;
+            _check(
+              mismatchRejected &&
+                  network.additionalMismatchReads == mismatches &&
+                  network.sends == 0 &&
+                  protector.isCurrent &&
+                  reader.isCurrent &&
+                  refreshCalls == 1 &&
+                  await vault.readRefreshToken() == rotated &&
+                  await _read(scope) == _expected(scope),
+            );
+            for (final attemptEvent in [
+              _event,
+              'b2000000-0000-4000-8000-000000000002',
+            ]) {
+              var stillPending = false;
+              try {
+                await session.start(
+                  StartConversationRequest(
+                    scenarioId: _user,
+                    level: AiTextLevel.n5,
+                    clientEventId: attemptEvent,
+                  ),
+                );
+              } on AiTextRequestPending {
+                stillPending = attemptEvent != _event;
+              } on AiTextFailure catch (error) {
+                stillPending =
+                    attemptEvent == _event &&
+                    error.code == AiTextErrorCode.syncConflict;
+              }
+              _check(stillPending && network.sends == 0);
+            }
+          }
+          network.additionalStoredRequest = null;
+          network.omitAdditionalOriginal = false;
         }
+        _check(mismatches == 5 && network.additionalMismatchReads == 5);
         network.additionalCommand = null;
         _check(
           network.additionalReceiptReads == 6 &&
@@ -1327,6 +1394,7 @@ Future<void> verifyWindowsOwnedReceiptPhase(
           _check(staleAdditionalRejected);
         }
         _check(network.additionalReceiptReads == 6 && network.sends == 0);
+        _check(network.additionalMismatchReads == 5);
         _check(
           await vault.readRefreshToken() == rotated &&
               await _read(scope) == _expected(scope),
