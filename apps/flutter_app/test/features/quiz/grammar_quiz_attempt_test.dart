@@ -273,8 +273,9 @@ void main() {
         final json = record();
         final first = answers(json).first as Map;
         if (mode == 'version') first['content_version'] = 2;
-        if (mode == 'order')
+        if (mode == 'order') {
           first['choices'] = (first['choices'] as List).reversed.toList();
+        }
         if (mode == 'answer') first['selected_id'] = id(1);
         expect(
           sameGrammarQuizAttempt(original, GrammarQuizAttempt.fromJson(json)),

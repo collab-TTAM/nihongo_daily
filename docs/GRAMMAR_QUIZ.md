@@ -6,6 +6,22 @@ GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
 
+## Grammar attempt test lint correction — 2026-10-29 UTC
+
+Parent5d7f414 CI40947859746/latestattempt1 all5/EVERYstep inspected. Database,
+repo-sanity,AI,Windows SUCCESS; Flutter format SUCCESS, analyzer failed sole
+curly_braces_in_flow_control_structures at grammar_quiz_attempt_test.dart:277.
+Twelve new unit tests and downstream Flutter/Web checks skipped, not passed.
+Add braces only to that multiline order-mutation if. Assignment, inputs, every
+assertion/deadline and production model unchanged; reverse patch restores entire
+parent test file byte-for-byte. No new test for this syntax-only fix. QA55/
+inventory155 valid(not155executed)/whitespace checked in PR. Local Dart/Flutter/
+analyze/build UNRUN; require new exact-head CI. Old pure smoke is parent evidence.
+No corpus/Pro/Auth/API/RLS/storage/default/retention change. Grammar storage/UI save
+still absent; PR41 draft/13 open/all14 hosted release groups pending. Commit/tree/
+new CI in PR checkpoint; next all5/EVERYstep/new12 and retained native markers,
+fix actual diagnostics preserving assertions. No merge/deploy/release acceptance.
+
 ## Grammar attempt data model — 2026-10-29 UTC
 
 Pre-code scoring/identity/scope rules were recorded in PR41 and issue13 before
