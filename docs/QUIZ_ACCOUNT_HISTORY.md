@@ -1,5 +1,30 @@
 # Captured local quiz-history repository — Issue #13
 
+## Readiness/Auth getter reentry — 2026-10-29
+
+A synchronous checking guard now rejects save/load invoked by supplied readiness
+or Auth getters while an outer identity check is unresolved. It uses the existing
+fixed session-changed failure before operation tracking or storage dispatch; the
+nested rejection alone does not revoke the healthy outer repository. Finally
+resets the checking guard on success and failure. Existing observed mismatch,
+closed-drain and revoked checks still permanently retire the capability.
+
+Two regressions use the existing actual disposable native journal and forwarding
+store, with reentry through readiness or the Auth getter. Both nested save and
+load must fail without any underlying I/O; the outer save then explicit load
+must perform exactly one append/read and preserve the same original immutable
+owner event, with foreign owner empty and operation drain still open. The test
+Auth hook defaults null; every original fixture byte/assertion/timeout/cleanup
+is retained. Existing legitimate reentry from the store itself still shares its
+registered dispatch; this guard only covers unresolved identity checks.
+
+Parent808d530 CI40826030053/latestattempt1 all5/EVERYstep SUCCESS/no skips,
+1523Flutter/fiveChrome/Web/Windows, prior8storage tests and native markers passed.
+New2/format/analyze/build locally UNRUN(noSDK), require exact-head CI. QA46/
+inventory152/diffcheck recorded separately. No Authstrategy/provider/API/RLS/
+retention/default/Pro/content change or hosted learner proof;41draft/13open and
+all14 hosted release groups pending.
+
 ## Final readiness storage fence — 2026-10-29
 
 The owner-bound repository now rechecks exact captured session identity, open

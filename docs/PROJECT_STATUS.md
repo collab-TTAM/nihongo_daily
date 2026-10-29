@@ -1,5 +1,31 @@
 # PROJECT STATUS
 
+## Core checkpoint — quiz readiness reentry guard, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  808d530030903f297b94c4bf803fc1c5e99f1da0. Commit/tree/CI in PR41 checkpoint.
+- Parent CI40826030053/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Flutter123289650123 clean analyze/1523full+fiveChrome/Web, prior8storage tests;
+  Windows123289210787 persistent SDK/post-decrypt markers verified.
+- Add synchronous checking guard around quiz history currentness, finally reset.
+  Supplied readiness/Auth getter nested save/load fails fixed session-changed
+  before operation registration/storage I/O without revoking healthy outer work.
+  Existing final session/drain/revoked/terminal mismatch/replay behavior retained.
+- Two actual-native-journal regressions readiness/Auth getter nested save+load,
+  healthy outer save/read exactly once/immutable owner event/foreignempty/open
+  drain. Entire original fixture recovered after removing insertions/optional
+  test-only Auth hook; all assertions/timeouts/cleanup unchanged. Four paths quiz
+  history repository/test under apps/flutter_app; QUIZ_ACCOUNT_HISTORY; this
+  status. Separate checking/finally/registration/drain/preservation diff review.
+- QA46/inventory152/diffcheck in PR; new2/format/analyze/build locally UNRUN(noSDK).
+  NEXT exact-head/latestattempt all5/EVERYstep/new2+retained native/SDK markers;
+  fix diagnostics with assertions/gates intact. Pending-onlyhandoff/no duplicate
+  code/longpolling. Remaining reviewed integration/trustedroot/backend/captured
+  lifecycle/uncertainty/authenticated conditional release/retentionapproval open.
+ 41draft/13open/AIoff/memory-only/all14hostedpending. No Pro/content/API/RLS/
+  Authstrategy/provider/collection/spend/security/merge/closure/deploy/release/
+  schedule change or Personal Alpha acceptance.
+
 ## Core checkpoint — exact quiz storage-test formatter repair, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent

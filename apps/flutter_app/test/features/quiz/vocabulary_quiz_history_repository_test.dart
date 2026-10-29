@@ -15,10 +15,12 @@ import 'quiz_journal_fixtures.dart';
 final class _QuizAuth implements ReviewAuth {
   ReviewSession? session = ReviewSession(userId: quizOwner);
   bool fail = false;
+  void Function()? onRead;
 
   @override
   ReviewSession? get currentSession {
     if (fail) throw StateError('PRIVATE AUTH TOKEN');
+    onRead?.call();
     return session;
   }
 }
@@ -62,6 +64,54 @@ void main() {
     await journal.close();
     await directory.delete(recursive: true);
   });
+
+  for (final throughAuth in [false, true]) {
+    test('quiz readiness nested storage rejected auth=$throughAuth', () async {
+      final event = quizReport(1);
+      late VocabularyQuizHistoryRepository service;
+      var armed = false;
+      Future<void>? nested;
+      void reenter() {
+        if (!armed) return;
+        armed = false;
+        nested = Future.wait<void>([
+          expectLater(service.save(event), changed),
+          expectLater(service.load(), changed),
+        ]).then<void>((_) {});
+      }
+
+      service = VocabularyQuizHistoryRepository(
+        auth: auth,
+        store: store,
+        operations: operations,
+        isReady: () {
+          if (!throughAuth) {
+            reenter();
+          }
+          return true;
+        },
+      );
+      if (throughAuth) {
+        auth.onRead = reenter;
+      }
+      armed = true;
+      final saved = await service.save(event);
+      expect(nested, isNotNull);
+      await nested;
+      expect(store.appends, 1);
+      expect(store.loads, 0);
+      expect(saved.ownerId, quizOwner);
+      expect(sameVocabularyQuizAttempt(saved.attempt, event), isTrue);
+      final loaded = await service.load();
+      expect(loaded, hasLength(1));
+      expect(store.appends, 1);
+      expect(store.loads, 1);
+      expect(loaded.single.ownerId, quizOwner);
+      expect(sameVocabularyQuizAttempt(loaded.single.attempt, event), isTrue);
+      expect(operations.isClosing, isFalse);
+      expect(await journal.list(quizOther), isEmpty);
+    });
+  }
 
   for (final save in [false, true]) {
     for (final afterIO in [false, true]) {

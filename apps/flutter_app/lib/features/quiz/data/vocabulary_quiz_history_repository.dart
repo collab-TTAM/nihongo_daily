@@ -95,24 +95,31 @@ final class VocabularyQuizHistoryRepository {
   final ReviewSession _captured;
   final _active = <String, _QuizSave>{};
   bool _revoked = false;
+  bool _checking = false;
 
   void _requireCurrent() {
-    if (!_revoked && !_operations.isClosing) {
-      try {
-        if (_isReady() &&
-            identical(_auth.currentSession, _captured) &&
-            _isReady() &&
-            identical(_auth.currentSession, _captured) &&
-            !_operations.isClosing &&
-            !_revoked) {
-          return;
+    if (_checking) throw const VocabularyQuizSessionChanged();
+    _checking = true;
+    try {
+      if (!_revoked && !_operations.isClosing) {
+        try {
+          if (_isReady() &&
+              identical(_auth.currentSession, _captured) &&
+              _isReady() &&
+              identical(_auth.currentSession, _captured) &&
+              !_operations.isClosing &&
+              !_revoked) {
+            return;
+          }
+        } on Object {
+          // Raw Auth/readiness errors never cross this boundary.
         }
-      } on Object {
-        // Raw Auth/readiness errors never cross this boundary.
       }
+      _revoked = true;
+      throw const VocabularyQuizSessionChanged();
+    } finally {
+      _checking = false;
     }
-    _revoked = true;
-    throw const VocabularyQuizSessionChanged();
   }
 
   Future<T> _storage<T>(Future<T> Function() operation) async {
