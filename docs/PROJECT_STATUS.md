@@ -1,5 +1,38 @@
 # PROJECT STATUS
 
+## Core checkpoint — deterministic grammar quiz core, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; parent
+  e9f6adcad8338a25473cf850338243af9c177f3b. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40868376520/latestattempt1 all5/EVERYstep SUCCESS/no skips; Flutter
+  123429527111 restored-history journey and Windows123428910630 persistent SDK/
+  protected original-mismatch markers seen. TEST ONLY, not hosted learner proof.
+- Pre-code rules persisted in PR41/issue13. Separate GrammarQuizQuestion/Round
+  cannot enter vocabulary attempt capture. Validate complete selected-level
+  grammar source <=5000 with bounded IDs/patterns/meanings, positive versions and
+  unique IDs. Skip repeated trimmed patterns; require4 distinct source meanings;
+  deterministic original entries/rotating correct slot, immutable lists.
+- Question identity grammar/level/id/version; <=10 same-level unique targets per
+  round. First valid current-question choice only, no early/stale advance, score
+  1/0, immutable incorrect/answer snapshots. Source association only, not semantic
+  equivalence/mastery. No UI/provider/storage/Auth/SRS/recorder/default activation.
+- Ten synthetic core tests AUTHORED locally UNRUN(noSDK): original options/slots,
+  diversity/duplicate prompts/invalid bounds, repeated meaning, immutable lists,
+  first answer/stale callbacks, level/version identity, round bounds and scoring.
+  QA55 PASS/inventory153 valid(not153executed)/diffcheck PASS. Separate type-safety/
+  source-validation/ambiguity/identity/round/bounds/no-write diff review complete.
+- Four paths new apps/flutter_app/lib/features/quiz/domain/grammar_quiz.dart;
+  new apps/flutter_app/test/features/quiz/grammar_quiz_test.dart; new
+  docs/GRAMMAR_QUIZ.md; this status. Full tree/blob/CAS evidence in PR41.
+- NEXT exact-head/latestattempt all5/EVERYstep/new10/format/analyze; fix actual
+  diagnostics preserving tests/security. Then review grammar UI/source integration
+  with explicit local-only limits; grammar persistence remains separate. Pending-
+  only handoff/no duplication/longpolling. Hosted Auth/sync/AI/voice/learner and
+  conditional release/retention gates remain.41draft/13open/defaultAIoff/memory-only/
+  all14hostedpending; no Pro/content/API/RLS/Authstrategy/provider/spend/collection/
+  security/merge/closure/deploy/release/schedule/Personal Alpha acceptance change.
+
+
 ## Core checkpoint — CI step resource validation, 2026-10-29 UTC
 
 - PR41/issue18 automation/issue-11-plan-sdk-integration; parent
