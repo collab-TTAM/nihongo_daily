@@ -1,5 +1,28 @@
 # PROJECT STATUS
 
+## Core checkpoint — reproducible quiz history QA evidence, 2026-10-29 UTC
+
+- PR41/issue18+13 automation/issue-11-plan-sdk-integration; exact parent
+  c0039dd94cd23b7685c16036b7a11ae95af719b8. New commit/tree/CI in PR41 checkpoint.
+- CI40805010560/latestattempt1 all5/EVERYstep SUCCESS/no skips. Flutter123222297423
+  clean analyze/1491full+fiveChrome, extended44-assertion actual-file filter journey
+  passed. Windows123221810794 builds/persistent SDK/post-decrypt markers verified.
+- Save unmodified workflow run and complete latest-attempt jobs in
+  qa/evidence/20261029-quiz-history-c0039dd.json. Existing verifier checks exact
+  parent/head/attempt/all jobs/every step. It is parent component evidence only,
+  not current docs-head CI/authenticity/hosted learner proof. New anchored matrix
+  case covers pages/errors/levels/actual-disk A/B/A. All151 old case objects,
+  findings/gates and14 pending release groups retained. Fix stale43-case prose.
+- Four paths qa/matrix.json; new qa/evidence/20261029-quiz-history-c0039dd.json;
+  docs/QA_SECURITY_MATRIX.md; this status. QA/evidence/inventory/negative release/
+  whitespace and separate exact snapshot/preservation review recorded in PR.
+  No local Flutter/Dart SDK or new Flutter execution claim for this QA delivery.
+- NEXT inspect new-head latest-attempt all5/EVERYstep; pending-only handoff/no
+  duplicatecode/longpolling. Continue remaining reviewed integration gaps.41draft/
+  18+13+17open/defaultAIoff/memory-only/all14hostedpending. No Pro/content/Auth/
+  API/RLS/provider/collection/spend/security/merge/closure/deploy/release/schedule
+  change or Personal Alpha acceptance.
+
 ## Core checkpoint — real-journal history filter journey, 2026-10-29 UTC
 
 - PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent

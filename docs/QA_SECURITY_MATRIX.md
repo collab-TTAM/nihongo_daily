@@ -1,11 +1,36 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-43 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+152 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
 synthetic evidence or fixture may be promoted to real integration evidence.
+
+## Observed quiz history component evidence — 2026-10-29
+
+Saved `qa/evidence/20261029-quiz-history-c0039dd.json` contains the unmodified
+workflow-run and complete latest-attempt jobs fetched from GitHub for exact
+`c0039dd94cd23b7685c16036b7a11ae95af719b8`, run40805010560/attempt1.
+All5 jobs and every returned step completed successfully. Flutter123222297423
+logs show clean analysis,1491 tests (including the extended actual-journal filter
+journey) and five Chrome tests; Web/Windows builds and retained native/SQL/Edge
+gates passed. Windows123221810794 logs show both post-decrypt native markers.
+The new matrix case anchors level/errors filtering,20-row boundaries and the
+actual journal/SDK mounted-history A/B/A continuation. Inventory is152, not152
+executed tests. This is observed source/component evidence, not release evidence.
+
+```bash
+python3 scripts/verify_qa.py --head c0039dd94cd23b7685c16036b7a11ae95af719b8 --evidence qa/evidence/20261029-quiz-history-c0039dd.json
+```
+
+The snapshot belongs only to that exact parent source. It does not prove CI for
+a later documentation/QA commit. The verifier checks metadata correlation and
+completeness, not cryptographic origin or live functionality. Adding `--release`
+must still fail because all14 integration gates remain pending. HTTP/unsigned JWT/
+vault are TEST ONLY, and graceful same-process reopen is not hosted JWT/RLS,
+physical Windows startup, hardware loss or multi-device learner acceptance.
+No production data, credentials, deploy or release activation is included.
 
 ## Baseline inventory and reproducible runs
 
