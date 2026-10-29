@@ -7,6 +7,30 @@ exists; it does **not** mean it passed on the current head or proves live integr
 `pending-integration` means the specified scenario has not been observed. No
 synthetic evidence or fixture may be promoted to real integration evidence.
 
+## Step resource correlation — 2026-10-29
+
+The CI verifier now requires each returned step number to be a positive JSON
+integer (excluding booleans/floats/strings), strictly increasing within its job.
+Duplicate or reversed step resources cannot pass behind unchanged successful
+names/statuses. Gaps and repeated numbers across different jobs remain valid;
+GitHub numbers jobs independently and post-action steps can leave gaps. All prior
+head/run/attempt/job/step-name/completeness/status/release checks remain required.
+This is metadata consistency, not authenticity or hosted learner proof.
+
+Four added regression groups cover invalid numeric aliases in every job,
+duplicate/reversed sequences, valid independent gapped sequences, and duplicated
+resources in all five slots of the saved native attempt2 snapshot. Before the
+fix, the three rejection groups exposed50 missed rejections. After the fix55 QA
+tests pass. All original test methods retain identical ASTs; synthetic metadata
+only gains API-shaped step numbers. Saved native/quiz evidence is unchanged and
+both remain accepted. Fresh actual f4aa294 CI40864496130/latestattempt1 also
+validates with all five jobs/every required step successful; Windows123415788312
+persistent SDK/profile/receipt rotation +protected original-mismatch markers
+observed. TEST ONLY native components are not hosted integration acceptance.
+Inventory153 is valid, not153executed; --release still rejects all14 pending groups.
+No app/default/Auth/RLS/workflow/content/retention policy or release gate changes.
+
+
 ## Job resource correlation — 2026-10-29
 
 The CI evidence verifier now requires unique positive integer job IDs, strict

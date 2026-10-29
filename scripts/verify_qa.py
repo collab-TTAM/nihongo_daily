@@ -116,6 +116,13 @@ def validate_ci(matrix, evidence, expected_head):
                 f"wrong job evidence URL: {name}")
         require(job["status"] == "completed" and job["conclusion"] == "success", f"job not successful: {name}")
         steps = job["steps"]
+        step_numbers = [step["number"] for step in steps]
+        require(all(type(number) is int and number > 0 for number in step_numbers),
+                f"invalid step resource identity: {name}")
+        # GitHub numbers each job independently, with possible post-action gaps.
+        # A successful name cannot stand in for another or reordered resource.
+        require(all(left < right for left, right in zip(step_numbers, step_numbers[1:])),
+                f"unordered or duplicate step resources: {name}")
         step_names = [step["name"] for step in steps]
         require(len(step_names) == len(set(step_names)), f"duplicate steps: {name}")
         require(set(matrix["ci_gates"][name]) <= set(step_names), f"missing critical step: {name}")

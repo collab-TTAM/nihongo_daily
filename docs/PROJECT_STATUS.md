@@ -1,31 +1,30 @@
 # PROJECT STATUS
 
-## Core checkpoint — restored real-journal quiz order journey, 2026-10-29 UTC
+## Core checkpoint — CI step resource validation, 2026-10-29 UTC
 
-- PR41/issue13 automation/issue-11-plan-sdk-integration; parent
-  258c386356052fdb1f95c0e417834b42961687f0. Commit/tree/new CI in PR41 checkpoint.
-- Parent CI40861677014/latestattempt1 all5/EVERYstep SUCCESS/no skips;
-  Flutter123406936468 all3 order widgets and Windows123406291869 persistent SDK/
-  protected original-mismatch markers observed. Component TEST ONLY, not hosted.
-- Extend existing actual-file/pinned SDK/owned restart quiz journey AFTER every
-  old assertion: order actual original+correction reports both ways, level filter/
-  range/totals, explicit reload retaining order, captured stale order before/after
-  B frame and A-B-A newest/empty reset. Exactly3 added explicit native reads;
-  toggles add0reads/0appends/0HTTP, final journal bytes unchanged/owner text absent.
-- Existing real runAsync disk barrier/deadlines/finally/cleanup/input/assertions
-  unchanged. Remove insertion to recover entire original fixture. Existing QA
-  case gains order/callback/counter anchors; other152 cases/findings/gates intact.
-  Separate snapshot/row identity/read count/account/callback/preservation review.
-  QA51 PASS/inventory153 valid(not153executed)/diffcheck PASS. New extended Flutter
-  journey/format/analyze/build locally UNRUN(noSDK); new exact-head CI required.
-- Four paths apps/flutter_app/test/features/quiz/quiz_disk_journey_widget_test.dart;
-  qa/matrix.json; docs/QUIZ_ACCOUNT_HISTORY.md; this status. No production source/
-  default/Authstrategy/provider/API/RLS/security/content/Pro/retention activation.
-- NEXT latestattempt all5/EVERYstep/extended real-file journey/native SDK markers;
-  fix actual diagnostics preserving assertions/deadlines/security. Pending-only
-  handoff/no duplication/longpolling. Hosted learner/Auth/sync/AI/voice/verified
-  conditional release/retention gates remain.41draft/13open/defaultAIoff/memory-only/
-  all14hostedpending; no merge/closure/deploy/spend/collection/schedule/Alpha action.
+- PR41/issue18 automation/issue-11-plan-sdk-integration; parent
+  f4aa294ff19296abebcc78699e23c42556877c75. Commit/tree/new CI in PR41 checkpoint.
+- Exact CI40864496130/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  Windows123415788312 persistent SDK/profile/receipt rotation and protected
+  original-mismatch markers observed. TEST ONLY component, not hosted proof.
+- Evidence verifier requires positive integer strictly increasing step numbers
+  within each job. Reject boolean/float/string/invalid numbers, duplicates and
+  reversed order even when every name/status is successful. Allow gaps and
+  independent job sequences. Existing identity/completeness/status gates retained.
+- Four new regression groups; red-before50 missed rejections, green-after55 QA
+  PASS. Original test method ASTs unchanged; synthetic fixture only gains step
+  numbers. Both saved evidence blobs unchanged/accepted; freshly fetched actual
+  parent run/jobs also accepted. Inventory153 valid(not153executed), --release
+  rejects all14pending. Separate diff/old-tests/gaps/raw-evidence review complete.
+- Four paths scripts/verify_qa.py; qa/test_verify_qa.py; docs/QA_SECURITY_MATRIX.md;
+  this status. No app/CI/Auth/RLS/content/default/retention-policy change. Python
+  unit suite executes modified verifier; no local Flutter/Windows execution claim.
+- NEXT exact-head/latestattempt all5/EVERYstep; pending-only handoff/no duplication/
+  longpolling. Production ownership/captured lifecycle/durable uncertainty/
+  authenticated lookup/verified conditional release/retentionapproval/hosted learner
+  remain.41draft/18open/defaultAIoff/memory-only/singlepending/all14hostedpending;
+  no Pro/provider/spend/collection/security/merge/closure/deploy/release/schedule/
+  Personal Alpha acceptance.
 
 
 ## Core checkpoint — quiz history formatter repair, 2026-10-29 UTC

@@ -29,8 +29,8 @@ def fixture(matrix):
          "run_url": f"https://api.github.com/repos/{qa.REPOSITORY}/actions/runs/123",
          "html_url": f"https://github.com/{qa.REPOSITORY}/actions/runs/123/job/{index}",
          "status": "completed", "conclusion": "success", "steps": [
-             {"name": step, "status": "completed", "conclusion": "success"}
-             for step in steps]}
+             {"number": number, "name": step, "status": "completed", "conclusion": "success"}
+             for number, step in enumerate(steps, start=1)]}
         for index, (name, steps) in enumerate(matrix["ci_gates"].items(), start=1)]}}
 
 
@@ -114,6 +114,50 @@ class QaEvidenceTests(unittest.TestCase):
                 mixed["jobs"]["jobs"][slot]["html_url"] = (
                     evidence["jobs"]["jobs"][(slot + 1) % 5]["html_url"])
                 with self.assertRaisesRegex(ValueError, "wrong job evidence URL"):
+                    qa.validate_ci(self.matrix, mixed, head)
+
+    def test_step_resource_numbers_are_positive_integers(self):
+        for slot in range(5):
+            for value in (None, False, True, 0, -1, 1.0, "1"):
+                with self.subTest(slot=slot, value=value):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot]["steps"][0]["number"] = value
+                    with self.assertRaisesRegex(ValueError, "invalid step resource identity"):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_step_resource_numbers_reject_duplicates_and_reversed_order(self):
+        for slot in range(5):
+            for mode in ("duplicate", "reversed"):
+                with self.subTest(slot=slot, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    steps = evidence["jobs"]["jobs"][slot]["steps"]
+                    if mode == "duplicate":
+                        steps[1]["number"] = steps[0]["number"]
+                    else:
+                        steps.reverse()
+                    with self.assertRaisesRegex(ValueError, "unordered or duplicate step resources"):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_step_resource_number_gaps_and_independent_job_sequences_are_valid(self):
+        # Post-action numbering can have gaps. Do not require contiguous numbers
+        # or globally unique step numbers across independently numbered jobs.
+        for job in self.evidence["jobs"]["jobs"]:
+            for index, step in enumerate(job["steps"], start=1):
+                step["number"] = index * 3
+        qa.validate_ci(self.matrix, self.evidence, HEAD)
+
+    def test_saved_native_snapshot_rejects_relabelled_step_resources(self):
+        evidence = qa.read_json(
+            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
+        qa.validate_ci(self.matrix, evidence, head)
+        for slot in range(5):
+            with self.subTest(slot=slot):
+                mixed = deepcopy(evidence)
+                steps = mixed["jobs"]["jobs"][slot]["steps"]
+                # Keep every successful name/status; duplicate one resource number.
+                steps[1]["number"] = steps[0]["number"]
+                with self.assertRaisesRegex(ValueError, "unordered or duplicate step resources"):
                     qa.validate_ci(self.matrix, mixed, head)
 
     def test_rejects_stale_head(self):
