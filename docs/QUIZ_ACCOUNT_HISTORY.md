@@ -303,3 +303,15 @@ original fixture. No assertion/input/test body/deadline/production/gate change,
 and no redundant test for whitespace. QA46/inventory151/diffcheck pass separately;
 no local Dart/Flutter SDK or formatter/analyzer/widget/build execution claim.
 New exact-head CI must verify format/analyze/new2filter and retained tests.
+
+## Exact page-test formatter repair — 2026-10-29 UTC
+
+CI40793661524 exact5b28377/latestattempt1 passed repo/AI/database/Windows with
+every step successful. Flutter123185323934 stopped at strict formatter: six range
+assertions must each fit on one line. Analyzer/new4page widgets/fullFlutter/later
+Flutter gates were skipped, not passed. Apply exactly the six logged wraps;
+output blob starts66b4311 as logged. Reverse expansion reproduces the entire
+original fixture, preserving all order/bounds/duplicate/ABA/owner/layout assertions,
+inputs, actual taps, deadlines and cleanup. No redundant test for formatting or
+weakened gate. QA46/inventory151/diffcheck pass separately; local Dart/Flutter SDK
+absent, new-head formatter/analyzer/widgets/build UNRUN. Exact-head CI required.

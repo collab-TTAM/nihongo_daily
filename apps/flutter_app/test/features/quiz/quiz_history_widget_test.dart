@@ -163,10 +163,7 @@ void main() {
     expect(_shownHistory(tester), keys(0, 20));
     expect(find.text('41 bộ đã lưu'), findsOneWidget);
     expect(find.text('Câu đúng theo bài gốc: 20 / 41'), findsOneWidget);
-    expect(
-      find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'),
-      findsOneWidget,
-    );
+    expect(find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'), findsOneWidget);
     final newer = find.byKey(const Key('quiz-history-newer'));
     final older = find.byKey(const Key('quiz-history-older'));
     expect(tester.widget<OutlinedButton>(newer).onPressed, isNull);
@@ -215,10 +212,7 @@ void main() {
     await _filterHistory(tester, 'N4');
     expect(find.text('21 bộ đã lưu'), findsOneWidget);
     expect(_shownHistory(tester).length, 20);
-    expect(
-      find.text('Hiển thị 1–20 / 21 bộ (mới nhất trước)'),
-      findsOneWidget,
-    );
+    expect(find.text('Hiển thị 1–20 / 21 bộ (mới nhất trước)'), findsOneWidget);
     final older = find.byKey(const Key('quiz-history-older'));
     final beforeReload = tester.widget<OutlinedButton>(older).onPressed!;
     await _pageHistory(tester, 'older');
@@ -249,10 +243,7 @@ void main() {
     beforeReload();
     await tester.pumpAndSettle();
     expect(find.text('N4'), findsOneWidget);
-    expect(
-      find.text('Hiển thị 1–20 / 21 bộ (mới nhất trước)'),
-      findsOneWidget,
-    );
+    expect(find.text('Hiển thị 1–20 / 21 bộ (mới nhất trước)'), findsOneWidget);
     await _filterHistory(tester, 'N5');
     expect(_shownHistory(tester).first, 'quiz-history-${attempts[40].eventId}');
     expect(source.reads, 3);
@@ -294,10 +285,7 @@ void main() {
     await _pageHistory(tester, 'newer');
     first(); // Same page offset after newer/older ABA is a different revision.
     await tester.pumpAndSettle();
-    expect(
-      find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'),
-      findsOneWidget,
-    );
+    expect(find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'), findsOneWidget);
     final beforeFilter = tester.widget<OutlinedButton>(older).onPressed!;
     await _filterHistory(tester, 'N4');
     expect(_shownHistory(tester), isEmpty);
@@ -305,10 +293,7 @@ void main() {
     await _filterHistory(tester, 'Tất cả cấp độ');
     beforeFilter();
     await tester.pumpAndSettle();
-    expect(
-      find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'),
-      findsOneWidget,
-    );
+    expect(find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'), findsOneWidget);
     final retired = tester.widget<OutlinedButton>(older).onPressed!;
     container.invalidate(quizHistoryRepositoryProvider);
     container.read(quizHistoryRepositoryProvider);
@@ -333,10 +318,7 @@ void main() {
     await tester.pumpAndSettle();
     beforeLogout();
     await tester.pumpAndSettle();
-    expect(
-      find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'),
-      findsOneWidget,
-    );
+    expect(find.text('Hiển thị 1–20 / 41 bộ (mới nhất trước)'), findsOneWidget);
     final disposed = tester.widget<OutlinedButton>(older).onPressed!;
     container.read(routerProvider).go('/quiz');
     await tester.pumpAndSettle();
