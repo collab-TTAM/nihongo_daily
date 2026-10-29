@@ -1,5 +1,39 @@
 # Captured local quiz-history repository — Issue #13
 
+## Bounded history pages — 2026-10-29
+
+The history view now constructs at most20 result rows, newest first, instead of
+constructing the entire validated snapshot of up to10000 records in one Column.
+Explicit full-width newer/older controls move through the already loaded data;
+the range identifies the displayed rows. Controls are absent for20 or fewer
+results, and the first/last page disables its unavailable direction. Completion
+time and event-ID tie order still come from the existing owner-bound repository.
+This bounds rendered rows, not storage reads or the in-memory snapshot.
+
+Round/correct/answer totals continue to cover the entire selected-level snapshot,
+including rows on other pages. Filtering precedes pagination, so pages contain
+only the selected level. Selection and explicit reload reset to the newest page;
+reload first clears rows, totals and paging controls, including on failure.
+Owner/repository/route replacement creates an empty fresh panel as before.
+
+Each page action captures a monotonically changing view revision. Page moves,
+filter selections (including return to the same level) and reload invalidate old
+actions immediately. Mounted/current-capability/loading checks precede state
+changes. Duplicate callbacks cannot skip pages, and newer/older or level ABA
+cannot revive an earlier callback. Paging has no read/write/recorder/profile/
+mastery/SRS or study-credit effect and does not delete or compact any records.
+
+Four added TEST ONLY Auth/profile/read-port widgets cover shuffled duplicate
+input and41/20/1 boundaries, full-snapshot totals and one-read pagination,
+filter/reload/failure/shrink reset, duplicate/ABA/replaced/account/disposed
+callbacks and320px/200% actual hit-tested controls. All original widget bodies,
+assertions and cleanup are preserved. Local Dart/Flutter SDK is unavailable;
+new format/analyze/widgets/build require exact-head CI. QA46/inventory151 and
+whitespace are checked separately. Parent2515977 CI40790563753/latestattempt1
+passed all5 jobs/every step,1485 full Flutter/five Chrome/Web/Windows including
+both prior level-filter widgets. Component tests are not hosted learner proof;
+Issue13 stays open, PR41 draft and all14 hosted release groups pending.
+
 VocabularyQuizHistoryRepository borrows an existing local attempt store under one
 captured ready ReviewSession and a trusted runtime-readiness fence. This optional
 library does not authenticate a caller or create a hosted endpoint. The existing

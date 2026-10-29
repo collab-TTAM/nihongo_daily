@@ -3,6 +3,35 @@
 Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
+## Core checkpoint — bounded quiz history pages, 2026-10-29 UTC
+
+- PR41/issue13 automation/issue-11-plan-sdk-integration; exact parent
+  2515977efd95c9d0f7d36fd2c926ab4cf8e69865. New commit/tree/CI in PR41 checkpoint.
+- Parent CI40790563753/latestattempt1 all5 jobs/EVERYstep SUCCESS/no skips.
+  Flutter123175091375 analyze clean/1485 full+five Chrome/Web, both prior filter
+  widgets passed; Windows123174540970 builds/persistent SDK/post-decrypt markers.
+  Prior one-line formatter repair verified. TEST ONLY, not hosted learner proof.
+- History previously constructed up to10000 rows in one Column. Render at most20
+  newest-first rows per explicit local page; range and full-width older/newer
+  controls. Full filtered snapshot totals remain unchanged; no added I/O/write.
+  Reset to first page on filter/reload; loading/error/replacement clear controls.
+  Captured revision/current-capability/mounted guards reject duplicate, stale,
+  page/filter ABA, replacement and disposed callbacks before state mutation.
+- Four authored widgets cover41/20/1 boundaries/duplicate order/full totals,
+  filter/reload/error/shrink reset, stale/account/route guards and320px/200%
+  actual hit-tested controls. All original test bodies/assertions/cleanup retained.
+  Four paths history screen/widget test under apps/flutter_app;
+  docs/QUIZ_ACCOUNT_HISTORY.md; this status. Separate diff/bounds/lifecycle review.
+- QA46/inventory151/diffcheck recorded in PR handoff. No local Dart/Flutter SDK:
+  NEW format/analyze/widgets/build UNRUN; require exact-head latest-attempt CI.
+  NEXT inspect all5/EVERYstep/new4+retained widgets/native markers and fix actual
+  diagnostics without weakening assertions/gates; pending-onlyhandoff/no duplicate
+  code/long polling. Then remaining13 and trustedroot/backend/captured lifecycle/
+  durable uncertainty/authenticated conditional release/retentionapproval.
+- Keep41draft/13+17open/defaultAIoff/memory-only/all14hostedpending. No Pro/content/
+  API/schema/RLS/Authstrategy/provider/collection/spend/security/merge/closure/
+  deploy/release/schedule change or Personal Alpha acceptance.
+
 
 
 

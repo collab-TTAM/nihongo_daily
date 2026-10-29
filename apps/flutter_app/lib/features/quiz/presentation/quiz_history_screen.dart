@@ -68,8 +68,11 @@ enum _HistoryLevel {
 }
 
 class _HistoryPanelState extends State<_HistoryPanel> {
+  static const _pageSize = 20;
   List<OwnedVocabularyQuizAttempt>? _records;
   _HistoryLevel _level = _HistoryLevel.all;
+  int _pageStart = 0;
+  int _pageRevision = 0;
   bool _loading = false;
   bool _failed = false;
 
@@ -79,6 +82,8 @@ class _HistoryPanelState extends State<_HistoryPanel> {
       _loading = true;
       _failed = false;
       _records = null;
+      _pageStart = 0;
+      _pageRevision++;
     });
     try {
       final records = await widget.repository.load();
@@ -94,6 +99,20 @@ class _HistoryPanelState extends State<_HistoryPanel> {
     }
   }
 
+  void _movePage(int revision, int start) {
+    if (!mounted ||
+        !widget.isCurrent() ||
+        _loading ||
+        _records == null ||
+        revision != _pageRevision) {
+      return;
+    }
+    setState(() {
+      _pageStart = start;
+      _pageRevision++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final records = _records
@@ -101,6 +120,12 @@ class _HistoryPanelState extends State<_HistoryPanel> {
           return _level.level == null || record.attempt.level == _level.level;
         })
         .toList(growable: false);
+    final visible = records?.reversed
+        .skip(_pageStart)
+        .take(_pageSize)
+        .toList(growable: false);
+    final pageRevision = _pageRevision;
+    final pageStart = _pageStart;
     var correct = 0;
     var answers = 0;
     if (records != null) {
@@ -122,7 +147,11 @@ class _HistoryPanelState extends State<_HistoryPanel> {
           ],
           onChanged: (level) {
             if (!mounted || !widget.isCurrent() || level == null) return;
-            setState(() => _level = level);
+            setState(() {
+              _level = level;
+              _pageStart = 0;
+              _pageRevision++;
+            });
           },
         ),
         OutlinedButton(
@@ -152,8 +181,29 @@ class _HistoryPanelState extends State<_HistoryPanel> {
                 ? 'Chưa có kết quả quiz được lưu trên thiết bị này.'
                 : 'Chưa có kết quả quiz đã lưu cho cấp độ này.',
           ),
-        if (records != null)
-          for (final record in records.reversed)
+        if (records != null && visible != null && visible.isNotEmpty) ...[
+          Text(
+            'Hiển thị ${pageStart + 1}–${pageStart + visible.length} / '
+            '${records.length} bộ (mới nhất trước)',
+            key: const Key('quiz-history-range'),
+          ),
+          if (records.length > _pageSize) ...[
+            OutlinedButton(
+              key: const Key('quiz-history-newer'),
+              onPressed: pageStart == 0
+                  ? null
+                  : () => _movePage(pageRevision, pageStart - _pageSize),
+              child: const Text('Kết quả mới hơn'),
+            ),
+            OutlinedButton(
+              key: const Key('quiz-history-older'),
+              onPressed: pageStart + visible.length >= records.length
+                  ? null
+                  : () => _movePage(pageRevision, pageStart + _pageSize),
+              child: const Text('Kết quả cũ hơn'),
+            ),
+          ],
+          for (final record in visible)
             ListTile(
               key: ValueKey('quiz-history-${record.attempt.eventId}'),
               title: Text(
@@ -165,6 +215,7 @@ class _HistoryPanelState extends State<_HistoryPanel> {
                 '${record.attempt.completedAt.toIso8601String()}',
               ),
             ),
+        ],
       ],
     );
   }
