@@ -18,6 +18,16 @@ final class Auth implements ReviewAuth {
   ReviewSession? currentSession = ReviewSession(userId: id);
 }
 
+final class CallbackAuth implements ReviewAuth {
+  final ReviewSession session = ReviewSession(userId: id);
+  void Function()? beforeRead;
+  @override
+  ReviewSession get currentSession {
+    beforeRead?.call();
+    return session;
+  }
+}
+
 final class Port implements ConversationMutationTransport {
   final calls =
       <({ReviewSession session, String operation, Map<String, Object> body})>[];
@@ -450,4 +460,104 @@ void main() {
       expect(port.calls, isEmpty);
     },
   );
+  for (final afterResponse in [false, true]) {
+    for (final replaceSession in [false, true]) {
+      test('last readiness retires $afterResponse/$replaceSession', () async {
+        final auth = Auth();
+        final captured = auth.currentSession;
+        final port = Port();
+        var armed = false;
+        var checks = 0;
+        late CapturedConversationMutation<Object> op;
+        op = CapturedConversationMutation.finish(
+          auth: auth,
+          transport: port,
+          isReady: () {
+            if (armed && ++checks == 2) {
+              if (replaceSession) {
+                auth.currentSession = ReviewSession(userId: id);
+              } else {
+                op.revoke();
+              }
+            }
+            return true;
+          },
+          request: FinishConversationRequest(
+            sessionId: id,
+            clientEventId: event,
+          ),
+        );
+        if (afterResponse) {
+          port.reply = (_) {
+            armed = true;
+            return fixtures['finish_conversation_response'];
+          };
+        } else {
+          armed = true;
+        }
+        await expectLater(
+          op.submit(),
+          throwsA(code(AiTextErrorCode.unauthorized)),
+        );
+        expect(checks, 2);
+        expect(port.calls, hasLength(afterResponse ? 1 : 0));
+        expect(op.isBusy, isFalse);
+        armed = false;
+        auth.currentSession = captured;
+        expect(op.isCurrent, isFalse);
+        await expectLater(
+          op.submit(),
+          throwsA(code(AiTextErrorCode.unauthorized)),
+        );
+        expect(port.calls, hasLength(afterResponse ? 1 : 0));
+      });
+    }
+  }
+
+  for (final authGetter in [false, true]) {
+    test('standalone readiness blocks submit auth=$authGetter', () async {
+      final auth = CallbackAuth();
+      final port = Port();
+      var armed = false;
+      var nestedCalls = 0;
+      Future<void>? checked;
+      late CapturedConversationMutation<Object> op;
+      void reenter() {
+        if (!armed) return;
+        armed = false;
+        nestedCalls++;
+        expect(op.isCurrent, isFalse);
+        checked = expectLater(
+          op.submit(),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+      }
+
+      op = CapturedConversationMutation.finish(
+        auth: auth,
+        transport: port,
+        isReady: () {
+          if (!authGetter) reenter();
+          return true;
+        },
+        request: FinishConversationRequest(sessionId: id, clientEventId: event),
+      );
+      if (authGetter) auth.beforeRead = reenter;
+      armed = true;
+      expect(op.isCurrent, isTrue);
+      await checked!;
+      expect(nestedCalls, 1);
+      expect(port.calls, isEmpty);
+      expect(op.isBusy, isFalse);
+      final result = await op.submit();
+      expect(port.calls, hasLength(1));
+      armed = true;
+      expect(op.isCurrent, isTrue);
+      await checked!;
+      expect(nestedCalls, 2);
+      expect(port.calls, hasLength(1));
+      expect(await op.submit(), same(result));
+      expect(port.calls, hasLength(1));
+    });
+  }
 }

@@ -1,29 +1,31 @@
 # PROJECT STATUS
 
-## Core checkpoint — text repository readiness lifecycle, 2026-10-29 UTC
+## Core checkpoint — mutation readiness callback fence, 2026-10-29 UTC
 
-- PR41/issue17 branch automation/issue-11-plan-sdk-integration; exact parent
-  140afb0e149cf2d7b4b05a8aeeb0600633ef2912. Commit/tree/CI in PR41 checkpoint.
-- Parent CI40809615439/latestattempt1 all5/EVERYstep SUCCESS/no skips;
-  Flutter123237130165 clean analyze/1497full+fiveChrome/Web and prior6 receipt
-  readiness cases; Windows123236630611 persistent SDK/post-decrypt markers.
-- Fix adjacent CapturedAiTextRepository readiness reentry and final callback
-  retirement: nested checks cannot authorize transport, finally resets checking,
-  exact session/revoked rechecked after last readiness callback before send/result.
-  Invalidations terminal; rejected nested calls preserve healthy outer capability.
-- Six new regressions: revoke/same-user replacement before send/after response;
-  nested readiness/Auth getter calls. Exact0/1 calls/safe unauthorized/drain/current
-  outer/frozen explain+correction. All original fixture bodies/assertions intact.
-  Four paths captured_ai_text_repository.dart +test under apps/flutter_app;
-  docs/AI_TEXT_REPOSITORY.md; this status. Separate callback/final identity/reentry/
-  terminal/redaction/preservation review; QA46/inventory152/diffcheck in PR.
-- No local Dart/Flutter SDK: new6/format/analyze/build UNRUN; require exact-head
-  latestattempt all5/EVERYstep/new6/native markers. Pending-onlyhandoff/no duplicate
-  code/longpolling. Continue trustedroot/backend/captured storage lifecycle/durable
-  uncertainty/authenticated conditional application-release/retentionapproval.
- 41draft/17open/defaultAIoff/memory-only/all14hostedpending. No Pro/content/API/
-  RLS/Authstrategy/provider/collection/spend/security/merge/close/deploy/release/
-  schedule change or hosted learner/Personal Alpha acceptance.
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  3f94b5a35ad0840c9d946331e84976038711670d. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI40811034591/latestattempt1 all5 jobs/EVERYstep SUCCESS/no skips;
+  Windows123241204402 required persistent SDK/profile/receipt marker verified.
+  TEST ONLY component evidence, not hosted learner proof.
+- CapturedConversationMutation guards readiness/Auth getter reentry and checks
+  exact captured session/revoked after last readiness callback. Nested submit
+  returns pending before dispatch or cached-result access even from standalone
+  currentness checks. Final callback revoke/same-user rotation is terminal before
+  send/result/cache publication. Existing wire/cache/retry/timeout/drain unchanged.
+- Six regressions AUTHORED: revoke/same-user replacement before send/after response;
+  standalone readiness/Auth getter nested submit before/after cache. Exact calls/
+  safe errors/idle drain/terminal and healthy outer cached identity. Original
+  test bodies/assertions/deadlines retained. Four paths captured mutation +test
+  under apps/flutter_app; docs/CAPTURED_CONVERSATION_MUTATION.md; this status.
+- No local Dart/Flutter SDK: new6/format/analyze/build UNRUN. QA/inventory152/
+  whitespace/separate lifecycle/preservation diff review recorded in PR41.
+- NEXT exact-head/latestattempt all5/EVERYstep/new6 and native/SDK markers; fix
+  actual diagnostics preserving assertions/deadlines/security. Pending-only
+  handoff/no duplication/longpolling. Continue trustedroot/backend/storage lifecycle/
+  durable uncertainty/authenticated conditional application-release/retentionapproval.
+  41draft/17open/defaultAIoff/memory-only/singlepending/all14hostedpending; no Pro/
+  content/API/RLS/Authstrategy/provider/collection/spend/security/merge/closure/
+  deploy/release/schedule change or Personal Alpha acceptance.
 
 ## Core checkpoint — receipt reader callback lifecycle fence, 2026-10-29 UTC
 

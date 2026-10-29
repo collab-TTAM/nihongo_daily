@@ -94,15 +94,23 @@ final class CapturedConversationMutation<T extends Object> {
   Object? _inFlight;
   T? _accepted;
   bool _revoked = false;
+  bool _checking = false;
   bool get isBusy => _inFlight != null;
   bool get isCurrent {
-    if (_revoked) return false;
+    if (_revoked || _checking) return false;
+    _checking = true;
     try {
-      if (_ready() && identical(_auth.currentSession, _session) && _ready()) {
+      if (_ready() &&
+          identical(_auth.currentSession, _session) &&
+          _ready() &&
+          identical(_auth.currentSession, _session) &&
+          !_revoked) {
         return true;
       }
     } on Object {
       /* Safe fail closed. */
+    } finally {
+      _checking = false;
     }
     revoke();
     return false;
@@ -122,6 +130,9 @@ final class CapturedConversationMutation<T extends Object> {
   /// Explicit send/retry of the same captured wire. Completed success is reused
   /// locally; uncertain timeout is not success and stays busy until actual drain.
   Future<T> submit() async {
+    // Supplied readiness/Auth getters must not dispatch or reuse cached success
+    // before the outer lifecycle check has finished.
+    if (_checking) throw const AiTextRequestPending();
     _requireCurrent();
     final accepted = _accepted;
     if (accepted != null) return accepted;

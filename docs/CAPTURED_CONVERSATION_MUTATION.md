@@ -51,3 +51,34 @@ hosted learner acceptance. Parent81bd0f7 CI40073204935 allfive/every step passed
 939 Flutter/five Chrome; new exact-head full CI is still required. All14 hosted
 gates stay pending, main/staging AI off, live provider/voice/Auth strategy and
 applicable human collection/spend/release decisions remain unapproved.
+
+## Readiness callback retirement and nested submit — 2026-10-29 UTC
+
+The captured mutation now reserves a synchronous readiness-check guard before
+calling supplied readiness/Auth getters. Nested currentness is false; nested
+submit throws the existing pending error before transport or cached-result
+access, including a standalone isCurrent evaluation while no I/O is active.
+Rejected nested work alone does not revoke a healthy outer capability. Finally
+releases the guard on every path. After the final readiness callback, exact
+captured session identity and revoked state are checked again. Same-user rotation
+or synchronous revoke cannot authorize dispatch, decoded-result publication or
+cached success. Observed invalidation stays terminal even if the old hint returns.
+Existing immutable wire, cached-result identity, explicit retry, timeout and actual
+I/O drain behavior remain unchanged. This guard introduces no new slot/SDK owner.
+
+Six TEST ONLY regression cases add revoke/same-user replacement before send/after
+response, plus standalone readiness/Auth getter nested submits both before and
+after caching success. Exact0/1 port calls, safe unauthorized/pending, idle drain,
+terminal invalidation and healthy outer cached identity are required. All original
+test bodies/assertions/deadlines remain unchanged. No Dart/Flutter SDK is available
+locally: new6/formatter/analyzer/builds are UNRUN; exact new-head Actions required.
+QA46/inventory152/whitespace and separate preservation/lifecycle review are tracked
+in PR41. Parent3f94b5a CI40811034591/latestattempt1 all5/EVERYstep SUCCESS, including
+Windows123241204402 required persistent vault/same SDK/profile/receipt marker.
+Parent component proof is not new-head verification or hosted learner acceptance.
+
+No new replay/reservation/release authority, payload retention/default activation,
+Auth strategy/provider/API/RLS or Pro content changes. Learner recovery remains
+memory-only, single pending mutation blocking new work. Trusted root/backend,
+storage lifecycle/durable uncertainty/authenticated conditional application-release
+and approved retention remain outstanding; all14 hosted release groups pending.
