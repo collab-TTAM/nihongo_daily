@@ -71,6 +71,7 @@ class _HistoryPanelState extends State<_HistoryPanel> {
   static const _pageSize = 20;
   List<OwnedVocabularyQuizAttempt>? _records;
   _HistoryLevel _level = _HistoryLevel.all;
+  bool _errorsOnly = false;
   int _pageStart = 0;
   int _pageRevision = 0;
   bool _loading = false;
@@ -117,7 +118,11 @@ class _HistoryPanelState extends State<_HistoryPanel> {
   Widget build(BuildContext context) {
     final records = _records
         ?.where((record) {
-          return _level.level == null || record.attempt.level == _level.level;
+          final attempt = record.attempt;
+          final levelMatches =
+              _level.level == null || attempt.level == _level.level;
+          return levelMatches &&
+              (!_errorsOnly || attempt.score < attempt.answers.length);
         })
         .toList(growable: false);
     final visible = records?.reversed
@@ -154,6 +159,21 @@ class _HistoryPanelState extends State<_HistoryPanel> {
             });
           },
         ),
+        CheckboxListTile(
+          key: const Key('quiz-history-errors-only'),
+          value: _errorsOnly,
+          title: const Text('Chỉ bộ có câu sai'),
+          controlAffinity: ListTileControlAffinity.leading,
+          contentPadding: EdgeInsets.zero,
+          onChanged: (value) {
+            if (!mounted || !widget.isCurrent() || value == null) return;
+            setState(() {
+              _errorsOnly = value;
+              _pageStart = 0;
+              _pageRevision++;
+            });
+          },
+        ),
         OutlinedButton(
           key: const Key('quiz-history-load'),
           onPressed: _loading ? null : () => unawaited(_load()),
@@ -177,7 +197,9 @@ class _HistoryPanelState extends State<_HistoryPanel> {
         ],
         if (records != null && records.isEmpty)
           Text(
-            _level == _HistoryLevel.all
+            _errorsOnly
+                ? 'Không có bộ quiz có câu sai trong bộ lọc này.'
+                : _level == _HistoryLevel.all
                 ? 'Chưa có kết quả quiz được lưu trên thiết bị này.'
                 : 'Chưa có kết quả quiz đã lưu cho cấp độ này.',
           ),

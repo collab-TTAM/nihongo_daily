@@ -131,6 +131,15 @@ Future<void> _pageHistory(WidgetTester tester, String direction) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _errorsHistory(WidgetTester tester) async {
+  final toggle = find.byKey(const Key('quiz-history-errors-only'));
+  await tester.ensureVisible(toggle);
+  await tester.pumpAndSettle();
+  expect(toggle.hitTestable(), findsOneWidget);
+  await tester.tap(toggle);
+  await tester.pumpAndSettle();
+}
+
 List<String> _shownHistory(WidgetTester tester) => tester
     .widgetList<ListTile>(find.byType(ListTile))
     .map((tile) => tile.key)
@@ -140,6 +149,73 @@ List<String> _shownHistory(WidgetTester tester) => tester
     .toList();
 
 void main() {
+  testWidgets('errors filter reuses snapshot and resets pages', (tester) async {
+    final h = Harness();
+    final source = _Source(h)
+      ..response = (owner) async => [
+        for (var i = 1; i <= 41; i++)
+          OwnedVocabularyQuizAttempt(owner, quizReport(i, correct: i.isEven)),
+      ];
+    await _mount(tester, harness: h, source: source);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    await _pageHistory(tester, 'older');
+    final older = find.byKey(const Key('quiz-history-older'));
+    final stale = tester.widget<OutlinedButton>(older).onPressed!;
+    await _errorsHistory(tester);
+    expect(find.text('21 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 0 / 21'), findsOneWidget);
+    expect(_shownHistory(tester), [
+      for (var i = 41; i >= 3; i -= 2) 'quiz-history-${quizReport(i).eventId}',
+    ]);
+    stale();
+    await tester.pumpAndSettle();
+    expect(_shownHistory(tester).length, 20);
+    await _pageHistory(tester, 'older');
+    expect(_shownHistory(tester).length, 1);
+    await _errorsHistory(tester);
+    expect(find.text('41 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 20 / 41'), findsOneWidget);
+    expect(_shownHistory(tester).length, 20);
+    expect(source.reads, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('errors filter empty reload and owner reset', (tester) async {
+    final h = Harness();
+    final source = _Source(h)
+      ..response = (owner) async => [
+        OwnedVocabularyQuizAttempt(owner, quizReport(1, correct: true)),
+      ];
+    await _mount(tester, harness: h, source: source);
+    await _errorsHistory(tester);
+    expect(source.reads, 0);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('0 bộ đã lưu'), findsOneWidget);
+    expect(find.text('Câu đúng theo bài gốc: 0 / 0'), findsOneWidget);
+    expect(_shownHistory(tester), isEmpty);
+    expect(find.textContaining('Không có bộ quiz có câu sai'), findsOneWidget);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('0 bộ đã lưu'), findsOneWidget);
+    expect(source.reads, 2);
+    await h.runtime.signOut();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-history-errors-only')), findsNothing);
+    h.access.change(fixture.other);
+    await tester.pumpAndSettle();
+    final toggle = tester.widget<CheckboxListTile>(
+      find.byKey(const Key('quiz-history-errors-only')),
+    );
+    expect(toggle.value, isFalse);
+    await _load(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('1 bộ đã lưu'), findsOneWidget);
+    expect(source.reads, 3);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('history pages bound newest-first rows and preserve totals', (
     tester,
   ) async {

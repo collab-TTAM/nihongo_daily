@@ -337,3 +337,24 @@ original fixture, preserving all order/bounds/duplicate/ABA/owner/layout asserti
 inputs, actual taps, deadlines and cleanup. No redundant test for formatting or
 weakened gate. QA46/inventory151/diffcheck pass separately; local Dart/Flutter SDK
 absent, new-head formatter/analyzer/widgets/build UNRUN. Exact-head CI required.
+
+## Errors-only local-history filter — 2026-10-29 UTC
+
+The explicit “Chỉ bộ có câu sai” checkbox combines with the existing All/N5/N4
+filter over the same validated/deduplicated loaded owner snapshot. A round matches
+when its original score is less than its original answer count. This is a saved
+practice result, not current-content correctness or mastery. Rows, selected totals
+and20-row pages use the combined subset. Changing either filter resets first page
+and advances the same revision, so retained page callbacks cannot cross filters.
+No storage/content/network I/O or derived writes are added by the checkbox.
+
+Selection before load is allowed with zero I/O; explicit reload retains the
+checkbox. No matches shows explicit filter-empty text and0of0. Owner/repository/
+route replacement starts unchecked with no loaded data, using existing mounted/
+current repository guards. Two authored widgets cover exact odd-event rows from
+41 mixed rounds,21/20/1 errors-only boundaries/full totals/stale callback rejection/
+roundtrip with one read, plus pre-load/empty/reload/new-owner reset/exact counts.
+All old fixture bodies/assertions/cleanup are unchanged. Parentca8bc36
+CI40799400532 attempt1 passed all5/every step and retained Windows markers.
+New2 Flutter/format/analyze/build locally UNRUN(noSDK); QA46/inventory151/diffcheck
+pass separately. Require own exact-head CI. Hosted learner acceptance remains open.
