@@ -588,3 +588,34 @@ new exact-head CI. TEST ONLY Auth/JWT/profile/HTTP remain synthetic; no hosted
 learner proof, retention activation, replay/release authority or default change.
 Concrete backend/trusted root/storage lifecycle/durable uncertainty/authenticated
 conditional release and all14 hosted release groups remain open.
+
+## Receipt reader callback lifecycle fence — 2026-10-29 UTC
+
+CapturedConversationReceiptLookup now guards its readiness evaluation against
+synchronous readiness/Auth getter reentry. A nested isCurrent returns false and
+nested lookup fails before the borrowed read port; this alone does not revoke a
+healthy outer reader. After the final readiness callback, recheck exact captured
+session identity and terminal revocation before dispatch or result publication.
+A callback revoking the reader or rotating even the same user's session cannot
+publish readiness. Observed invalidation stays terminal if the old hint returns.
+Finally always releases the checking guard, including private callback failures.
+The same checks cover legacy and original-command reads; no new SDK or I/O lane.
+
+Six TEST ONLY regressions add four final-callback cases (revoke/same-user session
+replacement, before dispatch/after read) and two nested-lookup cases (readiness
+callback/Auth getter). They require exact port counts, safe unauthorized failure,
+no legacy fallback, terminal invalidation, UNKNOWN preservation and continued
+healthy explicit reads after rejected nested work. All original tests/assertions
+remain unchanged. These tests are AUTHORED, locally UNRUN: no Dart/Flutter SDK.
+QA regression/inventory/whitespace and separate lifecycle/diff review are recorded
+in PR41; exact new-head formatter/analyzer/tests/builds still require Actions.
+Parent2a87ec7 CI40806643205 attempt1 passed all5 jobs/EVERY step, including Windows
+123227145491 required persistent SDK/receipt and post-decrypt markers. Parent
+success does not verify this change, hosted Auth/RLS or learner acceptance.
+
+This closes a captured reader guard gap only. No receipt write, reservation,
+release/application/replay permission, payload retention, default activation,
+Auth strategy/provider/API/RLS or Pro content change. UNKNOWN/missing remains
+ambiguous, one pending mutation stays blocking, all14 hosted gates remain pending.
+Concrete trusted storage root/backend/lifecycle/durable uncertainty and approved
+retention plus authenticated conditional application-release remain outstanding.

@@ -21,6 +21,16 @@ final class Auth implements ReviewAuth {
   ReviewSession? get currentSession => session;
 }
 
+final class CallbackAuth implements ReviewAuth {
+  final ReviewSession session = ReviewSession(userId: owner);
+  void Function()? beforeRead;
+  @override
+  ReviewSession get currentSession {
+    beforeRead?.call();
+    return session;
+  }
+}
+
 class LegacyPort implements ConversationReceiptReadPort {
   int legacyCalls = 0;
   @override
@@ -225,4 +235,100 @@ void main() {
     expect(port.calls, 1);
     expect(port.legacyCalls, 0);
   });
+
+  for (final afterRead in [false, true]) {
+    for (final replaceSession in [false, true]) {
+      test('last readiness retires $afterRead/$replaceSession', () async {
+        final original = command('start');
+        final captured = auth.session;
+        port.result = ConversationReceiptSnapshot.fromRows(
+          original.reference,
+          [],
+        );
+        var armed = false;
+        var checks = 0;
+        reader = CapturedConversationReceiptLookup(
+          auth: auth,
+          port: port,
+          isReady: () {
+            if (armed && ++checks == 2) {
+              if (replaceSession) {
+                auth.session = ReviewSession(userId: owner);
+              } else {
+                reader.revoke();
+              }
+            }
+            return true;
+          },
+        );
+        if (afterRead) {
+          port.action = () async {
+            armed = true;
+            return port.result;
+          };
+        } else {
+          armed = true;
+        }
+        await expectLater(
+          reader.lookupCommand(original),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        expect(checks, 2);
+        expect(port.calls, afterRead ? 1 : 0);
+        expect(port.legacyCalls, 0);
+        armed = false;
+        auth.session = captured;
+        expect(reader.isCurrent, isFalse);
+        await expectLater(
+          reader.lookupCommand(original),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        expect(port.calls, afterRead ? 1 : 0);
+      });
+    }
+  }
+
+  for (final authGetter in [false, true]) {
+    test('nested readiness cannot dispatch auth=$authGetter', () async {
+      final original = command('turn');
+      port.result = ConversationReceiptSnapshot.fromRows(
+        original.reference,
+        [],
+      );
+      final callbackAuth = CallbackAuth();
+      var armed = false;
+      var nestedCalls = 0;
+      Future<void>? nestedChecked;
+      void reenter() {
+        if (!armed) return;
+        armed = false;
+        nestedCalls++;
+        expect(reader.isCurrent, isFalse);
+        nestedChecked = expectLater(
+          reader.lookupCommand(original),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+      }
+
+      reader = CapturedConversationReceiptLookup(
+        auth: callbackAuth,
+        port: port,
+        isReady: () {
+          if (!authGetter) reenter();
+          return true;
+        },
+      );
+      if (authGetter) callbackAuth.beforeRead = reenter;
+      armed = true;
+      final result = await reader.lookupCommand(original);
+      await nestedChecked!;
+      expect(nestedCalls, 1);
+      expect(result.status, ConversationReceiptStatus.unknown);
+      expect(port.calls, 1);
+      expect(port.legacyCalls, 0);
+      expect(reader.isCurrent, isTrue);
+      expect(await reader.lookupCommand(original), same(port.result));
+      expect(port.calls, 2);
+    });
+  }
 }

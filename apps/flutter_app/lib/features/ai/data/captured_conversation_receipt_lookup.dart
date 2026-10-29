@@ -49,14 +49,24 @@ final class CapturedConversationReceiptLookup {
   final bool Function() _ready;
   late final ReviewSession _session;
   bool _revoked = false;
+  bool _checking = false;
   bool get isCurrent {
-    if (_revoked) return false;
+    // External readiness/Auth getters can synchronously reenter or retire us.
+    // Nested reads cannot establish readiness while the outer check is pending.
+    if (_revoked || _checking) return false;
+    _checking = true;
     try {
-      if (_ready() && identical(_auth.currentSession, _session) && _ready()) {
+      if (_ready() &&
+          identical(_auth.currentSession, _session) &&
+          _ready() &&
+          identical(_auth.currentSession, _session) &&
+          !_revoked) {
         return true;
       }
     } on Object {
       /* Fixed failure below. */
+    } finally {
+      _checking = false;
     }
     revoke();
     return false;

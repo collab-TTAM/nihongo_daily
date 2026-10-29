@@ -1,27 +1,32 @@
 # PROJECT STATUS
 
-## Core checkpoint — reproducible quiz history QA evidence, 2026-10-29 UTC
+## Core checkpoint — receipt reader callback lifecycle fence, 2026-10-29 UTC
 
-- PR41/issue18+13 automation/issue-11-plan-sdk-integration; exact parent
-  c0039dd94cd23b7685c16036b7a11ae95af719b8. New commit/tree/CI in PR41 checkpoint.
-- CI40805010560/latestattempt1 all5/EVERYstep SUCCESS/no skips. Flutter123222297423
-  clean analyze/1491full+fiveChrome, extended44-assertion actual-file filter journey
-  passed. Windows123221810794 builds/persistent SDK/post-decrypt markers verified.
-- Save unmodified workflow run and complete latest-attempt jobs in
-  qa/evidence/20261029-quiz-history-c0039dd.json. Existing verifier checks exact
-  parent/head/attempt/all jobs/every step. It is parent component evidence only,
-  not current docs-head CI/authenticity/hosted learner proof. New anchored matrix
-  case covers pages/errors/levels/actual-disk A/B/A. All151 old case objects,
-  findings/gates and14 pending release groups retained. Fix stale43-case prose.
-- Four paths qa/matrix.json; new qa/evidence/20261029-quiz-history-c0039dd.json;
-  docs/QA_SECURITY_MATRIX.md; this status. QA/evidence/inventory/negative release/
-  whitespace and separate exact snapshot/preservation review recorded in PR.
-  No local Flutter/Dart SDK or new Flutter execution claim for this QA delivery.
-- NEXT inspect new-head latest-attempt all5/EVERYstep; pending-only handoff/no
-  duplicatecode/longpolling. Continue remaining reviewed integration gaps.41draft/
-  18+13+17open/defaultAIoff/memory-only/all14hostedpending. No Pro/content/Auth/
-  API/RLS/provider/collection/spend/security/merge/closure/deploy/release/schedule
-  change or Personal Alpha acceptance.
+- PR41/issue17 automation/issue-11-plan-sdk-integration; exact parent
+  2a87ec7bcea49d51e90486225710bbcd15a6960d. Commit/tree/CI in PR41 checkpoint.
+- Parent CI40806643205/latestattempt1 all5 jobs/EVERYstep SUCCESS/no skips;
+  Windows123227145491 required persistent SDK/receipt/post-decrypt markers verified.
+  This is component TEST ONLY evidence, not hosted learner acceptance.
+- Harden CapturedConversationReceiptLookup against readiness/Auth getter reentry;
+  nested lookup cannot use the borrowed port or establish readiness. Final exact
+  session and revocation checks fence synchronous last-callback retirement before
+  dispatch/result publication. Observed invalidation remains terminal; healthy
+  outer reads survive rejected nested work. No new owner/transport/slot/I/O policy.
+- Six regressions AUTHORED: revoke/same-user replacement before dispatch/after read,
+  plus nested readiness/Auth getter lookup; exact counts/safe errors/no fallback/
+  UNKNOWN/current-read checks. All original fixture bodies/assertions unchanged.
+  Four paths reader/recovered_command_receipt_lookup_test under apps/flutter_app;
+  docs/CONVERSATION_RECEIPT_LOOKUP.md; this status. QA46/diffcheck PASS, inventory152
+  valid (not152 tests executed). Separate callback/final-check/terminal/redaction/
+  original-test-preservation/diff review complete.
+  Local Dart/Flutter SDK absent: new6/format/analyze/build UNRUN; require Actions.
+- NEXT exact-head/latestattempt all5/EVERYstep/new6 and retained SDK/native markers;
+  fix real diagnostics preserving assertions/deadlines/security. Pending-only
+  handoff/no duplication/longpolling. Continue trustedroot/backend/storage lifecycle/
+  durable uncertainty/authenticated conditional application-release/retentionapproval.
+  41draft/17open/defaultAIoff/memory-only/singlepending/all14hostedpending; no Pro/
+  content/API/RLS/Authstrategy/provider/collection/spend/security/merge/closure/
+  deploy/release/schedule change or Personal Alpha acceptance.
 
 ## Core checkpoint — real-journal history filter journey, 2026-10-29 UTC
 
