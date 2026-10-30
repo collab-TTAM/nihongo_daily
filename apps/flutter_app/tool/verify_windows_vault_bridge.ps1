@@ -89,8 +89,54 @@ function Invoke-WindowExit([string] $phase) {
     }
 }
 
+# Exact closed-file handshake: Dart GUI stdout is not reliable CI evidence.
+# Only this invocation's GUID scope is read; never relay child output or payloads.
+function Assert-GrammarFactoryEvidence([string] $path) {
+    try {
+        $expected = [System.Text.Encoding]::ASCII.GetBytes('TEST_ONLY_GRAMMAR_FACTORY_COMPLETE_V1')
+        if (-not [System.IO.File]::Exists($path) -or
+            [System.IO.FileInfo]::new($path).Length -ne $expected.Length -or
+            [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($path)) -cne [Convert]::ToBase64String($expected)) {
+            throw 'Invalid evidence'
+        }
+    } catch {
+        throw 'Windows grammar factory evidence missing or invalid'
+    }
+}
+
+$evidenceDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ('nd-' + $scope)
+$grammarEvidence = Join-Path $evidenceDirectory 'grammar-factory-done'
+# Negative regressions run in an independent disposable scope. Missing, truncated
+# and extra bytes must fail immediately; no timeout/retry can turn them into pass.
+$negativeDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ('nd-' + $scope + '-grammar-negative')
+$negativeEvidence = Join-Path $negativeDirectory 'grammar-factory-done'
 try {
+    [System.IO.Directory]::CreateDirectory($negativeDirectory) | Out-Null
+    foreach ($value in @($null, '', 'TEST_ONLY_GRAMMAR_FACTORY_COMPLETE', "TEST_ONLY_GRAMMAR_FACTORY_COMPLETE_V1`n")) {
+        if ($null -ne $value) { [System.IO.File]::WriteAllText($negativeEvidence, $value) }
+        $rejected = $false
+        try { Assert-GrammarFactoryEvidence $negativeEvidence } catch { $rejected = $true }
+        if (-not $rejected) { throw 'Windows grammar evidence rejection regression failed' }
+        if (Test-Path $negativeEvidence) { Remove-Item $negativeEvidence }
+    }
+    # A BOM is extra data, even though ReadAllText would silently strip it.
+    $bom = [byte[]](0xEF, 0xBB, 0xBF) + [System.Text.Encoding]::ASCII.GetBytes('TEST_ONLY_GRAMMAR_FACTORY_COMPLETE_V1')
+    [System.IO.File]::WriteAllBytes($negativeEvidence, $bom)
+    $rejected = $false
+    try { Assert-GrammarFactoryEvidence $negativeEvidence } catch { $rejected = $true }
+    if (-not $rejected) { throw 'Windows grammar evidence BOM rejection failed' }
+    [System.IO.File]::WriteAllText($negativeEvidence, 'TEST_ONLY_GRAMMAR_FACTORY_COMPLETE_V1')
+    Assert-GrammarFactoryEvidence $negativeEvidence
+} finally {
+    if (Test-Path $negativeDirectory) { Remove-Item -Recurse $negativeDirectory }
+}
+
+try {
+    if (Test-Path $grammarEvidence) { throw 'Windows grammar evidence scope not fresh' }
     Invoke-Bridge 'directory-write'
+    Assert-GrammarFactoryEvidence $grammarEvidence
+    Write-Output 'Windows opt-in grammar factory/default-off/corruption cleanup/reopen passed (TEST ONLY empty vault)'
+    Write-Output 'Windows grammar factory evidence missing/truncated/extra-byte rejection passed (TEST ONLY)'
     Invoke-Bridge 'directory-reopen'
     Invoke-Bridge 'directory-clear'
     Write-Output 'Windows project app-data and staging factory verification passed'

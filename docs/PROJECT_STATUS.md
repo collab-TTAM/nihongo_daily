@@ -1,5 +1,43 @@
 # PROJECT STATUS
 
+## Native grammar evidence handshake — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  9b722598a729251312630825e278ebaef56f27cf/tree6f8c7625773246f2ab05170803c2fc7a865e80ac.
+  Pre-code marker core-20261030T0914-grammar-evidence saved PR41+issue13.
+- Parent CI41025523882 exact9b72259/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter123963145669 confirms all5 settings cases +actual disk grammar UI
+  primary/correction save/restart/A-B-A journey. Windows123962677328 confirms
+  original staging-factory phase returned0 and persistent SDK marker. However
+  the new Dart grammar stdout marker is ABSENT: GUI stdout not relayed. Do not
+  claim that marker was observed or infer hosted learner proof from job success.
+- TEST ONLY bridge now publishes fixed ASCII completion bytes after ALL original
+  native grammar assertions and owned close/reopen succeed. Flush/close temporary
+  marker then rename in fresh random GUID temp scope; reject stale evidence.
+  Existing finally clear removes that scope, including pending files on failure.
+- PowerShell verifies existence/exact byte length/exact bytes, then emits the
+  fixed grammar marker. Read errors become fixed failure; never relay child logs,
+  journal content, credentials or paths. Missing/empty/truncated/newline/BOM
+  negative regressions must reject immediately; exact positive fixture accepted.
+  Isolated negative scope always removed; all original bridge phases, timeout,
+  exit-code/final cleanup and assertions retained unchanged.
+- Four paths: Flutter tool/windows_vault_bridge.dart and
+  tool/verify_windows_vault_bridge.ps1; docs/STAGING_BOOTSTRAP.md; this status.
+  Separate diff restoration proves removing new blocks restores both entire
+  original tool files exactly. No app default/Auth/SDK/API/schema/RLS/content/Pro/
+  dependency/workflow/storage format or retention change. ND_GRAMMAR_HISTORY
+  remains default false; no collection/production activation.
+- Fresh official Dart3.9.2 archive SHA256 verified; strict format1 zerochanges,
+  QA55 PASS; inventory155 valid NOTexecuted; diffcheck/review PASS. Flutter lint
+  include unresolved NOTanalyzer evidence. PowerShell/Flutter/native Windows
+  locally UNRUN; require new exact-head/latestattempt all5/EVERYstep and BOTH
+  grammar factory +evidence rejection markers in raw Windows log. Current new
+  execution/CI not yet observed; commit/tree/CI saved in PR41 checkpoint.
+- NEXT verify new head native markers +retained6/all regressions, fix diagnostics
+  without weakening checks. Keep draft41/13open/all14hostedpending/AIoff. Still
+  no hosted JWT/RLS/real learner WindowsGUI/OSrestart/Alpha acceptance. No merge,
+  issue closure/deploy/release/schedule change. Independent gaps remain after CI.
+
 ## Opt-in Windows grammar journal and disk journey — 2026-10-30 UTC
 
 - Issue13/draft PR41, automation/issue-11-plan-sdk-integration; parent

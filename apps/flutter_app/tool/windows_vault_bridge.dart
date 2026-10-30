@@ -89,6 +89,11 @@ Future<void> main(List<String> arguments) async {
     }
     switch (phase) {
       case 'directory-write':
+        final evidenceDirectory = runtimeFixtureDirectory(scope);
+        final evidence = File(
+          '${evidenceDirectory.path}${Platform.pathSeparator}grammar-factory-done',
+        );
+        require(!await evidence.exists());
         final directory = await resolveWindowsReviewDirectory(
           'https://$scope.invalid',
         );
@@ -163,6 +168,17 @@ Future<void> main(List<String> arguments) async {
         await retry.close();
         final finalGrammar = await NativeGrammarQuizJournal.open(directory);
         await finalGrammar.close();
+        // Publish only after every native assertion and close above succeeds.
+        // The GUI runner need not attach stdout; PowerShell verifies these exact
+        // fixed bytes instead. No journal data, paths or credentials are emitted.
+        await evidenceDirectory.create(recursive: true);
+        final pendingEvidence = File('${evidence.path}.publishing');
+        require(!await pendingEvidence.exists());
+        await pendingEvidence.writeAsString(
+          'TEST_ONLY_GRAMMAR_FACTORY_COMPLETE_V1',
+          flush: true,
+        );
+        await pendingEvidence.rename(evidence.path);
         stdout.writeln(
           'Windows opt-in grammar factory/default-off/corruption cleanup/reopen passed (TEST ONLY empty vault)',
         );

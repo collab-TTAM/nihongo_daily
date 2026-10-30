@@ -30,6 +30,19 @@ without these TEST ONLY settings before artifact upload. Hosted acceptance needs
 a configured project with the reviewed migrations/RPCs and actual learner A/B.
 Never include passwords, refresh/access tokens or private keys in build settings.
 
+## Native grammar evidence transport — 2026-10-30
+
+Parent9b72259 CI41025523882 passed all5 jobs/every step; raw Flutter log confirms
+all6 new settings/disk-UI cases. The Windows factory process exited successfully,
+but its Dart grammar stdout marker was absent from the GUI runner job log.
+The bridge now atomically publishes a fixed closed completion marker AFTER all
+native assertions succeed. PowerShell checks exact byte length/content then emits
+that marker to CI; missing/empty/truncated/newline/BOM fixtures must fail and the
+exact fixture must pass. Fresh GUID scopes and existing cleanup remain mandatory.
+No child output, tokens, journal content or paths are forwarded. Require both
+factory and rejection markers at the new exact head before calling this verified.
+This evidence is still TEST ONLY empty-vault native proof, not hosted learner Auth.
+
 ## Optional grammar history
 
 ND_GRAMMAR_HISTORY defaults to false (including existing configuration callers).
