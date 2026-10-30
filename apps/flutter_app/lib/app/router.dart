@@ -19,6 +19,7 @@ import '../features/quiz/presentation/quiz_history_screen.dart';
 import '../features/quiz/presentation/grammar_quiz_screen.dart';
 import '../features/quiz/presentation/grammar_quiz_history_screen.dart';
 import '../features/quiz/presentation/quiz_progress_screen.dart';
+import '../features/quiz/presentation/grammar_quiz_progress_screen.dart';
 import '../features/reading/presentation/reading_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import '../features/ai/presentation/ai_tutor_screen.dart';
@@ -118,6 +119,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/quiz/grammar',
             builder: (context, state) => const GrammarQuizScreen(),
+          ),
+          GoRoute(
+            path: '/quiz/grammar/progress',
+            builder: (context, state) => const GrammarQuizProgressScreen(),
           ),
           GoRoute(
             path: '/quiz/grammar/history',

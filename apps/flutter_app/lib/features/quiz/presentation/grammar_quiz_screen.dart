@@ -66,6 +66,11 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
           'Kết quả không cộng thời gian học hoặc xác định mức ghi nhớ.',
         ),
         TextButton(
+          key: const Key('grammar-quiz-progress-link'),
+          onPressed: () => context.go('/quiz/grammar/progress'),
+          child: const Text('Xem tiến độ ngữ pháp trên thiết bị'),
+        ),
+        TextButton(
           key: const Key('grammar-quiz-history-link'),
           onPressed: () => context.go('/quiz/grammar/history'),
           child: const Text('Xem lịch sử ngữ pháp trên thiết bị'),

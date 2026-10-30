@@ -1,5 +1,51 @@
 # PROJECT STATUS
 
+## Explicit grammar practice progress UI — 2026-10-30 UTC
+
+- Issue13/draft PR41 branch automation/issue-11-plan-sdk-integration; parent
+  12b4c4fbbfbc0605ff1b47549200f47f396fc1fc/tree33e0417d9419cce91f2f9943817deb4fc233d301.
+  Pre-code marker core-20261030T1113-grammar-progress-ui saved PR41+issue13.
+- Parent CI41039889817 exact12b4c4f/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter124010505337 all17 projection cases; Windows124009878009 BOTH grammar
+  factory/evidence-rejection markers +retained persistent SDK marker observed.
+  TEST ONLY component proof, not hosted learner/JWT/RLS acceptance.
+- New /quiz/grammar/progress and quiz link borrow only existing captured grammar
+  repository. Default unavailable/account navigation, no invented account/totals.
+  Ready own profile required. Explicit load/retry reads current grammar content
+  FIRST, owner-fenced history LAST, then reviewed pure projection atomically.
+  No auto-load/retry/write/newSDK/store/token/timer/SRS/plan/server credit.
+- Default N5/primary; N4 and correction explicit independent selectors. Display
+  selected kind+level saved rounds/original correct-answer totals/current practiced
+  count and original matching recommendation headings/meaning/error counts capped20.
+  No merged correction score, mastery threshold or study-minute claim. Empty,
+  loading and fixed safe failure states; reload clears previous totals before I/O.
+- Root manual listeners on history/curriculum/account increase generation before
+  frame, including ABA. Keyed panel/source/owner/current checks plus selector/load
+  revision guard before dispatch and every await/success/error/finally retire old
+  requests/callbacks. Kind/level changes clear totals without automatic reread.
+  New revision can explicitly load while an obsolete response settles; obsolete
+  finally cannot alter new loading/error/result state. Pending same-view taps inert.
+- 18 widget cases AUTHORED locally UNRUN: default/readiness/noauto/empty;dedup/repeated
+  errors/latercorrect;reload safe failure+retry;contentfailure nohistory;held read
+  sameowner/newowner withduplicate pending andstalecallback;level/content fences;
+  retired/disposed selectors;retained load beforelevelrebuild;levelABA;separatekind
+  totals+manualreload;held oldkind error;320px200%text;sourceABA andheldcontent source
+  replacement beforehistory. TEST ONLY Auth/profile/read ports, no hosted proof.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat4zerochanges/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck and separate owner/generation/revision/
+  await/kind/content/no-side-effects review PASS. Removing additions recovers entire
+  prior router+grammarquizscreen exactly; vocabulary/content/old tests untouched.
+  Flutter lint include unresolved NOTanalyzer. Full18/Flutter/analyze/build/native
+  locally UNRUN(noFlutter/Windows); require new exact-head/latestattempt Actions.
+- Six paths: Flutter lib/app/router.dart; lib/features/quiz/presentation/
+  grammar_quiz_screen.dart; NEW grammar_quiz_progress_screen.dart; NEW test/features/
+  quiz/grammar_quiz_progress_widget_test.dart; docs/GRAMMAR_QUIZ.md; this status.
+- NEXT exact-head/latestattempt all5/EVERYstep/all18 +retained17/native markers;
+  then actual owned disk UI progress/reopen/account journey. Pending-only handoff,
+  no duplicate code/longpoll; draft41/13open/all14hostedpending/AIoff/Pro untouched.
+  No Authstrategy/API/schema/RLS/dependency/CI/retention/collection/defaultactivation/
+  merge/closure/deploy/release/schedule/Personal Alpha acceptance.
+
 ## Grammar practice progress projection — 2026-10-30 UTC
 
 - Issue13/draft PR41 branch automation/issue-11-plan-sdk-integration; parent
