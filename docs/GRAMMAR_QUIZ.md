@@ -1,5 +1,47 @@
 # Grammar quiz core — Issue #13
 
+## Original grammar recommendation context — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  0f740912a4e8747dd776e9246b159ec66ab4f62e/treefc56f18104fde2d1ff23e2d338b7cf0c46953fb5.
+  Pre-code marker core-20261030T1307-grammar-context saved PR41+issue13.
+- Parent CI41054333275 exact0f74091/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter124058597832 extended actual grammar disk/progress/reopen/A-B-A
+  journey observed; Windows124058010161 BOTH grammar/evidence-rejection markers
+  +persistentSDK marker observed. TEST ONLY component proof, not hosted learner.
+- Existing capped20 current grammar recommendations expand on explicit tap to
+  show original explanation, usage notes, common mistakes and Japanese/reading/
+  Vietnamese examples. Only existing matching current CurriculumEntry fields;
+  preserve recommendation keys/order/score/counts and separate practice kinds.
+  Selectable original text, full-width wrapped sections. Missing optional notes,
+  mistakes or examples show explicit unavailable text; no fabricated advice.
+  Audio remains explicitly unavailable, no playback or fetching.
+- Expand/collapse uses already loaded immutable projection; no extra content/
+  history read, save/recorder/SDK/Auth/SRS/plan/server credit. Existing captured
+  owner/source/account generation and panel/revision fences continue to retire
+  expanded old content on account/source/kind/level change. No mastery/time claim.
+- Four appended widget cases AUTHORED locally UNRUN: actual original N5 context
+  fields+expand/collapse/no-extra-I/O; absent optional fields; expanded content
+  clears on TEST ONLY account replacement without extra read;320px200% expanded
+  text scrolling/no overflow. Existing18 widget tests/helpers/assertions unchanged.
+  Fixtures are TEST ONLY Auth/profile/read ports; not hosted learner/JWT/RLS proof.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat2zerochanges/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck/separate original-only/no-I-O/account/
+  optional-field/layout review PASS. Substituting original row recovers entire
+  prior production file; removing new cases recovers entire prior test file.
+  A local text-edit delimiter corrected before parsing; no assertion/security
+  suppressed. Flutter lint include unresolved NOTanalyzer. Full4/Flutter/analyze/
+  build/native locally UNRUN(noFlutter/Windows); exact new-head Actions required.
+- Four paths: Flutter lib/features/quiz/presentation/grammar_quiz_progress_screen.dart;
+  test/features/quiz/grammar_quiz_progress_widget_test.dart; docs/GRAMMAR_QUIZ.md;
+  docs/PROJECT_STATUS.md. Commit/tree/CI in PR41 checkpoint. No content or Pro edits.
+- NEXT exact-head/latestattempt all5/EVERYstep/all4 new context cases +retained18/
+ 17/diskjourney/native markers; then review remaining issue13 focused practice
+  integration with explicit save/round kind policy before implementation. Pending-
+  only handoff/no duplicate code/longpoll. All14hostedpending/AIoff/draft41/13open;
+  no Authstrategy/API/schema/RLS/dependency/CI/storage format/retention/collection/
+  defaultactivation/merge/closure/deploy/release/schedule/Personal Alpha acceptance.
+
 ## Composed grammar progress restart/account journey — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent

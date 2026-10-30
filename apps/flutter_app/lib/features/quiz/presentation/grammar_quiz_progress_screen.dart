@@ -228,12 +228,47 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
           if (progress.needsReview.length > 20)
             const Text('Hiển thị tối đa 20 mẫu cần ôn.'),
           for (final item in progress.needsReview.take(20))
-            ListTile(
+            ExpansionTile(
               key: ValueKey('grammar-progress-item-${item.entry.id}'),
               title: Text(item.entry.heading),
               subtitle: Text(
-                '${item.entry.meaningVi}\nSai ${item.incorrectCount} lần; câu trả lời gần nhất chưa đúng.',
+                '${item.entry.meaningVi}\nSai ${item.incorrectCount} lần; câu trả lời gần nhất chưa đúng.\nMở để xem cách dùng và ví dụ gốc.',
               ),
+              childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Giải thích theo bài gốc'),
+                SelectableText(item.entry.explanationVi),
+                const Text('Lưu ý cách dùng'),
+                if (item.entry.notes.isEmpty)
+                  const Text('Bài gốc chưa có lưu ý cách dùng cho mẫu này.')
+                else
+                  for (final note in item.entry.notes) SelectableText(note),
+                const Text('Lỗi thường gặp'),
+                if (item.entry.mistakes.isEmpty)
+                  const Text('Bài gốc chưa có lỗi thường gặp cho mẫu này.')
+                else
+                  for (final mistake in item.entry.mistakes)
+                    SelectableText(mistake),
+                if (item.entry.examples.isEmpty)
+                  const Text('Bài gốc chưa có ví dụ cho mẫu này.')
+                else ...[
+                  const Text('Ví dụ gốc'),
+                  for (final example in item.entry.examples)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SelectableText(example.japanese),
+                          SelectableText(example.reading),
+                          SelectableText(example.vietnamese),
+                        ],
+                      ),
+                    ),
+                ],
+                const Text('Âm thanh chưa khả dụng trong phần ôn này.'),
+              ],
             ),
         ],
       ],

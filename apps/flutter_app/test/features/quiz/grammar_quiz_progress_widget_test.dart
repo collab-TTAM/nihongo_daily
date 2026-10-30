@@ -605,4 +605,138 @@ void main() {
       expect(find.text('Vòng gốc · N5 · 0 bộ đã lưu'), findsOneWidget);
     },
   );
+  testWidgets('grammar recommendation opens original context without I O', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    final entry = question.target;
+    expect(entry.notes, isNotEmpty);
+    expect(entry.mistakes, isNotEmpty);
+    expect(entry.examples, isNotEmpty);
+    expect(find.text(entry.explanationVi), findsNothing);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('grammar-progress-item-${entry.id}')),
+    );
+    expect(find.text(entry.explanationVi), findsOneWidget);
+    for (final note in entry.notes) {
+      expect(find.text(note), findsOneWidget);
+    }
+    for (final mistake in entry.mistakes) {
+      expect(find.text(mistake), findsOneWidget);
+    }
+    for (final example in entry.examples) {
+      expect(find.text(example.japanese), findsOneWidget);
+      expect(find.text(example.reading), findsOneWidget);
+      expect(find.text(example.vietnamese), findsOneWidget);
+    }
+    expect(
+      find.text('Âm thanh chưa khả dụng trong phần ôn này.'),
+      findsOneWidget,
+    );
+    expect(ports.reads, 1);
+    expect(ports.contentReads, 1);
+    expect(ports.writes, 0);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('grammar-progress-item-${entry.id}')),
+    );
+    expect(find.text(entry.explanationVi), findsNothing);
+    expect(ports.reads, 1);
+    expect(ports.contentReads, 1);
+  });
+  testWidgets('grammar optional context absent stays explicitly unavailable', (
+    tester,
+  ) async {
+    final entry = question.target;
+    final sparse = CurriculumEntry(
+      id: entry.id,
+      kind: entry.kind,
+      level: entry.level,
+      contentVersion: entry.contentVersion,
+      heading: entry.heading,
+      caption: entry.caption,
+      reading: entry.reading,
+      meaningVi: entry.meaningVi,
+      explanationVi: entry.explanationVi,
+      hasAudioReference: entry.hasAudioReference,
+      notes: [],
+      mistakes: [],
+      examples: [],
+    );
+    final ports = _Ports([
+      for (final e in original) e.id == entry.id ? sparse : e,
+    ])..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('grammar-progress-item-${entry.id}')),
+    );
+    expect(find.text(entry.explanationVi), findsOneWidget);
+    expect(
+      find.text('Bài gốc chưa có lưu ý cách dùng cho mẫu này.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Bài gốc chưa có lỗi thường gặp cho mẫu này.'),
+      findsOneWidget,
+    );
+    expect(find.text('Bài gốc chưa có ví dụ cho mẫu này.'), findsOneWidget);
+    expect(find.text('Ví dụ gốc'), findsNothing);
+    expect(ports.reads, 1);
+    expect(ports.contentReads, 1);
+    expect(ports.writes, 0);
+  });
+  testWidgets('expanded grammar context clears on actual account replacement', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('grammar-progress-item-${question.target.id}')),
+    );
+    expect(find.text(question.target.explanationVi), findsOneWidget);
+    ports.harness.access.change(fixture.other);
+    await tester.pumpAndSettle();
+    expect(find.text(question.target.explanationVi), findsNothing);
+    expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+    expect(ports.reads, 1);
+    expect(ports.contentReads, 1);
+    expect(ports.writes, 0);
+  });
+  testWidgets('expanded grammar context fits narrow double scale view', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 1000);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final ports = _Ports(original)..records = [report(1)];
+    await mount(tester, ports);
+    await load(tester);
+    await tapQuiz(
+      tester,
+      find.byKey(ValueKey('grammar-progress-item-${question.target.id}')),
+    );
+    expect(find.text(question.target.explanationVi), findsOneWidget);
+    await tester.ensureVisible(
+      find.text('Âm thanh chưa khả dụng trong phần ôn này.'),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Âm thanh chưa khả dụng trong phần ôn này.').hitTestable(),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    expect(ports.reads, 1);
+    expect(ports.contentReads, 1);
+    expect(ports.writes, 0);
+  });
 }
