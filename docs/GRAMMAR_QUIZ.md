@@ -1,5 +1,52 @@
 # Grammar quiz core — Issue #13
 
+## Focused grammar question selection core — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  b56c77a3c5efc3ff5b5a24a2c801e7148c37aa73/tree609764957b0e8e0ad3e3d79efaecce1523ca0abd.
+  Pre-code marker core-20261030T1513-grammar-focused-core saved PR41+issue13.
+- Parent CI41070179752 exactb56c77a/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter124112828193 corrected header collapse/reopen +all4 context cases PASS;
+  Windows124112020791 BOTH grammar/evidence +persistentSDK markers observed. Prior
+  gesture fixture failure recovered; TEST ONLY not hosted learner/JWT/RLS proof.
+- New pure selectGrammarReviewQuestions selects primary-round needs-review targets
+  in existing deterministic projection priority from the FULL canonical grammar
+  deck. Exact immutable question/choices objects retained, including distractors
+  outside the error subset; never rebuild a small choice pool or invent a target.
+- Require PRIMARY projection; correction projection explicitly rejected, including
+  empty correction history. Future focused answers must use separate CORRECTION
+  captures: they cannot clear/raise/overwrite primary scores or recommendations.
+  A later correct PRIMARY report still follows existing reviewed progress rules.
+- Match grammar-prefixed level/ID/version AND identical original CurriculumEntry
+  reference. Copies/new versions/missing/foreign decks cannot retarget old progress.
+  Caller must build full deck/projection from the same captured current source;
+  process-local identity is not durable source authentication or language review.
+  Duplicate keys/decks above5000 fail before selecting targets; result immutable.
+- Select ALL matched targets, even above20 display cap or10-question round limit.
+  Future UI must explicitly batch using existing round limits. Selection has no
+  storage/Auth/SDK/recorder/UI/counter/SRS/plan/time/mastery/server side effect.
+  This increment does NOT connect the focused practice button or save UI yet.
+- Eight synthetic pure cases AUTHORED locally UNRUN: both-level priority/canonical
+  choices/immutable output; focused correction cannot change primary scores/review;
+  copied/replacement entries;empty/correct-only/missing/foreign deck;duplicate/
+  oversized rejection;all24 targets beyond display/batch caps;empty correction
+  projection rejection. Existing vocabulary algorithms/tests/content untouched.
+- Fresh official Dart3.9.2 SHA256 verified. Exact production-source standalone
+  smoke canonical question/choices, correction isolation, immutable/duplicate/
+  missing deck PASS. Strictformat2zerochanges/QA55/inventory155valid(NOTexecuted)/
+  diffcheck/separate canonical-source/priority/kind/bound/immutable/no-side-effects
+  review PASS. Flutter lint include unresolved NOTanalyzer. Full8/Flutter/analyze/
+  native/build locally UNRUN(noFlutter/Windows); exact new-head Actions required.
+- Four paths: NEW Flutter lib/features/quiz/domain/grammar_review_quiz.dart;
+  NEW test/features/quiz/grammar_review_quiz_test.dart; docs/GRAMMAR_QUIZ.md;
+  docs/PROJECT_STATUS.md. Commit/tree/CI in PR41 checkpoint.
+- NEXT exact-head/latestattempt all5/EVERYstep/all8 +retained context/projection/
+  diskjourney/native markers; then account/source/revision-fenced explicit focused
+  practice UI reusing existing grammar panel with CORRECTION capture/no timer.
+  Pending-only handoff/no duplicate source/longpoll; draft41/13open/all14hostedpending/
+  AIoff; no Pro/content/Authstrategy/API/schema/RLS/dependency/CI/storageformat/
+  retention/collection/defaultactivation/merge/closure/deploy/release/schedule/Alpha.
+
 ## Grammar context collapse gesture fixture recovery — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
