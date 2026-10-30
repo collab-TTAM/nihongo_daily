@@ -14,6 +14,7 @@ import '../domain/vocabulary_quiz.dart';
 import '../domain/vocabulary_quiz_progress.dart';
 import '../domain/vocabulary_review_quiz.dart';
 import 'vocabulary_quiz_panel.dart';
+import 'quiz_progress_navigation.dart';
 
 class QuizProgressScreen extends ConsumerStatefulWidget {
   const QuizProgressScreen({super.key});
@@ -41,6 +42,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
               'Thống kê từ kết quả đã lưu của tài khoản hiện tại. '
               'Chưa đồng bộ, xác định mức ghi nhớ hoặc cộng thời gian học.',
         ),
+        const QuizProgressNavigation(grammar: false),
         if (repository == null || owner == null) ...[
           const Text('Tiến độ chưa khả dụng. Hãy mở tài khoản đã cấu hình.'),
           OutlinedButton(

@@ -15,6 +15,7 @@ import '../domain/grammar_quiz.dart';
 import '../domain/grammar_review_quiz.dart';
 import '../application/grammar_quiz_attempt_factory.dart';
 import 'grammar_quiz_panel.dart';
+import 'quiz_progress_navigation.dart';
 
 class GrammarQuizProgressScreen extends ConsumerStatefulWidget {
   const GrammarQuizProgressScreen({super.key});
@@ -55,6 +56,7 @@ class _GrammarQuizProgressScreenState
           subtitle:
               'Kết quả tài khoản hiện tại, chỉ trên thiết bị này. Chưa đồng bộ, xác định mức ghi nhớ hoặc cộng thời gian học.',
         ),
+        const QuizProgressNavigation(grammar: true),
         if (repository == null || owner == null) ...[
           const Text('Tiến độ chưa khả dụng. Hãy mở tài khoản đã cấu hình.'),
           OutlinedButton(

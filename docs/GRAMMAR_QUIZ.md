@@ -1,5 +1,39 @@
 # Grammar quiz core — Issue #13
 
+## Progress destination discovery — 2026-10-30 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  2a7598ccdf4b0e66b1b25cccddab81458a9f5b4d/treebeb69fef43e2a7df980b87a51f5d534661692357.
+  Pre-code marker core-20261030T1914-progress-navigation saved PR41+issue13.
+- Parent CI41105713232 exact2a7598c/latestattempt1 all5/EVERY step SUCCESS/no
+  skips. Raw Flutter124235702413 extended real-disk focused grammar journey PASS;
+  Windows124234937883 BOTH grammar/evidence-rejection +persistentSDK markers
+  observed. Actual SDK/native disk with TEST ONLY HTTP/JWT/vault, not hosted proof.
+- Shared stateless navigation connects /progress vocabulary and
+  /quiz/grammar/progress. Explicit Vietnamese destination labels, current button
+  disabled, separate-statistics explanation. Available even when a history is
+  unconfigured so the learner can discover the independently configured module.
+  Both existing readiness barriers/manual loads/owned projections unchanged.
+  No combined score, mastery threshold, auto-fetch, save or default activation.
+- Two new actual-router preview widget cases: vocabulary-to-grammar roundtrip,
+  active destination disabled, unavailable state and absent load/summary retained,
+  zero curriculum reads; repeated at320px/200% text with hit-tested scroll/taps
+  and no exception. No Auth/history success fixture; no hosted learner claim.
+- Six paths: NEW quiz_progress_navigation.dart; quiz_progress_screen.dart;
+  grammar_quiz_progress_screen.dart; NEW progress_navigation_widget_test.dart
+  under Flutter quiz presentation/test; this status and GRAMMAR_QUIZ.md.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat4/QA55 PASS; inventory155
+  valid NOTexecuted; diffcheck/separate navigation-only/no-I-O/old-screen-byte
+  preservation review PASS. All old tests unchanged. Flutter lint include unresolved
+  NOT analyzer evidence. New widgets/fullFlutter/analyze/Web/Windows locally UNRUN
+  (no Flutter/native Windows); exact new-head Actions required, source/CI in PR41.
+- Next exact-head/latestattempt all5/EVERY step +both new navigation cases and
+  retained disk/native markers. Fix actual diagnostics without weakening tests;
+  pending-only handoff/no duplicate code/long polling. Then review remaining #13
+  dashboard dependencies/acceptance. All14hostedpending/AIoff/draft41/13open;
+  Pro/content/Authstrategy/API/schema/RLS/deps/workflow/retention untouched;
+  no merge/closure/deploy/release/Alpha acceptance/schedule change.
+
 ## Composed focused grammar disk journey — 2026-10-30 UTC
 
 - Issue13/draft PR41, branch automation/issue-11-plan-sdk-integration; parent
