@@ -1,5 +1,55 @@
 # PROJECT STATUS
 
+## Optional owned grammar history runtime — 2026-10-30 UTC
+
+- Issue13/PR41, branch automation/issue-11-plan-sdk-integration; parent
+  e518a82074320983c08cdc9d3d39134037ae949b. Published commit/tree/new CI are in
+  PR41 checkpoint. PRE-CODE ownership/drain rules saved in PR41 and issue13.
+- Parent CI40979163987 exact/latestattempt1 all5 jobs/EVERYstep SUCCESS/no skips.
+  Raw Flutter123815134707 confirms ALL18 captured grammar repository cases;
+  Windows123814632974 persistent vault/sameSDK/profile/receipt rotation marker
+  observed. TEST ONLY Auth/HTTP component proof, not hosted learner acceptance.
+- PersistentSupabaseRuntime accepts an OPTIONAL borrowed GrammarQuizAttemptStore
+  and implements GrammarQuizHistorySource. Factory binds exact ready runtime and
+  ReviewSession identity only AFTER existing rotated-secret persistence and own
+  profile barriers. No owner input/additional SDK/token writer. Missing store,
+  unready/failed/closed states return null; acquisition performs no storage/HTTP.
+  Refresh/logout retire old captured leases; A-B-A cannot revive the old runtime.
+- Separate GrammarQuizOperationDrain participates in runtime close before SDK
+  disposal. Caller MUST await runtime.close BEFORE closing borrowed storage.
+  PersistentAccountStartup forwards the factory; AccountStartupController exposes
+  its grammar source only while active. Explicit WindowsStagingOwner caller may
+  transfer grammarJournal ownership; close immediately fences its factory, waits
+  session/runtime drain, THEN closes grammar/vocabulary/study/review leases with
+  finally cleanup. Logout/shutdown preserve history; no deletion policy added.
+- Existing openWindowsStagingOwner factory is BYTE-IDENTICAL: it does NOT open or
+  supply grammar storage. No default/preview/staging entrypoint or grammar UI save
+  activation. This is opt-in composition, not an installed learner save journey.
+  Primary/correction records remain distinct; vocabulary source/store unchanged.
+- Sixteen new actual pinned-SDK/native-file cases AUTHORED, locally UNRUN: held
+  rotated vault/profile readiness, omitted store/no I/O, refresh, same-owner
+  relogin, owner forwarding/absence, held-write owner+runtime close/lease/reopen,
+  safe storage failure/explicit idempotent replay, late save/load success/error
+  through actual logout-A-B-A, failed vault/profile gates, startup source lifetime.
+  Auth/JWT/profile/vault/HTTP ports TEST ONLY; old test files untouched. Already
+  accepted old-owner writes stay with that owner; stale results cannot publish.
+- Fresh official Dart3.9.2 archive SHA256 verified; strict format5 files zerochanges
+  PASS(unresolved Flutter lint include warning, NOT analyzer). QA55 PASS/inventory
+  155 valid(NOT155executed)/diffcheck PASS. No local Flutter/analyzer/Web/Windows
+  run. Full new16+retained suites/native markers require exact new-head Actions.
+  Separate factory-algorithm/runtime-preservation/default-factory/owner/drain/
+  failure/session/account-switch/test diff review PASS. No gate/assertion weakened.
+- Seven paths: Flutter app staging_bootstrap.dart; auth/application runtime,
+  persistent startup and startup controller; new owned_grammar_quiz_history_sdk_test
+  under test/features/quiz; docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md.
+- NEXT exact-head/latestattempt all5/EVERYstep/new16+retained SDK/native markers;
+  fix actual diagnostics preserving assertions/deadlines/security. Pending-only
+  handoff, no duplicate source/longpolling. Then explicit grammar save/history UI
+  and reviewed entrypoint opt-in. Hosted Auth/RLS/sync/provider/voice/linguistic
+  learner proof remains pending; all14 release groups pending/defaultAIoff.
+  No Pro/content/Authstrategy/API/schema/RLS/retention/collection activation/CI/
+  dependency/merge/closure/deploy/release/schedule/Personal Alpha acceptance.
+
 ## Captured grammar history repository component — 2026-10-30 UTC
 
 Pre-code rules saved PR41+issue13. GrammarQuizHistoryRepository captures a ready

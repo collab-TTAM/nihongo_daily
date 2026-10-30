@@ -20,6 +20,8 @@ import '../features/auth/presentation/account_startup_app.dart';
 import '../features/daily_plan/data/daily_plan_repository.dart';
 import '../features/daily_plan/data/durable_study_session_repository.dart';
 import '../features/daily_plan/data/native_study_session_journal.dart';
+import '../features/quiz/data/native_grammar_quiz_journal.dart';
+import '../features/quiz/data/grammar_quiz_history_repository.dart';
 import '../features/quiz/data/native_vocabulary_quiz_journal.dart';
 import '../features/quiz/data/vocabulary_quiz_history_repository.dart';
 import '../features/srs/application/srs_study_runtime.dart';
@@ -155,6 +157,7 @@ final class WindowsStagingOwner
         DailyPlanRepositorySource,
         DurableStudySessionSource,
         VocabularyQuizHistorySource,
+        GrammarQuizHistorySource,
         AiTextRepositorySource,
         AiConversationSource,
         AiConversationScenarioSource {
@@ -163,7 +166,11 @@ final class WindowsStagingOwner
     this.journal, {
     this.studyJournal,
     this.quizJournal,
+    this.grammarJournal,
   });
+
+  /// Explicit caller opt-in only; the staging factory does not open this store.
+  final NativeGrammarQuizJournal? grammarJournal;
   final NativeVocabularyQuizJournal? quizJournal;
   final NativeStudySessionJournal? studyJournal;
   final PersistentAccountStartup session;
@@ -189,6 +196,9 @@ final class WindowsStagingOwner
   VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() =>
       _closing == null ? session.createVocabularyQuizHistoryRepository() : null;
   @override
+  GrammarQuizHistoryRepository? createGrammarQuizHistoryRepository() =>
+      _closing == null ? session.createGrammarQuizHistoryRepository() : null;
+  @override
   DailyPlanRepository? createDailyPlanRepository() =>
       _closing == null ? session.createDailyPlanRepository() : null;
   @override
@@ -212,12 +222,16 @@ final class WindowsStagingOwner
   Future<void> close() => _closing ??= () async {
     await session.close();
     try {
-      await quizJournal?.close();
+      await grammarJournal?.close();
     } finally {
       try {
-        await studyJournal?.close();
+        await quizJournal?.close();
       } finally {
-        await journal.close();
+        try {
+          await studyJournal?.close();
+        } finally {
+          await journal.close();
+        }
       }
     }
   }();

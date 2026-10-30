@@ -4,6 +4,7 @@ import '../../ai/data/ai_conversation_source.dart';
 import '../../ai/data/ai_conversation_scenario_source.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
+import '../../quiz/data/grammar_quiz_history_repository.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import 'account_session_notice.dart';
 import 'account_session_refresh.dart';
@@ -109,6 +110,16 @@ final class AccountStartupController<T> {
         _phase == AccountStartupPhase.active &&
         runtime is VocabularyQuizHistorySource) {
       return runtime as VocabularyQuizHistorySource;
+    }
+    return null;
+  }
+
+  GrammarQuizHistorySource? get grammarQuizHistorySource {
+    final runtime = _runtime;
+    if (!_closed &&
+        _phase == AccountStartupPhase.active &&
+        runtime is GrammarQuizHistorySource) {
+      return runtime as GrammarQuizHistorySource;
     }
     return null;
   }

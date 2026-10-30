@@ -19,6 +19,8 @@ import '../../ai/data/captured_conversation_receipt_lookup.dart';
 import '../../ai/data/captured_conversation_session.dart';
 import '../../ai/data/supabase_ai_text_transport.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
+import '../../quiz/data/grammar_quiz_attempt_store.dart';
+import '../../quiz/data/grammar_quiz_history_repository.dart';
 import '../../quiz/data/vocabulary_quiz_attempt_store.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
@@ -42,6 +44,7 @@ import 'account_session_refresh.dart';
 /// application never invokes this assembly or supplies project configuration.
 final class PersistentSupabaseRuntime
     implements
+        GrammarQuizHistorySource,
         AccountSessionNoticeSource,
         AccountSessionRefreshAction,
         AiTextRepositorySource,
@@ -54,6 +57,7 @@ final class PersistentSupabaseRuntime
     required DurableReviewStore store,
     StudySessionStore? studyStore,
     VocabularyQuizAttemptStore? quizStore,
+    GrammarQuizAttemptStore? grammarStore,
     ConversationReceiptStore? conversationReceiptStore,
     http.Client? httpClient,
     http.Client? aiHttpClient,
@@ -65,6 +69,7 @@ final class PersistentSupabaseRuntime
   }) : _commandScope = conversationReceiptStore?.scope,
        _studyStore = studyStore,
        _quizStore = quizStore,
+       _grammarStore = grammarStore,
        _aiTextEnabled = aiTextEnabled,
        _aiConversationEnabled = aiConversationEnabled {
     if (kIsWeb) {
@@ -269,6 +274,7 @@ final class PersistentSupabaseRuntime
 
   final StudySessionStore? _studyStore;
   final VocabularyQuizAttemptStore? _quizStore;
+  final GrammarQuizAttemptStore? _grammarStore;
   final bool _aiTextEnabled;
   final bool _aiConversationEnabled;
   late final AiTextRuntimeOwner _aiOwner;
@@ -278,6 +284,7 @@ final class PersistentSupabaseRuntime
   SrsStudyRuntime? _aiReadyRuntime;
   AiTextGeneration? _aiGeneration;
   final _quizOperations = VocabularyQuizOperationDrain();
+  final _grammarOperations = GrammarQuizOperationDrain();
   final _studyOperations = StudySessionOperationDrain();
   late final SupabaseClient _client;
   late final BoundedSessionHttp _network;
@@ -528,6 +535,32 @@ final class PersistentSupabaseRuntime
     }
   }
 
+  /// Optional borrowed local storage, bound to this exact ready runtime.
+  /// Caller retains the store until close() drains all accepted operations.
+  @override
+  GrammarQuizHistoryRepository? createGrammarQuizHistoryRepository() {
+    final store = _grammarStore;
+    if (_closing != null || store == null || _grammarOperations.isClosing) {
+      return null;
+    }
+    final ready = account.readyRuntime;
+    final session = account.readySession;
+    if (ready == null || session == null) return null;
+    try {
+      return GrammarQuizHistoryRepository(
+        auth: ready.auth,
+        store: store,
+        operations: _grammarOperations,
+        isReady: () =>
+            _closing == null &&
+            identical(account.readyRuntime, ready) &&
+            identical(account.readySession, session),
+      );
+    } on GrammarQuizSessionChanged {
+      return null;
+    }
+  }
+
   Future<void> _signOutWithReceipt() {
     if (_receiptLogout != null) return _receiptLogout!;
     final done = Completer<void>();
@@ -604,6 +637,7 @@ final class PersistentSupabaseRuntime
       persistence.close(),
       _studyOperations.revokeAndDrain(),
       _quizOperations.revokeAndDrain(),
+      _grammarOperations.revokeAndDrain(),
       aiClosing,
       commandClosing,
     ]);
