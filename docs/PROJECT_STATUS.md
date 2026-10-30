@@ -1,5 +1,51 @@
 # PROJECT STATUS
 
+## Composed grammar progress restart/account journey — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  09195708f30be220154ab14533eb399c8fd4dd98/treef05978d872f61d39671c57d8569bff98fb41a461.
+  Pre-code marker core-20261030T1214-grammar-disk-progress saved PR41+issue13.
+- Parent CI41047229281 exact0919570/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter124034897312 all18 grammar progress widgets; Windows124034243300 BOTH
+  grammar factory/evidence-rejection +persistentSDK markers observed. TEST ONLY
+  component proof, not hosted learner/JWT/RLS/physical Windows acceptance.
+- Extend the existing actual owned SDK/native-journal/Flutter UI journey AFTER
+  every original assertion. Existing real N5 primary9/10 and correction1/1 reports
+  are read through actual /quiz/grammar/progress. Primary shows10 matching current
+  items/one review recommendation; correction shows1item/no recommendation. No
+  auto-read before explicit load or automatic writes; no source/provider/capture/
+  router override, no fabricated results or replacement persistence.
+- While progress stays mounted, actual SDK logout/login A-B-A must clear previous
+  totals/recommendation. Captured old load/kind callbacks invoked BEFORE the first
+  replacement frame and after B load remain inert. B reads genuine empty primary
+  and correction; A restored only through explicit separate reads. Exactly6 added
+  reads through the forwarding real store; no additional appends.
+- Close second owned runtime/journals, create third owner using same files/vault;
+  startup refresh token request +own profile precede UI. No cached totals/auto-read;
+  actual primary+correction progress restores with exactly2 explicit real reads.
+  Old callbacks remain inert after owned close. Exact original DTOs/event IDs/kinds
+  and entire journal bytes unchanged; B journal empty; no owner/token display.
+  UI content/projection/list adds no HTTP beyond original TEST ONLY Auth/profile.
+- 50 new assertion sites AUTHORED locally UNRUN in existing journey, not50 executed
+  tests/new hosted evidence. Existing bounded real-loop diskAction/5s completion,
+  SDK readiness/owned cleanup unchanged. Removing continuation recovers entire
+  parent fixture/helpers/test/assertions/timeouts byte-for-byte. All production
+  source/old widgets/Pro/content unchanged. No timer/timeout extension or suppression.
+- Fresh official Dart3.9.2 SHA256 verified; strict format1 zerochanges/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck/separate real-I/O/generation/callback/
+  kind/owner/read-count/byte-integrity/cleanup review PASS. Flutter lint include
+  unresolved NOTanalyzer. Extended journey/Flutter/analyze/native/build locally
+  UNRUN(noFlutter/Windows), require new exact-head/latestattempt Actions.
+- Three paths: apps/flutter_app/test/features/quiz/grammar_disk_journey_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md. New commit/tree/CI in PR41 checkpoint.
+- NEXT exact-head/latestattempt all5/EVERYstep/extended real-disk journey and
+  retained18/17/native markers. Then review remaining #13 integration gaps before
+  selecting a next increment. Pending-only handoff/no duplicate source/longpoll.
+  All14hostedpending/AIoff/draft41/13open; no Pro/content/Authstrategy/API/schema/RLS/
+  dependency/CI/storage format/retention/collection/defaultactivation/merge/closure/
+  deploy/release/schedule/Personal Alpha acceptance. Same-process graceful file
+  reopen is not physical OS restart, power-loss durability or multi-device sync.
+
 ## Explicit grammar practice progress UI — 2026-10-30 UTC
 
 - Issue13/draft PR41 branch automation/issue-11-plan-sdk-integration; parent

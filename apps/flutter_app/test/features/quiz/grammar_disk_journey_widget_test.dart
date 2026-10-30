@@ -441,6 +441,195 @@ void main() {
         '/rest/v1/rpc/ensure_profile',
       });
       expect(tester.takeException(), isNull);
+      // Composed progress continuation: all original journey assertions above
+      // remain intact. Only actual UI reads of the existing native journal.
+      final progressReads = second.store.reads;
+      final progressHttp = server.paths.length;
+      container.read(routerProvider).go('/quiz/grammar/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(second.store.reads, progressReads);
+      Future<void> progressKind(String label) async {
+        final selector = find.byKey(const Key('grammar-progress-kind'));
+        await tester.ensureVisible(selector);
+        await tester.pumpAndSettle();
+        await tester.tap(selector);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(label).last);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      }
+
+      Future<void> primaryProgress(_DiskApp app) async {
+        await diskAction(app, 'grammar-progress-load');
+        expect(find.text('Vòng gốc · N5 · 1 bộ đã lưu'), findsOneWidget);
+        expect(
+          find.text(
+            'Vòng gốc · Câu đúng theo bài gốc: $score / ${questions.length}',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Mẫu hiện tại đã luyện: ${questions.length}'),
+          findsOneWidget,
+        );
+        expect(find.text('Mẫu cần ôn: 1'), findsOneWidget);
+        expect(find.text(questions.first.target.heading), findsOneWidget);
+        expect(find.textContaining('Sai 1 lần'), findsOneWidget);
+      }
+
+      Future<void> correctionProgress(_DiskApp app) async {
+        await progressKind('Vòng luyện sai');
+        await diskAction(app, 'grammar-progress-load');
+        expect(find.text('Vòng luyện sai · N5 · 1 bộ đã lưu'), findsOneWidget);
+        expect(
+          find.text('Vòng luyện sai · Câu đúng theo bài gốc: 1 / 1'),
+          findsOneWidget,
+        );
+        expect(find.text('Mẫu hiện tại đã luyện: 1'), findsOneWidget);
+        expect(find.text('Mẫu cần ôn: 0'), findsOneWidget);
+        expect(find.text(questions.first.target.heading), findsNothing);
+      }
+
+      await primaryProgress(second);
+      await correctionProgress(second);
+      expect(second.store.reads, progressReads + 2);
+      expect(second.store.appends, 0);
+      expect(server.paths.length, progressHttp);
+      final oldLoad = tester
+          .widget<OutlinedButton>(
+            find.byKey(const Key('grammar-progress-load')),
+          )
+          .onPressed!;
+      final oldKind = tester
+          .widget<DropdownButton<GrammarQuizAttemptKind>>(
+            find.byKey(const Key('grammar-progress-kind')),
+          )
+          .onChanged!;
+      await tester.runAsync(() async {
+        await second.runtime.account.signOut();
+        server.user = wire.b;
+        await second.login();
+      });
+      // Actual SDK/account replacement has completed but no frame rebuilt yet.
+      oldLoad();
+      oldKind(GrammarQuizAttemptKind.primary);
+      expect(second.store.reads, progressReads + 2);
+      await tester.pumpAndSettle();
+      expect(second.runtime.account.state.profile!.id, wire.b);
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(find.text(questions.first.target.heading), findsNothing);
+      expect(
+        tester
+            .widget<DropdownButton<GrammarQuizAttemptKind>>(
+              find.byKey(const Key('grammar-progress-kind')),
+            )
+            .value,
+        GrammarQuizAttemptKind.primary,
+      );
+      await diskAction(second, 'grammar-progress-load');
+      expect(find.text('Vòng gốc · N5 · 0 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Mẫu cần ôn: 0'), findsOneWidget);
+      await progressKind('Vòng luyện sai');
+      await diskAction(second, 'grammar-progress-load');
+      expect(find.text('Vòng luyện sai · N5 · 0 bộ đã lưu'), findsOneWidget);
+      expect(
+        find.text('Vòng luyện sai · Câu đúng theo bài gốc: 0 / 0'),
+        findsOneWidget,
+      );
+      oldLoad();
+      oldKind(GrammarQuizAttemptKind.primary);
+      await tester.pumpAndSettle();
+      expect(second.store.reads, progressReads + 4);
+      expect(find.text('Vòng luyện sai · N5 · 0 bộ đã lưu'), findsOneWidget);
+      final bLoad = tester
+          .widget<OutlinedButton>(
+            find.byKey(const Key('grammar-progress-load')),
+          )
+          .onPressed!;
+      await tester.runAsync(() async {
+        await second.runtime.account.signOut();
+        server.user = wire.a;
+        await second.login();
+      });
+      bLoad();
+      expect(second.store.reads, progressReads + 4);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      await primaryProgress(second);
+      await correctionProgress(second);
+      expect(second.store.reads, progressReads + 6);
+      expect(second.store.appends, 0);
+      final progressRequests = server.paths.length;
+      await tester.runAsync(second.close);
+      await tester.pumpWidget(const SizedBox());
+      expect(second.controller.grammarQuizHistorySource, isNull);
+      oldLoad();
+      bLoad();
+      oldKind(GrammarQuizAttemptKind.primary);
+      expect(second.store.reads, progressReads + 6);
+      final refreshBeforeThird = server.paths
+          .where((p) => p == '/auth/v1/token')
+          .length;
+      final third = (await tester.runAsync(() async {
+        final app = await _open(directory, server, vault);
+        current = app;
+        await app.ready();
+        return app;
+      }))!;
+      expect(
+        server.paths.where((p) => p == '/auth/v1/token').length,
+        refreshBeforeThird + 1,
+      );
+      expect(third.runtime.account.state.profile!.id, wire.a);
+      container = await mount(third);
+      container.read(routerProvider).go('/quiz/grammar/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(third.store.reads, 0);
+      final afterThirdProfile = server.paths.length;
+      await primaryProgress(third);
+      await correctionProgress(third);
+      expect(third.store.reads, 2);
+      expect(third.store.appends, 0);
+      expect(server.paths.length, afterThirdProfile);
+      expect(afterThirdProfile, greaterThan(progressRequests));
+      final finalRows = (await tester.runAsync(
+        () => third.journal.list(wire.a),
+      ))!;
+      expect(finalRows, hasLength(2));
+      for (final original in [primary, correction]) {
+        expect(
+          sameGrammarQuizAttempt(
+            finalRows
+                .singleWhere((r) => r.attempt.eventId == original.eventId)
+                .attempt,
+            original,
+          ),
+          isTrue,
+        );
+      }
+      expect(
+        (await tester.runAsync(() => third.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      expect(
+        (await tester.runAsync(
+          () => File(
+            '${directory.path}/grammar-quiz-attempts.ndjson',
+          ).readAsBytes(),
+        ))!,
+        bytes,
+      );
+      expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining('TEST_ONLY'), findsNothing);
+      expect(server.paths.toSet(), {
+        '/auth/v1/token',
+        '/auth/v1/logout',
+        '/rest/v1/rpc/ensure_profile',
+      });
+      expect(tester.takeException(), isNull);
+      // End composed progress continuation.
     },
   );
 }
