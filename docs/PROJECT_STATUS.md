@@ -1,5 +1,51 @@
 # PROJECT STATUS
 
+## Grammar practice progress projection — 2026-10-30 UTC
+
+- Issue13/draft PR41 branch automation/issue-11-plan-sdk-integration; parent
+  2694d57741808b94171592b1429eb12cd3ac0f96/tree6e598852d2f8edf1f89d2b6477023929c5e32f49.
+  Pre-code rules saved PR41+issue13 marker core-20261030T1014-grammar-progress.
+- Parent CI41032613231 exact2694d57/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Windows123985805118 BOTH grammar factory and negative-evidence markers plus
+  retained persistent SDK marker observed. Flutter123986366469 all6 retained new
+  settings/disk grammar UI journey observed. TEST ONLY, not hosted learner proof.
+- New pure deriveGrammarQuizProgress requires owner and explicit primary/correction
+  kind. Owner validation/foreign-owner rejection and exact-event dedup/conflict
+  checks precede ALL kind/level filters. Conflicting replay fails without partial
+  results; exact replay counts once; history bound10k checked before dedup.
+- Selected kind/level historical round/answer/correct totals use first-answer
+  reports only. Correction never changes primary totals or primary recommendations.
+  No percentages/mastery threshold/MASTERED/SRS/plan mutation/time/server credit.
+- Current items must match eligible original grammar item ID/version/ordered
+  choices through existing validated builder (source bound5k). Unknown/stale/
+  changed-choice reports stay historical totals ONLY; never fabricate headings or
+  recommend absent entries. Current-item counters use matching reports only.
+- Deterministic completed-time/event-ID ascending traversal selects latest answer
+  within selected kind; later correct clears needs-review, later wrong restores
+  it without erasing error counts. Rank repeated errors desc, last time desc,
+  original ID asc. Practiced items retain original source order/entry identity;
+  lists/results immutable. This is practice reporting, not authentication/mastery.
+- 17 synthetic pure cases AUTHORED locally UNRUN: empty/totals/original identity,
+  replay/conflict across excluded kind+level, foreign owner/invalid owner, strict
+  correction isolation, levels, repeated errors/clear/restore, timestamp ties,
+  stale/unknown/changed choices, rank ties, malformed content,10k bound and caller
+  mutation/immutable results. No content or content tests edited.
+- Fresh official Dart3.9.2 SHA256 verified; standalone exact production-source
+  smoke executes replay/kind/latest/conflict/foreign-owner/immutability PASS;
+  strict format2 zerochanges/QA55/inventory155valid(NOT155executed)/diffcheck and
+  separate owner/filter/order/content/immutable/no-side-effects review PASS.
+  Flutter lint include unresolved NOTanalyzer; full17/Flutter/analyze/build/native
+  locally UNRUN(noFlutter/Windows), require exact new-head Actions.
+- Four paths: new Flutter lib/features/quiz/domain/grammar_quiz_progress.dart;
+  new test/features/quiz/grammar_quiz_progress_test.dart; docs/GRAMMAR_QUIZ.md;
+  docs/PROJECT_STATUS.md. Public default/provider/runtime/store/UI/vocabulary/Pro/
+  API/schema/RLS/dependency/CI fields/retention unchanged; AI off.
+- NEXT exact-head/latestattempt all5/EVERYstep/all17 +retained Windows markers;
+  then explicit account-fenced grammar progress UI with current-source validation,
+  safe loading/error/empty/manual retry and separated kinds, no auto-load/write.
+  Pending-only handoff; draft41/13open/all14hostedpending; no merge/closure/deploy/
+  release/schedule/Personal Alpha acceptance.
+
 ## Native grammar evidence handshake — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
