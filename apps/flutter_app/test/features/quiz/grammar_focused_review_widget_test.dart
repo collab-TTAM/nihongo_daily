@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nihongo_daily/shared/models/preview_level.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/auth/application/account_provider.dart';
@@ -537,8 +538,10 @@ void main() {
             find.byKey(ValueKey('grammar-choice-${question.target.id}')),
           )
           .onPressed!;
-      final GrammarQuizAttemptFactory replacement = (round, kind) =>
-          captureGrammarQuizAttempt(round, kind);
+      GrammarQuizAttempt replacement(
+        GrammarQuizRound round,
+        GrammarQuizAttemptKind kind,
+      ) => captureGrammarQuizAttempt(round, kind);
       container.updateOverrides([
         accountRuntimeProvider.overrideWithValue(ports.harness.runtime),
         grammarQuizHistorySourceProvider.overrideWithValue(ports),

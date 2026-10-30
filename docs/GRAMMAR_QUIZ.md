@@ -1,5 +1,36 @@
 # Grammar quiz core — Issue #13
 
+## Focused grammar fixture analysis recovery — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  eaf74946cdb93bf5784d3373469f804862646037/treea948379ddc4093999632239abfd9825712842286.
+  Pre-code marker core-20261030T1707-focused-fixture-analysis saved PR41+issue13.
+- Parent CI41087906576 exacteaf7494/latestattempt1 FAILED. All5 jobs/every step
+  inspected: repo/AI/database/Windows SUCCESS; Flutter format SUCCESS/analyze
+  FAILED9 issues. Flutter tests including all11 focused cases and later native/
+  Chrome/Web gates SKIPPED, NOT passed/executed. No feature acceptance claim.
+- Raw Flutter124174667148 diagnostics: eight undefined PreviewLevel type/name
+  references in new focused fixture, plus prefer_function_declarations_over_variables
+  at line540. The fixture removed an indirect preferences export without adding
+  the direct shared model import. The factory replacement variable triggers lint.
+- Add explicit shared PreviewLevel import and use equivalent typed local function
+  declaration for replacement capture factory. No product/helper/assertion/data/
+  timeout change, no lint suppression or test weakening. Separate reverse-edit
+  comparison restores ENTIRE original fixture byte-for-byte, including all11 tests.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat1zerochanges/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck/import/function/assertion review PASS.
+  Flutter lint include unresolved NOTanalyzer; corrected analyze/11cases/Flutter/
+  native/build locally UNRUN(noFlutter/Windows). An initial local edit-match guard
+  rejected whitespace before writing; corrected exact match, no partial change.
+- Three paths: apps/flutter_app/test/features/quiz/grammar_focused_review_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md. Commit/tree/CI in PR41 checkpoint.
+- NEXT exact-head/latestattempt all5/EVERYstep/no skips +raw all11 focused cases/
+  retained grammar tests/diskjourney/native markers; fix actual diagnostics without
+  weakening assertions. Pending-only handoff/no duplicate source/longpoll; draft41/
+  13open/all14hostedpending/AIoff. Pro/content/default/Authstrategy/API/schema/RLS/
+  dependency/workflow/retention/collection untouched; no merge/closure/deploy/release/
+  schedule/Personal Alpha acceptance. Prior Windows build is not hosted learner proof.
+
 ## Explicit focused grammar practice UI — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
