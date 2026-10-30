@@ -1,5 +1,54 @@
 # PROJECT STATUS
 
+## Explicit completed grammar quiz save — 2026-10-30 UTC
+
+- Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent
+  f7d442d9dd480d5bd090c5df7ebb5b7fee924f30. Commit/tree/new CI in PR41 checkpoint.
+  Pre-code capture/ownership/retry/late-result rules saved PR41+issue13.
+- Parent CI41007011751 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter123904566055 ALL7 grammar provider cases, including the3 corrected
+  scheduler fixtures; Windows123904142197 retained persistent vault/sameSDK/profile/
+  receipt marker observed. Fixture recovery verified, NOT hosted learner proof.
+- Completed grammar rounds now offer explicit device-local save ONLY with current
+  borrowed grammar history capability. A separate factory generates secure UUIDv4/
+  UTC and captures immutable original first answers, versions/choices and explicit
+  primary/correction kind once per completed round. No repository means no capture,
+  no button/save or simulated success. No auto-save/retry is introduced.
+- Duplicate taps/pending/already-saved state cannot dispatch again. Failed storage
+  shows fixed unconfirmed text; explicit retry reuses IDENTICAL captured DTO/event/
+  time. Capture failure disables saving without leaking raw details. Only confirmed
+  current repository success shows saved. Accepted old-owner writes remain owned;
+  late success/error never updates a retired/unmounted round.
+- Screen keys panels to content/generation/repository/factory; manual listeners
+  retire repository/factory changes before a frame, including ABA. Callback checks
+  capture exact current source/level/snapshot/round/repository/factory. Account/
+  source replacement discards the old round; restart/focused correction/next batch
+  create new identities. Original and correction attempts stay separate; original
+  score cannot increase from correction. Vocabulary save/history untouched.
+- Twelve new cases AUTHORED locally UNRUN:2 factory (UUIDv4/UTC/kinds/unfinished),
+  10 widgets (no repository/no capture,no automatic save/duplicate taps,exact retry,
+  capture failure,late account-change success/error,disposal,primary vs correction,
+  320px200% text,actual grammar screen/provider completion+save). Synthetic local
+  Auth/memory/data only; all existing test files unchanged. Full Flutter/analyze/
+  Chrome/Web/Windows require exact new-head Actions; not hosted JWT/RLS proof.
+- Fresh official Dart3.9.2 archive SHA256 verified/strict format4zerochanges PASS
+  (unresolved Flutter lint include warning, NOT analyzer). QA55 PASS/inventory155
+  valid(NOT155executed)/diffcheck and separate capture/UUID/retry/no-auto-save/
+  lifecycle/late-error/source-reset/primary-correction/no-default diff review PASS.
+- Six paths: new quiz/application/grammar_quiz_attempt_factory.dart; new quiz/
+  presentation/grammar_quiz_save_action.dart; quiz/presentation/grammar_quiz_screen
+  (Flutter lib/features); new test/features/quiz/grammar_quiz_save_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; this status.
+- NEXT exact-head/latestattempt all5/EVERYstep/new12+retained grammar/provider/
+  SDK/native markers; fix real diagnostics preserving assertions/security.
+  Pending-only handoff/no duplicate code/longpolling. Grammar history UI and
+  reviewed staging store opt-in/native journey remain. Existing staging factory
+  still does NOT open grammar journal; default preview unconfigured/no saved
+  success. No mastery/study-minute/server credit claim or new store/SDK/retention
+  policy/collection activation. All14hostedpending/AIoff/draft41/13open; no Pro/
+  content/Authstrategy/API/schema/RLS/CI/dependency/merge/closure/deploy/release/
+  schedule/Personal Alpha acceptance.
+
 ## Grammar provider widget scheduler fixture correction — 2026-10-30 UTC
 
 - Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent

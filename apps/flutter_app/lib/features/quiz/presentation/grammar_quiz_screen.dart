@@ -5,6 +5,11 @@ import '../../../shared/widgets/page_body.dart';
 import '../../curriculum/application/curriculum_provider.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/grammar_quiz_provider.dart';
+import '../application/grammar_quiz_history_provider.dart';
+import '../application/grammar_quiz_attempt_factory.dart';
+import '../data/grammar_quiz_history_repository.dart';
+import '../domain/grammar_quiz_attempt.dart';
+import 'grammar_quiz_save_action.dart';
 import '../domain/grammar_quiz.dart';
 
 class GrammarQuizScreen extends ConsumerStatefulWidget {
@@ -23,10 +28,20 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
     // Retire callbacks immediately, including level/source ABA before a frame.
     ref.listenManual(previewLevelProvider, (_, _) => _generation++);
     ref.listenManual(curriculumRepositoryProvider, (_, _) => _generation++);
+    ref.listenManual(
+      grammarQuizHistoryRepositoryProvider,
+      (_, _) => _generation++,
+    );
+    ref.listenManual(
+      grammarQuizAttemptFactoryProvider,
+      (_, _) => _generation++,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final history = ref.watch(grammarQuizHistoryRepositoryProvider);
+    final capture = ref.watch(grammarQuizAttemptFactoryProvider);
     final level = ref.watch(previewLevelProvider);
     final source = ref.watch(curriculumRepositoryProvider);
     final content = ref.watch(grammarQuizProvider(level));
@@ -34,6 +49,8 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
     bool current() =>
         mounted &&
         generation == _generation &&
+        identical(ref.read(grammarQuizHistoryRepositoryProvider), history) &&
+        identical(ref.read(grammarQuizAttemptFactoryProvider), capture) &&
         ref.read(previewLevelProvider) == level &&
         identical(ref.read(curriculumRepositoryProvider), source) &&
         identical(ref.read(grammarQuizProvider(level)), content);
@@ -44,8 +61,8 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
           subtitle: 'Chọn nghĩa tiếng Việt theo bài gốc.',
         ),
         const Text(
-          'Luyện trong phiên này. Chưa lưu kết quả, cộng thời gian học '
-          'hoặc xác định mức ghi nhớ.',
+          'Chỉ lưu trên thiết bị khi bạn chọn lưu và tài khoản có kho lưu. '
+          'Kết quả không cộng thời gian học hoặc xác định mức ghi nhớ.',
         ),
         DropdownButton<PreviewLevel>(
           key: const Key('grammar-quiz-level'),
@@ -76,7 +93,9 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
               const Text('Chưa đủ mẫu có nghĩa khác nhau để tạo bộ câu hỏi.')
             else
               _GrammarRoundPanel(
-                key: ValueKey((content, generation)),
+                key: ValueKey((content, generation, history, capture)),
+                history: history,
+                capture: capture,
                 questions: questions,
                 isCurrent: current,
               ),
@@ -103,10 +122,14 @@ class _GrammarRoundPanel extends StatefulWidget {
     super.key,
     required this.questions,
     required this.isCurrent,
+    required this.history,
+    required this.capture,
   });
 
   final List<GrammarQuizQuestion> questions;
   final bool Function() isCurrent;
+  final GrammarQuizHistoryRepository? history;
+  final GrammarQuizAttemptFactory capture;
 
   @override
   State<_GrammarRoundPanel> createState() => _GrammarRoundPanelState();
@@ -143,7 +166,7 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (originalScore != null) ...[
-          const Text('Ôn riêng câu sai — chưa lưu kết quả'),
+          const Text('Ôn riêng câu sai — kết quả riêng với bộ gốc'),
           Text('Bộ gốc: $originalScore / ${_batch.length}'),
           OutlinedButton(
             key: const Key('grammar-review-original'),
@@ -226,6 +249,16 @@ class _GrammarRoundPanelState extends State<_GrammarRoundPanel> {
             ),
           ),
         ] else ...[
+          GrammarQuizSaveAction(
+            key: ValueKey(round),
+            round: round,
+            kind: originalScore == null
+                ? GrammarQuizAttemptKind.primary
+                : GrammarQuizAttemptKind.correction,
+            history: widget.history,
+            capture: widget.capture,
+            isCurrent: () => _current(round),
+          ),
           Text(
             'Kết quả theo bài gốc: ${round.score} / ${round.questions.length}',
           ),
