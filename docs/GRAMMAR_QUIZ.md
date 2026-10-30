@@ -1,5 +1,37 @@
 # Grammar quiz core — Issue #13
 
+## Grammar provider widget scheduler fixture correction — 2026-10-30 UTC
+
+- Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent
+  71e7df2c5ce50173847693272f31c82719466dc7. Commit/tree/new CI in PR41 checkpoint.
+- Parent CI41001601329 exact/latestattempt1: all5 jobs/EVERYstep inspected.
+  Database/repo-sanity/AI/Windows SUCCESS; Flutter format/analyze SUCCESS, tests
+  1644 passed/3 failed. Three new provider cases (profile readiness, failed profile/
+  source, A-B-A) failed pending zero-duration Riverpod default-vsync timers.
+  Four other new cases passed, including actual configured startup forwarding.
+  Later Flutter integration/Chrome/Web checks skipped, NOTpassed.
+- The TEST ONLY mount created a standalone ProviderContainer and rendered only
+  SizedBox. Now mount that SAME container through UncontrolledProviderScope with
+  the SAME empty child, binding Riverpod scheduling to Flutter widget vsync/
+  lifecycle. No delays, extra pumps, timer suppression or framework assertion
+  changes. All7 case bodies/assertions/timeouts and teardown remain byte-identical;
+  reverse removal of only the new mount/comment restores ENTIRE parent test.
+  Production/provider/startup/default behavior unchanged. No new mirrored test.
+- Fresh official Dart3.9.2 archive SHA256 verified; strict format1 zerochanges
+  after formatting PASS(unresolved Flutter lint include warning, NOT analyzer).
+  QA55 PASS/inventory155 valid(NOT155executed)/diffcheck and separate fixture/
+  scheduler/cleanup/preservation diff review PASS. Full corrected Flutter7,
+  analyzer/Chrome/Web/Windows locally UNRUN(noFlutter); require exact new-head CI.
+- Three paths: apps/flutter_app/test/features/quiz/
+  grammar_quiz_history_provider_test.dart; docs/GRAMMAR_QUIZ.md; this status.
+- NEXT exact-head/latestattempt all5/EVERYstep/all7 and retained SDK/native markers;
+  fix actual diagnostics preserving assertions/security. Pending-only handoff/no
+  duplicate code/longpolling. Then explicit grammar save/history UI and reviewed
+  entrypoint opt-in. Grammar source remains null by default, no staging grammar
+  store opening/save UI activation. All14hostedpending/AIoff/draft41/13open; no
+  Pro/content/Authstrategy/API/schema/RLS/CI/dependency/retention/merge/closure/
+  deployment/release/schedule/Personal Alpha acceptance.
+
 ## Grammar history providers and configured startup — 2026-10-30 UTC
 
 - Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent

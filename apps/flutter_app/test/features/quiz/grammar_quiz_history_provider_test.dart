@@ -103,7 +103,11 @@ void main() {
       await source.operations.revokeAndDrain();
       await h.close();
     });
-    await tester.pumpWidget(const SizedBox());
+    // Attach this container to Flutter's vsync rather than the standalone
+    // Riverpod Timer.run scheduler inside testWidgets' FakeAsync zone.
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const SizedBox()),
+    );
   }
 
   testWidgets(
