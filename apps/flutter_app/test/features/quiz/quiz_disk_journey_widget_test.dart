@@ -736,6 +736,210 @@ void main() {
       expect(find.textContaining(wire.b), findsNothing);
       expect(find.textContaining('TEST_ONLY'), findsNothing);
       expect(tester.takeException(), isNull);
+      // Owned practice retirement continuation; preserve all old assertions.
+      final practiceHttp = server.paths.length;
+      final freshDeck = (await tester.runAsync(() async {
+        final provider = vocabularyQuizProvider(PreviewLevel.n5);
+        content = container.listen(provider, (_, _) {});
+        return container.read(provider.future);
+      }))!.take(10).toList();
+      expect(freshDeck.map((q) => q.id), questions.map((q) => q.id));
+      container.read(routerProvider).go('/quiz');
+      await tester.pumpAndSettle();
+      for (var i = 0; i < freshDeck.length; i++) {
+        final q = freshDeck[i];
+        final choice = i == 0
+            ? q.choices.firstWhere((c) => c.id != q.target.id)
+            : q.target;
+        await tapQuiz(tester, find.byKey(ValueKey('quiz-choice-${choice.id}')));
+        await tapQuiz(tester, find.byKey(const Key('quiz-next')));
+      }
+      expect(find.text('Kết quả bộ này: 9 / 10'), findsOneWidget);
+      expect(third.store.appends, 0);
+      await diskAction(third, 'quiz-save');
+      expect(find.byKey(const Key('quiz-saved')), findsOneWidget);
+      expect(third.store.appends, 1);
+      final three = (await tester.runAsync(() => third.journal.list(wire.a)))!;
+      expect(three, hasLength(3));
+      final newest = three
+          .singleWhere(
+            (r) =>
+                r.attempt.eventId != original.eventId &&
+                r.attempt.eventId != correction.eventId,
+          )
+          .attempt;
+      expect(newest.score, 9);
+      expect(newest.answers, hasLength(10));
+      expect(newest.eventId[14], '4');
+      expect(newest.completedAt.isUtc, isTrue);
+      final practiceBytes = (await tester.runAsync(
+        () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+      ))!;
+      expect(practiceBytes.length, greaterThan(correctedBytes.length));
+      expect(
+        practiceBytes.take(correctedBytes.length).toList(),
+        correctedBytes,
+      );
+      container.read(routerProvider).go('/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await diskAction(third, 'quiz-progress-load');
+      expect(find.text('N5 · 3 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 19 / 21'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      await tapQuiz(tester, find.byKey(const Key('quiz-review-start')));
+      expect(find.text('Luyện lại 1 từ cần ôn'), findsOneWidget);
+      for (final choice in freshDeck.first.choices) {
+        expect(
+          find.byKey(ValueKey('quiz-choice-${choice.id}')),
+          findsOneWidget,
+        );
+      }
+      await tapQuiz(
+        tester,
+        find.byKey(ValueKey('quiz-choice-${freshDeck.first.target.id}')),
+      );
+      await tapQuiz(tester, find.byKey(const Key('quiz-next')));
+      expect(find.text('Kết quả bộ này: 1 / 1'), findsOneWidget);
+      final retiredSave = tester
+          .widget<FilledButton>(find.byKey(const Key('quiz-save')))
+          .onPressed!;
+      final retiredRestart = tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Làm lại bộ này'),
+          )
+          .onPressed!;
+      final retiredBack = tester
+          .widget<OutlinedButton>(find.byKey(const Key('quiz-review-back')))
+          .onPressed!;
+      final readsBeforeRetirement = third.store.reads;
+      expect(
+        third.store.appends,
+        1,
+      ); // Completed focused round is still unsaved.
+      expect(server.paths.length, practiceHttp);
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.b;
+        await third.login();
+      });
+      // Actual SDK/profile switch completed; no account-change widget frame yet.
+      retiredSave();
+      retiredRestart();
+      retiredBack();
+      await tester.idle();
+      expect(third.store.appends, 1);
+      expect(third.store.reads, readsBeforeRetirement);
+      await tester.pumpAndSettle();
+      expect(third.runtime.account.state.profile!.id, wire.b);
+      expect(find.byKey(const Key('quiz-result')), findsNothing);
+      expect(find.byKey(const Key('quiz-saved')), findsNothing);
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await diskAction(third, 'quiz-progress-load');
+      expect(find.text('N5 · 0 bộ đã lưu'), findsOneWidget);
+      expect(find.byKey(const Key('quiz-review-start')), findsNothing);
+      expect(
+        (await tester.runAsync(() => third.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      await tester.runAsync(() async {
+        await third.runtime.account.signOut();
+        server.user = wire.a;
+        await third.login();
+      });
+      retiredSave();
+      retiredRestart();
+      retiredBack();
+      await tester.idle();
+      expect(third.store.appends, 1);
+      expect(third.store.reads, readsBeforeRetirement + 1);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-result')), findsNothing);
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await diskAction(third, 'quiz-progress-load');
+      expect(find.text('N5 · 3 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 19 / 21'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      expect(third.store.reads, readsBeforeRetirement + 2);
+      expect(third.store.appends, 1);
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        practiceBytes,
+      );
+      content!.close();
+      content = null;
+      await tester.runAsync(third.close);
+      await tester.pumpWidget(const SizedBox());
+      retiredSave();
+      retiredRestart();
+      retiredBack();
+      expect(third.store.appends, 1);
+      expect(third.controller.quizHistorySource, isNull);
+      final tokensBeforeFourth = server.paths
+          .where((p) => p == '/auth/v1/token')
+          .length;
+      final fourth = (await tester.runAsync(() async {
+        final app = await _open(directory, server, vault);
+        current = app;
+        await app.ready();
+        return app;
+      }))!;
+      expect(
+        server.paths.where((p) => p == '/auth/v1/token').length,
+        tokensBeforeFourth + 1,
+      );
+      expect(fourth.runtime.account.state.profile!.id, wire.a);
+      container = await mount(fourth);
+      final fourthHttp = server.paths.length;
+      container.read(routerProvider).go('/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      expect(fourth.store.reads, 0);
+      await diskAction(fourth, 'quiz-progress-load');
+      expect(find.text('N5 · 3 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 19 / 21'), findsOneWidget);
+      expect(find.text('Từ hiện tại đã luyện: 10'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      expect(fourth.store.reads, 1);
+      expect(fourth.store.appends, 0);
+      expect(server.paths.length, fourthHttp);
+      final fourthRows = (await tester.runAsync(
+        () => fourth.journal.list(wire.a),
+      ))!;
+      expect(fourthRows, hasLength(3));
+      for (final attempt in [original, correction, newest]) {
+        expect(
+          sameVocabularyQuizAttempt(
+            fourthRows
+                .singleWhere((r) => r.attempt.eventId == attempt.eventId)
+                .attempt,
+            attempt,
+          ),
+          isTrue,
+        );
+      }
+      expect(
+        (await tester.runAsync(() => fourth.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        practiceBytes,
+      );
+      expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining(wire.b), findsNothing);
+      expect(find.textContaining('TEST_ONLY'), findsNothing);
+      expect(server.paths.toSet(), {
+        '/auth/v1/token',
+        '/auth/v1/logout',
+        '/rest/v1/rpc/ensure_profile',
+      });
+      expect(tester.takeException(), isNull);
+      // End owned practice retirement continuation.
     },
   );
 }

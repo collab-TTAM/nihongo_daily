@@ -1,5 +1,48 @@
 # PROJECT STATUS
 
+## Owned vocabulary practice retirement journey — 2026-10-30 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  8ec75b67fc1f76149100a79261d05a9ffa847d79/treef38ab23b483535129118e07ee13b656f3a24f7e8.
+  Pre-code marker core-20261030T2212-owned-practice-retirement saved PR41+issue13.
+- Parent CI41129861319 exact8ec75b6/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips;rawFlutter124318408461 ALL5 child-capability regressions +actual quiz disk
+  journey PASS;Windows124317804876 BOTH grammar/evidence+persistentSDK markers
+  observed. TEST ONLY component evidence, not hosted learner/Auth/JWT/RLS proof.
+- Extend existing actual SDK/native-journal/owned-startup/router journey AFTER
+  every original assertion. Ready restored A completes actual bundled N5 quiz
+  9/10, explicitly saves ONE new UUID4/UTC ten-answer report. Old journal bytes
+  remain exact prefix, original two reports retained; total3 reports/19correct
+  of21 answers/one current review target. No fake saved report/provider override.
+- Explicit focused practice uses all4 canonical choices; correct answer/result
+  1/1 is deliberately UNSAVED. Capture save/restart/back; actual SDK logout/login
+  B completes own-profile before invoking old callbacks WITHOUT a new frame.
+  No append/read, B progress clears and reads empty. Actual return A cannot revive
+  old callbacks; original three reports/totals/review target/full bytes unchanged.
+- Close third owner, invoke old actions again, open fourth owner on SAME vault/
+  files. Require actual SDK refresh+own profile, no automatic history load; manual
+  progress restores3 reports/19of21/current10/review1. Exact all3 immutable DTOs
+  and full journal bytes retained, B journal empty, no append or extra HTTP.
+  Secrets/owners absent from UI; endpoint set remains Auth token/logout/profile.
+- Native I/O uses unchanged tester.runAsync actual-completion barriers/deadlines;
+  entire previous fixture/helpers/assertions/timeouts byte-identical removing only
+  new delimited continuation. No source/router/capture overrides, sleeps, timeout
+  extensions or simulated save. TEST ONLY Auth/JWT/HTTP/memory vault remain NOT
+  physical Windows/hosted identity/RLS/power-loss/learner acceptance evidence.
+- Three paths: Flutter test/features/quiz/quiz_disk_journey_widget_test.dart;
+  docs/VOCABULARY_QUIZ.md;docs/PROJECT_STATUS.md. Production/default/Authstrategy/
+  API/schema/RLS/deps/workflow/retention/Pro/content unchanged, AIoff.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat1/QA55 PASS; inventory155
+  valid NOTexecuted/diffcheck/separate actual-I-O/explicit-write/captured-actions/
+  generation/account/count/byte-preservation review PASS. UnresolvedFlutterlint
+  include NOTanalyzer; extended journey/fullFlutter/analyze/Web/Windows locally
+  UNRUN(noFlutter/nativeWindows); exact new-head Actions required, source/CI in PR41.
+- Next exact-head/latestattempt ALL5/EVERYstep/raw extended owned quiz journey/
+  retained5 focused cases/navigation/grammar/native markers; fix actual diagnostics
+  preserving assertions. Pending-only handoff/no duplicate code/longpoll. Then
+  review remaining13 dashboard acceptance and integration gaps. All14hostedpending/
+  draft41/13open/no merge/closure/deploy/release/Alpha acceptance/schedule change.
+
 ## Vocabulary focused-practice capability fence — 2026-10-30 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
