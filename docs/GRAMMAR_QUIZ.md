@@ -1,5 +1,57 @@
 # Grammar quiz core — Issue #13
 
+## Opt-in Windows grammar journal and disk journey — 2026-10-30 UTC
+
+- Issue13/draft PR41, automation/issue-11-plan-sdk-integration; parent
+  367480c70e3f0613536e39723d7d4dd318a03983/tree
+  cead76c9c411399b496f1843a26fbf41452caa01. Published commit/tree/CI in PR41 checkpoint.
+  Pre-code marker core-20261030T0810-grammar-staging saved PR41+issue13.
+- Parent CI41018804246 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips;
+  raw Flutter123941661563 all10 history cases and Windows123941191738 retained
+  persistent vault/sameSDK/profile/receipt marker observed. TEST ONLY component proof.
+- Trusted build ND_GRAMMAR_HISTORY accepts literal true/false, defaults false.
+  Only explicit true in configured Windows staging opens the separate existing
+  grammar journal before SDK creation and transfers it to the SAME runtime/owner.
+  Failure closes all opened grammar/vocabulary/study/review leases; owned close
+  retains the accepted-operation drain before storage closes. Legacy constructors
+  default off, preview opens no account resources, invalid flag fails before opener.
+  No learner URL/key input, extra persisted fields, auto-save, fallback success,
+  new token writer, Auth/provider strategy, schema/RLS/dependency or retention change.
+- Five new settings cases AUTHORED: defaults/legacy, explicit true independent of
+  refresh, strict boolean rejection, invalid no-opener, preview no-opener.
+- New actual owned SDK/native-file/Flutter UI journey AUTHORED: bundled N5 first
+  answers; explicit primary save, stale double-save inert; correction save has a
+  distinct event/kind and leaves original score/DTO frozen; separate history kind
+  views; owned close/new owner startup refresh/profile; exact disk DTO restoration;
+  real SDK logout/login A-B-A clears old UI, B empty, returning A restored; reads
+  and switches preserve journal bytes/no extra appends or non-Auth/profile HTTP.
+  Completion barriers observe actual native I/O on tester.runAsync; no source,
+  provider, capture factory or router overrides/simulated save. TEST ONLY HTTP,
+  unsigned JWT and memory vault: NOT hosted Auth/JWT/RLS or physical Windows proof.
+- Mandatory existing Windows directory-write bridge retains ALL original checks
+  and adds explicit grammar opt-in/default-off/empty-vault owner close+lease reopen,
+  corrupt grammar rejection before SDK, byte preservation, all earlier leases
+  reopening through default factory, repaired test-file retry. Isolated GUID
+  .invalid scope only; emit Windows opt-in grammar factory/default-off/corruption
+  cleanup/reopen marker. New native checks require actual Windows CI execution.
+- Local QA55 PASS; inventory155 valid (NOT155executed); strict Dart format4
+  zerochanges and git diff --check PASS. Separate default/strict flag/pre-SDK
+  open/all-lease cleanup/same owner/drain/real-I/O/account/kind diff review PASS.
+  All original Windows bridge checks preserved byte-for-byte after removing the
+  new block/imports; previous vocabulary journey and content untouched.
+- Fresh official Dart3.9.2 SHA256 verified. Local formatter parses source; Flutter
+  lint include unresolved is NOT analyzer evidence. New Flutter/native/build cases
+  locally UNRUN (no Flutter/native Windows); exact-head Actions required. Local QA,
+  inventory, strict format, diff review and observed new CI recorded in checkpoint.
+- Seven paths: Flutter lib/app/staging_bootstrap.dart; tool/windows_vault_bridge.dart;
+  new test/features/srs/grammar_staging_settings_test.dart; new test/features/quiz/
+  grammar_disk_journey_widget_test.dart; docs/STAGING_BOOTSTRAP.md;
+  docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md. No Pro/content/test scope edits.
+- NEXT observe exact-head/latestattempt all5/EVERYstep plus all6 new cases and
+  new Windows marker; fix diagnostics preserving checks. Pending-only handoff.
+  Hosted configured learner proof/release gates remain pending (all14), AI off,
+  draft41/13 open, no merge/closure/deploy/release/Alpha acceptance/schedule change.
+
 ## Separate grammar quiz history UI — 2026-10-30 UTC
 
 - Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent

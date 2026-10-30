@@ -17,7 +17,8 @@ trusted build settings, never learner input):
   "ND_MODE": "staging",
   "ND_SUPABASE_URL": "https://YOUR_PROJECT.supabase.co",
   "ND_SUPABASE_PUBLIC_KEY": "YOUR_PUBLIC_PUBLISHABLE_KEY",
-  "ND_AUTOMATIC_REFRESH": "false"
+  "ND_AUTOMATIC_REFRESH": "false",
+  "ND_GRAMMAR_HISTORY": "false"
 }
 ```
 
@@ -28,6 +29,27 @@ falls back to preview Auth or another project. The shipped CI preview is rebuilt
 without these TEST ONLY settings before artifact upload. Hosted acceptance needs
 a configured project with the reviewed migrations/RPCs and actual learner A/B.
 Never include passwords, refresh/access tokens or private keys in build settings.
+
+## Optional grammar history
+
+ND_GRAMMAR_HISTORY defaults to false (including existing configuration callers).
+A trusted staging build may explicitly set the literal true to open the separate
+bounded native grammar journal before constructing the SDK and pass the same
+store to its runtime and owned close drain. It does not auto-save quiz answers.
+Preview ignores the flag and opens no account resources; selected staging rejects
+nonliteral values before opening any resources. No learner-editable settings or
+new Auth provider/fields/retention policy. Default builds remain off.
+
+Factory failure releases every earlier journal lease, retaining corrupt bytes;
+there is no memory/plaintext fallback. The mandatory Windows directory-write
+probe now additionally tests default-off, opt-in empty-vault factory/lease reopen,
+corrupt grammar rejection, earlier-lease cleanup and repaired isolated-file retry.
+The new marker and all5 latest-attempt exact-head jobs must be observed before
+claiming these checks passed. Empty-vault native probe is NOT configured learner
+login, hosted JWT/RLS or Windows authenticated GUI save/restart proof.
+An authored Flutter journey separately uses actual owned SDK/runtime/native files
+and primary/correction UI save/history/restart/A-B-A with TEST ONLY HTTP/vault;
+see docs/GRAMMAR_QUIZ.md and PR41 for source/CI evidence and remaining gates.
 
 ## Owned assembly and durable storage
 

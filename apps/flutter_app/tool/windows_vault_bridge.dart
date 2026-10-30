@@ -11,6 +11,8 @@ import 'windows_sdk_receipt_fixture.dart';
 import 'package:nihongo_daily/features/auth/data/windows_review_directory.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
+import 'package:nihongo_daily/features/quiz/data/native_grammar_quiz_journal.dart';
+import 'package:nihongo_daily/features/quiz/data/grammar_quiz_attempt_store.dart';
 
 void require(bool value) {
   if (!value) {
@@ -114,6 +116,56 @@ Future<void> main(List<String> arguments) async {
         await owner.close();
         final reopened = await NativeReviewJournal.open(directory);
         await reopened.close();
+        // Preserve the original default-off factory check above. Only this
+        // isolated TEST ONLY project explicitly opts in to grammar storage.
+        final grammarFile = File(
+          '${directory.path}${Platform.pathSeparator}grammar-quiz-attempts.ndjson',
+        );
+        require(!await grammarFile.exists());
+        final enabled = StagingConfiguration(
+          'https://$scope.invalid',
+          'sb_publishable_TEST_ONLY_1234567890',
+          false,
+          grammarHistoryEnabled: true,
+        );
+        final grammarOwner = await openWindowsStagingOwner(enabled);
+        await grammarOwner.start();
+        require(grammarOwner.account.readyRuntime == null);
+        require(await grammarFile.length() == 0);
+        await grammarOwner.close();
+        final grammar = await NativeGrammarQuizJournal.open(directory);
+        await grammar.close();
+        // A corrupt opted-in journal fails before creating an SDK/vault owner.
+        // Verify earlier leases were released rather than falling back to memory.
+        const corrupt = 'TEST_ONLY_CORRUPT_GRAMMAR\n';
+        await grammarFile.writeAsString(corrupt, flush: true);
+        var rejected = false;
+        try {
+          await openWindowsStagingOwner(enabled);
+        } on GrammarQuizStorageFailure {
+          rejected = true;
+        }
+        require(rejected && await grammarFile.readAsString() == corrupt);
+        require(await vault.readRefreshToken() == null);
+        final disabled = await openWindowsStagingOwner(
+          StagingConfiguration(
+            'https://$scope.invalid',
+            'sb_publishable_TEST_ONLY_1234567890',
+            false,
+          ),
+        );
+        await disabled.start();
+        await disabled.close();
+        require(await grammarFile.readAsString() == corrupt);
+        await grammarFile.writeAsString('', flush: true);
+        final retry = await openWindowsStagingOwner(enabled);
+        await retry.start();
+        await retry.close();
+        final finalGrammar = await NativeGrammarQuizJournal.open(directory);
+        await finalGrammar.close();
+        stdout.writeln(
+          'Windows opt-in grammar factory/default-off/corruption cleanup/reopen passed (TEST ONLY empty vault)',
+        );
       case 'directory-reopen':
         final directory = await resolveWindowsReviewDirectory(
           'https://$scope.invalid',

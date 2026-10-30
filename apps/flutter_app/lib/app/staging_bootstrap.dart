@@ -36,11 +36,16 @@ final class StagingBuildSettings {
     this.projectUrl = '',
     this.publicKey = '',
     this.automaticRefresh = 'false',
+    this.grammarHistory = 'false',
   });
   static const compiled = StagingBuildSettings(
     mode: String.fromEnvironment('ND_MODE'),
     projectUrl: String.fromEnvironment('ND_SUPABASE_URL'),
     publicKey: String.fromEnvironment('ND_SUPABASE_PUBLIC_KEY'),
+    grammarHistory: String.fromEnvironment(
+      'ND_GRAMMAR_HISTORY',
+      defaultValue: 'false',
+    ),
     automaticRefresh: String.fromEnvironment(
       'ND_AUTOMATIC_REFRESH',
       defaultValue: 'false',
@@ -50,16 +55,19 @@ final class StagingBuildSettings {
   final String projectUrl;
   final String publicKey;
   final String automaticRefresh;
+  final String grammarHistory;
   bool get isPreview => mode.isEmpty || mode == 'preview';
   StagingConfiguration configuration() {
     if (mode != 'staging' ||
-        !const {'true', 'false'}.contains(automaticRefresh)) {
+        !const {'true', 'false'}.contains(automaticRefresh) ||
+        !const {'true', 'false'}.contains(grammarHistory)) {
       throw const FormatException('Build configuration unavailable');
     }
     return StagingConfiguration(
       SupabaseReviewBinding.validateProjectUrl(projectUrl),
       SupabaseReviewBinding.validatePublicKey(publicKey),
       automaticRefresh == 'true',
+      grammarHistoryEnabled: grammarHistory == 'true',
     );
   }
 }
@@ -68,11 +76,13 @@ final class StagingConfiguration {
   const StagingConfiguration(
     this.projectUrl,
     this.publicKey,
-    this.automaticRefresh,
-  );
+    this.automaticRefresh, {
+    this.grammarHistoryEnabled = false,
+  });
   final String projectUrl;
   final String publicKey;
   final bool automaticRefresh;
+  final bool grammarHistoryEnabled;
 }
 
 typedef StagingOwner =
@@ -112,9 +122,13 @@ Future<StagingOwner> openWindowsStagingOwner(
   final journal = await NativeReviewJournal.open(directory);
   NativeStudySessionJournal? studyJournal;
   NativeVocabularyQuizJournal? quizJournal;
+  NativeGrammarQuizJournal? grammarJournal;
   try {
     studyJournal = await NativeStudySessionJournal.open(directory);
     quizJournal = await NativeVocabularyQuizJournal.open(directory);
+    if (config.grammarHistoryEnabled) {
+      grammarJournal = await NativeGrammarQuizJournal.open(directory);
+    }
     final runtime = PersistentSupabaseRuntime(
       projectUrl: config.projectUrl,
       publishableKey: config.publicKey,
@@ -122,6 +136,7 @@ Future<StagingOwner> openWindowsStagingOwner(
       store: journal,
       studyStore: studyJournal,
       quizStore: quizJournal,
+      grammarStore: grammarJournal,
       automaticRefresh: config.automaticRefresh,
     );
     return WindowsStagingOwner(
@@ -129,15 +144,20 @@ Future<StagingOwner> openWindowsStagingOwner(
       journal,
       studyJournal: studyJournal,
       quizJournal: quizJournal,
+      grammarJournal: grammarJournal,
     );
   } on Object {
     try {
-      await quizJournal?.close();
+      await grammarJournal?.close();
     } finally {
       try {
-        await studyJournal?.close();
+        await quizJournal?.close();
       } finally {
-        await journal.close();
+        try {
+          await studyJournal?.close();
+        } finally {
+          await journal.close();
+        }
       }
     }
     rethrow; // Startup controller replaces raw details with its fixed UI state.
@@ -169,7 +189,7 @@ final class WindowsStagingOwner
     this.grammarJournal,
   });
 
-  /// Explicit caller opt-in only; the staging factory does not open this store.
+  /// Only explicit trusted grammar-history opt-in transfers this store.
   final NativeGrammarQuizJournal? grammarJournal;
   final NativeVocabularyQuizJournal? quizJournal;
   final NativeStudySessionJournal? studyJournal;
