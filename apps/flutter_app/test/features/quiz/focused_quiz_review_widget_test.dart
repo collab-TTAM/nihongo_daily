@@ -394,4 +394,143 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  // Child practice capability regressions; all prior cases remain unchanged.
+  for (final phase in ['choice', 'next', 'save']) {
+    testWidgets('focused source A B A retires child $phase before frame', (
+      tester,
+    ) async {
+      final ports = _Ports(original)..seed(report([deck.first], 1));
+      final source = StateProvider<CurriculumRepository>((ref) => ports);
+      final container = await mount(tester, ports, source: source);
+      await load(tester);
+      await practice(tester);
+      final q = deck.first;
+      late VoidCallback stale;
+      if (phase == 'choice') {
+        stale = tester
+            .widget<OutlinedButton>(
+              find.byKey(ValueKey('quiz-choice-${q.target.id}')),
+            )
+            .onPressed!;
+      } else {
+        await tapQuiz(
+          tester,
+          find.byKey(ValueKey('quiz-choice-${q.target.id}')),
+        );
+        if (phase == 'next') {
+          stale = tester
+              .widget<FilledButton>(find.byKey(const Key('quiz-next')))
+              .onPressed!;
+        } else {
+          await tapQuiz(tester, find.byKey(const Key('quiz-next')));
+          stale = tester
+              .widget<FilledButton>(find.byKey(const Key('quiz-save')))
+              .onPressed!;
+        }
+      }
+      final captures = ports.captures;
+      container.read(source.notifier).state = FixtureCurriculumRepository(
+        (_, _) async => throw StateError('Retired source must not load'),
+      );
+      container.read(curriculumRepositoryProvider);
+      container.read(source.notifier).state = ports;
+      expect(container.read(curriculumRepositoryProvider), same(ports));
+      stale();
+      await tester.idle(); // No replacement frame yet.
+      expect(ports.captures, captures);
+      expect(ports.saved, isEmpty);
+      if (phase == 'choice') {
+        expect(find.byKey(const Key('quiz-feedback')), findsNothing);
+      }
+      if (phase == 'next') {
+        expect(find.byKey(const Key('quiz-result')), findsNothing);
+      }
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-prompt')), findsNothing);
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await load(tester);
+      await practice(tester);
+      stale();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-feedback')), findsNothing);
+      await answer(tester, q);
+      expect(find.text('Kết quả bộ này: 1 / 1'), findsOneWidget);
+      expect(ports.captures, captures + 1);
+      expect(ports.saved, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('focused accepted save cannot publish after explicit back', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..seed(report([deck.first], 1));
+    await mount(tester, ports);
+    await load(tester);
+    await practice(tester);
+    await answer(tester, deck.first);
+    ports.waiting = Completer<void>();
+    ports.entered = Completer<void>();
+    await tapQuiz(tester, find.byKey(const Key('quiz-save')));
+    expect(ports.entered!.isCompleted, isTrue);
+    expect(ports.saved, hasLength(1));
+    await tapQuiz(tester, find.byKey(const Key('quiz-review-back')));
+    ports.waiting!.complete();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-saved')), findsNothing);
+    expect(find.byKey(const Key('quiz-save-error')), findsNothing);
+    expect(find.text('Câu đúng theo bài gốc: 0 / 1'), findsOneWidget);
+    expect(ports.captures, 1);
+    expect(ports.saved, hasLength(1));
+    // Accepted storage is not rolled back; only an explicit reload observes it.
+    await load(tester);
+    expect(find.text('Câu đúng theo bài gốc: 1 / 2'), findsOneWidget);
+    expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'focused factory replacement retires captured next before frame',
+    (tester) async {
+      final ports = _Ports(original)..seed(report([deck.first], 1));
+      final container = await mount(tester, ports);
+      await load(tester);
+      await practice(tester);
+      await tapQuiz(
+        tester,
+        find.byKey(ValueKey('quiz-choice-${deck.first.target.id}')),
+      );
+      final stale = tester
+          .widget<FilledButton>(find.byKey(const Key('quiz-next')))
+          .onPressed!;
+      int replacements = 0;
+      VocabularyQuizAttempt replacement(QuizRound round) {
+        replacements++;
+        return captureQuizAttempt(round);
+      }
+
+      container.updateOverrides([
+        accountRuntimeProvider.overrideWithValue(ports.harness.runtime),
+        quizHistorySourceProvider.overrideWithValue(ports),
+        curriculumRepositoryProvider.overrideWithValue(ports),
+        quizAttemptFactoryProvider.overrideWithValue(replacement),
+      ]);
+      container.read(quizAttemptFactoryProvider);
+      stale();
+      expect(ports.captures, 0);
+      expect(replacements, 0);
+      expect(ports.saved, isEmpty);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('quiz-prompt')), findsNothing);
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      await load(tester);
+      await practice(tester);
+      await answer(tester, deck.first);
+      expect(replacements, 1);
+      expect(ports.captures, 0);
+      expect(ports.saved, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  // End child practice capability regressions.
 }

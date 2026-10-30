@@ -1,5 +1,48 @@
 # Public original-vocabulary quiz — Issue #13
 
+## Vocabulary focused-practice capability fence — 2026-10-30 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  f490f55795ac61636ad6c0d8b472fdfc3790c013/tree26e19ffa98dccb493501a8938f6c9609152e7da6.
+  Pre-code marker core-20261030T2117-vocabulary-practice-fence saved PR41+issue13.
+- Parent CI41122010440 exactf490f55/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips;rawFlutter124291084487 BOTH new source-generation cases+disk journey;
+  Windows124290279025 BOTH grammar/evidence+persistentSDK markers observed.
+  TEST ONLY component evidence, not hosted learner/Auth/JWT/RLS acceptance.
+- VocabularyQuizPanel accepts optional caller-owned isCurrent capability. Default
+  absent retains dedicated quiz behavior. Shared _current requires mounted,
+  captured round identity and external validity before answer/advance/capture,
+  restart/batch/save, async save success/error/final publication and timer readiness.
+  Existing account/history/round/retry/explicit-save/UUID checks remain unchanged.
+- Progress passes its existing source/owner/generation fence AND exact current
+  practice identity. Back immediately retires old child callbacks before a frame.
+  Root additionally observes/watches/captures quiz factory, includes it in panel
+  key/selector/current checks and passes that snapshot into practice. Factory
+  replacement retires old actions before rebuilding rather than retargeting them.
+- FIVE new widget cases AUTHORED locally UNRUN: source A-B-A before-frame stale
+  choice/next/save cannot mutate/capture/append; fresh practice works and old action
+  stays retired. Held accepted save after back never publishes old success/error;
+  explicit reload still sees accepted storage (no rollback fiction). Factory
+  replacement fences old next/capture; fresh practice captures using new factory.
+  Actual provider/router/production child, TEST ONLY Auth/profile/store/clock.
+- ENTIRE old fixture/helpers/assertions/timeouts byte-identical removing only
+  delimited new block. Separate diff review covers generation, practice/round,
+  pre/post save, timer-default compatibility and no changed scoring/event format.
+  Explicit braces added to multiline factory guard during review, no lint bypass.
+- Five paths: Flutter quiz presentation/vocabulary_quiz_panel.dart;
+  quiz_progress_screen.dart;test/features/quiz/focused_quiz_review_widget_test.dart;
+  docs/VOCABULARY_QUIZ.md;docs/PROJECT_STATUS.md. No Pro/content/Authstrategy/API/
+  schema/RLS/deps/workflow/retention/collection/default activation change; AIoff.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat3/QA55/inventory155valid
+  NOTexecuted/diffcheck/separate preservation/capability review PASS. Unresolved
+  Flutterlintinclude NOTanalyzer. New5/fullFlutter/analyze/Web/Windows locally
+  UNRUN(noFlutter/nativeWindows); exact new-head Actions required, source/CI in PR41.
+- Next exact-head/latestattempt ALL5/EVERYstep/rawnew5/retained dedicated quiz,
+  navigation/disk/native markers; fix actual diagnostics preserving tests. Pending-
+  only handoff/no duplicate code/longpoll. Then review remaining #13 integrated
+  dashboard/owned journey acceptance. All14hostedpending/draft41/13open; no merge/
+  closure/deploy/release/Alpha acceptance/schedule change.
+
 ## Vocabulary progress source-generation fence — 2026-10-30 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

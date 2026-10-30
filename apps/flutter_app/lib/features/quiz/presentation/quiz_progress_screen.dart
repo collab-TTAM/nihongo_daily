@@ -35,6 +35,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
     ref.listenManual(quizHistoryRepositoryProvider, (_, _) => _generation++);
     ref.listenManual(curriculumRepositoryProvider, (_, _) => _generation++);
     ref.listenManual(accountStateProvider, (_, _) => _generation++);
+    ref.listenManual(quizAttemptFactoryProvider, (_, _) => _generation++);
   }
 
   @override
@@ -42,6 +43,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
     final repository = ref.watch(quizHistoryRepositoryProvider);
     final owner = ref.watch(accountStateProvider).profile?.id;
     final source = ref.watch(curriculumRepositoryProvider);
+    final capture = ref.watch(quizAttemptFactoryProvider);
     final level = _level;
     final levelRevision = _levelRevision;
     final generation = _generation;
@@ -72,6 +74,9 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
             onChanged: (level) {
               if (!mounted) return;
               if (generation != _generation) return;
+              if (!identical(ref.read(quizAttemptFactoryProvider), capture)) {
+                return;
+              }
               final history = ref.read(quizHistoryRepositoryProvider);
               if (!identical(history, repository)) return;
               final curriculum = ref.read(curriculumRepositoryProvider);
@@ -92,14 +97,17 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
               _level,
               levelRevision,
               generation,
+              capture,
             )),
             repository: repository,
             source: source,
             owner: owner,
             level: _level,
+            capture: capture,
             isCurrent: () =>
                 mounted &&
                 generation == _generation &&
+                identical(ref.read(quizAttemptFactoryProvider), capture) &&
                 _level == level &&
                 _levelRevision == levelRevision &&
                 ref.read(accountStateProvider).profile?.id == owner &&
@@ -127,12 +135,14 @@ class _ProgressPanel extends ConsumerStatefulWidget {
     required this.owner,
     required this.level,
     required this.isCurrent,
+    required this.capture,
   });
   final VocabularyQuizHistoryRepository repository;
   final CurriculumRepository source;
   final String owner;
   final PreviewLevel level;
   final bool Function() isCurrent;
+  final QuizAttemptFactory capture;
 
   @override
   ConsumerState<_ProgressPanel> createState() => _ProgressPanelState();
@@ -229,8 +239,10 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
             key: ObjectKey(practice),
             questions: practice,
             history: widget.repository,
-            capture: ref.watch(quizAttemptFactoryProvider),
+            capture: widget.capture,
             enableStudyTimer: false,
+            isCurrent: () =>
+                mounted && widget.isCurrent() && identical(_practice, practice),
           ),
         ],
       );

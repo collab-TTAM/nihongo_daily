@@ -17,11 +17,13 @@ class VocabularyQuizPanel extends ConsumerStatefulWidget {
     required this.history,
     required this.capture,
     this.enableStudyTimer = true,
+    this.isCurrent,
   });
   final List<QuizQuestion> questions;
   final VocabularyQuizHistoryRepository? history;
   final QuizAttemptFactory capture;
   final bool enableStudyTimer;
+  final bool Function()? isCurrent;
 
   @override
   ConsumerState<VocabularyQuizPanel> createState() =>
@@ -39,6 +41,9 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   bool _captureFailed = false;
   bool get _eligible =>
       _roundHistory != null && identical(widget.history, _roundHistory);
+
+  bool _current(QuizRound round) =>
+      mounted && identical(_round, round) && (widget.isCurrent?.call() ?? true);
 
   @override
   void didUpdateWidget(covariant VocabularyQuizPanel oldWidget) {
@@ -67,7 +72,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   }
 
   void _restart(QuizRound expected, {bool next = false}) {
-    if (!mounted || !identical(_round, expected) || _saving) return;
+    if (!_current(expected) || _saving) return;
     if (widget.enableStudyTimer) {
       ref
           .read(studySessionRecorderProvider.notifier)
@@ -80,13 +85,13 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   }
 
   void _answer(QuizRound expected, String questionId, String choiceId) {
-    if (!mounted || !identical(_round, expected)) return;
+    if (!_current(expected)) return;
     if (_roundHistory != null && !_eligible) return;
     if (expected.answer(questionId, choiceId)) setState(() {});
   }
 
   void _advance(QuizRound expected, String questionId) {
-    if (!mounted || !identical(_round, expected)) return;
+    if (!_current(expected)) return;
     if (_roundHistory != null && !_eligible) return;
     if (expected.advance(questionId)) {
       if (expected.isComplete && _eligible) {
@@ -103,7 +108,8 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   Future<void> _save(QuizRound expected) async {
     final repository = _roundHistory;
     final attempt = _attempt;
-    if (!_eligible ||
+    if (!_current(expected) ||
+        !_eligible ||
         _saving ||
         _saved ||
         repository == null ||
@@ -112,10 +118,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
       return;
     }
     bool current() =>
-        mounted &&
-        identical(_round, expected) &&
-        identical(_attempt, attempt) &&
-        _eligible;
+        _current(expected) && identical(_attempt, attempt) && _eligible;
     setState(() {
       _saving = true;
       _saveFailed = false;
@@ -133,7 +136,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   @override
   Widget build(BuildContext context) {
     final round = _round;
-    final current = _roundHistory == null || _eligible;
+    final current = _current(round) && (_roundHistory == null || _eligible);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -143,9 +146,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
             area: DailyPlanArea.quizReview,
             contentVisible: current,
             isContentCurrent: () =>
-                mounted &&
-                identical(_round, round) &&
-                (_roundHistory == null || _eligible),
+                _current(round) && (_roundHistory == null || _eligible),
           ),
         _quizBody(context, round),
       ],
