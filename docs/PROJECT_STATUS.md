@@ -1,5 +1,50 @@
 # PROJECT STATUS
 
+## Composed focused grammar disk journey — 2026-10-30 UTC
+
+- Issue13/draft PR41, branch automation/issue-11-plan-sdk-integration; parent
+  f9bd1b0d5c36594bba2df5e05c4496a23039ae0f/tree07dc22b3ba3f030e2f0014108e202edfae5224a0.
+  Pre-code marker core-20261030T1816-focused-disk-journey saved PR41+issue13.
+- Parent CI41096496766 exactf9bd1b0/latestattempt1 ALL5 jobs/EVERY step SUCCESS,
+  no skipped/pending/missing gates. Raw Flutter124204240878 confirms ALL11 focused
+  cases and retained actual disk journey. Windows124203592143 confirms BOTH grammar
+  factory/evidence-rejection markers and persistent vault/sameSDK/profile/receipt
+  marker. The previous analysis repair is verified; TEST ONLY not hosted proof.
+- Extend the existing actual SDK/native-journal/owned-startup/router journey AFTER
+  all old assertions. Restored owner A explicitly loads PRIMARY progress, starts
+  focused practice with all4 original ordered choices, answers correctly, manually
+  saves ONE new CORRECTION event with new identity/current item version/UTC.
+  No write before explicit save; retained duplicate save callback writes no more.
+  Back and explicit reload retain primary9/10 and needsReview1; separate correction
+  totals become2 rounds/2correct. No extra HTTP or automatic reads on practice/back.
+- Journal prefix bytes remain exact after the new append. Close third owner,
+  open fourth owner on SAME files/vault, require actual SDK startup refresh+own
+  profile and no automatic history read. Read exact3 DTOs, including unchanged
+  original primary/correction and new focused correction; both kind totals restore.
+- Fourth owner starts fresh practice; actual SDK logout/login A-B-A retires saved
+  start/answer/back callbacks BEFORE any account-change frame. B sees empty kinds
+  and cannot start practice; returning A cannot revive prior callbacks and retains
+  scores/needsReview. No additional appends; complete journal bytes preserved.
+  Close owner and invoke old callbacks again with no I/O. No owner/token text UI.
+- ENTIRE previous fixture/helpers/assertions/timeouts retained byte-for-byte by
+  removing only the delimited continuation. No source/provider/router/capture
+  overrides, fabricated saved data, sleeps or timeout extension. HTTP/JWT/vault
+  remain TEST ONLY; native journal and production SDK/runtime/UI are actual.
+  This is NOT hosted Auth/JWT/RLS, physical Windows, power-loss or learner proof.
+- Three paths: apps/flutter_app/test/features/quiz/grammar_disk_journey_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md. Production/default/Authstrategy/API/
+  schema/RLS/deps/workflow/retention/collection/Pro/content unchanged; AI stays off.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat1zerochanges/QA55 PASS;
+  inventory155 valid NOTexecuted/diffcheck/separate real-I/O/count/kind/identity/
+  generation/byte-preservation review PASS. Flutter lint include unresolved is NOT
+  analyzer proof. Extended journey/Flutter/analyze/native/build locally UNRUN,
+  no Flutter/native Windows SDK; new exact-head Actions required. Source/CI in PR41.
+- NEXT inspect exact new-head/latestattempt ALL5/EVERY step, raw extended disk
+  journey/all11 focused cases and Windows markers. Fix actual diagnostics preserving
+  assertions; pending-only handoff/no duplicate source/long polling. Then review
+  remaining #13 progress/dashboard integration and current dependencies/acceptance.
+  Draft41/13open/all14hostedpending; no merge/closure/deploy/release/Alpha/schedule.
+
 ## Focused grammar fixture analysis recovery — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent

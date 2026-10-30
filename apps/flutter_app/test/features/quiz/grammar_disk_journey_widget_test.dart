@@ -630,6 +630,226 @@ void main() {
       });
       expect(tester.takeException(), isNull);
       // End composed progress continuation.
+      // Focused-practice continuation: use the same real journal and owned SDK.
+      // Every original assertion above remains intact; only explicit save writes.
+      final focusedHttp = server.paths.length;
+      await progressKind('Vòng gốc');
+      await primaryProgress(third);
+      expect(third.store.reads, 3);
+      final target = questions.first;
+      await tapQuiz(tester, find.byKey(const Key('grammar-focused-start')));
+      expect(find.text('Luyện lại 1 mẫu cần ôn'), findsOneWidget);
+      for (final choice in target.choices) {
+        expect(
+          find.byKey(ValueKey('grammar-choice-${choice.id}')),
+          findsOneWidget,
+        );
+      }
+      expect(third.store.reads, 3);
+      expect(third.store.appends, 0);
+      await tapQuiz(
+        tester,
+        find.byKey(ValueKey('grammar-choice-${target.target.id}')),
+      );
+      await tapQuiz(tester, find.byKey(const Key('grammar-quiz-next')));
+      expect(find.text('Kết quả theo bài gốc: 1 / 1'), findsOneWidget);
+      expect(third.store.appends, 0);
+      final focusedSave = tester
+          .widget<FilledButton>(find.byKey(const Key('grammar-quiz-save')))
+          .onPressed!;
+      await diskAction(third, 'grammar-quiz-save');
+      expect(find.byKey(const Key('grammar-quiz-saved')), findsOneWidget);
+      focusedSave();
+      await tester.pumpAndSettle();
+      expect(third.store.appends, 1);
+      expect(third.store.reads, 3);
+      expect(server.paths.length, focusedHttp);
+      final focusedRows = (await tester.runAsync(
+        () => third.journal.list(wire.a),
+      ))!;
+      expect(focusedRows, hasLength(3));
+      final focused = focusedRows
+          .singleWhere(
+            (r) =>
+                r.attempt.eventId != primary.eventId &&
+                r.attempt.eventId != correction.eventId,
+          )
+          .attempt;
+      expect(focused.kind, GrammarQuizAttemptKind.correction);
+      expect(focused.level, PreviewLevel.n5);
+      expect(focused.score, 1);
+      expect(focused.completedAt.isUtc, isTrue);
+      expect(focused.answers, hasLength(1));
+      expect(focused.answers.single.itemId, target.target.id);
+      expect(
+        focused.answers.single.contentVersion,
+        target.target.contentVersion,
+      );
+      expect(focused.answers.single.selectedId, target.target.id);
+      expect(
+        focused.answers.single.choices,
+        target.choices.map((c) => c.id).toList(),
+      );
+      await tapQuiz(tester, find.byKey(const Key('grammar-focused-back')));
+      expect(
+        find.text(
+          'Vòng gốc · Câu đúng theo bài gốc: $score / ${questions.length}',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Mẫu cần ôn: 1'), findsOneWidget);
+      expect(third.store.reads, 3);
+      await primaryProgress(third);
+      Future<void> twoCorrections(_DiskApp app) async {
+        await progressKind('Vòng luyện sai');
+        await diskAction(app, 'grammar-progress-load');
+        expect(find.text('Vòng luyện sai · N5 · 2 bộ đã lưu'), findsOneWidget);
+        expect(
+          find.text('Vòng luyện sai · Câu đúng theo bài gốc: 2 / 2'),
+          findsOneWidget,
+        );
+        expect(find.text('Mẫu hiện tại đã luyện: 1'), findsOneWidget);
+        expect(find.text('Mẫu cần ôn: 0'), findsOneWidget);
+        expect(find.byKey(const Key('grammar-focused-start')), findsNothing);
+      }
+
+      await twoCorrections(third);
+      expect(third.store.reads, 5);
+      expect(third.store.appends, 1);
+      final focusedBytes = (await tester.runAsync(
+        () => File(
+          '${directory.path}/grammar-quiz-attempts.ndjson',
+        ).readAsBytes(),
+      ))!;
+      expect(focusedBytes.length, greaterThan(bytes.length));
+      expect(focusedBytes.take(bytes.length).toList(), bytes);
+      await tester.runAsync(third.close);
+      focusedSave();
+      expect(third.store.appends, 1);
+      await tester.pumpWidget(const SizedBox());
+      expect(third.controller.grammarQuizHistorySource, isNull);
+      final refreshBeforeFourth = server.paths
+          .where((p) => p == '/auth/v1/token')
+          .length;
+      final fourth = (await tester.runAsync(() async {
+        final app = await _open(directory, server, vault);
+        current = app;
+        await app.ready();
+        return app;
+      }))!;
+      expect(
+        server.paths.where((p) => p == '/auth/v1/token').length,
+        refreshBeforeFourth + 1,
+      );
+      expect(fourth.runtime.account.state.profile!.id, wire.a);
+      container = await mount(fourth);
+      container.read(routerProvider).go('/quiz/grammar/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(fourth.store.reads, 0);
+      expect(fourth.store.appends, 0);
+      final fourthProfileHttp = server.paths.length;
+      await primaryProgress(fourth);
+      await twoCorrections(fourth);
+      expect(fourth.store.reads, 2);
+      await progressKind('Vòng gốc');
+      await primaryProgress(fourth);
+      final retiredStart = tester
+          .widget<FilledButton>(find.byKey(const Key('grammar-focused-start')))
+          .onPressed!;
+      await tapQuiz(tester, find.byKey(const Key('grammar-focused-start')));
+      final retiredAnswer = tester
+          .widget<OutlinedButton>(
+            find.byKey(ValueKey('grammar-choice-${target.target.id}')),
+          )
+          .onPressed!;
+      final retiredBack = tester
+          .widget<OutlinedButton>(find.byKey(const Key('grammar-focused-back')))
+          .onPressed!;
+      expect(server.paths.length, fourthProfileHttp);
+      await tester.runAsync(() async {
+        await fourth.runtime.account.signOut();
+        server.user = wire.b;
+        await fourth.login();
+      });
+      // Retained practice callbacks execute before any account-change frame.
+      retiredAnswer();
+      retiredBack();
+      retiredStart();
+      expect(fourth.store.reads, 3);
+      expect(fourth.store.appends, 0);
+      await tester.pumpAndSettle();
+      expect(fourth.runtime.account.state.profile!.id, wire.b);
+      expect(find.byKey(const Key('grammar-focused-back')), findsNothing);
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      await diskAction(fourth, 'grammar-progress-load');
+      expect(find.text('Vòng gốc · N5 · 0 bộ đã lưu'), findsOneWidget);
+      expect(find.byKey(const Key('grammar-focused-start')), findsNothing);
+      await progressKind('Vòng luyện sai');
+      await diskAction(fourth, 'grammar-progress-load');
+      expect(find.text('Vòng luyện sai · N5 · 0 bộ đã lưu'), findsOneWidget);
+      expect(find.byKey(const Key('grammar-focused-start')), findsNothing);
+      await tester.runAsync(() async {
+        await fourth.runtime.account.signOut();
+        server.user = wire.a;
+        await fourth.login();
+      });
+      final returnedAHttp = server.paths.length;
+      // A-B-A cannot reactivate callbacks from the earlier A generation.
+      retiredAnswer();
+      retiredBack();
+      retiredStart();
+      expect(fourth.store.reads, 5);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('grammar-focused-back')), findsNothing);
+      await primaryProgress(fourth);
+      await twoCorrections(fourth);
+      expect(fourth.store.reads, 7);
+      expect(fourth.store.appends, 0);
+      expect(server.paths.length, returnedAHttp);
+      final focusedRestored = (await tester.runAsync(
+        () => fourth.journal.list(wire.a),
+      ))!;
+      expect(focusedRestored, hasLength(3));
+      for (final original in [primary, correction, focused]) {
+        expect(
+          sameGrammarQuizAttempt(
+            focusedRestored
+                .singleWhere((r) => r.attempt.eventId == original.eventId)
+                .attempt,
+            original,
+          ),
+          isTrue,
+        );
+      }
+      expect(
+        (await tester.runAsync(() => fourth.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      expect(
+        (await tester.runAsync(
+          () => File(
+            '${directory.path}/grammar-quiz-attempts.ndjson',
+          ).readAsBytes(),
+        ))!,
+        focusedBytes,
+      );
+      expect(find.textContaining(wire.a), findsNothing);
+      expect(find.textContaining('TEST_ONLY'), findsNothing);
+      expect(server.paths.toSet(), {
+        '/auth/v1/token',
+        '/auth/v1/logout',
+        '/rest/v1/rpc/ensure_profile',
+      });
+      await tester.runAsync(fourth.close);
+      retiredAnswer();
+      retiredBack();
+      retiredStart();
+      expect(fourth.store.reads, 7);
+      expect(fourth.store.appends, 0);
+      expect(fourth.controller.grammarQuizHistorySource, isNull);
+      expect(tester.takeException(), isNull);
+      // End focused-practice continuation.
     },
   );
 }
