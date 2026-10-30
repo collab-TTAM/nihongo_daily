@@ -639,13 +639,17 @@ void main() {
     expect(ports.reads, 1);
     expect(ports.contentReads, 1);
     expect(ports.writes, 0);
-    await tapQuiz(
-      tester,
-      find.byKey(ValueKey('grammar-progress-item-${entry.id}')),
-    );
+    // An expanded tile's center is inside its selectable children. Hit the
+    // actual header to collapse instead of tapping the whole expanded subtree.
+    await tapQuiz(tester, find.text(entry.heading));
     expect(find.text(entry.explanationVi), findsNothing);
     expect(ports.reads, 1);
     expect(ports.contentReads, 1);
+    await tapQuiz(tester, find.text(entry.heading));
+    expect(find.text(entry.explanationVi), findsOneWidget);
+    expect(ports.reads, 1);
+    expect(ports.contentReads, 1);
+    expect(ports.writes, 0);
   });
   testWidgets('grammar optional context absent stays explicitly unavailable', (
     tester,

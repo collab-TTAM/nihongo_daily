@@ -1,5 +1,39 @@
 # Grammar quiz core — Issue #13
 
+## Grammar context collapse gesture fixture recovery — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  77a9891cdfb2cc38a0a1679f13aa5828bda43312/tree1c6adf800420338b2fe28746323f7526cc5dff4c.
+  Pre-code marker core-20261030T1411-context-tap-fix saved PR41+issue13.
+- Parent CI41061297857 exact77a9891/latestattempt1 FAILED. All5 jobs/every step
+  inspected: AI/database/repo/Windows SUCCESS; Flutter format/analyze SUCCESS,
+  flutter test1713passed/1failed; subsequent Flutter/native/Chrome/Web gates
+  SKIPPED, not success. Raw Flutter124082188767 failure line646 in new original-
+  context open/close test; other3 new context cases passed. No allgreen claim.
+- Diagnosis: tapQuiz hit-tests and taps the center of its Finder. The entire
+  expanded ExpansionTile's center is a child SelectableText, so tapping the tile
+  key does not invoke its header collapse action. Open and every original text/
+  optional-field/account/narrow check had succeeded; collapse gesture target wrong.
+- Correct ONLY that fixture action to hit-tested original heading. Keep ALL prior
+  assertions, including strict absence after collapse, no extra reads and every
+  old context field check. Add actual header reopen and original explanation,
+  unchanged read/content-read/zero-write assertions. No programmatic controller,
+  fake success, relaxed Finder/assertion, delays or timeout extension.
+- Separate review proves all parent assertion lines retained in order and replacing
+  only gesture/reopen continuation recovers entire original test bytes. Production
+  widgets/helpers/fixtures/security/default/content/Pro unchanged. Three paths:
+  Flutter test/features/quiz/grammar_quiz_progress_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat1zerochanges/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck/review PASS. Flutter lint include unresolved
+  NOTanalyzer; corrected Flutter case/all regressions/native/build locally UNRUN
+  (noFlutter/Windows), require new exact-head/latestattempt CI. Commit/tree/CI in PR41.
+- NEXT all5/EVERYstep exact new head +corrected collapse/reopen/all4 context cases,
+  retained18/17/diskjourney/native markers; fix actual diagnostics preserving tests.
+  Pending-only handoff/no duplicate source/longpoll. Draft41/13open/all14hostedpending/
+  AIoff; no Authstrategy/API/schema/RLS/dependency/workflow/retention/collection/
+  defaultactivation/merge/closure/deploy/release/schedule/Personal Alpha acceptance.
+
 ## Original grammar recommendation context — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
