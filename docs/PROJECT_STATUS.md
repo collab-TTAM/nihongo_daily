@@ -1,5 +1,43 @@
 # PROJECT STATUS
 
+## Vocabulary progress source-generation fence — 2026-10-30 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  e3b1faa2dda103bbfc493dd7811f6c7e2a7fd193/tree692c92e95829ee77240f00fb5ee86a18a5cbfc98.
+  Pre-code marker core-20261030T2017-progress-source-generation saved PR41+issue13.
+- Parent CI41113510388 exacte3b1faa/latestattempt1 all5/EVERY step SUCCESS/no
+  skips. RawFlutter124262478259 BOTH navigation cases +disk journey PASS;
+  Windows124261757581 BOTH grammar/evidence+persistentSDK markers observed.
+  TEST ONLY component evidence, not hosted learner/JWT/RLS acceptance.
+- Review found vocabulary progress compared source identity only. If provider
+  replacement A-B-A is observed before a widget frame, an old load or held content
+  continuation can see original identity again and dispatch/publish old work.
+- Add manual root generation listeners to curriculum/history/account providers.
+  Snapshot generation into selector guard, panel key and existing isCurrent closure.
+  Any observed replacement permanently retires old progress load/start/back and
+  asynchronous content/history continuations, even when original identity returns.
+  Existing level revision, identity checks, manual load and own-account barriers
+  retained. No extra I/O, automatic load/save or scoring/capture/token changes.
+- TWO new widget regressions AUTHORED locally UNRUN: source A-B-A retained old load
+  before/after frame stays inert; held source completes after A-B-A without history
+  dispatch or stale summary/error. New explicit load works; no replacement-source
+  reads, writes or timeout extension. Complete override list preserves fixture Auth.
+  ENTIRE old fixture/helpers/assertions/timeouts byte-identical after removing only
+  new cases/class. Existing child vocabulary panel action/capture fences are NOT
+  strengthened here and remain a separate review scope; no full child-safety claim.
+- Four paths: Flutter quiz presentation/quiz_progress_screen.dart;
+  test/features/quiz/quiz_progress_widget_test.dart; docs/VOCABULARY_QUIZ.md;
+  docs/PROJECT_STATUS.md. Pro/content/Authstrategy/API/schema/RLS/deps/workflow/
+  retention unchanged. All14hostedpending/AIoff/draft41/13open/no release or merge.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat2/QA55 PASS; inventory155
+  valid NOTexecuted/diffcheck/separate generation/old-fixture/I-O boundary review
+  PASS. Unresolved Flutterlintinclude NOTanalyzer; new Flutter/analyze/Web/Windows
+  locally UNRUN(noFlutter/nativeWindows); exact new-head Actions required.
+- Next exact-head/latestattempt all5/EVERYstep/raw new2 +retained navigation/disk/
+  native markers; fix actual diagnostics preserving tests. Pending-only handoff/no
+  duplicate source/longpoll. Then review vocabulary child practice callback/capture
+  ownership independently before further dashboard work. No Alpha/schedule change.
+
 ## Progress destination discovery — 2026-10-30 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

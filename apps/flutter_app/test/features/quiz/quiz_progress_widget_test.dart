@@ -544,4 +544,94 @@ void main() {
     expect(find.text(question.target.heading), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  // Source generation regressions: A-B-A must not revive a retained load.
+  testWidgets('source A B A before frame permanently retires progress load', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    final container = await mount(tester, ports);
+    final oldLoad = tester
+        .widget<OutlinedButton>(find.byKey(const Key('quiz-progress-load')))
+        .onPressed!;
+    final other = _UnusedProgressSource();
+    container.updateOverrides([
+      accountRuntimeProvider.overrideWithValue(ports.harness.runtime),
+      quizHistorySourceProvider.overrideWithValue(ports),
+      curriculumRepositoryProvider.overrideWithValue(other),
+    ]);
+    expect(container.read(curriculumRepositoryProvider), same(other));
+    container.updateOverrides([
+      accountRuntimeProvider.overrideWithValue(ports.harness.runtime),
+      quizHistorySourceProvider.overrideWithValue(ports),
+      curriculumRepositoryProvider.overrideWithValue(ports),
+    ]);
+    expect(container.read(curriculumRepositoryProvider), same(ports));
+    oldLoad(); // No replacement frame yet, original identity has returned.
+    expect(ports.contentReads, 0);
+    expect(ports.reads, 0);
+    expect(other.reads, 0);
+    await tester.pumpAndSettle();
+    oldLoad();
+    expect(ports.contentReads, 0);
+    await load(tester);
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 1);
+    expect(find.text('N5 · 1 bộ đã lưu'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('held content after source A B A cannot dispatch history', (
+    tester,
+  ) async {
+    final ports = _Ports(original)..records = [report(1)];
+    final container = await mount(tester, ports);
+    final held = Completer<List<CurriculumEntry>>();
+    ports.contentWaiting = held;
+    final button = find.byKey(const Key('quiz-progress-load'));
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pump();
+    expect(ports.contentReads, 1);
+    expect(ports.reads, 0);
+    final other = _UnusedProgressSource();
+    container.updateOverrides([
+      accountRuntimeProvider.overrideWithValue(ports.harness.runtime),
+      quizHistorySourceProvider.overrideWithValue(ports),
+      curriculumRepositoryProvider.overrideWithValue(other),
+    ]);
+    expect(container.read(curriculumRepositoryProvider), same(other));
+    container.updateOverrides([
+      accountRuntimeProvider.overrideWithValue(ports.harness.runtime),
+      quizHistorySourceProvider.overrideWithValue(ports),
+      curriculumRepositoryProvider.overrideWithValue(ports),
+    ]);
+    expect(container.read(curriculumRepositoryProvider), same(ports));
+    held.complete(original);
+    await tester.idle(); // Settle continuation without a new widget frame.
+    expect(ports.reads, 0);
+    expect(other.reads, 0);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+    expect(find.byKey(const Key('quiz-progress-error')), findsNothing);
+    ports.contentWaiting = null;
+    await load(tester);
+    expect(ports.contentReads, 2);
+    expect(ports.reads, 1);
+    expect(find.text('N5 · 1 bộ đã lưu'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+  // End source generation regressions.
+}
+
+// TEST ONLY replacement source; navigating through it must never load it.
+final class _UnusedProgressSource implements CurriculumRepository {
+  int reads = 0;
+  @override
+  Future<List<CurriculumEntry>> load(
+    CurriculumKind kind,
+    PreviewLevel level,
+  ) async {
+    reads++;
+    throw StateError('Unexpected replacement-source read');
+  }
 }

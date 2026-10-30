@@ -26,6 +26,16 @@ class QuizProgressScreen extends ConsumerStatefulWidget {
 class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
   PreviewLevel _level = PreviewLevel.n5;
   int _levelRevision = 0;
+  int _generation = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Identity alone cannot distinguish source A-B-A before the next frame.
+    ref.listenManual(quizHistoryRepositoryProvider, (_, _) => _generation++);
+    ref.listenManual(curriculumRepositoryProvider, (_, _) => _generation++);
+    ref.listenManual(accountStateProvider, (_, _) => _generation++);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +44,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
     final source = ref.watch(curriculumRepositoryProvider);
     final level = _level;
     final levelRevision = _levelRevision;
+    final generation = _generation;
     return PageBody(
       children: [
         const PageHeading(
@@ -60,6 +71,7 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
             ],
             onChanged: (level) {
               if (!mounted) return;
+              if (generation != _generation) return;
               final history = ref.read(quizHistoryRepositoryProvider);
               if (!identical(history, repository)) return;
               final curriculum = ref.read(curriculumRepositoryProvider);
@@ -73,13 +85,21 @@ class _QuizProgressScreenState extends ConsumerState<QuizProgressScreen> {
             },
           ),
           _ProgressPanel(
-            key: ValueKey((repository, source, owner, _level, levelRevision)),
+            key: ValueKey((
+              repository,
+              source,
+              owner,
+              _level,
+              levelRevision,
+              generation,
+            )),
             repository: repository,
             source: source,
             owner: owner,
             level: _level,
             isCurrent: () =>
                 mounted &&
+                generation == _generation &&
                 _level == level &&
                 _levelRevision == levelRevision &&
                 ref.read(accountStateProvider).profile?.id == owner &&
