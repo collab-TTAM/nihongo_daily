@@ -28,6 +28,7 @@ final class GrammarQuizProgress {
     required this.attemptCount,
     required this.answerCount,
     required this.correctCount,
+    required this.eligibleCurrentItemCount,
     required List<GrammarQuizItemProgress> items,
     required List<GrammarQuizItemProgress> needsReview,
   }) : items = List.unmodifiable(items),
@@ -36,9 +37,16 @@ final class GrammarQuizProgress {
   final int attemptCount;
   final int answerCount;
   final int correctCount;
+
+  /// Targets with a canonical question, not full JLPT curriculum coverage.
+  final int eligibleCurrentItemCount;
   final List<GrammarQuizItemProgress> items;
   final List<GrammarQuizItemProgress> needsReview;
   int get practicedCurrentItemCount => items.length;
+  int get unpracticedCurrentItemCount =>
+      eligibleCurrentItemCount - practicedCurrentItemCount;
+  int get latestCorrectCurrentItemCount =>
+      practicedCurrentItemCount - needsReview.length;
 }
 
 bool _sameChoices(List<String> left, List<CurriculumEntry> right) {
@@ -123,6 +131,7 @@ GrammarQuizProgress deriveGrammarQuizProgress({
     attemptCount: events.length,
     answerCount: answerCount,
     correctCount: correctCount,
+    eligibleCurrentItemCount: questions.length,
     items: items,
     needsReview: needsReview,
   );

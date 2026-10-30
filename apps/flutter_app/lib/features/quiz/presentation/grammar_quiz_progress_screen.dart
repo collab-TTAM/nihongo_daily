@@ -299,7 +299,19 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
             '$label · Câu đúng theo bài gốc: ${progress.correctCount} / ${progress.answerCount}',
           ),
           Text('Mẫu hiện tại đã luyện: ${progress.practicedCurrentItemCount}'),
+          Text(
+            'Mẫu có câu hỏi trong nội dung hiện tại: ${progress.eligibleCurrentItemCount}',
+          ),
+          Text(
+            'Mẫu chưa có kết quả khớp: ${progress.unpracticedCurrentItemCount}',
+          ),
+          Text(
+            'Mẫu có lần trả lời gần nhất đúng: ${progress.latestCorrectCurrentItemCount}',
+          ),
           Text('Mẫu cần ôn: ${progress.needsReview.length}'),
+          const Text(
+            'Phạm vi: các câu hỏi tạo được từ nội dung hiện tại, theo loại vòng đang chọn.',
+          ),
           if (_review.isNotEmpty)
             FilledButton(
               key: const Key('grammar-focused-start'),

@@ -281,4 +281,103 @@ void main() {
     expect(() => p.items.clear(), throwsUnsupportedError);
     expect(() => p.needsReview.clear(), throwsUnsupportedError);
   });
+  // Current-deck coverage buckets are practice evidence, never mastery.
+  test('grammar coverage counts eligible targets with no matching reports', () {
+    final p = derive([]);
+    expect(p.eligibleCurrentItemCount, 4);
+    expect(p.unpracticedCurrentItemCount, 4);
+    expect(p.latestCorrectCurrentItemCount, 0);
+    for (final content in [<CurriculumEntry>[], source().take(3).toList()]) {
+      final empty = derive([], content: content);
+      expect(empty.eligibleCurrentItemCount, 0);
+      expect(empty.unpracticedCurrentItemCount, 0);
+      expect(empty.latestCorrectCurrentItemCount, 0);
+    }
+  });
+
+  test(
+    'grammar coverage buckets partition distinct matched targets after replay',
+    () {
+      final q = buildGrammarQuiz(source(), PreviewLevel.n5);
+      final a = report(questions: [q[0]], correct: true);
+      final b = report(questions: [q[1]], event: 2, minute: 2);
+      final p = derive([a, b, a]);
+      expect(p.eligibleCurrentItemCount, 4);
+      expect(p.practicedCurrentItemCount, 2);
+      expect(p.unpracticedCurrentItemCount, 2);
+      expect(p.latestCorrectCurrentItemCount, 1);
+      expect(p.needsReview, hasLength(1));
+      expect(p.answerCount, 2);
+      expect(
+        p.unpracticedCurrentItemCount +
+            p.latestCorrectCurrentItemCount +
+            p.needsReview.length,
+        p.eligibleCurrentItemCount,
+      );
+      final corrected = derive([
+        a,
+        b,
+        report(questions: [q[1]], event: 3, minute: 3, correct: true),
+      ]);
+      expect(corrected.unpracticedCurrentItemCount, 2);
+      expect(corrected.latestCorrectCurrentItemCount, 2);
+      expect(corrected.needsReview, isEmpty);
+      final wrongAgain = derive([
+        a,
+        b,
+        report(questions: [q[0]], event: 4, minute: 4),
+      ]);
+      expect(wrongAgain.latestCorrectCurrentItemCount, 0);
+      expect(wrongAgain.unpracticedCurrentItemCount, 2);
+      expect(wrongAgain.needsReview, hasLength(2));
+    },
+  );
+
+  test(
+    'grammar coverage excludes obsolete version and ordered-choice evidence',
+    () {
+      final stale = derive([
+        report(correct: true),
+      ], content: source(version: 2));
+      final changed = derive([
+        variant(report(correct: true), (json) {
+          for (final raw in json['answers'] as List) {
+            final row = raw as Map<String, Object?>;
+            row['choices'] = (row['choices'] as List).reversed.toList();
+          }
+        }),
+      ]);
+      for (final p in [stale, changed]) {
+        expect(p.eligibleCurrentItemCount, 4);
+        expect(p.unpracticedCurrentItemCount, 4);
+        expect(p.latestCorrectCurrentItemCount, 0);
+        expect(p.practicedCurrentItemCount, 0);
+        expect(p.correctCount, 4); // Historical score remains independent.
+      }
+    },
+  );
+
+  test(
+    'grammar coverage keeps primary correction and level evidence separate',
+    () {
+      final events = [
+        report(correct: true, kind: GrammarQuizAttemptKind.correction),
+        report(event: 2, level: PreviewLevel.n4, correct: true),
+      ];
+      final primary = derive(events);
+      expect(primary.unpracticedCurrentItemCount, 4);
+      expect(primary.latestCorrectCurrentItemCount, 0);
+      final correction = derive(
+        events,
+        kind: GrammarQuizAttemptKind.correction,
+      );
+      expect(correction.unpracticedCurrentItemCount, 0);
+      expect(correction.latestCorrectCurrentItemCount, 4);
+      expect(
+        primary.eligibleCurrentItemCount,
+        correction.eligibleCurrentItemCount,
+      );
+    },
+  );
+  // End current-deck coverage regressions.
 }

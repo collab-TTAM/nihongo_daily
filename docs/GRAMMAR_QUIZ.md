@@ -1,5 +1,50 @@
 # Grammar quiz core — Issue #13
 
+## Current grammar question coverage — 2026-10-30 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  6ce7100c6acd006d2221505e666f5268ddbaed9e/treebb43cacedd34a6f7cc0dd4df3012d7cfc05f365e.
+  Pre-code marker core-20261030T2316-grammar-current-coverage saved PR41+issue13.
+- Parent CI41136575583 exact6ce7100/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips;rawFlutter124340996254 extended actual quiz disk journey PASS;
+  Windows124340526189 BOTH grammar/evidence+persistentSDK markers observed.
+  TEST ONLY component evidence, not hosted learner/Auth/JWT/RLS acceptance.
+- Reviewed before code: eligibleCurrentItemCount is the FULL canonical grammar
+  question-deck target count, NOT raw source rows, JLPT coverage or a study/mastery
+  threshold. Unpracticed = eligible minus distinct matched current practiced;
+  latestCorrect = practiced minus needsReview. These disjoint three buckets sum
+  to eligible, independent of historical answer totals or duplicate reports.
+- Existing current-ID/version/ordered-choice matching and selected kind/level
+  apply unchanged. Obsolete or changed-choice reports remain historical without
+  reducing unpracticed counts. Missing/insufficient eligible deck gives0; a
+  correction report never changes PRIMARY coverage. No MASTERED/time/SRS credit.
+- Grammar projection stores eligible count from SAME already-built deck; derived
+  getters expose unmatched and latest-correct counts. UI shows Vietnamese labels
+  only after existing explicit manual load, with current-content/selected-kind
+  scope explanation. No new I/O, storage, factory, account or refresh behavior.
+- FOUR new core regressions AUTHORED: empty/insufficient deck; mixed distinct
+  targets/dedup/partition/latest answer transitions; stale version/choice evidence;
+  primary/correction/level isolation. ONE widget case: no labels before load,
+  empty->wrong->correct manual snapshots/unchanged no-I-O between loads/zero writes.
+  Both ENTIRE old test files/helpers/assertions/timeouts byte-identical removing
+  only new delimited blocks. No content or Pro scope edits, even for synthetic N4.
+- Fresh official Dart3.9.2 SHA256 verified; actual-source standalone coverage smoke
+  PASS eligible/empty/dedup/partition/kind isolation. Strictformat4/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck/separate denominator/matching/kind/no-I-O/
+  historical-counter/preservation review PASS. Flutter lint include unresolved NOT
+  analyzer; new5/fullFlutter/analyze/Web/Windows locally UNRUN(noFlutter/Windows),
+  exact new-head Actions required. Commit/tree/CI in PR41 checkpoint.
+- Six paths: Flutter quiz domain/grammar_quiz_progress.dart;
+  presentation/grammar_quiz_progress_screen.dart;test/features/quiz/
+  grammar_quiz_progress_test.dart and grammar_quiz_progress_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md;docs/PROJECT_STATUS.md. Pro/content/Authstrategy/API/schema/
+  RLS/deps/workflow/retention/collection/default activation unchanged; AIoff.
+- Next exact-head/latestattempt ALL5/EVERYstep/rawnew4+1/retained grammar/disk/
+  native markers. Fix diagnostics preserving assertions; pending-only handoff/no
+  duplicate code/longpoll. Then review equivalent vocabulary current-deck metrics
+  and remaining #13 acceptance. All14hostedpending/draft41/13open; no merge/closure/
+  deploy/release/Alpha acceptance/schedule change.
+
 ## Progress destination discovery — 2026-10-30 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
