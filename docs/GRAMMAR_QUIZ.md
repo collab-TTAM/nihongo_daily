@@ -1,5 +1,47 @@
 # Grammar quiz core — Issue #13
 
+## Grammar history providers and configured startup — 2026-10-30 UTC
+
+- Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent
+  4f655fcf06d58aad3da7add6e1a103a7863a4512. New commit/tree/CI in PR41 checkpoint.
+- Recovered stale core-20261030T0150-grammar-provider after >138min: same head/
+  body/no newer heartbeat, PR comments/reviews or workflow evidence. Fresh clone
+  only; no unsaved work from prior environments reused. Pre-code scope saved
+  PR41+issue13 under core-20261030T0410-grammar-provider-recovery.
+- New grammarQuizHistorySourceProvider defaults null; separate repository provider
+  requires ready account, own profile, current ready runtime and explicit source.
+  Factory exceptions map to null, with no private details. Acquisition performs no
+  storage/HTTP. Existing captured repository enforces session/ready-runtime fences
+  on every operation; providers do not verify JWTs or create storage/Auth success.
+- AccountStartupApp forwards the controller's active grammar source beside the
+  unchanged vocabulary source. No save/history UI, store opening, additional SDK,
+  entrypoint opt-in/collection/retention/default activation. Existing staging
+  factory still does not supply grammar storage. Primary/correction/vocabulary
+  remain separate; no mastery or study credit claim.
+- Seven synthetic widget/provider cases AUTHORED locally UNRUN: null default,
+  source without account, ready account without source, held own-profile barrier/
+  cached acquisition/no reads/vocabulary separation, failed profile+throwing source,
+  captured A-B-A revocation/no old dispatch, configured startup forwarding after
+  start and retired capability after close. TEST ONLY account/profile/memory ports.
+  All old tests untouched. Full Flutter/analyze/Web/Windows require new exact-head CI.
+- Parent CI40985468181 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter123835898948 confirms all16 owned grammar SDK cases; Windows123835406214
+  persistent vault/sameSDK/profile/receipt marker observed. Not hosted learner proof.
+- Fresh official Dart3.9.2 archive SHA256 verified/strict format3 zerochanges PASS
+  (unresolved Flutter lint include warning, NOT analyzer). QA55 PASS/inventory155
+  valid(NOT155executed)/diffcheck PASS. Separate provider algorithm parity and
+  reverse-removal of additions restores entire old startup file; lifecycle/
+  readiness/error/no-I-O/no-default/test diff review PASS. No assertions weakened.
+- Five paths: new Flutter quiz/application/grammar_quiz_history_provider.dart;
+  auth/presentation/account_startup_app.dart; new test/features/quiz/
+  grammar_quiz_history_provider_test.dart; docs/GRAMMAR_QUIZ.md; this status.
+- NEXT new exact-head/latestattempt all5/EVERYstep/new7 and retained SDK/native
+  markers; fix actual diagnostics preserving assertions/security. Pending-only
+  handoff/no duplicate source/longpolling. Then explicit grammar save/history UI
+  and reviewed entrypoint opt-in; hosted learner evidence still pending. Keep
+  draft41/issue13/all14 hosted groups/defaultAIoff; no Pro/content/Authstrategy/
+  API/schema/RLS/dependency/CI/retention/merge/closure/deploy/release/schedule change.
+
 The grammar quiz now has an explicit process-local route at /quiz/grammar,
 linked from /quiz. It does not persist grammar attempts.
 GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary

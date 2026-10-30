@@ -7,6 +7,7 @@ import '../../../app/router.dart';
 import '../../../app/theme.dart';
 import '../../daily_plan/application/daily_plan_provider.dart';
 import '../../quiz/application/quiz_history_provider.dart';
+import '../../quiz/application/grammar_quiz_history_provider.dart';
 import '../../ai/application/ai_text_view_binding.dart';
 import '../../ai/application/ai_conversation_view_binding.dart';
 import '../../ai/application/ai_conversation_scenario_binding.dart';
@@ -107,6 +108,9 @@ class _AccountStartupAppState extends State<AccountStartupApp>
           ),
           aiTextRepositorySourceProvider.overrideWithValue(
             _controller.aiTextSource,
+          ),
+          grammarQuizHistorySourceProvider.overrideWithValue(
+            _controller.grammarQuizHistorySource,
           ),
           quizHistorySourceProvider.overrideWithValue(
             _controller.quizHistorySource,
