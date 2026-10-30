@@ -11,6 +11,10 @@ import '../application/grammar_quiz_history_provider.dart';
 import '../data/grammar_quiz_history_repository.dart';
 import '../domain/grammar_quiz_attempt.dart';
 import '../domain/grammar_quiz_progress.dart';
+import '../domain/grammar_quiz.dart';
+import '../domain/grammar_review_quiz.dart';
+import '../application/grammar_quiz_attempt_factory.dart';
+import 'grammar_quiz_panel.dart';
 
 class GrammarQuizProgressScreen extends ConsumerStatefulWidget {
   const GrammarQuizProgressScreen({super.key});
@@ -31,6 +35,10 @@ class _GrammarQuizProgressScreenState
     );
     ref.listenManual(curriculumRepositoryProvider, (_, _) => _generation++);
     ref.listenManual(accountStateProvider, (_, _) => _generation++);
+    ref.listenManual(
+      grammarQuizAttemptFactoryProvider,
+      (_, _) => _generation++,
+    );
   }
 
   @override
@@ -38,6 +46,7 @@ class _GrammarQuizProgressScreenState
     final repository = ref.watch(grammarQuizHistoryRepositoryProvider);
     final source = ref.watch(curriculumRepositoryProvider);
     final owner = ref.watch(accountStateProvider).profile?.id;
+    final capture = ref.watch(grammarQuizAttemptFactoryProvider);
     final generation = _generation;
     return PageBody(
       children: [
@@ -54,13 +63,18 @@ class _GrammarQuizProgressScreenState
           ),
         ] else
           _GrammarProgressPanel(
-            key: ValueKey((repository, source, owner, generation)),
+            key: ValueKey((repository, source, owner, capture, generation)),
             repository: repository,
             source: source,
             owner: owner,
+            capture: capture,
             isCurrent: () =>
                 mounted &&
                 generation == _generation &&
+                identical(
+                  ref.read(grammarQuizAttemptFactoryProvider),
+                  capture,
+                ) &&
                 ref.read(accountStateProvider).profile?.id == owner &&
                 identical(
                   ref.read(grammarQuizHistoryRepositoryProvider),
@@ -87,11 +101,13 @@ class _GrammarProgressPanel extends StatefulWidget {
     required this.repository,
     required this.source,
     required this.owner,
+    required this.capture,
     required this.isCurrent,
   });
   final GrammarQuizHistoryRepository repository;
   final CurriculumRepository source;
   final String owner;
+  final GrammarQuizAttemptFactory capture;
   final bool Function() isCurrent;
   @override
   State<_GrammarProgressPanel> createState() => _GrammarProgressPanelState();
@@ -104,6 +120,8 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
   bool _loading = false;
   bool _failed = false;
   GrammarQuizProgress? _progress;
+  List<GrammarQuizQuestion> _review = const [];
+  List<GrammarQuizQuestion>? _practice;
   bool _current(int revision) =>
       mounted && widget.isCurrent() && revision == _revision;
   void _select(
@@ -117,6 +135,8 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
       if (kind != null) _kind = kind;
       _revision++;
       _progress = null;
+      _review = const [];
+      _practice = null;
       _failed = false;
       _loading = false;
     });
@@ -130,6 +150,8 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
       _loading = true;
       _failed = false;
       _progress = null;
+      _review = const [];
+      _practice = null;
     });
     try {
       final entries = await widget.source.load(CurriculumKind.grammar, level);
@@ -144,7 +166,16 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
         source: entries,
         history: records,
       );
-      setState(() => _progress = progress);
+      final review = kind == GrammarQuizAttemptKind.primary
+          ? selectGrammarReviewQuestions(
+              buildGrammarQuiz(entries, level),
+              progress,
+            )
+          : const <GrammarQuizQuestion>[];
+      setState(() {
+        _progress = progress;
+        _review = review;
+      });
     } on Object {
       if (_current(revision)) setState(() => _failed = true);
     } finally {
@@ -152,9 +183,57 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
     }
   }
 
+  void _startReview(int revision, GrammarQuizProgress expected) {
+    if (!_current(revision) ||
+        _loading ||
+        _practice != null ||
+        !identical(_progress, expected) ||
+        expected.kind != GrammarQuizAttemptKind.primary ||
+        _review.isEmpty) {
+      return;
+    }
+    setState(() {
+      _practice = List.unmodifiable(_review);
+      _revision++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final revision = _revision;
+    final practice = _practice;
+    if (practice != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text('Luyện lại ${practice.length} mẫu cần ôn'),
+          const Text(
+            'Dùng câu hỏi và lựa chọn theo nội dung hiện tại. Kết quả được lưu riêng là vòng luyện sai; không đổi điểm hoặc mục cần ôn của vòng gốc. Không cộng thời gian học.',
+          ),
+          OutlinedButton(
+            key: const Key('grammar-focused-back'),
+            onPressed: () {
+              if (_current(revision) && identical(_practice, practice)) {
+                setState(() {
+                  _practice = null;
+                  _revision++;
+                });
+              }
+            },
+            child: const Text('Về thống kê ngữ pháp'),
+          ),
+          GrammarQuizPanel(
+            key: ObjectKey(practice),
+            questions: practice,
+            history: widget.repository,
+            capture: widget.capture,
+            baseKind: GrammarQuizAttemptKind.correction,
+            isCurrent: () =>
+                _current(revision) && identical(_practice, practice),
+          ),
+        ],
+      );
+    }
     final progress = _progress;
     final label = _kind == GrammarQuizAttemptKind.primary
         ? 'Vòng gốc'
@@ -219,6 +298,12 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
           ),
           Text('Mẫu hiện tại đã luyện: ${progress.practicedCurrentItemCount}'),
           Text('Mẫu cần ôn: ${progress.needsReview.length}'),
+          if (_review.isNotEmpty)
+            FilledButton(
+              key: const Key('grammar-focused-start'),
+              onPressed: () => _startReview(revision, progress),
+              child: const Text('Luyện lại các mẫu này'),
+            ),
           if (progress.attemptCount == 0)
             const Text(
               'Chưa có kết quả quiz đã lưu cho cấp độ và loại vòng này.',

@@ -1,5 +1,52 @@
 # PROJECT STATUS
 
+## Explicit focused grammar practice UI — 2026-10-30 UTC
+
+- Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
+  cd888507ec6e5269620209ff23d17b52096b4809/tree27514767e4f83c72558f2061049489e07036b85b.
+  Pre-code marker core-20261030T1605-grammar-focused-ui saved PR41+issue13.
+- Parent CI41079421513 exactcd88850/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter124145131626 ALL8 focused selector cases; Windows124144321272 BOTH
+  grammar/evidence +persistentSDK markers observed. TEST ONLY not hosted proof.
+- Explicit PRIMARY statistics load selects current review questions from full deck
+  built using SAME original entries/projection. Only nonempty primary needs-review
+  offers Luyện lại các mẫu này. No automatic practice/read/write. All targets retained,
+  batches10 through existing panel. Correction view/empty/correct-only has no start.
+- Existing private grammar round panel extracted to GrammarQuizPanel. Entire old
+  panel equals new after reversing public names and the single baseKind parameter/
+  substitution. PRIMARY default preserves dedicated /quiz/grammar. Focused caller
+  sets CORRECTION for every batch/restart/error subround; existing capture/save/
+  retry/UUID/current-round/session/late-result protections unchanged. No timer.
+- Progress root additionally listens/watches/fences capture-factory replacement.
+  Existing owner/source/account generation keys plus practice/selector/load revision
+  guard every start/back/answer/save callback, including before frame. Start/back
+  increments revision; old callbacks cannot revive prior practice. Root replacement
+  disposes practice and totals; loading/failed/retired snapshot cannot start.
+- Focused context explains correction-only save/no primary score/review alteration.
+  Explicit back shows unchanged primary snapshot; explicit reload applies reviewed
+  kind separation. No new fetch on start/back, no original event overwrite, SRS/
+  plan/recorder/time/mastery/server credit or default Auth/storage activation.
+- Eleven NEW isolated widget cases AUTHORED locally UNRUN: explicit canonical
+  choices/save correction/back/primary unchanged;unready/empty/correct-only/correction
+  no start;stale start afterlevel;back/retainedanswer/start;account/source replacement;
+  manual retry same event;held save afterback;320px200%;12targets/batch10+restart+2
+  allcorrection/3fresh events/original reports unchanged;factoryreplacement preframe.
+  TEST ONLY Auth/profile/read/write ports. All existing tests/helpers untouched.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat4zerochanges/QA55 PASS;
+  inventory155valid NOTexecuted/diffcheck/separate extraction/default-kind/current/
+  revision/selection/capture/no-extra-I-O review PASS. Flutter lint include unresolved
+  NOTanalyzer. Full11/Flutter/analyze/build/native locally UNRUN(noFlutter/Windows),
+  require exact new-head Actions. No test weakening, stub SDK or timeout extension.
+- Six paths: Flutter lib/features/quiz/presentation/grammar_quiz_screen.dart;
+  NEW grammar_quiz_panel.dart; grammar_quiz_progress_screen.dart;
+  NEW test/features/quiz/grammar_focused_review_widget_test.dart;
+  docs/GRAMMAR_QUIZ.md; docs/PROJECT_STATUS.md. Commit/tree/CI in PR41 checkpoint.
+- NEXT exact-head/latestattempt all5/EVERYstep/new11 +retained grammar save/context/
+ 18/17/8/diskjourney/native markers; then actual owned disk focused-practice journey.
+  Pending-only handoff/no duplicate code/longpoll; draft41/13open/all14hostedpending/
+  AIoff; no Pro/content/Authstrategy/API/schema/RLS/dependency/CI/storageformat/
+  retention/collection/defaultactivation/merge/closure/deploy/release/schedule/Alpha.
+
 ## Focused grammar question selection core — 2026-10-30 UTC
 
 - Issue13/draft PR41 automation/issue-11-plan-sdk-integration; parent
