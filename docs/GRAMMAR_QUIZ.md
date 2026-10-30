@@ -6,6 +6,56 @@ GrammarQuizQuestion and GrammarQuizRound are distinct types from vocabulary
 questions/rounds, preventing accidental input to VocabularyQuizAttempt.capture.
 No Auth, storage, study recorder, SRS or progress capability is imported.
 
+## Captured grammar history repository component — 2026-10-30 UTC
+
+Pre-code rules saved PR41+issue13. GrammarQuizHistoryRepository captures a ready
+ReviewSession object and its canonical owner; save accepts ONLY the immutable
+attempt, not a learner owner field. Separate GrammarQuizOperationDrain and
+GrammarQuizHistorySource capability remain uninstalled in current runtime/UI.
+Trusted Auth/readiness/owner/directory composition is still required; these local
+ports neither verify JWTs nor authorize hosted endpoints.
+
+Reviewed vocabulary repository/drain algorithm is retained in separate grammar
+types (comparison normalizes names/import/formatter), plus a final current-session
+check AFTER result validation/snapshot copying. Readiness and exact session identity
+are checked twice before dispatch, after success/error awaits and before publishing.
+Mismatch/ABA/closed drain permanently retires an old repository. Reentrant checks
+are rejected without revoking the healthy outer operation. Raw errors are redacted;
+late old-session errors cannot override session-changed failure. A callback during
+returned-list validation cannot publish old-owner data.
+
+Same-event identical in-flight save returns the same Future; changed content,
+including practice kind, conflicts before another dispatch. Result owner/content
+must match the captured command. Loads reject foreign owners,more than10000 rows
+or conflicting duplicates; exact duplicates collapse into an immutable snapshot
+sorted ascending by completion time then event ID. This does not merge correction
+scores into primary results. Accepted old-owner disk writes cannot be undone by
+session switch; their late results are fenced and records remain with that owner.
+Caller must revoke/drain accepted operations BEFORE closing borrowed storage; the
+repository never closes caller resources. No implicit retry/auto-save is added.
+
+Eighteen new real-journal/TEST ONLY Auth and held-result tests authored: owner/
+primary/correction isolation,duplicate/coalesced/conflicting saves,storage reentry,
+late save/load success+private error through A-B-A,pre-dispatch replacement,drain,
+readiness/Auth reentry and getter replacement,unready/null/throwing Auth,redacted
+storage/wrong owner/content,load sort/dedup/foreign/cap/conflict,final validation
+callback replacement. Existing vocabulary/core/native journal tests unchanged.
+Official fresh Dart3.9.2 SHA256 verified/strict format2files zerochanges PASS
+(unresolved Flutter lint include warning, not analyzer). Assertion-enabled actual
+Dart/native-file smoke PASS: coalesced dispatch,own history,late result fence,A-B-A,
+fresh-owner isolation and drain barrier. NOT18Flutter or hosted proof. QA55 PASS/
+inventory155 valid(not155executed)/diffcheck PASS; new18/fullFlutter/analyze/build
+locally UNRUN(noFlutter), require exact-head Actions.
+
+Parent72c6129 CI40971760438/latestattempt1 all5/EVERYstep SUCCESS/no skips; raw
+Flutter123790581884 all9 native grammar journal cases and Windows123790052457
+required persistent vault/sameSDK/profile/receipt marker observed. TEST ONLY,
+not hosted learner/native Windows grammar ownership acceptance. Next exact-head
+all5/EVERYstep/new18, then caller-owned runtime/store/drain composition before
+explicit save/history UI. No app/default/Authstrategy/API/RLS/retention/content/Pro
+activation or policy change; all14 hosted gates pending. PR41 draft/13 open.
+Commit/tree/new CI in PR checkpoint; no incomplete merge/deploy/release claim.
+
 ## Native grammar test interpolation correction — 2026-10-29 UTC
 
 Parentb4aed8a CI40964232310/latestattempt1 all5/EVERYstep inspected: database,
