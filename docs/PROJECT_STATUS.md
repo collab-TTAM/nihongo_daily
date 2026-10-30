@@ -1,5 +1,55 @@
 # PROJECT STATUS
 
+## Separate grammar quiz history UI — 2026-10-30 UTC
+
+- Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent
+  74b4e8de093a78c11e1e24d3511746dac8aa0d15. Commit/tree/new CI in PR41 checkpoint.
+  Pre-code kind/ownership/read/error/pagination rules saved PR41+issue13.
+- Parent CI41013732591 exact/latestattempt1 all5/EVERYstep SUCCESS/no skips.
+  Raw Flutter123925723850 all12 grammar save cases; Windows123925246856 retained
+  persistent vault/sameSDK/profile/receipt marker observed. Not hosted learner proof.
+- New /quiz/grammar/history route and link from grammar quiz borrow ONLY the
+  grammar history repository. No auto-load: explicit Tải lịch sử; duplicate pending
+  reads blocked. Fixed unavailable/auth navigation/loading/error/manual retry/
+  genuine empty states. No new storage/SDK/token writer, auto-save or server call.
+- Default selected kind is Vòng gốc. Separate Vòng luyện sai filter, N5/N4/all,
+  only-with-errors, ascending/descending completion-time/event-ID order and20-row
+  pages reuse ONE loaded immutable snapshot. Totals and score denominator use ONLY
+  selected practice kind plus current filters; no merged primary/correction score,
+  mastery, study minutes or sync claim. Rows show kind/level/integer score/UTC time.
+- Root repository listener/generation and keyed panel retire responses/callbacks on
+  source/account replacement before a frame, including ABA. Current checks before
+  dispatch and after success/error; mounted checks suppress disposed results.
+  Selectors/page callbacks require matching snapshot revision; filters/order reset
+  to first page and do not reread. Reload clears old rows before attempting I/O.
+- Ten new synthetic widget cases AUTHORED locally UNRUN: route/link/unavailable/
+  no-history-I/O; explicit load/separate kind totals;90-row pagination/order/stale
+  page+selector callback;level/error/empty filters;safe error+explicit retry/empty;
+  held old-owner success/error with pre-frame source replacement;idle old load/
+  account replacement clearing rows;dispose held read;320px200% actual kind/page.
+  TEST ONLY Auth/local read ports, not hosted JWT/RLS/sync/native learner proof.
+  Store append throws, so this read-only UI cannot pass its tests by saving.
+- Fresh official Dart3.9.2 archive SHA256 verified/strict format4zerochanges PASS
+  (unresolved Flutter lint include warning NOTanalyzer). QA55 PASS/inventory155valid
+  (NOT155executed)/diffcheck PASS. Separate load/page algorithm equals retained
+  vocabulary source exactly; removing additions restores entire prior router and
+  grammar screen. Vocabulary/content/old tests unchanged; kind/revision/current/
+  no-default diff review PASS. Full new10/Flutter/analyze/Web/Windows locally
+  UNRUN(noFlutter), require exact new-head Actions. Initial text-edit boundary
+  corrected before writing tests; no product diagnostic/assertion suppressed.
+- Six paths: lib/app/router.dart; lib/features/quiz/presentation/
+  grammar_quiz_screen.dart; new grammar_quiz_history_screen.dart; new test/features/
+  quiz/grammar_quiz_history_widget_test.dart (Flutter app); docs/GRAMMAR_QUIZ.md;
+  this status.
+- NEXT exact-head/latestattempt all5/EVERYstep/new10 +retained grammar/save/provider/
+  SDK/native markers; fix real diagnostics preserving assertions/security.
+  Pending-only handoff/no duplicate source/longpolling. Reviewed staging grammar
+  journal opt-in and actual native/UI save-reopen journey remain. Current staging
+  factory still does NOT open grammar storage/default preview stays unconfigured.
+  All14hostedpending/AIoff/draft41/13open; no Pro/content/Authstrategy/API/schema/RLS/
+  dependency/CI/retention/collection activation/merge/closure/deploy/release/schedule/
+  Personal Alpha acceptance.
+
 ## Explicit completed grammar quiz save — 2026-10-30 UTC
 
 - Issue13/PR41 branch automation/issue-11-plan-sdk-integration; parent

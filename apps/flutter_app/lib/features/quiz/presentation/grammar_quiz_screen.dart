@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
 import '../../curriculum/application/curriculum_provider.dart';
@@ -63,6 +64,11 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
         const Text(
           'Chỉ lưu trên thiết bị khi bạn chọn lưu và tài khoản có kho lưu. '
           'Kết quả không cộng thời gian học hoặc xác định mức ghi nhớ.',
+        ),
+        TextButton(
+          key: const Key('grammar-quiz-history-link'),
+          onPressed: () => context.go('/quiz/grammar/history'),
+          child: const Text('Xem lịch sử ngữ pháp trên thiết bị'),
         ),
         DropdownButton<PreviewLevel>(
           key: const Key('grammar-quiz-level'),
