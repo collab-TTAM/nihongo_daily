@@ -325,6 +325,10 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
+      - name: DEBUG temporary strict JSON Prettier diff
+        run: |
+          npx prettier test/strict_json.test.ts > "$RUNNER_TEMP/strict_json.test.ts"
+          diff -u test/strict_json.test.ts "$RUNNER_TEMP/strict_json.test.ts" || true
       - run: npm run format:check
       - run: npm run check
       - run: npm test
