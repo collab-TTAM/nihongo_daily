@@ -437,7 +437,7 @@ void main() {
   );
   test(
     'opt-in automatic refresh saves rotation before profile and cancels on '
-    'logout',
+        'logout',
     () async {
       await runtime.close();
       runtime = PersistentSupabaseRuntime(
@@ -535,7 +535,7 @@ void main() {
   );
   test(
     'explicit login clears failed display notice and normal logout has no '
-    'failure',
+        'failure',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
       authStatus = 401;

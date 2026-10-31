@@ -1637,3 +1637,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   native Windows cancelable-close/drain, and all retained database/security/
   AI/repo checks. No hosted Auth, production, default runtime, Auth strategy,
   schema/RLS, or release acceptance is claimed.
+
+
+## Exact-head Flutter format correction — 2026-10-31
+
+- Exact-head CI [41200164963](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41200164963), latest attempt 1, source `af17a6468d7cd69b44f59a0adaf11e1a74166acb`, completed with repo-sanity, database, ai-boundary and Windows SUCCESS. Flutter failed only at `dart format --output=none --set-exit-if-changed .` because `test/features/srs/persistent_supabase_runtime_test.dart` was reformatted; Flutter analyze, tests, browser verification and web build were skipped and are not passing evidence.
+- Applied the pinned Dart formatter's continuation indentation to the two adjacent test-description literals in that file. No test body, expectation, deadline, production code or assertion changed.
+- This runtime has no Flutter/Dart SDK, so the correction awaits a new full exact-head Actions run. Previous successful Windows/SQL/AI/repo jobs are parent evidence only; the new source must execute every required job/step.
+- Pro-owned PR #38 / Issue #14 N4 scope remains untouched. No hosted Supabase learner login, Auth strategy, deployment, default activation or Personal Alpha acceptance is claimed.
+- Next: inspect the new exact-head latest attempt and all five jobs/every step. Fix only observed failures while retaining assertions/security gates; if only jobs remain pending, hand off without duplicate code.
