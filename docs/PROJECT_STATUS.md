@@ -1,5 +1,31 @@
 # PROJECT STATUS
 
+## Duplicate-aware raw JSON ingress guard — 2026-10-31 UTC
+
+- Resume draft PR #41, branch automation/issue-11-plan-sdk-integration, parent 92e3fee730cc76b80399247fcebf55bcbb456fef, base main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c, tree 4c937b8eb1b511fdf1d9bc35e213ccad2c9fb5d0. PR #37 remains open/draft
+  at afa572a27f050048990ad4feb07fd6f01758e7e2; its source branch is unchanged.
+  Pro PR #38/N4 scope remains untouched.
+- Added a bounded recursive JSON lexical pass that rejects duplicate decoded
+  object keys (including escaped aliases), malformed/trailing documents,
+  excess nesting/tokens and non-finite numbers before JSON.parse. The existing
+  AI parseBounded decoder now uses it; HTTP regression proves duplicate request
+  members cannot reach provider/receipt dispatch.
+- Added reusable parseQuizReportJsonBody(Uint8Array): 16 KiB raw-byte cap, fatal
+  UTF-8/BOM rejection, duplicate-key detection and integer-only safe numeric
+  lexemes before future JSONB conversion. It returns decoded data only; schema,
+  verified Auth, current canonical content and transaction validation remain
+  separate and absent. No public RPC, collection activation, migration, grant,
+  RLS, Auth/provider strategy, or default app wiring was changed.
+- Parent exact-head CI #41188318005 for 92e3fee730cc76b80399247fcebf55bcbb456fef completed SUCCESS: all five jobs and every returned step succeeded, including
+  Flutter/Windows vault and profile-readiness probes. Those are TEST ONLY
+  component proofs, not hosted Supabase A/B learner proof. New parser tests and
+  downstream checks await the new exact-head CI.
+- Next: inspect all five jobs/every step on the new exact head; fix diagnostics
+  without weakening assertions. Then review active canonical-content validation
+  and replay-first public boundary separately; do not activate data collection
+  or expose private ledger helpers without applicable human/security review.
+
+
 ## Private atomic quiz report ledger — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

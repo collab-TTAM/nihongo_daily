@@ -133,6 +133,24 @@ test("HTTP rejects invalid envelope before Auth/provider and cancels body", asyn
   assert.equal(b.store.rows.size, 0);
 });
 
+test("HTTP duplicate JSON members fail before provider dispatch", async () => {
+  const b = boundary();
+  const valid = body();
+  const match = /"client_event_id":"([^"]+)"/.exec(valid);
+  assert.ok(match);
+  const duplicate = valid.replace(
+    match[0],
+    match[0] + ',"client_event_id":"' + match[1] + '"',
+  );
+  await safeError(
+    await b.handle(request(duplicate)),
+    400,
+    "VALIDATION_FAILURE",
+  );
+  assert.equal(b.calls.length, 0);
+  assert.equal(b.store.rows.size, 0);
+});
+
 test("HTTP decodes split multibyte UTF-8 and accepts exactly32KiB", async () => {
   const b = boundary("conversation_turn");
   const text = body("conversation_turn");

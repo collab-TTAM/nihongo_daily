@@ -31,6 +31,15 @@ failure/abort, cancel without awaiting an uncooperative source and release the
 reader lock. Raw stream errors become fixed network errors. The hosting runtime
 still owns connection/header/concurrency limits and underlying I/O cancellation.
 
+## Strict JSON member handling
+
+After the bounded stream is decoded, the shared parseBounded path now uses
+parseStrictJson. It rejects duplicate object member names at every depth,
+including escape-equivalent names, before schema validation, quota reservation,
+provider dispatch or receipt writes. Existing AI numeric JSON semantics are
+retained; non-finite values and malformed JSON remain fixed validation failures.
+This does not authenticate the caller or prove ownership/current curriculum.
+
 ## Deadline and late work
 
 The overall deadline starts before body reads, defaults to15s and accepts only

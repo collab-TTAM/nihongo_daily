@@ -3920,6 +3920,28 @@
       ],
       "reproduce": "From apps/flutter_app run flutter test test/features/srs/bounded_session_http_test.dart test/features/srs/persistent_supabase_runtime_test.dart. Run python3 scripts/verify_qa.py --head 39b96576fab842585b00d5ef9505dde2043a923f --evidence qa/evidence/20261029-session-cancellation-39b9657.json; require exact-head latest-attempt all5 jobs/every returned step.",
       "limitation": "Observed39b9657 CI40928842980/latestattempt1 all5/EVERYstep SUCCESS and raw Flutter123642555655 both stalled/oversized SDK recovery cases. Snapshot is unmodified GitHub run/jobs; verifier checks correlation/completeness, not authenticity. Simulated HTTP/OS/unsigned tokens with actual SDK/real journal; no hosted Auth/RLS/learner, physical Windows cancellation or cross-device proof. Existing SDK retries unchanged; no whole-operation deadline/guaranteed cleanup completion. All14 hosted release groups pending."
+    },
+    {
+      "id": "strict-raw-json-ingress",
+      "status": "automated-baseline",
+      "scope": "Duplicate-aware AI JSON decoding and reusable raw quiz-body preflight for 16 KiB, fatal UTF-8, duplicate/escaped keys and integer-only numeric lexemes before any future JSONB conversion",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/strict_json.test.ts",
+          "contains": "quiz raw body rejects exponent and fractional number lexemes"
+        },
+        {
+          "path": "backend/ai/test/http.test.ts",
+          "contains": "HTTP duplicate JSON members fail before provider dispatch"
+        }
+      ],
+      "issues": [
+        13,
+        31
+      ],
+      "reproduce": "cd backend/ai && npm run check && npm test && deno task check && deno task test",
+      "limitation": "The quiz parser is a raw-wire primitive only; no public quiz endpoint, verified Auth, active-content check, RPC/ledger call, collection activation or hosted learner proof is enabled."
     }
   ],
   "findings": [

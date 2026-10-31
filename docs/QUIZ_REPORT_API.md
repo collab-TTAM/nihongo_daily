@@ -1,5 +1,22 @@
 # Quiz report boundary — nd-quiz-report-1 (specified, undeployed)
 
+## Reusable raw-ingress guard primitive — 2026-10-31
+
+backend/ai/src/strict_json.ts now exports parseQuizReportJsonBody(Uint8Array)
+for a future quiz ingress adapter. It checks the original byte length (16 KiB
+maximum), fatal UTF-8 decoding, BOM rejection, duplicate decoded object keys
+at every depth, integer-only numeric lexemes and safe integer representation
+before any JSONB conversion. The helper returns an object only; it does not
+perform the nd-quiz-report-1 schema check, verify Auth, validate active
+curriculum/ordered choices, acquire the owner lock, or call the private ledger.
+
+The same module supplies duplicate-aware parseStrictJson to the existing AI
+request decoder. The quiz-specific guard is tested with valid, exact-limit,
+oversized, invalid UTF-8, duplicate/escaped-key, decimal/exponent, deep and
+trailing-body cases. It is a reusable internal primitive, not a public endpoint
+or an activated collection path. The private ledger remains inaccessible to
+app roles; no RPC, migration, grant, upload or default app behavior changed.
+
 ## Private ledger foundation — 2026-10-31 UTC
 
 Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
