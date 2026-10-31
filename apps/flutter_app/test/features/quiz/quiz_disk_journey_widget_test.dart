@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:nihongo_daily/features/curriculum/data/bundled_curriculum_repository.dart';
+import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
@@ -940,6 +942,87 @@ void main() {
       });
       expect(tester.takeException(), isNull);
       // End owned practice retirement continuation.
+      // Owned dashboard navigation continuation; no store is auto-enabled.
+      final eligible = (await tester.runAsync(() async {
+        final entries = decodeCurriculum(
+          await File('../../data/n5/vocabulary.json').readAsString(),
+          CurriculumKind.vocabulary,
+          PreviewLevel.n5,
+        );
+        return buildVocabularyQuiz(entries, PreviewLevel.n5).length;
+      }))!;
+      expect(eligible, greaterThan(questions.length));
+      void vocabularyCoverage() {
+        expect(
+          find.text('Từ có câu hỏi trong nội dung hiện tại: $eligible'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Từ chưa có kết quả khớp: ${eligible - 10}'),
+          findsOneWidget,
+        );
+        expect(find.text('Từ có lần trả lời gần nhất đúng: 9'), findsOneWidget);
+        expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      }
+
+      vocabularyCoverage();
+      final navigationReads = fourth.store.reads;
+      final navigationHttp = server.paths.length;
+      await tapQuiz(tester, find.byKey(const Key('progress-grammar')));
+      expect(
+        container.read(routerProvider).routeInformationProvider.value.uri.path,
+        '/quiz/grammar/progress',
+      );
+      expect(
+        find.text('Tiến độ chưa khả dụng. Hãy mở tài khoản đã cấu hình.'),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('grammar-progress-load')), findsNothing);
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(fourth.store.reads, navigationReads);
+      expect(fourth.store.appends, 0);
+      expect(server.paths.length, navigationHttp);
+      await tapQuiz(tester, find.byKey(const Key('progress-vocabulary')));
+      expect(
+        container.read(routerProvider).routeInformationProvider.value.uri.path,
+        '/progress',
+      );
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      expect(fourth.store.reads, navigationReads);
+      await diskAction(fourth, 'quiz-progress-load');
+      expect(find.text('N5 · 3 bộ đã lưu'), findsOneWidget);
+      expect(find.text('Câu đúng theo bài gốc: 19 / 21'), findsOneWidget);
+      vocabularyCoverage();
+      expect(fourth.store.reads, navigationReads + 1);
+      expect(fourth.store.appends, 0);
+      expect(server.paths.length, navigationHttp);
+      expect(
+        (await tester.runAsync(
+          () => File('${directory.path}/quiz-attempts.ndjson').readAsBytes(),
+        ))!,
+        practiceBytes,
+      );
+      final navigationRows = (await tester.runAsync(
+        () => fourth.journal.list(wire.a),
+      ))!;
+      expect(navigationRows, hasLength(3));
+      for (final attempt in [original, correction, newest]) {
+        expect(
+          sameVocabularyQuizAttempt(
+            navigationRows
+                .singleWhere((r) => r.attempt.eventId == attempt.eventId)
+                .attempt,
+            attempt,
+          ),
+          isTrue,
+        );
+      }
+      expect(
+        (await tester.runAsync(() => fourth.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      expect(tester.takeException(), isNull);
+      // End owned dashboard navigation continuation.
     },
   );
 }

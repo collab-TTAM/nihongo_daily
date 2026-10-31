@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:nihongo_daily/features/curriculum/data/bundled_curriculum_repository.dart';
+import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
@@ -850,6 +852,120 @@ void main() {
       expect(fourth.controller.grammarQuizHistorySource, isNull);
       expect(tester.takeException(), isNull);
       // End focused-practice continuation.
+      // Owned dashboard navigation continuation; no store is auto-enabled.
+      final tokensBeforeFifth = server.paths
+          .where((p) => p == '/auth/v1/token')
+          .length;
+      await tester.pumpWidget(const SizedBox());
+      final fifth = (await tester.runAsync(() async {
+        final app = await _open(directory, server, vault);
+        current = app;
+        await app.ready();
+        return app;
+      }))!;
+      expect(
+        server.paths.where((p) => p == '/auth/v1/token').length,
+        tokensBeforeFifth + 1,
+      );
+      expect(fifth.runtime.account.state.profile!.id, wire.a);
+      container = await mount(fifth);
+      final eligible = (await tester.runAsync(() async {
+        final entries = decodeCurriculum(
+          await File('../../data/n5/grammar.json').readAsString(),
+          CurriculumKind.grammar,
+          PreviewLevel.n5,
+        );
+        return buildGrammarQuiz(entries, PreviewLevel.n5).length;
+      }))!;
+      void grammarCoverage(int practiced, int correct, int review) {
+        expect(
+          find.text('Mẫu có câu hỏi trong nội dung hiện tại: $eligible'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Mẫu chưa có kết quả khớp: ${eligible - practiced}'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Mẫu có lần trả lời gần nhất đúng: $correct'),
+          findsOneWidget,
+        );
+        expect(find.text('Mẫu cần ôn: $review'), findsOneWidget);
+        expect(correct + review, practiced);
+      }
+
+      final navigationHttp = server.paths.length;
+      container.read(routerProvider).go('/quiz/grammar/progress');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(fifth.store.reads, 0);
+      await primaryProgress(fifth);
+      grammarCoverage(questions.length, score, 1);
+      await twoCorrections(fifth);
+      grammarCoverage(1, 1, 0);
+      expect(fifth.store.reads, 2);
+      await tapQuiz(tester, find.byKey(const Key('progress-vocabulary')));
+      expect(
+        container.read(routerProvider).routeInformationProvider.value.uri.path,
+        '/progress',
+      );
+      expect(
+        find.text('Tiến độ chưa khả dụng. Hãy mở tài khoản đã cấu hình.'),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('quiz-progress-load')), findsNothing);
+      expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      expect(fifth.store.reads, 2);
+      expect(fifth.store.appends, 0);
+      await tapQuiz(tester, find.byKey(const Key('progress-grammar')));
+      expect(
+        container.read(routerProvider).routeInformationProvider.value.uri.path,
+        '/quiz/grammar/progress',
+      );
+      expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      expect(fifth.store.reads, 2);
+      expect(
+        tester
+            .widget<DropdownButton<GrammarQuizAttemptKind>>(
+              find.byKey(const Key('grammar-progress-kind')),
+            )
+            .value,
+        GrammarQuizAttemptKind.primary,
+      );
+      await primaryProgress(fifth);
+      grammarCoverage(questions.length, score, 1);
+      expect(fifth.store.reads, 3);
+      expect(fifth.store.appends, 0);
+      expect(server.paths.length, navigationHttp);
+      final navigationRows = (await tester.runAsync(
+        () => fifth.journal.list(wire.a),
+      ))!;
+      expect(navigationRows, hasLength(3));
+      for (final saved in focusedRestored) {
+        expect(
+          sameGrammarQuizAttempt(
+            navigationRows
+                .singleWhere((r) => r.attempt.eventId == saved.attempt.eventId)
+                .attempt,
+            saved.attempt,
+          ),
+          isTrue,
+        );
+      }
+      expect(
+        (await tester.runAsync(() => fifth.journal.list(wire.b)))!,
+        isEmpty,
+      );
+      expect(
+        (await tester.runAsync(
+          () => File(
+            '${directory.path}/grammar-quiz-attempts.ndjson',
+          ).readAsBytes(),
+        ))!,
+        focusedBytes,
+      );
+      expect(tester.takeException(), isNull);
+      // End owned dashboard navigation continuation.
     },
   );
 }

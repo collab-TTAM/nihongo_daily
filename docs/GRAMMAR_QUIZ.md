@@ -1,5 +1,48 @@
 # Grammar quiz core — Issue #13
 
+## Owned progress navigation and current-deck evidence — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  a12ad99e00b877a8af2ad2792c7c8d1137dd1d2b/tree8380b0d0c2f23f59b09c7c839148401e2ecd84f5.
+  Pre-code marker core-20261031-owned-progress-navigation saved PR41+issue13.
+- Parent CI41149069779 exacta12ad99/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips;rawFlutter124381532168 ALL4 vocabulary coverage core+1 widget/owned quiz
+  disk PASS;Windows124381036799 BOTH grammar/evidence+persistentSDK markers.
+  TEST ONLY component evidence, not hosted learner/Auth/JWT/RLS acceptance.
+- Extend BOTH actual owned SDK/native-journal/router journeys AFTER old checks.
+  Vocabulary-only ready owner shows current full original N5 deck count above10,
+  practiced10/latestCorrect9/review1 and19of21 historical score from three actual
+  saved reports. Actual grammar navigation stays explicitly unavailable with no
+  grammar load/summary and no vocabulary read/write/HTTP. Back resets vocabulary
+  snapshot, no auto load; explicit real-disk read restores exact metrics/DTOs/bytes.
+- Grammar-only fresh fifth owner starts SAME vault/files after actual fourth close,
+  requires SDK refresh/own-profile then explicit PRIMARY read9of10/current10/
+  latestCorrect9/review1. Separate CORRECTION2of2/current1/latestCorrect1/review0
+  uses SAME full original grammar deck denominator. No cross-kind sum or mastery.
+- Navigate to unconfigured vocabulary: no fabricated summary/load/storage activation.
+  Back grammar resets to PRIMARY/no auto load; explicit native read restores primary
+  counts. Exact3 DTOs/full journal bytes unchanged, B empty, no append/additional HTTP.
+  Original N5 files are independently read only as expected deck-count oracle.
+- Both ENTIRE prior fixtures/helpers/assertions/timeouts byte-identical after
+  removing new delimited continuations and two imports. Unchanged runAsync actual
+  completion barriers/deadlines, no provider/source/router/capture overrides,
+  fake saved data, delays or timeout extension. HTTP/JWT/memory vault TEST ONLY;
+  actual SDK/journal/UI is not hosted identity/RLS/physical Windows/learner proof.
+- Five paths: Flutter test/features/quiz/quiz_disk_journey_widget_test.dart and
+  grammar_disk_journey_widget_test.dart;docs/VOCABULARY_QUIZ.md;
+  docs/GRAMMAR_QUIZ.md;docs/PROJECT_STATUS.md. Production/default/Authstrategy/API/
+  schema/RLS/deps/workflow/retention/collection/Pro/content unchanged;AIoff.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat2/QA55 PASS; inventory155
+  valid NOTexecuted/diffcheck/separate readiness/manual-I-O/kind/count/preservation
+  review PASS. Flutter lint include unresolved NOTanalyzer; extended2journeys/full
+  Flutter/analyze/Web/Windows locally UNRUN(noFlutter/Windows); exact new-head
+  Actions required. Published commit/tree/CI in PR41 checkpoint.
+- Next exact-head/latestattempt ALL5/EVERYstep/raw BOTH extended disk journeys/
+  retained coverage/native markers. Fix diagnostics preserving assertions; pending-
+  only handoff/no duplicate code/longpoll. Then audit remaining13 acceptance and
+  real hosted dependencies before adding another feature. All14hostedpending/
+  draft41/13open/no merge/closure/deploy/release/Alpha acceptance/schedule change.
+
 ## Current grammar question coverage — 2026-10-30 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
