@@ -1,5 +1,39 @@
 # PROJECT STATUS
 
+## Versioned spaced quiz evidence — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  3c14fd1cba7be18a39abad8ad8956e85d30473f5/treeb312749b79d3d1465520c0d0875412510204f0c5.
+  Pre-code marker core-20261031-spaced-quiz-evidence saved PR41+issue13 with
+  reviewed engineering policy nd-quiz-recall-1 and edge/authority limits.
+- Parent CI41159141294 exact3c14fd1/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips; raw Flutter124412989301 NEWdual+BOTHold disk journeys PASS; Windows
+  124412605141 grammar/evidence/persistentSDK markers. TEST ONLY nothosted.
+- Pure immutable helper: first correct1, count next correct only after24elapsed
+  hours from last counted correct, cap3; every matching wrong resets0 even tied
+  or after threshold. Strict UTC/nondecreasing instants, immutable snapshots.
+  A local quiz recall milestone needs48hours minimum, NOT scientifically proven
+  mastery/attention/trustedclock/independent recall/JLPT/SRS/server/time credit.
+- Vocabulary current-item projection applies AFTER existing owner/dedup/conflict/
+  selectedlevel/targetversion/orderedchoices fences; same existing event ordering.
+  New per-item evidence/aggregate count; practiced/latestcorrect/weakpoints/score
+  unchanged. No new wire/stored fields/UI/default activation; grammar still separate.
+- Five authored cases: exact/short24hour/rapid/cap/immutable; wrong/tiedreset;
+  invalidtimes; both-level projection replay/conflict/owner/level/version/order/
+  practiced-vs-reached. Existing tests unchanged. Actual-source standalone fresh
+  Dart smoke PASS bothlevels/spacing/reset/dedup; strictformat3/QA55/inventory155
+  valid NOTexecuted/diffcheck/separate rule/matching/authority review PASS.
+  MissingFlutterlintinclude NOTanalyzer; new5/fullFlutter/analyze/Web/Windows
+  locallyUNRUN(noFlutter/Windows), require exact new-head Actions.
+- Five paths: NEW quiz domain/quiz_recall_evidence.dart; vocabulary_quiz_progress.dart;
+  NEW test/features/quiz/quiz_recall_evidence_test.dart; NEW docs/QUIZ_RECALL_EVIDENCE.md;
+  docs/PROJECT_STATUS.md. Pro/content/Authstrategy/API/schema/RLS/workflow/deps/
+  collection/retention/default unchanged;AIoff. Published commit/tree/run in PR41.
+- Next exact-head/latestattempt ALL5/EVERYstep/rawnew5/retaineddual+old/native;
+  fixactualdiagnostics retaining assertions. Then review grammar-kind policy and
+  clear Vietnamese UI milestone explanations before integration. All14hostedpending/
+  draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Co-enabled quiz owner integration — 2026-10-31 UTC
 
 - Issue13/draft41; branch automation/issue-11-plan-sdk-integration; parent

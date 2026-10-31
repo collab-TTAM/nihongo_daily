@@ -1,6 +1,7 @@
 import '../../../shared/models/preview_level.dart';
 import '../../curriculum/domain/curriculum.dart';
 import 'vocabulary_quiz.dart';
+import 'quiz_recall_evidence.dart';
 import 'vocabulary_quiz_attempt.dart';
 
 final class VocabularyQuizHistoryConflict implements Exception {
@@ -14,12 +15,14 @@ final class VocabularyQuizItemProgress {
     required this.incorrectCount,
     required this.lastAnswerCorrect,
     required this.lastCompletedAt,
+    this.recallEvidence = const QuizRecallEvidence.empty(),
   });
   final CurriculumEntry entry;
   final int answerCount;
   final int incorrectCount;
   final bool lastAnswerCorrect;
   final DateTime lastCompletedAt;
+  final QuizRecallEvidence recallEvidence;
 }
 
 final class VocabularyQuizProgress {
@@ -40,6 +43,10 @@ final class VocabularyQuizProgress {
   final int eligibleCurrentItemCount;
   final List<VocabularyQuizItemProgress> items;
   final List<VocabularyQuizItemProgress> needsReview;
+
+  /// Local spaced-correct milestone only, never certified mastery.
+  int get recallMilestoneCurrentItemCount =>
+      items.where((item) => item.recallEvidence.milestoneReached).length;
   int get practicedCurrentItemCount => items.length;
   int get unpracticedCurrentItemCount =>
       eligibleCurrentItemCount - practicedCurrentItemCount;
@@ -104,6 +111,12 @@ VocabularyQuizProgress deriveVocabularyQuizProgress({
             (previous?.incorrectCount ?? 0) + (answer.isCorrect ? 0 : 1),
         lastAnswerCorrect: answer.isCorrect,
         lastCompletedAt: event.completedAt,
+        recallEvidence:
+            (previous?.recallEvidence ?? const QuizRecallEvidence.empty())
+                .observe(
+                  correct: answer.isCorrect,
+                  completedAt: event.completedAt,
+                ),
       );
     }
   }
