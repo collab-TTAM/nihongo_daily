@@ -1,5 +1,13 @@
 # PROJECT STATUS
 
+## Latest handoff — Flutter analyzer correction (2026-10-31 UTC)
+
+- PR #37 branch `automation/issue-22-atomic-review`; code commit `a28f0521dd5aa25e28522d4d06e22e6bcab4d6be`, parent `f100277130ffee47c833a71a82461a4e6c741a66`. In `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, changed two test-local closure-valued variables to local function declarations (`List<http.Request> profileRequests()` and `int authCalls()`) to satisfy the existing `prefer_function_declarations_over_variables` analyzer lint. No test assertions, HTTP fixtures, Auth/runtime behavior or timeouts changed.
+- Exact-head CI [41247508208](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41247508208), attempt 1, source `f100277130ffee47c833a71a82461a4e6c741a66`: `repo-sanity`, `database`, `ai-boundary`, `windows` and `supabase-integration` completed SUCCESS. Flutter dependency resolution and Dart format completed; `flutter analyze` failed on exactly two `prefer_function_declarations_over_variables` infos at lines 292 and 296. Flutter tests and downstream Flutter checks were skipped by fail-fast. The lint-only correction is committed as `a28f0521...`; this does not make the failed parent run pass.
+- Current-head CI for `a28f0521...` is required. No Flutter tests/analyze/build on the corrected head are yet claimed; no local Flutter SDK is available in the cloud runtime. Do not merge while the corrected-head checks are pending or failed.
+- Scope is one test file plus this status handoff. No production Auth, vault, RLS, migration, API, dependency, preview-default, N4 content or Pro-owned paths changed. #20/#22/#15 and hosted learner acceptance remain open; PR #37 stays draft.
+- Next worker: inspect all latest-attempt jobs and every step for the exact current PR head; fix only newly observed failures. Keep the core worker single-writer and preserve the separate Pro #14/N4 branch.
+
 ## Latest handoff — credential clear failure retry guard (2026-10-31 UTC)
 
 - PR #37 branch `automation/issue-22-atomic-review`, parent head `59e9c5965bdc747b0d1ac06673522d9c4c252fcf`. Added a pinned-Supabase-SDK/owned-runtime regression in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: when User A's vault clear fails during logout, the account remains fenced, no User B Auth/profile request is dispatched, and a successful explicit cleanup retry is required before B can persist its own rotated secret and load B's profile.
