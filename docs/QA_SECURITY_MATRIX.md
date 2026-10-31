@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-27 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+43 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -48,6 +48,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `content-integrity` | repo-sanity | Counts, unique IDs/text, references, Japanese readings and absent assets. Small original N5 seed only; no N4/audio/reference stroke corpus or independent teacher review. |
 | `rls-isolation` | database | Actual SQL roles A/B, parent message reads, forbidden writes, private functions. Native SQL fixture auth.uid() is not verified GoTrue/JWT/PostgREST integration. |
 | `review-storage` | database | Immutable original result replay, changed-input conflict and native two-session uniqueness. Storage helper race is not an atomic submit_review endpoint or updated scheduler counters. |
+| `review-transaction` | database | Authenticated SQL RPC validation/replay/rollback, 26 SQL/Dart cases and five native races. SQL auth fixtures do not establish JWT/PostgREST/Flutter/UI integration. |
 | `ai-sql-receipts` | database | Private token ownership, scoped claim/completion, privileges and rollback. Helpers do not persist conversation messages/session in a real adapter transaction. |
 | `ai-claim-race` | database | Two native sessions grant exactly one dispatch owner. SQL claims do not prove upstream delivery, recovery or two distinct session events. |
 | `srs-policy` | flutter | Versioned 26 policy pairs, offsets, stale events and actual Dart wire output. Pure scheduler; no authenticated persistence, queue or integrated review UI. |
@@ -111,7 +112,7 @@ application security review. No runtime activation or security weakening is incl
 | --- | --- | --- |
 | SEC-01 | high / coverage-gap | Real identity verification, session lifecycle and cross-account cache isolation remain unverified. This is missing release assurance, not a proven exploit. Complete #20/#15; run actual A/B, expiry/restart/sign-out cases before enabling personal data flows. |
 | SEC-02 | high / coverage-gap | Distributed limits, trusted message/session transactions and upstream reconciliation are not bound in the runtime. Fixture success cannot authorize real provider calls. Complete #31/#17 with durable commit-before-dispatch and correlated lookup-only recovery; retain safe pending state. |
-| SEC-03 | high / coverage-gap | Authoritative review endpoint and durable retry queue are missing; storage uniqueness alone does not protect scheduling counters. Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts. |
+| SEC-03 | high / coverage-gap | Local atomic SQL RPC is tested, but real identity/transport, integrated review UI and durable retry queue remain unverified. SQL fixture success alone does not establish an end-to-end review flow. Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts. |
 | SEC-04 | medium / coverage-gap | Audio contract, permissions and retention assurance is missing. No audio collection should be inferred from text schemas. Review #17 audio design and applicable user gates before activation; test denial/disconnect/retention. |
 | SEC-05 | medium / coverage-gap | No observed interactive browser/native launch evidence; CI builds and widget tests do not cover artifact launch failures. Run exact artifact smoke on supported browser/Windows in #18 and preserve redacted environment/assertions. |
 | DEP-01 | medium / remediated-dependency | PR #32 remediated Ajv GHSA-2g4f-4pwh-qvx6 with 8.20.0 and disabled $data; production audit passed at reviewed head e3200bc6. Retain moderate production audit and monitor new findings; do not disable tests or generalize this snapshot to overall security. |
@@ -155,3 +156,112 @@ or App Store release, auth strategy, expanded collection, material AI spend,
 production deletion and security reduction. No deployment/release is performed.
 Next sequential implementation priority: #22 atomic authoritative review path;
 #31 runtime binding and #11 plan/session integration remain queued independently.
+
+## Native lossless compaction baseline
+
+`native-journal-compaction` adds actual-file/subprocess replacement/reopen,
+legacy preservation, immutable replay/conflict, write-failure and full-cap
+checks. See JOURNAL_COMPACTION.md. CLI is mandatory on Linux/Windows. QA now
+has 37 groups with all 14 release integrations pending; no hosted acceptance.
+
+## Browser transactional review baseline
+
+`browser-transactional-review` requires pure ledger checks, actual Chrome
+IndexedDB connection contention/reopen and compiled-Dart real page refresh/
+second-tab preservation. See BROWSER_REVIEW_STORE.md. QA38 groups, all 14
+release gates pending. Fixture Auth/RPC, modeled quota/rollback and a localhost
+probe do not prove configured live learning or eviction/power-loss survival.
+
+## Receipt-cache retention baseline
+
+`receipt-cache-retention` covers explicit successful-receipt trimming, preserving
+all pending/rejected/other-owner records, original server-fixture replay, 600
+reviews, failure rollback and native process reopen/actual IndexedDB contention.
+QA39 groups, all 14 releases pending; see RECEIPT_CACHE_RETENTION.md. Default
+policy disabled. Hosted receipt retention and signed-in learner proof outstanding.
+
+## Own-profile bootstrap baseline
+
+`own-profile-bootstrap` tracks narrow caller-derived bootstrap, preserved
+settings, rollback/A-B isolation/observed native concurrency, same-run native
+SQL-to-Dart projection and two captured SDK/HTTP fixture cases. See
+OWN_PROFILE_BOOTSTRAP.md. QA40 groups, all 14 release cases pending; no actual
+login, JWT signature verification, secure token restore or hosted acceptance.
+
+## Account/profile readiness baseline
+
+`account-profile-readiness` tracks ten pure scenarios, five widgets and two SDK
+HTTP cases, including synchronous logout fencing and late-response rejection.
+See ACCOUNT_READINESS.md. QA41 groups; all 14 live release integrations remain
+pending. Default account runtime null; configured assembly is not hosted login
+or secure token restoration evidence. All previous CI gates remain required.
+
+## Windows session-vault baseline
+
+`windows-session-vault` adds twelve pure input/order/error cases, four mocked
+platform-channel cases and actual Windows Credential Manager process-reopen,
+project-isolation/corruption/bounds/clear checks. Native bridge compiles in the
+Windows app. See WINDOWS_SESSION_VAULT.md. QA42 groups, all 14 live integrations
+pending. Explicit component only; no SDK persistence/rotation/restoration or
+interactive bridge-to-OS/hosted Auth claim. Other platforms fail unavailable.
+
+Owned persistent SDK/vault lifecycle is an additional fixture baseline in
+PERSISTENT_SESSION_LIFECYCLE.md. It retains all live release gaps and existing gates.
+
+## Windows process restoration evidence — 2026-10-14
+
+Source e39d6fee CI38590916038 executed actual Flutter runner vault/runtime
+probes with production Credential Manager/native journal across separate
+processes, including rotation-before-profile and original pending-event retention.
+312 Flutter/five Chrome and all retained five-job gates passed; raw exact-head
+metadata checked. QA baseline anchors now include these probes. Auth HTTP/JWT
+signatures remain simulated; all 14 hosted release integrations remain pending.
+No release status/security gate is relaxed.
+
+## Configured startup host baseline — 2026-10-14
+
+Source 9388b581 CI38593010698 passed 324 Flutter/five Chrome and every retained
+five-job baseline gate. Added eight controller/four startup widget cases and
+`account-startup-host` QA anchors. Fixtures prove loading/error/login/retry/close
+behavior, including 320px/200% and late owner cleanup; no hosted identity or
+UI-to-OS learner acceptance. All 14 live release groups stay pending.
+
+## Opt-in refresh scheduler baseline — 2026-10-14
+
+Source c65528fb CI38596070841 passed 339 Flutter/five Chrome and all retained
+five-job gates. Twelve scheduler/two pinned-SDK/one foreground widget cases
+cover identity/expiry/rotation/failure/disposal guards. `owned-session-refresh`
+tracks fixture scope; all 14 live groups remain pending. Hosted expiry/rotation,
+background/OS suspension and two-device acceptance are not inferred from CI.
+
+## Safe account notice baseline — 2026-10-14
+
+Source bb6be63d CI38599504856 passed 347 Flutter/five Chrome and all retained
+five-job gates. Seven notice/provider/widget plus one pinned-SDK case prove fixed
+messages, credential clearing, no authorization from display, source ownership
+and explicit login recovery. The configured-host no-fields assertion is retained
+with source/state propagation checks before rendering. `account-session-notice`
+tracks fixture scope; all 14 live release integrations remain pending.
+
+## Explicit Windows staging assembly baseline — 2026-10-14 UTC
+
+Source 5be34663 CI38605205617 passed 356 Flutter/five Chrome and every five-job
+gate, including configured Windows main build, real LocalAppData project-scope
+marker and empty-vault factory/start/close/journal lease reopening. Normal preview
+rebuilt before upload. windows-staging-bootstrap tracks fixture/native/build scope;
+no hosted login/JWT/learner/full configured GUI proof. All 14 live groups pending.
+
+## Cancelable Windows close baseline
+
+Source `2aa94639e99dc38c9af9f5734eba7b47c52a3469` passed all five jobs in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38611061291 .
+Observed 360 Flutter/five real Chrome tests and retained native/SQL/wire/security
+gates. Four widget exit cases assert delayed/concurrent drain, fixed failure/
+explicit retry, late factory/restore, retained router/form listener identities,
+null account override, hidden/disabled/cleared fields and focus exclusion.
+Two actual native CloseMainWindow phases verify an empty-vault staging owner's
+awaited drain, cancellation/retry, real journal lease release and natural exit.
+Windows fixed close marker, configured staging build and normal preview rebuild
+passed. Raw exact-head/every-critical-step QA passed; following metadata successor
+has separate CI. New cancelable-window-exit case brings inventory to 48.
+All 14 live release groups remain pending; no hosted/logged-in learner or
+uncancelable logoff/power-loss proof. This hook does not replace persistence.

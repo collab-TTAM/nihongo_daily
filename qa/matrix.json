@@ -10,15 +10,38 @@
       "Validate QA inventory and evidence regressions"
     ],
     "database": [
-      "Migration, grants, RLS, replay and concurrent uniqueness"
+      "Install review parity validator",
+      "Migration, grants, RLS, replay and concurrent uniqueness",
+      "Validate profile bootstrap and observed concurrent creation",
+      "Publish actual native SQL profile projections",
+      "Publish actual native SQL queue projections"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
       "Run dart format --output=none --set-exit-if-changed .",
       "Run flutter analyze",
       "Run flutter test",
+      "Verify owned persistent session lifecycle",
+      "Verify credential vault validation and ordering",
+      "Verify account profile readiness",
+      "Verify real IndexedDB transactions in Chrome",
+      "Verify browser review page reload",
+      "Verify native receipt cache retention",
+      "Verify lossless native journal compaction",
+      "Verify native durable review restart",
+      "Verify durable study recovery with real disk",
+      "Verify captured-connection lifecycle with explicit fixture dispatch",
+      "Download same-run native profile bootstrap projections",
+      "Decode native profile projections with captured-session Dart adapter",
+      "Download same-run native SQL queue projections",
+      "Decode native SQL queue projections with Dart adapter",
+      "Validate decoded native queue wire output",
       "Verify pure SRS golden cases and emit actual wire payloads",
       "Validate actual Dart SRS output against frozen wire contracts",
+      "Verify typed review adapter using explicit fixture ports",
+      "Validate typed review adapter wire encodings",
+      "Verify SRS study controller using explicit fixture ports",
+      "Validate SRS study controller wire encodings",
       "Verify actual Kanji capture wire payloads",
       "Validate actual Dart Kanji output against frozen contracts",
       "Run flutter build web --release",
@@ -26,7 +49,15 @@
     ],
     "windows": [
       "Run flutter pub get --enforce-lockfile",
+      "Build TEST ONLY Dart-to-Windows vault bridge",
+      "Verify actual Dart-to-Windows vault bridge across processes",
+      "Build configured staging Windows entrypoint with TEST ONLY settings",
       "Run flutter build windows --release",
+      "Verify actual Windows credential store across processes",
+      "Verify native receipt cache retention",
+      "Verify lossless native journal compaction",
+      "Verify native durable review restart",
+      "Verify durable study recovery with real disk",
       "Run actions/upload-artifact@v4"
     ],
     "ai-boundary": [
@@ -39,6 +70,450 @@
     ]
   },
   "cases": [
+    {
+      "id": "manual-owned-session-refresh",
+      "status": "automated-baseline",
+      "scope": "Credential-free active-owner refresh capability; explicit account UI, duplicate-click prevention, delayed own-profile readiness and stale error suppression across logout/account/action change/unmount",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/manual_session_refresh_test.dart",
+          "contains": "manual refresh dispatches once and waits for profile readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/manual_session_refresh_test.dart",
+          "contains": "logout during manual refresh rejects late error display"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "final AccountSessionRefreshAction refreshAction = runtime;"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "flutter test test/features/srs/manual_session_refresh_test.dart test/features/srs/persistent_supabase_runtime_test.dart; flutter analyze; full retained CI",
+      "limitation": "New source CI pending. UI/Auth/profile fixtures and pinned SDK/mock HTTP/OS cases do not prove hosted identity or actual learner Windows UI rotation. Default action is null; only an owned configured startup can publish it. Existing persistence/profile gate grants readiness, never the action/UI state. Fixed stale-safe display errors, no automatic retry or timer/provider/schema/dependency/N4 changes. All live acceptance groups remain pending."
+    },
+    {
+      "id": "cancelable-window-exit",
+      "status": "automated-baseline",
+      "scope": "Owned startup host awaits cancelable framework/Windows window exit cleanup; retained router/form listeners, null account publication, hidden disabled cleared fields, delayed/concurrent drain and redacted explicit same-owner retry",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "cancelable exit awaits owned drain and coalesces requests"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_exit_fixture.dart",
+          "contains": "Normal close must release the actual native journal lease before exit."
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Windows actual cancelable window close and owned drain verification passed"
+        }
+      ],
+      "issues": [
+        20,
+        15,
+        22
+      ],
+      "reproduce": "flutter test test/features/srs/account_startup_widget_test.dart; on Windows flutter build windows --release --target tool/windows_vault_bridge.dart then ./tool/verify_windows_vault_bridge.ps1",
+      "limitation": "Four framework/widget fixtures with retained router/form identity, null account provider and disabled/empty fields; actual OS CloseMainWindow with an empty-vault staging owner, real app-data journal lease reopen and synthetic delay/one-shot cleanup failure. No hosted Auth or logged-in learner rotation/shutdown proof. Task Manager kill, uncancelable OS logoff and power loss can bypass the hook; persistence remains write-before-dispatch. Cleanup failure never reopens Auth and a retained failing owner is not assumed repaired. Preview/N4/provider/schema/security unchanged."
+    },
+    {
+      "id": "windows-staging-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Trusted build mode/URL/public-key selection, owned Windows runtime plus project-scoped OS app-data journal, configured main build and ordinary preview preservation",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/staging_bootstrap_test.dart",
+          "contains": "configured Windows selects owned startup"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_review_directory_test.dart",
+          "contains": "preserves Unicode OS path"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "app-data and staging factory verification passed"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "flutter test test/features/srs/staging_bootstrap_test.dart test/features/srs/windows_review_directory_test.dart; on Windows build tool/windows_vault_bridge.dart and execute tool/verify_windows_vault_bridge.ps1; compile selected staging main then rebuild preview",
+      "limitation": "Config/Auth owner fixtures, actual OS path/factory empty-vault process assembly and configured build; no hosted project/login/JWT/learner or full configured GUI/OS shutdown proof. Build mode cannot prove project is non-production; operator supplies intended trusted staging values. Default preview, no private credentials in build. Same OS user can access files/credentials; unusual OS roots fail without fallback."
+    },
+    {
+      "id": "account-session-notice",
+      "status": "automated-baseline",
+      "scope": "Display-only checking/failure messages, credential clearing, owned-source wiring/replacement and fixed login recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_session_notice_test.dart",
+          "contains": "clearing display notice never grants study access"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_session_notice_test.dart",
+          "contains": "configured startup forwards only its owned display source"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "explicit login clears failed display notice"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/account_session_notice_test.dart test/features/srs/persistent_supabase_runtime_test.dart",
+      "limitation": "Explicit display/Auth/profile/HTTP fixtures and actual pinned SDK/unsigned JWTs; not hosted learner or UI-to-OS expiry/rotation/suspension proof. Notices do not authorize. Default source/main null; configured owner only. Raw error/token/path data never displayed; all live acceptance remains pending."
+    },
+    {
+      "id": "owned-session-refresh",
+      "status": "automated-baseline",
+      "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed/expired resume fencing and active-owned foreground forwarding",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_refresh_scheduler_test.dart",
+          "contains": "failure has no timer or resume retry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "opt-in automatic refresh saves rotation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "foreground resume forwards only after startup"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/session_refresh_scheduler_test.dart test/features/srs/persistent_supabase_runtime_test.dart test/features/srs/account_startup_widget_test.dart",
+      "limitation": "Clock/timer/lease fixtures and actual pinned SDK with mock Auth HTTP/unsigned JWTs; not hosted refresh/expiry or OS suspension/device proof. automaticRefresh opt-in, default false/main unconfigured. SDK internal retry policy unchanged. One attempt per lease, no scheduler failure retry; caller must respect owned lifecycle/journal requirements."
+    },
+    {
+      "id": "account-startup-host",
+      "status": "automated-baseline",
+      "scope": "Owned factory/start/close, loading/error/fenced-login/retry UI, close-before-replacement and late-owner cleanup",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_test.dart",
+          "contains": "close during pending factory"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
+          "contains": "startup loading hides account"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/account_startup_test.dart test/features/srs/account_startup_widget_test.dart",
+      "limitation": "Explicit owner/Auth/profile fixtures, not hosted Auth or UI-to-OS learner acceptance. Opt-in configured host only; default main/provider unconfigured. Factory owns partial-failure cleanup, supplied journal remains caller-owned, caller must await close before replacement. No automatic refresh scheduler."
+    },
+    {
+      "id": "persistent-session-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Exclusively owned SDK/vault lifecycle, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_test.dart",
+          "contains": "persistent session lifecycle"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK startup server refresh persists rotation before own profile"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
+          "contains": "verifyWindowsRuntimePhase"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK vault write failure blocks profile and explicit retry recovers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "late A login response after logout cannot replace B session"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_lifecycle.dart; flutter test",
+      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof."
+    },
+    {
+      "id": "windows-session-vault",
+      "status": "automated-baseline",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen and explicit unsupported-platform failure",
+      "ci_job": "windows",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_credential_vault_test.dart",
+          "contains": "credential vault"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart",
+          "contains": "Windows method channel"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "actual Windows Credential Manager"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "runtime-restore"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe",
+      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-OS-user processes can access generic credentials. Single-isolate queue is not interprocess CAS; non-Windows/web unsupported."
+    },
+    {
+      "id": "account-profile-readiness",
+      "status": "automated-baseline",
+      "scope": "Configured credential UI, own-profile barrier, synchronous study invalidation and late-session/logout recovery",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/account_controller_test.dart",
+          "contains": "account readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/account_widget_test.dart",
+          "contains": "credential buffers clear"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "SDK account runtime waits for own profile"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: dart run tool/verify_account.dart; flutter test",
+      "limitation": "TEST ONLY Auth/profile/SDK HTTP fixtures, not hosted login/JWT signatures/secure token restore. Default account runtime null; no provider configuration or production deployment."
+    },
+    {
+      "id": "own-profile-bootstrap",
+      "status": "automated-baseline",
+      "scope": "Additive caller-derived idempotent own-profile bootstrap, preserved settings, unchanged grants/RLS, rollback/observed concurrent uniqueness and same-run actual SQL to captured-session Dart projection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/own_profile_repository_test.dart",
+          "contains": "own profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "profile bootstrap uses captured SDK token"
+        },
+        {
+          "path": "scripts/test_profile_concurrency.py",
+          "contains": "observed native bootstrap lock wait"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "python3 scripts/export_profiles.py build/profile-bootstrap-sql.json && python3 scripts/test_profile_concurrency.py with disposable TEST_DATABASE_URL; flutter test; dart run tool/verify_own_profile.dart build/profile-native-input/profile-bootstrap-sql.json",
+      "limitation": "Auth SQL-role and unsigned SDK HTTP fixtures; not hosted JWT/login/profile restoration proof. Default runtime null; no login/token persistence/provider choice/deployment. Frozen v0.1 operations untouched; new scoped bootstrap documented separately."
+    },
+    {
+      "id": "receipt-cache-retention",
+      "status": "automated-baseline",
+      "scope": "Opt-in owner-scoped confirmed-success cache trim with pending/rejection/other-owner preservation, original RPC replay, >512 reviews, atomic failure and native restart/actual IndexedDB concurrency",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/receipt_retention_test.dart",
+          "contains": "receipt retention"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_receipt_retention.dart",
+          "contains": "failed replacement deleted authoritative cache"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "receipt retention preserves pending"
+        }
+      ],
+      "issues": [
+        15,
+        22,
+        20
+      ],
+      "reproduce": "flutter test test/features/srs/receipt_retention_test.dart && dart run tool/verify_receipt_retention.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart",
+      "limitation": "Explicit opt-in cache policy; default disabled/runtime null. Replay Auth/server is TEST ONLY, no hosted receipt-retention/learner proof. Real file/process/IndexedDB checks do not certify power-loss/eviction; global pending/rejected/multi-account cap remains."
+    },
+    {
+      "id": "browser-transactional-review",
+      "status": "automated-baseline",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, immutable original outcomes and page reload/second-tab persistence",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/transactional_review_store_test.dart",
+          "contains": "transactional ledger"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "two connections serialize"
+        },
+        {
+          "path": "scripts/verify_browser_review_restart.py",
+          "contains": "await_status(\"RECEIPT_COMMITTED\")"
+        }
+      ],
+      "issues": [
+        15,
+        22,
+        20
+      ],
+      "reproduce": "flutter test test/features/srs/transactional_review_store_test.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart; dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js; python3 ../../scripts/verify_browser_review_restart.py build/browser-restart (from apps/flutter_app, ChromeDriver required)",
+      "limitation": "Actual Chrome IndexedDB/reloads with TEST ONLY Auth/RPC. Not hosted learner acceptance, real browser power-loss/quota/eviction, secure token persistence, other browsers or terminal retention. Default runtime null."
+    },
+    {
+      "id": "native-journal-compaction",
+      "status": "automated-baseline",
+      "scope": "Explicit lossless flushed-sibling replacement, exact owner-scoped pending/receipt/rejection, legacy read, serialized writes and safe temporary failure",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/journal_compaction_test.dart",
+          "contains": "lossless journal compaction"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_journal_compaction.dart",
+          "contains": "compaction lost immutable event conflict"
+        }
+      ],
+      "issues": [
+        22,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/journal_compaction_test.dart && dart run tool/verify_journal_compaction.dart; required on Linux and Windows",
+      "limitation": "Actual disposable native files/processes; no hosted Auth/RPC, automatic retention, history deletion, increased event cap, web store or hardware-power-loss proof."
+    },
+    {
+      "id": "durable-study-recovery",
+      "status": "automated-baseline",
+      "scope": "Opt-in controller/notifier/UI restore, manual exact-event replay before due cards, durable definitive rejection, safe storage retry, account clearing and authoritative queue reload",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/study_recovery_test.dart",
+          "contains": "pending blocks queue new IDs rating and reload"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/study_recovery_widget_test.dart",
+          "contains": "recovery at 320px and 200 percent text"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_study_recovery.dart",
+          "contains": "old receipt replaced authoritative queue/current progress"
+        }
+      ],
+      "issues": [
+        22,
+        15,
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/study_recovery_test.dart test/features/srs/study_recovery_widget_test.dart && dart run tool/verify_study_recovery.dart",
+      "limitation": "Real disposable native files with TEST ONLY Auth/RPC/queue; explicit supplied store required, default runtime null. No browser journal, configured Auth/profile/secure sessions, power-loss or hosted/two-client acceptance."
+    },
+    {
+      "id": "native-durable-review",
+      "status": "automated-baseline",
+      "scope": "Real native disk/subprocess restart, single-isolate/process writer lease, immutable account-scoped pending and original receipt, write-before-dispatch, corrupt-tail and late-account rejection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/durable_review_repository_test.dart",
+          "contains": "receipt write failure retains exact pending event for manual replay"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_durable_review.dart",
+          "contains": "process restart lost pending"
+        }
+      ],
+      "issues": [
+        22,
+        15,
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/durable_review_repository_test.dart && dart run tool/verify_durable_review.dart; verifier required on Linux and Windows CI",
+      "limitation": "Native opt-in library with real disposable files/processes but TEST ONLY Auth/RPC. Default runtime remains null; controller/UI restore, secure session storage, web journal, compaction, power-loss/multi-isolate and hosted/two-client sync not certified."
+    },
+    {
+      "id": "supabase-sdk-binding",
+      "status": "automated-baseline",
+      "scope": "Concrete SDK Auth events and captured-token PostgREST POST, lifecycle isolation, safe HTTP failures/limits and suppressed unsafe SDK logs",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "in-flight refresh never changes dispatched Authorization header"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/supabase_review_binding_test.dart",
+      "limitation": "Actual SDK with TEST ONLY unsigned JWTs and mocked Auth/RPC HTTP. No real gateway/JWT signature/RLS, login UI, profile provisioning, secure storage or durable learner journey; default runtime null."
+    },
+    {
+      "id": "review-connection-lifecycle",
+      "status": "automated-baseline",
+      "scope": "Synchronous captured-connection lifecycle, same-user refresh, expiry, logout/A-B-A, immutable ownerless dispatch and old-result rejection",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/review_connection_registry_test.dart",
+          "contains": "old success and failure are suppressed after logout or A B A"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_review_connection.dart",
+          "contains": "captured-connection lifecycle/refresh/expiry/immutable envelope/revoked-result checks"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/review_connection_registry_test.dart; dart run tool/verify_review_connection.dart",
+      "limitation": "TEST ONLY captured dispatch closures. No concrete SDK/JWT/HTTP, sign-in/profile provisioning, credential storage or durable restart evidence. Default runtime remains null."
+    },
     {
       "id": "wire-validation",
       "status": "automated-baseline",
@@ -110,6 +585,128 @@
       ],
       "reproduce": "On an empty disposable PostgreSQL 17 database: bash scripts/test_database.sh (see supabase/README.md)",
       "limitation": "Storage helper race is not an atomic submit_review endpoint or updated scheduler counters."
+    },
+    {
+      "id": "review-transaction",
+      "status": "automated-baseline",
+      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; five native race scenarios",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/review_rpc.sql",
+          "contains": "first authenticated review schedules"
+        },
+        {
+          "path": "scripts/verify_review_parity.py",
+          "contains": "actual SQL scheduler matches"
+        },
+        {
+          "path": "scripts/test_submit_review_concurrency.py",
+          "contains": "different_item"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        18
+      ],
+      "reproduce": "On a new empty disposable PostgreSQL 17 database: install contracts/requirements.txt; bash scripts/test_database.sh",
+      "limitation": "SQL role/auth.uid fixtures are not real Supabase JWT/PostgREST or typed Flutter/UI evidence; full #22 remains open."
+    },
+    {
+      "id": "review-adapter",
+      "status": "automated-baseline",
+      "scope": "Typed Dart strict response/error decoding, immutable event retries, timeout uncertainty and session lifecycle isolation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/review_repository_test.dart",
+          "contains": "in-flight old-user success is discarded after account switch"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_review_adapter.dart",
+          "contains": "TEST ONLY transport/Auth fixtures"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "From apps/flutter_app: flutter test test/features/srs/review_repository_test.dart; dart run tool/verify_review_adapter.dart build/review-adapter-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/review-adapter-output.json",
+      "limitation": "Injected Auth/transport and server responses are TEST ONLY; no concrete Supabase SDK, verified JWT/PostgREST, UI, SQL-to-Dart transaction or durable queue integration."
+    },
+    {
+      "id": "srs-study-ui",
+      "status": "automated-baseline",
+      "scope": "Unconfigured default, reveal/rating, receipt-only advancement, uncertain immutable retry, route retention and session clearing",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_study_widget_test.dart",
+          "contains": "default SRS route is unconfigured and cannot fabricate a saved review"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/srs_study_controller_test.dart",
+          "contains": "uncertain network retry retains exact timestamp rating duration and ID"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_srs_study.dart",
+          "contains": "TEST ONLY queue/Auth/server-response fixtures"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/srs_study_controller_test.dart test/features/srs/srs_study_widget_test.dart; dart run tool/verify_srs_study.dart build/srs-study-output.json. At root: python3 -m contracts.validate_srs_wire apps/flutter_app/build/srs-study-output.json",
+      "limitation": "Fixture queue/Auth/RPC replies are TEST ONLY. No real SDK/due queue/JWT/PostgREST, persisted learner journey, disk queue, restart or multi-device evidence. Default app runtime remains null."
+    },
+    {
+      "id": "queue-sql-read",
+      "status": "automated-baseline",
+      "scope": "Stable invoker read preserving RLS, provisioned owner, due/active/level/order/limit filters and read-only state",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/review_queue.sql",
+          "contains": "A receives four active own due N5 items"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        18
+      ],
+      "reproduce": "On a new empty disposable PostgreSQL 17: bash scripts/test_database.sh; actual SQL responses are exported by scripts/export_review_queue.py",
+      "limitation": "SQL SET ROLE/sub-claim fixtures do not verify JWT/PostgREST or hosted profile provisioning. No new enrollment or write occurs."
+    },
+    {
+      "id": "queue-sql-dart-bridge",
+      "status": "automated-baseline",
+      "scope": "Same-run native SQL artifact -> strict Dart queue DTO/RPC projection -> versioned schema validation",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/verify_review_queue.dart",
+          "contains": "CI passes actual native SQL fixture-role output"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/rpc_srs_study_queue_test.dart",
+          "contains": "RPC envelope is immutable ownerless and bound to captured session"
+        }
+      ],
+      "issues": [
+        22,
+        20,
+        15,
+        18
+      ],
+      "reproduce": "Download current-run review-queue-sql artifact; from apps/flutter_app run dart run tool/verify_review_queue.dart INPUT.json build/review-queue-dart.json; at root python3 -m contracts.validate_review_queue apps/flutter_app/build/review-queue-dart.json",
+      "limitation": "SQL-to-Dart fixture data flow is not a concrete SDK/HTTP call, real Auth/JWT/expired token, persisted UI or durable queue. Hand-authored fixtures.json is TEST ONLY and not SQL evidence."
     },
     {
       "id": "ai-sql-receipts",
@@ -295,7 +892,7 @@
         18
       ],
       "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
-      "limitation": "Only pure Dart and storage helper tests currently exist."
+      "limitation": "Local atomic SQL RPC, typed Dart repository and SRS controller/screen have executable fixture tests; real JWT/PostgREST, concrete SDK/Auth/due queue, persisted learner UI journey and durable retries remain pending."
     },
     {
       "id": "daily-plan",
@@ -463,7 +1060,7 @@
         "review-rpc",
         "offline-sync"
       ],
-      "description": "Authoritative review endpoint and durable retry queue are missing; storage uniqueness alone does not protect scheduling counters.",
+      "description": "Local atomic SQL RPC is tested, but real identity/transport, integrated review UI and durable retry queue remain unverified. SQL fixture success alone does not establish an end-to-end review flow.",
       "action": "Complete #22 then #15; test two native clients, rollback/counters/parity/conflicts."
     },
     {

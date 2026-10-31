@@ -1,5 +1,9 @@
 # Supabase storage baseline
 
+Additive due-queue read: docs/REVIEW_QUEUE.md defines get_review_queue, its stable
+invoker/RLS boundary and seven actual SQL fixture projections exported by the
+test script. This is not a deployed Auth/SDK/PostgREST or learner-flow claim.
+
 This directory contains an additive PostgreSQL migration, not a deployed service.
 The Flutter app still uses its labeled preview repository. No live credentials,
 production changes, authentication provider changes or AI provider calls are made.
@@ -27,11 +31,40 @@ that local execution cannot verify native-session concurrency or Supabase's JWT,
 GoTrue, PostgREST, storage or hosted environment. Those need later integration
 checks. No expiration/authentication claim is inferred from a test JWT setting.
 
-For a local Supabase stack, initialize CLI configuration separately, then use the
-usual `supabase start` / `supabase db reset` migration workflow. Do not apply
-`tests/bootstrap.sql`: the real stack already supplies Auth and API roles.
-Hosted migration/deployment remains a separate reviewed operation. No production
-connection is requested by the tests.
+## Disposable local Supabase integration
+
+The repository now includes a local-only Supabase CLI configuration for an
+ephemeral integration stack. It starts GoTrue and PostgREST against PostgreSQL
+17, applies the repository migrations, then creates two real local Auth users.
+The CI script verifies password sign-in, refresh-token rotation, logout
+revocation, a correctly signed expired JWT, caller-derived `ensure_profile`,
+atomic `submit_review` replay/conflict and A/B owner RLS through HTTP.
+
+The synthetic vocabulary row is inserted only into the disposable local stack
+from `supabase/tests/local_integration_seed.sql`; it is not a canonical content
+export and is never uploaded to a hosted project. The Python client uses only
+the local anon key and user access tokens, never the service-role key. CI sends
+the CLI environment file to GitHub Actions' job environment and does not
+print the keys or tokens.
+
+Reproduce on a machine with Docker and the pinned Supabase CLI:
+
+```sh
+supabase start -x studio,edge-runtime,imgproxy,logflare,vector
+supabase db reset --local
+supabase status -o env
+sudo apt-get install -y postgresql-client
+psql "$DB_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/local_integration_seed.sql
+python3 scripts/test_supabase_local.py
+supabase stop --no-backup
+```
+
+This exercises the actual local GoTrue and PostgREST services with locally
+signed JWTs; it is stronger than SQL-role fixtures or unsigned JWTs, but it is
+**not hosted Supabase proof**, a production deployment, or a real learner
+account. Hosted project URL/keys and actual learner A/B validation remain
+separate #20/#22 release gates. Do not use `supabase link`, `db push` or a
+hosted project in this test.
 
 ## Security boundary
 
@@ -44,9 +77,11 @@ connection is requested by the tests.
   Adapters select safe columns explicitly; `select *` on this table is rejected.
 - `service_role` is trusted and bypasses RLS. It gets explicit DML grants, not
   TRUNCATE. Keep it backend-only and verify end-user identity before every write.
-- Functions are invoker functions with empty `search_path` and qualified tables;
-  private schema/function access is revoked from clients. No security-definer RPC
-  is exposed in this baseline. Trigger functions cannot be called as RPCs.
+- Private helpers are invoker functions with empty `search_path` and qualified
+  tables; private schema/function access is revoked from clients. The original
+  baseline exposed no definer RPC. #22 adds the narrow caller-bound submit_review
+  definer function, audited separately in docs/SRS_RPC.md. Trigger functions cannot
+  be called as RPCs.
 - IDs/owners/parent-message identity are immutable. Review events cannot be edited
   or deleted. Curriculum is retired with `is_active=false`; restrictive FKs retain
   history. Account deletion is not implemented and needs the applicable human gate.
@@ -78,7 +113,8 @@ returns NULL for an unseen ID and raises `SYNC_CONFLICT` for changed input. It i
 only callable by trusted SQL/backend code; never accept an arbitrary client user
 ID. Canonicalize validated timestamps/fields before storing/comparing request JSON.
 
-**This is storage support, not a working submit_review API.** Issue #22's integration after scheduler #4
+**The original helper is storage support.** #22 now supplies a local SQL transaction
+increment (docs/SRS_RPC.md), without hosted or typed UI integration. Full #22 acceptance
 must authenticate, reject unknown fields, lock the user's learning item, replay
 before stale-time checks, validate rating/time skew/content, schedule on the server,
 and atomically append event/update state. Race losers must re-read the committed
@@ -106,3 +142,9 @@ normalization and actual timestamp conversion. Use the stored timezone for plans
 Issue #7 adds private AI receipt lookup/dispatch-claim/token-completion helpers and
 native claim-race/security tests. No deployed conversation/AI runtime is implied;
 see `../docs/AI_BOUNDARY.md` for required validation/transaction/recovery binding.
+
+Issue #22 verification also runs supabase/tests/review_rpc.sql, compares actual
+private SQL outputs against all 26 frozen Dart policy cases and executes five
+native submit_review race scenarios. Install contracts/requirements.txt first.
+The SQL-only Auth fixture cannot verify real JWT expiration, GoTrue/PostgREST
+or Flutter end-to-end behavior; #22 remains open for those acceptance gates.
