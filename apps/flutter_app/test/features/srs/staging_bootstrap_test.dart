@@ -14,7 +14,7 @@ const configured = StagingBuildSettings(
 void main() {
   test('staging settings validate before any resource construction', () {
     final valid = configured.configuration();
-    expect(valid.automaticRefresh, isFalse);
+    expect(valid.automaticRefresh, isTrue);
     for (final settings in [
       const StagingBuildSettings(mode: 'other'),
       const StagingBuildSettings(mode: 'staging'),
@@ -41,14 +41,15 @@ void main() {
       );
     }
   });
-  test('automatic refresh activation is an explicit build choice', () {
-    final settings = StagingBuildSettings(
+  test('staging refresh defaults on and supports an explicit opt-out', () {
+    expect(configured.configuration().automaticRefresh, isTrue);
+    final disabled = StagingBuildSettings(
       mode: 'staging',
       projectUrl: configured.projectUrl,
       publicKey: configured.publicKey,
-      automaticRefresh: 'true',
+      automaticRefresh: 'false',
     );
-    expect(settings.configuration().automaticRefresh, isTrue);
+    expect(disabled.configuration().automaticRefresh, isFalse);
   });
   testWidgets(
     'empty build preserves preview and never opens configured resources',
@@ -124,6 +125,7 @@ void main() {
           open: (settings) async {
             expect(settings.projectUrl, configured.projectUrl);
             expect(settings.publicKey, configured.publicKey);
+            expect(settings.automaticRefresh, isTrue);
             return owner;
           },
         ),

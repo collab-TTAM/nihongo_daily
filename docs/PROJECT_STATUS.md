@@ -1701,3 +1701,35 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   fix only observed failures while retaining assertions. Keep PR #37 draft and
   #20/#22/#15 open until hosted Auth, review transaction and multi-device
   learner acceptance are observed.
+
+
+## Trusted staging refresh default — 2026-10-31 UTC
+
+- Resumed released draft PR #37 on `automation/issue-22-atomic-review` at source
+  `a0bdbd01963e3279801a44d2111c3cb272c6e661` after confirming exact-head CI
+  [41228518710](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41228518710):
+  all five jobs (repo-sanity, database, ai-boundary, Windows and Flutter) and
+  every returned step completed SUCCESS. Windows exercised the TEST ONLY
+  Credential Manager/Dart bridge, owned runtime, journal compaction/restart and
+  configured staging build; Flutter exercised format, analyze, full tests,
+  Chrome IndexedDB/restart, session lifecycle, wire/parity and web release.
+- For a trusted `ND_MODE=staging` Windows build, `ND_AUTOMATIC_REFRESH`
+  now defaults to true; an explicit false remains a supported operator opt-out.
+  Absent/preview mode is unchanged and still never constructs Auth, vault or
+  learner save success. No learner-entered URL/key, credentials in build values,
+  provider/strategy change, schema/RLS change or production activation.
+- Updated paths: `apps/flutter_app/lib/app/staging_bootstrap.dart`,
+  `apps/flutter_app/test/features/srs/staging_bootstrap_test.dart`,
+  `docs/STAGING_BOOTSTRAP.md`, and this handoff. Tests assert the staging
+  default, explicit opt-out, and that the configured Windows factory receives
+  the refresh setting. Existing pinned-SDK lifecycle tests continue to cover
+  startup refresh -> token rotation persistence -> profile readiness, storage
+  write failure, late A response after logout, B isolation, and automatic
+  refresh/logout fencing.
+- No local Flutter/Dart SDK is available in this cloud runtime; this source
+  requires fresh exact-head Actions for formatter, analyzer, full Flutter tests,
+  native Windows and web build. CI 41228518710 is parent evidence only. No hosted
+  signed JWT, deployed PostgREST/RLS, real A/B learner or Personal Alpha proof.
+- Next: inspect every job/step on the new exact-head CI. If green, continue #20
+  non-production Auth/profile acceptance where approved configuration exists;
+  otherwise fix only observed failures. Keep PR #37 draft and #20/#22/#15 open.

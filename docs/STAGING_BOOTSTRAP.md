@@ -17,11 +17,11 @@ trusted build settings, never learner input):
   "ND_MODE": "staging",
   "ND_SUPABASE_URL": "https://YOUR_PROJECT.supabase.co",
   "ND_SUPABASE_PUBLIC_KEY": "YOUR_PUBLIC_PUBLISHABLE_KEY",
-  "ND_AUTOMATIC_REFRESH": "false"
+  "ND_AUTOMATIC_REFRESH": "true"
 }
 ```
 
-Use ND_AUTOMATIC_REFRESH=true only as explicit opt-in to SESSION_REFRESH policy.
+For an explicitly selected staging build, automatic refresh defaults to true. Set ND_AUTOMATIC_REFRESH=false only to opt out. The owned runtime refreshes before expiry and persists the rotated refresh secret before own-profile/study readiness; failed rotation fences the session and does not retry automatically. The ordinary absent/preview mode remains unchanged and never opens the configured Auth runtime.
 Invalid/missing selected configuration shows fixed errors before disk/SDK creation;
 unsupported web/mobile/non-Windows selects a fixed unavailable screen and never
 falls back to preview Auth or another project. The shipped CI preview is rebuilt

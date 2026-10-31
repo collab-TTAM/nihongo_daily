@@ -22,7 +22,7 @@ final class StagingBuildSettings {
     this.mode = '',
     this.projectUrl = '',
     this.publicKey = '',
-    this.automaticRefresh = 'false',
+    this.automaticRefresh = 'true',
   });
   static const compiled = StagingBuildSettings(
     mode: String.fromEnvironment('ND_MODE'),
@@ -30,7 +30,7 @@ final class StagingBuildSettings {
     publicKey: String.fromEnvironment('ND_SUPABASE_PUBLIC_KEY'),
     automaticRefresh: String.fromEnvironment(
       'ND_AUTOMATIC_REFRESH',
-      defaultValue: 'false',
+      defaultValue: 'true',
     ),
   );
   final String mode;
