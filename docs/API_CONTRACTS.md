@@ -79,3 +79,11 @@ are also implemented. No concrete SDK binding, hosted endpoint, JWT/PostgREST or
 Flutter review screen integration is claimed.
 See SRS_RPC.md for safe error objects, exact fractional retry identity, UTC
 microsecond policy, resource limits and the still-open #22 acceptance.
+
+## Separately versioned quiz report boundary (specified only)
+
+`contracts/quiz/v1` defines nd-quiz-report-1 for proposed
+`submit_quiz_report(p_request)`. See QUIZ_REPORT_API.md for the executable strict
+validator, immutable report identity, kind mapping and required future Auth/atomic
+receipt/content checks. No endpoint, migration, deployment, upload/default activation
+or hosted evidence is delivered. The eight frozen v0.1 operations remain intact.

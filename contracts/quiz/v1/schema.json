@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nihongo-daily.invalid/contracts/quiz/v1/schema.json",
+  "title": "nd-quiz-report-1 (undeployed)",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "instant": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 27,
+      "pattern": "^(20[0-9]{2}|2100)-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "content_version",
+        "selected_id",
+        "choices"
+      ],
+      "properties": {
+        "item_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "content_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "selected_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "client_event_id",
+        "quiz_type",
+        "practice_kind",
+        "jlpt_level",
+        "completed_at",
+        "answers"
+      ],
+      "properties": {
+        "client_event_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "quiz_type": {
+          "enum": [
+            "vocabulary_reading",
+            "grammar_meaning"
+          ]
+        },
+        "practice_kind": {
+          "enum": [
+            null,
+            "primary",
+            "correction"
+          ]
+        },
+        "jlpt_level": {
+          "enum": [
+            "N5",
+            "N4"
+          ]
+        },
+        "completed_at": {
+          "$ref": "#/$defs/instant"
+        },
+        "answers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/answer"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "quiz_type": {
+                "const": "vocabulary_reading"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "practice_kind": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "practice_kind": {
+                "enum": [
+                  "primary",
+                  "correction"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "client_event_id",
+        "quiz_type",
+        "practice_kind",
+        "jlpt_level",
+        "completed_at",
+        "answer_count",
+        "correct_count"
+      ],
+      "properties": {
+        "client_event_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "quiz_type": {
+          "enum": [
+            "vocabulary_reading",
+            "grammar_meaning"
+          ]
+        },
+        "practice_kind": {
+          "enum": [
+            null,
+            "primary",
+            "correction"
+          ]
+        },
+        "jlpt_level": {
+          "enum": [
+            "N5",
+            "N4"
+          ]
+        },
+        "completed_at": {
+          "$ref": "#/$defs/instant"
+        },
+        "answer_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "correct_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "quiz_type": {
+                "const": "vocabulary_reading"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "practice_kind": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "practice_kind": {
+                "enum": [
+                  "primary",
+                  "correction"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "Owner/content/transaction validation requires the future authenticated server implementation."
+}

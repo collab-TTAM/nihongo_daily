@@ -1,5 +1,40 @@
 # PROJECT STATUS
 
+## Quiz report contract and remaining server boundary — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  f5308cf66136b79e349c2e1163096daf9b06e910/tree680bd8b99ef570e73571eab1fbf1028434c5f09c.
+  Pre-code marker core-20261031-quiz-report-contract saved PR41+issue13 with
+  actualacceptanceaudit and separatelyversioned request/response/authority review.
+- Parent CI41180091136 exactf5308cf/latestattempt1 ALL5/EVERYstepSUCCESS/no skips;
+  rawFlutter124475881165 extendeddualjourneyPASS;Windows124475602208 grammar/
+  evidence/persistentSDKmarkers. TESTONLY nothosted. Localquiz/UI evidence exists;
+  no authenticated quizreportRPC/roundreceipt despite baseline per-item table.
+- NEW nd-quiz-report-1 contract for proposed submit_quiz_report(p_request):
+  immutable clientevent/type/kind/level/UTCtime/1..10uniqueanswers, fourordered
+  UUIDchoices containingtarget+selection, strictversion, no owner/score/mastery/
+  duration/metadata. Vocab kindnull preserves localfocusedformat;grammar explicit
+  primary/correction. Response echoesidentity with exactderivedcounts/correct<=total.
+- Executable schema+crossfield validator, bounded16KiB strictUTF8/duplicatekeys/
+  nonfinite/deepJSON rejection, strictinteger(no floats/bools), responsecorrelation;
+  THREEsyntheticpairs/TENmutationtestgroups in existing CI unittest discovery.
+  No Auth/contenttruth/transaction/endpoint proof or default upload. Baseline
+  quiz_attempts requires unmeasured duration; never fabricate0 or weakenconstraint.
+- Local pinnedjsonschema4.23.0 installed fresh;3fixtures/ALL70contracts/20frozen
+  fixtures/QA55 PASS;inventory155valid NOTexecuted/JSONformat/Pythoncompile/diff/
+  separate bounds/kindmapping/strictnumber/replayidentity/authority reviewPASS.
+  NewexactheadfullCI/Flutter/Web/Windows locallyUNRUN(noFlutter/Windows).
+- Eightpaths: NEW contracts/quiz/v1/{schema.json,contract.json,fixtures.json};
+  NEW contracts/validate_quiz_report.py;NEW contracts/test_quiz_report_contracts.py;
+  NEW docs/QUIZ_REPORT_API.md;docs/API_CONTRACTS.md pointer;PROJECT_STATUS.md.
+  Frozenv0.1/app/localjournals/DB/RLS/CI/Pro/content/deps/default/collection untouched.
+- NEXT exactnewhead/latestattempt ALL5/EVERYstep/rawnew10fixtures+retainednative;
+  then additive undeployed own-reportledger/RPC owner+atomicreceipt/replaybeforetime/
+  currentcontent/concurrency/RLS and typedDart parity. No live deployment/collection
+  authorization inferred; human gates remain. HostedAuth/learner/mastery/sync gaps
+  stillopen. All14hostedpending/draft41/13open/AIoff/no merge/closure/release/Alpha/
+  schedulechange. Published commit/tree/CI in PR41 checkpoint.
+
 ## Owned recall dashboard assertions — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
