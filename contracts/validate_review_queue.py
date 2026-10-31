@@ -10,7 +10,7 @@ from .validate import ContractError, load_json, validate_payload
 VERSION = "nd-review-queue-1"
 
 _UTC_TIMESTAMP = re.compile(
-    r"^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,6})?Z$"
+    r"^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,6})?Z$"
 )
 
 
