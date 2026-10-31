@@ -1,5 +1,42 @@
 # PROJECT STATUS
 
+## Co-enabled quiz owner integration — 2026-10-31 UTC
+
+- Issue13/draft41; branch automation/issue-11-plan-sdk-integration; parent
+  82dfd7521a206df84c3756d8e50590a9de18c003/tree4f3e944746b24a2835f09dbf5749e3942349f7bc.
+  Pre-code marker core-20261031-dual-quiz-owner saved PR41+issue13.
+- Parent CI41154492745 exact82dfd75/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips; raw Flutter124398551957 BOTH existing owned disk journeys PASS;
+  Windows124398218525 grammar/evidence+persistent vault/SDK/profile markers.
+  TEST ONLY components, not hosted learner/Auth/JWT/RLS acceptance.
+- Audited actual13 criteria: scoring/dedup/owned current-content weak points/
+  Vietnamese manual dashboard present. No reviewed mastery rule or mastered
+  projection; no MASTERED/study/server credit. #13 remains open; all14 hosted
+  release gates pending. Earlier two journeys enabled only one store each.
+- NEW dual_quiz_disk_journey_widget_test.dart uses ONE actual SDK/runtime/owner,
+  both borrowed native quiz stores in SAME disposable directory, original N5
+  providers/router/UI/default UUID captures. Actual UI answers/manual saves9of10
+  vocabulary vs8of10 primary grammar, separate weak-point1vs2 and read counters;
+  navigation no autoload/cross-store reads/append/HTTP. Account A/B/A empty B/
+  restored A, actual close/reopen SAMEvault/files requires SDKrefresh/profile;
+  both exactDTOs/fullbytes preserved/zero reopened append. No provider/content/
+  router/capture override or fake saved records/success. HTTP/JWT/memoryvault
+  TEST ONLY; not physical Windows/hosted identity/RLS/two-device/learner proof.
+- Three paths: NEW Flutter test/features/quiz/dual_quiz_disk_journey_widget_test.dart;
+  NEW docs/QUIZ_DUAL_OWNER.md;docs/PROJECT_STATUS.md. Entire previous files/tests/
+  assertions/timeouts retained. Production/default/Pro/content/Authstrategy/API/
+  schema/RLS/deps/workflow/collection/retention unchanged;AIoff.
+- Fresh official Dart3.9.2 SHA256 verified; strictformat new1/QA55 PASS;
+  inventory155 valid NOTexecuted;diffcheck/separate ownership/I-O/account/
+  DTO/byte preservation review PASS. Flutter lint include unresolved NOTanalyzer.
+  NEW journey/fullFlutter/analyze/Web/Windows locally UNRUN(noFlutter/Windows);
+  require exact new-head Actions. Published commit/tree/run in PR41 checkpoint.
+- Next verify exact-head/latestattempt ALL5/EVERYstep and raw new dual journey,
+  retained BOTH old disk journeys/native vault markers. Fix actual diagnostics
+  without weakening assertions; pending-only handoff/no duplicate code/longpoll.
+  Then review remaining13 mastery definition/dependencies and independent next
+  app integration. Draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Owned progress navigation and current-deck evidence — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
