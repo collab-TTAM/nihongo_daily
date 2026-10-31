@@ -187,3 +187,22 @@ tests. They do not verify hosted JWT signatures, deployed RLS, actual Supabase
 credentials, or a live learner. Default app startup remains the preview path;
 no Auth strategy, provider, database, RLS, deployment or secret fallback changed.
 Exact-head CI for this source increment is pending and is recorded in PR #37.
+
+
+## Late refresh response after logout — 2026-10-31
+
+A third pinned-SDK/owned-runtime HTTP regression now holds User A's refresh-token
+rotation response, performs explicit local logout and vault clear, then releases
+the old response. The test requires the refresh operation to fail safely, keeps
+A's runtime unavailable, verifies no additional `ensure_profile` request or
+stored A secret, and only then signs in User B. B must persist its own rotated
+refresh secret and the profile request must carry B's captured bearer.
+
+This closes a source-level gap between the earlier late-sign-in and late-startup
+tests: a refresh response already in flight at logout must not resurrect the
+same account's old session or race a subsequent account switch. The test uses
+the pinned Supabase SDK with a TEST ONLY MockClient and in-memory vault backend;
+it does not prove hosted JWT signatures, deployed RLS or live account isolation.
+The existing storage-failure, write/clear ordering, generation guards and all
+prior assertions remain unchanged. Fresh exact-head CI is required for this new
+case; the preceding source head's successful CI is not carried forward.

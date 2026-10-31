@@ -1672,3 +1672,32 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, and this status handoff. Complete recursive source tree was checked untruncated at 324 entries before and after; only the two intended blobs changed in the source commit, with path/type/mode preserved. Pro-owned #14/N4 paths were excluded and unchanged.
 - No local Flutter/Dart SDK is available in this runtime. The new exact-head CI must still verify format, analyze, all Flutter tests, browser persistence, web build and the remaining Windows/database/AI/repo gates; no new-head pass or hosted learner proof is claimed.
 - Next: inspect all five jobs and every step on the new exact head. Fix only observed failures while retaining assertions and security gates; if checks are merely pending, hand off without duplicate code. Keep PR #37 draft until #20/#22/#15 acceptance and Personal Alpha evidence are complete.
+
+
+## Core worker handoff — late refresh response fence, 2026-10-31 UTC
+
+- Resumed released PR #37 on `automation/issue-22-atomic-review`, source
+  `a17059f5a32f0840d666b6bb036f85b1ea9ca290`, after verifying its exact-head CI
+  `41223443638`: all five jobs (`repo-sanity`, `ai-boundary`, `database`,
+  `windows`, `flutter`) and every returned step completed SUCCESS. Windows
+  included actual Credential Manager/Dart bridge and owned-runtime process
+  probes; Flutter included format, analyze, full tests, Chrome IndexedDB,
+  native restart/recovery, wire/parity and web build.
+- Added one pinned Supabase SDK/owned-runtime regression in
+  `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`:
+  hold A's refresh-token rotation response, logout and clear, deliver the late
+  response, assert no A readiness/profile dispatch/token survives, then
+  explicitly sign in B and verify B's rotated secret and captured bearer.
+- Updated `docs/PERSISTENT_SESSION_LIFECYCLE.md` with the new test boundary and
+  explicit limitation. No Auth strategy/provider, production configuration,
+  default preview activation, database/RLS, dependency, N4 content or release
+  gate changed. The test uses TEST ONLY HTTP and vault fixtures, not hosted JWT
+  or real Supabase A/B evidence.
+- Changed paths: the runtime test above, `docs/PERSISTENT_SESSION_LIFECYCLE.md`,
+  and this status file. No local Flutter/Dart SDK is available in this runtime;
+  run pinned format/analyze/tests and all five required jobs through exact-head
+  GitHub Actions. Do not treat parent CI as evidence for the new commit.
+- Next: inspect the new exact-head workflow's latest attempt and every job/step;
+  fix only observed failures while retaining assertions. Keep PR #37 draft and
+  #20/#22/#15 open until hosted Auth, review transaction and multi-device
+  learner acceptance are observed.

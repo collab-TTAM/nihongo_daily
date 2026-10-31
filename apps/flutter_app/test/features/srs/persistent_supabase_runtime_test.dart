@@ -325,6 +325,82 @@ void main() {
   });
 
   test(
+    'late A refresh response after logout cannot restore A before B login',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_A_INITIAL_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      final initialProfiles = requests
+          .where((r) => r.url.path.contains('ensure_profile'))
+          .length;
+
+      authWait = Completer<http.Response>();
+      secret = 'TEST_ONLY_LATE_A_ROTATED_REFRESH';
+      final AccountSessionRefreshAction refreshAction = runtime;
+      final pendingRefresh = refreshAction.refresh();
+      final refreshFailure = expectLater(
+        pendingRefresh,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+      expect(runtime.account.readyRuntime, isNull);
+      final refreshRequests = requests
+          .where((r) => r.url.path == '/auth/v1/token')
+          .toList();
+      expect(refreshRequests, hasLength(2));
+      expect(
+        refreshRequests.last.url.queryParameters['grant_type'],
+        'refresh_token',
+      );
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        hasLength(initialProfiles),
+      );
+
+      await runtime.account.signOut();
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, isNull);
+
+      authWait!.complete(authResponse());
+      await refreshFailure;
+      await fixture.flush();
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, isNull);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        hasLength(initialProfiles),
+      );
+
+      authWait = null;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_ROTATED_B_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(backend.secret, secret);
+      final profileRequests = requests
+          .where((r) => r.url.path.contains('ensure_profile'))
+          .toList();
+      expect(profileRequests, hasLength(initialProfiles + 1));
+      expect(
+        profileRequests.last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+    },
+  );
+
+  test(
     'SDK safe logging and scope reject another project before requests',
     () async {
       final records = <LogRecord>[];
