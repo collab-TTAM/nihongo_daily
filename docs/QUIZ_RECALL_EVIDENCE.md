@@ -43,6 +43,26 @@ There is no claim of independent unaided recall, trusted time, current retention
 attention, lifetime mastery or full JLPT coverage. There is no expiry heuristic;
 a reached milestone describes past reports until a matching wrong resets it.
 
+## Vocabulary panel level-scope correction — 2026-10-31 UTC
+
+Exact source fa4e1d51b21e22145fb69e177186fd9f3209e413 failed
+[CI41172113298](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41172113298),
+latest attempt1. All five jobs/every returned step were inspected. Repo-sanity,
+database and AI passed; Flutter124452447937 failed analyze with undefined `_level`
+at quiz_progress_screen.dart:288. Tests, later native checks and Web build were
+skipped. Windows124452133030 reported the same undefined getter while building
+the TEST ONLY vault bridge; subsequent Windows checks/build/artifacts were skipped.
+No new widget, layout, SDK/journal or build pass is established for that source.
+
+The vocabulary panel receives its fixed level through `widget.level`, already
+used by its existing summary, content read and derivation. Only the new recall
+summary's scope expression changes to `widget.level.label`. Grammar has its own
+level state and stays unchanged. Existing level/source/owner generation fences,
+labels, thresholds, manual reads, all tests/assertions/deadlines and security
+checks remain intact. The existing two new widget cases and old narrow/native
+journeys must execute after the fix on its own exact head. No redundant test
+mirroring this one-line name correction is added. New CI evidence is in PR41.
+
 ## Vietnamese dashboard summary — 2026-10-31 UTC
 
 A shared stateless `QuizRecallSummary` displays the already-derived count inside

@@ -1,5 +1,31 @@
 # PROJECT STATUS
 
+## Recall summary level-scope correction — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  fa4e1d51b21e22145fb69e177186fd9f3209e413/tree71e906d81986462447c87664a589577b5eb8fc58.
+  Pre-code marker core-20261031-recall-level-scope-fix saved PR41+issue13.
+- Parent CI41172113298 exactfa4e1d5/latestattempt1 FAILURE. ALL5/EVERYstep
+  inspected: repo/database/AI SUCCESS; Flutter124452447937 analyze undefined
+  _level at quiz_progress_screen.dart288. Tests/laternative/Web skipped. Windows
+  124452133030 same undefinedgetter in vaultbridgebuild; remainingnative/build/
+  artifacts skipped. No new2widgets/layout/SDK/build pass for parent.
+- Vocabulary _ProgressPanelState has immutable widget.level, no _level state.
+  Change ONLY new summary scope to widget.level.label, same as existing summary/
+  contentread/derivation. Grammar localstate unchanged. All tests/assertions/
+  timeouts/sharedsummarytext/policy/source-owner-levelguards/manualI-O retained.
+- Threepaths: Flutter quiz presentation/quiz_progress_screen.dart;
+  docs/QUIZ_RECALL_EVIDENCE.md;PROJECT_STATUS.md. Separate exactoneexpression/
+  immutablelevel/capturedpanel/oldtests preservation review PASS. Official fresh
+  Dart3.9.2SHAverified/strictformat1/QA55 PASS;inventory155valid NOTexecuted/diff
+  PASS. MissingFlutterlintinclude NOTanalyzer; fullFlutter/analyze/new2/narrow/
+  native/Web/Windows locallyUNRUN(noFlutter/Windows); require exactnewhead CI.
+- Pro/content/Authstrategy/API/schema/RLS/workflow/deps/default/retention/collection
+  unchanged;AIoff. Published commit/tree/CI in PR41 checkpoint. Next exacthead/
+  latestattempt ALL5/EVERYstep/raw2widgets/oldnarrow/recall/dual+old/nativevault;
+  fixactualdiagnostics retainingassertions; pending-onlyhandoff/no duplicatecode.
+  All14hostedpending/draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Vietnamese quiz recall dashboard — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

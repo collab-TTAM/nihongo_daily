@@ -285,7 +285,7 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
             'Từ có lần trả lời gần nhất đúng: ${progress.latestCorrectCurrentItemCount}',
           ),
           QuizRecallSummary(
-            scope: _level.label,
+            scope: widget.level.label,
             itemLabel: 'Từ',
             count: progress.recallMilestoneCurrentItemCount,
           ),
