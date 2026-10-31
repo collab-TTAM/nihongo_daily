@@ -1741,3 +1741,29 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every job/step on the new exact-head CI. If green, continue #20
   non-production Auth/profile acceptance where approved configuration exists;
   otherwise fix only observed failures. Keep PR #37 draft and #20/#22/#15 open.
+
+
+## Local Supabase integration CI — connection export repair (2026-10-31 UTC)
+
+- Resumed released PR #37 at `automation/issue-22-atomic-review`, exact source
+  `de9cb630cdf05d5485ff087dacc368611621d55e`, after fetching the latest attempt
+  of [CI 41238351077](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41238351077)
+  and all six jobs/every step. `repo-sanity`, `database`, `ai-boundary`,
+  `flutter` and `windows` completed SUCCESS. The new local Supabase job started
+  its disposable stack and applied all migrations, then failed while seeding:
+  `psql "$DB_URL"` fell back to the runner's Unix socket; the HTTP GoTrue/
+  PostgREST step was skipped. This is not an integration pass.
+- Root-cause correction: `supabase status -o env` emits shell/dotenv-quoted
+  assignments, while GitHub's `GITHUB_ENV` parser does not evaluate shell quotes.
+  The workflow now parses with Python `shlex`, validates the local API/database
+  loopback endpoints and exports only `API_URL`, `ANON_KEY`, `DB_URL` and
+  `JWT_SECRET`. Service-role, secret and storage keys are not propagated to later
+  steps. The documented local reproduction imports the same four values only.
+- Changed paths: `.github/workflows/ci.yml`, `supabase/README.md`, and this
+  status record. No migration, schema, RLS/grant, Auth strategy/provider, test
+  assertion, app default, production setting or N4-owned path changed. No local
+  Flutter/Docker/Supabase execution is claimed in this cloud runtime.
+- New exact-head CI must run the local seed and GoTrue/PostgREST A/B flow before
+  this integration can be considered verified. Hosted Supabase and real learner
+  evidence remain separate #20/#22 acceptance gates; #15 offline/two-device sync
+  remains open. Keep PR #37 draft and do not merge on parent evidence.

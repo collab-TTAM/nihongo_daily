@@ -52,7 +52,9 @@ Reproduce on a machine with Docker and the pinned Supabase CLI:
 ```sh
 supabase start -x studio,edge-runtime,imgproxy,logflare,vector
 supabase db reset --local
-supabase status -o env
+# Import only the four local values used by the integration client/seed.
+eval "$(supabase status -o env | grep -E '^(API_URL|ANON_KEY|DB_URL|JWT_SECRET)=')"
+export API_URL ANON_KEY DB_URL JWT_SECRET
 sudo apt-get install -y postgresql-client
 psql "$DB_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/local_integration_seed.sql
 python3 scripts/test_supabase_local.py
