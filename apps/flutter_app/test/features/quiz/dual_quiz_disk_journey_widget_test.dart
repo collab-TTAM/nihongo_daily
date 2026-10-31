@@ -397,6 +397,29 @@ void main() {
       );
       expect(server.paths.length, quizHttp);
 
+      // Owned recall dashboard assertions.
+      void noRecallSnapshot() {
+        expect(find.textContaining('đạt mốc ôn cách ngày:'), findsNothing);
+        expect(find.textContaining('ít nhất 24 giờ'), findsNothing);
+        expect(
+          find.textContaining('không xác nhận đã thuộc bài'),
+          findsNothing,
+        );
+      }
+
+      void recallSummary(String label) {
+        expect(find.text(label), findsOneWidget);
+        expect(find.textContaining('ít nhất 24 giờ'), findsOneWidget);
+        expect(find.textContaining('tính lại từ đầu'), findsOneWidget);
+        expect(
+          find.textContaining('không xác nhận đã thuộc bài'),
+          findsOneWidget,
+        );
+      }
+
+      expect(vocabularyAttempt.answers, hasLength(10));
+      expect(grammarAttempt.answers, hasLength(10));
+      // End owned recall dashboard assertions.
       void vocabularySummary({bool empty = false}) {
         expect(find.text('N5 · ${empty ? 0 : 1} bộ đã lưu'), findsOneWidget);
         expect(
@@ -404,6 +427,9 @@ void main() {
           findsOneWidget,
         );
         expect(find.text('Từ cần ôn: ${empty ? 0 : 1}'), findsOneWidget);
+        // Owned recall dashboard assertions.
+        recallSummary('N5 · Từ đạt mốc ôn cách ngày: 0');
+        // End owned recall dashboard assertions.
         expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
       }
 
@@ -419,6 +445,9 @@ void main() {
           findsOneWidget,
         );
         expect(find.text('Mẫu cần ôn: ${empty ? 0 : 2}'), findsOneWidget);
+        // Owned recall dashboard assertions.
+        recallSummary('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 0');
+        // End owned recall dashboard assertions.
         expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
       }
 
@@ -435,12 +464,18 @@ void main() {
         );
         expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
         expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+        // Owned recall dashboard assertions.
+        noRecallSnapshot();
+        // End owned recall dashboard assertions.
       }
 
       container.read(routerProvider).go('/progress');
       await tester.pumpAndSettle();
       expect(first.vocabularyStore.reads, 0);
       expect(first.store.reads, 0);
+      // Owned recall dashboard assertions.
+      noRecallSnapshot();
+      // End owned recall dashboard assertions.
       await diskAction(first, 'quiz-progress-load');
       vocabularySummary();
       await navigate('progress-grammar', '/quiz/grammar/progress');
@@ -465,6 +500,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(first.runtime.account.state.profile!.id, wire.b);
       expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      // Owned recall dashboard assertions.
+      noRecallSnapshot();
+      // End owned recall dashboard assertions.
       await diskAction(first, 'quiz-progress-load');
       vocabularySummary(empty: true);
       expect(find.text(vocabulary.first.target.heading), findsNothing);
@@ -480,6 +518,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(first.runtime.account.state.profile!.id, wire.a);
       expect(find.byKey(const Key('grammar-progress-summary')), findsNothing);
+      // Owned recall dashboard assertions.
+      noRecallSnapshot();
+      // End owned recall dashboard assertions.
       await diskAction(first, 'grammar-progress-load', grammar: true);
       grammarSummary();
       await navigate('progress-vocabulary', '/progress');
@@ -515,6 +556,9 @@ void main() {
       expect(second.vocabularyStore.reads, 0);
       expect(second.store.reads, 0);
       expect(find.byKey(const Key('quiz-progress-summary')), findsNothing);
+      // Owned recall dashboard assertions.
+      noRecallSnapshot();
+      // End owned recall dashboard assertions.
       await diskAction(second, 'quiz-progress-load');
       vocabularySummary();
       await navigate('progress-grammar', '/quiz/grammar/progress');

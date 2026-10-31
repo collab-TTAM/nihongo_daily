@@ -1,5 +1,41 @@
 # Quiz histories under one caller-owned runtime
 
+## Owned recall dashboard evidence — 2026-10-31 UTC
+
+The existing dual-store SDK/native-file journey now also asserts the scoped
+recall milestone summary. Actual UI-created vocabulary9/10 and PRIMARYgrammar8/10
+reports each contain ten unique target answers and only one observation per item.
+Their milestone must be zero. A high correct total or a latest-correct answer
+must not become three spaced observations. Both B histories are empty and also
+show zero after an explicit read. No report timestamp, UUID or file is edited.
+
+Additive assertions require the selected-level vocabulary/PRIMARYgrammar zero,
+the24hour threshold, per-item wrong-reset explanation and not-certified-mastery
+limit after each existing manual native read. They require no milestone/rule/
+limit before initial load, after actual route navigation and SDKaccount replacement,
+and after fresh same-vault/files startup before manual reload. Existing A/B/A and
+close/reopen stages recheck the same summaries. Exact original DTOs, complete
+bytes, zero extra appends, read/HTTP counters, SDKrefresh/profile barrier and lease
+release assertions are unchanged. Entire previous fixture/helpers/assertions/
+deadlines are byte-identical after removing delimited additions; a preservation
+check initially found two extra blank lines, which were removed without changing
+assertions. The test uses no provider/content/router/capture override or fabricated
+saved success. This proves no spaced learner history or real identity by itself.
+
+Parent9aff66af286583f014d669867e2fa5a4694bf307 passed
+[CI41175719377](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41175719377),
+latestattempt1/allfive/every returnedstepSUCCESS/no skips. Raw Flutter124463099741
+confirms both new recall UI cases, old narrow-layout cases and the dual-store
+journey; Windows124462781293 confirms grammar/evidence/persistentSDK markers.
+The undefined-level correction is verified on that head. Extended native journey
+assertions require their own exact new-head CI result; local checks/full limits
+and publication are recorded in PR41/PROJECT_STATUS.
+
+The versioned local recall milestone in QUIZ_RECALL_EVIDENCE.md is distinct from
+certified mastery, trusted time, current retention, attention, SRS MASTERED or
+server credit. All14 hosted gates remain pending. After this integration evidence,
+audit remaining Issue13/server/mastery dependencies before adding more UI scope.
+
 ## Acceptance audit (Issue #13, 2026-10-31 UTC)
 
 Issue #13 requires deterministic scoring, immutable attempts/deduplication,

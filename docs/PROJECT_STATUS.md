@@ -1,5 +1,38 @@
 # PROJECT STATUS
 
+## Owned recall dashboard assertions — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  9aff66af286583f014d669867e2fa5a4694bf307/tree17a61346ff124f02eab288ef323233a8bee695be.
+  Pre-code marker core-20261031-owned-recall-dashboard saved PR41+issue13.
+- Parent CI41175719377 exact9aff66a/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips;rawFlutter124463099741 BOTHnewrecallUI/oldnarrow/dualjourney PASS;Windows
+  124462781293 grammar/evidence/persistentSDK markers. Undefinedlevel correction
+  now actually analyze/build/test verified. TEST ONLY components, nothosted.
+- Extend actualdual-store SDK/nativefiles/router/UI save/manualread journey:
+  vocabulary9of10/PRIMARYgrammar8of10 actualreports each10uniqueanswers/oneobsper
+  target, so scoped recallmilestone0 despite manycorrect. Require24hour/rule/
+  wrongreset/notcertifiedmastery explanation after reads; no milestone/rule/limits
+  beforeload, afteractualnavigation/SDKaccountreplacement, freshsamevault/files
+  restart beforeload. A/B/A/Bempty/manualrestore recheck summaries.
+- Entireoldfixture/helpers/assertions/timeouts byte-identical removingdelimited
+  additions. Initial preservationcheck found2extra blanklines; removedonlythose.
+  Existing exactDTOs/fullbytes/read-write/HTTP/SDKrefresh/profile/lease assertions
+  retained;no provider/source/router/capture overrides, fake saveddata/success,
+  editedtimestamps or simulatedspacedlearnerhistory. Production unchanged.
+- Threepaths: Flutter test/features/quiz/dual_quiz_disk_journey_widget_test.dart;
+  docs/QUIZ_DUAL_OWNER.md;PROJECT_STATUS.md. Fresh officialDart3.9.2SHAverified/
+  strictformat1/QA55 PASS;inventory155valid NOTexecuted/diff/separate source/count/
+  readiness/manualI-O/preservationreview PASS. MissingFlutterlintinclude NOTanalyzer;
+  extendedjourney/fullFlutter/analyze/native/Web/Windows locallyUNRUN(noFlutter/
+  Windows); exactnewhead Actions required. Published commit/tree/CI in PR41.
+- Pro/content/Authstrategy/API/schema/RLS/workflow/deps/default/retention/collection
+  unchanged;AIoff. No hostedidentity/RLS/actualWindowsvault/mastery/learnerproof.
+- Next exacthead/latestattempt ALL5/EVERYstep/rawextendeddual/newUI/oldnarrow/
+  recall/oldjourneys/nativevault;fixactualdiagnostics retainingassertions. Then
+  AUDITremaining13/server/mastery dependencies before moreUI scope. All14hosted
+  pending/draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Recall summary level-scope correction — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
