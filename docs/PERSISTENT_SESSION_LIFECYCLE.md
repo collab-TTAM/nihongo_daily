@@ -206,3 +206,22 @@ it does not prove hosted JWT signatures, deployed RLS or live account isolation.
 The existing storage-failure, write/clear ordering, generation guards and all
 prior assertions remain unchanged. Fresh exact-head CI is required for this new
 case; the preceding source head's successful CI is not carried forward.
+
+
+## Credential clear failure blocks account replacement — 2026-10-31
+
+A new pinned-Supabase-SDK/owned-runtime regression injects a failure while the
+caller-owned credential backend clears User A's refresh token during logout.
+The account must remain fenced, the old secret may remain physically present but
+cannot authorize a runtime, and a User B sign-in attempt must not dispatch Auth
+or profile requests while cleanup is still failing. After an explicit logout
+retry successfully clears the credential, B can sign in, persist B's own rotated
+secret and provision only B's profile with B's captured bearer.
+
+This covers the full SDK/controller boundary for clear failure and retry; the
+existing pure vault/lifecycle cases already cover clear ordering and retry at the
+port level. The new case uses a TEST ONLY in-memory OS backend and pinned SDK
+MockClient, not Windows Credential Manager failure injection or hosted Auth.
+No plaintext fallback, auto-retry, default Auth activation or cross-account
+cache exception is introduced. Exact-head CI must run the new test before it is
+counted as verified.

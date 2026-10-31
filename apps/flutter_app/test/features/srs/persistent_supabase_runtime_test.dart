@@ -276,6 +276,72 @@ void main() {
     },
   );
 
+  test(
+    'SDK credential clear failure fences account until explicit cleanup retry',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_A_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final profileRequests = () => requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .toList();
+      final initialProfileCount = profileRequests().length;
+      final authCalls = () => requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .length;
+      final initialAuthCalls = authCalls();
+
+      backend.failClear = true;
+      await runtime.account.signOut();
+      await fixture.flush();
+
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(backend.secret, 'TEST_ONLY_A_REFRESH');
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_B_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+      expect(authCalls(), initialAuthCalls);
+      expect(profileRequests(), hasLength(initialProfileCount));
+      expect(runtime.account.readyRuntime, isNull);
+
+      backend.failClear = false;
+      await runtime.account.signOut();
+      await fixture.flush();
+      expect(backend.secret, isNull);
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(backend.secret, 'TEST_ONLY_B_REFRESH');
+      expect(profileRequests(), hasLength(initialProfileCount + 1));
+      expect(
+        profileRequests().last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+    },
+  );
+
   test('late A login response after logout cannot replace B session', () async {
     await runtime.start();
     authUser = wire.a;

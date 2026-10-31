@@ -1,5 +1,11 @@
 # PROJECT STATUS
 
+## Latest handoff — credential clear failure retry guard (2026-10-31 UTC)
+
+- PR #37 branch `automation/issue-22-atomic-review`, parent head `59e9c5965bdc747b0d1ac06673522d9c4c252fcf`. Added a pinned-Supabase-SDK/owned-runtime regression in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: when User A's vault clear fails during logout, the account remains fenced, no User B Auth/profile request is dispatched, and a successful explicit cleanup retry is required before B can persist its own rotated secret and load B's profile.
+- Updated `docs/PERSISTENT_SESSION_LIFECYCLE.md` with the failure boundary and evidence limits. The new test uses TEST ONLY in-memory OS/HTTP ports; it is not a Windows Credential Manager failure injection or hosted Auth proof.
+- Exact-head CI for the resulting commit is required; this status entry records implementation intent, not a test pass. Keep #20/#22/#15 open and PR #37 draft. Hosted JWT/PostgREST learner A/B, two-device sync and release evidence remain outstanding. No Pro #14/N4 paths changed.
+
 ## Latest handoff — local Supabase Auth/PostgREST integration (2026-10-31 UTC)
 
 - PR #37 branch `automation/issue-22-atomic-review`, parent `4b25515dc4a27dcab5c748c38ba854824ba26f06`. Added a pinned Supabase CLI local stack gate using GoTrue, PostgREST and PostgreSQL 17; no hosted URL, key, service-role credential, deployment or Auth strategy change.
