@@ -276,59 +276,53 @@ void main() {
     },
   );
 
-  test(
-    'late A login response after logout cannot replace B session',
-    () async {
-      await runtime.start();
-      authUser = wire.a;
-      authSession = wire.sid1;
-      secret = 'TEST_ONLY_LATE_A_REFRESH';
-      authWait = Completer<http.Response>();
-      final lateLogin = runtime.account.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
-      await fixture.flush();
-      expect(
-        requests.where((r) => r.url.path == '/auth/v1/token'),
-        hasLength(1),
-      );
+  test('late A login response after logout cannot replace B session', () async {
+    await runtime.start();
+    authUser = wire.a;
+    authSession = wire.sid1;
+    secret = 'TEST_ONLY_LATE_A_REFRESH';
+    authWait = Completer<http.Response>();
+    final lateLogin = runtime.account.signIn(
+      'fixture@example.invalid',
+      'TEST_ONLY_PASSWORD',
+    );
+    await fixture.flush();
+    expect(requests.where((r) => r.url.path == '/auth/v1/token'), hasLength(1));
 
-      await runtime.account.signOut();
-      expect(runtime.account.readyRuntime, isNull);
-      expect(backend.secret, isNull);
-      authWait!.complete(authResponse());
-      await lateLogin;
-      await fixture.flush();
-      expect(runtime.account.readyRuntime, isNull);
-      expect(backend.secret, isNull);
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')),
-        isEmpty,
-      );
+    await runtime.account.signOut();
+    expect(runtime.account.readyRuntime, isNull);
+    expect(backend.secret, isNull);
+    authWait!.complete(authResponse());
+    await lateLogin;
+    await fixture.flush();
+    expect(runtime.account.readyRuntime, isNull);
+    expect(backend.secret, isNull);
+    expect(
+      requests.where((r) => r.url.path.contains('ensure_profile')),
+      isEmpty,
+    );
 
-      authWait = null;
-      authUser = wire.b;
-      authSession = wire.sid2;
-      secret = 'TEST_ONLY_ROTATED_B_REFRESH';
-      await runtime.account.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
-      await waitForReady();
-      expect(runtime.account.state.profile?.id, wire.b);
-      expect(runtime.persistence.currentSession?.userId, wire.b);
-      expect(backend.secret, secret);
-      final profileRequests = requests
-          .where((r) => r.url.path.contains('ensure_profile'))
-          .toList();
-      expect(profileRequests, hasLength(1));
-      expect(
-        profileRequests.single.headers['authorization'],
-        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
-      );
-    },
-  );
+    authWait = null;
+    authUser = wire.b;
+    authSession = wire.sid2;
+    secret = 'TEST_ONLY_ROTATED_B_REFRESH';
+    await runtime.account.signIn(
+      'fixture@example.invalid',
+      'TEST_ONLY_PASSWORD',
+    );
+    await waitForReady();
+    expect(runtime.account.state.profile?.id, wire.b);
+    expect(runtime.persistence.currentSession?.userId, wire.b);
+    expect(backend.secret, secret);
+    final profileRequests = requests
+        .where((r) => r.url.path.contains('ensure_profile'))
+        .toList();
+    expect(profileRequests, hasLength(1));
+    expect(
+      profileRequests.single.headers['authorization'],
+      'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+    );
+  });
 
   test(
     'SDK safe logging and scope reject another project before requests',
@@ -435,61 +429,58 @@ void main() {
       );
     },
   );
-  test(
-    'opt-in automatic refresh saves rotation before profile and cancels on '
-        'logout',
-    () async {
-      await runtime.close();
-      runtime = PersistentSupabaseRuntime(
-        projectUrl: wire.origin,
-        publishableKey: wire.key,
-        vault: vault,
-        store: journal,
-        httpClient: network,
-        now: () => now,
-        automaticRefresh: true,
-      );
-      await runtime.start();
-      await runtime.account.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
-      await waitForReady();
-      expect(runtime.refreshPhase, SessionRefreshPhase.scheduled);
-      secret = 'TEST_ONLY_AUTOMATIC_ROTATION';
-      backend.writeWait = Completer();
-      now = now.add(const Duration(minutes: 59, seconds: 30));
-      final initialProfiles = requests
-          .where((r) => r.url.path.contains('ensure_profile'))
-          .length;
-      runtime.resume();
-      await fixture.flush();
-      expect(runtime.account.readyRuntime, isNull);
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')).length,
-        initialProfiles,
-      );
-      expect(backend.secret, isNot(secret));
-      expect(runtime.notice, AccountSessionNotice.checking);
-      backend.writeWait!.complete();
-      await waitForReady();
-      expect(backend.secret, secret);
-      expect(runtime.notice, AccountSessionNotice.none);
-      final authCalls = requests
-          .where((r) => r.url.path == '/auth/v1/token')
-          .length;
-      expect(authCalls, 2);
-      await runtime.account.signOut();
-      runtime.resume();
-      await fixture.flush();
-      expect(backend.secret, isNull);
-      expect(runtime.account.readyRuntime, isNull);
-      expect(
-        requests.where((r) => r.url.path == '/auth/v1/token').length,
-        authCalls,
-      );
-    },
-  );
+  test('opt-in automatic refresh saves rotation before profile and cancels on '
+      'logout', () async {
+    await runtime.close();
+    runtime = PersistentSupabaseRuntime(
+      projectUrl: wire.origin,
+      publishableKey: wire.key,
+      vault: vault,
+      store: journal,
+      httpClient: network,
+      now: () => now,
+      automaticRefresh: true,
+    );
+    await runtime.start();
+    await runtime.account.signIn(
+      'fixture@example.invalid',
+      'TEST_ONLY_PASSWORD',
+    );
+    await waitForReady();
+    expect(runtime.refreshPhase, SessionRefreshPhase.scheduled);
+    secret = 'TEST_ONLY_AUTOMATIC_ROTATION';
+    backend.writeWait = Completer();
+    now = now.add(const Duration(minutes: 59, seconds: 30));
+    final initialProfiles = requests
+        .where((r) => r.url.path.contains('ensure_profile'))
+        .length;
+    runtime.resume();
+    await fixture.flush();
+    expect(runtime.account.readyRuntime, isNull);
+    expect(
+      requests.where((r) => r.url.path.contains('ensure_profile')).length,
+      initialProfiles,
+    );
+    expect(backend.secret, isNot(secret));
+    expect(runtime.notice, AccountSessionNotice.checking);
+    backend.writeWait!.complete();
+    await waitForReady();
+    expect(backend.secret, secret);
+    expect(runtime.notice, AccountSessionNotice.none);
+    final authCalls = requests
+        .where((r) => r.url.path == '/auth/v1/token')
+        .length;
+    expect(authCalls, 2);
+    await runtime.account.signOut();
+    runtime.resume();
+    await fixture.flush();
+    expect(backend.secret, isNull);
+    expect(runtime.account.readyRuntime, isNull);
+    expect(
+      requests.where((r) => r.url.path == '/auth/v1/token').length,
+      authCalls,
+    );
+  });
 
   test(
     'opt-in automatic refresh failure fences account without resume retry',
@@ -533,28 +524,23 @@ void main() {
       );
     },
   );
-  test(
-    'explicit login clears failed display notice and normal logout has no '
-        'failure',
-    () async {
-      backend.secret = 'TEST_ONLY_SAVED_SDK';
-      authStatus = 401;
-      await expectLater(
-        runtime.start(),
-        throwsA(isA<ReviewTransportFailure>()),
-      );
-      expect(runtime.notice, AccountSessionNotice.needsLogin);
-      authStatus = 200;
-      await runtime.account.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
-      await waitForReady();
-      expect(runtime.notice, AccountSessionNotice.none);
-      await runtime.account.signOut();
-      await fixture.flush();
-      expect(runtime.notice, AccountSessionNotice.none);
-      expect(runtime.account.readyRuntime, isNull);
-    },
-  );
+  test('explicit login clears failed display notice and normal logout has no '
+      'failure', () async {
+    backend.secret = 'TEST_ONLY_SAVED_SDK';
+    authStatus = 401;
+    await expectLater(runtime.start(), throwsA(isA<ReviewTransportFailure>()));
+    expect(runtime.notice, AccountSessionNotice.needsLogin);
+    authStatus = 200;
+    await runtime.account.signIn(
+      'fixture@example.invalid',
+      'TEST_ONLY_PASSWORD',
+    );
+    await waitForReady();
+    expect(runtime.notice, AccountSessionNotice.none);
+    await runtime.account.signOut();
+    await fixture.flush();
+    expect(runtime.notice, AccountSessionNotice.none);
+    expect(runtime.account.readyRuntime, isNull);
+  });
 }
+

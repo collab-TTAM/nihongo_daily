@@ -1646,3 +1646,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - This runtime has no Flutter/Dart SDK, so the correction awaits a new full exact-head Actions run. Previous successful Windows/SQL/AI/repo jobs are parent evidence only; the new source must execute every required job/step.
 - Pro-owned PR #38 / Issue #14 N4 scope remains untouched. No hosted Supabase learner login, Auth strategy, deployment, default activation or Personal Alpha acceptance is claimed.
 - Next: inspect the new exact-head latest attempt and all five jobs/every step. Fix only observed failures while retaining assertions/security gates; if only jobs remain pending, hand off without duplicate code.
+
+
+### Exact-head Flutter formatter correction — 2026-10-31 UTC
+
+- Read the complete latest-attempt jobs and Flutter log for CI 41209781746 at source `b597b3bdd96aa6dae3bc54d2a2d5aaa4ce7e50ec`. Repo-sanity, database, ai-boundary and Windows completed successfully. Flutter failed only because the pinned Dart 3.9.2 formatter changed `test/features/srs/persistent_supabase_runtime_test.dart`; analyze, tests, native/browser checks and web build were skipped and are not passing evidence.
+- Applied the formatter's exact three-hunk output to that test file. A token comparison allowing only Dart formatter trailing-comma normalization confirms no test logic or assertion changed; test bodies and timing bounds remain intact.
+- Removed the temporary read-only formatter-diagnostic step from `.github/workflows/ci.yml`; the existing `dart format --output=none --set-exit-if-changed .` gate remains unchanged.
+- Source, workflow and this handoff are committed together on PR #37. The new commit's full five-job latest-attempt Actions run is the required evidence; no Flutter/analyze/test/build pass is inferred from the failed parent run.
+- Pro-owned Issue #14 / PR #38 N4 paths and content tests remain untouched. No Auth strategy, credential behavior, schema, RLS, production, dependency or default-runtime activation changed. PR #37 remains draft; hosted learner and Personal Alpha gates remain pending.
