@@ -1655,3 +1655,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Removed the temporary read-only formatter-diagnostic step from `.github/workflows/ci.yml`; the existing `dart format --output=none --set-exit-if-changed .` gate remains unchanged.
 - Source, workflow and this handoff are committed together on PR #37. The new commit's full five-job latest-attempt Actions run is the required evidence; no Flutter/analyze/test/build pass is inferred from the failed parent run.
 - Pro-owned Issue #14 / PR #38 N4 paths and content tests remain untouched. No Auth strategy, credential behavior, schema, RLS, production, dependency or default-runtime activation changed. PR #37 remains draft; hosted learner and Personal Alpha gates remain pending.
+
+
+### Exact-head Flutter formatter follow-up — 2026-10-31 UTC
+
+- Inspected complete latest-attempt CI `41214320472` at source `1357b29c16df81e4cc3d851ed431aa2cea8ba5fd`. Repo-sanity, database, ai-boundary and Windows all completed SUCCESS with every returned step successful. Flutter failed only at `dart format --output=none --set-exit-if-changed .`; the formatter reported exactly `test/features/srs/persistent_supabase_runtime_test.dart` as changed. Analyze, Flutter tests, native/browser checks and web build were skipped and are not passing evidence.
+- The previous formatter-only correction was insufficient for the pinned Flutter 3.35.4 / Dart 3.9.2 run. This checkpoint adds a temporary read-only `dart format --output=show` + unified-diff diagnostic immediately before the unchanged format gate. It does not rewrite the file, suppress the gate or change tests.
+- Next: read the exact diagnostic diff from the new exact-head Actions run, apply only that formatter output to the one test file, remove the diagnostic step, and rerun the full five-job workflow. Keep PR #37 draft; no hosted learner, JWT/PostgREST, staging or Personal Alpha evidence is inferred.
