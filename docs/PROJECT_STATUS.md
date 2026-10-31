@@ -1,5 +1,48 @@
 # PROJECT STATUS
 
+## Private atomic quiz report ledger — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  b4d8a96a1b5bd0e95155aa2b97ef16044fb6aa3d/treed08710cb823c1430037c2918f9df8d7d91d44f81.
+  Pre-code marker core-20261031-private-quiz-ledger saved PR41+issue13.
+- Parent CI41183633360 exactb4d8a96/latestattempt1 ALL5/EVERYstepSUCCESS/no
+  skips;rawrepo124485980178 NEW10/70contractsPASS;Windows124486034256 grammar/
+  evidence/persistentSDKmarkers. TESTONLY components, nothosted.
+- ADDITIVE UNDEPLOYED private.quiz_report_receipts PK(auth-derivedowner,event),
+  immutable request/originalresponse/FKauth.users/ownerSELECTRLS/noapp-servicegrants.
+  Closed-path SECURITYINVOKER private decodedrequest/replay/store helpers; derive
+  owner onlyauth.uid, transactionownerlock heldacross lookupmiss, exactreplay before
+  futuretime, changedpayload conflict acrosstypes/kinds, single-rowatomic request/
+  derivedcounts/originalresponse. Otherowner independent. No suppliedowner/score/
+  duration/baselinequiz_attempts/SRS/mastery/progress/timecredit/publicRPC.
+- Strict decodedshape/UUID/kind/level/UTCcalendar/fraction/targetversion/unique
+  targets/orderedchoices/membership; reuse review_instant afternarrowguards.
+  JSONB normalization loses duplicatekeys/exponentlexemes/originalbytes: raw
+  ingressguard and activecanonicalcontent/verifiedJWT/publicwrapper remain missing.
+  Do NOT expose this private helper as validated user-facing quiz persistence.
+- New SQLsuite covers3correlatedfixtures/replay/typekindconflicts/roles/grants/
+  missingidentity/strictshape/calendar/newline/RLSA-B/immutableupdate-delete/
+  rollback/future/replaybeforefuture;TESTONLY priorfuture row modelsclockrollback.
+  Readgrants solely transaction-local/rolledback/grantabsence asserted. Four new
+  real-session race cases require observed pg_stat_activity advisorywait before
+  release:identical/changed/distinct/rollback plus originalresponse/atomicrowcounts.
+  Existingrunner/gates retained; mandatory SQL+races appended.
+- Fresh PGlite0.5.9 executes ALLmigrations +complete newSQLsuite PASS; confirms
+  zero retained testrows/no leaked readgrant. SingleWASMengine NOTnativePG17/
+  two-session/hosted/JWTproof. NativeSQL/races locallyUNRUN(no psql); use exactheadCI.
+  Freshpinnedjsonschema4.23.0/ALL70contracts/QA55 PASS;155inventoryvalid NOTexecuted;
+  bashsyntax/Pythoncompile/diff/separate access/lock/replay/rollback/rawboundary/
+  mandatoryrunnerreview PASS. Flutter/Web/Windows locallyUNRUN(noFlutter/Windows).
+- Eightpaths: NEW supabase/migrations/20261031090000_quiz_report_ledger.sql;
+  NEW supabase/tests/quiz_report_ledger.sql;NEW scripts/test_quiz_ledger_concurrency.py;
+  scripts/test_database.sh;docs/QUIZ_REPORT_API.md;API_CONTRACTS.md;DATABASE_SCHEMA.md;
+  PROJECT_STATUS.md. Frozencontracts/app/Pro/content/oldmigrations/oldtests/RLS/
+  grants/default/collection unchanged;AIoff. Published commit/tree/CI in PR41.
+- NEXT exacthead/latestattempt ALL5/EVERYstep/rawnewSQL+ALL4observednative races/
+  retainedcontracts/nativeSDK;fixdiagnostics preservingassertions. Then verified
+  rawingress/currentcanonicalcontent and replay-first publicboundary/Dartparity.
+  All14hostedpending/draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Quiz report contract and remaining server boundary — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

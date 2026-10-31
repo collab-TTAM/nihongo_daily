@@ -85,5 +85,6 @@ microsecond policy, resource limits and the still-open #22 acceptance.
 `contracts/quiz/v1` defines nd-quiz-report-1 for proposed
 `submit_quiz_report(p_request)`. See QUIZ_REPORT_API.md for the executable strict
 validator, immutable report identity, kind mapping and required future Auth/atomic
-receipt/content checks. No endpoint, migration, deployment, upload/default activation
-or hosted evidence is delivered. The eight frozen v0.1 operations remain intact.
+receipt/content checks. An additive private ledger migration is implemented but undeployed; no public
+endpoint, strict raw-ingress/current-content adapter, upload/default activation or
+hosted evidence is delivered. See the JSONB normalization caveat in QUIZ_REPORT_API.md. The eight frozen v0.1 operations remain intact.

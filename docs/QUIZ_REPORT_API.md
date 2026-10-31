@@ -1,5 +1,60 @@
 # Quiz report boundary — nd-quiz-report-1 (specified, undeployed)
 
+## Private ledger foundation — 2026-10-31 UTC
+
+Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
+self-report receipt ledger. All authenticated/anon/service-role table and helper
+privileges are revoked. No public RPC or app upload is enabled. RLS has an owner
+SELECT policy but no application read grant; future access needs an explicit
+reviewed boundary. Immutable update/delete trigger preserves original history.
+No baseline quiz_attempts row, unmeasured duration, progress, SRS or mastery is written.
+
+`private.quiz_report_request(jsonb)` checks decoded shape, UUIDs, kind/level,
+UTC/calendar/version, unique targets/ordered choices and membership. The existing
+review_instant helper supplies calendar parsing. `private.replay_quiz_report`
+derives owner exclusively from auth.uid(), validates structure, acquires a
+transaction-scoped per-owner advisory lock, and returns the original response or
+null on a miss. The lock survives a miss until transaction end: the future public
+wrapper must look up replay BEFORE active-content checks, validate a new report,
+and then call private.store_quiz_report in the same transaction.
+
+The private store repeats lookup under that lock, rejects new future reports
+beyond five minutes, derives counts from reported choices, and atomically inserts
+one complete round/request/original response. Identical retry returns the original;
+changed payload under the same owner/event conflicts across quiz types and grammar
+kinds. Another owner can use that event independently. Helpers are closed-path
+SECURITY INVOKER and inaccessible to app roles. They are internal capabilities for
+a future trusted wrapper, not a standalone authenticated user-facing service.
+
+**Important ingress gap:** conversion to JSONB loses duplicate object keys and can
+normalize exponent number spelling (e.g.1e0). Original UTF-8 byte size is also lost.
+These helpers cannot establish all raw-wire rules in nd-quiz-report-1. The future
+verified ingress must apply strict raw JSON validation BEFORE JSONB conversion,
+or explicitly review a transport contract change. Do not open the proposed
+jsonb RPC and claim the Python raw-parser guarantees were preserved. Canonical
+active target/choice validation is also deliberately absent from this ledger.
+Fixture rows are self-reports, not validated linguistic grades or learner proof.
+
+Native SQL tests cover three correlated fixture responses, missing identity,
+revoked role calls/grants, RLS(A/B) under transaction-local TEST ONLY read grants,
+exact retry, type/kind conflicts, malformed reports, immutability, outer rollback,
+new-future rejection and replay-before-future checking. A synthetic privileged
+prior-future receipt models clock rollback; it is not a real learner report.
+All temporary grants/data are rolled back and grant absence is asserted afterward.
+
+The mandatory database runner additionally invokes four real-session race cases
+(identical/changed/distinct/rollback). Each must observe the second session's
+actual pg_stat_activity advisory wait before releasing the first transaction;
+response/row counts are checked after commit/rollback. These are privileged
+TEST ONLY Auth-claim fixtures, not hosted JWT/RPC tests. Existing checks are retained.
+Fresh PGlite0.5.9 executed all migrations plus the complete new SQL suite locally,
+then verified zero retained fixture rows and no leaked read grant. This single
+WASM engine does not execute the native concurrency script. Actual PostgreSQL17
+SQL/race results still require the new exact-head Actions run in PR41.
+
+The next step remains a public verified/raw-ingress/current-content boundary and
+Dart parity. Production deployment, collection and Auth human gates remain intact.
+
 ## Issue #13 audit and bounded delivery
 
 At source f5308cf66136b79e349c2e1163096daf9b06e910, quiz rounds, immutable
@@ -11,9 +66,10 @@ it has no authenticated round-report mutation/receipt. Those rows also require a
 duration_ms that current local reports do not measure. Do not fabricate zero
 duration, reuse SRS receipts, grant direct writes or call a native journal cloud sync.
 
-This increment supplies a separate wire specification, executable JSON/semantic
-validator, fixtures and mutation tests. It does not implement an RPC, migrate a
-DB, send reports, activate collection or authorize deployment. Frozen v0.1,
+The earlier contract increment supplied a separate wire specification, executable
+JSON/semantic validator, fixtures and mutation tests. The private ledger increment
+above adds an undeployed migration; neither increment opens an RPC, sends reports,
+activates collection or authorizes deployment. Frozen v0.1,
 existing local journal formats, RLS/grants, default app and Pro content are intact.
 The pre-code design/review is saved under core-20261031-quiz-report-contract in
 PR41/Issue13. Live collection/deployment and other human gates remain unchanged.
@@ -89,8 +145,8 @@ are checked locally. Schema validation cannot prove ownership or curriculum trut
    parity/owned-runtime integration, precede hosted A/B/JWT/PostgREST/two-device
    evidence. Distinguish received self-report from scientifically validated mastery.
 
-No endpoint, server-side parser, ledger, grant, RPC adapter or replay transaction
-exists for this proposed operation yet. No hosted/learner acceptance follows from
+No public endpoint, strict raw-ingress adapter, canonical-content validation or
+Dart RPC adapter exists yet. The private decoded ledger above is a foundation only. No hosted/learner acceptance follows from
 these fixtures. Issue13 and all14 release gates remain open.
 
 ## Prior evidence

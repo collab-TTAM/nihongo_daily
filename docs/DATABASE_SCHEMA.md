@@ -92,3 +92,13 @@ See SRS_RPC.md; real JWT/PostgREST and typed Flutter/UI integration remain unver
 Additive caller-bound own-profile initialization is in OWN_PROFILE_BOOTSTRAP.md.
 The undeployed ensure_profile RPC has a narrow authenticated execution grant;
 existing RLS, direct client table privileges and frozen v0.1 fields are unchanged.
+
+## Private quiz report ledger foundation (undeployed)
+
+20261031090000_quiz_report_ledger.sql adds private.quiz_report_receipts keyed by
+Auth-derived user/event identity with immutable request/original-response JSON,
+owner SELECT RLS and no app/service table grants. Private closed-path invoker
+lookup/store helpers retain an owner transaction lock, original replay and atomic
+round insertion. No public quiz RPC, canonical-content or raw-wire validation,
+client upload, baseline duration fabrication or mastery/progress update is enabled.
+See QUIZ_REPORT_API.md for JSONB ingress limitations and required future boundaries.
