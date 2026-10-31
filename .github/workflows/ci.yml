@@ -71,6 +71,32 @@ jobs:
           python3 scripts/verify_qa.py
           python3 -m unittest discover -s qa -p 'test_*.py' -v
 
+  supabase-integration:
+    needs: repo-sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3
+        with:
+          version: 2.122.0
+      - name: Start disposable local Supabase services
+        run: supabase start -x studio,edge-runtime,imgproxy,logflare,vector > /dev/null 2>&1
+      - name: Apply repository migrations to the local stack
+        run: supabase db reset --local
+      - name: Export ephemeral local-only connection settings
+        run: supabase status -o env >> "$GITHUB_ENV"
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Seed one TEST ONLY active vocabulary item
+        run: psql "$DB_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/local_integration_seed.sql
+      - name: Verify local GoTrue, PostgREST, rotation, replay and A/B RLS
+        run: python3 scripts/test_supabase_local.py
+      - name: Stop disposable local Supabase services
+        if: always()
+        run: supabase stop --no-backup || true
+
   flutter:
     needs: [repo-sanity, database]
     if: needs.repo-sanity.outputs.has_flutter == 'true'

@@ -1,5 +1,13 @@
 # PROJECT STATUS
 
+## Latest handoff — local Supabase Auth/PostgREST integration (2026-10-31 UTC)
+
+- PR #37 branch `automation/issue-22-atomic-review`, parent `4b25515dc4a27dcab5c748c38ba854824ba26f06`. Added a pinned Supabase CLI local stack gate using GoTrue, PostgREST and PostgreSQL 17; no hosted URL, key, service-role credential, deployment or Auth strategy change.
+- New `supabase/config.toml` is local-only; `supabase/tests/local_integration_seed.sql` inserts one synthetic active vocabulary item only after a disposable local reset. `scripts/test_supabase_local.py` uses local user tokens and anon key to verify two real Auth users, refresh rotation, logout revocation, signed-expired JWT rejection, caller-derived profile bootstrap, atomic review replay/conflict and A/B RLS.
+- CI adds `supabase-integration` with Supabase CLI 2.122.0 via pinned setup action SHA. This run has not yet produced an exact-head CI result; pending CI is not pass evidence. The Python script is authored but has not been executed in this cloud runtime.
+- This is actual local GoTrue/PostgREST integration, not hosted Supabase learner evidence. Keep #20/#22/#15 and Personal Alpha open; next worker must inspect all exact-head CI jobs/steps and fix only observed failures. No Pro #14/N4 paths changed.
+
+
 Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
