@@ -20,16 +20,29 @@ function Invoke-Bridge([string] $phase) {
 
 function Wait-ExitMarker([System.Diagnostics.Process] $process, [string] $path) {
     $deadline = [DateTime]::UtcNow.AddSeconds(60)
-    while (-not (Test-Path $path)) {
+    $observedFile = $false
+    while ([DateTime]::UtcNow -lt $deadline) {
+        if (Test-Path -LiteralPath $path -PathType Leaf) {
+            $observedFile = $true
+            try {
+                # File creation can precede completion of Dart's asynchronous write.
+                if ([System.IO.File]::ReadAllText($path) -ceq 'TEST_ONLY_EXIT_MARKER') {
+                    return
+                }
+            } catch [System.IO.IOException] {
+                # The writer may still hold the short-lived file handle.
+            }
+        }
         $process.Refresh()
-        if ($process.HasExited -or [DateTime]::UtcNow -ge $deadline) {
+        if ($process.HasExited) {
             throw 'Windows exit marker missing'
         }
         Start-Sleep -Milliseconds 25
     }
-    if ((Get-Content -Raw $path) -ne 'TEST_ONLY_EXIT_MARKER') {
+    if ($observedFile) {
         throw 'Windows exit marker invalid'
     }
+    throw 'Windows exit marker missing'
 }
 
 function Invoke-WindowExit([string] $phase) {

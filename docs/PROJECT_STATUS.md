@@ -1615,3 +1615,25 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - CI `41196244613` confirmed the first regex literal was over-escaped: valid fixture timestamps were rejected. The lock-only fast-uri 3.1.9 remediation already passed the exact-head `npm audit` and Prettier steps; AI TypeScript/tests and database were still running at observation.
 - Corrected the raw-string regex to use Python digit/decimal escapes once. Existing valid fixtures and the invalid `24:00`, offset, leap-second and >6-digit fraction cases remain unchanged. Re-run the complete latest-attempt workflow; no partial check is treated as release evidence.
+
+
+## Exact-head CI repair — 2026-10-31 UTC
+
+- Resumed released PR #37 on `automation/issue-22-atomic-review`, source head
+  `9c225f16cf825d314fe012abda8e55cc21e1b370`; Pro #14/N4 scope remains untouched.
+- Exact-head CI [41196307161](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41196307161)
+  completed with repo-sanity, database and ai-boundary successful. Flutter
+  stopped at `dart format` for
+  `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`.
+  Windows completed project-directory, Dart/native bridge and persistent SDK
+  runtime checks, then rejected an exit marker at
+  `apps/flutter_app/tool/verify_windows_vault_bridge.ps1` line 31.
+- Corrected only two overlong test descriptions using adjacent string literals;
+  no assertions or behavior changed. Hardened the TEST ONLY Windows marker
+  reader to wait for the complete exact sentinel, tolerating a short-lived
+  partially-written/locked file rather than treating file existence as write
+  completion. The 60-second bound and invalid/missing marker failures remain.
+- Exact-head rerun is required for formatter, full Flutter analyze/tests,
+  native Windows cancelable-close/drain, and all retained database/security/
+  AI/repo checks. No hosted Auth, production, default runtime, Auth strategy,
+  schema/RLS, or release acceptance is claimed.
