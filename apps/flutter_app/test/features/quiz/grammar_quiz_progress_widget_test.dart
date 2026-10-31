@@ -776,5 +776,98 @@ void main() {
     expect(ports.writes, 0);
     expect(tester.takeException(), isNull);
   });
+  // Recall UI regression; original fixture remains unchanged.
+  testWidgets(
+    'grammar recall milestone reloads selected kind without cross credit',
+    (tester) async {
+      final ports = _Ports(original);
+      await mount(tester, ports);
+      expect(find.textContaining('đạt mốc ôn cách ngày:'), findsNothing);
+      await load(tester);
+      expect(
+        find.text('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 0'),
+        findsOneWidget,
+      );
+      OwnedGrammarQuizAttempt spaced(
+        int id,
+        int day, {
+        bool correct = true,
+        bool correction = false,
+      }) {
+        final base = report(id, correct: correct);
+        final json = base.attempt.toJson();
+        json['completed_at'] = DateTime.utc(
+          2026,
+          10,
+          20 + day,
+        ).toIso8601String();
+        json['practice_kind'] = correction ? 'correction' : 'primary';
+        return OwnedGrammarQuizAttempt(
+          base.ownerId,
+          GrammarQuizAttempt.fromJson(json),
+        );
+      }
+
+      final primary = [for (var i = 0; i < 3; i++) spaced(i + 1, i)];
+      final corrections = [
+        for (var i = 0; i < 3; i++) spaced(i + 10, i, correction: true),
+      ];
+      ports.records = [...primary, ...corrections, primary.first];
+      await tester.pumpAndSettle();
+      expect(ports.reads, 1);
+      expect(
+        find.text('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 0'),
+        findsOneWidget,
+      );
+      await load(tester);
+      expect(
+        find.text('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 1'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('ít nhất 24 giờ'), findsOneWidget);
+      expect(
+        find.textContaining('không xác nhận đã thuộc bài'),
+        findsOneWidget,
+      );
+      ports.records = [
+        ...primary,
+        ...corrections,
+        spaced(4, 3, correct: false),
+      ];
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 1'),
+        findsOneWidget,
+      );
+      await load(tester);
+      expect(
+        find.text('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 0'),
+        findsOneWidget,
+      );
+      expect(find.text('Mẫu cần ôn: 1'), findsOneWidget);
+      await tapQuiz(tester, find.byKey(const Key('grammar-progress-kind')));
+      await tapQuiz(tester, find.text('Vòng luyện sai').last);
+      expect(find.textContaining('đạt mốc ôn cách ngày:'), findsNothing);
+      expect(ports.reads, 3);
+      await load(tester);
+      expect(
+        find.text('Vòng luyện sai · N5 · Mẫu đạt mốc ôn cách ngày: 1'),
+        findsOneWidget,
+      );
+      expect(find.text('Mẫu cần ôn: 0'), findsOneWidget);
+      expect(
+        find.text('Vòng gốc · N5 · Mẫu đạt mốc ôn cách ngày: 0'),
+        findsNothing,
+      );
+      ports.harness.access.change(fixture.other);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('đạt mốc ôn cách ngày:'), findsNothing);
+      expect(ports.reads, 4);
+      expect(ports.contentReads, 4);
+      expect(ports.writes, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  // End recall UI regression.
   // End current-deck coverage UI regression.
 }

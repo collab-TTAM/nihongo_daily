@@ -3,7 +3,7 @@
 Issue #13 separates practiced items from mastery. This increment adds an explicit
 local quiz milestone to vocabulary and grammar pure projections. It does not claim certified
 mastery, update SRS MASTERED, grant study time or populate server snapshots.
-The dashboard does not expose this milestone yet.
+The dashboard shows this milestone only after an explicit statistics load.
 
 ## Rules reviewed before implementation
 
@@ -42,6 +42,38 @@ changing a clock, repeated source exposure or guessing can satisfy the rule.
 There is no claim of independent unaided recall, trusted time, current retention,
 attention, lifetime mastery or full JLPT coverage. There is no expiry heuristic;
 a reached milestone describes past reports until a matching wrong resets it.
+
+## Vietnamese dashboard summary — 2026-10-31 UTC
+
+A shared stateless `QuizRecallSummary` displays the already-derived count inside
+both screens' existing loaded-snapshot branch. Vocabulary labels include selected
+N5/N4; grammar includes selected level and PRIMARY/CORRECTION label. It does not
+load content/history, write events, create repositories or activate storage.
+The labels identify a local spaced-quiz milestone, not mastered items.
+
+Visible Vietnamese text explains that each item needs three correct observations
+at least24hours apart and that a matching wrong for that item restarts its count.
+It explicitly states that saved quiz reports do not prove having learned the item,
+remembering it now or earning study minutes. Existing current-content scope text,
+score, latest-correct, practiced count and weak points remain visible separately.
+No milestone appears in default/unconfigured, pre-load, error or revoked-account
+states. Kind/level changes clear the snapshot and require another manual read.
+
+Two new actual-root widget cases use original N5 questions and TEST ONLY Auth/
+read ports: absent-before-load; empty0; three spaced reports plus replay1;
+snapshot unchanged until explicit reload; a later wrong resets0; no extra reads/
+zero writes; account replacement clears labels. Grammar also changes the actual
+kind dropdown and proves that a wrong PRIMARY leaves the CORRECTION milestone1.
+Entire previous fixtures/helpers/assertions/deadlines are unchanged. Existing
+320px/200% root regressions continue to exercise the additional wrapped text.
+The new widget cases, full analysis and builds require their own exact-head CI.
+
+Parent892828b8d3868f6daf87210337aed87254eacdb9 passed
+[CI41167968052](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41167968052),
+latestattempt1/allfive/every stepSUCCESS/no skips. RawFlutter124439937821 confirms
+all seven grammar evidence tests and the dual-store journey; Windows124439585146
+confirms retained grammar/evidence/persistentSDK markers. TEST ONLY component
+proof does not establish hosted learner or Personal Alpha acceptance.
 
 ## Grammar kind isolation — 2026-10-31 UTC
 
@@ -93,7 +125,7 @@ new dual-store and both old real-disk journeys; Windows124412605141 confirms
 retained grammar/evidence/persistent SDK markers. Parent CI does not execute the
 new policy tests. Fixtures/unsigned JWT/native files/builds are not hosted proof.
 
-Next: verify the grammar increment at its exact new head, then integrate clear
-Vietnamese milestone labels for the selected level/kind. Any future UI must explain the threshold and limits
-and distinguish this local milestone from mastered/attention/server progress.
+Next: verify the dashboard increment at its exact new head, including both new
+widget cases, old narrow-layout cases and owned native journeys. Extend actual
+SDK/file dashboard evidence without fabricating spaced learner reports.
 Issue13 and all14 hosted release gates remain open; no Alpha acceptance.

@@ -16,6 +16,7 @@ import '../domain/grammar_review_quiz.dart';
 import '../application/grammar_quiz_attempt_factory.dart';
 import 'grammar_quiz_panel.dart';
 import 'quiz_progress_navigation.dart';
+import 'quiz_recall_summary.dart';
 
 class GrammarQuizProgressScreen extends ConsumerStatefulWidget {
   const GrammarQuizProgressScreen({super.key});
@@ -307,6 +308,11 @@ class _GrammarProgressPanelState extends State<_GrammarProgressPanel> {
           ),
           Text(
             'Mẫu có lần trả lời gần nhất đúng: ${progress.latestCorrectCurrentItemCount}',
+          ),
+          QuizRecallSummary(
+            scope: '$label · ${_level.label}',
+            itemLabel: 'Mẫu',
+            count: progress.recallMilestoneCurrentItemCount,
           ),
           Text('Mẫu cần ôn: ${progress.needsReview.length}'),
           const Text(

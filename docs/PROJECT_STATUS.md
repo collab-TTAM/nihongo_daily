@@ -1,5 +1,41 @@
 # PROJECT STATUS
 
+## Vietnamese quiz recall dashboard — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  892828b8d3868f6daf87210337aed87254eacdb9/tree78b803d0df51aa4cbc7f86d674b64477d821d373.
+  Pre-code marker core-20261031-quiz-recall-ui saved PR41+issue13.
+- Parent CI41167968052 exact892828b/latestattempt1 ALL5/EVERYstepSUCCESS/no
+  skips;rawFlutter124439937821 ALL7grammarevidence+dualjourneyPASS;Windows
+  124439585146 grammar/evidence/persistentSDK markers. TEST ONLY nothosted.
+- Shared stateless QuizRecallSummary displays only within existing explicit-load
+  vocabulary/grammar snapshot. Selectedlevel plus grammar PRIMARY/CORRECTION
+  scope/current-item count; Vietnamese per-item3correct>=24h/wrongreset rule and
+  saved-report/notcertifiedmastery/currentretention/timecredit explanation.
+  Existing score/practiced/latestcorrect/currentcoverage/weakpoints retained.
+- No new I-O, capture/factory, account behavior, auto-load, stored/wire fields,
+  default activation or policy changes. Level/kind/account revocation uses same
+  existing clear+manualreload behavior. No MASTERED/SRS/server/timecredit.
+- TWO new actual-root widget cases AUTHORED: absentbeforeload/empty0/three spaced
+  reports+replay1/noautoread/snapshotstable/laterwrongmanualreset0/accountclear;
+  grammar actualkinddropdown clear/noautoload/correction1 independent of primary
+  wrong. OriginalN5/readports/TESTONLYAuth, not learner/hosted/trustedclock proof.
+  Both ENTIRE prior fixtures/helpers/assertions/timeouts byte-identical removing
+  delimited additions. Existing320px200% tests retained/exercise new wrappedtext.
+- Official freshDart3.9.2SHAverified/strictformat5/QA55 PASS;inventory155 valid
+  NOTexecuted/diff/separate scope/manualsnapshot/zeroI-O/authority/preservation
+  review PASS. MissingFlutterlintinclude NOTanalyzer;new2/fullFlutter/analyze/
+  Web/Windows locallyUNRUN(noFlutter/Windows); exactnewhead Actions required.
+- Sevenpaths: NEW presentation/quiz_recall_summary.dart;quiz_progress_screen.dart;
+  grammar_quiz_progress_screen.dart;test/features/quiz/quiz_progress_widget_test.dart;
+  grammar_quiz_progress_widget_test.dart;docs/QUIZ_RECALL_EVIDENCE.md;PROJECT_STATUS.
+  Pro/content/Authstrategy/API/schema/RLS/workflow/deps/default/retention/collection
+  unchanged;AIoff. Published commit/tree/CI in PR41 checkpoint.
+- Next exact-head/latestattempt ALL5/EVERYstep/rawnew2/oldnarrow/recall/dual+old
+  nativejourneys/vaultmarkers;fixdiagnostics preservingassertions. Then owned
+  SDK/file dashboard milestone evidence without fabricated spaced learnerreports.
+  All14hostedpending/draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Kind-isolated grammar recall evidence — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

@@ -661,6 +661,65 @@ void main() {
     expect(find.text('N5 · 1 bộ đã lưu'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  // Recall UI regression; original fixture remains unchanged.
+  testWidgets(
+    'vocabulary recall milestone requires manual snapshots and clears with account',
+    (tester) async {
+      final ports = _Ports(original);
+      await mount(tester, ports);
+      expect(find.textContaining('đạt mốc ôn cách ngày:'), findsNothing);
+      expect(ports.reads, 0);
+      await load(tester);
+      expect(find.text('N5 · Từ đạt mốc ôn cách ngày: 0'), findsOneWidget);
+      OwnedVocabularyQuizAttempt spaced(
+        int id,
+        int day, {
+        bool correct = true,
+      }) {
+        final base = report(id, correct: correct);
+        final json = base.attempt.toJson();
+        json['completed_at'] = DateTime.utc(
+          2026,
+          10,
+          20 + day,
+        ).toIso8601String();
+        return OwnedVocabularyQuizAttempt(
+          base.ownerId,
+          VocabularyQuizAttempt.fromJson(json),
+        );
+      }
+
+      final a = spaced(1, 0), b = spaced(2, 1), c = spaced(3, 2);
+      ports.records = [c, a, b, a];
+      await tester.pumpAndSettle();
+      expect(find.text('N5 · Từ đạt mốc ôn cách ngày: 0'), findsOneWidget);
+      expect(ports.reads, 1);
+      await load(tester);
+      expect(find.text('N5 · Từ đạt mốc ôn cách ngày: 1'), findsOneWidget);
+      expect(find.text('Từ hiện tại đã luyện: 1'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(find.textContaining('ít nhất 24 giờ'), findsOneWidget);
+      expect(
+        find.textContaining('không xác nhận đã thuộc bài'),
+        findsOneWidget,
+      );
+      ports.records = [a, b, c, spaced(4, 3, correct: false)];
+      await tester.pumpAndSettle();
+      expect(find.text('N5 · Từ đạt mốc ôn cách ngày: 1'), findsOneWidget);
+      expect(ports.reads, 2);
+      await load(tester);
+      expect(find.text('N5 · Từ đạt mốc ôn cách ngày: 0'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      ports.harness.access.change(fixture.other);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('đạt mốc ôn cách ngày:'), findsNothing);
+      expect(ports.reads, 3);
+      expect(ports.contentReads, 3);
+      expect(ports.writes, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  // End recall UI regression.
   // End source generation regressions.
 }
 

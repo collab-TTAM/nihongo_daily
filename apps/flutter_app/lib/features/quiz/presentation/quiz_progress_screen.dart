@@ -15,6 +15,7 @@ import '../domain/vocabulary_quiz_progress.dart';
 import '../domain/vocabulary_review_quiz.dart';
 import 'vocabulary_quiz_panel.dart';
 import 'quiz_progress_navigation.dart';
+import 'quiz_recall_summary.dart';
 
 class QuizProgressScreen extends ConsumerStatefulWidget {
   const QuizProgressScreen({super.key});
@@ -282,6 +283,11 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
           ),
           Text(
             'Từ có lần trả lời gần nhất đúng: ${progress.latestCorrectCurrentItemCount}',
+          ),
+          QuizRecallSummary(
+            scope: _level.label,
+            itemLabel: 'Từ',
+            count: progress.recallMilestoneCurrentItemCount,
           ),
           Text('Từ cần ôn: ${progress.needsReview.length}'),
           const Text(
