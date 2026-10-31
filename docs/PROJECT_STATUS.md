@@ -1,5 +1,39 @@
 # PROJECT STATUS
 
+## Kind-isolated grammar recall evidence — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  d1b4a59614119a4d108b34ca2330e2df784bc7be/tree315149f954ae02670f3986d6d64c62efdd8639ba.
+  Pre-code marker core-20261031-grammar-recall-evidence saved PR41+issue13 with
+  kind-isolation policy/edge review. Existing nd-quiz-recall-1 helper unchanged.
+- Parent CI41163817889 exactd1b4a59/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips; raw Flutter124427382989 ALL5 prior recall tests+dualjourney PASS;
+  Windows124426984284 grammar/evidence/persistentSDK markers. TEST ONLY nothosted.
+- Grammar item recall evidence/aggregate after wholehistoryowner/conflict/dedup,
+  selectedlevel+kind, currenttargetversion+orderedchoices. PRIMARY/CORRECTION
+  never count or reset each other. Firstcorrect1/next>=24elapsedhours/cap3/
+  anymatchingwrongreset0; rapidcorrectdoesnotmoveanchor. Empty default preserves
+  existing constructors. No new stored/wire fields/UI/defaultactivation.
+- Local past quiz milestone NOTscientific mastery/trustedclock/attention/current
+  retention/independentrecall/JLPT/server evidence. No MASTERED/SRS/timecredit.
+  Existing scores/latestcorrect/weakpoints/currentcoverage unchanged.
+- Seven authored cases: BOTHlevels x BOTHkinds spacing/rapid/replay/reset/immutable/
+  oppositekindcorrectwrong isolation;empty/staleversion/choiceorder/foreignlevel/
+  stalewrong;owner/crosskindconflict beforefilter;UUIDtieorder. Entire old tests
+  unchanged. Actual-source freshDart smoke BOTHlevels/BOTHkinds spacing/dedup/
+  separation/reset PASS; strictformat2/QA55/155inventoryvalid NOTexecuted/diff/
+  separate matching/kind/authority review PASS. MissingFlutterlintinclude NOTanalyzer.
+  New7/fullFlutter/analyze/Web/Windows locallyUNRUN(noFlutter/Windows); require
+  exact new-head Actions. Published commit/tree/CI in PR41 checkpoint.
+- Fourpaths: Flutter quiz domain/grammar_quiz_progress.dart;NEW test/features/quiz/
+  grammar_quiz_recall_evidence_test.dart;docs/QUIZ_RECALL_EVIDENCE.md;PROJECT_STATUS.
+  Helper/vocabulary/Pro/content/Authstrategy/API/schema/RLS/workflow/deps/default/
+  retention/collection unchanged;AIoff. No hosted/linguistic/learner proof.
+- Next exact-head/latestattempt ALL5/EVERYstep/rawnew7/retainedrecall+dual+old/native;
+  fixactualdiagnostics preservingassertions. Then clearVietnameseUI threshold/
+  selectedkind/limits explanation with manual loads/no extraI-O. All14hostedpending/
+  draft41/13open/no merge/closure/deploy/release/Alpha/schedulechange.
+
 ## Versioned spaced quiz evidence — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

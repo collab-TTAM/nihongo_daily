@@ -1,6 +1,7 @@
 import '../../../shared/models/preview_level.dart';
 import '../../curriculum/domain/curriculum.dart';
 import 'grammar_quiz.dart';
+import 'quiz_recall_evidence.dart';
 import 'grammar_quiz_attempt.dart';
 
 final class GrammarQuizProgressConflict implements Exception {
@@ -14,12 +15,14 @@ final class GrammarQuizItemProgress {
     required this.incorrectCount,
     required this.lastAnswerCorrect,
     required this.lastCompletedAt,
+    this.recallEvidence = const QuizRecallEvidence.empty(),
   });
   final CurriculumEntry entry;
   final int answerCount;
   final int incorrectCount;
   final bool lastAnswerCorrect;
   final DateTime lastCompletedAt;
+  final QuizRecallEvidence recallEvidence;
 }
 
 final class GrammarQuizProgress {
@@ -42,6 +45,10 @@ final class GrammarQuizProgress {
   final int eligibleCurrentItemCount;
   final List<GrammarQuizItemProgress> items;
   final List<GrammarQuizItemProgress> needsReview;
+
+  /// Past local milestone for this kind only, never certified mastery.
+  int get recallMilestoneCurrentItemCount =>
+      items.where((item) => item.recallEvidence.milestoneReached).length;
   int get practicedCurrentItemCount => items.length;
   int get unpracticedCurrentItemCount =>
       eligibleCurrentItemCount - practicedCurrentItemCount;
@@ -111,6 +118,12 @@ GrammarQuizProgress deriveGrammarQuizProgress({
             (previous?.incorrectCount ?? 0) + (answer.isCorrect ? 0 : 1),
         lastAnswerCorrect: answer.isCorrect,
         lastCompletedAt: event.completedAt,
+        recallEvidence:
+            (previous?.recallEvidence ?? const QuizRecallEvidence.empty())
+                .observe(
+                  correct: answer.isCorrect,
+                  completedAt: event.completedAt,
+                ),
       );
     }
   }

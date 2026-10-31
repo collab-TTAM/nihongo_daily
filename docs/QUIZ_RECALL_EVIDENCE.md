@@ -1,9 +1,9 @@
 # Local spaced quiz evidence (nd-quiz-recall-1)
 
 Issue #13 separates practiced items from mastery. This increment adds an explicit
-local quiz milestone to vocabulary's pure projection. It does not claim certified
+local quiz milestone to vocabulary and grammar pure projections. It does not claim certified
 mastery, update SRS MASTERED, grant study time or populate server snapshots.
-The dashboard and grammar projection do not expose this milestone yet.
+The dashboard does not expose this milestone yet.
 
 ## Rules reviewed before implementation
 
@@ -43,7 +43,40 @@ There is no claim of independent unaided recall, trusted time, current retention
 attention, lifetime mastery or full JLPT coverage. There is no expiry heuristic;
 a reached milestone describes past reports until a matching wrong resets it.
 
-## Validation and remaining work
+## Grammar kind isolation — 2026-10-31 UTC
+
+Before implementation, marker core-20261031-grammar-recall-evidence saved the
+kind policy and review in PR41/Issue13. Grammar reuses the unchanged helper and
+threshold above. `GrammarQuizItemProgress.recallEvidence` and aggregate
+`recallMilestoneCurrentItemCount` are derived only after the existing whole-history
+owner/conflict/dedup checks, selected level AND selected practice kind, and current
+target version/ordered choice match. An empty default preserves existing explicit
+item constructors. No serialized fields are added.
+
+PRIMARY and CORRECTION have separate milestones. A wrong correction cannot reset
+a primary milestone; three spaced correct corrections cannot earn a primary
+milestone. The converse is also enforced. Neither kind grants SRS/server/time
+credit. Correcting a shown error is not independent recall. The existing score,
+current coverage, latest-correct and weak-point derivations remain unchanged.
+No UI, persistence activation or stored reports are changed.
+
+Seven new authored tests cover both levels x both kinds, spacing/rapid/replay,
+wrong/tied reset and immutable snapshots; opposite-kind correct/wrong isolation;
+empty/version/ordered-choice/other-level histories; stale wrong not resetting
+current evidence; foreign owner and cross-kind conflict rejection before filtering;
+and deterministic UUID ordering for tied instants. Existing tests are untouched.
+A standalone fresh-Dart smoke executes the actual grammar builder/report/projection
+for both levels and both kinds, spacing/dedup/separation/reset. Full execution of
+these new tests requires new exact-head Actions evidence.
+
+Parent d1b4a59614119a4d108b34ca2330e2df784bc7be passed
+[CI41163817889](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41163817889),
+latest attempt1/all five jobs/every step SUCCESS/no skips. Raw Flutter124427382989
+confirms all five earlier recall tests and the dual-store journey; Windows124426984284
+confirms retained grammar/evidence/persistent SDK markers. This is TEST ONLY
+component evidence and does not establish hosted learner or mastery acceptance.
+
+## Earlier vocabulary validation and remaining work
 
 Five authored tests cover exact 24-hour boundary/one-microsecond-short/rapid ties/
 cap/immutable snapshots; wrong and tied reset; backwards/non-UTC rejection; and
@@ -60,7 +93,7 @@ new dual-store and both old real-disk journeys; Windows124412605141 confirms
 retained grammar/evidence/persistent SDK markers. Parent CI does not execute the
 new policy tests. Fixtures/unsigned JWT/native files/builds are not hosted proof.
 
-Next: verify new exact-head CI and review grammar-kind policy before extending
-this evidence to grammar. Any future UI must explain the threshold and limits
+Next: verify the grammar increment at its exact new head, then integrate clear
+Vietnamese milestone labels for the selected level/kind. Any future UI must explain the threshold and limits
 and distinguish this local milestone from mastered/attention/server progress.
 Issue13 and all14 hosted release gates remain open; no Alpha acceptance.
