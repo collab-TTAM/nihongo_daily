@@ -27,6 +27,11 @@
   published, but review found incomplete indentation in the new test blocks.
   This commit corrects it. Run #41192292634 for b0937b was PENDING at observation;
   it is not acceptance evidence. No pass is claimed for failed/pending runs.
+- Exact-head CI #41192370146 for 34a002 observed repo-sanity SUCCESS and
+  ai-boundary FAILURE at format:check (test/strict_json.test.ts only); its
+  npm check/test/Deno steps were skipped. Database and Windows were still
+  in progress and Flutter was not yet listed. This concise test rewrite is a
+  formatting-only correction; no full CI pass is claimed.
 - Next: inspect all five jobs/every step on the new exact head; fix diagnostics
   without weakening assertions. Then review active canonical-content validation
   and replay-first public boundary separately; do not activate data collection

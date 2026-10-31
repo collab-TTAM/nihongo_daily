@@ -32,23 +32,20 @@ function quizReport() {
   };
 }
 
-test(
-  "strict JSON rejects duplicate members at every depth and decoded aliases",
-  () => {
-    const slash = String.fromCharCode(92);
-    const cases = [
-      '{"item":1,"item":2}',
-      '{"outer":{"item":1,"item":2}}',
-      '{"item":1,"' + slash + 'u0069tem":2}',
-      '{"items":[{"value":1,"value":2}]}',
-    ];
-    for (const raw of cases) {
-      assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
-    }
-  },
-);
+test("strict JSON rejects duplicate keys and escaped aliases", () => {
+  const slash = String.fromCharCode(92);
+  const cases = [
+    '{"item":1,"item":2}',
+    '{"outer":{"item":1,"item":2}}',
+    '{"item":1,"' + slash + 'u0069tem":2}',
+    '{"items":[{"value":1,"value":2}]}',
+  ];
+  for (const raw of cases) {
+    assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
+  }
+});
 
-test("strict JSON preserves generic JSON number semantics", () => {
+test("strict JSON keeps generic JSON number semantics", () => {
   assert.deepEqual(
     parseStrictJson('{"fraction":1.25,"exponent":1e0}'),
     { fraction: 1.25, exponent: 1 },
@@ -59,7 +56,7 @@ test("strict JSON preserves generic JSON number semantics", () => {
   );
 });
 
-test("strict JSON rejects malformed, trailing and over-deep documents", () => {
+test("strict JSON rejects malformed, trailing and deep input", () => {
   const cases = [
     '{"item":',
     '{"item":1} trailing',
@@ -72,30 +69,27 @@ test("strict JSON rejects malformed, trailing and over-deep documents", () => {
   }
 });
 
-test(
-  "AI bounded decoder maps duplicate-member failures to its fixed error",
-  () => {
-    assert.throws(
-      () =>
-        parseBounded(
-          '{"event":"a","event":"b"}',
-          128,
-          "VALIDATION_FAILURE",
-        ),
-      (error: unknown) =>
-        error instanceof BoundaryError &&
-        error.code === "VALIDATION_FAILURE",
-    );
-  },
-);
+test("AI decoder maps duplicate keys to fixed validation errors", () => {
+  assert.throws(
+    () =>
+      parseBounded(
+        '{"event":"a","event":"b"}',
+        128,
+        "VALIDATION_FAILURE",
+      ),
+    (error: unknown) =>
+      error instanceof BoundaryError &&
+      error.code === "VALIDATION_FAILURE",
+  );
+});
 
-test("quiz raw body accepts a valid bounded UTF-8 object", () => {
+test("quiz raw body accepts a valid UTF-8 object", () => {
   const expected = quizReport();
   const raw = encode(JSON.stringify(expected));
   assert.deepEqual(parseQuizReportJsonBody(raw), expected);
 });
 
-test("quiz raw body accepts exactly 16 KiB and rejects the next byte", () => {
+test("quiz raw body enforces the exact 16 KiB limit", () => {
   const expected = quizReport();
   const raw = JSON.stringify(expected);
   const exact = raw.padEnd(MAX_QUIZ_REPORT_BYTES, " ");
@@ -122,7 +116,7 @@ test("quiz raw body rejects exponent and fractional number lexemes", () => {
   }
 });
 
-test("quiz raw body rejects duplicate and escaped-alias members", () => {
+test("quiz raw body rejects duplicate and escaped keys", () => {
   const slash = String.fromCharCode(92);
   const raw = JSON.stringify(quizReport());
   const duplicate = raw.replace(
@@ -142,22 +136,19 @@ test("quiz raw body rejects duplicate and escaped-alias members", () => {
   }
 });
 
-test(
-  "quiz raw body rejects invalid UTF-8, BOM, non-object and trailing JSON",
-  () => {
-    const raw = JSON.stringify(quizReport());
-    const cases = [
-      new Uint8Array([0xff, 0x28]),
-      encode(String.fromCharCode(0xfeff) + raw),
-      encode("[]"),
-      encode("null"),
-      encode(raw + "{}"),
-    ];
-    for (const body of cases) {
-      assert.throws(
-        () => parseQuizReportJsonBody(body),
-        /^Error: Invalid quiz request body$/,
-      );
-    }
-  },
-);
+test("quiz raw body rejects invalid UTF-8, BOM and non-object JSON", () => {
+  const raw = JSON.stringify(quizReport());
+  const cases = [
+    new Uint8Array([0xff, 0x28]),
+    encode(String.fromCharCode(0xfeff) + raw),
+    encode("[]"),
+    encode("null"),
+    encode(raw + "{}"),
+  ];
+  for (const body of cases) {
+    assert.throws(
+      () => parseQuizReportJsonBody(body),
+      /^Error: Invalid quiz request body$/,
+    );
+  }
+});
