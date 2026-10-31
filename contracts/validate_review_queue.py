@@ -1,12 +1,28 @@
 """Additive nd-review-queue-1 contract; native SQL exports are fixture-role evidence."""
 from datetime import datetime
 import json
+import re
 from pathlib import Path
 import sys
 
 from .validate import ContractError, load_json, validate_payload
 
 VERSION = "nd-review-queue-1"
+
+_UTC_TIMESTAMP = re.compile(
+    r"^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,6})?Z$"
+)
+
+
+def _parse_utc_timestamp(value):
+    if not isinstance(value, str) or not _UTC_TIMESTAMP.fullmatch(value):
+        raise ContractError("Timestamp must be canonical UTC")
+    try:
+        return datetime.fromisoformat(value[:-1] + "+00:00")
+    except ValueError:
+        raise ContractError("Invalid UTC timestamp") from None
+
+
 SCHEMA = Path(__file__).parent / "review_queue/v1/schema.json"
 EXPECTED_IDS = {
     "A_N5": ["d3000000-0000-4000-8000-000000000001", "d4000000-0000-4000-8000-000000000001",
@@ -35,10 +51,10 @@ def validate_response(request, value):
     if value["jlpt_level"] != request["jlpt_level"] or len(value["items"]) > request["limit"]:
         raise ContractError("Queue level/limit mismatch")
     keys, order = set(), []
-    server = datetime.fromisoformat(value["server_time"])
+    server = _parse_utc_timestamp(value["server_time"])
     for item in value["items"]:
         key = (item["item_type"], item["item_id"].lower())
-        due = datetime.fromisoformat(item["next_review_at"])
+        due = _parse_utc_timestamp(item["next_review_at"])
         if key in keys or due > server or not item["prompt_ja"].strip() or not item["answer_vi"].strip():
             raise ContractError("Duplicate, future or blank queue item")
         keys.add(key)

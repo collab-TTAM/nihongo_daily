@@ -1602,3 +1602,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Source/test/docs/QA increment is committed on this PR branch. Exact-head
   format/analyze/test, native Windows, SQL and web/Windows builds are pending
   GitHub Actions; no local Flutter SDK execution or new test pass is claimed yet.
+
+
+## Exact-head CI remediation — 2026-10-31
+
+- Exact PR #37 source `de7be9269fde0db734e6b4595f98380da91781f5`, [CI 41196096277](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41196096277), latest attempt 1 exposed two independent environment/source failures: `npm audit --omit=dev` found fast-uri 3.1.8 affected by newly published GHSA advisories; the repo-sanity contract test found the runner's Python accepts `24:00` through `datetime.fromisoformat`, contrary to the frozen canonical-UTC rule. Database was still running at the observation; Windows was skipped and Flutter was not scheduled after the dependency failures. No all-check pass is claimed.
+- Remediation: upgrade only the locked transitive fast-uri package to patched 3.1.9 (Ajv's existing `^3.0.1` range already permits it); validate canonical UTC timestamp syntax before datetime parsing, retaining the existing invalid-hour/offset/leap-second/submicrosecond tests.
+- New exact-head CI is required for npm audit, Python contracts, Flutter format/analyze/tests, native SQL, Windows and web/Windows builds. No audit gate or test was weakened.
