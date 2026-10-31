@@ -32,7 +32,9 @@ function quizReport() {
   };
 }
 
-test("strict JSON rejects duplicate members at every depth and decoded aliases", () => {
+test(
+  "strict JSON rejects duplicate members at every depth and decoded aliases",
+  () => {
   const slash = String.fromCharCode(92);
   const cases = [
     '{"item":1,"item":2}',
@@ -43,7 +45,8 @@ test("strict JSON rejects duplicate members at every depth and decoded aliases",
   for (const raw of cases) {
     assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
   }
-});
+  },
+);
 
 test("strict JSON preserves generic JSON number semantics", () => {
   assert.deepEqual(
@@ -67,16 +70,20 @@ test("strict JSON rejects malformed, trailing and over-deep documents", () => {
   for (const raw of cases) {
     assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
   }
-});
+  },
+);
 
-test("AI bounded decoder maps duplicate-member failures to its fixed error", () => {
+test(
+  "AI bounded decoder maps duplicate-member failures to its fixed error",
+  () => {
   assert.throws(
     () => parseBounded('{"event":"a","event":"b"}', 128, "VALIDATION_FAILURE"),
     (error: unknown) =>
       error instanceof BoundaryError &&
       error.code === "VALIDATION_FAILURE",
   );
-});
+  },
+);
 
 test("quiz raw body accepts a valid bounded UTF-8 object", () => {
   const expected = quizReport();
@@ -131,7 +138,9 @@ test("quiz raw body rejects duplicate and escaped-alias members", () => {
   }
 });
 
-test("quiz raw body rejects invalid UTF-8, BOM, non-object and trailing JSON", () => {
+test(
+  "quiz raw body rejects invalid UTF-8, BOM, non-object and trailing JSON",
+  () => {
   const raw = JSON.stringify(quizReport());
   const cases = [
     new Uint8Array([0xff, 0x28]),

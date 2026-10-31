@@ -13,6 +13,19 @@ function isDigit(value: string | undefined): boolean {
   return value !== undefined && value >= "0" && value <= "9";
 }
 
+function isAllowedStringEscape(value: number): boolean {
+  return (
+    value === 0x22 ||
+    value === 0x5c ||
+    value === 0x2f ||
+    value === 0x62 ||
+    value === 0x66 ||
+    value === 0x6e ||
+    value === 0x72 ||
+    value === 0x74
+  );
+}
+
 export function parseStrictJson(
   text: string,
   options: StrictJsonOptions = {},
@@ -63,7 +76,7 @@ export function parseStrictJson(
             index++;
           }
         } else {
-          if (![0x22, 0x5c, 0x2f, 0x62, 0x66, 0x6e, 0x72, 0x74].includes(escaped)) {
+          if (!isAllowedStringEscape(escaped)) {
             throw invalidJson();
           }
           index++;

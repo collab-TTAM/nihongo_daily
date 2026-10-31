@@ -20,6 +20,11 @@
   Flutter/Windows vault and profile-readiness probes. Those are TEST ONLY
   component proofs, not hosted Supabase A/B learner proof. New parser tests and
   downstream checks await the new exact-head CI.
+- First exact-head CI #41192168864 for 607f521 observed repo-sanity SUCCESS and
+  ai-boundary FAILURE at npm run format:check (only the two new files were
+  flagged by Prettier); check/test/Deno steps were skipped. Database and Windows
+  were still in progress at observation. A formatting-only follow-up is now
+  being published; no pass is claimed for the failed or pending run.
 - Next: inspect all five jobs/every step on the new exact head; fix diagnostics
   without weakening assertions. Then review active canonical-content validation
   and replay-first public boundary separately; do not activate data collection
