@@ -35,16 +35,16 @@ function quizReport() {
 test(
   "strict JSON rejects duplicate members at every depth and decoded aliases",
   () => {
-  const slash = String.fromCharCode(92);
-  const cases = [
-    '{"item":1,"item":2}',
-    '{"outer":{"item":1,"item":2}}',
-    '{"item":1,"' + slash + 'u0069tem":2}',
-    '{"items":[{"value":1,"value":2}]}',
-  ];
-  for (const raw of cases) {
-    assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
-  }
+    const slash = String.fromCharCode(92);
+    const cases = [
+      '{"item":1,"item":2}',
+      '{"outer":{"item":1,"item":2}}',
+      '{"item":1,"' + slash + 'u0069tem":2}',
+      '{"items":[{"value":1,"value":2}]}',
+    ];
+    for (const raw of cases) {
+      assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
+    }
   },
 );
 
@@ -70,18 +70,22 @@ test("strict JSON rejects malformed, trailing and over-deep documents", () => {
   for (const raw of cases) {
     assert.throws(() => parseStrictJson(raw), /^Error: Invalid JSON body$/);
   }
-  },
-);
+});
 
 test(
   "AI bounded decoder maps duplicate-member failures to its fixed error",
   () => {
-  assert.throws(
-    () => parseBounded('{"event":"a","event":"b"}', 128, "VALIDATION_FAILURE"),
-    (error: unknown) =>
-      error instanceof BoundaryError &&
-      error.code === "VALIDATION_FAILURE",
-  );
+    assert.throws(
+      () =>
+        parseBounded(
+          '{"event":"a","event":"b"}',
+          128,
+          "VALIDATION_FAILURE",
+        ),
+      (error: unknown) =>
+        error instanceof BoundaryError &&
+        error.code === "VALIDATION_FAILURE",
+    );
   },
 );
 
@@ -105,7 +109,7 @@ test("quiz raw body accepts exactly 16 KiB and rejects the next byte", () => {
 
 test("quiz raw body rejects exponent and fractional number lexemes", () => {
   const raw = JSON.stringify(quizReport());
-  for (const lexeme of ["1.0", "1e0", "1E+0"]) {
+  for (const lexeme of ["1.0", "1e0", "1E+0", "9007199254740992"]) {
     const changed = raw.replace(
       '"content_version":1',
       '"content_version":' + lexeme,
@@ -141,18 +145,19 @@ test("quiz raw body rejects duplicate and escaped-alias members", () => {
 test(
   "quiz raw body rejects invalid UTF-8, BOM, non-object and trailing JSON",
   () => {
-  const raw = JSON.stringify(quizReport());
-  const cases = [
-    new Uint8Array([0xff, 0x28]),
-    encode(String.fromCharCode(0xfeff) + raw),
-    encode("[]"),
-    encode("null"),
-    encode(raw + "{}"),
-  ];
-  for (const body of cases) {
-    assert.throws(
-      () => parseQuizReportJsonBody(body),
-      /^Error: Invalid quiz request body$/,
-    );
-  }
-});
+    const raw = JSON.stringify(quizReport());
+    const cases = [
+      new Uint8Array([0xff, 0x28]),
+      encode(String.fromCharCode(0xfeff) + raw),
+      encode("[]"),
+      encode("null"),
+      encode(raw + "{}"),
+    ];
+    for (const body of cases) {
+      assert.throws(
+        () => parseQuizReportJsonBody(body),
+        /^Error: Invalid quiz request body$/,
+      );
+    }
+  },
+);

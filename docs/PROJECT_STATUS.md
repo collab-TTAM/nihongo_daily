@@ -23,8 +23,10 @@
 - First exact-head CI #41192168864 for 607f521 observed repo-sanity SUCCESS and
   ai-boundary FAILURE at npm run format:check (only the two new files were
   flagged by Prettier); check/test/Deno steps were skipped. Database and Windows
-  were still in progress at observation. A formatting-only follow-up is now
-  being published; no pass is claimed for the failed or pending run.
+  were still in progress at observation. Formatting follow-up b0937b was
+  published, but review found incomplete indentation in the new test blocks.
+  This commit corrects it. Run #41192292634 for b0937b was PENDING at observation;
+  it is not acceptance evidence. No pass is claimed for failed/pending runs.
 - Next: inspect all five jobs/every step on the new exact head; fix diagnostics
   without weakening assertions. Then review active canonical-content validation
   and replay-first public boundary separately; do not activate data collection
