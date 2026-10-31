@@ -165,3 +165,25 @@ SDK test's fixed event-turn readiness heuristic were corrected without changing
 production logic or original ready/non-null expectations. Source evidence is
 historical for later documentation commits; next startup/error UI and explicit
 refresh scheduling, then configured hosted learner acceptance.
+
+
+## Verified caller-owned Supabase vault regressions — 2026-10-31
+
+Two additional TEST ONLY cases exercise the actual pinned Supabase SDK and the
+owned runtime's HTTP dispatch against the isolated in-memory OS-vault port:
+
+- A credential-store write failure after Auth sign-in must keep the account
+  unavailable, clear the uncertain secret, and issue no own-profile request.
+  After the storage port recovers, only an explicit second login may persist
+  the refresh token and proceed to the profile barrier.
+- A delayed User A sign-in response delivered after explicit logout must not
+  restore A, write A's refresh token, or dispatch A's profile. A subsequent
+  explicit User B login must persist B's rotated refresh token and send B's
+  captured bearer to the own-profile RPC.
+
+These tests complement the existing pure lifecycle A/B and same-session
+rotation fixtures, SDK timeout/late-startup response, and persist-before-profile
+tests. They do not verify hosted JWT signatures, deployed RLS, actual Supabase
+credentials, or a live learner. Default app startup remains the preview path;
+no Auth strategy, provider, database, RLS, deployment or secret fallback changed.
+Exact-head CI for this source increment is pending and is recorded in PR #37.

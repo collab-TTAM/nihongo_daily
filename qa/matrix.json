@@ -245,6 +245,14 @@
         {
           "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
           "contains": "verifyWindowsRuntimePhase"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK vault write failure blocks profile and explicit retry recovers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "late A login response after logout cannot replace B session"
         }
       ],
       "issues": [

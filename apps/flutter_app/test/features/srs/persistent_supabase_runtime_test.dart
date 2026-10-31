@@ -31,17 +31,19 @@ void main() {
   late NativeReviewJournal journal;
   final requests = <http.Request>[];
   late String secret;
+  late String authUser;
+  late String authSession;
   late int authStatus;
   late Completer<http.Response>? authWait;
   late Completer<http.Response>? profileWait;
   http.Response authResponse() => http.Response(
     jsonEncode({
-      'access_token': wire.token(wire.a, wire.sid1, now),
+      'access_token': wire.token(authUser, authSession, now),
       'refresh_token': secret,
       'token_type': 'bearer',
       'expires_in': 3600,
       'user': {
-        'id': wire.a,
+        'id': authUser,
         'aud': 'authenticated',
         'role': 'authenticated',
         'created_at': '2026-10-14T00:00:00Z',
@@ -77,6 +79,8 @@ void main() {
     journal = await NativeReviewJournal.open(directory);
     now = DateTime.utc(2026, 10, 14, 3);
     secret = 'TEST_ONLY_ROTATED_SDK_1';
+    authUser = wire.a;
+    authSession = wire.sid1;
     authStatus = 200;
     authWait = null;
     profileWait = null;
@@ -97,7 +101,7 @@ void main() {
         return profileWait?.future ??
             Future.value(
               http.Response(
-                jsonEncode(profile.profile(wire.a)),
+                jsonEncode(profile.profile(authUser)),
                 200,
                 headers: {'content-type': 'application/json'},
               ),
@@ -237,6 +241,92 @@ void main() {
       await waitForReady();
       expect(runtime.account.readyRuntime, isNotNull);
       expect(backend.secret, secret);
+    },
+  );
+
+  test(
+    'SDK vault write failure blocks profile and explicit retry recovers',
+    () async {
+      await runtime.start();
+      backend.failWrite = true;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(backend.secret, isNull);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      backend.failWrite = false;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(backend.secret, secret);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        hasLength(1),
+      );
+    },
+  );
+
+  test(
+    'late A login response after logout cannot replace B session',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_LATE_A_REFRESH';
+      authWait = Completer<http.Response>();
+      final lateLogin = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+      expect(
+        requests.where((r) => r.url.path == '/auth/v1/token'),
+        hasLength(1),
+      );
+
+      await runtime.account.signOut();
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, isNull);
+      authWait!.complete(authResponse());
+      await lateLogin;
+      await fixture.flush();
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, isNull);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      authWait = null;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_ROTATED_B_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(backend.secret, secret);
+      final profileRequests = requests
+          .where((r) => r.url.path.contains('ensure_profile'))
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
     },
   );
 

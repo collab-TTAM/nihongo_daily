@@ -1577,3 +1577,24 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   scope unchanged. Hourly continuation remains enabled; keep PR #37 draft and
   all hosted learner/release gates pending. Exact-source CI and final RELEASED
   checkpoint are recorded in PR #37; next run checks CI before new development.
+
+
+## Caller-owned Supabase vault integration regressions — 2026-10-31
+
+- Resumed released PR #37 at `afa572a27f050048990ad4feb07fd6f01758e7e2` on
+  `automation/issue-22-atomic-review`; Pro #14/N4 files and branch remain
+  untouched.
+- Added two TEST ONLY cases to
+  `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`:
+  storage-write failure must block own-profile readiness until an explicit
+  retry succeeds; a delayed User A Auth response after logout must not restore
+  A or dispatch its profile, and a later User B login must persist/use B's
+  captured refresh token and bearer.
+- Existing vault ordering, generation/session identity checks, same-session
+  rotation drain, timeout/late-startup response, A/B fixture isolation, and
+  Windows Credential Manager process probes are unchanged. No Auth strategy,
+  default preview activation, schema/RLS, deployment or credential fallback
+  changed.
+- Source/test/docs/QA increment is committed on this PR branch. Exact-head
+  format/analyze/test, native Windows, SQL and web/Windows builds are pending
+  GitHub Actions; no new test pass or hosted learner proof is claimed yet.
