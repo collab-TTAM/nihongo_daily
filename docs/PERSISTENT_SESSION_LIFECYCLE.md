@@ -167,9 +167,9 @@ historical for later documentation commits; next startup/error UI and explicit
 refresh scheduling, then configured hosted learner acceptance.
 
 
-## Verified caller-owned Supabase vault regressions — 2026-10-31
+## Caller-owned Supabase vault integration regressions — 2026-10-31
 
-Two additional TEST ONLY cases exercise the actual pinned Supabase SDK and the
+Two additional TEST ONLY cases are authored to exercise the actual pinned Supabase SDK and the
 owned runtime's HTTP dispatch against the isolated in-memory OS-vault port:
 
 - A credential-store write failure after Auth sign-in must keep the account

@@ -1595,6 +1595,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Windows Credential Manager process probes are unchanged. No Auth strategy,
   default preview activation, schema/RLS, deployment or credential fallback
   changed.
+- Source/test commit: `0b844f1f57b1873ed3073efa28860f8d408ee0c2` (parent `afa572a27f050048990ad4feb07fd6f01758e7e2`). Four paths
+  changed: runtime SDK test, lifecycle documentation, PROJECT_STATUS, and
+  QA matrix. Full 324-entry recursive tree preserved; 320 untouched blobs,
+  paths, modes and types are unchanged.
 - Source/test/docs/QA increment is committed on this PR branch. Exact-head
   format/analyze/test, native Windows, SQL and web/Windows builds are pending
-  GitHub Actions; no new test pass or hosted learner proof is claimed yet.
+  GitHub Actions; no local Flutter SDK execution or new test pass is claimed yet.
