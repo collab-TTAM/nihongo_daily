@@ -274,7 +274,19 @@ class _ProgressPanelState extends ConsumerState<_ProgressPanel> {
             '${progress.answerCount}',
           ),
           Text('Từ hiện tại đã luyện: ${progress.practicedCurrentItemCount}'),
+          Text(
+            'Từ có câu hỏi trong nội dung hiện tại: ${progress.eligibleCurrentItemCount}',
+          ),
+          Text(
+            'Từ chưa có kết quả khớp: ${progress.unpracticedCurrentItemCount}',
+          ),
+          Text(
+            'Từ có lần trả lời gần nhất đúng: ${progress.latestCorrectCurrentItemCount}',
+          ),
           Text('Từ cần ôn: ${progress.needsReview.length}'),
+          const Text(
+            'Phạm vi: các câu hỏi tạo được từ nội dung hiện tại ở cấp độ đang chọn.',
+          ),
           if (progress.attemptCount == 0)
             const Text('Chưa có kết quả quiz đã lưu cho cấp độ này.'),
           if (progress.needsReview.isEmpty)

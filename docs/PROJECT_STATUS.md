@@ -1,5 +1,50 @@
 # PROJECT STATUS
 
+## Current vocabulary question coverage — 2026-10-31 UTC
+
+- Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
+  b581ed2e2f14fc2d75d0e1f023a09810d0020b2f/treecbc6ebaa90e8990fd607e811487bdd08cdf2ec65.
+  Pre-code marker core-20261031-vocabulary-current-coverage saved PR41+issue13.
+- Parent CI41143477407 exactb581ed2/latestattempt1 ALL5/EVERYstep SUCCESS/no
+  skips;rawFlutter124363565877 ALL4 grammar coverage core+1 widget/owned quiz disk
+  PASS;Windows124363069950 BOTH grammar/evidence+persistentSDK markers observed.
+  TEST ONLY component evidence, not hosted learner/Auth/JWT/RLS acceptance.
+- Reviewed before code: eligible vocabulary count is FULL canonical reading-quiz
+  target deck, NOT raw source rows, a ten-question batch, full JLPT coverage or
+  mastery. Unpracticed = eligible minus distinct matched current practiced;
+  latestCorrect = practiced minus needsReview. Three disjoint buckets sum to
+  eligible. Existing owner/selected-level/ID/version/ordered-choice/dedup retained.
+- Obsolete version or changed choices remain historical only. Empty/insufficient
+  eligible deck gives0; other-level reports cannot reduce current unpracticed.
+  Saved focused vocabulary practice continues existing latest-answer policy; no
+  new practice-kind split, mastery threshold, MASTERED, time or SRS credit.
+- Projection stores count from SAME already-built full deck; getters/UI labels
+  follow existing explicit load and current-content/selected-level explanation.
+  No extra I/O, storage, factory, account, readiness or refresh behavior.
+- FOUR pure cases AUTHORED: both levels/full12/empty/ineligible deck; distinct
+  target partition/replay/latest transitions; stale version/ordered-choice reports;
+  level isolation. ONE actual widget case empty->wrong->correct manual snapshots,
+  absent labels before load/no auto update/no extra read/zero write. ENTIRE old
+  widget fixture/helpers/assertions/timeouts byte-identical removing new block;
+  all old core/helper tests untouched. Initial insertion-whitespace preservation
+  guard failed; corrected blank lines only, all checks retained.
+- Fresh official Dart3.9.2 SHA256 verified; actual-source standalone smoke PASS
+  both levels/full12/empty/dedup/partition. Strictformat4/QA55 PASS; inventory155
+  valid NOTexecuted/diffcheck/separate denominator/matching/historicalcounter/
+  no-I-O/preservation review PASS. Flutter lint include unresolved NOTanalyzer;
+  new5/fullFlutter/analyze/Web/Windows locally UNRUN(noFlutter/Windows); exact new-
+  head Actions required. Published commit/tree/CI in PR41 checkpoint.
+- Six paths: Flutter quiz domain/vocabulary_quiz_progress.dart;
+  presentation/quiz_progress_screen.dart;NEW test/features/quiz/
+  vocabulary_quiz_progress_coverage_test.dart;quiz_progress_widget_test.dart;
+  docs/VOCABULARY_QUIZ.md;docs/PROJECT_STATUS.md. Pro/content/Authstrategy/API/
+  schema/RLS/deps/workflow/retention/collection/default activation unchanged;AIoff.
+- Next exact-head/latestattempt ALL5/EVERYstep/raw4+1/retained grammar/quiz disk/
+  native markers. Fix diagnostics preserving assertions; pending-only handoff/no
+  duplicate code/longpoll. Then review remaining13 integrated dashboard acceptance
+  and real pending dependencies. All14hostedpending/draft41/13open; no merge/
+  closure/deploy/release/Alpha acceptance/schedule change.
+
 ## Current grammar question coverage — 2026-10-30 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent

@@ -544,6 +544,47 @@ void main() {
     expect(find.text(question.target.heading), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  // Vocabulary current-deck counts follow explicit snapshots, never mastery.
+  testWidgets(
+    'vocabulary coverage labels update only on explicit matching load',
+    (tester) async {
+      final ports = _Ports(original);
+      await mount(tester, ports);
+      expect(find.textContaining('Từ chưa có kết quả khớp:'), findsNothing);
+      expect(ports.reads, 0);
+      final count = buildVocabularyQuiz(original, PreviewLevel.n5).length;
+      await load(tester);
+      expect(
+        find.text('Từ có câu hỏi trong nội dung hiện tại: $count'),
+        findsOneWidget,
+      );
+      expect(find.text('Từ chưa có kết quả khớp: $count'), findsOneWidget);
+      expect(find.text('Từ có lần trả lời gần nhất đúng: 0'), findsOneWidget);
+      ports.records = [report(1)];
+      await tester.pumpAndSettle();
+      expect(ports.reads, 1);
+      expect(find.text('Từ chưa có kết quả khớp: $count'), findsOneWidget);
+      await load(tester);
+      expect(
+        find.text('Từ chưa có kết quả khớp: ${count - 1}'),
+        findsOneWidget,
+      );
+      expect(find.text('Từ cần ôn: 1'), findsOneWidget);
+      ports.records = [report(1), report(2, correct: true)];
+      await load(tester);
+      expect(
+        find.text('Từ chưa có kết quả khớp: ${count - 1}'),
+        findsOneWidget,
+      );
+      expect(find.text('Từ có lần trả lời gần nhất đúng: 1'), findsOneWidget);
+      expect(find.text('Từ cần ôn: 0'), findsOneWidget);
+      expect(ports.reads, 3);
+      expect(ports.contentReads, 3);
+      expect(ports.writes, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  // End vocabulary current-deck counts regression.
   // Source generation regressions: A-B-A must not revive a retained load.
   testWidgets('source A B A before frame permanently retires progress load', (
     tester,

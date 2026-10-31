@@ -27,6 +27,7 @@ final class VocabularyQuizProgress {
     required this.attemptCount,
     required this.answerCount,
     required this.correctCount,
+    required this.eligibleCurrentItemCount,
     required List<VocabularyQuizItemProgress> items,
     required List<VocabularyQuizItemProgress> needsReview,
   }) : items = List.unmodifiable(items),
@@ -34,9 +35,16 @@ final class VocabularyQuizProgress {
   final int attemptCount;
   final int answerCount;
   final int correctCount;
+
+  /// Canonical question targets, not full JLPT curriculum coverage.
+  final int eligibleCurrentItemCount;
   final List<VocabularyQuizItemProgress> items;
   final List<VocabularyQuizItemProgress> needsReview;
   int get practicedCurrentItemCount => items.length;
+  int get unpracticedCurrentItemCount =>
+      eligibleCurrentItemCount - practicedCurrentItemCount;
+  int get latestCorrectCurrentItemCount =>
+      practicedCurrentItemCount - needsReview.length;
 }
 
 bool _sameChoices(List<String> left, List<CurriculumEntry> right) {
@@ -115,6 +123,7 @@ VocabularyQuizProgress deriveVocabularyQuizProgress({
     attemptCount: events.length,
     answerCount: answerCount,
     correctCount: correctCount,
+    eligibleCurrentItemCount: questions.length,
     items: items,
     needsReview: needsReview,
   );
