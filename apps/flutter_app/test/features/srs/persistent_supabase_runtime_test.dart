@@ -289,11 +289,11 @@ void main() {
       );
       await waitForReady();
 
-      final profileRequests = () => requests
+      List<http.Request> profileRequests() => requests
           .where((request) => request.url.path.contains('ensure_profile'))
           .toList();
       final initialProfileCount = profileRequests().length;
-      final authCalls = () => requests
+      int authCalls() => requests
           .where((request) => request.url.path == '/auth/v1/token')
           .length;
       final initialAuthCalls = authCalls();
