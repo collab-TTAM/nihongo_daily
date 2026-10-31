@@ -25,7 +25,8 @@ int destinationIndex(String path) {
     '/srs' ||
     '/quiz' ||
     '/listening' => 1,
-    '/kanji' => 2,
+    '/kanji' || '/kanji/characters' => 2,
+    _ when path.startsWith('/kanji/practice/') => 2,
     '/ai' || '/conversation' => 3,
     '/progress' => 4,
     '/settings' || '/auth' => 5,

@@ -1,0 +1,4228 @@
+[
+  {
+    "id": "01ab9879-a8d2-573e-a623-d152a4ac1a00",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "N／普通形 + と思います",
+    "pattern": "N／普通形 + と思います",
+    "meaning_vi": "Tôi nghĩ rằng…",
+    "explanation_vi": "Nói ý kiến hoặc phỏng đoán mềm hơn.",
+    "usage_notes_vi": [
+      "Với danh từ/tính từ な dùng だと思います."
+    ],
+    "common_mistakes": [
+      "Không dùng です sau động từ thể thường trước と."
+    ],
+    "related_grammar_ids": [
+      "d50eb4c1-6662-5084-974d-3816836217ca"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この店は便利だと思います。",
+        "reading_ja": "このみせはべんりだとおもいます。",
+        "translation_vi": "Tôi nghĩ cửa hàng này tiện lợi."
+      },
+      {
+        "sentence_ja": "来月、京都へ行くと思います。",
+        "reading_ja": "らいげつ、きょうとへいくとおもいます。",
+        "translation_vi": "Tôi nghĩ tháng sau mình sẽ đi Kyoto."
+      }
+    ]
+  },
+  {
+    "id": "d50eb4c1-6662-5084-974d-3816836217ca",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるつもりです",
+    "pattern": "Vるつもりです",
+    "meaning_vi": "dự định sẽ làm V",
+    "explanation_vi": "Nói về dự định của người nói.",
+    "usage_notes_vi": [
+      "Phủ định thường dùng Vないつもりです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます trước つもり."
+    ],
+    "related_grammar_ids": [
+      "93bbe1b6-5146-521b-9047-1c97bea689b9"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "夏休みに旅行するつもりです。",
+        "reading_ja": "なつやすみにりょこうするつもりです。",
+        "translation_vi": "Kỳ nghỉ hè tôi dự định đi du lịch."
+      },
+      {
+        "sentence_ja": "今日は早く寝るつもりです。",
+        "reading_ja": "きょうははやくねるつもりです。",
+        "translation_vi": "Hôm nay tôi định ngủ sớm."
+      }
+    ]
+  },
+  {
+    "id": "93bbe1b6-5146-521b-9047-1c97bea689b9",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる予定です",
+    "pattern": "Vる予定です",
+    "meaning_vi": "dự kiến sẽ làm V",
+    "explanation_vi": "Dùng cho lịch trình hoặc kế hoạch đã định.",
+    "usage_notes_vi": [
+      "Nの予定です cũng nói lịch dự kiến."
+    ],
+    "common_mistakes": [
+      "Không dùng cho ý thích nhất thời khi chưa có kế hoạch."
+    ],
+    "related_grammar_ids": [
+      "15b750ca-d647-5b2a-9de9-fd6fafecda28"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "会議は午後三時に始まる予定です。",
+        "reading_ja": "かいぎはごごさんじにはじまるよていです。",
+        "translation_vi": "Cuộc họp dự kiến bắt đầu lúc ba giờ chiều."
+      },
+      {
+        "sentence_ja": "来週、友達が家に来る予定です。",
+        "reading_ja": "らいしゅう、ともだちがいえにくるよていです。",
+        "translation_vi": "Tuần sau bạn tôi dự kiến sẽ đến nhà."
+      }
+    ]
+  },
+  {
+    "id": "15b750ca-d647-5b2a-9de9-fd6fafecda28",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vなければなりません",
+    "pattern": "Vなければなりません",
+    "meaning_vi": "phải làm V",
+    "explanation_vi": "Nêu nghĩa vụ hoặc việc bắt buộc.",
+    "usage_notes_vi": [
+      "Hội thoại có thể rút gọn thành Vなきゃ."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vなくてもいいです là không cần làm V."
+    ],
+    "related_grammar_ids": [
+      "01b43e99-ddbc-56ba-b155-86fea0f1253c"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "明日までに宿題をしなければなりません。",
+        "reading_ja": "あしたまでにしゅくだいをしなければなりません。",
+        "translation_vi": "Tôi phải làm bài tập trước ngày mai."
+      },
+      {
+        "sentence_ja": "旅行の前にホテルを予約しなければなりません。",
+        "reading_ja": "りょこうのまえにほてるをよやくしなければなりません。",
+        "translation_vi": "Trước chuyến đi phải đặt khách sạn."
+      }
+    ]
+  },
+  {
+    "id": "01b43e99-ddbc-56ba-b155-86fea0f1253c",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもいいです",
+    "pattern": "Vてもいいです",
+    "meaning_vi": "được phép làm V",
+    "explanation_vi": "Xin phép hoặc cho phép làm một việc.",
+    "usage_notes_vi": [
+      "Vてもいいですか dùng để xin phép."
+    ],
+    "common_mistakes": [
+      "Không dùng để nói nghĩa vụ."
+    ],
+    "related_grammar_ids": [
+      "324f9d74-65db-5141-bfdb-e33f3d54e89d"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "ここで写真を撮ってもいいですか。",
+        "reading_ja": "ここでしゃしんをとってもいいですか。",
+        "translation_vi": "Tôi chụp ảnh ở đây có được không?"
+      },
+      {
+        "sentence_ja": "この本を借りてもいいですよ。",
+        "reading_ja": "このほんをかりてもいいですよ。",
+        "translation_vi": "Bạn có thể mượn cuốn sách này."
+      }
+    ]
+  },
+  {
+    "id": "324f9d74-65db-5141-bfdb-e33f3d54e89d",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてはいけません",
+    "pattern": "Vてはいけません",
+    "meaning_vi": "không được làm V",
+    "explanation_vi": "Nêu điều cấm hoặc quy tắc.",
+    "usage_notes_vi": [
+      "Hội thoại có thể nói Vちゃいけません."
+    ],
+    "common_mistakes": [
+      "Không dùng ないでください nếu muốn diễn đạt quy định chung."
+    ],
+    "related_grammar_ids": [
+      "a06604ed-13b3-54c7-a501-51ca5f1bb73e"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "この部屋で食べてはいけません。",
+        "reading_ja": "このへやでたべてはいけません。",
+        "translation_vi": "Không được ăn trong phòng này."
+      },
+      {
+        "sentence_ja": "ここに車を止めてはいけません。",
+        "reading_ja": "ここにくるまをとめてはいけません。",
+        "translation_vi": "Không được đỗ xe ở đây."
+      }
+    ]
+  },
+  {
+    "id": "a06604ed-13b3-54c7-a501-51ca5f1bb73e",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたことがあります",
+    "pattern": "Vたことがあります",
+    "meaning_vi": "đã từng làm V",
+    "explanation_vi": "Nói về kinh nghiệm trong quá khứ.",
+    "usage_notes_vi": [
+      "Thường dùng với trải nghiệm, không phải thời điểm cụ thể."
+    ],
+    "common_mistakes": [
+      "Không dùng Vますことがあります để nói kinh nghiệm."
+    ],
+    "related_grammar_ids": [
+      "be1fe397-1aa0-5f28-89d9-52908c185fe5"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "日本料理を作ったことがあります。",
+        "reading_ja": "にほんりょうりをつくったことがあります。",
+        "translation_vi": "Tôi đã từng nấu món Nhật."
+      },
+      {
+        "sentence_ja": "富士山を見たことがありますか。",
+        "reading_ja": "ふじさんをみたことがありますか。",
+        "translation_vi": "Bạn đã từng nhìn thấy núi Phú Sĩ chưa?"
+      }
+    ]
+  },
+  {
+    "id": "be1fe397-1aa0-5f28-89d9-52908c185fe5",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたり、Vたりします",
+    "pattern": "Vたり、Vたりします",
+    "meaning_vi": "làm những việc như V và V",
+    "explanation_vi": "Liệt kê một số hoạt động tiêu biểu.",
+    "usage_notes_vi": [
+      "Mỗi động từ chuyển sang thể た rồi thêm り."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます trực tiếp trước たり."
+    ],
+    "related_grammar_ids": [
+      "d6f81f10-b5a2-50f3-a967-7f45a38b6bac"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "週末は映画を見たり、本を読んだりします。",
+        "reading_ja": "しゅうまつはえいがをみたり、ほんをよんだりします。",
+        "translation_vi": "Cuối tuần tôi làm những việc như xem phim và đọc sách."
+      },
+      {
+        "sentence_ja": "旅行で写真を撮ったり、料理を食べたりしました。",
+        "reading_ja": "りょこうでしゃしんをとったり、りょうりをたべたりしました。",
+        "translation_vi": "Trong chuyến du lịch tôi đã chụp ảnh, ăn món ăn và làm những việc khác."
+      }
+    ]
+  },
+  {
+    "id": "d6f81f10-b5a2-50f3-a967-7f45a38b6bac",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "普通形 + ので",
+    "pattern": "普通形 + ので",
+    "meaning_vi": "vì; do…",
+    "explanation_vi": "Nêu nguyên nhân với sắc thái mềm và lịch sự.",
+    "usage_notes_vi": [
+      "Danh từ/tính từ な dùng なので."
+    ],
+    "common_mistakes": [
+      "Không bỏ だ trong なので với danh từ/tính từ な."
+    ],
+    "related_grammar_ids": [
+      "d8bf91ea-3a1d-51a7-9dbf-c698cb388caf"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "雨なので、今日は出かけません。",
+        "reading_ja": "あめなので、きょうはでかけません。",
+        "translation_vi": "Vì trời mưa nên hôm nay tôi không ra ngoài."
+      },
+      {
+        "sentence_ja": "時間がないので、タクシーで行きます。",
+        "reading_ja": "じかんがないので、たくしーでいきます。",
+        "translation_vi": "Vì không có thời gian nên tôi sẽ đi taxi."
+      }
+    ]
+  },
+  {
+    "id": "d8bf91ea-3a1d-51a7-9dbf-c698cb388caf",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vます + ながら",
+    "pattern": "Vます + ながら",
+    "meaning_vi": "vừa làm V vừa…",
+    "explanation_vi": "Hai hành động xảy ra đồng thời.",
+    "usage_notes_vi": [
+      "Bỏ ます rồi thêm ながら."
+    ],
+    "common_mistakes": [
+      "Hai vế phải có cùng chủ thể trong cách dùng cơ bản."
+    ],
+    "related_grammar_ids": [
+      "01ab9879-a8d2-573e-a623-d152a4ac1a00"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "音楽を聞きながら勉強します。",
+        "reading_ja": "おんがくをききながらべんきょうします。",
+        "translation_vi": "Tôi vừa nghe nhạc vừa học."
+      },
+      {
+        "sentence_ja": "歩きながら電話で話してはいけません。",
+        "reading_ja": "あるきながらでんわではなしてはいけません。",
+        "translation_vi": "Không được vừa đi bộ vừa nói chuyện điện thoại."
+      }
+    ]
+  },
+  {
+    "id": "908421fc-2c13-5be1-9504-e92b94d004b1",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vそうです",
+    "pattern": "Vそうです",
+    "meaning_vi": "có vẻ sắp; có vẻ sẽ làm V",
+    "explanation_vi": "Dự đoán dựa trên vẻ ngoài hoặc dấu hiệu hiện tại.",
+    "usage_notes_vi": [
+      "Động từ dùng dạng bỏ ます rồi thêm そうです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước そうです."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "雨が降りそうです。",
+        "reading_ja": "あめがふりそうです。",
+        "translation_vi": "Có vẻ trời sắp mưa."
+      },
+      {
+        "sentence_ja": "この料理はおいしそうです。",
+        "reading_ja": "このりょうりはおいしそうです。",
+        "translation_vi": "Món ăn này trông có vẻ ngon."
+      }
+    ]
+  },
+  {
+    "id": "bfa50a0a-0cac-5686-bea2-37d710dde965",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vようになります",
+    "pattern": "Vようになります",
+    "meaning_vi": "trở nên có thể làm V; bắt đầu làm V",
+    "explanation_vi": "Diễn tả sự thay đổi về khả năng hoặc thói quen.",
+    "usage_notes_vi": [
+      "Danh từ có thể dùng Nになる."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vことにします là tự quyết định làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語のニュースが少し分かるようになりました。",
+        "reading_ja": "にほんごのにゅーすがすこしわかるようになりました。",
+        "translation_vi": "Tôi đã bắt đầu hiểu một chút tin tức tiếng Nhật."
+      },
+      {
+        "sentence_ja": "毎朝、早く起きるようになりました。",
+        "reading_ja": "まいあさ、はやくおきるようになりました。",
+        "translation_vi": "Tôi đã hình thành thói quen dậy sớm mỗi sáng."
+      }
+    ]
+  },
+  {
+    "id": "4649862e-d961-58ee-848d-055abec48910",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vなくてもいいです",
+    "pattern": "Vなくてもいいです",
+    "meaning_vi": "không cần làm V",
+    "explanation_vi": "Nói rằng một việc không bắt buộc.",
+    "usage_notes_vi": [
+      "Dùng thể ない bỏ い rồi thêm くてもいいです."
+    ],
+    "common_mistakes": [
+      "Không dùng Vないでください nếu muốn nói không bắt buộc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日は学校へ来なくてもいいです。",
+        "reading_ja": "あしたはがっこうへこなくてもいいです。",
+        "translation_vi": "Ngày mai không cần đến trường."
+      },
+      {
+        "sentence_ja": "全部を食べなくてもいいですよ。",
+        "reading_ja": "ぜんぶをたべなくてもいいですよ。",
+        "translation_vi": "Bạn không cần ăn hết đâu."
+      }
+    ]
+  },
+  {
+    "id": "e139777d-c787-56d6-9f9e-a6ab861fe759",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vすぎます",
+    "pattern": "Vすぎます",
+    "meaning_vi": "làm V quá mức",
+    "explanation_vi": "Nói rằng một hành động hoặc mức độ vượt quá mức phù hợp.",
+    "usage_notes_vi": [
+      "Bỏ ます rồi thêm すぎます."
+    ],
+    "common_mistakes": [
+      "Tính từ い bỏ い trước すぎます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "昨日は働きすぎました。",
+        "reading_ja": "きのうははたらきすぎました。",
+        "translation_vi": "Hôm qua tôi đã làm việc quá nhiều."
+      },
+      {
+        "sentence_ja": "このかばんは大きすぎます。",
+        "reading_ja": "このかばんはおおきすぎます。",
+        "translation_vi": "Chiếc túi này quá to."
+      }
+    ]
+  },
+  {
+    "id": "973290de-ebd0-5eab-999d-22ec790a5b38",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたほうがいいです",
+    "pattern": "Vたほうがいいです",
+    "meaning_vi": "nên làm V",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề nghị.",
+    "usage_notes_vi": [
+      "Phủ định dùng Vないほうがいいです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trước ほうがいいです trong lời khuyên cơ bản."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "早く病院へ行ったほうがいいです。",
+        "reading_ja": "はやくびょういんへいったほうがいいです。",
+        "translation_vi": "Bạn nên đi bệnh viện sớm."
+      },
+      {
+        "sentence_ja": "旅行の前に天気を調べたほうがいいです。",
+        "reading_ja": "りょこうのまえにてんきをしらべたほうがいいです。",
+        "translation_vi": "Trước chuyến đi bạn nên xem thời tiết."
+      }
+    ]
+  },
+  {
+    "id": "100c770f-f0bf-59fd-8cf9-f38634195ed8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vことにします",
+    "pattern": "Vことにします",
+    "meaning_vi": "quyết định làm V",
+    "explanation_vi": "Người nói tự quyết định một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển hoặc thể ない trước ことにします."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vことになります là quyết định do hoàn cảnh hoặc người khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来月から毎日運動することにします。",
+        "reading_ja": "らいげつからまいにちうんどうすることにします。",
+        "translation_vi": "Tôi quyết định từ tháng sau sẽ tập thể dục mỗi ngày."
+      },
+      {
+        "sentence_ja": "今日はタクシーを使わないことにしました。",
+        "reading_ja": "きょうはたくしーをつかわないことにしました。",
+        "translation_vi": "Hôm nay tôi đã quyết định không dùng taxi."
+      }
+    ]
+  },
+  {
+    "id": "e355c997-0c0b-5c30-9c67-ef94a8a7a801",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vことになります",
+    "pattern": "Vことになります",
+    "meaning_vi": "được quyết định là sẽ V",
+    "explanation_vi": "Diễn tả một quyết định hoặc kết quả do hoàn cảnh, tổ chức.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển hoặc thể ない trước ことになります."
+    ],
+    "common_mistakes": [
+      "Không dùng khi chỉ nói quyết định cá nhân của người nói."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来週から新しい先生が来ることになりました。",
+        "reading_ja": "らいしゅうからあたらしいせんせいがくることになりました。",
+        "translation_vi": "Đã quyết định rằng từ tuần sau giáo viên mới sẽ đến."
+      },
+      {
+        "sentence_ja": "会議は午後二時に始まることになっています。",
+        "reading_ja": "かいぎはごごにじにはじまることになっています。",
+        "translation_vi": "Cuộc họp được quy định là bắt đầu lúc hai giờ chiều."
+      }
+    ]
+  },
+  {
+    "id": "81b67904-8668-52ba-afef-ea2cfb5a87f9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "～かもしれません",
+    "pattern": "～かもしれません",
+    "meaning_vi": "có lẽ; có thể",
+    "explanation_vi": "Nói khả năng chưa chắc chắn.",
+    "usage_notes_vi": [
+      "Có thể dùng sau thể thường; danh từ và tính từ な thường bỏ だ."
+    ],
+    "common_mistakes": [
+      "Không dùng です ngay trước かもしれません."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日は雨かもしれません。",
+        "reading_ja": "あしたはあめかもしれません。",
+        "translation_vi": "Ngày mai có thể trời mưa."
+      },
+      {
+        "sentence_ja": "この道は少し危険かもしれません。",
+        "reading_ja": "このみちはすこしきけんかもしれません。",
+        "translation_vi": "Con đường này có lẽ hơi nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "b577a502-af92-5d72-9fd4-78e70b536f72",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないでください",
+    "pattern": "Vないでください",
+    "meaning_vi": "xin đừng làm V",
+    "explanation_vi": "Yêu cầu người nghe không làm một việc.",
+    "usage_notes_vi": [
+      "Dùng thể ない rồi thêm でください."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vなくてもいいです là không cần làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "ここで写真を撮らないでください。",
+        "reading_ja": "ここでしゃしんをとらないでください。",
+        "translation_vi": "Xin đừng chụp ảnh ở đây."
+      },
+      {
+        "sentence_ja": "授業中に電話を使わないでください。",
+        "reading_ja": "じゅぎょうちゅうにでんわをつかわないでください。",
+        "translation_vi": "Xin đừng dùng điện thoại trong giờ học."
+      }
+    ]
+  },
+  {
+    "id": "7420838d-9b97-5307-9c39-03c7c77972e8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてみます",
+    "pattern": "Vてみます",
+    "meaning_vi": "thử làm V",
+    "explanation_vi": "Nói thử làm một việc để trải nghiệm hoặc kiểm tra.",
+    "usage_notes_vi": [
+      "Dùng thể て trước みます."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước みます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この料理を食べてみます。",
+        "reading_ja": "このりょうりをたべてみます。",
+        "translation_vi": "Tôi sẽ thử ăn món này."
+      },
+      {
+        "sentence_ja": "先生に聞いてみました。",
+        "reading_ja": "せんせいにきいてみました。",
+        "translation_vi": "Tôi đã thử hỏi giáo viên."
+      }
+    ]
+  },
+  {
+    "id": "2039a7d3-f47f-51a4-825f-f4f3c906c8d2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vておきます",
+    "pattern": "Vておきます",
+    "meaning_vi": "làm V trước; làm sẵn V",
+    "explanation_vi": "Làm trước một việc để chuẩn bị cho sau này.",
+    "usage_notes_vi": [
+      "Dùng thể て trước おきます."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vています là đang làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "旅行の前にホテルを予約しておきます。",
+        "reading_ja": "りょこうのまえにほてるをよやくしておきます。",
+        "translation_vi": "Tôi sẽ đặt sẵn khách sạn trước chuyến đi."
+      },
+      {
+        "sentence_ja": "必要な書類をコピーしておきました。",
+        "reading_ja": "ひつようなしょるいをこぴーしておきました。",
+        "translation_vi": "Tôi đã sao sẵn giấy tờ cần thiết."
+      }
+    ]
+  },
+  {
+    "id": "a61d9821-ae10-5de5-b886-36ecca79531a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてしまいます",
+    "pattern": "Vてしまいます",
+    "meaning_vi": "lỡ; hoàn tất V",
+    "explanation_vi": "Diễn tả việc hoàn tất hoặc tiếc vì việc đã xảy ra.",
+    "usage_notes_vi": [
+      "Dùng thể て trước しまいます."
+    ],
+    "common_mistakes": [
+      "Cần dựa vào ngữ cảnh để phân biệt hoàn tất và nuối tiếc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "宿題を全部してしまいました。",
+        "reading_ja": "しゅくだいをぜんぶしてしまいました。",
+        "translation_vi": "Tôi đã làm xong toàn bộ bài tập."
+      },
+      {
+        "sentence_ja": "電車で財布を忘れてしまいました。",
+        "reading_ja": "でんしゃでさいふをわすれてしまいました。",
+        "translation_vi": "Tôi lỡ để quên ví trên tàu."
+      }
+    ]
+  },
+  {
+    "id": "8341c387-2ccc-5971-86f3-54bbbe28a7b4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのために",
+    "pattern": "Nのために",
+    "meaning_vi": "vì; để cho N",
+    "explanation_vi": "Nêu mục đích hoặc đối tượng được hưởng lợi của hành động.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước のために để nói vì ai hoặc vì mục đích gì."
+    ],
+    "common_mistakes": [
+      "Không dùng trực tiếp động từ thể て trước ために trong mẫu danh từ này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "家族のために毎日働いています。",
+        "reading_ja": "かぞくのためにまいにちはたらいています。",
+        "translation_vi": "Tôi làm việc mỗi ngày vì gia đình."
+      },
+      {
+        "sentence_ja": "健康のために運動します。",
+        "reading_ja": "けんこうのためにうんどうします。",
+        "translation_vi": "Tôi tập thể dục vì sức khỏe."
+      }
+    ]
+  },
+  {
+    "id": "f55eceb1-8481-5156-8306-9e287b057a3f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるようにします",
+    "pattern": "Vるようにします",
+    "meaning_vi": "cố gắng để V; tạo thói quen V",
+    "explanation_vi": "Diễn tả nỗ lực có ý thức để một việc trở thành thói quen hoặc đạt mục tiêu.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ようにします khi nói cố gắng làm việc đó."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu muốn nói nỗ lực từ bây giờ trở đi."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、日本語を読むようにします。",
+        "reading_ja": "まいあさ、にほんごをよむようにします。",
+        "translation_vi": "Tôi sẽ cố gắng đọc tiếng Nhật mỗi sáng."
+      },
+      {
+        "sentence_ja": "忘れないようにメモします。",
+        "reading_ja": "わすれないようにメモします。",
+        "translation_vi": "Tôi ghi chú để không quên."
+      }
+    ]
+  },
+  {
+    "id": "ca1b5556-f41a-5c0d-989a-00778a690115",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることができます",
+    "pattern": "Vることができます",
+    "meaning_vi": "có thể V",
+    "explanation_vi": "Diễn tả khả năng hoặc việc được phép thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことができます."
+    ],
+    "common_mistakes": [
+      "Không chia động từ sang thể ます trước ことができます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語で簡単な会話をすることができます。",
+        "reading_ja": "にほんごでかんたんなかいわをすることができます。",
+        "translation_vi": "Tôi có thể hội thoại đơn giản bằng tiếng Nhật."
+      },
+      {
+        "sentence_ja": "ここでカードを使うことができます。",
+        "reading_ja": "ここでカードをつかうことができます。",
+        "translation_vi": "Có thể dùng thẻ ở đây."
+      }
+    ]
+  },
+  {
+    "id": "fa2a47f0-4029-57c7-87a4-ba1650f94833",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのが好きです",
+    "pattern": "Vるのが好きです",
+    "meaning_vi": "thích V",
+    "explanation_vi": "Nói về việc thích một hành động hoặc hoạt động.",
+    "usage_notes_vi": [
+      "Đặt động từ thể từ điển trước のが好きです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます ngay trước のが好きです."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語を勉強するのが好きです。",
+        "reading_ja": "にほんごをべんきょうするのがすきです。",
+        "translation_vi": "Tôi thích học tiếng Nhật."
+      },
+      {
+        "sentence_ja": "音楽を聞くのが好きです。",
+        "reading_ja": "おんがくをきくのがすきです。",
+        "translation_vi": "Tôi thích nghe nhạc."
+      }
+    ]
+  },
+  {
+    "id": "9450f1e1-b154-5e08-bd19-a7306b72ee16",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてあげます",
+    "pattern": "Vてあげます",
+    "meaning_vi": "làm V cho ai",
+    "explanation_vi": "Diễn tả người nói hoặc người khác làm một việc có lợi cho người khác.",
+    "usage_notes_vi": [
+      "Dùng thể て của động từ trước あげます."
+    ],
+    "common_mistakes": [
+      "Cần nêu rõ người nhận lợi ích khi ngữ cảnh chưa rõ."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "妹に宿題を教えてあげます。",
+        "reading_ja": "いもうとにしゅくだいをおしえてあげます。",
+        "translation_vi": "Tôi sẽ chỉ bài tập cho em gái."
+      },
+      {
+        "sentence_ja": "友達の荷物を持ってあげました。",
+        "reading_ja": "ともだちのにもつをもってあげました。",
+        "translation_vi": "Tôi đã xách hành lý giúp bạn."
+      }
+    ]
+  },
+  {
+    "id": "c12f7e2b-2bb9-550a-a0fe-099de1289fb1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもらいます",
+    "pattern": "Vてもらいます",
+    "meaning_vi": "được ai làm V cho",
+    "explanation_vi": "Diễn tả người nói nhận được sự giúp đỡ hoặc hành động từ người khác.",
+    "usage_notes_vi": [
+      "Dùng thể て của động từ trước もらいます; người giúp đi với に."
+    ],
+    "common_mistakes": [
+      "Không dùng を cho người thực hiện hành động trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生に作文を直してもらいました。",
+        "reading_ja": "せんせいにさくぶんをなおしてもらいました。",
+        "translation_vi": "Tôi đã nhờ giáo viên sửa bài văn."
+      },
+      {
+        "sentence_ja": "友達に駅まで案内してもらいます。",
+        "reading_ja": "ともだちにえきまであんないしてもらいます。",
+        "translation_vi": "Tôi sẽ nhờ bạn hướng dẫn đến ga."
+      }
+    ]
+  },
+  {
+    "id": "40f5cd01-5e94-53ab-9b2d-be0e62b6fcc5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるために",
+    "pattern": "Vるために",
+    "meaning_vi": "để V; nhằm V",
+    "explanation_vi": "Nêu mục đích của hành động bằng động từ thể từ điển.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ために khi chủ thể của hai vế giống nhau."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ない nếu muốn nói mục đích khẳng định."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本で働くために日本語を勉強しています。",
+        "reading_ja": "にほんではたらくためににほんごをべんきょうしています。",
+        "translation_vi": "Tôi học tiếng Nhật để làm việc ở Nhật."
+      },
+      {
+        "sentence_ja": "健康になるために毎日歩きます。",
+        "reading_ja": "けんこうになるためにまいにちあるきます。",
+        "translation_vi": "Tôi đi bộ mỗi ngày để khỏe mạnh."
+      }
+    ]
+  },
+  {
+    "id": "536c402a-cd67-50fd-882f-6f72294b395a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたらどうですか",
+    "pattern": "Vたらどうですか",
+    "meaning_vi": "hay là V; sao không V",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề xuất nhẹ nhàng.",
+    "usage_notes_vi": [
+      "Dùng thể た trước らどうですか."
+    ],
+    "common_mistakes": [
+      "Đây là lời khuyên, không phải câu hỏi về điều kiện đã xảy ra."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "少し休んだらどうですか。",
+        "reading_ja": "すこしやすんだらどうですか。",
+        "translation_vi": "Bạn nghỉ một chút thì sao?"
+      },
+      {
+        "sentence_ja": "先生に相談したらどうですか。",
+        "reading_ja": "せんせいにそうだんしたらどうですか。",
+        "translation_vi": "Bạn thử trao đổi với giáo viên xem sao?"
+      }
+    ]
+  },
+  {
+    "id": "e9e6d1ab-6c52-5da0-9be5-0857269e8e33",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nしか～ません",
+    "pattern": "Nしか～ません",
+    "meaning_vi": "chỉ N; ngoài N ra không",
+    "explanation_vi": "Nhấn mạnh số lượng hoặc lựa chọn duy nhất với câu phủ định.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước しか và dùng vị ngữ phủ định sau đó."
+    ],
+    "common_mistakes": [
+      "Không dùng vị ngữ khẳng định sau しか."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "週末しか休みません。",
+        "reading_ja": "しゅうまつしかやすみません。",
+        "translation_vi": "Tôi chỉ nghỉ vào cuối tuần."
+      },
+      {
+        "sentence_ja": "この店では現金しか使えません。",
+        "reading_ja": "このみせではげんきんしかつかえません。",
+        "translation_vi": "Ở cửa hàng này chỉ dùng được tiền mặt."
+      }
+    ]
+  },
+  {
+    "id": "f24cb609-78cd-598d-adc6-42866d41ca04",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる前に",
+    "pattern": "Vる前に",
+    "meaning_vi": "trước khi V",
+    "explanation_vi": "Nêu một hành động xảy ra trước hành động khác.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước 前に."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu hành động phía sau chưa xảy ra."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "寝る前に歯を磨きます。",
+        "reading_ja": "ねるまえにはをみがきます。",
+        "translation_vi": "Tôi đánh răng trước khi ngủ."
+      },
+      {
+        "sentence_ja": "出かける前に鍵を確かめました。",
+        "reading_ja": "でかけるまえにかぎをたしかめました。",
+        "translation_vi": "Tôi đã kiểm tra chìa khóa trước khi ra ngoài."
+      }
+    ]
+  },
+  {
+    "id": "4dbae303-dd6c-56b4-96e7-8f287620e57c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vた後で",
+    "pattern": "Vた後で",
+    "meaning_vi": "sau khi V",
+    "explanation_vi": "Nêu một hành động xảy ra sau khi hành động khác kết thúc.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước 後で."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển khi muốn nói hành động đã hoàn tất trước đó."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "仕事が終わった後で友達に会います。",
+        "reading_ja": "しごとがおわったあとでともだちにあいます。",
+        "translation_vi": "Tôi sẽ gặp bạn sau khi xong việc."
+      },
+      {
+        "sentence_ja": "薬を飲んだ後で休みました。",
+        "reading_ja": "くすりをのんだあとでやすみました。",
+        "translation_vi": "Tôi đã nghỉ sau khi uống thuốc."
+      }
+    ]
+  },
+  {
+    "id": "f0b993d7-6a5e-573e-be32-b3a6b1be8fae",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nについて",
+    "pattern": "Nについて",
+    "meaning_vi": "về N; liên quan đến N",
+    "explanation_vi": "Nêu chủ đề được nói, hỏi hoặc tìm hiểu.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước について."
+    ],
+    "common_mistakes": [
+      "Không thêm の giữa danh từ và について."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本の文化について調べています。",
+        "reading_ja": "にほんのぶんかについてしらべています。",
+        "translation_vi": "Tôi đang tìm hiểu về văn hóa Nhật."
+      },
+      {
+        "sentence_ja": "試験について先生に質問しました。",
+        "reading_ja": "しけんについてせんせいにしつもんしました。",
+        "translation_vi": "Tôi đã hỏi giáo viên về kỳ thi."
+      }
+    ]
+  },
+  {
+    "id": "6c5cf987-cf96-5f02-a0f1-7bd38d91bc15",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vると",
+    "pattern": "Vると",
+    "meaning_vi": "hễ V thì; khi V thì",
+    "explanation_vi": "Diễn tả kết quả tự nhiên hoặc điều thường xảy ra sau một điều kiện.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước と."
+    ],
+    "common_mistakes": [
+      "Không dùng mệnh lệnh hoặc ý định trực tiếp trong vế sau của mẫu kết quả tự nhiên."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "春になると、花が咲きます。",
+        "reading_ja": "はるになると、はながさきます。",
+        "translation_vi": "Khi mùa xuân đến thì hoa nở."
+      },
+      {
+        "sentence_ja": "このボタンを押すと、ドアが開きます。",
+        "reading_ja": "このぼたんをおすと、どあがひらきます。",
+        "translation_vi": "Hễ bấm nút này thì cửa mở."
+      }
+    ]
+  },
+  {
+    "id": "9a40f539-b187-5c47-aaeb-dece5d59f558",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないで",
+    "pattern": "Vないで",
+    "meaning_vi": "không V mà; không làm V",
+    "explanation_vi": "Nêu hành động được thực hiện mà không làm một việc khác.",
+    "usage_notes_vi": [
+      "Dùng thể ない bỏ い rồi thêm で."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないでください là lời yêu cầu không làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "朝ご飯を食べないで学校へ行きました。",
+        "reading_ja": "あさごはんをたべないでがっこうへいきました。",
+        "translation_vi": "Tôi đã đến trường mà không ăn sáng."
+      },
+      {
+        "sentence_ja": "辞書を見ないで答えてみてください。",
+        "reading_ja": "じしょをみないでこたえてみてください。",
+        "translation_vi": "Hãy thử trả lời mà không xem từ điển."
+      }
+    ]
+  },
+  {
+    "id": "6f6852eb-5d96-5b22-8796-5558e38cd13a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nより",
+    "pattern": "Nより",
+    "meaning_vi": "hơn N; so với N",
+    "explanation_vi": "Dùng để so sánh một người hoặc vật với N.",
+    "usage_notes_vi": [
+      "Đặt danh từ làm mốc trước より."
+    ],
+    "common_mistakes": [
+      "より không tự mang nghĩa 'hơn' nếu thiếu đối tượng so sánh trong câu phù hợp."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電車はバスより速いです。",
+        "reading_ja": "でんしゃはばすよりはやいです。",
+        "translation_vi": "Tàu điện nhanh hơn xe buýt."
+      },
+      {
+        "sentence_ja": "去年より今年のほうが忙しいです。",
+        "reading_ja": "きょねんよりことしのほうがいそがしいです。",
+        "translation_vi": "Năm nay bận hơn năm ngoái."
+      }
+    ]
+  },
+  {
+    "id": "d499994a-9a67-52e6-9abc-accf2931ec95",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることがあります",
+    "pattern": "Vることがあります",
+    "meaning_vi": "có khi V; đôi khi V",
+    "explanation_vi": "Diễn tả một việc thỉnh thoảng xảy ra hoặc được thực hiện.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことがあります."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vたことがあります là đã từng V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "週末は家で料理することがあります。",
+        "reading_ja": "しゅうまつはいえでりょうりすることがあります。",
+        "translation_vi": "Cuối tuần đôi khi tôi nấu ăn ở nhà."
+      },
+      {
+        "sentence_ja": "仕事の後で友達と食事することがあります。",
+        "reading_ja": "しごとのあとでともだちとしょくじすることがあります。",
+        "translation_vi": "Sau giờ làm đôi khi tôi ăn cùng bạn."
+      }
+    ]
+  },
+  {
+    "id": "ff2d3eff-21c9-5e30-a028-31d0ce235d36",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのような",
+    "pattern": "Nのような",
+    "meaning_vi": "giống như N; chẳng hạn như N",
+    "explanation_vi": "Dùng để mô tả danh từ có đặc điểm giống hoặc thuộc kiểu của N.",
+    "usage_notes_vi": [
+      "Đặt danh từ làm ví dụ trước のような rồi đến danh từ được mô tả."
+    ],
+    "common_mistakes": [
+      "Không dùng のような sau động từ nếu muốn nói trực tiếp cách thức."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "これは春のような暖かい日です。",
+        "reading_ja": "これははるのようなあたたかいひです。",
+        "translation_vi": "Đây là ngày ấm áp như mùa xuân."
+      },
+      {
+        "sentence_ja": "日本のような島国に興味があります。",
+        "reading_ja": "にほんのようなしまぐににきょうみがあります。",
+        "translation_vi": "Tôi quan tâm đến những quốc đảo như Nhật Bản."
+      }
+    ]
+  },
+  {
+    "id": "db8a64fb-d036-5dc7-8141-478cc9d5552b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるはずです",
+    "pattern": "Vるはずです",
+    "meaning_vi": "chắc là V; đáng lẽ V",
+    "explanation_vi": "Dự đoán có căn cứ rằng một việc sẽ xảy ra hoặc đúng.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước はずです."
+    ],
+    "common_mistakes": [
+      "Không dùng はずです để biểu thị mệnh lệnh trực tiếp."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電車はもうすぐ到着するはずです。",
+        "reading_ja": "でんしゃはもうすぐとうちゃくするはずです。",
+        "translation_vi": "Tàu điện chắc sẽ đến ngay thôi."
+      },
+      {
+        "sentence_ja": "田中さんは今日来るはずです。",
+        "reading_ja": "たなかさんはきょうくるはずです。",
+        "translation_vi": "Anh Tanaka chắc hôm nay sẽ đến."
+      }
+    ]
+  },
+  {
+    "id": "bb829395-f7c4-580e-ae90-63933a9cb3c4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるなら",
+    "pattern": "Vるなら",
+    "meaning_vi": "nếu định V; nếu là V thì",
+    "explanation_vi": "Đưa lời khuyên hoặc thông tin dựa trên ý định hay điều kiện được nêu.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước なら."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た khi nói về ý định sắp tới."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "旅行するなら、春がいいです。",
+        "reading_ja": "りょこうするなら、はるがいいです。",
+        "translation_vi": "Nếu đi du lịch thì mùa xuân là phù hợp."
+      },
+      {
+        "sentence_ja": "買うなら、駅の近くの店をおすすめします。",
+        "reading_ja": "かうなら、えきのちかくのみせをおすすめします。",
+        "translation_vi": "Nếu mua thì tôi giới thiệu cửa hàng gần ga."
+      }
+    ]
+  },
+  {
+    "id": "dfd7c9f8-27d0-5689-8df9-f28ee85159af",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nでも",
+    "pattern": "Nでも",
+    "meaning_vi": "ngay cả N; chẳng hạn N",
+    "explanation_vi": "Đưa ra một ví dụ hoặc lựa chọn đại diện, đôi khi với sắc thái 'dù là'.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước でも khi đưa ra lựa chọn gợi ý."
+    ],
+    "common_mistakes": [
+      "Không nhầm でも gợi ý với でも nối hai mệnh đề đối lập."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "週末は映画でも見ませんか。",
+        "reading_ja": "しゅうまつはえいがでもみませんか。",
+        "translation_vi": "Cuối tuần xem phim chẳng hạn nhé?"
+      },
+      {
+        "sentence_ja": "困ったら、電話でもしてください。",
+        "reading_ja": "こまったら、でんわでもしてください。",
+        "translation_vi": "Nếu gặp khó khăn thì hãy gọi điện chẳng hạn."
+      }
+    ]
+  },
+  {
+    "id": "131d6ac5-9019-5e69-81a7-2e8273678caa",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるでしょう",
+    "pattern": "Vるでしょう",
+    "meaning_vi": "chắc là V; có lẽ V",
+    "explanation_vi": "Dự đoán hoặc xác nhận khả năng xảy ra của một việc.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước でしょう."
+    ],
+    "common_mistakes": [
+      "でしょう diễn tả dự đoán, không phải yêu cầu người nghe làm việc đó."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日は晴れるでしょう。",
+        "reading_ja": "あしたははれるでしょう。",
+        "translation_vi": "Ngày mai chắc trời sẽ nắng."
+      },
+      {
+        "sentence_ja": "この道は夜、暗くなるでしょう。",
+        "reading_ja": "このみちはよる、くらくなるでしょう。",
+        "translation_vi": "Con đường này ban đêm có lẽ sẽ tối."
+      }
+    ]
+  },
+  {
+    "id": "d13241ca-7231-5a01-ba59-427593ad1070",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたら",
+    "pattern": "Vたら",
+    "meaning_vi": "khi V; nếu V",
+    "explanation_vi": "Nêu điều kiện hoặc thời điểm để việc ở mệnh đề sau xảy ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước ら."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước ら trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "雨がやんだら、出かけましょう。",
+        "reading_ja": "あめがやんだら、でかけましょう。",
+        "translation_vi": "Khi mưa tạnh, chúng ta hãy ra ngoài."
+      },
+      {
+        "sentence_ja": "駅に着いたら、電話してください。",
+        "reading_ja": "えきについたら、でんわしてください。",
+        "translation_vi": "Khi đến ga, hãy gọi điện cho tôi."
+      }
+    ]
+  },
+  {
+    "id": "b4b9dd6d-99f4-5436-ae66-70f1eb179d94",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないと",
+    "pattern": "Vないと",
+    "meaning_vi": "nếu không V thì; phải V",
+    "explanation_vi": "Diễn tả điều kiện cần thiết, thường dùng trong hội thoại thân mật.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước と."
+    ],
+    "common_mistakes": [
+      "Trong văn viết trang trọng, nên chọn mẫu diễn đạt lịch sự hơn khi cần."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "早く寝ないと、明日起きられません。",
+        "reading_ja": "はやくねないと、あしたおきられません。",
+        "translation_vi": "Nếu không ngủ sớm thì ngày mai sẽ không dậy được."
+      },
+      {
+        "sentence_ja": "傘を持たないと、濡れますよ。",
+        "reading_ja": "かさをもたないと、ぬれますよ。",
+        "translation_vi": "Nếu không mang ô thì sẽ bị ướt đấy."
+      }
+    ]
+  },
+  {
+    "id": "fc93219e-b1c9-588d-9ab7-14646bc9da1a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nの間に",
+    "pattern": "Nの間に",
+    "meaning_vi": "trong lúc N; trong khoảng thời gian N",
+    "explanation_vi": "Nêu một khoảng thời gian mà trong đó một việc khác xảy ra.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ thời gian trước の間に."
+    ],
+    "common_mistakes": [
+      "Không dùng mẫu này để nói hai hành động xảy ra đồng thời bởi cùng một chủ thể; khi đó có thể dùng Vます + ながら."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "夏休みの間に、旅行したいです。",
+        "reading_ja": "なつやすみのあいだに、りょこうしたいです。",
+        "translation_vi": "Trong kỳ nghỉ hè, tôi muốn đi du lịch."
+      },
+      {
+        "sentence_ja": "旅行の間に写真をたくさん撮りました。",
+        "reading_ja": "りょこうのあいだにしゃしんをたくさんとりました。",
+        "translation_vi": "Trong chuyến du lịch, tôi đã chụp rất nhiều ảnh."
+      }
+    ]
+  },
+  {
+    "id": "eb562e1d-ce12-5fb7-94c9-3de9979a86e0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるとき",
+    "pattern": "Vるとき",
+    "meaning_vi": "khi V; lúc V",
+    "explanation_vi": "Nêu thời điểm thực hiện một hành động hoặc xảy ra một tình huống.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước とき khi nói về việc chưa xảy ra hoặc thường lệ."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu muốn nói hành động xảy ra sau thời điểm được nêu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "寝るとき、電気を消してください。",
+        "reading_ja": "ねるとき、でんきをけしてください。",
+        "translation_vi": "Khi đi ngủ, hãy tắt đèn."
+      },
+      {
+        "sentence_ja": "困ったときは、先生に相談します。",
+        "reading_ja": "こまったときは、せんせいにそうだんします。",
+        "translation_vi": "Khi gặp khó khăn, tôi sẽ hỏi ý kiến giáo viên."
+      }
+    ]
+  },
+  {
+    "id": "a5b04f4a-6152-583a-85f2-d0698773950e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたまま",
+    "pattern": "Vたまま",
+    "meaning_vi": "cứ để nguyên V; trong trạng thái đã V",
+    "explanation_vi": "Diễn tả việc giữ nguyên trạng thái sau một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước まま."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trước まま trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "窓を開けたまま、出かけてしまいました。",
+        "reading_ja": "まどをあけたまま、でかけてしまいました。",
+        "translation_vi": "Tôi đã ra ngoài mà để nguyên cửa sổ mở."
+      },
+      {
+        "sentence_ja": "靴を履いたまま、部屋に入らないでください。",
+        "reading_ja": "くつをはいたまま、へやにはいらないでください。",
+        "translation_vi": "Đừng vào phòng khi vẫn đi giày."
+      }
+    ]
+  },
+  {
+    "id": "3b1b6cbc-c8d3-5c2d-9298-cf3e5f7c6e93",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないように",
+    "pattern": "Vないように",
+    "meaning_vi": "để không V; sao cho không V",
+    "explanation_vi": "Diễn tả mục đích phòng tránh một việc không mong muốn.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước ように."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vるように khi nói mục tiêu thực hiện một việc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "忘れないように、予定をメモしました。",
+        "reading_ja": "わすれないように、よていをめもししました。",
+        "translation_vi": "Tôi đã ghi lịch để không quên."
+      },
+      {
+        "sentence_ja": "風邪をひかないように、暖かくしてください。",
+        "reading_ja": "かぜをひかないように、あたたかくしてください。",
+        "translation_vi": "Hãy giữ ấm để không bị cảm."
+      }
+    ]
+  },
+  {
+    "id": "5fee5c3a-130c-5894-8be5-89c2a7391e87",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてから",
+    "pattern": "Vてから",
+    "meaning_vi": "sau khi V rồi",
+    "explanation_vi": "Diễn tả một hành động xảy ra sau khi hành động trước đã hoàn tất.",
+    "usage_notes_vi": [
+      "Dùng động từ thể て trước から."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước から trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "仕事が終わってから、買い物に行きます。",
+        "reading_ja": "しごとがおわってから、かいものにいきます。",
+        "translation_vi": "Sau khi tan làm, tôi sẽ đi mua sắm."
+      },
+      {
+        "sentence_ja": "説明を読んでから、始めてください。",
+        "reading_ja": "せつめいをよんでから、はじめてください。",
+        "translation_vi": "Hãy đọc hướng dẫn rồi mới bắt đầu."
+      }
+    ]
+  },
+  {
+    "id": "de4097a2-57a7-5622-9728-295fb5eb0fb2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vても",
+    "pattern": "Vても",
+    "meaning_vi": "dù V; cho dù V",
+    "explanation_vi": "Diễn tả kết quả hoặc hành động vẫn xảy ra dù điều kiện được nêu có xảy ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể て trước も."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước も trong mẫu này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "雨が降っても、試合を続けます。",
+        "reading_ja": "あめがふっても、しあいをつづけます。",
+        "translation_vi": "Dù trời mưa, trận đấu vẫn tiếp tục."
+      },
+      {
+        "sentence_ja": "分からなくても、質問してください。",
+        "reading_ja": "わからなくても、しつもんしてください。",
+        "translation_vi": "Dù không hiểu, hãy cứ hỏi."
+      }
+    ]
+  },
+  {
+    "id": "6cdfd43a-6f99-518b-81cf-f635515ebee5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nなら",
+    "pattern": "Nなら",
+    "meaning_vi": "nếu là N; nếu nói về N",
+    "explanation_vi": "Đưa lời khuyên hoặc thông tin dựa trên danh từ hay chủ đề được nêu.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước なら."
+    ],
+    "common_mistakes": [
+      "Không nhầm Nなら với Vるなら, vốn đứng sau động từ thể từ điển."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "京都なら、秋がおすすめです。",
+        "reading_ja": "きょうとなら、あきがおすすめです。",
+        "translation_vi": "Nếu là Kyoto thì mùa thu rất đáng được giới thiệu."
+      },
+      {
+        "sentence_ja": "電子メールなら、すぐ返事できます。",
+        "reading_ja": "でんしめーるなら、すぐへんじできます。",
+        "translation_vi": "Nếu là email thì tôi có thể trả lời ngay."
+      }
+    ]
+  },
+  {
+    "id": "2a67ee97-785a-5f5f-af6c-055a01b8eae2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるところです",
+    "pattern": "Vるところです",
+    "meaning_vi": "sắp V",
+    "explanation_vi": "Diễn tả một hành động sắp bắt đầu ngay sau thời điểm nói.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ところです."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ている nếu muốn nhấn mạnh hành động chưa bắt đầu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今から出かけるところです。",
+        "reading_ja": "いまからでかけるところです。",
+        "translation_vi": "Bây giờ tôi sắp ra ngoài."
+      },
+      {
+        "sentence_ja": "これから会議を始めるところです。",
+        "reading_ja": "これからかいぎをはじめるところです。",
+        "translation_vi": "Bây giờ chúng tôi sắp bắt đầu cuộc họp."
+      }
+    ]
+  },
+  {
+    "id": "e02f0c00-dd5e-5b44-825d-7012ab0aac41",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vているところです",
+    "pattern": "Vているところです",
+    "meaning_vi": "đang V",
+    "explanation_vi": "Diễn tả một hành động đang diễn ra đúng vào thời điểm nói.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ている trước ところです."
+    ],
+    "common_mistakes": [
+      "Không dùng Vるところです khi hành động đã bắt đầu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今、昼ご飯を食べているところです。",
+        "reading_ja": "いま、ひるごはんをたべているところです。",
+        "translation_vi": "Bây giờ tôi đang ăn trưa."
+      },
+      {
+        "sentence_ja": "担当者に電話しているところです。",
+        "reading_ja": "たんとうしゃにでんわしているところです。",
+        "translation_vi": "Tôi đang gọi điện cho người phụ trách."
+      }
+    ]
+  },
+  {
+    "id": "98d0d1a7-1c3c-5466-846a-e506ed10c446",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたところです",
+    "pattern": "Vたところです",
+    "meaning_vi": "vừa mới V",
+    "explanation_vi": "Diễn tả một hành động vừa hoàn thành gần thời điểm nói.",
+    "usage_notes_vi": [
+      "Dùng động từ thể た trước ところです."
+    ],
+    "common_mistakes": [
+      "Không dùng Vたところです cho một việc đã xảy ra từ lâu."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今、駅に着いたところです。",
+        "reading_ja": "いま、えきについたところです。",
+        "translation_vi": "Tôi vừa mới đến ga."
+      },
+      {
+        "sentence_ja": "さっき宿題を終えたところです。",
+        "reading_ja": "さっきしゅくだいをおえたところです。",
+        "translation_vi": "Tôi vừa mới làm xong bài tập."
+      }
+    ]
+  },
+  {
+    "id": "fa219898-1b19-5b43-b44a-46eb636cbb61",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることにします",
+    "pattern": "Vることにします",
+    "meaning_vi": "quyết định sẽ V",
+    "explanation_vi": "Diễn tả quyết định do người nói tự đưa ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことにします."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た nếu quyết định được đưa ra từ thời điểm nói."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日漢字を勉強することにします。",
+        "reading_ja": "まいにちかんじをべんきょうすることにします。",
+        "translation_vi": "Tôi quyết định học Kanji mỗi ngày."
+      },
+      {
+        "sentence_ja": "週末は家で休むことにしました。",
+        "reading_ja": "しゅうまつはいえでやすむことにしました。",
+        "translation_vi": "Tôi đã quyết định nghỉ ở nhà cuối tuần."
+      }
+    ]
+  },
+  {
+    "id": "de96d3c7-c6ed-56b5-8b3a-fd2e92797cb5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることになりました",
+    "pattern": "Vることになりました",
+    "meaning_vi": "đã được quyết định sẽ V",
+    "explanation_vi": "Diễn tả một quyết định hoặc sắp xếp đã được định ra.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことになりました."
+    ],
+    "common_mistakes": [
+      "Không dùng mẫu này để nhấn mạnh quyết định cá nhân đơn thuần."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来月から大阪で働くことになりました。",
+        "reading_ja": "らいげつからおおさかではたらくことになりました。",
+        "translation_vi": "Từ tháng sau tôi sẽ làm việc ở Osaka theo quyết định đã định."
+      },
+      {
+        "sentence_ja": "会議は金曜日に行うことになりました。",
+        "reading_ja": "かいぎはきんようびにおこなうことになりました。",
+        "translation_vi": "Cuộc họp đã được quyết định tổ chức vào thứ Sáu."
+      }
+    ]
+  },
+  {
+    "id": "058a7b8d-94d1-516c-9296-e7d557a9381a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nらしいです",
+    "pattern": "Nらしいです",
+    "meaning_vi": "nghe nói là N; có vẻ đúng là N",
+    "explanation_vi": "Diễn tả thông tin nghe được hoặc nhận định dựa trên dấu hiệu.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước らしいです để nêu thông tin chưa trực tiếp xác nhận."
+    ],
+    "common_mistakes": [
+      "Không dùng らしいです khi người nói chắc chắn từ trải nghiệm trực tiếp."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "田中さんは来週休みらしいです。",
+        "reading_ja": "たなかさんはらいしゅうやすみらしいです。",
+        "translation_vi": "Nghe nói anh Tanaka nghỉ tuần sau."
+      },
+      {
+        "sentence_ja": "これは日本の伝統的な料理らしいです。",
+        "reading_ja": "これはにほんのでんとうてきなりょうりらしいです。",
+        "translation_vi": "Hình như đây là món ăn truyền thống Nhật Bản."
+      }
+    ]
+  },
+  {
+    "id": "70981462-021e-5351-add1-17d9880fa2cb",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに対して",
+    "pattern": "Nに対して",
+    "meaning_vi": "đối với N; đối lại với N",
+    "explanation_vi": "Nêu đối tượng hoặc phương diện mà hành động, thái độ hướng tới.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước に対して."
+    ],
+    "common_mistakes": [
+      "Không dùng に対して thay cho に khi chỉ địa điểm hoặc hướng di chuyển."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "お客様に対して、丁寧に説明します。",
+        "reading_ja": "おきゃくさまにたいして、ていねいにせつめいします。",
+        "translation_vi": "Tôi sẽ giải thích lịch sự với khách hàng."
+      },
+      {
+        "sentence_ja": "兄は私に対して親切です。",
+        "reading_ja": "あにはわたしにたいしてしんせつです。",
+        "translation_vi": "Anh trai đối xử tốt với tôi."
+      }
+    ]
+  },
+  {
+    "id": "8ab0f3cd-dd8c-5489-bc63-440582048a13",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないことにします",
+    "pattern": "Vないことにします",
+    "meaning_vi": "quyết định không V",
+    "explanation_vi": "Diễn tả quyết định của người nói là không thực hiện hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước ことにします."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển nếu muốn nói quyết định không làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今日は車を使わないことにします。",
+        "reading_ja": "きょうはくるまをつかわないことにします。",
+        "translation_vi": "Hôm nay tôi quyết định không dùng ô tô."
+      },
+      {
+        "sentence_ja": "夜は甘い物を食べないことにしました。",
+        "reading_ja": "よるはあまいものをたべないことにしました。",
+        "translation_vi": "Tôi đã quyết định buổi tối không ăn đồ ngọt."
+      }
+    ]
+  },
+  {
+    "id": "8b3185d9-f8f5-52dd-bd0c-0b90bda310e5",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによると",
+    "pattern": "Nによると",
+    "meaning_vi": "theo N; dựa theo N",
+    "explanation_vi": "Dẫn nguồn của thông tin được truyền đạt.",
+    "usage_notes_vi": [
+      "Đặt tên nguồn thông tin trước によると và thường kết hợp với そうです hoặc ということです."
+    ],
+    "common_mistakes": [
+      "Không dùng によると khi chỉ người nhận hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "天気予報によると、明日は雨だそうです。",
+        "reading_ja": "てんきよほうによると、あしたはあめだそうです。",
+        "translation_vi": "Theo dự báo thời tiết, nghe nói ngày mai sẽ mưa."
+      },
+      {
+        "sentence_ja": "先生によると、試験は来週です。",
+        "reading_ja": "せんせいによると、しけんはらいしゅうです。",
+        "translation_vi": "Theo giáo viên, kỳ thi là vào tuần sau."
+      }
+    ]
+  },
+  {
+    "id": "522f841b-6904-5735-b0b3-fe4ae1049f4d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるように言います",
+    "pattern": "Vるように言います",
+    "meaning_vi": "nói hoặc nhắc ai làm V",
+    "explanation_vi": "Dùng để truyền đạt lời nhắc hoặc yêu cầu gián tiếp về một hành động.",
+    "usage_notes_vi": [
+      "Sau ように thường là động từ thể từ điển hoặc thể phủ định."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生は宿題をするように言いました。",
+        "reading_ja": "せんせいはしゅくだいをするようにいいました。",
+        "translation_vi": "Giáo viên đã nhắc làm bài tập."
+      },
+      {
+        "sentence_ja": "母は早く寝るように言いました。",
+        "reading_ja": "ははははやくねるようにいいました。",
+        "translation_vi": "Mẹ đã nhắc đi ngủ sớm."
+      }
+    ]
+  },
+  {
+    "id": "bd7dafd8-80df-505c-92ac-6145dd87fee0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vている間に",
+    "pattern": "Vている間に",
+    "meaning_vi": "trong khi đang V",
+    "explanation_vi": "Diễn tả một việc xảy ra trong khoảng thời gian một hành động khác đang tiếp diễn.",
+    "usage_notes_vi": [
+      "Đặt 間に sau mệnh đề chỉ khoảng thời gian; chủ thể hai vế có thể khác nhau."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "私が料理している間に、弟が皿を並べました。",
+        "reading_ja": "わたしがりょうりしているあいだに、おとうとがさらをならべました。",
+        "translation_vi": "Trong khi tôi nấu ăn, em trai đã xếp đĩa."
+      },
+      {
+        "sentence_ja": "電車に乗っている間に、メールを読みました。",
+        "reading_ja": "でんしゃにのっているあいだに、めーるをよみました。",
+        "translation_vi": "Trong khi đi tàu điện, tôi đã đọc email."
+      }
+    ]
+  },
+  {
+    "id": "8b1ba3a1-0a57-5a51-9f9c-59f0be33d424",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによって",
+    "pattern": "Nによって",
+    "meaning_vi": "tùy theo N; do N",
+    "explanation_vi": "Diễn tả sự khác nhau tùy theo người, nơi hoặc điều kiện.",
+    "usage_notes_vi": [
+      "Nによって thường đi với biểu hiện khác nhau như 違います hoặc 変わります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có chức năng hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "地域によって祭りの日が違います。",
+        "reading_ja": "ちいきによってまつりのひがちがいます。",
+        "translation_vi": "Ngày lễ hội khác nhau tùy khu vực."
+      },
+      {
+        "sentence_ja": "季節によって食べる物が変わります。",
+        "reading_ja": "きせつによってたべるものがかわります。",
+        "translation_vi": "Thức ăn thay đổi tùy theo mùa."
+      }
+    ]
+  },
+  {
+    "id": "c8be6bbd-c1eb-5ef5-ad69-d1beae74ba9a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることになっています",
+    "pattern": "Vることになっています",
+    "meaning_vi": "được quy định là; đã được sắp xếp là",
+    "explanation_vi": "Diễn tả quy định hoặc lịch trình đã được quyết định trước.",
+    "usage_notes_vi": [
+      "Dùng với thể từ điển để nói về quy định hoặc quyết định đang có hiệu lực."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この図書館では、靴を脱ぐことになっています。",
+        "reading_ja": "このとしょかんでは、くつをぬぐことになっています。",
+        "translation_vi": "Ở thư viện này có quy định phải cởi giày."
+      },
+      {
+        "sentence_ja": "来週から新しい先生が来ることになっています。",
+        "reading_ja": "らいしゅうからあたらしいせんせいがくることになっています。",
+        "translation_vi": "Đã sắp xếp là giáo viên mới sẽ đến từ tuần sau."
+      }
+    ]
+  },
+  {
+    "id": "d9687467-8ebb-52c5-8384-e6011db3f978",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるまで",
+    "pattern": "Vるまで",
+    "meaning_vi": "cho đến khi V",
+    "explanation_vi": "Diễn tả khoảng thời gian kéo dài đến lúc một hành động hoặc sự việc xảy ra.",
+    "usage_notes_vi": [
+      "Mệnh đề trước まで nêu mốc kết thúc của khoảng thời gian."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "駅に着くまで、音楽を聞いていました。",
+        "reading_ja": "えきにつくまで、おんがくをきいていました。",
+        "translation_vi": "Tôi đã nghe nhạc cho đến khi tới ga."
+      },
+      {
+        "sentence_ja": "宿題が終わるまで、ゲームをしません。",
+        "reading_ja": "しゅくだいがおわるまで、げーむをしません。",
+        "translation_vi": "Tôi không chơi game cho đến khi làm xong bài tập."
+      }
+    ]
+  },
+  {
+    "id": "0afe37db-b6e3-57ff-a885-155e8473d1ed",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nの中で",
+    "pattern": "Nの中で",
+    "meaning_vi": "trong số N; trong N",
+    "explanation_vi": "Dùng để chọn hoặc so sánh một đối tượng trong một nhóm.",
+    "usage_notes_vi": [
+      "Sau Nの中で thường có biểu hiện lựa chọn hoặc so sánh như 一番."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu có thời điểm hoặc chức năng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "三つの町の中で、この町が一番静かです。",
+        "reading_ja": "みっつのまちのなかで、このまちがいちばんしずかです。",
+        "translation_vi": "Trong ba thị trấn, thị trấn này yên tĩnh nhất."
+      },
+      {
+        "sentence_ja": "果物の中で、りんごが一番好きです。",
+        "reading_ja": "くだもののなかで、りんごがいちばんすきです。",
+        "translation_vi": "Trong các loại trái cây, tôi thích táo nhất."
+      }
+    ]
+  },
+  {
+    "id": "5daaafbe-bc58-50db-81f9-92bbf9a40928",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vなくてはいけません",
+    "pattern": "Vなくてはいけません",
+    "meaning_vi": "phải V",
+    "explanation_vi": "Diễn tả nghĩa vụ hoặc việc bắt buộc phải làm.",
+    "usage_notes_vi": [
+      "Dùng dạng phủ định なくてはいけません để diễn đạt nghĩa phải làm."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "車を止めなくてはいけません。",
+        "reading_ja": "くるまをとめなくてはいけません。",
+        "translation_vi": "Phải dừng xe."
+      },
+      {
+        "sentence_ja": "申込書を出さなくてはいけません。",
+        "reading_ja": "もうしこみしょをださなくてはいけません。",
+        "translation_vi": "Phải nộp đơn đăng ký."
+      }
+    ]
+  },
+  {
+    "id": "ec6c33cb-669c-59a0-8b55-5023c5776601",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nという意味です",
+    "pattern": "Nという意味です",
+    "meaning_vi": "có nghĩa là N",
+    "explanation_vi": "Dùng để giải thích ý nghĩa của một từ, ký hiệu hoặc câu nói.",
+    "usage_notes_vi": [
+      "Đặt từ hoặc nội dung được giải thích trước という意味です."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この言葉は「安全」という意味です。",
+        "reading_ja": "このことばは「あんぜん」といういみです。",
+        "translation_vi": "Từ này có nghĩa là “an toàn”."
+      },
+      {
+        "sentence_ja": "その印は「入ってはいけない」という意味です。",
+        "reading_ja": "そのしるしは「はいってはいけない」といういみです。",
+        "translation_vi": "Ký hiệu đó có nghĩa là “không được vào”."
+      }
+    ]
+  },
+  {
+    "id": "71c651b4-4e57-5c0e-95b9-4d0a661c34d1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる必要があります",
+    "pattern": "Vる必要があります",
+    "meaning_vi": "cần phải V",
+    "explanation_vi": "Diễn tả việc cần làm để đạt mục đích hoặc hoàn thành thủ tục.",
+    "usage_notes_vi": [
+      "Đặt động từ thể từ điển trước 必要があります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu phủ định hoặc thời điểm khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日までに本を返却する必要があります。",
+        "reading_ja": "あしたまでにほんをへんきゃくするひつようがあります。",
+        "translation_vi": "Cần trả sách trước ngày mai."
+      },
+      {
+        "sentence_ja": "登録するにはメールアドレスを書く必要があります。",
+        "reading_ja": "とうろくするにはめーるあどれすをかくひつようがあります。",
+        "translation_vi": "Để đăng ký cần viết địa chỉ email."
+      }
+    ]
+  },
+  {
+    "id": "8144d0ac-b600-5d29-8649-e2082b9c679c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたばかりです",
+    "pattern": "Vたばかりです",
+    "meaning_vi": "vừa mới V",
+    "explanation_vi": "Diễn tả hành động vừa hoàn thành cách đây không lâu.",
+    "usage_notes_vi": [
+      "Dùng thể quá khứ của động từ trước ばかりです; khoảng thời gian thực tế tùy người nói."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "空港に着いたばかりです。",
+        "reading_ja": "くうこうについたばかりです。",
+        "translation_vi": "Tôi vừa mới đến sân bay."
+      },
+      {
+        "sentence_ja": "日本語を勉強し始めたばかりです。",
+        "reading_ja": "にほんごをべんきょうしはじめたばかりです。",
+        "translation_vi": "Tôi vừa mới bắt đầu học tiếng Nhật."
+      }
+    ]
+  },
+  {
+    "id": "bd19553b-4173-5e03-a79f-a148eea16869",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに興味があります",
+    "pattern": "Nに興味があります",
+    "meaning_vi": "có hứng thú với N",
+    "explanation_vi": "Diễn tả sự quan tâm hoặc hứng thú đối với một chủ đề.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ chủ đề trước に興味があります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本の文化に興味があります。",
+        "reading_ja": "にほんのぶんかにきょうみがあります。",
+        "translation_vi": "Tôi có hứng thú với văn hóa Nhật Bản."
+      },
+      {
+        "sentence_ja": "環境問題に興味を持ちました。",
+        "reading_ja": "かんきょうもんだいにきょうみをもちました。",
+        "translation_vi": "Tôi đã bắt đầu quan tâm đến vấn đề môi trường."
+      }
+    ]
+  },
+  {
+    "id": "87aa0040-26c4-567c-a512-ee7df1d58c00",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることが大切です",
+    "pattern": "Vることが大切です",
+    "meaning_vi": "điều quan trọng là V",
+    "explanation_vi": "Nêu rằng một hành động hoặc thói quen là quan trọng.",
+    "usage_notes_vi": [
+      "Danh từ hóa động từ bằng こと rồi dùng với 大切です."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu mô tả hành động đang diễn ra hoặc đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日練習することが大切です。",
+        "reading_ja": "まいにちれんしゅうすることがたいせつです。",
+        "translation_vi": "Việc luyện tập mỗi ngày là quan trọng."
+      },
+      {
+        "sentence_ja": "交通ルールを守ることが大切です。",
+        "reading_ja": "こうつうるーるをまもることがたいせつです。",
+        "translation_vi": "Việc tuân thủ luật giao thông là quan trọng."
+      }
+    ]
+  },
+  {
+    "id": "7b69e7e0-9182-5014-8575-418d8dbf2706",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてほしいです",
+    "pattern": "Vてほしいです",
+    "meaning_vi": "muốn ai đó V",
+    "explanation_vi": "Diễn tả mong muốn người khác thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Chủ thể mong muốn thường được nêu bằng に trước động từ."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生にもう一度説明してほしいです。",
+        "reading_ja": "せんせいにもういちどせつめいしてほしいです。",
+        "translation_vi": "Tôi muốn giáo viên giải thích lại một lần nữa."
+      },
+      {
+        "sentence_ja": "友達に面接の練習をしてほしいです。",
+        "reading_ja": "ともだちにめんせつのれんしゅうをしてほしいです。",
+        "translation_vi": "Tôi muốn bạn luyện phỏng vấn cùng tôi."
+      }
+    ]
+  },
+  {
+    "id": "a065a623-f8fd-5888-b277-4002261e31e7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nについて話します",
+    "pattern": "Nについて話します",
+    "meaning_vi": "nói về N",
+    "explanation_vi": "Dùng để nêu chủ đề của điều được nói hoặc trao đổi.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ chủ đề trước について."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "授業で日本の文化について話しました。",
+        "reading_ja": "じゅぎょうでにほんのぶんかについてはなしました。",
+        "translation_vi": "Trong giờ học tôi đã nói về văn hóa Nhật."
+      },
+      {
+        "sentence_ja": "面接で仕事について質問されました。",
+        "reading_ja": "めんせつでしごとについてしつもんされました。",
+        "translation_vi": "Trong buổi phỏng vấn tôi đã được hỏi về công việc."
+      }
+    ]
+  },
+  {
+    "id": "0304c77e-6b26-5892-ba5f-451ce3a228f4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのに時間がかかります",
+    "pattern": "Vるのに時間がかかります",
+    "meaning_vi": "mất thời gian để V",
+    "explanation_vi": "Diễn tả lượng thời gian cần thiết để thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước のに và đặt khoảng thời gian trước がかかります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với yêu cầu trực tiếp hoặc cách nêu thời lượng khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "駅まで歩くのに十分かかります。",
+        "reading_ja": "えきまであるくのにじゅっぷんかかります。",
+        "translation_vi": "Đi bộ đến ga mất mười phút."
+      },
+      {
+        "sentence_ja": "書類を準備するのに時間がかかりました。",
+        "reading_ja": "しょるいをじゅんびするのにじかんがかかりました。",
+        "translation_vi": "Việc chuẩn bị giấy tờ đã mất thời gian."
+      }
+    ]
+  },
+  {
+    "id": "1883281d-5783-5baf-b231-dd4a58d58bf0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたらいいですか",
+    "pattern": "Vたらいいですか",
+    "meaning_vi": "nên V thì tốt?; tôi nên V thế nào?",
+    "explanation_vi": "Dùng để hỏi lời khuyên hoặc cách xử lý phù hợp.",
+    "usage_notes_vi": [
+      "Dùng thể quá khứ たら trước いいですか để hỏi nên làm gì."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "熱があるときはどうしたらいいですか。",
+        "reading_ja": "ねつがあるときはどうしたらいいですか。",
+        "translation_vi": "Khi bị sốt thì tôi nên làm gì?"
+      },
+      {
+        "sentence_ja": "この書類はどこに出したらいいですか。",
+        "reading_ja": "このしょるいはどこにだしたらいいですか。",
+        "translation_vi": "Tôi nên nộp giấy tờ này ở đâu?"
+      }
+    ]
+  },
+  {
+    "id": "4d0e579b-6ffc-512e-b69c-555f948d096d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてしまいました",
+    "pattern": "Vてしまいました",
+    "meaning_vi": "đã lỡ V; đã hoàn tất V",
+    "explanation_vi": "Diễn tả việc đã hoàn thành hoặc tiếc nuối vì một hành động ngoài ý muốn.",
+    "usage_notes_vi": [
+      "Dùng thể て trước しまいました để nói về việc đã xảy ra trong quá khứ."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "薬を家に忘れてしまいました。",
+        "reading_ja": "くすりをいえにわすれてしまいました。",
+        "translation_vi": "Tôi đã lỡ quên thuốc ở nhà."
+      },
+      {
+        "sentence_ja": "宿題を全部終えてしまいました。",
+        "reading_ja": "しゅくだいをぜんぶおえてしまいました。",
+        "translation_vi": "Tôi đã làm xong hết bài tập."
+      }
+    ]
+  },
+  {
+    "id": "26c99416-66da-5f84-8d97-629a92e26884",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのように",
+    "pattern": "Nのように",
+    "meaning_vi": "như N; giống như N",
+    "explanation_vi": "Dùng để so sánh cách thức hoặc trạng thái với một danh từ.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước のように khi bổ nghĩa cho động từ hoặc tính từ."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu hỏi ý kiến hoặc mô tả trạng thái khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "医者のように詳しく説明できません。",
+        "reading_ja": "いしゃのようにくわしくせつめいできません。",
+        "translation_vi": "Tôi không thể giải thích chi tiết như bác sĩ."
+      },
+      {
+        "sentence_ja": "子どものように笑いました。",
+        "reading_ja": "こどものようにわらいました。",
+        "translation_vi": "Tôi đã cười như một đứa trẻ."
+      }
+    ]
+  },
+  {
+    "id": "a66e9a6c-b725-5c56-b5f5-7a032c775d9a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないようにしています",
+    "pattern": "Vないようにしています",
+    "meaning_vi": "đang cố gắng không V",
+    "explanation_vi": "Diễn tả thói quen hoặc nỗ lực có ý thức để không làm một việc.",
+    "usage_notes_vi": [
+      "Dùng thể phủ định trước ようにしています."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "事故を起こさないようにしています。",
+        "reading_ja": "じこをおこさないようにしています。",
+        "translation_vi": "Tôi luôn cố gắng không gây tai nạn."
+      },
+      {
+        "sentence_ja": "夜は危険な道を歩かないようにしています。",
+        "reading_ja": "よるはきけんなみちをあるかないようにしています。",
+        "translation_vi": "Buổi tối tôi cố gắng không đi trên đường nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "3db36ae5-21a7-5495-926e-25343bd51227",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに気をつけてください",
+    "pattern": "Nに気をつけてください",
+    "meaning_vi": "hãy chú ý/cẩn thận với N",
+    "explanation_vi": "Dùng để nhắc ai đó chú ý đến một điều có thể gây nguy hiểm hoặc sai sót.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ điều cần chú ý trước に気をつけてください."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "車に気をつけてください。",
+        "reading_ja": "くるまにきをつけてください。",
+        "translation_vi": "Hãy cẩn thận với xe cộ."
+      },
+      {
+        "sentence_ja": "火事に気をつけて料理してください。",
+        "reading_ja": "かじにきをつけてりょうりしてください。",
+        "translation_vi": "Hãy nấu ăn cẩn thận để tránh hỏa hoạn."
+      }
+    ]
+  },
+  {
+    "id": "af485bfc-db8b-57ed-b54c-53b387ed3c71",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるといいです",
+    "pattern": "Vるといいです",
+    "meaning_vi": "nên V thì tốt",
+    "explanation_vi": "Đưa ra một lời khuyên nhẹ nhàng về việc nên làm.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển trước といいです để gợi ý hành động."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mệnh lệnh trực tiếp hoặc lời khuyên khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "地震の前に水を用意するといいです。",
+        "reading_ja": "じしんのまえにみずをよういするといいです。",
+        "translation_vi": "Trước động đất, bạn nên chuẩn bị nước."
+      },
+      {
+        "sentence_ja": "分からないときは交番で聞くといいです。",
+        "reading_ja": "わからないときはこうばんできくといいです。",
+        "translation_vi": "Khi không biết đường, bạn nên hỏi ở đồn cảnh sát."
+      }
+    ]
+  },
+  {
+    "id": "371aa30c-1c6f-58ef-ab48-ca277d447a0f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nにします",
+    "pattern": "Nにします",
+    "meaning_vi": "chọn N; quyết định N",
+    "explanation_vi": "Dùng khi chọn một món, phương án hoặc trạng thái cụ thể.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ lựa chọn trước にします."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "昼ご飯はカレーにします。",
+        "reading_ja": "ひるごはんはかれーにします。",
+        "translation_vi": "Bữa trưa tôi chọn cà ri."
+      },
+      {
+        "sentence_ja": "支払いは現金にしました。",
+        "reading_ja": "しはらいはげんきんにしました。",
+        "translation_vi": "Tôi đã chọn thanh toán bằng tiền mặt."
+      }
+    ]
+  },
+  {
+    "id": "8647ce0e-3057-5d3d-83ff-7c13b0b03411",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてみたいです",
+    "pattern": "Vてみたいです",
+    "meaning_vi": "muốn thử V",
+    "explanation_vi": "Diễn tả mong muốn thử làm một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể て trước みたいです."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この店の商品を使ってみたいです。",
+        "reading_ja": "このみせのしょうひんをつかってみたいです。",
+        "translation_vi": "Tôi muốn thử dùng sản phẩm của cửa hàng này."
+      },
+      {
+        "sentence_ja": "日本で買い物をしてみたいです。",
+        "reading_ja": "にほんでかいものをしてみたいです。",
+        "translation_vi": "Tôi muốn thử mua sắm ở Nhật."
+      }
+    ]
+  },
+  {
+    "id": "c3e9d6cd-eb3d-586a-99a7-f7054871a86b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもらえますか",
+    "pattern": "Vてもらえますか",
+    "meaning_vi": "có thể nhờ ai V giúp không?",
+    "explanation_vi": "Dùng để nhờ người khác thực hiện một việc một cách lịch sự.",
+    "usage_notes_vi": [
+      "Đặt động từ thể て trước もらえますか."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu diễn tả ý định hoặc nhờ vả khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "領収書を見せてもらえますか。",
+        "reading_ja": "りょうしゅうしょをみせてもらえますか。",
+        "translation_vi": "Bạn có thể cho tôi xem biên lai được không?"
+      },
+      {
+        "sentence_ja": "この商品を交換してもらえますか。",
+        "reading_ja": "このしょうひんをこうかんしてもらえますか。",
+        "translation_vi": "Bạn có thể đổi sản phẩm này giúp tôi không?"
+      }
+    ]
+  },
+  {
+    "id": "9646c25b-b702-5af9-bb99-87ac83a20f87",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてあります",
+    "pattern": "Vてあります",
+    "meaning_vi": "được V sẵn; đang ở trạng thái đã V",
+    "explanation_vi": "Diễn tả kết quả của hành động được thực hiện có chủ ý và còn giữ nguyên.",
+    "usage_notes_vi": [
+      "Dùng động từ tha động từ ở thể て với あります."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "会議の資料が机の上に置いてあります。",
+        "reading_ja": "かいぎのしりょうがつくえのうえにおいてあります。",
+        "translation_vi": "Tài liệu cuộc họp được đặt sẵn trên bàn."
+      },
+      {
+        "sentence_ja": "窓が開けてあります。",
+        "reading_ja": "まどがあけてあります。",
+        "translation_vi": "Cửa sổ được mở sẵn."
+      }
+    ]
+  },
+  {
+    "id": "b76fe63b-5fcd-5195-8739-55393c81c40c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nのまま",
+    "pattern": "Nのまま",
+    "meaning_vi": "giữ nguyên N; trong trạng thái N",
+    "explanation_vi": "Diễn tả việc giữ nguyên trạng thái hoặc hình thức của danh từ.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước のまま khi trạng thái không thay đổi."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電気をつけたまま寝てしまいました。",
+        "reading_ja": "でんきをつけたままねてしまいました。",
+        "translation_vi": "Tôi đã lỡ ngủ khi vẫn bật điện."
+      },
+      {
+        "sentence_ja": "靴のまま部屋に入らないでください。",
+        "reading_ja": "くつのままへやにはいらないでください。",
+        "translation_vi": "Xin đừng vào phòng mà vẫn đi giày."
+      }
+    ]
+  },
+  {
+    "id": "cf7ec941-b486-5c7e-a6bd-a2d8f7f8f0cf",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vている間",
+    "pattern": "Vている間",
+    "meaning_vi": "trong lúc đang V",
+    "explanation_vi": "Diễn tả một hành động hoặc trạng thái kéo dài trong một khoảng thời gian.",
+    "usage_notes_vi": [
+      "Đặt 間 sau mệnh đề thể ている để nêu khoảng thời gian."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với trạng thái hoàn tất hoặc khoảng thời gian khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "工事をしている間、道を使えません。",
+        "reading_ja": "こうじをしているあいだ、みちをつかえません。",
+        "translation_vi": "Trong lúc thi công, không thể sử dụng đường."
+      },
+      {
+        "sentence_ja": "点検している間は機械を止めてください。",
+        "reading_ja": "てんけんしているあいだはきかいをとめてください。",
+        "translation_vi": "Trong lúc kiểm tra, hãy dừng máy."
+      }
+    ]
+  },
+  {
+    "id": "edfb0be1-c873-5ade-af40-8325b5fd7833",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nがします",
+    "pattern": "Nがします",
+    "meaning_vi": "có mùi/vị/âm thanh là N",
+    "explanation_vi": "Dùng để mô tả cảm giác được nhận biết bằng giác quan.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ cảm giác trước がします."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "台所からいい匂いがします。",
+        "reading_ja": "だいどころからいいにおいがします。",
+        "translation_vi": "Từ bếp có mùi thơm."
+      },
+      {
+        "sentence_ja": "この料理は辛い味がします。",
+        "reading_ja": "このりょうりはからいあじがします。",
+        "translation_vi": "Món ăn này có vị cay."
+      }
+    ]
+  },
+  {
+    "id": "9f6b9807-0e2a-5170-8c62-ae47d54aeaec",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのが上手です",
+    "pattern": "Vるのが上手です",
+    "meaning_vi": "giỏi V",
+    "explanation_vi": "Dùng để nói ai đó giỏi thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Danh từ hóa động từ bằng の rồi dùng với 上手です."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "母は魚を焼くのが上手です。",
+        "reading_ja": "はははさかなをやくのがじょうずです。",
+        "translation_vi": "Mẹ tôi giỏi nướng cá."
+      },
+      {
+        "sentence_ja": "妹は料理を作るのが上手になりました。",
+        "reading_ja": "いもうとはりょうりをつくるのがじょうずになりました。",
+        "translation_vi": "Em gái tôi đã trở nên giỏi nấu ăn."
+      }
+    ]
+  },
+  {
+    "id": "3c9475d2-4f35-5b69-8bcd-c901c549d2da",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてもいいですか",
+    "pattern": "Vてもいいですか",
+    "meaning_vi": "tôi có thể V không?",
+    "explanation_vi": "Dùng để hỏi xin phép thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Đặt động từ thể て trước もいいですか."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với mẫu nêu khả năng hoặc cho phép chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この塩を使ってもいいですか。",
+        "reading_ja": "このしおをつかってもいいですか。",
+        "translation_vi": "Tôi dùng muối này được không?"
+      },
+      {
+        "sentence_ja": "冷蔵庫を開けてもいいですか。",
+        "reading_ja": "れいぞうこをあけてもいいですか。",
+        "translation_vi": "Tôi mở tủ lạnh được không?"
+      }
+    ]
+  },
+  {
+    "id": "3dde2b79-c59f-5a46-8a65-e5307a01b75f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるかどうか",
+    "pattern": "Vるかどうか",
+    "meaning_vi": "có V hay không",
+    "explanation_vi": "Dùng để diễn tả chưa biết hoặc cần xác nhận một hành động có xảy ra hay không.",
+    "usage_notes_vi": [
+      "Đặt động từ thể từ điển trước かどうか."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "電車が時間通りに来るかどうか分かりません。",
+        "reading_ja": "でんしゃがじかんどおりにくるかどうかわかりません。",
+        "translation_vi": "Tôi không biết tàu có đến đúng giờ hay không."
+      },
+      {
+        "sentence_ja": "道が安全かどうか確認してください。",
+        "reading_ja": "みちがあんぜんかどうかかくにんしてください。",
+        "translation_vi": "Hãy kiểm tra xem đường có an toàn không."
+      }
+    ]
+  },
+  {
+    "id": "2f70f3ac-4839-5a46-bad2-454f447dd1a2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによっては",
+    "pattern": "Nによっては",
+    "meaning_vi": "tùy N thì; có trường hợp theo N",
+    "explanation_vi": "Diễn tả kết quả khác nhau tùy người, nơi hoặc điều kiện.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ tiêu chí trước によっては."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "季節によっては道路が混みます。",
+        "reading_ja": "きせつによってはどうろがこみます。",
+        "translation_vi": "Tùy mùa mà đường có thể đông."
+      },
+      {
+        "sentence_ja": "場所によっては電波が弱いです。",
+        "reading_ja": "ばしょによってはでんぱがよわいです。",
+        "translation_vi": "Ở một số nơi, sóng điện yếu."
+      }
+    ]
+  },
+  {
+    "id": "cf894c49-7c8e-53b9-a5d2-6520e40562df",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるためには",
+    "pattern": "Vるためには",
+    "meaning_vi": "để V thì; muốn V thì",
+    "explanation_vi": "Nêu điều kiện hoặc việc cần làm để đạt mục đích.",
+    "usage_notes_vi": [
+      "Dùng thể từ điển trước ためには rồi nêu điều cần thiết."
+    ],
+    "common_mistakes": [
+      "Không nhầm mẫu này với cách nêu thông tin chắc chắn hoặc điều kiện khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "時間に間に合うためには早く出る必要があります。",
+        "reading_ja": "じかんにまにあうためにははやくでるひつようがあります。",
+        "translation_vi": "Để kịp giờ cần xuất phát sớm."
+      },
+      {
+        "sentence_ja": "安全に歩くためには信号を守ってください。",
+        "reading_ja": "あんぜんにあるくためにはしんごうをまもってください。",
+        "translation_vi": "Để đi bộ an toàn hãy tuân thủ đèn tín hiệu."
+      }
+    ]
+  },
+  {
+    "id": "8aecccdf-40e5-5c85-8615-edc2399d863d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vているうちに",
+    "pattern": "Vているうちに",
+    "meaning_vi": "trong khi đang V; trước khi trạng thái thay đổi",
+    "explanation_vi": "Diễn tả một việc xảy ra trong lúc đang làm việc khác hoặc trước khi cơ hội mất đi.",
+    "usage_notes_vi": [
+      "Dùng dạng ている của động từ trước うちに."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nの間に khi chủ thể hoặc trạng thái thay đổi trong quá trình."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "日本語を勉強しているうちに、漢字が好きになりました。",
+        "reading_ja": "にほんごをべんきょうしているうちに、かんじがすきになりました。",
+        "translation_vi": "Trong khi học tiếng Nhật, tôi dần thích Kanji."
+      },
+      {
+        "sentence_ja": "忘れないうちに、メモしてください。",
+        "reading_ja": "わすれないうちに、めもしてください。",
+        "translation_vi": "Hãy ghi chú trước khi quên."
+      }
+    ]
+  },
+  {
+    "id": "d3068997-4da2-5b1c-aebf-c5995afa9176",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに比べて",
+    "pattern": "Nに比べて",
+    "meaning_vi": "so với N",
+    "explanation_vi": "So sánh một người hoặc vật với N về đặc điểm hay mức độ.",
+    "usage_notes_vi": [
+      "Đặt danh từ làm chuẩn so sánh trước に比べて."
+    ],
+    "common_mistakes": [
+      "Không dùng に比べて như một trợ từ chỉ địa điểm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "去年に比べて、今年は暖かいです。",
+        "reading_ja": "きょねんにくらべて、ことしはあたたかいです。",
+        "translation_vi": "So với năm ngoái, năm nay ấm hơn."
+      },
+      {
+        "sentence_ja": "電車はバスに比べて速いです。",
+        "reading_ja": "でんしゃはばすにくらべてはやいです。",
+        "translation_vi": "Tàu điện nhanh hơn xe buýt."
+      }
+    ]
+  },
+  {
+    "id": "3c30c009-697b-58c0-8c34-535735a5d6df",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたままにする",
+    "pattern": "Vたままにする",
+    "meaning_vi": "để nguyên trạng thái đã V",
+    "explanation_vi": "Nói rằng giữ nguyên một trạng thái sau khi đã thực hiện hành động.",
+    "usage_notes_vi": [
+      "Dùng thể た trước ままにする."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trước ままにする khi muốn nói trạng thái đã hoàn tất."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "ドアを開けたままにしないでください。",
+        "reading_ja": "どあをあけたままにしないでください。",
+        "translation_vi": "Xin đừng để cửa mở nguyên như vậy."
+      },
+      {
+        "sentence_ja": "電気をつけたままにしました。",
+        "reading_ja": "でんきをつけたままにしました。",
+        "translation_vi": "Tôi đã để đèn bật nguyên."
+      }
+    ]
+  },
+  {
+    "id": "f55f0179-162c-53ec-8657-dbaa0c7bd570",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるまでに",
+    "pattern": "Vるまでに",
+    "meaning_vi": "trước khi; trước thời điểm V",
+    "explanation_vi": "Nêu hạn chót mà một việc phải hoàn thành trước thời điểm khác.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước までに."
+    ],
+    "common_mistakes": [
+      "までに chỉ hạn hoàn thành, khác với まで chỉ thời điểm kéo dài."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "六時までに駅へ来てください。",
+        "reading_ja": "ろくじまでにえきへきてください。",
+        "translation_vi": "Hãy đến ga trước sáu giờ."
+      },
+      {
+        "sentence_ja": "寝るまでに宿題を終わらせます。",
+        "reading_ja": "ねるまでにしゅくだいをおわらせます。",
+        "translation_vi": "Tôi sẽ làm xong bài tập trước khi ngủ."
+      }
+    ]
+  },
+  {
+    "id": "aa985f7b-aba4-5737-94d3-c1f178b5f413",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるように言われました",
+    "pattern": "Vるように言われました",
+    "meaning_vi": "được bảo là hãy V",
+    "explanation_vi": "Nói lại lời dặn hoặc yêu cầu mà người khác đã nói với mình.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ように言われました."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vるようにします là tự cố gắng thực hiện."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生に毎日読むように言われました。",
+        "reading_ja": "せんせいにまいにちよむようにいわれました。",
+        "translation_vi": "Tôi được giáo viên bảo hãy đọc mỗi ngày."
+      },
+      {
+        "sentence_ja": "母に早く帰るように言われました。",
+        "reading_ja": "ははにはやくかえるようにいわれました。",
+        "translation_vi": "Tôi được mẹ bảo hãy về sớm."
+      }
+    ]
+  },
+  {
+    "id": "3b688b41-8bef-5463-9b82-eccdb483902b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nだけでなく",
+    "pattern": "Nだけでなく",
+    "meaning_vi": "không chỉ N mà còn",
+    "explanation_vi": "Thêm một đối tượng hoặc đặc điểm ngoài N.",
+    "usage_notes_vi": [
+      "Dùng danh từ trước だけでなく và thường nối với も ở vế sau."
+    ],
+    "common_mistakes": [
+      "Không dùng だけでなく để diễn tả lựa chọn chỉ có một đối tượng."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この店は日本人だけでなく、外国人にも人気があります。",
+        "reading_ja": "このみせはにほんじんだけでなく、がいこくじんにもにんきがあります。",
+        "translation_vi": "Cửa hàng này nổi tiếng không chỉ với người Nhật mà cả người nước ngoài."
+      },
+      {
+        "sentence_ja": "漢字だけでなく、文法も勉強します。",
+        "reading_ja": "かんじだけでなく、ぶんぽうもべんきょうします。",
+        "translation_vi": "Tôi học không chỉ Kanji mà cả ngữ pháp."
+      }
+    ]
+  },
+  {
+    "id": "77e7383e-29a1-5f55-871b-5eb1b4aa73ee",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてからでないと",
+    "pattern": "Vてからでないと",
+    "meaning_vi": "nếu không V trước thì không thể",
+    "explanation_vi": "Nêu điều kiện bắt buộc phải hoàn thành trước khi làm việc khác.",
+    "usage_notes_vi": [
+      "Dùng thể て trước からでないと."
+    ],
+    "common_mistakes": [
+      "Vế sau thường đi với dạng phủ định hoặc biểu thị không thể."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "予約してからでないと、入れません。",
+        "reading_ja": "よやくしてからでないと、はいれません。",
+        "translation_vi": "Nếu không đặt trước thì không thể vào."
+      },
+      {
+        "sentence_ja": "本人に確認してからでないと、変更できません。",
+        "reading_ja": "ほんにんにかくにんしてからでないと、へんこうできません。",
+        "translation_vi": "Nếu không xác nhận với本人 trước thì không thể thay đổi."
+      }
+    ]
+  },
+  {
+    "id": "b2d23285-7e7b-5daf-a301-c6a027e25c75",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nにとって",
+    "pattern": "Nにとって",
+    "meaning_vi": "đối với N; theo quan điểm của N",
+    "explanation_vi": "Nêu đánh giá hoặc ý nghĩa của sự việc đối với một người hay nhóm người.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ người hoặc nhóm làm chuẩn trước にとって."
+    ],
+    "common_mistakes": [
+      "Không dùng にとって để chỉ người nhận trực tiếp của hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "学生にとって、毎日の復習は大切です。",
+        "reading_ja": "がくせいにとって、まいにちのふくしゅうはたいせつです。",
+        "translation_vi": "Đối với học sinh, ôn tập mỗi ngày rất quan trọng."
+      },
+      {
+        "sentence_ja": "この経験は私にとって大切です。",
+        "reading_ja": "このけいけんはわたしにとってたいせつです。",
+        "translation_vi": "Kinh nghiệm này quan trọng đối với tôi."
+      }
+    ]
+  },
+  {
+    "id": "d7578aed-59fa-54ad-922c-9f0e7f4cb261",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるのではなく",
+    "pattern": "Vるのではなく",
+    "meaning_vi": "không phải V mà là",
+    "explanation_vi": "Phủ định một lựa chọn hoặc cách làm rồi đưa ra lựa chọn khác.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước のではなく."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないで là không làm V mà làm việc khác trong cùng hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "買うのではなく、借りることにしました。",
+        "reading_ja": "かうのではなく、かりることにしました。",
+        "translation_vi": "Tôi quyết định thuê thay vì mua."
+      },
+      {
+        "sentence_ja": "一人で決めるのではなく、みんなで相談しましょう。",
+        "reading_ja": "ひとりできめるのではなく、みんなでそうだんしましょう。",
+        "translation_vi": "Hãy cùng thảo luận thay vì tự quyết định một mình."
+      }
+    ]
+  },
+  {
+    "id": "2f6f257a-83a3-544d-8955-c1689a3a9892",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてくれます",
+    "pattern": "Vてくれます",
+    "meaning_vi": "ai đó làm V cho tôi/chúng tôi",
+    "explanation_vi": "Diễn tả người khác làm một việc có lợi hoặc giúp đỡ người nói.",
+    "usage_notes_vi": [
+      "Chủ thể thực hiện hành động đứng trước が hoặc は.",
+      "Dùng thể て của động từ trước くれます."
+    ],
+    "common_mistakes": [
+      "Không dùng もらいます khi muốn nhấn mạnh người thực hiện là người cho sự giúp đỡ."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "友達が駅まで案内してくれます。",
+        "reading_ja": "ともだちがえきまであんないしてくれます。",
+        "translation_vi": "Bạn tôi sẽ hướng dẫn tôi đến ga."
+      },
+      {
+        "sentence_ja": "店員が荷物を運んでくれました。",
+        "reading_ja": "てんいんがにもつをはこんでくれました。",
+        "translation_vi": "Nhân viên cửa hàng đã mang hành lý giúp tôi."
+      }
+    ]
+  },
+  {
+    "id": "8eecfbbf-5100-5699-bd1f-4777c63b8157",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vさせてください",
+    "pattern": "Vさせてください",
+    "meaning_vi": "hãy cho phép tôi làm V",
+    "explanation_vi": "Xin phép người nghe cho mình thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể sai khiến trước てください để nói lời xin phép lịch sự.",
+      "Chủ thể ngầm của V thường là người nói."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước させてください."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "先生、質問させてください。",
+        "reading_ja": "せんせい、しつもんさせてください。",
+        "translation_vi": "Thưa thầy/cô, hãy cho em hỏi một câu ạ."
+      },
+      {
+        "sentence_ja": "今日は早く帰らせてください。",
+        "reading_ja": "きょうははやくかえらせてください。",
+        "translation_vi": "Hôm nay hãy cho tôi về sớm ạ."
+      }
+    ]
+  },
+  {
+    "id": "c809ec5f-a520-58be-b93d-543aab0dad3a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないほうがいいです",
+    "pattern": "Vないほうがいいです",
+    "meaning_vi": "tốt hơn là không nên V",
+    "explanation_vi": "Đưa ra lời khuyên nên tránh một hành động.",
+    "usage_notes_vi": [
+      "Dùng thể ない trước ほうがいいです.",
+      "Có thể thêm です để lời khuyên lịch sự hơn."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vなくてもいいです, nghĩa là không cần phải làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "熱があるなら、無理をしないほうがいいです。",
+        "reading_ja": "ねつがあるなら、むりをしないほうがいいです。",
+        "translation_vi": "Nếu bị sốt thì tốt hơn là không nên cố sức."
+      },
+      {
+        "sentence_ja": "夜遅くにコーヒーを飲まないほうがいいです。",
+        "reading_ja": "よるおそくにコーヒーをのまないほうがいいです。",
+        "translation_vi": "Tốt hơn là không nên uống cà phê vào khuya."
+      }
+    ]
+  },
+  {
+    "id": "fab69c2a-bf1e-5455-86c4-c353f6e47dff",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vてくれませんか",
+    "pattern": "Vてくれませんか",
+    "meaning_vi": "bạn có thể V giúp tôi không?",
+    "explanation_vi": "Cách nhờ người nghe làm một việc giúp mình một cách lịch sự.",
+    "usage_notes_vi": [
+      "Dùng thể て của động từ trước くれませんか.",
+      "Câu hỏi này mềm hơn mệnh lệnh trực tiếp."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển trực tiếp trước くれませんか."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "もう一度説明してくれませんか。",
+        "reading_ja": "もういちどせつめいしてくれませんか。",
+        "translation_vi": "Bạn có thể giải thích lại một lần nữa không?"
+      },
+      {
+        "sentence_ja": "窓を開けてくれませんか。",
+        "reading_ja": "まどをあけてくれませんか。",
+        "translation_vi": "Bạn có thể mở cửa sổ giúp tôi không?"
+      }
+    ]
+  },
+  {
+    "id": "e3b62ded-94c4-5b00-81b9-3461160e3591",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることはありません",
+    "pattern": "Vることはありません",
+    "meaning_vi": "không cần phải V; không có chuyện V",
+    "explanation_vi": "Phủ định sự cần thiết hoặc khả năng xảy ra của hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことはありません.",
+      "Ngữ cảnh quyết định nghĩa là không cần hoặc không xảy ra."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないことにします, nghĩa là quyết định không làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "心配することはありません。",
+        "reading_ja": "しんぱいすることはありません。",
+        "translation_vi": "Bạn không cần phải lo lắng."
+      },
+      {
+        "sentence_ja": "急ぐことはありません。",
+        "reading_ja": "いそぐことはありません。",
+        "translation_vi": "Không cần phải vội."
+      }
+    ]
+  },
+  {
+    "id": "c4db813c-d1ea-5f78-bc84-7a22a63a1fc1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nを通して",
+    "pattern": "Nを通して",
+    "meaning_vi": "thông qua N",
+    "explanation_vi": "Nêu phương tiện, người trung gian hoặc khoảng thời gian xuyên suốt mà sự việc diễn ra.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ phương tiện hoặc trung gian trước を通して.",
+      "Có thể dùng cho hoạt động kéo dài qua một khoảng thời gian."
+    ],
+    "common_mistakes": [
+      "Không dùng を通して để chỉ người nhận trực tiếp của hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "友達を通してその人を知りました。",
+        "reading_ja": "ともだちをとおしてそのひとをしりました。",
+        "translation_vi": "Tôi biết người đó thông qua một người bạn."
+      },
+      {
+        "sentence_ja": "インターネットを通して情報を集めます。",
+        "reading_ja": "いんたーねっとをとおしてじょうほうをあつめます。",
+        "translation_vi": "Tôi thu thập thông tin qua Internet."
+      }
+    ]
+  },
+  {
+    "id": "91e4fe0d-3ede-5f21-b678-7ffbce191515",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vているようです",
+    "pattern": "Vているようです",
+    "meaning_vi": "có vẻ đang V",
+    "explanation_vi": "Suy đoán nhẹ rằng một hành động đang diễn ra dựa trên dấu hiệu quan sát được.",
+    "usage_notes_vi": [
+      "Dùng thể ている trước ようです.",
+      "Có thể thêm ように見えます để diễn đạt vẻ bề ngoài."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vるようにします, nghĩa là cố gắng làm V."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "外で雨が降っているようです。",
+        "reading_ja": "そとであめがふっているようです。",
+        "translation_vi": "Có vẻ bên ngoài đang mưa."
+      },
+      {
+        "sentence_ja": "彼はまだ寝ているようです。",
+        "reading_ja": "かれはまだねているようです。",
+        "translation_vi": "Có vẻ anh ấy vẫn đang ngủ."
+      }
+    ]
+  },
+  {
+    "id": "bbac03c7-0fcd-50e4-b067-d5e32057469a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたらどうでしょうか",
+    "pattern": "Vたらどうでしょうか",
+    "meaning_vi": "hay là V thì sao?",
+    "explanation_vi": "Đưa ra lời khuyên hoặc đề nghị một cách mềm mỏng.",
+    "usage_notes_vi": [
+      "Dùng thể た trước らどうでしょうか.",
+      "Cách nói này lịch sự hơn たらどうですか."
+    ],
+    "common_mistakes": [
+      "Không hiểu đây là câu hỏi về điều kiện đơn thuần; trong mẫu này người nói đang khuyên hoặc đề nghị."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "明日、先生に相談したらどうでしょうか。",
+        "reading_ja": "あした、せんせいにそうだんしたらどうでしょうか。",
+        "translation_vi": "Ngày mai bạn thử trao đổi với giáo viên xem sao?"
+      },
+      {
+        "sentence_ja": "少し休んだらどうでしょうか。",
+        "reading_ja": "すこしやすんだらどうでしょうか。",
+        "translation_vi": "Bạn nghỉ một chút thì sao?"
+      }
+    ]
+  },
+  {
+    "id": "708d8654-da63-52ac-99f9-f45803f45e95",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nほど",
+    "pattern": "Nほど",
+    "meaning_vi": "đến mức như N; không… bằng N",
+    "explanation_vi": "Dùng N làm mốc để nhấn mạnh mức độ hoặc so sánh trong câu phủ định.",
+    "usage_notes_vi": [
+      "Trong câu phủ định, Nほど thường mang nghĩa “không… bằng N”.",
+      "N đứng trước ほど."
+    ],
+    "common_mistakes": [
+      "Không dùng ほど như trợ từ số lượng khi muốn nêu con số ước lượng."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "東京ほど人が多い町はありません。",
+        "reading_ja": "とうきょうほどひとがおおいまちはありません。",
+        "translation_vi": "Không có thành phố nào đông người như Tokyo."
+      },
+      {
+        "sentence_ja": "この問題ほど難しい問題はありません。",
+        "reading_ja": "このもんだいほどむずかしいもんだいはありません。",
+        "translation_vi": "Không có vấn đề nào khó như vấn đề này."
+      }
+    ]
+  },
+  {
+    "id": "73c217b1-2fa6-5cf4-9614-f62d1c5844c4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vようと思います",
+    "pattern": "Vようと思います",
+    "meaning_vi": "tôi định sẽ V",
+    "explanation_vi": "Diễn tả ý định hoặc dự định của người nói.",
+    "usage_notes_vi": [
+      "Dùng thể ý chí trước と思います.",
+      "Thường dùng cho quyết định chưa thực hiện."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます trực tiếp trước と思います khi muốn nói ý định thân mật này."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "来年、日本へ旅行しようと思います。",
+        "reading_ja": "らいねん、にほんへりょこうしようとおもいます。",
+        "translation_vi": "Tôi định năm sau sẽ đi du lịch Nhật."
+      },
+      {
+        "sentence_ja": "週末は公園を掃除しようと思います。",
+        "reading_ja": "しゅうまつはこうえんをそうじしようとおもいます。",
+        "translation_vi": "Cuối tuần tôi định dọn vệ sinh công viên."
+      }
+    ]
+  },
+  {
+    "id": "0615e158-faaf-5ba7-bc11-3793a5d41521",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nの代わりに",
+    "pattern": "Nの代わりに",
+    "meaning_vi": "thay cho N",
+    "explanation_vi": "Nêu người hoặc vật được dùng thay cho một người hoặc vật khác.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước の代わりに.",
+      "Có thể dùng cho việc thay thế hoặc đại diện."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nのために, nghĩa là vì hoặc cho N."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "兄の代わりに会議へ行きます。",
+        "reading_ja": "あにのかわりにかいぎへいきます。",
+        "translation_vi": "Tôi sẽ đi họp thay cho anh trai."
+      },
+      {
+        "sentence_ja": "砂糖の代わりに蜂蜜を使いました。",
+        "reading_ja": "さとうのかわりにはちみつをつかいました。",
+        "translation_vi": "Tôi đã dùng mật ong thay cho đường."
+      }
+    ]
+  },
+  {
+    "id": "2d550e0b-26f7-5125-9b62-d769e7ea822a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nによれば",
+    "pattern": "Nによれば",
+    "meaning_vi": "theo N",
+    "explanation_vi": "Nêu nguồn thông tin hoặc căn cứ cho điều được nói.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ nguồn trước によれば.",
+      "Thường đi với そうです hoặc thông tin được nghe."
+    ],
+    "common_mistakes": [
+      "Không dùng によれば để chỉ phương tiện di chuyển; trường hợp đó dùng によって."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "天気予報によれば、明日は晴れです。",
+        "reading_ja": "てんきよほうによれば、あしたははれです。",
+        "translation_vi": "Theo dự báo thời tiết, ngày mai trời nắng."
+      },
+      {
+        "sentence_ja": "先生によれば、試験は来週です。",
+        "reading_ja": "せんせいによれば、しけんはらいしゅうです。",
+        "translation_vi": "Theo giáo viên, kỳ thi là tuần sau."
+      }
+    ]
+  },
+  {
+    "id": "dc84f430-34b6-5217-8e87-09aa05cff107",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることが必要です",
+    "pattern": "Vることが必要です",
+    "meaning_vi": "cần phải V",
+    "explanation_vi": "Nêu rằng một hành động là cần thiết.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことが必要です.",
+      "Có thể thay chủ thể bằng danh từ + には để nêu đối tượng."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vる必要があります, mẫu đã có trong seed, khi cần giữ cách diễn đạt nhất quán."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "申し込みには住所を書くことが必要です。",
+        "reading_ja": "もうしこみにはじゅうしょをかくことがひつようです。",
+        "translation_vi": "Đăng ký thì cần phải viết địa chỉ."
+      },
+      {
+        "sentence_ja": "安全のために電源を切ることが必要です。",
+        "reading_ja": "あんぜんのためにでんげんをきることがひつようです。",
+        "translation_vi": "Để an toàn thì cần phải tắt nguồn."
+      }
+    ]
+  },
+  {
+    "id": "aee95bcc-cb18-550e-8abc-7780a6345d1b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nを中心に",
+    "pattern": "Nを中心に",
+    "meaning_vi": "lấy N làm trung tâm",
+    "explanation_vi": "Mô tả hoạt động hoặc sự sắp xếp tập trung quanh N.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước を中心に.",
+      "Có thể dùng với địa điểm, nhóm người hoặc chủ đề."
+    ],
+    "common_mistakes": [
+      "Không dùng を中心に để chỉ người nhận trực tiếp của hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "駅を中心に新しい店が増えました。",
+        "reading_ja": "えきをちゅうしんにあたらしいみせがふえました。",
+        "translation_vi": "Các cửa hàng mới đã tăng lên quanh nhà ga."
+      },
+      {
+        "sentence_ja": "学生を中心に話し合いをしました。",
+        "reading_ja": "がくせいをちゅうしんにはなしあいをしました。",
+        "translation_vi": "Chúng tôi đã thảo luận với học sinh làm trung tâm."
+      }
+    ]
+  },
+  {
+    "id": "2eb9e96d-9798-5bb7-988c-7246c6f2d723",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるわけではありません",
+    "pattern": "Vるわけではありません",
+    "meaning_vi": "không hẳn là V",
+    "explanation_vi": "Phủ định một kết luận hoàn toàn hoặc giải thích rằng không phải lúc nào cũng V.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước わけではありません.",
+      "Có thể dùng は để tạo sắc thái đối chiếu."
+    ],
+    "common_mistakes": [
+      "Không hiểu là phủ định tuyệt đối mọi trường hợp; mẫu này thường phủ định một suy luận chung."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日テレビを見るわけではありません。",
+        "reading_ja": "まいにちてれびをみるわけではありません。",
+        "translation_vi": "Không phải là ngày nào tôi cũng xem tivi."
+      },
+      {
+        "sentence_ja": "この機能が難しいわけではありません。",
+        "reading_ja": "このきのうがむずかしいわけではありません。",
+        "translation_vi": "Không hẳn là chức năng này khó."
+      }
+    ]
+  },
+  {
+    "id": "9e647458-d9e5-57bb-8f17-6be24e1e834c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに関して",
+    "pattern": "Nに関して",
+    "meaning_vi": "liên quan đến N",
+    "explanation_vi": "Nêu chủ đề hoặc phạm vi mà thông tin, câu hỏi hay thảo luận hướng tới.",
+    "usage_notes_vi": [
+      "Đặt danh từ trước に関して.",
+      "Có thể thay bằng Nについて trong nhiều ngữ cảnh."
+    ],
+    "common_mistakes": [
+      "Không dùng に関して để chỉ nơi chốn diễn ra hành động."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "新しいサービスに関して質問があります。",
+        "reading_ja": "あたらしいさーびすにかんしてしつもんがあります。",
+        "translation_vi": "Tôi có câu hỏi liên quan đến dịch vụ mới."
+      },
+      {
+        "sentence_ja": "家の修理に関して説明を聞きました。",
+        "reading_ja": "いえのしゅうりにかんせついてせつめいをききました。",
+        "translation_vi": "Tôi đã nghe giải thích liên quan đến việc sửa nhà."
+      }
+    ]
+  },
+  {
+    "id": "b9b68dbd-96b4-5486-a886-9e2366778ae0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vている場合",
+    "pattern": "Vている場合",
+    "meaning_vi": "trong trường hợp đang V",
+    "explanation_vi": "Nêu điều kiện hoặc tình huống mà hành động đang diễn ra.",
+    "usage_notes_vi": [
+      "Dùng thể ている trước 場合.",
+      "Có thể dùng với なら để đưa ra hướng xử lý."
+    ],
+    "common_mistakes": [
+      "Không dùng thể từ điển nếu muốn nhấn mạnh trạng thái đang diễn ra."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "困っている場合は、受付に知らせてください。",
+        "reading_ja": "こまっているばあいは、うけつけにしらせてください。",
+        "translation_vi": "Trong trường hợp gặp khó khăn, hãy báo cho quầy tiếp nhận."
+      },
+      {
+        "sentence_ja": "雨が降っている場合は、試合を中止します。",
+        "reading_ja": "あめがふっているばあいは、しあいをちゅうしします。",
+        "translation_vi": "Nếu trời đang mưa thì sẽ hủy trận đấu."
+      }
+    ]
+  },
+  {
+    "id": "03978760-a973-5703-a391-f41eeed6b016",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vることにしています",
+    "pattern": "Vることにしています",
+    "meaning_vi": "duy trì việc V theo quyết định/quy tắc",
+    "explanation_vi": "Diễn tả thói quen hoặc quy tắc mà người nói đã quyết định duy trì.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ことにしています.",
+      "Dạng phủ định dùng Vないことにしています."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vることになります, nghĩa là được quyết định bởi hoàn cảnh hoặc người khác."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎朝、部屋を片付けることにしています。",
+        "reading_ja": "まいあさ、へやをかたづけることにしています。",
+        "translation_vi": "Tôi duy trì thói quen dọn phòng mỗi sáng."
+      },
+      {
+        "sentence_ja": "寝る前は電源を切ることにしています。",
+        "reading_ja": "ねるまえはでんげんをきることにしています。",
+        "translation_vi": "Tôi luôn tắt nguồn trước khi đi ngủ."
+      }
+    ]
+  },
+  {
+    "id": "61ef0b9f-5c90-4e1a-abfc-5bd74ae1b178",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vながら",
+    "pattern": "Vながら",
+    "meaning_vi": "vừa V vừa làm việc khác",
+    "explanation_vi": "Diễn tả hai hành động do cùng một chủ thể thực hiện đồng thời.",
+    "usage_notes_vi": [
+      "Dùng dạng liên dụng của động từ trước ながら.",
+      "Hành động chính thường đứng ở mệnh đề sau."
+    ],
+    "common_mistakes": [
+      "Không dùng ながら khi hai hành động có chủ thể khác nhau."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "音楽を聞きながら、部屋を片付けます。",
+        "reading_ja": "おんがくをききながら、へやをかたづけます。",
+        "translation_vi": "Tôi vừa nghe nhạc vừa dọn phòng."
+      },
+      {
+        "sentence_ja": "テレビを見ながら食事をしないでください。",
+        "reading_ja": "テレビをみながらしょくじをしないでください。",
+        "translation_vi": "Xin đừng vừa xem tivi vừa ăn cơm."
+      }
+    ]
+  },
+  {
+    "id": "6bd4f7af-a618-4067-8e4e-2724be0fcbc2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nまでに",
+    "pattern": "Nまでに",
+    "meaning_vi": "trước thời điểm N",
+    "explanation_vi": "Nêu hạn chót mà một hành động cần được hoàn thành trước đó.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ thời điểm trước までに.",
+      "Thường dùng với hành động có thể hoàn thành."
+    ],
+    "common_mistakes": [
+      "Không dùng までに để diễn tả một hành động kéo dài liên tục đến thời điểm đó."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "金曜日までに、荷物を送ります。",
+        "reading_ja": "きんようびまでに、にもつをおくります。",
+        "translation_vi": "Tôi sẽ gửi hành lý trước thứ Sáu."
+      },
+      {
+        "sentence_ja": "午後五時までに書類を提出してください。",
+        "reading_ja": "ごごごじまでにしょるいをていしゅつしてください。",
+        "translation_vi": "Hãy nộp tài liệu trước năm giờ chiều."
+      }
+    ]
+  },
+  {
+    "id": "7e72ead2-7036-4d19-a868-4bd436dfe362",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vたところ",
+    "pattern": "Vたところ",
+    "meaning_vi": "sau khi V thì phát hiện/kết quả là",
+    "explanation_vi": "Diễn tả kết quả hoặc phát hiện ngay sau khi thực hiện hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể quá khứ trước ところ.",
+      "Thường dùng khi kết quả vừa được nhận ra."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nのところ chỉ vị trí hoặc thời điểm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "玄関を見たところ、鍵がありませんでした。",
+        "reading_ja": "げんかんをみたところ、かぎがありませんでした。",
+        "translation_vi": "Sau khi nhìn ở cửa ra vào, tôi phát hiện không có chìa khóa."
+      },
+      {
+        "sentence_ja": "窓を開けたところ、涼しい風が入りました。",
+        "reading_ja": "まどをあけたところ、すずしいかぜがはいりました。",
+        "translation_vi": "Vừa mở cửa sổ thì gió mát thổi vào."
+      }
+    ]
+  },
+  {
+    "id": "d3f6e4b2-8a5c-4f02-9d33-2b7c9e6f8001",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに合わせて",
+    "pattern": "Nに合わせて",
+    "meaning_vi": "theo; phù hợp với N",
+    "explanation_vi": "Điều chỉnh hành động hoặc lựa chọn cho phù hợp với N.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ tiêu chuẩn hoặc hoàn cảnh trước に合わせて.",
+      "Dùng khi thay đổi lịch, vật dụng hoặc cách làm cho phù hợp."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Nに関して, mẫu chỉ nói về chủ đề."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "予定に合わせて、集合時間を変えます。",
+        "reading_ja": "よていにあわせて、しゅうごうじかんをかえます。",
+        "translation_vi": "Tôi sẽ đổi giờ tập trung cho phù hợp với lịch trình."
+      },
+      {
+        "sentence_ja": "季節に合わせて服を選びます。",
+        "reading_ja": "きせつにあわせてふくをえらびます。",
+        "translation_vi": "Tôi chọn quần áo phù hợp với mùa."
+      }
+    ]
+  },
+  {
+    "id": "d3f6e4b2-8a5c-4f02-9d33-2b7c9e6f8002",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるようにしてください",
+    "pattern": "Vるようにしてください",
+    "meaning_vi": "hãy cố gắng hoặc đảm bảo V",
+    "explanation_vi": "Yêu cầu người nghe thực hiện một việc và chú ý duy trì việc đó.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ようにしてください.",
+      "Mẫu thường dùng trong lời nhắc hoặc hướng dẫn lịch sự."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます ngay trước ようにしてください."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "ごみを分別するようにしてください。",
+        "reading_ja": "ごみをぶんべつするようにしてください。",
+        "translation_vi": "Hãy chú ý phân loại rác."
+      },
+      {
+        "sentence_ja": "避難場所を家族に知らせるようにしてください。",
+        "reading_ja": "ひなんばしょをかぞくにしらせるようにしてください。",
+        "translation_vi": "Hãy nhớ báo cho gia đình biết nơi sơ tán."
+      }
+    ]
+  },
+  {
+    "id": "d3f6e4b2-8a5c-4f02-9d33-2b7c9e6f8003",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないようにしてください",
+    "pattern": "Vないようにしてください",
+    "meaning_vi": "hãy chú ý đừng V",
+    "explanation_vi": "Yêu cầu người nghe tránh một hành động hoặc tình trạng không mong muốn.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước ようにしてください.",
+      "Dùng để nhắc tránh lỗi, nguy hiểm hoặc quên việc."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないでください, lời cấm trực tiếp hơn."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "訓練の時間に遅れないようにしてください。",
+        "reading_ja": "くんれんのじかんにおくれないようにしてください。",
+        "translation_vi": "Hãy chú ý đừng đến muộn giờ diễn tập."
+      },
+      {
+        "sentence_ja": "けがをしないように、急がないでください。",
+        "reading_ja": "けがをしないように、いそがないでください。",
+        "translation_vi": "Đừng vội để không bị thương."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0031",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに沿って",
+    "pattern": "Nに沿って",
+    "meaning_vi": "theo; dọc theo N",
+    "explanation_vi": "Diễn tả hành động được thực hiện theo một con đường, hướng dẫn hoặc kế hoạch làm chuẩn.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ đường, hướng dẫn hoặc kế hoạch trước に沿って.",
+      "Thường dùng khi làm theo nội dung đã được quy định."
+    ],
+    "common_mistakes": [
+      "Không dùng に沿って cho một hành động chỉ xảy ra cùng lúc mà không có chuẩn để theo."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "案内板に沿って非常口へ進んでください。",
+        "reading_ja": "あんないばんにそってひじょうぐちへすすんでください。",
+        "translation_vi": "Hãy đi về phía lối thoát hiểm theo bảng hướng dẫn."
+      },
+      {
+        "sentence_ja": "計画に沿って防災訓練を行います。",
+        "reading_ja": "けいかくにそってぼうさいくんれんをおこないます。",
+        "translation_vi": "Chúng tôi tiến hành diễn tập phòng chống thiên tai theo kế hoạch."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0032",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに応じて",
+    "pattern": "Nに応じて",
+    "meaning_vi": "tùy theo; phù hợp với N",
+    "explanation_vi": "Diễn tả việc thay đổi hoặc lựa chọn tùy theo điều kiện, mức độ hoặc nhu cầu.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ điều kiện hoặc mức độ trước に応じて.",
+      "Có thể dùng với cách làm, số lượng hoặc nội dung thay đổi."
+    ],
+    "common_mistakes": [
+      "Không nhầm に応じて với に合わせて khi muốn nhấn mạnh việc khớp với lịch hoặc kế hoạch cụ thể."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "人数に応じて避難所の部屋を分けます。",
+        "reading_ja": "にんずうにおうじてひなんじょのへやをわけます。",
+        "translation_vi": "Chúng tôi chia phòng ở nơi sơ tán tùy theo số người."
+      },
+      {
+        "sentence_ja": "危険の大きさに応じて警報を出します。",
+        "reading_ja": "きけんのおおきさにおうじてけいほうをだします。",
+        "translation_vi": "Chúng tôi phát cảnh báo tùy theo mức độ nguy hiểm."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0033",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vる際に",
+    "pattern": "Vる際に",
+    "meaning_vi": "khi; vào lúc V",
+    "explanation_vi": "Diễn tả thời điểm hoặc dịp thực hiện một hành động, thường dùng trong hướng dẫn lịch sự.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước 際に.",
+      "Có thể dùng với danh từ bằng cách thêm の, như Nの際に."
+    ],
+    "common_mistakes": [
+      "Không dùng thể た sau 際に khi muốn nói hành động sắp thực hiện."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "避難する際に、エレベーターを使わないでください。",
+        "reading_ja": "ひなんするさいに、えれべーたーをつかわないでください。",
+        "translation_vi": "Khi sơ tán, xin đừng sử dụng thang máy."
+      },
+      {
+        "sentence_ja": "入場する際に、係の人へ名前を伝えます。",
+        "reading_ja": "にゅうじょうするさいに、かかりのひとへなまえをつたえます。",
+        "translation_vi": "Khi vào cửa, tôi báo tên cho người phụ trách."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0041",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに従って",
+    "pattern": "Nに従って",
+    "meaning_vi": "theo; tuân theo N",
+    "explanation_vi": "Diễn tả việc thực hiện theo chỉ dẫn, quy tắc hoặc thứ tự đã có.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ quy tắc, hướng dẫn hoặc thứ tự trước に従って.",
+      "Thường dùng trong hướng dẫn và quy trình."
+    ],
+    "common_mistakes": [
+      "Không dùng に従って khi chỉ muốn nói hai hành động xảy ra cùng lúc."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "手順に従って機械を操作してください。",
+        "reading_ja": "てじゅんにしたがってきかいをそうさしてください。",
+        "translation_vi": "Hãy vận hành máy theo quy trình."
+      },
+      {
+        "sentence_ja": "指示に従って書類を提出しました。",
+        "reading_ja": "しじにしたがってしょるいをていしゅつしました。",
+        "translation_vi": "Tôi đã nộp giấy tờ theo hướng dẫn."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0042",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nをもとに",
+    "pattern": "Nをもとに",
+    "meaning_vi": "dựa trên N",
+    "explanation_vi": "Diễn tả việc tạo ra hoặc quyết định điều gì dựa trên thông tin hay tài liệu làm cơ sở.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ thông tin, dữ liệu hoặc tài liệu trước をもとに.",
+      "Thường đi với 作る, 決める hoặc 考える."
+    ],
+    "common_mistakes": [
+      "Không nhầm をもとに với Nについて, vốn chỉ nói về chủ đề."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "確認事項をもとに作業の計画を作ります。",
+        "reading_ja": "かくにんじこうをもとにさぎょうのけいかくをつくります。",
+        "translation_vi": "Tôi lập kế hoạch công việc dựa trên các mục cần xác nhận."
+      },
+      {
+        "sentence_ja": "参加者の意見をもとに手順を直しました。",
+        "reading_ja": "さんかしゃのいけんをもとにてじゅんをなおしました。",
+        "translation_vi": "Tôi đã sửa quy trình dựa trên ý kiến của người tham gia."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0043",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vるように伝えます",
+    "pattern": "Vるように伝えます",
+    "meaning_vi": "truyền đạt rằng hãy V",
+    "explanation_vi": "Diễn tả việc truyền đạt yêu cầu hoặc lời nhắc để ai đó thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ように伝えます.",
+      "Có thể dùng Vないように伝えます để truyền đạt việc tránh làm gì."
+    ],
+    "common_mistakes": [
+      "Không dùng thể ます ngay trước ように伝えます."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "担当者に休憩を取るように伝えます。",
+        "reading_ja": "たんとうしゃにきゅうけいをとるようにつたえます。",
+        "translation_vi": "Tôi sẽ nói với người phụ trách hãy nghỉ giải lao."
+      },
+      {
+        "sentence_ja": "新人に手順を守るように伝えました。",
+        "reading_ja": "しんじんにてじゅんをまもるようにつたえました。",
+        "translation_vi": "Tôi đã nhắc nhân viên mới tuân thủ quy trình."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0051",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに役立つ",
+    "pattern": "Nに役立つ",
+    "meaning_vi": "có ích cho N",
+    "explanation_vi": "Diễn tả điều gì đó hữu ích cho một mục đích hoặc hoạt động.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ mục đích hoặc hoạt động trước に役立つ.",
+      "Thường dùng với từ chỉ kỹ năng, thông tin hoặc công cụ."
+    ],
+    "common_mistakes": [
+      "Không nhầm に役立つ với 便利, vốn mô tả sự tiện lợi của đồ vật hoặc cách làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "毎日の練習は発音の上達に役立ちます。",
+        "reading_ja": "まいにちのれんしゅうははつおんのじょうたつにやくだちます。",
+        "translation_vi": "Luyện tập hằng ngày có ích cho việc tiến bộ phát âm."
+      },
+      {
+        "sentence_ja": "計画表は勉強時間の管理に役立ちます。",
+        "reading_ja": "けいかくひょうはべんきょうじかんのかんりにやくだちます。",
+        "translation_vi": "Bảng kế hoạch có ích cho việc quản lý thời gian học."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0052",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに向いています",
+    "pattern": "Nに向いています",
+    "meaning_vi": "phù hợp với N",
+    "explanation_vi": "Diễn tả một người hoặc cách làm phù hợp với một mục đích, hoàn cảnh hoặc đối tượng.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ mục đích hoặc đối tượng trước に向いています.",
+      "Có thể dùng với người, công việc và phương pháp."
+    ],
+    "common_mistakes": [
+      "Không dùng に向いています để nói một đồ vật chỉ đang hướng về một phía."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "この教材は初めて勉強する人に向いています。",
+        "reading_ja": "このきょうざいははじめてべんきょうするひとにむいています。",
+        "translation_vi": "Tài liệu này phù hợp với người mới học."
+      },
+      {
+        "sentence_ja": "短い練習は忙しい人に向いています。",
+        "reading_ja": "みじかいれんしゅうはいそがしいひとにむいています。",
+        "translation_vi": "Bài luyện tập ngắn phù hợp với người bận rộn."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0053",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "VるためのN",
+    "pattern": "VるためのN",
+    "meaning_vi": "N để V",
+    "explanation_vi": "Diễn tả danh từ được dùng cho mục đích thực hiện một hành động.",
+    "usage_notes_vi": [
+      "Dùng động từ thể từ điển trước ための rồi đến danh từ.",
+      "Phần sau phải là danh từ chỉ người, vật hoặc kế hoạch."
+    ],
+    "common_mistakes": [
+      "Không dùng động từ thể ます ngay trước ための."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "発音を練習するための時間を作ります。",
+        "reading_ja": "はつおんをれんしゅうするためのじかんをつくります。",
+        "translation_vi": "Tôi tạo thời gian để luyện phát âm."
+      },
+      {
+        "sentence_ja": "復習するためのノートを一冊用意しました。",
+        "reading_ja": "ふくしゅうするためののーとをいっさつよういしました。",
+        "translation_vi": "Tôi đã chuẩn bị một quyển vở để ôn tập."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0061",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに気づきます",
+    "pattern": "Nに気づきます",
+    "meaning_vi": "nhận ra N",
+    "explanation_vi": "Diễn tả việc nhận thấy hoặc nhận ra một sự vật, tình trạng hay điều chưa biết.",
+    "usage_notes_vi": [
+      "Dùng danh từ chỉ điều được nhận ra trước に気づきます.",
+      "Có thể dùng với lỗi, thay đổi hoặc dấu hiệu của cơ thể."
+    ],
+    "common_mistakes": [
+      "Không dùng を sau danh từ trong mẫu này; động từ 気づく đi với に."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "睡眠が足りないことに気づきました。",
+        "reading_ja": "すいみんがたりないことにきづきました。",
+        "translation_vi": "Tôi nhận ra rằng mình ngủ chưa đủ."
+      },
+      {
+        "sentence_ja": "体温の変化に早く気づいてください。",
+        "reading_ja": "たいおんのへんかにはやくきづいてください。",
+        "translation_vi": "Hãy sớm nhận ra sự thay đổi của thân nhiệt."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0062",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Vないでおきます",
+    "pattern": "Vないでおきます",
+    "meaning_vi": "để không V; quyết định không V",
+    "explanation_vi": "Diễn tả việc chủ động không làm một hành động để giữ nguyên tình trạng hoặc tránh vấn đề.",
+    "usage_notes_vi": [
+      "Dùng động từ thể ない trước でおきます.",
+      "Thường dùng cho quyết định tạm thời hoặc chuẩn bị cho tình huống."
+    ],
+    "common_mistakes": [
+      "Không nhầm với Vないでください, vốn là lời yêu cầu người khác không làm."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "今夜は遅くまでスマートフォンを見ないでおきます。",
+        "reading_ja": "こんやはおそくまですまーとふぉんをみないでおきます。",
+        "translation_vi": "Tối nay tôi quyết định không xem điện thoại đến khuya."
+      },
+      {
+        "sentence_ja": "体調が悪いので、無理をしないでおきます。",
+        "reading_ja": "たいちょうがわるいので、むりをしないでおきます。",
+        "translation_vi": "Vì sức khỏe không tốt nên tôi sẽ không cố quá sức."
+      }
+    ]
+  },
+  {
+    "id": "f6c9e4d3-1b7a-4f05-a843-5e9d2b7c0063",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nに必要なN",
+    "pattern": "Nに必要なN",
+    "meaning_vi": "N cần thiết cho N",
+    "explanation_vi": "Diễn tả một danh từ cần thiết cho mục đích, hoạt động hoặc tình huống khác.",
+    "usage_notes_vi": [
+      "Đặt danh từ chỉ mục đích trước に必要な rồi đến danh từ cần thiết.",
+      "Có thể dùng với thời gian, đồ vật, thông tin hoặc kỹ năng."
+    ],
+    "common_mistakes": [
+      "Không dùng 必要な như động từ; danh từ phía sau phải được nêu rõ."
+    ],
+    "related_grammar_ids": [],
+    "examples": [
+      {
+        "sentence_ja": "健康管理に必要な情報を記録します。",
+        "reading_ja": "けんこうかんりにひつようなじょうほうをきろくします。",
+        "translation_vi": "Tôi ghi lại thông tin cần thiết cho việc quản lý sức khỏe."
+      },
+      {
+        "sentence_ja": "十分な睡眠に必要な時間を考えました。",
+        "reading_ja": "じゅうぶんなすいみんにひつようなじかんをかんがえました。",
+        "translation_vi": "Tôi đã suy nghĩ về khoảng thời gian cần thiết để ngủ đủ."
+      }
+    ]
+  }
+]

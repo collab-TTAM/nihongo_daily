@@ -1,0 +1,11 @@
+{
+  "version": "nd-quiz-report-1",
+  "operation": "submit_quiz_report",
+  "transport": "Supabase RPC (specified, not implemented)",
+  "parameter": "p_request",
+  "request_definition": "schema.json#/$defs/request",
+  "response_definition": "schema.json#/$defs/response",
+  "error_definition": "contracts/v0.1/models.schema.json#/$defs/error",
+  "max_request_bytes": 16384,
+  "authority": "Future verified auth.uid only; client answers/time are self-reports, no mastery/study/SRS credit"
+}

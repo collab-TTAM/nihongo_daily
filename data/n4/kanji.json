@@ -1,0 +1,1737 @@
+[
+  {
+    "id": "b81afcad-a882-574c-80b5-8d1556278833",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "会",
+    "meaning_vi": "gặp; hội; cuộc họp",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あ"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c506426b-3b19-5c18-83be-d9c7b422e359",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "社",
+    "meaning_vi": "công ty; đền thờ",
+    "onyomi": [
+      "シャ"
+    ],
+    "kunyomi": [
+      "やしろ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "a734736c-e168-5f23-b630-873ba36b742d",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "店",
+    "meaning_vi": "cửa hàng",
+    "onyomi": [
+      "テン"
+    ],
+    "kunyomi": [
+      "みせ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "46348dec-b894-5bb3-9ecb-0964de350389",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "駅",
+    "meaning_vi": "nhà ga",
+    "onyomi": [
+      "エキ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "46c55f3e-4d5a-580a-b94c-7427d69acc1a",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "旅",
+    "meaning_vi": "du lịch; chuyến đi",
+    "onyomi": [
+      "リョ"
+    ],
+    "kunyomi": [
+      "たび"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b928e8c6-e475-574e-a257-0106bf3643cb",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "料",
+    "meaning_vi": "liệu; phí; nguyên liệu",
+    "onyomi": [
+      "リョウ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "230eee8a-4b32-574c-97bd-a689122b12f8",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "理",
+    "meaning_vi": "lý do; logic",
+    "onyomi": [
+      "リ"
+    ],
+    "kunyomi": [
+      "ことわり"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "4503e830-2d98-5ad4-bb17-c7a92e11566e",
+    "jlpt_level": "N4",
+    "difficulty": 0.35,
+    "content_version": 1,
+    "is_active": true,
+    "character": "勉",
+    "meaning_vi": "cố gắng; nỗ lực",
+    "onyomi": [
+      "ベン"
+    ],
+    "kunyomi": [
+      "つとめる"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "7270dab4-f127-5a1f-8474-c3a913bf7820",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "度",
+    "meaning_vi": "lần; mức độ; độ",
+    "onyomi": [
+      "ド",
+      "ト"
+    ],
+    "kunyomi": [
+      "たび"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "43e35f96-cc4e-56ee-bdbb-153a9db2b00c",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "活",
+    "meaning_vi": "sống; hoạt động",
+    "onyomi": [
+      "カツ"
+    ],
+    "kunyomi": [
+      "い",
+      "いける"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "10119cdf-7bef-54b9-aa92-3b955269cd6a",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "送",
+    "meaning_vi": "gửi; tiễn; đưa",
+    "onyomi": [
+      "ソウ"
+    ],
+    "kunyomi": [
+      "おく"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "cb6a8902-578b-5ec4-8df8-dbc745f691bd",
+    "jlpt_level": "N4",
+    "difficulty": 0.4,
+    "content_version": 1,
+    "is_active": true,
+    "character": "始",
+    "meaning_vi": "bắt đầu",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "はじ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "bb3424ab-a1ac-54b4-802b-54dc0fd5884e",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "character": "動",
+    "meaning_vi": "chuyển động; hoạt động",
+    "onyomi": [
+      "ドウ"
+    ],
+    "kunyomi": [
+      "うご"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "4c860ef3-3a44-5478-899b-9f6be868cddb",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "character": "健",
+    "meaning_vi": "khỏe mạnh",
+    "onyomi": [
+      "ケン"
+    ],
+    "kunyomi": [
+      "すこ"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d817e345-e025-5dfc-80a0-fac04fc24f1b",
+    "jlpt_level": "N4",
+    "difficulty": 0.45,
+    "content_version": 1,
+    "is_active": true,
+    "character": "直",
+    "meaning_vi": "thẳng; sửa; trực tiếp",
+    "onyomi": [
+      "チョク",
+      "ジキ"
+    ],
+    "kunyomi": [
+      "ただ",
+      "なお",
+      "すぐ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "46b27c85-714c-5596-8d30-d5fe270ff493",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "選",
+    "meaning_vi": "chọn; tuyển chọn",
+    "onyomi": [
+      "セン"
+    ],
+    "kunyomi": [
+      "えら"
+    ],
+    "stroke_count": 15,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "3676ec55-2b6e-54ab-98dc-69d95fd24d0d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "決",
+    "meaning_vi": "quyết định; quyết",
+    "onyomi": [
+      "ケツ"
+    ],
+    "kunyomi": [
+      "き",
+      "きま",
+      "きめ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "81e462fe-ca73-5794-abd4-1a2905b3f60c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "伝",
+    "meaning_vi": "truyền đạt; truyền lại",
+    "onyomi": [
+      "デン"
+    ],
+    "kunyomi": [
+      "つた",
+      "つた-"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "1b44d346-b2bd-55f2-8919-43cc0d6a15af",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "返",
+    "meaning_vi": "trả lại; quay lại",
+    "onyomi": [
+      "ヘン"
+    ],
+    "kunyomi": [
+      "かえ",
+      "かえ-"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c151c9b1-90f2-5e5c-947c-97ee3f20b109",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "薬",
+    "meaning_vi": "thuốc; dược phẩm",
+    "onyomi": [
+      "ヤク"
+    ],
+    "kunyomi": [
+      "くすり"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5ae0d6c-1a88-5c19-8a0e-b6e3087102b0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "知",
+    "meaning_vi": "biết; hiểu",
+    "onyomi": [
+      "チ"
+    ],
+    "kunyomi": [
+      "し",
+      "しら"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "cb9f2b28-8243-5dfb-b9e7-162e3110d2ab",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "払",
+    "meaning_vi": "trả; quét",
+    "onyomi": [
+      "フツ"
+    ],
+    "kunyomi": [
+      "はら"
+    ],
+    "stroke_count": 5,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b9f17e12-b81e-57ae-bcd6-c75ca397be53",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "増",
+    "meaning_vi": "tăng; thêm",
+    "onyomi": [
+      "ゾウ"
+    ],
+    "kunyomi": [
+      "ま",
+      "ふ"
+    ],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "e591fc1b-0498-532c-a263-4eb59ae30312",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "乗",
+    "meaning_vi": "lên; đi (phương tiện); cưỡi",
+    "onyomi": [
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "の"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "bd90fa65-0f7b-51c3-8983-30dfc909b758",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "残",
+    "meaning_vi": "còn lại; để lại",
+    "onyomi": [
+      "ザン"
+    ],
+    "kunyomi": [
+      "のこ",
+      "のこ-"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c37c21f3-c187-5be5-837f-6ff69373d4e6",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "急",
+    "meaning_vi": "gấp; vội; khẩn cấp",
+    "onyomi": [
+      "キュウ"
+    ],
+    "kunyomi": [
+      "いそ",
+      "いそ-"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "08c38bf1-83d5-590b-998f-7186cdf7f288",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "壊",
+    "meaning_vi": "hỏng; phá hỏng",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "こわ",
+      "こわ-"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "de52ea74-c8c5-5a86-945c-3969e6a6dae7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "到",
+    "meaning_vi": "đến; tới",
+    "onyomi": [
+      "トウ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "ec25de2b-677b-55d3-9dc1-4bedc4e57aa7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "泊",
+    "meaning_vi": "ở lại; neo đậu",
+    "onyomi": [
+      "ハク"
+    ],
+    "kunyomi": [
+      "と",
+      "とま"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d8c40d46-9e72-5afe-91b2-bc15e8fdb9fc",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "焼",
+    "meaning_vi": "nướng; đốt",
+    "onyomi": [
+      "ショウ"
+    ],
+    "kunyomi": [
+      "や",
+      "や-"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c8a4ca6a-2cc9-5d4d-9bfc-199682c23315",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "洗",
+    "meaning_vi": "rửa; giặt",
+    "onyomi": [
+      "セン"
+    ],
+    "kunyomi": [
+      "あら"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "11f5beb3-146c-5a65-a563-bab619962799",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "晴",
+    "meaning_vi": "quang; tạnh",
+    "onyomi": [
+      "セイ"
+    ],
+    "kunyomi": [
+      "は",
+      "は-れる",
+      "は-らす"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b5cd2150-12be-5aca-9a9c-18bd5bd3277d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "曇",
+    "meaning_vi": "mây; nhiều mây",
+    "onyomi": [
+      "ドン"
+    ],
+    "kunyomi": [
+      "くも",
+      "くも-る"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "8092f5e0-ecd0-5acb-bcfa-a36b3733623c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "疲",
+    "meaning_vi": "mệt mỏi",
+    "onyomi": [
+      "ヒ"
+    ],
+    "kunyomi": [
+      "つか",
+      "つか-れる"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "a90fdf40-0394-5741-a7e6-c762a1240e65",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "痛",
+    "meaning_vi": "đau; nhức",
+    "onyomi": [
+      "ツウ"
+    ],
+    "kunyomi": [
+      "いた",
+      "いた-い",
+      "いた-む"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "869c0343-5ed2-5d25-9816-0e690b01df8e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "招",
+    "meaning_vi": "mời; gọi",
+    "onyomi": [
+      "ショウ"
+    ],
+    "kunyomi": [
+      "まね"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "87aa3c14-70cf-599d-8ad5-507ec26d2e4c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "断",
+    "meaning_vi": "đoạn; từ chối",
+    "onyomi": [
+      "ダン"
+    ],
+    "kunyomi": [
+      "た",
+      "ことわ",
+      "さだ"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "9f17e6a8-c086-510c-9753-73a714e4907d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "滑",
+    "meaning_vi": "trượt; trơn",
+    "onyomi": [
+      "カツ",
+      "コツ"
+    ],
+    "kunyomi": [
+      "すべ",
+      "なめ"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f82ab07a-fea9-5235-95e4-d9934980dbca",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "磨",
+    "meaning_vi": "mài; đánh bóng",
+    "onyomi": [
+      "マ"
+    ],
+    "kunyomi": [
+      "みが"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "5dea7c2a-a07e-5cbf-9d68-c0262ef7c33c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "都",
+    "meaning_vi": "đô thị; thủ đô",
+    "onyomi": [
+      "ト",
+      "ツ"
+    ],
+    "kunyomi": [
+      "みやこ"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "0cd97fc9-a2b7-5a6a-b6e2-b4cc4fbc6f2c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "合",
+    "meaning_vi": "hợp; phù hợp",
+    "onyomi": [
+      "ゴウ",
+      "ガッ",
+      "カッ"
+    ],
+    "kunyomi": [
+      "あ",
+      "あわ"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "eaff1f25-bd49-53d9-bedb-264a384bbf58",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "所",
+    "meaning_vi": "nơi; chỗ",
+    "onyomi": [
+      "ショ"
+    ],
+    "kunyomi": [
+      "ところ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "89e12425-3a1c-553a-a730-917da4ece1db",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "設",
+    "meaning_vi": "thiết lập; xây dựng",
+    "onyomi": [
+      "セツ"
+    ],
+    "kunyomi": [
+      "もう"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "2e542082-9669-5d20-b16f-42f7242cf3f3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "環",
+    "meaning_vi": "vòng; môi trường",
+    "onyomi": [
+      "カン"
+    ],
+    "kunyomi": [
+      "わ"
+    ],
+    "stroke_count": 17,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d6dcff8a-3157-5ef5-9069-3ae9a6d802f3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "境",
+    "meaning_vi": "ranh giới; môi trường",
+    "onyomi": [
+      "キョウ",
+      "ケイ"
+    ],
+    "kunyomi": [
+      "さかい"
+    ],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "efd53111-2892-5837-8066-c54d49bcf14f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "役",
+    "meaning_vi": "vai trò; công việc",
+    "onyomi": [
+      "ヤク",
+      "エキ"
+    ],
+    "kunyomi": [
+      "つとめ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "856048cd-5815-52d1-bddb-79fa31711939",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "類",
+    "meaning_vi": "loại; nhóm",
+    "onyomi": [
+      "ルイ"
+    ],
+    "kunyomi": [
+      "たぐい"
+    ],
+    "stroke_count": 18,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "2a34a88d-4d78-528a-b6cd-a8a8f2055db7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "意",
+    "meaning_vi": "ý; ý định",
+    "onyomi": [
+      "イ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b4131ac1-ea38-5875-aff1-d5da99b995f3",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "見",
+    "meaning_vi": "nhìn; thấy",
+    "onyomi": [
+      "ケン"
+    ],
+    "kunyomi": [
+      "み"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "a3ecb5a6-840b-5ea7-821f-d28e7fd5f71e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "空",
+    "meaning_vi": "bầu trời; trống",
+    "onyomi": [
+      "クウ"
+    ],
+    "kunyomi": [
+      "そら",
+      "あ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "057cf9b5-74a5-5902-9d95-b04fb51fdb53",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "港",
+    "meaning_vi": "cảng",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "みなと"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "0882a658-6832-5584-a387-418493149d28",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "卒",
+    "meaning_vi": "tốt nghiệp; binh lính",
+    "onyomi": [
+      "ソツ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "25dd5745-4d0a-508e-b684-c0bd3f3bf3dd",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "業",
+    "meaning_vi": "nghề nghiệp; công việc",
+    "onyomi": [
+      "ギョウ",
+      "ゴウ"
+    ],
+    "kunyomi": [
+      "わざ"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "722c8fe6-3df6-5cfc-bed7-90fff018b4b0",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "医",
+    "meaning_vi": "y học; bác sĩ",
+    "onyomi": [
+      "イ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "9cada711-db84-50a0-a1c2-be2bc8c611ec",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "病",
+    "meaning_vi": "bệnh; ốm",
+    "onyomi": [
+      "ビョウ",
+      "ヘイ"
+    ],
+    "kunyomi": [
+      "やまい",
+      "やむ"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "9514fb8a-bb2c-5263-a3ef-e6332b8d857a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "地",
+    "meaning_vi": "đất; địa điểm",
+    "onyomi": [
+      "チ",
+      "ジ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "8c7841af-3aeb-52ce-9a82-82fdb9283af7",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "震",
+    "meaning_vi": "rung; chấn động",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "ふる"
+    ],
+    "stroke_count": 15,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "ed621e06-911b-572d-a46c-4b02ec16d0e1",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "品",
+    "meaning_vi": "sản phẩm; phẩm chất",
+    "onyomi": [
+      "ヒン"
+    ],
+    "kunyomi": [
+      "しな"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "1b05f187-4b89-5d07-bcd6-15bebf9c1485",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "割",
+    "meaning_vi": "chia; giảm giá",
+    "onyomi": [
+      "カツ"
+    ],
+    "kunyomi": [
+      "わ",
+      "わり",
+      "さ"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d0f3b995-2ba1-518e-b441-9c3fb1472d4f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "機",
+    "meaning_vi": "máy; cơ hội",
+    "onyomi": [
+      "キ"
+    ],
+    "kunyomi": [
+      "はた"
+    ],
+    "stroke_count": 16,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "61f5ba19-af82-532f-9e40-7024f2652e10",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "械",
+    "meaning_vi": "máy móc; dụng cụ",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "e9bd85a6-69dd-512a-b6a5-3fea1e5caa47",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "味",
+    "meaning_vi": "vị; mùi vị",
+    "onyomi": [
+      "ミ"
+    ],
+    "kunyomi": [
+      "あじ",
+      "あじわ"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "03e037f7-fabc-598e-ba36-f5bbb7c35c2f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "塩",
+    "meaning_vi": "muối",
+    "onyomi": [
+      "エン"
+    ],
+    "kunyomi": [
+      "しお"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "a2403a0f-122f-5c7b-abd3-7588e5951655",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "道",
+    "meaning_vi": "đường; đạo",
+    "onyomi": [
+      "ドウ",
+      "トウ"
+    ],
+    "kunyomi": [
+      "みち"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "7514736a-2ad3-566e-aaf8-3717fffbf32d",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "信",
+    "meaning_vi": "tin; tín hiệu",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "しん"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "d1def842-54eb-545c-a80b-b04c06732a8f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "開",
+    "meaning_vi": "mở; khai",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あ",
+      "ひら"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "aa7fcf23-8f2d-55f6-8638-7c0157ff5e72",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "着",
+    "meaning_vi": "mặc; đến nơi",
+    "onyomi": [
+      "チャク"
+    ],
+    "kunyomi": [
+      "き",
+      "つ"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "110acd3f-a670-54c0-8b97-3f070720461a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "配",
+    "meaning_vi": "phân phát; phân phối",
+    "onyomi": [
+      "ハイ"
+    ],
+    "kunyomi": [
+      "くば"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "dc6bcbe9-f91d-5b80-a7d1-2e228d9865d9",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "集",
+    "meaning_vi": "tập hợp; thu thập",
+    "onyomi": [
+      "シュウ"
+    ],
+    "kunyomi": [
+      "あつ",
+      "つど"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5978433-484f-57bd-b8fc-7e32685d573a",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "客",
+    "meaning_vi": "khách; hành khách",
+    "onyomi": [
+      "キャク",
+      "カク"
+    ],
+    "kunyomi": [],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "47774582-5a39-5719-80fd-ea82c5a5001c",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "売",
+    "meaning_vi": "bán",
+    "onyomi": [
+      "バイ"
+    ],
+    "kunyomi": [
+      "う"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "97cc58ba-dd4a-5917-8e5e-2d2513ccc226",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "体",
+    "meaning_vi": "thân thể; cơ thể",
+    "onyomi": [
+      "タイ"
+    ],
+    "kunyomi": [
+      "からだ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f69fcfbc-5360-534c-aa27-4f102b964305",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "改",
+    "meaning_vi": "sửa đổi; cải thiện",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あらた",
+      "あらためる",
+      "あらたまる"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "2b93bc42-b4fd-5d6a-9380-35916ee217a4",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "許",
+    "meaning_vi": "cho phép",
+    "onyomi": [
+      "キョ"
+    ],
+    "kunyomi": [
+      "ゆる"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "b43e78d4-74e7-5ba1-a8cc-15bf6efbcaf2",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "場",
+    "meaning_vi": "nơi; địa điểm",
+    "onyomi": [
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "ば"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "8712c199-0394-5d94-89a7-83200deea927",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "成",
+    "meaning_vi": "thành; đạt được",
+    "onyomi": [
+      "セイ",
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "な"
+    ],
+    "stroke_count": 6,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "182665cb-6d99-5764-a003-be01ff6b91da",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "洪",
+    "meaning_vi": "lũ lụt",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "846bf4f6-209a-5cae-9237-7531c0cbae9b",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "祭",
+    "meaning_vi": "lễ hội; cúng lễ",
+    "onyomi": [
+      "サイ"
+    ],
+    "kunyomi": [
+      "まつり",
+      "まつる"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "09760fd5-28e5-5ae1-b320-b8fc8a1c0b01",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "森",
+    "meaning_vi": "rừng",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "もり"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "3fcad661-3105-5fd1-a921-4074c4828b5e",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "画",
+    "meaning_vi": "bức tranh; hình ảnh",
+    "onyomi": [
+      "ガ",
+      "カ"
+    ],
+    "kunyomi": [
+      "え",
+      "かく"
+    ],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "07268c33-f052-5cd9-8e55-77d9adfa4499",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "源",
+    "meaning_vi": "nguồn; nguồn gốc",
+    "onyomi": [
+      "ゲン"
+    ],
+    "kunyomi": [
+      "みなもと"
+    ],
+    "stroke_count": 13,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "ca45dfbd-9e52-5345-b27d-fa0aa5f0ce3f",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "玄",
+    "meaning_vi": "huyền; sâu xa",
+    "onyomi": [
+      "ゲン"
+    ],
+    "kunyomi": [],
+    "stroke_count": 5,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "dff41e49-b6c0-530a-a13f-269eb52914b8",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "階",
+    "meaning_vi": "tầng; bậc",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "122bb352-af5d-43f4-9ef5-cfdd12668973",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "窓",
+    "meaning_vi": "cửa sổ",
+    "onyomi": [
+      "ソウ"
+    ],
+    "kunyomi": [
+      "まど"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "9737e089-0ab3-4531-9e8a-ad7de6fcb879",
+    "jlpt_level": "N4",
+    "difficulty": 0.5,
+    "content_version": 1,
+    "is_active": true,
+    "character": "庭",
+    "meaning_vi": "sân vườn",
+    "onyomi": [
+      "テイ"
+    ],
+    "kunyomi": [
+      "にわ"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c2e5d3a1-7f4b-4e91-9c22-1a6b8d5e7001",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "防",
+    "meaning_vi": "phòng ngừa; bảo vệ",
+    "onyomi": [
+      "ボウ"
+    ],
+    "kunyomi": [
+      "ふせぐ"
+    ],
+    "stroke_count": 7,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "c2e5d3a1-7f4b-4e91-9c22-1a6b8d5e7002",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "訓",
+    "meaning_vi": "lời dạy; huấn luyện",
+    "onyomi": [
+      "クン"
+    ],
+    "kunyomi": [
+      "おしえる"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0021",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "消",
+    "meaning_vi": "tiêu; tắt; xóa",
+    "onyomi": [
+      "ショウ"
+    ],
+    "kunyomi": [
+      "きえる",
+      "けす"
+    ],
+    "stroke_count": 10,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0022",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "非",
+    "meaning_vi": "phi; không; trái với",
+    "onyomi": [
+      "ヒ"
+    ],
+    "kunyomi": [],
+    "stroke_count": 8,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0023",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "指",
+    "meaning_vi": "chỉ; ngón tay",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "ゆび",
+      "さす"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0024",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "順",
+    "meaning_vi": "thứ tự; thuận theo",
+    "onyomi": [
+      "ジュン"
+    ],
+    "kunyomi": [],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0051",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "習",
+    "meaning_vi": "học; luyện tập",
+    "onyomi": [
+      "シュウ"
+    ],
+    "kunyomi": [
+      "ならう"
+    ],
+    "stroke_count": 11,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0052",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "練",
+    "meaning_vi": "luyện; rèn",
+    "onyomi": [
+      "レン"
+    ],
+    "kunyomi": [
+      "ねる"
+    ],
+    "stroke_count": 14,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0061",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "朝",
+    "meaning_vi": "buổi sáng",
+    "onyomi": [
+      "チョウ"
+    ],
+    "kunyomi": [
+      "あさ"
+    ],
+    "stroke_count": 12,
+    "radical": null,
+    "stroke_data_ref": null
+  },
+  {
+    "id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0062",
+    "jlpt_level": "N4",
+    "difficulty": 0.55,
+    "content_version": 1,
+    "is_active": true,
+    "character": "昼",
+    "meaning_vi": "buổi trưa; ban ngày",
+    "onyomi": [
+      "チュウ"
+    ],
+    "kunyomi": [
+      "ひる"
+    ],
+    "stroke_count": 9,
+    "radical": null,
+    "stroke_data_ref": null
+  }
+]

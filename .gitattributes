@@ -1,0 +1,6 @@
+# Preserve the exact bytes locked by the N5/N4 guide provenance manifests.
+third_party/kanjivg/** -text
+data/n5/kanji.json -text
+apps/flutter_app/assets/kanji_references/n5.json -text
+data/n4/kanji.json -text
+apps/flutter_app/assets/kanji_references/n4.json -text

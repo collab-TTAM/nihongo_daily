@@ -18,7 +18,11 @@ def timestamp_with_offset(value):
     """Enforce the documented timestamp subset without optional dependencies."""
     if not isinstance(value, str):
         return True  # JSON Schema's type keyword handles non-strings.
-    pattern = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})"
+    # Do not delegate clock/offset bounds to a host parser that may normalize
+    # rollover (24:00) or offset minutes. Calendar validity still uses datetime.
+    clock = r"(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
+    zone = r"(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])"
+    pattern = rf"[0-9]{{4}}-[0-9]{{2}}-[0-9]{{2}}T{clock}(?:\.[0-9]+)?{zone}"
     if re.fullmatch(pattern, value) is None:
         return False
     return datetime.fromisoformat(value.replace("Z", "+00:00")).tzinfo is not None

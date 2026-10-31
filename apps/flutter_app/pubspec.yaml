@@ -15,6 +15,9 @@ dependencies:
   cupertino_icons: 1.0.8
   flutter_riverpod: 2.6.1
   go_router: 14.8.1
+  supabase: 2.16.5
+  http: 1.6.0
+  logging: 1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +26,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/curriculum/n5/vocabulary.json
+    - assets/curriculum/n5/grammar.json
+    - assets/curriculum/n4/vocabulary.json
+    - assets/curriculum/n4/grammar.json
+    - assets/curriculum/n5/kanji.json
+    - assets/curriculum/n4/kanji.json
+    - assets/kanji_references/n5.json
+    - assets/kanji_references/n4.json

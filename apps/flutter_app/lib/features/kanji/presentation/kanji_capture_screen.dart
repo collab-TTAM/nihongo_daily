@@ -1,21 +1,92 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
 import '../application/kanji_capture_provider.dart';
 import '../domain/kanji_models.dart';
+import '../domain/kanji_catalog.dart';
+import 'kanji_stroke_guide_panel.dart';
+import 'kanji_trace_painter.dart';
+import '../domain/kanji_stroke_guide.dart';
+import '../application/kanji_stroke_guide_provider.dart';
+import '../../../shared/models/preview_level.dart';
 
-class KanjiCaptureScreen extends ConsumerWidget {
-  const KanjiCaptureScreen({super.key});
+class KanjiCaptureScreen extends ConsumerStatefulWidget {
+  const KanjiCaptureScreen({super.key, this.entry});
+  final KanjiCatalogEntry? entry;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<KanjiCaptureScreen> createState() => _KanjiCaptureScreenState();
+}
+
+class _KanjiCaptureScreenState extends ConsumerState<KanjiCaptureScreen> {
+  KanjiGuideTrace? _trace;
+  KanjiCatalogEntry? get entry => widget.entry;
+  @override
+  void didUpdateWidget(covariant KanjiCaptureScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entry != widget.entry) {
+      _trace = null;
+    }
+  }
+
+  void _setTrace(KanjiGuideTrace? value) {
+    if (value != null && !(entry != null && value.guide.matches(entry!))) {
+      return;
+    }
+    setState(() => _trace = value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(kanjiCaptureProvider);
     final controller = ref.read(kanjiCaptureProvider.notifier);
+    KanjiGuideTrace? trace;
+    if (entry case final selected? when _trace != null) {
+      final provider = kanjiStrokeGuideProvider(selected);
+      // Subscribe only after explicit enable; opening practice never loads a guide.
+      ref.listen(provider, (_, next) {
+        if (_trace != null &&
+            (next.isLoading ||
+                next.hasError ||
+                !identical(next.asData?.value, _trace!.guide))) {
+          setState(() => _trace = null);
+        }
+      });
+      final current = ref.watch(provider);
+      if (!current.isLoading &&
+          !current.hasError &&
+          identical(current.asData?.value, _trace?.guide) &&
+          (_trace?.guide.matches(selected) ?? false)) {
+        trace = _trace;
+      }
+    }
     return PageBody(
       children: [
-        Text('Luyện Kanji', style: Theme.of(context).textTheme.headlineMedium),
+        Text(
+          entry == null ? 'Luyện Kanji' : 'Luyện viết ${entry!.character}',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        if (entry case final selected?) ...[
+          Text(
+            selected.character,
+            key: ValueKey('kanji-selected-${selected.id}'),
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
+          Text(selected.meaningVi),
+          Text(
+            'Âm On: ${selected.onyomi.isEmpty ? 'Chưa có' : selected.onyomi.join('、')}',
+          ),
+          Text(
+            'Âm Kun: ${selected.kunyomi.isEmpty ? 'Chưa có' : selected.kunyomi.join('、')}',
+          ),
+          Text(
+            '${selected.level.label} · Số nét theo nội dung: ${selected.strokeCount}',
+          ),
+          Text('Bộ thủ: ${selected.radical ?? 'Chưa có thông tin'}'),
+        ],
         const SizedBox(height: 8),
         const Text('BẢN XEM TRƯỚC · NHẬP NÉT THỬ NGHIỆM'),
         const SizedBox(height: 12),
@@ -24,9 +95,26 @@ class KanjiCaptureScreen extends ConsumerWidget {
           'Nét chỉ giữ trong màn này; chưa lưu tiến độ.',
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
-          'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
+        Text(
+          entry != null
+              ? 'Có thể xem từng nét mẫu ${entry!.level.label}. Bộ đánh giá chữ viết chưa được kiểm chứng.'
+              : 'Chưa có nét mẫu đã kiểm chứng để chấm Kanji thật. '
+                    'Ô này là vùng tập vẽ, chưa hướng dẫn thứ tự nét.',
+        ),
+        if (entry case final selected?)
+          KanjiStrokeGuidePanel(
+            entry: selected,
+            trace: trace,
+            onTraceChanged: _setTrace,
+          ),
+        OutlinedButton(
+          key: const Key('kanji-open-catalog'),
+          onPressed: () => context.go(
+            entry == null
+                ? '/kanji/characters'
+                : '/kanji/characters?level=${entry!.level.name}',
+          ),
+          child: Text(entry == null ? 'Chọn chữ N5/N4' : 'Về danh sách Kanji'),
         ),
         const SizedBox(height: 20),
         Align(
@@ -80,7 +168,11 @@ class KanjiCaptureScreen extends ConsumerWidget {
                         child: ColoredBox(
                           color: color.surfaceContainerLow,
                           child: CustomPaint(
-                            painter: _StrokePainter(
+                            key: const Key('kanji-canvas-picture'),
+                            painter: trace == null
+                                ? null
+                                : KanjiTracePainter(trace, color.primary),
+                            foregroundPainter: _StrokePainter(
                               state,
                               color.primary,
                               color.outlineVariant,
@@ -128,9 +220,11 @@ class KanjiCaptureScreen extends ConsumerWidget {
             state.messageVi!,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
-        const Text(
-          'Chấm điểm: chưa khả dụng — thiếu dữ liệu nét mẫu. '
-          'Không có điểm số hoặc kết quả học được lưu.',
+        Text(
+          entry != null
+              ? 'Chấm điểm: chưa khả dụng — bộ đánh giá chữ viết chưa được kiểm chứng. Không có điểm số hoặc kết quả học được lưu.'
+              : 'Chấm điểm: chưa khả dụng — thiếu dữ liệu nét mẫu. '
+                    'Không có điểm số hoặc kết quả học được lưu.',
         ),
       ],
     );

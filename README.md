@@ -5,8 +5,10 @@
 See `docs/` for product, architecture, security and automation contracts.
 
 The Flutter UI preview is in `apps/flutter_app`; see its README for running on
-web/Windows, routes, tests and explicit integration limitations. This is a demo
-shell; real study, auth, sync and AI remain tracked in GitHub issues.
+web/Windows, routes, tests and explicit integration limitations. Default startup
+is an unconfigured preview with an original N5/N4 vocabulary/grammar reader. Explicit
+Windows staging can use owned Auth/SRS, Daily Plan and durable completed-study
+recovery. Hosted learner acceptance, full sync and AI remain open.
 
 Frozen models/API are in `contracts/v0.1/`; see `docs/CONTRACT_BASELINE.md` for decisions/dependencies and `docs/PROJECT_STATUS.md` for the handoff.
 
@@ -34,3 +36,6 @@ QA/security and Personal Alpha release gates are maintained in `qa/matrix.json`
 and `docs/QA_SECURITY_MATRIX.md`. Run `python3 scripts/verify_qa.py` and
 `python3 -m unittest discover -s qa -p 'test_*.py' -v`; inventory success is not
 a release claim. Saved exact-head Actions evidence can be checked separately.
+
+The local SQL submit_review transaction, typed Dart repository and outstanding UI/Auth
+integration are documented in `docs/SRS_RPC.md`; #22 is still open.
