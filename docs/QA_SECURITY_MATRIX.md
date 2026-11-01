@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-43 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+50 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -49,6 +49,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `rls-isolation` | database | Actual SQL roles A/B, parent message reads, forbidden writes, private functions. Native SQL fixture auth.uid() is not verified GoTrue/JWT/PostgREST integration. |
 | `review-storage` | database | Immutable original result replay, changed-input conflict and native two-session uniqueness. Storage helper race is not an atomic submit_review endpoint or updated scheduler counters. |
 | `review-transaction` | database | Authenticated SQL RPC validation/replay/rollback, 26 SQL/Dart cases and five native races. SQL auth fixtures do not establish JWT/PostgREST/Flutter/UI integration. |
+| `local-two-session-sync` | supabase-integration | Disposable GoTrue/PostgREST, two independent same-owner sessions, concurrent idempotent replay, changed/stale conflicts, shared server projection and global logout. Not physical-device/hosted offline-sync proof. |
 | `ai-sql-receipts` | database | Private token ownership, scoped claim/completion, privileges and rollback. Helpers do not persist conversation messages/session in a real adapter transaction. |
 | `ai-claim-race` | database | Two native sessions grant exactly one dispatch owner. SQL claims do not prove upstream delivery, recovery or two distinct session events. |
 | `srs-policy` | flutter | Versioned 26 policy pairs, offsets, stale events and actual Dart wire output. Pure scheduler; no authenticated persistence, queue or integrated review UI. |

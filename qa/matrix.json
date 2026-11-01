@@ -16,6 +16,16 @@
       "Publish actual native SQL profile projections",
       "Publish actual native SQL queue projections"
     ],
+    "supabase-integration": [
+      "Install pinned Supabase CLI",
+      "Start disposable local Supabase services",
+      "Apply repository migrations to the local stack",
+      "Export only validated local integration settings",
+      "Install PostgreSQL client",
+      "Seed one TEST ONLY active vocabulary item",
+      "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS",
+      "Stop disposable local Supabase services"
+    ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
       "Run dart format --output=none --set-exit-if-changed .",
@@ -601,7 +611,7 @@
     {
       "id": "review-transaction",
       "status": "automated-baseline",
-      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback, 26 SQL/Dart policy pairs, five native race scenarios and two independent GoTrue sessions for one owner",
+      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; five native race scenarios",
       "ci_job": "database",
       "anchors": [
         {
@@ -615,10 +625,6 @@
         {
           "path": "scripts/test_submit_review_concurrency.py",
           "contains": "different_item"
-        },
-        {
-          "path": "scripts/test_supabase_local.py",
-          "contains": "two independent sessions for one owner commit one identical review"
         }
       ],
       "issues": [
@@ -628,6 +634,25 @@
       ],
       "reproduce": "On a new empty disposable PostgreSQL 17 database: install contracts/requirements.txt; bash scripts/test_database.sh",
       "limitation": "SQL role/auth.uid fixtures are not real Supabase JWT/PostgREST or typed Flutter/UI evidence; full #22 remains open."
+    },
+    {
+      "id": "local-two-session-sync",
+      "status": "automated-baseline",
+      "scope": "Disposable local GoTrue/PostgREST with two independent password sessions for one owner; concurrent immutable review replay, changed/stale conflict, authoritative reads and global logout revocation",
+      "ci_job": "supabase-integration",
+      "anchors": [
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "two independent sessions for one owner commit one identical review"
+        }
+      ],
+      "issues": [
+        15,
+        20,
+        22
+      ],
+      "reproduce": "Run scripts/test_supabase_local.py against the fresh disposable local Supabase stack after migrations and the TEST ONLY vocabulary seed.",
+      "limitation": "Two local authenticated HTTP sessions are not physical devices, hosted JWT/deployed RLS or browser/native offline-cache transfer; #15 remains pending."
     },
     {
       "id": "review-adapter",
@@ -1011,7 +1036,7 @@
         18
       ],
       "reproduce": "Run two clients A/B, go offline, queue immutable event IDs/times, restart, reconnect/resend, provoke stale/two-device conflict and account switch; inspect retained authoritative state.",
-      "limitation": "Native journal and browser IndexedDB ledgers plus manual recovery are implemented, and local GoTrue now exercises two independent sessions for one owner. No physical two-device offline cache transfer/reconnect, hosted multi-device learner flow or integrated cross-device reconciliation is yet verified."
+      "limitation": "Native journal and browser IndexedDB ledgers plus manual recovery are implemented, and local GoTrue exercises two independent sessions for one owner. No physical two-device offline cache transfer/reconnect, hosted multi-device learner flow or integrated cross-device reconciliation is yet verified."
     },
     {
       "id": "quiz-progress",

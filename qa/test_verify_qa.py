@@ -46,6 +46,19 @@ class QaEvidenceTests(unittest.TestCase):
         self.assertTrue(qa.RELEASE_CASES <= {c["id"] for c in cases
                                             if c["status"] == "pending-integration"})
 
+    def test_all_six_ci_jobs_include_local_supabase_integration(self):
+        self.assertEqual(
+            qa.REQUIRED_JOBS,
+            {"repo-sanity", "database", "supabase-integration", "flutter", "windows", "ai-boundary"},
+        )
+        self.assertIn("supabase-integration", self.matrix["ci_gates"])
+        self.assertIn(
+            "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS",
+            self.matrix["ci_gates"]["supabase-integration"],
+        )
+        case = next(c for c in self.matrix["cases"] if c["id"] == "local-two-session-sync")
+        self.assertEqual(case["ci_job"], "supabase-integration")
+
     def test_complete_same_head_latest_attempt_is_accepted_as_baseline_only(self):
         self.assertEqual(qa.validate_ci(self.matrix, self.evidence, HEAD),
                          f"https://github.com/{qa.REPOSITORY}/actions/runs/123")
