@@ -76,10 +76,10 @@ revocation, OS-logoff/power-loss recovery or protection from same-OS-user proces
 ## Reproduction and separate review
 
 In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
-`flutter test`. Twenty-two pure cases cover empty/refresh startup, persistence
+`flutter test`. Twenty-five pure cases cover empty/refresh startup, persistence
 barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
-retry, revocation, owner exclusivity, stream closure and disposal. Seven pinned-SDK
+retry, revocation, owner exclusivity, stream closure and disposal. Fifteen pinned-SDK
 HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
 late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
 Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof.
@@ -251,3 +251,22 @@ server, Auth identities and unsigned JWT are TEST ONLY; it does not prove hosted
 JWT signatures, deployed PostgREST/RLS, real learner accounts, OS logoff or
 hardware power-loss behavior. Storage write/clear failure injection remains in
 the isolated backend tests, not a fabricated Credential Manager failure.
+
+
+## Startup vault read failure and explicit recovery — 2026-11-01
+
+A new pinned-SDK/owned-runtime regression starts with an existing stored refresh
+secret while the credential backend reports a read failure. Startup must fail
+closed without calling the Auth token endpoint or `ensure_profile`; the existing
+stored value is not treated as a usable session. After the backend recovers, only
+an explicit login may proceed. The test records method names only and requires
+the order `read -> clear -> write`: failed-state cleanup clears the old slot
+before authentication, and the new rotated refresh secret is written before the
+own-profile barrier can publish study readiness.
+
+This is a TEST ONLY in-memory credential backend with the pinned Supabase SDK and
+MockClient HTTP, not a Windows Credential Manager failure injection or hosted
+Auth test. It adds no plaintext fallback, automatic retry, default Auth
+activation, Auth strategy/provider, schema/RLS or deployment change. The Windows
+OS-backed bridge still verifies successful read/write/clear and late refresh
+account switching; live hosted identity remains a separate #20 gate.

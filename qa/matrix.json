@@ -231,7 +231,7 @@
     {
       "id": "persistent-session-lifecycle",
       "status": "automated-baseline",
-      "scope": "Exclusively owned SDK/vault lifecycle, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP",
+      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -253,6 +253,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "late A login response after logout cannot replace B session"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK vault read failure blocks restore and explicit login recovers"
         }
       ],
       "issues": [

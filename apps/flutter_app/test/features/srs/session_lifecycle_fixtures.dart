@@ -33,10 +33,12 @@ final class MemoryVault implements SessionCredentialBackend {
   bool failWrite = false;
   bool failRead = false;
   bool failClear = false;
+  final operations = <String>[];
   int writes = 0;
   int clears = 0;
   @override
   Future<Object?> invoke(String method, Map<String, Object> args) async {
+    operations.add(method); // Method names only; never record credential values.
     if (method == 'read') {
       await readWait?.future;
       if (failRead) throw StateError('PRIVATE OS ERROR');
