@@ -213,7 +213,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       // Revoke the account before the held A refresh response is released.
       await runtime.account.signOut();
       _check(await vault.readRefreshToken() == null);
-      lateRefresh!.complete(authResponse());
+      lateRefresh.complete(authResponse());
 
       var restoreFailed = false;
       try {
