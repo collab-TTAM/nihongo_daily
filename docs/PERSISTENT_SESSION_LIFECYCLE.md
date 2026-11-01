@@ -63,7 +63,7 @@ runtime before that barrier. Getter checks also reject a changed SDK identity or
 secret before queued notifications are delivered. Failed writes fence access and
 attempt credential clear. Clear failures remain visible as failed persistence;
 later explicit login/logout must clean successfully before accepting a session.
-Storage read errors preserve the existing entry until an explicit cleanup/login.
+Storage read errors preserve the existing entry until an explicit cleanup/login. The account controller also retains its fixed sign-in error across queued no-session notifications; only an explicit retry or logout changes that error state.
 
 Await `runtime.close()` before replacing the assembly. It revokes access, disposes
 the account controller, drains interrupted Auth/credential operations, cancels

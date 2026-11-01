@@ -691,7 +691,7 @@ void main() {
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
-      await fixture.flush();
+      await waitForReady();
       reviews = runtime.account.readyRuntime!.reviews as ReviewRecovery;
       expect((await reviews.recoverPending()).single.request, request);
       expect((await journal.list(wire.a)).single.isPending, isTrue);

@@ -149,7 +149,19 @@ final class AccountController<T> {
       return;
     }
     if (session == null) {
-      _block(_signInBusy ? AccountPhase.signingIn : AccountPhase.signedOut);
+      if (_signInBusy) {
+        if (_state.phase != AccountPhase.signingIn) {
+          _block(AccountPhase.signingIn);
+        }
+      } else if (!const {
+        AccountPhase.signedOut,
+        AccountPhase.signInError,
+        AccountPhase.signOutError,
+      }.contains(_state.phase)) {
+        // A queued no-session event must not erase an explicit Auth failure.
+        // Only a user retry or logout should leave the fixed error state.
+        _block(AccountPhase.signedOut);
+      }
       return;
     }
     if (identical(session, _readySession) ||

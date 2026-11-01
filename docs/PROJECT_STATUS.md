@@ -1,5 +1,16 @@
 # PROJECT STATUS
 
+## Latest handoff — exact-head Auth lifecycle test regressions (2026-11-01 UTC)
+
+- Run `core-20261101T1405Z-auth-ci-regressions`; branch `automation/issue-22-atomic-review`; parent `6834c92cea31263343ffa4559b478f17c634bc0a`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41310396025](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41310396025) targeted the parent and completed with repo-sanity, database, ai-boundary, supabase-integration and Windows fully SUCCESS. Flutter format and analyze passed; Flutter Test reported 385 passed / 2 failed, so all later Flutter checks were skipped.
+- Failure 1: after corrupt stored refresh data and an explicit cleanup failure, a queued null-session event changed `AccountPhase.signInError` back to `signedOut`. Updated `AccountController._sessionChanged` to preserve the fixed sign-in/sign-out error while there is no session; only explicit retry/logout transitions away. Added `sign-in-error-preserved` controller fixture, including successful explicit retry.
+- Failure 2: the real-disk rotation/logout test used a fixed microtask flush after its second sign-in, then dereferenced readiness before the asynchronous SDK/profile barrier had settled. Replaced that timing assumption with the existing `waitForReady()` condition; no production behavior or assertion is weakened.
+- Changed paths: `apps/flutter_app/lib/features/auth/application/account_controller.dart`, `apps/flutter_app/test/features/srs/account_fixtures.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file.
+- Separate diff review and exact-head CI are still required. Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run. No Auth strategy/provider, schema/RLS, API contract, default activation, production configuration or Pro-owned #14/#38/N4 paths changed.
+- Next: inspect the parent-to-commit diff separately, then require all six latest-attempt CI jobs and every step to pass on the new exact head. Keep PR #37 and #20/#22/#15 open; hosted signed-JWT learner A/B and physical multi-device sync remain unproven.
+
+
 ## Latest handoff — corrupt-vault cleanup failure remains fenced (2026-11-01 UTC)
 
 - Run `core-20261101T1307Z-corrupt-clear-retry`; source increment authored on `automation/issue-22-atomic-review`, parent `87c1a7e23fc49ef6be49dd790aa95b53756b5e16`, main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

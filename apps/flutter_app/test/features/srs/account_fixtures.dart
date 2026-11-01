@@ -111,6 +111,36 @@ Future<void> verifyAccount(String scenario) async {
         controller.state.phase == AccountPhase.ready && profileCalls == 1,
         'valid sign-in/profile failed',
       );
+    } else if (scenario == 'sign-in-error-preserved') {
+      access.failSignIn = true;
+      await controller.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      check(
+        controller.state.phase == AccountPhase.signInError &&
+            controller.readyRuntime == null,
+        'failed sign-in did not publish a fenced error',
+      );
+      access.events.add(null);
+      await flush();
+      check(
+        controller.state.phase == AccountPhase.signInError &&
+            controller.state.messageVi != null &&
+            controller.readyRuntime == null,
+        'queued no-session event erased the sign-in error',
+      );
+      access.failSignIn = false;
+      await controller.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await flush();
+      check(
+        controller.state.phase == AccountPhase.ready &&
+            controller.readyRuntime != null,
+        'explicit retry did not recover after sign-in error',
+      );
     } else if (scenario == 'profile-retry') {
       failProfile = true;
       access.change(owner);
@@ -246,6 +276,7 @@ Future<void> verifyAccount(String scenario) async {
 const scenarios = [
   'profile-barrier',
   'credentials-duplicate',
+  'sign-in-error-preserved',
   'profile-retry',
   'late-profile',
   'logout-failure',
