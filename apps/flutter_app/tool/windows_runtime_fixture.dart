@@ -87,7 +87,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       'exp': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
       'iat': now.millisecondsSinceEpoch ~/ 1000,
     });
-    return '$header.$payload.\${_segment('TEST ONLY NOT A SIGNATURE')}';
+    return '$header.$payload.${_segment('TEST ONLY NOT A SIGNATURE')}';
   }
 
   http.Response authResponse() => http.Response(
@@ -145,7 +145,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       // The real OS write must already be observable before profile dispatch.
       _check(await vault.readRefreshToken() == secret);
       if (phase == 'runtime-late-refresh') {
-        _check(request.headers['authorization'] == 'Bearer \${accessToken()}');
+        _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
       return http.Response(
         jsonEncode({
@@ -166,7 +166,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     // Includes submit_review: recovery must not dispatch an uncertain event.
     throw const FormatException('Unexpected fixture request');
   });
-    final runtime = PersistentSupabaseRuntime(
+  final runtime = PersistentSupabaseRuntime(
     projectUrl: origin,
     publishableKey: 'sb_publishable_TEST_ONLY_1234567890',
     vault: vault,
