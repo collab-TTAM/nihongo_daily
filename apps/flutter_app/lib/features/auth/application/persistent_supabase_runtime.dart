@@ -73,7 +73,7 @@ final class PersistentSupabaseRuntime
       httpClient: _network,
       now: now,
     );
-    _port = _OwnedSdkAccess(_client, _binding);
+    _port = _OwnedSdkAccess(_client, _binding, _network);
     persistence = PersistentAccountAccess(sdk: _port, vault: vault);
     account = createSupabaseAccountRuntime(
       _binding,
@@ -170,23 +170,34 @@ final class _BoundedSessionHttp extends http.BaseClient {
   final bool owns;
   final Uri origin;
   final Duration timeout;
+  ReviewTransportFailure? _authTransportFailure;
+
+  void beginAuthOperation() => _authTransportFailure = null;
+
+  ReviewTransportFailure? takeAuthTransportFailure() {
+    final failure = _authTransportFailure;
+    _authTransportFailure = null;
+    return failure;
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    final authRequest = request.url.path.startsWith('/auth/v1/');
     if (request.url.origin != origin.origin ||
-        !request.url.path.startsWith('/auth/v1/') &&
-            !request.url.path.startsWith('/rest/v1/')) {
+        (!authRequest && !request.url.path.startsWith('/rest/v1/'))) {
       throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
     }
+    if (authRequest) _authTransportFailure = null;
     request.followRedirects = false;
     final elapsed = Stopwatch()..start();
     var timedOut = false;
-    final pending = inner.send(request);
-    unawaited(
-      pending.then<void>((response) async {
-        if (timedOut) await response.stream.listen((_) {}).cancel();
-      }, onError: (Object _, StackTrace __) {}),
-    );
     try {
+      final pending = inner.send(request);
+      unawaited(
+        pending.then<void>((response) async {
+          if (timedOut) await response.stream.listen((_) {}).cancel();
+        }, onError: (Object _, StackTrace __) {}),
+      );
       final response = await pending.timeout(
         timeout,
         onTimeout: () {
@@ -218,20 +229,27 @@ final class _BoundedSessionHttp extends http.BaseClient {
         headers: response.headers,
         request: request,
       );
-    } on ReviewTransportFailure {
+    } on ReviewTransportFailure catch (failure) {
+      if (authRequest) _authTransportFailure = failure;
       rethrow;
     } on TimeoutException {
-      throw const ReviewTransportFailure(
+      const failure = ReviewTransportFailure(
         ReviewErrorCode.networkUnavailable,
         retryable: true,
       );
+      if (authRequest) _authTransportFailure = failure;
+      throw failure;
     } on http.ClientException {
-      throw const ReviewTransportFailure(
+      const failure = ReviewTransportFailure(
         ReviewErrorCode.networkUnavailable,
         retryable: true,
       );
+      if (authRequest) _authTransportFailure = failure;
+      throw failure;
     } on Object {
-      throw const ReviewTransportFailure(ReviewErrorCode.internalError);
+      const failure = ReviewTransportFailure(ReviewErrorCode.internalError);
+      if (authRequest) _authTransportFailure = failure;
+      throw failure;
     }
   }
 
@@ -242,7 +260,7 @@ final class _BoundedSessionHttp extends http.BaseClient {
 }
 
 final class _OwnedSdkAccess implements RefreshableAccountAccess {
-  _OwnedSdkAccess(this.client, this.binding) {
+  _OwnedSdkAccess(this.client, this.binding, this.network) {
     _bindingSubscription = binding.sessionChanges.listen(
       (_) => _events.add(null),
       onError: (Object _, StackTrace __) => _events.addError(_failure()),
@@ -256,11 +274,29 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
   }
   final SupabaseClient client;
   final SupabaseReviewBinding binding;
+  final _BoundedSessionHttp network;
   final _events = StreamController<void>.broadcast();
   late final StreamSubscription<void> _bindingSubscription;
   late final StreamSubscription<AuthState> _authSubscription;
   static ReviewTransportFailure _failure() =>
       const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+
+  Future<void> _authOperation(Future<void> Function() action) async {
+    network.beginAuthOperation();
+    try {
+      await action();
+      final failure = network.takeAuthTransportFailure();
+      if (failure != null) throw failure;
+    } on ReviewTransportFailure {
+      network.takeAuthTransportFailure();
+      rethrow;
+    } on Object {
+      // Supabase Auth may wrap errors thrown by its injected HTTP client in an
+      // AuthException. Preserve only our typed, redacted transport category.
+      throw network.takeAuthTransportFailure() ?? _failure();
+    }
+  }
+
   @override
   Stream<void> get sessionChanges => _events.stream;
   @override
@@ -269,31 +305,17 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
   String? get currentRefreshToken =>
       currentSession == null ? null : client.auth.currentSession?.refreshToken;
   @override
-  Future<void> signIn(String email, String password) =>
-      SupabaseAccountAccess(binding).signIn(email, password);
+  Future<void> signIn(String email, String password) => _authOperation(
+    () => SupabaseAccountAccess(binding).signIn(email, password),
+  );
   @override
   Future<void> signOut() => binding.signOutLocally();
   @override
-  Future<void> restore(String refreshToken) async {
-    try {
-      await client.auth.setSession(refreshToken);
-    } on ReviewTransportFailure {
-      rethrow;
-    } on Object {
-      throw _failure();
-    }
-  }
+  Future<void> restore(String refreshToken) =>
+      _authOperation(() => client.auth.setSession(refreshToken));
 
   @override
-  Future<void> refresh() async {
-    try {
-      await client.auth.refreshSession();
-    } on ReviewTransportFailure {
-      rethrow;
-    } on Object {
-      throw _failure();
-    }
-  }
+  Future<void> refresh() => _authOperation(() => client.auth.refreshSession());
 
   Future<void> close() async {
     await _bindingSubscription.cancel();

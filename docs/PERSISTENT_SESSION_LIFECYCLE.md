@@ -306,17 +306,25 @@ strategy/provider, migration, schema or RLS behavior is changed.
 
 ## Bounded Auth response failures — 2026-11-01
 
-The caller-owned Auth HTTP boundary preserves typed, sanitized transport failures
-instead of converting every failure into a retryable network error. A response
-that exceeds the 1 MiB cap remains a non-retryable internal error; request/body
-timeouts and HTTP client transport failures are reported as retryable network
-unavailability. The pinned SDK adapter and persistent account owner rethrow only
-the already-safe `ReviewTransportFailure` type; unknown SDK exceptions continue
-to collapse to the generic unauthorized result.
+The caller-owned Auth HTTP boundary preserves typed, sanitized transport failures.
+A response that exceeds the 1 MiB cap remains a non-retryable internal error;
+request/body timeouts and HTTP client transport failures remain retryable network
+unavailability. The pinned Supabase Auth SDK can wrap exceptions from its injected
+HTTP client in an SDK `AuthException`, so the owned adapter cannot rely on a
+direct `ReviewTransportFailure` catch alone.
 
-The regression uses a TEST ONLY stored refresh token and an oversized mock Auth
-response. It requires startup to fail closed, retain the untrusted stored value
-for explicit recovery, and make no own-profile request. The timeout regression
-also asserts the safe retryable network classification and late-response discard.
-This is not hosted Auth evidence and does not change Auth strategy/provider,
-default activation, credential storage, schema or RLS.
+The bounded client now keeps only the last typed Auth transport failure in a
+private, ephemeral operation channel. `_OwnedSdkAccess` clears that channel at
+the start of each serialized Auth operation and consumes it after the SDK call;
+each new Auth request also clears an earlier attempt before recording its own
+failure. If the SDK wraps a transport exception, the adapter returns the saved
+safe category; unknown SDK errors still map to the fixed unauthorized result.
+The channel stores no URL, response body, credential or raw exception and is
+never logged. It does not change the SDK retry policy or add an application retry.
+
+The pinned-SDK regressions exercise an oversized response and a timed-out refresh
+whose late response is discarded. Both must fail startup before own-profile
+dispatch while preserving the expected safe error classification. This remains
+TEST ONLY MockClient/in-memory-vault coverage, not hosted Auth evidence; Auth
+strategy/provider, default activation, credential storage, schema and RLS are
+unchanged.

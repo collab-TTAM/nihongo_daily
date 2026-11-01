@@ -507,6 +507,14 @@
         {
           "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
           "contains": "in-flight refresh never changes dispatched Authorization header"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK oversized Auth response fails closed as internal error"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK timeout discards late response and never dispatches profile"
         }
       ],
       "issues": [
