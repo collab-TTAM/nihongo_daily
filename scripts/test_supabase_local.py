@@ -12,6 +12,7 @@ import hashlib
 import hmac
 import json
 import os
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -319,6 +320,109 @@ def main() -> None:
         "B stores its own event under the shared UUID",
     )
 
+
+    # Distinct owners may race on one client event UUID without sharing receipts.
+    # The owner-scoped advisory/unique key must allow both transactions to commit.
+    shared_event_id = str(uuid.uuid4())
+    shared_occurred_at = dt.datetime.now(dt.timezone.utc).isoformat(
+        timespec="microseconds"
+    ).replace("+00:00", "Z")
+    concurrent_request_a = {
+        "client_event_id": shared_event_id,
+        "item_type": "VOCABULARY",
+        "item_id": TEST_ITEM_ID,
+        "rating": 2,
+        "is_correct": True,
+        "response_ms": 900,
+        "occurred_at": shared_occurred_at,
+    }
+    concurrent_request_b = dict(
+        concurrent_request_a,
+        rating=1,
+        response_ms=1750,
+    )
+    dispatch_barrier = threading.Barrier(2)
+
+    def dispatch_shared(request_body: dict, access_token: str):
+        dispatch_barrier.wait(timeout=10)
+        return rpc("submit_review", request_body, access_token)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as clients:
+        call_a = clients.submit(
+            dispatch_shared, concurrent_request_a, token_a
+        )
+        call_b = clients.submit(
+            dispatch_shared, concurrent_request_b, token_b
+        )
+        concurrent_result_a = call_a.result(timeout=20)
+        concurrent_result_b = call_b.result(timeout=20)
+    require(
+        error_code(concurrent_result_a) is None
+        and concurrent_result_a.get("review_count") == 3,
+        "A commits its own payload while B races on the same event UUID",
+    )
+    require(
+        error_code(concurrent_result_b) is None
+        and concurrent_result_b.get("review_count") == 2,
+        "B commits its own payload while A races on the same event UUID",
+    )
+    require(
+        concurrent_result_a != concurrent_result_b,
+        "both owners commit the shared event UUID concurrently without receipt collision",
+    )
+    replay_concurrent_a = rpc(
+        "submit_review", concurrent_request_a, token_a
+    )
+    replay_concurrent_b = rpc(
+        "submit_review", concurrent_request_b, token_b
+    )
+    require(
+        replay_concurrent_a == concurrent_result_a
+        and replay_concurrent_b == concurrent_result_b,
+        "concurrent cross-owner retries return each owner's original receipt",
+    )
+    changed_concurrent_a = dict(concurrent_request_a, rating=3)
+    changed_concurrent_b = dict(concurrent_request_b, rating=2)
+    require(
+        error_code(rpc("submit_review", changed_concurrent_a, token_a))
+        == "SYNC_CONFLICT",
+        "A changed replay conflicts only within A's owner scope",
+    )
+    require(
+        error_code(rpc("submit_review", changed_concurrent_b, token_b))
+        == "SYNC_CONFLICT",
+        "B changed replay conflicts only within B's owner scope",
+    )
+    shared_rows_a = [
+        row
+        for row in rows(
+            "review_events", "user_id,client_event_id,rating",
+            "user_id", id_a, token_a
+        )
+        if row["client_event_id"] == shared_event_id
+    ]
+    shared_rows_b = [
+        row
+        for row in rows(
+            "review_events", "user_id,client_event_id,rating",
+            "user_id", id_b, token_b
+        )
+        if row["client_event_id"] == shared_event_id
+    ]
+    require(
+        len(shared_rows_a) == 1
+        and shared_rows_a[0]["user_id"] == id_a
+        and shared_rows_a[0]["rating"] == 2,
+        "A stores its own rating under the shared event UUID",
+    )
+    require(
+        len(shared_rows_b) == 1
+        and shared_rows_b[0]["user_id"] == id_b
+        and shared_rows_b[0]["rating"] == 1,
+        "B stores its own rating under the shared event UUID",
+    )
+
+
     a_rows = rows(
         "user_learning_items",
         "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
@@ -336,12 +440,12 @@ def main() -> None:
     b_rows = rows(
         "user_learning_items", "id,user_id,item_id,review_count", "user_id", id_b, token_b
     )
-    require(len(a_rows) == 1 and a_rows[0]["review_count"] == 2, "A own latest review row")
+    require(len(a_rows) == 1 and a_rows[0]["review_count"] == 3, "A own latest review row")
     require(
         a_device_rows == a_rows,
         "both same-owner sessions read identical authoritative server state",
     )
-    require(len(b_rows) == 1 and b_rows[0]["review_count"] == 1, "B own review row")
+    require(len(b_rows) == 1 and b_rows[0]["review_count"] == 2, "B own review row")
     require(
         rows("user_learning_items", "id", "user_id", id_a, token_b) == [],
         "B cannot read A review state",

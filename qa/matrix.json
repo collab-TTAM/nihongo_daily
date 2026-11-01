@@ -650,12 +650,16 @@
     {
       "id": "local-two-session-sync",
       "status": "automated-baseline",
-      "scope": "Disposable local GoTrue/PostgREST with two independent password sessions for one owner; concurrent immutable review replay, changed/stale conflict, authoritative reads and global logout revocation",
+      "scope": "Disposable local GoTrue/PostgREST with two independent same-owner sessions and a barrier-synchronized shared event UUID race across A/B owners; owner-specific replay, conflicts, authoritative reads and logout.",
       "ci_job": "supabase-integration",
       "anchors": [
         {
           "path": "scripts/test_supabase_local.py",
           "contains": "two independent sessions for one owner commit one identical review"
+        },
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "both owners commit the shared event UUID concurrently without receipt collision"
         }
       ],
       "issues": [

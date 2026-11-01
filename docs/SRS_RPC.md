@@ -293,3 +293,20 @@ shared event UUID. This guards the frozen unique key `(user_id, client_event_id)
 against accidental global deduplication and complements the existing A/B RLS
 read-isolation checks. The test uses two real GoTrue users on the disposable
 local Supabase stack; it is not hosted learner or physical-device evidence.
+
+
+## Concurrent cross-owner event identity — local disposable stack
+
+The same TEST ONLY `client_event_id` is submitted behind a two-party thread
+barrier by two independent GoTrue users with different valid ratings and the
+same event instant. Both requests begin dispatch together. Both transactions
+must commit, return distinct owner-specific receipts, and replay their own
+immutable result. Changed retries must conflict independently within each
+owner, and persisted event rows must retain each verified owner and rating.
+This exercises the `(user_id, client_event_id)` identity under a real request
+race, not only sequential reuse.
+
+The regression runs in the disposable `supabase-integration` job. It remains
+LOCAL ONLY: it does not prove hosted learner JWT/PostgREST/RLS or physical
+multi-device offline reconciliation, so #20/#15 and full #22 acceptance remain
+open.

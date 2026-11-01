@@ -2074,3 +2074,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `scripts/test_supabase_local.py`, `docs/SRS_RPC.md`, `docs/PROJECT_STATUS.md`. No migration, RLS, frozen API, Auth provider/strategy, production config, default activation, credential, or Pro-owned #14/#38/N4 path changed.
 - Cloud runtime has no Flutter/Dart SDK or Windows OS; local Flutter/native tests were not run. The new Python/GoTrue/PostgREST regression must run in exact-head GitHub Actions. No new-head test/build pass is claimed.
 - Next: inspect every latest-attempt job/step on the new exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open until hosted signed-JWT learner A/B, real expiry/restart, and physical multi-device reconciliation are evidenced.
+
+
+## Core worker checkpoint — concurrent cross-owner event identity — 2026-11-01 UTC
+
+- Run `core-20261101T2210Z-cross-owner-concurrency`; branch
+  `automation/issue-22-atomic-review`; parent
+  `82fd44940dd8aadf18752273540e44f36f55e366`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added a TEST ONLY local GoTrue/PostgREST race: two distinct Auth users
+  synchronize on a two-party barrier, then submit the same new
+  `client_event_id` with different valid ratings and the same event instant.
+  Each must commit/replay its own receipt, reject changed input within its own
+  owner scope, and persist exactly one event row with its own owner/rating.
+  Existing sequential cross-owner, same-owner concurrency, A/B RLS and logout
+  tests remain.
+- Updated the existing `local-two-session-sync` QA case with a second exact
+  executable anchor, its regression test, and QA/SRS documentation. No new
+  release case was promoted; no production SQL/migration/RLS/API/Auth strategy,
+  default activation, secret, or Pro-owned #14/#38/N4 path changed.
+- Paths: `scripts/test_supabase_local.py`, `qa/matrix.json`,
+  `qa/test_verify_qa.py`, `docs/SRS_RPC.md`,
+  `docs/QA_SECURITY_MATRIX.md`, and this status file.
+- This checkpoint is pending exact-head CI. Cloud runtime has no Flutter/Dart
+  SDK or disposable local Supabase services, so no local GoTrue/PostgREST run
+  is claimed. The regression must execute in GitHub Actions before acceptance.
+- Next: inspect every latest-attempt job and step on the new exact head. Keep
+  PR #37 Draft and #20/#22/#15 open; hosted signed-JWT learner A/B and physical
+  multi-device offline reconciliation remain unproven.

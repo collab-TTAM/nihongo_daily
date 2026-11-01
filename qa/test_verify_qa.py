@@ -59,6 +59,22 @@ class QaEvidenceTests(unittest.TestCase):
         case = next(c for c in self.matrix["cases"] if c["id"] == "local-two-session-sync")
         self.assertEqual(case["ci_job"], "supabase-integration")
 
+    def test_cross_owner_concurrent_event_identity_is_in_local_sync_gate(self):
+        cases = qa.validate_matrix(self.matrix)
+        case = next(c for c in cases if c["id"] == "local-two-session-sync")
+        self.assertEqual(case["ci_job"], "supabase-integration")
+        self.assertIn("concurrent reuse", case["scope"])
+        expected_anchor = (
+            "both owners commit the shared event UUID concurrently "
+            "without receipt collision"
+        )
+        self.assertTrue(
+            any(
+                anchor["contains"] == expected_anchor
+                for anchor in case["anchors"]
+            )
+        )
+
     def test_complete_same_head_latest_attempt_is_accepted_as_baseline_only(self):
         self.assertEqual(qa.validate_ci(self.matrix, self.evidence, HEAD),
                          f"https://github.com/{qa.REPOSITORY}/actions/runs/123")
