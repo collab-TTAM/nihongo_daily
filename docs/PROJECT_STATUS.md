@@ -2052,3 +2052,4 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, and this status file. Full base tree was verified untruncated (327 entries); exact `base_tree_sha` is used. No production Auth/default activation, schema/RLS, secrets or Pro-owned #14/#38/N4 changes.
 - Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head CI is required; no new-head pass is claimed.
 - Next: inspect all six latest-attempt jobs/every step on the corrected head. If the disposable Supabase startup fails again, diagnose safely without printing local keys; keep PR #37 draft and #20/#22/#15 open pending hosted learner A/B and physical multi-device acceptance.
+- Follow-up formatter diff review retained the blank line between adjacent test cases and a terminal newline; no behavior or assertion changed.

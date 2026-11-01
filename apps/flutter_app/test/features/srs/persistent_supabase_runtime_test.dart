@@ -675,6 +675,7 @@ void main() {
       isEmpty,
     );
   });
+
   test(
     'SDK timeout discards late response and never dispatches profile',
     () async {
