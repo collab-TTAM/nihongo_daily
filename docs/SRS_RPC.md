@@ -281,3 +281,15 @@ not launch two physical devices, test offline browser/native cache transfer,
 prove hosted JWT/deployed RLS, or complete #15's cross-device learner flow.
 The QA `review-transaction` baseline points to this executable integration
 anchor while `offline-sync` remains pending-integration.
+
+
+## Cross-owner event identity regression — local disposable stack
+
+The TEST ONLY `scripts/test_supabase_local.py` scenario now reuses learner A's
+`client_event_id` for learner B with a different valid rating. B must create and
+replay its own receipt, while a changed retry under B's own identity returns
+`SYNC_CONFLICT`. The persisted B event must carry B's verified owner and the
+shared event UUID. This guards the frozen unique key `(user_id, client_event_id)`
+against accidental global deduplication and complements the existing A/B RLS
+read-isolation checks. The test uses two real GoTrue users on the disposable
+local Supabase stack; it is not hosted learner or physical-device evidence.

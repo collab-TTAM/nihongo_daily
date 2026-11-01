@@ -289,9 +289,35 @@ def main() -> None:
         "second-session stale offline event is rejected",
     )
 
-    request_b = review_request()
+    # The idempotency key is owner-scoped, not global: B may use A's UUID
+    # with a different valid payload and must receive B's own receipt.
+    request_b = dict(request_a, rating=3)
     result_b = rpc("submit_review", request_b, token_b)
-    require(result_b.get("review_count") == 1, "independent B review")
+    require(
+        error_code(result_b) is None and result_b.get("review_count") == 1,
+        "B accepts the same client event UUID in its own owner scope",
+    )
+    replay_b = rpc("submit_review", request_b, token_b)
+    require(replay_b == result_b, "B replay returns B's original receipt")
+    changed_b = dict(request_b, rating=1)
+    conflict_b = rpc("submit_review", changed_b, token_b)
+    require(
+        error_code(conflict_b) == "SYNC_CONFLICT",
+        "B changed replay conflicts only within B's owner scope",
+    )
+    b_event_rows = rows(
+        "review_events",
+        "user_id,client_event_id,rating",
+        "user_id",
+        id_b,
+        token_b,
+    )
+    require(
+        len(b_event_rows) == 1
+        and b_event_rows[0]["client_event_id"] == request_a["client_event_id"]
+        and b_event_rows[0]["rating"] == 3,
+        "B stores its own event under the shared UUID",
+    )
 
     a_rows = rows(
         "user_learning_items",
@@ -360,7 +386,7 @@ def main() -> None:
         "password sessions, refresh rotation, global logout revocation, profile "
         "bootstrap, signed-expired JWT rejection, concurrent same-owner replay, "
         "historical replay after a later review without state rollback, changed/stale "
-        "conflicts and A/B RLS isolation. LOCAL ONLY."
+        "conflicts, owner-scoped shared event IDs and A/B RLS isolation. LOCAL ONLY."
     )
 
 
