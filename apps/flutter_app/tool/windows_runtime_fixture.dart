@@ -69,10 +69,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   var secret = phase == 'runtime-restore'
       ? _second
       : phase == 'runtime-logout'
-          ? _third
-          : phase == 'runtime-late-refresh'
-              ? _second
-              : _first;
+      ? _third
+      : phase == 'runtime-late-refresh'
+      ? _second
+      : _first;
   Completer<http.Response>? lateRefresh;
   final profileOwners = <String>[];
 
@@ -121,10 +121,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         final expected = phase == 'runtime-restore'
             ? _first
             : phase == 'runtime-logout'
-                ? _second
-                : phase == 'runtime-late-refresh'
-                    ? _first
-                    : _rejected;
+            ? _second
+            : phase == 'runtime-late-refresh'
+            ? _first
+            : _rejected;
         _check(body.length == 1 && body['refresh_token'] == expected);
         if (phase == 'runtime-rejected') {
           return http.Response('{"message":"fixture rejected"}', 401);
@@ -242,7 +242,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       final profileRequest = requests
           .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .single;
-      _check(profileRequest.headers['authorization'] == 'Bearer ${accessToken()}');
+      _check(
+        profileRequest.headers['authorization'] == 'Bearer ${accessToken()}',
+      );
       _check((await journal.list(_ownerB)).isEmpty);
       await runtime.account.signOut();
       _check(runtime.account.readyRuntime == null);
