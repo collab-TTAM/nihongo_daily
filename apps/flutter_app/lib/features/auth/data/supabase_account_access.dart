@@ -16,6 +16,8 @@ final class SupabaseAccountAccess implements AccountAccess {
   Future<void> signIn(String email, String password) async {
     try {
       await binding.authenticateWithPassword(email, password);
+    } on ReviewTransportFailure {
+      rethrow;
     } on Object {
       throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
     }

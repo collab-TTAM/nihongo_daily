@@ -231,6 +231,9 @@ final class PersistentAccountAccess implements AccountAccess {
     _cancelledOperation = false;
     try {
       await action();
+    } on ReviewTransportFailure {
+      if (_allowed && !_closed) _fail();
+      rethrow;
     } on Object {
       if (_allowed && !_closed) _fail();
       throw _failure();

@@ -302,3 +302,21 @@ This is TEST ONLY MockClient/in-memory-backend coverage. It does not simulate a
 Windows Credential Manager failure or establish hosted Auth/JWT/RLS evidence.
 No production fallback, automatic retry, default Auth activation, Auth
 strategy/provider, migration, schema or RLS behavior is changed.
+
+
+## Bounded Auth response failures — 2026-11-01
+
+The caller-owned Auth HTTP boundary preserves typed, sanitized transport failures
+instead of converting every failure into a retryable network error. A response
+that exceeds the 1 MiB cap remains a non-retryable internal error; request/body
+timeouts and HTTP client transport failures are reported as retryable network
+unavailability. The pinned SDK adapter and persistent account owner rethrow only
+the already-safe `ReviewTransportFailure` type; unknown SDK exceptions continue
+to collapse to the generic unauthorized result.
+
+The regression uses a TEST ONLY stored refresh token and an oversized mock Auth
+response. It requires startup to fail closed, retain the untrusted stored value
+for explicit recovery, and make no own-profile request. The timeout regression
+also asserts the safe retryable network classification and late-response discard.
+This is not hosted Auth evidence and does not change Auth strategy/provider,
+default activation, credential storage, schema or RLS.

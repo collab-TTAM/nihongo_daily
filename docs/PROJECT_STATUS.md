@@ -1993,3 +1993,43 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Applied exactly that formatter output, removed the temporary diagnostic workflow step, and left the strict formatter gate, analyzer, tests, browser/native checks and builds unchanged. No production Auth/session behavior or test assertions changed.
 - Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run. New exact-head GitHub Actions is required; no new-head pass is claimed. No hosted signed-JWT learner A/B, physical multi-device sync, Auth strategy/provider, migration/RLS, default activation, production deployment or Pro-owned #14/#38/N4 change.
 - Next: inspect every latest-attempt job and step for the new exact head. Fix only observed failures; if checks remain pending, persist a released handoff without duplicate source changes. Keep PR #37 draft and #20/#22/#15 open.
+
+
+## Core worker handoff — bounded Auth response classification — 2026-11-01 UTC
+
+- Run `core-20261101T1805Z-bounded-auth-response-classification`; branch
+  `automation/issue-22-atomic-review`; parent `5f0428d8cf78cf836b5a29b951037253a924c0a1`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Before this increment, exact-head CI
+  [41329988599](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41329988599)
+  completed **all six jobs and every returned step successfully** on
+  `5f0428d8cf78cf836b5a29b951037253a924c0a1`: repo-sanity, ai-boundary, database, supabase-integration,
+  windows and flutter. Flutter strict format, analyze, full tests, session/vault/
+  profile checks, Chrome IndexedDB/browser reload, native recovery, actual Dart
+  wire projections and Web release build passed. Windows vault bridge/cross-process
+  Credential Manager, Windows release, retention, compaction and durable restart
+  checks passed. The disposable local Supabase GoTrue/PostgREST A/B/rotation/
+  replay/RLS test passed. These are exact-head CI component/local-stack results,
+  not hosted learner A/B or physical multi-device acceptance.
+- Corrected the owned Auth HTTP error boundary: oversized response bodies retain
+  non-retryable INTERNAL_ERROR; request/body timeouts and HTTP client transport
+  failures retain retryable NETWORK_UNAVAILABLE. Only sanitized
+  ReviewTransportFailure values cross the SDK/persistent-account adapters;
+  unknown exceptions still collapse to a safe generic error. Added an oversized
+  Auth response fail-closed regression and strengthened the timeout classification
+  assertion. No token/body is logged or exposed.
+- Paths: `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`,
+  `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`,
+  `apps/flutter_app/lib/features/auth/data/supabase_account_access.dart`,
+  `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`,
+  `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`,
+  `qa/matrix.json`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file.
+- Cloud runtime has no Flutter/Dart SDK or Windows OS; local format/analyze/test/
+  build and native execution were not run. The exact-head Actions run for the new
+  commit is the required verification; pending/skip/fail steps are not passes.
+- No Auth strategy/provider, migration/RLS, API contract, default Auth activation,
+  secrets, production deployment, or Pro-owned #14/#38/N4 paths changed. Keep
+  PR #37 draft and #20/#22/#15 open; hosted signed-JWT/PostgREST learner A/B,
+  real expiry/restart and physical two-device offline reconciliation remain
+  outstanding. Next: inspect every latest-attempt job/step on the new exact head
+  and fix only observed failures.

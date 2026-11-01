@@ -34,6 +34,7 @@ void main() {
   late String authUser;
   late String authSession;
   late int authStatus;
+  late http.Response? authOverride;
   late Completer<http.Response>? authWait;
   late Completer<http.Response>? profileWait;
   http.Response authResponse() => http.Response(
@@ -82,6 +83,7 @@ void main() {
     authUser = wire.a;
     authSession = wire.sid1;
     authStatus = 200;
+    authOverride = null;
     authWait = null;
     profileWait = null;
     vault = SessionCredentialVault(projectUrl: wire.origin, backend: backend);
@@ -89,6 +91,7 @@ void main() {
       requests.add(request);
       if (request.url.path == '/auth/v1/token') {
         if (authWait != null) return authWait!.future;
+        if (authOverride != null) return authOverride!;
         return authStatus == 200
             ? authResponse()
             : http.Response(
@@ -642,6 +645,41 @@ void main() {
   );
 
   test(
+    'SDK oversized Auth response fails closed as internal error',
+    () async {
+      const responseBytes = 1024 * 1024 + 1;
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      authOverride = http.Response(
+        'x' * responseBytes,
+        200,
+        headers: {
+          'content-type': 'application/json',
+          'content-length': '$responseBytes',
+        },
+      );
+
+      await expectLater(
+        runtime.start(),
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (failure) => failure.code,
+            'code',
+            ReviewErrorCode.internalError,
+          ),
+        ),
+      );
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
+      expect(
+        requests.where((request) => request.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+    },
+  );
+
+  test(
     'SDK timeout discards late response and never dispatches profile',
     () async {
       await runtime.close();
@@ -658,7 +696,15 @@ void main() {
       authWait = Completer();
       await expectLater(
         runtime.start(),
-        throwsA(isA<ReviewTransportFailure>()),
+        throwsA(
+          isA<ReviewTransportFailure>()
+              .having(
+                (failure) => failure.code,
+                'code',
+                ReviewErrorCode.networkUnavailable,
+              )
+              .having((failure) => failure.retryable, 'retryable', isTrue),
+        ),
       );
       authWait!.complete(authResponse());
       await fixture.flush();

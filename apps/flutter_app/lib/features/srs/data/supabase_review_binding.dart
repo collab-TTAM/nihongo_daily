@@ -179,6 +179,8 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
       if (_disposed) {
         throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
       }
+    } on ReviewTransportFailure {
+      rethrow;
     } on Object {
       throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
     }

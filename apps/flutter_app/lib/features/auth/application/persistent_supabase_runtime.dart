@@ -218,8 +218,20 @@ final class _BoundedSessionHttp extends http.BaseClient {
         headers: response.headers,
         request: request,
       );
+    } on ReviewTransportFailure {
+      rethrow;
+    } on TimeoutException {
+      throw const ReviewTransportFailure(
+        ReviewErrorCode.networkUnavailable,
+        retryable: true,
+      );
+    } on http.ClientException {
+      throw const ReviewTransportFailure(
+        ReviewErrorCode.networkUnavailable,
+        retryable: true,
+      );
     } on Object {
-      throw const ReviewTransportFailure(ReviewErrorCode.networkUnavailable);
+      throw const ReviewTransportFailure(ReviewErrorCode.internalError);
     }
   }
 
@@ -265,6 +277,8 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
   Future<void> restore(String refreshToken) async {
     try {
       await client.auth.setSession(refreshToken);
+    } on ReviewTransportFailure {
+      rethrow;
     } on Object {
       throw _failure();
     }
@@ -274,6 +288,8 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
   Future<void> refresh() async {
     try {
       await client.auth.refreshSession();
+    } on ReviewTransportFailure {
+      rethrow;
     } on Object {
       throw _failure();
     }

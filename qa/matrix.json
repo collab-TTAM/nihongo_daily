@@ -267,6 +267,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "SDK vault read failure blocks restore and explicit login recovers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK oversized Auth response fails closed as internal error"
         }
       ],
       "issues": [
