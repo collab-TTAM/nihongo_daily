@@ -6,6 +6,7 @@ This never connects to a hosted project and never prints credentials or tokens.
 from __future__ import annotations
 
 import base64
+import concurrent.futures
 import datetime as dt
 import hashlib
 import hmac
@@ -66,13 +67,7 @@ def error_code(body) -> str | None:
     return value if isinstance(value, str) else None
 
 
-def create_user(label: str):
-    email = f"{label}-{uuid.uuid4().hex}@example.com"
-    password = f"Local-Only-{uuid.uuid4().hex[:20]}!"
-    status, _ = request(
-        "POST", "/auth/v1/signup", {"email": email, "password": password}
-    )
-    require(status in (200, 201), f"{label} GoTrue signup ({status})")
+def password_login(email: str, password: str, label: str):
     status, session = request(
         "POST",
         "/auth/v1/token?grant_type=password",
@@ -88,6 +83,16 @@ def create_user(label: str):
         f"{label} session shape",
     )
     return session
+
+
+def create_user(label: str):
+    email = f"{label}-{uuid.uuid4().hex}@example.com"
+    password = f"Local-Only-{uuid.uuid4().hex[:20]}!"
+    status, _ = request(
+        "POST", "/auth/v1/signup", {"email": email, "password": password}
+    )
+    require(status in (200, 201), f"{label} GoTrue signup ({status})")
+    return password_login(email, password, label), email, password
 
 
 def rpc(name: str, request_body: dict, access_token: str):
@@ -153,8 +158,8 @@ def review_request() -> dict:
 
 def main() -> None:
     require(len(JWT_SECRET) >= 32, "local JWT verifier configuration")
-    user_a = create_user("learner-a")
-    user_b = create_user("learner-b")
+    user_a, email_a, password_a = create_user("learner-a")
+    user_b, _, _ = create_user("learner-b")
     id_a = user_a["user"]["id"]
     id_b = user_b["user"]["id"]
     token_a = user_a["access_token"]
@@ -193,6 +198,9 @@ def main() -> None:
         rpc("ensure_profile", {}, token_a).get("id") == id_a,
         "rotated access token retains owner identity",
     )
+    device_a = password_login(email_a, password_a, "learner-a second device")
+    require(device_a["user"]["id"] == id_a, "two independent sessions share owner")
+    token_a_device = device_a["access_token"]
 
     expired = expired_jwt(id_a)
     status, _ = request(
@@ -201,24 +209,67 @@ def main() -> None:
     require(status in (401, 403), "expired signed JWT rejected by local API")
 
     request_a = review_request()
-    first = rpc("submit_review", request_a, token_a)
-    replay = rpc("submit_review", request_a, token_a)
-    require(first == replay and first.get("review_count") == 1, "atomic replay")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as clients:
+        first_call = clients.submit(rpc, "submit_review", request_a, token_a)
+        second_call = clients.submit(
+            rpc, "submit_review", request_a, token_a_device
+        )
+        first = first_call.result(timeout=20)
+        concurrent_replay = second_call.result(timeout=20)
+    require(
+        first == concurrent_replay and first.get("review_count") == 1,
+        "two independent sessions for one owner commit one identical review",
+    )
+    replay = rpc("submit_review", request_a, token_a_device)
+    require(replay == first, "second-session retry returns original receipt")
     changed = dict(request_a, rating=3)
-    conflict = rpc("submit_review", changed, token_a)
-    require(error_code(conflict) == "SYNC_CONFLICT", "changed replay conflicts")
+    conflict = rpc("submit_review", changed, token_a_device)
+    require(
+        error_code(conflict) == "SYNC_CONFLICT",
+        "changed two-session replay conflicts",
+    )
+    occurred = dt.datetime.fromisoformat(
+        request_a["occurred_at"].replace("Z", "+00:00")
+    )
+    stale = dict(
+        request_a,
+        client_event_id=str(uuid.uuid4()),
+        occurred_at=(occurred - dt.timedelta(seconds=1))
+        .isoformat(timespec="microseconds")
+        .replace("+00:00", "Z"),
+    )
+    stale_result = rpc("submit_review", stale, token_a_device)
+    require(
+        error_code(stale_result) == "SYNC_CONFLICT",
+        "second-session stale offline event is rejected",
+    )
 
     request_b = review_request()
     result_b = rpc("submit_review", request_b, token_b)
     require(result_b.get("review_count") == 1, "independent B review")
 
     a_rows = rows(
-        "user_learning_items", "id,user_id,item_id,review_count", "user_id", id_a, token_a
+        "user_learning_items",
+        "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
+        "user_id",
+        id_a,
+        token_a,
+    )
+    a_device_rows = rows(
+        "user_learning_items",
+        "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
+        "user_id",
+        id_a,
+        token_a_device,
     )
     b_rows = rows(
         "user_learning_items", "id,user_id,item_id,review_count", "user_id", id_b, token_b
     )
     require(len(a_rows) == 1 and a_rows[0]["review_count"] == 1, "A own review row")
+    require(
+        a_device_rows == a_rows,
+        "both same-owner sessions read identical authoritative server state",
+    )
     require(len(b_rows) == 1 and b_rows[0]["review_count"] == 1, "B own review row")
     require(
         rows("user_learning_items", "id", "user_id", id_a, token_b) == [],
@@ -247,6 +298,12 @@ def main() -> None:
         {"refresh_token": rotated["refresh_token"]},
     )
     require(status in (400, 401), "logout revokes rotated refresh token")
+    status, _ = request(
+        "POST",
+        "/auth/v1/token?grant_type=refresh_token",
+        {"refresh_token": device_a["refresh_token"]},
+    )
+    require(status in (400, 401), "global logout revokes second-device refresh token")
 
     status, _ = request(
         "POST", "/auth/v1/logout?scope=global", access_token=token_b
@@ -254,9 +311,10 @@ def main() -> None:
     require(status in (200, 204), "B GoTrue logout")
 
     print(
-        "Local Supabase GoTrue/PostgREST passed: two Auth users, refresh rotation, "
-        "logout revocation, own-profile bootstrap, signed-expired JWT rejection, "
-        "atomic review replay/conflict and A/B RLS isolation. LOCAL ONLY."
+        "Local Supabase GoTrue/PostgREST passed: two Auth users, three independent "
+        "password sessions, refresh rotation, global logout revocation, profile "
+        "bootstrap, signed-expired JWT rejection, concurrent same-owner replay, "
+        "changed/stale conflict and A/B RLS isolation. LOCAL ONLY."
     )
 
 

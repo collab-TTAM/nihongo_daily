@@ -258,3 +258,23 @@ navigation and logout. Native recovery and existing 320/375px at 200% widget
 checks are retained/strengthened. These use TEST ONLY ports; exact-source CI
 must pass. No N4 exports/content tests, Auth/default activation, API/schema or
 security gates changed. All 14 hosted learner/integration groups remain open.
+
+
+## Two independent GoTrue sessions — local-only verification (2026-11-01)
+
+The disposable `supabase-integration` job now signs the same TEST ONLY learner
+into two independent password sessions, then dispatches the same immutable
+`submit_review` request concurrently with each session's bearer. Both responses
+must equal the one original receipt and `review_count` must remain one. A changed
+payload under the same event ID and a separate stale event from the second
+session must each return `SYNC_CONFLICT`. Both sessions then read the same
+server-authoritative learning-item projection. A global logout must revoke both
+refresh-token sessions.
+
+This exercises the real disposable local GoTrue/PostgREST stack and the atomic
+RPC across two independent authenticated client sessions; it is stronger than
+two SQL roles or two requests using one bearer. It is still LOCAL ONLY: it does
+not launch two physical devices, test offline browser/native cache transfer,
+prove hosted JWT/deployed RLS, or complete #15's cross-device learner flow.
+The QA `review-transaction` baseline points to this executable integration
+anchor while `offline-sync` remains pending-integration.

@@ -1888,3 +1888,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud runtime has no Flutter/Dart SDK, so no local format/analyze/test/build was run. The source fix is now persisted and a fresh CI is expected on the documentation/final head; no result for that new head is claimed yet.
 - Keep PR #37 draft and #20/#22/#15 open. Hosted signed JWT/PostgREST/RLS, real learner A/B, restart/expiry and two-device sync evidence remain outstanding; no Personal Alpha acceptance is claimed.
 - Next: inspect every latest-attempt job and step for the final documentation head. Fix only observed failures; if all required checks pass, continue the next unblocked integration acceptance without merging this still-incomplete draft.
+
+
+
+## Local two-session atomic review integration — 2026-11-01 UTC
+
+- Run `core-20261101T1009Z-two-session-replay` on branch `automation/issue-22-atomic-review`; source parent `9c1a9f5a635b30f3b23311d2a2af7bea9e4f38f8`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Extended `scripts/test_supabase_local.py` to sign the same disposable learner into two independent GoTrue password sessions, submit one immutable review concurrently through both bearers, require identical original receipts and one counter increment, reject changed replay and a stale second-session event, compare the same authoritative user-learning projection from both sessions, and verify global logout revokes both refresh sessions. Existing separate A/B RLS, expired signed JWT, profile bootstrap and token-rotation checks remain.
+- Updated `docs/SRS_RPC.md` and the `review-transaction` QA anchor. The `offline-sync` release case remains pending: this is two authenticated local HTTP sessions, not two physical devices, browser/native cache transfer, hosted learner accounts or offline restart/reconnect acceptance.
+- This source change requires the exact-head disposable Supabase integration job and full six-job CI. Cloud runtime has no Docker/hosted project or Flutter/Dart SDK; no local Supabase, Flutter, Windows or web build is claimed. No Auth strategy/provider, migration/RLS, API schema, secrets, production/default-preview or Pro-owned #14/#38/N4 scope changed.
+- Next: inspect every latest-attempt job/step on the new exact head; fix only observed failures. If CI passes, retain #20/#22/#15 open until hosted learner A/B and actual multi-device sync evidence are supplied.

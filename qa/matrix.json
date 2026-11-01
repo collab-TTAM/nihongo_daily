@@ -601,7 +601,7 @@
     {
       "id": "review-transaction",
       "status": "automated-baseline",
-      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; five native race scenarios",
+      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback, 26 SQL/Dart policy pairs, five native race scenarios and two independent GoTrue sessions for one owner",
       "ci_job": "database",
       "anchors": [
         {
@@ -615,6 +615,10 @@
         {
           "path": "scripts/test_submit_review_concurrency.py",
           "contains": "different_item"
+        },
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "two independent sessions for one owner commit one identical review"
         }
       ],
       "issues": [
@@ -1007,7 +1011,7 @@
         18
       ],
       "reproduce": "Run two clients A/B, go offline, queue immutable event IDs/times, restart, reconnect/resend, provoke stale/two-device conflict and account switch; inspect retained authoritative state.",
-      "limitation": "No durable local queue/cache, multi-device integration or restart tests."
+      "limitation": "Native journal and browser IndexedDB ledgers plus manual recovery are implemented, and local GoTrue now exercises two independent sessions for one owner. No physical two-device offline cache transfer/reconnect, hosted multi-device learner flow or integrated cross-device reconciliation is yet verified."
     },
     {
       "id": "quiz-progress",
