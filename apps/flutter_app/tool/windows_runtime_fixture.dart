@@ -109,7 +109,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     headers: {'content-type': 'application/json'},
   );
 
+  final requests = <http.Request>[];
   final network = MockClient((request) async {
+    requests.add(request);
     _check(request.url.origin == origin && !request.followRedirects);
     if (request.url.path == '/auth/v1/token') {
       authCalls++;
