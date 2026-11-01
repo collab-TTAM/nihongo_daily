@@ -327,6 +327,55 @@ void main() {
   );
 
   test(
+    'SDK corrupt stored refresh value blocks restore and explicit login recovers',
+    () async {
+      const corrupt = 'TEST_ONLY_CORRUPT\\nVALUE';
+      backend.secret = corrupt;
+      await expectLater(
+        runtime.start(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, corrupt);
+      expect(backend.operations, ['read']);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
+        isEmpty,
+      );
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      expect(backend.operations, ['read', 'clear', 'write']);
+      expect(backend.secret, secret);
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      final profileRequests = requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .toList();
+      expect(authRequests, hasLength(1));
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+    },
+  );
+
+  test(
     'SDK credential clear failure fences account until explicit cleanup retry',
     () async {
       await runtime.start();

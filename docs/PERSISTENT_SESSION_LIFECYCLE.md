@@ -270,3 +270,19 @@ Auth test. It adds no plaintext fallback, automatic retry, default Auth
 activation, Auth strategy/provider, schema/RLS or deployment change. The Windows
 OS-backed bridge still verifies successful read/write/clear and late refresh
 account switching; live hosted identity remains a separate #20 gate.
+
+
+## Corrupt stored refresh value and explicit recovery — 2026-11-01
+
+A pinned-Supabase-SDK/owned-runtime regression now supplies a malformed stored
+refresh value from the TEST ONLY credential backend. Startup must fail closed at
+the vault decoder, preserve the corrupt entry for explicit cleanup, and issue no
+Auth token refresh or own-profile request. Only an explicit login may clean the
+entry and proceed; the method sequence is `read -> clear -> write`, and the new
+rotated refresh secret must be persisted before the own-profile barrier opens.
+
+The fixture uses an invalid control-character value, the actual pinned SDK,
+MockClient HTTP and an in-memory vault port. It is not a Windows Credential
+Manager failure injection or hosted Auth/JWT/RLS evidence. It adds no plaintext
+fallback, automatic retry, default Auth activation, Auth strategy/provider,
+schema/RLS or deployment change.

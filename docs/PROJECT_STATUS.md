@@ -1,5 +1,15 @@
 # PROJECT STATUS
 
+## Latest handoff — corrupt vault restore regression (2026-11-01 UTC)
+
+- PR #37 branch `automation/issue-22-atomic-review`; parent source head `7254202d2347081cfc400d586577d1f67f47dc6a`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. Added a TEST ONLY pinned-Supabase-SDK/owned-runtime regression in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` for a malformed stored refresh value.
+- Startup must fail closed before Auth token refresh or `ensure_profile`, retain the corrupt value until explicit cleanup, then require the sequence `read -> clear -> write` on explicit login. The new rotated refresh secret is verified before the own-profile barrier publishes readiness. This complements existing storage read/write/clear failures, late-response and account-switch cases.
+- Updated `docs/PERSISTENT_SESSION_LIFECYCLE.md`; no production Auth/runtime, schema/RLS, frozen API, default activation, deployment or Pro-owned #14/#38/N4 files changed.
+- Parent exact-head CI [41300703129](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41300703129), attempt 1, exact parent `7254202d2347081cfc400d586577d1f67f47dc6a`, completed SUCCESS: all six jobs (`repo-sanity`, `database`, `ai-boundary`, `supabase-integration`, `windows`, `flutter`) and every returned step succeeded. This is parent evidence only; the new regression has not run yet. The cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run.
+- Exact-head CI for the new commit is required. The fixture uses an invalid control-character value, TEST ONLY MockClient and an in-memory vault backend; it is not a native Credential Manager failure injection or hosted signed-JWT/PostgREST/RLS/learner proof. Keep PR #37 draft and #20/#22/#15 open; Pro #14/#38 remains untouched.
+- Next: inspect all six latest-attempt jobs/every step on the new exact head; fix only observed failures. Hosted non-production learner A/B/expiry/restart and physical two-device offline sync remain external acceptance gates.
+
+
 ## Latest handoff — Windows OS-backed late refresh and account switch (2026-11-01 UTC)
 
 - PR #37 branch automation/issue-22-atomic-review; parent head 6e6b5b036ccb7344a57359289a694d5022eb1437. Added a TEST ONLY runtime-late-refresh phase in apps/flutter_app/tool/windows_runtime_fixture.dart and registered it in apps/flutter_app/tool/verify_windows_vault_bridge.ps1.
