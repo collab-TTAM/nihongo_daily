@@ -1,5 +1,13 @@
 # PROJECT STATUS
 
+## Latest handoff — pinned Dart formatter follow-up (2026-11-01 UTC)
+
+- Exact-head CI [41314789659](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41314789659) targets `55d69788cdec5a0877fcdb9a44301f2c65baa6a8`. Repo-sanity, AI boundary and database completed SUCCESS with all steps; Windows and disposable Supabase integration were still running at the last observation. Flutter failed only at pinned Dart 3.35.4 strict format: the log identified `test/features/srs/account_fixtures.dart` as the sole changed file; Analyze, tests and Web Build were SKIPPED on that attempt.
+- Applied only the formatter-required collapse of the two new explicit sign-in calls in `account_fixtures.dart`; no logic/assertions changed. This follows the exact CI formatter output naming one file; the next exact-head run must verify format and then execute the full test suite.
+- Parent commit `55d69788cdec5a0877fcdb9a44301f2c65baa6a8` contains the Auth error-retention fix and deterministic readiness wait. No Auth strategy/provider, schema/RLS, API contract, default activation or Pro-owned #14/#38/N4 paths changed.
+- Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. Keep PR #37 Draft and #20/#22/#15 open. Next: inspect every latest-attempt job/step on the new exact head; fix only observed failures.
+
+
 ## Latest handoff — exact-head Auth lifecycle test regressions (2026-11-01 UTC)
 
 - Run `core-20261101T1405Z-auth-ci-regressions`; branch `automation/issue-22-atomic-review`; parent `6834c92cea31263343ffa4559b478f17c634bc0a`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

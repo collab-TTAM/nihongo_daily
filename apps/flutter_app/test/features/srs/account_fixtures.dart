@@ -113,10 +113,7 @@ Future<void> verifyAccount(String scenario) async {
       );
     } else if (scenario == 'sign-in-error-preserved') {
       access.failSignIn = true;
-      await controller.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
+      await controller.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD');
       check(
         controller.state.phase == AccountPhase.signInError &&
             controller.readyRuntime == null,
@@ -131,10 +128,7 @@ Future<void> verifyAccount(String scenario) async {
         'queued no-session event erased the sign-in error',
       );
       access.failSignIn = false;
-      await controller.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
+      await controller.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD');
       await flush();
       check(
         controller.state.phase == AccountPhase.ready &&
