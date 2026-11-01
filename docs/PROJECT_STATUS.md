@@ -1,5 +1,14 @@
 # PROJECT STATUS
 
+## Latest handoff — corrupt-vault cleanup failure remains fenced (2026-11-01 UTC)
+
+- Run `core-20261101T1307Z-corrupt-clear-retry`; source increment authored on `automation/issue-22-atomic-review`, parent `87c1a7e23fc49ef6be49dd790aa95b53756b5e16`, main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Extended `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: malformed stored refresh data fails startup before Auth/profile; if explicit cleanup clear fails, sign-in remains fenced, the corrupt value is preserved, and no Auth token/profile request is dispatched. A successful explicit logout cleanup retry is required before a new sign-in can persist the rotated secret and open own-profile readiness.
+- Updated `docs/PERSISTENT_SESSION_LIFECYCLE.md`. This is TEST ONLY pinned-SDK/MockClient/in-memory-vault coverage, not native Credential Manager failure injection or hosted signed-JWT/PostgREST/RLS/learner evidence. No production/Auth strategy/provider/schema/RLS/default/Pro N4 behavior changed.
+- Exact-head CI for the new source/doc checkpoint is required; no new-head format/analyze/test/build result is claimed. Cloud runtime has no Flutter/Dart SDK.
+- Next: inspect all six latest-attempt CI jobs and every step for the exact new head; fix only observed failures. Keep #20/#22/#15 and PR #37 draft until hosted learner A/B and physical multi-device sync gates are evidenced.
+
+
 ## Latest handoff — corrupt-vault fixture correction (2026-11-01 UTC)
 
 - PR #37 branch `automation/issue-22-atomic-review`; source commit `a82db3032948148c5f1e27e665c90f79a1535bd4`, parent `7c35e51d88b6c506749f0c16c8c74f41506c9b0f`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

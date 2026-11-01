@@ -286,3 +286,19 @@ MockClient HTTP and an in-memory vault port. It is not a Windows Credential
 Manager failure injection or hosted Auth/JWT/RLS evidence. It adds no plaintext
 fallback, automatic retry, default Auth activation, Auth strategy/provider,
 schema/RLS or deployment change.
+
+
+## Corrupt-vault cleanup failure remains fenced — 2026-11-01
+
+The pinned-Supabase-SDK regression now combines malformed startup storage with
+an explicit cleanup failure. Startup rejects the corrupt refresh value before
+Auth/profile dispatch. A subsequent explicit sign-in attempts cleanup first;
+when the vault clear fails, the account stays unavailable, the corrupt value
+remains untrusted, and no Auth token or own-profile request is sent. After an
+explicit logout retry clears the slot, a new explicit sign-in is allowed and
+must persist its rotated refresh secret before profile readiness.
+
+This is TEST ONLY MockClient/in-memory-backend coverage. It does not simulate a
+Windows Credential Manager failure or establish hosted Auth/JWT/RLS evidence.
+No production fallback, automatic retry, default Auth activation, Auth
+strategy/provider, migration, schema or RLS behavior is changed.

@@ -327,7 +327,7 @@ void main() {
   );
 
   test(
-    'SDK corrupt stored refresh value blocks restore and explicit login recovers',
+    'SDK corrupt stored refresh value requires successful cleanup before login',
     () async {
       const corrupt = 'TEST_ONLY_CORRUPT\nVALUE';
       backend.secret = corrupt;
@@ -352,13 +352,44 @@ void main() {
         isEmpty,
       );
 
+      backend.failClear = true;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, corrupt);
+      expect(backend.operations, ['read', 'clear']);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
+        isEmpty,
+      );
+
+      backend.failClear = false;
+      await runtime.account.signOut();
+      await fixture.flush();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, isNull);
+      expect(backend.operations, ['read', 'clear', 'clear']);
+
       await runtime.account.signIn(
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
       await waitForReady();
 
-      expect(backend.operations, ['read', 'clear', 'write']);
+      expect(backend.operations, ['read', 'clear', 'clear', 'write']);
       expect(backend.secret, secret);
       final authRequests = requests
           .where((request) => request.url.path == '/auth/v1/token')
