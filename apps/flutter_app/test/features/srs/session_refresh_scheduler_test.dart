@@ -211,29 +211,31 @@ void main() {
     expect(h.timers, isEmpty);
     h.scheduler.dispose();
   });
-  test('same-session expiry rotation invalidates stale timer callbacks', () async {
-    final h = Harness();
-    h.scheduler.update();
-    final stale = h.timers.single;
-    final identity = h.lease!.identity;
-    final oldExpiry = h.lease!.expiresAt;
-    h.lease = RefreshLease(
-      identity,
-      oldExpiry.add(const Duration(hours: 1)),
-    );
-    h.scheduler.update();
-    expect(h.timers.where((timer) => timer.isActive), hasLength(1));
-    expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
+  test(
+    'same-session expiry rotation invalidates stale timer callbacks',
+    () async {
+      final h = Harness();
+      h.scheduler.update();
+      final stale = h.timers.single;
+      final identity = h.lease!.identity;
+      final oldExpiry = h.lease!.expiresAt;
+      h.lease = RefreshLease(
+        identity,
+        oldExpiry.add(const Duration(hours: 1)),
+      );
+      h.scheduler.update();
+      expect(h.timers.where((timer) => timer.isActive), hasLength(1));
+      expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
 
-    // A canceled callback may already be queued by the event loop. It must
-    // re-check the captured expiry, not refresh the same identity's new lease.
-    stale.fire(stale: true);
-    await flush();
-    expect(h.calls, 0);
-    expect(h.scheduler.phase, SessionRefreshPhase.scheduled);
-    expect(h.timers.where((timer) => timer.isActive), hasLength(1));
-    expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
-    h.scheduler.dispose();
-  });
-
+      // A canceled callback may already be queued by the event loop. It must
+      // re-check the captured expiry, not refresh the same identity's new lease.
+      stale.fire(stale: true);
+      await flush();
+      expect(h.calls, 0);
+      expect(h.scheduler.phase, SessionRefreshPhase.scheduled);
+      expect(h.timers.where((timer) => timer.isActive), hasLength(1));
+      expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
+      h.scheduler.dispose();
+    },
+  );
 }
