@@ -329,7 +329,7 @@ void main() {
   test(
     'SDK corrupt stored refresh value blocks restore and explicit login recovers',
     () async {
-      const corrupt = 'TEST_ONLY_CORRUPT\\nVALUE';
+      const corrupt = 'TEST_ONLY_CORRUPT\nVALUE';
       backend.secret = corrupt;
       await expectLater(
         runtime.start(),
