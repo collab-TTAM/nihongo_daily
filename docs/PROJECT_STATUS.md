@@ -2102,3 +2102,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every latest-attempt job and step on the new exact head. Keep
   PR #37 Draft and #20/#22/#15 open; hosted signed-JWT learner A/B and physical
   multi-device offline reconciliation remain unproven.
+
+
+## Core worker checkpoint — expired JWT RPC guards — 2026-11-02 UTC
+
+- Run `core-20261101T2312Z-expired-rpc-auth-guards`; branch `automation/issue-22-atomic-review`; parent `c9a8330a0b18310dbd207a3bd5ffc908d2d5c184`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head CI [41356318234](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41356318234) completed all six jobs and every step successfully on `c9a8330a0b18310dbd207a3bd5ffc908d2d5c184`: repo-sanity, database, ai-boundary, disposable Supabase integration, Windows and Flutter (format/analyze/full tests/Chrome IndexedDB/native recovery/Web release). This is parent evidence, not evidence for this new increment.
+- Extended `scripts/test_supabase_local.py` so a validly signed but expired TEST ONLY local JWT is sent to `ensure_profile` and `submit_review`, not just a profile read. The gateway must reject both RPC calls; a subsequent valid-session query must show no review event and no learning-item side effect. `docs/OWN_PROFILE_BOOTSTRAP.md` records the exact LOCAL ONLY boundary.
+- Changed paths: `scripts/test_supabase_local.py`, `docs/OWN_PROFILE_BOOTSTRAP.md`, and this status file. No migration, RLS, API contract, Auth strategy/provider, default runtime activation, secrets or Pro-owned #14/#38/N4 path changed.
+- Cloud runtime has no Docker/Flutter SDK; local GoTrue/PostgREST, format/analyze/test/build were not run. Exact-head Actions must execute the new regression. This does not satisfy hosted signed-JWT learner A/B or physical multi-device offline acceptance.
+- Next: inspect all latest-attempt jobs/steps on the new exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open.

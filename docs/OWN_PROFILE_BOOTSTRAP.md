@@ -97,3 +97,15 @@ five actual same-run SQL-to-Dart profile projections, retained Chrome/native
 gates and web/Windows release artifacts. Exact-head CI metadata verification
 accepted all required steps. This is not hosted login/signature or token-restore
 evidence; later commits need their own checks.
+
+
+## Expired JWT RPC rejection — disposable local evidence
+
+The TEST ONLY local GoTrue/PostgREST integration creates a JWT with a valid
+local HMAC signature but an already-expired `exp`. The gateway must reject it
+for the profile read, `ensure_profile` RPC and `submit_review` RPC. After the
+review attempt, a valid session confirms that no review event or learning item
+was created. This verifies expiry enforcement across both write endpoints in
+the disposable local stack only; it is not hosted Supabase, production JWT or
+learner A/B evidence. The app still accepts no learner-supplied URL/key, and no
+Auth strategy/provider or RLS change is made.

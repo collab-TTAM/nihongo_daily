@@ -207,7 +207,38 @@ def main() -> None:
     status, _ = request(
         "GET", "/rest/v1/profiles?select=id", access_token=expired
     )
-    require(status in (401, 403), "expired signed JWT rejected by local API")
+    require(status in (401, 403), "expired signed JWT rejected by local profile read")
+
+    status, _ = request(
+        "POST",
+        "/rest/v1/rpc/ensure_profile",
+        {"p_request": {}},
+        expired,
+    )
+    require(status in (401, 403), "expired signed JWT rejected by profile bootstrap RPC")
+
+    expired_review = review_request()
+    status, _ = request(
+        "POST",
+        "/rest/v1/rpc/submit_review",
+        {"p_request": expired_review},
+        expired,
+    )
+    require(status in (401, 403), "expired signed JWT rejected by review RPC")
+    require(
+        rows(
+            "review_events",
+            "client_event_id",
+            "client_event_id",
+            expired_review["client_event_id"],
+            token_a,
+        ) == [],
+        "expired JWT cannot append a review event",
+    )
+    require(
+        rows("user_learning_items", "id", "user_id", id_a, token_a) == [],
+        "expired JWT cannot create a learning item",
+    )
 
     request_a = review_request()
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as clients:
