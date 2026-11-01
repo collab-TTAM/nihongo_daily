@@ -1,5 +1,15 @@
 # PROJECT STATUS
 
+## Latest handoff — same-session refresh-expiry rotation guard (2026-11-01 UTC)
+
+- Resume branch `automation/issue-22-atomic-review`, parent source head `086a6f12be245ad35b6f90c8cf822160771ccd0a`, main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41315035250](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41315035250) completed SUCCESS on `086a6f12be245ad35b6f90c8cf822160771ccd0a`: all six jobs (`repo-sanity`, `ai-boundary`, `database`, `supabase-integration`, `windows`, `flutter`) and every returned step succeeded. Flutter format/analyze/test, SRS wire checks, web release build, Windows vault/process and durable-journal checks, local Supabase GoTrue/PostgREST two-session checks, database/RLS and AI boundary/audit all passed on that exact head.
+- Added one TEST ONLY scheduler regression: when the same accepted session identity receives a later expiry after token rotation, an already-queued timer callback captured against the old expiry must not refresh the new lease. It must preserve one correctly timed timer and dispatch zero stale refreshes. Updated `docs/SESSION_REFRESH.md` from 12 to 13 clock/timer fixtures.
+- This closes a specific stale-expiry callback test gap only. Clock/timer/SDK fixtures and local Supabase are not hosted signed-JWT learner A/B, deployed RLS or physical multi-device evidence. No production Auth, provider strategy, schema/RLS, API, default activation, learner-selected URL/key, or Pro-owned #14/#38/N4 paths changed.
+- Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. Require all six latest-attempt jobs/every step on the new exact head before treating this increment as verified.
+- Next: inspect the new exact-head CI; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open until hosted learner and real multi-device acceptance are observed.
+
+
 ## Latest handoff — pinned Dart formatter follow-up (2026-11-01 UTC)
 
 - Exact-head CI [41314789659](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41314789659) targets `55d69788cdec5a0877fcdb9a44301f2c65baa6a8`. Repo-sanity, AI boundary and database completed SUCCESS with all steps; Windows and disposable Supabase integration were still running at the last observation. Flutter failed only at pinned Dart 3.35.4 strict format: the log identified `test/features/srs/account_fixtures.dart` as the sole changed file; Analyze, tests and Web Build were SKIPPED on that attempt.

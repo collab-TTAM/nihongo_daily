@@ -29,9 +29,10 @@ persistence/SDK operations, preventing late rescheduling. Foreground integration
 does not guarantee background execution while OS suspends the process. Factory
 and supplied journal ownership rules remain those in ACCOUNT_STARTUP.
 
-Twelve clock/timer/lease fixtures cover normal scheduling, logout/stale callbacks,
-identity replacement, valid/expired resume, pending operations, failures, unchanged
-expiry/short TTL, long timers/rollback, disposal and invalid hints. Two actual
+Thirteen clock/timer/lease fixtures cover normal scheduling, logout/stale callbacks,
+identity replacement and same-session expiry rotation, valid/expired resume, pending
+operations, failures, unchanged expiry/short TTL, long timers/rollback, disposal and
+invalid hints. Two actual
 pinned-SDK/mock-HTTP tests cover persistence/profile ordering and fenced failure
 without resume retry; one widget test covers forwarding before/after ownership.
 Verified source evidence is recorded below; no hosted rotation/device/OS suspend proof. Existing
