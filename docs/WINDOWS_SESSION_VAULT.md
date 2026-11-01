@@ -93,12 +93,15 @@ channel lifetime and exact-target scope. No new dependency, Auth provider,
 configuration, schema/RLS/RPC, deployment or production-history deletion.
 Content lane #14 is untouched; shared QA/CI/docs belong to the coordinator.
 
-This complete storage component is not yet wired to Supabase session refresh,
-token rotation, sign-in/logout persistence or startup restore. That next assembly
-must preserve profile readiness, captured SDK identity, immediate logout fencing
-and late-result rejection, and prove error handling before any automatic restore
-is enabled. All 14 live Personal Alpha cases remain pending; keep #37 draft and
-#20/#22/#15 open. Default account runtime remains null.
+The storage component is now wired through the explicitly caller-owned
+PersistentSupabaseRuntime in the opt-in Windows staging owner. Startup refresh,
+rotation persistence, own-profile readiness, logout fencing and late-result
+generation guards have TEST ONLY SDK coverage. The separate Windows runner probe
+also exercises a held User A refresh response after logout, then a fresh User B
+login through the real Credential Manager/MethodChannel. It does not use hosted
+HTTP or prove a real learner identity. Default preview still does not activate
+Auth or the vault; all hosted Personal Alpha cases remain pending. Keep #37 draft
+and #20/#22/#15 open.
 
 Primary Microsoft documentation checked 2026-10-14:
 - https://learn.microsoft.com/en-us/windows/win32/api/wincred/ns-wincred-credentialw
@@ -147,3 +150,25 @@ afterward and both Windows/web artifacts passed upload. All retained pure/native
 SQL/Chrome/security gates passed; exact-head/every-required-step QA accepted raw
 run/latest-attempt metadata. These results are historical for later commits.
 No hosted Auth or SDK-to-OS restart acceptance is claimed.
+
+
+## Windows OS-backed late-refresh/account-switch probe — 2026-11-01
+
+The runtime-late-refresh phase in tool/windows_runtime_fixture.dart runs
+inside the production Flutter Windows runner with the real MethodChannel and
+Windows Credential Manager, the caller-owned PersistentSupabaseRuntime, and
+the real native review-journal lease. It writes User A's synthetic refresh token
+to the OS vault, holds the startup refresh response, logs out and confirms the
+slot is empty before releasing A's old rotation response. The startup operation
+must fail closed with no A profile request or restored secret. The same runtime
+then signs in User B, checks that only B's own-profile request carries B's
+captured bearer and that B's rotated refresh token is already readable from the
+OS vault before profile readiness, then logs out and verifies the slot is empty.
+The existing A-owned pending review remains in the journal and B's owner-scoped
+view stays empty.
+
+verify_windows_vault_bridge.ps1 runs this as a fresh process after the existing
+login/restore/logout/rejected-token phases. Auth HTTP is a TEST ONLY MockClient
+and the JWT is explicitly unsigned; only the Windows storage/channel/journal and
+pinned SDK lifecycle are real. This is not hosted Auth, signed-JWT, deployed RLS,
+two-device or learner acceptance. The normal preview remains unconfigured.

@@ -18,8 +18,12 @@ const runtimePhases = {
   'runtime-logout',
   'runtime-signedout',
   'runtime-rejected',
+  'runtime-late-refresh',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
+const _ownerB = 'a1000000-0000-4000-8000-000000000002';
+const _sessionA = 'c1000000-0000-4000-8000-000000000001';
+const _sessionB = 'c1000000-0000-4000-8000-000000000002';
 const _first = 'TEST_ONLY_RUNTIME_FIRST';
 const _second = 'TEST_ONLY_RUNTIME_SECOND';
 const _third = 'TEST_ONLY_RUNTIME_THIRD';
@@ -60,11 +64,51 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   var authCalls = 0;
   var profileCalls = 0;
   var logoutCalls = 0;
+  var userId = _owner;
+  var sessionId = _sessionA;
   var secret = phase == 'runtime-restore'
       ? _second
       : phase == 'runtime-logout'
       ? _third
+      : phase == 'runtime-late-refresh'
+      ? _second
       : _first;
+  Completer<http.Response>? lateRefresh;
+  final profileOwners = <String>[];
+
+  String accessToken() {
+    final header = _segment({'alg': 'HS256', 'typ': 'JWT'});
+    final payload = _segment({
+      'sub': userId,
+      'session_id': sessionId,
+      'role': 'authenticated',
+      'aud': 'authenticated',
+      'iss': '$origin/auth/v1',
+      'exp': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+      'iat': now.millisecondsSinceEpoch ~/ 1000,
+    });
+    return '$header.$payload.\${_segment('TEST ONLY NOT A SIGNATURE')}';
+  }
+
+  http.Response authResponse() => http.Response(
+    jsonEncode({
+      'access_token': accessToken(),
+      'refresh_token': secret,
+      'token_type': 'bearer',
+      'expires_in': 3600,
+      'user': {
+        'id': userId,
+        'aud': 'authenticated',
+        'role': 'authenticated',
+        'created_at': '2026-10-14T00:00:00Z',
+        'app_metadata': <String, Object>{},
+        'user_metadata': <String, Object>{},
+      },
+    }),
+    200,
+    headers: {'content-type': 'application/json'},
+  );
+
   final network = MockClient((request) async {
     _check(request.url.origin == origin && !request.followRedirects);
     if (request.url.path == '/auth/v1/token') {
@@ -76,46 +120,36 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             ? _first
             : phase == 'runtime-logout'
             ? _second
+            : phase == 'runtime-late-refresh'
+            ? _first
             : _rejected;
         _check(body.length == 1 && body['refresh_token'] == expected);
         if (phase == 'runtime-rejected') {
           return http.Response('{"message":"fixture rejected"}', 401);
+        }
+        if (phase == 'runtime-late-refresh') {
+          final wait = lateRefresh;
+          _check(wait != null);
+          return wait!.future;
         }
       } else {
         _check(grant == 'password');
         _check(body['email'] == 'fixture@example.invalid');
         _check(body['password'] == 'TEST_ONLY_PASSWORD');
       }
-      final access =
-          '${_segment({'alg': 'HS256', 'typ': 'JWT'})}.'
-          '${_segment({'sub': _owner, 'session_id': 'c1000000-0000-4000-8000-000000000001', 'role': 'authenticated', 'aud': 'authenticated', 'iss': '$origin/auth/v1', 'exp': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000, 'iat': now.millisecondsSinceEpoch ~/ 1000})}.'
-          '${_segment('TEST ONLY NOT A SIGNATURE')}';
-      return http.Response(
-        jsonEncode({
-          'access_token': access,
-          'refresh_token': secret,
-          'token_type': 'bearer',
-          'expires_in': 3600,
-          'user': {
-            'id': _owner,
-            'aud': 'authenticated',
-            'role': 'authenticated',
-            'created_at': '2026-10-14T00:00:00Z',
-            'app_metadata': <String, Object>{},
-            'user_metadata': <String, Object>{},
-          },
-        }),
-        200,
-        headers: {'content-type': 'application/json'},
-      );
+      return authResponse();
     }
     if (request.url.path == '/rest/v1/rpc/ensure_profile') {
       profileCalls++;
+      profileOwners.add(userId);
       // The real OS write must already be observable before profile dispatch.
       _check(await vault.readRefreshToken() == secret);
+      if (phase == 'runtime-late-refresh') {
+        _check(request.headers['authorization'] == 'Bearer \${accessToken()}');
+      }
       return http.Response(
         jsonEncode({
-          'id': _owner,
+          'id': userId,
           'display_name': '学習者',
           'preferred_jlpt': 'N5',
           'daily_target_minutes': 120,
@@ -132,7 +166,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     // Includes submit_review: recovery must not dispatch an uncertain event.
     throw const FormatException('Unexpected fixture request');
   });
-  final runtime = PersistentSupabaseRuntime(
+    final runtime = PersistentSupabaseRuntime(
     projectUrl: origin,
     publishableKey: 'sb_publishable_TEST_ONLY_1234567890',
     vault: vault,
@@ -150,6 +184,14 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     _check(runtime.account.readyRuntime != null && profileCalls > 0);
   }
 
+  Future<void> waitForAuthCalls(int count) async {
+    final end = DateTime.now().add(const Duration(seconds: 5));
+    while (authCalls < count && DateTime.now().isBefore(end)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+    _check(authCalls == count);
+  }
+
   Future<void> pending() async {
     final records = await journal.list(_owner);
     _check(records.length == 1 && records.single.isPending);
@@ -157,7 +199,55 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   }
 
   try {
-    if (phase == 'runtime-rejected') {
+    if (phase == 'runtime-late-refresh') {
+      _check(await vault.readRefreshToken() == null);
+      await vault.writeRefreshToken(_first);
+      lateRefresh = Completer<http.Response>();
+
+      final restoring = runtime.start();
+      await waitForAuthCalls(1);
+      _check(runtime.account.readyRuntime == null && profileCalls == 0);
+
+      // Revoke the account before the held A refresh response is released.
+      await runtime.account.signOut();
+      _check(await vault.readRefreshToken() == null);
+      lateRefresh!.complete(authResponse());
+
+      var restoreFailed = false;
+      try {
+        await restoring;
+      } on ReviewTransportFailure {
+        restoreFailed = true;
+      }
+      _check(restoreFailed);
+      _check(await vault.readRefreshToken() == null);
+      _check(runtime.account.readyRuntime == null && profileCalls == 0);
+
+      // A's captured response is now settled. A fresh B login owns the next
+      // generation and must be the only identity allowed through the barrier.
+      lateRefresh = null;
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(authCalls == 2 && profileCalls == 1);
+      _check(profileOwners.length == 1 && profileOwners.single == _ownerB);
+      _check(await vault.readRefreshToken() == _third);
+      final profileRequest = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .single;
+      _check(profileRequest.headers['authorization'] == 'Bearer ${accessToken()}');
+      _check((await journal.list(_ownerB)).isEmpty);
+      await runtime.account.signOut();
+      _check(runtime.account.readyRuntime == null);
+      _check(await vault.readRefreshToken() == null);
+      _check(logoutCalls >= 1);
+      await pending();
+    } else if (phase == 'runtime-rejected') {
       _check(await vault.readRefreshToken() == null);
       await vault.writeRefreshToken(_rejected);
       var failed = false;

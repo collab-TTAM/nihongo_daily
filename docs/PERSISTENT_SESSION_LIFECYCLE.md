@@ -225,3 +225,29 @@ MockClient, not Windows Credential Manager failure injection or hosted Auth.
 No plaintext fallback, auto-retry, default Auth activation or cross-account
 cache exception is introduced. Exact-head CI must run the new test before it is
 counted as verified.
+
+
+## Windows OS-backed late refresh and account switch — 2026-11-01
+
+The Windows runner's runtime-late-refresh phase extends the existing SDK/OS
+bridge probe rather than relying only on the in-memory vault tests. It uses the
+real production MethodChannel/Credential Manager and PersistentSupabaseRuntime
+with a TEST ONLY HTTP handler:
+
+1. Persist User A's synthetic refresh secret in the real OS vault and hold the
+   startup refresh response before the SDK can complete restoration.
+2. Explicitly log out, require the credential slot to be empty and keep profile
+   readiness unavailable.
+3. Release A's late rotated response; the restore must fail closed, leave no
+   secret and issue no own-profile request.
+4. Sign in User B on the same owned runtime; require exactly one profile request,
+   B's captured bearer, B's rotated secret already persisted before profile
+   readiness, and no A-owned pending review visible through B's journal scope.
+5. Log out B and require the OS credential slot to be empty.
+
+This proves the Windows OS storage bridge participates in the caller-owned SDK
+generation/session guards for this deterministic fixture sequence. The HTTP
+server, Auth identities and unsigned JWT are TEST ONLY; it does not prove hosted
+JWT signatures, deployed PostgREST/RLS, real learner accounts, OS logoff or
+hardware power-loss behavior. Storage write/clear failure injection remains in
+the isolated backend tests, not a fabricated Credential Manager failure.

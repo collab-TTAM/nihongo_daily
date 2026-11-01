@@ -107,6 +107,7 @@ try {
     Invoke-Bridge 'runtime-logout'
     Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-rejected'
+    Invoke-Bridge 'runtime-late-refresh'
     Write-Output 'Windows persistent SDK runtime cross-process verification passed'
     Invoke-WindowExit 'exit-drain'
     Invoke-WindowExit 'exit-cancel'

@@ -1,5 +1,16 @@
 # PROJECT STATUS
 
+## Latest handoff — Windows OS-backed late refresh and account switch (2026-11-01 UTC)
+
+- PR #37 branch automation/issue-22-atomic-review; parent head 6e6b5b036ccb7344a57359289a694d5022eb1437. Added a TEST ONLY runtime-late-refresh phase in apps/flutter_app/tool/windows_runtime_fixture.dart and registered it in apps/flutter_app/tool/verify_windows_vault_bridge.ps1.
+- The probe runs the pinned Supabase SDK and caller-owned PersistentSupabaseRuntime through the production Dart MethodChannel and actual Windows Credential Manager, with a real NativeReviewJournal lease. It stores User A's synthetic refresh token, holds the startup refresh response, logs out/clears the OS slot, releases A's stale rotation response and requires no A profile/secret restoration. It then signs in User B, verifies exactly one B profile request with B's captured bearer, confirms B's rotated secret is readable from the OS vault before profile readiness, verifies B cannot read A's pending journal records, and logs out/clears B.
+- Updated docs/WINDOWS_SESSION_VAULT.md, docs/PERSISTENT_SESSION_LIFECYCLE.md and the windows-session-vault QA anchors. Storage failure injection remains covered by the isolated pinned-SDK backend tests; this bridge case does not fabricate a native Credential Manager failure.
+- Parent exact-head CI [41251469435](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41251469435), attempt 1, head 6e6b5b036ccb7344a57359289a694d5022eb1437: all six jobs (repo-sanity, database, ai-boundary, windows, supabase-integration, flutter) and every returned step completed SUCCESS. This is parent evidence only, not verification of the new source.
+- New-source exact-head CI has not yet been observed at this checkpoint. No Flutter/Dart SDK is available in this cloud runtime; do not infer formatter/analyzer/test/Windows success from the parent run. Keep PR #37 draft and #20/#22/#15 open.
+- Evidence limits: real Windows Credential Manager/MethodChannel/native journal plus pinned SDK, but Auth HTTP uses a TEST ONLY MockClient and unsigned synthetic JWT. No hosted Supabase, signed JWT, deployed RLS, real learner A/B, two-device sync, OS-logoff or hardware-power-loss acceptance. Default preview remains unconfigured and never simulates Auth/save success. Pro #14/N4 and PR #38 are untouched.
+- Next: inspect every latest-attempt job/step for the new exact head; fix only observed failures. After CI, continue the remaining hosted non-production Auth/PostgREST A/B and learner acceptance when approved staging configuration is available.
+
+
 ## Latest handoff — Flutter analyzer correction (2026-10-31 UTC)
 
 - PR #37 branch `automation/issue-22-atomic-review`; code commit `a28f0521dd5aa25e28522d4d06e22e6bcab4d6be`, parent `f100277130ffee47c833a71a82461a4e6c741a66`. In `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, changed two test-local closure-valued variables to local function declarations (`List<http.Request> profileRequests()` and `int authCalls()`) to satisfy the existing `prefer_function_declarations_over_variables` analyzer lint. No test assertions, HTTP fixtures, Auth/runtime behavior or timeouts changed.

@@ -284,6 +284,14 @@
         {
           "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
           "contains": "runtime-restore"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
+          "contains": "'runtime-late-refresh'"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "runtime-late-refresh"
         }
       ],
       "issues": [
