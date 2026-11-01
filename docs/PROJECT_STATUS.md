@@ -2033,3 +2033,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   real expiry/restart and physical two-device offline reconciliation remain
   outstanding. Next: inspect every latest-attempt job/step on the new exact head
   and fix only observed failures.
+
+
+## Core worker checkpoint — formatter diagnostic for Auth regression — 2026-11-01 UTC
+
+- Run `core-20261101T1909Z-format-diagnostic`; branch `automation/issue-22-atomic-review`; parent `00384258bd6a549be3cbd4525c32da028b90c9a4`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41335171988](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41335171988) targeted that parent and completed all six jobs. `repo-sanity`, `database`, `ai-boundary`, `supabase-integration`, and `windows` passed every returned step. `flutter` failed only strict pinned-Dart formatting, naming `test/features/srs/persistent_supabase_runtime_test.dart`; analyze, tests, browser/native checks and Web build were skipped, not passed.
+- Added a temporary read-only CI diagnostic that prints the pinned Dart 3.35.4 unified formatter diff for that exact test file before the unchanged strict format gate. It writes only under `$RUNNER_TEMP`, never edits source, and exits successfully after printing the diff; no checks/assertions were weakened.
+- Changed paths in this diagnostic checkpoint: `.github/workflows/ci.yml` and `docs/PROJECT_STATUS.md`. The complete base tree was fetched untruncated (327 entries / 262 blobs); `create_tree` uses its exact tree SHA. No Pro-owned #14/#38/N4 paths or production Auth/default activation changed.
+- Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. The diagnostic exact-head Actions run is pending; no new-head test/build pass is claimed.
+- Next: inspect all six latest-attempt jobs/every step, read the exact formatter diff, apply only that output, remove the temporary diagnostic, then require all six jobs/every step on the corrected exact head. Keep PR #37 draft and #20/#22/#15 open; hosted signed-JWT learner A/B and physical multi-device acceptance remain outstanding.
