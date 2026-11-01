@@ -1792,3 +1792,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   this integration can be considered verified. Hosted Supabase and real learner
   evidence remain separate #20/#22 acceptance gates; #15 offline/two-device sync
   remains open. Keep PR #37 draft and do not merge on parent evidence.
+
+
+## Core worker checkpoint — Windows runtime fixture formatter correction — 2026-11-01 UTC
+
+- Run core-20261101T0109-dart-format-fix; source commit b13158b0b3b88361aeef3f1307b29051fb9cdacb, branch automation/issue-22-atomic-review, parent f19adba75d5d2563fc2c52342c6daeb7044c419b; main baseline 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+- Exact-head CI 41256258064, attempt 1, targeted f19adba75d5d2563fc2c52342c6daeb7044c419b. repo-sanity, database, ai-boundary, windows and supabase-integration completed SUCCESS with all returned steps. Flutter failed only at dart format --output=none --set-exit-if-changed .: pinned Dart 3.9.2 reported only tool/windows_runtime_fixture.dart changed. Flutter analyze, tests, native/browser verification and web build were skipped because the format gate failed.
+- Applied formatter continuation indentation to the two nested conditional expressions in apps/flutter_app/tool/windows_runtime_fixture.dart. Commit diff confirms only whitespace/continuation indentation changed; no condition, selected value, assertion, fixture behavior or production runtime code changed. No test/security gate was weakened.
+- Changed paths in this increment: the Windows runtime fixture above and this status document. Full recursive source tree was untruncated at 327 entries; the source tree was built with the exact parent commit tree as base_tree_sha. All paths/modes/types were retained and all untouched blobs preserved. The docs tree was based on the exact source commit tree. Ref updates used expected_sha and force=false.
+- No local Flutter/Dart SDK is available in this cloud runtime. The corrected source requires exact-head Actions for format, analyze, all Flutter tests, Windows bridge, Supabase local integration and web build. No new-head CI pass is claimed at this checkpoint.
+- Auth HTTP/JWT in the Windows fixture remains TEST ONLY MockClient/unsigned synthetic data. No hosted Supabase, signed hosted JWT, deployed RLS, real learner A/B, two-device sync, production setting, Auth provider/strategy, schema/RLS, or Pro #14/N4 scope changed. PR #37 remains draft; #20/#22/#15 and Personal Alpha acceptance remain open.
+- Next: inspect every latest-attempt job and every step on the corrected exact head; fix only observed failures. If all checks pass, continue hosted non-production Auth/PostgREST A/B and learner acceptance when approved staging configuration is available.
