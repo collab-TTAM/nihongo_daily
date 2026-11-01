@@ -644,41 +644,37 @@ void main() {
     },
   );
 
-  test(
-    'SDK oversized Auth response fails closed as internal error',
-    () async {
-      const responseBytes = 1024 * 1024 + 1;
-      backend.secret = 'TEST_ONLY_SAVED_SDK';
-      authOverride = http.Response(
-        'x' * responseBytes,
-        200,
-        headers: {
-          'content-type': 'application/json',
-          'content-length': '$responseBytes',
-        },
-      );
+  test('SDK oversized Auth response fails closed as internal error', () async {
+    const responseBytes = 1024 * 1024 + 1;
+    backend.secret = 'TEST_ONLY_SAVED_SDK';
+    authOverride = http.Response(
+      'x' * responseBytes,
+      200,
+      headers: {
+        'content-type': 'application/json',
+        'content-length': '$responseBytes',
+      },
+    );
 
-      await expectLater(
-        runtime.start(),
-        throwsA(
-          isA<ReviewTransportFailure>().having(
-            (failure) => failure.code,
-            'code',
-            ReviewErrorCode.internalError,
-          ),
+    await expectLater(
+      runtime.start(),
+      throwsA(
+        isA<ReviewTransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          ReviewErrorCode.internalError,
         ),
-      );
+      ),
+    );
 
-      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
-      expect(runtime.account.readyRuntime, isNull);
-      expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
-      expect(
-        requests.where((request) => request.url.path.contains('ensure_profile')),
-        isEmpty,
-      );
-    },
-  );
-
+    expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+    expect(runtime.account.readyRuntime, isNull);
+    expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
+    expect(
+      requests.where((request) => request.url.path.contains('ensure_profile')),
+      isEmpty,
+    );
+  });
   test(
     'SDK timeout discards late response and never dispatches profile',
     () async {
