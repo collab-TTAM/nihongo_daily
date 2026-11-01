@@ -1,5 +1,14 @@
 # PROJECT STATUS
 
+## Latest handoff — corrupt-vault fixture correction (2026-11-01 UTC)
+
+- PR #37 branch `automation/issue-22-atomic-review`; source commit `a82db3032948148c5f1e27e665c90f79a1535bd4`, parent `7c35e51d88b6c506749f0c16c8c74f41506c9b0f`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Separate diff review found the new test's control-character escape was double-escaped and therefore printable. Corrected only the TEST ONLY literal in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` to one Dart newline escape; direct GitHub readback confirms one backslash in source. The corrupt-value assertions remain intact: fail before Auth/profile dispatch, preserve the malformed value until explicit cleanup, then `read -> clear -> write` before profile readiness.
+- Parent exact-head CI [41300703129](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41300703129) remains all-six-jobs/all-steps SUCCESS for `7254202d2347081cfc400d586577d1f67f47dc6a` only. Exact-head run [41305432574](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41305432574) targets `a82db3032948148c5f1e27e665c90f79a1535bd4`, attempt 1, and was observed `pending` with no jobs reported at `2026-11-01T12:13Z`; no new format/analyze/test/build pass is claimed. Cloud runtime has no Flutter/Dart SDK.
+- No production source, Auth/provider strategy, schema/RLS, API contract, default activation, deployment or Pro-owned #14/#38/N4 paths changed. Fixture remains TEST ONLY MockClient/in-memory vault; hosted signed-JWT/PostgREST/RLS/learner and two-device offline acceptance remain outstanding. Keep #37 draft and #20/#22/#15 open.
+- Next: inspect the latest exact-head CI run after the docs checkpoint; fix only observed failures, otherwise hand off pending CI without duplicate code.
+
+
 ## Latest handoff — corrupt vault restore regression (2026-11-01 UTC)
 
 - PR #37 branch `automation/issue-22-atomic-review`; parent source head `7254202d2347081cfc400d586577d1f67f47dc6a`; main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. Added a TEST ONLY pinned-Supabase-SDK/owned-runtime regression in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` for a malformed stored refresh value.
