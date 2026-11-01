@@ -1984,3 +1984,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 
 - Diagnostic command syntax was re-read from GitHub before Actions: the first checkpoint had an escaped line-continuation typo (two backslashes). It was corrected to a single shell pipeline on the next expected-head commit; the strict formatter gate remains untouched. The diagnostic step is still read-only and temporary.
+
+
+## Exact-head formatter correction — 2026-11-01 UTC
+
+- Run `core-20261101T1705Z-dart-format-cleanup`; source parent `cab705e9ead890b26f8969ff1d560e4a14999de7`, branch `automation/issue-22-atomic-review`, main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. The complete base tree contained 327 entries and was checked untruncated before writing.
+- Exact-head CI [41325343958](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41325343958) failed only at pinned Dart `format --set-exit-if-changed`. The read-only diagnostic emitted one formatter change in `test/features/srs/session_refresh_scheduler_test.dart`: collapse the three-line `RefreshLease(identity, oldExpiry.add(...))` construction to one line. The other five jobs (repo-sanity, AI boundary, database, Windows and disposable Supabase integration) completed successfully; Flutter analyze, tests and web build were skipped after the format failure.
+- Applied exactly that formatter output, removed the temporary diagnostic workflow step, and left the strict formatter gate, analyzer, tests, browser/native checks and builds unchanged. No production Auth/session behavior or test assertions changed.
+- Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run. New exact-head GitHub Actions is required; no new-head pass is claimed. No hosted signed-JWT learner A/B, physical multi-device sync, Auth strategy/provider, migration/RLS, default activation, production deployment or Pro-owned #14/#38/N4 change.
+- Next: inspect every latest-attempt job and step for the new exact head. Fix only observed failures; if checks remain pending, persist a released handoff without duplicate source changes. Keep PR #37 draft and #20/#22/#15 open.

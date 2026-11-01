@@ -219,10 +219,7 @@ void main() {
       final stale = h.timers.single;
       final identity = h.lease!.identity;
       final oldExpiry = h.lease!.expiresAt;
-      h.lease = RefreshLease(
-        identity,
-        oldExpiry.add(const Duration(hours: 1)),
-      );
+      h.lease = RefreshLease(identity, oldExpiry.add(const Duration(hours: 1)));
       h.scheduler.update();
       expect(h.timers.where((timer) => timer.isActive), hasLength(1));
       expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
