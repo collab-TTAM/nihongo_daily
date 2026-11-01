@@ -69,10 +69,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   var secret = phase == 'runtime-restore'
       ? _second
       : phase == 'runtime-logout'
-      ? _third
-      : phase == 'runtime-late-refresh'
-      ? _second
-      : _first;
+          ? _third
+          : phase == 'runtime-late-refresh'
+              ? _second
+              : _first;
   Completer<http.Response>? lateRefresh;
   final profileOwners = <String>[];
 
@@ -121,10 +121,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         final expected = phase == 'runtime-restore'
             ? _first
             : phase == 'runtime-logout'
-            ? _second
-            : phase == 'runtime-late-refresh'
-            ? _first
-            : _rejected;
+                ? _second
+                : phase == 'runtime-late-refresh'
+                    ? _first
+                    : _rejected;
         _check(body.length == 1 && body['refresh_token'] == expected);
         if (phase == 'runtime-rejected') {
           return http.Response('{"message":"fixture rejected"}', 401);
