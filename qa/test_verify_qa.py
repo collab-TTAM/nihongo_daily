@@ -63,7 +63,7 @@ class QaEvidenceTests(unittest.TestCase):
         cases = qa.validate_matrix(self.matrix)
         case = next(c for c in cases if c["id"] == "local-two-session-sync")
         self.assertEqual(case["ci_job"], "supabase-integration")
-        self.assertIn("concurrent reuse", case["scope"])
+        self.assertIn("barrier-synchronized", case["scope"])
         expected_anchor = (
             "both owners commit the shared event UUID concurrently "
             "without receipt collision"
