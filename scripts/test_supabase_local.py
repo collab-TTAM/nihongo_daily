@@ -222,6 +222,51 @@ def main() -> None:
     )
     replay = rpc("submit_review", request_a, token_a_device)
     require(replay == first, "second-session retry returns original receipt")
+
+    # A later review advances the owner's state. A delayed retry from the other
+    # device must return the immutable first receipt without restoring old state.
+    later_request = review_request()
+    first_instant = dt.datetime.fromisoformat(
+        request_a["occurred_at"].replace("Z", "+00:00")
+    )
+    later_instant = dt.datetime.fromisoformat(
+        later_request["occurred_at"].replace("Z", "+00:00")
+    )
+    if later_instant <= first_instant:
+        later_request["occurred_at"] = (
+            first_instant + dt.timedelta(microseconds=1)
+        ).isoformat(timespec="microseconds").replace("+00:00", "Z")
+    later_result = rpc("submit_review", later_request, token_a)
+    require(
+        later_result.get("review_count") == 2,
+        "later same-owner review advances authoritative state",
+    )
+    state_before_historical_replay = rows(
+        "user_learning_items",
+        "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
+        "user_id",
+        id_a,
+        token_a,
+    )
+    historical_replay = rpc("submit_review", request_a, token_a_device)
+    require(
+        historical_replay == first,
+        "second-session historical retry returns original receipt after later review",
+    )
+    state_after_historical_replay = rows(
+        "user_learning_items",
+        "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
+        "user_id",
+        id_a,
+        token_a_device,
+    )
+    require(
+        len(state_after_historical_replay) == 1
+        and state_after_historical_replay[0]["review_count"] == 2
+        and state_after_historical_replay == state_before_historical_replay,
+        "historical retry cannot overwrite later server-authoritative state",
+    )
+
     changed = dict(request_a, rating=3)
     conflict = rpc("submit_review", changed, token_a_device)
     require(
@@ -265,7 +310,7 @@ def main() -> None:
     b_rows = rows(
         "user_learning_items", "id,user_id,item_id,review_count", "user_id", id_b, token_b
     )
-    require(len(a_rows) == 1 and a_rows[0]["review_count"] == 1, "A own review row")
+    require(len(a_rows) == 1 and a_rows[0]["review_count"] == 2, "A own latest review row")
     require(
         a_device_rows == a_rows,
         "both same-owner sessions read identical authoritative server state",
@@ -314,7 +359,8 @@ def main() -> None:
         "Local Supabase GoTrue/PostgREST passed: two Auth users, three independent "
         "password sessions, refresh rotation, global logout revocation, profile "
         "bootstrap, signed-expired JWT rejection, concurrent same-owner replay, "
-        "changed/stale conflict and A/B RLS isolation. LOCAL ONLY."
+        "historical replay after a later review without state rollback, changed/stale "
+        "conflicts and A/B RLS isolation. LOCAL ONLY."
     )
 
 

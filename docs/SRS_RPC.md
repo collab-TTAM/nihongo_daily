@@ -265,11 +265,14 @@ security gates changed. All 14 hosted learner/integration groups remain open.
 The disposable `supabase-integration` job now signs the same TEST ONLY learner
 into two independent password sessions, then dispatches the same immutable
 `submit_review` request concurrently with each session's bearer. Both responses
-must equal the one original receipt and `review_count` must remain one. A changed
-payload under the same event ID and a separate stale event from the second
-session must each return `SYNC_CONFLICT`. Both sessions then read the same
-server-authoritative learning-item projection. A global logout must revoke both
-refresh-token sessions.
+must equal the one original receipt and `review_count` must remain one. A second,
+later review is then committed through the first session. Retrying the original
+event through the other session must still return its original receipt, while
+the current server row remains at `review_count = 2` with the later scheduling
+state unchanged. A changed payload under the original event ID and a separate
+stale event from the second session must each return `SYNC_CONFLICT`. Both
+sessions read the same server-authoritative latest row. A global logout must
+revoke both refresh-token sessions.
 
 This exercises the real disposable local GoTrue/PostgREST stack and the atomic
 RPC across two independent authenticated client sessions; it is stronger than
