@@ -497,4 +497,3 @@ Future<void> verifyLifecycle(String scenario) async {
     await sdk.events.close();
   }
 }
-
