@@ -79,8 +79,7 @@ In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
 `flutter test`. Twenty-five pure cases cover empty/refresh startup, persistence
 barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
-retry, revocation, owner exclusivity, stream closure and disposal. Fifteen pinned-SDK
-HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
+retry, revocation, owner exclusivity, stream closure and disposal. Pinned-SDK HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
 late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
 Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof.
 
@@ -344,3 +343,23 @@ This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does no
 prove hosted Auth/JWT/RLS, OS Credential Manager failure injection, OS logoff or
 power-loss behavior. No default Auth activation, URL/key input, Auth strategy,
 provider, schema, RLS or production configuration changes.
+
+## Refresh rotation vault-write failure — 2026-11-02
+
+A pinned-Supabase-SDK/owned-runtime regression now holds the credential-vault
+write after an explicit refresh returns a rotated token, then injects a storage
+failure. While the write is pending, the prior persisted secret remains but the
+study/profile gate is closed. After failure, the uncertain secret is cleared,
+the account remains fenced, the fixed needs-login notice is published, and no
+second own-profile request is dispatched.
+
+After the storage port recovers, only an explicit login can persist a fresh
+rotated secret. The test holds the own-profile response and verifies that the
+secret is already saved while readiness remains closed; readiness opens only
+after the matching profile response arrives.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does
+not prove Windows Credential Manager failure injection, hosted signed-JWT
+learner A/B, deployed RLS, OS logoff or power-loss behavior. No default Auth
+activation, plaintext fallback, Auth strategy/provider, schema, RLS or
+production configuration changes.

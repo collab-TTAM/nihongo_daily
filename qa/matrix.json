@@ -191,7 +191,7 @@
     {
       "id": "owned-session-refresh",
       "status": "automated-baseline",
-      "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed/expired resume fencing and active-owned foreground forwarding",
+      "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed vault-write/expired-resume fencing and active-owned foreground forwarding",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -205,6 +205,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/account_startup_widget_test.dart",
           "contains": "foreground resume forwards only after startup"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK refresh rotation vault write failure stays fenced and explicit login recovers"
         }
       ],
       "issues": [
@@ -213,7 +217,7 @@
         15
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/srs/session_refresh_scheduler_test.dart test/features/srs/persistent_supabase_runtime_test.dart test/features/srs/account_startup_widget_test.dart",
-      "limitation": "Clock/timer/lease fixtures and actual pinned SDK with mock Auth HTTP/unsigned JWTs; not hosted refresh/expiry or OS suspension/device proof. automaticRefresh opt-in, default false/main unconfigured. SDK internal retry policy unchanged. One attempt per lease, no scheduler failure retry; caller must respect owned lifecycle/journal requirements."
+      "limitation": "Clock/timer/lease fixtures and actual pinned SDK with mock Auth HTTP/unsigned JWTs; an explicit-refresh regression also verifies a failed vault write clears the uncertain rotated secret and keeps readiness fenced. Not hosted refresh/expiry or OS suspension/device proof. automaticRefresh opt-in, default false/main unconfigured. SDK internal retry policy unchanged. One attempt per lease, no scheduler failure retry; caller must respect owned lifecycle/journal requirements."
     },
     {
       "id": "account-startup-host",

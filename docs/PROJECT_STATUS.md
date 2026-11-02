@@ -1,5 +1,18 @@
 # PROJECT STATUS
 
+## Core worker handoff — refresh rotation vault-write failure — 2026-11-02 UTC
+
+- Resume PR #37, branch `automation/issue-22-atomic-review`; parent `5b0546a046f3a35c1ca7138f0cde913f5e577196`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added a TEST ONLY pinned-Supabase-SDK regression for explicit refresh rotation when the credential-vault write is delayed and then fails. It verifies the previous secret is not replaced while pending, readiness/profile dispatch remain fenced, the uncertain secret is cleared after failure, and only a later explicit login can recover.
+- Recovery holds the own-profile response and verifies the newly rotated secret is saved before the profile barrier opens.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, and this status file.
+- Parent exact-head CI [41366109566](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41366109566) completed SUCCESS on `5b0546a046f3a35c1ca7138f0cde913f5e577196`: all six jobs and every step passed. A fresh exact-head CI is required for this increment; no new-source test/build result is claimed yet.
+- Cloud runtime has no Flutter/Dart SDK or Windows OS. This fixture is not Windows OS storage failure injection or hosted learner A/B. No production Auth/provider/default activation, API, migration/RLS, secret, or Pro-owned N4 scope changed.
+- Next: inspect every latest-attempt job/step on the new exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open pending hosted signed-JWT learner A/B and physical multi-device evidence.
+
+---
+
+
 ## Formatter correction handoff — runtime close-drain test (2026-11-02 UTC)
 
 - Run `core-20261102T0012Z-dart-format-diagnostic`; branch `automation/issue-22-atomic-review`; diagnostic parent `a61592e535568a6b0cef2bd723a09bc231822519`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
