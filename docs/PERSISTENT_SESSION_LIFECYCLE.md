@@ -438,3 +438,29 @@ bearer and B-only readiness. This is TEST ONLY SDK evidence, not hosted
 signed-JWT learner A/B or native Windows Credential Manager failure injection.
 No Auth strategy/provider, default activation, plaintext fallback, schema,
 RLS, production configuration or Pro-owned N4 content changed.
+
+
+## Fence transient registry invalidation during an SDK lifecycle transition — 2026-11-02
+
+The review registry can emit a lifecycle notification when its previous
+captured connection is revoked. During a user switch or refresh, the SDK may
+already hold a valid replacement session while the corresponding Auth event is
+still queued for the binding. That temporary mismatch is not a signed-out
+credential state. Forwarding it unconditionally to persistence can schedule an
+extra vault clear before the new session's own Auth event is processed.
+
+The owned SDK adapter now forwards a registry notification to the persistence
+barrier only when the SDK has no current session, the current SDK session is
+invalid/expired, or its exact user/session lifecycle, access token and expiry
+match the binding's current hint. A valid-but-not-yet-bound SDK session
+suppresses the transient notification; the raw Auth observer still processes
+the matching queued event and persists its refresh-token rotation before
+own-profile readiness. A genuine logout or expired/invalid SDK session still
+reaches the persistence barrier and clears the credential in the existing
+serialized order.
+
+The existing pinned-SDK regression retains the exact three cleanup attempts,
+operation order, B refresh secret, B profile bearer and B-only readiness. No
+test expectation was weakened. This remains TEST ONLY SDK/MockClient/in-memory
+vault evidence, not hosted signed-JWT learner A/B or Windows Credential Manager
+failure injection.

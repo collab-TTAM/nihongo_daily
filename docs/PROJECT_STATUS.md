@@ -1,3 +1,15 @@
+## Core worker handoff — suppress transient registry invalidation during SDK account switch — 2026-11-02 UTC
+
+- Run `core-20261102T0833Z-fix-stale-lifecycle-notification`; branch `automation/issue-22-atomic-review`; parent `d59b7b7e12db8bd78b876f9da09f96891adb28d8`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head CI [41408614762](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41408614762), latest attempt 1, completed FAILURE: repo-sanity, ai-boundary, database, windows and supabase-integration passed every step; Flutter format/analyze passed, but Flutter tests reported 393 passed / 1 failed at `persistent_supabase_runtime_test.dart:407` (expected 3 clears, observed 4). All later Flutter lifecycle/wire/Chrome/Web checks were skipped, not passed.
+- Root cause: `_OwnedSdkAccess` forwarded every review-registry notification to persistence. The registry can revoke its previous connection while a valid replacement SDK session is current but its queued Auth event has not yet been bound. That transient registry invalidation is not a real sign-out; forwarding it makes `PersistentAccountAccess` clear the vault before the replacement event is persisted.
+- Fix: `SupabaseReviewBinding.shouldForwardSessionChangeToPersistence` now forwards only when SDK state is absent, invalid/expired, or exactly matches the bound user/session lifecycle, access token and expiry. The raw Auth observer remains responsible for accepted current-session events and rotation. Genuine logout/expiry still reaches persistence. The existing test still requires exactly 3 ordered clear attempts, B's rotated secret/profile bearer and B-only readiness; no assertion or gate was weakened.
+- Changed paths: `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`, `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file.
+- Full parent recursive tree was read untruncated: 327 entries (262 blobs / 65 trees); create_tree will use exact base tree `a5db84d89f9935e19dbbb30d6c84467e7d7fde84`. Cloud runtime has no Dart/Flutter SDK or Windows OS; no local format/analyze/test/build/native execution is claimed. New exact-head CI is required.
+- Keep PR #37 Draft and #20/#22/#15 open. No Pro-owned #14/#38/N4 path, Auth strategy/provider, default activation, schema/migration/RLS, secrets, production or release change. Hosted signed-JWT learner A/B and physical multi-device evidence remain unproven. Next: inspect every latest-attempt job/step on the new exact head; fix only observed diagnostics.
+
+---
+
 ## Core worker handoff — ignore stale SDK sign-out after account replacement — 2026-11-02 UTC
 
 - Run `core-20261102T0414Z-ignore-stale-signed-out-event`; branch `automation/issue-22-atomic-review`; parent `31743d76e7884bfc517315018dd2b7533a63dd22`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

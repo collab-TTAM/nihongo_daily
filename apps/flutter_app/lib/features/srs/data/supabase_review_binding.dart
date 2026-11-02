@@ -112,6 +112,27 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     }
   }
 
+  /// Registry changes are not always real sign-outs: an old registry lease can
+  /// be revoked while the SDK's replacement Auth event is still queued. Forward
+  /// that event to persistence only when the SDK is actually signed out/invalid,
+  /// or when its exact current session is the one already bound here.
+  bool get shouldForwardSessionChangeToPersistence {
+    if (_disposed) return false;
+    try {
+      final current = _client.auth.currentSession;
+      if (current == null) return true;
+      final hint = _SessionHint.from(current, _now());
+      final bound = _hint;
+      return bound != null &&
+          bound.sameLifecycle(hint) &&
+          bound.token == hint.token &&
+          bound.expiresAt == hint.expiresAt;
+    } on Object {
+      // Invalid or expired SDK state must still revoke persisted access.
+      return true;
+    }
+  }
+
   void _accept(AuthState state) {
     if (_disposed) {
       return;
