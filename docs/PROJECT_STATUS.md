@@ -1,3 +1,11 @@
+## Core worker review follow-up — normalize helper spacing — 2026-11-02T22:15Z
+
+- Parent `92503db4866e2218da1d84780e1c27ce83b2cf67` contained one extra blank line before the new test helper in `persistent_supabase_runtime_test.dart`; this follow-up removes only that whitespace before the pinned Dart formatter runs. No test or runtime behavior changes.
+- CI [41535390299](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41535390299) was queued on the parent head and is superseded by this formatting-only commit; no result is counted from it.
+- Next: inspect the corrected exact-head CI, especially formatter, bounded readiness regression, all Flutter downstream steps, Windows and Supabase integration.
+
+---
+
 ## Core worker handoff — bound configured-host widget readiness test — 2026-11-02T22:10Z
 
 - Run `core-20261102T2210Z-bound-configured-host-widget-test-timeout`; branch `automation/issue-22-atomic-review`; parent `7adeb47f5d93ba2905e08af8610b85976de201dd`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

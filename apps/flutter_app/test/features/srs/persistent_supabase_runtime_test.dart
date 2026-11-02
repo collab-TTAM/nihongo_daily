@@ -78,7 +78,6 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-
   Future<void> pumpReadyAccountUi(WidgetTester tester) async {
     // Wait for the account/profile barrier itself, not an indeterminate loading
     // animation. A missing profile response fails within waitForReady's timeout.
