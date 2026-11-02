@@ -328,3 +328,19 @@ dispatch while preserving the expected safe error classification. This remains
 TEST ONLY MockClient/in-memory-vault coverage, not hosted Auth evidence; Auth
 strategy/provider, default activation, credential storage, schema and RLS are
 unchanged.
+
+
+## Runtime close during startup refresh — 2026-11-02
+
+A pinned-Supabase-SDK regression now closes the caller-owned runtime while its
+startup refresh response is held. The close future must remain pending until the
+late SDK operation settles and cleanup clears the uncertain refresh credential.
+The test requires no own-profile dispatch, retains the same-project owner slot
+until the drain finishes, then proves a replacement owner can start from an empty
+vault. It also probes the injected HTTP client after close to verify that the
+runtime disposes only its wrapper and never closes a caller-owned client.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does not
+prove hosted Auth/JWT/RLS, OS Credential Manager failure injection, OS logoff or
+power-loss behavior. No default Auth activation, URL/key input, Auth strategy,
+provider, schema, RLS or production configuration changes.

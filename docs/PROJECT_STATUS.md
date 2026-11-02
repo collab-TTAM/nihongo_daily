@@ -1,5 +1,17 @@
 # PROJECT STATUS
 
+## Latest handoff — caller-owned runtime close drains startup refresh (2026-11-02 UTC)
+
+- Resume PR #37, branch `automation/issue-22-atomic-review`; parent `fcb8de1300aa1728c339ac7f9bf09dd1501a8bf3`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added one TEST ONLY pinned-Supabase-SDK regression: close the owned runtime while startup refresh is pending; verify close waits for the late response, cleanup performs `read -> clear`, no own-profile request is dispatched, the same-project owner slot remains held until close completes, and a replacement owner can start only after cleanup. The injected HTTP client remains usable after wrapper disposal.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, this status file. No production Auth behavior, default activation, schema/RLS, provider strategy, URL/key handling or Pro-owned #14/#38/N4 content changed.
+- Parent exact-head CI [41361214986](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41361214986) targets `fcb8de1300aa1728c339ac7f9bf09dd1501a8bf3` and is observed SUCCESS: all six jobs and every returned step succeeded (Flutter format/analyze/test, Chrome IndexedDB/reload, web build; Windows vault/process/build; disposable local Supabase integration; database/RLS; AI boundary; repo-sanity). This is parent evidence only.
+- New-source exact-head CI is required. Cloud runtime has no Flutter/Dart SDK or Windows OS, so local Flutter format/analyze/test/build and native execution are not claimed. The test is fixture evidence, not hosted signed-JWT learner A/B or physical multi-device acceptance.
+- Next: inspect every latest-attempt job/step on the new exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open pending hosted learner A/B, expiry/restart and real multi-device evidence.
+
+---
+
+
 ## Latest handoff — same-session refresh-expiry rotation guard (2026-11-01 UTC)
 
 - Resume branch `automation/issue-22-atomic-review`, parent source head `086a6f12be245ad35b6f90c8cf822160771ccd0a`, main baseline `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

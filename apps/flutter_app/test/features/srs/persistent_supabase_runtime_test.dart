@@ -100,6 +100,7 @@ void main() {
               );
       }
       if (request.url.path == '/auth/v1/logout') return http.Response('', 204);
+      if (request.url.path == '/caller-owned-probe') return http.Response('', 204);
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
         return profileWait?.future ??
             Future.value(
@@ -712,6 +713,82 @@ void main() {
       );
     },
   );
+  test(
+    'runtime close drains a late startup refresh before releasing its owner',
+    () async {
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      authWait = Completer<http.Response>();
+      final starting = runtime.start();
+      await fixture.flush();
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
+      );
+      expect(
+        requests.where((request) => request.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      final closing = runtime.close();
+      await fixture.flush();
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(
+        () => PersistentSupabaseRuntime(
+          projectUrl: wire.origin,
+          publishableKey: wire.key,
+          vault: vault,
+          store: journal,
+          httpClient: network,
+          now: () => now,
+        ),
+        throwsA(
+          isA<SessionVaultFailure>().having(
+            (failure) => failure.code,
+            'code',
+            SessionVaultError.unavailable,
+          ),
+        ),
+      );
+
+      authWait!.complete(authResponse());
+      await expectLater(
+        starting,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await closing;
+      await fixture.flush();
+
+      expect(backend.operations, ['read', 'clear']);
+      expect(backend.secret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(
+        requests.where((request) => request.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      final probe = await network.get(
+        Uri.parse('${wire.origin}/caller-owned-probe'),
+      );
+      expect(probe.statusCode, 204);
+
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+      await runtime.start();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
+      );
+    },
+  );
+
   test(
     'SDK rotation and logout preserve original pending review on real disk',
     () async {
