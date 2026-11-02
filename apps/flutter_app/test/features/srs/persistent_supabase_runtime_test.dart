@@ -404,7 +404,11 @@ void main() {
       // Auth observers after B is current. The review binding and the raw
       // persistence observer must share the current-session filter; otherwise
       // persistence sees null and clears B's rotated credential.
-      expect(backend.clears, 3);
+      expect(
+        backend.clears,
+        3,
+        reason: 'vault operation order: ${backend.operations.join(' -> ')}',
+      );
       expect(backend.operations, [
         'read',
         'write',
