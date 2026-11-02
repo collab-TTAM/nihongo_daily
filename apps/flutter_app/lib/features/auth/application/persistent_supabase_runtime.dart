@@ -261,14 +261,11 @@ final class _BoundedSessionHttp extends http.BaseClient {
 
 final class _OwnedSdkAccess implements RefreshableAccountAccess {
   _OwnedSdkAccess(this.client, this.binding, this.network) {
-    _bindingSubscription = binding.sessionChanges.listen(
-      (_) {
-        if (binding.shouldForwardSessionChangeToPersistence) {
-          _events.add(null);
-        }
-      },
-      onError: (Object _, StackTrace __) => _events.addError(_failure()),
-    );
+    _bindingSubscription = binding.sessionChanges.listen((_) {
+      if (binding.shouldForwardSessionChangeToPersistence) {
+        _events.add(null);
+      }
+    }, onError: (Object _, StackTrace __) => _events.addError(_failure()));
     // Binding retains ReviewSession identity on same-lifecycle refresh and does
     // not emit a review invalidation. Persistence also needs every SDK rotation.
     _authSubscription = client.auth.onAuthStateChange.listen((state) {

@@ -1,3 +1,15 @@
+## Core worker handoff — exact Dart 3.9.2 formatting and diagnostic cleanup — 2026-11-02T10:11Z
+
+- Run `core-20261102T1011Z-fix-dart-format`; branch `automation/issue-22-atomic-review`; parent `fe3b2de277f71f41022526bf92efc283b37643c4`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Inspected latest main, README, project manifest, AGENTS, single-account automation, PROJECT_SPEC, AUTOMATION, API/database/security/QA docs, open issues/PRs, and PR #37 worker markers. Pro-owned PR #38 / Issue #14 scope remains reserved and untouched.
+- Exact-head CI [41420437185](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41420437185), latest attempt 1, completed FAILURE solely because strict Dart 3.9.2 formatting found one file changed. The diagnostic diff required only compacting the `_bindingSubscription` callback in `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`; no behavior changed. The other five jobs (repo-sanity, ai-boundary, database, supabase-integration, Windows) completed SUCCESS with every step. Flutter analyze, tests, lifecycle/wire checks, Chrome and Web build were SKIPPED after the formatter failure and are not counted as passing.
+- Applied exactly that formatter diff and removed the temporary diagnostic-only workflow step from `.github/workflows/ci.yml`. No runtime semantics, tests/assertions, Auth strategy/provider, API/schema, migration/RLS, security, dependencies, or curriculum changed.
+- Changed paths: `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`, `.github/workflows/ci.yml`, and `docs/PROJECT_STATUS.md`.
+- Full recursive parent tree was read untruncated: 327 entries. `create_tree` used the exact parent tree SHA as `base_tree_sha`; the new full recursive tree was checked for path/mode/type preservation and only the three intended blobs changed. Ref update used `expected_sha=fe3b2de277f71f41022526bf92efc283b37643c4`, `force=false`; branch and PR readback were checked.
+- Cloud runtime has no Dart/Flutter SDK, so no local formatter/analyze/test/build result is claimed. New exact-head CI is the verification gate; inspect every latest-attempt job/step. Keep PR #37 Draft and #20/#22/#15 open. Hosted signed-JWT learner A/B, deployed RLS, physical multi-device sync, and full Personal Alpha journey evidence remain outstanding. No production/release action or human-gated change was made.
+
+---
+
 ## Core worker handoff — suppress transient registry invalidation during SDK account switch — 2026-11-02 UTC
 
 - Run `core-20261102T0833Z-fix-stale-lifecycle-notification`; branch `automation/issue-22-atomic-review`; parent `d59b7b7e12db8bd78b876f9da09f96891adb28d8`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
