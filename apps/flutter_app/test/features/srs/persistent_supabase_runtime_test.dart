@@ -331,6 +331,112 @@ void main() {
   );
 
   test(
+    'SDK failed refresh rotation and failed vault clear stay fenced until explicit cleanup recovers',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_INITIAL_A_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final initialSecret = backend.secret;
+      expect(initialSecret, secret);
+      List<http.Request> profileRequests() => requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .toList();
+      int authCalls() => requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .length;
+      final initialProfileCount = profileRequests().length;
+      final initialAuthCalls = authCalls();
+      expect(initialProfileCount, 1);
+
+      backend.failWrite = true;
+      backend.failClear = true;
+      secret = 'TEST_ONLY_FAILED_ROTATED_A_REFRESH';
+      final AccountSessionRefreshAction refreshAction = runtime;
+      final rotationFailure = expectLater(
+        refreshAction.refresh(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+      await rotationFailure;
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.notice, AccountSessionNotice.needsLogin);
+      expect(backend.secret, initialSecret);
+      expect(backend.clears, 1);
+      expect(profileRequests(), hasLength(initialProfileCount));
+      expect(authCalls(), initialAuthCalls + 1);
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_B_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(backend.secret, initialSecret);
+      expect(backend.clears, 2);
+      expect(profileRequests(), hasLength(initialProfileCount));
+      expect(authCalls(), initialAuthCalls + 1);
+
+      backend.failClear = false;
+      profileWait = Completer<http.Response>();
+      final recovery = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(backend.clears, 3);
+      expect(backend.operations, [
+        'read',
+        'write',
+        'write',
+        'clear',
+        'clear',
+        'clear',
+        'write',
+      ]);
+      expect(backend.secret, secret);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(profileRequests(), hasLength(initialProfileCount + 1));
+      expect(
+        profileRequests().last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(authUser)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await recovery;
+      await waitForReady();
+      expect(runtime.persistence.phase, SessionPersistencePhase.ready);
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(backend.secret, secret);
+      expect(authCalls(), initialAuthCalls + 2);
+    },
+  );
+
+  test(
     'SDK vault write failure blocks profile and explicit retry recovers',
     () async {
       await runtime.start();

@@ -363,3 +363,25 @@ not prove Windows Credential Manager failure injection, hosted signed-JWT
 learner A/B, deployed RLS, OS logoff or power-loss behavior. No default Auth
 activation, plaintext fallback, Auth strategy/provider, schema, RLS or
 production configuration changes.
+
+
+## Failed refresh rotation and failed vault cleanup — 2026-11-02
+
+A pinned-Supabase-SDK/owned-runtime regression now combines two consecutive
+credential-storage failures. User A's explicit refresh returns a rotated secret,
+but the vault write fails; the compensating clear also fails, leaving the prior
+secret physically present. The runtime must revoke its accepted session, keep
+profile/study readiness closed, publish only the fixed needs-login notice, and
+send no additional own-profile request.
+
+An explicit User B login is then attempted while cleanup still fails. It must
+retry the clear before dispatching another Auth token request; B cannot inherit
+A's retained secret or open a profile. After the vault becomes available, a
+second explicit login clears the uncertain A slot, persists B's rotated secret,
+and only then waits for B's own-profile response before readiness opens.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does not
+inject failures into Windows Credential Manager or prove hosted signed-JWT
+learner A/B, deployed RLS, OS logoff or power-loss behavior. No plaintext
+fallback, automatic retry, default Auth activation, Auth strategy/provider,
+schema, RLS or production configuration changes.

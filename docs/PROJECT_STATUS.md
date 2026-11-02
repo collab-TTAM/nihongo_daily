@@ -1,5 +1,18 @@
 # PROJECT STATUS
 
+## Core worker handoff — failed refresh rotation plus failed vault cleanup — 2026-11-02 UTC
+
+- Run `core-20261102T0205Z-review-next-session-boundary`; branch `automation/issue-22-atomic-review`; parent `36421e57de14bec2ef720a968e43c46b1c2e8ded`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added one TEST ONLY pinned-Supabase-SDK regression combining a failed refresh-token rotation write with a failed compensating vault clear. The old secret remains physically present but is not accepted as a session; readiness stays fenced and no profile request is dispatched.
+- A User B login while cleanup still fails must not send another Auth token request. After the vault recovers, explicit cleanup clears A's uncertain slot, persists B's rotated secret, and waits for B's matching profile response before opening readiness.
+- Paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, and this status file.
+- Parent exact-head CI [41371848770](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41371848770) completed SUCCESS on `36421e57de14bec2ef720a968e43c46b1c2e8ded`: all six jobs and every returned step passed, including Flutter format/analyze/tests, Chrome IndexedDB/reload, Windows release/native vault/journal probes, disposable local Supabase GoTrue/PostgREST rotation/replay/A-B RLS, database and AI boundary. This parent run does not certify the new regression.
+- Cloud runtime has no Flutter/Dart SDK or Windows OS. New regression is TEST ONLY MockClient/in-memory-vault evidence, not native Windows storage-failure injection or hosted signed-JWT learner A/B. No Auth strategy/provider, default activation, schema/RLS, secret, production or Pro-owned N4 change.
+- Next: inspect every latest-attempt job and step on the new exact head; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open pending hosted learner A/B and physical multi-device evidence.
+
+---
+
+
 ## Core worker handoff — refresh rotation vault-write failure — 2026-11-02 UTC
 
 - Resume PR #37, branch `automation/issue-22-atomic-review`; parent `5b0546a046f3a35c1ca7138f0cde913f5e577196`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
