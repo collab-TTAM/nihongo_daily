@@ -400,6 +400,9 @@ void main() {
       );
       await fixture.flush();
 
+      // Binding and raw SDK observers may both surface the same SIGNED_OUT
+      // transition. A delayed duplicate must not enqueue a fourth clear that
+      // could race B's replacement credential.
       expect(backend.clears, 3);
       expect(backend.operations, [
         'read',

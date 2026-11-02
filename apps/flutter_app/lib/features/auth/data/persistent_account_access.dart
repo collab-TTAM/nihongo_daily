@@ -57,6 +57,9 @@ final class PersistentAccountAccess implements AccountAccess {
   bool _closed = false;
   bool _authInFlight = false;
   bool _cancelledOperation = false;
+  // One SDK sign-out can reach both lifecycle observers. Coalesce delayed
+  // null-session notifications until a new session is observed.
+  bool _noSessionClearPending = false;
   SessionPersistencePhase _phase = SessionPersistencePhase.idle;
   SessionPersistencePhase get phase => _phase;
 
@@ -119,6 +122,8 @@ final class PersistentAccountAccess implements AccountAccess {
       final session = _sdk.currentSession;
       final secret = _sdk.currentRefreshToken;
       if (session == null) {
+        if (_noSessionClearPending) return;
+        _noSessionClearPending = true;
         _revoke(SessionPersistencePhase.idle);
         unawaited(
           _enqueue(() async {
@@ -131,6 +136,7 @@ final class PersistentAccountAccess implements AccountAccess {
         );
         return;
       }
+      _noSessionClearPending = false;
       if (secret == null) {
         _fail();
         return;
@@ -297,6 +303,9 @@ final class PersistentAccountAccess implements AccountAccess {
 
   Future<void> _cleanup() async {
     var failed = false;
+    // Mark cleanup before SDK sign-out; its duplicate/late null-session events
+    // must not enqueue a second clear after a replacement login has started.
+    _noSessionClearPending = true;
     // No SDK calls inside a synchronous Auth callback. Gate already revoked.
     await Future<void>.value();
     try {

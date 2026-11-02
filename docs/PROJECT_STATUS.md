@@ -1,3 +1,14 @@
+## Core worker handoff — coalesce delayed SDK sign-out cleanup — 2026-11-02 UTC
+
+- Run `core-20261102T0310Z-fix-refresh-rotation-clear-regression`; branch `automation/issue-22-atomic-review`; parent `95c4c2b0593fdec28f374c913e3bb20e6fc1567e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41376229941](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41376229941) on the parent completed with five jobs fully SUCCESS and Flutter format/analyze SUCCESS; Flutter tests reported 392 passed / 1 failed at the new cross-account cleanup regression (expected 3 clears, observed 4), so later Flutter steps were skipped. The earlier heartbeat in this PR was queued; this is the final observed run result.
+- Corrected the lifecycle boundary rather than weakening the test: `PersistentAccountAccess` now coalesces delayed duplicate null-session notifications from the owned binding/Auth observers until a non-null session is observed. Explicit cleanup marks the fence before SDK sign-out; the existing regression still requires exactly three ordered clear attempts before B's rotated-secret write.
+- Paths: `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file.
+- This source remains TEST ONLY pinned-SDK/MockClient/in-memory-vault evidence. No Windows Credential Manager failure injection, hosted signed-JWT learner A/B, deployed RLS, OS logoff/power-loss or physical multi-device proof is claimed. Cloud runtime has no Flutter/Dart SDK or Windows OS; local format/analyze/test/build/native execution was not run.
+- New exact-head CI must verify the corrected lifecycle/test on all six jobs and every required step before integration. Keep PR #37 Draft and #20/#22/#15 open; no default Auth activation, provider strategy, schema/RLS, secret, production or Pro-owned #14/#38/N4 change.
+
+---
+
 # PROJECT STATUS
 
 ## Core worker handoff — failed refresh rotation plus failed vault cleanup — 2026-11-02 UTC

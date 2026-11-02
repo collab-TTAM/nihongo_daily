@@ -385,3 +385,22 @@ inject failures into Windows Credential Manager or prove hosted signed-JWT
 learner A/B, deployed RLS, OS logoff or power-loss behavior. No plaintext
 fallback, automatic retry, default Auth activation, Auth strategy/provider,
 schema, RLS or production configuration changes.
+
+
+## Coalesced SDK sign-out cleanup — 2026-11-02
+
+The owned binding and raw Supabase Auth observer can both report the same
+signed-out transition. A delayed duplicate null-session notification must not
+enqueue another credential clear after an explicit cleanup has already begun.
+PersistentAccountAccess now marks that cleanup before calling SDK sign-out
+and coalesces further null-session events until a new non-null session is
+observed. This preserves the required serialized order: failed rotation
+compensation, failed cross-account cleanup, successful explicit cleanup, then
+User B's rotated-secret write. The final stored secret and own-profile bearer
+remain bound to B.
+
+The regression remains TEST ONLY pinned SDK + MockClient + in-memory vault
+evidence; it is not hosted signed-JWT learner A/B or Windows Credential Manager
+failure injection. No automatic retry, plaintext fallback, default Auth
+activation, Auth strategy/provider, schema, RLS or production configuration
+changes.
