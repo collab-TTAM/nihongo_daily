@@ -111,20 +111,23 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     if (_disposed) return false;
     try {
       final current = _client.auth.currentSession;
-      if (state.event == AuthChangeEvent.signedOut || state.session == null) {
-        // A null event has no session identity. Accept it only while it belongs
-        // to the most recent explicit owner sign-out generation.
-        if (_pendingSignOutGeneration != _authOperationGeneration) {
-          return false;
+      final eventSession = state.session;
+      if (state.event == AuthChangeEvent.signedOut || eventSession == null) {
+        if (eventSession != null) {
+          // A session-bearing event can be checked against the SDK's current
+          // stable user/session identity; an old A event cannot revoke B.
+          if (current == null) return false;
+          final currentHint = _SessionHint.from(current, _now());
+          return _SessionHint.matchesLifecycle(eventSession, currentHint);
         }
-        if (current == null) return true;
-        final currentHint = _SessionHint.from(current, _now());
-        return state.session != null &&
-            _SessionHint.matchesLifecycle(state.session, currentHint);
+        // A null event has no identity. It needs the still-current explicit
+        // sign-out generation and an SDK that is actually signed out.
+        return _pendingSignOutGeneration == _authOperationGeneration &&
+            current == null;
       }
       if (current == null) return false;
       final currentHint = _SessionHint.from(current, _now());
-      return _SessionHint.matchesLifecycle(state.session, currentHint);
+      return _SessionHint.matchesLifecycle(eventSession, currentHint);
     } on Object {
       return false;
     }

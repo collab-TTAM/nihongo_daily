@@ -42,13 +42,15 @@ OS suspension acceptance remain separate. SDK rotation signals are observed inde
 signals because the review binding preserves identity on same-session refresh.
 The owned adapter therefore observes the raw Auth stream as a second listener,
 but forwards an event only when it still matches the SDK's current user/session
-lifecycle. Both observers use the same validated predicate: delayed null or
-previous-session sign-out events are ignored while a replacement session is
-current; a matching current-session sign-out and a sign-out with no current SDK
-session still revoke and clear. This prevents the raw observer from bypassing
-the review binding's stale-event guard and deleting the replacement refresh
-token. A pinned-SDK A-to-B regression covers both the predicate and the full
-vault write/cleanup order.
+lifecycle. A session-bearing SIGNED_OUT event is accepted only when its stable
+user/session identity matches the SDK's current session; a delayed event for A
+cannot revoke replacement B. A null-session SIGNED_OUT event has no identity,
+so it is accepted only while the explicit local sign-out generation is still
+current and the SDK itself has no current session. A newer sign-in, restore or
+refresh invalidates an older pending null sign-out. This preserves a genuine
+current-session sign-out while preventing delayed cleanup from deleting a
+replacement refresh token. The pinned-SDK A-to-B regression covers the
+predicate and the complete vault write/cleanup order.
 
 One active persistence owner is allowed per canonical project target in this
 Dart isolate. Closing drains operations before releasing the owner slot. This
@@ -496,14 +498,17 @@ its originating sign-out call has returned. A null event carries no user or
 session identity, so sampling only the SDK's state at callback time is not enough
 to prove that the event still belongs to the current account lifecycle.
 
-The owned binding now advances an operation generation before password sign-in,
-refresh-token restore, and explicit refresh. An explicit local sign-out records
-the generation it belongs to. A null/signed-out event is accepted only while
-that pending sign-out generation still matches; beginning a newer Auth operation
-invalidates the older null event. A valid current session event also clears the
-pending sign-out marker. Explicit logout remains accepted in its own generation,
-while registry expiry/invalid-session handling and failed Auth operations remain
-fail-closed through their existing paths.
+The owned binding advances an operation generation before password
+sign-in, refresh-token restore and explicit refresh. An explicit local sign-out
+records its generation. A null-session SIGNED_OUT event is accepted only while
+that pending sign-out generation still matches and the SDK has no current
+session; beginning a newer Auth operation invalidates the older null event.
+A session-bearing SIGNED_OUT event is checked separately against the SDK's
+current stable user/session identity, so a current-session sign-out is accepted
+while a previous-session A event cannot revoke replacement B. Explicit logout
+remains accepted in its own generation, while registry expiry/invalid-session
+handling and failed Auth operations remain fail-closed through their existing
+paths.
 
 This is a local event-ordering guard, not JWT signature verification, hosted Auth
 proof, or permission for another caller to mutate the exclusively owned SDK.

@@ -393,6 +393,8 @@ void main() {
       expect(authCalls(), initialAuthCalls + 1);
 
       backend.failClear = false;
+      // Recovery must exercise a successful B rotation after the failed A write.
+      backend.failWrite = false;
       profileWait = Completer<http.Response>();
       final recovery = runtime.account.signIn(
         'fixture@example.invalid',
@@ -401,9 +403,10 @@ void main() {
       await fixture.flush();
 
       // A delayed null sign-out event carries no session identity. The binding
-      // accepts it only in the generation that explicitly initiated logout;
+      // accepts it only in the still-current explicit logout generation;
       // B's newer sign-in invalidates that old event before it can clear B.
-      // _settle still samples the final SDK session before accepting B.
+      // Session-bearing sign-out events must instead match the SDK's current
+      // stable user/session identity. _settle samples the final SDK state.
       expect(
         backend.clears,
         3,
