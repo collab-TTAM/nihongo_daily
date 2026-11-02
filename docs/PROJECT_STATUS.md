@@ -1,3 +1,14 @@
+## Core worker handoff — bound configured-host widget readiness test — 2026-11-02T22:10Z
+
+- Run `core-20261102T2210Z-bound-configured-host-widget-test-timeout`; branch `automation/issue-22-atomic-review`; parent `7adeb47f5d93ba2905e08af8610b85976de201dd`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41527342579](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41527342579), latest attempt 1, had repo-sanity, database, AI boundary, disposable local Supabase integration and Windows complete SUCCESS with every returned step. Flutter format/analyze passed; the full suite reached 64 passing tests, then the configured-host startup widget test hit its own 10-minute timeout. The downstream Flutter lifecycle/wire/browser/Web steps were skipped. The run was later cancelled; no full-CI pass is claimed.
+- The timed-out test used `pumpAndSettle()` while the account route can retain an indeterminate `LinearProgressIndicator` until the asynchronous own-profile barrier publishes ready state. Replace that unbounded settle on both successful configured-host paths with the existing five-second `waitForReady()` assertion plus two finite frame pumps. If profile readiness does not arrive, the test now fails at the bounded barrier rather than hanging for ten minutes; UI visibility and ready-runtime assertions remain.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` and this file. No production Auth/session code, CI timeout, test assertion, schema/RLS, provider strategy, default app behavior, curriculum or Pro-owned #14/#38/N4 scope changed.
+- Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head CI must verify the complete Flutter suite, downstream lifecycle/wire/browser/Web checks, Windows and database/integration jobs. Hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry and physical multi-device proof remain outstanding.
+- Next: inspect every latest-attempt job and step for the new exact head; if the bounded readiness wait fails, fix the actual profile-dispatch/readiness defect rather than extending timeouts or removing assertions.
+
+---
+
 ## Core worker handoff — generation-fenced delayed Auth sign-out — 2026-11-02 UTC
 
 - Run `core-20261102T1318Z-session-event-generation-fence`; branch `automation/issue-22-atomic-review`; parent `c84dfcfe498d888347d50b07d68e21290191e544`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

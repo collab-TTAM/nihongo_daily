@@ -78,6 +78,15 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
+
+  Future<void> pumpReadyAccountUi(WidgetTester tester) async {
+    // Wait for the account/profile barrier itself, not an indeterminate loading
+    // animation. A missing profile response fails within waitForReady's timeout.
+    await waitForReady();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+  }
+
   setUp(() async {
     requests.clear();
     backend = fixture.MemoryVault();
@@ -1208,7 +1217,7 @@ void main() {
         ),
       );
       await fixture.flush();
-      await tester.pumpAndSettle();
+      await pumpReadyAccountUi(tester);
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
 
@@ -1280,7 +1289,7 @@ void main() {
 
       backend.writeWait!.complete();
       await fixture.flush();
-      await tester.pumpAndSettle();
+      await pumpReadyAccountUi(tester);
       expect(backend.secret, secret);
       expect(
         requests.where((r) => r.url.path.contains('ensure_profile')),
