@@ -100,7 +100,9 @@ void main() {
               );
       }
       if (request.url.path == '/auth/v1/logout') return http.Response('', 204);
-      if (request.url.path == '/caller-owned-probe') return http.Response('', 204);
+      if (request.url.path == '/caller-owned-probe') {
+        return http.Response('', 204);
+      }
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
         return profileWait?.future ??
             Future.value(
@@ -725,7 +727,9 @@ void main() {
         hasLength(1),
       );
       expect(
-        requests.where((request) => request.url.path.contains('ensure_profile')),
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
         isEmpty,
       );
 
@@ -751,10 +755,7 @@ void main() {
       );
 
       authWait!.complete(authResponse());
-      await expectLater(
-        starting,
-        throwsA(isA<ReviewTransportFailure>()),
-      );
+      await expectLater(starting, throwsA(isA<ReviewTransportFailure>()));
       await closing;
       await fixture.flush();
 
@@ -763,7 +764,9 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       expect(runtime.persistence.phase, SessionPersistencePhase.closed);
       expect(
-        requests.where((request) => request.url.path.contains('ensure_profile')),
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
         isEmpty,
       );
 

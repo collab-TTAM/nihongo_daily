@@ -1,5 +1,17 @@
 # PROJECT STATUS
 
+## Formatter correction handoff — runtime close-drain test (2026-11-02 UTC)
+
+- Run `core-20261102T0012Z-dart-format-diagnostic`; branch `automation/issue-22-atomic-review`; diagnostic parent `a61592e535568a6b0cef2bd723a09bc231822519`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head diagnostic CI [41365877205](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41365877205), attempt 1, targets `a61592e535568a6b0cef2bd723a09bc231822519`. repo-sanity, database and ai-boundary passed every step; Flutter failed only strict pinned-Dart formatting, so Analyze/tests/build were skipped. Windows and local Supabase integration were still in progress at last job inspection.
+- The temporary always-run diagnostic printed the exact Dart 3.35.4 diff: wrap the two new `requests.where(...ensure_profile...)` arguments, compact the awaited `expectLater`, and put the caller-owned probe route's return inside a block. Applied only these formatter edits; removed the temporary workflow diagnostic step in this same commit. No assertions, CI gates or production code changed.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, this status file. Parent formatter failure is not treated as a pass; a fresh exact-head CI must run format/analyze/test/build and all other jobs.
+- Cloud runtime has no Flutter/Dart SDK or Windows OS, so no local format/analyze/test/build/native execution is claimed. The new runtime-close test remains TEST ONLY pinned-SDK/MockClient/in-memory-vault evidence, not hosted signed-JWT learner A/B or physical multi-device acceptance.
+- Next: inspect all latest-attempt jobs/steps on the corrected exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open pending hosted learner and multi-device evidence.
+
+---
+
+
 ## Latest handoff — caller-owned runtime close drains startup refresh (2026-11-02 UTC)
 
 - Resume PR #37, branch `automation/issue-22-atomic-review`; parent `fcb8de1300aa1728c339ac7f9bf09dd1501a8bf3`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

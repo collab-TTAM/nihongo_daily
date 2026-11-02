@@ -165,11 +165,6 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed .
-      - name: Diagnostic only — print pinned Dart format diff
-        if: always()
-        run: |
-          dart format test/features/srs/persistent_supabase_runtime_test.dart
-          git diff -- test/features/srs/persistent_supabase_runtime_test.dart
       - run: flutter analyze
       - run: flutter test
       - name: Verify owned persistent session lifecycle
