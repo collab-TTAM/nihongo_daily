@@ -61,6 +61,19 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
 
   Stream<void> get sessionChanges => _registry.sessionChanges;
 
+  int _authOperationGeneration = 0;
+  int? _pendingSignOutGeneration;
+
+  /// Starts a newer owner-controlled Auth operation and invalidates any
+  /// delayed null sign-out event left by an earlier cleanup.
+  void beginOwnedAuthOperation() {
+    if (_disposed) {
+      throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+    }
+    _authOperationGeneration++;
+    _pendingSignOutGeneration = null;
+  }
+
   @override
   ReviewSession? get currentSession {
     if (!_sameSdkLifecycle(_hint)) {
@@ -99,6 +112,11 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     try {
       final current = _client.auth.currentSession;
       if (state.event == AuthChangeEvent.signedOut || state.session == null) {
+        // A null event has no session identity. Accept it only while it belongs
+        // to the most recent explicit owner sign-out generation.
+        if (_pendingSignOutGeneration != _authOperationGeneration) {
+          return false;
+        }
         if (current == null) return true;
         final currentHint = _SessionHint.from(current, _now());
         return state.session != null &&
@@ -140,6 +158,7 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     try {
       if (state.event == AuthChangeEvent.signedOut || state.session == null) {
         if (!acceptsCurrentAuthState(state)) return;
+        _pendingSignOutGeneration = null;
         _revoke();
         return;
       }
@@ -159,6 +178,7 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
         }
         return;
       }
+      _pendingSignOutGeneration = null;
       final preserve =
           _hint?.sameLifecycle(hint) == true &&
           _registry.currentSession != null;
@@ -222,6 +242,7 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
         password.length > 4096) {
       throw const ReviewTransportFailure(ReviewErrorCode.validationFailure);
     }
+    beginOwnedAuthOperation();
     try {
       await _client.auth.signInWithPassword(
         email: email.trim(),
@@ -244,6 +265,7 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     if (_disposed) {
       throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
     }
+    _pendingSignOutGeneration = _authOperationGeneration;
     try {
       await _client.auth.signOut(scope: SignOutScope.local);
     } on Object {

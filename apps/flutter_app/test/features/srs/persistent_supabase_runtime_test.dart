@@ -400,10 +400,10 @@ void main() {
       );
       await fixture.flush();
 
-      // Registry and raw Auth observers can report A's transition while B's
-      // owned Auth operation is still settling. Synchronous delivery lets the
-      // persistence barrier ignore in-flight callbacks; _settle then samples
-      // the final SDK session before the replacement credential is accepted.
+      // A delayed null sign-out event carries no session identity. The binding
+      // accepts it only in the generation that explicitly initiated logout;
+      // B's newer sign-in invalidates that old event before it can clear B.
+      // _settle still samples the final SDK session before accepting B.
       expect(
         backend.clears,
         3,

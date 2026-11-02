@@ -243,6 +243,27 @@ void main() {
     expect(requests, isEmpty);
   });
   test(
+    'new owned Auth generation fences delayed null sign-out events',
+    () async {
+      await login();
+      await binding.signOutLocally();
+      binding.beginOwnedAuthOperation();
+
+      expect(
+        binding.acceptsCurrentAuthState(
+          AuthState(AuthChangeEvent.signedOut, null),
+        ),
+        isFalse,
+      );
+
+      nextUser = b;
+      nextSid = sid2;
+      generation++;
+      await login();
+      expect(binding.currentSession?.userId, b);
+    },
+  );
+  test(
     'real SDK POST uses only captured bearer public key and ownerless envelope',
     () async {
       await login();

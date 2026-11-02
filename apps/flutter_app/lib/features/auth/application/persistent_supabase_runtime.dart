@@ -316,11 +316,16 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
   @override
   Future<void> signOut() => binding.signOutLocally();
   @override
-  Future<void> restore(String refreshToken) =>
-      _authOperation(() => client.auth.setSession(refreshToken));
+  Future<void> restore(String refreshToken) => _authOperation(() {
+    binding.beginOwnedAuthOperation();
+    return client.auth.setSession(refreshToken);
+  });
 
   @override
-  Future<void> refresh() => _authOperation(() => client.auth.refreshSession());
+  Future<void> refresh() => _authOperation(() {
+    binding.beginOwnedAuthOperation();
+    return client.auth.refreshSession();
+  });
 
   Future<void> close() async {
     await _bindingSubscription.cancel();

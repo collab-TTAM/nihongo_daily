@@ -487,3 +487,23 @@ profile bearer, B-only readiness and the absence of a late fourth clear after
 profile readiness. This remains TEST ONLY SDK/MockClient/in-memory-vault
 evidence, not hosted signed-JWT learner A/B or Windows Credential Manager
 failure injection.
+
+
+## Owned Auth operation generation fence
+
+Supabase Auth may deliver a queued `SIGNED_OUT` event with a null session after
+its originating sign-out call has returned. A null event carries no user or
+session identity, so sampling only the SDK's state at callback time is not enough
+to prove that the event still belongs to the current account lifecycle.
+
+The owned binding now advances an operation generation before password sign-in,
+refresh-token restore, and explicit refresh. An explicit local sign-out records
+the generation it belongs to. A null/signed-out event is accepted only while
+that pending sign-out generation still matches; beginning a newer Auth operation
+invalidates the older null event. A valid current session event also clears the
+pending sign-out marker. Explicit logout remains accepted in its own generation,
+while registry expiry/invalid-session handling and failed Auth operations remain
+fail-closed through their existing paths.
+
+This is a local event-ordering guard, not JWT signature verification, hosted Auth
+proof, or permission for another caller to mutate the exclusively owned SDK.

@@ -279,6 +279,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "SDK oversized Auth response fails closed as internal error"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
+          "contains": "new owned Auth generation fences delayed null sign-out events"
         }
       ],
       "issues": [

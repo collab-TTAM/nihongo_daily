@@ -1,3 +1,15 @@
+## Core worker handoff — generation-fenced delayed Auth sign-out — 2026-11-02 UTC
+
+- Run `core-20261102T1318Z-session-event-generation-fence`; branch `automation/issue-22-atomic-review`; parent `c84dfcfe498d888347d50b07d68e21290191e544`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41444643342](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41444643342), latest attempt 1, completed FAILURE on this exact parent. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration passed every step. Flutter format/analyze passed; Flutter tests were 393 passed / 1 failed: the pinned-SDK A/B recovery case expected three vault clears but observed four, with redacted operation order `read → write → write → clear → clear → clear → write → clear`. All downstream Flutter lifecycle/wire/browser/Web steps were skipped, not passed.
+- The binding now assigns a monotonically increasing generation to each owned sign-in/restore/refresh. Explicit logout records its generation; a delayed null `SIGNED_OUT` event is accepted only while that generation remains current. Starting B's newer Auth operation invalidates A's queued null event. The pinned-SDK regression retains the exact three-clear and full operation-order assertions; a focused binding test covers the stale null event after a newer generation. Explicit logout and expiry paths remain fail-closed.
+- Changed paths: `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`, `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`, `apps/flutter_app/test/features/srs/supabase_review_binding_test.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `qa/matrix.json`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this file.
+- Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head Actions must verify the focused regression and every retained job/step. This remains TEST ONLY SDK/MockClient/in-memory-vault evidence, not hosted signed-JWT learner A/B, deployed RLS, or physical multi-device proof.
+- No Auth strategy/provider, API, migration/RLS, default activation, production config, secrets, or Pro-owned #14/#38/N4 path changed. Keep PR #37 Draft and #20/#22/#15 open.
+- Next: inspect every latest-attempt job/step on the new exact head; fix only observed failures. If checks are pending, hand off without duplicate code.
+
+---
+
 ## Core worker handoff — exact Dart 3.9.2 formatting and diagnostic cleanup — 2026-11-02T10:11Z
 
 - Run `core-20261102T1011Z-fix-dart-format`; branch `automation/issue-22-atomic-review`; parent `fe3b2de277f71f41022526bf92efc283b37643c4`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
