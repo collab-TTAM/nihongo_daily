@@ -164,12 +164,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnose exact Dart formatter output (temporary)
-        shell: bash
-        run: |
-          target=lib/features/auth/application/persistent_supabase_runtime.dart
-          dart format --output=show "$target" > "$RUNNER_TEMP/persistent_supabase_runtime.formatted.dart"
-          diff -u --label="$target (checkout)" --label="$target (Dart 3.9.2)" "$target" "$RUNNER_TEMP/persistent_supabase_runtime.formatted.dart" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
