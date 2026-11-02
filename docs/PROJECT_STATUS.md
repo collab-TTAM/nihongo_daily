@@ -2288,3 +2288,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added a temporary read-only CI diagnostic that prints the exact unified diff from pinned Dart 3.9.2 `dart format --output=show`; the strict formatter gate remains immediately afterward and is unchanged. This diagnostic commit does not alter tests, assertions, runtime, security or build gates.
 - Changed paths for this diagnostic checkpoint: `.github/workflows/ci.yml` and `docs/PROJECT_STATUS.md`. Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build result is claimed.
 - Next: read the diagnostic diff from exact-head Actions, apply only that formatting change to the test file, remove the temporary workflow step, and rerun full CI.
+
+
+## Core worker checkpoint — exact formatter correction — 2026-11-02 UTC
+
+- Run `core-20261102T1907Z-fix-formatter`; branch `automation/issue-22-atomic-review`; parent `11305d574e8532b0c187c09f50988d383a579c5c`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Inspected exact-head CI [41500674650](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41500674650), latest attempt 1. Repo-sanity, database, AI boundary, disposable Supabase integration and Windows completed SUCCESS with every returned step. Flutter failed only strict Dart 3.9.2 formatting; its read-only diagnostic identified two exact hunks in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: compact the grant-type `expect` invocation while retaining the two-element expected list, and remove the extra blank line before the closing brace. Flutter analyze, tests and downstream Flutter checks were SKIPPED, not passed.
+- Applied only those two formatter hunks and removed the temporary read-only diagnostic from `.github/workflows/ci.yml`; strict `dart format --output=none --set-exit-if-changed .` remains unchanged. No assertions, runtime behavior, API/schema/RLS, Auth strategy/provider, default activation, or Pro-owned #14/#38/N4 content changed.
+- Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI must verify format, analyze, all Flutter tests, lifecycle/wire/browser/Web build and all other required jobs/steps before any pass claim.
+- Next: inspect every latest-attempt job and step for the new exact head. Keep PR #37 Draft and #20/#22/#15 open. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device sync remain unproven; no merge/deployment/release.

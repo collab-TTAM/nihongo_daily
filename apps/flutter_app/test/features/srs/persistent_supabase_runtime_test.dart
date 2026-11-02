@@ -1267,10 +1267,10 @@ void main() {
       final tokenRequests = requests
           .where((r) => r.url.path == '/auth/v1/token')
           .toList();
-      expect(
-        tokenRequests.map((r) => r.url.queryParameters['grant_type']),
-        ['refresh_token', 'password'],
-      );
+      expect(tokenRequests.map((r) => r.url.queryParameters['grant_type']), [
+        'refresh_token',
+        'password',
+      ]);
       expect(backend.secret, isNull);
       expect(runtime.account.readyRuntime, isNull);
       expect(
@@ -1293,5 +1293,4 @@ void main() {
       await controller.close();
     },
   );
-
 }
