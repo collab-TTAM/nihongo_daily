@@ -121,3 +121,26 @@ confirmed logged-in learner rotation/restart, OS logoff or power-loss proof.
 All 14 release groups remain pending. Following evidence/QA documentation
 successor has separate CI; this source-head evidence is historical for later
 commits. Keep #37 draft and #20/#22/#15 open.
+
+
+## Configured-host UI barrier regressions — 2026-11-02
+
+Two additional widget tests now mount the actual explicit `AccountStartupApp`
+around `PersistentAccountStartup` and `PersistentSupabaseRuntime`, using the
+pinned Supabase SDK with TEST ONLY MockClient HTTP and the in-memory credential
+backend:
+
+- Startup with a saved refresh secret holds the SDK's rotated-secret vault write.
+  The account route and own-profile RPC remain unavailable until that write
+  succeeds. The profile response is then held separately; study readiness and
+  the profile UI remain unavailable until the captured owner's profile returns.
+- A rejected stored refresh secret leaves the startup error screen and exposes
+  only the explicit re-login action. The same runtime clears failed credential
+  state before password Auth; a held replacement-token write blocks
+  `ensure_profile` and study readiness until the rotated secret is stored.
+
+These tests cover the configured UI/controller/SDK/persistence composition,
+not hosted Auth signatures, deployed RLS, real Credential Manager failure
+injection, or a learner account. The default preview/provider remains null and
+unchanged. The full pinned Flutter/Windows/SQL/Chrome/Web checks must pass on
+the exact source head before treating these tests as verified.

@@ -2268,3 +2268,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file. No API/schema/migration/RLS/Auth strategy/provider, default activation, token logging/plaintext fallback, Pro-owned #14/#38/N4 or production/release scope changed.
 - Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. This commit must be verified by exact-head GitHub Actions; no new-head pass is claimed.
 - Next: inspect all six latest-attempt CI jobs and every step for this exact head. Keep PR #37 Draft and #20/#22/#15 open; hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry and physical multi-device proof remain outstanding.
+
+
+## Core worker checkpoint — configured-host startup UI persistence barrier — 2026-11-02 UTC
+
+- Run `core-20261102T1811Z-configured-host-startup-barrier-widget-tests`; branch `automation/issue-22-atomic-review`; parent `72c0c23a010874b2816b5d40eab2a6a886b4884e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added two widget-level integration regressions that mount the actual `AccountStartupApp` with `PersistentAccountStartup` and `PersistentSupabaseRuntime`, using the pinned Supabase SDK plus TEST ONLY MockClient HTTP and in-memory credential backend.
+- Startup test holds the rotated refresh-token write and proves no `ensure_profile` request/account UI is published until storage succeeds; it then holds the captured own-profile response and proves study readiness remains blocked until that response completes.
+- Recovery test rejects a stored refresh token, proves the UI exposes only explicit re-login, then verifies cleanup/credential clear occurs before password Auth. A held new-token write blocks profile dispatch/readiness until persistence succeeds. Assertions record method names and request grant types only; no secret values are logged.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/ACCOUNT_STARTUP.md`, and `docs/PROJECT_STATUS.md`. No production source, default preview/runtime, Auth strategy/provider, schema/RLS, migration, CI, secret, or Pro-owned #14/#38/N4 path changed.
+- Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head GitHub Actions must verify the two new widget tests and every required job/step. No new-head pass is claimed.
+- Next: inspect all latest-attempt jobs/steps for the new exact head; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open. Hosted signed-JWT learner A/B, deployed RLS, real expiry/restart and physical multi-device sync remain unproven.

@@ -2,18 +2,23 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
+import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/session_refresh_scheduler.dart';
 import 'package:nihongo_daily/features/auth/application/account_session_notice.dart';
 import 'package:nihongo_daily/features/auth/application/account_session_refresh.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
+import 'package:nihongo_daily/features/srs/application/srs_study_runtime.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 import 'recovery_fixtures.dart' as recovery;
@@ -1146,4 +1151,147 @@ void main() {
     expect(runtime.notice, AccountSessionNotice.none);
     expect(runtime.account.readyRuntime, isNull);
   });
+
+  testWidgets(
+    'configured host waits for rotated vault secret and own profile before publishing account UI',
+    (tester) async {
+      tester.view.physicalSize = const Size(1100, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      backend.writeWait = Completer<void>();
+      profileWait = Completer<http.Response>();
+      final controller =
+          AccountStartupController<AccountController<SrsStudyRuntime>>(
+            () async => PersistentAccountStartup(runtime),
+          );
+
+      await tester.pumpWidget(AccountStartupApp(controller: controller));
+      await tester.pump();
+      expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
+      expect(find.byKey(const Key('account-email')), findsNothing);
+      await fixture.flush();
+
+      expect(
+        requests.where((r) => r.url.path == '/auth/v1/token'),
+        hasLength(1),
+      );
+      expect(
+        requests.single.url.queryParameters['grant_type'],
+        'refresh_token',
+      );
+      expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      backend.writeWait!.complete();
+      await fixture.flush();
+      await tester.pump();
+      expect(backend.secret, secret);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        hasLength(1),
+      );
+      expect(runtime.account.readyRuntime, isNull);
+      expect(find.text('Đang chuẩn bị hồ sơ học tập…'), findsOneWidget);
+      expect(find.byKey(const Key('account-profile-name')), findsNothing);
+
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(wire.a)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await fixture.flush();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+      expect(runtime.account.readyRuntime, isNotNull);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await controller.close();
+    },
+  );
+
+  testWidgets(
+    'configured host offers explicit login after rejected restore and clears before password auth',
+    (tester) async {
+      tester.view.physicalSize = const Size(1100, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      authStatus = 401;
+      final controller =
+          AccountStartupController<AccountController<SrsStudyRuntime>>(
+            () async => PersistentAccountStartup(runtime),
+          );
+      await tester.pumpWidget(AccountStartupApp(controller: controller));
+      await fixture.flush();
+      await tester.pumpAndSettle();
+
+      expect(controller.phase, AccountStartupPhase.restoreError);
+      expect(find.text('Đăng nhập lại'), findsOneWidget);
+      expect(find.byKey(const Key('account-email')), findsNothing);
+      expect(backend.operations, ['read']);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      await tester.tap(find.text('Đăng nhập lại'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('account-email')), findsOneWidget);
+      expect(find.byKey(const Key('account-password')), findsOneWidget);
+
+      authStatus = 200;
+      backend.writeWait = Completer<void>();
+      await tester.enterText(
+        find.byKey(const Key('account-email')),
+        'fixture@example.invalid',
+      );
+      await tester.enterText(
+        find.byKey(const Key('account-password')),
+        'TEST_ONLY_PASSWORD',
+      );
+      await tester.tap(find.text('Đăng nhập'));
+      await tester.pump();
+      await fixture.flush();
+
+      expect(backend.operations, ['read', 'clear', 'write']);
+      final tokenRequests = requests
+          .where((r) => r.url.path == '/auth/v1/token')
+          .toList();
+      expect(
+        tokenRequests.map((r) => r.url.queryParameters['grant_type']),
+        ['refresh_token', 'password'],
+      );
+      expect(backend.secret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      backend.writeWait!.complete();
+      await fixture.flush();
+      await tester.pumpAndSettle();
+      expect(backend.secret, secret);
+      expect(
+        requests.where((r) => r.url.path.contains('ensure_profile')),
+        hasLength(1),
+      );
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await controller.close();
+    },
+  );
+
 }
