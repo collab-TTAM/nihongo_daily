@@ -404,3 +404,28 @@ evidence; it is not hosted signed-JWT learner A/B or Windows Credential Manager
 failure injection. No automatic retry, plaintext fallback, default Auth
 activation, Auth strategy/provider, schema, RLS or production configuration
 changes.
+
+
+## Ignore stale sign-out events after account replacement — 2026-11-02
+
+The prior persistence-level clear coalescing fence was insufficient by itself:
+the pinned Supabase SDK can deliver a queued `SIGNED_OUT`/null-session event
+for User A after a replacement User B session is already current. The binding
+previously revoked its session unconditionally for every such event. The
+persistence observer then saw no current session and could enqueue a fourth
+vault clear over B's newly rotated refresh token.
+
+`SupabaseReviewBinding` now checks the current SDK session before applying a
+signed-out/null event. A current session must pass the full existing session
+hint validation. If the event has no session or its stable user + JWT
+`session_id` differs from that current lifecycle, the event is stale and is
+ignored. An event matching the current lifecycle, or any signed-out event when
+the SDK has no current session, still revokes normally. The event comparison
+uses only lifecycle identity; it does not persist, expose or log tokens.
+
+The pinned-SDK/MockClient/in-memory-vault regression continues to require the
+exact three cleanup attempts, B's rotated refresh secret, B's captured profile
+bearer and B-only readiness. This is TEST ONLY SDK evidence, not hosted
+signed-JWT learner A/B or native Windows Credential Manager failure injection.
+No Auth strategy/provider, default activation, plaintext fallback, schema,
+RLS, production configuration or Pro-owned N4 content changed.

@@ -1,3 +1,14 @@
+## Core worker handoff — ignore stale SDK sign-out after account replacement — 2026-11-02 UTC
+
+- Run `core-20261102T0414Z-ignore-stale-signed-out-event`; branch `automation/issue-22-atomic-review`; parent `31743d76e7884bfc517315018dd2b7533a63dd22`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41382115777](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41382115777), attempt 1, targets `31743d76e7884bfc517315018dd2b7533a63dd22` and failed: Flutter format/analyze passed; Flutter tests reported 392 passed / 1 failed at `persistent_supabase_runtime_test.dart:406` (expected three vault clears, observed four). Five other jobs (`repo-sanity`, `ai-boundary`, `database`, `windows`, `supabase-integration`) completed SUCCESS with every returned step; downstream Flutter checks/build were skipped after the test failure. No full-CI pass is claimed.
+- Root cause: `SupabaseReviewBinding._accept` unconditionally revoked on a queued `SIGNED_OUT`/null event. The pinned SDK can deliver an event for A after B is already current; persistence then observed null and queued a fourth clear over B's rotated token. The binding now validates the current SDK session and ignores a null/older-lifecycle event that does not match it. Events matching the current lifecycle, and signed-out events with no current SDK session, still revoke. The event identity comparison uses user ID + JWT `session_id`, not token persistence or logging.
+- Paths: `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file. The existing regression retains the exact three-clear operation sequence, B token/profile bearer and readiness assertions; no test expectation or CI gate was weakened.
+- Full recursive parent tree: 327 entries (262 blobs, 65 trees), untruncated. No N4/content, API/schema, migration/RLS, Auth strategy/provider, default activation, secret, production or Pro-owned #14/#38 path changed. Cloud runtime has no Flutter/Dart SDK or Windows OS; local format/analyze/test/build/native execution was not run.
+- New exact-head CI is required for Flutter regression, web/Windows builds and all six jobs. Keep PR #37 Draft and #20/#22/#15 open pending hosted signed-JWT learner A/B, deployed RLS and physical multi-device evidence. Next: inspect every latest-attempt job/step on the new exact head and fix only observed diagnostics.
+
+---
+
 ## Core worker handoff — coalesce delayed SDK sign-out cleanup — 2026-11-02 UTC
 
 - Run `core-20261102T0310Z-fix-refresh-rotation-clear-regression`; branch `automation/issue-22-atomic-review`; parent `95c4c2b0593fdec28f374c913e3bb20e6fc1567e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

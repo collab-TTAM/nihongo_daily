@@ -96,6 +96,16 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     }
     try {
       if (state.event == AuthChangeEvent.signedOut || state.session == null) {
+        final current = _client.auth.currentSession;
+        if (current != null) {
+          final currentHint = _SessionHint.from(current, _now());
+          // Auth stream delivery is asynchronous. A queued null/old-session
+          // sign-out event must not revoke a newer SDK session.
+          if (state.session == null ||
+              !_SessionHint.matchesLifecycle(state.session, currentHint)) {
+            return;
+          }
+        }
         _revoke();
         return;
       }
@@ -270,6 +280,24 @@ final class _SessionHint {
   final DateTime expiresAt;
   bool sameLifecycle(_SessionHint other) =>
       userId == other.userId && lifecycle == other.lifecycle;
+
+  /// Compare only the stable user/session identity of a queued Auth event.
+  /// Its access token may already be expired; the current SDK session is fully
+  /// validated separately before this helper is used.
+  static bool matchesLifecycle(Session? session, _SessionHint expected) {
+    if (session == null) return false;
+    try {
+      final payload = _jwtPayload(session.accessToken);
+      final userId = ReviewSession(userId: session.user.id).userId;
+      final lifecycle = ReviewSession(
+        userId: payload['session_id'] as String,
+      ).userId;
+      return userId == expected.userId && lifecycle == expected.lifecycle;
+    } on Object {
+      return false;
+    }
+  }
+
   static _SessionHint from(Session? session, DateTime now) {
     if (session == null || session.tokenType.toLowerCase() != 'bearer') {
       throw const FormatException();
