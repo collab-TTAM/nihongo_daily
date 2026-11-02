@@ -284,6 +284,37 @@ void main() {
     },
   );
   test(
+    'stale sign-out events cannot invalidate a replacement SDK session',
+    () async {
+      await login();
+      final old = sdk.auth.currentSession!;
+      nextUser = b;
+      nextSid = sid2;
+      await login();
+      final current = sdk.auth.currentSession!;
+
+      expect(
+        binding.acceptsCurrentAuthState(
+          AuthState(AuthChangeEvent.signedOut, null),
+        ),
+        isFalse,
+      );
+      expect(
+        binding.acceptsCurrentAuthState(
+          AuthState(AuthChangeEvent.signedOut, old),
+        ),
+        isFalse,
+      );
+      expect(
+        binding.acceptsCurrentAuthState(
+          AuthState(AuthChangeEvent.signedOut, current),
+        ),
+        isTrue,
+      );
+      expect(binding.currentSession?.userId, b);
+    },
+  );
+  test(
     'same-user new server session and A B A revoke old prepared identity',
     () async {
       await login();

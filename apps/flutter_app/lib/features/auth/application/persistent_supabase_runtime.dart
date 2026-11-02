@@ -268,7 +268,9 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
     // Binding retains ReviewSession identity on same-lifecycle refresh and does
     // not emit a review invalidation. Persistence also needs every SDK rotation.
     _authSubscription = client.auth.onAuthStateChange.listen(
-      (_) => _events.add(null),
+      (state) {
+        if (binding.acceptsCurrentAuthState(state)) _events.add(null);
+      },
       onError: (Object _, StackTrace __) => _events.addError(_failure()),
     );
   }

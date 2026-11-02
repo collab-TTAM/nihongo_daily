@@ -400,9 +400,10 @@ void main() {
       );
       await fixture.flush();
 
-      // Supabase may deliver a queued SIGNED_OUT/null event for A after B
-      // is already current. The binding must ignore that stale lifecycle;
-      // otherwise persistence sees null and clears B's rotated credential.
+      // Supabase may deliver a queued SIGNED_OUT/null event for A to both
+      // Auth observers after B is current. The review binding and the raw
+      // persistence observer must share the current-session filter; otherwise
+      // persistence sees null and clears B's rotated credential.
       expect(backend.clears, 3);
       expect(backend.operations, [
         'read',

@@ -165,6 +165,15 @@
 Current release target: Personal Alpha
 Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
 
+## Core session-lifecycle checkpoint — 2026-11-02 UTC
+
+- Resumed draft PR #37 on `automation/issue-22-atomic-review` at parent `b9eaa458914fd5f41dca1da216d856821a8ff436`. Exact-head CI [41387850885](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41387850885) ran all six jobs: five jobs and every step succeeded; Flutter format/analyze succeeded, but the test suite reported 392 passed / 1 failed at `persistent_supabase_runtime_test.dart:406` (expected 3 credential clears, observed 4). All Flutter downstream lifecycle/native/web checks and web build were skipped after the test failure.
+- Root cause: the owned runtime intentionally listens to both the review binding stream and raw Supabase Auth stream so same-session refresh-token rotations are observed. The raw listener forwarded every queued Auth event, bypassing the review binding's stale-session filter and allowing an old null/sign-out notification to enqueue a fourth vault clear after account B became current.
+- Bounded correction: expose one validated current-session predicate from `SupabaseReviewBinding`, apply it to both binding and raw persistence event delivery, and ignore stale non-null lifecycle events without revoking a newer valid SDK session. Genuine current-session sign-out and no-current-session events still revoke. Added a focused predicate regression and retained the full SDK A-to-B test's exact three-clear, B-token, captured-profile-bearer and readiness assertions.
+- Changed paths for this increment: `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`, `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`, `apps/flutter_app/test/features/srs/supabase_review_binding_test.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this file.
+- Verification for the new source head is pending GitHub Actions. Do not infer a pass from parent CI. Cloud runtime has no Flutter/Dart SDK or Windows OS; no local Flutter format/analyze/test/build/native execution or hosted learner JWT/A-B proof is claimed.
+- Next: inspect every latest-attempt job and step on the exact new commit; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open until hosted learner A/B, expiry/restart and multi-device acceptance is recorded. Pro-owned #14/#38/N4 scope remains untouched.
+
 | Milestone | Status | Owner / prerequisite |
 | --- | --- | --- |
 | Architecture baseline | MERGED via PR #10; #1 completed | Lead |

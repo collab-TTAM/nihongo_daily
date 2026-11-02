@@ -40,6 +40,15 @@ expiry itself revokes review access and clears the persisted secret via the
 binding event. Opt-in scheduling has fixture/source CI evidence; hosted expiry/rotation and
 OS suspension acceptance remain separate. SDK rotation signals are observed independently of review lifecycle
 signals because the review binding preserves identity on same-session refresh.
+The owned adapter therefore observes the raw Auth stream as a second listener,
+but forwards an event only when it still matches the SDK's current user/session
+lifecycle. Both observers use the same validated predicate: delayed null or
+previous-session sign-out events are ignored while a replacement session is
+current; a matching current-session sign-out and a sign-out with no current SDK
+session still revoke and clear. This prevents the raw observer from bypassing
+the review binding's stale-event guard and deleting the replacement refresh
+token. A pinned-SDK A-to-B regression covers both the predicate and the full
+vault write/cleanup order.
 
 One active persistence owner is allowed per canonical project target in this
 Dart isolate. Closing drains operations before releasing the owner slot. This

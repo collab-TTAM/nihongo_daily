@@ -90,29 +90,52 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     }
   }
 
+  /// True only when this queued Auth event still describes the SDK's current
+  /// lifecycle. The persistence observer also listens to raw SDK events so it
+  /// can capture same-session refresh-token rotations; it must apply this same
+  /// filter or a delayed sign-out can clear a replacement account's credential.
+  bool acceptsCurrentAuthState(AuthState state) {
+    if (_disposed) return false;
+    try {
+      final current = _client.auth.currentSession;
+      if (state.event == AuthChangeEvent.signedOut || state.session == null) {
+        if (current == null) return true;
+        final currentHint = _SessionHint.from(current, _now());
+        return state.session != null &&
+            _SessionHint.matchesLifecycle(state.session, currentHint);
+      }
+      if (current == null) return false;
+      final currentHint = _SessionHint.from(current, _now());
+      return _SessionHint.matchesLifecycle(state.session, currentHint);
+    } on Object {
+      return false;
+    }
+  }
+
   void _accept(AuthState state) {
     if (_disposed) {
       return;
     }
     try {
       if (state.event == AuthChangeEvent.signedOut || state.session == null) {
-        final current = _client.auth.currentSession;
-        if (current != null) {
-          final currentHint = _SessionHint.from(current, _now());
-          // Auth stream delivery is asynchronous. A queued null/old-session
-          // sign-out event must not revoke a newer SDK session.
-          if (state.session == null ||
-              !_SessionHint.matchesLifecycle(state.session, currentHint)) {
-            return;
-          }
-        }
+        if (!acceptsCurrentAuthState(state)) return;
         _revoke();
         return;
       }
       final hint = _SessionHint.from(state.session, _now());
-      // Ignore queued/replayed old events; consult current SDK state too.
+      // Ignore queued/replayed old events without revoking a newer valid SDK
+      // session. If the SDK has no/invalid current session, revoke fail-closed.
       if (!_sameSdkLifecycle(hint)) {
-        _revoke();
+        final current = _client.auth.currentSession;
+        if (current == null) {
+          _revoke();
+        } else {
+          try {
+            _SessionHint.from(current, _now());
+          } on Object {
+            _revoke();
+          }
+        }
         return;
       }
       final preserve =
