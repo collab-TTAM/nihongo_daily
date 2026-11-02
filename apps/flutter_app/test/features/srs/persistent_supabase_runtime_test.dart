@@ -79,11 +79,20 @@ void main() {
   }
 
   Future<void> pumpReadyAccountUi(WidgetTester tester) async {
-    // Wait for the account/profile barrier itself, not an indeterminate loading
-    // animation. A missing profile response fails within waitForReady's timeout.
-    await waitForReady();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    // WidgetTest's fake clock does not advance while awaiting Future.timeout.
+    // Pump bounded frames instead of awaiting the real-time waitForReady helper.
+    const terminalPhases = {
+      AccountPhase.ready,
+      AccountPhase.profileError,
+      AccountPhase.signInError,
+      AccountPhase.unavailable,
+    };
+    for (var attempt = 0; attempt < 50; attempt++) {
+      if (terminalPhases.contains(runtime.account.state.phase)) break;
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(runtime.account.state.phase, AccountPhase.ready);
+    expect(runtime.account.readyRuntime, isNotNull);
   }
 
   setUp(() async {
