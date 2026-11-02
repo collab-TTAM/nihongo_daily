@@ -464,3 +464,26 @@ operation order, B refresh secret, B profile bearer and B-only readiness. No
 test expectation was weakened. This remains TEST ONLY SDK/MockClient/in-memory
 vault evidence, not hosted signed-JWT learner A/B or Windows Credential Manager
 failure injection.
+
+
+## Deliver owned lifecycle notifications synchronously — 2026-11-02
+
+The owned SDK adapter delivers its private Auth/registry change stream
+synchronously. These notifications describe SDK state at emission time; an
+asynchronous second queue could replay a transient null from User A after User
+B's sign-in has settled and clear B's newly persisted refresh token.
+
+During an owned restore, sign-in or refresh, the persistence barrier ignores
+reentrant lifecycle callbacks while its Auth operation is in flight. The
+operation's settle phase then samples the SDK's final current session and drains
+serialized credential writes before publishing readiness. Outside an owned
+Auth operation, a real signed-out or invalid/expired lifecycle notification is
+still handled immediately and its clear remains serialized behind any write.
+The synchronous callback performs no SDK mutation or network request.
+
+The A-to-B pinned-SDK regression now checks the exact three cleanup attempts,
+the complete vault operation order, B's rotated refresh secret, B's captured
+profile bearer, B-only readiness and the absence of a late fourth clear after
+profile readiness. This remains TEST ONLY SDK/MockClient/in-memory-vault
+evidence, not hosted signed-JWT learner A/B or Windows Credential Manager
+failure injection.

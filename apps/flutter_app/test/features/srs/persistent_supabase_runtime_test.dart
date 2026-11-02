@@ -400,10 +400,10 @@ void main() {
       );
       await fixture.flush();
 
-      // Supabase may deliver a queued SIGNED_OUT/null event for A to both
-      // Auth observers after B is current. The review binding and the raw
-      // persistence observer must share the current-session filter; otherwise
-      // persistence sees null and clears B's rotated credential.
+      // Registry and raw Auth observers can report A's transition while B's
+      // owned Auth operation is still settling. Synchronous delivery lets the
+      // persistence barrier ignore in-flight callbacks; _settle then samples
+      // the final SDK session before the replacement credential is accepted.
       expect(
         backend.clears,
         3,
@@ -435,6 +435,18 @@ void main() {
       );
       await recovery;
       await waitForReady();
+      await fixture.flush();
+      expect(backend.clears, 3);
+      expect(backend.operations, [
+        'read',
+        'write',
+        'write',
+        'clear',
+        'clear',
+        'clear',
+        'write',
+      ]);
+      expect(backend.secret, secret);
       expect(runtime.persistence.phase, SessionPersistencePhase.ready);
       expect(runtime.account.readyRuntime, isNotNull);
       expect(runtime.account.state.profile?.id, wire.b);

@@ -275,7 +275,12 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
   final SupabaseClient client;
   final SupabaseReviewBinding binding;
   final _BoundedSessionHttp network;
-  final _events = StreamController<void>.broadcast();
+  // Deliver lifecycle snapshots synchronously. An async queue can replay a
+  // transient null from User A after User B's Auth operation has settled and
+  // incorrectly clear B's just-persisted refresh token. During owned Auth
+  // operations, PersistentAccountAccess ignores callbacks while _authInFlight;
+  // _settle then samples the final SDK state and drains its writes.
+  final _events = StreamController<void>.broadcast(sync: true);
   late final StreamSubscription<void> _bindingSubscription;
   late final StreamSubscription<AuthState> _authSubscription;
   static ReviewTransportFailure _failure() =>
