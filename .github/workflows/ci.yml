@@ -166,7 +166,8 @@ jobs:
       - run: flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
-      - run: flutter test
+      - name: Run the complete Flutter suite serially with expanded diagnostics
+        run: flutter test --concurrency=1 --reporter expanded
       - name: Verify owned persistent session lifecycle
         run: dart run tool/verify_session_lifecycle.dart
       - name: Verify credential vault validation and ordering
