@@ -2279,3 +2279,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/ACCOUNT_STARTUP.md`, and `docs/PROJECT_STATUS.md`. No production source, default preview/runtime, Auth strategy/provider, schema/RLS, migration, CI, secret, or Pro-owned #14/#38/N4 path changed.
 - Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head GitHub Actions must verify the two new widget tests and every required job/step. No new-head pass is claimed.
 - Next: inspect all latest-attempt jobs/steps for the new exact head; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open. Hosted signed-JWT learner A/B, deployed RLS, real expiry/restart and physical multi-device sync remain unproven.
+
+
+## Core worker checkpoint — exact Dart formatter diagnosis — 2026-11-02 UTC
+
+- Run `core-20261102T1826Z-dart-format-diagnostic`; parent `ba2c8d4ea86fe90ad9e5b96b6275091ed6a92dbf`; branch `automation/issue-22-atomic-review`.
+- Exact-head CI [41499960522](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41499960522), attempt 1, observed Flutter strict format failure only: Dart 3.9.2 reported `test/features/srs/persistent_supabase_runtime_test.dart` changed. Flutter analyze/test and every downstream Flutter step were skipped, not passed. Repo-sanity/database/AI boundary had succeeded; Supabase integration and Windows were still running at the observation.
+- Added a temporary read-only CI diagnostic that prints the exact unified diff from pinned Dart 3.9.2 `dart format --output=show`; the strict formatter gate remains immediately afterward and is unchanged. This diagnostic commit does not alter tests, assertions, runtime, security or build gates.
+- Changed paths for this diagnostic checkpoint: `.github/workflows/ci.yml` and `docs/PROJECT_STATUS.md`. Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build result is claimed.
+- Next: read the diagnostic diff from exact-head Actions, apply only that formatting change to the test file, remove the temporary workflow step, and rerun full CI.
