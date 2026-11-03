@@ -1295,8 +1295,7 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
-      addTearDown(() => closeWidgetStartup(tester, controller));
-
+      try {
       // Start the SDK restore in the real async zone and observe the synchronous
       // persistence state. A test-zone Completer cannot safely be awaited here.
       final writeStarted = await pumpUntilRealCondition(
@@ -1346,23 +1345,16 @@ void main() {
         reason:
             'profile provisioning must follow the exact rotated vault secret',
       );
-      final startupFinished = await pumpUntilRealCondition(
-        tester,
-        () => controller.phase == AccountStartupPhase.active,
-      );
-      expect(
-        startupFinished,
-        isTrue,
-        reason: 'configured startup did not settle after profile request',
-      );
-      await tester.pump();
+      // The startup owner remains unpublished until profile provisioning
+      // returns; do not wait for ACTIVE before releasing this response.
+      expect(controller.phase, AccountStartupPhase.loading);
+      expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
       expect(backend.secret, secret);
       expect(
         requests.where((r) => r.url.path.contains('ensure_profile')),
         hasLength(1),
       );
       expect(runtime.account.readyRuntime, isNull);
-      expect(find.text('Đang chuẩn bị hồ sơ học tập…'), findsOneWidget);
       expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
       final profileReturned = await pumpUntilRealCondition(
@@ -1386,8 +1378,12 @@ void main() {
       await tester.pump();
       await waitForAccountReady(tester);
       await tester.pump();
+      expect(controller.phase, AccountStartupPhase.active);
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
+      } finally {
+        await closeWidgetStartup(tester, controller);
+      }
     },
   );
 
@@ -1405,8 +1401,7 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
-      addTearDown(() => closeWidgetStartup(tester, controller));
-
+      try {
       await tester.runAsync(() async {
         await controller.start();
       });
@@ -1474,6 +1469,9 @@ void main() {
       );
       expect(runtime.account.readyRuntime, isNotNull);
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+      } finally {
+        await closeWidgetStartup(tester, controller);
+      }
     },
   );
 }
