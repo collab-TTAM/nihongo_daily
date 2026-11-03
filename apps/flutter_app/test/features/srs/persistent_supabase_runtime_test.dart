@@ -95,6 +95,13 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
+  /// Runs fixture timers outside WidgetTest's fake-async clock.
+  /// The subsequent pump publishes any account state changed by the flush.
+  Future<void> flushWidgetFixture(WidgetTester tester) async {
+    await tester.runAsync(fixture.flush);
+    await tester.pump();
+  }
+
   setUp(() async {
     requests.clear();
     backend = fixture.MemoryVault();
@@ -1189,7 +1196,7 @@ void main() {
       await tester.pump();
       expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
       expect(find.byKey(const Key('account-email')), findsNothing);
-      await fixture.flush();
+      await flushWidgetFixture(tester);
 
       expect(
         requests.where((r) => r.url.path == '/auth/v1/token'),
@@ -1206,7 +1213,7 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await fixture.flush();
+      await flushWidgetFixture(tester);
       await tester.pump();
       expect(backend.secret, secret);
       expect(
@@ -1224,7 +1231,7 @@ void main() {
           headers: {'content-type': 'application/json'},
         ),
       );
-      await fixture.flush();
+      await flushWidgetFixture(tester);
       await pumpReadyAccountUi(tester);
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
@@ -1249,7 +1256,7 @@ void main() {
             () async => PersistentAccountStartup(runtime),
           );
       await tester.pumpWidget(AccountStartupApp(controller: controller));
-      await fixture.flush();
+      await flushWidgetFixture(tester);
       await tester.pumpAndSettle();
 
       expect(controller.phase, AccountStartupPhase.restoreError);
@@ -1278,7 +1285,7 @@ void main() {
       );
       await tester.tap(find.text('Đăng nhập'));
       await tester.pump();
-      await fixture.flush();
+      await flushWidgetFixture(tester);
 
       expect(backend.operations, ['read', 'clear', 'write']);
       final tokenRequests = requests
@@ -1296,7 +1303,7 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await fixture.flush();
+      await flushWidgetFixture(tester);
       await pumpReadyAccountUi(tester);
       expect(backend.secret, secret);
       expect(
