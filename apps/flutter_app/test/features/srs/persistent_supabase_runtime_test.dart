@@ -80,24 +80,34 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-  /// Polls synchronous state from the real async zone. Completers created by
-  /// WidgetTest FakeAsync must not be awaited from runAsync: their callbacks are
-  /// queued in the paused fake zone. Polling the observable barrier avoids that
-  /// cross-zone deadlock while keeping a strict wall-clock bound.
-  Future<bool> runRealUntil(
+  /// Advances both WidgetTest FakeAsync and the real async zone while polling.
+  /// SDK/HTTP continuations may be queued in either zone; polling only from
+  /// runAsync can starve FakeAsync callbacks and leave the exclusive owner open.
+  Future<bool> pumpUntilRealCondition(
     WidgetTester tester,
     bool Function() condition, {
     void Function()? start,
+    bool startInRealZone = false,
   }) async {
-    final completed = await tester.runAsync<bool>(() async {
-      start?.call();
-      final elapsed = Stopwatch()..start();
-      while (!condition() && elapsed.elapsed < const Duration(seconds: 5)) {
-        await Future<void>.delayed(const Duration(milliseconds: 10));
+    if (start != null) {
+      if (startInRealZone) {
+        final started = await tester.runAsync<bool>(() async {
+          start();
+          return true;
+        });
+        if (started != true) return false;
+      } else {
+        start();
       }
-      return condition();
-    });
-    return completed ?? false;
+    }
+    final elapsed = Stopwatch()..start();
+    while (!condition() && elapsed.elapsed < const Duration(seconds: 5)) {
+      await tester.pump(const Duration(milliseconds: 10));
+      await tester.runAsync<void>(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      });
+    }
+    return condition();
   }
 
   Future<void> waitForRealCondition(
@@ -105,7 +115,7 @@ void main() {
     bool Function() condition, {
     required String reason,
   }) async {
-    final completed = await runRealUntil(tester, condition);
+    final completed = await pumpUntilRealCondition(tester, condition);
     final profileRequests = requests
         .where((request) => request.url.path.contains('ensure_profile'))
         .length;
@@ -117,7 +127,7 @@ void main() {
 
   Future<void> waitForAccountReady(WidgetTester tester) async {
     if (runtime.account.state.phase == AccountPhase.ready) return;
-    final reachedTerminal = await runRealUntil(
+    final reachedTerminal = await pumpUntilRealCondition(
       tester,
       () => const {
         AccountPhase.ready,
@@ -138,26 +148,26 @@ void main() {
     WidgetTester tester,
     AccountStartupController<AccountController<SrsStudyRuntime>> controller,
   ) async {
-    await tester.runAsync(() async {
-      if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
-        backend.writeWait!.complete();
-      }
-      if (backend.readWait != null && !backend.readWait!.isCompleted) {
-        backend.readWait!.complete();
-      }
-      if (authWait != null && !authWait!.isCompleted) {
-        authWait!.complete(authResponse());
-      }
-      if (profileWait != null && !profileWait!.isCompleted) {
-        profileWait!.complete(
-          http.Response(
-            jsonEncode(profile.profile(authUser)),
-            200,
-            headers: {'content-type': 'application/json'},
-          ),
-        );
-      }
-    });
+    // Complete FakeAsync-owned barriers in their creating zone; the pump
+    // below delivers their queued continuations before owner close begins.
+    if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+      backend.writeWait!.complete();
+    }
+    if (backend.readWait != null && !backend.readWait!.isCompleted) {
+      backend.readWait!.complete();
+    }
+    if (authWait != null && !authWait!.isCompleted) {
+      authWait!.complete(authResponse());
+    }
+    if (profileWait != null && !profileWait!.isCompleted) {
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(authUser)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+    }
     // Release callbacks queued by test-zone Completers before beginning close.
     await tester.pump();
     var closeCompleted = false;
@@ -1289,12 +1299,13 @@ void main() {
 
       // Start the SDK restore in the real async zone and observe the synchronous
       // persistence state. A test-zone Completer cannot safely be awaited here.
-      final writeStarted = await runRealUntil(
+      final writeStarted = await pumpUntilRealCondition(
         tester,
         () =>
             backend.writes == 1 &&
             runtime.persistence.phase == SessionPersistencePhase.saving,
         start: () => unawaited(controller.start()),
+        startInRealZone: true,
       );
       final profileRequests = requests
           .where((request) => request.url.path.contains('ensure_profile'))
@@ -1327,7 +1338,7 @@ void main() {
         isEmpty,
       );
 
-      await tester.runAsync(() async => backend.writeWait!.complete());
+      backend.writeWait!.complete();
       await tester.pump();
       await waitForRealCondition(
         tester,
@@ -1335,7 +1346,7 @@ void main() {
         reason:
             'profile provisioning must follow the exact rotated vault secret',
       );
-      final startupFinished = await runRealUntil(
+      final startupFinished = await pumpUntilRealCondition(
         tester,
         () => controller.phase == AccountStartupPhase.active,
       );
@@ -1354,7 +1365,7 @@ void main() {
       expect(find.text('Đang chuẩn bị hồ sơ học tập…'), findsOneWidget);
       expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
-      final profileReturned = await runRealUntil(
+      final profileReturned = await pumpUntilRealCondition(
         tester,
         () => profileResponseWasReturned,
         start: () {
@@ -1452,7 +1463,7 @@ void main() {
         isEmpty,
       );
 
-      await tester.runAsync(() async => backend.writeWait!.complete());
+      backend.writeWait!.complete();
       await tester.pump();
       await waitForAccountReady(tester);
       await tester.pump();
