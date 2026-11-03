@@ -1296,91 +1296,91 @@ void main() {
             () async => PersistentAccountStartup(runtime),
           );
       try {
-      // Start the SDK restore in the real async zone and observe the synchronous
-      // persistence state. A test-zone Completer cannot safely be awaited here.
-      final writeStarted = await pumpUntilRealCondition(
-        tester,
-        () =>
-            backend.writes == 1 &&
-            runtime.persistence.phase == SessionPersistencePhase.saving,
-        start: () => unawaited(controller.start()),
-        startInRealZone: true,
-      );
-      final profileRequests = requests
-          .where((request) => request.url.path.contains('ensure_profile'))
-          .length;
-      expect(
-        writeStarted,
-        isTrue,
-        reason:
-            'the final SDK session must enter the vault barrier before startup can settle '
-            '(writes=${backend.writes}, phase=${runtime.persistence.phase.name}, '
-            'profileRequests=$profileRequests)',
-      );
-      await tester.pumpWidget(AccountStartupApp(controller: controller));
-      await tester.pump();
-      expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
-      expect(find.byKey(const Key('account-email')), findsNothing);
+        // Start the SDK restore in the real async zone and observe the synchronous
+        // persistence state. A test-zone Completer cannot safely be awaited here.
+        final writeStarted = await pumpUntilRealCondition(
+          tester,
+          () =>
+              backend.writes == 1 &&
+              runtime.persistence.phase == SessionPersistencePhase.saving,
+          start: () => unawaited(controller.start()),
+          startInRealZone: true,
+        );
+        final profileRequests = requests
+            .where((request) => request.url.path.contains('ensure_profile'))
+            .length;
+        expect(
+          writeStarted,
+          isTrue,
+          reason:
+              'the final SDK session must enter the vault barrier before startup can settle '
+              '(writes=${backend.writes}, phase=${runtime.persistence.phase.name}, '
+              'profileRequests=$profileRequests)',
+        );
+        await tester.pumpWidget(AccountStartupApp(controller: controller));
+        await tester.pump();
+        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
+        expect(find.byKey(const Key('account-email')), findsNothing);
 
-      expect(
-        requests.where((r) => r.url.path == '/auth/v1/token'),
-        hasLength(1),
-      );
-      expect(backend.writes, 1);
-      expect(
-        requests.single.url.queryParameters['grant_type'],
-        'refresh_token',
-      );
-      expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')),
-        isEmpty,
-      );
+        expect(
+          requests.where((r) => r.url.path == '/auth/v1/token'),
+          hasLength(1),
+        );
+        expect(backend.writes, 1);
+        expect(
+          requests.single.url.queryParameters['grant_type'],
+          'refresh_token',
+        );
+        expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')),
+          isEmpty,
+        );
 
-      backend.writeWait!.complete();
-      await tester.pump();
-      await waitForRealCondition(
-        tester,
-        () => profileWasRequested,
-        reason:
-            'profile provisioning must follow the exact rotated vault secret',
-      );
-      // The startup owner remains unpublished until profile provisioning
-      // returns; do not wait for ACTIVE before releasing this response.
-      expect(controller.phase, AccountStartupPhase.loading);
-      expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
-      expect(backend.secret, secret);
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')),
-        hasLength(1),
-      );
-      expect(runtime.account.readyRuntime, isNull);
-      expect(find.byKey(const Key('account-profile-name')), findsNothing);
+        backend.writeWait!.complete();
+        await tester.pump();
+        await waitForRealCondition(
+          tester,
+          () => profileWasRequested,
+          reason:
+              'profile provisioning must follow the exact rotated vault secret',
+        );
+        // The startup owner remains unpublished until profile provisioning
+        // returns; do not wait for ACTIVE before releasing this response.
+        expect(controller.phase, AccountStartupPhase.loading);
+        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
+        expect(backend.secret, secret);
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')),
+          hasLength(1),
+        );
+        expect(runtime.account.readyRuntime, isNull);
+        expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
-      final profileReturned = await pumpUntilRealCondition(
-        tester,
-        () => profileResponseWasReturned,
-        start: () {
-          profileWait!.complete(
-            http.Response(
-              jsonEncode(profile.profile(wire.a)),
-              200,
-              headers: {'content-type': 'application/json'},
-            ),
-          );
-        },
-      );
-      expect(
-        profileReturned,
-        isTrue,
-        reason: 'own-profile response did not return to the configured host',
-      );
-      await tester.pump();
-      await waitForAccountReady(tester);
-      await tester.pump();
-      expect(controller.phase, AccountStartupPhase.active);
-      expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
-      expect(runtime.account.readyRuntime, isNotNull);
+        final profileReturned = await pumpUntilRealCondition(
+          tester,
+          () => profileResponseWasReturned,
+          start: () {
+            profileWait!.complete(
+              http.Response(
+                jsonEncode(profile.profile(wire.a)),
+                200,
+                headers: {'content-type': 'application/json'},
+              ),
+            );
+          },
+        );
+        expect(
+          profileReturned,
+          isTrue,
+          reason: 'own-profile response did not return to the configured host',
+        );
+        await tester.pump();
+        await waitForAccountReady(tester);
+        await tester.pump();
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+        expect(runtime.account.readyRuntime, isNotNull);
       } finally {
         await closeWidgetStartup(tester, controller);
       }
@@ -1402,73 +1402,73 @@ void main() {
             () async => PersistentAccountStartup(runtime),
           );
       try {
-      await tester.runAsync(() async {
-        await controller.start();
-      });
-      await tester.pumpWidget(AccountStartupApp(controller: controller));
-      await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          await controller.start();
+        });
+        await tester.pumpWidget(AccountStartupApp(controller: controller));
+        await tester.pumpAndSettle();
 
-      expect(controller.phase, AccountStartupPhase.restoreError);
-      expect(find.text('Đăng nhập lại'), findsOneWidget);
-      expect(find.byKey(const Key('account-email')), findsNothing);
-      expect(backend.operations, ['read']);
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')),
-        isEmpty,
-      );
+        expect(controller.phase, AccountStartupPhase.restoreError);
+        expect(find.text('Đăng nhập lại'), findsOneWidget);
+        expect(find.byKey(const Key('account-email')), findsNothing);
+        expect(backend.operations, ['read']);
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')),
+          isEmpty,
+        );
 
-      await tester.tap(find.text('Đăng nhập lại'));
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('account-email')), findsOneWidget);
-      expect(find.byKey(const Key('account-password')), findsOneWidget);
+        await tester.tap(find.text('Đăng nhập lại'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('account-email')), findsOneWidget);
+        expect(find.byKey(const Key('account-password')), findsOneWidget);
 
-      authStatus = 200;
-      backend.writeWait = Completer<void>();
-      await tester.enterText(
-        find.byKey(const Key('account-email')),
-        'fixture@example.invalid',
-      );
-      await tester.enterText(
-        find.byKey(const Key('account-password')),
-        'TEST_ONLY_PASSWORD',
-      );
-      await tester.tap(find.text('Đăng nhập'));
-      await tester.pump();
-      await waitForRealCondition(
-        tester,
-        () =>
-            backend.writes == 1 &&
-            runtime.persistence.phase == SessionPersistencePhase.saving,
-        reason:
-            'explicit password login must reach the credential write barrier',
-      );
+        authStatus = 200;
+        backend.writeWait = Completer<void>();
+        await tester.enterText(
+          find.byKey(const Key('account-email')),
+          'fixture@example.invalid',
+        );
+        await tester.enterText(
+          find.byKey(const Key('account-password')),
+          'TEST_ONLY_PASSWORD',
+        );
+        await tester.tap(find.text('Đăng nhập'));
+        await tester.pump();
+        await waitForRealCondition(
+          tester,
+          () =>
+              backend.writes == 1 &&
+              runtime.persistence.phase == SessionPersistencePhase.saving,
+          reason:
+              'explicit password login must reach the credential write barrier',
+        );
 
-      expect(backend.operations, ['read', 'clear', 'write']);
-      final tokenRequests = requests
-          .where((r) => r.url.path == '/auth/v1/token')
-          .toList();
-      expect(tokenRequests.map((r) => r.url.queryParameters['grant_type']), [
-        'refresh_token',
-        'password',
-      ]);
-      expect(backend.secret, isNull);
-      expect(runtime.account.readyRuntime, isNull);
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')),
-        isEmpty,
-      );
+        expect(backend.operations, ['read', 'clear', 'write']);
+        final tokenRequests = requests
+            .where((r) => r.url.path == '/auth/v1/token')
+            .toList();
+        expect(tokenRequests.map((r) => r.url.queryParameters['grant_type']), [
+          'refresh_token',
+          'password',
+        ]);
+        expect(backend.secret, isNull);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')),
+          isEmpty,
+        );
 
-      backend.writeWait!.complete();
-      await tester.pump();
-      await waitForAccountReady(tester);
-      await tester.pump();
-      expect(backend.secret, secret);
-      expect(
-        requests.where((r) => r.url.path.contains('ensure_profile')),
-        hasLength(1),
-      );
-      expect(runtime.account.readyRuntime, isNotNull);
-      expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+        backend.writeWait!.complete();
+        await tester.pump();
+        await waitForAccountReady(tester);
+        await tester.pump();
+        expect(backend.secret, secret);
+        expect(
+          requests.where((r) => r.url.path.contains('ensure_profile')),
+          hasLength(1),
+        );
+        expect(runtime.account.readyRuntime, isNotNull);
+        expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       } finally {
         await closeWidgetStartup(tester, controller);
       }
