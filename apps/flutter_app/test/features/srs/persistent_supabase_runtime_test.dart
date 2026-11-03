@@ -1274,7 +1274,6 @@ void main() {
       await tester.pump();
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
-
     },
   );
 
