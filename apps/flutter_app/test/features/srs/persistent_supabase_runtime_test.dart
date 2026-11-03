@@ -42,8 +42,8 @@ void main() {
   late http.Response? authOverride;
   late Completer<http.Response>? authWait;
   late Completer<http.Response>? profileWait;
-  late Completer<void>? profileRequested;
-  late Completer<void>? profileResponseReturned;
+  var profileWasRequested = false;
+  var profileResponseWasReturned = false;
   http.Response authResponse() => http.Response(
     jsonEncode({
       'access_token': wire.token(authUser, authSession, now),
@@ -80,27 +80,32 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-  /// Runs an asynchronous operation while WidgetTester has its real async
-  /// zone active, with a non-throwing bound that cannot leak a root-zone timer.
+  /// Polls synchronous state from the real async zone. Completers created by
+  /// WidgetTest FakeAsync must not be awaited from runAsync: their callbacks are
+  /// queued in the paused fake zone. Polling the observable barrier avoids that
+  /// cross-zone deadlock while keeping a strict wall-clock bound.
   Future<bool> runRealUntil(
     WidgetTester tester,
-    Future<void> Function() operation,
-  ) async {
-    final completed = await tester.runAsync<bool>(() {
-      return Future.any<bool>([
-        operation().then((_) => true),
-        Future<void>.delayed(const Duration(seconds: 5)).then((_) => false),
-      ]);
+    bool Function() condition, {
+    void Function()? start,
+  }) async {
+    final completed = await tester.runAsync<bool>(() async {
+      start?.call();
+      final elapsed = Stopwatch()..start();
+      while (!condition() && elapsed.elapsed < const Duration(seconds: 5)) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      return condition();
     });
     return completed ?? false;
   }
 
-  Future<void> waitForRealSignal(
+  Future<void> waitForRealCondition(
     WidgetTester tester,
-    Future<void> signal, {
+    bool Function() condition, {
     required String reason,
   }) async {
-    final completed = await runRealUntil(tester, () => signal);
+    final completed = await runRealUntil(tester, condition);
     final profileRequests = requests
         .where((request) => request.url.path.contains('ensure_profile'))
         .length;
@@ -114,16 +119,12 @@ void main() {
     if (runtime.account.state.phase == AccountPhase.ready) return;
     final reachedTerminal = await runRealUntil(
       tester,
-      () => runtime.account.changes
-          .firstWhere(
-            (state) => const {
-              AccountPhase.ready,
-              AccountPhase.profileError,
-              AccountPhase.signInError,
-              AccountPhase.unavailable,
-            }.contains(state.phase),
-          )
-          .then<void>((_) {}),
+      () => const {
+        AccountPhase.ready,
+        AccountPhase.profileError,
+        AccountPhase.signInError,
+        AccountPhase.unavailable,
+      }.contains(runtime.account.state.phase),
     );
     expect(
       reachedTerminal,
@@ -137,27 +138,45 @@ void main() {
     WidgetTester tester,
     AccountStartupController<AccountController<SrsStudyRuntime>> controller,
   ) async {
-    if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
-      backend.writeWait!.complete();
-    }
-    if (backend.readWait != null && !backend.readWait!.isCompleted) {
-      backend.readWait!.complete();
-    }
-    if (authWait != null && !authWait!.isCompleted) {
-      authWait!.complete(authResponse());
-    }
-    if (profileWait != null && !profileWait!.isCompleted) {
-      profileWait!.complete(
-        http.Response(
-          jsonEncode(profile.profile(authUser)),
-          200,
-          headers: {'content-type': 'application/json'},
-        ),
-      );
-    }
-    final closed = await runRealUntil(tester, () => controller.close());
+    await tester.runAsync(() async {
+      if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+        backend.writeWait!.complete();
+      }
+      if (backend.readWait != null && !backend.readWait!.isCompleted) {
+        backend.readWait!.complete();
+      }
+      if (authWait != null && !authWait!.isCompleted) {
+        authWait!.complete(authResponse());
+      }
+      if (profileWait != null && !profileWait!.isCompleted) {
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(authUser)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+      }
+    });
+    var closeCompleted = false;
+    var closeFailed = false;
+    final closed = await runRealUntil(
+      tester,
+      () => closeCompleted,
+      start: () {
+        unawaited(
+          controller.close().then<void>(
+            (_) => closeCompleted = true,
+            onError: (Object _, StackTrace __) {
+              closeFailed = true;
+              closeCompleted = true;
+            },
+          ),
+        );
+      },
+    );
     expect(
-      closed,
+      closed && !closeFailed,
       isTrue,
       reason: 'startup owner did not close within five seconds',
     );
@@ -177,8 +196,8 @@ void main() {
     authOverride = null;
     authWait = null;
     profileWait = null;
-    profileRequested = null;
-    profileResponseReturned = null;
+    profileWasRequested = false;
+    profileResponseWasReturned = false;
     vault = SessionCredentialVault(projectUrl: wire.origin, backend: backend);
     network = MockClient((request) async {
       requests.add(request);
@@ -197,10 +216,7 @@ void main() {
         return http.Response('', 204);
       }
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
-        final requested = profileRequested;
-        if (requested != null && !requested.isCompleted) {
-          requested.complete();
-        }
+        profileWasRequested = true;
         final response =
             await (profileWait?.future ??
                 Future.value(
@@ -210,10 +226,7 @@ void main() {
                     headers: {'content-type': 'application/json'},
                   ),
                 ));
-        final returned = profileResponseReturned;
-        if (returned != null && !returned.isCompleted) {
-          returned.complete();
-        }
+        profileResponseWasReturned = true;
         return response;
       }
       throw StateError('unexpected fixture endpoint');
@@ -1260,24 +1273,22 @@ void main() {
 
       backend.secret = 'TEST_ONLY_SAVED_SDK';
       backend.writeWait = Completer<void>();
-      backend.writeStarted = Completer<void>();
       profileWait = Completer<http.Response>();
-      profileRequested = Completer<void>();
-      profileResponseReturned = Completer<void>();
       final controller =
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
       addTearDown(() => closeWidgetStartup(tester, controller));
 
-      // Start the real SDK restore outside FakeAsync before mounting the UI.
-      // The test then renders the observable loading state while persistence is
-      // deliberately held at the vault write barrier.
-      late Future<void> startup;
-      final writeStarted = await runRealUntil(tester, () {
-        startup = controller.start();
-        return backend.writeStarted!.future;
-      });
+      // Start the SDK restore in the real async zone and observe the synchronous
+      // persistence state. A test-zone Completer cannot safely be awaited here.
+      final writeStarted = await runRealUntil(
+        tester,
+        () =>
+            backend.writes == 1 &&
+            runtime.persistence.phase == SessionPersistencePhase.saving,
+        start: () => unawaited(controller.start()),
+      );
       final profileRequests = requests
           .where((request) => request.url.path.contains('ensure_profile'))
           .length;
@@ -1309,15 +1320,18 @@ void main() {
         isEmpty,
       );
 
-      backend.writeWait!.complete();
+      await tester.runAsync(() async => backend.writeWait!.complete());
       await tester.pump();
-      await waitForRealSignal(
+      await waitForRealCondition(
         tester,
-        profileRequested!.future,
+        () => profileWasRequested,
         reason:
             'profile provisioning must follow the exact rotated vault secret',
       );
-      final startupFinished = await runRealUntil(tester, () => startup);
+      final startupFinished = await runRealUntil(
+        tester,
+        () => controller.phase == AccountStartupPhase.active,
+      );
       expect(
         startupFinished,
         isTrue,
@@ -1333,16 +1347,19 @@ void main() {
       expect(find.text('Đang chuẩn bị hồ sơ học tập…'), findsOneWidget);
       expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
-      final profileReturned = await runRealUntil(tester, () {
-        profileWait!.complete(
-          http.Response(
-            jsonEncode(profile.profile(wire.a)),
-            200,
-            headers: {'content-type': 'application/json'},
-          ),
-        );
-        return profileResponseReturned!.future;
-      });
+      final profileReturned = await runRealUntil(
+        tester,
+        () => profileResponseWasReturned,
+        start: () {
+          profileWait!.complete(
+            http.Response(
+              jsonEncode(profile.profile(wire.a)),
+              200,
+              headers: {'content-type': 'application/json'},
+            ),
+          );
+        },
+      );
       expect(
         profileReturned,
         isTrue,
@@ -1394,7 +1411,6 @@ void main() {
 
       authStatus = 200;
       backend.writeWait = Completer<void>();
-      backend.writeStarted = Completer<void>();
       await tester.enterText(
         find.byKey(const Key('account-email')),
         'fixture@example.invalid',
@@ -1405,9 +1421,11 @@ void main() {
       );
       await tester.tap(find.text('Đăng nhập'));
       await tester.pump();
-      await waitForRealSignal(
+      await waitForRealCondition(
         tester,
-        backend.writeStarted!.future,
+        () =>
+            backend.writes == 1 &&
+            runtime.persistence.phase == SessionPersistencePhase.saving,
         reason:
             'explicit password login must reach the credential write barrier',
       );
@@ -1427,7 +1445,7 @@ void main() {
         isEmpty,
       );
 
-      backend.writeWait!.complete();
+      await tester.runAsync(() async => backend.writeWait!.complete());
       await tester.pump();
       await waitForAccountReady(tester);
       await tester.pump();
