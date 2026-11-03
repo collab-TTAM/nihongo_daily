@@ -158,27 +158,34 @@ void main() {
         );
       }
     });
+    // Release callbacks queued by test-zone Completers before beginning close.
+    await tester.pump();
     var closeCompleted = false;
     var closeFailed = false;
-    final closed = await runRealUntil(
-      tester,
-      () => closeCompleted,
-      start: () {
-        unawaited(
-          controller.close().then<void>(
-            (_) => closeCompleted = true,
-            onError: (Object _, StackTrace __) {
-              closeFailed = true;
-              closeCompleted = true;
-            },
-          ),
-        );
-      },
+    unawaited(
+      controller.close().then<void>(
+        (_) => closeCompleted = true,
+        onError: (Object _, StackTrace __) {
+          closeFailed = true;
+          closeCompleted = true;
+        },
+      ),
     );
+    // The mounted host listens to the controller's broadcast stream in
+    // WidgetTest FakeAsync. Pump that zone while close emits its final event;
+    // waiting only inside runAsync pauses the listener and can strand shutdown.
+    for (var attempt = 0; attempt < 500 && !closeCompleted; attempt++) {
+      await tester.pump(const Duration(milliseconds: 10));
+    }
+    final diagnostic =
+        'controller=${controller.phase.name}, '
+        'persistence=${runtime.persistence.phase.name}, '
+        'account=${runtime.account.state.phase.name}, '
+        'writes=${backend.writes}, clears=${backend.clears}';
     expect(
-      closed && !closeFailed,
+      closeCompleted && !closeFailed,
       isTrue,
-      reason: 'startup owner did not close within five seconds',
+      reason: 'startup owner did not close within five seconds ($diagnostic)',
     );
     await tester.pumpWidget(const SizedBox.shrink());
   }
