@@ -292,6 +292,10 @@ final class _OwnedSdkAccess implements RefreshableAccountAccess {
       await action();
       final failure = network.takeAuthTransportFailure();
       if (failure != null) throw failure;
+      // Do not make persistence readiness depend on delivery timing of the
+      // SDK's asynchronous broadcast stream. Reconcile the final owned SDK
+      // session now; queued duplicate events remain lifecycle-guarded.
+      binding.synchronizeOwnedAuthSession();
     } on ReviewTransportFailure {
       network.takeAuthTransportFailure();
       rethrow;

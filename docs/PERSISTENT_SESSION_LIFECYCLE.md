@@ -40,6 +40,14 @@ expiry itself revokes review access and clears the persisted secret via the
 binding event. Opt-in scheduling has fixture/source CI evidence; hosted expiry/rotation and
 OS suspension acceptance remain separate. SDK rotation signals are observed independently of review lifecycle
 signals because the review binding preserves identity on same-session refresh.
+The owned adapter also reconciles the final SDK session synchronously after every
+successful caller-owned sign-in, restore or refresh operation, before
+`PersistentAccountAccess` settles its persistence barrier. This avoids
+making startup readiness depend solely on when the SDK's asynchronous Auth
+broadcast is delivered. The raw Auth stream remains necessary for out-of-band
+refresh/logout events; queued events are still checked against the current
+SDK lifecycle and cannot override a newer account.
+
 The owned adapter therefore observes the raw Auth stream as a second listener,
 but forwards an event only when it still matches the SDK's current user/session
 lifecycle. A session-bearing SIGNED_OUT event is accepted only when its stable

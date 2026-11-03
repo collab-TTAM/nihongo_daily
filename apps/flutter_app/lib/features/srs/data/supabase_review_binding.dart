@@ -74,6 +74,20 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     _pendingSignOutGeneration = null;
   }
 
+  /// Reconciles the SDK's final session after an owner-controlled Auth call.
+  ///
+  /// Auth stream delivery is asynchronous. The persistence owner must see the
+  /// exact current session/rotated refresh token before its readiness barrier
+  /// settles, even when a queued stream event has not run yet.
+  void synchronizeOwnedAuthSession() {
+    if (_disposed) {
+      throw const ReviewTransportFailure(ReviewErrorCode.unauthorized);
+    }
+    _accept(
+      AuthState(AuthChangeEvent.initialSession, _client.auth.currentSession),
+    );
+  }
+
   @override
   ReviewSession? get currentSession {
     if (!_sameSdkLifecycle(_hint)) {

@@ -105,6 +105,19 @@ void main() {
     }
   }
 
+  Future<void> pumpWidgetUntil(
+    WidgetTester tester,
+    bool Function() condition, {
+    required String reason,
+  }) async {
+    // Wait for the observable persistence/profile boundary, not a guessed
+    // number of microtask turns. The finite bound prevents a hung widget test.
+    for (var turn = 0; turn < 100 && !condition(); turn++) {
+      await tester.pump(const Duration(milliseconds: 1));
+    }
+    expect(condition(), isTrue, reason: reason);
+  }
+
   setUp(() async {
     requests.clear();
     backend = fixture.MemoryVault();
@@ -1194,17 +1207,31 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
+      addTearDown(() async {
+        // A failed assertion must not leave a blocked vault write or owner slot
+        // behind for the next widget test.
+        if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+          backend.writeWait!.complete();
+        }
+        await tester.pumpWidget(const SizedBox.shrink());
+        await controller.close();
+      });
 
       await tester.pumpWidget(AccountStartupApp(controller: controller));
       await tester.pump();
       expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
       expect(find.byKey(const Key('account-email')), findsNothing);
-      await flushWidgetFixture(tester);
+      await pumpWidgetUntil(
+        tester,
+        () => backend.writes == 1,
+        reason: 'the final SDK session must enter the vault barrier before startup can settle',
+      );
 
       expect(
         requests.where((r) => r.url.path == '/auth/v1/token'),
         hasLength(1),
       );
+      expect(backend.writes, 1);
       expect(
         requests.single.url.queryParameters['grant_type'],
         'refresh_token',
@@ -1216,7 +1243,16 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await flushWidgetFixture(tester);
+      await pumpWidgetUntil(
+        tester,
+        () {
+          final profileCount = requests
+              .where((r) => r.url.path.contains('ensure_profile'))
+              .length;
+          return backend.secret == secret && profileCount == 1;
+        },
+        reason: 'profile provisioning must follow the exact rotated vault secret',
+      );
       await tester.pump();
       expect(backend.secret, secret);
       expect(
@@ -1234,13 +1270,11 @@ void main() {
           headers: {'content-type': 'application/json'},
         ),
       );
-      await flushWidgetFixture(tester);
       await pumpReadyAccountUi(tester);
+      await tester.pump();
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
 
-      await tester.pumpWidget(const SizedBox.shrink());
-      await controller.close();
     },
   );
 
