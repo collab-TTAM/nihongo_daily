@@ -1,3 +1,13 @@
+## Core worker handoff — startup formatter diagnostic — 2026-11-03T20:22Z
+
+- Run `core-20261103T2013Z-fix-startup-format`; branch `automation/issue-22-atomic-review`; source HEAD `e38c3ec0139014144daf7ce66f978b3629a00805`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41701867443](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41701867443), attempt 1, completed FAILURE on `e38c3ec0139014144daf7ce66f978b3629a00805`: repo-sanity, database/RLS, AI boundary, disposable local Supabase integration and Windows all SUCCESS with every step; Flutter dependency resolution SUCCESS; Dart 3.35.4 strict formatter failed because only `lib/features/auth/application/persistent_account_startup.dart` was changed by formatter (115 files checked). Analyze, full Flutter suite and every downstream Flutter check were SKIPPED.
+- Added a temporary read-only CI diagnostic immediately before the unchanged strict format gate. It writes `dart format --output=show` to the runner temp directory and prints a unified diff for the single identified file; it does not modify checked-out source or weaken the gate. Next: capture the exact diff, apply formatter output, remove this diagnostic step in the same final correction, then inspect full exact-head CI.
+- Changed paths for this diagnostic checkpoint: `.github/workflows/ci.yml`, `docs/PROJECT_STATUS.md`. No production Auth/session/vault, database/RLS, dependencies, default activation, or Pro-owned #14/#38/N4 files changed. Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build claim.
+- Keep PR #37 Draft and #20/#22/#15 open. Hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry and physical multi-device evidence remain outstanding.
+
+---
+
 ## Latest handoff — startup profile publication barrier — 2026-11-03T19:12Z
 
 - Core run `core-20261103T1912Z-await-profile-before-publish`; branch `automation/issue-22-atomic-review`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; source parent `840cc026b93414f44227345a69cf8c1e772a9507`.
