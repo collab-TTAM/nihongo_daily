@@ -952,36 +952,36 @@ void main() {
       Logger.root.level = Level.ALL;
       final subscription = Logger.root.onRecord.listen(records.add);
       try {
-            await runtime.start();
-            await runtime.account.signIn(
-              'fixture@example.invalid',
-              'TEST_ONLY_PASSWORD',
-            );
-            await fixture.flush();
-            expect(
-              records.where((r) => r.toString().contains('TEST_ONLY')),
-              isEmpty,
-            );
-            expect(
-              () => PersistentSupabaseRuntime(
-                projectUrl: 'https://other.supabase.invalid',
-                publishableKey: wire.key,
-                vault: vault,
-                store: journal,
-                httpClient: network,
-              ),
-              throwsA(isA<SessionVaultFailure>()),
-            );
-            expect(
-              () => PersistentSupabaseRuntime(
-                projectUrl: wire.origin,
-                publishableKey: wire.key,
-                vault: vault,
-                store: journal,
-                httpClient: network,
-              ),
-              throwsA(isA<SessionVaultFailure>()),
-            );
+        await runtime.start();
+        await runtime.account.signIn(
+          'fixture@example.invalid',
+          'TEST_ONLY_PASSWORD',
+        );
+        await fixture.flush();
+        expect(
+          records.where((r) => r.toString().contains('TEST_ONLY')),
+          isEmpty,
+        );
+        expect(
+          () => PersistentSupabaseRuntime(
+            projectUrl: 'https://other.supabase.invalid',
+            publishableKey: wire.key,
+            vault: vault,
+            store: journal,
+            httpClient: network,
+          ),
+          throwsA(isA<SessionVaultFailure>()),
+        );
+        expect(
+          () => PersistentSupabaseRuntime(
+            projectUrl: wire.origin,
+            publishableKey: wire.key,
+            vault: vault,
+            store: journal,
+            httpClient: network,
+          ),
+          throwsA(isA<SessionVaultFailure>()),
+        );
       } finally {
         await subscription.cancel();
         Logger.root.level = old;
