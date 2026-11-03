@@ -78,44 +78,23 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-  Future<void> pumpReadyAccountUi(WidgetTester tester) async {
-    // WidgetTest's fake clock does not advance while awaiting Future.timeout.
-    // Pump bounded frames instead of awaiting the real-time waitForReady helper.
-    const terminalPhases = {
-      AccountPhase.ready,
-      AccountPhase.profileError,
-      AccountPhase.signInError,
-      AccountPhase.unavailable,
-    };
-    for (var attempt = 0; attempt < 50; attempt++) {
-      if (terminalPhases.contains(runtime.account.state.phase)) break;
-      await tester.pump(const Duration(milliseconds: 100));
-    }
-    expect(runtime.account.state.phase, AccountPhase.ready);
-    expect(runtime.account.readyRuntime, isNotNull);
-  }
-
-  /// Runs fixture timers outside WidgetTest's fake-async clock.
-  /// The subsequent pump publishes any account state changed by the flush.
-  Future<void> flushWidgetFixture(WidgetTester tester) async {
-    // fixture.flush awaits eight zero-delay timers. Pump each turn inside
-    // WidgetTest's fake-async zone so SDK/vault continuations can complete.
-    for (var turn = 0; turn < 8; turn++) {
-      await tester.pump(const Duration(milliseconds: 1));
-    }
-  }
-
-  Future<void> pumpWidgetUntil(
-    WidgetTester tester,
-    bool Function() condition, {
+  /// Waits for SDK/network work on the real event loop instead of the
+  /// WidgetTest FakeAsync clock.
+  Future<void> runRealUntil(
+    WidgetTester tester, {
+    Future<void> Function()? start,
+    required bool Function() condition,
     required String reason,
   }) async {
-    // Wait for the observable persistence/profile boundary, not a guessed
-    // number of microtask turns. The finite bound prevents a hung widget test.
-    for (var turn = 0; turn < 100 && !condition(); turn++) {
-      await tester.pump(const Duration(milliseconds: 1));
-    }
-    expect(condition(), isTrue, reason: reason);
+    final completed = await tester.runAsync<bool>(() async {
+      if (start != null) await start();
+      final deadline = DateTime.now().add(const Duration(seconds: 10));
+      while (!condition() && DateTime.now().isBefore(deadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      return condition();
+    });
+    expect(completed, isTrue, reason: reason);
   }
 
   setUp(() async {
@@ -1217,16 +1196,22 @@ void main() {
         await controller.close();
       });
 
+      // Start the real SDK restore outside FakeAsync before mounting the UI.
+      // The test then renders the observable loading state while persistence is
+      // deliberately held at the vault write barrier.
+      await runRealUntil(
+        tester,
+        start: () async {
+          unawaited(controller.start());
+        },
+        condition: () => backend.writes == 1,
+        reason:
+            'the final SDK session must enter the vault barrier before startup can settle',
+      );
       await tester.pumpWidget(AccountStartupApp(controller: controller));
       await tester.pump();
       expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
       expect(find.byKey(const Key('account-email')), findsNothing);
-      await pumpWidgetUntil(
-        tester,
-        () => backend.writes == 1,
-        reason:
-            'the final SDK session must enter the vault barrier before startup can settle',
-      );
 
       expect(
         requests.where((r) => r.url.path == '/auth/v1/token'),
@@ -1244,9 +1229,9 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await pumpWidgetUntil(
+      await runRealUntil(
         tester,
-        () {
+        condition: () {
           final profileCount = requests
               .where((r) => r.url.path.contains('ensure_profile'))
               .length;
@@ -1272,7 +1257,11 @@ void main() {
           headers: {'content-type': 'application/json'},
         ),
       );
-      await pumpReadyAccountUi(tester);
+      await runRealUntil(
+        tester,
+        condition: () => runtime.account.state.phase == AccountPhase.ready,
+        reason: 'the own-profile response must complete before account UI',
+      );
       await tester.pump();
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
@@ -1293,8 +1282,25 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
+      addTearDown(() async {
+        if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+          backend.writeWait!.complete();
+        }
+        await tester.pumpWidget(const SizedBox.shrink());
+        await controller.close();
+      });
+
+      await runRealUntil(
+        tester,
+        start: () async {
+          unawaited(controller.start());
+        },
+        condition: () =>
+            controller.phase == AccountStartupPhase.restoreError,
+        reason:
+            'a rejected stored credential must finish in the fenced login state',
+      );
       await tester.pumpWidget(AccountStartupApp(controller: controller));
-      await flushWidgetFixture(tester);
       await tester.pumpAndSettle();
 
       expect(controller.phase, AccountStartupPhase.restoreError);
@@ -1321,9 +1327,13 @@ void main() {
         find.byKey(const Key('account-password')),
         'TEST_ONLY_PASSWORD',
       );
-      await tester.tap(find.text('Đăng nhập'));
-      await tester.pump();
-      await flushWidgetFixture(tester);
+      await runRealUntil(
+        tester,
+        start: () => tester.tap(find.text('Đăng nhập')),
+        condition: () => backend.writes == 1,
+        reason:
+            'explicit password login must reach the credential write barrier',
+      );
 
       expect(backend.operations, ['read', 'clear', 'write']);
       final tokenRequests = requests
@@ -1341,18 +1351,21 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await flushWidgetFixture(tester);
-      await pumpReadyAccountUi(tester);
-      expect(backend.secret, secret);
+      await runRealUntil(
+        tester,
+        condition: () =>
+            backend.secret == secret &&
+            runtime.account.state.phase == AccountPhase.ready,
+        reason:
+            'explicit login must persist the rotated secret before profile readiness',
+      );
+      await tester.pump();
       expect(
         requests.where((r) => r.url.path.contains('ensure_profile')),
         hasLength(1),
       );
       expect(runtime.account.readyRuntime, isNotNull);
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await controller.close();
     },
   );
 }

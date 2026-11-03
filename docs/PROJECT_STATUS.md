@@ -1,3 +1,14 @@
+## Latest handoff — run owned Supabase SDK lifecycle on the real test loop — 2026-11-03T08:15Z
+
+- Core run `core-20261103T0815Z-trace-sdk-restore-barrier`; branch `automation/issue-22-atomic-review`; parent `e41b1a7ce1c05a75c02ba322cfec2e509eb5d08e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41595439958](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41595439958), attempt 1, targeted `e41b1a7ce1c05a75c02ba322cfec2e509eb5d08e`. Repo-sanity, database/RLS, AI boundary, disposable Supabase integration and Windows completed SUCCESS with every step. Flutter format and analyze passed; the complete serial suite had 395 passes and two failures. The configured-host startup widget did not reach its held vault-write barrier (the `pumpWidgetUntil` assertion failed), then teardown/startup timed out for ten minutes; the following explicit-login widget also timed out. All downstream Flutter lifecycle/wire/Chrome/Web steps were SKIPPED, not passed.
+- The two configured-host tests were driving real Supabase SDK/MockClient HTTP and credential-vault work by pumping WidgetTest FakeAsync frames. Replace that mixed clock with a bounded `tester.runAsync` helper: start the owned restore before mounting the UI, wait for the actual vault barrier/restore-error state on the real loop, and wait for profile readiness/explicit-login persistence on the real loop. UI loading/profile assertions and vault ordering assertions remain; cleanup still releases a held write and closes the startup owner.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` and `docs/PROJECT_STATUS.md`. No production Auth/session code, SDK configuration, dependency, timeout, API/schema/migration/RLS, CI gate, default activation or Pro-owned content changed.
+- Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build is claimed. Exact-head Actions must verify formatter/analyzer, all Flutter tests, lifecycle/vault/profile/wire/Chrome/Web checks, Windows and disposable Supabase jobs with no required skips. No hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry or physical multi-device proof is claimed.
+- Next: inspect every latest-attempt job and step on the new exact head. If the two widget tests pass, continue only with observed failures and then resume remaining #20/#22/#15 acceptance; keep PR #37 Draft until all criteria and hosted evidence are met. Pro-owned PR #38 / Issue #14 / N4 scope remains untouched.
+
+---
+
 ## Latest handoff — exact Dart 3.9.2 formatter correction — 2026-11-03T07:14Z
 
 - Core run `core-20261103T0714Z-apply-dart-format-ci-diff`; branch `automation/issue-22-atomic-review`; source commit `670dd0c26dd64d274a639dde85436afba612d521` (parent `4b93ae079a5cef342a021f3fc2dcc9ca08a7a35c`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
