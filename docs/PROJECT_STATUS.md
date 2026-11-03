@@ -2534,3 +2534,26 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   plus all non-Flutter jobs. No hosted learner A/B, deployed RLS, hosted
   restart/expiry or physical multi-device evidence is claimed. PR #37 stays
   Draft; #20/#22/#15 remain open; Pro-owned #14/#38/N4 remains untouched.
+
+## Exact-head CI handoff — 2026-11-03T14:18Z
+
+- Branch `automation/issue-22-atomic-review`; candidate HEAD before this
+  documentation-only handoff: `3f5bf0b4c31c1a1b706db786aa0124ac6e815491`.
+  Source fix: `189249b9127f6de908cd386462a0ef84fdb42809`; status checkpoint:
+  `3f5bf0b4c31c1a1b706db786aa0124ac6e815491`; base main remains
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact candidate-head CI [41652266626](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41652266626),
+  attempt 1, targets `3f5bf0b4c31c1a1b706db786aa0124ac6e815491`. At
+  2026-11-03T14:18Z the workflow was PENDING and its latest-attempt jobs list
+  was empty. No format/analyze/test/build or full-CI result is claimed for this
+  candidate head.
+- This checkpoint changes documentation only. Its push will create another
+  exact-head CI run; the next worker must inspect the latest attempt for the
+  resulting PR head, including all six jobs and every required Flutter step,
+  before making any further source change. Do not treat run 41652266626 as
+  evidence for a later docs commit.
+- Core worker RELEASED after persisting the source/test fix, exact parent-CI
+  diagnosis, complete-tree/diff review and pending-CI handoff. PR #37 stays
+  Draft; #20/#22/#15 stay open. Pro-owned PR #38 / Issue #14 / N4 scope remains
+  separate and untouched. No hosted learner A/B, deployed RLS, hosted
+  restart/expiry or physical multi-device proof is claimed.
