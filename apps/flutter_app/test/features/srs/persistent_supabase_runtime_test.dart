@@ -184,16 +184,17 @@ void main() {
     // The mounted host listens to the controller's broadcast stream in
     // WidgetTest FakeAsync. Pump that zone while close emits its final event;
     // waiting only inside runAsync pauses the listener and can strand shutdown.
-    for (var attempt = 0; attempt < 500 && !closeCompleted; attempt++) {
-      await tester.pump(const Duration(milliseconds: 10));
-    }
+    final closeDrained = await pumpUntilRealCondition(
+      tester,
+      () => closeCompleted,
+    );
     final diagnostic =
         'controller=${controller.phase.name}, '
         'persistence=${runtime.persistence.phase.name}, '
         'account=${runtime.account.state.phase.name}, '
         'writes=${backend.writes}, clears=${backend.clears}';
     expect(
-      closeCompleted && !closeFailed,
+      closeDrained && closeCompleted && !closeFailed,
       isTrue,
       reason: 'startup owner did not close within five seconds ($diagnostic)',
     );
