@@ -36,6 +36,7 @@ final class PersistentAccountStartup
     await runtime.start();
     await runtime.account.waitForCurrentProfile();
   }
+
   @override
   Future<void> close() => runtime.close();
 }
