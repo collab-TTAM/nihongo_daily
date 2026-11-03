@@ -80,21 +80,27 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-  /// Waits for explicit SDK/storage signals without polling timers in a
-  /// WidgetTest. Timeout timers are created in the root zone, not FakeAsync.
+  /// Runs an asynchronous operation while WidgetTester has its real async
+  /// zone active, with a non-throwing bound that cannot leak a root-zone timer.
+  Future<bool> runRealUntil(
+    WidgetTester tester,
+    Future<void> Function() operation,
+  ) async {
+    final completed = await tester.runAsync<bool>(() {
+      return Future.any<bool>([
+        operation().then((_) => true),
+        Future<void>.delayed(const Duration(seconds: 5)).then((_) => false),
+      ]);
+    });
+    return completed ?? false;
+  }
+
   Future<void> waitForRealSignal(
     WidgetTester tester,
     Future<void> signal, {
     required String reason,
   }) async {
-    final completed = await tester.runAsync<bool>(() async {
-      try {
-        await Zone.root.run(() => signal.timeout(const Duration(seconds: 5)));
-        return true;
-      } on TimeoutException {
-        return false;
-      }
-    });
+    final completed = await runRealUntil(tester, () => signal);
     final profileRequests = requests
         .where((request) => request.url.path.contains('ensure_profile'))
         .length;
@@ -105,14 +111,26 @@ void main() {
   }
 
   Future<void> waitForAccountReady(WidgetTester tester) async {
-    await tester.runAsync(() async {
-      if (runtime.account.state.phase == AccountPhase.ready) return;
-      await Zone.root.run(
-        () => runtime.account.changes
-            .firstWhere((state) => state.phase == AccountPhase.ready)
-            .timeout(const Duration(seconds: 5)),
-      );
-    });
+    if (runtime.account.state.phase == AccountPhase.ready) return;
+    final reachedTerminal = await runRealUntil(
+      tester,
+      () => runtime.account.changes
+          .firstWhere(
+            (state) => const {
+              AccountPhase.ready,
+              AccountPhase.profileError,
+              AccountPhase.signInError,
+              AccountPhase.unavailable,
+            }.contains(state.phase),
+          )
+          .then<void>((_) {}),
+    );
+    expect(
+      reachedTerminal,
+      isTrue,
+      reason: 'account startup did not reach a terminal state',
+    );
+    expect(runtime.account.state.phase, AccountPhase.ready);
   }
 
   Future<void> closeWidgetStartup(
@@ -137,11 +155,12 @@ void main() {
         ),
       );
     }
-    await tester.runAsync(() async {
-      await Zone.root.run(
-        () => controller.close().timeout(const Duration(seconds: 5)),
-      );
-    });
+    final closed = await runRealUntil(tester, () => controller.close());
+    expect(
+      closed,
+      isTrue,
+      reason: 'startup owner did not close within five seconds',
+    );
     await tester.pumpWidget(const SizedBox.shrink());
   }
 
@@ -1255,14 +1274,20 @@ void main() {
       // The test then renders the observable loading state while persistence is
       // deliberately held at the vault write barrier.
       late Future<void> startup;
-      await tester.runAsync(() async {
+      final writeStarted = await runRealUntil(tester, () {
         startup = controller.start();
+        return backend.writeStarted!.future;
       });
-      await waitForRealSignal(
-        tester,
-        backend.writeStarted!.future,
+      final profileRequests = requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .length;
+      expect(
+        writeStarted,
+        isTrue,
         reason:
-            'the final SDK session must enter the vault barrier before startup can settle',
+            'the final SDK session must enter the vault barrier before startup can settle '
+            '(writes=${backend.writes}, phase=${runtime.persistence.phase.name}, '
+            'profileRequests=$profileRequests)',
       );
       await tester.pumpWidget(AccountStartupApp(controller: controller));
       await tester.pump();
@@ -1292,9 +1317,12 @@ void main() {
         reason:
             'profile provisioning must follow the exact rotated vault secret',
       );
-      await tester.runAsync(() async {
-        await Zone.root.run(() => startup.timeout(const Duration(seconds: 5)));
-      });
+      final startupFinished = await runRealUntil(tester, () => startup);
+      expect(
+        startupFinished,
+        isTrue,
+        reason: 'configured startup did not settle after profile request',
+      );
       await tester.pump();
       expect(backend.secret, secret);
       expect(
@@ -1305,7 +1333,7 @@ void main() {
       expect(find.text('Đang chuẩn bị hồ sơ học tập…'), findsOneWidget);
       expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
-      await tester.runAsync(() async {
+      final profileReturned = await runRealUntil(tester, () {
         profileWait!.complete(
           http.Response(
             jsonEncode(profile.profile(wire.a)),
@@ -1313,12 +1341,13 @@ void main() {
             headers: {'content-type': 'application/json'},
           ),
         );
-        await Zone.root.run(
-          () => profileResponseReturned!.future.timeout(
-            const Duration(seconds: 5),
-          ),
-        );
+        return profileResponseReturned!.future;
       });
+      expect(
+        profileReturned,
+        isTrue,
+        reason: 'own-profile response did not return to the configured host',
+      );
       await tester.pump();
       await waitForAccountReady(tester);
       await tester.pump();
