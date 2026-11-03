@@ -101,7 +101,7 @@ Future<void> verifyAccount(String scenario) async {
       );
       await flush();
       check(profileCalls == 1, 'startup did not request the own profile');
-      delayed!.complete(ownProfile());
+      delayed.complete(ownProfile());
       await waiting;
       check(
         controller.state.phase == AccountPhase.ready &&
