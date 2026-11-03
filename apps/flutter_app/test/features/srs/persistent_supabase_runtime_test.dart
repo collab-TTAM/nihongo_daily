@@ -1224,7 +1224,8 @@ void main() {
       await pumpWidgetUntil(
         tester,
         () => backend.writes == 1,
-        reason: 'the final SDK session must enter the vault barrier before startup can settle',
+        reason:
+            'the final SDK session must enter the vault barrier before startup can settle',
       );
 
       expect(
@@ -1251,7 +1252,8 @@ void main() {
               .length;
           return backend.secret == secret && profileCount == 1;
         },
-        reason: 'profile provisioning must follow the exact rotated vault secret',
+        reason:
+            'profile provisioning must follow the exact rotated vault secret',
       );
       await tester.pump();
       expect(backend.secret, secret);
