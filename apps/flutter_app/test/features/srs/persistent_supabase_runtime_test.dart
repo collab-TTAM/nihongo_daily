@@ -89,9 +89,7 @@ void main() {
   }) async {
     final completed = await tester.runAsync<bool>(() async {
       try {
-        await Zone.root.run(
-          () => signal.timeout(const Duration(seconds: 5)),
-        );
+        await Zone.root.run(() => signal.timeout(const Duration(seconds: 5)));
         return true;
       } on TimeoutException {
         return false;
@@ -184,14 +182,15 @@ void main() {
         if (requested != null && !requested.isCompleted) {
           requested.complete();
         }
-        final response = await (profileWait?.future ??
-            Future.value(
-              http.Response(
-                jsonEncode(profile.profile(authUser)),
-                200,
-                headers: {'content-type': 'application/json'},
-              ),
-            ));
+        final response =
+            await (profileWait?.future ??
+                Future.value(
+                  http.Response(
+                    jsonEncode(profile.profile(authUser)),
+                    200,
+                    headers: {'content-type': 'application/json'},
+                  ),
+                ));
         final returned = profileResponseReturned;
         if (returned != null && !returned.isCompleted) {
           returned.complete();
@@ -1294,9 +1293,7 @@ void main() {
             'profile provisioning must follow the exact rotated vault secret',
       );
       await tester.runAsync(() async {
-        await Zone.root.run(
-          () => startup.timeout(const Duration(seconds: 5)),
-        );
+        await Zone.root.run(() => startup.timeout(const Duration(seconds: 5)));
       });
       await tester.pump();
       expect(backend.secret, secret);
