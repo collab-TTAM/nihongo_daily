@@ -32,7 +32,10 @@ final class PersistentAccountStartup
   @override
   Future<void> refresh() => runtime.refresh();
   @override
-  Future<void> start() => runtime.start();
+  Future<void> start() async {
+    await runtime.start();
+    await runtime.account.waitForCurrentProfile();
+  }
   @override
   Future<void> close() => runtime.close();
 }

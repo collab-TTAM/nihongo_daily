@@ -1,3 +1,15 @@
+## Latest handoff — startup profile publication barrier — 2026-11-03T19:12Z
+
+- Core run `core-20261103T1912Z-await-profile-before-publish`; branch `automation/issue-22-atomic-review`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`; source parent `840cc026b93414f44227345a69cf8c1e772a9507`.
+- Exact-head CI [41691714798](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41691714798), attempt 1, targeted `840cc026b93414f44227345a69cf8c1e772a9507`: repo-sanity, AI boundary, database, disposable Supabase integration and Windows all SUCCESS with every step; Flutter format/analyze SUCCESS; the full Flutter suite failed at `persistent_supabase_runtime_test.dart:1351` because the configured startup host became `active` before its held own-profile response returned. All downstream Flutter lifecycle/wire/browser/Web checks were SKIPPED. No full-CI pass.
+- Implemented a captured-session profile barrier: `AccountController.waitForCurrentProfile()` follows the current session through A→B changes, returns only when that session reaches ready/profileError/signed-out/disposed, and is bounded at 20 seconds (the profile transport itself retains its 15-second timeout). `PersistentAccountStartup.start()` now awaits it after the credential-vault restore/rotation barrier. This keeps the startup screen loading until the own profile settles; profile errors still reach the existing explicit retry UI.
+- Added TEST ONLY account-controller scenarios for pending profile, account replacement/late response, and profile failure. Existing rotated-secret-before-profile, no-study-runtime-before-profile, logout and safe-error assertions remain.
+- Paths: `apps/flutter_app/lib/features/auth/application/account_controller.dart`, `apps/flutter_app/lib/features/auth/application/persistent_account_startup.dart`, `apps/flutter_app/test/features/srs/account_fixtures.dart`, `docs/PROJECT_STATUS.md`.
+- Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head GitHub Actions is the verification gate. No hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry or physical multi-device proof is claimed. No Auth strategy/provider, schema/RLS, CI gate, default activation, deployment or Pro-owned N4 change.
+- Next: inspect every latest-attempt job and required step for the new exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open until their full acceptance and hosted evidence are satisfied.
+
+---
+
 ## Latest handoff — exact Dart formatter output applied — 2026-11-03T09:14Z
 
 - Core run `core-20261103T0911Z-rerun-cancelled-flutter-diagnostic`; branch `automation/issue-22-atomic-review`; source parent `543514b6ac71955f627842394c4a2bfb84d19f1c`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

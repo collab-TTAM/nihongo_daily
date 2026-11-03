@@ -90,6 +90,62 @@ Future<void> verifyAccount(String scenario) async {
             ),
         'profile did not gate authenticated runtime',
       );
+    } else if (scenario == 'wait-current-profile') {
+      delayed = Completer();
+      access.change(owner);
+      final waiting = controller.waitForCurrentProfile();
+      check(
+        controller.state.phase == AccountPhase.loadingProfile &&
+            controller.readyRuntime == null,
+        'startup profile barrier returned before the profile response',
+      );
+      await flush();
+      check(profileCalls == 1, 'startup did not request the own profile');
+      delayed!.complete(ownProfile());
+      await waiting;
+      check(
+        controller.state.phase == AccountPhase.ready &&
+            controller.readyRuntime != null,
+        'startup profile barrier did not release after the matching profile',
+      );
+    } else if (scenario == 'wait-current-profile-switch') {
+      final firstProfile = Completer<OwnProfile>();
+      delayed = firstProfile;
+      access.change(owner);
+      final waiting = controller.waitForCurrentProfile();
+      await flush();
+      final secondProfile = Completer<OwnProfile>();
+      delayed = secondProfile;
+      access.change(other);
+      await flush();
+      check(
+        profileCalls == 2 && controller.readyRuntime == null,
+        'startup barrier did not follow the replacement account',
+      );
+      firstProfile.complete(ownProfile(owner));
+      await flush();
+      check(
+        controller.state.phase == AccountPhase.loadingProfile &&
+            controller.readyRuntime == null,
+        'late previous-account profile escaped the captured-session guard',
+      );
+      secondProfile.complete(ownProfile(other));
+      await waiting;
+      check(
+        controller.state.phase == AccountPhase.ready &&
+            controller.state.profile?.id == other &&
+            controller.readyRuntime != null,
+        'startup barrier did not settle on the replacement account',
+      );
+    } else if (scenario == 'wait-profile-error') {
+      failProfile = true;
+      access.change(owner);
+      await controller.waitForCurrentProfile();
+      check(
+        controller.state.phase == AccountPhase.profileError &&
+            controller.readyRuntime == null,
+        'profile failure did not release the startup barrier safely',
+      );
     } else if (scenario == 'credentials-duplicate') {
       await controller.signIn('bad', 'SECRET');
       check(access.signInCalls == 0, 'invalid credentials dispatched');
@@ -269,6 +325,9 @@ Future<void> verifyAccount(String scenario) async {
 
 const scenarios = [
   'profile-barrier',
+  'wait-current-profile',
+  'wait-current-profile-switch',
+  'wait-profile-error',
   'credentials-duplicate',
   'sign-in-error-preserved',
   'profile-retry',

@@ -211,6 +211,45 @@ final class AccountController<T> {
     }
   }
 
+  /// Wait until the profile for the currently restored session is settled.
+  ///
+  /// The configured startup host uses this after the refresh-token persistence
+  /// barrier so it cannot publish account UI while profile provisioning is
+  /// pending. A profile error is terminal for this startup barrier: the account
+  /// screen can then expose its existing explicit retry action.
+  Future<void> waitForCurrentProfile() async {
+    while (!_disposed && !_dead && !_logoutFence) {
+      final session = _current();
+      if (session == null) return;
+      if (identical(session, _readySession)) return;
+      if (!identical(session, _profileSession)) {
+        _sessionChanged();
+      }
+      if (_disposed || _dead || _logoutFence) return;
+      if (identical(_readySession, session) ||
+          _state.phase == AccountPhase.profileError) {
+        return;
+      }
+      if (!identical(_profileSession, session)) continue;
+      try {
+        await changes
+            .firstWhere(
+              (state) =>
+                  _disposed ||
+                  _dead ||
+                  _logoutFence ||
+                  identical(_readySession, session) ||
+                  state.phase == AccountPhase.profileError ||
+                  state.phase == AccountPhase.signedOut ||
+                  !identical(_profileSession, session),
+            )
+            .timeout(const Duration(seconds: 20));
+      } on StateError {
+        return;
+      }
+    }
+  }
+
   Future<void> retryProfile() async {
     if (_disposed ||
         _dead ||
