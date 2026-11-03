@@ -2493,3 +2493,44 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Test-only fix: replace awaited signal Completers with bounded 10 ms real-zone polling of synchronous observable state (`writes` + `SessionPersistencePhase`, profile request/response flags, account phase). Start and release held operations in `tester.runAsync`; close completion is observed with a real-zone completion flag. Remove the unused `MemoryVault.writeStarted` fixture signal. Preserve every existing token-before-profile, no-readiness-before-profile, clear-before-password-auth, rotated-secret, UI and account-readiness assertion. Production Auth/runtime, vault implementation, API, schema/RLS, dependencies, default activation and Pro-owned N4 scope remain unchanged.
 - Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart`, `docs/PROJECT_STATUS.md`. Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI must execute the full Flutter suite and every downstream lifecycle/wire/Chrome/Web check plus Windows and disposable Supabase jobs; no hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry or physical multi-device proof is claimed.
 - Next: inspect every latest-attempt job and step for the new exact PR HEAD. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned #14/#38/N4 files remain untouched. Worker will be marked RELEASED after source/diff/tree and CI handoff are persisted.
+
+## Configured-host WidgetTest close-barrier correction — 2026-11-03T14:18Z
+
+- Run `core-20261103T1409Z-fix-configured-host-close-barrier`; branch
+  `automation/issue-22-atomic-review`; source commit
+  `189249b9127f6de908cd386462a0ef84fdb42809` (parent
+  `0a76c0803083bab98898ea58c526b930a01efbe4`); base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head CI [41643013488](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41643013488),
+  attempt 1, failed only in the Flutter test job after format/analyze passed:
+  395 tests passed and two configured-host widget tests failed. The first
+  reported `startup owner did not close within five seconds`; the next could
+  not acquire the still-owned project target (`SessionVaultFailure(unavailable)`).
+  Repo-sanity, AI boundary, database/RLS, disposable local Supabase integration
+  and Windows release/native vault/journal jobs passed every step. All downstream
+  Flutter lifecycle, wire, Chrome and Web build steps were skipped; this was not
+  a full-CI pass.
+- The failing teardown waited for controller close inside `tester.runAsync`
+  while the mounted `AccountStartupApp` listener belonged to WidgetTest
+  FakeAsync. The close stream's final delivery was not pumped, so the test left
+  the owner undrained; this is a test-zone scheduling failure, not evidence of
+  a production refresh-token or Auth failure.
+- TEST ONLY correction in
+  `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`:
+  release held fake barriers, pump their queued callbacks, initiate owner close
+  in the widget-test zone, then pump that zone in bounded 10 ms increments
+  while observing close completion. Failure diagnostics expose only controller/
+  persistence/account phases and operation counts, never tokens or raw errors.
+  All token-rotation-before-profile, profile-readiness, explicit-login,
+  clear-before-password-auth and UI assertions remain unchanged.
+- Source diff separately reviewed: exactly one leaf file changed in commit
+  `189249b9127f6de908cd386462a0ef84fdb42809`; the complete recursive tree had
+  327 entries, was not truncated, and had no path additions/removals or
+  mode/type changes. No production Auth/session, vault, API/schema/RLS,
+  dependencies, default activation, Windows code or Pro-owned N4 scope changed.
+- Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build are not
+  claimed. Next: observe the latest-attempt CI on the final docs head, including
+  the full Flutter suite and every downstream lifecycle/wire/Chrome/Web step,
+  plus all non-Flutter jobs. No hosted learner A/B, deployed RLS, hosted
+  restart/expiry or physical multi-device evidence is claimed. PR #37 stays
+  Draft; #20/#22/#15 remain open; Pro-owned #14/#38/N4 remains untouched.
