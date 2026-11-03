@@ -1,3 +1,16 @@
+## Latest handoff — exact Dart 3.9.2 formatter correction — 2026-11-03T07:14Z
+
+- Core run `core-20261103T0714Z-apply-dart-format-ci-diff`; branch `automation/issue-22-atomic-review`; source commit `670dd0c26dd64d274a639dde85436afba612d521` (parent `4b93ae079a5cef342a021f3fc2dcc9ca08a7a35c`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41588760679](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41588760679), attempt 1, completed FAILURE solely at strict Dart 3.9.2 formatting. The other five jobs (repo-sanity, database, ai-boundary, disposable Supabase integration and Windows) completed SUCCESS with every step. Flutter analyze, full tests, lifecycle/wire/Chrome/Web checks were SKIPPED after the formatter gate and are not counted as passing.
+- The diagnostic output showed exactly three whitespace changes in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: split two overlong `reason` strings and add the terminal newline. Applied only those changes and removed the temporary read-only diagnostic step from `.github/workflows/ci.yml`; strict format/analyze/test/build gates remain unchanged.
+- Source paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` and `.github/workflows/ci.yml`. The test diff is +4/-2 whitespace only; workflow removes four temporary diagnostic lines. No assertion, runtime, Auth, dependency, API, schema/RLS, content, or default-app behavior changed.
+- Separate diff review: exactly the two intended paths. Parent/result recursive trees were complete and untruncated at 327 entries; 318 entries including all untouched blobs remained identical, with no path/mode/type loss. `create_tree` used exact base tree `0bd70ee5e96390f93ba2a3f087685f722e10fd4d`; `update_ref` used `expected_sha=4b93ae079a5cef342a021f3fc2dcc9ca08a7a35c`, `force=false`; branch and PR readback matched source commit `670dd0c26dd64d274a639dde85436afba612d521`.
+- New source-head CI [41595317740](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41595317740), attempt 1, targets source commit `670dd0c26dd64d274a639dde85436afba612d521` and was observed `in_progress` at 2026-11-03T07:17Z. This run precedes the status-only handoff commit below; it is not final-PR-head evidence. No format/analyze/test/build/full-CI pass is claimed for the new source yet.
+- Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build is claimed. No hosted learner A/B, deployed RLS, hosted expiry/restart or physical multi-device proof. PR #37 remains Draft; #20/#22/#15 remain open. Pro-owned PR #38 / Issue #14 / N4 files remain untouched.
+- Next: inspect every latest-attempt job/step on the final status-commit head, require strict format/analyze/full Flutter tests/downstream lifecycle/wire/Chrome/Web plus all other jobs without skips, and fix only observed failures. Keep #20/#22/#15 and Personal Alpha IN_PROGRESS until hosted learner evidence and release gates are met.
+
+---
+
 ## Latest handoff — exact Dart formatter diagnostic — 2026-11-03T06:12Z
 
 - Branch `automation/issue-22-atomic-review`; source HEAD `75faf33cf239c3b8418e8532641ad7e2c1af1e60`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
