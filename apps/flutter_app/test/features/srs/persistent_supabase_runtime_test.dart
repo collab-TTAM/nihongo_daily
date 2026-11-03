@@ -98,8 +98,11 @@ void main() {
   /// Runs fixture timers outside WidgetTest's fake-async clock.
   /// The subsequent pump publishes any account state changed by the flush.
   Future<void> flushWidgetFixture(WidgetTester tester) async {
-    await tester.runAsync(fixture.flush);
-    await tester.pump();
+    // fixture.flush awaits eight zero-delay timers. Pump each turn inside
+    // WidgetTest's fake-async zone so SDK/vault continuations can complete.
+    for (var turn = 0; turn < 8; turn++) {
+      await tester.pump(const Duration(milliseconds: 1));
+    }
   }
 
   setUp(() async {
