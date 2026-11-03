@@ -1,3 +1,14 @@
+## Latest handoff — capture exact Dart 3.35.4 formatter output — 2026-11-03T08:24Z
+
+- Core run `core-20261103T0824Z-capture-dart-format-diff`; branch `automation/issue-22-atomic-review`; diagnostic commit pending; parent `09acbc5f10fcf574b96699864cf30b6319837f4e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41602758958](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41602758958), attempt 1, on parent `09acbc5f10fcf574b96699864cf30b6319837f4e`: Flutter setup and locked dependency install passed; strict `dart format --output=none --set-exit-if-changed .` failed because exactly `test/features/srs/persistent_supabase_runtime_test.dart` was reformatted. Flutter analyze, suite and all downstream Flutter steps were skipped. Repo-sanity/database/AI boundary completed SUCCESS; Windows and disposable Supabase integration were still running at observation.
+- Add a temporary `if: always()` CI diagnostic immediately after the strict formatter gate. It formats only the affected test file in the disposable runner workspace and prints `git diff`; it does not modify the branch checkout or weaken/replace the formatter gate. Next apply only the exact emitted whitespace diff and remove this temporary step in the same source commit.
+- Changed paths: `.github/workflows/ci.yml` (temporary read-only diagnostic step) and `docs/PROJECT_STATUS.md`. No production/runtime, test assertion, Auth, schema/RLS, dependency, security or Pro-owned content change.
+- Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build is claimed. New exact-head CI will capture the formatter diff; do not count any skipped Flutter step as pass.
+- Next: inspect the diagnostic output on the exact new head, apply the exact formatter correction, remove the diagnostic step, then rerun all exact-head jobs/steps. Keep PR #37 Draft and #20/#22/#15 open.
+
+---
+
 ## Latest handoff — run owned Supabase SDK lifecycle on the real test loop — 2026-11-03T08:15Z
 
 - Core run `core-20261103T0815Z-trace-sdk-restore-barrier`; branch `automation/issue-22-atomic-review`; parent `e41b1a7ce1c05a75c02ba322cfec2e509eb5d08e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

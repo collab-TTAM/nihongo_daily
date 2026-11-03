@@ -165,6 +165,11 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed .
+      - name: Diagnostic — show exact Dart formatter diff (temporary)
+        if: always()
+        run: |
+          dart format test/features/srs/persistent_supabase_runtime_test.dart
+          git diff -- test/features/srs/persistent_supabase_runtime_test.dart
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
         run: flutter test --concurrency=1 --reporter expanded
