@@ -1295,8 +1295,7 @@ void main() {
         start: () async {
           unawaited(controller.start());
         },
-        condition: () =>
-            controller.phase == AccountStartupPhase.restoreError,
+        condition: () => controller.phase == AccountStartupPhase.restoreError,
         reason:
             'a rejected stored credential must finish in the fenced login state',
       );

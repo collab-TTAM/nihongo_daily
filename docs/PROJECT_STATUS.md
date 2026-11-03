@@ -1,3 +1,16 @@
+## Latest handoff — exact Dart formatter output applied — 2026-11-03T09:14Z
+
+- Core run `core-20261103T0911Z-rerun-cancelled-flutter-diagnostic`; branch `automation/issue-22-atomic-review`; source parent `543514b6ac71955f627842394c4a2bfb84d19f1c`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- On exact current PR-head workflow [41603332837](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41603332837), attempt 2, the pinned Dart 3.35.4 formatter gate failed and the temporary diagnostic step succeeded. Its unified diff identified exactly one whitespace-only change in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: join the two-line `condition` expression for `AccountStartupPhase.restoreError` into one line. No other Dart file was reformatted.
+- In that latest attempt, `repo-sanity`, `database` and `ai-boundary` completed SUCCESS with all returned steps; Flutter Analyze, the complete Flutter suite and later Flutter checks were SKIPPED after the format gate. `windows` and `supabase-integration` remained CANCELLED because only the cancelled Flutter job was rerun. This is diagnostic evidence, not a full-CI pass.
+- Applied only the formatter's exact one-line change and removed the temporary diagnostic step from `.github/workflows/ci.yml`; strict formatter/analyze/test/build gates remain unchanged. No test semantics/assertions, production Auth/session, schema/RLS, dependency, default activation or Pro-owned N4 files changed.
+- Changed paths in this increment: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, `docs/PROJECT_STATUS.md`.
+- Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build is claimed. The new exact-head Actions run must execute all six jobs and every required Flutter lifecycle/vault/profile/wire/Chrome/Web, Windows and disposable Supabase step without skips before acceptance.
+- No hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry or physical multi-device proof is claimed. Keep PR #37 Draft and #20/#22/#15 open. Pro-owned #14/#38/N4 scope untouched.
+- Next: inspect the new exact-head run's latest attempt and all steps; fix only newly observed failures. Do not merge until full PR acceptance and hosted gates are met.
+
+---
+
 ## Latest handoff — capture exact Dart 3.35.4 formatter output — 2026-11-03T08:24Z
 
 - Core run `core-20261103T0824Z-capture-dart-format-diff`; branch `automation/issue-22-atomic-review`; diagnostic commit `1e2731dfe074d19bf90aa5fef05ea9e69c0f46ea` (parent `09acbc5f10fcf574b96699864cf30b6319837f4e`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
