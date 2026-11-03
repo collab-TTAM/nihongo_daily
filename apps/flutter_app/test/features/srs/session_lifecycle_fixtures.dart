@@ -30,6 +30,7 @@ final class MemoryVault implements SessionCredentialBackend {
   String? secret;
   Completer<void>? writeWait;
   Completer<void>? readWait;
+  Completer<void>? writeStarted;
   bool failWrite = false;
   bool failRead = false;
   bool failClear = false;
@@ -48,6 +49,8 @@ final class MemoryVault implements SessionCredentialBackend {
     }
     if (method == 'write') {
       writes++;
+      final started = writeStarted;
+      if (started != null && !started.isCompleted) started.complete();
       await writeWait?.future;
       if (failWrite) throw StateError('PRIVATE OS ERROR');
       secret = args['token'] as String;

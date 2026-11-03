@@ -42,6 +42,8 @@ void main() {
   late http.Response? authOverride;
   late Completer<http.Response>? authWait;
   late Completer<http.Response>? profileWait;
+  late Completer<void>? profileRequested;
+  late Completer<void>? profileResponseReturned;
   http.Response authResponse() => http.Response(
     jsonEncode({
       'access_token': wire.token(authUser, authSession, now),
@@ -78,23 +80,71 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-  /// Waits for SDK/network work on the real event loop instead of the
-  /// WidgetTest FakeAsync clock.
-  Future<void> runRealUntil(
-    WidgetTester tester, {
-    Future<void> Function()? start,
-    required bool Function() condition,
+  /// Waits for explicit SDK/storage signals without polling timers in a
+  /// WidgetTest. Timeout timers are created in the root zone, not FakeAsync.
+  Future<void> waitForRealSignal(
+    WidgetTester tester,
+    Future<void> signal, {
     required String reason,
   }) async {
     final completed = await tester.runAsync<bool>(() async {
-      if (start != null) await start();
-      final deadline = DateTime.now().add(const Duration(seconds: 10));
-      while (!condition() && DateTime.now().isBefore(deadline)) {
-        await Future<void>.delayed(const Duration(milliseconds: 10));
+      try {
+        await Zone.root.run(
+          () => signal.timeout(const Duration(seconds: 5)),
+        );
+        return true;
+      } on TimeoutException {
+        return false;
       }
-      return condition();
     });
-    expect(completed, isTrue, reason: reason);
+    final profileRequests = requests
+        .where((request) => request.url.path.contains('ensure_profile'))
+        .length;
+    final diagnostic =
+        'writes=${backend.writes}, phase=${runtime.persistence.phase.name}, '
+        'profileRequests=$profileRequests';
+    expect(completed, isTrue, reason: '$reason ($diagnostic)');
+  }
+
+  Future<void> waitForAccountReady(WidgetTester tester) async {
+    await tester.runAsync(() async {
+      if (runtime.account.state.phase == AccountPhase.ready) return;
+      await Zone.root.run(
+        () => runtime.account.changes
+            .firstWhere((state) => state.phase == AccountPhase.ready)
+            .timeout(const Duration(seconds: 5)),
+      );
+    });
+  }
+
+  Future<void> closeWidgetStartup(
+    WidgetTester tester,
+    AccountStartupController<AccountController<SrsStudyRuntime>> controller,
+  ) async {
+    if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+      backend.writeWait!.complete();
+    }
+    if (backend.readWait != null && !backend.readWait!.isCompleted) {
+      backend.readWait!.complete();
+    }
+    if (authWait != null && !authWait!.isCompleted) {
+      authWait!.complete(authResponse());
+    }
+    if (profileWait != null && !profileWait!.isCompleted) {
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(authUser)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+    }
+    await tester.runAsync(() async {
+      await Zone.root.run(
+        () => controller.close().timeout(const Duration(seconds: 5)),
+      );
+    });
+    await tester.pumpWidget(const SizedBox.shrink());
   }
 
   setUp(() async {
@@ -110,6 +160,8 @@ void main() {
     authOverride = null;
     authWait = null;
     profileWait = null;
+    profileRequested = null;
+    profileResponseReturned = null;
     vault = SessionCredentialVault(projectUrl: wire.origin, backend: backend);
     network = MockClient((request) async {
       requests.add(request);
@@ -128,14 +180,23 @@ void main() {
         return http.Response('', 204);
       }
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
-        return profileWait?.future ??
+        final requested = profileRequested;
+        if (requested != null && !requested.isCompleted) {
+          requested.complete();
+        }
+        final response = await (profileWait?.future ??
             Future.value(
               http.Response(
                 jsonEncode(profile.profile(authUser)),
                 200,
                 headers: {'content-type': 'application/json'},
               ),
-            );
+            ));
+        final returned = profileResponseReturned;
+        if (returned != null && !returned.isCompleted) {
+          returned.complete();
+        }
+        return response;
       }
       throw StateError('unexpected fixture endpoint');
     });
@@ -1181,30 +1242,26 @@ void main() {
 
       backend.secret = 'TEST_ONLY_SAVED_SDK';
       backend.writeWait = Completer<void>();
+      backend.writeStarted = Completer<void>();
       profileWait = Completer<http.Response>();
+      profileRequested = Completer<void>();
+      profileResponseReturned = Completer<void>();
       final controller =
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
-      addTearDown(() async {
-        // A failed assertion must not leave a blocked vault write or owner slot
-        // behind for the next widget test.
-        if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
-          backend.writeWait!.complete();
-        }
-        await tester.pumpWidget(const SizedBox.shrink());
-        await controller.close();
-      });
+      addTearDown(() => closeWidgetStartup(tester, controller));
 
       // Start the real SDK restore outside FakeAsync before mounting the UI.
       // The test then renders the observable loading state while persistence is
       // deliberately held at the vault write barrier.
-      await runRealUntil(
+      late Future<void> startup;
+      await tester.runAsync(() async {
+        startup = controller.start();
+      });
+      await waitForRealSignal(
         tester,
-        start: () async {
-          unawaited(controller.start());
-        },
-        condition: () => backend.writes == 1,
+        backend.writeStarted!.future,
         reason:
             'the final SDK session must enter the vault barrier before startup can settle',
       );
@@ -1229,17 +1286,18 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await runRealUntil(
+      await tester.pump();
+      await waitForRealSignal(
         tester,
-        condition: () {
-          final profileCount = requests
-              .where((r) => r.url.path.contains('ensure_profile'))
-              .length;
-          return backend.secret == secret && profileCount == 1;
-        },
+        profileRequested!.future,
         reason:
             'profile provisioning must follow the exact rotated vault secret',
       );
+      await tester.runAsync(() async {
+        await Zone.root.run(
+          () => startup.timeout(const Duration(seconds: 5)),
+        );
+      });
       await tester.pump();
       expect(backend.secret, secret);
       expect(
@@ -1250,18 +1308,22 @@ void main() {
       expect(find.text('Đang chuẩn bị hồ sơ học tập…'), findsOneWidget);
       expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
-      profileWait!.complete(
-        http.Response(
-          jsonEncode(profile.profile(wire.a)),
-          200,
-          headers: {'content-type': 'application/json'},
-        ),
-      );
-      await runRealUntil(
-        tester,
-        condition: () => runtime.account.state.phase == AccountPhase.ready,
-        reason: 'the own-profile response must complete before account UI',
-      );
+      await tester.runAsync(() async {
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(wire.a)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+        await Zone.root.run(
+          () => profileResponseReturned!.future.timeout(
+            const Duration(seconds: 5),
+          ),
+        );
+      });
+      await tester.pump();
+      await waitForAccountReady(tester);
       await tester.pump();
       expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
       expect(runtime.account.readyRuntime, isNotNull);
@@ -1282,23 +1344,11 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
-      addTearDown(() async {
-        if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
-          backend.writeWait!.complete();
-        }
-        await tester.pumpWidget(const SizedBox.shrink());
-        await controller.close();
-      });
+      addTearDown(() => closeWidgetStartup(tester, controller));
 
-      await runRealUntil(
-        tester,
-        start: () async {
-          unawaited(controller.start());
-        },
-        condition: () => controller.phase == AccountStartupPhase.restoreError,
-        reason:
-            'a rejected stored credential must finish in the fenced login state',
-      );
+      await tester.runAsync(() async {
+        await controller.start();
+      });
       await tester.pumpWidget(AccountStartupApp(controller: controller));
       await tester.pumpAndSettle();
 
@@ -1318,6 +1368,7 @@ void main() {
 
       authStatus = 200;
       backend.writeWait = Completer<void>();
+      backend.writeStarted = Completer<void>();
       await tester.enterText(
         find.byKey(const Key('account-email')),
         'fixture@example.invalid',
@@ -1326,10 +1377,11 @@ void main() {
         find.byKey(const Key('account-password')),
         'TEST_ONLY_PASSWORD',
       );
-      await runRealUntil(
+      await tester.tap(find.text('Đăng nhập'));
+      await tester.pump();
+      await waitForRealSignal(
         tester,
-        start: () => tester.tap(find.text('Đăng nhập')),
-        condition: () => backend.writes == 1,
+        backend.writeStarted!.future,
         reason:
             'explicit password login must reach the credential write barrier',
       );
@@ -1350,15 +1402,10 @@ void main() {
       );
 
       backend.writeWait!.complete();
-      await runRealUntil(
-        tester,
-        condition: () =>
-            backend.secret == secret &&
-            runtime.account.state.phase == AccountPhase.ready,
-        reason:
-            'explicit login must persist the rotated secret before profile readiness',
-      );
       await tester.pump();
+      await waitForAccountReady(tester);
+      await tester.pump();
+      expect(backend.secret, secret);
       expect(
         requests.where((r) => r.url.path.contains('ensure_profile')),
         hasLength(1),
