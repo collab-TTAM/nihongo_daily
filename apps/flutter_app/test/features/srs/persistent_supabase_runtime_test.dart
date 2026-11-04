@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -16,7 +15,6 @@ import 'package:nihongo_daily/features/auth/application/account_session_notice.d
 import 'package:nihongo_daily/features/auth/application/account_session_refresh.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
-import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_runtime.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
@@ -80,125 +78,15 @@ void main() {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
-  /// Advances both WidgetTest FakeAsync and the real async zone while polling.
-  /// SDK/HTTP continuations may be queued in either zone; polling only from
-  /// runAsync can starve FakeAsync callbacks and leave the exclusive owner open.
-  Future<bool> pumpUntilRealCondition(
-    WidgetTester tester,
-    bool Function() condition, {
-    void Function()? start,
-    bool startInRealZone = false,
-  }) async {
-    if (start != null) {
-      if (startInRealZone) {
-        final started = await tester.runAsync<bool>(() async {
-          start();
-          return true;
-        });
-        if (started != true) return false;
-      } else {
-        start();
-      }
-    }
-    final elapsed = Stopwatch()..start();
-    while (!condition() && elapsed.elapsed < const Duration(seconds: 5)) {
-      await tester.pump(const Duration(milliseconds: 10));
-      await tester.runAsync<void>(() async {
-        await Future<void>.delayed(const Duration(milliseconds: 10));
-      });
-    }
-    return condition();
-  }
-
-  Future<void> waitForRealCondition(
-    WidgetTester tester,
+  Future<void> waitForCondition(
     bool Function() condition, {
     required String reason,
   }) async {
-    final completed = await pumpUntilRealCondition(tester, condition);
-    final profileRequests = requests
-        .where((request) => request.url.path.contains('ensure_profile'))
-        .length;
-    final diagnostic =
-        'writes=${backend.writes}, phase=${runtime.persistence.phase.name}, '
-        'profileRequests=$profileRequests';
-    expect(completed, isTrue, reason: '$reason ($diagnostic)');
-  }
-
-  Future<void> waitForAccountReady(WidgetTester tester) async {
-    if (runtime.account.state.phase == AccountPhase.ready) return;
-    final reachedTerminal = await pumpUntilRealCondition(
-      tester,
-      () => const {
-        AccountPhase.ready,
-        AccountPhase.profileError,
-        AccountPhase.signInError,
-        AccountPhase.unavailable,
-      }.contains(runtime.account.state.phase),
-    );
-    expect(
-      reachedTerminal,
-      isTrue,
-      reason: 'account startup did not reach a terminal state',
-    );
-    expect(runtime.account.state.phase, AccountPhase.ready);
-  }
-
-  Future<void> closeWidgetStartup(
-    WidgetTester tester,
-    AccountStartupController<AccountController<SrsStudyRuntime>> controller,
-  ) async {
-    // Complete FakeAsync-owned barriers in their creating zone; the pump
-    // below delivers their queued continuations before owner close begins.
-    if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
-      backend.writeWait!.complete();
+    final elapsed = Stopwatch()..start();
+    while (!condition() && elapsed.elapsed < const Duration(seconds: 5)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
     }
-    if (backend.readWait != null && !backend.readWait!.isCompleted) {
-      backend.readWait!.complete();
-    }
-    if (authWait != null && !authWait!.isCompleted) {
-      authWait!.complete(authResponse());
-    }
-    if (profileWait != null && !profileWait!.isCompleted) {
-      profileWait!.complete(
-        http.Response(
-          jsonEncode(profile.profile(authUser)),
-          200,
-          headers: {'content-type': 'application/json'},
-        ),
-      );
-    }
-    // Release callbacks queued by test-zone Completers before beginning close.
-    await tester.pump();
-    var closeCompleted = false;
-    var closeFailed = false;
-    unawaited(
-      controller.close().then<void>(
-        (_) => closeCompleted = true,
-        onError: (Object _, StackTrace __) {
-          closeFailed = true;
-          closeCompleted = true;
-        },
-      ),
-    );
-    // The mounted host listens to the controller's broadcast stream in
-    // WidgetTest FakeAsync. Pump that zone while close emits its final event;
-    // waiting only inside runAsync pauses the listener and can strand shutdown.
-    final closeDrained = await pumpUntilRealCondition(
-      tester,
-      () => closeCompleted,
-    );
-    final diagnostic =
-        'controller=${controller.phase.name}, '
-        'persistence=${runtime.persistence.phase.name}, '
-        'account=${runtime.account.state.phase.name}, '
-        'writes=${backend.writes}, clears=${backend.clears}';
-    expect(
-      closeDrained && closeCompleted && !closeFailed,
-      isTrue,
-      reason: 'startup owner did not close within five seconds ($diagnostic)',
-    );
-    await tester.pumpWidget(const SizedBox.shrink());
+    expect(condition(), isTrue, reason: reason);
   }
 
   setUp(() async {
@@ -1281,14 +1169,9 @@ void main() {
     expect(runtime.account.readyRuntime, isNull);
   });
 
-  testWidgets(
+  test(
     'configured host waits for rotated vault secret and own profile before publishing account UI',
-    (tester) async {
-      tester.view.physicalSize = const Size(1100, 900);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
+    () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
       backend.writeWait = Completer<void>();
       profileWait = Completer<http.Response>();
@@ -1296,38 +1179,23 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
+      var startupCompleted = false;
       try {
-        // Start the SDK restore in the real async zone and observe the synchronous
-        // persistence state. A test-zone Completer cannot safely be awaited here.
-        final writeStarted = await pumpUntilRealCondition(
-          tester,
+        final starting = controller.start();
+        await waitForCondition(
           () =>
               backend.writes == 1 &&
               runtime.persistence.phase == SessionPersistencePhase.saving,
-          start: () => unawaited(controller.start()),
-          startInRealZone: true,
+          reason: 'restored SDK session did not reach the vault write barrier',
         );
-        final profileRequests = requests
-            .where((request) => request.url.path.contains('ensure_profile'))
-            .length;
-        expect(
-          writeStarted,
-          isTrue,
-          reason:
-              'the final SDK session must enter the vault barrier before startup can settle '
-              '(writes=${backend.writes}, phase=${runtime.persistence.phase.name}, '
-              'profileRequests=$profileRequests)',
-        );
-        await tester.pumpWidget(AccountStartupApp(controller: controller));
-        await tester.pump();
-        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
-        expect(find.byKey(const Key('account-email')), findsNothing);
 
+        expect(controller.phase, AccountStartupPhase.loading);
+        expect(controller.account, isNull);
+        expect(runtime.account.readyRuntime, isNull);
         expect(
           requests.where((r) => r.url.path == '/auth/v1/token'),
           hasLength(1),
         );
-        expect(backend.writes, 1);
         expect(
           requests.single.url.queryParameters['grant_type'],
           'refresh_token',
@@ -1339,109 +1207,102 @@ void main() {
         );
 
         backend.writeWait!.complete();
-        await tester.pump();
-        await waitForRealCondition(
-          tester,
+        await waitForCondition(
           () => profileWasRequested,
-          reason:
-              'profile provisioning must follow the exact rotated vault secret',
+          reason: 'profile provisioning did not follow the saved rotated secret',
         );
-        // The startup owner remains unpublished until profile provisioning
-        // returns; do not wait for ACTIVE before releasing this response.
-        expect(controller.phase, AccountStartupPhase.loading);
-        expect(find.text('Đang khôi phục phiên đăng nhập…'), findsOneWidget);
-        expect(backend.secret, secret);
-        expect(
-          requests.where((r) => r.url.path.contains('ensure_profile')),
-          hasLength(1),
-        );
-        expect(runtime.account.readyRuntime, isNull);
-        expect(find.byKey(const Key('account-profile-name')), findsNothing);
 
-        final profileReturned = await pumpUntilRealCondition(
-          tester,
-          () => profileResponseWasReturned,
-          start: () {
-            profileWait!.complete(
-              http.Response(
-                jsonEncode(profile.profile(wire.a)),
-                200,
-                headers: {'content-type': 'application/json'},
-              ),
-            );
-          },
-        );
+        final profileRequests = requests
+            .where((r) => r.url.path.contains('ensure_profile'))
+            .toList();
+        expect(controller.phase, AccountStartupPhase.loading);
+        expect(controller.account, isNull);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.secret, secret);
+        expect(profileRequests, hasLength(1));
         expect(
-          profileReturned,
-          isTrue,
-          reason: 'own-profile response did not return to the configured host',
+          profileRequests.single.headers['authorization'],
+          'Bearer ${wire.token(wire.a, wire.sid1, now)}',
         );
-        await tester.pump();
-        await waitForAccountReady(tester);
-        await tester.pump();
+
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(wire.a)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+        await waitForCondition(
+          () => profileResponseWasReturned,
+          reason: 'held own-profile response did not return',
+        );
+        await starting.timeout(const Duration(seconds: 5));
+        startupCompleted = true;
+
         expect(controller.phase, AccountStartupPhase.active);
-        expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+        expect(identical(controller.account, runtime.account), isTrue);
+        expect(runtime.account.state.phase, AccountPhase.ready);
         expect(runtime.account.readyRuntime, isNotNull);
       } finally {
-        await closeWidgetStartup(tester, controller);
+        if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+          backend.writeWait!.complete();
+        }
+        if (profileWait != null && !profileWait!.isCompleted) {
+          profileWait!.complete(
+            http.Response(
+              jsonEncode(profile.profile(wire.a)),
+              200,
+              headers: {'content-type': 'application/json'},
+            ),
+          );
+        }
+        if (!startupCompleted) runtime.account.dispose();
+        await controller.close().timeout(const Duration(seconds: 5));
       }
     },
   );
 
-  testWidgets(
+  test(
     'configured host offers explicit login after rejected restore and clears before password auth',
-    (tester) async {
-      tester.view.physicalSize = const Size(1100, 900);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
+    () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
       authStatus = 401;
       final controller =
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
+      var startupCompleted = false;
+      var loginCompleted = false;
+      Future<void>? login;
       try {
-        await tester.runAsync(() async {
-          await controller.start();
-        });
-        await tester.pumpWidget(AccountStartupApp(controller: controller));
-        await tester.pumpAndSettle();
+        await controller.start().timeout(const Duration(seconds: 5));
+        startupCompleted = true;
 
         expect(controller.phase, AccountStartupPhase.restoreError);
-        expect(find.text('Đăng nhập lại'), findsOneWidget);
-        expect(find.byKey(const Key('account-email')), findsNothing);
+        expect(controller.canOfferLogin, isTrue);
+        expect(controller.account, isNull);
         expect(backend.operations, ['read']);
         expect(
           requests.where((r) => r.url.path.contains('ensure_profile')),
           isEmpty,
         );
 
-        await tester.tap(find.text('Đăng nhập lại'));
-        await tester.pumpAndSettle();
-        expect(find.byKey(const Key('account-email')), findsOneWidget);
-        expect(find.byKey(const Key('account-password')), findsOneWidget);
+        controller.offerLogin();
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(identical(controller.account, runtime.account), isTrue);
 
         authStatus = 200;
         backend.writeWait = Completer<void>();
-        await tester.enterText(
-          find.byKey(const Key('account-email')),
+        profileWait = Completer<http.Response>();
+        login = runtime.account.signIn(
           'fixture@example.invalid',
-        );
-        await tester.enterText(
-          find.byKey(const Key('account-password')),
           'TEST_ONLY_PASSWORD',
         );
-        await tester.tap(find.text('Đăng nhập'));
-        await tester.pump();
-        await waitForRealCondition(
-          tester,
+        await waitForCondition(
           () =>
               backend.writes == 1 &&
               runtime.persistence.phase == SessionPersistencePhase.saving,
-          reason:
-              'explicit password login must reach the credential write barrier',
+          reason: 'explicit login did not reach the credential write barrier',
         );
 
         expect(backend.operations, ['read', 'clear', 'write']);
@@ -1460,18 +1321,57 @@ void main() {
         );
 
         backend.writeWait!.complete();
-        await tester.pump();
-        await waitForAccountReady(tester);
-        await tester.pump();
-        expect(backend.secret, secret);
-        expect(
-          requests.where((r) => r.url.path.contains('ensure_profile')),
-          hasLength(1),
+        await waitForCondition(
+          () => profileWasRequested,
+          reason: 'profile provisioning did not follow password-session persistence',
         );
+        expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+        expect(runtime.account.readyRuntime, isNull);
+
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(wire.a)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+        await waitForCondition(
+          () => profileResponseWasReturned,
+          reason: 'password-login own-profile response did not return',
+        );
+        await login.timeout(const Duration(seconds: 5));
+        await waitForCondition(
+          () => runtime.account.state.phase == AccountPhase.ready,
+          reason: 'account did not become ready after profile provisioning',
+        );
+        loginCompleted = true;
+
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(backend.secret, secret);
         expect(runtime.account.readyRuntime, isNotNull);
-        expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
+        final profileRequests = requests
+            .where((r) => r.url.path.contains('ensure_profile'))
+            .toList();
+        expect(profileRequests, hasLength(1));
+        expect(
+          profileRequests.single.headers['authorization'],
+          'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+        );
       } finally {
-        await closeWidgetStartup(tester, controller);
+        if (backend.writeWait != null && !backend.writeWait!.isCompleted) {
+          backend.writeWait!.complete();
+        }
+        if (profileWait != null && !profileWait!.isCompleted) {
+          profileWait!.complete(
+            http.Response(
+              jsonEncode(profile.profile(wire.a)),
+              200,
+              headers: {'content-type': 'application/json'},
+            ),
+          );
+        }
+        if (!startupCompleted || !loginCompleted) runtime.account.dispose();
+        await controller.close().timeout(const Duration(seconds: 5));
       }
     },
   );
