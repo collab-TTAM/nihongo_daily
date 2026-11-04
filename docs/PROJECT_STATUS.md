@@ -7,6 +7,11 @@
 - Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head CI is the verification gate. No hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry or physical multi-device evidence is claimed.
 - Next: inspect every latest-attempt job and required step for the final status commit; require strict format, analyze, full Flutter suite, lifecycle/vault/profile/wire/Chrome/Web, Windows, disposable Supabase, database, AI boundary and repo-sanity without required skips. Fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned #14/#38/N4 untouched.
 
+### Exact-head CI observation — 2026-11-04T03:11Z
+
+- GitHub Actions run [41765389109](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41765389109) targets status HEAD `d925acec828b125f37df94da1ccfe637c8aee21a`, attempt 1. At 03:11Z the workflow was PENDING and no jobs had been published; no final-head format/analyze/test/build or full-CI result is claimed. The prior diagnostic run is not a passing substitute.
+- Next: inspect the new status-commit run and every latest-attempt job/step before further source edits.
+
 ---
 
 ## Core worker handoff — account profile barrier formatter — 2026-11-04T00:22Z
