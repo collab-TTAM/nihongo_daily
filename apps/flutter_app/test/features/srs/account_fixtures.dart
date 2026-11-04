@@ -139,7 +139,10 @@ Future<void> verifyAccount(String scenario) async {
       );
       secondProfile.complete(ownProfile(other));
       await waiting;
-      check(barrierCompleted, 'matching replacement profile did not settle startup');
+      check(
+        barrierCompleted,
+        'matching replacement profile did not settle startup',
+      );
       check(
         controller.state.phase == AccountPhase.ready &&
             controller.state.profile?.id == other &&
