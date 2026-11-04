@@ -1,3 +1,15 @@
+## Core worker handoff — browser IndexedDB formatter correction — 2026-11-04T16:07Z
+
+- Run `core-20261104T1606Z-fix-browser-indexeddb-format`; branch `automation/issue-22-atomic-review`; source commit `18841eb043efdf79eca5b1f7cdcc71fef58263a1` (parent `fd7daee3334ad3410143a0bb240eb1479bb8208b`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- The prior exact-head CI [41855665838](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41855665838), attempt 1 on `fd7daee3334ad3410143a0bb240eb1479bb8208b`, completed with five jobs successful (repo-sanity, AI boundary, database, disposable Supabase integration, Windows) and Flutter failed at pinned Dart 3.35.4 format. Formatter identified only `test/features/srs/browser_review_store_check.dart`; Flutter analyze and all downstream Flutter checks were skipped, not passed.
+- Applied a whitespace-only correction in that test file: removed the two duplicated consecutive blank-line runs around the delayed-list test fixture and account-switch test. No assertions, runtime behavior, Auth/session/vault, IndexedDB semantics, SQL/RLS, dependencies, CI gates or Pro-owned N4 files changed. Separate commit diff review reports exactly one path, 0 additions / 2 deletions.
+- Complete recursive Git tree at source HEAD was fetched untruncated (328 entries: 263 blobs / 65 trees). All paths/modes/types remain; only the target test blob changed. Source tree was built from exact parent tree `1d0f4e9b9ce4eee63119ee3941455526627d0c51`; source ref update used expected head `fd7daee3334ad3410143a0bb240eb1479bb8208b`, force=false; branch readback matched.
+- Exact-head CI [41864430976](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41864430976) has been queued for source commit `18841eb043efdf79eca5b1f7cdcc71fef58263a1`; no job result is yet claimed. Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run.
+- Hosted signed-JWT learner A/B, deployed RLS/PostgREST, hosted session expiry/restart, physical multi-device sync and full learner journey remain unverified. Keep #15/#20/#22 open and PR #37 Draft. PR #41 and Pro-owned PR #38/#14/N4 remain untouched.
+- Next: inspect every latest-attempt job/step on exact source head `18841eb043efdf79eca5b1f7cdcc71fef58263a1`; if strict format passes, require analyze, full Flutter suite, browser/native checks, Web/Windows builds and all backend/security jobs before recording final verification.
+
+---
+
 ## Core worker handoff — IndexedDB captured-session recovery fence — 2026-11-04T15:12Z
 
 - Run `core-20261104T1507Z-indexeddb-account-switch-recovery-fence`; branch `automation/issue-22-atomic-review`; source commit `bac58582e75c37c0a06f2dc407d42762fdb91fe1` (parent `36f1215d8cbcf2ec88e89bda072fbc189c4708da`), tree `f9f211629793c62faeed194c2fa3c9afe5a161ed`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
