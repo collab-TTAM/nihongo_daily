@@ -37,6 +37,7 @@ void main() {
   late Completer<void>? writeWait;
   late bool failRead;
   late bool failWrite;
+  late bool failClear;
   final requests = <http.Request>[];
   final timeline = <String>[];
 
@@ -82,6 +83,7 @@ void main() {
     writeWait = null;
     failRead = false;
     failWrite = false;
+    failClear = false;
 
     messenger.setMockMethodCallHandler(channel, (call) async {
       final arguments = call.arguments as Map<Object?, Object?>;
@@ -118,6 +120,13 @@ void main() {
           return true;
         case 'clear':
           timeline.add('vault.clear');
+          if (failClear) {
+            throw PlatformException(
+              code: 'PRIVATE_STORAGE',
+              message: 'PRIVATE_REFRESH_SECRET',
+              details: {'token': 'PRIVATE_REFRESH_SECRET'},
+            );
+          }
           storedSecret = null;
           return true;
         default:
@@ -392,6 +401,83 @@ void main() {
         timeline.lastIndexOf('vault.write'),
         lessThan(timeline.lastIndexOf('profile.ensure')),
       );
+    },
+  );
+
+  test(
+    'vault clear failure keeps logout fenced until explicit retry before User B',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_A_REFRESH_BEFORE_CLEAR_FAILURE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(storedSecret, refreshSecret);
+
+      failClear = true;
+      await runtime.account.signOut();
+
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(
+        runtime.account.state.messageVi,
+        'Chưa xác nhận đăng xuất. Vui lòng thử lại.',
+      );
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(storedSecret, refreshSecret);
+      final failedClear = timeline.lastIndexOf('vault.clear');
+      expect(failedClear, greaterThan(-1));
+      expect(
+        failedClear,
+        greaterThan(timeline.lastIndexOf('auth.logout')),
+      );
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_CLEAR_RETRY';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
+        reason: 'User B must not authenticate while A vault clear is uncertain',
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+
+      failClear = false;
+      await runtime.account.signOut();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(storedSecret, isNull);
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(2));
+      expect(
+        profileRequests.last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
     },
   );
 }
