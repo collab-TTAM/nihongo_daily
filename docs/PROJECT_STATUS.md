@@ -2711,3 +2711,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - No Dart/Flutter SDK is available in this cloud runtime; local format/analyze/test/build were not run. New exact-head CI is required before claiming the regression passes.
 - No production Auth/session/vault code, Auth strategy/provider, SQL/schema/RLS, dependencies, default runtime activation, secrets, deployment, merge, or Pro-owned #14/#38/N4 paths changed. Hosted signed-JWT learner A/B, hosted restart/expiry, deployed RLS and physical multi-device proof remain outstanding.
 - Worker remains ACTIVE while the source/tree/diff checkpoint is persisted; next action is inspect every latest-attempt job and step on the final exact head.
+
+
+### Source checkpoint persisted — 2026-11-04T06:14Z
+
+- Source commit `9462b501944aeba783992542b5084b5f73c3e4f3` (parent `4494c3c9df3e9e6c1299a44fcf7c114af07b5b2e`) adds only the caller-close/pending-vault-read regression, lifecycle documentation, one QA anchor, and this status handoff.
+- Separate diff review: exactly four intended paths; test +50 lines, lifecycle doc +22, QA matrix +5/-1, status +11. No production code or assertions were modified.
+- Recursive base/result trees were both complete and untruncated at 327 entries (262 blobs / 65 trees); same path/mode/type set, no additions/removals, 258 unchanged blob SHAs. `create_tree` used base tree `dbdb926380e4cccd75c38bdeb4e1dac6aad28dbe`; source `update_ref` used expected SHA `4494c3c9df3e9e6c1299a44fcf7c114af07b5b2e`, `force=false`; branch readback matched.
+- Exact-head CI [41784564786](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41784564786) was QUEUED on source head `9462b501944aeba783992542b5084b5f73c3e4f3` at handoff; no test/build result was yet available. This is not a CI pass.
+- Cloud has no Dart/Flutter SDK; local format/analyze/test/build were not run. New final-head CI is required. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device proof remain outstanding.
+- Worker is preparing a final docs checkpoint, then RELEASED. Next: inspect all latest-attempt jobs/steps on the final exact PR head; do not duplicate code while CI is pending.
