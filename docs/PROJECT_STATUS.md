@@ -1,3 +1,14 @@
+## Core worker handoff — exact-head CI success and final diff review — 2026-11-04T04:14Z
+
+- Resumed open Draft PR #37 on `automation/issue-22-atomic-review`; source HEAD `15acaede269a67d1b7732b164fac34db0800439b`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41765461336](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41765461336), attempt 1, completed SUCCESS on this exact HEAD. All six jobs and every step passed: repo-sanity (11), ai-boundary (12), database (12), supabase-integration (13), Windows (17), Flutter (35). Flutter included pinned Dart format, analyze, full serial suite, owned session/vault/profile checks, Chrome IndexedDB/reload, SRS/review/Kanji wire checks and Web release build. Windows included the native credential vault cross-process probe, configured staging release build, and durable journal/recovery probes. No required job or step was skipped, pending or failed.
+- Separate source diff review of `c6dcb7de5d858ba6aa59d549daff374446f869bf`: exactly two formatter-required line wraps in `persistent_supabase_runtime_test.dart` and removal of the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`. Assertions, runtime behavior and CI gates are unchanged. Current status commit `15acaede269a67d1b7732b164fac34db0800439b` changes only `docs/PROJECT_STATUS.md`.
+- Complete recursive tree at exact source HEAD was fetched untruncated (327 entries). This handoff changes only the status document. No Dart/Flutter SDK is available in the cloud runtime, so local format/analyze/test/build were not run; exact-head CI is the observed verification.
+- Windows SDK/MockClient/native-vault lifecycle probes are TEST ONLY. Hosted non-production Supabase signed-JWT user A/B, deployed RLS/PostgREST, hosted expiry/restart and physical multi-device learner proof remain outstanding. #20/#22/#15 stay open; PR #37 remains Draft and is not merged.
+- Pro-owned #14/#38/N4 paths remain untouched. No Auth strategy/provider, production configuration, schema/migration/RLS, dependency, security, AI spend, deployment or release setting changed.
+- Next: use approved non-production Supabase staging configuration through supported secret settings to complete hosted #20/#22/#15 evidence. Until then, keep the staging owner opt-in and continue independent app/plan/study work in a later released core turn; do not treat fixture/CI success as hosted learner proof.
+
+---
 ## Core worker handoff — pinned Dart formatting correction — 2026-11-04T03:10Z
 
 - Run `core-20261104T0307Z-fix-pinned-dart-format`; branch `automation/issue-22-atomic-review`; source commit `c6dcb7de5d858ba6aa59d549daff374446f869bf` (parent `083a9a29567d5fc5e7096ad282c9c5983026110a`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
