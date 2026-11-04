@@ -59,6 +59,8 @@ final class AccountController<T> {
   T? _runtime;
   ReviewSession? _readySession;
   ReviewSession? _profileSession;
+  ReviewSession? _profileErrorSession;
+  Completer<void>? _profileSettled;
   int _generation = 0;
   bool _disposed = false;
   bool _dead = false;
@@ -121,10 +123,20 @@ final class AccountController<T> {
     }
   }
 
-  void _block(AccountPhase phase, {String? message}) {
+  void _block(
+    AccountPhase phase, {
+    String? message,
+    ReviewSession? profileErrorSession,
+  }) {
     _generation++;
+    final pendingProfile = _profileSettled;
+    _profileSettled = null;
+    if (pendingProfile != null && !pendingProfile.isCompleted) {
+      pendingProfile.complete();
+    }
     _readySession = null;
     _profileSession = null;
+    _profileErrorSession = profileErrorSession;
     _runtime = null;
     _publish(AccountState(phase, messageVi: message));
   }
@@ -165,7 +177,8 @@ final class AccountController<T> {
       return;
     }
     if (identical(session, _readySession) ||
-        identical(session, _profileSession)) {
+        identical(session, _profileSession) ||
+        identical(session, _profileErrorSession)) {
       return;
     }
     unawaited(_loadProfile(session));
@@ -177,6 +190,8 @@ final class AccountController<T> {
       return;
     }
     _profileSession = session;
+    final settled = Completer<void>();
+    _profileSettled = settled;
     final generation = _generation;
     bool current() =>
         !_disposed &&
@@ -200,12 +215,17 @@ final class AccountController<T> {
       _readySession = session;
       _runtime = runtime;
       _publish(AccountState(AccountPhase.ready, profile: profile));
+      if (identical(_profileSettled, settled)) {
+        _profileSettled = null;
+      }
+      if (!settled.isCompleted) settled.complete();
     } on Object {
       if (!current()) {
         return;
       }
       _block(
         AccountPhase.profileError,
+        profileErrorSession: session,
         message: 'Không thể tải hồ sơ học tập. Vui lòng thử lại.',
       );
     }
@@ -221,32 +241,30 @@ final class AccountController<T> {
     while (!_disposed && !_dead && !_logoutFence) {
       final session = _current();
       if (session == null) return;
-      if (identical(session, _readySession)) return;
+      if (identical(session, _readySession) ||
+          identical(session, _profileErrorSession)) {
+        return;
+      }
       if (!identical(session, _profileSession)) {
         _sessionChanged();
       }
       if (_disposed || _dead || _logoutFence) return;
       if (identical(_readySession, session) ||
-          _state.phase == AccountPhase.profileError) {
+          identical(_profileErrorSession, session)) {
         return;
       }
-      if (!identical(_profileSession, session)) continue;
-      try {
-        await changes
-            .firstWhere(
-              (state) =>
-                  _disposed ||
-                  _dead ||
-                  _logoutFence ||
-                  identical(_readySession, session) ||
-                  state.phase == AccountPhase.profileError ||
-                  state.phase == AccountPhase.signedOut ||
-                  !identical(_profileSession, session),
-            )
-            .timeout(const Duration(seconds: 20));
-      } on StateError {
-        return;
+      if (!identical(_profileSession, session)) {
+        await Future<void>.delayed(Duration.zero);
+        continue;
       }
+      final settled = _profileSettled;
+      if (settled == null) {
+        await Future<void>.delayed(Duration.zero);
+        continue;
+      }
+      // A session replacement completes the old barrier before publishing the
+      // new one. Re-read Auth after every wake so late A responses cannot settle B.
+      await settled.future.timeout(const Duration(seconds: 20));
     }
   }
 
@@ -368,6 +386,11 @@ final class AccountController<T> {
     }
     _disposed = true;
     _generation++;
+    final pendingProfile = _profileSettled;
+    _profileSettled = null;
+    if (pendingProfile != null && !pendingProfile.isCompleted) {
+      pendingProfile.complete();
+    }
     _runtime = null;
     _readySession = null;
     unawaited(_subscription?.cancel());

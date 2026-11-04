@@ -159,6 +159,18 @@
 
 # PROJECT STATUS
 
+## Latest core handoff — 2026-11-04T00:16Z
+
+- Run `core-20261104T0014Z-fix-profile-switch-barrier` RELEASED after publishing source commit; PR #37 branch `automation/issue-22-atomic-review`, parent `be39abe86a3a4d75dac5f4444b8970ce891514b9`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41728874434](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41728874434), latest attempt 2 on `be39abe86a3a4d75dac5f4444b8970ce891514b9`: repo-sanity, AI boundary, database/RLS, disposable local Supabase integration and Windows completed SUCCESS with every returned step; Flutter format and analyze succeeded. The serial Flutter suite exposed `account readiness wait-current-profile-switch` failing with `startup barrier did not follow the replacement account`; the job was later CANCELLED, and all Flutter downstream checks were SKIPPED. This is not a full-CI pass. The log also showed the next profile-error scenario beginning before cancellation; no result for that scenario is claimed.
+- Implemented a per-session profile settlement completer. A session replacement or disposal settles the previous waiter; the startup loop re-reads the currently captured session and waits for its own profile. Profile errors are now associated with the exact session so startup does not silently retry the same failed profile; the existing explicit retry remains the only retry path.
+- Regression coverage strengthens A→B: a late A profile cannot release the B startup barrier, and B's matching profile must settle it. The profile-error test asserts exactly one request and a safely released barrier.
+- Changed paths: `apps/flutter_app/lib/features/auth/application/account_controller.dart`, `apps/flutter_app/test/features/srs/account_fixtures.dart`, `docs/PROJECT_STATUS.md`. No Auth strategy/provider, token handling, native vault, schema/RLS, N4/Pro-owned content, production configuration or release setting changed.
+- Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI must pass all Flutter tests and every downstream lifecycle/vault/profile/wire/Chrome/Web, Windows and Supabase job with no required skips. Hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry and physical multi-device proof remain outstanding.
+- Next: inspect every latest-attempt job/step for the new exact HEAD. If tests fail, fix only the observed cause; keep #20/#22/#15 open and PR #37 Draft.
+
+---
+
 ## Core worker handoff — failed refresh rotation plus failed vault cleanup — 2026-11-02 UTC
 
 - Run `core-20261102T0205Z-review-next-session-boundary`; branch `automation/issue-22-atomic-review`; parent `36421e57de14bec2ef720a968e43c46b1c2e8ded`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

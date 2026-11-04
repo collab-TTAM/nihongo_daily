@@ -112,25 +112,34 @@ Future<void> verifyAccount(String scenario) async {
       final firstProfile = Completer<OwnProfile>();
       delayed = firstProfile;
       access.change(owner);
-      final waiting = controller.waitForCurrentProfile();
+      var barrierCompleted = false;
+      final waiting = controller.waitForCurrentProfile().then((_) {
+        barrierCompleted = true;
+      });
       await flush();
       final secondProfile = Completer<OwnProfile>();
       delayed = secondProfile;
       access.change(other);
       await flush();
       check(
-        profileCalls == 2 && controller.readyRuntime == null,
-        'startup barrier did not follow the replacement account',
+        profileCalls == 2 &&
+            controller.readyRuntime == null &&
+            !barrierCompleted,
+        'startup barrier did not follow the replacement account '
+        '(calls=$profileCalls, phase=${controller.state.phase.name}, '
+        'barrierCompleted=$barrierCompleted)',
       );
       firstProfile.complete(ownProfile(owner));
       await flush();
       check(
         controller.state.phase == AccountPhase.loadingProfile &&
-            controller.readyRuntime == null,
+            controller.readyRuntime == null &&
+            !barrierCompleted,
         'late previous-account profile escaped the captured-session guard',
       );
       secondProfile.complete(ownProfile(other));
       await waiting;
+      check(barrierCompleted, 'matching replacement profile did not settle startup');
       check(
         controller.state.phase == AccountPhase.ready &&
             controller.state.profile?.id == other &&
@@ -142,9 +151,11 @@ Future<void> verifyAccount(String scenario) async {
       access.change(owner);
       await controller.waitForCurrentProfile();
       check(
-        controller.state.phase == AccountPhase.profileError &&
+        profileCalls == 1 &&
+            controller.state.phase == AccountPhase.profileError &&
             controller.readyRuntime == null,
-        'profile failure did not release the startup barrier safely',
+        'profile failure did not release the startup barrier safely '
+        '(calls=$profileCalls)',
       );
     } else if (scenario == 'credentials-duplicate') {
       await controller.signIn('bad', 'SECRET');
