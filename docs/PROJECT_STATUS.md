@@ -2788,3 +2788,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   #20/#22/#15 remain open. Pro-owned #14/#38/N4 are untouched.
 - Next: inspect exact-head/latest-attempt CI for all jobs and steps; fix only
   observed diagnostics, then continue the remaining hosted acceptance gates.
+
+
+## Exact-head Dart formatter correction — 2026-11-04T14:12Z
+
+- Core run `core-20261104T1412Z-pr37-format-correction`; branch `automation/issue-22-atomic-review`; starting HEAD `c8b19daf29247d5ef3e09e61117e26e62d83d202`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41835945318](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41835945318), attempt 1, targets this starting HEAD. Repository sanity, AI boundary, database/RLS, disposable Supabase integration and Windows all completed SUCCESS with every listed step. Flutter failed only at strict Dart 3.35.4 format: the diagnostic output showed one line-wrap compaction in `windows_persistent_supabase_runtime_test.dart` around the User B `ensure_profile` request filter. Flutter analyze, the complete test suite and downstream lifecycle/wire/Chrome/Web/build steps were SKIPPED, not passed.
+- Applied only the formatter-emitted line wrap to that test and removed the temporary read-only diagnostic step from `.github/workflows/ci.yml` in the same correction. The repository-wide strict formatter command remains unchanged; no assertions, test semantics, runtime/Auth behavior, API/schema/RLS, dependencies or defaults changed.
+- Cloud runtime has no Flutter/Dart SDK; no local format/analyze/test/build is claimed. The successor exact-head Actions run must verify format, analyze, the full Flutter suite, all native/browser verifiers and builds.
+- Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned #14/#38/N4 untouched.
+- Next: inspect every latest-attempt job and required step on the successor exact HEAD; fix only observed failures. Do not merge this draft from formatter correction alone.

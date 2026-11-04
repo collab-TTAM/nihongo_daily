@@ -374,9 +374,7 @@ void main() {
       await waitForReady();
 
       final profileRequests = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
       expect(profileRequests, hasLength(1));
       expect(
