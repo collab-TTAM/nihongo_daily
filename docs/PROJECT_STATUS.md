@@ -2730,3 +2730,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added one anchor to the existing `persistent-session-lifecycle` QA case and clarified that this combined test mocks the MethodChannel. The separate Windows CI child-process probe remains the actual OS Credential Manager evidence; neither is hosted Supabase learner proof.
 - Changed paths: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, `docs/PROJECT_STATUS.md`.
 - Cloud runtime has no Flutter/Dart SDK; no local format/analyze/test/build is claimed. Exact-head Actions must verify the new test. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device evidence remain outstanding. PR #37 stays Draft; #20/#22/#15 remain open; Pro-owned #14/#38/N4 untouched.
+
+
+## Formatter diagnostic checkpoint — 2026-11-04 UTC
+
+- Exact-head CI [41792111168](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41792111168) targets `f6a4b7f571409e7b75f2acaefde5e886e872b6f8`. Repo-sanity, AI boundary and database completed SUCCESS/all steps. Flutter strict Dart format FAILED on the new `windows_persistent_supabase_runtime_test.dart`; analyze, full tests and downstream Flutter gates were SKIPPED. Disposable Supabase integration and Windows jobs were still IN_PROGRESS at the last observation.
+- Added a temporary read-only CI diagnostic to print the exact Dart 3.35.4 formatter diff into the Flutter job log. It writes only to `RUNNER_TEMP`, does not modify the checkout, and does not bypass the strict formatter gate. Remove this diagnostic in the same commit that applies the exact formatter output.
+- No test/analyze/build pass is claimed. Cloud runtime has no Dart/Flutter SDK. Keep PR #37 Draft and #20/#22/#15 open; hosted learner/Auth/expiry/restart and multi-device gates remain pending.
