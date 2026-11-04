@@ -1,3 +1,15 @@
+## Core worker handoff — account profile barrier formatter — 2026-11-04T00:22Z
+
+- Run `core-20261104T0018Z-format-account-fixture` RELEASED. Branch `automation/issue-22-atomic-review`; formatter source commit `b4beee09d3c5b100620dfdc473ec9854c0042441` (parent `b4beee09d3c5b100620dfdc473ec9854c0042441`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41745469694](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41745469694), attempt 1, on parent `b4beee09d3c5b100620dfdc473ec9854c0042441`: repo-sanity, AI boundary, database/RLS, disposable local Supabase integration and Windows all completed SUCCESS with every returned step. Flutter strict format FAILED because Dart 3.35.4 reformatted only `test/features/srs/account_fixtures.dart`; Flutter analyze, full suite and every downstream Flutter check were SKIPPED. This was not a full-CI pass.
+- Applied the formatter-only layout to the replacement-profile barrier assertion in `apps/flutter_app/test/features/srs/account_fixtures.dart`: split the long `check(...)` call into the formatter's multiline form. No assertion, expected behavior, controller, production Auth/session/vault, API/schema/RLS, dependency or CI gate changed.
+- Source commit changed exactly one blob/path. Full recursive source tree was untruncated at 327 entries (262 blobs / 65 trees); identical path/mode/type sets, one intended blob SHA changed, all other blobs retained. `create_tree` used exact parent tree `80bd7cea657c10a6a6dc0a402c4f24b5774519fa`; `update_ref` used expected SHA `b4beee09d3c5b100620dfdc473ec9854c0042441`, `force=false`; branch readback matched source commit.
+- Cloud runtime has no Dart/Flutter SDK, so local format/analyze/test/build were not run. New exact-head CI on the final status checkpoint must confirm format, analyze, all Flutter tests, lifecycle/vault/profile/wire/Chrome/Web checks, Windows and Supabase integration. The formatter correction itself is source-only; no final-head CI pass is claimed here.
+- Hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry and physical multi-device sync remain unproven. PR #37 stays Draft; #20/#22/#15 stay open. Pro-owned #14/#38/N4 scope remains untouched.
+- Next: inspect every latest-attempt job and step on the final branch head; fix only observed failures. Do not merge or claim Personal Alpha from this formatter-only correction.
+
+---
+
 ## Core worker handoff — startup formatter diagnostic — 2026-11-03T20:22Z
 
 - Run `core-20261103T2013Z-fix-startup-format`; branch `automation/issue-22-atomic-review`; source HEAD `e38c3ec0139014144daf7ce66f978b3629a00805`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
