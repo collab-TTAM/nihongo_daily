@@ -1,26 +1,25 @@
 # PROJECT STATUS
 
-## Captured-request quiz response validation — 2026-11-04 UTC
+## Quiz replay-first transaction coordinator — 2026-11-04 UTC
 
-- Draft PR41 / issue13, branch automation/issue-11-plan-sdk-integration;
-  parent308fc295996c1fa018fddcefb3d65e695879a70d, main78a44faf.
-- Extended backend/ai/src/quiz_report.ts and test/quiz_report.test.ts with a
-  response decoder bound to the validated original request before asynchronous
-  I/O. Strict raw/schema validation, exact five-field identity including timestamp
-  spelling, derived answer/correct counts, immutable output and safe INTERNAL_ERROR.
-  Invalid request binding remains VALIDATION_FAILURE. Updated QUIZ_REPORT_API.
-- Local pinned Prettier, TypeScript and all209 Node tests PASS (5 response groups).
-  Separate diff review checked schema-valid type/kind swaps, equivalent timestamp
-  spelling, byte mutation after capture, no coercion and no raw error leakage.
-  Deno/Flutter/native Windows not executed locally; new exact-head CI pending.
-- Parent exact308fc295 CI41832606675 attempt1 ALL5/EVERYstep SUCCESS;
-  mandatory Windows persistent SDK/receipt marker observed, TEST ONLY Auth/HTTP.
-  This is not hosted learner or Personal Alpha acceptance.
-- Next inspect new exact-head CI/all5 jobs/every required step, then implement
-  canonical-content and replay-first transaction integration. No public endpoint,
-  Auth/grant/RLS, default save/collection activation or Pro/N4 change. PR37 source
-  untouched. Matching response is not persistence/ownership/retry authority.
-  All14 release groups and issue13 remain open; actual commit/CI in PR41 handoff.
+- Draft41/issue13, automation/issue-11-plan-sdk-integration; parent
+  b8761579f080befe3638430bbbe054b357bb4d08; main78a44faf.
+- Added backend/ai/src/quiz_report_transaction.ts and corresponding test file;
+  updated QUIZ_REPORT_API and this status. Capture request before await, replay
+  first, only explicit miss permits content validation/store; validate response
+  inside transaction callback before host commit. Fixed redacted errors.
+- Local TypeScript/pinned Prettier/216 Node tests PASS; separate source/test diff
+  review. Coverage: canonical rounds, replay bypass, malformed ingress, lookup
+  failure/unknown, conflict/content failures, malformed replay/store, captured
+  bytes and commit failure. Scripted host TEST ONLY; actual verified-owner
+  PostgreSQL transaction, canonical-content/clock adapters remain missing.
+- Deno/Flutter/native Windows unrun locally; new exact-head CI pending.
+  Parent CI41881800638 attempt1/all5/every step SUCCESS; raw Windows mandatory
+  persistent SDK/profile/receipt marker observed TEST ONLY Auth/HTTP.
+- Next inspect new exact-head CI/latest attempt/all required steps, then wire
+  real verified-owner transaction/canonical content and native rollback tests.
+  No default host/public endpoint/SQL/grant/Auth/collection/Pro scope changes.
+  PR37 source untouched. Draft/#13/all14 Personal Alpha release groups stay open.
 
 
 ## Private atomic quiz report ledger — 2026-10-31 UTC

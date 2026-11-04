@@ -59,6 +59,25 @@ A matching response proves only contract correlation: no authenticated ownership
 persistence, mastery, receipt lookup or permission to retry follows from it.
 This internal decoder does not activate an endpoint or change app behavior.
 
+## Internal transaction coordinator — 2026-11-04
+
+`submitQuizReportInTransaction(schema, raw, host)` captures the validated request
+before asynchronous work. Inside the caller's verified-owner transaction it
+looks up replay first. Only explicit null permits current-content validation and
+store; lookup failure/unknown or invalid replay cannot authorize a new write.
+Both replay and store responses are validated before the work callback resolves,
+so the host must roll back malformed results rather than commit them. Commit
+failure propagates as a safe error. Safe Auth/conflict/validation codes are
+reconstructed without forwarding SQL details or mutable error messages.
+
+The host MUST bind verified identity and a single connection/transaction, retain
+the owner lock after replay miss, validate canonical active content, enforce the
+server clock in store, commit only on callback success and roll back on failure.
+No default host, public route, identity verifier, PostgreSQL adapter or content
+adapter is supplied. Scripted transaction traces are TEST ONLY, not native DB
+rollback, concurrency or hosted learner evidence. Actual wiring remains required.
+An authoritative miss inside this transaction is not learner retry permission.
+
 ## Private ledger foundation — 2026-10-31 UTC
 
 Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
