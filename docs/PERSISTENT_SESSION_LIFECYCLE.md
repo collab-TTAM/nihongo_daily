@@ -102,9 +102,13 @@ retry, revocation, owner exclusivity, stream closure and disposal. Pinned-SDK HT
 late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
 Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof.
 
-The existing actual Windows Credential Manager/process probe remains mandatory,
-but it does not exercise this assembly's Dart-to-native bridge. Existing SQL/RLS,
-profile races, Chrome, native disk, security, wire and release-build checks remain.
+The new TEST ONLY `windows_persistent_supabase_runtime_test.dart` composes
+the actual Dart Windows MethodChannel vault adapter with the pinned Supabase SDK.
+It asserts saved-secret read, server refresh, rotated-secret write before
+`ensure_profile`, logout before credential clear, fail-closed read/write errors,
+and a late User A login followed by User B. The MethodChannel is mocked here:
+this verifies assembly wiring, not the native Windows Credential Manager call.
+The separate Windows child-process probe still verifies the actual OS store.
 Current-source CI must pass; historical previous-source success is insufficient.
 All 14 live Personal Alpha release groups remain pending. Keep PR #37 draft and
 #20/#22/#15 open. Next: interactive Windows bridge/restart, hosted Auth learner

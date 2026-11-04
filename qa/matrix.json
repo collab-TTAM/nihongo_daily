@@ -287,6 +287,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "caller close waits for a pending vault read and rejects late restore"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows vault restores through SDK and persists rotation before own profile"
         }
       ],
       "issues": [
