@@ -17,7 +17,6 @@ final class _Auth implements ReviewAuth {
   ReviewSession? currentSession = ReviewSession(userId: fixture.owner);
 }
 
-
 final class _DelayedListStore implements DurableReviewStore {
   _DelayedListStore(this.delegate);
 
@@ -233,7 +232,6 @@ void main() {
       }
     },
   );
-
 
   test(
     'real IndexedDB late User A recovery cannot publish after account switch',
