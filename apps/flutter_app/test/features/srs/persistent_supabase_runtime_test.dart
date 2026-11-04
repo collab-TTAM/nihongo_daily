@@ -1209,7 +1209,8 @@ void main() {
         backend.writeWait!.complete();
         await waitForCondition(
           () => profileWasRequested,
-          reason: 'profile provisioning did not follow the saved rotated secret',
+          reason:
+              'profile provisioning did not follow the saved rotated secret',
         );
 
         final profileRequests = requests
@@ -1323,7 +1324,8 @@ void main() {
         backend.writeWait!.complete();
         await waitForCondition(
           () => profileWasRequested,
-          reason: 'profile provisioning did not follow password-session persistence',
+          reason:
+              'profile provisioning did not follow password-session persistence',
         );
         expect(runtime.account.state.phase, AccountPhase.loadingProfile);
         expect(runtime.account.readyRuntime, isNull);
