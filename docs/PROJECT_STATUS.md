@@ -1,41 +1,26 @@
 # PROJECT STATUS
 
-## Duplicate-aware raw JSON ingress guard — 2026-10-31 UTC
+## Quiz JSON string preflight — 2026-11-04 UTC
 
-- Resume draft PR #41, branch automation/issue-11-plan-sdk-integration, parent 92e3fee730cc76b80399247fcebf55bcbb456fef, base main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c, tree 4c937b8eb1b511fdf1d9bc35e213ccad2c9fb5d0. PR #37 remains open/draft
-  at afa572a27f050048990ad4feb07fd6f01758e7e2; its source branch is unchanged.
-  Pro PR #38/N4 scope remains untouched.
-- Added a bounded recursive JSON lexical pass that rejects duplicate decoded
-  object keys (including escaped aliases), malformed/trailing documents,
-  excess nesting/tokens and non-finite numbers before JSON.parse. The existing
-  AI parseBounded decoder now uses it; HTTP regression proves duplicate request
-  members cannot reach provider/receipt dispatch.
-- Added reusable parseQuizReportJsonBody(Uint8Array): 16 KiB raw-byte cap, fatal
-  UTF-8/BOM rejection, duplicate-key detection and integer-only safe numeric
-  lexemes before future JSONB conversion. It returns decoded data only; schema,
-  verified Auth, current canonical content and transaction validation remain
-  separate and absent. No public RPC, collection activation, migration, grant,
-  RLS, Auth/provider strategy, or default app wiring was changed.
-- Parent exact-head CI #41188318005 for 92e3fee730cc76b80399247fcebf55bcbb456fef completed SUCCESS: all five jobs and every returned step succeeded, including
-  Flutter/Windows vault and profile-readiness probes. Those are TEST ONLY
-  component proofs, not hosted Supabase A/B learner proof. New parser tests and
-  downstream checks await the new exact-head CI.
-- First exact-head CI #41192168864 for 607f521 observed repo-sanity SUCCESS and
-  ai-boundary FAILURE at npm run format:check (only the two new files were
-  flagged by Prettier); check/test/Deno steps were skipped. Database and Windows
-  were still in progress at observation. Formatting follow-up b0937b was
-  published, but review found incomplete indentation in the new test blocks.
-  This commit corrects it. Run #41192292634 for b0937b was PENDING at observation;
-  it is not acceptance evidence. No pass is claimed for failed/pending runs.
-- Exact-head CI #41192370146 for 34a002 observed repo-sanity SUCCESS and
-  ai-boundary FAILURE at format:check (test/strict_json.test.ts only); its
-  npm check/test/Deno steps were skipped. Database and Windows were still
-  in progress and Flutter was not yet listed. This concise test rewrite is a
-  formatting-only correction; no full CI pass is claimed.
-- Next: inspect all five jobs/every step on the new exact head; fix diagnostics
-  without weakening assertions. Then review active canonical-content validation
-  and replay-first public boundary separately; do not activate data collection
-  or expose private ledger helpers without applicable human/security review.
+- Draft PR #41 / issue #13; branch automation/issue-11-plan-sdk-integration,
+  parent 61a9634e3173bb72f50a25d67f36ceae68b13997. Main remains 78a44faf.
+- Quiz raw-byte parser now rejects decoded NUL and unpaired UTF-16 surrogates
+  in keys and nested values before future PostgreSQL JSONB conversion. Valid
+  supplementary/Japanese characters survive raw UTF-8 and escaped pairs.
+  General AI JSON string semantics remain unchanged.
+- Paths: backend/ai/src/strict_json.ts, backend/ai/test/strict_json.test.ts,
+  docs/QUIZ_REPORT_API.md and this status. Separate diff review checked opt-in
+  scope, paired-surrogate advancement, fixed errors and unchanged resource bounds.
+- Local Prettier check, TypeScript check and all 11 strict JSON tests passed.
+  Full Node suite result and new exact-head CI are recorded in PR #41 handoff.
+  Flutter/native Windows/Deno not executed locally for this increment.
+- Parent CI41778425674 attempt1 on exact61a9634: all five jobs and every returned
+  step SUCCESS. Required Windows persistent vault/same SDK/profile/receipt
+  rotation preserve/reopen/no-redispatch/logout marker observed, TEST ONLY Auth/HTTP.
+- Next: inspect new exact-head CI all5/every step; continue reviewed canonical
+  content and replay-first boundary. No public quiz endpoint, collection,
+  Auth strategy, grants/RLS, default save or Pro/N4 change. Hosted learner
+  proof and all14 Personal Alpha release groups remain incomplete.
 
 
 ## Private atomic quiz report ledger — 2026-10-31 UTC

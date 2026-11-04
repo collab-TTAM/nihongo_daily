@@ -6,7 +6,10 @@ backend/ai/src/strict_json.ts now exports parseQuizReportJsonBody(Uint8Array)
 for a future quiz ingress adapter. It checks the original byte length (16 KiB
 maximum), fatal UTF-8 decoding, BOM rejection, duplicate decoded object keys
 at every depth, integer-only numeric lexemes and safe integer representation
-before any JSONB conversion. The helper returns an object only; it does not
+before any JSONB conversion. Quiz string values and object keys additionally
+reject decoded NUL and unpaired UTF-16 surrogates, including escaped forms;
+valid supplementary characters are preserved. This preflight restriction does
+not change the general AI decoder's string semantics. The helper returns an object only; it does not
 perform the nd-quiz-report-1 schema check, verify Auth, validate active
 curriculum/ordered choices, acquire the owner lock, or call the private ledger.
 

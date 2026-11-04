@@ -2,6 +2,7 @@ export const MAX_QUIZ_REPORT_BYTES = 16_384;
 
 interface StrictJsonOptions {
   integerNumbersOnly?: boolean;
+  postgresStringsOnly?: boolean;
   maxDepth?: number;
   maxTokens?: number;
 }
@@ -61,7 +62,21 @@ export function parseStrictJson(
       const code = text.charCodeAt(index);
       if (code === 0x22) {
         index++;
-        return text.slice(start, index);
+        const token = text.slice(start, index);
+        if (options.postgresStringsOnly) {
+          const decoded = JSON.parse(token) as string;
+          for (let unit = 0; unit < decoded.length; unit++) {
+            const current = decoded.charCodeAt(unit);
+            if (current === 0) throw invalidJson();
+            if (current >= 0xd800 && current <= 0xdbff) {
+              const next = decoded.charCodeAt(++unit);
+              if (!(next >= 0xdc00 && next <= 0xdfff)) throw invalidJson();
+            } else if (current >= 0xdc00 && current <= 0xdfff) {
+              throw invalidJson();
+            }
+          }
+        }
+        return token;
       }
       if (code === 0x5c) {
         index++;
@@ -220,6 +235,7 @@ export function parseQuizReportJsonBody(
     }).decode(raw);
     const value = parseStrictJson(text, {
       integerNumbersOnly: true,
+      postgresStringsOnly: true,
       maxDepth: 16,
       maxTokens: 2_048,
     });

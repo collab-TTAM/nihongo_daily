@@ -146,3 +146,38 @@ test("quiz raw body rejects invalid UTF-8, BOM and non-object JSON", () => {
     );
   }
 });
+
+test("quiz raw body rejects JSONB-incompatible strings in keys and values", () => {
+  const invalid = [
+    String.fromCharCode(0),
+    String.fromCharCode(0xd800),
+    String.fromCharCode(0xdfff),
+    String.fromCharCode(0xd800, 0x61),
+    String.fromCharCode(0xd800, 0xd800, 0xdc00),
+    String.fromCharCode(0xdc00, 0xd800),
+  ];
+  for (const value of invalid) {
+    for (const object of [{ outer: [value] }, { [value]: 1 }]) {
+      const raw = JSON.stringify(object);
+      assert.deepEqual(parseStrictJson(raw), object);
+      assert.throws(
+        () => parseQuizReportJsonBody(encode(raw)),
+        /^Error: Invalid quiz request body$/,
+      );
+    }
+  }
+});
+
+test("quiz raw body preserves valid supplementary and Japanese strings", () => {
+  const value = String.fromCodePoint(0x20bb7) + "日本語";
+  const object = { [value]: [value] };
+  assert.deepEqual(
+    parseQuizReportJsonBody(encode(JSON.stringify(object))),
+    object,
+  );
+  const escaped = JSON.stringify(object).replaceAll(
+    String.fromCodePoint(0x20bb7),
+    String.fromCharCode(92) + "ud842" + String.fromCharCode(92) + "udfb7",
+  );
+  assert.deepEqual(parseQuizReportJsonBody(encode(escaped)), object);
+});
