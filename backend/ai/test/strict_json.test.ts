@@ -46,10 +46,10 @@ test("strict JSON rejects duplicate keys and escaped aliases", () => {
 });
 
 test("strict JSON keeps generic JSON number semantics", () => {
-  assert.deepEqual(
-    parseStrictJson('{"fraction":1.25,"exponent":1e0}'),
-    { fraction: 1.25, exponent: 1 },
-  );
+  assert.deepEqual(parseStrictJson('{"fraction":1.25,"exponent":1e0}'), {
+    fraction: 1.25,
+    exponent: 1,
+  });
   assert.throws(
     () => parseStrictJson('{"overflow":1e400}'),
     /^Error: Invalid JSON body$/,
@@ -71,15 +71,9 @@ test("strict JSON rejects malformed, trailing and deep input", () => {
 
 test("AI decoder maps duplicate keys to fixed validation errors", () => {
   assert.throws(
-    () =>
-      parseBounded(
-        '{"event":"a","event":"b"}',
-        128,
-        "VALIDATION_FAILURE",
-      ),
+    () => parseBounded('{"event":"a","event":"b"}', 128, "VALIDATION_FAILURE"),
     (error: unknown) =>
-      error instanceof BoundaryError &&
-      error.code === "VALIDATION_FAILURE",
+      error instanceof BoundaryError && error.code === "VALIDATION_FAILURE",
   );
 });
 

@@ -10986,3 +10986,13 @@ All145priorQA/findings/gates exact; source and fixture parity verified. Full new
 Flutter/native/build unrun locally/no bootstrap retry/bypass. This is NOT secure
 persistence/OS crypto/hosted/release proof; codec unused and encoding sensitive
 plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
+
+
+## Core worker checkpoint — RELEASED — 2026-11-04 UTC
+
+- Run `core-20261104T0513Z-pr41-prettier-cleanup` on PR #41, branch `automation/issue-11-plan-sdk-integration`; source parent `4dedb658a8e2ba1cd6f677b04fb6ed685c6ea1f8`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Resumed the existing raw-JSON/quiz boundary handoff. Exact formatter output from failed CI [41192601564](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41192601564) was applied only to `backend/ai/test/strict_json.test.ts`; the temporary read-only diagnostic step was removed from `.github/workflows/ci.yml`. Strict `npm run format:check`, `npm run check`, `npm test`, Deno checks and all downstream CI gates remain unchanged.
+- The failed parent run's other four jobs (database, repo-sanity, Windows, Flutter) completed successfully with every returned step; only ai-boundary strict formatting failed, so its downstream checks were skipped. No test assertions/semantics or production behavior changed.
+- Paths: `.github/workflows/ci.yml`, `backend/ai/test/strict_json.test.ts`, `docs/PROJECT_STATUS.md`. The status handoff is appended after the existing content; no previous evidence is replaced.
+- The complete source tree before editing contained 903 entries (788 blobs / 115 trees), untruncated. The next exact-head CI is the required verification; cloud runtime has no checked-out Node/Deno/Flutter SDK, so no local format/analyze/test/build result is claimed. No Pro-owned N4 scope, Auth strategy, production configuration, SQL/RLS, dependency, security gate, deployment or release changed.
+- Next: inspect every latest-attempt job and step for the new exact commit. Keep PR #41 draft and related issues open until remaining plan/session, curriculum/study, quiz persistence, Kanji assets/grading and hosted release acceptance are proven.
