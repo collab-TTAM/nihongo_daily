@@ -1,3 +1,14 @@
+## Core worker handoff — pinned Dart formatting correction — 2026-11-04T03:10Z
+
+- Run `core-20261104T0307Z-fix-pinned-dart-format`; branch `automation/issue-22-atomic-review`; source commit `c6dcb7de5d858ba6aa59d549daff374446f869bf` (parent `083a9a29567d5fc5e7096ad282c9c5983026110a`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Changed source paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` and `.github/workflows/ci.yml`. Applied exactly the two pinned Dart 3.35.4 formatter line-wraps reported by diagnostic CI and removed the temporary read-only formatter diagnostic. No assertions, test behavior, production Auth/session/vault, schema/RLS, dependency, CI gate or Pro-owned N4 content changed.
+- Parent exact-head CI [41759416459](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41759416459), attempt 1, had repo-sanity, AI boundary, database/RLS, disposable local Supabase integration and Windows SUCCESS with all returned steps; Flutter strict format FAILED only because these two long reason strings needed wrapping. Flutter analyze, full suite and all downstream Flutter checks were SKIPPED, not passed.
+- Separate source diff/tree review: only the two intended blobs changed; complete recursive tree was untruncated at 327 entries (262 blobs / 65 trees), with identical paths/modes/types and all other 325 entries retained. create_tree used exact base tree `958106d49897afc54ddab72d838bd476a66e3737`; source commit parent was the exact prior branch head; update_ref used `expected_sha=083a9a29567d5fc5e7096ad282c9c5983026110a`, `force=false`.
+- Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head CI is the verification gate. No hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry or physical multi-device evidence is claimed.
+- Next: inspect every latest-attempt job and required step for the final status commit; require strict format, analyze, full Flutter suite, lifecycle/vault/profile/wire/Chrome/Web, Windows, disposable Supabase, database, AI boundary and repo-sanity without required skips. Fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned #14/#38/N4 untouched.
+
+---
+
 ## Core worker handoff — account profile barrier formatter — 2026-11-04T00:22Z
 
 - Run `core-20261104T0018Z-format-account-fixture` RELEASED. Branch `automation/issue-22-atomic-review`; formatter source commit `b4beee09d3c5b100620dfdc473ec9854c0042441` (parent `b86b7981ea3a5ab66e17b99681f1220f4bb03567`); status handoff follows source commit `b4beee09d3c5b100620dfdc473ec9854c0042441`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
