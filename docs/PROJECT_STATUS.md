@@ -2752,3 +2752,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Applied those exact formatter hunks to `windows_persistent_supabase_runtime_test.dart`. Added a non-vacuous `auth.logout` presence assertion before checking the later Windows vault clear.
 - Removed the temporary read-only diagnostic step from `.github/workflows/ci.yml` in this same correction. The strict repository-wide `dart format --output=none --set-exit-if-changed .` gate remains unchanged.
 - Run 417929: repo-sanity, AI boundary and database SUCCESS; Flutter formatter diagnostic showed the mismatch and strict format failed before analyze/tests; Windows and Supabase integration were IN_PROGRESS at the last observation. A new exact-head full CI run is required; no analyze/test/build pass is claimed. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device evidence remain outstanding.
+
+
+## Follow-up formatter diagnostic — 2026-11-04 UTC
+
+- Corrected source head `7ccb03a3b8943f2d8824f825ab55766ca617be44` still failed the strict Dart format step in exact-head CI [41793363427](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41793363427); repo-sanity passed, database and AI boundary passed, Flutter analyze/tests were skipped after formatting, and Windows/Supabase jobs were still running at last observation.
+- The first diagnostic's three hunks were applied, but the strict formatter still reports this test file changed. Re-added the same read-only `dart format --output=show` + `diff -u` diagnostic (unique step name, no YAML colon) to capture the remaining exact diff. It writes only to `RUNNER_TEMP`; strict formatting remains mandatory.
+- Next: apply the second exact diff and remove the diagnostic in the same commit. No analyzer/test/build success is claimed.
