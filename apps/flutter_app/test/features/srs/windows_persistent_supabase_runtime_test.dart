@@ -164,6 +164,9 @@ void main() {
   });
 
   tearDown(() async {
+    if (writeWait != null && !writeWait!.isCompleted) {
+      writeWait!.complete();
+    }
     await runtime.close();
     await journal.close();
     await directory.delete(recursive: true);
