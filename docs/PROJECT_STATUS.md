@@ -2823,3 +2823,16 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud runtime has no Flutter/Dart SDK; no local format/analyze/test/build is claimed. The successor exact-head Actions run must verify format, analyze, the full Flutter suite, all native/browser verifiers and builds.
 - Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned #14/#38/N4 untouched.
 - Next: inspect every latest-attempt job and required step on the successor exact HEAD; fix only observed failures. Do not merge this draft from formatter correction alone.
+
+
+## Core worker handoff — formatter correction — 2026-11-04T18:12Z
+
+- Run `core-20261104T1812Z-pr37-browser-store-format-fix`; branch `automation/issue-22-atomic-review`.
+- Source commit: `bfd99f84327799db77bd451c6aad3254374c1d1d` (parent `6cd904e430087b78c08b88382686d043b304a7ec`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Applied the exact Dart 3.35.4 formatter diff from diagnostic CI [41875730877](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41875730877) to `apps/flutter_app/test/features/srs/browser_review_store_check.dart`: compact the `reject` override signature and wrap its delegate call as emitted; retain one final newline.
+- Removed the temporary read-only diagnostic step from `.github/workflows/ci.yml` in the same source commit. The strict repository-wide formatter gate remains unchanged. No assertions, runtime, Auth, schema/RLS, dependencies, defaults or Pro-owned N4 files changed.
+- Exact diagnostic job observed: repo-sanity, AI boundary, database, Windows and disposable Supabase integration all SUCCESS; Flutter failed only at strict Dart format. The diagnostic output identified this single file/hunk plus the EOF newline. Flutter analyze, full tests and downstream checks were skipped, not passed.
+- Complete base tree previously read back for the 6cd diagnostic checkpoint: 328 entries (263 blobs / 65 trees), with the only delta from its parent being `.github/workflows/ci.yml`. Reconstructed that exact current-head tree from the verified parent tree `592ac416c4115e7bab41775ee63ea0ef7ee3f7df` plus the recorded workflow blob `f684c799d8dde266cc4c034d25b9e02d8be52b62`; the source tree is based on that reconstructed current-head tree, preserving all untouched paths/modes/types.
+- Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build is claimed. Successor exact-head Actions must pass formatter, analyze, all Flutter tests, Windows, disposable Supabase integration and all required downstream checks before this correction is green.
+- PR remains Draft; #20/#22/#15 remain open. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device proof remain unverified. No merge or deployment.
+
