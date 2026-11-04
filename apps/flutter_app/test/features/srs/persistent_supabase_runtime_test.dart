@@ -154,6 +154,56 @@ void main() {
   });
 
   test(
+    'caller close waits for a pending vault read and rejects late restore',
+    () async {
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      backend.readWait = Completer<void>();
+      final starting = runtime.start();
+      final startFailure = expectLater(
+        starting,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(backend.operations, ['read']);
+      expect(runtime.persistence.phase, SessionPersistencePhase.restoring);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+      );
+
+      final closing = runtime.close();
+      await waitForCondition(
+        () => runtime.persistence.phase == SessionPersistencePhase.closed,
+        reason: 'close did not revoke persistence while vault read was pending',
+      );
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
+      expect(backend.operations, ['read']);
+
+      backend.readWait!.complete();
+      await startFailure;
+      await closing;
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(backend.operations, ['read', 'clear']);
+      expect(backend.secret, isNull);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
+        isEmpty,
+      );
+    },
+  );
+
+  test(
     'SDK startup server refresh persists rotation before own profile',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';

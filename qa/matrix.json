@@ -249,7 +249,7 @@
     {
       "id": "persistent-session-lifecycle",
       "status": "automated-baseline",
-      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP",
+      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -283,6 +283,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/supabase_review_binding_test.dart",
           "contains": "new owned Auth generation fences delayed null sign-out events"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "caller close waits for a pending vault read and rejects late restore"
         }
       ],
       "issues": [

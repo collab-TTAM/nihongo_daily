@@ -520,3 +520,25 @@ paths.
 
 This is a local event-ordering guard, not JWT signature verification, hosted Auth
 proof, or permission for another caller to mutate the exclusively owned SDK.
+
+
+## Caller close while startup vault read is pending — 2026-11-04
+
+The caller-owned runtime can be closed while its initial OS credential read is
+still pending. Closing revokes the accepted-session generation immediately and
+waits for the owned persistence operation to settle. If the vault read returns
+after close began, the captured generation/closed guard must reject the saved
+secret before any Supabase Auth refresh or own-profile RPC. The cancelled
+startup then clears the exact project vault slot before the caller-owned close
+completes.
+
+The pinned-Supabase-SDK regression holds the TEST ONLY in-memory vault read,
+starts caller close, confirms the saved secret is not cleared before the read
+settles, then releases the late read. It requires no Auth token request, no
+profile RPC, a single ordered read-then-clear, and a closed persistence phase.
+
+This is a TEST ONLY SDK/MockClient/in-memory-vault lifecycle check. It does not
+inject a stalled native Windows Credential Manager call or prove hosted
+signed-JWT learner restoration, deployed RLS, OS logoff, or power-loss behavior.
+No production Auth/session/vault implementation, default activation, plaintext
+fallback, strategy/provider, schema/RLS, or Pro-owned N4 content changes.

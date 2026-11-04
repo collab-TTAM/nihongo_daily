@@ -2700,3 +2700,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `.github/workflows/ci.yml` and `docs/PROJECT_STATUS.md`. No production Auth/session/vault, API/schema/RLS, dependencies, tests/assertions, default activation, Pro-owned N4 paths or release settings changed.
 - Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build was run. Hosted signed-JWT learner A/B, deployed RLS, hosted restart/expiry and physical multi-device proof remain outstanding. PR #37 stays Draft; #20/#22/#15 remain open; Pro-owned #14/#38/N4 untouched.
 - Next: inspect the exact diff from the new exact-head CI, apply only Dart's formatting output, remove the temporary diagnostic, then require all six jobs and every required step on the final head.
+
+
+## Caller-owned close during pending credential-vault read — 2026-11-04T06:12Z
+
+- PR #37 branch `automation/issue-22-atomic-review`, starting HEAD `4494c3c9df3e9e6c1299a44fcf7c114af07b5b2e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added a pinned-Supabase-SDK regression in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: caller close begins while the startup vault read is held; the owner remains draining until the read settles, then rejects the late saved secret, performs one ordered `read -> clear`, and completes closed. The test requires zero `/auth/v1/token` and zero `ensure_profile` requests.
+- Updated `docs/PERSISTENT_SESSION_LIFECYCLE.md` and the existing `persistent-session-lifecycle` QA anchor; no new acceptance case was claimed.
+- Previous exact-head CI [41772535782](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41772535782) completed SUCCESS on `4494c3c9df3e9e6c1299a44fcf7c114af07b5b2e`: repo-sanity 11/11, AI boundary 12/12, database 12/12, disposable Supabase integration 13/13, Windows 17/17, Flutter 35/35; every job and returned step SUCCESS. This is parent-head evidence only.
+- No Dart/Flutter SDK is available in this cloud runtime; local format/analyze/test/build were not run. New exact-head CI is required before claiming the regression passes.
+- No production Auth/session/vault code, Auth strategy/provider, SQL/schema/RLS, dependencies, default runtime activation, secrets, deployment, merge, or Pro-owned #14/#38/N4 paths changed. Hosted signed-JWT learner A/B, hosted restart/expiry, deployed RLS and physical multi-device proof remain outstanding.
+- Worker remains ACTIVE while the source/tree/diff checkpoint is persisted; next action is inspect every latest-attempt job and step on the final exact head.
