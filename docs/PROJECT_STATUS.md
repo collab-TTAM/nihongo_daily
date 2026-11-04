@@ -1,11 +1,13 @@
-## Core worker checkpoint — IndexedDB captured-session recovery fence — 2026-11-04T15:07Z
+## Core worker handoff — IndexedDB captured-session recovery fence — 2026-11-04T15:12Z
 
-- Resumed released Draft PR #37 on `automation/issue-22-atomic-review`, starting HEAD `36f1215d8cbcf2ec88e89bda072fbc189c4708da`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. The previous PR #37 marker was RELEASED at 14:14Z; PR #41 was RELEASED at 12:50Z.
-- Added an actual-Chrome IndexedDB regression in `apps/flutter_app/test/features/srs/browser_review_store_check.dart`: a User A pending snapshot is read from real IndexedDB, the captured Auth session switches to User B before the delayed read returns, and recovery must fail with the fixed UNAUTHORIZED category. The original A event remains pending and B's projection stays empty.
-- Updated `docs/BROWSER_REVIEW_STORE.md` and the existing `browser-transactional-review` QA case/anchor. No production Auth, vault, SQL/schema/RLS, frozen contract, default runtime activation, dependency or Pro-owned N4/content paths changed.
-- The prior exact-head CI [41845586766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41845586766) passed all six jobs/every step on parent `36f1215d8cbcf2ec88e89bda072fbc189c4708da`. The new browser test and this documentation/QA increment require a fresh exact-head run; Flutter/Dart SDK is not available in the cloud runtime, so local Flutter format/analyze/test/build are not claimed.
-- This TEST ONLY Auth port + real IndexedDB test proves stale local recovery is fenced; it does not prove hosted signed JWT, deployed RLS/PostgREST, learner A/B, physical multi-device sync or Personal Alpha. Keep #15/#20/#22 open and PR #37 Draft.
-- Next: inspect all six jobs/every step on the new exact HEAD; fix only observed failures. Hosted non-production Supabase configuration is still required for #20/#22/#15 learner acceptance.
+- Run `core-20261104T1507Z-indexeddb-account-switch-recovery-fence`; branch `automation/issue-22-atomic-review`; source commit `bac58582e75c37c0a06f2dc407d42762fdb91fe1` (parent `36f1215d8cbcf2ec88e89bda072fbc189c4708da`), tree `f9f211629793c62faeed194c2fa3c9afe5a161ed`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Changed paths: `apps/flutter_app/test/features/srs/browser_review_store_check.dart`, `docs/BROWSER_REVIEW_STORE.md`, `qa/matrix.json`, and this status handoff. The new actual-Chrome IndexedDB test holds a User A recovery snapshot, switches the captured Auth session to B, then requires safe UNAUTHORIZED, preserves A's pending event, and confirms B's owner projection is empty.
+- Exact-head CI [41855397832](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41855397832), attempt 1, targets source commit `bac58582e75c37c0a06f2dc407d42762fdb91fe1`. At the 15:12Z observation repo-sanity, AI boundary and database completed SUCCESS; Windows, disposable Supabase integration and Flutter were IN_PROGRESS. Flutter SDK setup was still running; formatter/analyze/tests/build had not run. No full pass is claimed.
+- The previous exact-head CI [41845586766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41845586766) passed all six jobs/every step on the parent only. Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build are not claimed.
+- Full recursive source tree was untruncated at 328 entries; four intended blobs changed and all 259 untouched blobs/path/mode/type entries were preserved. The source commit has one parent and compare shows exactly the four intended paths. QA JSON parses successfully.
+- This TEST ONLY Auth port plus real browser IndexedDB is not hosted signed-JWT A/B, deployed RLS/PostgREST, physical two-device sync or Personal Alpha evidence. Keep #15/#20/#22 open and PR #37 Draft. Pro-owned #14/#38/N4 content is untouched.
+- Next: inspect every latest-attempt job and required step on the final status HEAD; fix only observed failures, then continue hosted acceptance when approved non-production Supabase configuration is available.
+
 
 ---
 
