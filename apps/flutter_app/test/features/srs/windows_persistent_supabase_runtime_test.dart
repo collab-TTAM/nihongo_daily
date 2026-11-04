@@ -431,10 +431,7 @@ void main() {
       expect(storedSecret, refreshSecret);
       final failedClear = timeline.lastIndexOf('vault.clear');
       expect(failedClear, greaterThan(-1));
-      expect(
-        failedClear,
-        greaterThan(timeline.lastIndexOf('auth.logout')),
-      );
+      expect(failedClear, greaterThan(timeline.lastIndexOf('auth.logout')));
 
       authUser = wire.b;
       authSession = wire.sid2;
@@ -481,3 +478,4 @@ void main() {
     },
   );
 }
+
