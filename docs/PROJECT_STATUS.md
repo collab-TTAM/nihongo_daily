@@ -2836,3 +2836,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud runtime has no Dart/Flutter SDK; no local format/analyze/test/build is claimed. Successor exact-head Actions must pass formatter, analyze, all Flutter tests, Windows, disposable Supabase integration and all required downstream checks before this correction is green.
 - PR remains Draft; #20/#22/#15 remain open. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device proof remain unverified. No merge or deployment.
 
+
+
+## Core worker handoff — Windows vault formatter diagnostic — 2026-11-04T22:14Z
+
+- Run `core-20261104T2214Z-pr37-dart-format-diagnostic`; branch `automation/issue-22-atomic-review`; parent HEAD `8627685d76431c4637e01815a10deeab223f6bfd`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [41913994938](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41913994938), attempt 1, completed: repo-sanity, AI boundary, database, disposable local Supabase integration and Windows all SUCCESS with every listed step. Flutter failed only at pinned Dart 3.35.4 strict formatting: `windows_persistent_supabase_runtime_test.dart` was the sole changed file. Flutter analyze, full suite and downstream Flutter steps were SKIPPED, not passed. The job log did not include formatter output, so no guessed source patch was applied.
+- Added a temporary read-only formatter output/diff step in `.github/workflows/ci.yml` for that one test file, before the unchanged strict repository-wide formatter gate. The diagnostic is to expose the exact formatter hunk; remove it in the same source correction after applying the emitted patch.
+- No production Auth/vault/runtime/API/schema/RLS/default behavior, assertions, dependencies, Pro-owned #14/#38 or N4 content changed. Cloud runtime has no Flutter/Dart SDK; no local Flutter format/analyze/test/build was run.
+- Next: inspect the new exact-head Actions run and its Flutter job log, apply only the exact Dart 3.35.4 diff, remove the temporary diagnostic, update this status with observed final checks, and require all jobs/steps on the corrected HEAD. Keep PR #37 Draft and #20/#22/#15 open; hosted signed-JWT learner A/B, deployed RLS/PostgREST, hosted expiry/restart and physical multi-device acceptance remain outstanding.
