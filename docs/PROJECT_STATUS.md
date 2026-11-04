@@ -1,26 +1,25 @@
 # PROJECT STATUS
 
-## Quiz JSON string preflight — 2026-11-04 UTC
+## Typed quiz request decoder — 2026-11-04 UTC
 
-- Draft PR #41 / issue #13; branch automation/issue-11-plan-sdk-integration,
-  parent 61a9634e3173bb72f50a25d67f36ceae68b13997. Main remains 78a44faf.
-- Quiz raw-byte parser now rejects decoded NUL and unpaired UTF-16 surrogates
-  in keys and nested values before future PostgreSQL JSONB conversion. Valid
-  supplementary/Japanese characters survive raw UTF-8 and escaped pairs.
-  General AI JSON string semantics remain unchanged.
-- Paths: backend/ai/src/strict_json.ts, backend/ai/test/strict_json.test.ts,
-  docs/QUIZ_REPORT_API.md and this status. Separate diff review checked opt-in
-  scope, paired-surrogate advancement, fixed errors and unchanged resource bounds.
-- Local Prettier check, TypeScript check and all 11 strict JSON tests passed.
-  Full Node suite result and new exact-head CI are recorded in PR #41 handoff.
-  Flutter/native Windows/Deno not executed locally for this increment.
-- Parent CI41778425674 attempt1 on exact61a9634: all five jobs and every returned
-  step SUCCESS. Required Windows persistent vault/same SDK/profile/receipt
-  rotation preserve/reopen/no-redispatch/logout marker observed, TEST ONLY Auth/HTTP.
-- Next: inspect new exact-head CI all5/every step; continue reviewed canonical
-  content and replay-first boundary. No public quiz endpoint, collection,
-  Auth strategy, grants/RLS, default save or Pro/N4 change. Hosted learner
-  proof and all14 Personal Alpha release groups remain incomplete.
+- Draft PR41 / issue13, branch automation/issue-11-plan-sdk-integration;
+  parent19e3b9467678dae65f2a845232460292a7708d6d, main78a44faf.
+- Added backend/ai/src/quiz_report.ts and test/quiz_report.test.ts. Trusted
+  repository-schema decoder composes raw guard, strict schema, unique targets,
+  choice membership and real UTC calendar, retaining exact timestamp/array order.
+  Deeply frozen output, no raw byte aliases, fixed VALIDATION_FAILURE errors;
+  asynchronous schema rejected at setup. Updated QUIZ_REPORT_API and this status.
+- Local pinned Prettier, TypeScript and all204 Node tests PASS (7 new decoder
+  groups). Separate review checked byte-first validation, no coercion/stripping,
+  guarded schema assertion, calendar normalization, nested freeze and safe errors.
+  Deno/Flutter/native Windows not executed locally; new exact-head CI pending.
+- Parent exact19e3b946 CI41788686231 attempt1 ALL5/EVERYstep SUCCESS,
+  with mandatory Windows persistent SDK/receipt marker observed TEST ONLY.
+  This is not hosted signed-JWT learner or Personal Alpha proof.
+- Next inspect new exact-head all5 jobs/every step; then canonical-content and
+  replay-first transaction integration. No public endpoint, Auth/grant/RLS,
+  default save/collection activation or Pro/N4 change. PR37 old source untouched.
+  All14 release groups and issue13 remain open. Commit/CI links in PR41 handoff.
 
 
 ## Private atomic quiz report ledger — 2026-10-31 UTC

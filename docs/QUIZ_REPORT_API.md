@@ -20,6 +20,27 @@ trailing-body cases. It is a reusable internal primitive, not a public endpoint
 or an activated collection path. The private ledger remains inaccessible to
 app roles; no RPC, migration, grant, upload or default app behavior changed.
 
+## Typed request decoder — 2026-11-04
+
+`backend/ai/src/quiz_report.ts` exposes `createQuizReportDecoder(schema)`.
+The trusted host supplies the unchanged repository nd-quiz-report-1 schema;
+learner input must never choose a schema. The returned function consumes raw
+bytes through the guard above, validates the request definition without coercion,
+defaults or field stripping, rejects repeated targets and nonmember choices,
+and checks the real UTC calendar. Asynchronous schemas are rejected at setup.
+It preserves original timestamp spelling/microseconds and answer/choice order,
+then freezes the report, answer list, each answer and each choice list.
+All request failures become the fixed VALIDATION_FAILURE boundary error.
+
+Seven regression groups exercise all three canonical request fixtures, unknown/
+missing fields, versions, kind, choice membership/duplicates, calendar overflow,
+raw guard composition, nested immutability and asynchronous schema rejection.
+These run in the existing Node/Deno test discovery. This is an internal decoder:
+no HTTP route, verified identity, canonical-content check, transaction, public
+RPC or upload is provided. Future replay lookup must still precede current-content
+and future-time checks under the same owner transaction. No stored report or
+learner acceptance is implied by successful decoding.
+
 ## Private ledger foundation — 2026-10-31 UTC
 
 Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
