@@ -1,25 +1,25 @@
 # PROJECT STATUS
 
-## Quiz replay-first transaction coordinator — 2026-11-04 UTC
+## Quiz transaction cancellation fences — 2026-11-04 UTC
 
 - Draft41/issue13, automation/issue-11-plan-sdk-integration; parent
-  b8761579f080befe3638430bbbe054b357bb4d08; main78a44faf.
-- Added backend/ai/src/quiz_report_transaction.ts and corresponding test file;
-  updated QUIZ_REPORT_API and this status. Capture request before await, replay
-  first, only explicit miss permits content validation/store; validate response
-  inside transaction callback before host commit. Fixed redacted errors.
-- Local TypeScript/pinned Prettier/216 Node tests PASS; separate source/test diff
-  review. Coverage: canonical rounds, replay bypass, malformed ingress, lookup
-  failure/unknown, conflict/content failures, malformed replay/store, captured
-  bytes and commit failure. Scripted host TEST ONLY; actual verified-owner
-  PostgreSQL transaction, canonical-content/clock adapters remain missing.
-- Deno/Flutter/native Windows unrun locally; new exact-head CI pending.
-  Parent CI41881800638 attempt1/all5/every step SUCCESS; raw Windows mandatory
-  persistent SDK/profile/receipt marker observed TEST ONLY Auth/HTTP.
-- Next inspect new exact-head CI/latest attempt/all required steps, then wire
-  real verified-owner transaction/canonical content and native rollback tests.
-  No default host/public endpoint/SQL/grant/Auth/collection/Pro scope changes.
-  PR37 source untouched. Draft/#13/all14 Personal Alpha release groups stay open.
+  39739c2a1b474659669923cb8754818dcd4c5546; main78a44faf.
+- Updated backend/ai/src/quiz_report_transaction.ts, its test file and
+  QUIZ_REPORT_API. Optional caller AbortSignal reaches host; fences before open,
+  delayed callback, after replay/content/store and after host completion prevent
+  cancelled work progressing or late success. Safe NETWORK_UNAVAILABLE only.
+- Three regression groups exercise pre-cancel, delayed callback/all awaited phases,
+  replay hit and late committed response. No Promise.race/orphaned operation;
+  commit cancellation may already be committed and grants no retry authority.
+  Host still owns bounded DB deadlines/cancellation/rollback and commit checks.
+- Local pinned format/TypeScript/219 Node tests PASS; separate diff review.
+  Deno/Flutter/native Windows/real PostgreSQL cancellation unrun locally.
+- Parent CI41929216029 attempt1/all5/every step SUCCESS with mandatory raw Windows
+  persistent SDK/profile/receipt marker TEST ONLY Auth/HTTP. New-head CI pending.
+- Next verify new exact-head/latest attempt/all5 required jobs/steps, then implement
+  verified-owner PostgreSQL/content adapter with native rollback/concurrency and
+  cancellation evidence. No endpoint/SQL/grants/Auth/default/Pro change. PR37 source
+  untouched; draft/#13/all14 Personal Alpha release groups remain open.
 
 
 ## Private atomic quiz report ledger — 2026-10-31 UTC

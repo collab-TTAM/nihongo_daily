@@ -164,3 +164,103 @@ test("quiz captures bytes before await and does not hide commit failure", async 
     /^Error: INTERNAL_ERROR$/,
   );
 });
+
+test("quiz pre-cancelled operation does not open a transaction or leak reason", async () => {
+  const controller = new AbortController();
+  controller.abort("private token");
+  const h = harness(fixtures[0]);
+  await assert.rejects(
+    submit(schema, encode(fixtures[0].request), h.host, controller.signal),
+    /^Error: NETWORK_UNAVAILABLE$/,
+  );
+  assert.deepEqual(h.calls, []);
+});
+
+test("quiz cancellation at delayed callback or awaited phases stops subsequent work", async () => {
+  for (const phase of ["begin", "replay", "content", "store"] as const) {
+    const controller = new AbortController();
+    const calls: string[] = [];
+    const cancel = async (current: string) => {
+      calls.push(current);
+      await Promise.resolve();
+      if (current === phase) controller.abort("private token");
+    };
+    const host: QuizReportTransactionHost = {
+      async run(work, signal) {
+        assert.equal(signal, controller.signal);
+        await cancel("begin");
+        try {
+          const result = await work({
+            async replay() {
+              await cancel("replay");
+              return null;
+            },
+            async validateCurrentContent() {
+              await cancel("content");
+            },
+            async store() {
+              await cancel("store");
+              return encode(fixtures[0].response);
+            },
+          });
+          calls.push("commit");
+          return result;
+        } catch (error) {
+          calls.push("rollback");
+          throw error;
+        }
+      },
+    };
+    await assert.rejects(
+      submit(schema, encode(fixtures[0].request), host, controller.signal),
+      /^Error: NETWORK_UNAVAILABLE$/,
+    );
+    const order = ["begin", "replay", "content", "store"];
+    assert.deepEqual(calls, [
+      ...order.slice(0, order.indexOf(phase) + 1),
+      "rollback",
+    ]);
+  }
+});
+
+test("quiz cancelled replay and late committed response never publish success", async () => {
+  for (const phase of ["replay", "commit"] as const) {
+    const controller = new AbortController();
+    const f = fixtures[0];
+    const calls: string[] = [];
+    const host: QuizReportTransactionHost = {
+      async run(work) {
+        try {
+          const result = await work({
+            async replay() {
+              calls.push("replay");
+              await Promise.resolve();
+              if (phase === "replay") controller.abort();
+              return encode(f.response);
+            },
+            async validateCurrentContent() {
+              assert.fail("replay content");
+            },
+            async store() {
+              assert.fail("replay store");
+            },
+          });
+          calls.push("commit");
+          controller.abort();
+          return result;
+        } catch (error) {
+          calls.push("rollback");
+          throw error;
+        }
+      },
+    };
+    await assert.rejects(
+      submit(schema, encode(f.request), host, controller.signal),
+      /^Error: NETWORK_UNAVAILABLE$/,
+    );
+    assert.deepEqual(
+      calls,
+      phase === "replay" ? ["replay", "rollback"] : ["replay", "commit"],
+    );
+  }
+});

@@ -22,6 +22,7 @@ export interface QuizReportTransaction {
 export interface QuizReportTransactionHost {
   run(
     work: (tx: QuizReportTransaction) => Promise<QuizReportResponse>,
+    signal?: AbortSignal,
   ): Promise<QuizReportResponse>;
 }
 
@@ -29,23 +30,38 @@ export async function submitQuizReportInTransaction(
   schema: AnySchemaObject,
   raw: Uint8Array,
   host: QuizReportTransactionHost,
+  signal?: AbortSignal,
 ): Promise<QuizReportResponse> {
+  const check = () => {
+    if (signal?.aborted) throw new BoundaryError("NETWORK_UNAVAILABLE");
+  };
   try {
+    check();
     const request = createQuizReportDecoder(schema)(raw);
     const decodeResponse = createQuizReportResponseDecoder(schema, raw);
-    return await host.run(async (tx) => {
+    const result = await host.run(async (tx) => {
+      check();
       const replay = await tx.replay(request);
+      check();
       if (replay !== null) return decodeResponse(replay);
       await tx.validateCurrentContent(request);
-      return decodeResponse(await tx.store(request));
-    });
+      check();
+      const stored = await tx.store(request);
+      check();
+      return decodeResponse(stored);
+    }, signal);
+    check();
+    return result;
   } catch (error) {
     // Reconstruct safe errors; never forward mutable messages/SQL details.
     if (
       error instanceof BoundaryError &&
-      ["VALIDATION_FAILURE", "SYNC_CONFLICT", "UNAUTHORIZED"].includes(
-        error.code,
-      )
+      [
+        "VALIDATION_FAILURE",
+        "SYNC_CONFLICT",
+        "UNAUTHORIZED",
+        "NETWORK_UNAVAILABLE",
+      ].includes(error.code)
     )
       throw new BoundaryError(error.code);
     throw new BoundaryError("INTERNAL_ERROR");

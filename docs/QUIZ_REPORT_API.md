@@ -78,6 +78,19 @@ adapter is supplied. Scripted transaction traces are TEST ONLY, not native DB
 rollback, concurrency or hosted learner evidence. Actual wiring remains required.
 An authoritative miss inside this transaction is not learner retry permission.
 
+The coordinator optionally accepts the caller's AbortSignal and passes the same
+signal to the host. It checks before opening, when the transaction callback starts,
+after each awaited replay/content/store phase, and after the host returns. An
+observed cancellation yields only NETWORK_UNAVAILABLE, never the abort reason.
+Cancellation before/during work rejects the callback so a conforming host rolls
+back; cancellation during commit may already have committed and remains UNKNOWN
+to the caller. It never authorizes retry, deletion or a claim that rollback occurred.
+The host must enforce its own bounded DB cancellation/deadlines and check the
+signal before commit. The coordinator awaits operation settlement rather than
+racing an orphaned DB promise; it does not itself impose a timeout. Scripted
+cancellation tests do not prove native PostgreSQL cancellation/rollback.
+
+
 ## Private ledger foundation — 2026-10-31 UTC
 
 Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
