@@ -422,7 +422,7 @@
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",
-      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, immutable original outcomes and page reload/second-tab persistence",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -432,6 +432,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
           "contains": "two connections serialize"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "late User A recovery cannot publish after account switch"
         },
         {
           "path": "scripts/verify_browser_review_restart.py",

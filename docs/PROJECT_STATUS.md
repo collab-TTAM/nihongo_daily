@@ -1,3 +1,14 @@
+## Core worker checkpoint — IndexedDB captured-session recovery fence — 2026-11-04T15:07Z
+
+- Resumed released Draft PR #37 on `automation/issue-22-atomic-review`, starting HEAD `36f1215d8cbcf2ec88e89bda072fbc189c4708da`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. The previous PR #37 marker was RELEASED at 14:14Z; PR #41 was RELEASED at 12:50Z.
+- Added an actual-Chrome IndexedDB regression in `apps/flutter_app/test/features/srs/browser_review_store_check.dart`: a User A pending snapshot is read from real IndexedDB, the captured Auth session switches to User B before the delayed read returns, and recovery must fail with the fixed UNAUTHORIZED category. The original A event remains pending and B's projection stays empty.
+- Updated `docs/BROWSER_REVIEW_STORE.md` and the existing `browser-transactional-review` QA case/anchor. No production Auth, vault, SQL/schema/RLS, frozen contract, default runtime activation, dependency or Pro-owned N4/content paths changed.
+- The prior exact-head CI [41845586766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41845586766) passed all six jobs/every step on parent `36f1215d8cbcf2ec88e89bda072fbc189c4708da`. The new browser test and this documentation/QA increment require a fresh exact-head run; Flutter/Dart SDK is not available in the cloud runtime, so local Flutter format/analyze/test/build are not claimed.
+- This TEST ONLY Auth port + real IndexedDB test proves stale local recovery is fenced; it does not prove hosted signed JWT, deployed RLS/PostgREST, learner A/B, physical multi-device sync or Personal Alpha. Keep #15/#20/#22 open and PR #37 Draft.
+- Next: inspect all six jobs/every step on the new exact HEAD; fix only observed failures. Hosted non-production Supabase configuration is still required for #20/#22/#15 learner acceptance.
+
+---
+
 ## Core worker handoff — exact-head CI success and final diff review — 2026-11-04T04:14Z
 
 - Resumed open Draft PR #37 on `automation/issue-22-atomic-review`; source HEAD `15acaede269a67d1b7732b164fac34db0800439b`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

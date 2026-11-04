@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/srs/data/browser_review_store.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
@@ -13,6 +15,41 @@ import 'receipt_retention_fixtures.dart' as retention;
 final class _Auth implements ReviewAuth {
   @override
   ReviewSession? currentSession = ReviewSession(userId: fixture.owner);
+}
+
+
+final class _DelayedListStore implements DurableReviewStore {
+  _DelayedListStore(this.delegate);
+
+  final DurableReviewStore delegate;
+  final started = Completer<void>();
+  final release = Completer<void>();
+
+  @override
+  Future<List<StoredReview>> list(String userId) async {
+    final snapshot = await delegate.list(userId);
+    if (!started.isCompleted) started.complete();
+    await release.future;
+    return snapshot;
+  }
+
+  @override
+  Future<StoredReview> stage(String userId, Map<String, Object> request) =>
+      delegate.stage(userId, request);
+
+  @override
+  Future<void> acknowledge(
+    String userId,
+    String eventId,
+    ReviewSuccess receipt,
+  ) => delegate.acknowledge(userId, eventId, receipt);
+
+  @override
+  Future<void> reject(
+    String userId,
+    String eventId,
+    ReviewFailure rejection,
+  ) => delegate.reject(userId, eventId, rejection);
 }
 
 final class _Reviews implements ReviewRepository {
@@ -192,6 +229,46 @@ void main() {
           ReviewErrorCode.syncConflict,
         );
       } finally {
+        await store.close();
+      }
+    },
+  );
+
+
+  test(
+    'real IndexedDB late User A recovery cannot publish after account switch',
+    () async {
+      final store = await openBrowserReviewStore(databaseName: name());
+      final auth = _Auth();
+      await store.stage(fixture.owner, fixture.request(1));
+      final delayed = _DelayedListStore(store);
+      final repository = DurableReviewRepository(
+        auth: auth,
+        delegate: _Reviews(auth, store),
+        store: delayed,
+      );
+      final recovery = repository.recoverPending();
+      try {
+        await delayed.started.future;
+        auth.currentSession = ReviewSession(userId: fixture.other);
+        delayed.release.complete();
+
+        await expectLater(
+          recovery,
+          throwsA(
+            isA<ReviewTransportFailure>().having(
+              (failure) => failure.code,
+              'captured-session recovery after account switch',
+              ReviewErrorCode.unauthorized,
+            ),
+          ),
+        );
+        final original = await store.list(fixture.owner);
+        expect(original, hasLength(1));
+        expect(original.single.isPending, isTrue);
+        expect(await store.list(fixture.other), isEmpty);
+      } finally {
+        if (!delayed.release.isCompleted) delayed.release.complete();
         await store.close();
       }
     },
