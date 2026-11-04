@@ -2744,3 +2744,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - The temporary diagnostic workflow revision `d9a44ccce4e271c05204c47cb0a20549c489feeb` produced Actions run [41792517944](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41792517944) with no jobs. The unquoted colon in the temporary step's `name` was not valid YAML plain-scalar syntax.
 - Corrected only the diagnostic step label (the read-only formatter diff command and strict formatter gate are unchanged). The diagnostic remains temporary and will be removed with the exact formatting correction.
 - No new source test/analyze/build result is claimed; the previous test-head run 41792111168 still targets parent `f6a4b7f571409e7b75f2acaefde5e886e872b6f8`. Keep PR #37 Draft and all hosted gates pending.
+
+
+## Pinned Dart formatter correction — 2026-11-04 UTC
+
+- Exact-head diagnostic run [41792913013](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41792913013) (head `a2b0ba88645f89ecae96fa869562c598d1e48ff5`) printed the Dart 3.35.4 formatter's exact output. Only three layout hunks and the final formatter newline differed; no other Dart file changed.
+- Applied those exact formatter hunks to `windows_persistent_supabase_runtime_test.dart`. Added a non-vacuous `auth.logout` presence assertion before checking the later Windows vault clear.
+- Removed the temporary read-only diagnostic step from `.github/workflows/ci.yml` in this same correction. The strict repository-wide `dart format --output=none --set-exit-if-changed .` gate remains unchanged.
+- Run 417929: repo-sanity, AI boundary and database SUCCESS; Flutter formatter diagnostic showed the mismatch and strict format failed before analyze/tests; Windows and Supabase integration were IN_PROGRESS at the last observation. A new exact-head full CI run is required; no analyze/test/build pass is claimed. Hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart and physical multi-device evidence remain outstanding.

@@ -195,6 +195,7 @@ void main() {
 
       await runtime.account.signOut();
       expect(storedSecret, isNull);
+      expect(timeline, contains('auth.logout'));
       expect(
         timeline.lastIndexOf('vault.clear'),
         greaterThan(timeline.lastIndexOf('auth.logout')),
@@ -228,10 +229,7 @@ void main() {
     storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
     failWrite = true;
 
-    await expectLater(
-      runtime.start(),
-      throwsA(isA<ReviewTransportFailure>()),
-    );
+    await expectLater(runtime.start(), throwsA(isA<ReviewTransportFailure>()));
 
     expect(timeline.indexOf('auth.refresh'), greaterThan(-1));
     expect(timeline.indexOf('vault.write'), greaterThan(-1));
@@ -239,10 +237,7 @@ void main() {
       timeline.lastIndexOf('vault.clear'),
       greaterThan(timeline.indexOf('vault.write')),
     );
-    expect(
-      timeline.where((value) => value == 'profile.ensure'),
-      isEmpty,
-    );
+    expect(timeline.where((value) => value == 'profile.ensure'), isEmpty);
     expect(runtime.account.readyRuntime, isNull);
     expect(storedSecret, isNull);
   });
@@ -296,9 +291,7 @@ void main() {
       expect(runtime.persistence.currentSession?.userId, wire.b);
       expect(storedSecret, refreshSecret);
       final profileRequests = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
       expect(profileRequests, hasLength(1));
       expect(
@@ -308,3 +301,4 @@ void main() {
     },
   );
 }
+
