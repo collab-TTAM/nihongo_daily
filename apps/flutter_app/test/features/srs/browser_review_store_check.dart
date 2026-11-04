@@ -44,11 +44,8 @@ final class _DelayedListStore implements DurableReviewStore {
   ) => delegate.acknowledge(userId, eventId, receipt);
 
   @override
-  Future<void> reject(
-    String userId,
-    String eventId,
-    ReviewFailure rejection,
-  ) => delegate.reject(userId, eventId, rejection);
+  Future<void> reject(String userId, String eventId, ReviewFailure rejection) =>
+      delegate.reject(userId, eventId, rejection);
 }
 
 final class _Reviews implements ReviewRepository {
