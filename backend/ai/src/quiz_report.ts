@@ -68,3 +68,58 @@ export function createQuizReportDecoder(schema: AnySchemaObject) {
     }
   };
 }
+
+export interface QuizReportResponse extends Omit<QuizReportRequest, "answers"> {
+  readonly answer_count: number;
+  readonly correct_count: number;
+}
+
+/** Bind response validation to a validated snapshot before asynchronous I/O.
+ * A matching response is not proof of persistence, ownership or retry authority.
+ */
+export function createQuizReportResponseDecoder(
+  schema: AnySchemaObject,
+  requestRaw: Uint8Array,
+) {
+  const request = createQuizReportDecoder(schema)(requestRaw);
+  const ajv = new Ajv2020({
+    strict: true,
+    allErrors: false,
+    coerceTypes: false,
+    useDefaults: false,
+    removeAdditional: false,
+    strictNumbers: true,
+  });
+  addFormats.default(ajv);
+  const validate = ajv.compile<QuizReportResponse>({
+    ...structuredClone(schema),
+    $ref: "#/$defs/response",
+  });
+  if ("$async" in validate) throw new Error("Quiz schema must be synchronous");
+  const correct = request.answers.filter(
+    (a) => a.item_id === a.selected_id,
+  ).length;
+  const identity = [
+    "client_event_id",
+    "quiz_type",
+    "practice_kind",
+    "jlpt_level",
+    "completed_at",
+  ] as const;
+  return (raw: Uint8Array): QuizReportResponse => {
+    try {
+      const decoded = parseQuizReportJsonBody(raw);
+      if (validate(decoded) !== true) throw new Error();
+      const response = decoded as unknown as QuizReportResponse;
+      if (
+        identity.some((key) => response[key] !== request[key]) ||
+        response.answer_count !== request.answers.length ||
+        response.correct_count !== correct
+      )
+        throw new Error();
+      return Object.freeze(response);
+    } catch {
+      throw new BoundaryError("INTERNAL_ERROR");
+    }
+  };
+}

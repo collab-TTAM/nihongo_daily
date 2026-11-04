@@ -1,25 +1,26 @@
 # PROJECT STATUS
 
-## Typed quiz request decoder — 2026-11-04 UTC
+## Captured-request quiz response validation — 2026-11-04 UTC
 
 - Draft PR41 / issue13, branch automation/issue-11-plan-sdk-integration;
-  parent19e3b9467678dae65f2a845232460292a7708d6d, main78a44faf.
-- Added backend/ai/src/quiz_report.ts and test/quiz_report.test.ts. Trusted
-  repository-schema decoder composes raw guard, strict schema, unique targets,
-  choice membership and real UTC calendar, retaining exact timestamp/array order.
-  Deeply frozen output, no raw byte aliases, fixed VALIDATION_FAILURE errors;
-  asynchronous schema rejected at setup. Updated QUIZ_REPORT_API and this status.
-- Local pinned Prettier, TypeScript and all204 Node tests PASS (7 new decoder
-  groups). Separate review checked byte-first validation, no coercion/stripping,
-  guarded schema assertion, calendar normalization, nested freeze and safe errors.
+  parent308fc295996c1fa018fddcefb3d65e695879a70d, main78a44faf.
+- Extended backend/ai/src/quiz_report.ts and test/quiz_report.test.ts with a
+  response decoder bound to the validated original request before asynchronous
+  I/O. Strict raw/schema validation, exact five-field identity including timestamp
+  spelling, derived answer/correct counts, immutable output and safe INTERNAL_ERROR.
+  Invalid request binding remains VALIDATION_FAILURE. Updated QUIZ_REPORT_API.
+- Local pinned Prettier, TypeScript and all209 Node tests PASS (5 response groups).
+  Separate diff review checked schema-valid type/kind swaps, equivalent timestamp
+  spelling, byte mutation after capture, no coercion and no raw error leakage.
   Deno/Flutter/native Windows not executed locally; new exact-head CI pending.
-- Parent exact19e3b946 CI41788686231 attempt1 ALL5/EVERYstep SUCCESS,
-  with mandatory Windows persistent SDK/receipt marker observed TEST ONLY.
-  This is not hosted signed-JWT learner or Personal Alpha proof.
-- Next inspect new exact-head all5 jobs/every step; then canonical-content and
-  replay-first transaction integration. No public endpoint, Auth/grant/RLS,
-  default save/collection activation or Pro/N4 change. PR37 old source untouched.
-  All14 release groups and issue13 remain open. Commit/CI links in PR41 handoff.
+- Parent exact308fc295 CI41832606675 attempt1 ALL5/EVERYstep SUCCESS;
+  mandatory Windows persistent SDK/receipt marker observed, TEST ONLY Auth/HTTP.
+  This is not hosted learner or Personal Alpha acceptance.
+- Next inspect new exact-head CI/all5 jobs/every required step, then implement
+  canonical-content and replay-first transaction integration. No public endpoint,
+  Auth/grant/RLS, default save/collection activation or Pro/N4 change. PR37 source
+  untouched. Matching response is not persistence/ownership/retry authority.
+  All14 release groups and issue13 remain open; actual commit/CI in PR41 handoff.
 
 
 ## Private atomic quiz report ledger — 2026-10-31 UTC

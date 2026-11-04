@@ -41,6 +41,24 @@ RPC or upload is provided. Future replay lookup must still precede current-conte
 and future-time checks under the same owner transaction. No stored report or
 learner acceptance is implied by successful decoding.
 
+## Captured-request response decoder — 2026-11-04
+
+`createQuizReportResponseDecoder(schema, requestRaw)` validates and captures the
+original request before asynchronous I/O. Its returned decoder applies the same
+16 KiB raw-byte guard and strict response schema, then requires exact equality of
+all five echoed fields (including timestamp spelling). Counts must equal the
+captured answer count and the count of selected_id==item_id. It returns a frozen
+response with no aliases to either input byte array. Invalid captured requests
+remain VALIDATION_FAILURE; invalid responses produce only INTERNAL_ERROR.
+
+Five regression groups cover all canonical pairs, mutation of request bytes after
+capture, immutable output, each identity/count mismatch, equivalent timestamps
+with different spellings, schema-valid type/kind swaps, missing/extra fields,
+invalid counts, raw lexical/encoding/size errors and invalid request binding.
+A matching response proves only contract correlation: no authenticated ownership,
+persistence, mastery, receipt lookup or permission to retry follows from it.
+This internal decoder does not activate an endpoint or change app behavior.
+
 ## Private ledger foundation — 2026-10-31 UTC
 
 Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
