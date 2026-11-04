@@ -2768,3 +2768,23 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Applied exactly the formatter's one-blank-line EOF correction and removed the temporary read-only diagnostic from `.github/workflows/ci.yml` in the same source change. No assertions, production Auth/session/vault code, API/schema/RLS, dependencies, defaults, or Pro-owned #14/#38/N4 content changed. Strict repository-wide formatter gate remains unchanged.
 - Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. The new exact-head CI must verify all six jobs and every required step before this correction can be considered green. TEST ONLY SDK/MethodChannel/native probes are not hosted learner A/B proof.
 - Next: inspect all latest-attempt jobs/steps for the exact final commit, then address only observed failures. Keep PR #37 Draft and #20/#22/#15 open until full issue and hosted acceptance is demonstrated.
+
+
+## Windows vault late-write generation regression — 2026-11-04 UTC
+
+- Added a pinned Supabase SDK + Windows MethodChannel regression in
+  `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`.
+  It holds User A's credential write across logout, proves immediate readiness
+  revocation, verifies the serialized clear occurs only after the pending write,
+  rejects any A own-profile request, then accepts B only after B's rotated
+  refresh secret is stored and B's captured bearer/profile agree.
+- Updated `docs/PERSISTENT_SESSION_LIFECYCLE.md` to distinguish this mocked
+  MethodChannel/SDK evidence from the separate native Credential Manager probes.
+- Local Flutter/Dart format/analyze/test/build were not run because the cloud
+  runtime has no Flutter/Dart SDK. Exact-head GitHub Actions is the required
+  verification; no pass is claimed until every required job and step completes.
+- Hosted signed-JWT learner A/B, deployed RLS, restart/expiry on the hosted
+  service and real multi-device sync remain unverified. PR #37 stays Draft;
+  #20/#22/#15 remain open. Pro-owned #14/#38/N4 are untouched.
+- Next: inspect exact-head/latest-attempt CI for all jobs and steps; fix only
+  observed diagnostics, then continue the remaining hosted acceptance gates.

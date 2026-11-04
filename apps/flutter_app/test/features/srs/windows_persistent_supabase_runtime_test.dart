@@ -34,6 +34,7 @@ void main() {
   late String authSession;
   late String refreshSecret;
   late Completer<http.Response>? authWait;
+  late Completer<void>? writeWait;
   late bool failRead;
   late bool failWrite;
   final requests = <http.Request>[];
@@ -78,6 +79,7 @@ void main() {
     authSession = wire.sid1;
     refreshSecret = 'TEST_ONLY_ROTATED_WINDOWS_REFRESH';
     authWait = null;
+    writeWait = null;
     failRead = false;
     failWrite = false;
 
@@ -111,6 +113,7 @@ void main() {
           if (token is! String) {
             throw PlatformException(code: 'invalid_argument');
           }
+          await (writeWait?.future ?? Future<void>.value());
           storedSecret = token;
           return true;
         case 'clear':
@@ -300,4 +303,95 @@ void main() {
       );
     },
   );
+
+  test(
+    'late User A vault write is cleared before User B profile readiness',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_LATE_A_REFRESH';
+      writeWait = Completer<void>();
+
+      final lateLogin = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(timeline, contains('vault.write'));
+      expect(storedSecret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      final logout = runtime.account.signOut();
+      await fixture.flush();
+      expect(runtime.account.readyRuntime, isNull);
+      expect(timeline, contains('auth.logout'));
+      expect(
+        timeline.where((value) => value == 'vault.clear'),
+        isEmpty,
+        reason: 'clear must wait for the in-flight credential write',
+      );
+
+      writeWait!.complete();
+      await lateLogin;
+      await logout;
+      await fixture.flush();
+
+      expect(storedSecret, isNull);
+      expect(
+        timeline.indexOf('auth.logout'),
+        lessThan(timeline.lastIndexOf('vault.clear')),
+      );
+      expect(
+        timeline.indexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('vault.clear')),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      writeWait = null;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_AFTER_LATE_A_WRITE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final profileRequests = requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        lessThan(timeline.lastIndexOf('vault.write')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('profile.ensure')),
+      );
+    },
+  );
+
 }

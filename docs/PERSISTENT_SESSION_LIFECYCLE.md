@@ -546,3 +546,20 @@ inject a stalled native Windows Credential Manager call or prove hosted
 signed-JWT learner restoration, deployed RLS, OS logoff, or power-loss behavior.
 No production Auth/session/vault implementation, default activation, plaintext
 fallback, strategy/provider, schema/RLS, or Pro-owned N4 content changes.
+
+
+## Late credential write and account replacement
+
+The pinned-Supabase-SDK + Windows MethodChannel suite also holds User A's
+refresh-secret write after the SDK has returned a session. Logout is issued
+while that write is pending. The test verifies that the persistence generation
+is revoked immediately, no own-profile request is made for A, and the queued
+vault clear cannot overtake the unresolved write. After the write is released,
+cleanup clears A's late value before a new B login is accepted. B's rotated
+secret must be stored before B's own-profile request, whose bearer and returned
+profile must both belong to B.
+
+This is TEST ONLY SDK/HTTP/MethodChannel evidence; the channel is mocked in this
+test. The separate Windows Credential Manager/process and runner probes remain
+the evidence for native storage/bridge behavior. This does not establish hosted
+signed-JWT learner A/B acceptance or deployed RLS.
