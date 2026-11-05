@@ -326,7 +326,7 @@ class QaEvidenceTests(unittest.TestCase):
                     path.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(ROOT / anchor["path"], path)
             workflow = root / ".github/workflows/ci.yml"
-            workflow.parent.mkdir(parents=True)
+            workflow.parent.mkdir(parents=True, exist_ok=True)
             source = (ROOT / ".github/workflows/ci.yml").read_text()
             command = "      - run: npm audit --omit=dev --audit-level=moderate\n"
             self.assertIn(command, source)

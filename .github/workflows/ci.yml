@@ -329,6 +329,11 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
       - run: npm run format:check
+      - name: Print Prettier patch for failed native quiz test
+        if: failure()
+        run: |
+          npx prettier --write test/quiz_report_transaction.native.ts
+          git diff -- test/quiz_report_transaction.native.ts
       - run: npm run check
       - run: npm test
       - uses: denoland/setup-deno@v2
