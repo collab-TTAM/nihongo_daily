@@ -1,25 +1,24 @@
 # PROJECT STATUS
 
-## Quiz transaction capability lifetime — 2026-11-05 UTC
+## Quiz queued dispatch revocation — 2026-11-05 UTC
 
 - Draft41/issue13; automation/issue-11-plan-sdk-integration; parent
-  e8c4205e884fcbd454de19daf8af232e2b1c7e10; main78a44faf.
-- Added backend/ai/src/quiz_report_scope.ts and test/quiz_report_scope.test.ts;
-  wired quiz_report_transaction.ts and updated QUIZ_REPORT_API.md. Callback
-  settlement revokes escaped capabilities; overlap/port failures poison work;
-  unfinished calls drain before the host can commit/rollback. No native timeout
-  or rollback guarantee; real bounded verified-owner host/content still required.
-- Local pinned format/TypeScript/228 Node tests PASS; separate source/diff review.
-  Five new TEST ONLY scope groups plus retained coordinator/SQL cases. Initial
-  TypeScript missing parameter inference corrected with explicit generic context.
-  Native PostgreSQL, Deno, Flutter and Windows not run locally. New-head CI pending.
-- Parent CI41970583177 attempt1 all5/every step SUCCESS; raw Windows persistent
-  vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout
-  marker observed TEST ONLY Auth/HTTP. This is not hosted learner evidence.
-- Next inspect new exact-head/latest attempt/all5 required jobs/steps, then supply
-  real verified-owner transaction host, canonical content and native integration
-  tests. No grants/Auth/default/Pro changes; PR37 source untouched. Draft/#13 and
-  all14 Personal Alpha release groups remain open.
+  1613dc107e5a28e1d53f1041aaa5ce7a727fe5e0; main78a44faf.
+- Fixed backend/ai/src/quiz_report_scope.ts: recheck active scope at microtask
+  dispatch, preventing a queued replay/content/store call from starting after
+  synchronous callback failure. Already-started operations retain drain behavior.
+- Added regression in test/quiz_report_scope.test.ts; updated QUIZ_REPORT_API.
+  Observed RED before fix (unexpected replay dispatch), then all three ports
+  verified zero dispatch and safe rejection. Retained drain/overlap tests pass.
+- Pinned format/TypeScript/229 Node tests PASS; separate diff review. Native
+  PostgreSQL/Deno/Flutter/Windows not run locally; new exact-head CI pending.
+- Parent CI42006385825 attempt1/exact1613dc10 all5/every step SUCCESS;
+  mandatory Windows persistent SDK/profile/receipt marker observed in raw log
+  TEST ONLY Auth/HTTP. Not hosted learner or native quiz transaction evidence.
+- Next inspect new exact-head/latest attempt/all5 required jobs/steps; continue
+  bounded verified-owner same-connection host, canonical content and native tests.
+  No grants/Auth/default/Pro changes; PR37 source untouched. Draft/#13/all14
+  Personal Alpha release groups remain open.
 
 
 ## Quiz transaction cancellation fences — 2026-11-04 UTC

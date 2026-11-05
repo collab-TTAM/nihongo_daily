@@ -133,3 +133,19 @@ test("quiz scope retains safe port failure even if callback swallows rejection",
   );
   assert.deepEqual(trace, []);
 });
+
+test("quiz scope never dispatches queued ports after synchronous callback failure", async () => {
+  for (const method of ["replay", "validateCurrentContent", "store"] as const) {
+    const trace: string[] = [];
+    let queued!: Promise<unknown>;
+    await assert.rejects(
+      withQuizReportTransactionScope(source(trace), (tx) => {
+        queued = tx[method](request);
+        throw new Error("private callback failure");
+      }),
+      /^Error: INTERNAL_ERROR$/,
+    );
+    assert.deepEqual(trace, []);
+    await assert.rejects(queued, /^Error: INTERNAL_ERROR$/);
+  }
+});

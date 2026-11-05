@@ -35,7 +35,12 @@ export async function withQuizReportTransactionScope<T>(
     }
     // Defer dispatch until pending has been installed, including reentrant ports.
     const result = Promise.resolve()
-      .then(operation)
+      .then(() => {
+        // The callback can throw synchronously before this microtask dispatches.
+        // Revocation must also fence already-queued, not-yet-started operations.
+        if (!active) throw new BoundaryError("INTERNAL_ERROR");
+        return operation();
+      })
       .catch((error: unknown) => {
         failed ??= safe(error);
         throw failed;

@@ -125,6 +125,13 @@ without dispatch. If an operation is still pending, the scope rejects and drains
 it before returning to the host, including when the callback throws. Safe errors
 are reconstructed; private exceptions are never forwarded.
 
+Dispatch also rechecks revocation inside the queued microtask. A synchronous
+callback throw after scheduling a port call now prevents that port from starting;
+it does not merely drain a query that should never have been dispatched. A new
+regression reproduces the old failure and verifies zero dispatch plus safe rejection
+for replay, current-content validation and store. Already-started operations still
+drain through the original settlement path; this is not native query cancellation.
+
 The host must await the callback before commit/rollback and provide bounded native
 operations. This wrapper does not impose a timeout, cancel a query, revoke the
 host's original ports, or guarantee native rollback. SQL/identity/content/grants
