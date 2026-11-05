@@ -1,3 +1,4 @@
+import { withQuizReportTransactionScope } from "./quiz_report_scope.ts";
 import type { AnySchemaObject } from "ajv";
 import { BoundaryError } from "./contracts.ts";
 import {
@@ -39,17 +40,21 @@ export async function submitQuizReportInTransaction(
     check();
     const request = createQuizReportDecoder(schema)(raw);
     const decodeResponse = createQuizReportResponseDecoder(schema, raw);
-    const result = await host.run(async (tx) => {
-      check();
-      const replay = await tx.replay(request);
-      check();
-      if (replay !== null) return decodeResponse(replay);
-      await tx.validateCurrentContent(request);
-      check();
-      const stored = await tx.store(request);
-      check();
-      return decodeResponse(stored);
-    }, signal);
+    const result = await host.run(
+      (source) =>
+        withQuizReportTransactionScope(source, async (tx) => {
+          check();
+          const replay = await tx.replay(request);
+          check();
+          if (replay !== null) return decodeResponse(replay);
+          await tx.validateCurrentContent(request);
+          check();
+          const stored = await tx.store(request);
+          check();
+          return decodeResponse(stored);
+        }),
+      signal,
+    );
     check();
     return result;
   } catch (error) {

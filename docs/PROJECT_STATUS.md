@@ -1,26 +1,25 @@
 # PROJECT STATUS
 
-## Quiz private-ledger SQL bridge — 2026-11-05 UTC
+## Quiz transaction capability lifetime — 2026-11-05 UTC
 
-- Draft41/issue13, automation/issue-11-plan-sdk-integration; parent
-  69c1f026cab8d5cbeeec04e720639737f8dce592; main78a44faf.
-- Added backend/ai/src/quiz_report_sql.ts and test/quiz_report_sql.test.ts;
-  updated QUIZ_REPORT_API. Fixed parameterized replay/store SQL, text result
-  projection, strict single-row/column envelope, 16KiB UTF-8 bounds and exact
-  SQLSTATE/message safe errors. Required caller current-content validator.
-- Local pinned format/TypeScript/223 Node tests PASS; separate source/test review.
-  Cases cover all canonical pairs, replay/miss ordering, parameter payloads,
-  malformed/unknown rows, null store, invalid response and error redaction.
-  SQL replies are TEST ONLY; real PostgreSQL bridge execution, transaction host,
-  verified identity/canonical-content snapshot and native rollback remain unrun.
-  Flutter/Deno/native Windows also unrun locally; new exact-head CI pending.
-- Parent CI41967190003 attempt1/all5/every step SUCCESS; mandatory Windows raw
-  persistent SDK/profile/receipt marker observed TEST ONLY Auth/HTTP. Previous
-  vocabulary owner-fence regression is verified by that CI, not hosted A/B proof.
+- Draft41/issue13; automation/issue-11-plan-sdk-integration; parent
+  e8c4205e884fcbd454de19daf8af232e2b1c7e10; main78a44faf.
+- Added backend/ai/src/quiz_report_scope.ts and test/quiz_report_scope.test.ts;
+  wired quiz_report_transaction.ts and updated QUIZ_REPORT_API.md. Callback
+  settlement revokes escaped capabilities; overlap/port failures poison work;
+  unfinished calls drain before the host can commit/rollback. No native timeout
+  or rollback guarantee; real bounded verified-owner host/content still required.
+- Local pinned format/TypeScript/228 Node tests PASS; separate source/diff review.
+  Five new TEST ONLY scope groups plus retained coordinator/SQL cases. Initial
+  TypeScript missing parameter inference corrected with explicit generic context.
+  Native PostgreSQL, Deno, Flutter and Windows not run locally. New-head CI pending.
+- Parent CI41970583177 attempt1 all5/every step SUCCESS; raw Windows persistent
+  vault/same SDK/profile/receipt rotation preserve/reopen/no-redispatch/logout
+  marker observed TEST ONLY Auth/HTTP. This is not hosted learner evidence.
 - Next inspect new exact-head/latest attempt/all5 required jobs/steps, then supply
-  real verified-owner transaction host and native bridge tests. Grants remain
-  revoked; no endpoint/role switching/Auth/default/Pro changes. PR37 source
-  untouched. Draft/#13/all14 Personal Alpha release groups stay open.
+  real verified-owner transaction host, canonical content and native integration
+  tests. No grants/Auth/default/Pro changes; PR37 source untouched. Draft/#13 and
+  all14 Personal Alpha release groups remain open.
 
 
 ## Quiz transaction cancellation fences — 2026-11-04 UTC

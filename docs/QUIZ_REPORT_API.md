@@ -114,6 +114,25 @@ canonical validator and native PostgreSQL tests are still required; do not wire
 this directly to an HTTP route. Scripted SQL envelopes test protocol composition,
 not actual SQL/RLS/rollback or hosted learner acceptance.
 
+## Transaction capability lifetime — 2026-11-05
+
+The coordinator now wraps each host callback with
+`withQuizReportTransactionScope` (`backend/ai/src/quiz_report_scope.ts`). Only one
+replay/content/store call may run at a time. A rejected operation or overlapping
+call poisons the callback even if its caller catches the rejection. At callback
+settlement all exposed capabilities are revoked; retained references reject
+without dispatch. If an operation is still pending, the scope rejects and drains
+it before returning to the host, including when the callback throws. Safe errors
+are reconstructed; private exceptions are never forwarded.
+
+The host must await the callback before commit/rollback and provide bounded native
+operations. This wrapper does not impose a timeout, cancel a query, revoke the
+host's original ports, or guarantee native rollback. SQL/identity/content/grants
+remain the host's responsibility. Sequential awaited coordinator behavior and
+replay-first ordering are unchanged. Five new scripted regression groups cover
+success, escaped calls, failure, overlap, pending drain and swallowed failures;
+they are TEST ONLY capability evidence, not native PostgreSQL/hosted acceptance.
+
 ## Private ledger foundation — 2026-10-31 UTC
 
 Migration20261031090000_quiz_report_ledger.sql adds only a private, undeployed
