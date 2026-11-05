@@ -222,7 +222,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       }
       _check(runtime.persistence.phase.name == 'closed');
       secret = _second;
-      lateRefresh!.complete(authResponse());
+      lateRefresh.complete(authResponse());
 
       var restoreFailed = false;
       try {
@@ -338,9 +338,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     }
   } finally {
     // A failed assertion must not strand a held HTTP response while close drains.
-    if (lateRefresh != null && !lateRefresh!.isCompleted) {
+    if (lateRefresh != null && !lateRefresh.isCompleted) {
       if (phase == 'runtime-close-restore') secret = _second;
-      lateRefresh!.complete(authResponse());
+      lateRefresh.complete(authResponse());
     }
     await runtime.close();
     await journal.close();
