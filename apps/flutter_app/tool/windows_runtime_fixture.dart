@@ -119,7 +119,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       final grant = request.url.queryParameters['grant_type'];
       final body = jsonDecode(request.body) as Map<String, Object?>;
       if (grant == 'refresh_token') {
-        final expected = phase == 'runtime-restore' ||
+        final expected =
+            phase == 'runtime-restore' ||
                 phase == 'runtime-late-refresh' ||
                 phase == 'runtime-close-restore'
             ? _first
