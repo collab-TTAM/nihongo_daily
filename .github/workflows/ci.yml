@@ -164,6 +164,15 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
+      # TEMPORARY read-only reproduction; remove after applying the exact formatter output.
+      - name: Diagnostic Dart 3.35.4 formatter diff for Windows runtime fixture (temporary)
+        shell: bash
+        run: |
+          source=tool/windows_runtime_fixture.dart
+          copy="$RUNNER_TEMP/windows_runtime_fixture.dart"
+          cp "$source" "$copy"
+          dart format "$copy"
+          diff -u "$source" "$copy" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
