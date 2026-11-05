@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-52 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+53 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -28,6 +28,14 @@ python3 -m unittest discover -s contracts -p 'test_*.py' -v
 Database: `bash scripts/test_database.sh` with the supported disposable
 `TEST_DATABASE_URL`; it applies migrations, real SQL `SET ROLE`/RLS tests and two
 native concurrency tests. Setting an auth fixture's user ID does not validate a JWT.
+
+The disposable `supabase-integration` job also launches a fresh child process
+that receives a TEST ONLY GoTrue refresh token over stdin, rotates it against the
+local Auth service, verifies the same owner through `ensure_profile`, and returns
+the rotated secret only through captured stdout. The parent verifies global logout
+revokes that rotated token. This is a process-boundary local-service check, not
+the Flutter OS vault or hosted learner acceptance; no token is logged or written
+to disk.
 
 In `backend/ai`: `npm ci --ignore-scripts --no-audit --no-fund`,
 `npm audit --omit=dev --audit-level=moderate`, `npm run format:check`,

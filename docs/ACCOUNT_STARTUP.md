@@ -160,3 +160,21 @@ study readiness is allowed. No clear is needed for an absent credential. A
 pinned-SDK/MockClient/in-memory-vault regression covers this first-install path;
 it is TEST ONLY and does not prove hosted identity, Windows Credential Manager
 execution or deployed RLS.
+
+
+## Disposable GoTrue fresh-process restore — 2026-11-05
+
+The `supabase-integration` CI script now starts a separate Python child process
+with a TEST ONLY refresh token supplied over stdin. The child asks local GoTrue
+to rotate the token, checks the returned authenticated user, calls
+`ensure_profile` with the new access token and returns only the new refresh
+token through a captured pipe. The parent keeps stdout/stderr captured, checks
+that the supplied token is absent from stderr, and never writes the token to a
+file or prints it. A later global logout must revoke the child-rotated token.
+
+This adds a real disposable GoTrue process-boundary check to the existing
+pinned-SDK/MockClient lifecycle suite and Windows Credential Manager process
+probe. It does not combine those separate test environments into a single
+Windows/hosted learner flow and does not prove deployed JWT/RLS or physical
+multi-device recovery. All credentials are synthetic, short-lived and local to
+the disposable CI stack.

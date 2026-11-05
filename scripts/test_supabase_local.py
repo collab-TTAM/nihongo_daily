@@ -12,6 +12,8 @@ import hashlib
 import hmac
 import json
 import os
+import subprocess
+import sys
 import threading
 import time
 import urllib.error
@@ -105,6 +107,102 @@ def rpc(name: str, request_body: dict, access_token: str):
     )
     require(status == 200 and isinstance(result, dict), f"{name} RPC ({status})")
     return result
+
+
+def restore_child() -> None:
+    """TEST ONLY child: restore a GoTrue session without logging its secret."""
+    try:
+        payload = json.loads(sys.stdin.read())
+        if (
+            not isinstance(payload, dict)
+            or set(payload) != {"refresh_token", "expected_user_id"}
+        ):
+            raise ValueError()
+        refresh_token = payload["refresh_token"]
+        expected_user_id = payload["expected_user_id"]
+        if (
+            not isinstance(refresh_token, str)
+            or not refresh_token
+            or len(refresh_token) > 2048
+            or not isinstance(expected_user_id, str)
+        ):
+            raise ValueError()
+        status, session = request(
+            "POST",
+            "/auth/v1/token?grant_type=refresh_token",
+            {"refresh_token": refresh_token},
+        )
+        if status != 200 or not isinstance(session, dict):
+            raise ValueError()
+        user = session.get("user")
+        access_token = session.get("access_token")
+        rotated_token = session.get("refresh_token")
+        if (
+            not isinstance(user, dict)
+            or user.get("id") != expected_user_id
+            or not isinstance(access_token, str)
+            or not isinstance(rotated_token, str)
+            or not rotated_token
+            or rotated_token == refresh_token
+        ):
+            raise ValueError()
+        profile = rpc("ensure_profile", {}, access_token)
+        if profile.get("id") != expected_user_id:
+            raise ValueError()
+        sys.stdout.write(
+            json.dumps(
+                {
+                    "ok": True,
+                    "user_id": expected_user_id,
+                    "refresh_token": rotated_token,
+                },
+                separators=(",", ":"),
+            )
+            + "\n"
+        )
+    except Exception:
+        raise SystemExit("Local Supabase fresh-process restore failed") from None
+
+
+def restore_in_fresh_process(refresh_token: str, expected_user_id: str) -> str:
+    """Pass the test secret only through pipes; never write or print it."""
+    try:
+        child = subprocess.run(
+            [sys.executable, os.path.abspath(__file__), "--restore-child"],
+            input=json.dumps(
+                {
+                    "refresh_token": refresh_token,
+                    "expected_user_id": expected_user_id,
+                },
+                separators=(",", ":"),
+            ),
+            text=True,
+            capture_output=True,
+            timeout=20,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        require(False, "fresh-process restore completed")
+        return ""
+    require(child.returncode == 0, "fresh-process restore completed")
+    require(refresh_token not in child.stderr, "child does not log supplied refresh token")
+    require(refresh_token not in child.stdout, "child output does not echo supplied refresh token")
+    restored = decode(child.stdout.encode("utf-8"))
+    require(
+        isinstance(restored, dict)
+        and set(restored) == {"ok", "user_id", "refresh_token"}
+        and restored.get("ok") is True
+        and restored.get("user_id") == expected_user_id,
+        "fresh process restores rotated session and own profile",
+    )
+    rotated_token = restored["refresh_token"]
+    require(
+        isinstance(rotated_token, str)
+        and rotated_token
+        and rotated_token != refresh_token,
+        "fresh process returns only the rotated refresh token",
+    )
+    return rotated_token
 
 
 def rows(table: str, select: str, column: str, owner_id: str, access_token: str):
@@ -202,6 +300,12 @@ def main() -> None:
     device_a = password_login(email_a, password_a, "learner-a second device")
     require(device_a["user"]["id"] == id_a, "two independent sessions share owner")
     token_a_device = device_a["access_token"]
+    restart_session = password_login(
+        email_a, password_a, "learner-a fresh-process restore"
+    )
+    restart_refresh = restore_in_fresh_process(
+        restart_session["refresh_token"], id_a
+    )
 
     expired = expired_jwt(id_a)
     status, _ = request(
@@ -510,6 +614,15 @@ def main() -> None:
         {"refresh_token": device_a["refresh_token"]},
     )
     require(status in (400, 401), "global logout revokes second-device refresh token")
+    status, _ = request(
+        "POST",
+        "/auth/v1/token?grant_type=refresh_token",
+        {"refresh_token": restart_refresh},
+    )
+    require(
+        status in (400, 401),
+        "global logout revokes fresh-process rotated refresh token",
+    )
 
     status, _ = request(
         "POST", "/auth/v1/logout?scope=global", access_token=token_b
@@ -517,13 +630,18 @@ def main() -> None:
     require(status in (200, 204), "B GoTrue logout")
 
     print(
-        "Local Supabase GoTrue/PostgREST passed: two Auth users, three independent "
-        "password sessions, refresh rotation, global logout revocation, profile "
-        "bootstrap, signed-expired JWT rejection, concurrent same-owner replay, "
+        "Local Supabase GoTrue/PostgREST passed: two Auth users, four independent "
+        "password sessions, fresh-process refresh restoration, global logout revocation, "
+        "profile bootstrap, signed-expired JWT rejection, concurrent same-owner replay, "
         "historical replay after a later review without state rollback, changed/stale "
         "conflicts, owner-scoped shared event IDs and A/B RLS isolation. LOCAL ONLY."
     )
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["--restore-child"]:
+        restore_child()
+    elif not sys.argv[1:]:
+        main()
+    else:
+        raise SystemExit("Local Supabase integration failed: invalid test mode")

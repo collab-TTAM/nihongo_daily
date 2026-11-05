@@ -1156,6 +1156,24 @@
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/srs/persistent_supabase_runtime_test.dart --plain-name 'empty vault startup publishes signed-out account before first login'",
       "limitation": "Pinned Supabase SDK with TEST ONLY MockClient, synthetic identity and in-memory vault. Verifies first-install sequencing only; not hosted JWT/Auth/RLS or actual Windows Credential Manager execution. Default preview remains unconfigured."
+    },
+    {
+      "id": "local-auth-process-restore",
+      "status": "automated-baseline",
+      "scope": "Disposable GoTrue refresh-token restoration in a fresh child process followed by same-owner own-profile provisioning",
+      "ci_job": "supabase-integration",
+      "anchors": [
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "fresh process restores rotated session and own profile"
+        }
+      ],
+      "issues": [
+        20,
+        18
+      ],
+      "reproduce": "Run scripts/test_supabase_local.py against the fresh disposable local Supabase stack after migrations and the TEST ONLY vocabulary seed.",
+      "limitation": "The refresh secret crosses a private stdin pipe and the rotated secret is returned only through captured stdout; neither is written to disk or printed. This is local GoTrue/PostgREST process-boundary evidence, not the Flutter Windows vault, hosted learner Auth, deployed RLS or physical-device restart."
     }
   ],
   "findings": [
