@@ -1,3 +1,12 @@
+## Core checkpoint — PR #41 pinned Prettier correction — 2026-11-05 UTC
+
+- Branch: `automation/issue-11-plan-sdk-integration`; diagnostic parent HEAD: `0901e87240d4582573d0e0af2f04b72446cbf2a7`; exact diagnostic CI [42101186825](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42101186825), attempt 1.
+- The diagnostic printed exactly one Prettier-only change in `backend/ai/test/quiz_report_transaction.native.ts`: expand the `choices` array literal into three lines. Applied only that formatter output; assertions, fixtures and transaction behavior are unchanged.
+- Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`. The pinned `npm run format:check` gate remains strict; no skipped test or alternate success path was added.
+- Changed paths for this correction: `backend/ai/test/quiz_report_transaction.native.ts`, `.github/workflows/ci.yml`, and this status handoff. No N4/Pro-owned content paths, Auth/provider, API/schema/RLS, or production settings changed.
+- The diagnostic run's AI job failed at the expected strict formatter check after printing the diff; repo-sanity passed, database/Windows were still in progress at the handoff, and no full-CI pass is claimed. Cloud runtime has no pinned Node 24/Dart/Flutter environment; final verification must come from the next exact-head GitHub Actions run.
+- Next: inspect all jobs and every latest-attempt step for the corrected exact HEAD; fix only observed failures. Keep PR #41 Draft and do not merge or close dependent issues from formatter-only success.
+
 ## Core checkpoint — PR #41 pinned Prettier diagnosis — 2026-11-05 UTC
 
 - Resumed run `core-20261105T2007Z-pr41-prettier-fix` on `automation/issue-11-plan-sdk-integration`, starting HEAD `5c0edb5e44bbb04d0355ecbd43040ca4382e0e7c`.

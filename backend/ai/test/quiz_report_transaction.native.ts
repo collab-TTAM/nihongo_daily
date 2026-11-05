@@ -104,7 +104,9 @@ async function validateCurrentContent(
   request: QuizReportRequest,
 ) {
   const table = tableFor(request);
-  const choices = [...new Set(request.answers.flatMap((answer) => [...answer.choices]))];
+  const choices = [
+    ...new Set(request.answers.flatMap((answer) => [...answer.choices])),
+  ];
   const active = await connection.query(
     "SELECT count(*)::integer AS count FROM " +
       table +
