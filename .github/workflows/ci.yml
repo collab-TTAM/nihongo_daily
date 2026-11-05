@@ -82,7 +82,18 @@ jobs:
         with:
           version: 2.122.0
       - name: Start disposable local Supabase services
-        run: supabase start -x studio,edge-runtime,imgproxy,logflare,vector > /dev/null 2>&1
+        shell: bash
+        run: |
+          log_file="$RUNNER_TEMP/supabase-start.log"
+          trap 'rm -f "$log_file"' EXIT
+          if supabase start -x studio,edge-runtime,imgproxy,logflare,vector >"$log_file" 2>&1; then
+            exit 0
+          else
+            start_status=$?
+            echo "::error::Disposable Supabase startup failed (exit ${start_status}); sanitized diagnostics follow."
+            python3 scripts/redact_supabase_start_log.py "$log_file" --tail 120
+            exit "$start_status"
+          fi
       - name: Apply repository migrations to the local stack
         run: supabase db reset --local
       - name: Export only validated local integration settings

@@ -1120,6 +1120,25 @@
       ],
       "reproduce": "Exact tested commit: login -> plan -> study -> review -> quiz -> Kanji -> conversation/voice -> progress; restart/two-device sync, no critical defects; preserve rollback/recovery and evidence.",
       "limitation": "Eight starter issues closing is not a release. Production/App Store gates remain separate."
+    },
+    {
+      "id": "ci-supabase-log-redaction",
+      "status": "automated-baseline",
+      "scope": "Redacted diagnostics for disposable local Supabase startup failures",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "qa/test_supabase_start_log.py",
+          "contains": "def test_redacts_credentials_and_preserves_failure_context"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        18
+      ],
+      "reproduce": "Run python3 -m unittest discover -s qa -p 'test_*.py' -v; synthetic cases cover CLI key assignments, JWTs, bearer values, PostgreSQL URL passwords and bounded failure output.",
+      "limitation": "Synthetic patterns are regression coverage, not proof that every future third-party CLI log format is secret-free or that hosted Auth is working."
     }
   ],
   "findings": [

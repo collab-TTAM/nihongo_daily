@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-50 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+51 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -59,6 +59,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `ai-retry-recovery` | ai-boundary | Duplicate concurrent requests, changed input, pending recovery, commit failure and immutable results. Memory test store and lookup fixture are not durable process restart or provider reconciliation. |
 | `dependency-audit` | ai-boundary | Pinned patched Ajv, production audit and unchanged generated schema projections. Production npm audit snapshot alone does not establish security of Flutter/native/dev dependencies or application. |
 | `qa-evidence` | repo-sanity | Reject missing/skipped/pending/stale-head/mixed-attempt CI evidence. Checks saved Actions metadata, not test execution/authenticity or integration completion. |
+| `ci-supabase-log-redaction` | repo-sanity | Redacts common CLI key/token/JWT/bearer/DB URL values and bounds captured startup failure context. Synthetic strings do not prove every future CLI log format is secret-free. |
 
 ## Observed evidence and current-head merge check
 
