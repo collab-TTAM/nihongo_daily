@@ -42,7 +42,7 @@ class SupabaseStartLogRedactionTests(unittest.TestCase):
     def test_tail_is_bounded_and_redaction_happens_before_output(self):
         log = "first line\nthird line\nTOKEN=do-not-print\nfourth line"
         output = format_log(log, max_lines=2)
-        self.assertEqual(output, "[REDACTED]\nfourth line")
+        self.assertEqual(output, "TOKEN=[REDACTED]\nfourth line")
         self.assertNotIn("do-not-print", output)
 
     def test_rejects_unbounded_or_empty_tail(self):

@@ -2937,3 +2937,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Follow-up review of `core-20261105T1011Z-pr37-supabase-start-redacted-diagnostics` found two synthetic-test gaps before relying on the queued CI: the JWT was inside an `anon key` assignment (so the assignment redactor masked it before the JWT-specific branch), and the tail fixture placed its token outside the returned last two lines.
 - Corrected `qa/test_supabase_start_log.py` to cover an unlabelled JWT independently, a separate anon-key assignment, and a token assignment that remains inside the bounded output; the test now asserts the raw token is absent from returned output. No production behavior or security boundary changed.
 - The first exact-head CI for the diagnostic implementation, [42009495967](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42009495967), was queued on the pre-correction head and is superseded by the new exact-head run. Its result must not be used as evidence for the corrected commit.
+
+
+## Redaction tail assertion correction — 2026-11-05 UTC
+
+- Exact-head CI [42009743437](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42009743437) ran the new synthetic redaction suite and found one assertion mismatch: the helper correctly retains the field label while replacing its value (`TOKEN=[REDACTED]`); the test expected the label itself to be removed.
+- Corrected only the expected output in `qa/test_supabase_start_log.py`. The test still asserts that the raw synthetic token is absent and the tail is bounded. No helper, workflow, production or security behavior changed.
+- Repo-sanity failed at this one test; AI boundary passed; database was still cleaning up; Windows and Supabase integration were skipped behind the repo-sanity dependency. A new exact-head run is required.
