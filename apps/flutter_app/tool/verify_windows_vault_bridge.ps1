@@ -108,6 +108,10 @@ try {
     Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-rejected'
     Invoke-Bridge 'runtime-late-refresh'
+    # Close a fresh owner during held startup restore, then prove a new process
+    # observes the cleared OS credential slot.
+    Invoke-Bridge 'runtime-close-restore'
+    Invoke-Bridge 'runtime-signedout'
     Write-Output 'Windows persistent SDK runtime cross-process verification passed'
     Invoke-WindowExit 'exit-drain'
     Invoke-WindowExit 'exit-cancel'

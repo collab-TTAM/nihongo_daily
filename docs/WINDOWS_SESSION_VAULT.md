@@ -187,3 +187,9 @@ the captured user's own-profile request.
 This is a mocked Auth HTTP response and mocked MethodChannel storage backend,
 not hosted Auth/JWT evidence. The separate Windows CI process probe continues
 to exercise the native Credential Manager API with TEST ONLY values.
+
+## Caller close during a held Windows startup restore
+
+The TEST ONLY `runtime-close-restore` phase runs in a fresh production Flutter Windows runner process. It writes a synthetic refresh value to the real Windows Credential Manager slot, starts the pinned Supabase SDK's refresh-only restore against a held MockClient response, then asks the caller-owned runtime to close before releasing that response. The fixture waits until the persistence owner is closed, releases the late response, and requires the startup operation to fail, no own-profile RPC/readiness to appear, the owned SDK cleanup to run, and the OS credential slot to be empty before close returns. A following fresh `runtime-signedout` process verifies that the slot remains absent across process boundaries.
+
+This covers a close racing a pending startup restore in addition to the existing logout/account-switch and vault-write races. The Windows Credential Manager, MethodChannel, native journal lease and pinned SDK are real in the runner; Auth HTTP and JWT values remain synthetic TEST ONLY fixtures. It is not hosted Auth, signed-JWT, deployed RLS, OS logoff/power-loss or physical multi-device evidence. A fully persisted session still survives an ordinary clean close; an interrupted restore is deliberately cleaned before the owner is released.

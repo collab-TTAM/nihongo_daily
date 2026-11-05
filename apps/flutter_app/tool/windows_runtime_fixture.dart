@@ -19,6 +19,7 @@ const runtimePhases = {
   'runtime-signedout',
   'runtime-rejected',
   'runtime-late-refresh',
+  'runtime-close-restore',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
 const _ownerB = 'a1000000-0000-4000-8000-000000000002';
@@ -118,18 +119,19 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       final grant = request.url.queryParameters['grant_type'];
       final body = jsonDecode(request.body) as Map<String, Object?>;
       if (grant == 'refresh_token') {
-        final expected = phase == 'runtime-restore'
+        final expected = phase == 'runtime-restore' ||
+                phase == 'runtime-late-refresh' ||
+                phase == 'runtime-close-restore'
             ? _first
             : phase == 'runtime-logout'
             ? _second
-            : phase == 'runtime-late-refresh'
-            ? _first
             : _rejected;
         _check(body.length == 1 && body['refresh_token'] == expected);
         if (phase == 'runtime-rejected') {
           return http.Response('{"message":"fixture rejected"}', 401);
         }
-        if (phase == 'runtime-late-refresh') {
+        if (phase == 'runtime-late-refresh' ||
+            phase == 'runtime-close-restore') {
           final wait = lateRefresh;
           _check(wait != null);
           return wait!.future;
@@ -201,7 +203,39 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   }
 
   try {
-    if (phase == 'runtime-late-refresh') {
+    if (phase == 'runtime-close-restore') {
+      // Use the actual Windows Credential Manager slot, then hold the SDK's
+      // startup refresh while the caller begins closing its owned runtime.
+      _check(await vault.readRefreshToken() == null);
+      await vault.writeRefreshToken(_first);
+      lateRefresh = Completer<http.Response>();
+      final restoring = runtime.start();
+      await waitForAuthCalls(1);
+      _check(runtime.account.readyRuntime == null && profileCalls == 0);
+
+      final closing = runtime.close();
+      final closeDeadline = DateTime.now().add(const Duration(seconds: 5));
+      while (runtime.persistence.phase.name != 'closed' &&
+          DateTime.now().isBefore(closeDeadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      _check(runtime.persistence.phase.name == 'closed');
+      secret = _second;
+      lateRefresh!.complete(authResponse());
+
+      var restoreFailed = false;
+      try {
+        await restoring;
+      } on ReviewTransportFailure {
+        restoreFailed = true;
+      }
+      await closing;
+      _check(restoreFailed && profileCalls == 0);
+      _check(runtime.account.readyRuntime == null);
+      _check(await vault.readRefreshToken() == null);
+      _check(logoutCalls >= 1);
+      await pending();
+    } else if (phase == 'runtime-late-refresh') {
       _check(await vault.readRefreshToken() == null);
       await vault.writeRefreshToken(_first);
       lateRefresh = Completer<http.Response>();
@@ -302,6 +336,11 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       await pending();
     }
   } finally {
+    // A failed assertion must not strand a held HTTP response while close drains.
+    if (lateRefresh != null && !lateRefresh!.isCompleted) {
+      if (phase == 'runtime-close-restore') secret = _second;
+      lateRefresh!.complete(authResponse());
+    }
     await runtime.close();
     await journal.close();
     network.close();

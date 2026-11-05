@@ -304,7 +304,7 @@
     {
       "id": "windows-session-vault",
       "status": "automated-baseline",
-      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen and explicit unsupported-platform failure",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, held startup-restore close cleanup and explicit unsupported-platform failure",
       "ci_job": "windows",
       "anchors": [
         {
@@ -334,6 +334,14 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
           "contains": "Windows rejected restore clears through vault before explicit login and profile"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
+          "contains": "'runtime-close-restore'"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "runtime-close-restore"
         }
       ],
       "issues": [
