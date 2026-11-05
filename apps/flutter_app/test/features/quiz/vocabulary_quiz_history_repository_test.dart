@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,28 @@ final class _QuizAuth implements ReviewAuth {
     onRead?.call();
     return session;
   }
+}
+
+final class _ChangingList extends ListBase<OwnedVocabularyQuizAttempt> {
+  _ChangingList(this.record, this.onRead);
+  final OwnedVocabularyQuizAttempt record;
+  final void Function() onRead;
+
+  @override
+  int get length => 1;
+
+  @override
+  set length(int value) => throw UnsupportedError('TEST ONLY immutable');
+
+  @override
+  OwnedVocabularyQuizAttempt operator [](int index) {
+    onRead();
+    return record;
+  }
+
+  @override
+  void operator []=(int index, OwnedVocabularyQuizAttempt value) =>
+      throw UnsupportedError('TEST ONLY immutable');
 }
 
 void main() {
@@ -424,5 +447,18 @@ void main() {
     await closing;
     expect(store.appends + store.loads, 0);
     expect(await journal.list(quizOwner), isEmpty);
+  });
+
+  test('load rechecks owner after result validation callbacks', () async {
+    final service = repository();
+    store.listOverride = _ChangingList(
+      OwnedVocabularyQuizAttempt(quizOwner, quizReport(1)),
+      () => auth.session = ReviewSession(userId: quizOther),
+    );
+    await expectLater(service.load(), changed);
+    expect(store.loads, 1);
+    expect(store.appends, 0);
+    store.listOverride = null;
+    expect(await repository().load(), isEmpty);
   });
 }

@@ -221,7 +221,9 @@ final class VocabularyQuizHistoryRepository {
           ? left.attempt.eventId.compareTo(right.attempt.eventId)
           : time;
     });
-    return List.unmodifiable(result);
+    final snapshot = List<OwnedVocabularyQuizAttempt>.unmodifiable(result);
+    _requireCurrent(); // Validation/snapshot callbacks cannot publish old data.
+    return snapshot;
   }
 }
 

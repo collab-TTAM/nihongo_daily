@@ -1,5 +1,17 @@
 # Public original-vocabulary quiz — Issue #13
 
+## Captured-session publication fence — 2026-11-05 UTC
+
+Vocabulary history loading now rechecks the captured Auth session after validating,
+deduplicating, sorting and creating the immutable result snapshot. This matches the
+existing grammar-history repository fence. A store-supplied list can invoke a
+synchronous callback while it is iterated; if that callback changes A to B, the
+old repository returns only the fixed session-changed error and does not publish
+A's snapshot. This is a local owner/session guard, not JWT verification or hosted
+sync evidence. The regression uses a TEST ONLY reentrant ListBase and verifies a
+fresh B repository reads an empty B history.
+
+
 ## Owned progress navigation and current-deck evidence — 2026-10-31 UTC
 
 - Issue13/draft41 automation/issue-11-plan-sdk-integration; parent
