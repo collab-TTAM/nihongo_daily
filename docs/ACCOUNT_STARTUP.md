@@ -144,3 +144,19 @@ not hosted Auth signatures, deployed RLS, real Credential Manager failure
 injection, or a learner account. The default preview/provider remains null and
 unchanged. The full pinned Flutter/Windows/SQL/Chrome/Web checks must pass on
 the exact source head before treating these tests as verified.
+
+
+## First install with an empty credential vault
+
+When the caller-owned startup vault has no refresh secret, startup performs only
+the bounded vault read. It does not send an Auth refresh request or call
+`ensure_profile`. The owned account is then published in the signed-out state,
+so the existing account route can offer its explicit password form without
+pretending that a session exists.
+
+The first password login uses that same owner. The exact rotated refresh secret
+must cross the vault write barrier before the captured user's own-profile RPC or
+study readiness is allowed. No clear is needed for an absent credential. A
+pinned-SDK/MockClient/in-memory-vault regression covers this first-install path;
+it is TEST ONLY and does not prove hosted identity, Windows Credential Manager
+execution or deployed RLS.

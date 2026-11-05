@@ -1427,4 +1427,98 @@ void main() {
       }
     },
   );
+  test(
+    'empty vault startup publishes signed-out account before first login',
+    () async {
+      final controller =
+          AccountStartupController<AccountController<SrsStudyRuntime>>(
+            () async => PersistentAccountStartup(runtime),
+          );
+      Completer<void>? writeWait;
+      Future<void>? loginExpectation;
+      try {
+        await controller.start().timeout(const Duration(seconds: 5));
+
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(identical(controller.account, runtime.account), isTrue);
+        expect(runtime.persistence.phase, SessionPersistencePhase.idle);
+        expect(runtime.account.state.phase, AccountPhase.signedOut);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.operations, ['read']);
+        expect(
+          requests.where((request) => request.url.path == '/auth/v1/token'),
+          isEmpty,
+        );
+        expect(
+          requests.where(
+            (request) => request.url.path.contains('ensure_profile'),
+          ),
+          isEmpty,
+        );
+
+        authUser = wire.a;
+        authSession = wire.sid1;
+        secret = 'TEST_ONLY_FIRST_LOGIN_ROTATED';
+        final writeBarrier = Completer<void>();
+        backend.writeWait = writeBarrier;
+        writeWait = writeBarrier;
+        final login = runtime.account.signIn(
+          'fixture@example.invalid',
+          'TEST_ONLY_PASSWORD',
+        );
+        loginExpectation = expectLater(login, completes);
+        await waitForCondition(
+          () =>
+              backend.writes == 1 &&
+              runtime.persistence.phase == SessionPersistencePhase.saving,
+          reason: 'first password login did not reach the vault write barrier',
+        );
+
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.operations, ['read', 'write']);
+        expect(
+          requests.where(
+            (request) => request.url.path.contains('ensure_profile'),
+          ),
+          isEmpty,
+        );
+        expect(
+          requests
+              .where((request) => request.url.path == '/auth/v1/token')
+              .map((request) => request.url.queryParameters['grant_type']),
+          ['password'],
+        );
+
+        writeBarrier.complete();
+        await loginExpectation.timeout(const Duration(seconds: 5));
+        await waitForReady();
+
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(runtime.account.readyRuntime, isNotNull);
+        expect(backend.secret, secret);
+        expect(backend.operations, ['read', 'write']);
+        final profileRequests = requests
+            .where((request) => request.url.path.contains('ensure_profile'))
+            .toList();
+        expect(profileRequests, hasLength(1));
+        expect(
+          profileRequests.single.headers['authorization'],
+          'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+        );
+      } finally {
+        if (writeWait != null && !writeWait.isCompleted) {
+          writeWait.complete();
+        }
+        if (loginExpectation != null) {
+          try {
+            await loginExpectation;
+          } on Object {
+            // The primary assertion above owns the failure.
+          }
+        }
+        await controller.close().timeout(const Duration(seconds: 5));
+      }
+    },
+  );
+
 }

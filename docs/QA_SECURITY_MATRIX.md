@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-51 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+52 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -55,6 +55,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `srs-policy` | flutter | Versioned 26 policy pairs, offsets, stale events and actual Dart wire output. Pure scheduler; no authenticated persistence, queue or integrated review UI. |
 | `kanji-capture` | flutter | Bounded capture/time/multiple pointers, undo/clear and synthetic scoring. Synthetic fixtures never establish canonical stroke order, recognition or learner grades. |
 | `preview-ui` | flutter | Navigation, recovery, loading/error/retry/empty and large text layouts. Widget tests exercise a labeled demo; no interactive web/Windows or account/study flow evidence. |
+| `empty-vault-first-login` | flutter | First configured start with no saved secret stays signed out without Auth/profile calls; first password login saves rotation before own-profile readiness. TEST ONLY SDK/MockClient/in-memory vault, not hosted Auth or OS vault proof. |
 | `ai-boundary-faults` | ai-boundary | Missing/expired/forged identity, limits, provider malformed output/timeout and safe errors. Auth/limiter/provider ports are test fixtures, not JWT verification or distributed rate limiting. |
 | `ai-retry-recovery` | ai-boundary | Duplicate concurrent requests, changed input, pending recovery, commit failure and immutable results. Memory test store and lookup fixture are not durable process restart or provider reconciliation. |
 | `dependency-audit` | ai-boundary | Pinned patched Ajv, production audit and unchanged generated schema projections. Production npm audit snapshot alone does not establish security of Flutter/native/dev dependencies or application. |

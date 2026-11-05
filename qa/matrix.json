@@ -1139,6 +1139,23 @@
       ],
       "reproduce": "Run python3 -m unittest discover -s qa -p 'test_*.py' -v; synthetic cases cover CLI key assignments, JWTs, bearer values, PostgreSQL URL passwords and bounded failure output.",
       "limitation": "Synthetic patterns are regression coverage, not proof that every future third-party CLI log format is secret-free or that hosted Auth is working."
+    },
+    {
+      "id": "empty-vault-first-login",
+      "status": "automated-baseline",
+      "scope": "First configured startup with no saved refresh secret publishes a signed-out account without Auth/profile calls; first password login persists the rotated secret before own-profile readiness",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "empty vault startup publishes signed-out account before first login"
+        }
+      ],
+      "issues": [
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/persistent_supabase_runtime_test.dart --plain-name 'empty vault startup publishes signed-out account before first login'",
+      "limitation": "Pinned Supabase SDK with TEST ONLY MockClient, synthetic identity and in-memory vault. Verifies first-install sequencing only; not hosted JWT/Auth/RLS or actual Windows Credential Manager execution. Default preview remains unconfigured."
     }
   ],
   "findings": [
