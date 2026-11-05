@@ -2944,3 +2944,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Exact-head CI [42009743437](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42009743437) ran the new synthetic redaction suite and found one assertion mismatch: the helper correctly retains the field label while replacing its value (`TOKEN=[REDACTED]`); the test expected the label itself to be removed.
 - Corrected only the expected output in `qa/test_supabase_start_log.py`. The test still asserts that the raw synthetic token is absent and the tail is bounded. No helper, workflow, production or security behavior changed.
 - Repo-sanity failed at this one test; AI boundary passed; database was still cleaning up; Windows and Supabase integration were skipped behind the repo-sanity dependency. A new exact-head run is required.
+
+
+## Windows startup refresh late-response A/B fence — 2026-11-05T11:20Z
+
+- PR #37 / branch `automation/issue-22-atomic-review`; source test commit `c93f39b50753fb48497fc4c4bd4f2cf2b9f05541`.
+- Added a TEST ONLY Windows runtime regression in `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`: hold User A's stored refresh response during startup, logout, prove User B's password Auth is fenced while A's owned request is unsettled, release A's late response, verify cleanup clears the vault and no A profile becomes ready, then authenticate B and verify only B's rotated refresh secret and captured profile bearer are accepted.
+- No production Auth/session implementation, provider strategy, schema/RLS, default runtime activation, secret fallback or Pro-owned N4/content paths changed. Existing read/write/clear failure, rotation-before-profile, late-login/write and logout-order assertions remain.
+- Parent exact-head CI [42009953024](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42009953024) passed all six jobs and every returned step on `9c3a9113695b7dec9e5710f2e06c6552f3d07634`, including Flutter format/analyze/full suite, Chrome IndexedDB, Web/Windows release, Windows credential store/process bridge and disposable local Supabase GoTrue/PostgREST rotation/replay/A-B RLS. This is TEST ONLY local-stack evidence, not hosted learner Auth proof.
+- New source head `c93f39b50753fb48497fc4c4bd4f2cf2b9f05541` has not yet produced an observed exact-head workflow result. Cloud runtime has no Flutter/Dart SDK; the new regression was not run locally. No new-head format/analyze/test/build pass is claimed.
+- Next: inspect every latest-attempt job/step for the exact final PR head; fix only observed failures while preserving the assertions. Hosted signed-JWT learner A/B, deployed RLS/PostgREST, expiry/restart and physical multi-device acceptance remain open.
