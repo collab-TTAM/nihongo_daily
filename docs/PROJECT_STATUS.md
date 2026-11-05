@@ -1,5 +1,36 @@
 # PROJECT STATUS
 
+## Vocabulary quiz history post-validation owner fence — 2026-11-05 UTC
+
+- Draft PR #41, branch `automation/issue-11-plan-sdk-integration`; source commit
+  `2aed1669ac8dcab43323b65d2b206fe7c8dfa0a3` (parent
+  `a81a6e06694c747f04186a72c0bf067e55be07de`); base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Changed `apps/flutter_app/lib/features/quiz/data/vocabulary_quiz_history_repository.dart`:
+  after validating owner rows, deduplicating/sorting and creating the immutable
+  snapshot, recheck the exact captured Auth session before returning it. This
+  closes the gap already guarded by the grammar history repository.
+- Added a TEST ONLY reentrant `ListBase` case in
+  `apps/flutter_app/test/features/quiz/vocabulary_quiz_history_repository_test.dart`.
+  Iteration changes A→B; the old repository must throw the fixed
+  `VocabularyQuizSessionChanged` instead of publishing A's history, and a fresh B
+  repository must read an empty B history. `docs/VOCABULARY_QUIZ.md` records the
+  local-only boundary. No N4 assets, content tests, manifests, API/schema/RLS,
+  Auth strategy, defaults or production data paths changed.
+- Separate diff review: one production guard, one regression helper/test and one
+  documentation section; all pre-existing assertions retained. Full starting tree
+  was untruncated (907 entries/792 blobs); source tree has the same 907 entries,
+  no missing paths, identical mode/type set and exactly three intended blob changes.
+- Baseline [CI 41936959454](https://github.com/collab-TTAM/nihongo_daily/actions/runs/41936959454)
+  on parent `a81a6e06694c747f04186a72c0bf067e55be07de` passed all five jobs and
+  every listed step. This does not verify the new regression. Cloud runtime has no
+  Flutter/Dart SDK; local format/analyze/test/build were not run. Exact final-head
+  Actions verification is required.
+- Next: inspect all latest-attempt jobs/steps on the final status commit, fix only
+  observed failures, then continue #13's server-authoritative attempt/mastery and
+  hosted A/B gaps. PR #41 remains Draft; #13 stays open; all hosted release gates
+  remain pending. Pro-owned #14/#38/N4 scope is untouched; no merge/deployment.
+
 ## Quiz transaction cancellation fences — 2026-11-04 UTC
 
 - Draft41/issue13, automation/issue-11-plan-sdk-integration; parent
