@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/reading/application/reading_provider.dart';
+import 'package:nihongo_daily/features/reading/data/bundled_reading_repository.dart';
 import 'package:nihongo_daily/features/reading/data/local_reading_repository.dart';
 import 'package:nihongo_daily/features/reading/domain/reading_material.dart';
 import 'package:nihongo_daily/features/reading/domain/reading_repository.dart';
@@ -130,29 +131,43 @@ Future<void> openReading(WidgetTester tester, {String id = 'fixture-a'}) async {
 }
 
 void main() {
-  testWidgets('default route has no fabricated lesson audio or result', (
-    tester,
-  ) async {
-    final h = await mountReading(tester);
-    await tester.pumpAndSettle();
-    expect(h.container.read(readingRepositoryProvider), isNull);
-    expect(find.byKey(const Key('reading-unavailable')), findsOneWidget);
-    expect(find.byKey(const Key('reading-reload')), findsNothing);
-    expect(find.byKey(const Key('reading-result')), findsNothing);
-    expect(
-      tester
-          .widget<FilledButton>(
-            find.byKey(const Key('reading-audio-unavailable')),
-          )
-          .onPressed,
-      isNull,
-    );
-    expect(find.textContaining('chưa lưu tiến độ'), findsOneWidget);
-    h.container.read(previewLevelProvider.notifier).state = PreviewLevel.n4;
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('reading-unavailable')), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'default route uses bundled N5 reading; audio and saved result stay unavailable',
+    (tester) async {
+      final h = await mountReading(tester);
+      await tester.pumpAndSettle();
+      expect(
+        h.container.read(readingRepositoryProvider),
+        isA<BundledReadingRepository>(),
+      );
+      expect(find.byKey(const Key('reading-unavailable')), findsNothing);
+      expect(find.text('3 bài đọc · Chọn để mở'), findsOneWidget);
+      expect(
+        find.byKey(const Key('reading-open-n5-daily-routine-01')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('reading-result')), findsNothing);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const Key('reading-audio-unavailable')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(find.textContaining('chưa lưu tiến độ'), findsOneWidget);
+
+      h.container.read(previewLevelProvider.notifier).state = PreviewLevel.n4;
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('reading-empty')), findsOneWidget);
+      expect(
+        find.text('Chưa có bài đọc N4 trong nguồn hiện tại.'),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('reading-result')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('read answer feedback completion restart and stale callbacks', (
     tester,

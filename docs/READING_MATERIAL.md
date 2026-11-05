@@ -1,8 +1,9 @@
 # Reading material domain — Issue #34
 
 The core is a pure local model/importer and deterministic comprehension round.
-The opt-in repository is described below; READING_SCREEN.md documents its later
-read-only UI. No default lesson, audio or study-session writer is installed. Frozen v0.1 APIs/database models and seven Daily Plan blocks are unchanged.
+A fixed bundled N5 draft source is described below; READING_SCREEN.md documents
+the read-only UI. N4 remains empty until its separate content source is reviewed
+and integrated. No audio or default study-session writer is installed. Frozen v0.1 APIs/database models and seven Daily Plan blocks are unchanged.
 No canonical N5/N4 asset, content manifest or Pro-owned content/test is modified.
 Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 

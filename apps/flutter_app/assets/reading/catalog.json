@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "passages": [
+    {
+      "id": "n5-daily-routine-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "私の一日",
+      "title_vi": "Một ngày của tôi",
+      "text_ja": "私は毎朝七時に起きます。朝ご飯を食べてから、八時に学校へ行きます。学校で日本語を勉強します。午後四時に家へ帰ります。夜は本を読んで、十一時に寝ます。",
+      "reading_ja": "わたしはまいあさしちじにおきます。あさごはんをたべてから、はちじにがっこうへいきます。がっこうでにほんごをべんきょうします。ごごよじにいえへかえります。よるはほんをよんで、じゅういちじにねます。",
+      "translation_vi": "Mỗi sáng tôi thức dậy lúc 7 giờ. Sau khi ăn sáng, tôi đến trường lúc 8 giờ. Tôi học tiếng Nhật ở trường. Tôi về nhà lúc 4 giờ chiều. Buổi tối tôi đọc sách và đi ngủ lúc 11 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "私は何時に起きますか。",
+          "reading_ja": "わたしはなんじにおきますか。",
+          "prompt_vi": "Tôi thức dậy lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "七時",
+              "reading_ja": "しちじ",
+              "text_vi": "7 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "九時",
+              "reading_ja": "くじ",
+              "text_vi": "9 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi thức dậy lúc 7 giờ."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "学校で何を勉強しますか。",
+          "reading_ja": "がっこうでなにをべんきょうしますか。",
+          "prompt_vi": "Tôi học gì ở trường?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "英語",
+              "reading_ja": "えいご",
+              "text_vi": "Tiếng Anh"
+            },
+            {
+              "id": "b",
+              "text_ja": "日本語",
+              "reading_ja": "にほんご",
+              "text_vi": "Tiếng Nhật"
+            },
+            {
+              "id": "c",
+              "text_ja": "数学",
+              "reading_ja": "すうがく",
+              "text_vi": "Toán"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi học tiếng Nhật ở trường."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "夜、何をしますか。",
+          "reading_ja": "よる、なにをしますか。",
+          "prompt_vi": "Buổi tối tôi làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本を読みます",
+              "reading_ja": "ほんをよみます",
+              "text_vi": "Đọc sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "映画を見ます",
+              "reading_ja": "えいがをみます",
+              "text_vi": "Xem phim"
+            },
+            {
+              "id": "c",
+              "text_ja": "料理をします",
+              "reading_ja": "りょうりをします",
+              "text_vi": "Nấu ăn"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi tối tôi đọc sách."
+        }
+      ]
+    },
+    {
+      "id": "n5-saturday-park-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "土曜日の公園",
+      "title_vi": "Thứ Bảy ở công viên",
+      "text_ja": "土曜日、私は友達と公園へ行きます。公園には大きい木があります。私たちは少し歩いて、ベンチでお弁当を食べます。午後、写真を撮って、五時に家へ帰ります。",
+      "reading_ja": "どようび、わたしはともだちとこうえんへいきます。こうえんにはおおきいきがあります。わたしたちはすこしあるいて、ベンチでおべんとうをたべます。ごご、しゃしんをとって、ごじにいえへかえります。",
+      "translation_vi": "Thứ Bảy, tôi đi công viên với bạn. Trong công viên có một cái cây lớn. Chúng tôi đi bộ một lúc rồi ăn cơm hộp trên ghế băng. Buổi chiều, chúng tôi chụp ảnh và về nhà lúc 5 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "土曜日、どこへ行きますか。",
+          "reading_ja": "どようび、どこへいきますか。",
+          "prompt_vi": "Thứ Bảy tôi đi đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "公園",
+              "reading_ja": "こうえん",
+              "text_vi": "Công viên"
+            },
+            {
+              "id": "b",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            },
+            {
+              "id": "c",
+              "text_ja": "駅",
+              "reading_ja": "えき",
+              "text_vi": "Nhà ga"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi công viên với bạn."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何を食べますか。",
+          "reading_ja": "なにをたべますか。",
+          "prompt_vi": "Chúng tôi ăn gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "パン",
+              "reading_ja": "パン",
+              "text_vi": "Bánh mì"
+            },
+            {
+              "id": "b",
+              "text_ja": "お弁当",
+              "reading_ja": "おべんとう",
+              "text_vi": "Cơm hộp"
+            },
+            {
+              "id": "c",
+              "text_ja": "りんご",
+              "reading_ja": "りんご",
+              "text_vi": "Táo"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói chúng tôi ăn cơm hộp trên ghế băng."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に家へ帰りますか。",
+          "reading_ja": "なんじにいえへかえりますか。",
+          "prompt_vi": "Mấy giờ chúng tôi về nhà?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "四時",
+              "reading_ja": "よじ",
+              "text_vi": "4 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "五時",
+              "reading_ja": "ごじ",
+              "text_vi": "5 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "六時",
+              "reading_ja": "ろくじ",
+              "text_vi": "6 giờ"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói chúng tôi về nhà lúc 5 giờ."
+        }
+      ]
+    },
+    {
+      "id": "n5-station-shop-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "駅の近くの店",
+      "title_vi": "Cửa hàng gần nhà ga",
+      "text_ja": "駅の近くに小さい店があります。店は朝九時から夜八時までです。私は学校のあとで店へ行きます。りんごを二つ買います。店の人はやさしいです。",
+      "reading_ja": "えきのちかくにちいさいみせがあります。みせはあさくじからよるはちじまでです。わたしはがっこうのあとでみせへいきます。りんごをふたつかいます。みせのひとはやさしいです。",
+      "translation_vi": "Gần nhà ga có một cửa hàng nhỏ. Cửa hàng mở từ 9 giờ sáng đến 8 giờ tối. Sau giờ học, tôi đến cửa hàng. Tôi mua hai quả táo. Người bán hàng rất tốt bụng.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "店は何時からですか。",
+          "reading_ja": "みせはなんじからですか。",
+          "prompt_vi": "Cửa hàng bắt đầu mở lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "九時",
+              "reading_ja": "くじ",
+              "text_vi": "9 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "十時",
+              "reading_ja": "じゅうじ",
+              "text_vi": "10 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói cửa hàng mở từ 9 giờ sáng."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何を二つ買いますか。",
+          "reading_ja": "なにをふたつかいますか。",
+          "prompt_vi": "Tôi mua hai thứ gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "パン",
+              "reading_ja": "パン",
+              "text_vi": "Bánh mì"
+            },
+            {
+              "id": "b",
+              "text_ja": "バナナ",
+              "reading_ja": "バナナ",
+              "text_vi": "Chuối"
+            },
+            {
+              "id": "c",
+              "text_ja": "りんご",
+              "reading_ja": "りんご",
+              "text_vi": "Táo"
+            }
+          ],
+          "correct_choice_id": "c",
+          "explanation_vi": "Bài đọc nói tôi mua hai quả táo."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "店の人はどうですか。",
+          "reading_ja": "みせのひとはどうですか。",
+          "prompt_vi": "Người bán hàng thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "いそがしいです",
+              "reading_ja": "いそがしいです",
+              "text_vi": "Bận rộn"
+            },
+            {
+              "id": "b",
+              "text_ja": "やさしいです",
+              "reading_ja": "やさしいです",
+              "text_vi": "Tốt bụng"
+            },
+            {
+              "id": "c",
+              "text_ja": "しずかです",
+              "reading_ja": "しずかです",
+              "text_vi": "Yên lặng"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói người bán hàng tốt bụng."
+        }
+      ]
+    }
+  ]
+}

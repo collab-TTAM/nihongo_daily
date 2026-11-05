@@ -1746,16 +1746,24 @@
     {
       "id": "reading-widget-flow",
       "status": "automated-baseline",
-      "scope": "Opt-in read-only reading list/passage/first-answer feedback/result UI, nullable default source and explicit missing audio, loading/error/empty/manual reload states with level/source/round identity barriers",
+      "scope": "Fixed bundled original N5 draft plus trusted local overrides, explicit empty N4, read-only comprehension UI, disabled audio and loading/error/empty/reload/round identity barriers",
       "ci_job": "flutter",
       "anchors": [
         {
           "path": "apps/flutter_app/lib/features/reading/application/reading_provider.dart",
-          "contains": "Provider<ReadingRepository?>((ref) => null)"
+          "contains": "BundledReadingRepository()"
         },
         {
-          "path": "apps/flutter_app/lib/features/reading/presentation/reading_screen.dart",
-          "contains": "skipLoadingOnRefresh: false"
+          "path": "apps/flutter_app/assets/reading/catalog.json",
+          "contains": "私の一日"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/bundled_reading_repository_test.dart",
+          "contains": "bundled catalog contains original N5 passages and no N4 fallback"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/reading_widget_test.dart",
+          "contains": "default route uses bundled N5 reading; audio and saved result stay unavailable"
         },
         {
           "path": "apps/flutter_app/test/features/reading/reading_widget_test.dart",
@@ -1774,8 +1782,8 @@
         34,
         18
       ],
-      "reproduce": "cd apps/flutter_app && flutter pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test test/features/reading/reading_widget_test.dart",
-      "limitation": "Widget cases authored using actual router/providers/parser/local repository and TEST ONLY source material; full new-head Flutter execution/build still required. No reviewed default lesson or playable audio, account-owned study report/minutes/mastery/persistence/sync or hosted learner acceptance. All14 release groups pending; unconfigured source remains unavailable."
+      "reproduce": "In apps/flutter_app: flutter test test/features/reading/bundled_reading_repository_test.dart test/features/reading/reading_widget_test.dart; retain full Flutter/Chrome/Web/Windows CI.",
+      "limitation": "The bundled catalog is three original N5 draft passages with no independent teacher/native-speaker review; N4 is intentionally empty pending separate Pro PR #38 review/integration. No audio, saved answers, progress/mastery or study-minute credit; the server LISTENING_READING block remains BLOCKED. Tests/CI are component evidence, not hosted learner acceptance."
     },
     {
       "id": "reading-study-recorder",

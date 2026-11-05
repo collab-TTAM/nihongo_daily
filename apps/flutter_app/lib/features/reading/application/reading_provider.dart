@@ -3,12 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/preview_level.dart';
 import '../../settings/application/preview_preferences.dart'
     show previewLevelProvider;
+import '../data/bundled_reading_repository.dart';
 import '../domain/reading_material.dart';
 import '../domain/reading_repository.dart';
 
-// The host may inject a reviewed trusted local source. No demo lesson, arbitrary
-// learner URL, account capability or default network service is installed.
-final readingRepositoryProvider = Provider<ReadingRepository?>((ref) => null);
+// The default is one fixed, read-only package asset. A trusted host may override
+// it with a reviewed local source; no learner URL/path or network writer exists.
+final readingRepositoryProvider = Provider<ReadingRepository?>(
+  (ref) => BundledReadingRepository(),
+);
 
 final readingCatalogProvider = FutureProvider.autoDispose
     .family<List<ReadingPassage>, PreviewLevel>((ref, level) {

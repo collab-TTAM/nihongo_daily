@@ -77,7 +77,10 @@ results must be observed at the actual new commit; parent CI success is not a pa
 for these new cases. Local pinned Dart formatting and QA inventory are not Flutter
 execution. Actual observed results are recorded in PROJECT_STATUS and PR #41.
 
-Next: verify full current-head CI, supply separately reviewed original/licensed
-reading material in coordination with #26/#14, and validate the optional reading timer composition described in
-READING_STUDY_TIMER.md before trusted server availability can enable real reports. Audio, hosted learner
-acceptance and all14 release groups remain pending; #34 stays open and #41 draft.
+The default-route widget case now reads the actual bundled N5 asset and verifies
+that N4 remains empty; the remaining injected widget cases are TEST ONLY fixtures.
+Next: independently review the N5 draft linguistically, broaden original N5 reading
+coverage, and integrate N4 only after the separate Pro PR #38 content review. Then
+map reviewed passages to authoritative server availability before any timer can
+credit study. Audio, hosted learner acceptance and all14 release groups remain
+pending; #34 stays open and #41 draft.
