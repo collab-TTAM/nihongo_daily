@@ -1444,6 +1444,7 @@ void main() {
         expect(runtime.persistence.phase, SessionPersistencePhase.idle);
         expect(runtime.account.state.phase, AccountPhase.signedOut);
         expect(runtime.account.readyRuntime, isNull);
+        expect(backend.secret, isNull);
         expect(backend.operations, ['read']);
         expect(
           requests.where((request) => request.url.path == '/auth/v1/token'),
@@ -1466,7 +1467,8 @@ void main() {
           'fixture@example.invalid',
           'TEST_ONLY_PASSWORD',
         );
-        loginExpectation = expectLater(login, completes);
+        final loginDone = expectLater(login, completes);
+        loginExpectation = loginDone;
         await waitForCondition(
           () =>
               backend.writes == 1 &&
@@ -1490,7 +1492,7 @@ void main() {
         );
 
         writeBarrier.complete();
-        await loginExpectation.timeout(const Duration(seconds: 5));
+        await loginDone.timeout(const Duration(seconds: 5));
         await waitForReady();
 
         expect(controller.phase, AccountStartupPhase.active);
@@ -1520,5 +1522,4 @@ void main() {
       }
     },
   );
-
 }
