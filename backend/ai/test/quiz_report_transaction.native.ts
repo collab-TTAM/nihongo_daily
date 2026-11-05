@@ -19,8 +19,7 @@ import type { PostgresResult } from "../src/postgres_connection.ts";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
 if (
-  databaseUrl !==
-  "postgresql://postgres:postgres@localhost:5432/nihongo_test"
+  databaseUrl !== "postgresql://postgres:postgres@localhost:5432/nihongo_test"
 ) {
   throw new Error(
     "Native quiz coordinator requires the fixed disposable CI database",
@@ -55,9 +54,7 @@ function tableFor(request: QuizReportRequest) {
 }
 
 function remap(request: QuizReportRequest): QuizReportRequest {
-  const ids = new Set(
-    request.answers.flatMap((answer) => [...answer.choices]),
-  );
+  const ids = new Set(request.answers.flatMap((answer) => [...answer.choices]));
   const replacements = new Map(
     [...ids].map((id) => [id, randomUUID()] as const),
   );
@@ -73,33 +70,18 @@ function remap(request: QuizReportRequest): QuizReportRequest {
   };
 }
 
-async function seedContent(
-  connection: Client,
-  request: QuizReportRequest,
-) {
-  const ids = new Set(
-    request.answers.flatMap((answer) => [...answer.choices]),
-  );
+async function seedContent(connection: Client, request: QuizReportRequest) {
+  const ids = new Set(request.answers.flatMap((answer) => [...answer.choices]));
   for (const id of ids) {
     if (request.quiz_type === "vocabulary_reading") {
       await connection.query(
         "INSERT INTO public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,$3,$4,'nghĩa','noun','native quiz TEST ONLY')",
-        [
-          id,
-          request.jlpt_level,
-          "語" + id.slice(0, 8),
-          "ご" + id.slice(0, 8),
-        ],
+        [id, request.jlpt_level, "語" + id.slice(0, 8), "ご" + id.slice(0, 8)],
       );
     } else {
       await connection.query(
         "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,$3,$4,'nghĩa','giải thích')",
-        [
-          id,
-          request.jlpt_level,
-          "文法" + id.slice(0, 8),
-          "N" + id.slice(0, 8),
-        ],
+        [id, request.jlpt_level, "文法" + id.slice(0, 8), "N" + id.slice(0, 8)],
       );
     }
   }
@@ -122,11 +104,7 @@ async function validateCurrentContent(
   request: QuizReportRequest,
 ) {
   const table = tableFor(request);
-  const choices = [
-    ...new Set(
-      request.answers.flatMap((answer) => [...answer.choices]),
-    ),
-  ];
+  const choices = [...new Set(request.answers.flatMap((answer) => [...answer.choices]))];
   const active = await connection.query(
     "SELECT count(*)::integer AS count FROM " +
       table +
@@ -179,8 +157,7 @@ function makeHost(
     if (
       sql !==
         "SELECT private.replay_quiz_report($1::jsonb)::text AS response" &&
-      sql !==
-        "SELECT private.store_quiz_report($1::jsonb)::text AS response"
+      sql !== "SELECT private.store_quiz_report($1::jsonb)::text AS response"
     ) {
       throw new Error("Unexpected quiz SQL capability");
     }
@@ -195,12 +172,14 @@ function makeHost(
       rows: result.rows as Record<string, unknown>[],
     };
   };
-  const transaction: QuizReportTransaction =
-    createQuizReportSqlTransaction(query, async (request) => {
+  const transaction: QuizReportTransaction = createQuizReportSqlTransaction(
+    query,
+    async (request) => {
       trace.operations.push("content");
       trace.transactionIds.push(await transactionId(connection));
       await validator(request);
-    });
+    },
+  );
   return {
     async run(work) {
       await connection.query("BEGIN");
@@ -276,10 +255,9 @@ test(
         const request = remap(fixture.request);
         const first = request.answers[0];
         assert.ok(first);
-        await connection.query(
-          "INSERT INTO auth.users(id) VALUES($1::uuid)",
-          [ownerA],
-        );
+        await connection.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+          ownerA,
+        ]);
         await seedContent(connection, request);
 
         await setActive(connection, request, first.item_id, false);
@@ -385,10 +363,9 @@ test(
         );
 
         await setActive(connection, request, first.item_id, true);
-        await connection.query(
-          "INSERT INTO auth.users(id) VALUES($1::uuid)",
-          [ownerB],
-        );
+        await connection.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+          ownerB,
+        ]);
         const ownerBTrace: Trace = { operations: [], transactionIds: [] };
         assert.deepEqual(
           await submit(
@@ -400,7 +377,11 @@ test(
           ),
           expected,
         );
-        assert.deepEqual(ownerBTrace.operations, ["replay", "content", "store"]);
+        assert.deepEqual(ownerBTrace.operations, [
+          "replay",
+          "content",
+          "store",
+        ]);
         assertOneNativeTransaction(ownerBTrace);
         assert.equal(
           await receiptCount(connection, ownerA, request.client_event_id),
@@ -424,4 +405,3 @@ test(
     }
   },
 );
-
