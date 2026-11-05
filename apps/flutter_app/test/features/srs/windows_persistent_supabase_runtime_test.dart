@@ -415,7 +415,8 @@ void main() {
           (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
         ),
         isEmpty,
-        reason: 'neither stale User A nor blocked User B may provision a profile',
+        reason:
+            'neither stale User A nor blocked User B may provision a profile',
       );
 
       await runtime.account.signIn(
@@ -430,9 +431,7 @@ void main() {
       expect(authRequests, hasLength(1));
       expect(authRequests.single.url.queryParameters['grant_type'], 'password');
       final profileRequests = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
       expect(profileRequests, hasLength(1));
       expect(
