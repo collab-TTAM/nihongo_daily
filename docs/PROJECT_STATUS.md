@@ -1,3 +1,13 @@
+# Quiz coordinator native PostgreSQL checkpoint — 2026-11-05 UTC
+
+- Core lane: `automation/issue-11-plan-sdk-integration`; source commit `f5809830cca0e53735334c9124ec7fbcfa27a309`, formatting/QA follow-ups `82e292bac585d860c0115fca3d414c098783db69`, `6923c2dcfe724cf828a1c8284e542134405100af`, `5924a4fda6d2c1b887076a0e7735e6c7e7ef20d8`.
+- Paths: `backend/ai/test/quiz_report_transaction.native.ts`, `backend/ai/package.json`, `.github/workflows/ci.yml`, `docs/QUIZ_REPORT_API.md`, `qa/matrix.json`, `qa/test_verify_qa.py`.
+- The new TEST ONLY native PostgreSQL 17 test composes `submitQuizReportInTransaction` and `createQuizReportSqlTransaction` over one `pg.Client`; transaction IDs are checked across replay/content/store. It exercises vocabulary, grammar-primary and grammar-correction fixtures; savepoint rollback after current-content rejection; retry; exact replay after content retirement without revalidation; changed-payload `SYNC_CONFLICT`; and same-event isolation for owners A/B.
+- Exact-head CI evidence: run `42082893234` on source head `f5809830cca0e53735334c9124ec7fbcfa27a309` had a successful database job, including all three native quiz fixtures, but failed AI formatting and QA historical-snapshot tests. Run `42084007328` on `82e292bac585d860c0115fca3d414c098783db69` still failed formatting and the QA temp-workflow fixture. Run `42084419965` on `6923c2dcfe724cf828a1c8284e542134405100af` showed repo-sanity success; AI formatting still failed and its diagnostic step emitted the pinned Prettier patch. That patch was applied in `5924a4f...`; the temporary formatter diagnostic was removed, and the QA temp directory now uses `exist_ok=True`.
+- New exact-head run `42084713382` for `5924a4f...` was pending when this note was written; no pass is claimed for that head. Runtime used GitHub Actions Node 24/PostgreSQL 17; no local Windows/Flutter/native runtime proof was performed.
+- TEST ONLY uses the fixed disposable PostgreSQL database, privileged test connection and synthetic `request.jwt.claim.sub`; it is not signed JWT, PostgREST/RLS, hosted Auth, production host binding, public RPC, learner or Personal Alpha proof. No migration/grant/Auth/provider/default activation, Pro N4 content or production data was changed.
+- Next: inspect the complete latest-attempt jobs/steps for run `42084713382` on its exact head; correct any failure without weakening gates. Keep issue #13 open. PR #37's separate exact-head CI is green; its hosted Auth/RLS acceptance remains unproven.
+
 # PROJECT STATUS
 
 ## Quiz queued dispatch revocation — 2026-11-05 UTC
