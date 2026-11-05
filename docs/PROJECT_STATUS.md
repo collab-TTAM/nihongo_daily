@@ -11029,7 +11029,7 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Next: inspect every latest-attempt job and step for the new exact commit. Keep PR #41 draft and related issues open until remaining plan/session, curriculum/study, quiz persistence, Kanji assets/grading and hosted release acceptance are proven.
 
 
-## Core worker checkpoint — RELEASED — 2026-11-05T21:15Z
+## Core worker checkpoint — RELEASED — 2026-11-05T21:26Z
 
 - Run `core-20261105T2115Z-pr41-n5-reading-catalog` released on branch `automation/issue-11-plan-sdk-integration`; source parent `b4d4f44e3fbfd499d4c73145d1cdfe1ac7b612ba`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
 - Issue #34 increment: package a fixed, read-only `assets/reading/catalog.json` with three original N5 draft passages and nine deterministic comprehension questions; add `BundledReadingRepository` over the existing bounded whole-catalog parser and make it the default reading source. The reader now shows N5 material and an explicit empty N4 list. Audio remains disabled; answers/results are local only.
@@ -11037,3 +11037,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Changed paths: `apps/flutter_app/assets/reading/catalog.json`, `apps/flutter_app/lib/features/reading/data/bundled_reading_repository.dart`, `apps/flutter_app/lib/features/reading/application/reading_provider.dart`, `apps/flutter_app/test/features/reading/bundled_reading_repository_test.dart`, `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `apps/flutter_app/pubspec.yaml`, `docs/READING_MATERIAL.md`, `docs/READING_SCREEN.md`, `qa/matrix.json`, and this status file.
 - Added actual-bundle tests for bounded UTF-8 size, exact N5 IDs/version, nine questions, source-review disclosure, exact-version lookup, empty N4 and redacted asset-load failure; updated the default-route widget test to assert N5 availability, N4 empty, audio disabled and no saved result. Flutter SDK is not available in this cloud runtime, so local format/analyze/test/build were not run; the exact-head GitHub Actions run is the required verification and is recorded in PR #41.
 - Remaining: inspect every latest-attempt job/step on the new exact head; fix only observed failures. Independent linguistic review, broader N5/N4 reading scope, accepted Pro N4 integration, vetted audio, server-side reading availability and hosted learner study evidence remain open. The current plan's LISTENING_READING block is still BLOCKED; no reading timer can credit study minutes.
+
+
+## Core worker formatter correction checkpoint — 2026-11-05T21:28Z
+
+- Resumed the released N5 reading-catalog increment on PR #41, branch `automation/issue-11-plan-sdk-integration`, parent HEAD `c60381d84b0a361f6ca889f11193c459fba9828d`. The previous catalog worker's actual release time is 21:26Z; the 21:15Z value is its run-start marker.
+- Exact-head Actions [42112463557](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42112463557), attempt 1: repo-sanity, AI boundary and database completed SUCCESS/all steps. Flutter failed only strict Dart formatting in `test/features/reading/bundled_reading_repository_test.dart`; the job log emitted two exact line-layout hunks. Flutter analyze/full tests/Web build and all downstream Flutter steps were SKIPPED, not passed. Windows remained IN_PROGRESS at the TEST ONLY vault-bridge build. No full-CI pass is claimed.
+- Applied only those two pinned-Dart formatter hunks; no test assertions or runtime behavior changed. The strict formatter gate remains unchanged. New exact-head CI is required for format/analyze/full Flutter tests, Chrome/Web, Windows and every retained job.
+- Cloud runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. No Pro-owned N4 files/content tests/docs, Auth/provider, SQL/RLS, default save behavior, dependencies, spend or deployment changed. Keep #41 Draft and #34 open; N4 review/integration, independent N5 linguistic review, vetted audio, server reading availability and hosted learner acceptance remain pending.

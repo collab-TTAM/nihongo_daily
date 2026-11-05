@@ -27,14 +27,11 @@ void main() {
       final n5 = await repository.load(PreviewLevel.n5);
       final n4 = await repository.load(PreviewLevel.n4);
 
-      expect(
-        n5.map((passage) => passage.id),
-        [
-          'n5-daily-routine-01',
-          'n5-saturday-park-01',
-          'n5-station-shop-01',
-        ],
-      );
+      expect(n5.map((passage) => passage.id), [
+        'n5-daily-routine-01',
+        'n5-saturday-park-01',
+        'n5-station-shop-01',
+      ]);
       expect(n4, isEmpty);
       expect(n5.every((passage) => passage.contentVersion == 1), isTrue);
       expect(
@@ -65,14 +62,8 @@ void main() {
       }
 
       final first = n5.first;
-      expect(
-        await repository.find(PreviewLevel.n5, first.id, 1),
-        same(first),
-      );
-      expect(
-        await repository.find(PreviewLevel.n5, first.id, 2),
-        isNull,
-      );
+      expect(await repository.find(PreviewLevel.n5, first.id, 1), same(first));
+      expect(await repository.find(PreviewLevel.n5, first.id, 2), isNull);
     },
   );
 
