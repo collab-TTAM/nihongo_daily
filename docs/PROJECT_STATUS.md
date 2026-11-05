@@ -1,3 +1,10 @@
+## Core checkpoint — PR #41 pinned Prettier diagnosis — 2026-11-05 UTC
+
+- Resumed run `core-20261105T2007Z-pr41-prettier-fix` on `automation/issue-11-plan-sdk-integration`, starting HEAD `5c0edb5e44bbb04d0355ecbd43040ca4382e0e7c`.
+- Exact-head CI [42084955709](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42084955709), attempt 1: database, repo-sanity, Windows and Flutter completed SUCCESS with every listed step; AI boundary failed only `npm run format:check`, which flagged `backend/ai/test/quiz_report_transaction.native.ts`. Subsequent AI type/tests/Deno/Edge/type-generation steps were SKIPPED, not passes.
+- Added a temporary read-only pinned-Prettier diagnostic to print the exact diff to runner temp; the strict format gate and all other checks remain unchanged. No assertions, application runtime, Auth, API/schema/RLS, or Pro-owned N4 source/content files changed.
+- Next: inspect the emitted diff, apply only that formatter output, remove the temporary diagnostic, update this handoff, and verify all jobs/steps on the final exact HEAD.
+
 # Quiz coordinator native PostgreSQL checkpoint — 2026-11-05 UTC
 
 - Core lane: `automation/issue-11-plan-sdk-integration`; source commit `f5809830cca0e53735334c9124ec7fbcfa27a309`, formatting/QA follow-ups `82e292bac585d860c0115fca3d414c098783db69`, `6923c2dcfe724cf828a1c8284e542134405100af`, `5924a4fda6d2c1b887076a0e7735e6c7e7ef20d8`.
