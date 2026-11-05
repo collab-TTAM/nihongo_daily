@@ -330,6 +330,10 @@
         {
           "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
           "contains": "runtime-late-refresh"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows rejected restore clears through vault before explicit login and profile"
         }
       ],
       "issues": [

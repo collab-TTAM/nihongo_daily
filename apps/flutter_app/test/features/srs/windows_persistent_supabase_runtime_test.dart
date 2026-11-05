@@ -38,6 +38,7 @@ void main() {
   late bool failRead;
   late bool failWrite;
   late bool failClear;
+  late bool rejectRefresh;
   final requests = <http.Request>[];
   final timeline = <String>[];
 
@@ -84,6 +85,7 @@ void main() {
     failRead = false;
     failWrite = false;
     failClear = false;
+    rejectRefresh = false;
 
     messenger.setMockMethodCallHandler(channel, (call) async {
       final arguments = call.arguments as Map<Object?, Object?>;
@@ -145,6 +147,17 @@ void main() {
         timeline.add(
           grant == 'refresh_token' ? 'auth.refresh' : 'auth.password',
         );
+        if (grant == 'refresh_token' && rejectRefresh) {
+          return http.Response(
+            jsonEncode({
+              'code': 400,
+              'error_code': 'refresh_token_not_found',
+              'msg': 'Invalid Refresh Token',
+            }),
+            400,
+            headers: {'content-type': 'application/json'},
+          );
+        }
         if (authWait != null) return authWait!.future;
         return authResponse();
       }
@@ -216,6 +229,79 @@ void main() {
         greaterThan(timeline.lastIndexOf('auth.logout')),
       );
       expect(runtime.account.state.phase, AccountPhase.signedOut);
+    },
+  );
+
+  test(
+    'Windows rejected restore clears through vault before explicit login and profile',
+    () async {
+      storedSecret = 'TEST_ONLY_REJECTED_WINDOWS_REFRESH';
+      rejectRefresh = true;
+
+      await expectLater(
+        runtime.start(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+
+      expect(timeline, ['vault.read', 'auth.refresh']);
+      expect(storedSecret, 'TEST_ONLY_REJECTED_WINDOWS_REFRESH');
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      rejectRefresh = false;
+      failClear = true;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, 'TEST_ONLY_REJECTED_WINDOWS_REFRESH');
+      expect(
+        timeline.where((value) => value == 'auth.password'),
+        isEmpty,
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+      final failedClear = timeline.lastIndexOf('vault.clear');
+      expect(failedClear, greaterThan(timeline.indexOf('auth.refresh')));
+
+      failClear = false;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final successfulClear = timeline.lastIndexOf('vault.clear');
+      final passwordAuth = timeline.indexOf('auth.password');
+      final rotatedWrite = timeline.lastIndexOf('vault.write');
+      final profileRead = timeline.lastIndexOf('profile.ensure');
+      expect(successfulClear, greaterThan(failedClear));
+      expect(passwordAuth, greaterThan(successfulClear));
+      expect(rotatedWrite, greaterThan(passwordAuth));
+      expect(profileRead, greaterThan(rotatedWrite));
+      expect(storedSecret, refreshSecret);
+      expect(runtime.account.state.profile?.id, wire.a);
+
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
     },
   );
 

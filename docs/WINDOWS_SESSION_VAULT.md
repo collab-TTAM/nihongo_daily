@@ -172,3 +172,18 @@ login/restore/logout/rejected-token phases. Auth HTTP is a TEST ONLY MockClient
 and the JWT is explicitly unsigned; only the Windows storage/channel/journal and
 pinned SDK lifecycle are real. This is not hosted Auth, signed-JWT, deployed RLS,
 two-device or learner acceptance. The normal preview remains unconfigured.
+
+## Rejected stored-refresh recovery
+
+The TEST ONLY Windows runtime suite also exercises a rejected stored refresh
+through the pinned Supabase SDK and the Windows vault MethodChannel boundary.
+The simulated server rejects the saved refresh value; no own-profile request or
+study runtime is published. Explicit password login first runs owned cleanup.
+If the vault clear fails, the old secret remains, the login is rejected and no
+password grant/profile request is sent. A later explicit retry clears the old
+slot before password Auth, then persists the new rotated refresh secret before
+the captured user's own-profile request.
+
+This is a mocked Auth HTTP response and mocked MethodChannel storage backend,
+not hosted Auth/JWT evidence. The separate Windows CI process probe continues
+to exercise the native Credential Manager API with TEST ONLY values.
