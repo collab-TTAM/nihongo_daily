@@ -297,3 +297,31 @@ confirms the extended owned dual-store dashboard journey; Windows124475602208
 confirms grammar/evidence/persistent SDK markers. This is TEST ONLY component
 proof; it does not execute the new contract tests. Their exact new-head CI and
 publication are recorded in PR41/PROJECT_STATUS.
+
+
+## Native PostgreSQL coordinator and SQL-bridge execution — 2026-11-06
+
+The database CI job now runs `npm run test:postgres-quiz` on its fixed disposable
+PostgreSQL 17 database. The Node 24 test composes
+`submitQuizReportInTransaction` with `createQuizReportSqlTransaction` on one
+`pg.Client` connection. It records the native transaction ID across replay,
+current-content validation and store, and refuses any other SQL statement from
+the bridge.
+
+For each canonical vocabulary/grammar fixture it seeds isolated TEST ONLY
+curriculum rows and Auth user IDs. A retired choice causes current-content
+validation to reject after replay miss; the test host rolls back to a savepoint
+and commits the empty outer harness transaction, then confirms no receipt row
+exists. After reactivating the content, the same event succeeds. The test then
+retires the target and proves exact replay returns the original response without
+calling current-content validation; changed payload returns only
+`SYNC_CONFLICT`. A second synthetic owner can store the same event ID without
+reading the first owner's receipt.
+
+This is native PostgreSQL execution of the TypeScript coordinator/SQL bridge,
+not merely a mocked query trace. The test-only host sets
+`request.jwt.claim.sub` on a privileged disposable connection; it does not
+verify a signed JWT, exercise PostgREST grants/RLS, or provide a production
+transaction host. The current-content callback is a test fixture, not a trusted
+deployed content service. No public RPC, app binding, migration, grant, default
+activation, hosted learner evidence, mastery or study credit is added.

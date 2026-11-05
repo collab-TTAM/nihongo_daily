@@ -21,7 +21,8 @@
       "Verify AI PostgreSQL adapters with pinned Deno",
       "Verify trusted AI assembly with native PostgreSQL",
       "Verify bundled Edge PostgreSQL assembly",
-      "Publish Edge PostgreSQL assembly evidence"
+      "Publish Edge PostgreSQL assembly evidence",
+      "Verify quiz report coordinator and SQL bridge with native PostgreSQL"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -3942,6 +3943,28 @@
       ],
       "reproduce": "cd backend/ai && npm run check && npm test && deno task check && deno task test",
       "limitation": "The quiz parser is a raw-wire primitive only; no public quiz endpoint, verified Auth, active-content check, RPC/ledger call, collection activation or hosted learner proof is enabled."
+    },
+    {
+      "id": "quiz-native-coordinator",
+      "status": "automated-baseline",
+      "scope": "Native PostgreSQL exercise of the TypeScript quiz transaction coordinator and fixed private-ledger SQL bridge on one owner-bound connection",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_transaction.native.ts",
+          "contains": "native quiz coordinator rolls back a rejected current-content attempt to its savepoint, then retries"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_transaction.native.ts",
+          "contains": "assert.deepEqual(replayTrace.operations, [\"replay\"])"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "With the fixed disposable PostgreSQL 17 CI database, run `cd backend/ai && npm run test:postgres-quiz`; the test is intentionally not configured for hosted URLs.",
+      "limitation": "TEST ONLY privileged PostgreSQL connection and synthetic request.jwt.claim.sub; current-content reads are test fixtures. This is not a public RPC, verified JWT/Auth, PostgREST/RLS learner proof, production host binding, mastery or Personal Alpha acceptance."
     }
   ],
   "findings": [
