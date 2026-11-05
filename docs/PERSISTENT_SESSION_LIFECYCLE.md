@@ -84,6 +84,8 @@ attempt credential clear. Clear failures remain visible as failed persistence;
 later explicit login/logout must clean successfully before accepting a session.
 Storage read errors preserve the existing entry until an explicit cleanup/login. The account controller also retains its fixed sign-in error across queued no-session notifications; only an explicit retry or logout changes that error state.
 
+If explicit logout arrives while startup is still awaiting the vault read, the generation is revoked immediately. Credential clear remains serialized behind that read; the saved value is never sent to Auth after it returns, and a replacement login remains blocked until the cancelled startup and clear have drained. The pinned-SDK/Windows-MethodChannel regression holds the read, attempts User B, then verifies clear -> B password grant -> B rotation write -> B own-profile. The held MethodChannel response is TEST ONLY; native Credential Manager behavior remains covered by the separate Windows process probe.
+
 Await `runtime.close()` before replacing the assembly. It revokes access, disposes
 the account controller, drains interrupted Auth/credential operations, cancels
 subscriptions and disposes only owned SDK/network resources. A fully saved
@@ -100,7 +102,7 @@ barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
 retry, revocation, owner exclusivity, stream closure and disposal. Pinned-SDK HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
 late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
-Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof.
+Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof. The Windows MethodChannel suite also covers logout during a held vault read and blocks B until the stale read/clear drain; that held read is a mock channel response, not a native Credential Manager fault injection.
 
 The new TEST ONLY `windows_persistent_supabase_runtime_test.dart` composes
 the actual Dart Windows MethodChannel vault adapter with the pinned Supabase SDK.

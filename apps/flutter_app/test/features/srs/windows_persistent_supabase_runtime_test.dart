@@ -35,6 +35,7 @@ void main() {
   late String authSession;
   late String refreshSecret;
   late Completer<http.Response>? authWait;
+  late Completer<void>? readWait;
   late Completer<void>? writeWait;
   late bool failRead;
   late bool failWrite;
@@ -82,6 +83,7 @@ void main() {
     authSession = wire.sid1;
     refreshSecret = 'TEST_ONLY_ROTATED_WINDOWS_REFRESH';
     authWait = null;
+    readWait = null;
     writeWait = null;
     failRead = false;
     failWrite = false;
@@ -97,6 +99,7 @@ void main() {
       switch (call.method) {
         case 'read':
           timeline.add('vault.read');
+          await (readWait?.future ?? Future<void>.value());
           if (failRead) {
             throw PlatformException(
               code: 'PRIVATE_STORAGE',
@@ -187,6 +190,9 @@ void main() {
   });
 
   tearDown(() async {
+    if (readWait != null && !readWait!.isCompleted) {
+      readWait!.complete();
+    }
     if (writeWait != null && !writeWait!.isCompleted) {
       writeWait!.complete();
     }
@@ -340,6 +346,116 @@ void main() {
     expect(runtime.account.readyRuntime, isNull);
     expect(storedSecret, isNull);
   });
+
+  test(
+    'Windows logout fences a held vault read before User B can authenticate',
+    () async {
+      storedSecret = 'TEST_ONLY_SAVED_A_REFRESH';
+      readWait = Completer<void>();
+
+      final starting = runtime.start();
+      final startupFailure = expectLater(
+        starting,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(timeline, ['vault.read']);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+      );
+      expect(runtime.persistence.phase, SessionPersistencePhase.restoring);
+      expect(runtime.account.readyRuntime, isNull);
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_READ_LOGOUT';
+      final logout = runtime.account.signOut();
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signingOut);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, 'TEST_ONLY_SAVED_A_REFRESH');
+      expect(
+        timeline.where((value) => value == 'vault.clear'),
+        isEmpty,
+        reason: 'clear must remain ordered behind the held vault read',
+      );
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      expect(runtime.account.state.phase, AccountPhase.signingOut);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+        reason: 'User B Auth must wait for the cancelled startup and clear',
+      );
+
+      readWait!.complete();
+      await startupFailure;
+      await logout;
+      await fixture.flush();
+
+      expect(storedSecret, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.indexOf('vault.read')),
+      );
+      expect(
+        timeline.where((value) => value == 'auth.refresh'),
+        isEmpty,
+        reason: 'the stale User A secret must never reach Auth',
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+        reason: 'neither stale User A nor blocked User B may provision a profile',
+      );
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      expect(authRequests, hasLength(1));
+      expect(authRequests.single.url.queryParameters['grant_type'], 'password');
+      final profileRequests = requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        lessThan(timeline.indexOf('auth.password')),
+      );
+      expect(
+        timeline.indexOf('auth.password'),
+        lessThan(timeline.lastIndexOf('vault.write')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('profile.ensure')),
+      );
+    },
+  );
 
   test(
     'late User A startup refresh is drained and cleared before User B can authenticate',
