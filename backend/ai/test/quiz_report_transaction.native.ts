@@ -5,12 +5,8 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { Client } from "pg";
 import { BoundaryError } from "../src/contracts.ts";
-import {
-  createQuizReportSqlTransaction,
-} from "../src/quiz_report_sql.ts";
-import {
-  submitQuizReportInTransaction,
-} from "../src/quiz_report_transaction.ts";
+import { createQuizReportSqlTransaction } from "../src/quiz_report_sql.ts";
+import { submitQuizReportInTransaction } from "../src/quiz_report_transaction.ts";
 import type {
   QuizReportRequest,
   QuizReportResponse,
@@ -22,8 +18,13 @@ import type {
 import type { PostgresResult } from "../src/postgres_connection.ts";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
-if (databaseUrl !== "postgresql://postgres:postgres@localhost:5432/nihongo_test") {
-  throw new Error("Native quiz coordinator requires the fixed disposable CI database");
+if (
+  databaseUrl !==
+  "postgresql://postgres:postgres@localhost:5432/nihongo_test"
+) {
+  throw new Error(
+    "Native quiz coordinator requires the fixed disposable CI database",
+  );
 }
 const root = new URL("../../../contracts/quiz/v1/", import.meta.url);
 const schema = JSON.parse(readFileSync(new URL("schema.json", root), "utf8"));
@@ -54,8 +55,12 @@ function tableFor(request: QuizReportRequest) {
 }
 
 function remap(request: QuizReportRequest): QuizReportRequest {
-  const ids = new Set(request.answers.flatMap((answer) => [...answer.choices]));
-  const replacements = new Map([...ids].map((id) => [id, randomUUID()]));
+  const ids = new Set(
+    request.answers.flatMap((answer) => [...answer.choices]),
+  );
+  const replacements = new Map(
+    [...ids].map((id) => [id, randomUUID()] as const),
+  );
   return {
     ...request,
     client_event_id: randomUUID(),
@@ -72,16 +77,29 @@ async function seedContent(
   connection: Client,
   request: QuizReportRequest,
 ) {
-  for (const id of new Set(request.answers.flatMap((answer) => [...answer.choices]))) {
+  const ids = new Set(
+    request.answers.flatMap((answer) => [...answer.choices]),
+  );
+  for (const id of ids) {
     if (request.quiz_type === "vocabulary_reading") {
       await connection.query(
         "INSERT INTO public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,$3,$4,'nghĩa','noun','native quiz TEST ONLY')",
-        [id, request.jlpt_level, "語" + id.slice(0, 8), "ご" + id.slice(0, 8)],
+        [
+          id,
+          request.jlpt_level,
+          "語" + id.slice(0, 8),
+          "ご" + id.slice(0, 8),
+        ],
       );
     } else {
       await connection.query(
         "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,$3,$4,'nghĩa','giải thích')",
-        [id, request.jlpt_level, "文法" + id.slice(0, 8), "N" + id.slice(0, 8)],
+        [
+          id,
+          request.jlpt_level,
+          "文法" + id.slice(0, 8),
+          "N" + id.slice(0, 8),
+        ],
       );
     }
   }
@@ -94,7 +112,7 @@ async function setActive(
   active: boolean,
 ) {
   await connection.query(
-    `UPDATE ${tableFor(request)} SET is_active=$2 WHERE id=$1::uuid`,
+    "UPDATE " + tableFor(request) + " SET is_active=$2 WHERE id=$1::uuid",
     [itemId, active],
   );
 }
@@ -104,10 +122,15 @@ async function validateCurrentContent(
   request: QuizReportRequest,
 ) {
   const table = tableFor(request);
-  const choices = [...new Set(request.answers.flatMap((answer) => [...answer.choices]))];
+  const choices = [
+    ...new Set(
+      request.answers.flatMap((answer) => [...answer.choices]),
+    ),
+  ];
   const active = await connection.query(
-    `SELECT count(*)::integer AS count FROM ${table}
-      WHERE id=ANY($1::uuid[]) AND jlpt_level=$2::public.jlpt_level AND is_active`,
+    "SELECT count(*)::integer AS count FROM " +
+      table +
+      " WHERE id=ANY($1::uuid[]) AND jlpt_level=$2::public.jlpt_level AND is_active",
     [choices, request.jlpt_level],
   );
   if (active.rows[0]?.count !== choices.length) {
@@ -115,8 +138,9 @@ async function validateCurrentContent(
   }
   for (const answer of request.answers) {
     const target = await connection.query(
-      `SELECT content_version FROM ${table}
-        WHERE id=$1::uuid AND jlpt_level=$2::public.jlpt_level AND is_active`,
+      "SELECT content_version FROM " +
+        table +
+        " WHERE id=$1::uuid AND jlpt_level=$2::public.jlpt_level AND is_active",
       [answer.item_id, request.jlpt_level],
     );
     if (
@@ -148,14 +172,21 @@ function makeHost(
   validator: Validator,
   trace: Trace,
 ): QuizReportTransactionHost {
-  const query = async (sql: string, values: string[]): Promise<PostgresResult> => {
+  const query = async (
+    sql: string,
+    values: string[],
+  ): Promise<PostgresResult> => {
     if (
-      sql !== "SELECT private.replay_quiz_report($1::jsonb)::text AS response" &&
-      sql !== "SELECT private.store_quiz_report($1::jsonb)::text AS response"
+      sql !==
+        "SELECT private.replay_quiz_report($1::jsonb)::text AS response" &&
+      sql !==
+        "SELECT private.store_quiz_report($1::jsonb)::text AS response"
     ) {
       throw new Error("Unexpected quiz SQL capability");
     }
-    trace.operations.push(sql.includes("replay_quiz_report") ? "replay" : "store");
+    trace.operations.push(
+      sql.includes("replay_quiz_report") ? "replay" : "store",
+    );
     trace.transactionIds.push(await transactionId(connection));
     const result = await connection.query(sql, values);
     return {
@@ -164,14 +195,12 @@ function makeHost(
       rows: result.rows as Record<string, unknown>[],
     };
   };
-  const transaction: QuizReportTransaction = createQuizReportSqlTransaction(
-    query,
-    async (request) => {
+  const transaction: QuizReportTransaction =
+    createQuizReportSqlTransaction(query, async (request) => {
       trace.operations.push("content");
       trace.transactionIds.push(await transactionId(connection));
       await validator(request);
-    },
-  );
+    });
   return {
     async run(work) {
       await connection.query("BEGIN");
@@ -247,13 +276,22 @@ test(
         const request = remap(fixture.request);
         const first = request.answers[0];
         assert.ok(first);
-        await connection.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerA]);
+        await connection.query(
+          "INSERT INTO auth.users(id) VALUES($1::uuid)",
+          [ownerA],
+        );
         await seedContent(connection, request);
 
         await setActive(connection, request, first.item_id, false);
         const rejectedTrace: Trace = { operations: [], transactionIds: [] };
         await assert.rejects(
-          submit(connection, ownerA, request, (value) => validateCurrentContent(connection, value), rejectedTrace),
+          submit(
+            connection,
+            ownerA,
+            request,
+            (value) => validateCurrentContent(connection, value),
+            rejectedTrace,
+          ),
           (error: unknown) => {
             assert.ok(error instanceof BoundaryError);
             assert.equal(error.code, "VALIDATION_FAILURE");
@@ -263,7 +301,10 @@ test(
         );
         assert.deepEqual(rejectedTrace.operations, ["replay", "content"]);
         assertOneNativeTransaction(rejectedTrace);
-        assert.equal(await receiptCount(connection, ownerA, request.client_event_id), 0);
+        assert.equal(
+          await receiptCount(connection, ownerA, request.client_event_id),
+          0,
+        );
 
         await setActive(connection, request, first.item_id, true);
         const savedTrace: Trace = { operations: [], transactionIds: [] };
@@ -283,7 +324,10 @@ test(
         );
         assert.deepEqual(savedTrace.operations, ["replay", "content", "store"]);
         assertOneNativeTransaction(savedTrace);
-        assert.equal(await receiptCount(connection, ownerA, request.client_event_id), 1);
+        assert.equal(
+          await receiptCount(connection, ownerA, request.client_event_id),
+          1,
+        );
 
         await setActive(connection, request, first.item_id, false);
         const replayTrace: Trace = { operations: [], transactionIds: [] };
@@ -292,7 +336,8 @@ test(
             connection,
             ownerA,
             request,
-            async () => assert.fail("Exact replay must skip current-content validation"),
+            async () =>
+              assert.fail("Exact replay must skip current-content validation"),
             replayTrace,
           ),
           expected,
@@ -306,7 +351,9 @@ test(
             index === 0
               ? {
                   ...answer,
-                  selected_id: answer.choices.find((id) => id !== answer.selected_id)!,
+                  selected_id: answer.choices.find(
+                    (id) => id !== answer.selected_id,
+                  )!,
                 }
               : answer,
           ),
@@ -317,7 +364,10 @@ test(
             connection,
             ownerA,
             changed,
-            async () => assert.fail("Changed replay must conflict before content validation"),
+            async () =>
+              assert.fail(
+                "Changed replay must conflict before content validation",
+              ),
             conflictTrace,
           ),
           (error: unknown) => {
@@ -329,10 +379,16 @@ test(
         );
         assert.deepEqual(conflictTrace.operations, ["replay"]);
         assertOneNativeTransaction(conflictTrace);
-        assert.equal(await receiptCount(connection, ownerA, request.client_event_id), 1);
+        assert.equal(
+          await receiptCount(connection, ownerA, request.client_event_id),
+          1,
+        );
 
         await setActive(connection, request, first.item_id, true);
-        await connection.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerB]);
+        await connection.query(
+          "INSERT INTO auth.users(id) VALUES($1::uuid)",
+          [ownerB],
+        );
         const ownerBTrace: Trace = { operations: [], transactionIds: [] };
         assert.deepEqual(
           await submit(
@@ -346,11 +402,21 @@ test(
         );
         assert.deepEqual(ownerBTrace.operations, ["replay", "content", "store"]);
         assertOneNativeTransaction(ownerBTrace);
-        assert.equal(await receiptCount(connection, ownerA, request.client_event_id), 1);
-        assert.equal(await receiptCount(connection, ownerB, request.client_event_id), 1);
+        assert.equal(
+          await receiptCount(connection, ownerA, request.client_event_id),
+          1,
+        );
+        assert.equal(
+          await receiptCount(connection, ownerB, request.client_event_id),
+          1,
+        );
         assert.equal(connection.getTransactionStatus(), "I");
         console.log(
-          `PASS: native quiz coordinator ${request.quiz_type}/${request.practice_kind ?? "none"} rollback, retry, original replay and A/B isolation (TEST ONLY)`,
+          "PASS: native quiz coordinator " +
+            request.quiz_type +
+            "/" +
+            (request.practice_kind ?? "none") +
+            " rollback, retry, original replay and A/B isolation (TEST ONLY)",
         );
       } finally {
         await connection.end();

@@ -21,8 +21,7 @@
       "Verify AI PostgreSQL adapters with pinned Deno",
       "Verify trusted AI assembly with native PostgreSQL",
       "Verify bundled Edge PostgreSQL assembly",
-      "Publish Edge PostgreSQL assembly evidence",
-      "Verify quiz report coordinator and SQL bridge with native PostgreSQL"
+      "Publish Edge PostgreSQL assembly evidence"
     ],
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
@@ -3957,6 +3956,10 @@
         {
           "path": "backend/ai/test/quiz_report_transaction.native.ts",
           "contains": "assert.deepEqual(replayTrace.operations, [\"replay\"])"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "contains": "run: npm run test:postgres-quiz"
         }
       ],
       "issues": [
