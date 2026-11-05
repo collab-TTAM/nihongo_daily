@@ -263,10 +263,7 @@ void main() {
       expect(runtime.account.state.phase, AccountPhase.signInError);
       expect(runtime.account.readyRuntime, isNull);
       expect(storedSecret, 'TEST_ONLY_REJECTED_WINDOWS_REFRESH');
-      expect(
-        timeline.where((value) => value == 'auth.password'),
-        isEmpty,
-      );
+      expect(timeline.where((value) => value == 'auth.password'), isEmpty);
       expect(
         requests.where(
           (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
