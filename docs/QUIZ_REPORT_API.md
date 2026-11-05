@@ -73,8 +73,8 @@ reconstructed without forwarding SQL details or mutable error messages.
 The host MUST bind verified identity and a single connection/transaction, retain
 the owner lock after replay miss, validate canonical active content, enforce the
 server clock in store, commit only on callback success and roll back on failure.
-No default host, public route, identity verifier, PostgreSQL adapter or content
-adapter is supplied. Scripted transaction traces are TEST ONLY, not native DB
+No default host, public route, identity verifier, PostgreSQL transaction host or
+content adapter is supplied. Scripted transaction traces are TEST ONLY, not native DB
 rollback, concurrency or hosted learner evidence. Actual wiring remains required.
 An authoritative miss inside this transaction is not learner retry permission.
 
@@ -90,6 +90,29 @@ signal before commit. The coordinator awaits operation settlement rather than
 racing an orphaned DB promise; it does not itself impose a timeout. Scripted
 cancellation tests do not prove native PostgreSQL cancellation/rollback.
 
+
+## Private ledger SQL capability bridge — 2026-11-05
+
+`createQuizReportSqlTransaction(query, validateCurrentContent)` supplies the
+coordinator's replay/store capabilities using fixed parameterized SELECT calls to
+private.replay_quiz_report and private.store_quiz_report. A single $1::jsonb value
+carries the captured request; no owner, SQL identifier or role comes from input.
+The SQL result is cast to text so the coordinator applies its existing strict
+response decoder before returning from the transaction callback. Exactly one
+SELECT row/one response column is required. Only SQL NULL from replay is a miss;
+unknown/missing rows, JSON null text, malformed responses and null store fail.
+Input/output UTF-8 bytes are bounded to16KiB. Exact P0001 plus UNAUTHORIZED,
+VALIDATION_FAILURE or SYNC_CONFLICT maps to safe errors; other SQL details stay
+private. Canonical-content validation is mandatory caller input, never a default
+success implementation.
+
+This bridge does not open/commit a transaction or establish identity, privileges,
+cancellation or a content snapshot. Both capabilities MUST use the same trusted
+verified-owner transaction, retain the replay lock, and be revoked at transaction
+end. Current app/service grants remain revoked. A reviewed real transaction host,
+canonical validator and native PostgreSQL tests are still required; do not wire
+this directly to an HTTP route. Scripted SQL envelopes test protocol composition,
+not actual SQL/RLS/rollback or hosted learner acceptance.
 
 ## Private ledger foundation — 2026-10-31 UTC
 
