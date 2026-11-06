@@ -198,7 +198,10 @@ Future<void> verifySharedRecorder(String scenario) async {
       );
       final count = server.reads;
       await recorder.start(date, area: DailyPlanArea.aiConversation);
-      checkStudy(server.reads == count, 'Unsupported AI activity was activated');
+      checkStudy(
+        server.reads == count,
+        'Unsupported AI activity was activated',
+      );
       checkStudy(
         (await journal.list(studyOwner)).isEmpty,
         'Preflight wrote event',

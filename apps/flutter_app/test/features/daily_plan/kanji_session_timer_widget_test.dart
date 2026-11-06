@@ -48,12 +48,8 @@ final class KanjiFixtureRepository implements KanjiCatalogRepository {
   final bool empty;
 
   @override
-  Future<List<KanjiCatalogEntry>> load(PreviewLevel level) async => empty
-      ? []
-      : [
-          _entry(level, 0),
-          _entry(level, 1),
-        ];
+  Future<List<KanjiCatalogEntry>> load(PreviewLevel level) async =>
+      empty ? [] : [_entry(level, 0), _entry(level, 1)];
 }
 
 Future<TimerHarness> mountKanjiTimer(
@@ -91,9 +87,9 @@ Future<TimerHarness> mountKanjiTimer(
   if (configured) f.h.access.change(account.owner);
   await tester.pumpAndSettle();
   final selected = _entry(routeLevel, 0);
-  f.container.read(routerProvider).go(
-    '/kanji/practice/${routeLevel.name}/${selected.id}',
-  );
+  f.container
+      .read(routerProvider)
+      .go('/kanji/practice/${routeLevel.name}/${selected.id}');
   await tester.pumpAndSettle();
   return f;
 }
@@ -196,9 +192,7 @@ void main() {
     f.clock.advance(const Duration(seconds: 30));
 
     final next = _entry(PreviewLevel.n4, 1);
-    f.container.read(routerProvider).go(
-      '/kanji/practice/n4/${next.id}',
-    );
+    f.container.read(routerProvider).go('/kanji/practice/n4/${next.id}');
     await tester.pumpAndSettle();
 
     expect(

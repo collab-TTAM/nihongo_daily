@@ -11209,3 +11209,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Applied only the exact formatter hunks emitted by that CI log to those two files. No behavior, owner/timezone/generation fence, repository call, route, widget case or assertion was removed or changed intentionally. Updated this handoff; no API/schema/RLS/Auth/provider/default-save/Pro N4/security/production changes.
 - Parent recursive source tree was fetched untruncated at 928 entries. The new tree will use the exact parent tree SHA; post-write review must confirm only the two formatter files and this status file changed, with all other paths/modes/types/blobs preserved.
 - Cloud runtime has no Flutter/Dart SDK, so no local format/analyze/test/build is claimed. Next: inspect every latest-attempt job/step on the new exact HEAD; do not claim the overview widget tests, Chrome, Web, Windows or full CI until observed. PR #41 remains Draft; Issue #11 remains open.
+
+
+## Kanji timer fixture formatter correction — 2026-11-06T23:20Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `505abd007b14f172d7b06ce8a68c720f0fb366d4`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42304331278](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42304331278), attempt 1, targeted `505abd007b14f172d7b06ce8a68c720f0fb366d4`. Repo-sanity, database, AI boundary and Windows completed SUCCESS with every returned step successful. Flutter failed only strict `dart format --output=none --set-exit-if-changed .`; its log identified exactly two TEST ONLY files and three formatter hunks in `kanji_session_timer_widget_test.dart`, plus one hunk in `shared_study_recorder_fixtures.dart`. Flutter analyze/tests and downstream browser/Web steps were SKIPPED, not passes.
+- Applied only those exact pinned Dart 3.35.4 formatting changes. No assertions, fixture state, recorder behavior, timeout, or production code changed. Pro-owned N4 source/manifest/README/content tests/docs and branch were not edited.
+- Cloud runtime has no Flutter/Dart SDK; local Flutter format/analyze/test/build were not run. New exact-head CI is the executable gate; inspect every latest-attempt job/step before further code or pass claims. PR #41 stays Draft; issue #11 remains open.
