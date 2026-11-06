@@ -1776,6 +1776,10 @@
         {
           "path": "apps/flutter_app/test/features/reading/reading_widget_test.dart",
           "contains": "200 percent controls and answers remain accessible"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart",
+          "contains": "bundled N5 expansion includes the library study passage"
         }
       ],
       "issues": [
@@ -1783,7 +1787,7 @@
         18
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/reading/bundled_reading_repository_test.dart test/features/reading/reading_widget_test.dart; retain full Flutter/Chrome/Web/Windows CI.",
-      "limitation": "The bundled catalog is three original N5 draft passages with no independent teacher/native-speaker review; N4 is intentionally empty pending separate Pro PR #38 review/integration. No audio, saved answers, progress/mastery or study-minute credit; the server LISTENING_READING block remains BLOCKED. Tests/CI are component evidence, not hosted learner acceptance."
+      "limitation": "The bundled catalog is five original N5 draft passages with no independent teacher/native-speaker review; N4 is intentionally empty pending separate Pro PR #38 review/integration. No audio, saved answers, progress/mastery or study-minute credit; the server LISTENING_READING block remains BLOCKED. Tests/CI are component evidence, not hosted learner acceptance."
     },
     {
       "id": "reading-study-recorder",

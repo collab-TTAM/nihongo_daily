@@ -291,6 +291,200 @@
           "explanation_vi": "Bài đọc nói người bán hàng tốt bụng."
         }
       ]
+    },
+    {
+      "id": "n5-library-study-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "図書館で勉強",
+      "title_vi": "Học ở thư viện",
+      "text_ja": "日曜日、私は友達と図書館へ行きました。午前十時に図書館に入りました。日本語の本を二冊読みました。昼ご飯は近くの店で食べました。午後二時に家へ帰りました。",
+      "reading_ja": "にちようび、わたしはともだちととしょかんへいきました。ごぜんじゅうじにとしょかんにはいりました。にほんごのほんをにさつよみました。ひるごはんはちかくのみせでたべました。ごごにじにいえへかえりました。",
+      "translation_vi": "Chủ nhật, tôi đã đi thư viện với bạn. Tôi vào thư viện lúc 10 giờ sáng. Tôi đọc hai quyển sách tiếng Nhật. Tôi ăn trưa ở cửa hàng gần đó. Tôi về nhà lúc 2 giờ chiều.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "いつ図書館へ行きましたか。",
+          "reading_ja": "いつとしょかんへいきましたか。",
+          "prompt_vi": "Tôi đã đi thư viện vào ngày nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "日曜日",
+              "reading_ja": "にちようび",
+              "text_vi": "Chủ nhật"
+            },
+            {
+              "id": "b",
+              "text_ja": "土曜日",
+              "reading_ja": "どようび",
+              "text_vi": "Thứ Bảy"
+            },
+            {
+              "id": "c",
+              "text_ja": "月曜日",
+              "reading_ja": "げつようび",
+              "text_vi": "Thứ Hai"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi thư viện vào Chủ nhật."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "本を何冊読みましたか。",
+          "reading_ja": "ほんをなんさつよみましたか。",
+          "prompt_vi": "Tôi đã đọc bao nhiêu quyển sách?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "一冊",
+              "reading_ja": "いっさつ",
+              "text_vi": "Một quyển"
+            },
+            {
+              "id": "b",
+              "text_ja": "二冊",
+              "reading_ja": "にさつ",
+              "text_vi": "Hai quyển"
+            },
+            {
+              "id": "c",
+              "text_ja": "三冊",
+              "reading_ja": "さんさつ",
+              "text_vi": "Ba quyển"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi đọc hai quyển sách tiếng Nhật."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "昼ご飯はどこで食べましたか。",
+          "reading_ja": "ひるごはんはどこでたべましたか。",
+          "prompt_vi": "Tôi đã ăn trưa ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "図書館",
+              "reading_ja": "としょかん",
+              "text_vi": "Thư viện"
+            },
+            {
+              "id": "b",
+              "text_ja": "近くの店",
+              "reading_ja": "ちかくのみせ",
+              "text_vi": "Cửa hàng gần đó"
+            },
+            {
+              "id": "c",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi ăn trưa ở cửa hàng gần đó."
+        }
+      ]
+    },
+    {
+      "id": "n5-rainy-day-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "雨の日",
+      "title_vi": "Ngày mưa",
+      "text_ja": "朝は雨でした。私はかさを持って駅まで歩きました。駅で友達に会いました。私たちは電車に乗って、町の店へ行きました。店で新しいくつを買いました。午後、家へ帰りました。",
+      "reading_ja": "あさはあめでした。わたしはかさをもってえきまであるきました。えきでともだちにあいました。わたしたちはでんしゃにのって、まちのみせへいきました。みせであたらしいくつをかいました。ごご、いえへかえりました。",
+      "translation_vi": "Buổi sáng trời mưa. Tôi mang ô và đi bộ đến ga. Tôi gặp bạn ở ga. Chúng tôi đi tàu điện đến cửa hàng trong thị trấn. Tôi mua đôi giày mới ở cửa hàng. Buổi chiều, tôi về nhà.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "朝、天気はどうでしたか。",
+          "reading_ja": "あさ、てんきはどうでしたか。",
+          "prompt_vi": "Buổi sáng thời tiết thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "雨でした",
+              "reading_ja": "あめでした",
+              "text_vi": "Trời mưa"
+            },
+            {
+              "id": "b",
+              "text_ja": "晴れでした",
+              "reading_ja": "はれでした",
+              "text_vi": "Trời nắng"
+            },
+            {
+              "id": "c",
+              "text_ja": "雪でした",
+              "reading_ja": "ゆきでした",
+              "text_vi": "Trời tuyết"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi sáng trời mưa."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "どこで友達に会いましたか。",
+          "reading_ja": "どこでともだちにあいましたか。",
+          "prompt_vi": "Tôi gặp bạn ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "駅",
+              "reading_ja": "えき",
+              "text_vi": "Nhà ga"
+            },
+            {
+              "id": "b",
+              "text_ja": "店",
+              "reading_ja": "みせ",
+              "text_vi": "Cửa hàng"
+            },
+            {
+              "id": "c",
+              "text_ja": "家",
+              "reading_ja": "いえ",
+              "text_vi": "Nhà"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi gặp bạn ở nhà ga."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何を買いましたか。",
+          "reading_ja": "なにをかいましたか。",
+          "prompt_vi": "Tôi đã mua gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本",
+              "reading_ja": "ほん",
+              "text_vi": "Sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "新しいくつ",
+              "reading_ja": "あたらしいくつ",
+              "text_vi": "Đôi giày mới"
+            },
+            {
+              "id": "c",
+              "text_ja": "かさ",
+              "reading_ja": "かさ",
+              "text_vi": "Cái ô"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi mua đôi giày mới."
+        }
+      ]
     }
   ]
 }
