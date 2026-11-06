@@ -14,15 +14,10 @@ const _third = 'a2000000-0000-4000-8000-000000000003';
 const _fourth = 'a2000000-0000-4000-8000-000000000004';
 
 String _eventId(int number) =>
-    'a3000000-0000-4000-8000-' + number.toString().padLeft(12, '0');
+    'a3000000-0000-4000-8000-${number.toString().padLeft(12, '0')}';
 
 String _databaseName(String kind, int sequence) =>
-    'nd-' +
-    kind +
-    '-' +
-    DateTime.now().microsecondsSinceEpoch.toString() +
-    '-' +
-    sequence.toString();
+    'nd-$kind-${DateTime.now().microsecondsSinceEpoch}-$sequence';
 
 VocabularyQuizAttempt _vocabularyAttempt(int number, {bool correct = false}) =>
     VocabularyQuizAttempt.fromJson({

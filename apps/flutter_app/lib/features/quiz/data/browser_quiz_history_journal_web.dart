@@ -103,7 +103,7 @@ final class _IndexedDbQuizJournal<T> {
   bool _accepting = true;
   bool _closed = false;
 
-  String _key(T record) => _ownerOf(record) + '/' + _eventIdOf(record);
+  String _key(T record) => '${_ownerOf(record)}/${_eventIdOf(record)}';
 
   Map<String, T> _decodeState(String? raw) {
     if (raw == null) return <String, T>{};
@@ -126,8 +126,9 @@ final class _IndexedDbQuizJournal<T> {
   }
 
   String _encodeState(Map<String, T> records) {
-    final keys = records.keys.toList()..sort();
-    return jsonEncode([for (final key in keys) _encodeRecord(records[key]!)]);
+    final entries = records.entries.toList()
+      ..sort((left, right) => left.key.compareTo(right.key));
+    return jsonEncode([for (final entry in entries) _encodeRecord(entry.value)]);
   }
 
   Future<List<T>> list(String ownerId) => _serial(
@@ -252,7 +253,7 @@ final class _IndexedDbQuizJournal<T> {
       } on Object {
         // The transaction may already be complete or aborted.
       }
-      if (!done.isCompleted) done.completeError(failure);
+      if (!done.isCompleted) done.completeError(failure ?? _storageFailure());
     }
     return done.future;
   }
