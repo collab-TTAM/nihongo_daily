@@ -718,6 +718,123 @@ void main() {
   );
 
   test(
+    'late User A vault write plus failed logout clear stays fenced until explicit retry',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_LATE_A_REFRESH_BEFORE_CLEAR_FAILURE';
+      writeWait = Completer<void>();
+
+      final lateLogin = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(timeline, contains('vault.write'));
+      expect(storedSecret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      failClear = true;
+      final logout = runtime.account.signOut();
+      await fixture.flush();
+
+      expect(runtime.account.readyRuntime, isNull);
+      expect(timeline, contains('auth.logout'));
+      expect(
+        timeline.where((value) => value == 'vault.clear'),
+        isEmpty,
+        reason: 'clear must remain queued behind the late A write',
+      );
+
+      writeWait!.complete();
+      await lateLogin;
+      await logout;
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, refreshSecret);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      final failedClear = timeline.lastIndexOf('vault.clear');
+      expect(failedClear, greaterThan(timeline.indexOf('auth.logout')));
+      expect(failedClear, greaterThan(timeline.indexOf('vault.write')));
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_LATE_WRITE_CLEAR_RETRY';
+      final authCallsBeforeRetry = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .length;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(authCallsBeforeRetry),
+        reason: 'User B must not authenticate while User A clear is uncertain',
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      failClear = false;
+      await runtime.account.signOut();
+      await fixture.flush();
+      expect(storedSecret, isNull);
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.persistence.phase, SessionPersistencePhase.idle);
+      final successfulClear = timeline.lastIndexOf('vault.clear');
+      expect(successfulClear, greaterThan(failedClear));
+
+      writeWait = null;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(authCallsBeforeRetry + 1),
+      );
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+      expect(successfulClear, lessThan(timeline.lastIndexOf('vault.write')));
+      expect(timeline.lastIndexOf('vault.write'), lessThan(timeline.lastIndexOf('profile.ensure')));
+    },
+  );
+
+  test(
     'vault clear failure keeps logout fenced until explicit retry before User B',
     () async {
       await runtime.start();

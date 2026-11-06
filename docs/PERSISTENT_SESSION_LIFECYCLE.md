@@ -590,3 +590,24 @@ inject a delayed native Windows Credential Manager operation and does not prove
 hosted signed-JWT learner Auth, deployed RLS, OS logoff, power-loss or physical
 multi-device behavior. No production Auth/provider/schema/RLS/default activation
 or Pro-owned N4 content changes.
+
+
+## Late User A write followed by a failed logout clear — 2026-11-06
+
+The pinned-SDK Windows MethodChannel regression holds User A's refresh-secret
+write after password Auth has returned a session, then starts explicit logout.
+The vault clear must remain queued behind the unresolved write. After the write
+is released, the first clear is deliberately failed: study/profile readiness
+must remain revoked, the uncertain User A value may remain in the test vault,
+and a User B sign-in must produce no Auth or profile request.
+
+Only an explicit successful cleanup retry may clear the old value and reopen
+login. The test then signs in User B and requires B's rotated refresh secret to
+be persisted before ensure_profile; the only profile/bearer observed belongs
+to B. This covers the combined late-write + failed-clear ordering, not merely
+the two failure cases in isolation.
+
+This is TEST ONLY pinned-SDK/MockClient/MethodChannel evidence with in-memory
+storage. The separate Windows Credential Manager/process probes remain the
+native component evidence; neither establishes a hosted learner A/B flow,
+deployed RLS/PostgREST, or delayed native Credential Manager failure injection.
