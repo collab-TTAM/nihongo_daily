@@ -11094,3 +11094,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Applied only the exact formatter hunk to that N5-only test; no assertion, source content or runtime behavior changed. Pro-owned N4 source/content/manifest/README/content-test/docs/assets and PR #38 were not modified.
 - Full PR #41 parent tree was read untruncated: 917 entries (801 blobs, 116 trees). The intended successor must retain every path/mode/type; post-write diff and exact-head CI are the next verification gates.
 - Cloud runtime has no Flutter/Dart SDK; no local Flutter format/analyze/test/build was run. Next: review the exact two-file diff/tree and inspect every latest-attempt job/step on the new exact HEAD. PR #41 remains Draft; no merge, deployment or Personal Alpha claim.
+
+## N5 formatter correction — post-write review — 2026-11-06T13:12Z
+
+- Source commit `7c549092e903da49fccf70a80db54923ac316490` (parent `bde6d8b3e1c57cc4dd9ae511726118a048cea914`), branch `automation/issue-11-plan-sdk-integration`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Separate post-write compare review found exactly two modified paths: the N5-only test formatter hunk (1 insertion/3 deletions; assertions unchanged) and this status append (8 added lines in source increment). No additions/deletions in the tree; recursive source and successor trees are both untruncated at 917 entries / 801 blobs / 116 trees, with identical path/mode/type sets. All untouched blobs are inherited from the exact parent tree.
+- Git tree creation used `base_tree_sha=773203d751a03cb2e8523e4bfba27560ff0e2d28`; commit parent is the expected PR head; ref update used `expected_sha=bde6d8b3e1c57cc4dd9ae511726118a048cea914`, `force=false`, and branch/PR read back at the new commit.
+- The correction is formatter-only; local Flutter/Dart commands remain unavailable. Exact-head CI for this successor was not yet published at this observation. Keep PR #41 Draft and inspect every job/step on the next workflow attempt before claiming format/analyze/test/build.
