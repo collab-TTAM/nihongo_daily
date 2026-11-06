@@ -4006,6 +4006,36 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test --platform chrome test/features/quiz/browser_quiz_history_check.dart; full retained Flutter CI",
       "limitation": "Real browser-local IndexedDB component only. Not wired into the web app because its Auth/runtime remains unavailable; local owner IDs are not authentication. No encryption, hosted JWT/RLS, backup, multi-device sync, current-content mastery, study credit or Personal Alpha learner acceptance. Browser site-data clearing may remove local history."
+    },
+    {
+      "id": "progress-overview",
+      "status": "pending-integration",
+      "scope": "Server-derived Daily Plan study minutes with separate vocabulary/grammar quiz report navigation",
+      "issues": [
+        11,
+        13,
+        18
+      ],
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "preview overview never fabricates a server plan"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "profile-local today and plan progress require explicit loads"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late plan response cannot publish after account replacement"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "overview links keep vocabulary and grammar reports separate"
+        }
+      ],
+      "reproduce": "Open /overview in preview and configured test account; explicitly choose the server profile day, load a plan, inspect minutes and block status, retry a safe network error, replace the account during a held response, and open the separate quiz reports.",
+      "limitation": "Auth/RPC gateways are TEST ONLY. No hosted learner identity, authoritative mastery, cross-device sync or Personal Alpha acceptance is established."
     }
   ],
   "findings": [

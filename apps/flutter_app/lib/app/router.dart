@@ -19,6 +19,7 @@ import '../features/quiz/presentation/quiz_history_screen.dart';
 import '../features/quiz/presentation/grammar_quiz_screen.dart';
 import '../features/quiz/presentation/grammar_quiz_history_screen.dart';
 import '../features/quiz/presentation/quiz_progress_screen.dart';
+import '../features/progress/presentation/progress_overview_screen.dart';
 import '../features/quiz/presentation/grammar_quiz_progress_screen.dart';
 import '../features/reading/presentation/reading_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
@@ -131,6 +132,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/quiz/history',
             builder: (context, state) => const QuizHistoryScreen(),
+          ),
+          GoRoute(
+            path: '/overview',
+            builder: (context, state) => const ProgressOverviewScreen(),
           ),
           GoRoute(
             path: '/progress',
