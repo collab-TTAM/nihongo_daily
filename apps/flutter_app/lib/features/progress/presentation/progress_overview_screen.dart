@@ -130,9 +130,7 @@ class _ProgressOverviewScreenState
       )) {
         return;
       }
-      setState(
-        () => _message = 'Chưa thể tải tiến độ học. Vui lòng thử lại.',
-      );
+      setState(() => _message = 'Chưa thể tải tiến độ học. Vui lòng thử lại.');
     } finally {
       if (_isCurrent(
         repository: repository,
@@ -168,10 +166,12 @@ class _ProgressOverviewScreenState
     final account = ref.watch(accountStateProvider);
     final repository = ref.watch(dailyPlanRepositoryProvider);
     final profile = account.profile;
-    final ready = account.phase == AccountPhase.ready &&
+    final ready =
+        account.phase == AccountPhase.ready &&
         profile != null &&
         repository != null;
-    final plan = ready &&
+    final plan =
+        ready &&
             profile != null &&
             repository != null &&
             _planOwner == profile.id &&
@@ -232,9 +232,7 @@ class _ProgressOverviewScreenState
                 });
               }
             },
-            onSubmitted: ready && !_loading
-                ? (_) => unawaited(_load())
-                : null,
+            onSubmitted: ready && !_loading ? (_) => unawaited(_load()) : null,
           ),
           StudyDayButton(
             key: const Key('progress-today'),
@@ -279,8 +277,10 @@ class _ProgressOverviewScreenState
               key: const Key('progress-study-minutes'),
             ),
             LinearProgressIndicator(
-              value: (plan.completedMinutes / plan.targetMinutes)
-                  .clamp(0.0, 1.0),
+              value: (plan.completedMinutes / plan.targetMinutes).clamp(
+                0.0,
+                1.0,
+              ),
               semanticsLabel: 'Tiến độ học theo máy chủ',
             ),
             if (plan.completedMinutes > plan.targetMinutes)

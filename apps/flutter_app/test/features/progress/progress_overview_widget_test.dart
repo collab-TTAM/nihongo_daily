@@ -24,8 +24,8 @@ final class _ProgressSource implements DailyPlanRepositorySource {
   int dayReads = 0;
   Map<String, Object>? lastPlanParameters;
   Map<String, Object>? lastDayParameters;
-  Future<Object?> Function(Map<String, Object>) planResponse =
-      (_) async => studyPlan(45);
+  Future<Object?> Function(Map<String, Object>) planResponse = (_) async =>
+      studyPlan(45);
   Future<Object?> Function() dayResponse = () async => {
     'date': '2026-10-20',
     'timezone': 'Asia/Tokyo',
@@ -76,8 +76,7 @@ Future<ProviderContainer> _mount(
 }) async {
   final container = ProviderContainer(
     overrides: [
-      if (configured)
-        accountRuntimeProvider.overrideWithValue(harness.runtime),
+      if (configured) accountRuntimeProvider.overrideWithValue(harness.runtime),
       if (configured) dailyPlanSourceProvider.overrideWithValue(source),
     ],
   );
@@ -120,44 +119,43 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets(
-    'profile-local today and plan progress require explicit loads',
-    (tester) async {
-      final harness = Harness();
-      final source = _ProgressSource(harness);
-      await _mount(tester, harness, source);
+  testWidgets('profile-local today and plan progress require explicit loads', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    await _mount(tester, harness, source);
 
-      expect(source.planReads, 0);
-      expect(source.dayReads, 0);
-      await tester.ensureVisible(_todayButton());
-      await tester.tap(_todayButton());
-      await tester.pumpAndSettle();
+    expect(source.planReads, 0);
+    expect(source.dayReads, 0);
+    await tester.ensureVisible(_todayButton());
+    await tester.tap(_todayButton());
+    await tester.pumpAndSettle();
 
-      expect(source.dayReads, 1);
-      expect(source.lastDayParameters, {'p_request': <String, Object>{}});
-      expect(
-        tester
-            .widget<TextField>(find.byKey(const Key('progress-date')))
-            .controller!
-            .text,
-        '2026-10-20',
-      );
+    expect(source.dayReads, 1);
+    expect(source.lastDayParameters, {'p_request': <String, Object>{}});
+    expect(
+      tester
+          .widget<TextField>(find.byKey(const Key('progress-date')))
+          .controller!
+          .text,
+      '2026-10-20',
+    );
 
-      await tester.ensureVisible(find.byKey(const Key('progress-load')));
-      await tester.tap(find.byKey(const Key('progress-load')));
-      await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('progress-load')));
+    await tester.tap(find.byKey(const Key('progress-load')));
+    await tester.pumpAndSettle();
 
-      expect(source.planReads, 1);
-      expect(source.lastPlanParameters, {
-        'p_request': {'date': '2026-10-20'},
-      });
-      expect(find.text('45/120 phút'), findsOneWidget);
-      expect(find.byKey(const Key('progress-study-minutes')), findsOneWidget);
-      expect(find.textContaining('SRS'), findsOneWidget);
-      expect(destinationIndex('/overview'), 4);
-      expect(destinationIndex('/progress'), 4);
-    },
-  );
+    expect(source.planReads, 1);
+    expect(source.lastPlanParameters, {
+      'p_request': {'date': '2026-10-20'},
+    });
+    expect(find.text('45/120 phút'), findsOneWidget);
+    expect(find.byKey(const Key('progress-study-minutes')), findsOneWidget);
+    expect(find.textContaining('SRS'), findsOneWidget);
+    expect(destinationIndex('/overview'), 4);
+    expect(destinationIndex('/progress'), 4);
+  });
 
   testWidgets('safe plan error can be retried explicitly', (tester) async {
     final harness = Harness();
@@ -185,33 +183,32 @@ void main() {
     expect(find.text('45/120 phút'), findsOneWidget);
   });
 
-  testWidgets(
-    'late plan response cannot publish after account replacement',
-    (tester) async {
-      final harness = Harness();
-      final pending = Completer<Object?>();
-      final source = _ProgressSource(harness)
-        ..planResponse = (_) => pending.future;
-      await _mount(tester, harness, source);
+  testWidgets('late plan response cannot publish after account replacement', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final pending = Completer<Object?>();
+    final source = _ProgressSource(harness)
+      ..planResponse = (_) => pending.future;
+    await _mount(tester, harness, source);
 
-      await tester.enterText(
-        find.byKey(const Key('progress-date')),
-        '2026-10-20',
-      );
-      await tester.tap(find.byKey(const Key('progress-load')));
-      await tester.pump();
-      expect(find.text('Đang tải tiến độ…'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(const Key('progress-date')),
+      '2026-10-20',
+    );
+    await tester.tap(find.byKey(const Key('progress-load')));
+    await tester.pump();
+    expect(find.text('Đang tải tiến độ…'), findsOneWidget);
 
-      harness.access.change(account.other);
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
+    harness.access.change(account.other);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
 
-      pending.complete(studyPlan(45));
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
-      expect(source.planReads, 1);
-    },
-  );
+    pending.complete(studyPlan(45));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
+    expect(source.planReads, 1);
+  });
 
   testWidgets('overview links keep vocabulary and grammar reports separate', (
     tester,
@@ -238,5 +235,4 @@ void main() {
       '/quiz/grammar/progress',
     );
   });
-
 }
