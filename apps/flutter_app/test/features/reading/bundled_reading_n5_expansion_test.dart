@@ -9,9 +9,7 @@ void main() {
   late List<ReadingPassage> passages;
 
   setUpAll(() async {
-    final source = await rootBundle.loadString(
-      'assets/reading/catalog.json',
-    );
+    final source = await rootBundle.loadString('assets/reading/catalog.json');
     passages = decodeReadingMaterial(source, PreviewLevel.n5);
   });
 
