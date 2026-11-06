@@ -204,6 +204,66 @@ void main() {
   );
 
   test(
+    'caller close waits for a pending logout vault clear before releasing the owned SDK',
+    () async {
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      int profileRequestCount() => requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .length;
+      expect(profileRequestCount(), 1);
+      expect(backend.secret, secret);
+
+      backend.clearWait = Completer<void>();
+      final logout = runtime.account.signOut();
+      await waitForCondition(
+        () => backend.operations.contains('clear'),
+        reason: 'logout did not reach the held vault clear',
+      );
+      expect(backend.clears, 1);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(backend.secret, secret);
+
+      var closeCompleted = false;
+      final closing = runtime.close().then<void>((_) {
+        closeCompleted = true;
+      });
+      await fixture.flush();
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(
+        closeCompleted,
+        isFalse,
+        reason: 'caller close released the owned SDK before vault clear settled',
+      );
+      expect(backend.secret, secret);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(profileRequestCount(), 1);
+
+      backend.clearWait!.complete();
+      await logout.timeout(const Duration(seconds: 5));
+      await closing.timeout(const Duration(seconds: 5));
+
+      expect(closeCompleted, isTrue);
+      expect(backend.operations, ['read', 'write', 'clear']);
+      expect(backend.secret, isNull);
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(profileRequestCount(), 1);
+
+      final borrowedProbe = await network.get(
+        Uri.parse('${wire.origin}/caller-owned-probe'),
+      );
+      expect(borrowedProbe.statusCode, 204);
+    },
+  );
+
+  test(
     'SDK startup server refresh persists rotation before own profile',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';

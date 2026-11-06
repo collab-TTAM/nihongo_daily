@@ -565,3 +565,28 @@ This is TEST ONLY SDK/HTTP/MethodChannel evidence; the channel is mocked in this
 test. The separate Windows Credential Manager/process and runner probes remain
 the evidence for native storage/bridge behavior. This does not establish hosted
 signed-JWT learner A/B acceptance or deployed RLS.
+
+
+## Caller close while logout vault clear is pending — 2026-11-06
+
+The caller-owned runtime may be closed while an explicit logout has already
+revoked study readiness but its serialized credential-vault clear is still
+pending. Close must remain pending until that logout cleanup settles; it must
+not dispose the exclusively owned Supabase SDK while the vault operation is
+unresolved. The test also verifies that the caller-supplied HTTP client remains
+usable after the owned runtime closes.
+
+The pinned-Supabase-SDK regression first establishes a TEST ONLY User A session
+and persists its rotated refresh secret. It then holds the in-memory vault
+clear, starts logout, and calls runtime close. The expected state is immediately
+closed/fenced with no own-profile readiness, while the old secret remains
+present only until the held clear is released. Close must not complete early.
+After release, logout and close settle, the vault is empty, no extra profile
+request occurred, and the borrowed HTTP client still serves its caller-owned
+probe.
+
+This is TEST ONLY MockClient/in-memory-vault lifecycle evidence. It does not
+inject a delayed native Windows Credential Manager operation and does not prove
+hosted signed-JWT learner Auth, deployed RLS, OS logoff, power-loss or physical
+multi-device behavior. No production Auth/provider/schema/RLS/default activation
+or Pro-owned N4 content changes.
