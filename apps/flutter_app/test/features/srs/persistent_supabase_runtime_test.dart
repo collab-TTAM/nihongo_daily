@@ -240,7 +240,8 @@ void main() {
       expect(
         closeCompleted,
         isFalse,
-        reason: 'caller close released the owned SDK before vault clear settled',
+        reason:
+            'caller close released the owned SDK before vault clear settled',
       );
       expect(backend.secret, secret);
       expect(runtime.account.readyRuntime, isNull);
