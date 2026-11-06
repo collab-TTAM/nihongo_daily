@@ -43,9 +43,11 @@ have a fixed Vietnamese message with no path or raw filesystem exception.
 The private directory and one writer isolate are caller responsibilities.
 This does not protect against hostile same-OS-user edits or symlink races;
 filesystem locks are cooperative where the OS defines them. Process restart is
-covered by authored tests; sudden hardware power loss is not certified. Browser
-storage, encryption, retention/compaction and full synchronization remain future
-work. No existing journal format, shared contract or dependency changes.
+covered by authored tests; sudden hardware power loss is not certified. A
+separate bounded IndexedDB quiz-history component is now available for browser
+storage, but it is not wired to a web Auth runtime. Encryption, retention/compaction
+and full synchronization remain future work. No existing journal format, shared
+contract or dependency changes.
 
 ## Verification and remaining composition
 

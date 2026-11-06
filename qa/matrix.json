@@ -32,6 +32,7 @@
       "Verify credential vault validation and ordering",
       "Verify account profile readiness",
       "Verify real IndexedDB transactions in Chrome",
+      "Verify browser quiz history transactions in Chrome",
       "Verify browser review page reload",
       "Verify native receipt cache retention",
       "Verify lossless native journal compaction",
@@ -3980,6 +3981,32 @@
       ],
       "reproduce": "With the fixed disposable PostgreSQL 17 CI database, run `cd backend/ai && npm run test:postgres-quiz`; the test is intentionally not configured for hosted URLs.",
       "limitation": "TEST ONLY privileged PostgreSQL connection and synthetic request.jwt.claim.sub; current-content reads are test fixtures. This is not a public RPC, verified JWT/Auth, PostgREST/RLS learner proof, production host binding, mastery or Personal Alpha acceptance."
+    },
+    {
+      "id": "browser-quiz-history",
+      "status": "automated-baseline",
+      "scope": "Actual Chrome IndexedDB persistence for vocabulary and grammar quiz snapshots, with owner/event isolation, replay/conflict, transaction commit acknowledgement, bounded state and close/reopen behavior.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/browser_quiz_history_check.dart",
+          "contains": "browser vocabulary journal serializes two real IndexedDB connections"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/browser_quiz_history_check.dart",
+          "contains": "browser grammar journal preserves primary and correction attempts"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/data/browser_quiz_history_journal_web.dart",
+          "contains": "Only transaction completion acknowledges a committed write."
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test --platform chrome test/features/quiz/browser_quiz_history_check.dart; full retained Flutter CI",
+      "limitation": "Real browser-local IndexedDB component only. Not wired into the web app because its Auth/runtime remains unavailable; local owner IDs are not authentication. No encryption, hosted JWT/RLS, backup, multi-device sync, current-content mastery, study credit or Personal Alpha learner acceptance. Browser site-data clearing may remove local history."
     }
   ],
   "findings": [
