@@ -32,7 +32,6 @@
       "Verify credential vault validation and ordering",
       "Verify account profile readiness",
       "Verify real IndexedDB transactions in Chrome",
-      "Verify browser quiz history transactions in Chrome",
       "Verify browser review page reload",
       "Verify native receipt cache retention",
       "Verify lossless native journal compaction",

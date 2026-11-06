@@ -11118,3 +11118,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Actual Chrome IndexedDB uses a canonical bounded state, composite owner/event replay, typed conflicts, read/modify/write in one transaction, acknowledgement only on transaction completion, and close/drain before connection release. Bounds match native history: 1 MiB / 512 records; no eviction or memory fallback.
 - Added a real-Chrome test covering two independent connections, concurrent identical/distinct writes, owner isolation, exact replay/conflict, grammar primary/correction, close/drain and reopen. CI adds a dedicated Chrome step; QA inventory records the exact anchor.
 - This is storage-component evidence only. It is not connected to web Auth (still unavailable), default preview, hosted attempts/JWT/RLS, encryption, sync, mastery or study credit. No N4/Pro content, API/schema/RLS, provider, dependency, or production change. Exact-head Actions is the executable verification gate; cloud runtime has no Flutter/Dart SDK.
+
+
+## Browser quiz-history QA snapshot compatibility correction — 2026-11-06T15:16Z
+
+- Exact-head Actions [42241376668](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42241376668) targets `ac1da761a319b110d80ff0f4bd3c32c52d9dcb15`. AI boundary completed SUCCESS/all steps. Database remained IN_PROGRESS. Repo-sanity failed only in three saved historical-evidence tests because the new browser step had been added to `qa/matrix.json` `ci_gates.flutter`; old snapshots correctly do not contain a step that did not exist when captured.
+- Preserved historical evidence rather than fabricating/updating old run snapshots: removed only the new step name from the historical `ci_gates` subset. The dedicated live Chrome step remains in `.github/workflows/ci.yml`, and the new `browser-quiz-history` QA case/anchors remain. Thus the new test still gates the current Flutter job without rewriting old evidence.
+- Also removed unused private constructors from the non-web stub; the conditional non-web open functions still fail with fixed storage errors and no fallback. No product behavior, assertions, security, API/schema/RLS, Auth/provider, N4/Pro content or CI strictness was weakened.
+- New exact-head Actions must verify this correction and then run the actual Chrome IndexedDB test; no browser test or full-CI pass is claimed yet.

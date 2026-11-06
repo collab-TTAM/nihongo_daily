@@ -5,7 +5,6 @@ import 'vocabulary_quiz_attempt_store.dart';
 
 final class BrowserVocabularyQuizJournal
     implements VocabularyQuizAttemptStore {
-  BrowserVocabularyQuizJournal._();
 
   @override
   Future<List<OwnedVocabularyQuizAttempt>> list(String ownerId) =>
@@ -25,7 +24,6 @@ final class BrowserVocabularyQuizJournal
 }
 
 final class BrowserGrammarQuizJournal implements GrammarQuizAttemptStore {
-  BrowserGrammarQuizJournal._();
 
   @override
   Future<List<OwnedGrammarQuizAttempt>> list(String ownerId) =>
