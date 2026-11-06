@@ -42,17 +42,23 @@ KanjiCatalogEntry _entry(PreviewLevel level, int index) {
 }
 
 final class KanjiFixtureRepository implements KanjiCatalogRepository {
+  KanjiFixtureRepository({this.empty = false});
+  final bool empty;
+
   @override
-  Future<List<KanjiCatalogEntry>> load(PreviewLevel level) async => [
-    _entry(level, 0),
-    _entry(level, 1),
-  ];
+  Future<List<KanjiCatalogEntry>> load(PreviewLevel level) async => empty
+      ? []
+      : [
+          _entry(level, 0),
+          _entry(level, 1),
+        ];
 }
 
 Future<TimerHarness> mountKanjiTimer(
   WidgetTester tester, {
   bool configured = true,
   PreviewLevel routeLevel = PreviewLevel.n4,
+  bool emptyCatalog = false,
 }) async {
   final f = TimerHarness();
   f.container = ProviderContainer(
@@ -61,7 +67,7 @@ Future<TimerHarness> mountKanjiTimer(
       if (configured) durableStudySourceProvider.overrideWithValue(f.source),
       studyRecorderClockProvider.overrideWithValue(f.clock),
       kanjiCatalogRepositoryProvider.overrideWithValue(
-        KanjiFixtureRepository(),
+        KanjiFixtureRepository(empty: emptyCatalog),
       ),
     ],
   );
@@ -138,6 +144,19 @@ void main() {
       expect(find.textContaining('Chấm điểm: chưa khả dụng'), findsOneWidget);
     },
   );
+
+  testWidgets('empty Kanji catalog cannot start a study report', (
+    tester,
+  ) async {
+    final f = await mountKanjiTimer(tester, emptyCatalog: true);
+    expect(
+      f.container.read(canStartStudyRecorderProvider(DailyPlanArea.kanji)),
+      isFalse,
+    );
+    expect(find.byKey(const Key('kanji-timer-start')), findsNothing);
+    expect(f.server.reads, 0);
+    expect(f.server.writes, 0);
+  });
 
   testWidgets('profile-level mismatch disables Kanji time reporting', (
     tester,
