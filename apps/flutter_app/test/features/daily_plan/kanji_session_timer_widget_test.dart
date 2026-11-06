@@ -10,8 +10,10 @@ import 'package:nihongo_daily/features/daily_plan/application/study_session_reco
 import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
 import 'package:nihongo_daily/features/kanji/application/kanji_catalog_provider.dart';
 import 'package:nihongo_daily/features/kanji/domain/kanji_catalog.dart';
+import 'package:nihongo_daily/features/settings/application/preview_preferences.dart';
 import 'package:nihongo_daily/shared/models/preview_level.dart';
 import '../srs/account_fixtures.dart' as account;
+import '../srs/study_fixtures.dart' show fixtureItem;
 import 'srs_session_timer_widget_test.dart' show TimerHarness;
 
 KanjiCatalogEntry _entry(PreviewLevel level, int index) {
@@ -61,6 +63,7 @@ Future<TimerHarness> mountKanjiTimer(
   bool emptyCatalog = false,
 }) async {
   final f = TimerHarness();
+  f.h.queue.items = [fixtureItem(level: PreviewLevel.n4)];
   f.container = ProviderContainer(
     overrides: [
       if (configured) accountRuntimeProvider.overrideWithValue(f.h.runtime),
@@ -71,6 +74,7 @@ Future<TimerHarness> mountKanjiTimer(
       ),
     ],
   );
+  f.container.read(previewLevelProvider.notifier).state = PreviewLevel.n4;
   addTearDown(() async {
     final wait = f.server.writeWait;
     if (wait != null && !wait.isCompleted) wait.complete();
