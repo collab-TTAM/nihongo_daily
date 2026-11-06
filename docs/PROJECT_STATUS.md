@@ -1,3 +1,14 @@
+## Exact-head Flutter analyzer cleanup — 2026-11-07
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; source HEAD before correction `d05cf0f4b6419bab8e168d3d4f109d0faa8e42eb`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [42281404050](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42281404050), attempt 1, completed FAILURE. Repository sanity, database, AI boundary and Windows jobs all completed SUCCESS. Flutter formatter completed successfully; `flutter analyze` reported exactly two redundant null comparisons in `progress_overview_screen.dart` (the ready-state boolean already promotes the captured profile/repository) and one unused `daily_plan.dart` import in `progress_overview_widget_test.dart`. Flutter tests and all dependent Flutter verification/build steps were SKIPPED, not passed.
+- Correction: removed only those two redundant checks and the unused test import. The existing readiness guard, owner/timezone/repository identity fences, all widget tests and assertions remain unchanged.
+- Separate post-write review: only the screen, widget test and this status file are intended to change. Full source tree was read untruncated (928 entries); the new tree is based on the exact parent tree SHA. No N4/Pro-owned content, manifest, content-test or documentation path is in scope.
+- Cloud authoring runtime has no Flutter/Dart SDK; local format/analyze/tests/build were not run. New exact-head Actions must verify Flutter analyze, full tests, Chrome checks and Web build before any pass claim. Keep PR #41 Draft and issue #11 open.
+- Next: inspect every latest-attempt job and step on the correction's exact HEAD; fix only observed failures. Hosted learner/Auth A/B, deployed PostgREST/RLS, audio, multi-device sync and independent curriculum review remain separate Personal Alpha gates.
+
+---
+
 ## Exact-head Flutter analyzer correction — 2026-11-06
 
 - PR #41 branch `automation/issue-11-plan-sdk-integration`; source HEAD before correction `f1b095bb5baea1fd790b5b2e5cca6a03fd4a5e81` (base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`).

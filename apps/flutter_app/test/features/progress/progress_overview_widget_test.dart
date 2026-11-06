@@ -9,7 +9,6 @@ import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/auth/application/account_provider.dart';
 import 'package:nihongo_daily/features/daily_plan/application/daily_plan_provider.dart';
 import 'package:nihongo_daily/features/daily_plan/data/daily_plan_repository.dart';
-import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
 
 import '../srs/account_fixtures.dart' as account;
 import '../srs/account_widget_test.dart' show Harness;

@@ -172,8 +172,6 @@ class _ProgressOverviewScreenState
         repository != null;
     final plan =
         ready &&
-            profile != null &&
-            repository != null &&
             _planOwner == profile.id &&
             _planTimezone == profile.timezone &&
             identical(_planRepository, repository)
