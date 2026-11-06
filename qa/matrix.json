@@ -1852,6 +1852,37 @@
       "limitation": "Current server QUIZ_REVIEW remains zero-resource/BLOCKED. TEST ONLY permissive plans/Auth/RPC/clock, original curriculum unchanged. Four actual-file core cases and11 widgets need exact-head Flutter proof; native close/reopen is one process, not Windows crash/hosted learner or synced quiz-attempt acceptance. Elapsed self-report is separate from scores/history/mastery; all14 hosted groups pending."
     },
     {
+      "id": "kanji-study-recorder",
+      "status": "automated-baseline",
+      "scope": "Selected-profile Kanji foreground time reports through the existing captured-owner durable recorder and immutable study-session journal",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/kanji/presentation/kanji_capture_screen.dart",
+          "contains": "StudySessionTimerPanel("
+        },
+        {
+          "path": "apps/flutter_app/lib/features/daily_plan/application/srs_session_recorder_provider.dart",
+          "contains": "if (area == DailyPlanArea.kanji)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/kanji_session_timer_widget_test.dart",
+          "contains": "configured Kanji practice records one acknowledged foreground session"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/shared_study_recorder_fixtures.dart",
+          "contains": "DailyPlanArea.kanji,"
+        }
+      ],
+      "issues": [
+        11,
+        16,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/daily_plan/kanji_session_timer_widget_test.dart test/features/daily_plan/shared_study_recorder_test.dart",
+      "limitation": "Self-reported foreground duration only; no saved strokes, handwriting grading, mastery, hosted learner/JWT or multi-device proof. AI conversation remains unsupported. No Pro-owned N4 source/content/tests/docs changed."
+    },
+    {
       "id": "focused-quiz-review",
       "status": "automated-baseline",
       "scope": "Explicit current-source needs-review practice using unchanged canonical choices and captured local quiz save, fenced by projection/source/level/owner",

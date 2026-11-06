@@ -64,7 +64,7 @@ final class StudyRecorderState {
   }.contains(phase);
 }
 
-/// One foreground interval across study/reading/quiz, not attention/mastery.
+/// One foreground interval across study/reading/quiz/Kanji, not attention/mastery.
 /// One current-owner instance retains even a not-yet-staged frozen report. Explicit
 /// finish dispatches. Owner replacement disposes this captured controller;
 /// unfinished timing is canceled on route/background loss by the host widget.
@@ -147,6 +147,7 @@ class StudySessionRecorder {
     if (!const {
       DailyPlanArea.srs,
       DailyPlanArea.vocabulary,
+      DailyPlanArea.kanji,
       DailyPlanArea.grammar,
       DailyPlanArea.listeningReading,
       DailyPlanArea.quizReview,

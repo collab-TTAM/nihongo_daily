@@ -39,6 +39,7 @@ Future<void> verifySharedRecorder(String scenario) async {
   final ready = {
     DailyPlanArea.srs,
     DailyPlanArea.vocabulary,
+    DailyPlanArea.kanji,
     DailyPlanArea.grammar,
   };
   final recorder = StudySessionRecorder(
@@ -77,7 +78,7 @@ Future<void> verifySharedRecorder(String scenario) async {
         );
       }
       checkStudy(
-        clock.ids == 3 && server.writes == 3 && server.committed.length == 3,
+        clock.ids == 4 && server.writes == 4 && server.committed.length == 4,
         'Area reports duplicated or were not dispatched',
       );
     } else if (scenario == 'unstaged-frozen') {
@@ -196,8 +197,8 @@ Future<void> verifySharedRecorder(String scenario) async {
         'Content readiness was not rechecked after awaited preflight',
       );
       final count = server.reads;
-      await recorder.start(date, area: DailyPlanArea.kanji);
-      checkStudy(server.reads == count, 'Unsupported activity was activated');
+      await recorder.start(date, area: DailyPlanArea.aiConversation);
+      checkStudy(server.reads == count, 'Unsupported AI activity was activated');
       checkStudy(
         (await journal.list(studyOwner)).isEmpty,
         'Preflight wrote event',

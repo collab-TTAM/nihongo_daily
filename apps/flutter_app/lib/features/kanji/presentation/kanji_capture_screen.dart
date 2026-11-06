@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/widgets/page_body.dart';
+import '../../auth/application/account_provider.dart';
+import '../../daily_plan/domain/daily_plan.dart';
+import '../../daily_plan/presentation/study_session_timer_panel.dart';
 import '../application/kanji_capture_provider.dart';
+import '../application/kanji_catalog_provider.dart';
 import '../domain/kanji_models.dart';
 import '../domain/kanji_catalog.dart';
 import 'kanji_stroke_guide_panel.dart';
@@ -43,6 +47,18 @@ class _KanjiCaptureScreenState extends ConsumerState<KanjiCaptureScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(kanjiCaptureProvider);
     final controller = ref.read(kanjiCaptureProvider.notifier);
+    final selectedEntry = entry;
+    final profile = ref.watch(accountStateProvider).profile;
+    final selectedCatalog = selectedEntry == null
+        ? null
+        : ref.watch(kanjiCatalogProvider(selectedEntry.level));
+    final timerContentVisible =
+        selectedEntry != null &&
+        profile?.level == selectedEntry.level.label &&
+        (selectedCatalog?.asData?.value.any(
+              (candidate) => identical(candidate, selectedEntry),
+            ) ??
+            false);
     KanjiGuideTrace? trace;
     if (entry case final selected? when _trace != null) {
       final provider = kanjiStrokeGuideProvider(selected);
@@ -92,7 +108,8 @@ class _KanjiCaptureScreenState extends ConsumerState<KanjiCaptureScreen> {
         const SizedBox(height: 12),
         const Text(
           'Dùng chuột, bút hoặc ngón tay để vẽ trong ô vuông. '
-          'Nét chỉ giữ trong màn này; chưa lưu tiến độ.',
+          'Nét vẽ chỉ giữ trong màn này; bộ đếm (nếu tài khoản đã cấu hình) '
+          'chỉ ghi nhận thời gian, không lưu nét hoặc chấm điểm.',
         ),
         const SizedBox(height: 8),
         Text(
@@ -116,6 +133,24 @@ class _KanjiCaptureScreenState extends ConsumerState<KanjiCaptureScreen> {
           ),
           child: Text(entry == null ? 'Chọn chữ N5/N4' : 'Về danh sách Kanji'),
         ),
+        if (selectedEntry != null)
+          StudySessionTimerPanel(
+            area: DailyPlanArea.kanji,
+            contentVisible: timerContentVisible,
+            isContentCurrent: () {
+              final currentProfile = ref.read(accountStateProvider).profile;
+              if (currentProfile?.level != selectedEntry.level.label) {
+                return false;
+              }
+              final current = ref.read(
+                kanjiCatalogProvider(selectedEntry.level),
+              );
+              return current.asData?.value.any(
+                    (candidate) => identical(candidate, selectedEntry),
+                  ) ??
+                  false;
+            },
+          ),
         const SizedBox(height: 20),
         Align(
           alignment: Alignment.center,

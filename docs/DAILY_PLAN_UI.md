@@ -98,3 +98,12 @@ existing interrupted-refresh cleanup, old repository rejection and disk reopen
 after owned close. It retains the prior ten widget and ten gateway/SDK cases.
 The vault/JWT/HTTP remain TEST ONLY; no hosted/OS acceptance is inferred.
 Current-source execution still requires independent exact-head Actions.
+
+
+## Kanji foreground study-time reporting
+
+A selected Kanji practice entry now exposes the shared durable foreground timer only when the configured account profile level matches that entry and the current catalog still contains the same entry object/version. The freehand canvas and unconfigured preview do not expose a timer. The existing server plan must also mark KANJI as available with a positive item count before timing can start; client catalog presence cannot override a BLOCKED plan.
+
+The timer uses the same captured owner, immutable five-field `submit_study_session` event, write-before-dispatch journal, manual exact-event recovery and authoritative plan reload as vocabulary/grammar/reader/quiz/SRS. Changing the selected character, catalog readiness, profile level, route or app foreground cancels unfinished timing. The event reports self-reported elapsed foreground time only. It does not save stroke input, grade handwriting, award mastery or create a Kanji attempt. The freehand strokes remain local and ungraded; no default Auth or demo save-success path is enabled.
+
+The Kanji session widget suite covers unconfigured preview, a profile-matched acknowledged report, profile-level mismatch and character-change interruption. The shared recorder's real-disk fixture now includes KANJI while keeping AI_CONVERSATION unsupported until its separate live feature exists. These are component/fixture checks; hosted learner, grading, multi-device and full curriculum acceptance remain separate gates.

@@ -1,3 +1,16 @@
+## Kanji study-session integration — 2026-11-06 UTC
+
+- PR #41 / branch `automation/issue-11-plan-sdk-integration`; parent HEAD `f754b88e950e272f48169ae48cf9614788f6b4da`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Enabled `DailyPlanArea.kanji` in the shared foreground recorder only when the authenticated profile level maps to a loaded, non-empty Kanji catalog. The selected practice entry is checked again against the captured profile and current catalog before start/finish. Freehand-only Kanji and unconfigured preview remain unable to save.
+- Added the shared timer to selected Kanji practice. The authoritative Daily Plan KANJI block must be non-BLOCKED with a positive item count. Character/catalog/profile/route/background changes interrupt unfinished timing. A completed report uses the existing immutable five-field study-session event and durable journal; strokes remain local, ungraded and unsaved. No mastery or Kanji attempt is fabricated.
+- Expanded shared real-disk recorder coverage to KANJI and kept AI_CONVERSATION unsupported. Added `kanji_session_timer_widget_test.dart` for preview isolation, acknowledged profile-matched reporting, profile-level mismatch and character-change cancellation. Added QA case `kanji-study-recorder`; updated `docs/DAILY_PLAN_UI.md`.
+- Parent exact-head CI [42286176136](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42286176136) was rechecked at `f754b88e950e272f48169ae48cf9614788f6b4da`: five jobs (`repo-sanity`, `ai-boundary`, `database`, `windows`, `flutter`) all completed SUCCESS with every listed step successful, including format/analyze/full Flutter tests, real Windows vault/runtime probes, Chrome checks and Web/Windows release builds. This is parent evidence only; the new Kanji increment requires its own exact-head CI.
+- PR #37 exact-head CI [42296020766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42296020766) was independently rechecked: six jobs and all returned steps SUCCESS. Hosted A/B still cannot run until the manual workflow is on default branch and a protected `supabase-staging` environment is configured. No secrets were inspected or requested; no hosted learner proof is claimed.
+- Cloud authoring runtime has no Flutter/Dart SDK; local format/analyze/tests/build were not run. Keep PR #41 Draft and Issue #11 open. No N4-owned source/content/test/docs, Auth strategy, provider, schema/RLS, production, deployment or release changes.
+- Next: inspect every latest-attempt job/step for the new exact HEAD. Then continue hosted learner acceptance when staging configuration becomes available; otherwise proceed with independent Study/Progress work without treating this timer as Kanji grading or Personal Alpha completion.
+
+---
+
 ## Exact-head Flutter analyzer cleanup — 2026-11-07
 
 - PR #41 branch `automation/issue-11-plan-sdk-integration`; source HEAD before correction `d05cf0f4b6419bab8e168d3d4f109d0faa8e42eb`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

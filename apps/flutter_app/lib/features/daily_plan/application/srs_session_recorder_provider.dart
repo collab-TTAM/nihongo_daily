@@ -6,6 +6,7 @@ import '../../curriculum/domain/curriculum.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../../reading/application/reading_provider.dart';
 import '../../quiz/application/vocabulary_quiz_provider.dart';
+import '../../kanji/application/kanji_catalog_provider.dart';
 import '../../srs/application/srs_study_controller.dart';
 import '../../srs/application/srs_study_provider.dart';
 import '../domain/daily_plan.dart';
@@ -33,6 +34,23 @@ final canStartStudyRecorderProvider = Provider.autoDispose
     .family<bool, DailyPlanArea>((ref, area) {
       if (area == DailyPlanArea.srs) {
         return ref.watch(canStartSrsRecorderProvider);
+      }
+      if (area == DailyPlanArea.kanji) {
+        final profile = ref.watch(accountStateProvider).profile;
+        final level = switch (profile?.level) {
+          'N5' => PreviewLevel.n5,
+          'N4' => PreviewLevel.n4,
+          _ => null,
+        };
+        if (level == null) return false;
+        final content = ref.watch(kanjiCatalogProvider(level));
+        if (content.isLoading || content.hasError) return false;
+        final entries = content.asData?.value;
+        return entries != null &&
+            entries.isNotEmpty &&
+            entries.every(
+              (entry) => entry.level == level && entry.contentVersion > 0,
+            );
       }
       if (area == DailyPlanArea.quizReview) {
         final profile = ref.watch(accountStateProvider).profile;

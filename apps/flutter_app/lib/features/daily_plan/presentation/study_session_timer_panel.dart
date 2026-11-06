@@ -202,6 +202,11 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                     'Làm lại hoặc đổi bộ câu hỏi sẽ hủy bộ đếm. '
                     'Điểm và việc lưu kết quả quiz không tự cộng thời gian.',
                   )
+                else if (widget.area == DailyPlanArea.kanji)
+                  const Text(
+                    'Đổi chữ Kanji hoặc tải lại danh mục sẽ hủy bộ đếm. '
+                    'Nét vẽ không được lưu hoặc chấm điểm.',
+                  )
                 else if (widget.area != DailyPlanArea.srs)
                   const Text(
                     'Đổi cấp độ hoặc tìm kiếm không có kết quả cũng hủy bộ đếm.',
@@ -242,6 +247,8 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                     Text(
                       widget.area == DailyPlanArea.srs
                           ? 'Cần thẻ ôn sẵn sàng và trình độ ôn trùng với hồ sơ.'
+                          : widget.area == DailyPlanArea.kanji
+                          ? 'Cần danh mục Kanji khả dụng ở đúng trình độ hồ sơ.'
                           : 'Cần bài học khả dụng và trình độ đang đọc trùng với hồ sơ.',
                     ),
                   FilledButton(
@@ -285,7 +292,8 @@ class _StudySessionTimerPanelState extends ConsumerState<StudySessionTimerPanel>
                       if (current.area == area &&
                           current.phase == StudyRecorderPhase.running &&
                           ((area != DailyPlanArea.listeningReading &&
-                                  area != DailyPlanArea.quizReview) ||
+                                  area != DailyPlanArea.quizReview &&
+                                  area != DailyPlanArea.kanji) ||
                               _currentAction(
                                 owner,
                                 state,
