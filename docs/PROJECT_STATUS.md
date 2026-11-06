@@ -1,3 +1,14 @@
+## Exact-head Flutter analyzer correction — 2026-11-06
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; source HEAD before correction `f1b095bb5baea1fd790b5b2e5cca6a03fd4a5e81` (base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`).
+- Exact-head CI [42113039746](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42113039746), attempt 1, completed FAILURE on this head. Repo-sanity, AI boundary, database and Windows jobs succeeded; Flutter formatter succeeded, then `flutter analyze` failed solely because `dart:typed_data` was an unnecessary import in `apps/flutter_app/test/features/reading/bundled_reading_repository_test.dart`. Flutter tests and downstream Flutter steps were skipped, not passed.
+- Correction: removed only that import. `ByteData` remains provided by `package:flutter/services.dart`; no assertions, fixtures, runtime behavior or CI gates changed.
+- Full recursive source tree was read untruncated: 916 entries / 800 blobs. Planned tree update uses that exact source root tree as base; only this test and this status document are changed. No Pro-owned N4 source/content/tests/docs path is in scope.
+- Cloud runtime has no Flutter/Dart SDK; local analyze/tests/build were not run. New exact-head GitHub Actions must verify format, analyze, full Flutter suite and all platform/database/AI jobs before any pass claim.
+- Next: inspect every job and required step on the correction's exact HEAD. Keep PR #41 Draft; broader reading review, N4 integration only after Pro review, vetted audio, hosted reading availability and learner acceptance remain pending.
+
+---
+
 ## Core checkpoint — PR #41 pinned Prettier correction — 2026-11-05 UTC
 
 - Branch: `automation/issue-11-plan-sdk-integration`; diagnostic parent HEAD: `0901e87240d4582573d0e0af2f04b72446cbf2a7`; exact diagnostic CI [42101186825](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42101186825), attempt 1.
