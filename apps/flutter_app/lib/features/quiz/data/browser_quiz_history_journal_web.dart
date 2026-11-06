@@ -128,7 +128,9 @@ final class _IndexedDbQuizJournal<T> {
   String _encodeState(Map<String, T> records) {
     final entries = records.entries.toList()
       ..sort((left, right) => left.key.compareTo(right.key));
-    return jsonEncode([for (final entry in entries) _encodeRecord(entry.value)]);
+    return jsonEncode([
+      for (final entry in entries) _encodeRecord(entry.value),
+    ]);
   }
 
   Future<List<T>> list(String ownerId) => _serial(
