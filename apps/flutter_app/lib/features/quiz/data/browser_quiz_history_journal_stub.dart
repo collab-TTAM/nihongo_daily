@@ -3,9 +3,7 @@ import '../domain/vocabulary_quiz_attempt.dart';
 import 'grammar_quiz_attempt_store.dart';
 import 'vocabulary_quiz_attempt_store.dart';
 
-final class BrowserVocabularyQuizJournal
-    implements VocabularyQuizAttemptStore {
-
+final class BrowserVocabularyQuizJournal implements VocabularyQuizAttemptStore {
   @override
   Future<List<OwnedVocabularyQuizAttempt>> list(String ownerId) =>
       Future<List<OwnedVocabularyQuizAttempt>>.error(
@@ -24,7 +22,6 @@ final class BrowserVocabularyQuizJournal
 }
 
 final class BrowserGrammarQuizJournal implements GrammarQuizAttemptStore {
-
   @override
   Future<List<OwnedGrammarQuizAttempt>> list(String ownerId) =>
       Future<List<OwnedGrammarQuizAttempt>>.error(
@@ -35,9 +32,7 @@ final class BrowserGrammarQuizJournal implements GrammarQuizAttemptStore {
   Future<OwnedGrammarQuizAttempt> append(
     String ownerId,
     GrammarQuizAttempt attempt,
-  ) => Future<OwnedGrammarQuizAttempt>.error(
-    const GrammarQuizStorageFailure(),
-  );
+  ) => Future<OwnedGrammarQuizAttempt>.error(const GrammarQuizStorageFailure());
 
   Future<void> close() async {}
 }
@@ -50,6 +45,5 @@ Future<BrowserVocabularyQuizJournal> openBrowserVocabularyQuizJournal({
 
 Future<BrowserGrammarQuizJournal> openBrowserGrammarQuizJournal({
   String databaseName = 'nd-grammar-quiz-history-v1',
-}) => Future<BrowserGrammarQuizJournal>.error(
-  const GrammarQuizStorageFailure(),
-);
+}) =>
+    Future<BrowserGrammarQuizJournal>.error(const GrammarQuizStorageFailure());

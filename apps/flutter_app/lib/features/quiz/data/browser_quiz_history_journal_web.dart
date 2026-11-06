@@ -127,9 +127,7 @@ final class _IndexedDbQuizJournal<T> {
 
   String _encodeState(Map<String, T> records) {
     final keys = records.keys.toList()..sort();
-    return jsonEncode([
-      for (final key in keys) _encodeRecord(records[key]!),
-    ]);
+    return jsonEncode([for (final key in keys) _encodeRecord(records[key]!)]);
   }
 
   Future<List<T>> list(String ownerId) => _serial(
@@ -189,7 +187,10 @@ final class _IndexedDbQuizJournal<T> {
     var ready = false;
     _Transaction? transaction;
     try {
-      final tx = _database.transaction('journal', write ? 'readwrite' : 'readonly');
+      final tx = _database.transaction(
+        'journal',
+        write ? 'readwrite' : 'readonly',
+      );
       transaction = tx;
       void fail() {
         if (!done.isCompleted) {
@@ -228,13 +229,12 @@ final class _IndexedDbQuizJournal<T> {
           }
           // No await/microtask gap: queue the read/modify/write while this
           // IndexedDB request callback keeps the transaction active.
-          value = operation(
-            raw == null ? null : (raw as JSString).toDart,
-            (next) {
-              if (!write || _closed) throw _storageFailure();
-              store.put(next.toJS, 'state'.toJS);
-            },
-          );
+          value = operation(raw == null ? null : (raw as JSString).toDart, (
+            next,
+          ) {
+            if (!write || _closed) throw _storageFailure();
+            store.put(next.toJS, 'state'.toJS);
+          });
           ready = true;
         } on Object catch (error) {
           failure = _isConflict(error) ? error : _storageFailure();
@@ -392,8 +392,7 @@ int _compareGrammarRecords(
       : time;
 }
 
-final class BrowserVocabularyQuizJournal
-    implements VocabularyQuizAttemptStore {
+final class BrowserVocabularyQuizJournal implements VocabularyQuizAttemptStore {
   BrowserVocabularyQuizJournal._(this._journal);
 
   final _IndexedDbQuizJournal<OwnedVocabularyQuizAttempt> _journal;

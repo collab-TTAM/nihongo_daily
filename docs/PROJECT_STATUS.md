@@ -11126,3 +11126,12 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Preserved historical evidence rather than fabricating/updating old run snapshots: removed only the new step name from the historical `ci_gates` subset. The dedicated live Chrome step remains in `.github/workflows/ci.yml`, and the new `browser-quiz-history` QA case/anchors remain. Thus the new test still gates the current Flutter job without rewriting old evidence.
 - Also removed unused private constructors from the non-web stub; the conditional non-web open functions still fail with fixed storage errors and no fallback. No product behavior, assertions, security, API/schema/RLS, Auth/provider, N4/Pro content or CI strictness was weakened.
 - New exact-head Actions must verify this correction and then run the actual Chrome IndexedDB test; no browser test or full-CI pass is claimed yet.
+
+
+## Browser quiz-history exact-head format correction — 2026-11-06T16:11Z
+
+- PR #41 exact-head Actions [42241707326](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42241707326), attempt 1, targets `96fc04e24d6225a71f9f644d8e5db2c93b86485c`. The latest-attempt collection had five jobs: database, repo-sanity, AI boundary and Windows completed SUCCESS with every listed step successful; Flutter failed only at strict `dart format --output=none --set-exit-if-changed .`.
+- The pinned Dart formatter in the CI log identified exactly three files: `browser_quiz_history_journal_stub.dart`, `browser_quiz_history_journal_web.dart`, and `browser_quiz_history_check.dart`. Applied those exact formatter hunks only; no runtime behavior or test assertions were intentionally changed.
+- Flutter analyze, Flutter tests, Chrome/browser quiz-history verification and Web build were SKIPPED after the formatter failure; they are not passes. Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run.
+- No N4/Pro content, Auth/provider, API/schema/RLS, default save activation, production, dependency, or security changes. PR #41 remains Draft and Issue #13 remains open; hosted quiz attempts, mastery/weak-point derivation and integrated progress remain unproven.
+- Next: inspect every latest-attempt job and step for the new exact PR head. Fix only observed failures; do not claim full CI until all required jobs/steps pass.
