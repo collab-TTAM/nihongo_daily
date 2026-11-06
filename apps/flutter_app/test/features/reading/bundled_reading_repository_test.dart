@@ -14,6 +14,7 @@ final class _FailingBundle extends CachingAssetBundle {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   test(
     'bundled catalog contains original N5 passages and no N4 fallback',
     () async {
