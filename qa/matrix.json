@@ -7,7 +7,8 @@
       "Validate project manifest and content JSON",
       "Validate authored curriculum exports",
       "Validate frozen contracts and regression cases",
-      "Validate QA inventory and evidence regressions"
+      "Validate QA inventory and evidence regressions",
+      "Verify hosted Supabase probe safety and behavior"
     ],
     "database": [
       "Install review parity validator",
@@ -980,13 +981,13 @@
     {
       "id": "auth-live",
       "status": "pending-integration",
-      "scope": "Login/logout, expiry, restart and two actual user accounts",
+      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus separate Flutter startup/restart acceptance.",
       "issues": [
         20,
         18
       ],
-      "reproduce": "Non-production Supabase: login A/B, verify issuer/signature/expiry, provision profiles from trusted identity, restart/restore, sign out/switch and inspect caches. Record exact commit/environment and redacted assertions.",
-      "limitation": "No configured real Auth/account session adapter or end-to-end evidence."
+      "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial and logout revocation; record exact run/head. Separately verify configured Flutter startup/restart.",
+      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey."
     },
     {
       "id": "review-rpc",

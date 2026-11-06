@@ -1,3 +1,11 @@
+## Hosted staging acceptance probe — 2026-11-06T21:09Z
+
+- Draft PR #37 / automation/issue-22-atomic-review adds a manual-only hosted Supabase probe for #20/#22. It uses a validated *.supabase.co origin, publishable/anon key and two pre-provisioned non-production accounts from the supabase-staging GitHub environment; it never uses service-role credentials, creates/deletes users, changes profile fields or runs on PR/push.
+- Probe coverage: distinct Auth identities, refresh-token rotation, caller-bound ensure_profile, own-profile reads, A/B cross-owner RLS denial, unauthenticated denial, A logout/refresh revocation and B continuity. Offline fake-transport regressions cover positive/negative paths, URL/key restrictions and redacted failures.
+- New paths: scripts/hosted_supabase_probe.py, scripts/test_hosted_supabase_probe.py, .github/workflows/hosted-supabase-acceptance.yml and docs/HOSTED_SUPABASE_ACCEPTANCE.md; CI/QA inventory and this status are updated.
+- No staging secrets are configured or inspected in this run, so hosted acceptance is not executed. The manual workflow becomes dispatchable after it reaches the default branch. It is API-level evidence only; Flutter Windows vault/startup/restart, signed expired-JWT, physical multi-device sync and learner-journey gates remain pending. Keep #20/#22/#15/#18 and QA auth-live open.
+- Exact-head CI is the verification gate; cloud authoring runtime has no Flutter/Dart SDK. No Auth strategy/provider, schema/RLS, production, default-app, Pro N4 or secret changes.
+
 ## Core worker handoff — browser IndexedDB formatter correction — 2026-11-04T16:07Z
 
 - Run `core-20261104T1606Z-fix-browser-indexeddb-format`; branch `automation/issue-22-atomic-review`; source commit `18841eb043efdf79eca5b1f7cdcc71fef58263a1` (parent `fd7daee3334ad3410143a0bb240eb1479bb8208b`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
