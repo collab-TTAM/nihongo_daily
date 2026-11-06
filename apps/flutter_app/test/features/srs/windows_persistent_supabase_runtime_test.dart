@@ -830,7 +830,10 @@ void main() {
       expect(runtime.persistence.currentSession?.userId, wire.b);
       expect(storedSecret, refreshSecret);
       expect(successfulClear, lessThan(timeline.lastIndexOf('vault.write')));
-      expect(timeline.lastIndexOf('vault.write'), lessThan(timeline.lastIndexOf('profile.ensure')));
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('profile.ensure')),
+      );
     },
   );
 
