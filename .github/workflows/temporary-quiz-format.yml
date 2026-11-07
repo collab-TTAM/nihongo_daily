@@ -1,0 +1,36 @@
+name: Temporary quiz report formatter
+
+on:
+  push:
+    branches:
+      - automation/issue-11-plan-sdk-integration
+    paths:
+      - .github/workflows/temporary-quiz-format.yml
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: backend/ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/ai/package-lock.json
+      - name: Install locked formatter
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Format only the two new quiz-content files
+        run: npx prettier --write src/quiz_report_content.ts test/quiz_report_content.test.ts
+      - name: Emit exact formatted files for review
+        run: |
+          echo "===== src/quiz_report_content.ts ====="
+          cat src/quiz_report_content.ts
+          echo "===== test/quiz_report_content.test.ts ====="
+          cat test/quiz_report_content.test.ts
