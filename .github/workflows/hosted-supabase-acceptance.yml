@@ -1,0 +1,34 @@
+name: Hosted Supabase Acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_non_production:
+        description: Confirm isolated non-production Supabase project and two test accounts
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: hosted-supabase-acceptance
+  cancel-in-progress: false
+jobs:
+  auth-a-b:
+    if: ${{ inputs.confirm_non_production }}
+    environment: supabase-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify hosted Auth, profile ownership and A/B RLS
+        run: python3 scripts/hosted_supabase_probe.py
+        env:
+          ND_STAGING_SUPABASE_URL: ${{ secrets.ND_STAGING_SUPABASE_URL }}
+          ND_STAGING_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.ND_STAGING_SUPABASE_PUBLISHABLE_KEY }}
+          ND_STAGING_USER_A_EMAIL: ${{ secrets.ND_STAGING_USER_A_EMAIL }}
+          ND_STAGING_USER_A_PASSWORD: ${{ secrets.ND_STAGING_USER_A_PASSWORD }}
+          ND_STAGING_USER_B_EMAIL: ${{ secrets.ND_STAGING_USER_B_EMAIL }}
+          ND_STAGING_USER_B_PASSWORD: ${{ secrets.ND_STAGING_USER_B_PASSWORD }}

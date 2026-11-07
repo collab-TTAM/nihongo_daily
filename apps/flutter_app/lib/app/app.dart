@@ -7,7 +7,8 @@ import 'router.dart';
 import 'theme.dart';
 
 class NihongoDailyApp extends ConsumerWidget {
-  const NihongoDailyApp({super.key});
+  const NihongoDailyApp({super.key, this.builder});
+  final TransitionBuilder? builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,6 +22,7 @@ class NihongoDailyApp extends ConsumerWidget {
       darkTheme: buildAppTheme(Brightness.dark),
       themeMode: ref.watch(previewThemeProvider),
       routerConfig: ref.watch(routerProvider),
+      builder: builder,
     );
   }
 }
