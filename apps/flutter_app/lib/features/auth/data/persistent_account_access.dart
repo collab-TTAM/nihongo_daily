@@ -241,6 +241,9 @@ final class PersistentAccountAccess implements AccountAccess {
   Future<void> _runTracked(Future<void> Function() action) {
     final completer = Completer<void>();
     final result = completer.future;
+    // Cancellation can arrive after this slot is published but before the
+    // deferred runner starts. Reset before publication, never inside _run.
+    _cancelledOperation = false;
     _operation = result;
     unawaited(
       Future<void>.microtask(() async {
@@ -257,7 +260,6 @@ final class PersistentAccountAccess implements AccountAccess {
 
   Future<void> _run(Future<void> Function() action) async {
     _authInFlight = true;
-    _cancelledOperation = false;
     try {
       await action();
     } on ReviewTransportFailure {

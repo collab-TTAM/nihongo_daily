@@ -645,3 +645,8 @@ The first authenticated session is still hidden until its rotated refresh token
 has been durably written and the verified user's own profile is ready. This does
 not enable automatic login, plaintext fallback, token logging or a default Auth
 assembly.
+
+
+## Cancellation latch across deferred Auth dispatch — 2026-11-07
+
+`_runTracked` reserves the caller-owned operation slot synchronously and resets the cancellation latch before publishing that slot. A concurrent logout/close can then set the latch even if the runner is still queued as a microtask. `_run` must never clear that latch on entry: the original Auth operation remains cancelled, and its finalizer drains SDK sign-out plus credential clear after any late SDK response. This is a one-shot cancellation/cleanup path, not an automatic Auth retry. The deterministic lifecycle fixtures retain late-login, failed-logout and login-during-late-cleanup coverage; the failed-close retry fixture performs only one initial login.

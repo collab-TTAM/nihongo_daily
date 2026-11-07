@@ -467,7 +467,6 @@ Future<void> verifyLifecycle(String scenario) async {
         'old write survived clear',
       );
     } else if (scenario == 'close-retries-failed-cleanup') {
-      await login();
       backend.failClear = true;
       await fails(access.signOut());
       check(
