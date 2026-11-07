@@ -119,6 +119,7 @@ final class MemorySdk implements RefreshableAccountAccess {
 
 const scenarios = [
   'empty-start',
+  'empty-start-login',
   'restore-barrier',
   'login-barrier',
   'rotation-barrier',
@@ -214,6 +215,16 @@ Future<void> verifyLifecycle(String scenario) async {
       return;
     }
     await access.start();
+    if (scenario == 'empty-start-login') {
+      await login();
+      check(
+        sdk.logins == 1 &&
+            access.currentSession?.userId == owner &&
+            backend.secret == sdk.secret,
+        'empty-vault startup rejected the first explicit login',
+      );
+      return;
+    }
     if (scenario == 'exclusive-owner') {
       var rejected = false;
       try {

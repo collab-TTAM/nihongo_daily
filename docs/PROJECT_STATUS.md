@@ -3112,3 +3112,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Root cause: the test referenced a type declared in `session_credential_vault.dart` but imported only the Windows adapter, which does not re-export the type. Added the direct package import only in commit `0f9d36fec95a9ae4824df2c314cd4604786407fa`; existing assertions and runtime behavior are unchanged.
 - No production/Auth/provider/API/schema/RLS/default runtime, N4 content, deployment or security behavior changed. Cloud runtime lacks Flutter/Dart SDK; local analyze/test/build were not run.
 - Next: inspect all latest-attempt jobs/steps on the corrected exact PR head. Hosted learner A/B, deployed PostgREST/RLS, expiry/restart and physical multi-device acceptance remain open.
+
+
+## Core worker checkpoint — ACTIVE — 2026-11-07T13:13Z
+
+- Run `core-20261107T1313Z-pr37-start-race`; branch `automation/issue-22-atomic-review`; parent HEAD `194d70a93fbcc9b0e9eb192f5ceb21052048e614`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42371680102](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42371680102) completed: database, repo-sanity, AI boundary, disposable Supabase integration and Windows all SUCCESS with every listed step successful. Flutter format and analyze SUCCESS; full suite FAILED at `persistent session lifecycle: close-retries-failed-cleanup` because the first sign-in after an empty-vault start was rejected at the operation guard. All later Flutter steps were SKIPPED, not passes.
+- Changed paths in this checkpoint: `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart` (reserve operation before scheduling work), `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart` (explicit empty-vault/first-login regression), this lifecycle document, and this status record. No Auth strategy/provider, API/schema/RLS, Pro-owned N4 or default activation change.
+- New exact-head CI will verify the correction. Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run. Hosted signed-JWT learner A/B, deployed RLS/PostgREST, hosted expiry/restart and physical multi-device proof remain outstanding. PR #37 stays Draft; #20/#22/#15/#18 remain open.
+- Next: inspect every latest-attempt job/step for the new exact HEAD; fix only observed failures, then continue unblocked study/quiz/progress integration without entering Pro #14/#38/N4 scope.

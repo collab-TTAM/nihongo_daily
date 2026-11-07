@@ -215,7 +215,7 @@ final class PersistentAccountAccess implements AccountAccess {
     _started = true;
     _revoke(SessionPersistencePhase.restoring);
     final generation = _generation;
-    final result = _run(() async {
+    return _runTracked(() async {
       final String? secret;
       try {
         secret = await vault.readRefreshToken();
@@ -233,7 +233,23 @@ final class PersistentAccountAccess implements AccountAccess {
       await _sdk.restore(secret);
       await _settle();
     });
+  }
+
+  /// Reserve the operation slot before scheduling Auth work. A fast empty-vault
+  /// read can otherwise finish before the caller assigns [_operation], leaving a
+  /// completed future in the slot and rejecting the first explicit sign-in.
+  Future<void> _runTracked(Future<void> Function() action) {
+    final completer = Completer<void>();
+    final result = completer.future;
     _operation = result;
+    unawaited(Future<void>.microtask(() async {
+      try {
+        await _run(action);
+        completer.complete();
+      } on Object catch (error, stackTrace) {
+        completer.completeError(error, stackTrace);
+      }
+    }));
     return result;
   }
 
@@ -277,7 +293,7 @@ final class PersistentAccountAccess implements AccountAccess {
         currentSession != null) {
       return Future.error(_failure());
     }
-    final result = _run(() async {
+    return _runTracked(() async {
       if (_failed) {
         await _cleanup();
         if (_closed || _logout != null || _cancelledOperation) throw _failure();
@@ -287,8 +303,6 @@ final class PersistentAccountAccess implements AccountAccess {
       await _sdk.signIn(email, password);
       await _settle();
     });
-    _operation = result;
-    return result;
   }
 
   /// Explicit refresh, with the same persistence barrier as sign-in/restore.
@@ -298,12 +312,10 @@ final class PersistentAccountAccess implements AccountAccess {
       return Future.error(_failure());
     }
     _revoke(SessionPersistencePhase.saving);
-    final result = _run(() async {
+    return _runTracked(() async {
       await _sdk.refresh();
       await _settle();
     });
-    _operation = result;
-    return result;
   }
 
   Future<void> _cleanup() async {

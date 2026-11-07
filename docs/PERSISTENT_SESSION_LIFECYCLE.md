@@ -633,3 +633,15 @@ failed close, rejected replacement owner and successful close retry.
 These are TEST ONLY in-memory/MethodChannel failure injections. They do not
 simulate a native Credential Manager failure or establish hosted Auth. The
 native Windows process probes and hosted staging acceptance remain separate.
+
+
+## Empty-vault first-login ordering
+
+An owned account access start with an empty credential vault must settle to an
+idle, signed-out state and immediately allow one explicit password sign-in. The
+operation slot is reserved before asynchronous Auth/vault work is scheduled, so
+an immediately completing read cannot leave a completed operation marked busy.
+The first authenticated session is still hidden until its rotated refresh token
+has been durably written and the verified user's own profile is ready. This does
+not enable automatic login, plaintext fallback, token logging or a default Auth
+assembly.
