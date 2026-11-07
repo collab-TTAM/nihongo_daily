@@ -139,7 +139,7 @@ void main() {
       expect(records, hasLength(1));
       expect(records.single.acknowledged, isTrue);
       expect(records.single.event.area, DailyPlanArea.kanji);
-      expect(records.single.event.date, DailyPlanDate('2026-10-20'));
+      expect(records.single.event.date.value, '2026-10-20');
       expect(find.textContaining('Chấm điểm: chưa khả dụng'), findsOneWidget);
     },
   );

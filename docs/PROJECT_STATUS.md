@@ -1,3 +1,14 @@
+## Exact-head Kanji session date assertion correction — 2026-11-07 UTC
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `c012a8be670b1495229edf610d52e042dbaf1988`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42316366812](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42316366812), attempt 1, completed FAILURE on this HEAD. Repo-sanity, database, AI boundary and Windows all completed SUCCESS. Flutter format/analyze succeeded; the full suite reported 1782 passed and one failure at `kanji_session_timer_widget_test.dart:142`: two `DailyPlanDate` objects have no value equality. All dependent Flutter verification/build steps were SKIPPED, not passed.
+- Corrected only the TEST ONLY assertion to compare the immutable profile-local `.value` (`2026-10-20`); no production code, equality semantics, test scenario, fixture or gate changed.
+- Cloud authoring runtime has no Flutter/Dart SDK; no local Flutter format/analyze/test/build is claimed. The next exact-head CI must run the full Flutter suite, all browser/native verifiers and Web/Windows builds with every required job/step successful.
+- Pro-owned PR #38 / Issue #14 / N4 source, manifests, content tests/docs and branch remain untouched. PR #41 stays Draft; Issue #11 stays open. Hosted Auth/A-B, deployed RLS, quiz/mastery, multi-device and curriculum-review evidence remain separate Personal Alpha gates.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed failures. If CI is pending, release the worker and hand off without duplicate code or long polling.
+
+---
+
 ## Exact-head Flutter analyzer import correction — 2026-11-07
 
 - PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `0443b35d73e2e37df2b6d46665a48f28536aebf2`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
