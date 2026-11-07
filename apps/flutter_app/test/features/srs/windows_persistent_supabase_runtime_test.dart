@@ -927,9 +927,7 @@ void main() {
 
       expect(storedSecret, refreshSecret);
       final profileCountBeforeRefresh = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .length;
       expect(profileCountBeforeRefresh, 1);
 
@@ -979,9 +977,7 @@ void main() {
       expect(authRequests[2].url.queryParameters['grant_type'], 'password');
 
       final profileRequests = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
       expect(profileRequests, hasLength(2));
       expect(

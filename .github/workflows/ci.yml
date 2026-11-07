@@ -177,13 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Capture read-only formatter diff for PR 37
-        if: github.event_name == 'pull_request' && github.event.pull_request.number == 37
-        shell: bash
-        run: |
-          formatted="$RUNNER_TEMP/windows-persistent-supabase-runtime-formatted.dart"
-          dart format --output=show test/features/srs/windows_persistent_supabase_runtime_test.dart > "$formatted"
-          diff -u test/features/srs/windows_persistent_supabase_runtime_test.dart "$formatted" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
