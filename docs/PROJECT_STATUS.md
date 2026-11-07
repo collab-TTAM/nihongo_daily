@@ -1,3 +1,13 @@
+## Exact-head CI correction — 2026-11-07T08:11Z
+
+- Branch `automation/issue-22-atomic-review`; parent HEAD `59f92e5f1a2c300d1ac03a2afb6882a02fd5bdfc`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head CI [42353111771](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42353111771) completed FAILURE only at pinned Dart 3.35.4 formatting in `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`. Database, repository sanity, AI boundary, Windows and disposable local Supabase integration all completed SUCCESS with every returned step successful. Flutter analyze, full tests, browser/native checks and Web build were SKIPPED because format failed; they are not passes.
+- Applied the single formatter-required blank line between adjacent test declarations in that TEST ONLY file. No assertions, runtime behavior, Auth/vault logic, schema/RLS, or dependencies changed.
+- Cloud authoring runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head Actions is required to verify the correction and all downstream Flutter steps.
+- Next: inspect every latest-attempt job and step on the corrected exact HEAD; preserve the Draft and hosted learner/security gates.
+
+---
+
 ## Hosted staging acceptance probe — 2026-11-06T21:09Z
 
 - Draft PR #37 / automation/issue-22-atomic-review adds a manual-only hosted Supabase probe for #20/#22. It uses a validated *.supabase.co origin, publishable/anon key and two pre-provisioned non-production accounts from the supabase-staging GitHub environment; it never uses service-role credentials, creates/deletes users, changes profile fields or runs on PR/push.

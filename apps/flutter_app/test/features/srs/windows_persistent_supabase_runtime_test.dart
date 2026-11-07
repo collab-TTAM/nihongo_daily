@@ -910,6 +910,7 @@ void main() {
       expect(storedSecret, refreshSecret);
     },
   );
+
   test(
     'Windows caller close retries failed logout clear before releasing owned runtime',
     () async {
