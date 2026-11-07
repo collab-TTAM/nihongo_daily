@@ -15,7 +15,10 @@ import type {
   QuizReportTransaction,
   QuizReportTransactionHost,
 } from "../src/quiz_report_transaction.ts";
-import type { PostgresConnection, PostgresResult } from "../src/postgres_connection.ts";
+import type {
+  PostgresConnection,
+  PostgresResult,
+} from "../src/postgres_connection.ts";
 import type { AuthVerifier } from "../src/ports.ts";
 import { submitVerifiedQuizReport } from "../src/quiz_report_host.ts";
 import type { QuizReportQuery } from "../src/quiz_report_host.ts";
@@ -50,7 +53,6 @@ function client() {
   return connection;
 }
 
-
 function nativeConnectionFactory(): PostgresConnection {
   const owned = client();
   return {
@@ -81,18 +83,20 @@ async function validateCurrentContentWithQuery(
   const choices = [
     ...new Set(request.answers.flatMap((answer) => [...answer.choices])),
   ];
-  const active = await query(
-    "SELECT count(*)::integer AS count FROM " +
-      table +
-      " WHERE id=ANY($1::uuid[]) AND jlpt_level=$2::public.jlpt_level AND is_active",
-    [choices, request.jlpt_level],
-  );
-  if (
-    active.command !== "SELECT" ||
-    active.rowCount !== 1 ||
-    active.rows[0]?.count !== choices.length
-  ) {
-    throw new BoundaryError("VALIDATION_FAILURE");
+  for (const choice of choices) {
+    const active = await query(
+      "SELECT id::text AS id FROM " +
+        table +
+        " WHERE id=$1::uuid AND jlpt_level=$2::public.jlpt_level AND is_active",
+      [choice, request.jlpt_level],
+    );
+    if (
+      active.command !== "SELECT" ||
+      active.rowCount !== 1 ||
+      active.rows.length !== 1
+    ) {
+      throw new BoundaryError("VALIDATION_FAILURE");
+    }
   }
   for (const answer of request.answers) {
     const target = await query(
@@ -471,7 +475,6 @@ test(
     }
   },
 );
-
 
 test(
   "native verified-owner quiz host binds Auth identity before private ledger access (TEST ONLY)",
