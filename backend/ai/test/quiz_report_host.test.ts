@@ -110,7 +110,11 @@ function dependencies(
         opened++;
         return connection;
       },
-      validateCurrentContent: async (query, request, signal) => {
+      validateCurrentContent: async (
+        query: Parameters<QuizReportCurrentContentValidator>[0],
+        request: Parameters<QuizReportCurrentContentValidator>[1],
+        signal: Parameters<QuizReportCurrentContentValidator>[2],
+      ) => {
         assert.equal(signal.aborted, false);
         assert.equal(request.client_event_id, fixture.request.client_event_id);
         await validateCurrentContent(query, request, signal);
