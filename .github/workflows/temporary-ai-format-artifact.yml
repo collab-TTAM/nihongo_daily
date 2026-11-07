@@ -8,7 +8,7 @@ on:
       - .github/workflows/temporary-ai-format-artifact.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   format-artifact:
@@ -26,6 +26,15 @@ jobs:
       - name: Format only the three new quiz host TypeScript files
         run: npx prettier --write src/quiz_report_host.ts test/quiz_report_host.test.ts test/quiz_report_transaction.native.ts
         working-directory: backend/ai
+      - name: Publish exact formatter output on an isolated candidate branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c automation/issue-11-format-candidate-59c0606
+          git add backend/ai/src/quiz_report_host.ts backend/ai/test/quiz_report_host.test.ts backend/ai/test/quiz_report_transaction.native.ts
+          git diff --cached --check
+          git commit -m "Apply pinned Prettier formatting to quiz host"
+          git push origin HEAD:refs/heads/automation/issue-11-format-candidate-59c0606
       - name: Upload formatted files for exact source handoff
         uses: actions/upload-artifact@v4
         with:
