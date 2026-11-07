@@ -242,14 +242,16 @@ final class PersistentAccountAccess implements AccountAccess {
     final completer = Completer<void>();
     final result = completer.future;
     _operation = result;
-    unawaited(Future<void>.microtask(() async {
-      try {
-        await _run(action);
-        completer.complete();
-      } on Object catch (error, stackTrace) {
-        completer.completeError(error, stackTrace);
-      }
-    }));
+    unawaited(
+      Future<void>.microtask(() async {
+        try {
+          await _run(action);
+          completer.complete();
+        } on Object catch (error, stackTrace) {
+          completer.completeError(error, stackTrace);
+        }
+      }),
+    );
     return result;
   }
 
