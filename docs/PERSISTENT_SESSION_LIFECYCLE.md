@@ -669,3 +669,21 @@ restart, native Credential Manager restoration, hosted signed-JWT learner A/B,
 deployed RLS/PostgREST, OS logoff, power-loss or physical multi-device proof.
 No default Auth activation, plaintext fallback, token logging, Auth strategy,
 provider, schema/RLS, production configuration or Pro-owned N4 content changes.
+
+
+## Windows refresh rotation write failure
+
+The pinned Supabase SDK + Windows MethodChannel regression first establishes
+User A through password Auth and persists A's refresh secret. An explicit
+refresh then receives a rotated secret while the Windows vault write is
+deliberately failed. The runtime must revoke A's session/profile readiness,
+attempt to clear the uncertain credential, and issue no additional own-profile
+request. A subsequent explicit User B login must run SDK sign-out and vault
+cleanup before the password grant, persist B's rotated secret, and only then
+request B's own profile.
+
+This combines a post-login rotation failure with the account-switch boundary.
+It is TEST ONLY MockClient/MethodChannel failure injection using the production
+Dart Windows vault adapter; it does not inject a native Credential Manager
+failure or prove hosted learner A/B, deployed RLS/PostgREST, or physical
+multi-device behavior.

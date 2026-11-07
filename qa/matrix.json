@@ -312,6 +312,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "caller-owned runtime restart restores saved refresh token before own profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows refresh rotation write failure fences A before B profile readiness"
         }
       ],
       "issues": [

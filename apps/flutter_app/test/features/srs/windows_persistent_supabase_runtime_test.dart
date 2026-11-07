@@ -913,6 +913,97 @@ void main() {
   );
 
   test(
+    'Windows refresh rotation write failure fences A before B profile readiness',
+    () async {
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_A_INITIAL_REFRESH';
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      expect(storedSecret, refreshSecret);
+      final profileCountBeforeRefresh = requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .length;
+      expect(profileCountBeforeRefresh, 1);
+
+      failWrite = true;
+      refreshSecret = 'TEST_ONLY_A_ROTATED_REFRESH';
+      await expectLater(
+        runtime.refresh(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, isNull);
+      final refreshIndex = timeline.indexOf('auth.refresh');
+      final failedWriteIndex = timeline.lastIndexOf('vault.write');
+      final failedClearIndex = timeline.lastIndexOf('vault.clear');
+      expect(refreshIndex, greaterThan(-1));
+      expect(failedWriteIndex, greaterThan(refreshIndex));
+      expect(failedClearIndex, greaterThan(failedWriteIndex));
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(profileCountBeforeRefresh),
+      );
+
+      failWrite = false;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_A_ROTATION_WRITE_FAILURE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      expect(authRequests, hasLength(3));
+      expect(authRequests[0].url.queryParameters['grant_type'], 'password');
+      expect(
+        authRequests[1].url.queryParameters['grant_type'],
+        'refresh_token',
+      );
+      expect(authRequests[2].url.queryParameters['grant_type'], 'password');
+
+      final profileRequests = requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .toList();
+      expect(profileRequests, hasLength(2));
+      expect(
+        profileRequests.last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+
+      final cleanupIndex = timeline.lastIndexOf('vault.clear');
+      final passwordIndex = timeline.lastIndexOf('auth.password');
+      final savedIndex = timeline.lastIndexOf('vault.write');
+      final profileIndex = timeline.lastIndexOf('profile.ensure');
+      expect(cleanupIndex, greaterThan(failedClearIndex));
+      expect(passwordIndex, greaterThan(cleanupIndex));
+      expect(savedIndex, greaterThan(passwordIndex));
+      expect(profileIndex, greaterThan(savedIndex));
+    },
+  );
+
+  test(
     'Windows caller close retries failed logout clear before releasing owned runtime',
     () async {
       await runtime.start();
