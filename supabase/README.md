@@ -1,8 +1,19 @@
 # Supabase storage baseline
 
+Additive due-queue read: docs/REVIEW_QUEUE.md defines get_review_queue, its stable
+invoker/RLS boundary and seven actual SQL fixture projections exported by the
+test script. This is not a deployed Auth/SDK/PostgREST or learner-flow claim.
+
 This directory contains an additive PostgreSQL migration, not a deployed service.
 The Flutter app still uses its labeled preview repository. No live credentials,
 production changes, authentication provider changes or AI provider calls are made.
+
+Issue #11 adds a narrowly scoped authenticated Daily Plan snapshot RPC in
+`20261019150000_daily_plan.sql`. It preserves existing user/date plans and derived
+progress and keeps unavailable services blocked. This is an additive local/CI
+migration, not deployment or study-session integration. See
+[`docs/DAILY_PLAN.md`](../docs/DAILY_PLAN.md) for the definer boundary, frozen
+payload mapping, allocation policy and native role/wire/concurrency checks.
 
 ## Reproduce verification
 
@@ -20,6 +31,10 @@ real `SET ROLE`, and starts two native PostgreSQL sessions for the duplicate-key
 race. `bootstrap.sql` must never run against Supabase or an existing database.
 The script is deliberately not repeatable on an already initialized database.
 Create a fresh test database for each run.
+
+Daily Plan's actual SQL wire validation also requires the existing pinned
+`python3 -m pip install -r contracts/requirements.txt`; the database CI job
+installs it before running the retained SQL tests and new plan checks.
 
 CI's `database` job uses a PostgreSQL 17 service and runs this same script. The SQL
 baseline was also executed locally with PostgreSQL 18.6 through PGlite 0.5.9;
@@ -44,9 +59,11 @@ connection is requested by the tests.
   Adapters select safe columns explicitly; `select *` on this table is rejected.
 - `service_role` is trusted and bypasses RLS. It gets explicit DML grants, not
   TRUNCATE. Keep it backend-only and verify end-user identity before every write.
-- Functions are invoker functions with empty `search_path` and qualified tables;
-  private schema/function access is revoked from clients. No security-definer RPC
-  is exposed in this baseline. Trigger functions cannot be called as RPCs.
+- Private helpers are invoker functions with empty `search_path` and qualified
+  tables; private schema/function access is revoked from clients. The original
+  baseline exposed no definer RPC. #22 adds the narrow caller-bound submit_review
+  definer function, audited separately in docs/SRS_RPC.md. Trigger functions cannot
+  be called as RPCs.
 - IDs/owners/parent-message identity are immutable. Review events cannot be edited
   or deleted. Curriculum is retired with `is_active=false`; restrictive FKs retain
   history. Account deletion is not implemented and needs the applicable human gate.
@@ -78,7 +95,8 @@ returns NULL for an unseen ID and raises `SYNC_CONFLICT` for changed input. It i
 only callable by trusted SQL/backend code; never accept an arbitrary client user
 ID. Canonicalize validated timestamps/fields before storing/comparing request JSON.
 
-**This is storage support, not a working submit_review API.** Issue #22's integration after scheduler #4
+**The original helper is storage support.** #22 now supplies a local SQL transaction
+increment (docs/SRS_RPC.md), without hosted or typed UI integration. Full #22 acceptance
 must authenticate, reject unknown fields, lock the user's learning item, replay
 before stale-time checks, validate rating/time skew/content, schedule on the server,
 and atomically append event/update state. Race losers must re-read the committed
@@ -106,3 +124,98 @@ normalization and actual timestamp conversion. Use the stored timezone for plans
 Issue #7 adds private AI receipt lookup/dispatch-claim/token-completion helpers and
 native claim-race/security tests. No deployed conversation/AI runtime is implied;
 see `../docs/AI_BOUNDARY.md` for required validation/transaction/recovery binding.
+
+Issue #22 verification also runs supabase/tests/review_rpc.sql, compares actual
+private SQL outputs against all 26 frozen Dart policy cases and executes five
+native submit_review race scenarios. Install contracts/requirements.txt first.
+The SQL-only Auth fixture cannot verify real JWT expiration, GoTrue/PostgREST
+or Flutter end-to-end behavior; #22 remains open for those acceptance gates.
+
+# Internal study-session progress
+
+The additive `20261019185500_study_session_progress.sql` provides a private,
+service-only completed-session transaction; it is not a public/client endpoint.
+Caller must verify identity/activity and derive owner. Session, immutable receipt
+and plan progress commit together; retries replay and overlapping intervals
+conflict. No hosted migration or UI integration has been performed.
+Policy, boundary/limits and native role/wire/concurrency reproduction:
+`../docs/STUDY_SESSIONS.md`. The existing database runner retains all prior gates
+and appends `scripts/test_study_sessions.py`. No service key belongs in Flutter.
+
+# Authenticated completed-session report v1
+
+`20261019191000_submit_study_session.sql` adds the separately versioned
+`submit_study_session(p_request)` RPC, EXECUTE only authenticated and owner derived
+from auth.uid. No owner/service credential or derived minutes enter the client
+request. This records self-reported elapsed time, never attention/mastery/scores.
+Existing private ledger ACLs/RLS and frozen v0.1 remain unchanged. Review and
+request/response/retry/UI limits: `../docs/STUDY_SESSION_API.md` and
+`../contracts/study/v1`. Native role/wire checks run after the retained session
+races through `scripts/test_study_submit.py`. No hosted deployment is applied.
+
+Additive profile-study-day-v1 get_study_day read and calendar/ACL/no-write/actual
+wire checks: docs/PROFILE_STUDY_DAY.md, supabase/tests/study_day.sql and
+scripts/test_study_day.py. The database runner retains prior suites and appends
+this one. No hosted migration or JWT/learner acceptance is claimed.
+
+## Undeployed AI request quota (#31)
+
+`20261022091000_ai_rate_limits.sql` adds private per-user burst/daily counters and
+an invoker `consume_ai_quota` helper shared by all five AI operations. Only the
+trusted backend can reserve capacity; no client RPC/grants or receipt mutation
+is added. The adapter must confirm its short transaction COMMIT before dispatch
+and fail closed on unknown outcomes. Runtime wiring remains pending. Policy,
+ACL/clock/cancellation limits and SQL/observed-lock concurrency reproduction:
+[`AI_POSTGRES_QUOTA.md`](../docs/AI_POSTGRES_QUOTA.md).
+
+## Undeployed text context (#31)
+
+`20261022111500_ai_text_context.sql` adds two private service-only STABLE invoker
+functions for tutor/correction active curriculum/profile-level projection and
+post-provider snapshot revalidation. No public RPC/table/RLS/client grant or
+conversation mutation changes. The retained database runner adds
+`supabase/tests/ai_text_context.sql`; bounds/selection/trusted-user requirements
+and pending runtime/hosted evidence are in
+[`AI_TEXT_CONTEXT.md`](../docs/AI_TEXT_CONTEXT.md).
+
+## Undeployed conversation reservations (#31)
+
+`20261022131000_ai_conversation_reservations.sql` adds private strict request/
+context/reserve helpers and a SELECT/INSERT-only pending reservation table. Server
+IDs/sequence and receipt claim commit together; one pending slot blocks distinct
+session events. Reservation alone never completes public messages/session or releases
+a slot; the separate validated completion component below provides that transaction.
+Retained database tests now add the SQL suite and five native races; authorization,
+limits, pending safety, runtime ordering and remaining runtime/recovery work:
+[`AI_CONVERSATION_RESERVATIONS.md`](../docs/AI_CONVERSATION_RESERVATIONS.md).
+
+## Undeployed atomic conversation completion (#31)
+
+`20261022142000_ai_conversation_completion.sql` adds strict original response
+validation and owner/request/token-bound public session/messages + receipt + guarded
+reservation release in one transaction. Narrow service-only definer authority keeps
+direct private release denied. Source/owner/sequence locks, immutable completed
+replay and whole rollback preserve safe uncertainty. The retained runner adds99 SQL
+assertions/eight native lock/restart races; runtime acquisition/reconciliation,
+COMMIT delivery, real Auth/Edge/provider/learner proof remain open. Details:
+[`AI_CONVERSATION_COMPLETION.md`](../docs/AI_CONVERSATION_COMPLETION.md).
+
+
+The opt-in TypeScript conversation driver now calls these helpers through one
+coherent acquire/complete port, with confirmed COMMIT before provider/final success.
+No transaction spans provider I/O and no pending legacy recovery fallback renews
+claims. The required database job adds actual pg runtime probes, retaining all SQL
+suites/races/quota/text/profile exports. See
+[AI_CONVERSATION_RUNTIME.md](../docs/AI_CONVERSATION_RUNTIME.md); hosted identity,
+TLS/Edge/provider and correlated reconciliation remain unverified.
+
+
+## Undeployed conversation reconciliation SQL (#31)
+
+`20261022161500_ai_conversation_reconciliation.sql` adds service-only STABLE saved
+correlation/context lookup and atomic reconciliation bound to original receipt,
+owner/operation/event key/request/context. The dispatch token stays inside SQL;
+existing validated completion/ACL/RLS/claim lifetime remain intact. Retained runner
+adds72 SQL assertions/eight native races. No trusted upstream verifier/runtime
+recovery/endpoint is installed; SQL identity matching is not provider proof. See
+[AI_CONVERSATION_RECONCILIATION.md](../docs/AI_CONVERSATION_RECONCILIATION.md).

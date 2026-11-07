@@ -102,7 +102,96 @@ export interface ReceiptStore {
     signal: AbortSignal,
   ): Promise<void>;
 }
+/** Atomic mutation lane. Acquired resolves only after confirmed context+claim
+ * COMMIT; pending never exposes a token. Completion atomically revalidates and
+ * persists public writes + receipt + reservation release. No recovery redispatch.
+ */
+export type ConversationClaim =
+  | { kind: "acquired"; token: string; context: PreparedContext }
+  | Exclude<ReceiptLookup, { kind: "missing" }>;
+export interface ConversationStore {
+  lookup(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ReceiptLookup>;
+  acquire(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ConversationClaim>;
+  complete(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    token: string,
+    response: Responses[Mutation],
+    context: PreparedContext,
+    signal: AbortSignal,
+  ): Promise<void>;
+}
+/** Database identity binding only; this is NOT upstream authenticity proof. */
+export interface ConversationCorrelation {
+  readonly receipt_id: string;
+  readonly user_id: string;
+  readonly operation: Mutation;
+  readonly client_event_id: string;
+  readonly idempotency_key: string;
+}
+export type ConversationRecoveryLookup =
+  | ReceiptLookup
+  | {
+      kind: "pending";
+      correlation: ConversationCorrelation;
+      context: PreparedContext;
+    };
+/** Host-only prerequisite for trusted authenticated lookup-only recovery.
+ * Not an AiDependencies/default binding. Never feed learner/model/legacy recovery
+ * output here as proof; the host must authenticate upstream result association.
+ * Missing/legacy pending never creates/renews a claim or permits redispatch.
+ */
+export interface ConversationRecoveryStore {
+  lookupRecovery(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    signal: AbortSignal,
+  ): Promise<ConversationRecoveryLookup>;
+  reconcile(
+    key: ReceiptKey,
+    request: Requests[Mutation],
+    correlation: ConversationCorrelation,
+    context: PreparedContext,
+    response: Responses[Mutation],
+    signal: AbortSignal,
+  ): Promise<void>;
+}
+/** Trusted server adapter MUST authenticate upstream and verify result provenance.
+ * Metadata here must come from that verified lookup, never model/learner echoes.
+ * Read existing result only: no generate/reissue/claim/reset on missing or unknown.
+ * Return null for absent/ambiguous; otherwise <=2MiB JSON with exactly user_id,
+ * operation, client_event_id, idempotency_key, original request/context and response.
+ * Structural checks in recovery do not implement transport authentication.
+ */
+export interface AuthenticatedConversationLookup {
+  lookupExisting(
+    input: {
+      readonly key: Readonly<ReceiptKey>;
+      readonly request: Requests[Mutation];
+      readonly context: PreparedContext;
+      readonly idempotencyKey: string;
+    },
+    signal: AbortSignal,
+  ): Promise<string | null>;
+}
+export interface ConversationRecoveryBinding {
+  /** Must be the identical captured AiDependencies.conversations object. */
+  readonly store: ConversationStore & ConversationRecoveryStore;
+  readonly lookup: AuthenticatedConversationLookup;
+}
 export interface AiDependencies {
+  /** Explicit binding; never fall back to split claim or legacy recovery when set. */
+  conversations?: ConversationStore;
+  /** Explicit opt-in only; no adapter/default/legacy fallback is supplied. */
+  conversationRecovery?: ConversationRecoveryBinding;
   auth: AuthVerifier;
   limiter: RateLimiter;
   context: ContextRepository;

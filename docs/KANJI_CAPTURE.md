@@ -5,10 +5,12 @@ button, touch and stylus input share a single-pointer state machine. Undo remove
 the last stroke; clear/route exit discards the local session. Secondary pointers,
 right-clicks, cancellations and taps do not create strokes. Scroll outside the
 canvas; gestures beginning inside are reserved for drawing. No data is uploaded,
-persisted, counted as learning progress or associated with a real Kanji yet.
+persisted or counted as learning progress. The original free canvas stays available;
+selected-character practice now displays original metadata (KANJI_CATALOG.md).
 
-The feature has no content/reference loader, backend or deployed evaluator. The UI
-explicitly displays unavailable real grading. Issue #16 owns vetted/licensed
+The public metadata loader does not load reference strokes. Selected N5 practice
+now separately offers an explicit optional KanjiVG step guide (N5_STROKE_GUIDE.md).
+No backend or deployed evaluator is installed; real grading remains unavailable. Issue #16 owns vetted/licensed
 reference assets; tracing, stroke animation and real feedback require those assets
 and a later integration. Lack of a provider/account does not block this prototype.
 

@@ -4,6 +4,8 @@ import copy
 import json
 import tempfile
 import unittest
+from datetime import datetime, timezone
+from unittest.mock import patch
 from pathlib import Path
 
 from contracts.validate import ContractError, ROOT, load_json, validate_baseline, validate_payload
@@ -57,6 +59,41 @@ class ContractTests(unittest.TestCase):
         payload = self.fixture("submit_review_request")
         payload["occurred_at"] = "2026-10-13T20:00:00+07:00"
         validate_payload("submit_review_request", payload)
+
+    def test_wire_clock_ranges_do_not_depend_on_lenient_datetime_parser(self):
+        invalid = [
+            "2026-10-14T24:00:00Z", "2026-10-14T24:00:00.000000Z",
+            "2026-10-14T23:60:00Z", "2026-10-14T23:59:60Z",
+            "2026-10-14T00:00:00+24:00", "2026-10-14T00:00:00-24:00",
+            "2026-10-14T00:00:00+07:60", "2026-10-14T00:00:00-00:60",
+            "2026-10-14T００:00:00Z", "2026-10-14T00:00:00z",
+        ]
+        # A host parser may normalize rollover or offsets. Wire validation must
+        # reject before that parser can silently convert an invalid instant.
+        with patch("contracts.validate.datetime") as parser:
+            parser.fromisoformat.return_value = datetime(2026, 10, 15, tzinfo=timezone.utc)
+            for instant in invalid:
+                with self.subTest(instant=instant):
+                    payload = self.fixture("submit_review_request")
+                    payload["occurred_at"] = instant
+                    self.reject("submit_review_request", payload)
+            parser.fromisoformat.assert_not_called()
+
+    def test_wire_clock_boundaries_and_calendar_validation_remain_valid(self):
+        for instant in [
+            "2024-02-29T00:00:00Z", "2026-10-14T23:59:59.123456Z",
+            "2026-10-14T00:00:00+23:59", "2026-10-14T00:00:00-23:59",
+            "2026-10-14T07:00:00+07:00", "2026-10-14T00:00:00-00:00",
+        ]:
+            with self.subTest(instant=instant):
+                payload = self.fixture("submit_review_request")
+                payload["occurred_at"] = instant
+                validate_payload("submit_review_request", payload)
+        for instant in ["2026-02-29T00:00:00Z", "2026-04-31T12:00:00Z"]:
+            with self.subTest(instant=instant):
+                payload = self.fixture("submit_review_request")
+                payload["occurred_at"] = instant
+                self.reject("submit_review_request", payload)
 
     def test_local_date_is_a_real_calendar_date(self):
         for value in ("2026-02-30", "2026-10-13T00:00:00Z"):
