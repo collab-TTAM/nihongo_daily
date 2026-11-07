@@ -1,3 +1,14 @@
+## Active quiz-content eligibility validation — 2026-11-07 UTC
+
+- Run core-20261107T0609Z-quiz-content-validation; PR #41 branch automation/issue-11-plan-sdk-integration; parent HEAD 7816d1e9a23ddcf3227f61f074f9c5afc30f79d5; base main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+- Added backend/ai/src/quiz_report_content.ts and backend/ai/test/quiz_report_content.test.ts. The trusted callback reads only active vocabulary/grammar rows at the request's fixed N5/N4 level, caps the projection at 5,000 rows, validates exact database projection shape, target content_version, unique eligible headings, vocabulary Kanji/readings or grammar meanings, and all four active same-level displayed choices. Query failures are redacted; cancellation remains NETWORK_UNAVAILABLE. It is intended to run only after the host's replay miss on the same owned transaction.
+- Eleven Node regression cases cover vocabulary, grammar primary/correction, missing/retired/foreign-level choice, stale target version, ineligible target, ambiguous reading/meaning, malformed/oversized projection, pre-query abort and redacted database failure. No public route/RPC, app save activation, migration, grant, Auth strategy/provider, mastery, SRS or study credit was added.
+- Important limit: current curriculum tables have no source ordinal. This validator checks active membership and quiz eligibility but cannot prove the exact deterministic distractor order/target slot or the version of each displayed distractor. Ambiguous reading/meaning labels are conservatively rejected rather than guessed. Self-reported answers are not independent linguistic grading.
+- Exact parent CI [42341749013](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42341749013) was rechecked on 7816d1e9: all five jobs and every returned step SUCCESS, including Node format/type/tests, native PostgreSQL quiz host, Flutter, Chrome, Windows vault/process checks and Web/Windows builds. PR #37 parent CI [42296020766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42296020766) was rechecked on e145a120: all six jobs/every step SUCCESS. These are parent/component evidence, not hosted learner proof.
+- Cloud authoring has Node 22.16 but no pinned Node 24 dependencies/Prettier package or Flutter/Dart SDK; no local format/type/test/build pass is claimed for this new source. Require exact-new-head GitHub Actions and inspect every latest-attempt job/step.
+- Next: use this callback only in the future trusted server route after separate review of exact deterministic ordering and per-choice content-version provenance. Keep #13/#41 open/Draft and all hosted identity/learner/mastery gates pending. Pro-owned #14/#38/N4 remains untouched.
+
+---
 ## Verified-owner quiz report transaction host — 2026-11-07 UTC
 
 - PR #41 / branch `automation/issue-11-plan-sdk-integration`; parent HEAD `b6894049aa4ea5c68b964ce93bb1118b23372cda`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

@@ -4087,7 +4087,40 @@
         13
       ],
       "reproduce": "cd backend/ai && npm test && npm run test:postgres-quiz; inspect the exact-head database and ai-boundary jobs.",
-      "limitation": "The native test uses a synthetic TEST ONLY AuthVerifier and privileged disposable PostgreSQL 17, not signed JWT/PostgREST or deployed RLS. The host requires a trusted canonical-content validator; exact deterministic choice reconstruction, public route, Dart adapter, hosted A/B and learner acceptance remain unverified. No migration, grant, default app activation, mastery or study credit is added."
+      "limitation": "The native test uses a synthetic TEST ONLY AuthVerifier and privileged disposable PostgreSQL 17, not signed JWT/PostgREST or deployed RLS. Active same-level target/choice membership and target content_version are covered by quiz-report-current-content-membership; exact deterministic distractor order/target slot and per-choice displayed version remain unverified because the curriculum tables have no source ordinal. Public route, Dart adapter, hosted A/B and learner acceptance remain unverified. No migration, grant, default app activation, mastery or study credit is added."
+    },
+    {
+      "id": "quiz-report-current-content-membership",
+      "status": "automated-baseline",
+      "scope": "Trusted quiz-report content callback validates active same-level target/choice membership, target content_version, unique eligible headings and distinct displayed readings/meanings after verified-owner replay miss",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_content.test.ts",
+          "contains": "accepts active same-level vocabulary choices and target content version"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_content.test.ts",
+          "contains": "accepts grammar primary and correction reports from active content"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_content.test.ts",
+          "contains": "rejects ambiguous vocabulary readings in displayed choices"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_content.test.ts",
+          "contains": "rejects ambiguous grammar meanings in displayed choices"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_content.test.ts",
+          "contains": "redacts content-query failures"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "cd backend/ai && npm test -- test/quiz_report_content.test.ts; inspect the exact-head ai-boundary job, then verify the database job retains the native PostgreSQL quiz transaction suite.",
+      "limitation": "This validates active current membership/eligibility only. The database has no original source ordinal, so exact deterministic distractor order/target slot and each displayed distractor's version are not proven. Reports remain self-reported; no public route/RPC, Dart adapter, hosted JWT/PostgREST, linguistic grading, mastery or study credit is activated."
     }
   ],
   "findings": [

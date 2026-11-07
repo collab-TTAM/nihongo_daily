@@ -358,3 +358,12 @@ native test composes the host with a synthetic TEST ONLY AuthVerifier and real
 disposable database connection, then checks `auth.uid()`, owner A/B receipts,
 retired-content replay and rollback. This is not signed-JWT/PostgREST, deployed
 RLS, hosted Auth, canonical linguistic validation or learner acceptance.
+## Current active-content eligibility callback — 2026-11-07
+
+backend/ai/src/quiz_report_content.ts exports validateCurrentQuizReportContent, a concrete callback matching the verified-owner host's required validateCurrentContent port. It runs only after the host's replay miss and receives the host's same-connection query function and abort signal.
+
+The callback reads a bounded projection from exactly one table selected by the trusted decoded quiz type: active public.vocabulary or active public.grammar, filtered by the fixed jlpt_level. It requires an exact projection shape, canonical lowercase UUIDs, valid content versions and nonblank bounded text. The target must still be active at the captured content version and eligible under the current quiz builder's unique-heading rules. Vocabulary choices must be current active Kanji-bearing vocabulary prompts with distinct readings; grammar choices must be active unique-title items with distinct meanings. All four displayed IDs must be present in that same level's active eligible set. Query/driver details are redacted; abort is preserved as NETWORK_UNAVAILABLE.
+
+This is deliberately a membership and eligibility check, not exact deterministic reconstruction. The curriculum tables do not store the original source ordinal used by the client quiz builder, so the server cannot yet prove the exact distractor order or target slot. The report also carries only the target content version, not each distractor's displayed version. To avoid guessing, ambiguous reading/meaning labels are rejected. Adding source-order/version provenance requires a separately reviewed content-contract/schema increment; this change does not invent it.
+
+The callback does not expose an HTTP route or public RPC, read environment secrets, activate the Flutter save path, grade linguistic correctness, infer mastery, or grant study/SRS credit. Its eleven Node tests are automated component checks; the new exact-head CI must execute them before this increment is accepted. Hosted signed-JWT/PostgREST/A-B and learner proof remain separate gates.
