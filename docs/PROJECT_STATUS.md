@@ -3104,3 +3104,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - No production Auth/provider, API/schema/RLS, default runtime activation, N4 content, deployment, merge or issue closure changed. Cloud runtime lacks Flutter/Dart SDK, so local format/analyze/test/build were not run; corrected exact-head CI remains the verification gate.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart, actual native Credential Manager failure injection and physical multi-device proof remain unverified. PR #37 stays Draft; #20/#22/#15/#18 remain open.
 - Next: inspect every latest-attempt job and step on the corrected exact PR head; fix only observed failures, or hand off if CI is still pending.
+
+
+## PR #37 direct vault type import — 2026-11-07T12:16Z
+
+- Exact-head CI [42371431572](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42371431572) passed pinned Dart formatting, then Flutter analyze found two `non_type_as_type_argument` errors for `SessionVaultFailure` in the Windows runtime TEST ONLY file. Database, repo-sanity and AI-boundary passed; Windows and disposable Supabase integration were still running. Full Flutter tests and downstream checks were skipped, not passes.
+- Root cause: the test referenced a type declared in `session_credential_vault.dart` but imported only the Windows adapter, which does not re-export the type. Added the direct package import only in commit `0f9d36fec95a9ae4824df2c314cd4604786407fa`; existing assertions and runtime behavior are unchanged.
+- No production/Auth/provider/API/schema/RLS/default runtime, N4 content, deployment or security behavior changed. Cloud runtime lacks Flutter/Dart SDK; local analyze/test/build were not run.
+- Next: inspect all latest-attempt jobs/steps on the corrected exact PR head. Hosted learner A/B, deployed PostgREST/RLS, expiry/restart and physical multi-device acceptance remain open.
