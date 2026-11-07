@@ -35,15 +35,26 @@ class FakeConnection implements PostgresConnection {
   readonly calls: Array<{ sql: string; values?: string[] }> = [];
   closed = false;
 
+  readonly mode:
+    | "miss"
+    | "hit"
+    | "denied"
+    | "permission-error"
+    | "commit-rollback";
+  readonly response: unknown;
+
   constructor(
-    readonly mode:
+    mode:
       | "miss"
       | "hit"
       | "denied"
       | "permission-error"
       | "commit-rollback" = "miss",
-    readonly response: unknown = fixture.response,
-  ) {}
+    response: unknown = fixture.response,
+  ) {
+    this.mode = mode;
+    this.response = response;
+  }
 
   async connect(): Promise<void> {}
 
