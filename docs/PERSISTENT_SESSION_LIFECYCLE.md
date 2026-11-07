@@ -650,3 +650,22 @@ assembly.
 ## Cancellation latch across deferred Auth dispatch — 2026-11-07
 
 `_runTracked` reserves the caller-owned operation slot synchronously and resets the cancellation latch before publishing that slot. A concurrent logout/close can then set the latch even if the runner is still queued as a microtask. `_run` must never clear that latch on entry: the original Auth operation remains cancelled, and its finalizer drains SDK sign-out plus credential clear after any late SDK response. This is a one-shot cancellation/cleanup path, not an automatic Auth retry. The deterministic lifecycle fixtures retain late-login, failed-logout and login-during-late-cleanup coverage; the failed-close retry fixture performs only one initial login.
+
+
+## Caller-owned runtime close and restore — 2026-11-07
+
+A pinned-Supabase-SDK regression closes a fully authenticated caller-owned
+runtime, verifies that its confirmed refresh secret is preserved, then constructs
+a fresh SDK/runtime against the same trusted project vault. Startup must send
+only the saved refresh secret to the server, accept the server's rotated secret,
+and persist that rotation before dispatching the new own-profile request. The
+profile response is held to prove that the recreated runtime remains unavailable
+to study until its matching own profile completes.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence with the
+caller-owned disposable journal retained across runtime reconstruction. It
+verifies a new SDK/runtime owner in one test process; it is not a forced process
+restart, native Credential Manager restoration, hosted signed-JWT learner A/B,
+deployed RLS/PostgREST, OS logoff, power-loss or physical multi-device proof.
+No default Auth activation, plaintext fallback, token logging, Auth strategy,
+provider, schema/RLS, production configuration or Pro-owned N4 content changes.

@@ -250,7 +250,7 @@
     {
       "id": "persistent-session-lifecycle",
       "status": "automated-baseline",
-      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear",
+      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear; caller-owned runtime close/recreate restores the saved refresh token through server refresh, persists rotation before own-profile readiness, and stays fenced while the recreated profile response is held",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -308,6 +308,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
           "contains": "Windows caller close retries failed logout clear before releasing owned runtime"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "caller-owned runtime restart restores saved refresh token before own profile"
         }
       ],
       "issues": [
@@ -316,7 +320,7 @@
         15
       ],
       "reproduce": "In apps/flutter_app: dart run tool/verify_session_lifecycle.dart; flutter test",
-      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof. The close/logout held-clear and late-write/failed-clear retry races use TEST ONLY in-memory/MethodChannel storage; they do not inject a delayed native Credential Manager failure or prove hosted learner evidence."
+      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof. The close/logout held-clear and late-write/failed-clear retry races use TEST ONLY in-memory/MethodChannel storage; they do not inject a delayed native Credential Manager failure or prove hosted learner evidence. New runtime-recreation regression uses TEST ONLY MockClient/in-memory vault and same-process SDK reconstruction; it is not native Credential Manager restoration or forced process restart."
     },
     {
       "id": "windows-session-vault",

@@ -305,6 +305,101 @@ void main() {
   );
 
   test(
+    'caller-owned runtime restart restores saved refresh token before own profile',
+    () async {
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final savedRefreshToken = backend.secret!;
+      expect(savedRefreshToken, secret);
+      expect(backend.operations, ['read', 'write']);
+      int profileCount() => requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .length;
+      int refreshCount() => requests
+          .where(
+            (request) =>
+                request.url.path == '/auth/v1/token' &&
+                request.url.queryParameters['grant_type'] == 'refresh_token',
+          )
+          .length;
+      final profileRequestCount = profileCount();
+      final refreshRequestCount = refreshCount();
+
+      await runtime.close();
+      expect(backend.secret, savedRefreshToken);
+      expect(backend.operations, ['read', 'write']);
+
+      secret = 'TEST_ONLY_RESTART_ROTATED_REFRESH';
+      profileWait = Completer<http.Response>();
+      profileResponseWasReturned = false;
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+
+      final restarting = runtime.start();
+      await waitForCondition(
+        () => profileCount() > profileRequestCount,
+        reason: 'restarted runtime did not request its own profile',
+      );
+      await restarting.timeout(const Duration(seconds: 5));
+
+      final refreshRequests = requests
+          .where(
+            (request) =>
+                request.url.path == '/auth/v1/token' &&
+                request.url.queryParameters['grant_type'] == 'refresh_token',
+          )
+          .toList();
+      expect(refreshRequests, hasLength(refreshRequestCount + 1));
+      expect(
+        refreshRequests.last.url.queryParameters['grant_type'],
+        'refresh_token',
+      );
+      expect(jsonDecode(refreshRequests.last.body), {
+        'refresh_token': savedRefreshToken,
+      });
+
+      final profileRequests = requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .toList();
+      expect(profileRequests, hasLength(profileRequestCount + 1));
+      expect(backend.operations, ['read', 'write', 'read', 'write']);
+      expect(backend.secret, secret);
+      expect(
+        profileRequests.last.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+      expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(profileResponseWasReturned, isFalse);
+
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(wire.a)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await waitForReady();
+
+      expect(profileResponseWasReturned, isTrue);
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(backend.secret, secret);
+    },
+  );
+
+  test(
     'SDK login explicit rotation and logout use vault readiness barrier',
     () async {
       await runtime.start();
