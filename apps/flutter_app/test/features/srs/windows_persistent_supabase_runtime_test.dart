@@ -932,10 +932,7 @@ void main() {
       expect(runtime.persistence.currentSession, isNull);
       expect(storedSecret, refreshSecret);
 
-      await expectLater(
-        runtime.close(),
-        throwsA(isA<SessionVaultFailure>()),
-      );
+      await expectLater(runtime.close(), throwsA(isA<SessionVaultFailure>()));
       expect(runtime.persistence.phase, SessionPersistencePhase.closed);
       expect(storedSecret, refreshSecret);
       expect(
@@ -955,10 +952,7 @@ void main() {
       await runtime.close();
       expect(storedSecret, isNull);
       expect(runtime.account.readyRuntime, isNull);
-      expect(
-        timeline.where((value) => value == 'vault.clear'),
-        hasLength(3),
-      );
+      expect(timeline.where((value) => value == 'vault.clear'), hasLength(3));
       expect(
         requests.where(
           (request) => request.url.path == '/rest/v1/rpc/ensure_profile',

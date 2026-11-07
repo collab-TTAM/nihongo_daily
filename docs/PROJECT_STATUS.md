@@ -3094,3 +3094,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Previous exact-head CI [42296020766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42296020766) passed all six jobs/every returned step on its own head; this is historical parent evidence, not the new source. Cloud runtime lacks Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI is required.
 - Hosted signed-JWT A/B, deployed RLS/PostgREST, actual native Credential Manager failure injection, learner restart/expiry and physical multi-device evidence remain outstanding. No Auth strategy/provider/default activation, migration/RLS, Pro N4, merge or deployment change.
 - Next: review the full diff/tree, publish with exact base tree and expected HEAD/force=false, then inspect all latest-attempt jobs/steps on the new exact head. Keep PR #37 Draft and #20/#22/#15 open.
+
+
+## PR #37 formatter repair — 2026-11-07T12:08Z
+
+- Resumed the stale formatter checkpoint on `automation/issue-22-atomic-review` from exact starting HEAD `8cb7e40583c154fd7598c53638be33fb072d95ba`; main remains `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. The recursive parent tree was complete and untruncated (335 entries).
+- Exact-head CI [42362945395](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42362945395), attempt 1, failed only the pinned Dart 3.9.2 format step in `windows_persistent_supabase_runtime_test.dart`. The other five jobs completed successfully; Flutter analyze, full tests and downstream Flutter checks were skipped, not passes.
+- Pinned formatter run [42362940960](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42362940960), attempt 1, succeeded and emitted the exact two-hunk patch. Applied only those two formatting changes in the TEST ONLY Windows runtime test and removed the temporary formatter workflow; all assertions and strict CI gates remain unchanged.
+- No production Auth/provider, API/schema/RLS, default runtime activation, N4 content, deployment, merge or issue closure changed. Cloud runtime lacks Flutter/Dart SDK, so local format/analyze/test/build were not run; corrected exact-head CI remains the verification gate.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart, actual native Credential Manager failure injection and physical multi-device proof remain unverified. PR #37 stays Draft; #20/#22/#15/#18 remain open.
+- Next: inspect every latest-attempt job and step on the corrected exact PR head; fix only observed failures, or hand off if CI is still pending.
