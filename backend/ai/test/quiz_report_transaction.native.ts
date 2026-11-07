@@ -486,8 +486,12 @@ test(
       const ownerA = randomUUID();
       const ownerB = randomUUID();
       const request = remap(fixtures[0]!.request);
-      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerA]);
-      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerB]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerA,
+      ]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerB,
+      ]);
       await seedContent(admin, request);
 
       const tokens = new Map([
@@ -533,8 +537,14 @@ test(
         await submitVerifiedQuizReport(schema, raw, "verified-A", dependencies),
         expected,
       );
-      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
-      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      assert.equal(
+        await receiptCount(admin, ownerA, request.client_event_id),
+        1,
+      );
+      assert.equal(
+        await receiptCount(admin, ownerB, request.client_event_id),
+        0,
+      );
       assert.equal(validations, 1);
 
       const first = request.answers[0]!;
@@ -548,10 +558,12 @@ test(
       await assert.rejects(
         submitVerifiedQuizReport(schema, raw, "verified-B", dependencies),
         (error: unknown) =>
-          error instanceof BoundaryError &&
-          error.code === "VALIDATION_FAILURE",
+          error instanceof BoundaryError && error.code === "VALIDATION_FAILURE",
       );
-      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      assert.equal(
+        await receiptCount(admin, ownerB, request.client_event_id),
+        0,
+      );
       assert.equal(validations, 2);
 
       await setActive(admin, request, first.item_id, true);
@@ -559,8 +571,14 @@ test(
         await submitVerifiedQuizReport(schema, raw, "verified-B", dependencies),
         expected,
       );
-      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
-      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 1);
+      assert.equal(
+        await receiptCount(admin, ownerA, request.client_event_id),
+        1,
+      );
+      assert.equal(
+        await receiptCount(admin, ownerB, request.client_event_id),
+        1,
+      );
       assert.equal(validations, 3);
 
       const changed: QuizReportRequest = {
@@ -595,8 +613,14 @@ test(
           error instanceof BoundaryError && error.code === "UNAUTHORIZED",
       );
       assert.equal(opened, beforeUnauthorized);
-      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
-      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 1);
+      assert.equal(
+        await receiptCount(admin, ownerA, request.client_event_id),
+        1,
+      );
+      assert.equal(
+        await receiptCount(admin, ownerB, request.client_event_id),
+        1,
+      );
       console.log(
         "PASS: native quiz report host verified-owner binding, replay-first A/B isolation and current-content rollback (TEST ONLY synthetic Auth)",
       );

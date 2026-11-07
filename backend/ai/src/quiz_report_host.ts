@@ -256,11 +256,7 @@ class PostgresQuizReportHost implements QuizReportTransactionHost {
       alive();
       return result;
     } catch (error) {
-      if (
-        transactionOpen &&
-        !commitStarted &&
-        !controller.signal.aborted
-      ) {
+      if (transactionOpen && !commitStarted && !controller.signal.aborted) {
         try {
           const rolledBack = await query("ROLLBACK");
           if (rolledBack.command === "ROLLBACK") {
