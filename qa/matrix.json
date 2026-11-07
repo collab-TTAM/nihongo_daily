@@ -4067,6 +4067,27 @@
       ],
       "reproduce": "Open /overview in preview and configured test account; explicitly choose the server profile day, load a plan, inspect minutes and block status, retry a safe network error, replace the account during a held response, and open the separate quiz reports.",
       "limitation": "Auth/RPC gateways are TEST ONLY. No hosted learner identity, authoritative mastery, cross-device sync or Personal Alpha acceptance is established."
+    },
+    {
+      "id": "quiz-report-verified-owner-host",
+      "status": "automated-baseline",
+      "scope": "Server-only verified Auth identity bound to one owned PostgreSQL quiz-report transaction with replay-first private receipt access and mandatory current-content validation",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_host.test.ts",
+          "contains": "verified quiz host binds Auth identity and keeps replay/content/store in one transaction"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_transaction.native.ts",
+          "contains": "native verified-owner quiz host binds Auth identity before private ledger access"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "cd backend/ai && npm test && npm run test:postgres-quiz; inspect the exact-head database and ai-boundary jobs.",
+      "limitation": "The native test uses a synthetic TEST ONLY AuthVerifier and privileged disposable PostgreSQL 17, not signed JWT/PostgREST or deployed RLS. The host requires a trusted canonical-content validator; exact deterministic choice reconstruction, public route, Dart adapter, hosted A/B and learner acceptance remain unverified. No migration, grant, default app activation, mastery or study credit is added."
     }
   ],
   "findings": [

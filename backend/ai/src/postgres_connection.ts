@@ -21,7 +21,8 @@ export function createOwnedPostgresFactory(
   applicationName:
     | "nihongo-ai-quota"
     | "nihongo-ai-text-context"
-    | "nihongo-ai-conversation",
+    | "nihongo-ai-conversation"
+    | "nihongo-ai-quiz-report",
 ): () => PostgresConnection {
   try {
     const url = new URL(databaseUrl);

@@ -15,7 +15,10 @@ import type {
   QuizReportTransaction,
   QuizReportTransactionHost,
 } from "../src/quiz_report_transaction.ts";
-import type { PostgresResult } from "../src/postgres_connection.ts";
+import type { PostgresConnection, PostgresResult } from "../src/postgres_connection.ts";
+import type { AuthVerifier } from "../src/ports.ts";
+import { submitVerifiedQuizReport } from "../src/quiz_report_host.ts";
+import type { QuizReportQuery } from "../src/quiz_report_host.ts";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
 if (
@@ -45,6 +48,67 @@ function client() {
   });
   connection.on("error", () => {});
   return connection;
+}
+
+
+function nativeConnectionFactory(): PostgresConnection {
+  const owned = client();
+  return {
+    connect: async () => {
+      await owned.connect();
+    },
+    query: async (text, values = []) => {
+      const result = await owned.query(text, values);
+      return {
+        command: result.command,
+        rowCount: result.rowCount,
+        rows: result.rows as Record<string, unknown>[],
+      };
+    },
+    close: () => {
+      void owned.end().catch(() => {});
+    },
+  };
+}
+
+async function validateCurrentContentWithQuery(
+  query: QuizReportQuery,
+  request: QuizReportRequest,
+  signal: AbortSignal,
+) {
+  if (signal.aborted) throw new BoundaryError("NETWORK_UNAVAILABLE");
+  const table = tableFor(request);
+  const choices = [
+    ...new Set(request.answers.flatMap((answer) => [...answer.choices])),
+  ];
+  const active = await query(
+    "SELECT count(*)::integer AS count FROM " +
+      table +
+      " WHERE id=ANY($1::uuid[]) AND jlpt_level=$2::public.jlpt_level AND is_active",
+    [choices, request.jlpt_level],
+  );
+  if (
+    active.command !== "SELECT" ||
+    active.rowCount !== 1 ||
+    active.rows[0]?.count !== choices.length
+  ) {
+    throw new BoundaryError("VALIDATION_FAILURE");
+  }
+  for (const answer of request.answers) {
+    const target = await query(
+      "SELECT content_version FROM " +
+        table +
+        " WHERE id=$1::uuid AND jlpt_level=$2::public.jlpt_level AND is_active",
+      [answer.item_id, request.jlpt_level],
+    );
+    if (
+      target.command !== "SELECT" ||
+      target.rows.length !== 1 ||
+      Number(target.rows[0]?.content_version) !== answer.content_version
+    ) {
+      throw new BoundaryError("VALIDATION_FAILURE");
+    }
+  }
 }
 
 function tableFor(request: QuizReportRequest) {
@@ -404,6 +468,137 @@ test(
       } finally {
         await connection.end();
       }
+    }
+  },
+);
+
+
+test(
+  "native verified-owner quiz host binds Auth identity before private ledger access (TEST ONLY)",
+  { timeout: 30000 },
+  async () => {
+    const admin = client();
+    await admin.connect();
+    try {
+      const ownerA = randomUUID();
+      const ownerB = randomUUID();
+      const request = remap(fixtures[0]!.request);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerA]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerB]);
+      await seedContent(admin, request);
+
+      const tokens = new Map([
+        ["verified-A", ownerA],
+        ["verified-B", ownerB],
+      ]);
+      let verifiedOwner = "";
+      const auth: AuthVerifier = {
+        verify: async (bearer, signal) => {
+          if (signal.aborted) throw new BoundaryError("NETWORK_UNAVAILABLE");
+          const id = tokens.get(bearer) ?? null;
+          verifiedOwner = id ?? "";
+          return id ? { id } : null;
+        },
+      };
+      let opened = 0;
+      let validations = 0;
+      const dependencies = {
+        auth,
+        connections: () => {
+          opened++;
+          return nativeConnectionFactory();
+        },
+        validateCurrentContent: async (
+          query: QuizReportQuery,
+          value: QuizReportRequest,
+          signal: AbortSignal,
+        ) => {
+          validations++;
+          const identity = await query("SELECT auth.uid()::text AS owner");
+          assert.equal(identity.command, "SELECT");
+          assert.equal(identity.rows[0]?.owner, verifiedOwner);
+          await validateCurrentContentWithQuery(query, value, signal);
+        },
+      };
+      const raw = new TextEncoder().encode(JSON.stringify(request));
+      const expected: QuizReportResponse = {
+        ...fixtures[0]!.response,
+        client_event_id: request.client_event_id,
+      };
+
+      assert.deepEqual(
+        await submitVerifiedQuizReport(schema, raw, "verified-A", dependencies),
+        expected,
+      );
+      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
+      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      assert.equal(validations, 1);
+
+      const first = request.answers[0]!;
+      await setActive(admin, request, first.item_id, false);
+      assert.deepEqual(
+        await submitVerifiedQuizReport(schema, raw, "verified-A", dependencies),
+        expected,
+      );
+      assert.equal(validations, 1);
+
+      await assert.rejects(
+        submitVerifiedQuizReport(schema, raw, "verified-B", dependencies),
+        (error: unknown) =>
+          error instanceof BoundaryError &&
+          error.code === "VALIDATION_FAILURE",
+      );
+      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      assert.equal(validations, 2);
+
+      await setActive(admin, request, first.item_id, true);
+      assert.deepEqual(
+        await submitVerifiedQuizReport(schema, raw, "verified-B", dependencies),
+        expected,
+      );
+      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
+      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 1);
+      assert.equal(validations, 3);
+
+      const changed: QuizReportRequest = {
+        ...request,
+        answers: request.answers.map((answer, index) =>
+          index === 0
+            ? {
+                ...answer,
+                selected_id: answer.choices.find(
+                  (id) => id !== answer.selected_id,
+                )!,
+              }
+            : answer,
+        ),
+      };
+      await assert.rejects(
+        submitVerifiedQuizReport(
+          schema,
+          new TextEncoder().encode(JSON.stringify(changed)),
+          "verified-A",
+          dependencies,
+        ),
+        (error: unknown) =>
+          error instanceof BoundaryError && error.code === "SYNC_CONFLICT",
+      );
+      assert.equal(validations, 3);
+
+      const beforeUnauthorized = opened;
+      await assert.rejects(
+        submitVerifiedQuizReport(schema, raw, "invalid", dependencies),
+        (error: unknown) =>
+          error instanceof BoundaryError && error.code === "UNAUTHORIZED",
+      );
+      assert.equal(opened, beforeUnauthorized);
+      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
+      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 1);
+      console.log(
+        "PASS: native quiz report host verified-owner binding, replay-first A/B isolation and current-content rollback (TEST ONLY synthetic Auth)",
+      );
+    } finally {
+      await admin.end();
     }
   },
 );

@@ -285,9 +285,12 @@ are checked locally. Schema validation cannot prove ownership or curriculum trut
    parity/owned-runtime integration, precede hosted A/B/JWT/PostgREST/two-device
    evidence. Distinguish received self-report from scientifically validated mastery.
 
-No public endpoint, strict raw-ingress adapter, canonical-content validation or
-Dart RPC adapter exists yet. The private decoded ledger above is a foundation only. No hosted/learner acceptance follows from
-these fixtures. Issue13 and all14 release gates remain open.
+The strict raw-byte guard and typed decoder now exist, but no public endpoint,
+canonical-content validator or Dart RPC adapter exists yet. The private decoded
+ledger and verified-owner transaction host are foundations only; the host requires
+a trusted canonical-content validator and is not wired to a route. No hosted or
+learner acceptance follows from these fixtures. Issue #13 and all 14 release gates
+remain open.
 
 ## Prior evidence
 
@@ -325,3 +328,33 @@ verify a signed JWT, exercise PostgREST grants/RLS, or provide a production
 transaction host. The current-content callback is a test fixture, not a trusted
 deployed content service. No public RPC, app binding, migration, grant, default
 activation, hosted learner evidence, mastery or study credit is added.
+
+## Verified-owner PostgreSQL transaction host — 2026-11-07
+
+`backend/ai/src/quiz_report_host.ts` now supplies an opt-in server-side host.
+`submitVerifiedQuizReport` verifies the bearer through the injected AuthVerifier
+before creating a database connection. Invalid identity never opens PostgreSQL.
+A fresh trusted connection must already have the private schema/function/table
+privileges; the host checks those privileges and never creates or widens grants.
+It begins one bounded transaction, binds `request.jwt.claim.sub` only from the
+verified Auth result, and runs the private replay/content/store capabilities on
+that same connection. Replay remains first. The mandatory current-content
+validator runs only on an authoritative miss; there is no default-success
+validator. A valid response is decoded before COMMIT. Failure rolls back;
+cancellation closes the owned connection; an ambiguous COMMIT is never retried
+or presented as a saved result. Raw SQL/driver errors are redacted.
+
+`createTrustedPostgresQuizReportSubmitter` wires only trusted server configuration
+to `SupabaseAuthVerifier` and the TLS-enforcing owned PostgreSQL factory. It does
+not read environment variables, install an HTTP route, expose a public RPC,
+change the default Flutter runtime, add migration/grants, or collect additional
+learner fields. The current-content callback is still a required trusted input;
+canonical ordered-choice reconstruction and a typed Dart adapter remain open.
+
+The Node tests cover invalid identity/body, verified-owner claim binding,
+replay-first behavior, mandatory content validation, rollback, closed-role
+refusal, redacted errors, cancellation and ambiguous commit. The PostgreSQL 17
+native test composes the host with a synthetic TEST ONLY AuthVerifier and real
+disposable database connection, then checks `auth.uid()`, owner A/B receipts,
+retired-content replay and rollback. This is not signed-JWT/PostgREST, deployed
+RLS, hosted Auth, canonical linguistic validation or learner acceptance.

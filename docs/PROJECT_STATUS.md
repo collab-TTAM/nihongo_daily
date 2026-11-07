@@ -1,3 +1,14 @@
+## Verified-owner quiz report transaction host — 2026-11-07 UTC
+
+- PR #41 / branch `automation/issue-11-plan-sdk-integration`; parent HEAD `b6894049aa4ea5c68b964ce93bb1118b23372cda`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added `backend/ai/src/quiz_report_host.ts`: bearer verification through the injected Supabase Auth verifier occurs before DB connection creation; a fresh TLS-owned PostgreSQL connection checks existing private-ledger privileges, binds only the verified owner into `request.jwt.claim.sub`, and composes replay/content/store on one bounded transaction. Current-content validation is mandatory, runs only after replay miss, and has no default-success implementation. Response decoding precedes COMMIT; failures roll back, cancellation closes the owned connection, and ambiguous COMMIT is never retried or reported as saved.
+- Added `backend/ai/test/quiz_report_host.test.ts` for invalid identity/body, no-connection-on-unauthorized, verified claim binding, replay-first order, content rejection/rollback, closed-role refusal, redacted database errors, cancellation and ambiguous commit. Extended `quiz_report_transaction.native.ts` to run the host against disposable PostgreSQL 17 with a synthetic TEST ONLY AuthVerifier and verify `auth.uid()` binding, A/B receipt isolation, replay after content retirement and rollback.
+- Changed paths: `backend/ai/src/quiz_report_host.ts` (new), `backend/ai/test/quiz_report_host.test.ts` (new), `backend/ai/src/postgres_connection.ts`, `backend/ai/test/quiz_report_transaction.native.ts`, `docs/QUIZ_REPORT_API.md`, `qa/matrix.json`, `docs/PROJECT_STATUS.md`.
+- No public route/RPC, migration, grants, Auth strategy/provider, default app activation, mastery/SRS/study credit, additional learner collection, production deployment or Pro-owned N4/content path changed. The host still requires a trusted canonical-content validator; exact deterministic choice reconstruction and Dart RPC adapter remain next.
+- Cloud runtime has no Node 24/Deno/Dart/Flutter SDK. No local format/typecheck/test/build pass is claimed. Exact-head GitHub Actions must run Node format/check/tests, Deno checks, native PostgreSQL quiz suite, full Flutter/Chrome/native and Web/Windows builds before any pass claim.
+- PR #41 remains Draft; Issue #13 remains open. Hosted signed-JWT/PostgREST/RLS, learner A/B and Personal Alpha acceptance remain unproven.
+
+---
 ## Exact-head Kanji session date assertion correction — 2026-11-07 UTC
 
 - PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `c012a8be670b1495229edf610d52e042dbaf1988`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
