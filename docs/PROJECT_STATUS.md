@@ -3073,3 +3073,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud runtime has no Flutter/Dart SDK, so local format/analyze/test/build were not run. The corrected exact-head workflow must execute formatter, analyze, full Flutter tests, Windows, disposable Supabase integration and Web build before a new full-CI pass can be claimed.
 - TEST ONLY pinned-SDK/MockClient/MethodChannel/Windows process evidence is not hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart or physical multi-device proof. #20/#22/#15/#18 remain open; PR #37 stays Draft. No merge, deployment, production release or issue closure.
 - Next: inspect every latest-attempt job and step for the corrected exact PR HEAD; fix only observed failures, otherwise retain the CI handoff. Hosted staging/learner proof remains externally unverified.
+
+
+## Core worker checkpoint — ACTIVE — 2026-11-07T07:33Z
+
+- Run `core-20261107T0733Z-pr37-close-retry`; branch `automation/issue-22-atomic-review`; starting HEAD `e145a1202a01d5e75eb1003abbdf76fb998a157c`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Code change: failed logout/rotation cleanup is now remembered by `PersistentAccountAccess`; caller close retries SDK sign-out and vault clear before releasing the project owner. A failed close returns a fixed safe error, retains ownership and is retryable. The outer `PersistentSupabaseRuntime.close()` also clears its cached failed future so a later explicit close can finish cleanup.
+- Tests authored: pure lifecycle scenario `close-retries-failed-cleanup` and pinned-SDK Windows MethodChannel regression `Windows caller close retries failed logout clear before releasing owned runtime`. The regression keeps User A's token fenced, rejects a replacement owner while clear still fails, then verifies a second close clears it before owner release.
+- Paths: `persistent_account_access.dart`, `persistent_supabase_runtime.dart`, `session_lifecycle_fixtures.dart`, `windows_persistent_supabase_runtime_test.dart`, `PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, `PROJECT_STATUS.md`.
+- Previous exact-head CI [42296020766](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42296020766) passed all six jobs/every returned step on its own head; this is historical parent evidence, not the new source. Cloud runtime lacks Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI is required.
+- Hosted signed-JWT A/B, deployed RLS/PostgREST, actual native Credential Manager failure injection, learner restart/expiry and physical multi-device evidence remain outstanding. No Auth strategy/provider/default activation, migration/RLS, Pro N4, merge or deployment change.
+- Next: review the full diff/tree, publish with exact base tree and expected HEAD/force=false, then inspect all latest-attempt jobs/steps on the new exact head. Keep PR #37 Draft and #20/#22/#15 open.

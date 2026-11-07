@@ -129,6 +129,7 @@ const scenarios = [
   'write-error',
   'read-error',
   'clear-error-retry',
+  'close-retries-failed-cleanup',
   'sdk-logout-error',
   'revocation',
   'dispose-ready',
@@ -454,6 +455,35 @@ Future<void> verifyLifecycle(String scenario) async {
         backend.secret == null && access.currentSession == null,
         'old write survived clear',
       );
+    } else if (scenario == 'close-retries-failed-cleanup') {
+      await login();
+      backend.failClear = true;
+      await fails(access.signOut());
+      check(
+        backend.secret == 'TEST_ONLY_ROTATED_1' && sdk.session == null,
+        'failed logout clear did not retain only an uncertain vault value',
+      );
+      var closeFailed = false;
+      try {
+        await access.close();
+      } on SessionVaultFailure catch (error) {
+        closeFailed = true;
+        check(!error.toString().contains('PRIVATE'), 'unsafe close error');
+      }
+      check(closeFailed, 'close ignored a failed credential clear');
+      check(
+        PersistentAccountAccess.isTargetOwned(vault.target),
+        'failed close released the credential owner',
+      );
+      backend.failClear = false;
+      await access.close();
+      check(
+        backend.secret == null &&
+            sdk.session == null &&
+            !PersistentAccountAccess.isTargetOwned(vault.target),
+        'close retry released the owner before successful cleanup',
+      );
+      return;
     } else if (scenario == 'clear-error-retry' ||
         scenario == 'sdk-logout-error') {
       backend.failClear = scenario == 'clear-error-retry';

@@ -250,7 +250,7 @@
     {
       "id": "persistent-session-lifecycle",
       "status": "automated-baseline",
-      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile",
+      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -304,6 +304,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
           "contains": "late User A vault write plus failed logout clear stays fenced until explicit retry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows caller close retries failed logout clear before releasing owned runtime"
         }
       ],
       "issues": [

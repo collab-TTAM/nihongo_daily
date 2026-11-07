@@ -611,3 +611,25 @@ This is TEST ONLY pinned-SDK/MockClient/MethodChannel evidence with in-memory
 storage. The separate Windows Credential Manager/process probes remain the
 native component evidence; neither establishes a hosted learner A/B flow,
 deployed RLS/PostgREST, or delayed native Credential Manager failure injection.
+
+
+## Caller close after a failed logout clear — 2026-11-07
+
+A failed credential clear is not a successful shutdown. The persistence owner
+now records when sign-out, a rotation-write compensation, or an unsolicited
+null-session clear leaves cleanup uncertain. `close()` retries SDK sign-out
+and vault clear before releasing the project owner. If the retry also fails,
+close returns a fixed safe storage error, keeps the owner slot, and can be
+called again after storage recovers. A fully saved session with no interrupted
+or failed cleanup is still preserved for the next startup.
+
+The pure lifecycle regression holds the cleanup failure through the first close,
+asserts that a competing owner cannot be constructed, then restores storage and
+requires a second close to clear the secret before releasing ownership. The
+pinned-SDK Windows MethodChannel regression exercises the same behavior through
+the production Windows vault adapter and caller-owned runtime, including a
+failed close, rejected replacement owner and successful close retry.
+
+These are TEST ONLY in-memory/MethodChannel failure injections. They do not
+simulate a native Credential Manager failure or establish hosted Auth. The
+native Windows process probes and hosted staging acceptance remain separate.

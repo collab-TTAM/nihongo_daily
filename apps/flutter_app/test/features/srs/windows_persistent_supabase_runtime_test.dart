@@ -910,4 +910,60 @@ void main() {
       expect(storedSecret, refreshSecret);
     },
   );
+  test(
+    'Windows caller close retries failed logout clear before releasing owned runtime',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_WINDOWS_CLOSE_CLEAR_RETRY';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(storedSecret, refreshSecret);
+
+      failClear = true;
+      await runtime.account.signOut();
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(storedSecret, refreshSecret);
+
+      await expectLater(
+        runtime.close(),
+        throwsA(isA<SessionVaultFailure>()),
+      );
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(storedSecret, refreshSecret);
+      expect(
+        () => PersistentSupabaseRuntime(
+          projectUrl: wire.origin,
+          publishableKey: wire.key,
+          vault: createWindowsSessionCredentialVault(wire.origin),
+          store: journal,
+          httpClient: network,
+          now: () => now,
+        ),
+        throwsA(isA<SessionVaultFailure>()),
+        reason: 'the failed close must retain exclusive vault ownership',
+      );
+
+      failClear = false;
+      await runtime.close();
+      expect(storedSecret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        timeline.where((value) => value == 'vault.clear'),
+        hasLength(3),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+    },
+  );
 }

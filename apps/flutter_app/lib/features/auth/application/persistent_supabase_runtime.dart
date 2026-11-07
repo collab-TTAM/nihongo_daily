@@ -147,20 +147,32 @@ final class PersistentSupabaseRuntime
   @override
   Future<void> refresh() => persistence.refresh();
 
-  /// Shutdown preserves confirmed stored credentials; explicit logout clears.
-  Future<void> close() => _closing ??= () async {
-    account.dispose();
-    _refreshScheduler?.dispose();
-    await _noticeSubscription?.cancel();
-    _notice = AccountSessionNotice.none;
-    unawaited(_noticeEvents.close());
-    await _refreshSubscription?.cancel();
-    await persistence.close();
-    await _port.close();
-    _binding.dispose();
-    await _client.dispose();
-    _network.close();
-  }();
+  /// Shutdown preserves confirmed credentials; failed interrupted cleanup is
+  /// retryable and never releases the vault owner before its clear succeeds.
+  Future<void> close() {
+    if (_closing != null) return _closing!;
+    late final Future<void> result;
+    result = () async {
+      try {
+        account.dispose();
+        _refreshScheduler?.dispose();
+        await _noticeSubscription?.cancel();
+        _notice = AccountSessionNotice.none;
+        unawaited(_noticeEvents.close());
+        await _refreshSubscription?.cancel();
+        await persistence.close();
+        await _port.close();
+        _binding.dispose();
+        await _client.dispose();
+        _network.close();
+      } on Object {
+        if (identical(_closing, result)) _closing = null;
+        throw const SessionVaultFailure(SessionVaultError.unavailable);
+      }
+    }();
+    _closing = result;
+    return result;
+  }
 }
 
 /// One bounded attempt; timed-out responses cannot reach the SDK later.

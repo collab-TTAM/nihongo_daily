@@ -57,6 +57,9 @@ final class PersistentAccountAccess implements AccountAccess {
   bool _closed = false;
   bool _authInFlight = false;
   bool _cancelledOperation = false;
+  // A failed sign-out/rotation cleanup must be retried before close releases
+  // this target owner; otherwise a stale OS credential could survive shutdown.
+  bool _cleanupRequired = false;
   // One SDK sign-out can reach both lifecycle observers. Coalesce delayed
   // null-session notifications until a new session is observed.
   bool _noSessionClearPending = false;
@@ -130,6 +133,7 @@ final class PersistentAccountAccess implements AccountAccess {
             try {
               await vault.clear();
             } on Object {
+              _cleanupRequired = true;
               _fail();
             }
           }),
@@ -164,11 +168,12 @@ final class PersistentAccountAccess implements AccountAccess {
           } on Object {
             // Fail closed even if an older event's in-flight write failed. Its
             // OS result is uncertain; never publish a newer unpersisted session.
+            _cleanupRequired = true;
             _fail();
             try {
               await vault.clear();
             } on Object {
-              // Explicit signOut retries both storage clear and SDK cleanup.
+              // Explicit signOut/close retries SDK cleanup and storage clear.
             }
           }
         }),
@@ -319,9 +324,11 @@ final class PersistentAccountAccess implements AccountAccess {
       failed = true;
     }
     if (failed) {
+      _cleanupRequired = true;
       _fail();
       throw _failure();
     }
+    _cleanupRequired = false;
   }
 
   @override
@@ -358,18 +365,29 @@ final class PersistentAccountAccess implements AccountAccess {
     _revoke(SessionPersistencePhase.closed);
     final operation = _operation;
     final logout = _logout;
-    final result = () async {
-      await _subscription?.cancel();
-      for (final pending in [operation, logout]) {
-        try {
-          await pending;
-        } on Object {
-          // Safe error already returned to the operation's caller.
+    late final Future<void> result;
+    result = () async {
+      try {
+        await _subscription?.cancel();
+        for (final pending in [operation, logout]) {
+          try {
+            await pending;
+          } on Object {
+            // A failed operation may have set _cleanupRequired below.
+          }
         }
+        await _tail;
+        if (_cleanupRequired) {
+          // Never release the owner while a failed logout/rotation clear could
+          // leave an old credential for a later startup to restore.
+          await _cleanup();
+        }
+        await _events.close();
+        _owners.remove(vault.target);
+      } on Object {
+        if (identical(_close, result)) _close = null;
+        throw const SessionVaultFailure(SessionVaultError.unavailable);
       }
-      await _tail;
-      await _events.close();
-      _owners.remove(vault.target);
     }();
     _close = result;
     return result;
