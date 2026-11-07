@@ -16,7 +16,8 @@ const grammarSql =
   "FROM public.grammar WHERE jlpt_level = $1::public.jlpt_level " +
   "AND is_active = true ORDER BY id LIMIT 5001";
 
-const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const uuid =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const kanji = /[\u3400-\u9fff]/;
 const maxContentItems = 5000;
 const internal = () => new BoundaryError("INTERNAL_ERROR");
@@ -83,7 +84,10 @@ function readRows(
   });
 }
 
-function counts(rows: readonly ContentRow[], select: (row: ContentRow) => string) {
+function counts(
+  rows: readonly ContentRow[],
+  select: (row: ContentRow) => string,
+) {
   const result = new Map<string, number>();
   for (const row of rows) {
     const value = select(row).trim();

@@ -57,10 +57,7 @@ function requestCopy(request: QuizReportRequest): QuizReportRequest {
   return structuredClone(request);
 }
 
-async function rejectsCode(
-  work: Promise<void>,
-  code: string,
-): Promise<void> {
+async function rejectsCode(work: Promise<void>, code: string): Promise<void> {
   await assert.rejects(
     work,
     (error: unknown) =>
@@ -73,11 +70,7 @@ async function rejectsCode(
 test("accepts active same-level vocabulary choices and target content version", async () => {
   const rows = rowsFor(vocabulary);
   const { query, calls } = queryFor(rows);
-  await validateHostContent(
-    query,
-    vocabulary,
-    new AbortController().signal,
-  );
+  await validateHostContent(query, vocabulary, new AbortController().signal);
   assert.equal(calls.length, 1);
   assert.match(calls[0]!.sql, /public\.vocabulary/);
   assert.deepEqual(calls[0]!.values, ["N5"]);
@@ -88,11 +81,7 @@ test("accepts active same-level vocabulary choices and target content version", 
 test("accepts grammar primary and correction reports from active content", async () => {
   for (const request of [grammarPrimary, grammarCorrection]) {
     const { query, calls } = queryFor(rowsFor(request, true));
-    await validateHostContent(
-      query,
-      request,
-      new AbortController().signal,
-    );
+    await validateHostContent(query, request, new AbortController().signal);
     assert.match(calls[0]!.sql, /public\.grammar/);
     assert.deepEqual(calls[0]!.values, ["N5"]);
   }
@@ -102,11 +91,7 @@ test("rejects missing, retired or foreign-level quiz choices", async () => {
   const rows = rowsFor(vocabulary).slice(1);
   const { query } = queryFor(rows);
   await rejectsCode(
-    validateHostContent(
-      query,
-      vocabulary,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, vocabulary, new AbortController().signal),
     "VALIDATION_FAILURE",
   );
 });
@@ -120,11 +105,7 @@ test("rejects a target whose active content version changed", async () => {
   };
   const { query } = queryFor(rows);
   await rejectsCode(
-    validateHostContent(
-      query,
-      request,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, request, new AbortController().signal),
     "VALIDATION_FAILURE",
   );
 });
@@ -135,11 +116,7 @@ test("rejects vocabulary targets without a unique Kanji heading", async () => {
   rows[0] = { ...rows[0]!, heading: "かなだけ" };
   const { query } = queryFor(rows);
   await rejectsCode(
-    validateHostContent(
-      query,
-      request,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, request, new AbortController().signal),
     "VALIDATION_FAILURE",
   );
 });
@@ -149,11 +126,7 @@ test("rejects ambiguous vocabulary readings in displayed choices", async () => {
   rows[1] = { ...rows[1]!, reading: rows[0]!.reading };
   const { query } = queryFor(rows);
   await rejectsCode(
-    validateHostContent(
-      query,
-      vocabulary,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, vocabulary, new AbortController().signal),
     "VALIDATION_FAILURE",
   );
 });
@@ -163,11 +136,7 @@ test("rejects grammar targets without a unique heading or meaning", async () => 
   rows[0] = { ...rows[0]!, heading: rows[1]!.heading };
   const { query } = queryFor(rows);
   await rejectsCode(
-    validateHostContent(
-      query,
-      grammarPrimary,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, grammarPrimary, new AbortController().signal),
     "VALIDATION_FAILURE",
   );
 });
@@ -177,11 +146,7 @@ test("rejects ambiguous grammar meanings in displayed choices", async () => {
   rows[1] = { ...rows[1]!, meaning_vi: rows[0]!.meaning_vi };
   const { query } = queryFor(rows);
   await rejectsCode(
-    validateHostContent(
-      query,
-      grammarPrimary,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, grammarPrimary, new AbortController().signal),
     "VALIDATION_FAILURE",
   );
 });
@@ -232,11 +197,7 @@ test("redacts content-query failures", async () => {
     throw new Error("PRIVATE DATABASE PASSWORD");
   };
   await rejectsCode(
-    validateHostContent(
-      query,
-      vocabulary,
-      new AbortController().signal,
-    ),
+    validateHostContent(query, vocabulary, new AbortController().signal),
     "INTERNAL_ERROR",
   );
 });
