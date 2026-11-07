@@ -11,7 +11,6 @@ import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
 import 'package:nihongo_daily/features/kanji/application/kanji_catalog_provider.dart';
 import 'package:nihongo_daily/features/kanji/domain/kanji_catalog.dart';
 import 'package:nihongo_daily/features/settings/application/preview_preferences.dart';
-import 'package:nihongo_daily/shared/models/preview_level.dart';
 import '../srs/account_fixtures.dart' as account;
 import '../srs/study_fixtures.dart' show fixtureItem;
 import 'srs_session_timer_widget_test.dart' show TimerHarness;

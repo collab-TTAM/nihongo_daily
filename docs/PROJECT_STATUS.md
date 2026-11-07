@@ -1,3 +1,13 @@
+## Exact-head Flutter analyzer import correction — 2026-11-07
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `0443b35d73e2e37df2b6d46665a48f28536aebf2`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42310826005](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42310826005), attempt 1, targets `0443b35d73e2e37df2b6d46665a48f28536aebf2`. Repo-sanity, database, AI boundary and Windows completed SUCCESS with every returned step successful. Flutter format completed SUCCESS; `flutter analyze` failed on exactly one INFO diagnostic: the import of `shared/models/preview_level.dart` in `test/features/daily_plan/kanji_session_timer_widget_test.dart:14` is unnecessary because the used elements are also exported by `settings/application/preview_preferences.dart`. Flutter tests and all dependent browser/native/Web verification steps were SKIPPED, not passed.
+- Correction removes only that one redundant TEST ONLY import. No assertions, test bodies, fixture data, production behavior, dependencies or CI gates are changed.
+- Cloud authoring runtime has no Flutter/Dart SDK; local format/analyze/tests/build were not run. The new exact-head Actions run must verify formatter, analyzer, full Flutter suite, Chrome/native/Web checks and all other required jobs before any pass claim.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed failures. Keep PR #41 Draft and Issue #11 open. Hosted Supabase learner A/B, deployed PostgREST/RLS, real audio, multi-device sync and independent N5/N4 curriculum review remain separate Personal Alpha gates. Pro-owned N4 files/branch remain untouched.
+
+---
+
 ## Exact-head Flutter analyzer cleanup — 2026-11-07
 
 - PR #41 branch `automation/issue-11-plan-sdk-integration`; source HEAD before correction `d05cf0f4b6419bab8e168d3d4f109d0faa8e42eb`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
