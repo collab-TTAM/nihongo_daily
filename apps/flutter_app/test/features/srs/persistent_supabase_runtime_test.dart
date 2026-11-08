@@ -852,7 +852,7 @@ void main() {
   test(
     'SDK close retries corrupt stored refresh cleanup before releasing owner',
     () async {
-      const corrupt = 'TEST_ONLY_CORRUPT\\nVALUE';
+      const corrupt = 'TEST_ONLY_CORRUPT VALUE';
       backend.secret = corrupt;
       await expectLater(
         runtime.start(),
