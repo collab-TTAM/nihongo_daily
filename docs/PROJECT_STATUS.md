@@ -3325,3 +3325,28 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   signed-JWT learner A/B, deployed PostgREST/RLS, native Credential Manager
   failure injection, learner expiry/restart and physical multi-device evidence
   remain unverified. Pro-owned #14/#38/N4 scope remains untouched.
+
+
+## Read-only formatter diagnostic — 2026-11-08T11:21Z
+
+- Exact-head Actions [42475005316](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42475005316)
+  targets `c7a6612d7730c00d7122e311f05f16fd46d244ad`. Database,
+  AI-boundary, repo-sanity and disposable Supabase integration completed
+  SUCCESS with every returned step successful. Windows remained IN_PROGRESS
+  at the TEST ONLY Dart-to-Windows vault bridge build. Flutter failed only
+  strict Dart formatting in `windows_session_credential_vault_test.dart`;
+  analyze, tests and Web checks were SKIPPED.
+- The first manual formatter-only correction did not satisfy pinned Dart
+  3.35.4. Added a read-only `dart format --output=show` + `diff` step for
+  that single test file before the existing strict formatter gate. The
+  diagnostic does not edit the checkout, and the strict gate is unchanged.
+- This diagnostic-only increment changes exactly `.github/workflows/ci.yml`
+  and `docs/PROJECT_STATUS.md`. No tests/assertions, production source,
+  Auth/provider, schema/RLS, security gate, or Pro-owned N4 path changes.
+- Cloud authoring has Git but no Dart/Flutter SDK; local format/analyze/test/
+  build were not run.
+- Next: inspect the read-only diff on the diagnostic commit's exact-head CI,
+  apply only the emitted formatter hunk, remove this temporary diagnostic step,
+  and require a fresh full exact-head run. Keep PR #37 Draft and #20/#22/#15
+  open; hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical
+  multi-device acceptance remain outstanding.
