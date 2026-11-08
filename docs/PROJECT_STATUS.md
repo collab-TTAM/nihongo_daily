@@ -3411,3 +3411,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix
   only observed failures. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned
   #14/#38/N4 scope remains untouched.
+
+
+## Windows process restore fixture analyzer repair — 2026-11-08T16:14Z
+
+- Exact-head Actions [42494183095](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42494183095), attempt 1, targets `d42fd6518366913d32a86872a6c43ec00d086712` and completed FAILURE. The Windows bridge build failed because `waitForReady` was undefined in `tool/windows_runtime_fixture.dart:289`. Flutter formatting passed, but `flutter analyze` reported the same undefined helper and three unnecessary null assertions at lines 288, 395 and 396. The remaining four jobs completed SUCCESS; Windows process probes and downstream Flutter tests/build were skipped.
+- Corrected only the TEST ONLY process fixture: reuse its existing bounded `ready()` helper after releasing the held own-profile response, and remove the three analyzer-proven redundant null assertions. The profile-held phase, refresh rotation, vault-before-profile checks, readiness assertions and cleanup behavior are unchanged.
+- Changed exactly `apps/flutter_app/tool/windows_runtime_fixture.dart` and this status file. No production Auth/provider/API/schema/RLS/default activation, CI gate, Pro-owned N4 path, deployment, merge or release change.
+- Cloud authoring has no Dart/Flutter SDK or Windows OS; local format/analyze/test/build were not run. New exact-head Actions must execute formatter, analyzer, complete Flutter suite, Windows bridge/process probes and Web build before this repair is considered verified.
+- TEST ONLY Auth HTTP/JWT/profile fixtures remain synthetic; real Windows Credential Manager/process execution in CI is not hosted signed-JWT learner A/B or deployed PostgREST/RLS. Hosted learner A/B, expiry/restart and physical multi-device acceptance remain outstanding. Keep PR #37 Draft and #20/#22/#15 open.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures.

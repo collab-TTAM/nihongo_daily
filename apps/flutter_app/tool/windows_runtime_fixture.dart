@@ -285,8 +285,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(runtime.account.state.phase != AccountPhase.ready);
       _check(!profileResponseReleased);
 
-      heldProfile!.complete(profileResponse());
-      await waitForReady();
+      heldProfile.complete(profileResponse());
+      await ready();
       _check(profileResponseReleased);
       _check(runtime.account.readyRuntime != null);
       await pending();
@@ -392,8 +392,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     }
   } finally {
     // A failed assertion must not strand a held HTTP response while close drains.
-    if (heldProfile != null && !heldProfile!.isCompleted) {
-      heldProfile!.complete(profileResponse());
+    if (heldProfile != null && !heldProfile.isCompleted) {
+      heldProfile.complete(profileResponse());
     }
     if (lateRefresh != null && !lateRefresh.isCompleted) {
       if (phase == 'runtime-close-restore') secret = _second;
