@@ -12,7 +12,7 @@ The caller owns one writer isolate and a trusted private project directory.
 quiz-attempts.lock holds an exclusive OS lease, with an additional same-isolate
 resolved-directory guard. quiz-attempts.ndjson is independent of all review,
 completed-study and credential files. The local envelope has exactly version
-(integer1), owner_id (canonical UUID) and attempt (existing local-v1 snapshot).
+(integer1), owner_id (canonical UUID) and attempt (strict local-v1 or local-v2 snapshot).
 It stores no credentials, display text, supplied score, timer or server credit.
 
 Accepted operations serialize. An append writes canonical JSON plus newline and
@@ -28,8 +28,7 @@ complete flushed line and exact replay avoids duplicates. An injected write/flus
 failure test is still outstanding; the poisoning path has source review only.
 
 Restore validates all complete lines before repairing only an incomplete EOF
-tail under the lease. Strict existing attempt decoding and exact writer encoding
-reject unknown versions/keys, malformed owners, duplicate JSON keys, changed
+tail under the lease. Strict attempt decoding accepts legacy v1 and provenance-complete v2 snapshots; exact writer encoding rejects unknown versions/keys, malformed owners, duplicate JSON keys, changed
 replays, noncanonical dates and noncanonical complete lines. Complete corruption
 fails closed without deleting bytes. Identical complete replay deduplicates.
 An incomplete final record has not crossed the newline commit marker.

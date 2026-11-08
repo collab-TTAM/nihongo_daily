@@ -22,8 +22,7 @@ Exact replay returns the original record without another write; changed payload
 under the same owner/event returns the existing typed conflict. Equal event IDs
 under different owners remain isolated.
 
-Complete state is revalidated on every read/write. Exact canonical re-encoding
-rejects duplicate JSON members, unknown envelope fields, noncanonical ordering,
+Complete state is revalidated on every read/write. Attempt decoding retains strict v1 compatibility and validates v2 per-choice content versions; exact canonical re-encoding rejects duplicate JSON members, unknown envelope fields, noncanonical ordering,
 duplicate owner/event records and malformed attempt snapshots. Storage is bounded
 to 1 MiB and 512 records across owners, matching the native journal. At capacity
 the store fails closed without eviction; exact replay remains available.

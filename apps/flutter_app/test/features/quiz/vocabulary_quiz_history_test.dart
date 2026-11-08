@@ -113,6 +113,7 @@ void main() {
         round: round,
       );
       expect(event.score, 5);
+      expect(event.formatVersion, 2);
       expect(event.level, level);
       expect(event.answers, hasLength(10));
       for (var i = 0; i < questions.length; i++) {
@@ -120,6 +121,10 @@ void main() {
         expect(answer.itemId, questions[i].target.id);
         expect(answer.contentVersion, questions[i].target.contentVersion);
         expect(answer.choices, questions[i].choices.map((choice) => choice.id));
+        expect(
+          answer.choiceContentVersions,
+          questions[i].choices.map((choice) => choice.contentVersion).toList(),
+        );
         expect(answer.selectedId, round.acceptedAnswers[questions[i].id]);
       }
       final decoded = VocabularyQuizAttempt.fromJson(copyJson(event));
@@ -198,7 +203,7 @@ void main() {
       [],
       {...good, 'owner_id': owner},
       {...good, 'score': 999},
-      {...good, 'format_version': 2},
+      {...good, 'format_version': 3},
       {...good, 'format_version': 1.0},
       {...good, 'level': 'N1'},
       {...good, 'event_id': owner.toUpperCase()},
@@ -222,9 +227,42 @@ void main() {
     }
   });
 
+  test('legacy v1 snapshots remain lossless without choice provenance', () {
+    final current = report([decks[PreviewLevel.n5]!.first]);
+    final legacy = copyJson(current)..['format_version'] = 1;
+    for (final raw in rows(legacy)) {
+      (raw as Map<String, Object?>).remove('choice_content_versions');
+    }
+
+    final decoded = VocabularyQuizAttempt.fromJson(legacy);
+    expect(decoded.formatVersion, 1);
+    expect(
+      decoded.answers.every((answer) => answer.choiceContentVersions == null),
+      isTrue,
+    );
+    expect(decoded.toJson(), equals(legacy));
+    expect(
+      sameVocabularyQuizAttempt(
+        decoded,
+        VocabularyQuizAttempt.fromJson(legacy),
+      ),
+      isTrue,
+    );
+  });
+
   test('answer decoder rejects forged selection choices and versions', () {
     final event = report([decks[PreviewLevel.n5]!.first]);
     final answer = event.answers.single.toJson();
+    final mismatchedTarget = copyJson(event);
+    final mismatchedAnswer = row(mismatchedTarget);
+    final displayedIds = mismatchedAnswer['choices']! as List<Object?>;
+    final displayedVersions =
+        mismatchedAnswer['choice_content_versions']! as List<Object?>;
+    displayedVersions[displayedIds.indexOf(mismatchedAnswer['item_id'])] = 2;
+    expect(
+      () => VocabularyQuizAnswer.fromJson(mismatchedAnswer),
+      throwsFormatException,
+    );
     for (final invalid in <Object?>[
       null,
       {...answer, 'is_correct': true},
@@ -240,6 +278,11 @@ void main() {
         'choices': [owner, other, eventId(1), eventId(2)],
       },
       {...answer, 'choices': 'PRIVATE'},
+      {...answer, 'choice_content_versions': <Object?>[]},
+      {...answer, 'choice_content_versions': [1, 2, 3]},
+      {...answer, 'choice_content_versions': [1, 2, 3, 0]},
+      {...answer, 'choice_content_versions': [1, 2, 3, 2147483648]},
+      {...answer, 'choice_content_versions': [1, 2, 3, 1.0]},
     ]) {
       expect(
         () => VocabularyQuizAnswer.fromJson(invalid),
@@ -284,6 +327,8 @@ void main() {
     final changedOrder = variant(event, (json) {
       final choices = row(json)['choices']! as List<Object?>;
       row(json)['choices'] = choices.reversed.toList();
+      final versions = row(json)['choice_content_versions']! as List<Object?>;
+      row(json)['choice_content_versions'] = versions.reversed.toList();
     });
     final otherLevel = report([decks[PreviewLevel.n4]!.first]);
     for (final conflict in [
@@ -385,7 +430,12 @@ void main() {
   test('old unknown and changed-choice snapshots keep only history totals', () {
     final event = report([decks[PreviewLevel.n5]!.first]);
     final old = variant(event, (json) {
-      row(json)['content_version'] = event.answers.single.contentVersion + 1;
+      final answer = row(json);
+      final nextVersion = event.answers.single.contentVersion + 1;
+      answer['content_version'] = nextVersion;
+      final choices = answer['choices']! as List<Object?>;
+      final versions = answer['choice_content_versions']! as List<Object?>;
+      versions[choices.indexOf(answer['item_id'])] = nextVersion;
     });
     final unknown = variant(event, (json) {
       final answer = row(json);
@@ -396,6 +446,8 @@ void main() {
     final changedChoices = variant(event, (json) {
       final choices = row(json)['choices']! as List<Object?>;
       row(json)['choices'] = choices.reversed.toList();
+      final versions = row(json)['choice_content_versions']! as List<Object?>;
+      row(json)['choice_content_versions'] = versions.reversed.toList();
     });
     for (final historical in [old, unknown, changedChoices]) {
       final result = derive([own(historical)]);

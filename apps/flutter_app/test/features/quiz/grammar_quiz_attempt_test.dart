@@ -55,12 +55,17 @@ void main() {
       expect(attempt.eventId, event);
       expect(attempt.completedAt, completed);
       expect(attempt.score, 2);
+      expect(attempt.formatVersion, 2);
       expect(attempt.answers, hasLength(4));
       for (var i = 0; i < 4; i++) {
         final answer = attempt.answers[i];
         expect(answer.itemId, questions[i].target.id);
         expect(answer.contentVersion, i + 1);
         expect(answer.choices, questions[i].choices.map((c) => c.id).toList());
+        expect(
+          answer.choiceContentVersions,
+          questions[i].choices.map((c) => c.contentVersion).toList(),
+        );
         expect(answer.isCorrect, i.isEven);
       }
     },
@@ -148,7 +153,7 @@ void main() {
   );
 
   test('grammar record rejects invalid version level and answer count', () {
-    for (final value in [0, 2, 1.0, true, '1', null]) {
+    for (final value in [0, 3, 1.0, true, '1', null]) {
       final json = record()..['format_version'] = value;
       expect(() => GrammarQuizAttempt.fromJson(json), throwsFormatException);
     }
@@ -237,6 +242,64 @@ void main() {
     },
   );
 
+  test('grammar v1 snapshots remain lossless without choice provenance', () {
+    final legacy = record()..['format_version'] = 1;
+    for (final raw in answers(legacy)) {
+      (raw as Map<String, Object?>).remove('choice_content_versions');
+    }
+
+    final decoded = GrammarQuizAttempt.fromJson(legacy);
+    expect(decoded.formatVersion, 1);
+    expect(
+      decoded.answers.every((answer) => answer.choiceContentVersions == null),
+      isTrue,
+    );
+    expect(decoded.toJson(), equals(legacy));
+    expect(
+      sameGrammarQuizAttempt(
+        decoded,
+        GrammarQuizAttempt.fromJson(legacy),
+      ),
+      isTrue,
+    );
+  });
+
+  test('grammar v2 validates every displayed choice version', () {
+    final invalidVersions = <Object?>[
+      null,
+      <Object?>[],
+      [1, 2, 3],
+      [1, 2, 3, 4, 5],
+      [1, 2, 3, 0],
+      [1, 2, 3, 2147483648],
+      [1, 2, 3, 1.0],
+      [1, 2, 3, null],
+    ];
+    for (final versions in invalidVersions) {
+      final json = record();
+      (answers(json).first as Map<String, Object?>)
+          ['choice_content_versions'] = versions;
+      expect(() => GrammarQuizAttempt.fromJson(json), throwsFormatException);
+    }
+
+    final mismatch = record();
+    final first = answers(mismatch).first as Map<String, Object?>;
+    final versions = first['choice_content_versions']! as List<Object?>;
+    versions[0] = 2147483647;
+    expect(() => GrammarQuizAttempt.fromJson(mismatch), throwsFormatException);
+
+    final missing = record();
+    (answers(missing).first as Map<String, Object?>)
+        .remove('choice_content_versions');
+    expect(() => GrammarQuizAttempt.fromJson(missing), throwsFormatException);
+
+    final v1WithV2Field = record()..['format_version'] = 1;
+    expect(
+      () => GrammarQuizAttempt.fromJson(v1WithV2Field),
+      throwsFormatException,
+    );
+  });
+
   test('grammar attempt detaches input output and immutable nested lists', () {
     final json = record();
     final attempt = GrammarQuizAttempt.fromJson(json);
@@ -272,9 +335,16 @@ void main() {
       for (final mode in ['version', 'order', 'answer']) {
         final json = record();
         final first = answers(json).first as Map;
-        if (mode == 'version') first['content_version'] = 2;
+        if (mode == 'version') {
+          first['content_version'] = 2;
+          final choices = first['choices'] as List;
+          final versions = first['choice_content_versions'] as List;
+          versions[choices.indexOf(first['item_id'])] = 2;
+        }
         if (mode == 'order') {
           first['choices'] = (first['choices'] as List).reversed.toList();
+          first['choice_content_versions'] =
+              (first['choice_content_versions'] as List).reversed.toList();
         }
         if (mode == 'answer') first['selected_id'] = id(1);
         expect(
@@ -295,6 +365,12 @@ void main() {
             'content_version': 2147483647,
             'selected_id': id(i),
             'choices': [id(i), id(i + 1), id(i + 2), id(i + 3)],
+            'choice_content_versions': [
+              2147483647,
+              2147483647,
+              2147483647,
+              2147483647,
+            ],
           },
       ];
       final attempt = GrammarQuizAttempt.fromJson(json);

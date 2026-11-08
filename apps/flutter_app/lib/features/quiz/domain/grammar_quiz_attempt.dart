@@ -41,19 +41,32 @@ DateTime _completedTime(Object? value) {
 /// A structurally validated client report, never server or mastery evidence.
 final class GrammarQuizAnswer {
   GrammarQuizAnswer._({
+    required this.formatVersion,
     required this.itemId,
     required this.contentVersion,
     required this.selectedId,
     required List<String> choices,
-  }) : choices = List.unmodifiable(choices);
+    required List<int>? choiceContentVersions,
+  }) : choices = List.unmodifiable(choices),
+       choiceContentVersions = choiceContentVersions == null
+           ? null
+           : List.unmodifiable(choiceContentVersions);
 
-  factory GrammarQuizAnswer.fromJson(Object? value) {
-    final json = _object(value, {
+  factory GrammarQuizAnswer.fromJson(
+    Object? value, {
+    int formatVersion = 2,
+  }) {
+    if (formatVersion != 1 && formatVersion != 2) {
+      throw const FormatException('Invalid grammar answer version');
+    }
+    final keys = <String>{
       'item_id',
       'content_version',
       'selected_id',
       'choices',
-    });
+      if (formatVersion == 2) 'choice_content_versions',
+    };
+    final json = _object(value, keys);
     final itemId = _identity(json['item_id']);
     final selectedId = _identity(json['selected_id']);
     final version = json['content_version'];
@@ -71,18 +84,45 @@ final class GrammarQuizAnswer {
         !choices.contains(selectedId)) {
       throw const FormatException('Invalid grammar attempt choices');
     }
+
+    List<int>? choiceContentVersions;
+    if (formatVersion == 2) {
+      final rawVersions = json['choice_content_versions'];
+      if (rawVersions is! List<Object?> ||
+          rawVersions.length != 4 ||
+          rawVersions.any(
+            (value) =>
+                value is! int || value < 1 || value > 2147483647,
+          )) {
+        throw const FormatException('Invalid grammar choice versions');
+      }
+      choiceContentVersions = rawVersions.cast<int>().toList();
+      if (choiceContentVersions[choices.indexOf(itemId)] != version) {
+        throw const FormatException(
+          'Grammar target choice version mismatch',
+        );
+      }
+    }
+
     return GrammarQuizAnswer._(
+      formatVersion: formatVersion,
       itemId: itemId,
       contentVersion: version,
       selectedId: selectedId,
       choices: choices,
+      choiceContentVersions: choiceContentVersions,
     );
   }
 
+  final int formatVersion;
   final String itemId;
   final int contentVersion;
   final String selectedId;
   final List<String> choices;
+
+  /// Null only for legacy v1 snapshots, which never captured distractor versions.
+  final List<int>? choiceContentVersions;
+
   bool get isCorrect => selectedId == itemId;
 
   Map<String, Object?> toJson() => {
@@ -90,15 +130,18 @@ final class GrammarQuizAnswer {
     'content_version': contentVersion,
     'selected_id': selectedId,
     'choices': choices.toList(),
+    if (formatVersion == 2)
+      'choice_content_versions': choiceContentVersions!.toList(),
   };
 }
 
 /// Caller classifies the completed practice; this is not server evidence.
 enum GrammarQuizAttemptKind { primary, correction }
 
-/// Pure local format v1. Not connected to a store, owner or save UI.
+/// Pure local format v1/v2. Not connected to a store, owner or save UI.
 final class GrammarQuizAttempt {
   GrammarQuizAttempt._({
+    required this.formatVersion,
     required this.eventId,
     required this.kind,
     required this.level,
@@ -124,7 +167,7 @@ final class GrammarQuizAttempt {
     }
     final accepted = round.acceptedAnswers;
     return GrammarQuizAttempt.fromJson({
-      'format_version': 1,
+      'format_version': 2,
       'quiz_type': 'grammar_meaning',
       'practice_kind': kind.name,
       'event_id': eventId,
@@ -137,6 +180,9 @@ final class GrammarQuizAttempt {
             'content_version': q.target.contentVersion,
             'selected_id': accepted[q.id],
             'choices': q.choices.map((choice) => choice.id).toList(),
+            'choice_content_versions': q.choices
+                .map((choice) => choice.contentVersion)
+                .toList(),
           },
       ],
     });
@@ -156,7 +202,7 @@ final class GrammarQuizAttempt {
     final rawAnswers = json['answers'];
     if (json['quiz_type'] != 'grammar_meaning' ||
         version is! int ||
-        version != 1 ||
+        (version != 1 && version != 2) ||
         rawAnswers is! List<Object?> ||
         rawAnswers.isEmpty ||
         rawAnswers.length > 10) {
@@ -172,12 +218,20 @@ final class GrammarQuizAttempt {
       'N4' => PreviewLevel.n4,
       _ => throw const FormatException('Invalid grammar attempt level'),
     };
-    final answers = rawAnswers.map(GrammarQuizAnswer.fromJson).toList();
+    final answers = rawAnswers
+        .map(
+          (answer) => GrammarQuizAnswer.fromJson(
+            answer,
+            formatVersion: version,
+          ),
+        )
+        .toList();
     final targets = answers.map((answer) => answer.itemId).toSet();
     if (targets.length != answers.length) {
       throw const FormatException('Repeated grammar attempt target');
     }
     return GrammarQuizAttempt._(
+      formatVersion: version,
       eventId: _identity(json['event_id']),
       kind: kind,
       level: level,
@@ -186,6 +240,7 @@ final class GrammarQuizAttempt {
     );
   }
 
+  final int formatVersion;
   final String eventId;
   final GrammarQuizAttemptKind kind;
   final PreviewLevel level;
@@ -194,7 +249,7 @@ final class GrammarQuizAttempt {
   int get score => answers.where((answer) => answer.isCorrect).length;
 
   Map<String, Object?> toJson() => {
-    'format_version': 1,
+    'format_version': formatVersion,
     'quiz_type': 'grammar_meaning',
     'practice_kind': kind.name,
     'event_id': eventId,

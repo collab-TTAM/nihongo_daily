@@ -1075,6 +1075,18 @@
         {
           "path": "apps/flutter_app/test/features/quiz/quiz_progress_widget_test.dart",
           "contains": "held read cannot publish after replacement"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_history_test.dart",
+          "contains": "legacy v1 snapshots remain lossless without choice provenance"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/grammar_quiz_attempt_test.dart",
+          "contains": "grammar v1 snapshots remain lossless without choice provenance"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/grammar_quiz_attempt_test.dart",
+          "contains": "grammar v2 validates every displayed choice version"
         }
       ],
       "issues": [
@@ -1082,7 +1094,7 @@
         18
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/vocabulary_quiz_history_test.dart",
-      "limitation": "Client-report models and configured local history/progress UI have component CI evidence. Simulated Auth/storage UI ports do not prove hosted attempts, multi-device sync, mastery, native file faults or study credit."
+      "limitation": "Local attempt v2 captures all four displayed choice versions and keeps strict v1 replay compatibility. Exact-head Flutter CI is required for this increment. Client-report models/local history do not prove hosted attempts, multi-device sync, reviewed mastery, study credit or learner acceptance."
     },
     {
       "id": "quiz-native-ui-restart",

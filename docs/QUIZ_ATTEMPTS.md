@@ -10,24 +10,22 @@ An opt-in native library is described in NATIVE_QUIZ_HISTORY.md. The optional
 captured-ready-session repository is described in QUIZ_ACCOUNT_HISTORY.md;
 UI save/recovery and hosted transport remain pending. The models do not authorize their caller.
 
-## Local format version1
+## Local formats version1 and version2
 
-VocabularyQuizAttempt.capture accepts a nonempty fully advanced1..10-question
-round from one level, plus one caller-supplied canonical UUID and explicit UTC
-completion time. It snapshots the accepted first answers through a copied,
-unmodifiable map. Targets, content versions and exact displayed choice IDs remain
-original. A selected ID must be one of four distinct displayed IDs and the target
-must also be displayed. Score is derived from selected/target equality.
+VocabularyQuizAttempt.capture and GrammarQuizAttempt.capture write format_version2 for a nonempty, fully advanced 1..10-question round from one level, plus a caller-supplied canonical UUID and explicit UTC completion time. They snapshot accepted first answers through a copied, unmodifiable map. Each answer retains the target content version, the exact four displayed choice IDs, and a parallel ordered choice_content_versions list captured from those same curriculum entries. The target's version must equal the version at its choice position. A selected ID must be one of four distinct displayed IDs and the target must also be displayed. Score is derived from selected/target equality.
+
+Decoders also accept strict legacy format_version1 records. Since v1 never stored distractor versions, its choiceContentVersions projection is null and re-encoding remains v1 without inventing provenance. This preserves exact replay for old local journals; it does not upgrade their historical evidence.
 
 Strict toJson/fromJson fields:
 
 | Object | Exact fields |
 | --- | --- |
 | Attempt | format_version, event_id, level, completed_at, answers |
-| Answer | item_id, content_version, selected_id, choices |
+| Answer v1 | item_id, content_version, selected_id, choices |
+| Answer v2 | item_id, content_version, selected_id, choices, choice_content_versions |
 | Stored envelope | Validated ownerId plus immutable attempt; no wire/API shape yet |
 
-Only N5/N4; format_version is integer1, content version1..2147483647,
+Only N5/N4; format_version is integer1 or2, content versions are integers1..2147483647,
 canonical lowercase UUIDs, canonical UTC ISO text in2000..2100. Reject unknown or
 missing keys, incorrect types, invalid/normalized date strings, duplicate target
 IDs and round/choice bounds. Deep-copy/freeze collections. Payload includes no
@@ -78,7 +76,7 @@ step:605 Flutter/five actual Chrome, format/analyze, retained SQL/SDK/native/pro
 checks, configured/preview Windows and Web release builds/artifacts. SDK readiness
 correction and all19 public-quiz cases passed. This is parent evidence.
 
-New16 tests cover both actual canonical levels/deep immutable snapshots, incomplete/
+New tests cover both actual canonical levels/deep immutable snapshots, per-choice version capture and malformed provenance, strict lossless v1 compatibility, incomplete/
 empty/mixed rounds, unknown/type/date/ID/version/choice/bounds rejection, duplicate
 target, owner isolation before dedup/level filter, identical replay, changed-event
 conflict, repeated wrong/correct/wrong transitions, stable equal-time order,

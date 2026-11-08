@@ -41,19 +41,32 @@ DateTime _completedTime(Object? value) {
 /// A structurally validated client report, never server or mastery evidence.
 final class VocabularyQuizAnswer {
   VocabularyQuizAnswer._({
+    required this.formatVersion,
     required this.itemId,
     required this.contentVersion,
     required this.selectedId,
     required List<String> choices,
-  }) : choices = List.unmodifiable(choices);
+    required List<int>? choiceContentVersions,
+  }) : choices = List.unmodifiable(choices),
+       choiceContentVersions = choiceContentVersions == null
+           ? null
+           : List.unmodifiable(choiceContentVersions);
 
-  factory VocabularyQuizAnswer.fromJson(Object? value) {
-    final json = _object(value, {
+  factory VocabularyQuizAnswer.fromJson(
+    Object? value, {
+    int formatVersion = 2,
+  }) {
+    if (formatVersion != 1 && formatVersion != 2) {
+      throw const FormatException('Invalid quiz answer version');
+    }
+    final keys = <String>{
       'item_id',
       'content_version',
       'selected_id',
       'choices',
-    });
+      if (formatVersion == 2) 'choice_content_versions',
+    };
+    final json = _object(value, keys);
     final itemId = quizHistoryUuid(json['item_id']);
     final selectedId = quizHistoryUuid(json['selected_id']);
     final version = json['content_version'];
@@ -71,18 +84,43 @@ final class VocabularyQuizAnswer {
         !choices.contains(selectedId)) {
       throw const FormatException('Invalid quiz choices');
     }
+
+    List<int>? choiceContentVersions;
+    if (formatVersion == 2) {
+      final rawVersions = json['choice_content_versions'];
+      if (rawVersions is! List<Object?> ||
+          rawVersions.length != 4 ||
+          rawVersions.any(
+            (value) =>
+                value is! int || value < 1 || value > 2147483647,
+          )) {
+        throw const FormatException('Invalid quiz choice versions');
+      }
+      choiceContentVersions = rawVersions.cast<int>().toList();
+      if (choiceContentVersions[choices.indexOf(itemId)] != version) {
+        throw const FormatException('Quiz target choice version mismatch');
+      }
+    }
+
     return VocabularyQuizAnswer._(
+      formatVersion: formatVersion,
       itemId: itemId,
       contentVersion: version,
       selectedId: selectedId,
       choices: choices,
+      choiceContentVersions: choiceContentVersions,
     );
   }
 
+  final int formatVersion;
   final String itemId;
   final int contentVersion;
   final String selectedId;
   final List<String> choices;
+
+  /// Null only for legacy v1 snapshots, which never captured distractor versions.
+  final List<int>? choiceContentVersions;
+
   bool get isCorrect => selectedId == itemId;
 
   Map<String, Object?> toJson() => {
@@ -90,12 +128,15 @@ final class VocabularyQuizAnswer {
     'content_version': contentVersion,
     'selected_id': selectedId,
     'choices': choices.toList(),
+    if (formatVersion == 2)
+      'choice_content_versions': choiceContentVersions!.toList(),
   };
 }
 
-/// Local format v1. Owner identity is attached separately by a trusted caller.
+/// Local format v1/v2. Owner identity is attached separately by a trusted caller.
 final class VocabularyQuizAttempt {
   VocabularyQuizAttempt._({
+    required this.formatVersion,
     required this.eventId,
     required this.level,
     required this.completedAt,
@@ -119,7 +160,7 @@ final class VocabularyQuizAttempt {
     }
     final accepted = round.acceptedAnswers;
     return VocabularyQuizAttempt.fromJson({
-      'format_version': 1,
+      'format_version': 2,
       'event_id': eventId,
       'level': level.label,
       'completed_at': completedAt.toIso8601String(),
@@ -130,6 +171,9 @@ final class VocabularyQuizAttempt {
             'content_version': q.target.contentVersion,
             'selected_id': accepted[q.id],
             'choices': q.choices.map((choice) => choice.id).toList(),
+            'choice_content_versions': q.choices
+                .map((choice) => choice.contentVersion)
+                .toList(),
           },
       ],
     });
@@ -146,7 +190,7 @@ final class VocabularyQuizAttempt {
     final version = json['format_version'];
     final rawAnswers = json['answers'];
     if (version is! int ||
-        version != 1 ||
+        (version != 1 && version != 2) ||
         rawAnswers is! List<Object?> ||
         rawAnswers.isEmpty ||
         rawAnswers.length > 10) {
@@ -157,12 +201,20 @@ final class VocabularyQuizAttempt {
       'N4' => PreviewLevel.n4,
       _ => throw const FormatException('Invalid quiz level'),
     };
-    final answers = rawAnswers.map(VocabularyQuizAnswer.fromJson).toList();
+    final answers = rawAnswers
+        .map(
+          (answer) => VocabularyQuizAnswer.fromJson(
+            answer,
+            formatVersion: version,
+          ),
+        )
+        .toList();
     final targets = answers.map((answer) => answer.itemId).toSet();
     if (targets.length != answers.length) {
       throw const FormatException('Repeated quiz target');
     }
     return VocabularyQuizAttempt._(
+      formatVersion: version,
       eventId: quizHistoryUuid(json['event_id']),
       level: level,
       completedAt: _completedTime(json['completed_at']),
@@ -170,6 +222,7 @@ final class VocabularyQuizAttempt {
     );
   }
 
+  final int formatVersion;
   final String eventId;
   final PreviewLevel level;
   final DateTime completedAt;
@@ -177,7 +230,7 @@ final class VocabularyQuizAttempt {
   int get score => answers.where((answer) => answer.isCorrect).length;
 
   Map<String, Object?> toJson() => {
-    'format_version': 1,
+    'format_version': formatVersion,
     'event_id': eventId,
     'level': level.label,
     'completed_at': completedAt.toIso8601String(),
