@@ -3454,8 +3454,33 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   path without changing Auth strategy/provider or requesting secrets in chat.
 
 
-## Exact-head formatter diagnostic handoff — 2026-11-08T18:11Z
+## Exact-head formatter repair — 2026-11-08T19:09Z
 
-- Re-read latest main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`, PR #37/branch HEAD `4f3c8d4ed53777a7a624a9a03213b52908fe8d18`, and all six latest-attempt jobs for Actions [42504053745](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42504053745). Five jobs completed SUCCESS with every returned step; Flutter failed only strict Dart 3.35.4 formatting, reporting exactly one changed file: `test/features/srs/windows_persistent_supabase_runtime_test.dart`. Flutter analyze, full tests, downstream probes and Web build were SKIPPED.
-- Added a temporary read-only formatter diagnostic immediately before the unchanged strict formatter gate. It writes `dart format --output=show` output to the runner temp directory and prints a unified diff; it does not edit source or change gate behavior.
-- This diagnostic commit is only to capture the pinned formatter's exact patch. Next: read the diagnostic log, remove the temporary step, apply only the observed formatter hunk, and require complete exact-head CI. No production/Auth/provider/API/schema/RLS/default activation, Pro N4, deployment, merge or release change.
+- Re-read main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`, PR #37/branch HEAD
+  `ec4f776d0625c68bc6d25fa2ee819cfaafee3a0f`, and exact-head Actions [42508908153](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42508908153).
+  Latest attempt 1 completed with five jobs and every returned step successful:
+  repo-sanity, ai-boundary, database, disposable Supabase integration and Windows.
+  Flutter failed only the strict pinned Dart 3.35.4 formatter in
+  `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`;
+  formatter diagnostics identified one test block. Flutter analyze, full tests,
+  downstream probes and Web build were skipped, not passed.
+- Applied only the formatter's exact layout to the final TEST ONLY owner-release
+  retry case; assertion expressions, order, test behavior and coverage remain
+  unchanged. Removed the temporary read-only formatter diagnostic from
+  `.github/workflows/ci.yml`; the strict formatter gate remains untouched.
+- Changed exactly `.github/workflows/ci.yml`,
+  `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`,
+  and `docs/PROJECT_STATUS.md`. No production Auth/provider/API/schema/RLS,
+  default activation, security gate, Pro-owned #14/#38/N4 content, deployment,
+  merge or release change.
+- Cloud authoring has no Dart/Flutter SDK or Windows OS, so local format/analyze/
+  test/build/native execution was not run. The new exact-head Actions run must
+  verify strict formatting, analyze, full Flutter suite, Windows process/vault
+  probes, disposable Supabase integration and Web build before this increment
+  is considered verified.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart
+  and physical multi-device acceptance remain outstanding. PR #37 stays Draft;
+  #20/#22/#15 remain open.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only
+  observed failures. If only CI remains pending, hand off without another source
+  commit. Preserve Auth strategy/provider and do not request secrets in chat.

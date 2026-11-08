@@ -1099,85 +1099,81 @@ void main() {
     },
   );
 
-  test(
-    'Windows caller close retries a failed native owner release',
-    () async {
-      await runtime.start();
-      expect(ownerLeaseCalls, ['acquireOwner']);
-      expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
-      expect(requests, isEmpty);
+  test('Windows caller close retries a failed native owner release', () async {
+    await runtime.start();
+    expect(ownerLeaseCalls, ['acquireOwner']);
+    expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
+    expect(requests, isEmpty);
 
-      failOwnerRelease = true;
-      await expectLater(
-        runtime.close(),
-        throwsA(
-          isA<SessionVaultFailure>()
-              .having(
-                (error) => error.code,
-                'safe owner-release error',
-                SessionVaultError.unavailable,
-              )
-              .having(
-                (error) => error.toString().contains('PRIVATE_REFRESH_SECRET'),
-                'redacted owner-release error',
-                false,
-              ),
-        ),
-      );
+    failOwnerRelease = true;
+    await expectLater(
+      runtime.close(),
+      throwsA(
+        isA<SessionVaultFailure>()
+            .having(
+              (error) => error.code,
+              'safe owner-release error',
+              SessionVaultError.unavailable,
+            )
+            .having(
+              (error) => error.toString().contains('PRIVATE_REFRESH_SECRET'),
+              'redacted owner-release error',
+              false,
+            ),
+      ),
+    );
 
-      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
-      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
-      expect(closeOrder, ['owner.release']);
-      expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
-      expect(requests, isEmpty);
-      expect(timeline, ['vault.read']);
+    expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+    expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+    expect(closeOrder, ['owner.release']);
+    expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
+    expect(requests, isEmpty);
+    expect(timeline, ['vault.read']);
 
-      expect(
-        () => PersistentSupabaseRuntime(
-          projectUrl: wire.origin,
-          publishableKey: wire.key,
-          vault: createWindowsSessionCredentialVault(wire.origin),
-          store: journal,
-          httpClient: network,
-          now: () => now,
-        ),
-        throwsA(isA<SessionVaultFailure>()),
-        reason: 'a failed native release must retain the Dart project owner',
-      );
-
-      failOwnerRelease = false;
-      await runtime.close();
-      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner', 'releaseOwner']);
-      expect(closeOrder, ['owner.release', 'owner.release']);
-      expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
-
-      runtime = PersistentSupabaseRuntime(
+    expect(
+      () => PersistentSupabaseRuntime(
         projectUrl: wire.origin,
         publishableKey: wire.key,
         vault: createWindowsSessionCredentialVault(wire.origin),
         store: journal,
         httpClient: network,
         now: () => now,
-      );
-      await runtime.start();
-      expect(
-        ownerLeaseCalls,
-        ['acquireOwner', 'releaseOwner', 'releaseOwner', 'acquireOwner'],
-      );
-      await runtime.close();
-      expect(
-        ownerLeaseCalls,
-        [
-          'acquireOwner',
-          'releaseOwner',
-          'releaseOwner',
-          'acquireOwner',
-          'releaseOwner',
-        ],
-      );
-      expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
-      expect(requests, isEmpty);
-    },
-  );
+      ),
+      throwsA(isA<SessionVaultFailure>()),
+      reason: 'a failed native release must retain the Dart project owner',
+    );
+
+    failOwnerRelease = false;
+    await runtime.close();
+    expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner', 'releaseOwner']);
+    expect(closeOrder, ['owner.release', 'owner.release']);
+    expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
+
+    runtime = PersistentSupabaseRuntime(
+      projectUrl: wire.origin,
+      publishableKey: wire.key,
+      vault: createWindowsSessionCredentialVault(wire.origin),
+      store: journal,
+      httpClient: network,
+      now: () => now,
+    );
+    await runtime.start();
+    expect(ownerLeaseCalls, [
+      'acquireOwner',
+      'releaseOwner',
+      'releaseOwner',
+      'acquireOwner',
+    ]);
+    await runtime.close();
+    expect(ownerLeaseCalls, [
+      'acquireOwner',
+      'releaseOwner',
+      'releaseOwner',
+      'acquireOwner',
+      'releaseOwner',
+    ]);
+    expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
+    expect(requests, isEmpty);
+  });
 
 }
