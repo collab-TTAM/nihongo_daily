@@ -3350,3 +3350,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   and require a fresh full exact-head run. Keep PR #37 Draft and #20/#22/#15
   open; hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical
   multi-device acceptance remain outstanding.
+
+
+## Exact-head Windows vault formatter correction — 2026-11-08T12:16Z
+
+- Diagnostic Actions [42475288513](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42475288513), attempt 1, targets exact HEAD `1e801602775697d19768851004c292c35558dedf` and completed FAILURE only in the Flutter job's strict Dart 3.35.4 formatter step. `ai-boundary`, `database`, `repo-sanity`, `windows`, and `supabase-integration` all completed SUCCESS with every returned step successful. Flutter Analyze, the full Flutter suite, lifecycle/vault/profile checks, Chrome checks and Web build were SKIPPED downstream; they are not passing evidence.
+- The read-only formatter output identified exactly one TEST ONLY file: `apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart`. Applied only the emitted Dart formatting hunk to the Windows owner-lease test declaration/expect layout; no assertion or behavior changed.
+- Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`; the repository-wide strict formatter gate remains unchanged.
+- Changed paths for this correction: `.github/workflows/ci.yml`, `apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart`, and `docs/PROJECT_STATUS.md`. No production Auth/provider strategy, schema/RLS, default activation, Pro-owned N4, or security/test gate changed.
+- Cloud authoring runtime has GitHub access but no Dart/Flutter SDK, so local format/analyze/test/build were not run. A fresh exact-head Actions run must execute the formatter, analyzer, full Flutter suite, Windows native probes, disposable Supabase integration and Web build.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, learner expiry/restart and physical multi-device evidence remain unverified. Keep PR #37 Draft and #20/#22/#15 open; no merge, deployment or release.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; if green, continue the remaining caller-owned Auth/profile lifecycle acceptance without bypassing protected hosted gates.

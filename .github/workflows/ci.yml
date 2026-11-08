@@ -177,12 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Capture read-only formatter diff for Windows vault test
-        shell: bash
-        run: |
-          formatted="$RUNNER_TEMP/windows-session-vault.formatted.dart"
-          dart format --output=show test/features/srs/windows_session_credential_vault_test.dart > "$formatted"
-          diff -u test/features/srs/windows_session_credential_vault_test.dart "$formatted" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

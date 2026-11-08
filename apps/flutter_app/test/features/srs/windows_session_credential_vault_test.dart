@@ -49,45 +49,38 @@ void main() {
     },
   );
 
-  test(
-    'Windows owner lease uses only the canonical project target',
-    () async {
-      final calls = <MethodCall>[];
-      var allowAcquire = true;
-      messenger.setMockMethodCallHandler(channel, (call) async {
-        calls.add(call);
-        expect(call.method, anyOf('acquireOwner', 'releaseOwner'));
-        expect(
-          call.arguments,
-          {'target': 'NihongoDaily.Refresh.v1|https://fixture.supabase.co'},
-        );
-        if (call.method == 'acquireOwner') return allowAcquire;
-        return true;
+  test('Windows owner lease uses only the canonical project target', () async {
+    final calls = <MethodCall>[];
+    var allowAcquire = true;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call);
+      expect(call.method, anyOf('acquireOwner', 'releaseOwner'));
+      expect(call.arguments, {
+        'target': 'NihongoDaily.Refresh.v1|https://fixture.supabase.co',
       });
-      final vault = createWindowsSessionCredentialVault(
-        'https://fixture.supabase.co',
-      );
-      await vault.acquireOwner();
-      await vault.releaseOwner();
-      expect(
-        calls.map((call) => call.method),
-        ['acquireOwner', 'releaseOwner'],
-      );
+      if (call.method == 'acquireOwner') return allowAcquire;
+      return true;
+    });
+    final vault = createWindowsSessionCredentialVault(
+      'https://fixture.supabase.co',
+    );
+    await vault.acquireOwner();
+    await vault.releaseOwner();
+    expect(calls.map((call) => call.method), ['acquireOwner', 'releaseOwner']);
 
-      allowAcquire = false;
-      await expectLater(
-        vault.acquireOwner(),
-        throwsA(
-          isA<SessionVaultFailure>().having(
-            (error) => error.code,
-            'busy owner lease',
-            SessionVaultError.unavailable,
-          ),
+    allowAcquire = false;
+    await expectLater(
+      vault.acquireOwner(),
+      throwsA(
+        isA<SessionVaultFailure>().having(
+          (error) => error.code,
+          'busy owner lease',
+          SessionVaultError.unavailable,
         ),
-      );
-      expect(calls.last.method, 'acquireOwner');
-    },
-  );
+      ),
+    );
+    expect(calls.last.method, 'acquireOwner');
+  });
 
   test(
     'Windows platform failures never expose raw secret exception details',
