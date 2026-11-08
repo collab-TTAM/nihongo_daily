@@ -3263,3 +3263,28 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Next: inspect exact-head CI on the committed tree, fix observed failures only,
   then continue the hosted Auth/atomic-review acceptance and PR #41 formatter
   correction in the next sequential core iteration.
+
+
+## Exact-head formatter repair — Windows process-owner lease — 2026-11-08T07:32Z
+
+- Run `core-20261108T0732Z-pr37-owner-lease-format-repair`; branch
+  `automation/issue-22-atomic-review`; parent/expected HEAD
+  `4c449b3ca2f222c6d04eb06321f727354675c569`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [run 42459039744](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42459039744)
+  targets parent `4c449b3`. Repo-sanity, AI-boundary and database completed
+  SUCCESS with every listed step successful. Flutter failed only at
+  `dart format --output=none --set-exit-if-changed .`, which identified
+  `test/features/srs/windows_session_credential_vault_test.dart` as the sole
+  changed file. Flutter Analyze, all Flutter tests, lifecycle/vault/profile
+  probes, Chrome checks and Web build were SKIPPED downstream. Windows and
+  disposable Supabase jobs were still running at the handoff observation.
+- Applied only the formatter's required multiline `test(` call layout in that
+  one test file. No test assertion, behavior, native code, CI gate or security
+  control changed. The formatter repair requires a fresh exact-head Actions run
+  before any Flutter result is counted.
+- Cloud authoring has no Dart/Flutter SDK or Windows native runtime; local
+  format/analyze/test/build were not run. Keep PR #37 Draft and #20/#22/#15 open.
+  Hosted signed-JWT A/B, deployed PostgREST/RLS, learner expiry/restart and
+  physical multi-device evidence remain pending. Pro-owned N4 paths are untouched.
+- Next: inspect all jobs/steps on the new exact HEAD; fix only observed failures.

@@ -49,7 +49,9 @@ void main() {
     },
   );
 
-  test('Windows owner lease uses only the canonical project target', () async {
+  test(
+    'Windows owner lease uses only the canonical project target',
+    () async {
     final calls = <MethodCall>[];
     var allowAcquire = true;
     messenger.setMockMethodCallHandler(channel, (call) async {
