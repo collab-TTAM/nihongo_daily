@@ -725,3 +725,27 @@ A/B, deployed RLS/PostgREST, OS logoff, power-loss, or physical multi-device
 behavior. No Auth strategy/provider, default activation, plaintext fallback,
 token logging, schema/RLS, production configuration, or Pro-owned N4 content
 changes.
+
+
+## Failed Windows native owner-lease release — 2026-11-08
+
+A failed native `releaseOwner` is not a successful shutdown. The caller-owned
+runtime must return the fixed redacted storage error, retain both the Dart
+project-owner slot and the native lease, and reject construction of a competing
+runtime for the same trusted project. It must remain possible to call the same
+runtime's `close()` again after the platform channel recovers. Only a successful
+release removes the Dart owner; a subsequent runtime may then acquire the same
+project target.
+
+The pinned-SDK Windows MethodChannel regression injects a platform failure
+containing synthetic private details, verifies the public error does not expose
+those details, confirms no Auth/profile request was dispatched, and retries the
+caller-owned close. It then constructs a replacement runtime to prove that the
+lease can be acquired and released after recovery.
+
+This is TEST ONLY MethodChannel failure injection. It does not force
+`ReleaseMutex` itself to fail in the Windows kernel or prove hosted learner
+Auth, OS logoff/power-loss, deployed RLS, or physical multi-device behavior.
+The separate native process probe verifies normal mutex contention and
+abandoned-process recovery. No production Auth/provider, credential format,
+schema/RLS, default activation, or Pro-owned N4 content changes.

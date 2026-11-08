@@ -3421,3 +3421,34 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring has no Dart/Flutter SDK or Windows OS; local format/analyze/test/build were not run. New exact-head Actions must execute formatter, analyzer, complete Flutter suite, Windows bridge/process probes and Web build before this repair is considered verified.
 - TEST ONLY Auth HTTP/JWT/profile fixtures remain synthetic; real Windows Credential Manager/process execution in CI is not hosted signed-JWT learner A/B or deployed PostgREST/RLS. Hosted learner A/B, expiry/restart and physical multi-device acceptance remain outstanding. Keep PR #37 Draft and #20/#22/#15 open.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures.
+
+
+## Windows native owner-release retry regression — 2026-11-08T17:10Z
+
+- Re-read latest main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`, PR #37 head
+  `2c08c0bc15ff74eca5d95c2a254a78c9c7fc472c`, and exact-head Actions
+  [42499388888](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42499388888).
+  The run completed SUCCESS: all six jobs and every returned step completed
+  SUCCESS, including Windows process/vault probes, Flutter formatter/analyze/full
+  suite, Chrome IndexedDB, Web release, SQL/RLS and disposable Supabase A/B.
+  This is automated disposable/fixture evidence, not hosted learner acceptance.
+- Added a TEST ONLY Windows MethodChannel regression for failed native
+  `releaseOwner`: the runtime close returns a fixed redacted error, keeps the
+  exclusive target owner, rejects a competing runtime, then succeeds on explicit
+  close retry after storage-channel recovery. A replacement runtime can acquire
+  and release the target afterward; no Auth/profile request is dispatched.
+- Changed exactly: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`,
+  `qa/matrix.json`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status file.
+  No production Auth/provider/API/schema/RLS/default activation, CI gate, or
+  Pro-owned #14/#38/N4 content changed.
+- Cloud authoring has no Dart/Flutter SDK or Windows OS; local format/analyze/test/
+  build/native execution was not run. New exact-head Actions must run the
+  formatter, analyzer, full Flutter suite, Windows native/process probes and Web
+  build before this increment is considered verified.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart,
+  and physical multi-device acceptance remain outstanding. PR #37 stays Draft;
+  #20/#22/#15 remain open.
+- Next: inspect every latest-attempt job and step on the new exact HEAD. Fix only
+  observed failures; if only CI remains pending, hand off without another source
+  commit. After this component check, continue the hosted #20/#22 acceptance
+  path without changing Auth strategy/provider or requesting secrets in chat.
