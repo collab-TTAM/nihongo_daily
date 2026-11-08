@@ -27,6 +27,7 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
   late PersistentSupabaseRuntime runtime;
+  late SessionCredentialVault vault;
   late MockClient network;
   late NativeReviewJournal journal;
   late Directory directory;
@@ -205,10 +206,11 @@ void main() {
       }
       throw StateError('unexpected TEST ONLY endpoint');
     });
+    vault = createWindowsSessionCredentialVault(wire.origin);
     runtime = PersistentSupabaseRuntime(
       projectUrl: wire.origin,
       publishableKey: wire.key,
-      vault: createWindowsSessionCredentialVault(wire.origin),
+      vault: vault,
       store: journal,
       httpClient: network,
       now: () => now,
@@ -1149,10 +1151,11 @@ void main() {
     expect(closeOrder, ['owner.release', 'owner.release']);
     expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
 
+    vault = createWindowsSessionCredentialVault(wire.origin);
     runtime = PersistentSupabaseRuntime(
       projectUrl: wire.origin,
       publishableKey: wire.key,
-      vault: createWindowsSessionCredentialVault(wire.origin),
+      vault: vault,
       store: journal,
       httpClient: network,
       now: () => now,
