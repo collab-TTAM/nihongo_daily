@@ -692,3 +692,29 @@ multi-device behavior.
 ## Refresh completion across an account switch
 
 The scheduler allows only one refresh attempt at a time. If account A's refresh is already in flight when the caller publishes account B, an update does not start an overlapping request. When A's attempt settles, the scheduler re-reads the caller-owned current lease and schedules B using B's identity and expiry. A canceled A timer callback that was already queued may re-arm the current B timer, but its captured A lease cannot dispatch a refresh. The scheduler does not authorize or persist a session: `PersistentAccountAccess` remains responsible for SDK session/generation checks and the vault write-before-readiness barrier. This deterministic timer regression is not hosted Auth or OS-suspension evidence.
+
+
+## Caller close after a corrupt stored refresh value — 2026-11-08
+
+A successful credential read whose value fails the vault's bounded token
+validation is a known corrupt slot, not a transient storage outage. Startup
+still fails closed and never sends that value to Supabase. It now marks cleanup
+as required so a caller that closes before an explicit login cannot release the
+exclusive project owner while the unusable value remains in Credential Manager.
+Close performs the existing ordered SDK sign-out and exact-project vault clear;
+if clear fails, close returns the fixed safe storage error and retains ownership
+for a later close retry. A transient read-unavailable error is deliberately
+different: it does not mark the saved value for deletion, so a temporary OS
+outage does not destroy a potentially valid session.
+
+The pinned-SDK/MockClient regression starts with a corrupt in-memory vault
+value, verifies no Auth refresh or own-profile request, fails the first close
+clear, checks that the secret and exclusive owner remain, then restores storage
+and requires a second close to clear the slot before releasing ownership.
+
+This is TEST ONLY in-memory vault/MockClient evidence. It does not inject a
+native Windows Credential Manager failure or prove hosted signed-JWT learner
+A/B, deployed RLS/PostgREST, OS logoff, power-loss, or physical multi-device
+behavior. No Auth strategy/provider, default activation, plaintext fallback,
+token logging, schema/RLS, production configuration, or Pro-owned N4 content
+changes.

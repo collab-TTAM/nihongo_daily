@@ -219,6 +219,14 @@ final class PersistentAccountAccess implements AccountAccess {
       final String? secret;
       try {
         secret = await vault.readRefreshToken();
+      } on SessionVaultFailure catch (error) {
+        // A corrupt value is known to be unusable. Require a successful clear
+        // before caller close releases this project's exclusive vault owner.
+        if (error.code == SessionVaultError.corrupt) {
+          _cleanupRequired = true;
+        }
+        _fail();
+        rethrow;
       } on Object {
         _fail();
         rethrow;

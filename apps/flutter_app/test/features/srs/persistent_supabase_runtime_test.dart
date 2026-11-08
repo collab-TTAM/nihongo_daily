@@ -850,6 +850,68 @@ void main() {
   );
 
   test(
+    'SDK close retries corrupt stored refresh cleanup before releasing owner',
+    () async {
+      const corrupt = 'TEST_ONLY_CORRUPT\\nVALUE';
+      backend.secret = corrupt;
+      await expectLater(
+        runtime.start(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, corrupt);
+      expect(backend.operations, ['read']);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
+        isEmpty,
+      );
+
+      backend.failClear = true;
+      try {
+        await expectLater(
+          runtime.close(),
+          throwsA(
+            isA<SessionVaultFailure>().having(
+              (error) => error.code,
+              'code',
+              SessionVaultError.unavailable,
+            ),
+          ),
+        );
+        expect(backend.secret, corrupt);
+        expect(backend.operations, ['read', 'clear']);
+        expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
+        expect(
+          requests.where((request) => request.url.path == '/auth/v1/token'),
+          isEmpty,
+        );
+        expect(
+          requests.where(
+            (request) => request.url.path.contains('ensure_profile'),
+          ),
+          isEmpty,
+        );
+      } finally {
+        backend.failClear = false;
+      }
+
+      await runtime.close();
+      expect(backend.secret, isNull);
+      expect(backend.operations, ['read', 'clear', 'clear']);
+      expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
+    },
+  );
+
+  test(
     'SDK credential clear failure fences account until explicit cleanup retry',
     () async {
       await runtime.start();

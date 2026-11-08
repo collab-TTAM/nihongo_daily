@@ -254,7 +254,7 @@
     {
       "id": "persistent-session-lifecycle",
       "status": "automated-baseline",
-      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear; caller-owned runtime close/recreate restores the saved refresh token through server refresh, persists rotation before own-profile readiness, and stays fenced while the recreated profile response is held",
+      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear; caller-owned runtime close/recreate restores the saved refresh token through server refresh, persists rotation before own-profile readiness, and stays fenced while the recreated profile response is held; a corrupt stored refresh value marks cleanup required so caller close retries clear and retains the exclusive owner until storage succeeds, while transient read-unavailable remains non-destructive",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -320,6 +320,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
           "contains": "Windows refresh rotation write failure fences A before B profile readiness"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK close retries corrupt stored refresh cleanup before releasing owner"
         }
       ],
       "issues": [
