@@ -3484,3 +3484,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only
   observed failures. If only CI remains pending, hand off without another source
   commit. Preserve Auth strategy/provider and do not request secrets in chat.
+
+
+## Exact-head formatter follow-up — 2026-11-08T20:13Z
+
+- Re-read main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`, PR #37 and branch `automation/issue-22-atomic-review` at exact HEAD `7a112b30e469ee61f3f1cab21aa9de03cc8a8a95`; the previous core worker was RELEASED at 2026-11-08T19:16Z. The PR body is beyond GitHub's practical body-size limit, so the run marker/heartbeat is recorded as a PR conversation comment.
+- Exact-head Actions [42514160409](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42514160409), attempt 1, targets this exact HEAD and completed FAILURE. Latest-attempt jobs: `repo-sanity`, `ai-boundary`, `database`, `supabase-integration` and `windows` completed SUCCESS with their returned steps successful; `flutter` failed only at strict Dart 3.35.4 formatting of `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`. Flutter Analyze, full tests, downstream lifecycle/native checks and Web build were SKIPPED, not passed.
+- The earlier read-only diagnostic on parent `ec4f776d0625c68bc6d25fa2ee819cfaafee3a0f` emitted one formatter hunk and that hunk was applied in `7a112b30e469ee61f3f1cab21aa9de03cc8a8a95`; the new exact-head run still reports the same file as changed. Do not assume the earlier hunk was sufficient. Added a temporary read-only pinned-formatter diff and SHA diagnostic immediately before the unchanged strict gate so the next exact-head run exposes the remaining difference.
+- Changed paths: `.github/workflows/ci.yml` (temporary read-only diagnostic only; strict format gate unchanged) and this status file. No test assertion/source behavior, Auth/provider, API/schema/RLS, default activation, Pro-owned #14/#38/N4 content, deployment, merge or release change.
+- Cloud authoring has no Dart/Flutter SDK or Windows OS; local format/analyze/test/build were not run. New exact-head Actions must provide the diagnostic output; analyze/full tests/native probes/Web build remain unverified until the formatter passes.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device acceptance remain outstanding. PR #37 stays Draft; #20/#22/#15 remain open.
+- Next: inspect the new run's diagnostic diff and hashes on its exact HEAD; apply only the emitted formatter output, remove this temporary step, then require a fresh full six-job exact-head run. Preserve Pro-owned N4 scope and all security gates.
