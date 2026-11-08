@@ -3288,3 +3288,40 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   Hosted signed-JWT A/B, deployed PostgREST/RLS, learner expiry/restart and
   physical multi-device evidence remain pending. Pro-owned N4 paths are untouched.
 - Next: inspect all jobs/steps on the new exact HEAD; fix only observed failures.
+
+
+## Exact-head Windows owner-lease capability and formatter repair — 2026-11-08T11:11Z
+
+- Run `core-20261108T1111Z-pr37-owner-capability-and-format-repair`; branch
+  `automation/issue-22-atomic-review`; parent/expected HEAD `b953c2aa376ec7e70cbf48408045e274b18a667f`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42459240374](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42459240374)
+  completed FAILURE on this parent. Repo-sanity, AI-boundary, database and
+  disposable Supabase integration completed SUCCESS with all returned steps
+  successful. Windows failed at compile because Dart did not promote the
+  optional owner-lease capability to the unrelated interface type. Flutter
+  failed only strict Dart 3.35.4 formatting in
+  `windows_session_credential_vault_test.dart`; analyze, tests and Web checks
+  were SKIPPED downstream, not passed.
+- Fixed the two owner calls by checking the optional capability, then using an
+  explicit nullable interface cast before dispatch. Backends without the
+  optional lease capability still return without native calls. Applied only
+  the formatter-required indentation/argument layout in the identified test;
+  assertions and behavior are unchanged.
+- Changed exactly:
+  `apps/flutter_app/lib/features/auth/data/session_credential_vault.dart`,
+  `apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart`,
+  and `docs/PROJECT_STATUS.md`. No QA anchor, production Auth strategy/provider,
+  schema/RLS, default runtime activation, workflow gate, Pro N4 content,
+  deployment, merge or release change.
+- Full parent tree was read recursively before the write: 334 entries / 269
+  blobs; all unrelated paths remain represented by the exact base tree. The
+  new exact-head Actions run must verify formatter, analyze, full Flutter tests,
+  Windows build/process probes and disposable Supabase integration. Cloud
+  authoring runtime has Git but no Dart/Flutter SDK, so local format/analyze/test/
+  build were not run.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix
+  only observed failures. Keep PR #37 Draft and #20/#22/#15 open. Hosted
+  signed-JWT learner A/B, deployed PostgREST/RLS, native Credential Manager
+  failure injection, learner expiry/restart and physical multi-device evidence
+  remain unverified. Pro-owned #14/#38/N4 scope remains untouched.

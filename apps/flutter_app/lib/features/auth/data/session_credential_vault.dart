@@ -106,9 +106,12 @@ final class SessionCredentialVault {
   /// must acquire it before any Auth restore or password grant.
   Future<void> acquireOwner() => _serial(() async {
     final backend = _backend;
-    if (backend is! SessionCredentialOwnerLeaseBackend) return;
+    final ownerBackend = backend is SessionCredentialOwnerLeaseBackend
+        ? backend as SessionCredentialOwnerLeaseBackend?
+        : null;
+    if (ownerBackend == null) return;
     try {
-      if (!await backend.acquireOwner(target)) {
+      if (!await ownerBackend.acquireOwner(target)) {
         throw const SessionVaultFailure(SessionVaultError.unavailable);
       }
     } on SessionVaultFailure {
@@ -122,9 +125,12 @@ final class SessionCredentialVault {
   /// have drained. A failed release is retryable and keeps the Dart owner slot.
   Future<void> releaseOwner() => _serial(() async {
     final backend = _backend;
-    if (backend is! SessionCredentialOwnerLeaseBackend) return;
+    final ownerBackend = backend is SessionCredentialOwnerLeaseBackend
+        ? backend as SessionCredentialOwnerLeaseBackend?
+        : null;
+    if (ownerBackend == null) return;
     try {
-      if (!await backend.releaseOwner(target)) {
+      if (!await ownerBackend.releaseOwner(target)) {
         throw const SessionVaultFailure(SessionVaultError.unavailable);
       }
     } on SessionVaultFailure {
