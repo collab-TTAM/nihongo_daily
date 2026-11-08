@@ -1175,5 +1175,4 @@ void main() {
     expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
     expect(requests, isEmpty);
   });
-
 }
