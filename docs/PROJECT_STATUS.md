@@ -3361,3 +3361,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has GitHub access but no Dart/Flutter SDK, so local format/analyze/test/build were not run. A fresh exact-head Actions run must execute the formatter, analyzer, full Flutter suite, Windows native probes, disposable Supabase integration and Web build.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, learner expiry/restart and physical multi-device evidence remain unverified. Keep PR #37 Draft and #20/#22/#15 open; no merge, deployment or release.
 - Next: inspect every latest-attempt job and step for the new exact HEAD; if green, continue the remaining caller-owned Auth/profile lifecycle acceptance without bypassing protected hosted gates.
+
+
+## Windows runtime owner-lease fixture correction — 2026-11-08T13:12Z
+
+- Exact-head Actions [42479903434](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42479903434) targets `84562cf2d7cbf79c9819522909ae2576b6ce1c85`. Repository sanity, database, AI boundary, Windows and disposable Supabase integration completed SUCCESS with every returned step successful. Flutter formatter and analyzer passed; the complete Flutter suite failed with 12 errors in `windows_persistent_supabase_runtime_test.dart`.
+- Root cause: the TEST ONLY Windows MethodChannel mock handled `read`, `write` and `clear`, but omitted the new native `acquireOwner` / `releaseOwner` calls. The production owner lease therefore failed closed before any mocked vault read; downstream Flutter lifecycle, native-projection and Web checks were skipped.
+- Corrected only the test harness: model successful owner acquire/release, assert acquire precedes the vault read, assert close releases the owner, and extend the failed-clear close regression to prove the owner remains held until a successful clear. Added a `persistent-session-lifecycle` QA anchor. No production source, Auth/provider, API/schema/RLS, default activation, CI gate or Pro-owned N4 content changed.
+- Changed paths: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`, `qa/matrix.json`, and `docs/PROJECT_STATUS.md`. Cloud authoring has no Dart/Flutter SDK; local format/analyze/test/build were not run. Fresh exact-head Actions must verify the full Flutter suite, Windows process probes and Web build.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device acceptance remain outstanding. Keep PR #37 Draft and #20/#22/#15 open; do not treat local disposable Supabase or TEST ONLY MethodChannel evidence as hosted learner proof.
+- Next: inspect every latest-attempt job and step for the corrected exact HEAD; fix only observed failures.

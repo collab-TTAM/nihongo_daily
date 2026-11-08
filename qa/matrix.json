@@ -340,6 +340,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
           "contains": "owner-release-failure-retains-owner"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows runtime leases vault before read and releases on close"
         }
       ],
       "issues": [

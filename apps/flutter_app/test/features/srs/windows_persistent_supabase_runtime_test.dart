@@ -44,6 +44,9 @@ void main() {
   late bool rejectRefresh;
   final requests = <http.Request>[];
   final timeline = <String>[];
+  final ownerLeaseCalls = <String>[];
+  final startupOrder = <String>[];
+  final closeOrder = <String>[];
 
   http.Response authResponse() => http.Response(
     jsonEncode({
@@ -78,6 +81,9 @@ void main() {
     debugDefaultTargetPlatformOverride = TargetPlatform.windows;
     requests.clear();
     timeline.clear();
+    ownerLeaseCalls.clear();
+    startupOrder.clear();
+    closeOrder.clear();
     now = DateTime.utc(2026, 10, 14, 3);
     storedSecret = null;
     authUser = wire.a;
@@ -98,7 +104,16 @@ void main() {
         'NihongoDaily.Refresh.v1|https://example.supabase.invalid',
       );
       switch (call.method) {
+        case 'acquireOwner':
+          ownerLeaseCalls.add(call.method);
+          startupOrder.add('owner.acquire');
+          return true;
+        case 'releaseOwner':
+          ownerLeaseCalls.add(call.method);
+          closeOrder.add('owner.release');
+          return true;
         case 'read':
+          startupOrder.add('vault.read');
           timeline.add('vault.read');
           await (readWait?.future ?? Future<void>.value());
           if (failRead) {
@@ -126,6 +141,7 @@ void main() {
           storedSecret = token;
           return true;
         case 'clear':
+          closeOrder.add('vault.clear');
           timeline.add('vault.clear');
           if (failClear) {
             throw PlatformException(
@@ -204,6 +220,22 @@ void main() {
     messenger.setMockMethodCallHandler(channel, null);
     debugDefaultTargetPlatformOverride = null;
   });
+
+  test(
+    'Windows runtime leases vault before read and releases on close',
+    () async {
+      await runtime.start();
+
+      expect(startupOrder, ['owner.acquire', 'vault.read']);
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+
+      await runtime.close();
+
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder, ['owner.release']);
+    },
+  );
 
   test(
     'Windows vault restores through SDK and persists rotation before own profile',
@@ -1023,6 +1055,8 @@ void main() {
       await expectLater(runtime.close(), throwsA(isA<SessionVaultFailure>()));
       expect(runtime.persistence.phase, SessionPersistencePhase.closed);
       expect(storedSecret, refreshSecret);
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, ['vault.clear', 'vault.clear']);
       expect(
         () => PersistentSupabaseRuntime(
           projectUrl: wire.origin,
@@ -1041,6 +1075,12 @@ void main() {
       expect(storedSecret, isNull);
       expect(runtime.account.readyRuntime, isNull);
       expect(timeline.where((value) => value == 'vault.clear'), hasLength(3));
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder.last, 'owner.release');
+      expect(
+        closeOrder.lastIndexOf('vault.clear'),
+        lessThan(closeOrder.lastIndexOf('owner.release')),
+      );
       expect(
         requests.where(
           (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
