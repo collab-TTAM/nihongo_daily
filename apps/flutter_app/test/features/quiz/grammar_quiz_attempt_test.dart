@@ -309,9 +309,17 @@ void main() {
     expect(attempt.answers.first.choices, hasLength(4));
     expect(() => attempt.answers.clear(), throwsUnsupportedError);
     expect(() => attempt.answers.first.choices.clear(), throwsUnsupportedError);
+    expect(
+      () => attempt.answers.first.choiceContentVersions!.clear(),
+      throwsUnsupportedError,
+    );
     final output = attempt.toJson();
     answers(output).clear();
     expect(attempt.answers, hasLength(4));
+    final versions =
+        attempt.answers.first.toJson()['choice_content_versions']! as List<int>;
+    versions.clear();
+    expect(attempt.answers.first.choiceContentVersions, hasLength(4));
     expect(sameGrammarQuizAttempt(attempt, capture()), isTrue);
   });
 

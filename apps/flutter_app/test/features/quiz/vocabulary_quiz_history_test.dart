@@ -131,12 +131,20 @@ void main() {
       expect(sameVocabularyQuizAttempt(event, decoded), isTrue);
       expect(() => event.answers.clear(), throwsUnsupportedError);
       expect(() => event.answers.first.choices.clear(), throwsUnsupportedError);
+      expect(
+        () => event.answers.first.choiceContentVersions!.clear(),
+        throwsUnsupportedError,
+      );
       final mutable = event.toJson();
       rows(mutable).clear();
       expect(event.answers, hasLength(10));
       final choices = event.answers.first.toJson()['choices']! as List<String>;
       choices.clear();
       expect(event.answers.first.choices, hasLength(4));
+      final versions =
+          event.answers.first.toJson()['choice_content_versions']! as List<int>;
+      versions.clear();
+      expect(event.answers.first.choiceContentVersions, hasLength(4));
       expect(event.score, round.score);
     });
   }
