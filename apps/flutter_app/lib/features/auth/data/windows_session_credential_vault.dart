@@ -9,9 +9,31 @@ SessionCredentialVault createWindowsSessionCredentialVault(String projectUrl) =>
       backend: const _WindowsCredentialBackend(),
     );
 
-final class _WindowsCredentialBackend implements SessionCredentialBackend {
+final class _WindowsCredentialBackend
+    implements SessionCredentialBackend, SessionCredentialOwnerLeaseBackend {
   const _WindowsCredentialBackend();
   static const _channel = MethodChannel('nihongo_daily/session_vault_v1');
+
+  Future<bool> _ownerCall(String method, String target) async {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.windows) {
+      throw const SessionVaultFailure(SessionVaultError.unavailable);
+    }
+    try {
+      return await _channel.invokeMethod<bool>(method, {'target': target}) ==
+          true;
+    } on Object {
+      throw const SessionVaultFailure(SessionVaultError.unavailable);
+    }
+  }
+
+  @override
+  Future<bool> acquireOwner(String target) =>
+      _ownerCall('acquireOwner', target);
+
+  @override
+  Future<bool> releaseOwner(String target) =>
+      _ownerCall('releaseOwner', target);
+
   @override
   Future<Object?> invoke(String method, Map<String, Object> arguments) async {
     if (kIsWeb || defaultTargetPlatform != TargetPlatform.windows) {

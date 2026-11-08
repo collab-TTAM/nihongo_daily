@@ -60,12 +60,19 @@ current-session sign-out while preventing delayed cleanup from deleting a
 replacement refresh token. The pinned-SDK A-to-B regression covers the
 predicate and the complete vault write/cleanup order.
 
-One active persistence owner is allowed per canonical project target in this
-Dart isolate. Closing drains operations before releasing the owner slot. This
-is not cross-process CAS/locking; caller must not run competing same-project
-credential writers in multiple application instances. Credential Manager remains
-OS-user scoped. Server verification is authoritative; decoded JWT hints are only
-fail-closed client checks. No memory-zeroization claim is added for Dart strings.
+One active persistence owner is allowed per canonical project target in
+this Dart isolate. On Windows, startup also acquires a native named-mutex lease
+for the canonical target before reading the saved secret or dispatching Auth.
+The mutex name contains only a stable non-secret hash, is scoped to the current
+Windows logon session, and rejects a competing Nihongo Daily runtime with a
+fixed unavailable error. An abandoned mutex is recoverable after the prior
+process exits unexpectedly. Caller close drains Auth/vault work and any required
+cleanup before releasing the native lease and local owner slot. This coordinates
+cooperating app instances in one Windows session; it is not cross-device CAS,
+does not restrict arbitrary same-user software from accessing Credential Manager,
+and does not coordinate separate Windows logon sessions. Server verification is
+authoritative; decoded JWT hints are only fail-closed client checks. No
+memory-zeroization claim is added for Dart strings.
 
 ## Logout, failure and shutdown
 
@@ -97,12 +104,12 @@ revocation, OS-logoff/power-loss recovery or protection from same-OS-user proces
 ## Reproduction and separate review
 
 In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
-`flutter test`. Twenty-five pure cases cover empty/refresh startup, persistence
+`flutter test`. Thirty pure cases cover empty/refresh startup, persistence
 barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
 retry, revocation, owner exclusivity, stream closure and disposal. Pinned-SDK HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
 late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
-Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof. The Windows MethodChannel suite also covers logout during a held vault read and blocks B until the stale read/clear drain; that held read is a mock channel response, not a native Credential Manager fault injection.
+Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof. The Windows MethodChannel suite also covers the native owner-lease acquire/release mapping and logout during a held vault read and blocks B until the stale read/clear drain; that held read is a mock channel response, not a native Credential Manager fault injection.
 
 The new TEST ONLY `windows_persistent_supabase_runtime_test.dart` composes
 the actual Dart Windows MethodChannel vault adapter with the pinned Supabase SDK.
@@ -110,7 +117,7 @@ It asserts saved-secret read, server refresh, rotated-secret write before
 `ensure_profile`, logout before credential clear, fail-closed read/write errors,
 and a late User A login followed by User B. The MethodChannel is mocked here:
 this verifies assembly wiring, not the native Windows Credential Manager call.
-The separate Windows child-process probe still verifies the actual OS store.
+The separate Windows child-process probe verifies the actual OS store and per-project process-lease contention/abandoned-mutex recovery.
 Current-source CI must pass; historical previous-source success is insufficient.
 All 14 live Personal Alpha release groups remain pending. Keep PR #37 draft and
 #20/#22/#15 open. Next: interactive Windows bridge/restart, hosted Auth learner

@@ -26,7 +26,8 @@ Future<void> fails(Future<void> operation) async {
   throw StateError('operation unexpectedly succeeded');
 }
 
-final class MemoryVault implements SessionCredentialBackend {
+final class MemoryVault
+    implements SessionCredentialBackend, SessionCredentialOwnerLeaseBackend {
   String? secret;
   Completer<void>? writeWait;
   Completer<void>? readWait;
@@ -37,6 +38,30 @@ final class MemoryVault implements SessionCredentialBackend {
   final operations = <String>[];
   int writes = 0;
   int clears = 0;
+  bool ownerHeld = false;
+  bool failAcquireOwner = false;
+  bool failReleaseOwner = false;
+  int ownerAcquires = 0;
+  int ownerReleases = 0;
+
+  @override
+  Future<bool> acquireOwner(String target) async {
+    ownerAcquires++;
+    if (failAcquireOwner) throw StateError('PRIVATE OS OWNER');
+    if (ownerHeld) return false;
+    ownerHeld = true;
+    return true;
+  }
+
+  @override
+  Future<bool> releaseOwner(String target) async {
+    ownerReleases++;
+    if (failReleaseOwner) throw StateError('PRIVATE OS OWNER');
+    if (!ownerHeld) return false;
+    ownerHeld = false;
+    return true;
+  }
+
   @override
   Future<Object?> invoke(String method, Map<String, Object> args) async {
     operations.add(
@@ -145,6 +170,9 @@ const scenarios = [
   'logout-failure-late-login',
   'login-during-late-cleanup',
   'logout-during-failed-state-retry',
+  'owner-lease-order',
+  'owner-lock-failure-no-storage-access',
+  'owner-release-failure-retains-owner',
 ];
 
 Future<void> verifyLifecycle(String scenario) async {
@@ -158,6 +186,62 @@ Future<void> verifyLifecycle(String scenario) async {
   Future<void> login() =>
       access.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD');
   try {
+    if (scenario == 'owner-lock-failure-no-storage-access') {
+      backend.secret = 'TEST_ONLY_SAVED';
+      backend.failAcquireOwner = true;
+      await fails(access.start());
+      await fails(login());
+      check(
+        backend.operations.isEmpty &&
+            backend.secret == 'TEST_ONLY_SAVED' &&
+            sdk.restores == 0 &&
+            sdk.logins == 0 &&
+            !backend.ownerHeld,
+        'busy process lease touched saved credentials or dispatched Auth',
+      );
+      backend.failAcquireOwner = false;
+      return;
+    }
+    if (scenario == 'owner-release-failure-retains-owner') {
+      await access.start();
+      await login();
+      backend.failReleaseOwner = true;
+      var closeFailed = false;
+      try {
+        await access.close();
+      } on SessionVaultFailure {
+        closeFailed = true;
+      }
+      check(
+        closeFailed &&
+            backend.ownerHeld &&
+            PersistentAccountAccess.isTargetOwned(vault.target),
+        'failed native lease release freed the local owner',
+      );
+      backend.failReleaseOwner = false;
+      await access.close();
+      check(
+        !backend.ownerHeld &&
+            !PersistentAccountAccess.isTargetOwned(vault.target),
+        'close retry did not release both owner slots',
+      );
+      return;
+    }
+    if (scenario == 'owner-lease-order') {
+      await access.start();
+      check(
+        backend.ownerAcquires == 1 &&
+            backend.ownerHeld &&
+            backend.operations.first == 'read',
+        'vault read started before native owner acquisition',
+      );
+      await access.close();
+      check(
+        backend.ownerReleases == 1 && !backend.ownerHeld,
+        'caller close did not release the native owner',
+      );
+      return;
+    }
     if (scenario == 'restore-barrier' || scenario == 'logout-during-restore') {
       backend.secret = 'TEST_ONLY_SAVED';
       sdk.authWait = Completer();

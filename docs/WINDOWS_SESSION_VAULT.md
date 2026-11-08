@@ -12,9 +12,12 @@ The native helper uses `CredWriteW`, `CredReadW`, `CredDeleteW` and `CredFree` f
 application/version prefix followed by a canonical trusted HTTPS project origin.
 The origin contains no account/password/query/fragment. Each project has a
 single refresh-secret slot under the current Windows user's credential set.
-This is an OS-user credential facility, not application/process isolation; other
-processes running as that user may access generic credentials. It is not a
-multi-account history store or a cross-device secret synchronization mechanism.
+The Credential Manager slot remains OS-user scoped, so other same-user software
+can access generic credentials. The owned Nihongo Daily runtime additionally
+acquires a per-project named-mutex lease before reading/restoring the slot. This
+coordinates competing app instances in the same Windows logon session; it is
+not a security boundary against arbitrary same-user processes, a multi-account
+history store or a cross-device secret synchronization mechanism.
 
 This component accepts an opaque, nonempty printable-ASCII value of at most
 2048 bytes, below Windows' 2560-byte credential blob bound. This is a local
@@ -34,9 +37,15 @@ do not include raw arguments, secrets, OS errors or response details.
 
 Dart serializes operations across vault facades sharing the same canonical
 target in one isolate. A failed operation does not poison the queue. Independent
-project targets do not block each other. This is not interprocess compare-and-
-swap or a transactional SDK token-rotation protocol. Session assembly must own
-one writer, guard late results/account changes and clear/revoke on logout.
+project targets do not block each other. The Windows runtime also acquires a
+native named mutex derived from a stable non-secret hash of the canonical target
+before vault read/Auth restore; a competing app instance receives a fixed
+unavailable result. The mutex is scoped to the current logon session and an
+abandoned mutex is recoverable after process exit. This is an exclusive runtime
+lease, not interprocess compare-and-swap or a transactional SDK token-rotation
+protocol. Arbitrary same-user processes can still access Credential Manager.
+Session assembly must own one writer, guard late results/account changes and
+clear/revoke on logout.
 The shared review journal, browser IndexedDB, preferences and logs are never
 used as secret-storage fallbacks. Web/mobile/Linux/macOS explicitly fail
 unavailable; their protected stores require separately tested adapters.
@@ -70,12 +79,13 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Twelve pure cases cover canonical/invalid scopes, secret bounds, malformed read/
 acknowledgment, safe failures, same-scope write-clear order, error recovery and
-independent projects. Four channel cases use mock native messages: exact
+independent projects. Five channel cases use mock native messages: exact
 arguments, redacted errors, unsupported platforms and missing channel. These
 are not OS-storage execution. The separately built native probe shares the
 production helper and uses actual Credential Manager with PID-qualified
 `.invalid` TEST ONLY scopes. It tests write/read/replacement, child-write/exit/
-parent-read, project isolation, invalid writes preserving the prior value,
+parent-read, process-lease contention and abandoned-mutex recovery, project
+isolation, invalid writes preserving the prior value,
 maximum size, foreign namespace rejection, injected corrupt OS blob, recovery
 and idempotent clear. Probe credentials are removed before a passing exit.
 The probe is outside the packaged application release directory.

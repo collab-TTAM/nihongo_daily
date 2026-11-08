@@ -15,6 +15,13 @@ abstract interface class SessionCredentialBackend {
   Future<Object?> invoke(String method, Map<String, Object> arguments);
 }
 
+/// Optional native process lease for runtimes that share one OS credential slot.
+/// The lease spans restore/rotation/logout, not merely an individual vault call.
+abstract interface class SessionCredentialOwnerLeaseBackend {
+  Future<bool> acquireOwner(String target);
+  Future<bool> releaseOwner(String target);
+}
+
 /// One refresh secret per trusted project origin and OS user. No Auth/session
 /// validity is inferred from a stored value, and no password/profile is stored.
 final class SessionCredentialVault {
@@ -93,6 +100,39 @@ final class SessionCredentialVault {
       throw const SessionVaultFailure(SessionVaultError.unavailable);
     }
   }
+
+  /// Acquires an OS-level owner lease when the backend supports one. Test-only
+  /// in-memory ports may omit the capability; the Windows production backend
+  /// must acquire it before any Auth restore or password grant.
+  Future<void> acquireOwner() => _serial(() async {
+    final backend = _backend;
+    if (backend is! SessionCredentialOwnerLeaseBackend) return;
+    try {
+      if (!await backend.acquireOwner(target)) {
+        throw const SessionVaultFailure(SessionVaultError.unavailable);
+      }
+    } on SessionVaultFailure {
+      rethrow;
+    } on Object {
+      throw const SessionVaultFailure(SessionVaultError.unavailable);
+    }
+  });
+
+  /// Releases the native lease only after the owned SDK and pending vault work
+  /// have drained. A failed release is retryable and keeps the Dart owner slot.
+  Future<void> releaseOwner() => _serial(() async {
+    final backend = _backend;
+    if (backend is! SessionCredentialOwnerLeaseBackend) return;
+    try {
+      if (!await backend.releaseOwner(target)) {
+        throw const SessionVaultFailure(SessionVaultError.unavailable);
+      }
+    } on SessionVaultFailure {
+      rethrow;
+    } on Object {
+      throw const SessionVaultFailure(SessionVaultError.unavailable);
+    }
+  });
 
   Future<String?> readRefreshToken() => _serial(() async {
     final result = await _invoke('read');

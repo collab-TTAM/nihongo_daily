@@ -4,7 +4,12 @@
 #include <wincred.h>
 
 #include <algorithm>
+#include <cstdint>
+#include <iomanip>
+#include <map>
 #include <memory>
+#include <mutex>
+#include <sstream>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -13,6 +18,27 @@ namespace nihongo {
 namespace {
 constexpr std::string_view kPrefix = "NihongoDaily.Refresh.v1|https://";
 constexpr size_t kMaxSecret = 2048;
+
+struct OwnerLease {
+  HANDLE mutex;
+  DWORD thread_id;
+};
+std::mutex owner_lease_guard;
+std::map<std::string, OwnerLease> owner_leases;
+
+std::wstring OwnerMutexName(const std::string& target) {
+  // Stable non-secret name: the canonical target is never embedded in the
+  // kernel object namespace, and collisions can only fail closed.
+  std::uint64_t hash = 14695981039346656037ull;
+  for (const unsigned char value : target) {
+    hash ^= value;
+    hash *= 1099511628211ull;
+  }
+  std::wostringstream name;
+  name << L"Local\\NihongoDaily.Refresh.Owner.v1." << std::hex
+       << std::setfill(L'0') << std::setw(16) << hash;
+  return name.str();
+}
 
 bool ValidTarget(const std::string& target) {
   if (target.size() <= kPrefix.size() || target.size() > 512 ||
@@ -97,5 +123,43 @@ VaultStatus ClearRefreshCredential(const std::string& target) {
     return VaultStatus::success;
   }
   return VaultStatus::unavailable;
+}
+
+VaultStatus AcquireCredentialOwner(const std::string& target) {
+  if (!ValidTarget(target)) return VaultStatus::invalid_input;
+  std::lock_guard<std::mutex> guard(owner_lease_guard);
+  if (owner_leases.find(target) != owner_leases.end()) {
+    return VaultStatus::unavailable;
+  }
+  const std::wstring name = OwnerMutexName(target);
+  HANDLE mutex = CreateMutexW(nullptr, FALSE, name.c_str());
+  if (!mutex) return VaultStatus::unavailable;
+  const DWORD wait = WaitForSingleObject(mutex, 0);
+  if (wait != WAIT_OBJECT_0 && wait != WAIT_ABANDONED) {
+    CloseHandle(mutex);
+    return VaultStatus::unavailable;
+  }
+  try {
+    owner_leases.emplace(target, OwnerLease{mutex, GetCurrentThreadId()});
+  } catch (...) {
+    ReleaseMutex(mutex);
+    CloseHandle(mutex);
+    return VaultStatus::unavailable;
+  }
+  return VaultStatus::success;
+}
+
+VaultStatus ReleaseCredentialOwner(const std::string& target) {
+  if (!ValidTarget(target)) return VaultStatus::invalid_input;
+  std::lock_guard<std::mutex> guard(owner_lease_guard);
+  const auto it = owner_leases.find(target);
+  if (it == owner_leases.end() ||
+      it->second.thread_id != GetCurrentThreadId()) {
+    return VaultStatus::unavailable;
+  }
+  if (!ReleaseMutex(it->second.mutex)) return VaultStatus::unavailable;
+  CloseHandle(it->second.mutex);
+  owner_leases.erase(it);
+  return VaultStatus::success;
 }
 }  // namespace nihongo

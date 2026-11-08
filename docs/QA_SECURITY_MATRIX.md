@@ -209,7 +209,7 @@ or secure token restoration evidence. All previous CI gates remain required.
 
 ## Windows session-vault baseline
 
-`windows-session-vault` adds twelve pure input/order/error cases, four mocked
+`windows-session-vault` adds twelve pure input/order/error cases, five mocked
 platform-channel cases and actual Windows Credential Manager process-reopen,
 project-isolation/corruption/bounds/clear checks. Native bridge compiles in the
 Windows app. See WINDOWS_SESSION_VAULT.md. QA42 groups, all 14 live integrations
@@ -276,3 +276,18 @@ passed. Raw exact-head/every-critical-step QA passed; following metadata success
 has separate CI. New cancelable-window-exit case brings inventory to 48.
 All 14 live release groups remain pending; no hosted/logged-in learner or
 uncancelable logoff/power-loss proof. This hook does not replace persistence.
+
+
+## Windows vault process-owner lease — 2026-11-08
+
+The caller-owned Windows runtime now acquires a per-project named mutex before
+reading a saved refresh token or starting SDK Auth. A competing Nihongo Daily
+process in the same Windows logon session fails closed instead of racing token
+rotation. Caller close releases the lease only after Auth work and required
+credential cleanup have drained. The native probe exercises parent/child
+contention and recovery from an abandoned mutex after child-process exit.
+This is an exclusive cooperating-runtime lease, not CAS or a boundary against
+arbitrary same-user software; separate Windows logon sessions are not
+coordinated. The Windows job must pass on the exact source head before this
+case is counted as observed evidence. It remains TEST ONLY native/process
+evidence, not hosted signed-JWT learner or multi-device proof.

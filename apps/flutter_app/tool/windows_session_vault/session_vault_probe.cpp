@@ -1,8 +1,11 @@
 #include <windows.h>
 #include <wincred.h>
 
-#include <iostream>
 #include <algorithm>
+#include <cstdint>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -12,6 +15,18 @@
 namespace {
 void Check(bool ok) {
   if (!ok) throw std::runtime_error("credential probe assertion failed");
+}
+
+std::wstring OwnerMutexNameForProbe(const std::string& target) {
+  std::uint64_t hash = 14695981039346656037ull;
+  for (const unsigned char value : target) {
+    hash ^= value;
+    hash *= 1099511628211ull;
+  }
+  std::wostringstream name;
+  name << L"Local\\NihongoDaily.Refresh.Owner.v1." << std::hex
+       << std::setfill(L'0') << std::setw(16) << hash;
+  return name.str();
 }
 
 void WriteCorruptFixture(const std::string& target) {
@@ -25,6 +40,37 @@ void WriteCorruptFixture(const std::string& target) {
   credential.CredentialBlob = bytes;
   credential.Persist = CRED_PERSIST_LOCAL_MACHINE;
   Check(CredWriteW(&credential, 0) != FALSE);
+}
+
+DWORD RunChild(std::wstring command) {
+  STARTUPINFOW startup{};
+  startup.cb = sizeof(startup);
+  PROCESS_INFORMATION process{};
+  Check(CreateProcessW(nullptr, command.data(), nullptr, nullptr, FALSE,
+                       CREATE_NO_WINDOW, nullptr, nullptr, &startup, &process) !=
+        FALSE);
+  const DWORD wait = WaitForSingleObject(process.hProcess, 10000);
+  DWORD code = 1;
+  if (wait == WAIT_OBJECT_0) {
+    Check(GetExitCodeProcess(process.hProcess, &code) != FALSE);
+  } else {
+    TerminateProcess(process.hProcess, 1);
+    WaitForSingleObject(process.hProcess, 5000);
+  }
+  CloseHandle(process.hThread);
+  CloseHandle(process.hProcess);
+  Check(wait == WAIT_OBJECT_0);
+  return code;
+}
+
+DWORD ChildOwnerAttempt(const std::string& target, const wchar_t* mode) {
+  wchar_t executable[32768]{};
+  const DWORD length = GetModuleFileNameW(nullptr, executable, 32768);
+  Check(length > 0 && length < 32768);
+  const std::wstring name(target.begin(), target.end());
+  const std::wstring command = L"\"" + std::wstring(executable) + L"\" " +
+                               mode + L" " + name;
+  return RunChild(command);
 }
 
 void ChildWrite(const std::string& target) {
@@ -56,6 +102,37 @@ void ChildWrite(const std::string& target) {
 
 int wmain(int argc, wchar_t* argv[]) {
   using nihongo::VaultStatus;
+  if (argc == 3 &&
+      (std::wstring(argv[1]) == L"--child-acquire" ||
+       std::wstring(argv[1]) == L"--child-abandon")) {
+    const std::wstring name(argv[2]);
+    const std::wstring prefix = L"NihongoDaily.Refresh.v1|https://ci-vault-a-";
+    const std::wstring suffix = L".invalid";
+    if (name.size() <= prefix.size() + suffix.size() || name.size() > 512 ||
+        name.compare(0, prefix.size(), prefix) != 0 ||
+        name.compare(name.size() - suffix.size(), suffix.size(), suffix) != 0) {
+      return 1;
+    }
+    const std::wstring pid = name.substr(
+        prefix.size(), name.size() - prefix.size() - suffix.size());
+    if (!std::all_of(pid.begin(), pid.end(), [](wchar_t c) {
+          return c >= L'0' && c <= L'9';
+        })) {
+      return 1;
+    }
+    std::string target;
+    for (const wchar_t c : name) {
+      if (c < 0x21 || c > 0x7e) return 1;
+      target.push_back(static_cast<char>(c));
+    }
+    if (nihongo::AcquireCredentialOwner(target) != VaultStatus::success) {
+      return 2;
+    }
+    if (std::wstring(argv[1]) == L"--child-abandon") return 0;
+    return nihongo::ReleaseCredentialOwner(target) == VaultStatus::success
+               ? 0
+               : 1;
+  }
   if (argc == 3 && std::wstring(argv[1]) == L"--child-write") {
     const std::wstring name(argv[2]);
     const std::wstring prefix = L"NihongoDaily.Refresh.v1|https://ci-vault-a-";
@@ -90,6 +167,19 @@ int wmain(int argc, wchar_t* argv[]) {
   try {
     Check(nihongo::ClearRefreshCredential(a) == VaultStatus::success);
     Check(nihongo::ClearRefreshCredential(b) == VaultStatus::success);
+    Check(nihongo::AcquireCredentialOwner(a) == VaultStatus::success);
+    Check(ChildOwnerAttempt(a, L"--child-acquire") == 2);
+    Check(nihongo::ReleaseCredentialOwner(a) == VaultStatus::success);
+    Check(ChildOwnerAttempt(a, L"--child-acquire") == 0);
+    // Keep the named object alive while the child exits so the next wait
+    // observes WAIT_ABANDONED instead of creating a fresh mutex.
+    const std::wstring mutex_name = OwnerMutexNameForProbe(a);
+    HANDLE witness = CreateMutexW(nullptr, FALSE, mutex_name.c_str());
+    Check(witness != nullptr);
+    Check(ChildOwnerAttempt(a, L"--child-abandon") == 0);
+    Check(nihongo::AcquireCredentialOwner(a) == VaultStatus::success);
+    Check(nihongo::ReleaseCredentialOwner(a) == VaultStatus::success);
+    CloseHandle(witness);
     Check(nihongo::ReadRefreshCredential(a).status == VaultStatus::not_found);
     Check(nihongo::WriteRefreshCredential(a, "TEST_ONLY_FIRST_REFRESH") ==
           VaultStatus::success);
@@ -131,7 +221,8 @@ int wmain(int argc, wchar_t* argv[]) {
     return 1;
   }
   std::cout << "PASS: actual Windows Credential Manager write/read/replace, "
-               "child exit/parent read, project isolation, bounded corrupt data "
-               "and idempotent clear. TEST ONLY; no hosted Auth restoration.\n";
+               "child exit/parent read, project isolation, process owner lease "
+               "contention/abandonment recovery, bounded corrupt data and "
+               "idempotent clear. TEST ONLY; no hosted Auth restoration.\n";
   return 0;
 }

@@ -17,5 +17,7 @@ VaultRead ReadRefreshCredential(const std::string& target);
 VaultStatus WriteRefreshCredential(const std::string& target,
                                   const std::string& token);
 VaultStatus ClearRefreshCredential(const std::string& target);
+VaultStatus AcquireCredentialOwner(const std::string& target);
+VaultStatus ReleaseCredentialOwner(const std::string& target);
 }  // namespace nihongo
 #endif

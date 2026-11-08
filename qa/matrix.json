@@ -254,7 +254,7 @@
     {
       "id": "persistent-session-lifecycle",
       "status": "automated-baseline",
-      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear; caller-owned runtime close/recreate restores the saved refresh token through server refresh, persists rotation before own-profile readiness, and stays fenced while the recreated profile response is held; a corrupt stored refresh value marks cleanup required so caller close retries clear and retains the exclusive owner until storage succeeds, while transient read-unavailable remains non-destructive",
+      "scope": "Exclusively owned SDK/vault lifecycle, fail-closed startup read/write errors, explicit cleanup/login recovery, server refresh on startup, persist-before-profile barrier, rotation, fenced logout, late-response cleanup and bounded Auth HTTP; caller close during a pending vault read waits for cleanup and rejects the late restore; explicit logout while a startup vault read is held, blocked account replacement until read/clear drain, then B rotation before profile; caller close during an in-flight logout waits for the held vault clear before disposing the owned SDK and preserves borrowed HTTP-client ownership; delayed User A vault write followed by failed logout clear remains fenced, blocks User B until explicit cleanup retry, then persists B rotation before profile; failed logout/rotation cleanup remains retryable during caller close, and vault ownership is retained until a successful clear; caller-owned runtime close/recreate restores the saved refresh token through server refresh, persists rotation before own-profile readiness, and stays fenced while the recreated profile response is held; a corrupt stored refresh value marks cleanup required so caller close retries clear and retains the exclusive owner until storage succeeds, while transient read-unavailable remains non-destructive; Windows caller-owned runtime acquires a per-project native process-owner lease before saved-secret read/Auth restore and releases it only after close drains",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -324,6 +324,22 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "SDK close retries corrupt stored refresh cleanup before releasing owner"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/auth/data/persistent_account_access.dart",
+          "contains": "await vault.acquireOwner()"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/auth/data/persistent_account_access.dart",
+          "contains": "await vault.releaseOwner()"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "owner-lock-failure-no-storage-access"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "owner-release-failure-retains-owner"
         }
       ],
       "issues": [
@@ -332,12 +348,12 @@
         15
       ],
       "reproduce": "In apps/flutter_app: dart run tool/verify_session_lifecycle.dart; flutter test",
-      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof. The close/logout held-clear and late-write/failed-clear retry races use TEST ONLY in-memory/MethodChannel storage; they do not inject a delayed native Credential Manager failure or prove hosted learner evidence. New runtime-recreation regression uses TEST ONLY MockClient/in-memory vault and same-process SDK reconstruction; it is not native Credential Manager restoration or forced process restart."
+      "limitation": "Pure/pinned-SDK HTTP fixtures and sequential actual Windows Credential Manager/journal process restart; Auth HTTP and JWT signatures remain simulated. Explicit assembly/default runtime null, no automatic refresh scheduler or hosted learner proof. Windows only; web rejected before construction. Isolate ownership is not interprocess locking; no OS-logoff/power-loss or concurrent writer proof. The close/logout held-clear and late-write/failed-clear retry races use TEST ONLY in-memory/MethodChannel storage; they do not inject a delayed native Credential Manager failure or prove hosted learner evidence. New runtime-recreation regression uses TEST ONLY MockClient/in-memory vault and same-process SDK reconstruction; it is not native Credential Manager restoration or forced process restart. Windows native owner lease additionally serializes cooperating Nihongo Daily processes in one logon session and recovers an abandoned mutex after process exit; it does not restrict arbitrary same-user software or separate sessions. Native process evidence is TEST ONLY, not hosted Auth/device proof."
     },
     {
       "id": "windows-session-vault",
       "status": "automated-baseline",
-      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, held startup-restore close cleanup and explicit unsupported-platform failure",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, per-project Windows runtime owner lease and abandoned-process recovery",
       "ci_job": "windows",
       "anchors": [
         {
@@ -375,14 +391,26 @@
         {
           "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
           "contains": "runtime-close-restore"
+        },
+        {
+          "path": "apps/flutter_app/windows/runner/session_credential_vault.cpp",
+          "contains": "AcquireCredentialOwner"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "--child-abandon"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart",
+          "contains": "Windows owner lease uses only the canonical project target"
         }
       ],
       "issues": [
         20,
         22
       ],
-      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe",
-      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-OS-user processes can access generic credentials. Single-isolate queue is not interprocess CAS; non-Windows/web unsupported."
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe. The native probe verifies parent/child lease contention and abandoned-mutex recovery.",
+      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. The named mutex coordinates cooperating Nihongo Daily runtimes in one Windows logon session; arbitrary same-user software can still access generic credentials and separate Windows logon sessions are not coordinated. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-isolate queue is not cross-device CAS."
     },
     {
       "id": "account-profile-readiness",

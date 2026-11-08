@@ -3223,3 +3223,43 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed exactly five paths: `persistent_account_access.dart`, `persistent_supabase_runtime_test.dart`, `qa/matrix.json`, `PERSISTENT_SESSION_LIFECYCLE.md`, and this status document. No Auth strategy/provider, API/schema/RLS, default activation, workflow gate, Pro-owned N4, deployment, merge or release changes.
 - Parent exact-head CI [42445578429](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42445578429) completed success on `a0bbeca3a9cc909ac71fa75c3b294febedffe011`: all six jobs and every returned step succeeded (101/101). This new source head requires its own exact-head Actions run. Cloud authoring has no Flutter/Dart SDK; local format/analyze/test/build were not run.
 - Hosted signed-JWT learner A/B, deployed hosted PostgREST/RLS, native Credential Manager failure injection, OS restart/expiry, and physical multi-device evidence remain unverified. Next: inspect every job/step on the new exact HEAD; preserve all assertions and keep PR #37 Draft.
+
+
+## Windows per-project process-owner lease — 2026-11-08T07:09Z
+
+- Run `core-20261108T0709Z-pr37-restore-lifecycle-review`; branch
+  `automation/issue-22-atomic-review`; parent/expected HEAD
+  `346c223f8ec60b55727da87906e9884dda0aff54`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Closed a documented lifecycle gap: the Dart owner set was isolate-local, so
+  two Windows app processes could read the same OS-user refresh slot and race
+  Supabase refresh-token rotation. The Windows runtime now acquires a
+  target-derived named mutex before vault read/Auth restore and releases it only
+  after caller-owned Auth/vault work and required cleanup drain. Busy acquisition
+  fails with a fixed safe unavailable error; abandoned mutex recovery allows a
+  later process to continue after an earlier process exits unexpectedly.
+- Native probe adds real parent/child process contention and abandoned-mutex
+  recovery using only PID-qualified `.invalid` TEST ONLY targets. Windows
+  MethodChannel test verifies exact target-only acquire/release arguments and
+  safe busy handling. Three additional pure lifecycle cases verify acquire-before-
+  read ordering, busy-lease no-storage/no-Auth behavior, and retention of both
+  local/native ownership after a failed release until close retry. Existing
+  per-target Dart serialization and session/generation guards remain unchanged.
+- Changed paths: `session_credential_vault.dart`,
+  `persistent_account_access.dart`, `windows_session_credential_vault.dart`,
+  `session_lifecycle_fixtures.dart`, Windows native vault header/implementation/
+  MethodChannel, native process probe, Windows MethodChannel tests, QA matrix,
+  session lifecycle/vault/QA docs,
+  and this status file. No Auth strategy/provider, public grants, RLS, schema,
+  default runtime activation, production configuration, N4 content, deployment,
+  merge or release changes.
+- Cloud authoring has no Flutter/Dart SDK or Windows native runtime. Local
+  format/analyze/tests/build were not run; exact-head GitHub Actions must verify
+  Dart formatting/analyze/full Flutter suite and Windows mutex/process probe.
+- Limit: the mutex coordinates cooperating Nihongo Daily processes in one
+  Windows logon session. Credential Manager remains accessible to arbitrary
+  same-user software; this is not cross-device CAS, separate-session locking,
+  hosted signed-JWT A/B, deployed PostgREST/RLS, or physical multi-device proof.
+  Next: inspect exact-head CI on the committed tree, fix observed failures only,
+  then continue the hosted Auth/atomic-review acceptance and PR #41 formatter
+  correction in the next sequential core iteration.

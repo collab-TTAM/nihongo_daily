@@ -20,7 +20,9 @@ RegisterSessionVaultChannel(flutter::BinaryMessenger* messenger) {
       const flutter::MethodCall<flutter::EncodableValue>& call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
     const auto& method = call.method_name();
-    if (method != "read" && method != "write" && method != "clear" && method != "reviewDirectory") {
+    if (method != "read" && method != "write" && method != "clear" &&
+        method != "reviewDirectory" && method != "acquireOwner" &&
+        method != "releaseOwner") {
       result->NotImplemented();
       return;
     }
@@ -39,7 +41,21 @@ RegisterSessionVaultChannel(flutter::BinaryMessenger* messenger) {
       Fail(result.get());
       return;
     }
-    if (method == "reviewDirectory") {
+    if (method == "acquireOwner") {
+      if (nihongo::AcquireCredentialOwner(*target) ==
+          nihongo::VaultStatus::success) {
+        result->Success(flutter::EncodableValue(true));
+      } else {
+        Fail(result.get());
+      }
+    } else if (method == "releaseOwner") {
+      if (nihongo::ReleaseCredentialOwner(*target) ==
+          nihongo::VaultStatus::success) {
+        result->Success(flutter::EncodableValue(true));
+      } else {
+        Fail(result.get());
+      }
+    } else if (method == "reviewDirectory") {
       std::string path;
       if (ResolveReviewDataDirectory(*target, &path)) {
         result->Success(flutter::EncodableValue(path));

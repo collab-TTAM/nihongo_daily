@@ -60,6 +60,7 @@ final class PersistentAccountAccess implements AccountAccess {
   // A failed sign-out/rotation cleanup must be retried before close releases
   // this target owner; otherwise a stale OS credential could survive shutdown.
   bool _cleanupRequired = false;
+  bool _vaultOwnerAcquired = false;
   // One SDK sign-out can reach both lifecycle observers. Coalesce delayed
   // null-session notifications until a new session is observed.
   bool _noSessionClearPending = false;
@@ -216,6 +217,14 @@ final class PersistentAccountAccess implements AccountAccess {
     _revoke(SessionPersistencePhase.restoring);
     final generation = _generation;
     return _runTracked(() async {
+      try {
+        await vault.acquireOwner();
+        _vaultOwnerAcquired = true;
+      } on Object {
+        _fail();
+        rethrow;
+      }
+      if (_closed || generation != _generation) throw _failure();
       final String? secret;
       try {
         secret = await vault.readRefreshToken();
@@ -298,6 +307,7 @@ final class PersistentAccountAccess implements AccountAccess {
   @override
   Future<void> signIn(String email, String password) {
     if (!_started ||
+        !_vaultOwnerAcquired ||
         _closed ||
         (!_allowed && !_failed) ||
         _operation != null ||
@@ -331,6 +341,7 @@ final class PersistentAccountAccess implements AccountAccess {
   }
 
   Future<void> _cleanup() async {
+    if (!_vaultOwnerAcquired) throw _failure();
     var failed = false;
     // Mark cleanup before SDK sign-out; its duplicate/late null-session events
     // must not enqueue a second clear after a replacement login has started.
@@ -357,7 +368,7 @@ final class PersistentAccountAccess implements AccountAccess {
 
   @override
   Future<void> signOut() {
-    if (_closed) return Future.error(_failure());
+    if (_closed || !_vaultOwnerAcquired) return Future.error(_failure());
     if (_logout != null) return _logout!;
     _allowed = false;
     if (_operation != null) _cancelledOperation = true;
@@ -405,6 +416,10 @@ final class PersistentAccountAccess implements AccountAccess {
           // Never release the owner while a failed logout/rotation clear could
           // leave an old credential for a later startup to restore.
           await _cleanup();
+        }
+        if (_vaultOwnerAcquired) {
+          await vault.releaseOwner();
+          _vaultOwnerAcquired = false;
         }
         await _events.close();
         _owners.remove(vault.target);
