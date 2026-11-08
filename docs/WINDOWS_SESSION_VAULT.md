@@ -203,3 +203,27 @@ to exercise the native Credential Manager API with TEST ONLY values.
 The TEST ONLY `runtime-close-restore` phase runs in a fresh production Flutter Windows runner process. It writes a synthetic refresh value to the real Windows Credential Manager slot, starts the pinned Supabase SDK's refresh-only restore against a held MockClient response, then asks the caller-owned runtime to close before releasing that response. The fixture waits until the persistence owner is closed, releases the late response, and requires the startup operation to fail, no own-profile RPC/readiness to appear, the owned SDK cleanup to run, and the OS credential slot to be empty before close returns. A following fresh `runtime-signedout` process verifies that the slot remains absent across process boundaries.
 
 This covers a close racing a pending startup restore in addition to the existing logout/account-switch and vault-write races. The Windows Credential Manager, MethodChannel, native journal lease and pinned SDK are real in the runner; Auth HTTP and JWT values remain synthetic TEST ONLY fixtures. It is not hosted Auth, signed-JWT, deployed RLS, OS logoff/power-loss or physical multi-device evidence. A fully persisted session still survives an ordinary clean close; an interrupted restore is deliberately cleaned before the owner is released.
+
+
+## Windows process restore keeps study readiness closed while profile is held
+
+The TEST ONLY `runtime-restore-profile-held` phase is a fresh Flutter runner
+process after `runtime-login`. It first reads the synthetic refresh secret
+written by the prior process from the real Windows Credential Manager, then
+uses the pinned Supabase SDK's refresh-only startup path. The fixture's HTTP
+handler returns a rotated secret and verifies that exact value is readable from
+the OS vault before it accepts the own-profile request. That profile response
+is then held while the process asserts that `readyRuntime` remains null and
+the account is not ready. Only after releasing the profile response may the
+account become ready. Clean caller close must preserve the confirmed rotated
+secret for the next fresh process; the following `runtime-restore` phase
+consumes that rotated value and rotates it again.
+
+The PowerShell sequence launches every phase as a separate process with one
+GUID-scoped `.invalid` target. The Windows Credential Manager, Dart
+MethodChannel, native owner lease, pinned SDK and native journal are real in the
+runner. Auth HTTP and JWTs are TEST ONLY MockClient/unsigned fixtures, and the
+profile handler is a test double rather than deployed PostgREST. This adds
+OS-backed process-boundary evidence for the persist-before-profile readiness
+barrier; it is not hosted signed-JWT Auth, deployed RLS/PostgREST, a physical
+learner login, OS logoff/power-loss or multi-device acceptance.

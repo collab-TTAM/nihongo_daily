@@ -103,6 +103,8 @@ try {
     Invoke-Bridge 'absent'
     Write-Output 'Windows Dart/native bridge cross-process verification passed'
     Invoke-Bridge 'runtime-login'
+    # A new process must persist rotation before releasing a held own-profile response.
+    Invoke-Bridge 'runtime-restore-profile-held'
     Invoke-Bridge 'runtime-restore'
     Invoke-Bridge 'runtime-logout'
     Invoke-Bridge 'runtime-signedout'

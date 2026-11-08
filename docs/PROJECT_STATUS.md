@@ -3371,3 +3371,43 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`, `qa/matrix.json`, and `docs/PROJECT_STATUS.md`. Cloud authoring has no Dart/Flutter SDK; local format/analyze/test/build were not run. Fresh exact-head Actions must verify the full Flutter suite, Windows process probes and Web build.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device acceptance remain outstanding. Keep PR #37 Draft and #20/#22/#15 open; do not treat local disposable Supabase or TEST ONLY MethodChannel evidence as hosted learner proof.
 - Next: inspect every latest-attempt job and step for the corrected exact HEAD; fix only observed failures.
+
+
+## Windows process restore profile-readiness barrier — 2026-11-08T15:10Z
+
+- Run `core-20261108T1510Z-pr37-windows-restore-profile-barrier`; branch
+  `automation/issue-22-atomic-review`; parent/expected HEAD
+  `a22424a6dbc878da80927ef70cd50c14d59e2009`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head Actions [42484377224](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42484377224)
+  was re-read: all six jobs (repo-sanity, ai-boundary, database,
+  supabase-integration, windows, flutter) completed SUCCESS and every returned
+  step completed SUCCESS on the exact parent SHA. This is parent evidence only.
+- Added TEST ONLY `runtime-restore-profile-held` to the real Windows runner
+  process sequence. A prior fresh process signs in and writes a synthetic
+  refresh secret to Windows Credential Manager. The next fresh process restores
+  only from that saved secret through the pinned SDK; its test HTTP response
+  rotates the secret, and the own-profile handler checks the rotated value in
+  the real OS vault before holding the profile response. While held, the
+  account's `readyRuntime` must remain null/not ready. Releasing the profile
+  permits readiness; clean close must preserve the confirmed rotated secret
+  for the next process.
+- Changed exactly six paths: `apps/flutter_app/tool/windows_runtime_fixture.dart`,
+  `apps/flutter_app/tool/verify_windows_vault_bridge.ps1`,
+  `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `docs/WINDOWS_SESSION_VAULT.md`,
+  `qa/matrix.json`, and this status file.
+  No production Auth/provider, schema/RLS/grants, default runtime activation,
+  CI gate/assertion, Pro-owned #14/#38/N4 source/content, deployment, merge or
+  release change.
+- Cloud authoring has no Flutter/Dart SDK or Windows OS; local format/analyze/
+  Flutter test/native probe/build were not run. The parent CI is not evidence
+  for this new fixture. New exact-head CI must execute the pinned formatter,
+  full Flutter suite and Windows process probe before this increment is
+  considered verified.
+- Limitation: the process boundary and Windows Credential Manager are real in
+  CI, but Auth HTTP/JWT and own-profile response are TEST ONLY MockClient
+  fixtures. This is not hosted signed-JWT A/B, deployed PostgREST/RLS, real
+  learner login, OS logoff/power-loss or physical multi-device acceptance.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix
+  only observed failures. Keep PR #37 Draft and #20/#22/#15 open; Pro-owned
+  #14/#38/N4 scope remains untouched.

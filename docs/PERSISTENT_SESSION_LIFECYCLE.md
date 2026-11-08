@@ -164,7 +164,7 @@ Source evidence is historical for subsequent documentation/source commits.
 
 The separate TEST ONLY Flutter runner now invokes `PersistentSupabaseRuntime`
 with the real production Windows vault/MethodChannel/Credential Manager and
-NativeReviewJournal. Five additional fresh-process phases cover explicit login,
+NativeReviewJournal. Six additional fresh-process phases cover explicit login,
 refresh-only restore of the previous secret with rotation, restore/logout with
 synchronous fencing, signed-out restart without any Auth/profile dispatch, and
 401 stored-token rejection followed by explicit login/logout recovery.

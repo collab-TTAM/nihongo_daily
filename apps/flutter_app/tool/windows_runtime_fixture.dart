@@ -14,6 +14,7 @@ import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 
 const runtimePhases = {
   'runtime-login',
+  'runtime-restore-profile-held',
   'runtime-restore',
   'runtime-logout',
   'runtime-signedout',
@@ -28,6 +29,7 @@ const _sessionB = 'c1000000-0000-4000-8000-000000000002';
 const _first = 'TEST_ONLY_RUNTIME_FIRST';
 const _second = 'TEST_ONLY_RUNTIME_SECOND';
 const _third = 'TEST_ONLY_RUNTIME_THIRD';
+const _fourth = 'TEST_ONLY_RUNTIME_FOURTH';
 const _rejected = 'TEST_ONLY_RUNTIME_REJECTED';
 const _pending = <String, Object>{
   'client_event_id': 'c2000000-0000-4000-8000-000000000001',
@@ -67,14 +69,18 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   var logoutCalls = 0;
   var userId = _owner;
   var sessionId = _sessionA;
-  var secret = phase == 'runtime-restore'
+  var secret = phase == 'runtime-restore-profile-held'
       ? _second
-      : phase == 'runtime-logout'
+      : phase == 'runtime-restore'
       ? _third
+      : phase == 'runtime-logout'
+      ? _fourth
       : phase == 'runtime-late-refresh'
       ? _second
       : _first;
   Completer<http.Response>? lateRefresh;
+  Completer<http.Response>? heldProfile;
+  var profileResponseReleased = false;
   final profileOwners = <String>[];
 
   String accessToken() {
@@ -110,6 +116,18 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     headers: {'content-type': 'application/json'},
   );
 
+  http.Response profileResponse() => http.Response(
+    jsonEncode({
+      'id': userId,
+      'display_name': '学習者',
+      'preferred_jlpt': 'N5',
+      'daily_target_minutes': 120,
+      'timezone': 'Asia/Saigon',
+    }),
+    200,
+    headers: {'content-type': 'application/json'},
+  );
+
   final requests = <http.Request>[];
   final network = MockClient((request) async {
     requests.add(request);
@@ -120,12 +138,14 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       final body = jsonDecode(request.body) as Map<String, Object?>;
       if (grant == 'refresh_token') {
         final expected =
-            phase == 'runtime-restore' ||
+            phase == 'runtime-restore-profile-held' ||
                 phase == 'runtime-late-refresh' ||
                 phase == 'runtime-close-restore'
             ? _first
-            : phase == 'runtime-logout'
+            : phase == 'runtime-restore'
             ? _second
+            : phase == 'runtime-logout'
+            ? _third
             : _rejected;
         _check(body.length == 1 && body['refresh_token'] == expected);
         if (phase == 'runtime-rejected') {
@@ -149,20 +169,18 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       profileOwners.add(userId);
       // The real OS write must already be observable before profile dispatch.
       _check(await vault.readRefreshToken() == secret);
-      if (phase == 'runtime-late-refresh') {
+      if (phase == 'runtime-late-refresh' ||
+          phase == 'runtime-restore-profile-held') {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
-      return http.Response(
-        jsonEncode({
-          'id': userId,
-          'display_name': '学習者',
-          'preferred_jlpt': 'N5',
-          'daily_target_minutes': 120,
-          'timezone': 'Asia/Saigon',
-        }),
-        200,
-        headers: {'content-type': 'application/json'},
-      );
+      if (phase == 'runtime-restore-profile-held') {
+        final wait = heldProfile;
+        _check(wait != null);
+        final response = await wait!.future;
+        profileResponseReleased = true;
+        return response;
+      }
+      return profileResponse();
     }
     if (request.url.path == '/auth/v1/logout') {
       logoutCalls++;
@@ -195,6 +213,14 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
     _check(authCalls == count);
+  }
+
+  Future<void> waitForProfileCalls(int count) async {
+    final end = DateTime.now().add(const Duration(seconds: 5));
+    while (profileCalls < count && DateTime.now().isBefore(end)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+    _check(profileCalls == count);
   }
 
   Future<void> pending() async {
@@ -235,6 +261,34 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(runtime.account.readyRuntime == null);
       _check(await vault.readRefreshToken() == null);
       _check(logoutCalls >= 1);
+      await pending();
+    } else if (phase == 'runtime-restore-profile-held') {
+      // This process must restore the secret written by the preceding process.
+      _check(await vault.readRefreshToken() == _first);
+      heldProfile = Completer<http.Response>();
+      final restoring = runtime.start();
+      await waitForAuthCalls(1);
+      await waitForProfileCalls(1);
+      await restoring.timeout(const Duration(seconds: 5));
+
+      final refreshRequest = requests
+          .where(
+            (request) =>
+                request.url.path == '/auth/v1/token' &&
+                request.url.queryParameters['grant_type'] == 'refresh_token',
+          )
+          .single;
+      _check(jsonDecode(refreshRequest.body)['refresh_token'] == _first);
+      _check(await vault.readRefreshToken() == _second);
+      _check(profileOwners.length == 1 && profileOwners.single == _owner);
+      _check(runtime.account.readyRuntime == null);
+      _check(runtime.account.state.phase != AccountPhase.ready);
+      _check(!profileResponseReleased);
+
+      heldProfile!.complete(profileResponse());
+      await waitForReady();
+      _check(profileResponseReleased);
+      _check(runtime.account.readyRuntime != null);
       await pending();
     } else if (phase == 'runtime-late-refresh') {
       _check(await vault.readRefreshToken() == null);
@@ -338,6 +392,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     }
   } finally {
     // A failed assertion must not strand a held HTTP response while close drains.
+    if (heldProfile != null && !heldProfile!.isCompleted) {
+      heldProfile!.complete(profileResponse());
+    }
     if (lateRefresh != null && !lateRefresh.isCompleted) {
       if (phase == 'runtime-close-restore') secret = _second;
       lateRefresh.complete(authResponse());
@@ -347,7 +404,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     network.close();
   }
   // Closing the runtime preserves a fully saved session for the next process.
-  if (phase == 'runtime-login' || phase == 'runtime-restore') {
+  if (phase == 'runtime-login' ||
+      phase == 'runtime-restore-profile-held' ||
+      phase == 'runtime-restore') {
     _check(await vault.readRefreshToken() == secret);
   }
 }
