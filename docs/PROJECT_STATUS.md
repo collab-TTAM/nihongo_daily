@@ -3452,3 +3452,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   observed failures; if only CI remains pending, hand off without another source
   commit. After this component check, continue the hosted #20/#22 acceptance
   path without changing Auth strategy/provider or requesting secrets in chat.
+
+
+## Exact-head formatter diagnostic handoff — 2026-11-08T18:11Z
+
+- Re-read latest main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`, PR #37/branch HEAD `4f3c8d4ed53777a7a624a9a03213b52908fe8d18`, and all six latest-attempt jobs for Actions [42504053745](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42504053745). Five jobs completed SUCCESS with every returned step; Flutter failed only strict Dart 3.35.4 formatting, reporting exactly one changed file: `test/features/srs/windows_persistent_supabase_runtime_test.dart`. Flutter analyze, full tests, downstream probes and Web build were SKIPPED.
+- Added a temporary read-only formatter diagnostic immediately before the unchanged strict formatter gate. It writes `dart format --output=show` output to the runner temp directory and prints a unified diff; it does not edit source or change gate behavior.
+- This diagnostic commit is only to capture the pinned formatter's exact patch. Next: read the diagnostic log, remove the temporary step, apply only the observed formatter hunk, and require complete exact-head CI. No production/Auth/provider/API/schema/RLS/default activation, Pro N4, deployment, merge or release change.
