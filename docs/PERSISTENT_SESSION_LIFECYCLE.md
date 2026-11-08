@@ -687,3 +687,8 @@ It is TEST ONLY MockClient/MethodChannel failure injection using the production
 Dart Windows vault adapter; it does not inject a native Credential Manager
 failure or prove hosted learner A/B, deployed RLS/PostgREST, or physical
 multi-device behavior.
+
+
+## Refresh completion across an account switch
+
+The scheduler allows only one refresh attempt at a time. If account A's refresh is already in flight when the caller publishes account B, an update does not start an overlapping request. When A's attempt settles, the scheduler re-reads the caller-owned current lease and schedules B using B's identity and expiry. A canceled A timer callback that was already queued may re-arm the current B timer, but its captured A lease cannot dispatch a refresh. The scheduler does not authorize or persist a session: `PersistentAccountAccess` remains responsible for SDK session/generation checks and the vault write-before-readiness barrier. This deterministic timer regression is not hosted Auth or OS-suspension evidence.

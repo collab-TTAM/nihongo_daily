@@ -235,4 +235,52 @@ void main() {
       h.scheduler.dispose();
     },
   );
+  test(
+    'in-flight A refresh completion schedules B without reusing A lease',
+    () async {
+      final h = Harness()
+        ..waiting = Completer<void>()
+        ..rotate = false;
+      h.scheduler.update();
+      final staleA = h.timers.single;
+      h.due();
+      expect(h.calls, 1);
+      expect(h.scheduler.phase, SessionRefreshPhase.refreshing);
+
+      final bLease = RefreshLease(
+        Object(),
+        h.now.add(const Duration(hours: 2)),
+      );
+      h.lease = bLease;
+      h.scheduler.update();
+      expect(h.timers.where((timer) => timer.isActive), isEmpty);
+
+      // A's in-flight refresh must not leave B without a scheduled lease.
+      h.waiting!.complete();
+      await flush();
+      expect(h.calls, 1);
+      expect(identical(h.lease, bLease), isTrue);
+      expect(h.scheduler.phase, SessionRefreshPhase.scheduled);
+      expect(h.timers.where((timer) => timer.isActive), hasLength(1));
+      expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
+
+      // A duplicate callback already queued before cancellation may arrive late.
+      // It may re-arm B, but it must never dispatch another refresh for A.
+      staleA.fire(stale: true);
+      await flush();
+      expect(h.calls, 1);
+      expect(h.scheduler.phase, SessionRefreshPhase.scheduled);
+      expect(h.timers.where((timer) => timer.isActive), hasLength(1));
+      expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
+
+      h.now = bLease.expiresAt.subtract(SessionRefreshScheduler.leadTime);
+      h.timers.last.fire();
+      await flush();
+      expect(h.calls, 2);
+      expect(h.scheduler.phase, SessionRefreshPhase.idle);
+      expect(h.timers.where((timer) => timer.isActive), isEmpty);
+      h.scheduler.dispose();
+    },
+  );
+
 }

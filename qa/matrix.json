@@ -192,7 +192,7 @@
     {
       "id": "owned-session-refresh",
       "status": "automated-baseline",
-      "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed vault-write plus failed-clear fencing and active-owned foreground forwarding",
+      "scope": "Opt-in identity/expiry refresh scheduling, rotation persistence barrier, failed vault-write plus failed-clear fencing and active-owned foreground forwarding; in-flight refresh completion re-schedules the replacement account lease without stale callback dispatch",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -214,6 +214,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "SDK failed refresh rotation and failed vault clear stay fenced until explicit cleanup recovers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/session_refresh_scheduler_test.dart",
+          "contains": "in-flight A refresh completion schedules B without reusing A lease"
         }
       ],
       "issues": [
