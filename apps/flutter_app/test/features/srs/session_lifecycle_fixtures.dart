@@ -538,10 +538,10 @@ Future<void> verifyLifecycle(String scenario) async {
             !PersistentAccountAccess.isTargetOwned(vault.target),
         'close retry did not clear the uncertain credential before release',
       );
+      final operations = backend.operations.join(' -> ');
       check(
-        backend.operations,
-        ['read', 'write', 'write', 'clear', 'clear', 'clear'],
-        'uncertain credential write cleanup order changed',
+        operations == 'read -> write -> write -> clear -> clear -> clear',
+        'uncertain credential write cleanup order changed: $operations',
       );
       return;
     }
