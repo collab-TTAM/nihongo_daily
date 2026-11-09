@@ -4133,6 +4133,77 @@
       ],
       "reproduce": "cd backend/ai && npm test -- test/quiz_report_content.test.ts; inspect the exact-head ai-boundary job, then verify the database job retains the native PostgreSQL quiz transaction suite.",
       "limitation": "This validates active current membership/eligibility only. The database has no original source ordinal, so exact deterministic distractor order/target slot and each displayed distractor's version are not proven. Reports remain self-reported; no public route/RPC, Dart adapter, hosted JWT/PostgREST, linguistic grading, mastery or study credit is activated."
+    },
+    {
+      "id": "quiz-source-order-contract",
+      "status": "automated-baseline",
+      "scope": "Separate nd-quiz-report-2 schema and strict choice-version contract fixtures",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "contracts/test_quiz_report_v2_contracts.py",
+          "contains": "test_choice_versions_are_four_positive_int32_values"
+        },
+        {
+          "path": "contracts/quiz/v2/schema.json",
+          "contains": "choice_content_versions"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "Run `python3 -m unittest contracts.test_quiz_report_v2_contracts -v` and the repo-sanity contract validation step.",
+      "limitation": "The v2 contract is separate and undeployed; v1 remains unchanged. Schema/fixture tests do not establish authenticated ownership, current content, SQL persistence or hosted learner acceptance."
+    },
+    {
+      "id": "quiz-source-order-validator",
+      "status": "automated-baseline",
+      "scope": "Exact deterministic vocabulary/grammar choice order, target slot and all four current displayed versions",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_content_v2.test.ts",
+          "contains": "accepts exact vocabulary source order and displayed versions"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_content_v2.test.ts",
+          "contains": "rejects reordered choice slots even when all IDs and versions are valid"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_content_v2.test.ts",
+          "contains": "reconstructs first-occurrence duplicate readings without guessing by UUID"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "Run `cd backend/ai && npm test -- test/quiz_report_content_v2.test.ts` and inspect the exact-head ai-boundary job.",
+      "limitation": "The validator is not wired to a public route or the v1 ledger. It requires a trusted importer-populated source_ordinal projection and must run after replay miss on the same verified-owner transaction. No mastery or study credit is inferred."
+    },
+    {
+      "id": "quiz-source-order-storage",
+      "status": "automated-baseline",
+      "scope": "Additive vocabulary/grammar source ordinal constraints and per-level uniqueness",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/migrations/20261109030000_quiz_source_order.sql",
+          "contains": "vocabulary_active_requires_source_ordinal"
+        },
+        {
+          "path": "supabase/tests/quiz_source_order.sql",
+          "contains": "vocabulary source ordinal is unique per level"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "supabase/tests/quiz_source_order.sql"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "Run the disposable PostgreSQL migration suite through `bash scripts/test_database.sh`; the new SQL case is executed after the private quiz-ledger test.",
+      "limitation": "The migration is additive and has not been deployed. Existing inactive/unimported rows remain nullable; no content is populated or activated. This is not hosted JWT/RLS or learner evidence."
     }
   ],
   "findings": [

@@ -1,0 +1,10 @@
+{
+  "version": "nd-quiz-report-2",
+  "operation": "submit_quiz_report",
+  "parameter": "p_request",
+  "schema_file": "schema.json",
+  "fixtures_file": "fixtures.json",
+  "max_request_bytes": 16384,
+  "compatibility": "Separate from nd-quiz-report-1; v1 remains frozen and does not carry distractor versions.",
+  "activation": "Undeployed. No public RPC, HTTP route, default app save path, mastery or study credit."
+}

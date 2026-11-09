@@ -367,3 +367,34 @@ The callback reads a bounded projection from exactly one table selected by the t
 This is deliberately a membership and eligibility check, not exact deterministic reconstruction. The curriculum tables do not store the original source ordinal used by the client quiz builder, so the server cannot yet prove the exact distractor order or target slot. The report also carries only the target content version, not each distractor's displayed version. To avoid guessing, ambiguous reading/meaning labels are rejected. Adding source-order/version provenance requires a separately reviewed content-contract/schema increment; this change does not invent it.
 
 The callback does not expose an HTTP route or public RPC, read environment secrets, activate the Flutter save path, grade linguistic correctness, infer mastery, or grant study/SRS credit. Its eleven Node tests are automated component checks; the new exact-head CI must execute them before this increment is accepted. Hosted signed-JWT/PostgREST/A-B and learner proof remain separate gates.
+
+
+## Deterministic source-order report v2 — 2026-11-09
+
+The separate `nd-quiz-report-2` contract lives under
+`contracts/quiz/v2`; `nd-quiz-report-1` remains unchanged. Each answer adds
+`choice_content_versions`, exactly four positive int32 values aligned with the
+four ordered choice IDs. The target's `content_version` remains for explicit
+target identity and must match the value at its displayed slot.
+
+The additive `20261109030000_quiz_source_order.sql` migration adds
+`source_ordinal` to vocabulary and grammar. It is the zero-based order from the
+canonical source export within a JLPT level, not UUID order or a learner-supplied
+value. Partial unique indexes enforce non-null ordinal uniqueness per level.
+New active rows require an ordinal; old inactive/unimported rows may remain null.
+The v2 content validator fails closed if an active projection contains a missing,
+duplicate, malformed or non-monotonic ordinal.
+
+`validateCurrentQuizReportContentV2` reconstructs the same eligible target
+sequence, first-occurrence reading/meaning pool, cyclic distractor selection and
+`targetIndex % 4` insertion slot as the Dart builders. It compares the exact
+four ordered IDs and every captured choice version. Duplicate labels retain the
+same first-in-source-order behavior as the client; no UUID-based guess is used.
+This closes the prior membership-only gap for a current-content projection.
+
+The v2 schema, Python fixtures, TypeScript validator and additive SQL constraints
+are component foundations only. Existing v1 private-ledger SQL/host is not
+silently reinterpreted as v2. No v2 ledger function, HTTP route, public RPC,
+grant, Dart upload adapter, default save path, hosted JWT/PostgREST learner flow,
+mastery or study credit is enabled. The trusted content importer must populate
+canonical ordinals before active rows can be accepted by v2 validation.

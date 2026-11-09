@@ -40,4 +40,5 @@ python3 "$repo_root/scripts/test_study_day.py"
 
 # Private quiz ledger foundation; no hosted/public RPC claim.
 psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f "$repo_root/supabase/tests/quiz_report_ledger.sql"
+psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f "$repo_root/supabase/tests/quiz_source_order.sql"
 python3 "$repo_root/scripts/test_quiz_ledger_concurrency.py"

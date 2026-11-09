@@ -130,4 +130,11 @@ def validate_baseline(root=ROOT):
 
 
 if __name__ == "__main__":
-    print(f"Validated v0.1 contracts and {validate_baseline()} fixtures")
+    from contracts.validate_quiz_report_v2 import validate_fixtures as validate_quiz_report_v2_fixtures
+
+    baseline_count = validate_baseline()
+    quiz_v2_count = validate_quiz_report_v2_fixtures()
+    print(
+        f"Validated v0.1 contracts ({baseline_count} fixtures) and "
+        f"nd-quiz-report-2 ({quiz_v2_count} fixtures)"
+    )

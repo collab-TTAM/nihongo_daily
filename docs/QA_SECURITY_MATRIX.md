@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-155 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+165 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -391,3 +391,20 @@ Auth/JWT/profile/receipt HTTP remain TEST ONLY; payloads remain in memory. No
 server receipt release, durable payload retention, hosted learner/provider/RLS or
 all14 Personal Alpha acceptance follows. Saved evidence verifies its parent source
 only; the new QA/docs successor needs its own exact-head/latest-attempt CI.
+
+
+## Quiz source-order contract v2 — 2026-11-09
+
+Three automated-baseline cases now cover the separate report-v2 schema,
+deterministic active-content reconstruction and additive PostgreSQL source-order
+constraints. Repo-sanity validates the strict four-version contract fixtures;
+AI-boundary tests exact vocabulary/grammar choice order, first-occurrence labels,
+target slots, stale distractor versions and malformed ordinals; database CI
+applies the additive migration and tests uniqueness/nonnegative/active-row
+constraints. These cases increase the inventory to165.
+
+They are component gates only. The content importer has not populated source
+ordinals for existing active curriculum, the v2 ledger/route and Dart adapter
+remain unwired, and hosted signed-JWT/PostgREST/A-B learner acceptance is still
+pending. No source content, N4 Pro scope, public grant, mastery or study credit
+is activated.
