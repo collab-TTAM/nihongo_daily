@@ -11434,3 +11434,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Corrective design: preserve the original global `ci_gates` baseline for historical snapshots; add optional case-specific `ci_steps` to the new source-order case and make `validate_matrix` require those named steps inside that case's declared job block. Add a negative test that moves the command outside repo-sanity and requires rejection. `validate_ci` remains strict and unchanged for every saved/current workflow snapshot.
 - Database and AI-boundary jobs were still IN_PROGRESS at the observation; Windows was SKIPPED because repo-sanity failed, and Flutter had not run. No complete CI pass is claimed for `4c4e2c6`.
 - Next: inspect the corrected exact-head CI and every latest-attempt job/step. Preserve the N5-only repo-sanity invocation, no N4 Pro content changes, and all Personal Alpha release gates.
+
+
+## Case-scoped QA negative-test correction — 2026-11-09 UTC
+
+- Exact-head CI [42683207925](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42683207925) confirmed the three historical saved-evidence tests now PASS after global ci_gates was restored. The new case-scoped validator also runs, but its first negative test was incorrectly constructed: it inserted the removed repo-sanity command at the same indentation immediately before the next top-level job, so the existing job-block regex still correctly considered it part of repo-sanity.
+- Corrected only the test fixture to move the command into the actual Flutter steps block before asserting that repo-sanity no longer satisfies the case-specific requirement. No verifier relaxation or production behavior change.
+- The exporter and its10 regression tests passed on exact HEAD 4c4e2c6; on f2efc82 the repo-sanity QA suite ran56 tests with55 passing and this one negative-fixture test failing. Database and AI-boundary were still in progress; Windows skipped and Flutter had not run. New exact-head CI is required.

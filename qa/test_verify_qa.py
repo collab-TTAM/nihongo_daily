@@ -358,9 +358,10 @@ class QaEvidenceTests(unittest.TestCase):
                 "\"$RUNNER_TEMP/quiz-source-order-n5.json\"\n"
             )
             self.assertIn(step, source)
-            source = source.replace(step, "", 1).replace(
-                "  flutter:\n", step + "\n  flutter:\n", 1
-            )
+            source = source.replace(step, "", 1)
+            flutter_start = source.index("  flutter:\n")
+            flutter_steps = source.index("    steps:\n", flutter_start) + len("    steps:\n")
+            source = source[:flutter_steps] + step + source[flutter_steps:]
             workflow.write_text(source)
             with self.assertRaisesRegex(
                 ValueError, "case CI step missing from job repo-sanity"
