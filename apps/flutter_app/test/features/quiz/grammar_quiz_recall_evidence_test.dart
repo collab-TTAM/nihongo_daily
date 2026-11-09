@@ -125,7 +125,13 @@ void main() {
       // A mismatched wrong is history, not a reset of current evidence.
       final staleWrong = variant(event(8, 72, correct: false), (json) {
         for (final raw in json['answers'] as List) {
-          (raw as Map<String, Object?>)['content_version'] = 2;
+          final row = raw as Map<String, Object?>;
+          final choices = row['choices'] as List<Object?>;
+          final versions = row['choice_content_versions'] as List<Object?>;
+          final targetSlot = choices.indexOf(row['item_id']);
+          expect(targetSlot, greaterThanOrEqualTo(0));
+          row['content_version'] = 2;
+          versions[targetSlot] = 2;
         }
       });
       expect(
