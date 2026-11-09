@@ -5,6 +5,9 @@
 
 #include <algorithm>
 #include <cstdint>
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+#include <atomic>
+#endif
 #include <iomanip>
 #include <map>
 #include <memory>
@@ -25,6 +28,30 @@ struct OwnerLease {
 };
 std::mutex owner_lease_guard;
 std::map<std::string, OwnerLease> owner_leases;
+
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+std::atomic<VaultProbeFault> read_probe_fault{VaultProbeFault::none};
+std::atomic<VaultProbeFault> write_probe_fault{VaultProbeFault::none};
+std::atomic<VaultProbeFault> clear_probe_fault{VaultProbeFault::none};
+
+std::atomic<VaultProbeFault>& ProbeFaultSlot(VaultProbeOperation operation) {
+  switch (operation) {
+    case VaultProbeOperation::read:
+      return read_probe_fault;
+    case VaultProbeOperation::write:
+      return write_probe_fault;
+    case VaultProbeOperation::clear:
+      return clear_probe_fault;
+  }
+  return clear_probe_fault;
+}
+
+bool ConsumeProbeFault(VaultProbeOperation operation, VaultProbeFault fault) {
+  auto expected = fault;
+  return ProbeFaultSlot(operation).compare_exchange_strong(
+      expected, VaultProbeFault::none);
+}
+#endif
 
 std::wstring OwnerMutexName(const std::string& target) {
   // Stable non-secret name: the canonical target is never embedded in the
@@ -72,10 +99,25 @@ struct CredentialRelease {
 };
 }  // namespace
 
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+void SetVaultProbeFaultOnce(VaultProbeOperation operation,
+                            VaultProbeFault fault) {
+  ProbeFaultSlot(operation).store(fault);
+}
+#endif
+
 bool IsCredentialTargetValid(const std::string& target) { return ValidTarget(target); }
 
 VaultRead ReadRefreshCredential(const std::string& target) {
   if (!ValidTarget(target)) return {VaultStatus::invalid_input, {}};
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+  // One-shot native read failure: no Credential Manager call is made.
+  if (ConsumeProbeFault(VaultProbeOperation::read,
+                        VaultProbeFault::fail_before)) {
+    SetLastError(ERROR_ACCESS_DENIED);
+    return {VaultStatus::unavailable, {}};
+  }
+#endif
   const std::wstring name(target.begin(), target.end());
   PCREDENTIALW raw = nullptr;
   if (!CredReadW(name.c_str(), CRED_TYPE_GENERIC, 0, &raw)) {
@@ -102,6 +144,14 @@ VaultStatus WriteRefreshCredential(const std::string& target,
   if (!ValidTarget(target) || !ValidSecret(token)) {
     return VaultStatus::invalid_input;
   }
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+  // One-shot write-before-commit failure preserves the previous OS value.
+  if (ConsumeProbeFault(VaultProbeOperation::write,
+                        VaultProbeFault::fail_before)) {
+    SetLastError(ERROR_ACCESS_DENIED);
+    return VaultStatus::unavailable;
+  }
+#endif
   std::wstring name(target.begin(), target.end());
   std::vector<BYTE> bytes(token.begin(), token.end());
   CREDENTIALW credential{};
@@ -112,11 +162,28 @@ VaultStatus WriteRefreshCredential(const std::string& target,
   credential.Persist = CRED_PERSIST_LOCAL_MACHINE;
   const bool written = CredWriteW(&credential, 0) != FALSE;
   SecureZeroMemory(bytes.data(), bytes.size());
-  return written ? VaultStatus::success : VaultStatus::unavailable;
+  if (!written) return VaultStatus::unavailable;
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+  // The real write committed; report one ambiguous failure to the caller.
+  if (ConsumeProbeFault(VaultProbeOperation::write,
+                        VaultProbeFault::commit_then_fail)) {
+    SetLastError(ERROR_WRITE_FAULT);
+    return VaultStatus::unavailable;
+  }
+#endif
+  return VaultStatus::success;
 }
 
 VaultStatus ClearRefreshCredential(const std::string& target) {
   if (!ValidTarget(target)) return VaultStatus::invalid_input;
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+  // One-shot clear failure leaves the current OS value for explicit retry.
+  if (ConsumeProbeFault(VaultProbeOperation::clear,
+                        VaultProbeFault::fail_before)) {
+    SetLastError(ERROR_ACCESS_DENIED);
+    return VaultStatus::unavailable;
+  }
+#endif
   const std::wstring name(target.begin(), target.end());
   if (CredDeleteW(name.c_str(), CRED_TYPE_GENERIC, 0) ||
       GetLastError() == ERROR_NOT_FOUND) {

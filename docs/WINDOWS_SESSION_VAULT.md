@@ -90,6 +90,29 @@ maximum size, foreign namespace rejection, injected corrupt OS blob, recovery
 and idempotent clear. Probe credentials are removed before a passing exit.
 The probe is outside the packaged application release directory.
 
+## Probe-only one-shot native fault injection
+
+The standalone `session_vault_probe` CMake target alone defines
+`NIHONGO_SESSION_VAULT_TEST_HOOKS`. The packaged Flutter Windows runner compiles
+the same helper without that definition, so the test API and atomic fault state
+are absent from the learner executable.
+
+The probe injects one failure at a time at the native helper boundary:
+- Read failure returns a fixed unavailable result before `CredReadW`; the next
+  read must return the previously stored value.
+- Write-before-commit returns unavailable without calling `CredWriteW`; the
+  prior Credential Manager value must remain unchanged.
+- Ambiguous write performs the real `CredWriteW` successfully, then returns
+  unavailable once; a subsequent read must observe the newly committed value.
+- Clear failure returns unavailable before `CredDeleteW`; the old value must
+  remain readable, and an explicit second clear must succeed and read as absent.
+
+All scopes are PID-qualified `.invalid` TEST ONLY targets and all values are
+synthetic. These deterministic wrapper faults verify the caller-visible result
+and retry ordering against actual Credential Manager state; they do not claim
+that Windows itself spontaneously returned these errors, simulate power loss,
+or prove hosted Auth/learner acceptance. No token or native error is printed.
+
 CI requires the pure verifier and native Windows probe while retaining all old
 jobs/steps. Compiling the runner validates the native bridge; mock Dart messages
 plus a native helper probe are not an interactive Dart-to-Windows integration

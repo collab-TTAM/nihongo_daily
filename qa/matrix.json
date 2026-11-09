@@ -373,7 +373,7 @@
     {
       "id": "windows-session-vault",
       "status": "automated-baseline",
-      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, per-project Windows runtime owner lease and abandoned-process recovery",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, per-project Windows runtime owner lease and abandoned-process recovery, plus standalone one-shot read/write/ambiguous-commit/clear fault probes",
       "ci_job": "windows",
       "anchors": [
         {
@@ -423,14 +423,30 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_session_credential_vault_test.dart",
           "contains": "Windows owner lease uses only the canonical project target"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "one-shot native read failure"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "ambiguous write commit"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp",
+          "contains": "explicit clear retry after injected failure"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_session_vault/CMakeLists.txt",
+          "contains": "NIHONGO_SESSION_VAULT_TEST_HOOKS"
         }
       ],
       "issues": [
         20,
         22
       ],
-      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe. The native probe verifies parent/child lease contention and abandoned-mutex recovery.",
-      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. The named mutex coordinates cooperating Nihongo Daily runtimes in one Windows logon session; arbitrary same-user software can still access generic credentials and separate Windows logon sessions are not coordinated. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-isolate queue is not cross-device CAS."
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe. The native probe verifies parent/child lease contention and abandoned-mutex recovery. The standalone probe also injects one-shot TEST ONLY read, write-before-commit, write-after-commit/ambiguous-result and clear failures against actual PID-scoped .invalid Credential Manager entries; the hook macro is scoped to that probe target.",
+      "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. The named mutex coordinates cooperating Nihongo Daily runtimes in one Windows logon session; arbitrary same-user software can still access generic credentials and separate Windows logon sessions are not coordinated. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-isolate queue is not cross-device CAS. The deterministic read, pre-commit write and pre-delete clear faults are injected before the corresponding OS API call; the ambiguous-write case performs actual CredWriteW then returns a synthetic unavailable result. This verifies old/new/absent state and explicit retry ordering, not spontaneous OS access-denied/partial-disk/power-loss behavior or hosted Auth."
     },
     {
       "id": "account-profile-readiness",

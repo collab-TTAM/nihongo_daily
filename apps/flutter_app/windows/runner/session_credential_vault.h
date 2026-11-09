@@ -19,5 +19,13 @@ VaultStatus WriteRefreshCredential(const std::string& target,
 VaultStatus ClearRefreshCredential(const std::string& target);
 VaultStatus AcquireCredentialOwner(const std::string& target);
 VaultStatus ReleaseCredentialOwner(const std::string& target);
+
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+// These hooks exist only in the standalone TEST ONLY probe target.
+enum class VaultProbeOperation { read, write, clear };
+enum class VaultProbeFault { none, fail_before, commit_then_fail };
+void SetVaultProbeFaultOnce(VaultProbeOperation operation,
+                            VaultProbeFault fault);
+#endif
 }  // namespace nihongo
 #endif

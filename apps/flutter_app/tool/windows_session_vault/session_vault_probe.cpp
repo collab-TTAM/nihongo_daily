@@ -12,6 +12,10 @@
 
 #include "session_credential_vault.h"
 
+#ifndef NIHONGO_SESSION_VAULT_TEST_HOOKS
+#error "Standalone probe requires its TEST ONLY fault hooks"
+#endif
+
 namespace {
 void Check(bool ok) {
   if (!ok) throw std::runtime_error("credential probe assertion failed");
@@ -98,6 +102,66 @@ void ChildWrite(const std::string& target) {
   CloseHandle(process.hProcess);
   Check(wait == WAIT_OBJECT_0 && code == 0);
 }
+
+void VerifyOneShotNativeFaultInjection(const std::string& target) {
+  using nihongo::VaultProbeFault;
+  using nihongo::VaultProbeOperation;
+  using nihongo::VaultStatus;
+
+  const auto expect_token = [&](const std::string& expected) {
+    const auto read = nihongo::ReadRefreshCredential(target);
+    Check(read.status == VaultStatus::success && read.token == expected);
+  };
+
+  Check(nihongo::ClearRefreshCredential(target) == VaultStatus::success);
+  Check(nihongo::WriteRefreshCredential(target, "TEST_ONLY_READ_BASELINE") ==
+        VaultStatus::success);
+  // one-shot native read failure
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::read,
+                                  VaultProbeFault::fail_before);
+  const auto failed_read = nihongo::ReadRefreshCredential(target);
+  Check(failed_read.status == VaultStatus::unavailable &&
+        failed_read.token.empty());
+  expect_token("TEST_ONLY_READ_BASELINE");
+
+  Check(nihongo::WriteRefreshCredential(target, "TEST_ONLY_WRITE_BASELINE") ==
+        VaultStatus::success);
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::write,
+                                  VaultProbeFault::fail_before);
+  Check(nihongo::WriteRefreshCredential(target, "TEST_ONLY_REJECTED_WRITE") ==
+        VaultStatus::unavailable);
+  expect_token("TEST_ONLY_WRITE_BASELINE");
+  Check(nihongo::WriteRefreshCredential(target, "TEST_ONLY_WRITE_RECOVERED") ==
+        VaultStatus::success);
+  expect_token("TEST_ONLY_WRITE_RECOVERED");
+
+  // ambiguous write commit: actual CredWrite succeeds before the safe error.
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::write,
+                                  VaultProbeFault::commit_then_fail);
+  Check(nihongo::WriteRefreshCredential(target, "TEST_ONLY_AMBIGUOUS_COMMIT") ==
+        VaultStatus::unavailable);
+  expect_token("TEST_ONLY_AMBIGUOUS_COMMIT");
+  Check(nihongo::WriteRefreshCredential(target, "TEST_ONLY_AFTER_AMBIGUOUS") ==
+        VaultStatus::success);
+  expect_token("TEST_ONLY_AFTER_AMBIGUOUS");
+
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::clear,
+                                  VaultProbeFault::fail_before);
+  Check(nihongo::ClearRefreshCredential(target) == VaultStatus::unavailable);
+  expect_token("TEST_ONLY_AFTER_AMBIGUOUS");
+  // explicit clear retry after injected failure
+  Check(nihongo::ClearRefreshCredential(target) == VaultStatus::success);
+  Check(nihongo::ReadRefreshCredential(target).status == VaultStatus::not_found);
+  Check(nihongo::ClearRefreshCredential(target) == VaultStatus::success);
+}
+
+void ResetOneShotNativeFaults() {
+  using nihongo::VaultProbeFault;
+  using nihongo::VaultProbeOperation;
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::read, VaultProbeFault::none);
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::write, VaultProbeFault::none);
+  nihongo::SetVaultProbeFaultOnce(VaultProbeOperation::clear, VaultProbeFault::none);
+}
 }  // namespace
 
 int wmain(int argc, wchar_t* argv[]) {
@@ -167,6 +231,7 @@ int wmain(int argc, wchar_t* argv[]) {
   try {
     Check(nihongo::ClearRefreshCredential(a) == VaultStatus::success);
     Check(nihongo::ClearRefreshCredential(b) == VaultStatus::success);
+    VerifyOneShotNativeFaultInjection(a);
     Check(nihongo::AcquireCredentialOwner(a) == VaultStatus::success);
     Check(ChildOwnerAttempt(a, L"--child-acquire") == 2);
     Check(nihongo::ReleaseCredentialOwner(a) == VaultStatus::success);
@@ -213,6 +278,7 @@ int wmain(int argc, wchar_t* argv[]) {
   } catch (...) {
     // No raw errors, tokens, target names or credentials in output.
   }
+  ResetOneShotNativeFaults();
   // Only PID-qualified .invalid TEST ONLY namespaces; never user/live credentials.
   const bool cleared_a = nihongo::ClearRefreshCredential(a) == VaultStatus::success;
   const bool cleared_b = nihongo::ClearRefreshCredential(b) == VaultStatus::success;
@@ -222,7 +288,7 @@ int wmain(int argc, wchar_t* argv[]) {
   }
   std::cout << "PASS: actual Windows Credential Manager write/read/replace, "
                "child exit/parent read, project isolation, process owner lease "
-               "contention/abandonment recovery, bounded corrupt data and "
+               "contention/abandonment recovery, one-shot read/write/ambiguous-commit/clear fault recovery, bounded corrupt data and "
                "idempotent clear. TEST ONLY; no hosted Auth restoration.\n";
   return 0;
 }

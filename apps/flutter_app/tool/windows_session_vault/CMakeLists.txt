@@ -8,7 +8,11 @@ add_executable(session_vault_probe
   "../../windows/runner/session_credential_vault.cpp"
 )
 target_compile_features(session_vault_probe PRIVATE cxx_std_17)
-target_compile_definitions(session_vault_probe PRIVATE NOMINMAX UNICODE _UNICODE)
+# Only the standalone TEST ONLY probe sees deterministic native fault hooks.
+# The packaged Flutter runner builds session_credential_vault.cpp without this define.
+target_compile_definitions(session_vault_probe PRIVATE
+  NOMINMAX UNICODE _UNICODE NIHONGO_SESSION_VAULT_TEST_HOOKS
+)
 target_compile_options(session_vault_probe PRIVATE /W4 /WX /EHsc)
 target_link_libraries(session_vault_probe PRIVATE advapi32)
 target_include_directories(session_vault_probe PRIVATE "../../windows/runner")
