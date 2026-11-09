@@ -332,7 +332,7 @@ jobs:
       - run: npm audit --omit=dev --audit-level=moderate
       - name: Diagnose exact pinned Prettier output (temporary)
         run: |
-          for file in src/quiz_report_content_v2.ts test/quiz_report_content_v2.test.ts; do
+          for file in src/quiz_report_content_v2.ts test/quiz_report_content_v2.test.ts test/quiz_report_transaction.native.ts; do
             echo "::group::$file"
             ./node_modules/.bin/prettier "$file" | diff -u "$file" - || true
             echo "::endgroup::"

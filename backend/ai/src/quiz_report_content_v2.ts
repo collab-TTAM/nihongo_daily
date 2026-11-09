@@ -220,10 +220,7 @@ export async function validateCurrentQuizReportContentV2(
     seenTargets.add(answer.item_id);
     const targetIndex = eligible.findIndex((row) => row.id === answer.item_id);
     const target = eligible[targetIndex];
-    if (
-      !target ||
-      target.contentVersion !== answer.content_version
-    ) {
+    if (!target || target.contentVersion !== answer.content_version) {
       throw invalid();
     }
     const expectedChoices = canonicalChoices(eligible, targetIndex);

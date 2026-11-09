@@ -21,8 +21,8 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
     other = f'c4000000-0000-4000-8000-{index:012d}'
     event = f'c2000000-0000-4000-8000-{index:012d}'
     run(f"insert into auth.users values ('{owner}');" +
-        ''.join(f"insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi) "
-                f"values ('{content}','N5',0.1,1,true,'試験','しけん','test','noun','native RPC fixture');" for content in [item, other]))
+        ''.join(f"insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) "
+                f"values ('{content}','N5',0.1,1,true,'試験','しけん','test','noun','native RPC fixture',(select coalesce(max(source_ordinal), -1) + 1 from public.vocabulary where jlpt_level='N5'));" for content in [item, other]))
     instant = run("select to_char((clock_timestamp()-interval '1 hour') at time zone 'UTC','YYYY-MM-DD\"T\"HH24:MI:SS.US\"Z\"');").strip()
     request = dict(client_event_id=event, item_type='VOCABULARY', item_id=item,
                    rating=2, is_correct=True, response_ms=100, occurred_at=instant)

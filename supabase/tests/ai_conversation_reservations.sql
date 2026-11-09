@@ -12,9 +12,10 @@ grant usage on schema reservation_test to anon,authenticated,service_role;
 grant execute on all functions in schema reservation_test to anon,authenticated,service_role;
 insert into auth.users values('d1000000-0000-4000-8000-000000000001'),('d1000000-0000-4000-8000-000000000002'),('d1000000-0000-4000-8000-000000000003');
 insert into public.profiles(id,preferred_jlpt) values('d1000000-0000-4000-8000-000000000001','N5'),('d1000000-0000-4000-8000-000000000002','N4');
-insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
+insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
 select ('d2000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
- case when i=2 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>3,'文法','～です','nghĩa','giải thích' from generate_series(1,3) i;
+ case when i=2 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>3,'文法','～です','nghĩa','giải thích',
+ case when i=3 then null else 0 end from generate_series(1,3) i;
 insert into public.conversation_scenarios(id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi,system_context)
 select ('d3000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
  case when i=2 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>3,'Tình huống','会話','mô tả','固定した文脈' from generate_series(1,3) i;

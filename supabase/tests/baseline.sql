@@ -28,7 +28,7 @@ select id,'水です。','みずです。','Là nước.',0 from public.vocabula
 insert into public.kanji(id,jlpt_level,difficulty,content_version,is_active,character,meaning_vi,stroke_count)
 values ('30000000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','nước',4);
 insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
-values ('40000000-0000-4000-8000-000000000001','N5',0.1,1,true,'です','Nです','là','Câu lịch sự',0);
+values ('40000000-0000-4000-8000-000000000001','N5',0.1,1,true,'です','Nです','là','Câu lịch sự',1);
 insert into public.grammar_examples(grammar_id,sentence_ja,reading_ja,translation_vi,sort_order)
 values ('40000000-0000-4000-8000-000000000001','水です。','みずです。','Là nước.',0);
 insert into public.conversation_scenarios(id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi,system_context)

@@ -5,7 +5,10 @@ import json
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
-from contracts.validate import FORMATS
+if __package__:
+    from .validate import FORMATS
+else:
+    from validate import FORMATS
 
 ROOT = Path(__file__).resolve().parent / "quiz/v2"
 SCHEMA = json.loads((ROOT / "schema.json").read_text(encoding="utf-8"))

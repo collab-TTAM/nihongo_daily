@@ -34,8 +34,9 @@ print('PASS: native session ACL/calendar/replay/overlap/DST/rollback; 11 actual 
 
 owner = 'e1900000-0000-4000-8000-000000000001'
 run(f"insert into auth.users(id) values ('{owner}'); insert into public.profiles(id) values ('{owner}');")
-run("insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi) "
-    "values ('e1900000-0000-4000-8000-000000000002','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY');")
+run("insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) "
+    "values ('e1900000-0000-4000-8000-000000000002','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY', "
+    "(select coalesce(max(source_ordinal), -1) + 1 from public.vocabulary where jlpt_level='N5'));")
 auth = f"set local role authenticated; select set_config('request.jwt.claim.sub','{owner}',true);\n"
 read_plan = "select 'WIRE:'||public.get_daily_plan('{\"date\":\"2026-10-18\"}')::text;\n"
 initial = wire(run('begin;\n' + auth + read_plan + 'commit;\n'))

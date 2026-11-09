@@ -32,8 +32,8 @@ insert into auth.users(id) values ('e1100000-0000-4000-8000-000000000001'),
 insert into public.profiles(id,timezone) values
  ('e1100000-0000-4000-8000-000000000001','Asia/Saigon'),
  ('e1100000-0000-4000-8000-000000000002','Asia/Saigon');
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
-values ('e1200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY');
+insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
+values ('e1200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',0);
 set local role authenticated;
 select set_config('request.jwt.claim.sub','e1100000-0000-4000-8000-000000000001',true);
 select session_test.ok(public.get_daily_plan('{"date":"2026-10-18"}')->>'completed_minutes'='0','initial A plan');

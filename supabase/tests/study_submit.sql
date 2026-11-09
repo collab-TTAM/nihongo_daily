@@ -25,8 +25,8 @@ select submit_test.ok((select prosecdef and proconfig @> array['search_path=""']
 insert into auth.users values ('e2100000-0000-4000-8000-000000000001'),
  ('e2100000-0000-4000-8000-000000000002'),('e2100000-0000-4000-8000-000000000003');
 insert into public.profiles(id) values ('e2100000-0000-4000-8000-000000000001'),('e2100000-0000-4000-8000-000000000002');
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
-values ('e2200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY');
+insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
+values ('e2200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',0);
 set local role anon;
 select submit_test.ok(submit_test.denied($s$select public.submit_study_session('{}')$s$),'anon actual call denied');
 reset role;

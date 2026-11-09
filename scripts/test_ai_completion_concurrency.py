@@ -61,8 +61,12 @@ for index, case in enumerate(['same_completion', 'changed_completion', 'next_tur
     values('{scenario}','N5',0,1,true,'fixture','会話','fixture','固定文脈'),('{other_scenario}','N5',0,1,true,'fixture','会話','fixture','固定文脈');
     insert into public.conversation_sessions(id,user_id,scenario_id,jlpt_level) values('{session}','{a}','{scenario}','N5'),('{other_session}','{b}','{other_scenario}','N5');
     insert into public.conversation_messages(conversation_session_id,role,text_ja,sequence_no) values('{session}','assistant','こんにちは',0),('{other_session}','assistant','こんにちは',0);
-    insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
-    values('{grammar}','N5',0,1,true,'文法','です','nghĩa','fixture'),('{extra_grammar}','N5',0,1,true,'文法','ます','nghĩa','fixture');
+    insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+    select '{grammar}','N5',0,1,true,'文法','です','nghĩa','fixture',coalesce(max(source_ordinal),-1)+1
+    from public.grammar where jlpt_level='N5';
+    insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+    select '{extra_grammar}','N5',0,1,true,'文法','ます','nghĩa','fixture',coalesce(max(source_ordinal),-1)+1
+    from public.grammar where jlpt_level='N5';
     insert into public.scenario_grammar(scenario_id,grammar_id) values('{scenario}','{grammar}');""")
     operation = 'finish_conversation' if case == 'finish_closure' else 'conversation_turn'
     request = {'session_id': session, 'client_event_id': event}

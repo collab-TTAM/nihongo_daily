@@ -11,16 +11,17 @@ grant select,insert on queue_test.results to authenticated;
 insert into auth.users values ('d1000000-0000-4000-8000-000000000001'),
  ('d1000000-0000-4000-8000-000000000002'),('d1000000-0000-4000-8000-000000000003');
 insert into public.profiles(id) select id from auth.users where id::text like 'd100%';
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
+insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
 select ('d3000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,
  0.1,1,true,case when i=1 then '猫' else '犬' end,
- case when i=1 then 'ねこ' else 'いぬ' end,'nghĩa kiểm thử','noun','TEST ONLY'
+ case when i=1 then 'ねこ' else 'いぬ' end,'nghĩa kiểm thử','noun','TEST ONLY',
+ case when i=3 then 0 when i<3 then i-1 else i-2 end
 from generate_series(1,6) i;
 insert into public.kanji(id,jlpt_level,difficulty,content_version,is_active,character,meaning_vi,onyomi,kunyomi,stroke_count)
  values('d5000000-0000-4000-8000-000000000001','N5',0.1,1,true,'日','ngày',array['ニチ'],array['ひ'],4);
-insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
- values('d4000000-0000-4000-8000-000000000001','N5',0.1,1,true,'TEST ONLY','～です','là','TEST ONLY');
+insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+ values('d4000000-0000-4000-8000-000000000001','N5',0.1,1,true,'TEST ONLY','～です','là','TEST ONLY',0);
 insert into public.user_learning_items(user_id,item_type,item_id,srs_state,last_review_at,next_review_at,interval_days,review_count,correct_count)
  select 'd1000000-0000-4000-8000-000000000001','VOCABULARY',id,'REVIEW','2010-01-01T00:00:00Z'::timestamptz,
  case when right(id::text,1)='1' then '2020-01-01T00:00:00Z'::timestamptz

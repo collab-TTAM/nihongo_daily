@@ -33,8 +33,8 @@ insert into auth.users values('e1000000-0000-4000-8000-000000000001'),('e1000000
 insert into public.profiles(id) values('e1000000-0000-4000-8000-000000000001'),('e1000000-0000-4000-8000-000000000002');
 insert into public.conversation_scenarios(id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi,system_context)
  values('e2000000-0000-4000-8000-000000000001','N5',0,1,true,'fixture','会話','fixture','固定文脈');
-insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
- values('e3000000-0000-4000-8000-000000000001','N5',0,1,true,'文法','です','nghĩa','giải thích');
+insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+ values('e3000000-0000-4000-8000-000000000001','N5',0,1,true,'文法','です','nghĩa','giải thích',0);
 insert into public.scenario_grammar(scenario_id,grammar_id) values('e2000000-0000-4000-8000-000000000001','e3000000-0000-4000-8000-000000000001');
 select completion_test.ok((select prosecdef and proconfig @> array['search_path=""'] from pg_proc where oid='private.ai_conversation_complete(uuid,text,jsonb,uuid,jsonb)'::regprocedure),'narrow definer fixed empty search path');
 select completion_test.ok(not exists(select 1 from pg_proc p,lateral aclexplode(p.proacl) a where p.oid in

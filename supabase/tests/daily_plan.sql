@@ -37,16 +37,16 @@ insert into auth.users values ('d1100000-0000-4000-8000-000000000001'),
 insert into public.profiles(id,preferred_jlpt,daily_target_minutes,timezone) values
   ('d1100000-0000-4000-8000-000000000001','N5',120,'Asia/Saigon'),
   ('d1100000-0000-4000-8000-000000000002','N4',90,'UTC');
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi) values
-  ('d1200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY'),
-  ('d1200000-0000-4000-8000-000000000002','N5',0.1,1,true,'川','かわ','sông','noun','TEST ONLY'),
-  ('d1200000-0000-4000-8000-000000000003','N5',0.1,1,true,'山','やま','núi','noun','TEST ONLY'),
-  ('d1200000-0000-4000-8000-000000000004','N4',0.1,1,true,'森','もり','rừng','noun','TEST ONLY'),
-  ('d1200000-0000-4000-8000-000000000005','N5',0.1,1,false,'本','ほん','sách','noun','TEST ONLY');
+insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) values
+  ('d1200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',0),
+  ('d1200000-0000-4000-8000-000000000002','N5',0.1,1,true,'川','かわ','sông','noun','TEST ONLY',1),
+  ('d1200000-0000-4000-8000-000000000003','N5',0.1,1,true,'山','やま','núi','noun','TEST ONLY',2),
+  ('d1200000-0000-4000-8000-000000000004','N4',0.1,1,true,'森','もり','rừng','noun','TEST ONLY',0),
+  ('d1200000-0000-4000-8000-000000000005','N5',0.1,1,false,'本','ほん','sách','noun','TEST ONLY',null);
 insert into public.kanji(jlpt_level,difficulty,content_version,is_active,character,meaning_vi,stroke_count,stroke_data_ref)
 values ('N5',0.1,1,true,'水','nước',4,'TEST ONLY unverified reference');
-insert into public.grammar(jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
-values ('N5',0.1,1,true,'TEST ONLY','Nです','là','TEST ONLY');
+insert into public.grammar(jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+values ('N5',0.1,1,true,'TEST ONLY','Nです','là','TEST ONLY',0);
 insert into public.user_learning_items(user_id,item_type,item_id,next_review_at) values
   ('d1100000-0000-4000-8000-000000000001','VOCABULARY','d1200000-0000-4000-8000-000000000001','2026-10-19T16:59:59Z'),
   ('d1100000-0000-4000-8000-000000000001','VOCABULARY','d1200000-0000-4000-8000-000000000002','2026-10-19T17:00:00Z'),

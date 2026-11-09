@@ -16,13 +16,15 @@ update public.grammar set is_active=false where is_active;
 update public.vocabulary set is_active=false where is_active;
 insert into auth.users values('c1000000-0000-4000-8000-000000000001'),('c1000000-0000-4000-8000-000000000002'),('c1000000-0000-4000-8000-000000000003');
 insert into public.profiles(id,preferred_jlpt) values('c1000000-0000-4000-8000-000000000001','N5'),('c1000000-0000-4000-8000-000000000002','N4');
-insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
+insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
 select ('c2000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
-  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>2,'文法','～です','nghĩa','giải thích'
+  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>2,'文法','～です','nghĩa','giải thích',
+  case when i=2 then null else 0 end
 from generate_series(1,3) i;
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
+insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
 select ('c3000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
-  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>2,'猫','ねこ','mèo','danh từ','ngữ cảnh'
+  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>2,'猫','ねこ','mèo','danh từ','ngữ cảnh',
+  case when i=2 then null else 0 end
 from generate_series(1,3) i;
 create table text_context_test.captured(op text,request jsonb,prepared jsonb);
 grant all on text_context_test.captured to service_role;
@@ -116,8 +118,9 @@ update public.profiles set preferred_jlpt='N4' where id='c1000000-0000-4000-8000
 select text_context_test.reject($s$select private.ai_validate_text_context('c1000000-0000-4000-8000-000000000001',op,request,prepared) from text_context_test.captured$s$,'42501','late result after profile level switch rejected');
 update public.profiles set preferred_jlpt='N5' where id='c1000000-0000-4000-8000-000000000001';
 -- Large catalog: correction admits whole entries only within fixed byte budget.
-insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
-select ('c4000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,'N5',0.2,1,true,'文法','～です',repeat('漢',500),'説明'
+insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+select ('c4000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,'N5',0.2,1,true,'文法','～です',repeat('漢',500),'説明',
+ row_number() over (order by i)::integer
 from generate_series(1,101) i;
 select text_context_test.reject($s$select private.ai_validate_text_context('c1000000-0000-4000-8000-000000000001',op,request,prepared) from text_context_test.captured where op='correct_sentence'$s$,'P0001','late correction cannot reuse a changed selection');
 select text_context_test.ok(

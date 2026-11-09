@@ -10,7 +10,9 @@ import {
 import type { PostgresResult } from "../src/postgres_connection.ts";
 
 const root = new URL("../../../contracts/quiz/v2/", import.meta.url);
-const fixtures = JSON.parse(readFileSync(new URL("fixtures.json", root), "utf8")) as Array<{
+const fixtures = JSON.parse(
+  readFileSync(new URL("fixtures.json", root), "utf8"),
+) as Array<{
   request: QuizReportV2Request;
 }>;
 const vocabulary = fixtures[0]!.request;
@@ -202,11 +204,41 @@ test("reconstructs first-occurrence duplicate readings without guessing by UUID"
     "a2000000-0000-4000-8000-000000000005",
   ];
   const rows = [
-    { id: ids[0]!, source_ordinal: 0, content_version: 1, heading: "日本語0", reading: "よみ0" },
-    { id: ids[1]!, source_ordinal: 1, content_version: 1, heading: "日本語1", reading: "よみ1" },
-    { id: ids[2]!, source_ordinal: 2, content_version: 1, heading: "日本語2", reading: "よみ1" },
-    { id: ids[3]!, source_ordinal: 3, content_version: 1, heading: "日本語3", reading: "よみ2" },
-    { id: ids[4]!, source_ordinal: 4, content_version: 1, heading: "日本語4", reading: "よみ3" },
+    {
+      id: ids[0]!,
+      source_ordinal: 0,
+      content_version: 1,
+      heading: "日本語0",
+      reading: "よみ0",
+    },
+    {
+      id: ids[1]!,
+      source_ordinal: 1,
+      content_version: 1,
+      heading: "日本語1",
+      reading: "よみ1",
+    },
+    {
+      id: ids[2]!,
+      source_ordinal: 2,
+      content_version: 1,
+      heading: "日本語2",
+      reading: "よみ1",
+    },
+    {
+      id: ids[3]!,
+      source_ordinal: 3,
+      content_version: 1,
+      heading: "日本語3",
+      reading: "よみ2",
+    },
+    {
+      id: ids[4]!,
+      source_ordinal: 4,
+      content_version: 1,
+      heading: "日本語4",
+      reading: "よみ3",
+    },
   ];
   const request = copyRequest(vocabulary);
   request.answers[0]!.choices = [ids[0]!, ids[1]!, ids[3]!, ids[4]!];
