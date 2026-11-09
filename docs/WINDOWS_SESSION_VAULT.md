@@ -56,6 +56,25 @@ Flutter codec copies and caller-owned strings are not guaranteed zeroized.
 Native errors return fixed platform text; Dart replaces platform exceptions
 with typed safe errors. No secret is printed by production code or the probe.
 
+## Native owner-lease acquisition failure
+
+The caller reserves the project target in the Dart owner registry, then must
+acquire the Windows native named-mutex lease before reading Credential Manager.
+If acquisition returns false or the MethodChannel fails, startup fails closed:
+no credential read/clear, Auth restore/password grant or own-profile request is
+dispatched. The stored refresh secret is left untouched because this process
+never acquired the native lease and cannot safely assume ownership of the slot.
+
+Caller close still releases the local Dart reservation and owned SDK resources,
+but does not call native `releaseOwner` for a lease it never acquired. After
+the channel/contending process recovers, a new runtime can acquire the same
+target and perform the normal server refresh -> rotated-secret write ->
+own-profile readiness sequence. The TEST ONLY Windows MethodChannel regression
+injects a native-style unavailable acquisition result and verifies this
+recovery order. The standalone native probe separately covers real process-lease
+contention and abandoned-mutex recovery; neither fixture is hosted learner Auth
+proof.
+
 ## Reproduction and evidence limits
 
 In `apps/flutter_app`:

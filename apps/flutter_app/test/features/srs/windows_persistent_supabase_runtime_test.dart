@@ -42,6 +42,7 @@ void main() {
   late bool failRead;
   late bool failWrite;
   late bool failClear;
+  late bool failOwnerAcquire;
   late bool failOwnerRelease;
   late bool rejectRefresh;
   final requests = <http.Request>[];
@@ -97,6 +98,7 @@ void main() {
     failRead = false;
     failWrite = false;
     failClear = false;
+    failOwnerAcquire = false;
     failOwnerRelease = false;
     rejectRefresh = false;
 
@@ -110,6 +112,7 @@ void main() {
         case 'acquireOwner':
           ownerLeaseCalls.add(call.method);
           startupOrder.add('owner.acquire');
+          if (failOwnerAcquire) return false;
           return true;
         case 'releaseOwner':
           ownerLeaseCalls.add(call.method);
@@ -231,6 +234,80 @@ void main() {
     messenger.setMockMethodCallHandler(channel, null);
     debugDefaultTargetPlatformOverride = null;
   });
+
+  test(
+    'Windows owner acquisition failure blocks vault and Auth until caller close',
+    () async {
+      storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
+      failOwnerAcquire = true;
+
+      await expectLater(
+        runtime.start(),
+        throwsA(
+          isA<ReviewTransportFailure>()
+              .having(
+                (error) => error.code,
+                'safe error code',
+                ReviewErrorCode.unauthorized,
+              )
+              .having(
+                (error) =>
+                    error.toString().contains('PRIVATE_REFRESH_SECRET'),
+                'redacted owner error',
+                false,
+              ),
+        ),
+      );
+
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(startupOrder, ['owner.acquire']);
+      expect(timeline, isEmpty);
+      expect(requests, isEmpty);
+      expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
+      expect(runtime.account.readyRuntime, isNull);
+      expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
+
+      await runtime.close();
+
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+      expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
+
+      failOwnerAcquire = false;
+      vault = createWindowsSessionCredentialVault(wire.origin);
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+      await runtime.start();
+      await waitForReady();
+
+      expect(ownerLeaseCalls, ['acquireOwner', 'acquireOwner']);
+      expect(startupOrder, ['owner.acquire', 'owner.acquire', 'vault.read']);
+      expect(
+        timeline.indexOf('auth.refresh'),
+        greaterThan(timeline.indexOf('vault.read')),
+      );
+      expect(
+        timeline.indexOf('vault.write'),
+        greaterThan(timeline.indexOf('auth.refresh')),
+      );
+      expect(
+        timeline.indexOf('profile.ensure'),
+        greaterThan(timeline.indexOf('vault.write')),
+      );
+      expect(storedSecret, refreshSecret);
+      expect(runtime.account.state.profile?.id, wire.a);
+
+      await runtime.close();
+      expect(ownerLeaseCalls, ['acquireOwner', 'acquireOwner', 'releaseOwner']);
+      expect(closeOrder.last, 'owner.release');
+    },
+  );
 
   test(
     'Windows runtime leases vault before read and releases on close',
