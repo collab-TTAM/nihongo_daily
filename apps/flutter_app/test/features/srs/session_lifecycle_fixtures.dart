@@ -155,6 +155,7 @@ const scenarios = [
   'restore-barrier',
   'login-barrier',
   'rotation-barrier',
+  'logout-during-refresh',
   'account-switch',
   'logout-during-write',
   'logout-during-restore',
@@ -566,6 +567,48 @@ Future<void> verifyLifecycle(String scenario) async {
             access.currentSession != null,
         'rotation not saved',
       );
+    } else if (scenario == 'logout-during-refresh') {
+      final originalSecret = backend.secret;
+      sdk.authWait = Completer<void>();
+      sdk.nextOwner = owner;
+      sdk.nextSecret = 'TEST_ONLY_LATE_A_REFRESH';
+      final pending = fails(access.refresh());
+      await flush();
+      check(
+        access.currentSession == null && backend.secret == originalSecret,
+        'explicit refresh published before its rotated secret was saved',
+      );
+
+      await access.signOut();
+      check(
+        backend.secret == null && sdk.session == null,
+        'logout did not clear the saved session before refresh settled',
+      );
+      await fails(login());
+      check(
+        sdk.logins == 1,
+        'replacement login raced the late User A refresh',
+      );
+
+      sdk.authWait!.complete();
+      await pending;
+      await flush();
+      check(
+        backend.secret == null &&
+            sdk.session == null &&
+            access.currentSession == null,
+        'late User A refresh resurrected after logout',
+      );
+
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_REFRESH_AFTER_LATE_A';
+      await login();
+      check(
+        access.currentSession?.userId == other &&
+            backend.secret == 'TEST_ONLY_B_REFRESH_AFTER_LATE_A',
+        'User B did not authenticate after the late refresh was drained',
+      );
+      return;
     } else if (scenario == 'queued-old-rotation') {
       final writes = backend.writes;
       sdk.change(owner, 'TEST_ONLY_OLD', sameSession: true);

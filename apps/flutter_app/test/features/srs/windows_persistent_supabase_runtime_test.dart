@@ -691,6 +691,124 @@ void main() {
   );
 
   test(
+    'late User A explicit refresh is drained and cleared before User B can authenticate',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_A_INITIAL_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(storedSecret, refreshSecret);
+
+      final profileCountBeforeRefresh = requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .length;
+      authWait = Completer<http.Response>();
+      final lateARefresh = authWait!;
+      refreshSecret = 'TEST_ONLY_LATE_A_ROTATED_REFRESH';
+      final refreshFailure = expectLater(
+        runtime.refresh(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(timeline, contains('auth.refresh'));
+      expect(runtime.persistence.phase, SessionPersistencePhase.saving);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(profileCountBeforeRefresh),
+      );
+
+      final lateAResponse = authResponse();
+      await runtime.account.signOut();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(storedSecret, isNull);
+
+      authWait = null;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_LATE_A_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(2),
+        reason: 'User B must wait for User A refresh cleanup to finish',
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(profileCountBeforeRefresh),
+      );
+
+      lateARefresh.complete(lateAResponse);
+      await refreshFailure;
+      await fixture.flush();
+      expect(storedSecret, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(profileCountBeforeRefresh),
+      );
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      expect(authRequests, hasLength(3));
+      expect(authRequests[0].url.queryParameters['grant_type'], 'password');
+      expect(
+        authRequests[1].url.queryParameters['grant_type'],
+        'refresh_token',
+      );
+      expect(authRequests[2].url.queryParameters['grant_type'], 'password');
+
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(profileCountBeforeRefresh + 1));
+      expect(
+        profileRequests.last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+
+      final refreshIndex = timeline.indexOf('auth.refresh');
+      final clearIndex = timeline.lastIndexOf('vault.clear');
+      final passwordIndex = timeline.lastIndexOf('auth.password');
+      final writeIndex = timeline.lastIndexOf('vault.write');
+      final profileIndex = timeline.lastIndexOf('profile.ensure');
+      expect(clearIndex, greaterThan(refreshIndex));
+      expect(clearIndex, lessThan(passwordIndex));
+      expect(writeIndex, greaterThan(passwordIndex));
+      expect(profileIndex, greaterThan(writeIndex));
+    },
+  );
+
+  test(
     'late User A login cannot restore after logout before User B login',
     () async {
       await runtime.start();
