@@ -3574,3 +3574,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no Flutter/Dart SDK or Windows OS; local Dart format/analyze/Flutter tests/native execution were not run. No new-head CI pass is claimed until every latest-attempt job/step is inspected.
 - No Auth/provider/API/schema/RLS/default activation, Pro-owned #14/#38/N4 content, deployment, merge or release changes. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart, physical multi-device and learner-journey acceptance remain outstanding. PR #37 stays Draft; #20/#22/#15/#18 remain open.
 - Next: inspect the exact-final-head Actions run and every latest-attempt job/step; fix only observed failures, then continue independently unblocked Personal Alpha work without claiming hosted proof from fixtures.
+
+
+## Core worker handoff — 2026-11-09 15:12 UTC
+
+- PR #37 branch `automation/issue-22-atomic-review`; exact source HEAD `b2db0494ceffed6d4c8193ff154cbb7ab73d226b`; base main remains `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42633586413](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42633586413), attempt 1, targets this HEAD. `repo-sanity`, `ai-boundary`, `database`, `windows` and `supabase-integration` completed SUCCESS with every returned step successful. Flutter failed only strict Dart 3.35.4 formatting for `test/features/srs/windows_persistent_supabase_runtime_test.dart`; analyze, tests, downstream probes and Web build were SKIPPED, not passes.
+- The cloud authoring runtime has no pinned Dart/Flutter SDK. A temporary read-only CI diagnostic now formats only that TEST ONLY file, emits the exact Git diff, and restores the checkout before the unchanged strict formatter gate. This diagnostic is temporary and must be removed with the formatter-only correction.
+- Next: inspect the diagnostic diff from the new exact-head Actions run; apply only those formatting hunks, remove the diagnostic step, then inspect every latest-attempt job/step. No production Auth/provider, API/schema/RLS, default activation, Pro-owned N4, deployment, merge or release change. Hosted learner A/B, deployed RLS, restart/expiry and multi-device proof remain outstanding.
