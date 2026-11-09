@@ -61,6 +61,10 @@ jobs:
         run: python3 -m pip install -r contracts/requirements.txt
       - name: Validate authored curriculum exports
         run: python3 -m contracts.validate_content
+      - name: Export canonical N5 quiz source order
+        run: python3 scripts/export_quiz_source_order.py --level N5 > "$RUNNER_TEMP/quiz-source-order-n5.json"
+      - name: Run quiz source-order export regressions
+        run: python3 -m unittest scripts.test_quiz_source_order_export -v
       - name: Validate frozen contracts and regression cases
         run: |
           python3 contracts/validate.py

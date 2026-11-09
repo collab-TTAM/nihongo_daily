@@ -11386,3 +11386,43 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - TEST ONLY repair: capture the pre-existing N5 maximum once, assign the two review fixtures consecutive ordinals above it, and assert both rows are distinct and exactly `baseline+1` / `baseline+2`. This preserves the unique index and all existing RPC, replay, rollback, ownership and RLS assertions. No migration or production content changed.
 - Changed paths: `supabase/tests/review_rpc.sql`, `docs/PROJECT_STATUS.md`. Cloud authoring runtime has no PostgreSQL/Dart/Flutter SDK; local database/Flutter tests were not run. The new exact-head Actions run must verify the fixture and every downstream job.
 - Next: inspect the complete latest-attempt job/step set on the new exact HEAD; fix only observed failures. Keep PR #41 Draft and Issue #13 open. Public quiz report route/Dart adapter, hosted learner ownership, authoritative mastery/weak-point derivation and Personal Alpha acceptance remain incomplete. Pro-owned #14/#38/N4 paths and branch remain untouched.
+
+
+## Quiz source-order export projection — 2026-11-09 UTC
+
+- Run `core-20261109T1912Z-quiz-source-order-export`; branch
+  `automation/issue-11-plan-sdk-integration`; parent HEAD
+  `9f73a369a41ffc9b21087d85294b26c2ce53bb66`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. The resulting exact commit is
+  recorded in the RELEASED PR #41 checkpoint comment.
+- Added a read-only source-order projection for vocabulary/grammar exports.
+  Ordinals use original zero-based array positions, including inactive rows,
+  and reset per table/level. Manifest counts, duplicate JSON keys/IDs, level,
+  active flag, positive int32 content versions and existing ordinal fields are
+  validated. Exact manifest/source SHA-256 values accompany the projection.
+- Added ten standard-library tests with temporary synthetic N5/N4 fixtures,
+  including per-table/per-level reset, inactive gaps, hash provenance, CLI JSON
+  and fail-closed malformed inputs. The isolated cloud harness ran all10 tests
+  successfully and `py_compile` succeeded. This was a temporary fixture harness,
+  not a checkout-wide test run or actual repository N5 export.
+- Changed paths: `scripts/export_quiz_source_order.py`,
+  `scripts/test_quiz_source_order_export.py`, `.github/workflows/ci.yml`,
+  `qa/matrix.json`, `docs/QA_SECURITY_MATRIX.md`,
+  `docs/QUIZ_REPORT_API.md`, `docs/PROJECT_STATUS.md`.
+- Previous exact-head PR #41 run [42671707917](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42671707917)
+  completed FAILURE but exposed only two jobs, Windows and Flutter, both SKIPPED;
+  repo-sanity/database/AI-boundary job resources were absent. It provides no
+  test evidence for the SQL fixture repair. New exact-head CI is required.
+- PR #37 exact-head run [42653556067](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42653556067)
+  completed all6 jobs and all returned steps SUCCESS on
+  `b5505bbf5eb2a0aeb069c051aa3251435d46ac29`. This is component CI only;
+  protected hosted Supabase A/B/expiry/restart/profile evidence remains open.
+- No N4-owned files, manifest/README/content tests/docs, Pro branch, migration,
+  database content, Auth/provider, RLS/grants, public route/default save,
+  mastery/study credit, deployment, merge or release changed. CI invokes only
+  the N5 export; N4 generic behavior uses synthetic fixtures.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. If the
+  workflow again publishes only skipped Windows/Flutter jobs, diagnose the
+  workflow trigger/job graph before further feature code. Then continue the
+  separate v2 private-ledger transaction bridge and typed Dart adapter without
+  adding a public route or activating default save.

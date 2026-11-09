@@ -398,3 +398,28 @@ silently reinterpreted as v2. No v2 ledger function, HTTP route, public RPC,
 grant, Dart upload adapter, default save path, hosted JWT/PostgREST learner flow,
 mastery or study credit is enabled. The trusted content importer must populate
 canonical ordinals before active rows can be accepted by v2 validation.
+
+
+## Canonical source-order projection — 2026-11-09 UTC
+
+`scripts/export_quiz_source_order.py` builds a read-only projection for the
+future trusted curriculum importer. It reads `data/manifest.json` and each
+selected level's original `vocabulary.json` / `grammar.json` arrays. For each
+table and level it emits the original zero-based array index as
+`source_ordinal`, including inactive rows, plus ID, level, content version and
+active flag. It records SHA-256 for the exact manifest and each exact source
+file, so an import review can bind the ordinal map to the source snapshot.
+
+The projection fails closed on duplicate JSON keys/IDs, missing or mismatched
+manifest counts, unsupported/duplicated levels, wrong-level rows, invalid
+active/version metadata, oversized sources or a pre-existing ordinal field.
+It never edits canonical JSON, contacts Supabase, produces SQL or accepts
+credentials. `--level N5` is the repo-sanity CI path. The same generic code
+supports N4 after coordinator review/integration, but this core CI increment
+does not read or modify Pro-owned N4 content.
+
+The output is only an import input contract, not an importer or deployment.
+Existing active database rows remain unpopulated until a separately reviewed
+trusted transaction consumes the projection. The v2 validator remains fail
+closed; no public route/RPC/grant, typed Dart upload, default save, mastery or
+study credit is enabled by this step.

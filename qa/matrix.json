@@ -6,6 +6,8 @@
       "Check forbidden secret-like files",
       "Validate project manifest and content JSON",
       "Validate authored curriculum exports",
+      "Export canonical N5 quiz source order",
+      "Run quiz source-order export regressions",
       "Validate frozen contracts and regression cases",
       "Validate QA inventory and evidence regressions"
     ],
@@ -4212,6 +4214,27 @@
       ],
       "reproduce": "Run the disposable PostgreSQL migration suite through `bash scripts/test_database.sh`; the new SQL case is executed after the private quiz-ledger test.",
       "limitation": "The migration is additive and has not been deployed. Existing inactive/unimported rows remain nullable; no content is populated or activated. This is not hosted JWT/RLS or learner evidence."
+    },
+    {
+      "id": "quiz-source-order-export",
+      "status": "automated-baseline",
+      "scope": "Read-only deterministic per-table/per-level source-order projection; original zero-based export positions include inactive rows and retain source SHA-256 provenance.",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "scripts/export_quiz_source_order.py",
+          "contains": "source_ordinal"
+        },
+        {
+          "path": "scripts/test_quiz_source_order_export.py",
+          "contains": "test_original_array_positions_include_inactive_rows_and_reset_per_table_level"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "Run `python3 -m unittest scripts.test_quiz_source_order_export -v` and `python3 scripts/export_quiz_source_order.py --level N5 > /tmp/quiz-source-order-n5.json`.",
+      "limitation": "Read-only projection only; no Supabase write/import/deployment. CI exercises the core-owned N5 source. N4 support is covered with synthetic fixtures only; Pro-owned N4 content is not read or changed by this increment. Hosted A/B and existing-row import remain pending."
     }
   ],
   "findings": [

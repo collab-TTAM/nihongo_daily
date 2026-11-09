@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-165 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+166 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -408,3 +408,25 @@ ordinals for existing active curriculum, the v2 ledger/route and Dart adapter
 remain unwired, and hosted signed-JWT/PostgREST/A-B learner acceptance is still
 pending. No source content, N4 Pro scope, public grant, mastery or study credit
 is activated.
+
+
+## Read-only quiz source-order export — 2026-11-09 UTC
+
+One new automated-baseline case brings the inventory to166. The exporter reads
+the canonical manifest and vocabulary/grammar arrays and emits a deterministic
+ID/level/source_ordinal/content-version/active projection with SHA-256 hashes
+of the exact manifest and source files. Each ordinal is the original zero-based
+array position, including inactive rows; ordinals restart independently for
+each table and JLPT level. It rejects duplicate JSON keys/IDs, mismatched
+manifest counts/levels, invalid metadata and pre-existing source_ordinal fields.
+
+Ten standard-library regression tests use temporary synthetic N5/N4 datasets to
+verify ordering, inactive-row gaps, per-table/per-level isolation, provenance,
+CLI JSON and fail-closed malformed inputs. Repo-sanity runs the real N5 export
+only. The generic N4 path is not run against Pro-owned curriculum in this core
+increment; no N4 source/content test/document is modified.
+
+This is a read-only import projection, not a database importer. It does not
+populate existing active rows, issue SQL, use credentials, activate content or
+change v2 validation. The v2 route/typed adapter and hosted signed-JWT learner
+acceptance remain pending; all14 Personal Alpha release groups remain pending.
