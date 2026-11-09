@@ -37,16 +37,74 @@ insert into auth.users values ('d1100000-0000-4000-8000-000000000001'),
 insert into public.profiles(id,preferred_jlpt,daily_target_minutes,timezone) values
   ('d1100000-0000-4000-8000-000000000001','N5',120,'Asia/Saigon'),
   ('d1100000-0000-4000-8000-000000000002','N4',90,'UTC');
+create temp table vocabulary_ordinal_baseline as
+select levels.jlpt_level, coalesce(max(v.source_ordinal), -1) as max_ordinal
+from (values ('N5'::public.jlpt_level), ('N4'::public.jlpt_level)) as levels(jlpt_level)
+left join public.vocabulary v on v.jlpt_level = levels.jlpt_level
+group by levels.jlpt_level;
+
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) values
-  ('d1200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',0),
-  ('d1200000-0000-4000-8000-000000000002','N5',0.1,1,true,'川','かわ','sông','noun','TEST ONLY',1),
-  ('d1200000-0000-4000-8000-000000000003','N5',0.1,1,true,'山','やま','núi','noun','TEST ONLY',2),
-  ('d1200000-0000-4000-8000-000000000004','N4',0.1,1,true,'森','もり','rừng','noun','TEST ONLY',0),
+  ('d1200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',
+   (select max_ordinal + 1 from vocabulary_ordinal_baseline where jlpt_level='N5')),
+  ('d1200000-0000-4000-8000-000000000002','N5',0.1,1,true,'川','かわ','sông','noun','TEST ONLY',
+   (select max_ordinal + 2 from vocabulary_ordinal_baseline where jlpt_level='N5')),
+  ('d1200000-0000-4000-8000-000000000003','N5',0.1,1,true,'山','やま','núi','noun','TEST ONLY',
+   (select max_ordinal + 3 from vocabulary_ordinal_baseline where jlpt_level='N5')),
+  ('d1200000-0000-4000-8000-000000000004','N4',0.1,1,true,'森','もり','rừng','noun','TEST ONLY',
+   (select max_ordinal + 1 from vocabulary_ordinal_baseline where jlpt_level='N4')),
   ('d1200000-0000-4000-8000-000000000005','N5',0.1,1,false,'本','ほん','sách','noun','TEST ONLY',null);
+
+select plan_test.assert_true(
+  (select count(*)=3
+      and count(distinct v.source_ordinal)=3
+      and min(v.source_ordinal)=b.max_ordinal+1
+      and max(v.source_ordinal)=b.max_ordinal+3
+   from public.vocabulary v
+   join vocabulary_ordinal_baseline b on b.jlpt_level='N5'
+   where v.jlpt_level='N5'
+     and v.id in (
+       'd1200000-0000-4000-8000-000000000001',
+       'd1200000-0000-4000-8000-000000000002',
+       'd1200000-0000-4000-8000-000000000003'
+     )),
+  'daily plan N5 vocabulary fixtures allocate consecutive available ordinals'
+);
+select plan_test.assert_true(
+  (select count(*)=1 and min(v.source_ordinal)=b.max_ordinal+1
+   from public.vocabulary v
+   join vocabulary_ordinal_baseline b on b.jlpt_level='N4'
+   where v.jlpt_level='N4'
+     and v.id='d1200000-0000-4000-8000-000000000004'),
+  'daily plan N4 vocabulary fixture allocates the next independent ordinal'
+);
+select plan_test.assert_true(
+  (select source_ordinal is null and not is_active
+   from public.vocabulary
+   where id='d1200000-0000-4000-8000-000000000005'),
+  'inactive legacy vocabulary fixture retains a null source ordinal'
+);
 insert into public.kanji(jlpt_level,difficulty,content_version,is_active,character,meaning_vi,stroke_count,stroke_data_ref)
 values ('N5',0.1,1,true,'水','nước',4,'TEST ONLY unverified reference');
-insert into public.grammar(jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
-values ('N5',0.1,1,true,'TEST ONLY','Nです','là','TEST ONLY',0);
+create temp table grammar_ordinal_baseline as
+select coalesce(max(source_ordinal), -1) as max_ordinal
+from public.grammar
+where jlpt_level='N5';
+
+create temp table grammar_ordinal_fixture as
+with inserted as (
+  insert into public.grammar(jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+  select 'N5',0.1,1,true,'TEST ONLY','Nです','là','TEST ONLY',max_ordinal+1
+  from grammar_ordinal_baseline
+  returning source_ordinal
+)
+select source_ordinal from inserted;
+
+select plan_test.assert_true(
+  (select f.source_ordinal=b.max_ordinal+1
+   from grammar_ordinal_fixture f
+   cross join grammar_ordinal_baseline b),
+  'daily plan grammar fixture allocates the next available N5 source ordinal'
+);
 insert into public.user_learning_items(user_id,item_type,item_id,next_review_at) values
   ('d1100000-0000-4000-8000-000000000001','VOCABULARY','d1200000-0000-4000-8000-000000000001','2026-10-19T16:59:59Z'),
   ('d1100000-0000-4000-8000-000000000001','VOCABULARY','d1200000-0000-4000-8000-000000000002','2026-10-19T17:00:00Z'),
