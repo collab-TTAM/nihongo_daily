@@ -177,19 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Capture pinned Dart formatter diff (diagnostic only)
-        shell: bash
-        run: |
-          target="test/features/srs/windows_persistent_supabase_runtime_test.dart"
-          backup="$(mktemp)"
-          cp "$target" "$backup"
-          restore() {
-            cp "$backup" "$target"
-            rm -f "$backup"
-          }
-          trap restore EXIT
-          dart format "$target"
-          git --no-pager diff --no-ext-diff -- "$target"
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

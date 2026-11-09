@@ -251,8 +251,7 @@ void main() {
                 ReviewErrorCode.unauthorized,
               )
               .having(
-                (error) =>
-                    error.toString().contains('PRIVATE_REFRESH_SECRET'),
+                (error) => error.toString().contains('PRIVATE_REFRESH_SECRET'),
                 'redacted owner error',
                 false,
               ),
