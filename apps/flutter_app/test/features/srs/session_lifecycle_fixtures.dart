@@ -33,6 +33,8 @@ final class MemoryVault
   Completer<void>? readWait;
   Completer<void>? clearWait;
   bool failWrite = false;
+  // Simulate an OS write that commits before its response is lost.
+  bool commitWriteThenFail = false;
   bool failRead = false;
   bool failClear = false;
   final operations = <String>[];
@@ -75,8 +77,13 @@ final class MemoryVault
     if (method == 'write') {
       writes++;
       await writeWait?.future;
+      final token = args['token'] as String;
+      if (commitWriteThenFail) {
+        secret = token;
+        throw StateError('PRIVATE OS ERROR AFTER COMMIT');
+      }
       if (failWrite) throw StateError('PRIVATE OS ERROR');
-      secret = args['token'] as String;
+      secret = token;
       return true;
     }
     clears++;
@@ -156,6 +163,7 @@ const scenarios = [
   'read-error',
   'clear-error-retry',
   'close-retries-failed-cleanup',
+  'uncertain-rotation-write-failure-requires-clear-before-owner-release',
   'sdk-logout-error',
   'revocation',
   'dispose-ready',
@@ -493,6 +501,50 @@ Future<void> verifyLifecycle(String scenario) async {
       return;
     }
     await login();
+    if (scenario ==
+        'uncertain-rotation-write-failure-requires-clear-before-owner-release') {
+      backend.commitWriteThenFail = true;
+      backend.failClear = true;
+      sdk.nextSecret = 'TEST_ONLY_ROTATED_2';
+      await fails(access.refresh());
+      check(
+        backend.secret == 'TEST_ONLY_ROTATED_2' &&
+            access.currentSession == null &&
+            access.phase == SessionPersistencePhase.failed &&
+            backend.clears == 1,
+        'ambiguous write result granted access or skipped compensating clear',
+      );
+
+      var closeFailed = false;
+      try {
+        await access.close();
+      } on SessionVaultFailure {
+        closeFailed = true;
+      }
+      check(
+        closeFailed &&
+            backend.secret == 'TEST_ONLY_ROTATED_2' &&
+            backend.ownerHeld &&
+            PersistentAccountAccess.isTargetOwned(vault.target),
+        'caller close released the owner after an uncertain credential write',
+      );
+
+      backend.failClear = false;
+      await access.close();
+      check(
+        backend.secret == null &&
+            sdk.session == null &&
+            !backend.ownerHeld &&
+            !PersistentAccountAccess.isTargetOwned(vault.target),
+        'close retry did not clear the uncertain credential before release',
+      );
+      check(
+        backend.operations,
+        ['read', 'write', 'write', 'clear', 'clear', 'clear'],
+        'uncertain credential write cleanup order changed',
+      );
+      return;
+    }
     if (scenario == 'rotation-barrier') {
       backend.writeWait = Completer();
       sdk.nextSecret = 'TEST_ONLY_ROTATED_2';

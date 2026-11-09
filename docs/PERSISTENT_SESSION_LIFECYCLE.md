@@ -749,3 +749,10 @@ Auth, OS logoff/power-loss, deployed RLS, or physical multi-device behavior.
 The separate native process probe verifies normal mutex contention and
 abandoned-process recovery. No production Auth/provider, credential format,
 schema/RLS, default activation, or Pro-owned N4 content changes.
+
+
+## Ambiguous credential-write completion — 2026-11-09
+
+A credential backend can return an error after the underlying write may already have committed. The persistence layer must treat that result as uncertain: revoke the captured session immediately, attempt an exact-project clear, and retain the exclusive owner if the compensating clear fails. Caller close must retry SDK sign-out and vault clear; the native/Dart owner is released only after a later clear succeeds. A subsequent account cannot inherit the uncertain refresh token.
+
+The deterministic lifecycle fixture simulates a rotation write that stores the new synthetic value and then throws, followed by a failed clear. It verifies no accepted session remains, the first caller close fails while retaining ownership, and a second close clears the uncertain value before releasing both owner slots. This is a conservative TEST ONLY backend fixture, not proof that Windows Credential Manager itself can partially commit and return an error. The separate Windows process probe continues to verify normal OS-backed persistence/rotation; hosted signed-JWT learner acceptance remains outstanding.
