@@ -14,10 +14,28 @@ $$;
 grant usage on schema review_test to authenticated,anon,service_role;
 grant execute on all functions in schema review_test to authenticated,anon,service_role;
 insert into auth.users values ('b1000000-0000-4000-8000-000000000001'),('b1000000-0000-4000-8000-000000000002');
+create table review_test.vocabulary_ordinal_baseline as
+select coalesce(max(source_ordinal), -1) as max_ordinal
+from public.vocabulary
+where jlpt_level='N5';
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
- values('b3000000-0000-4000-8000-000000000001','N5',0.1,1,true,'試験','しけん','kiểm thử','noun','SQL test',0);
+ values('b3000000-0000-4000-8000-000000000001','N5',0.1,1,true,'試験','しけん','kiểm thử','noun','SQL test',
+   (select max_ordinal + 1 from review_test.vocabulary_ordinal_baseline));
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
- values('b3000000-0000-4000-8000-000000000002','N5',0.1,1,true,'追加','ついか','kiểm thử khác','noun','SQL test',1);
+ values('b3000000-0000-4000-8000-000000000002','N5',0.1,1,true,'追加','ついか','kiểm thử khác','noun','SQL test',
+   (select max_ordinal + 2 from review_test.vocabulary_ordinal_baseline));
+select review_test.ok(
+ (select count(*)=2
+    and count(distinct v.source_ordinal)=2
+    and min(v.source_ordinal)=max(b.max_ordinal)+1
+    and max(v.source_ordinal)=max(b.max_ordinal)+2
+  from public.vocabulary v
+  cross join review_test.vocabulary_ordinal_baseline b
+  where v.id in (
+   'b3000000-0000-4000-8000-000000000001',
+   'b3000000-0000-4000-8000-000000000002'
+  )),
+ 'review fixtures allocate consecutive available source ordinals');
 create table review_test.saved(request jsonb,response jsonb);
 insert into review_test.saved values(review_test.request(1),null);
 grant select,update on review_test.saved to authenticated;
