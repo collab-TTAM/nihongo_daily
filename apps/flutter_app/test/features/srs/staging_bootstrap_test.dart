@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/staging_bootstrap.dart';
+import 'package:nihongo_daily/app/retryable_async_close.dart';
 import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'account_startup_test.dart' show Owner;
 import 'account_widget_test.dart' show Harness;
@@ -12,6 +13,66 @@ const configured = StagingBuildSettings(
 );
 
 void main() {
+  test(
+    'staging owner close retries session cleanup before closing journal',
+    () async {
+      final close = RetryableAsyncClose();
+      final events = <String>[];
+      var failSessionClose = true;
+
+      Future<void> closeOwnedResources() => close.run(() async {
+        events.add('session.close');
+        if (failSessionClose) throw StateError('PRIVATE SESSION');
+        events.add('journal.close');
+      });
+
+      final first = closeOwnedResources();
+      expect(identical(first, closeOwnedResources()), isTrue);
+      await expectLater(first, throwsA(isA<StateError>()));
+      expect(events, ['session.close']);
+
+      failSessionClose = false;
+      await closeOwnedResources();
+      expect(events, ['session.close', 'session.close', 'journal.close']);
+
+      await closeOwnedResources();
+      expect(events, ['session.close', 'session.close', 'journal.close']);
+    },
+  );
+
+  test(
+    'staging owner close retries journal cleanup after session close',
+    () async {
+      final close = RetryableAsyncClose();
+      final events = <String>[];
+      var failJournalClose = true;
+
+      Future<void> closeOwnedResources() => close.run(() async {
+        events.add('session.close');
+        events.add('journal.close');
+        if (failJournalClose) throw StateError('PRIVATE JOURNAL');
+      });
+
+      await expectLater(closeOwnedResources(), throwsA(isA<StateError>()));
+      failJournalClose = false;
+      await closeOwnedResources();
+      expect(events, [
+        'session.close',
+        'journal.close',
+        'session.close',
+        'journal.close',
+      ]);
+
+      await closeOwnedResources();
+      expect(events, [
+        'session.close',
+        'journal.close',
+        'session.close',
+        'journal.close',
+      ]);
+    },
+  );
+
   test('staging settings validate before any resource construction', () {
     final valid = configured.configuration();
     expect(valid.automaticRefresh, isTrue);

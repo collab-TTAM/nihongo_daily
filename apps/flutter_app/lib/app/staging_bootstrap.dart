@@ -7,6 +7,7 @@ import '../features/auth/application/account_startup_controller.dart';
 import '../features/auth/application/account_session_notice.dart';
 import '../features/auth/application/account_session_refresh.dart';
 import '../features/auth/application/persistent_account_startup.dart';
+import 'retryable_async_close.dart';
 import '../features/auth/application/persistent_supabase_runtime.dart';
 import '../features/auth/data/windows_review_directory.dart';
 import '../features/auth/data/windows_session_credential_vault.dart';
@@ -123,7 +124,7 @@ final class _WindowsStagingOwner
   _WindowsStagingOwner(this.session, this.journal);
   final PersistentAccountStartup session;
   final NativeReviewJournal journal;
-  Future<void>? _closing;
+  final _close = RetryableAsyncClose();
   @override
   AccountController<SrsStudyRuntime> get account => session.account;
   @override
@@ -139,10 +140,13 @@ final class _WindowsStagingOwner
   @override
   Future<void> start() => session.start();
   @override
-  Future<void> close() => _closing ??= () async {
+  Future<void> close() => _close.run(() async {
+    // Keep the journal lease until SDK/vault cleanup has succeeded. A failed
+    // session close clears only the in-flight future so an explicit retry can
+    // reach the same owner again.
     await session.close();
     await journal.close();
-  }();
+  });
 }
 
 class _ConfigurationUnavailable extends StatelessWidget {

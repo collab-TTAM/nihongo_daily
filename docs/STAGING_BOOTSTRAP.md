@@ -47,6 +47,8 @@ vault offers the account route. Close drains the SDK/persistence runtime before
 releasing the journal lease. Factory failure closes an already opened journal.
 Logout/close do not delete learner history. No cwd/temp/network path fallback;
 unusual/long/redirected unsupported roots fail with a fixed storage error.
+
+The Windows staging owner coalesces concurrent close requests. If session/runtime close fails, it releases only the in-flight close future and retains the journal; a later explicit close retries the same session owner. The journal is closed only after session/vault cleanup succeeds. If journal close itself fails, the next explicit close retries that stage too. Successful completion is memoized, so later close calls do not repeat cleanup.
 Native known-folder memory is freed, hash provider closed and Unicode converted
 with checked Windows APIs. Canonical credential target validation is shared
 without changing the existing credential read/write/delete contract.

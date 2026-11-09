@@ -138,7 +138,7 @@
     {
       "id": "windows-staging-bootstrap",
       "status": "automated-baseline",
-      "scope": "Trusted build mode/URL/public-key selection, owned Windows runtime plus project-scoped OS app-data journal, configured main build and ordinary preview preservation",
+      "scope": "Trusted build mode/URL/public-key selection, owned Windows runtime plus project-scoped OS app-data journal, retryable session-before-journal shutdown, configured main build and ordinary preview preservation",
       "ci_job": "windows",
       "anchors": [
         {
@@ -152,6 +152,10 @@
         {
           "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
           "contains": "app-data and staging factory verification passed"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/staging_bootstrap_test.dart",
+          "contains": "staging owner close retries session cleanup before closing journal"
         }
       ],
       "issues": [
@@ -160,7 +164,7 @@
         15
       ],
       "reproduce": "flutter test test/features/srs/staging_bootstrap_test.dart test/features/srs/windows_review_directory_test.dart; on Windows build tool/windows_vault_bridge.dart and execute tool/verify_windows_vault_bridge.ps1; compile selected staging main then rebuild preview",
-      "limitation": "Config/Auth owner fixtures, actual OS path/factory empty-vault process assembly and configured build; no hosted project/login/JWT/learner or full configured GUI/OS shutdown proof. Build mode cannot prove project is non-production; operator supplies intended trusted staging values. Default preview, no private credentials in build. Same OS user can access files/credentials; unusual OS roots fail without fallback."
+      "limitation": "Config/Auth owner fixtures, actual OS path/factory empty-vault process assembly and configured build; retry tests exercise the close coordinator with TEST ONLY callbacks. No hosted project/login/JWT/learner or full configured GUI/OS shutdown proof. Build mode cannot prove project is non-production; operator supplies intended trusted staging values. Default preview, no private credentials in build. Same OS user can access files/credentials; unusual OS roots fail without fallback."
     },
     {
       "id": "account-session-notice",
