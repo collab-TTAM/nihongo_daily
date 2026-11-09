@@ -11355,3 +11355,13 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Changed paths: `supabase/tests/ai_text_context.sql`, `backend/ai/test/quiz_report_transaction.native.ts`, `.github/workflows/ci.yml`, and this status file. No production code, migration invariant, public quiz route/grants, private-ledger ACL, Auth/provider, RLS, default save, mastery/study credit or Pro-owned N4 content changed.
 - Cloud authoring has no pinned Node 24/Prettier, PostgreSQL, Dart or Flutter SDK. No local formatter/analyze/database/Flutter test or build is claimed. The new exact-head Actions run is the required verification; pending or skipped jobs are not passes.
 - Next: inspect every latest-attempt job and step for the new exact HEAD. Keep PR #41 Draft and Issue #13 open until the quiz route/adapter, hosted learner ownership, authoritative mastery/weak-point behavior and Personal Alpha acceptance are separately complete.
+
+
+## PR #41 — level-switch fixture source ordinal — 2026-11-09 UTC
+
+- Run `core-20261109T0622Z-pr41-level-switch-fixture-ordinal`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `2d538fa7c9799800ccdf94e1e1f2780461f5ebb0`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42572385117](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42572385117) confirmed repo-sanity and AI boundary PASS. PostgreSQL then failed in `supabase/tests/ai_conversation_reservations.sql:118`: the TEST ONLY grammar fixture changed from N5 to N4 without changing its source ordinal, colliding with an existing N4 ordinal 0. Windows was still in progress; Flutter was skipped because database failed.
+- Corrected both TEST ONLY level switches (N5→N4 and N4→N5) to allocate `MAX(source_ordinal)+1` within the destination level, excluding the row being moved. The fixture remains active for the same wrong-level assertion, and the transaction rollback is unchanged. No migration/index relaxation or production source change.
+- Changed paths: `supabase/tests/ai_conversation_reservations.sql` and this status file. No Pro-owned N4 content, Auth/provider, RLS, public route/grants, default save, mastery/study credit, deployment, merge or release changes.
+- Local PostgreSQL/Flutter/Node test commands are unavailable in the cloud authoring runtime; exact-head GitHub Actions must validate the fixture and all downstream jobs. Previous run [42572385117](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42572385117) is not a pass because its database job failed and Flutter was skipped.
+- Next: inspect the new exact-head CI latest attempt and every job/step; fix only observed fixture/test failures while preserving the source-order invariant and all security gates.

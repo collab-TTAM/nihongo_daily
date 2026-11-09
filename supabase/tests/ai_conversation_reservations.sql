@@ -115,9 +115,26 @@ end $$;
 update public.grammar set is_active=false where id='d2000000-0000-4000-8000-000000000001';
 select reservation_test.reject($s$select private.ai_conversation_reserve('d1000000-0000-4000-8000-000000000001',op,jsonb_set(request,'{client_event_id}','"d5000000-0000-4000-8000-000000000042"')) from reservation_test.calls where op='start_conversation'$s$,'P0002','inactive target curriculum rejected');
 select reservation_test.ok((select private.ai_conversation_reserve('d1000000-0000-4000-8000-000000000001',op,request)='{"kind":"pending"}' from reservation_test.calls where op='start_conversation'),'pending replay survives target retirement without fresh dispatch');
-update public.grammar set is_active=true,jlpt_level='N4' where id='d2000000-0000-4000-8000-000000000001';
+update public.grammar as target
+set is_active=true,
+    jlpt_level='N4',
+    source_ordinal=coalesce((
+      select max(existing.source_ordinal) + 1
+      from public.grammar existing
+      where existing.jlpt_level='N4'
+        and existing.id<>target.id
+    ),0)
+where target.id='d2000000-0000-4000-8000-000000000001';
 select reservation_test.reject($s$select private.ai_conversation_reserve('d1000000-0000-4000-8000-000000000001',op,jsonb_set(request,'{client_event_id}','"d5000000-0000-4000-8000-000000000042"')) from reservation_test.calls where op='start_conversation'$s$,'P0002','wrong-level target curriculum rejected');
-update public.grammar set jlpt_level='N5' where id='d2000000-0000-4000-8000-000000000001';
+update public.grammar as target
+set jlpt_level='N5',
+    source_ordinal=coalesce((
+      select max(existing.source_ordinal) + 1
+      from public.grammar existing
+      where existing.jlpt_level='N5'
+        and existing.id<>target.id
+    ),0)
+where target.id='d2000000-0000-4000-8000-000000000001';
 update public.conversation_scenarios set system_context=repeat('漢',2667) where id='d3000000-0000-4000-8000-000000000001';
 select reservation_test.reject($s$select private.ai_conversation_reserve('d1000000-0000-4000-8000-000000000001',op,jsonb_set(request,'{client_event_id}','"d5000000-0000-4000-8000-000000000042"')) from reservation_test.calls where op='start_conversation'$s$,'22023','oversized multibyte scenario context rejected');
 update public.conversation_scenarios set system_context='固定した文脈' where id='d3000000-0000-4000-8000-000000000001';
