@@ -1,3 +1,15 @@
+## Windows native owner-acquisition fail-closed regression — 2026-11-09T14:10Z
+
+- Branch `automation/issue-22-atomic-review`; source commit `a338dc5b6fdc9c4a71ba1eddc825583363fa1610` (parent `bbbb706bc621da45a92437a8bd1487db07328dc9`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added a TEST ONLY Windows MethodChannel regression for native owner-lease acquisition returning unavailable. It verifies startup stops before vault read/clear, Auth restore/password grant or own-profile; the stored refresh value remains untouched; safe errors contain no private platform details; caller close releases the local Dart target reservation without releasing a native lease it never acquired; a fresh runtime then reacquires the target and performs refresh -> rotated-token write -> own-profile readiness.
+- Changed exactly three paths: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart` (+77); `docs/WINDOWS_SESSION_VAULT.md` (+19); `qa/matrix.json` (+5/-1). No production implementation, Auth strategy/provider, API/schema/RLS, default activation, N4 Pro scope, deployment or release setting changed.
+- Separate post-write diff review: compare from parent reports exactly those three modified blobs and no added/deleted paths. Parent/final recursive trees are complete/untruncated at 335 entries; identical path/mode/type sets, with only those three blob SHAs and their ancestor tree SHAs changed. All three changed blob readbacks match. `create_tree` used exact `base_tree_sha=8fd0859cb90c995d0c11e5450bb0f287bb0936a6`; `update_ref` used `expected_sha=bbbb706bc621da45a92437a8bd1487db07328dc9`, `force=false`; branch readback matched the source commit.
+- Parent exact-head Actions [42625204054](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42625204054), attempt 1, passed all six jobs and all 101 returned steps on exact parent `bbbb706bc621da45a92437a8bd1487db07328dc9`. This is parent evidence only; the new source head still requires its own CI.
+- Cloud authoring runtime has no Dart/Flutter SDK, so local format/analyze/test/build were not run. No new-head test/CI pass is claimed until Actions is fetched for the final status head. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device proof remain outstanding. Keep PR #37 Draft and #20/#22/#15 open.
+- Next: inspect every latest-attempt job and step for the final PR head; fix only observed failures, then continue hosted acceptance through approved non-production configuration. No Pro-owned #14/#38/N4 path was touched.
+
+---
+
 ## Exact-head CI correction — 2026-11-07T08:11Z
 
 - Branch `automation/issue-22-atomic-review`; parent HEAD `59f92e5f1a2c300d1ac03a2afb6882a02fd5bdfc`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
