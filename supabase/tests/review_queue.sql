@@ -47,8 +47,19 @@ select queue_test.ok(
  'N4 fixture keeps its independent source ordinal');
 insert into public.kanji(id,jlpt_level,difficulty,content_version,is_active,character,meaning_vi,onyomi,kunyomi,stroke_count)
  values('d5000000-0000-4000-8000-000000000001','N5',0.1,1,true,'日','ngày',array['ニチ'],array['ひ'],4);
+create table queue_test.grammar_ordinal_baseline as
+select coalesce(max(source_ordinal), -1) as max_ordinal
+from public.grammar
+where jlpt_level = 'N5';
 insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
- values('d4000000-0000-4000-8000-000000000001','N5',0.1,1,true,'TEST ONLY','～です','là','TEST ONLY',0);
+select 'd4000000-0000-4000-8000-000000000001','N5',0.1,1,true,'TEST ONLY','～です','là','TEST ONLY',
+       (select max_ordinal + 1 from queue_test.grammar_ordinal_baseline);
+select queue_test.ok(
+ (select g.source_ordinal = b.max_ordinal + 1
+  from public.grammar g
+  cross join queue_test.grammar_ordinal_baseline b
+  where g.id='d4000000-0000-4000-8000-000000000001'),
+ 'queue grammar fixture allocates next available N5 source ordinal');
 insert into public.user_learning_items(user_id,item_type,item_id,srs_state,last_review_at,next_review_at,interval_days,review_count,correct_count)
  select 'd1000000-0000-4000-8000-000000000001','VOCABULARY',id,'REVIEW','2010-01-01T00:00:00Z'::timestamptz,
  case when right(id::text,1)='1' then '2020-01-01T00:00:00Z'::timestamptz

@@ -686,6 +686,10 @@
         {
           "path": "supabase/tests/review_queue.sql",
           "contains": "N4 fixture keeps its independent source ordinal"
+        },
+        {
+          "path": "supabase/tests/review_queue.sql",
+          "contains": "queue grammar fixture allocates next available N5 source ordinal"
         }
       ],
       "issues": [

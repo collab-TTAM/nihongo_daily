@@ -1,3 +1,15 @@
+## Exact-head review queue grammar source-ordinal fixture repair — 2026-11-09 UTC
+
+- Run `core-20261109T2005Z-pr41-review-queue-grammar-ordinal`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `bebdcf048d8083c6ef2dc1dffbcab8f880cac845`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42683629109](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42683629109), attempt 1, failed only in the database job at `supabase/tests/review_queue.sql`: its TEST ONLY N5 grammar row hard-coded source ordinal 0, already occupied by the canonical N5 baseline. Repo-sanity, AI boundary and Windows passed; Flutter was skipped after the database failure. The preceding vocabulary fixture fix does not cover this separate grammar insert.
+- TEST ONLY correction: snapshot the pre-existing N5 grammar maximum, allocate the fixture at `max_ordinal + 1`, and assert the stored ordinal. The unique per-level index, N4 vocabulary fixture, queue order/filters, RLS, read-only and ownership assertions are unchanged.
+- Paths: `supabase/tests/review_queue.sql`, `qa/matrix.json` (one additional exact assertion anchor), and this status handoff. No migration, index, production code, RLS/grants, Auth/provider, default save, N4/Pro-owned content, deployment or release change.
+- Pre-persist authoring checks: exact fixture replacement occurred once; JSON parsed; QA anchor resolves to the new SQL assertion; complete source tree was fetched untruncated (`945` entries). Cloud authoring runtime has no PostgreSQL/Dart/Flutter SDK, so no local database, format, analyze, Flutter test or build is claimed. Exact-head Actions must execute the database and dependent Flutter jobs.
+- PR #41 remains Draft and Issue #13/#11 remain open. PR #37 remains a separate Draft with caller-owned Windows vault component CI green; hosted signed-JWT learner A/B, deployed PostgREST/RLS and real learner restart/multi-device proof remain outstanding. Pro-owned #14/#38/N4 files remain untouched.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed failures, or release a pending-only handoff.
+
+---
+
 ## Exact-head review queue source-ordinal fixture repair — 2026-11-09 UTC
 
 - Run `core-20261109T1805Z-pr41-review-queue-ordinal-fixture`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `533d37853d1bb7d3a83338a1b519747b4372f01b`; source commit `c307d323b3c6b12881f52de86ce10219fc97cb5f`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
