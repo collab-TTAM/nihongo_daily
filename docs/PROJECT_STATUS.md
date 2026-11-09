@@ -1,3 +1,15 @@
+## Exact-head review queue source-ordinal fixture repair — 2026-11-09 UTC
+
+- Run `core-20261109T1805Z-pr41-review-queue-ordinal-fixture`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `533d37853d1bb7d3a83338a1b519747b4372f01b`; source commit `c307d323b3c6b12881f52de86ce10219fc97cb5f`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-parent Actions [42615376490](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42615376490) had repo-sanity, AI-boundary and Windows SUCCESS; database FAILED in `supabase/tests/review_queue.sql` on unique key `(N5, 0)`; Flutter was SKIPPED because database failed. The native PostgreSQL log confirms `scripts/test_review_concurrency.py` had already committed the N5 ordinal 0? No: the baseline fixture owns N5 ordinal 0 and the concurrency fixture takes the next available ordinal 1; the review-queue fixture's fixed N5 ordinal 0 therefore collides.
+- TEST ONLY correction: snapshot the existing N5 maximum before queue fixture insertion, allocate its five N5 vocabulary rows at baseline+1 through baseline+5, retain N4's independent ordinal 0, and assert N5 uniqueness/consecutiveness plus N4 independence. Existing queue ordering, RLS, ownership, read-only and RPC assertions remain unchanged; the production unique index is not weakened.
+- Changed source paths in `c307d323`: `supabase/tests/review_queue.sql` and `qa/matrix.json`. The QA inventory now anchors both new ordinal assertions. This status update is the separate follow-up commit.
+- Static authoring sanity check: the disposable CI fixture's pre-existing N5 maximum is 1, so the new allocation is exactly [2, 3, 4, 5, 6], unique and consecutive. No local PostgreSQL/Dart/Flutter SDK was available; no local SQL, formatter, analyzer, Flutter test or build pass is claimed. New exact-head Actions is the execution gate.
+- PR #41 remains Draft and Issue #13 remains open; this is fixture-only and does not complete quiz persistence/mastery/progress. PR #37 is separately RELEASED at `b5505bbf5eb2a0aeb069c051aa3251435d46ac29`; exact-head Actions [42653556067](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42653556067) passed all six jobs and all 101 steps, but hosted signed-JWT learner A/B, deployed staging RLS and physical learner restart/multi-device proof remain unverified.
+- No migration, production data, Auth/provider, schema/RLS/grants, default save, Pro-owned #14/#38/N4 paths, deployment, merge or release changed. Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures.
+
+---
+
 ## Active quiz-content eligibility validation — 2026-11-07 UTC
 
 - Run core-20261107T0609Z-quiz-content-validation; PR #41 branch automation/issue-11-plan-sdk-integration; parent HEAD 7816d1e9a23ddcf3227f61f074f9c5afc30f79d5; base main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
