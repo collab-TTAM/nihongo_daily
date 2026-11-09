@@ -130,7 +130,10 @@ def validate_baseline(root=ROOT):
 
 
 if __name__ == "__main__":
-    from contracts.validate_quiz_report_v2 import validate_fixtures as validate_quiz_report_v2_fixtures
+    if __package__:
+        from .validate_quiz_report_v2 import validate_fixtures as validate_quiz_report_v2_fixtures
+    else:
+        from validate_quiz_report_v2 import validate_fixtures as validate_quiz_report_v2_fixtures
 
     baseline_count = validate_baseline()
     quiz_v2_count = validate_quiz_report_v2_fixtures()

@@ -2,6 +2,8 @@
 
 import copy
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -25,6 +27,23 @@ class ContractTests(unittest.TestCase):
 
     def test_baseline_covers_all_endpoints_and_content(self):
         self.assertEqual(validate_baseline(), 20)
+
+    def test_validator_cli_supports_script_and_module_entrypoints(self):
+        commands = (
+            [sys.executable, "contracts/validate.py"],
+            [sys.executable, "-m", "contracts.validate"],
+        )
+        for command in commands:
+            with self.subTest(command=command):
+                completed = subprocess.run(
+                    command,
+                    cwd=ROOT.parent.parent,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+                self.assertIn("nd-quiz-report-2", completed.stdout)
 
     def test_all_ratings_and_correctness(self):
         for rating in range(4):

@@ -330,6 +330,13 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
+      - name: Diagnose exact pinned Prettier output (temporary)
+        run: |
+          for file in src/quiz_report_content_v2.ts test/quiz_report_content_v2.test.ts; do
+            echo "::group::$file"
+            ./node_modules/.bin/prettier "$file" | diff -u "$file" - || true
+            echo "::endgroup::"
+          done
       - run: npm run format:check
       - run: npm run check
       - run: npm test

@@ -20,15 +20,15 @@ insert into auth.users values ('10000000-0000-4000-8000-000000000001'), ('100000
 insert into public.profiles(id) select id from auth.users;
 select test_support.assert_true((select bool_and(timezone = 'Asia/Ho_Chi_Minh') from public.profiles),'Vietnam default normalized to canonical IANA zone');
 select test_support.assert_true(timezone('Asia/Ho_Chi_Minh', '2026-10-13T12:00:00Z'::timestamptz) = '2026-10-13 19:00:00'::timestamp,'Vietnam timezone conversion');
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi)
-values ('20000000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','đồ uống'),
-       ('20000000-0000-4000-8000-000000000002','N4',0.2,1,false,'森','もり','rừng','noun','thiên nhiên');
+insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
+values ('20000000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','đồ uống',0),
+       ('20000000-0000-4000-8000-000000000002','N4',0.2,1,false,'森','もり','rừng','noun','thiên nhiên',null);
 insert into public.vocabulary_examples(vocabulary_id,sentence_ja,reading_ja,translation_vi,sort_order)
 select id,'水です。','みずです。','Là nước.',0 from public.vocabulary;
 insert into public.kanji(id,jlpt_level,difficulty,content_version,is_active,character,meaning_vi,stroke_count)
 values ('30000000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','nước',4);
-insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi)
-values ('40000000-0000-4000-8000-000000000001','N5',0.1,1,true,'です','Nです','là','Câu lịch sự');
+insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
+values ('40000000-0000-4000-8000-000000000001','N5',0.1,1,true,'です','Nです','là','Câu lịch sự',0);
 insert into public.grammar_examples(grammar_id,sentence_ja,reading_ja,translation_vi,sort_order)
 values ('40000000-0000-4000-8000-000000000001','水です。','みずです。','Là nước.',0);
 insert into public.conversation_scenarios(id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi,system_context)
