@@ -40,6 +40,7 @@ def validate_matrix(matrix, root=ROOT):
     gates = matrix["ci_gates"]
     require(set(gates) == REQUIRED_JOBS, "all five CI jobs must be tracked")
     workflow = (root / ".github/workflows/ci.yml").read_text()
+    job_blocks = {}
     for job, steps in gates.items():
         # This workflow uses two-space top-level job IDs. Scope checks to the
         # actual job block; a command moved into another job is not coverage.
@@ -47,6 +48,7 @@ def validate_matrix(matrix, root=ROOT):
                             workflow, re.MULTILINE | re.DOTALL)
         require(len(blocks) == 1, f"job missing/duplicated in workflow: {job}")
         require(steps and len(steps) == len(set(steps)), f"invalid step list: {job}")
+        job_blocks[job] = blocks[0]
         for step in steps:
             # Named steps and GitHub's generated 'Run <command>' names.
             anchor = step[4:] if step.startswith("Run ") else step
@@ -63,6 +65,24 @@ def validate_matrix(matrix, root=ROOT):
                 f"missing scope/limitation/reproduction: {label}")
         require(case["issues"] and all(type(i) is int and i > 0 for i in case["issues"]),
                 f"missing issue owner: {label}")
+        case_steps = case.get("ci_steps", [])
+        require(
+            isinstance(case_steps, list)
+            and all(type(step) is str and step for step in case_steps),
+            f"invalid case CI steps: {label}",
+        )
+        if case_steps:
+            job = case.get("ci_job")
+            require(
+                job in job_blocks and len(case_steps) == len(set(case_steps)),
+                f"invalid case CI job/steps: {label}",
+            )
+            for step in case_steps:
+                anchor = step[4:] if step.startswith("Run ") else step
+                require(
+                    anchor in job_blocks[job],
+                    f"case CI step missing from job {job}: {label}: {step}",
+                )
         if label in RELEASE_CASES:
             require(case["status"] == "pending-integration", f"unverified release case: {label}")
         if case["status"] == "automated-baseline":

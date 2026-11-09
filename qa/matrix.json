@@ -6,8 +6,6 @@
       "Check forbidden secret-like files",
       "Validate project manifest and content JSON",
       "Validate authored curriculum exports",
-      "Export canonical N5 quiz source order",
-      "Run quiz source-order export regressions",
       "Validate frozen contracts and regression cases",
       "Validate QA inventory and evidence regressions"
     ],
@@ -4234,7 +4232,11 @@
         13
       ],
       "reproduce": "Run `python3 -m unittest scripts.test_quiz_source_order_export -v` and `python3 scripts/export_quiz_source_order.py --level N5 > /tmp/quiz-source-order-n5.json`.",
-      "limitation": "Read-only projection only; no Supabase write/import/deployment. CI exercises the core-owned N5 source. N4 support is covered with synthetic fixtures only; Pro-owned N4 content is not read or changed by this increment. Hosted A/B and existing-row import remain pending."
+      "limitation": "Read-only projection only; no Supabase write/import/deployment. CI exercises the core-owned N5 source. N4 support is covered with synthetic fixtures only; Pro-owned N4 content is not read or changed by this increment. Hosted A/B and existing-row import remain pending.",
+      "ci_steps": [
+        "Export canonical N5 quiz source order",
+        "Run quiz source-order export regressions"
+      ]
     }
   ],
   "findings": [

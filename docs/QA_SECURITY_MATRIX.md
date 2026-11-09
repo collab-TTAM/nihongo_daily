@@ -430,3 +430,10 @@ This is a read-only import projection, not a database importer. It does not
 populate existing active rows, issue SQL, use credentials, activate content or
 change v2 validation. The v2 route/typed adapter and hosted signed-JWT learner
 acceptance remain pending; all14 Personal Alpha release groups remain pending.
+
+The new case stores its two commands in case-scoped `ci_steps`, checked against
+the declared repo-sanity job block by `scripts/verify_qa.py`. The global
+`ci_gates` list remains the stable historical evidence baseline, so older
+unmodified Actions snapshots are not retroactively required to contain steps
+added after their source commit. The case-specific commands are still required
+to exist in the current workflow and cannot be moved to another job.

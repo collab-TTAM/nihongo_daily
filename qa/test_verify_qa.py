@@ -335,6 +335,38 @@ class QaEvidenceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "step missing from job ai-boundary"):
                 qa.validate_matrix(self.matrix, root)
 
+    def test_case_specific_ci_steps_are_scoped_to_declared_job(self):
+        case = next(c for c in self.matrix["cases"]
+                    if c["id"] == "quiz-source-order-export")
+        self.assertEqual(case["ci_steps"], [
+            "Export canonical N5 quiz source order",
+            "Run quiz source-order export regressions",
+        ])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for item in self.matrix["cases"]:
+                for anchor in item.get("anchors", []):
+                    path = root / anchor["path"]
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / anchor["path"], path)
+            workflow = root / ".github/workflows/ci.yml"
+            workflow.parent.mkdir(parents=True, exist_ok=True)
+            source = (ROOT / ".github/workflows/ci.yml").read_text()
+            step = (
+                "      - name: Export canonical N5 quiz source order\n"
+                "        run: python3 scripts/export_quiz_source_order.py --level N5 > "
+                "\"$RUNNER_TEMP/quiz-source-order-n5.json\"\n"
+            )
+            self.assertIn(step, source)
+            source = source.replace(step, "", 1).replace(
+                "  flutter:\n", step + "\n  flutter:\n", 1
+            )
+            workflow.write_text(source)
+            with self.assertRaisesRegex(
+                ValueError, "case CI step missing from job repo-sanity"
+            ):
+                qa.validate_matrix(self.matrix, root)
+
     def test_external_file_cannot_be_a_repository_test_anchor(self):
         self.matrix["cases"][0]["anchors"][0]["path"] = "../outside-test.py"
         with self.assertRaisesRegex(ValueError, "escapes repository"):
