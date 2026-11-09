@@ -287,10 +287,22 @@ void main() {
       },
       {...answer, 'choices': 'PRIVATE'},
       {...answer, 'choice_content_versions': <Object?>[]},
-      {...answer, 'choice_content_versions': [1, 2, 3]},
-      {...answer, 'choice_content_versions': [1, 2, 3, 0]},
-      {...answer, 'choice_content_versions': [1, 2, 3, 2147483648]},
-      {...answer, 'choice_content_versions': [1, 2, 3, 1.0]},
+      {
+        ...answer,
+        'choice_content_versions': [1, 2, 3],
+      },
+      {
+        ...answer,
+        'choice_content_versions': [1, 2, 3, 0],
+      },
+      {
+        ...answer,
+        'choice_content_versions': [1, 2, 3, 2147483648],
+      },
+      {
+        ...answer,
+        'choice_content_versions': [1, 2, 3, 1.0],
+      },
     ]) {
       expect(
         () => VocabularyQuizAnswer.fromJson(invalid),

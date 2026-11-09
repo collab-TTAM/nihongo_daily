@@ -52,10 +52,7 @@ final class GrammarQuizAnswer {
            ? null
            : List.unmodifiable(choiceContentVersions);
 
-  factory GrammarQuizAnswer.fromJson(
-    Object? value, {
-    int formatVersion = 2,
-  }) {
+  factory GrammarQuizAnswer.fromJson(Object? value, {int formatVersion = 2}) {
     if (formatVersion != 1 && formatVersion != 2) {
       throw const FormatException('Invalid grammar answer version');
     }
@@ -91,16 +88,13 @@ final class GrammarQuizAnswer {
       if (rawVersions is! List<Object?> ||
           rawVersions.length != 4 ||
           rawVersions.any(
-            (value) =>
-                value is! int || value < 1 || value > 2147483647,
+            (value) => value is! int || value < 1 || value > 2147483647,
           )) {
         throw const FormatException('Invalid grammar choice versions');
       }
       choiceContentVersions = rawVersions.cast<int>().toList();
       if (choiceContentVersions[choices.indexOf(itemId)] != version) {
-        throw const FormatException(
-          'Grammar target choice version mismatch',
-        );
+        throw const FormatException('Grammar target choice version mismatch');
       }
     }
 
@@ -220,10 +214,8 @@ final class GrammarQuizAttempt {
     };
     final answers = rawAnswers
         .map(
-          (answer) => GrammarQuizAnswer.fromJson(
-            answer,
-            formatVersion: version,
-          ),
+          (answer) =>
+              GrammarQuizAnswer.fromJson(answer, formatVersion: version),
         )
         .toList();
     final targets = answers.map((answer) => answer.itemId).toSet();

@@ -91,8 +91,7 @@ final class VocabularyQuizAnswer {
       if (rawVersions is! List<Object?> ||
           rawVersions.length != 4 ||
           rawVersions.any(
-            (value) =>
-                value is! int || value < 1 || value > 2147483647,
+            (value) => value is! int || value < 1 || value > 2147483647,
           )) {
         throw const FormatException('Invalid quiz choice versions');
       }
@@ -203,10 +202,8 @@ final class VocabularyQuizAttempt {
     };
     final answers = rawAnswers
         .map(
-          (answer) => VocabularyQuizAnswer.fromJson(
-            answer,
-            formatVersion: version,
-          ),
+          (answer) =>
+              VocabularyQuizAnswer.fromJson(answer, formatVersion: version),
         )
         .toList();
     final targets = answers.map((answer) => answer.itemId).toSet();

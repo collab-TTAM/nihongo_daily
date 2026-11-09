@@ -256,10 +256,7 @@ void main() {
     );
     expect(decoded.toJson(), equals(legacy));
     expect(
-      sameGrammarQuizAttempt(
-        decoded,
-        GrammarQuizAttempt.fromJson(legacy),
-      ),
+      sameGrammarQuizAttempt(decoded, GrammarQuizAttempt.fromJson(legacy)),
       isTrue,
     );
   });
@@ -277,8 +274,8 @@ void main() {
     ];
     for (final versions in invalidVersions) {
       final json = record();
-      (answers(json).first as Map<String, Object?>)
-          ['choice_content_versions'] = versions;
+      (answers(json).first as Map<String, Object?>)['choice_content_versions'] =
+          versions;
       expect(() => GrammarQuizAttempt.fromJson(json), throwsFormatException);
     }
 
@@ -289,8 +286,9 @@ void main() {
     expect(() => GrammarQuizAttempt.fromJson(mismatch), throwsFormatException);
 
     final missing = record();
-    (answers(missing).first as Map<String, Object?>)
-        .remove('choice_content_versions');
+    (answers(missing).first as Map<String, Object?>).remove(
+      'choice_content_versions',
+    );
     expect(() => GrammarQuizAttempt.fromJson(missing), throwsFormatException);
 
     final v1WithV2Field = record()..['format_version'] = 1;
