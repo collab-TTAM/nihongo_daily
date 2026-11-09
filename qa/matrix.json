@@ -678,6 +678,14 @@
         {
           "path": "supabase/tests/review_queue.sql",
           "contains": "A receives four active own due N5 items"
+        },
+        {
+          "path": "supabase/tests/review_queue.sql",
+          "contains": "queue fixtures allocate consecutive available N5 source ordinals"
+        },
+        {
+          "path": "supabase/tests/review_queue.sql",
+          "contains": "N4 fixture keeps its independent source ordinal"
         }
       ],
       "issues": [

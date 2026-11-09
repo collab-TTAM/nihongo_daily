@@ -11,13 +11,40 @@ grant select,insert on queue_test.results to authenticated;
 insert into auth.users values ('d1000000-0000-4000-8000-000000000001'),
  ('d1000000-0000-4000-8000-000000000002'),('d1000000-0000-4000-8000-000000000003');
 insert into public.profiles(id) select id from auth.users where id::text like 'd100%';
+create table queue_test.vocabulary_ordinal_baseline as
+select coalesce(max(source_ordinal), -1) as max_ordinal
+from public.vocabulary
+where jlpt_level = 'N5';
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
 select ('d3000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
  case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,
  0.1,1,true,case when i=1 then '猫' else '犬' end,
  case when i=1 then 'ねこ' else 'いぬ' end,'nghĩa kiểm thử','noun','TEST ONLY',
- case when i=3 then 0 when i<3 then i-1 else i-2 end
+ case when i=3 then 0 else
+   (select max_ordinal from queue_test.vocabulary_ordinal_baseline) +
+   case when i<3 then i else i-1 end
+ end
 from generate_series(1,6) i;
+select queue_test.ok(
+ (select count(*)=5
+    and count(distinct v.source_ordinal)=5
+    and min(v.source_ordinal)=max(b.max_ordinal)+1
+    and max(v.source_ordinal)=max(b.max_ordinal)+5
+  from public.vocabulary v
+  cross join queue_test.vocabulary_ordinal_baseline b
+  where v.jlpt_level='N5'
+    and v.id in (
+      'd3000000-0000-4000-8000-000000000001',
+      'd3000000-0000-4000-8000-000000000002',
+      'd3000000-0000-4000-8000-000000000004',
+      'd3000000-0000-4000-8000-000000000005',
+      'd3000000-0000-4000-8000-000000000006'
+    )),
+ 'queue fixtures allocate consecutive available N5 source ordinals');
+select queue_test.ok(
+ (select jlpt_level='N4' and source_ordinal=0
+  from public.vocabulary where id='d3000000-0000-4000-8000-000000000003'),
+ 'N4 fixture keeps its independent source ordinal');
 insert into public.kanji(id,jlpt_level,difficulty,content_version,is_active,character,meaning_vi,onyomi,kunyomi,stroke_count)
  values('d5000000-0000-4000-8000-000000000001','N5',0.1,1,true,'日','ngày',array['ニチ'],array['ひ'],4);
 insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
