@@ -159,12 +159,24 @@ async function seedContent(connection: Client, request: QuizReportRequest) {
     if (request.quiz_type === "vocabulary_reading") {
       await connection.query(
         "INSERT INTO public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,$3,$4,'nghĩa','noun','native quiz TEST ONLY',$5)",
-        [id, request.jlpt_level, "語" + id.slice(0, 8), "ご" + id.slice(0, 8), sourceOrdinal],
+        [
+          id,
+          request.jlpt_level,
+          "語" + id.slice(0, 8),
+          "ご" + id.slice(0, 8),
+          sourceOrdinal,
+        ],
       );
     } else {
       await connection.query(
         "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,$3,$4,'nghĩa','giải thích',$5)",
-        [id, request.jlpt_level, "文法" + id.slice(0, 8), "N" + id.slice(0, 8), sourceOrdinal],
+        [
+          id,
+          request.jlpt_level,
+          "文法" + id.slice(0, 8),
+          "N" + id.slice(0, 8),
+          sourceOrdinal,
+        ],
       );
     }
     sourceOrdinal += 1;

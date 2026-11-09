@@ -19,12 +19,30 @@ insert into public.profiles(id,preferred_jlpt) values('c1000000-0000-4000-8000-0
 insert into public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal)
 select ('c2000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
   case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>2,'文法','～です','nghĩa','giải thích',
-  case when i=2 then null else 0 end
+  case when i=2 then null else
+  coalesce((
+    select max(existing.source_ordinal) + 1
+    from public.grammar existing
+    where existing.jlpt_level = case
+      when i=3 then 'N4'::public.jlpt_level
+      else 'N5'::public.jlpt_level
+    end
+  ), 0)
+end
 from generate_series(1,3) i;
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
 select ('c3000000-0000-4000-8000-'||lpad(i::text,12,'0'))::uuid,
   case when i=3 then 'N4'::public.jlpt_level else 'N5'::public.jlpt_level end,0.2,1,i<>2,'猫','ねこ','mèo','danh từ','ngữ cảnh',
-  case when i=2 then null else 0 end
+  case when i=2 then null else
+  coalesce((
+    select max(existing.source_ordinal) + 1
+    from public.vocabulary existing
+    where existing.jlpt_level = case
+      when i=3 then 'N4'::public.jlpt_level
+      else 'N5'::public.jlpt_level
+    end
+  ), 0)
+end
 from generate_series(1,3) i;
 create table text_context_test.captured(op text,request jsonb,prepared jsonb);
 grant all on text_context_test.captured to service_role;
