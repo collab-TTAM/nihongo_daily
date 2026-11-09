@@ -109,12 +109,27 @@ select quiz_source_order_test.ok(
   'new active vocabulary requires source ordinal'
 );
 
+create table quiz_source_order_test.grammar_ordinal_baseline as
+select coalesce(max(source_ordinal), -1) as max_ordinal
+from public.grammar
+where jlpt_level = 'N5';
+
 insert into public.grammar (
   id, jlpt_level, difficulty, content_version, is_active,
   title, pattern, meaning_vi, explanation_vi, source_ordinal
 ) values (
   'a4100000-0000-4000-8000-000000000001', 'N5', 0.5, 1, true,
-  '理由', 'Nので', 'Vì', 'Dùng để nêu lý do.', 0
+  '理由', 'Nので', 'Vì', 'Dùng để nêu lý do.',
+  (select max_ordinal + 1
+   from quiz_source_order_test.grammar_ordinal_baseline)
+);
+
+select quiz_source_order_test.ok(
+  (select g.source_ordinal = b.max_ordinal + 1
+   from public.grammar g
+   cross join quiz_source_order_test.grammar_ordinal_baseline b
+   where g.id = 'a4100000-0000-4000-8000-000000000001'),
+  'grammar fixture allocates the next available source ordinal'
 );
 
 select quiz_source_order_test.ok(
@@ -124,7 +139,9 @@ select quiz_source_order_test.ok(
       title, pattern, meaning_vi, explanation_vi, source_ordinal
     ) values (
       'a4100000-0000-4000-8000-000000000002', 'N5', 0.5, 1, true,
-      '原因', 'Nから', 'Vì', 'Dùng để nêu lý do.', 0
+      '原因', 'Nから', 'Vì', 'Dùng để nêu lý do.',
+      (select max_ordinal + 1
+       from quiz_source_order_test.grammar_ordinal_baseline)
     )$sql$,
     '23505'
   ),

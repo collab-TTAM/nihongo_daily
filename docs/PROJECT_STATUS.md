@@ -11441,3 +11441,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Exact-head CI [42683207925](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42683207925) confirmed the three historical saved-evidence tests now PASS after global ci_gates was restored. The new case-scoped validator also runs, but its first negative test was incorrectly constructed: it inserted the removed repo-sanity command at the same indentation immediately before the next top-level job, so the existing job-block regex still correctly considered it part of repo-sanity.
 - Corrected only the test fixture to move the command into the actual Flutter steps block before asserting that repo-sanity no longer satisfies the case-specific requirement. No verifier relaxation or production behavior change.
 - The exporter and its10 regression tests passed on exact HEAD 4c4e2c6; on f2efc82 the repo-sanity QA suite ran56 tests with55 passing and this one negative-fixture test failing. Database and AI-boundary were still in progress; Windows skipped and Flutter had not run. New exact-head CI is required.
+
+
+## PR #41 grammar source-order fixture collision — 2026-11-09 UTC
+
+- Exact-head Actions [42683207925](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42683207925) database log identified a TEST ONLY collision in `supabase/tests/quiz_source_order.sql`: the grammar fixture inserted N5 at ordinal0 while the disposable baseline already contained an active N5 grammar row at ordinal0. The migration/index is behaving correctly; the fixture was hard-coded.
+- Corrected the fixture to capture the current N5 grammar maximum, insert at `baseline+1`, assert the stored value, and use the same computed ordinal for the duplicate-uniqueness rejection. This mirrors the existing vocabulary/review fixture pattern. No migration, index, constraint, content or RLS behavior is weakened.
+- The exact-head QA negative-test follow-up on `b2a52c2` is still running in Actions [42683415046](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42683415046); repo-sanity had reached the N5 export step, with database/AI jobs in progress. No complete CI pass is claimed.
+- Next: inspect every latest-attempt job/step on the next exact HEAD. Keep PR #41 Draft, Issue #13 open, and hosted learner gates pending.
