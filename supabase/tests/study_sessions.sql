@@ -32,7 +32,6 @@ insert into auth.users(id) values ('e1100000-0000-4000-8000-000000000001'),
 insert into public.profiles(id,timezone) values
  ('e1100000-0000-4000-8000-000000000001','Asia/Saigon'),
  ('e1100000-0000-4000-8000-000000000002','Asia/Saigon');
-insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
 create temp table session_vocabulary_ordinal_baseline as
 select coalesce(max(source_ordinal), -1) as max_ordinal
 from public.vocabulary
