@@ -334,7 +334,15 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
-      - run: npm run format:check
+      - name: Run npm run format:check
+        id: format_check
+        run: npm run format:check
+      - name: TEMP inspect V2 host Prettier hunk (diagnostic only)
+        if: failure() && steps.format_check.outcome == 'failure'
+        working-directory: backend/ai
+        run: |
+          npx prettier --write src/quiz_report_v2_host.ts
+          git diff -- src/quiz_report_v2_host.ts
       - run: npm run check
       - run: npm test
       - uses: denoland/setup-deno@v2
