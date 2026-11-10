@@ -108,8 +108,7 @@ final class QuizReportV2Request {
     required this.completedAt,
     required List<QuizReportV2Answer> answers,
   }) : answers = List.unmodifiable(answers) {
-    if ((quizType != 'vocabulary_reading' &&
-            quizType != 'grammar_meaning') ||
+    if ((quizType != 'vocabulary_reading' && quizType != 'grammar_meaning') ||
         (jlptLevel != 'N5' && jlptLevel != 'N4') ||
         (quizType == 'vocabulary_reading' && practiceKind != null) ||
         (quizType == 'grammar_meaning' &&

@@ -45,26 +45,24 @@ VocabularyQuizAttempt _vocabulary({int formatVersion = 2}) =>
       ],
     });
 
-GrammarQuizAttempt _grammar({
-  int formatVersion = 2,
-  String kind = 'primary',
-}) => GrammarQuizAttempt.fromJson({
-  'format_version': formatVersion,
-  'quiz_type': 'grammar_meaning',
-  'practice_kind': kind,
-  'event_id': _event(2),
-  'level': 'N5',
-  'completed_at': '2026-11-10T05:00:00.123456Z',
-  'answers': [
-    _answer(
-      11,
-      targetVersion: 3,
-      versions: [3, 1, 2, 1],
-      selectedOffset: 2,
-      legacy: formatVersion == 1,
-    ),
-  ],
-});
+GrammarQuizAttempt _grammar({int formatVersion = 2, String kind = 'primary'}) =>
+    GrammarQuizAttempt.fromJson({
+      'format_version': formatVersion,
+      'quiz_type': 'grammar_meaning',
+      'practice_kind': kind,
+      'event_id': _event(2),
+      'level': 'N5',
+      'completed_at': '2026-11-10T05:00:00.123456Z',
+      'answers': [
+        _answer(
+          11,
+          targetVersion: 3,
+          versions: [3, 1, 2, 1],
+          selectedOffset: 2,
+          legacy: formatVersion == 1,
+        ),
+      ],
+    });
 
 Map<String, Object?> _response(QuizReportV2Request request) => {
   'client_event_id': request.clientEventId,
@@ -117,17 +115,25 @@ void main() {
     expect(request.answers, hasLength(2));
   });
 
-  test('maps grammar primary and correction attempts with captured choice versions', () {
-    for (final kind in ['primary', 'correction']) {
-      final attempt = _grammar(kind: kind);
-      final request = QuizReportV2Request.fromGrammarAttempt(attempt);
-      expect(request.quizType, 'grammar_meaning');
-      expect(request.practiceKind, kind);
-      expect(request.answers.single.choiceContentVersions, [3, 1, 2, 1]);
-      expect(request.toJson()['practice_kind'], kind);
-      expect(request.answers.single.choices, [_id(11), _id(12), _id(13), _id(14)]);
-    }
-  });
+  test(
+    'maps grammar primary and correction attempts with captured choice versions',
+    () {
+      for (final kind in ['primary', 'correction']) {
+        final attempt = _grammar(kind: kind);
+        final request = QuizReportV2Request.fromGrammarAttempt(attempt);
+        expect(request.quizType, 'grammar_meaning');
+        expect(request.practiceKind, kind);
+        expect(request.answers.single.choiceContentVersions, [3, 1, 2, 1]);
+        expect(request.toJson()['practice_kind'], kind);
+        expect(request.answers.single.choices, [
+          _id(11),
+          _id(12),
+          _id(13),
+          _id(14),
+        ]);
+      }
+    },
+  );
 
   test('rejects legacy v1 attempts without displayed choice versions', () {
     expect(
@@ -137,9 +143,7 @@ void main() {
       throwsFormatException,
     );
     expect(
-      () => QuizReportV2Request.fromGrammarAttempt(
-        _grammar(formatVersion: 1),
-      ),
+      () => QuizReportV2Request.fromGrammarAttempt(_grammar(formatVersion: 1)),
       throwsFormatException,
     );
   });
@@ -169,16 +173,22 @@ void main() {
     expect(() => request.decodeResponse(missingField), throwsFormatException);
   });
 
-  test('keeps request and answer snapshots immutable while returning fresh JSON', () {
-    final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
-    expect(() => request.answers.clear(), throwsUnsupportedError);
-    expect(() => request.answers.first.choices.clear(), throwsUnsupportedError);
-    expect(
-      () => request.answers.first.choiceContentVersions.clear(),
-      throwsUnsupportedError,
-    );
-    final wire = request.toJson();
-    (wire['answers'] as List<Object?>).clear();
-    expect(request.answers, hasLength(2));
-  });
+  test(
+    'keeps request and answer snapshots immutable while returning fresh JSON',
+    () {
+      final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
+      expect(() => request.answers.clear(), throwsUnsupportedError);
+      expect(
+        () => request.answers.first.choices.clear(),
+        throwsUnsupportedError,
+      );
+      expect(
+        () => request.answers.first.choiceContentVersions.clear(),
+        throwsUnsupportedError,
+      );
+      final wire = request.toJson();
+      (wire['answers'] as List<Object?>).clear();
+      expect(request.answers, hasLength(2));
+    },
+  );
 }
