@@ -415,7 +415,9 @@ class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
         (sql, values) => query(sql, values),
         async (currentQuery, request, signal) => {
           alive();
-          await wait(this.validateCurrentContent(currentQuery, request, signal));
+          await wait(
+            this.validateCurrentContent(currentQuery, request, signal),
+          );
           alive();
         },
         controller.signal,

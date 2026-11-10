@@ -172,6 +172,16 @@ final class _App {
     expect(runtime.account.readyRuntime, isNotNull);
   }
 
+  Future<void> profileFailed() async {
+    final elapsed = Stopwatch()..start();
+    while (runtime.account.state.phase != AccountPhase.profileError &&
+        elapsed.elapsed < const Duration(seconds: 5)) {
+      await Future<void>.delayed(const Duration(milliseconds: 1));
+    }
+    expect(runtime.account.state.phase, AccountPhase.profileError);
+    expect(runtime.account.readyRuntime, isNull);
+  }
+
   Future<void> login() async {
     await runtime.account.signIn(
       'fixture@example.invalid',
@@ -620,6 +630,7 @@ void main() {
             'fixture@example.invalid',
             'TEST_ONLY_PASSWORD',
           );
+          if (!storage) await app.profileFailed();
           await lifecycle.flush();
         });
         await tester.pumpAndSettle();
@@ -636,6 +647,12 @@ void main() {
           );
         } else {
           expect(app.runtime.account.state.phase, AccountPhase.profileError);
+          expect(
+            app.server.requests.where(
+              (r) => r.url.path.contains('ensure_profile'),
+            ),
+            hasLength(1),
+          );
         }
         app.vault.failWrite = false;
         app.server.failProfile = false;
