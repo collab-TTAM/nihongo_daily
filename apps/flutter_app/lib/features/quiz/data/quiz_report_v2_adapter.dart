@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../../../shared/models/preview_level.dart';
 import '../domain/grammar_quiz_attempt.dart';
 import '../domain/vocabulary_quiz_attempt.dart';
@@ -101,6 +102,8 @@ final class QuizReportV2Answer {
 
 /// Pure wire projection only. It never dispatches or authorizes a save.
 final class QuizReportV2Request {
+  static const int maxRawBodyBytes = 16 * 1024;
+
   QuizReportV2Request._({
     required this.clientEventId,
     required this.quizType,
@@ -190,6 +193,17 @@ final class QuizReportV2Request {
     'completed_at': completedAt,
     'answers': answers.map((answer) => answer.toJson()).toList(),
   };
+
+  /// Encodes a fresh immutable UTF-8 body for the strict v2 ingress.
+  ///
+  /// This is a wire projection only; it does not dispatch or authorize a save.
+  List<int> encodeRawBody() {
+    final bytes = utf8.encode(jsonEncode(toJson()));
+    if (bytes.length > maxRawBodyBytes) {
+      throw const FormatException('Invalid quiz report request size');
+    }
+    return List<int>.unmodifiable(bytes);
+  }
 
   /// Correlates a response to this immutable request; it does not prove storage.
   QuizReportV2Response decodeResponse(Object? value) {

@@ -4271,7 +4271,7 @@
     {
       "id": "quiz-report-v2-dart-adapter",
       "status": "automated-baseline",
-      "scope": "Typed Dart projection from immutable local vocabulary/grammar attempt v2 into nd-quiz-report-2, requiring every displayed choice version and exact response correlation.",
+      "scope": "Typed Dart projection from immutable local vocabulary/grammar attempt v2 into nd-quiz-report-2, requiring every displayed choice version, exact response correlation and immutable UTF-8 JSON encoding under the 16 KiB ingress bound.",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -4293,6 +4293,10 @@
         {
           "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
           "contains": "rejects response identity, shape and count mismatches"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
+          "contains": "encodes bounded UTF-8 JSON for the strict v2 ingress"
         }
       ],
       "issues": [

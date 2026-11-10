@@ -1,3 +1,15 @@
+## PR #41 — bounded Flutter nd-quiz-report-2 raw-body encoder — 2026-11-10 UTC
+
+- Run `core-20261110T1509Z-pr41-bounded-v2-wire-encoder`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `886968218ffa8d8be21953846c502b2a929496b7`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head Actions [42834086113](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42834086113), attempt 1, matched the parent HEAD and completed all five jobs and every returned step SUCCESS: AI boundary, database, repo-sanity, Windows and Flutter. Flutter format/analyze/full tests, Chrome probes and Web build all succeeded; Windows vault/process probes and release build succeeded; AI Node/Deno and native PostgreSQL quiz host checks succeeded.
+- Added `QuizReportV2Request.encodeRawBody()`: a fresh immutable UTF-8 JSON body with a 16 KiB byte limit matching the backend raw ingress guard. It preserves the existing six-field request and captured choice versions; no owner, score, duration, credentials or transport are introduced.
+- Added vocabulary and grammar/correction round-trip, byte-bound and immutability regression; extended the existing Issue #13 QA anchor and API handoff. Changed paths: adapter, adapter test, `docs/QUIZ_REPORT_API.md`, `qa/matrix.json`, this status file.
+- The cloud authoring runtime has no pinned Dart/Flutter SDK, so no local formatter/analyzer/test/build is claimed for this change. The new exact-head Actions run is the verification gate.
+- No route/RPC/grant, default save, hosted Auth/PostgREST, mastery/SRS/study credit, migration/RLS, Pro-owned #14/#38/N4 source/data/content tests/docs, deployment, merge or release change.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; require Flutter format/analyze/full tests, Chrome, Web and Windows plus AI/database/repo-sanity to complete SUCCESS before further integration. Keep PR #41 Draft and Issue #13 open.
+
+---
+
 ## PR #41 — V2 raw decoder formatter and schema-type repair — 2026-11-10 UTC
 
 - Branch `automation/issue-11-plan-sdk-integration`; parent HEAD `61fe897aff4ac42880327ddf27fec06c385795a5`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

@@ -441,12 +441,18 @@ duration, SRS state, mastery, credentials or timer data. The strict response
 decoder requires exactly the seven v2 response fields and correlates all five
 identity fields plus answer/correct counts against the captured request.
 
-This is a pure Dart wire projection/decoder, not a repository or transport. It
-does not call Supabase, expose a public route/RPC, persist attempts, activate
+The adapter's `encodeRawBody()` serializes the immutable request as UTF-8 JSON,
+returns a fresh unmodifiable byte list and enforces the same 16,384-byte maximum
+as the backend raw-ingress guard. The encoder cannot emit duplicate object keys
+and does not normalize timestamps or versions. The test covers vocabulary and
+grammar/correction requests, byte-count parity, round-trip fields and immutability.
+
+This remains a pure Dart wire projection/decoder, not a repository or transport.
+It does not call Supabase, expose a public route/RPC, persist attempts, activate
 default save, or grant mastery/study credit. The existing v1 private ledger/host
-is not reused as a v2 endpoint; v2 still needs its own reviewed transaction host,
-raw-ingress boundary and deployment/hosted acceptance. No N4 content is read or
-changed by these tests.
+is not reused as a v2 endpoint; hosted acceptance and a separately reviewed
+transport integration remain required. No N4 content is read or changed by these
+tests.
 
 
 ## Private nd-quiz-report-2 ledger foundation — 2026-11-10

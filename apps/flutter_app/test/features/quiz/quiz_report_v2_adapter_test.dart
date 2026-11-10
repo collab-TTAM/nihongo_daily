@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
 import 'package:nihongo_daily/features/quiz/domain/grammar_quiz_attempt.dart';
@@ -134,6 +135,28 @@ void main() {
       }
     },
   );
+
+  test('encodes bounded UTF-8 JSON for the strict v2 ingress', () {
+    expect(QuizReportV2Request.maxRawBodyBytes, 16384);
+    final requests = [
+      QuizReportV2Request.fromVocabularyAttempt(_vocabulary()),
+      QuizReportV2Request.fromGrammarAttempt(_grammar(kind: 'correction')),
+    ];
+
+    for (final request in requests) {
+      final bytes = request.encodeRawBody();
+      expect(bytes, isNotEmpty);
+      expect(
+        bytes.length,
+        lessThanOrEqualTo(QuizReportV2Request.maxRawBodyBytes),
+      );
+      expect(jsonDecode(utf8.decode(bytes)), request.toJson());
+      expect(() => bytes[0] = 0, throwsUnsupportedError);
+      final repeatedBytes = request.encodeRawBody();
+      expect(repeatedBytes, bytes);
+      expect(identical(repeatedBytes, bytes), isFalse);
+    }
+  });
 
   test('rejects legacy v1 attempts without displayed choice versions', () {
     expect(
