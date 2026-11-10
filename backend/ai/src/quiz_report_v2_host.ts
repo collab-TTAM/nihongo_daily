@@ -173,8 +173,7 @@ export function createQuizReportV2SqlTransaction(
   }
 
   return Object.freeze({
-    replay: (request: QuizReportV2Request) =>
-      call(replaySql, request, true),
+    replay: (request: QuizReportV2Request) => call(replaySql, request, true),
     validateCurrentContent,
     store: async (request: QuizReportV2Request) => {
       const response = await call(storeSql, request, false);
@@ -540,16 +539,8 @@ export function createTrustedPostgresQuizReportV2Submitter(
         {
           auth,
           connections,
-          validateCurrentContent: (
-            query,
-            request,
-            activeSignal,
-          ) =>
-            validateCurrentQuizReportContentV2(
-              query,
-              request,
-              activeSignal,
-            ),
+          validateCurrentContent: (query, request, activeSignal) =>
+            validateCurrentQuizReportContentV2(query, request, activeSignal),
           timeoutMs,
         },
         signal,

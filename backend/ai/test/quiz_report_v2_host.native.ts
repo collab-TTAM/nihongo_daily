@@ -102,7 +102,9 @@ async function seedAndCanonicalize(
   fixture: (typeof fixtures)[number],
 ): Promise<MutableRequest> {
   const mutable = structuredClone(fixture.request) as MutableRequest;
-  const originalIds = [...new Set(mutable.answers.flatMap((answer) => answer.choices))];
+  const originalIds = [
+    ...new Set(mutable.answers.flatMap((answer) => answer.choices)),
+  ];
   const replacements = new Map(
     originalIds.map((id) => [id, randomUUID()] as const),
   );
@@ -203,7 +205,9 @@ async function seedAndCanonicalize(
     }
   }
   if (choices.length !== 3) {
-    throw new Error("Native v2 source did not provide three distinct distractors");
+    throw new Error(
+      "Native v2 source did not provide three distinct distractors",
+    );
   }
   choices.splice(targetIndex % 4, 0, target);
   answer.choices = choices.map((row) => row.id);
@@ -248,8 +252,12 @@ test(
     try {
       const ownerA = randomUUID();
       const ownerB = randomUUID();
-      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerA]);
-      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerB]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerA,
+      ]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerB,
+      ]);
 
       const tokens = new Map([
         ["verified-A", ownerA],

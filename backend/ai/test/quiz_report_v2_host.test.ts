@@ -26,9 +26,7 @@ interface Fixture {
 }
 
 const root = new URL("../../../contracts/quiz/v2/", import.meta.url);
-const schema = JSON.parse(
-  readFileSync(new URL("schema.json", root), "utf8"),
-);
+const schema = JSON.parse(readFileSync(new URL("schema.json", root), "utf8"));
 const fixtures = JSON.parse(
   readFileSync(new URL("fixtures.json", root), "utf8"),
 ) as Fixture[];
@@ -177,7 +175,9 @@ test("verified-owner v2 host binds Auth identity and runs replay/content/store o
   const content = sql.indexOf("SELECT canonical current content");
   const store = sql.indexOf(storeSql);
   const commit = sql.indexOf("COMMIT");
-  assert.ok(replay >= 0 && replay < content && content < store && store < commit);
+  assert.ok(
+    replay >= 0 && replay < content && content < store && store < commit,
+  );
   assert.ok(
     connection.calls.some(
       (call) =>
@@ -209,8 +209,14 @@ test("exact v2 replay bypasses current content and store", async () => {
     ),
     fixture.response,
   );
-  assert.equal(connection.calls.some((call) => call.sql === storeSql), false);
-  assert.equal(connection.calls.some((call) => call.sql === "COMMIT"), true);
+  assert.equal(
+    connection.calls.some((call) => call.sql === storeSql),
+    false,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql === "COMMIT"),
+    true,
+  );
 });
 
 test("invalid v2 raw input is rejected before Auth or PostgreSQL", async () => {
@@ -280,9 +286,18 @@ test("current-content failure rolls back and never acknowledges a v2 report", as
     ),
     /^Error: VALIDATION_FAILURE$/,
   );
-  assert.equal(connection.calls.some((call) => call.sql === "ROLLBACK"), true);
-  assert.equal(connection.calls.some((call) => call.sql === "COMMIT"), false);
-  assert.equal(connection.calls.some((call) => call.sql === storeSql), false);
+  assert.equal(
+    connection.calls.some((call) => call.sql === "ROLLBACK"),
+    true,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql === "COMMIT"),
+    false,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql === storeSql),
+    false,
+  );
   assert.equal(connection.closed, true);
 });
 
@@ -332,7 +347,10 @@ test("v2 database and ambiguous commit errors are redacted", async () => {
     ),
     /^Error: NETWORK_UNAVAILABLE$/,
   );
-  assert.equal(commit.calls.some((call) => call.sql === storeSql), true);
+  assert.equal(
+    commit.calls.some((call) => call.sql === storeSql),
+    true,
+  );
   assert.equal(commit.closed, true);
 });
 
@@ -351,8 +369,14 @@ test("v2 response mismatch rolls back before commit", async () => {
     ),
     /^Error: INTERNAL_ERROR$/,
   );
-  assert.equal(connection.calls.some((call) => call.sql === "ROLLBACK"), true);
-  assert.equal(connection.calls.some((call) => call.sql === "COMMIT"), false);
+  assert.equal(
+    connection.calls.some((call) => call.sql === "ROLLBACK"),
+    true,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql === "COMMIT"),
+    false,
+  );
   assert.equal(connection.closed, true);
 });
 
@@ -383,7 +407,10 @@ test("v2 cancellation during content validation closes the connection before sto
   await entered;
   controller.abort("PRIVATE SQL TOKEN");
   await assert.rejects(pending, /^Error: NETWORK_UNAVAILABLE$/);
-  assert.equal(connection.calls.some((call) => call.sql === storeSql), false);
+  assert.equal(
+    connection.calls.some((call) => call.sql === storeSql),
+    false,
+  );
   assert.equal(connection.closed, true);
 });
 
@@ -398,10 +425,7 @@ test("v2 SQL bridge binds only fixed private functions and preserves replay-firs
         const replay = sql === replaySql;
         return result("SELECT", [
           {
-            response:
-              replay && !hit
-                ? null
-                : JSON.stringify(fixture.response),
+            response: replay && !hit ? null : JSON.stringify(fixture.response),
           },
         ]);
       },
@@ -428,11 +452,9 @@ test("v2 SQL bridge treats malformed lookup envelopes as internal, never as a mi
     async () => assert.fail("Unknown replay must not validate content"),
   );
   await assert.rejects(
-    submitQuizReportV2InTransaction(
-      schema,
-      encode(fixture.request),
-      { run: (work) => work(tx) },
-    ),
+    submitQuizReportV2InTransaction(schema, encode(fixture.request), {
+      run: (work) => work(tx),
+    }),
     /^Error: INTERNAL_ERROR$/,
   );
 });
