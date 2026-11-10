@@ -423,3 +423,27 @@ Existing active database rows remain unpopulated until a separately reviewed
 trusted transaction consumes the projection. The v2 validator remains fail
 closed; no public route/RPC/grant, typed Dart upload, default save, mastery or
 study credit is enabled by this step.
+
+
+## Typed Dart nd-quiz-report-2 projection — 2026-11-10
+
+\`QuizReportV2Request.fromVocabularyAttempt\` and
+\`QuizReportV2Request.fromGrammarAttempt\` project immutable local attempt snapshots
+into the separate v2 request shape. They require local \`format_version: 2\`; legacy
+v1 snapshots are rejected because they never captured all four displayed choice
+versions. The adapter preserves event ID, exact canonical UTC completion text,
+level, grammar primary/correction kind, answer order, four choice IDs and their
+parallel content versions. Vocabulary \`practice_kind\` remains null.
+
+The request and answer snapshots are immutable and serialize only the six v2
+request fields. They do not serialize owner identity, local format version, score,
+duration, SRS state, mastery, credentials or timer data. The strict response
+decoder requires exactly the seven v2 response fields and correlates all five
+identity fields plus answer/correct counts against the captured request.
+
+This is a pure Dart wire projection/decoder, not a repository or transport. It
+does not call Supabase, expose a public route/RPC, persist attempts, activate
+default save, or grant mastery/study credit. The existing v1 private ledger/host
+is not reused as a v2 endpoint; v2 still needs its own reviewed transaction host,
+raw-ingress boundary and deployment/hosted acceptance. No N4 content is read or
+changed by these tests.

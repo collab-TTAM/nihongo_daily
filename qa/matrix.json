@@ -4267,6 +4267,39 @@
         "Export canonical N5 quiz source order",
         "Run quiz source-order export regressions"
       ]
+    },
+    {
+      "id": "quiz-report-v2-dart-adapter",
+      "status": "automated-baseline",
+      "scope": "Typed Dart projection from immutable local vocabulary/grammar attempt v2 into nd-quiz-report-2, requiring every displayed choice version and exact response correlation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
+          "contains": "maps vocabulary v2 attempts without owner or derived fields"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
+          "contains": "maps grammar primary and correction attempts with captured choice versions"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
+          "contains": "rejects legacy v1 attempts without displayed choice versions"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
+          "contains": "correlates response identity and counts to the captured request"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
+          "contains": "rejects response identity, shape and count mismatches"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "From apps/flutter_app run `flutter test test/features/quiz/quiz_report_v2_adapter_test.dart`; the complete Flutter job also runs the full suite.",
+      "limitation": "Pure request/response projection only. No transport, public RPC/route, account persistence, hosted Auth, mastery, SRS or study credit. Legacy local v1 attempts are not uploaded because they lack distractor versions; the v1 contract/ledger remains unchanged."
     }
   ],
   "findings": [
