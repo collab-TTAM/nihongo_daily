@@ -334,7 +334,7 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
-temporary formatter diagnostic removal      - run: npm run format:check
+      - run: npm run format:check
       - run: npm run check
       - run: npm test
       - uses: denoland/setup-deno@v2
