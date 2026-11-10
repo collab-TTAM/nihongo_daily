@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import type { AnySchemaObject } from "ajv";
 import { BoundaryError } from "../src/contracts.ts";
 import {
   createQuizReportV2Decoder,
@@ -35,7 +36,7 @@ interface MutableRequest {
 const root = new URL("../../../contracts/quiz/v2/", import.meta.url);
 const schema = JSON.parse(
   readFileSync(new URL("schema.json", root), "utf8"),
-) as Record<string, unknown>;
+) as AnySchemaObject;
 const fixtures = JSON.parse(
   readFileSync(new URL("fixtures.json", root), "utf8"),
 ) as Fixture[];
@@ -105,8 +106,7 @@ test("quiz v2 decoder rejects duplicate targets, choices and unoffered selection
   invalid(encode(duplicateChoice));
 
   const missingTarget = fresh();
-  missingTarget.answers[0]!.choices[0] =
-    "ffffffff-ffff-4fff-8fff-ffffffffffff";
+  missingTarget.answers[0]!.choices[0] = "ffffffff-ffff-4fff-8fff-ffffffffffff";
   invalid(encode(missingTarget));
 
   const unofferedSelection = fresh();
@@ -162,7 +162,10 @@ test("quiz v2 decoder rejects raw duplicate keys, fractional/exponent numbers an
     ),
     raw.replace('"content_version":1', '"content_version":1.0'),
     raw.replace('"content_version":1', '"content_version":1e0'),
-    raw.replace('"choice_content_versions":[1', '"choice_content_versions":[1e0'),
+    raw.replace(
+      '"choice_content_versions":[1',
+      '"choice_content_versions":[1e0',
+    ),
     raw + "{}",
   ];
   for (const text of changed) {
@@ -185,10 +188,7 @@ test("quiz v2 decoder freezes nested choices and versions without raw aliases", 
     assert.ok(Object.isFrozen(answer));
     assert.ok(Object.isFrozen(answer.choices));
     assert.ok(Object.isFrozen(answer.choice_content_versions));
-    assert.equal(
-      Reflect.set(answer.choice_content_versions, "0", 99),
-      false,
-    );
+    assert.equal(Reflect.set(answer.choice_content_versions, "0", 99), false);
   }
   assert.deepEqual(result, expected);
 });
@@ -264,7 +264,6 @@ test("quiz v2 response decoder validates the request before response use", () =>
         encode({ ...fresh(), user_id: "forged" }),
       ),
     (error: unknown) =>
-      error instanceof BoundaryError &&
-      error.code === "VALIDATION_FAILURE",
+      error instanceof BoundaryError && error.code === "VALIDATION_FAILURE",
   );
 });

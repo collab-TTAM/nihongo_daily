@@ -1,9 +1,12 @@
-## PR #41 — pinned Prettier diagnostic for V2 quiz decoder — 2026-11-10 UTC
+## PR #41 — V2 raw decoder formatter and schema-type repair — 2026-11-10 UTC
 
-- Exact-head Actions [42806403973](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42806403973) targets `20a2420a45d77b2ba68ee75b8c308bf7f07ee271`. Repo-sanity completed SUCCESS; ai-boundary failed only at pinned Prettier `npm run format:check` for the two new V2 decoder files. The Node TypeScript check, tests and Deno checks were skipped; database and Windows were still in progress at observation. This is not a full CI pass.
-- Added a temporary read-only formatter diagnostic before the unchanged strict format gate. It backs up only `src/quiz_report_v2.ts` and `test/quiz_report_v2.test.ts`, runs the repository-pinned Prettier 3.6.2, prints the exact diff, and restores both files in an EXIT trap before the strict gate.
-- No source assertions, behavior, test coverage, security gate or strict formatter requirement is weakened. The diagnostic will be removed in the formatter-repair commit.
-- No Auth/provider, route/grant, migration/RLS, default save, Pro-owned #14/#38/N4, deployment, merge or release change. Next: inspect the emitted diff, apply only those formatter hunks, correct any actual TypeScript/test issue, remove the temporary step, and inspect all jobs on the successor exact HEAD.
+- Branch `automation/issue-11-plan-sdk-integration`; parent HEAD `61fe897aff4ac42880327ddf27fec06c385795a5`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42806877432](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42806877432) targets diagnostic HEAD `61fe897aff4ac42880327ddf27fec06c385795a5`. Latest attempt 1 completed: repo-sanity SUCCESS (13/13 steps), database SUCCESS (25/25), Windows SUCCESS (18/18), Flutter SUCCESS (37/37); ai-boundary FAILED only at strict `npm run format:check`. Its TypeScript check, Node tests and Deno steps were SKIPPED, not passes. Overall run conclusion: FAILURE.
+- Pinned Prettier 3.6.2 diagnostic emitted exact formatting-only hunks in `backend/ai/src/quiz_report_v2.ts` (timestamp and target-version expressions) and `backend/ai/test/quiz_report_v2.test.ts` (missing-target assignment, raw replacement, immutable assertion and validation predicate). Applied those hunks without changing assertions or behavior.
+- Corrected the test schema's static type to Ajv's `AnySchemaObject`, matching the decoder's trusted repository-schema parameter; the schema remains read from the bundled contract, never learner input.
+- Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`; the original strict format, TypeScript, Node and Deno gates remain unchanged.
+- No migration/RLS/grant, Auth/provider, public route, verified-owner transaction host, default save, mastery/SRS/study credit, deployment/release or Pro-owned #14/#38/N4 change. No local Node/Deno verification is claimed in the cloud authoring runtime.
+- Next: inspect every job/step on the successor exact HEAD. Require ai-boundary format, TypeScript, Node tests, pinned Deno/Edge checks and all other jobs to complete SUCCESS before further integration. Keep PR #41 Draft and Issue #13 open.
 
 ---
 

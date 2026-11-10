@@ -67,8 +67,7 @@ export function createQuizReportV2Decoder(schema: AnySchemaObject) {
       const instant = new Date(request.completed_at);
       if (
         !Number.isFinite(instant.getTime()) ||
-        instant.toISOString().slice(0, 19) !==
-          request.completed_at.slice(0, 19)
+        instant.toISOString().slice(0, 19) !== request.completed_at.slice(0, 19)
       ) {
         throw new Error();
       }
@@ -80,8 +79,7 @@ export function createQuizReportV2Decoder(schema: AnySchemaObject) {
           targets.has(answer.item_id) ||
           targetIndex < 0 ||
           !answer.choices.includes(answer.selected_id) ||
-          answer.choice_content_versions[targetIndex] !==
-            answer.content_version
+          answer.choice_content_versions[targetIndex] !== answer.content_version
         ) {
           throw new Error();
         }
