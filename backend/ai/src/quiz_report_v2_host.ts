@@ -175,7 +175,7 @@ export function createQuizReportV2SqlTransaction(
 
   return Object.freeze({
     replay: (request: QuizReportV2Request) => call(replaySql, request, true),
-    validateCurrentContent: (request) =>
+    validateCurrentContent: (request: QuizReportV2Request) =>
       validateCurrentContent(query, request, signal),
     store: async (request: QuizReportV2Request) => {
       const response = await call(storeSql, request, false);
