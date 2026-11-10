@@ -93,6 +93,40 @@ final class _FakeAuth implements QuizReportV2Auth {
   Future<void> dispose() => _events.close();
 }
 
+final class _AbortableMockClient extends http.BaseClient {
+  _AbortableMockClient(this._handler);
+
+  final Future<http.Response> Function(http.BaseRequest request) _handler;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    final response = request.finalize().drain<void>().then(
+      (_) => _handler(request),
+    ).then(
+      (value) => http.StreamedResponse(
+        Stream<List<int>>.value(value.bodyBytes),
+        value.statusCode,
+        contentLength: value.bodyBytes.length,
+        request: request,
+        headers: value.headers,
+      ),
+    );
+
+    final abortTrigger = request is http.AbortableRequest
+        ? request.abortTrigger
+        : null;
+    if (abortTrigger == null) return response;
+
+    final aborted = abortTrigger.then<http.StreamedResponse>((_) {
+      throw http.ClientException('Request aborted', request.url);
+    });
+    return Future.any<http.StreamedResponse>([response, aborted]);
+  }
+
+  @override
+  void close() {}
+}
+
 QuizReportV2HttpTransport _transport({
   required _FakeAuth auth,
   required http.Client client,
@@ -165,7 +199,7 @@ void main() {
     final report = _report();
     final responseGate = Completer<http.Response>();
     final requestSeen = Completer<http.AbortableRequest>();
-    final client = MockClient((request) {
+    final client = _AbortableMockClient((request) {
       requestSeen.complete(request as http.AbortableRequest);
       return responseGate.future;
     });
@@ -199,7 +233,7 @@ void main() {
     final report = _report();
     final responseGate = Completer<http.Response>();
     final requestSeen = Completer<http.AbortableRequest>();
-    final client = MockClient((request) {
+    final client = _AbortableMockClient((request) {
       requestSeen.complete(request as http.AbortableRequest);
       return responseGate.future;
     });
