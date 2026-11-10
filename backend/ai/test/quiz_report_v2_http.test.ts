@@ -9,7 +9,9 @@ import type { QuizReportV2Submitter } from "../src/quiz_report_v2_host.ts";
 import type { QuizReportV2Response } from "../src/quiz_report_v2.ts";
 
 const encoder = new TextEncoder();
-const rawBody = encoder.encode('{"duplicate":"first","duplicate":"second","jp":"あ"}');
+const rawBody = encoder.encode(
+  '{"duplicate":"first","duplicate":"second","jp":"あ"}',
+);
 const saved: QuizReportV2Response = {
   client_event_id: "e4200000-0000-4000-8000-000000000001",
   quiz_type: "vocabulary_reading",
@@ -37,10 +39,7 @@ function request(
     },
     duplex: "half",
   };
-  return new Request(
-    "https://untrusted.invalid/quiz?user_id=forged",
-    init,
-  );
+  return new Request("https://untrusted.invalid/quiz?user_id=forged", init);
 }
 
 async function safeError(
@@ -106,8 +105,16 @@ test("rejects method, media type, encoding and bearer before submitter", async (
   });
   const cases: Array<[Request, number, string]> = [
     [request(null, {}, undefined, "GET"), 405, "VALIDATION_FAILURE"],
-    [request(rawBody, { "content-type": "text/plain" }), 415, "VALIDATION_FAILURE"],
-    [request(rawBody, { "content-encoding": "gzip" }), 415, "VALIDATION_FAILURE"],
+    [
+      request(rawBody, { "content-type": "text/plain" }),
+      415,
+      "VALIDATION_FAILURE",
+    ],
+    [
+      request(rawBody, { "content-encoding": "gzip" }),
+      415,
+      "VALIDATION_FAILURE",
+    ],
     [request(rawBody, { authorization: "" }), 401, "UNAUTHORIZED"],
     [
       request(rawBody, { authorization: "Bearer fixture-token,other" }),

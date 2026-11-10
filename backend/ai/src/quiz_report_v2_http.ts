@@ -144,10 +144,7 @@ async function readBoundedBytes(
   }
 }
 
-function awaitWithSignal<T>(
-  work: Promise<T>,
-  signal: AbortSignal,
-): Promise<T> {
+function awaitWithSignal<T>(work: Promise<T>, signal: AbortSignal): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     let settled = false;
     let abort: (() => void) | undefined;

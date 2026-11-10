@@ -334,14 +334,6 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
-      - name: Temporary read-only Prettier diff for v2 HTTP ingress
-        run: |
-          set -euo pipefail
-          for path in src/quiz_report_v2_http.ts test/quiz_report_v2_http.test.ts; do
-            echo "Pinned Prettier output for $path"
-            npx prettier "$path" > "$RUNNER_TEMP/prettier.out"
-            diff -u "$path" "$RUNNER_TEMP/prettier.out" || true
-          done
       - run: npm run format:check
       - run: npm run check
       - run: npm test
