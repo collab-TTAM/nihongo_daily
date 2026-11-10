@@ -451,13 +451,13 @@ changed by these tests.
 
 ## Private nd-quiz-report-2 ledger foundation — 2026-11-10
 
-The additive migration \`20261110100500_quiz_report_v2_ledger.sql\` adds private
-\`quiz_report_request_v2\`, \`replay_quiz_report_v2\` and
-\`store_quiz_report_v2\` helpers. V2 validates exactly four ordered choice IDs
-and four positive int32 \`choice_content_versions\`; the version at the target's
-choice position must equal \`content_version\`.
+The additive migration `20261110100500_quiz_report_v2_ledger.sql` adds private
+`quiz_report_request_v2`, `replay_quiz_report_v2` and
+`store_quiz_report_v2` helpers. V2 validates exactly four ordered choice IDs
+and four positive int32 `choice_content_versions`; the version at the target's
+choice position must equal `content_version`.
 
-V1 and V2 intentionally share \`private.quiz_report_receipts\` and the same
+V1 and V2 intentionally share `private.quiz_report_receipts` and the same
 per-owner advisory lock. The complete JSONB request (including all displayed
 versions) is the immutable replay identity, so changing a distractor version
 under an existing event conflicts. A V1/V2 attempt cannot silently reuse the

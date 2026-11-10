@@ -36,8 +36,10 @@ begin
     raise exception 'VALIDATION_FAILURE' using errcode='P0001';
   end if;
   perform private.review_instant(instant_text);
-  if jsonb_typeof(p_request->'answers') is distinct from 'array' or
-     jsonb_array_length(p_request->'answers') not between 1 and 10 then
+  if jsonb_typeof(p_request->'answers') is distinct from 'array' then
+    raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+  end if;
+  if jsonb_array_length(p_request->'answers') not between 1 and 10 then
     raise exception 'VALIDATION_FAILURE' using errcode='P0001';
   end if;
 
@@ -55,14 +57,21 @@ begin
     targets := array_append(targets,target);
 
     version_text := answer->>'content_version';
-    if jsonb_typeof(answer->'content_version') is distinct from 'number' or
-       version_text !~ '^[1-9][0-9]{0,9}$' or version_text::bigint>2147483647 then
+    if jsonb_typeof(answer->'content_version') is distinct from 'number' then
+      raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+    end if;
+    if version_text !~ '^[1-9][0-9]{0,9}$' then
+      raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+    end if;
+    if version_text::bigint>2147483647 then
       raise exception 'VALIDATION_FAILURE' using errcode='P0001';
     end if;
     version_value := version_text::integer;
 
-    if jsonb_typeof(answer->'choices') is distinct from 'array' or
-       jsonb_array_length(answer->'choices')<>4 then
+    if jsonb_typeof(answer->'choices') is distinct from 'array' then
+      raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+    end if;
+    if jsonb_array_length(answer->'choices')<>4 then
       raise exception 'VALIDATION_FAILURE' using errcode='P0001';
     end if;
     choices := '{}';
@@ -75,15 +84,22 @@ begin
       raise exception 'VALIDATION_FAILURE' using errcode='P0001';
     end if;
 
-    if jsonb_typeof(answer->'choice_content_versions') is distinct from 'array' or
-       jsonb_array_length(answer->'choice_content_versions')<>4 then
+    if jsonb_typeof(answer->'choice_content_versions') is distinct from 'array' then
+      raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+    end if;
+    if jsonb_array_length(answer->'choice_content_versions')<>4 then
       raise exception 'VALIDATION_FAILURE' using errcode='P0001';
     end if;
     choice_versions := '{}';
     for choice in select value from jsonb_array_elements(answer->'choice_content_versions') loop
       version_text := choice #>> '{}';
-      if jsonb_typeof(choice) is distinct from 'number' or
-         version_text !~ '^[1-9][0-9]{0,9}$' or version_text::bigint>2147483647 then
+      if jsonb_typeof(choice) is distinct from 'number' then
+        raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+      end if;
+      if version_text !~ '^[1-9][0-9]{0,9}$' then
+        raise exception 'VALIDATION_FAILURE' using errcode='P0001';
+      end if;
+      if version_text::bigint>2147483647 then
         raise exception 'VALIDATION_FAILURE' using errcode='P0001';
       end if;
       choice_versions := array_append(choice_versions,version_text::integer);
