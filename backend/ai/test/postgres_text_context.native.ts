@@ -75,12 +75,12 @@ async function fixture(level = "N5") {
   );
   const grammarInsert = await admin(
     "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,'文法','～です','nghĩa','giải thích',$3::integer) RETURNING source_ordinal",
-    [grammar, level, grammarOrdinal],
+    [grammar, level, String(grammarOrdinal)],
   );
   assert.equal(Number(grammarInsert.rows[0]?.source_ordinal), grammarOrdinal);
   const vocabularyInsert = await admin(
     "INSERT INTO public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,'猫','ねこ','mèo','noun','fixture',$3::integer) RETURNING source_ordinal",
-    [vocabulary, level, vocabularyOrdinal],
+    [vocabulary, level, String(vocabularyOrdinal)],
   );
   assert.equal(
     Number(vocabularyInsert.rows[0]?.source_ordinal),

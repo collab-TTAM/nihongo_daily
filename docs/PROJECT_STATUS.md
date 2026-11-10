@@ -1,3 +1,12 @@
+## PR #41 — native text-context ordinal bind typing — 2026-11-10 UTC
+
+- Exact-head Actions [42754409650](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42754409650) on `203706515fe6fe786cdb627cc0d0cc92622d5a49` passed `npm run format:check`, then failed `npm run check` at the two new fixture bind arrays because the existing TEST ONLY `admin` helper accepts `string[]`, not numeric parameters. Node tests were skipped; Database was still running and Windows was queued at observation, so this run is not green.
+- Kept the helper signature and explicit PostgreSQL `$3::integer` casts unchanged; the two allocated ordinals are now passed as decimal strings. The allocation, nonnegative checks and RETURNING assertions remain intact.
+- Changed paths remain `backend/ai/test/postgres_text_context.native.ts` and this status handoff. No production or schema/security/content changes.
+- Next: inspect every latest-attempt job/step on the successor exact HEAD. No test/analyze/build pass is claimed until the complete current-head workflow succeeds; PR #41 remains Draft and Issues #11/#13 remain open.
+
+---
+
 ## PR #41 — native text-context fixture source ordinals — 2026-11-10 UTC
 
 - Exact-head Actions [42748662784](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42748662784), attempt 1, targets `16c0bb8fd1bbff1a789c936f248f9e295d6b91f1`. Repo-sanity, AI boundary and Windows passed; Database failed in `backend/ai/test/postgres_text_context.native.ts`: the shared TEST ONLY fixture inserted active grammar without the newly required per-level `source_ordinal`. The fixture's vocabulary insert had the same latent mismatch. Flutter was skipped after Database failed; no full CI pass is claimed.
