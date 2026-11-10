@@ -7,7 +7,8 @@ import 'quiz_report_v2_transport.dart';
 /// Read-only view of the caller-owned Supabase SDK Auth lifecycle.
 /// The server, not this local snapshot, verifies the bearer JWT.
 final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
-  SupabaseQuizReportV2Auth({required SupabaseClient client}) : _client = client {
+  SupabaseQuizReportV2Auth({required SupabaseClient client})
+    : _client = client {
     _syncFromSdk(notify: false);
     _subscription = _client.auth.onAuthStateChange.listen(
       (_) => _syncFromSdk(),
@@ -21,8 +22,9 @@ final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
   );
 
   final SupabaseClient _client;
-  final StreamController<void> _changes =
-      StreamController<void>.broadcast(sync: true);
+  final StreamController<void> _changes = StreamController<void>.broadcast(
+    sync: true,
+  );
   StreamSubscription<AuthState>? _subscription;
   String? _userId;
   String? _accessToken;

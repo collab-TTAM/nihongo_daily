@@ -11714,3 +11714,18 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Parent PR #41 exact-head Actions [42864195936](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42864195936) completed all 5 jobs and every returned step SUCCESS on b1b29e24bf8ea2d1b9f145f63a6d14c74d322283; it is parent evidence only, not proof of this new transport.
 - Cloud authoring runtime has Node 22 but no Dart/Flutter SDK; no local Dart format/analyze/test/build is claimed. Require the new exact-head Actions run to execute Flutter format/analyze/full tests and Web/Windows builds.
 - Next: inspect every latest-attempt job/step for the exact new HEAD. If green, register a separately reviewed Edge route using server-only configuration, then run hosted signed-JWT/PostgREST/RLS A/B in protected staging before any default save activation. Keep PR #41 Draft and Issue #13 open.
+
+## PR #41 — captured quiz-report transport formatter correction — 2026-11-10 UTC
+
+- Core lane resumed on `automation/issue-11-plan-sdk-integration` after the prior 2026-11-10T18:09Z marker aged beyond 90 minutes; no later core heartbeat was present. PR #37 remains separately RELEASED at `60f7b062fe1511fe36575fe50ecdfb4f6fd0325e`.
+- Parent HEAD: `aa075619795e4fc46f48707f1b5fafad0d8f66a1`. Exact-head Actions [42876226331](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42876226331), attempt 1, completed with repo-sanity, database, AI boundary and Windows all SUCCESS. Flutter failed only the pinned Dart 3.35.4 formatter on the four quiz transport/Auth source and test files; Flutter analyze, the complete test suite, native/browser probes and Web build were SKIPPED, not passes.
+- Applied only the four formatter hunks emitted by that exact CI log. Source/test semantics, assertions, transport bounds, cancellation, captured-session generation checks and safe error mapping are unchanged. Changed paths:
+  - `apps/flutter_app/lib/features/quiz/data/quiz_report_v2_transport.dart`
+  - `apps/flutter_app/lib/features/quiz/data/supabase_quiz_report_v2_auth.dart`
+  - `apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart`
+  - `apps/flutter_app/test/features/quiz/supabase_quiz_report_v2_auth_test.dart`
+  - `docs/PROJECT_STATUS.md`
+- Full recursive parent tree: 959 entries, untruncated; all unmodified paths/modes/types/blobs are retained. No `data/n4`, `data/manifest.json`, `data/README.md`, N4 content tests/documentation, production route, default save, Auth strategy/provider, schema/RLS, deployment, merge or release change.
+- Cloud authoring runtime has no pinned Dart/Flutter SDK; local format/analyze/test/build were not run. The new source head must pass every exact-head CI job and step before this transport increment is treated as verified.
+- Next: inspect the latest attempt and every job/step for the resulting PR HEAD. If checks pass, separately review the opt-in transport boundary and continue #13's remaining durable user-owned attempt/history, reviewed mastery/weak-point and progress UI acceptance. Keep PR #41 Draft and Issue #13 open; hosted signed-JWT/PostgREST/RLS and learner A/B remain unverified.
+

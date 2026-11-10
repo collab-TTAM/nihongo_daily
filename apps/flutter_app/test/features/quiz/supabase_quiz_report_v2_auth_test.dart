@@ -25,8 +25,13 @@ String _token(String userId, String sessionId, int generation) {
             'exp': now + 3600,
             'iat': now,
             'session_id': sessionId,
-            'email': userId == _userA ? 'learner@example.test' : 'learner-b@example.test',
-            'app_metadata': {'provider': 'email', 'providers': ['email']},
+            'email': userId == _userA
+                ? 'learner@example.test'
+                : 'learner-b@example.test',
+            'app_metadata': {
+              'provider': 'email',
+              'providers': ['email'],
+            },
             'user_metadata': {},
             'generation': generation,
           }),
@@ -46,14 +51,20 @@ Map<String, Object?> _authResponse(
     'access_token': _token(userId, sessionId, generation),
     'token_type': 'bearer',
     'expires_in': 3600,
-    'expires_at': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+    'expires_at':
+        now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
     'refresh_token': 'fixture-refresh-' + generation.toString(),
     'user': {
       'id': userId,
       'aud': 'authenticated',
       'role': 'authenticated',
-      'email': userId == _userA ? 'learner@example.test' : 'learner-b@example.test',
-      'app_metadata': {'provider': 'email', 'providers': ['email']},
+      'email': userId == _userA
+          ? 'learner@example.test'
+          : 'learner-b@example.test',
+      'app_metadata': {
+        'provider': 'email',
+        'providers': ['email'],
+      },
       'user_metadata': {},
       'created_at': '2026-01-01T00:00:00.000Z',
     },
@@ -130,60 +141,63 @@ void main() {
     client.close();
   });
 
-  test('account replacement and logout fence the prior account snapshot', () async {
-    var userId = _userA;
-    var sessionId = _sessionA;
-    var generation = 0;
-    final client = MockClient((request) async {
-      if (request.url.path.endsWith('/auth/v1/token') &&
-          request.url.queryParameters['grant_type'] == 'password') {
-        return http.Response(
-          jsonEncode(_authResponse(userId, sessionId, generation)),
-          200,
-          headers: {'content-type': 'application/json'},
-        );
-      }
-      if (request.url.path.endsWith('/auth/v1/logout')) {
-        return http.Response('', 204);
-      }
-      return http.Response('{}', 404);
-    });
-    final sdk = SupabaseClient(
-      _projectUrl,
-      _publishableKey,
-      httpClient: client,
-      authOptions: AuthClientOptions(autoRefreshToken: false),
-    );
-    final auth = SupabaseQuizReportV2Auth(client: sdk);
+  test(
+    'account replacement and logout fence the prior account snapshot',
+    () async {
+      var userId = _userA;
+      var sessionId = _sessionA;
+      var generation = 0;
+      final client = MockClient((request) async {
+        if (request.url.path.endsWith('/auth/v1/token') &&
+            request.url.queryParameters['grant_type'] == 'password') {
+          return http.Response(
+            jsonEncode(_authResponse(userId, sessionId, generation)),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        if (request.url.path.endsWith('/auth/v1/logout')) {
+          return http.Response('', 204);
+        }
+        return http.Response('{}', 404);
+      });
+      final sdk = SupabaseClient(
+        _projectUrl,
+        _publishableKey,
+        httpClient: client,
+        authOptions: AuthClientOptions(autoRefreshToken: false),
+      );
+      final auth = SupabaseQuizReportV2Auth(client: sdk);
 
-    await sdk.auth.signInWithPassword(
-      email: 'learner@example.test',
-      password: 'fixture-password',
-    );
-    final accountA = auth.capture()!;
+      await sdk.auth.signInWithPassword(
+        email: 'learner@example.test',
+        password: 'fixture-password',
+      );
+      final accountA = auth.capture()!;
 
-    userId = _userB;
-    sessionId = _sessionB;
-    generation++;
-    await sdk.auth.signInWithPassword(
-      email: 'learner-b@example.test',
-      password: 'fixture-password',
-    );
-    final accountB = auth.capture();
+      userId = _userB;
+      sessionId = _sessionB;
+      generation++;
+      await sdk.auth.signInWithPassword(
+        email: 'learner-b@example.test',
+        password: 'fixture-password',
+      );
+      final accountB = auth.capture();
 
-    expect(accountB, isNotNull);
-    expect(accountB!.userId, _userB);
-    expect(auth.isCurrent(accountA), isFalse);
-    expect(auth.isCurrent(accountB), isTrue);
+      expect(accountB, isNotNull);
+      expect(accountB!.userId, _userB);
+      expect(auth.isCurrent(accountA), isFalse);
+      expect(auth.isCurrent(accountB), isTrue);
 
-    await sdk.auth.signOut(scope: SignOutScope.local);
-    expect(auth.capture(), isNull);
-    expect(auth.isCurrent(accountB), isFalse);
+      await sdk.auth.signOut(scope: SignOutScope.local);
+      expect(auth.capture(), isNull);
+      expect(auth.isCurrent(accountB), isFalse);
 
-    await auth.dispose();
-    await sdk.dispose();
-    client.close();
-  });
+      await auth.dispose();
+      await sdk.dispose();
+      client.close();
+    },
+  );
 
   test('disposing the observer invalidates every captured snapshot', () async {
     final client = MockClient((request) async {

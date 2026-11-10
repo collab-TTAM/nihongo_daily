@@ -100,8 +100,9 @@ final class QuizReportV2HttpTransport {
     http.Client? client,
     Duration timeout = const Duration(seconds: 15),
   }) : _origin = SupabaseReviewBinding.validateProjectUrl(projectUrl),
-       _publishableKey =
-           SupabaseReviewBinding.validatePublicKey(publishableKey),
+       _publishableKey = SupabaseReviewBinding.validatePublicKey(
+         publishableKey,
+       ),
        _auth = auth,
        _timeout = _validateTimeout(timeout),
        _client = client ?? http.Client(),
@@ -235,28 +236,31 @@ final class QuizReportV2HttpTransport {
       );
       requireCurrent();
 
-      final outbound = http.AbortableRequest(
-        'POST',
-        _endpoint,
-        abortTrigger: abortSignal.future,
-      )
-        ..followRedirects = false
-        ..maxRedirects = 0
-        ..headers.addAll({
-          'accept': 'application/json',
-          'content-type': 'application/json; charset=utf-8',
-          'apikey': _publishableKey,
-          'authorization': 'Bearer ' + captured.accessToken,
-        })
-        ..bodyBytes = raw;
+      final outbound =
+          http.AbortableRequest(
+              'POST',
+              _endpoint,
+              abortTrigger: abortSignal.future,
+            )
+            ..followRedirects = false
+            ..maxRedirects = 0
+            ..headers.addAll({
+              'accept': 'application/json',
+              'content-type': 'application/json; charset=utf-8',
+              'apikey': _publishableKey,
+              'authorization': 'Bearer ' + captured.accessToken,
+            })
+            ..bodyBytes = raw;
 
-      final response = await _client.send(outbound).timeout(
-        remaining(),
-        onTimeout: () {
-          abort();
-          throw TimeoutException('deadline');
-        },
-      );
+      final response = await _client
+          .send(outbound)
+          .timeout(
+            remaining(),
+            onTimeout: () {
+              abort();
+              throw TimeoutException('deadline');
+            },
+          );
       requireCurrent(responseStream: response.stream);
 
       final actualUrl = response.request?.url;
@@ -384,7 +388,9 @@ final class QuizReportV2HttpTransport {
 
   static bool _hasNoStore(String? value) =>
       value != null &&
-      value.split(',').any((directive) => directive.trim().toLowerCase() == 'no-store');
+      value
+          .split(',')
+          .any((directive) => directive.trim().toLowerCase() == 'no-store');
 
   static Future<Uint8List> _readBounded(Stream<List<int>> stream) async {
     final iterator = StreamIterator<List<int>>(stream);
@@ -407,8 +413,7 @@ final class QuizReportV2HttpTransport {
 
   static QuizReportV2TransportFailure _statusFailure(int status) {
     final code = switch (status) {
-      400 || 405 || 413 || 415 =>
-        QuizReportV2TransportCode.validationFailure,
+      400 || 405 || 413 || 415 => QuizReportV2TransportCode.validationFailure,
       401 => QuizReportV2TransportCode.unauthorized,
       403 => QuizReportV2TransportCode.forbidden,
       404 => QuizReportV2TransportCode.notFound,

@@ -52,8 +52,7 @@ http.Response _success(QuizReportV2Request report) =>
     http.Response(jsonEncode(_response(report)), 200, headers: _headers);
 
 final class _FakeAuth implements QuizReportV2Auth {
-  _FakeAuth()
-    : _events = StreamController<void>.broadcast(sync: true);
+  _FakeAuth() : _events = StreamController<void>.broadcast(sync: true);
 
   final StreamController<void> _events;
   String? token = 'access-token-A';
@@ -117,10 +116,7 @@ void main() {
       expect(request.followRedirects, isFalse);
       expect(request.maxRedirects, 0);
       expect(request.headers['authorization'], 'Bearer access-token-A');
-      expect(
-        request.headers['apikey'],
-        'sb_publishable_TEST_ONLY_1234567890',
-      );
+      expect(request.headers['apikey'], 'sb_publishable_TEST_ONLY_1234567890');
       expect(
         request.headers['content-type'],
         'application/json; charset=utf-8',
@@ -260,7 +256,6 @@ void main() {
     client.close();
     await auth.dispose();
   });
-
 
   test('maps a gateway auth rejection without exposing its body', () async {
     final auth = _FakeAuth();
