@@ -447,3 +447,29 @@ default save, or grant mastery/study credit. The existing v1 private ledger/host
 is not reused as a v2 endpoint; v2 still needs its own reviewed transaction host,
 raw-ingress boundary and deployment/hosted acceptance. No N4 content is read or
 changed by these tests.
+
+
+## Private nd-quiz-report-2 ledger foundation — 2026-11-10
+
+The additive migration \`20261110100500_quiz_report_v2_ledger.sql\` adds private
+\`quiz_report_request_v2\`, \`replay_quiz_report_v2\` and
+\`store_quiz_report_v2\` helpers. V2 validates exactly four ordered choice IDs
+and four positive int32 \`choice_content_versions\`; the version at the target's
+choice position must equal \`content_version\`.
+
+V1 and V2 intentionally share \`private.quiz_report_receipts\` and the same
+per-owner advisory lock. The complete JSONB request (including all displayed
+versions) is the immutable replay identity, so changing a distractor version
+under an existing event conflicts. A V1/V2 attempt cannot silently reuse the
+same owner/event key with a different contract body. Existing V1 validators and
+request/response contract remain unchanged.
+
+The native TEST ONLY ledger suite covers V2 insert/replay, changed distractor
+version conflict, target-version mismatch, short arrays, boolean/decimal
+versions, cross-version event collision, owner isolation, RLS and revoked
+execute grants. The migration is additive and undeployed. It does not provide
+the V2 raw HTTP decoder binding, verified-owner V2 host, public RPC/route,
+PostgREST grant, client dispatch, default save, mastery, SRS or study credit.
+The raw UTF-8/duplicate-key/integer-lexeme guard must still run before JSONB
+conversion, and the V2 current-content validator must run after replay miss on
+the same verified-owner transaction.

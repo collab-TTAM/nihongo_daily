@@ -922,31 +922,31 @@
       "limitation": "Home shows a process-local preview allocation; no get_daily_plan/session write service."
     },
     {
-        "id": "study-submit-auth-gateway",
-        "status": "automated-baseline",
-        "scope": "Native Auth-role fixture verifies the public study-submit gateway derives ownership from the authenticated claim, preserves immutable retries and rejects owner/progress overrides.",
-        "issues": [
-          11,
-          18
-        ],
-        "ci_job": "database",
-        "anchors": [
-          {
-            "path": "supabase/tests/study_submit.sql",
-            "contains": "study-submit N5 vocabulary fixture allocates the next available ordinal"
-          },
-          {
-            "path": "scripts/test_study_submit.py",
-            "contains": "PASS: authenticated submit owns only A/B identity"
-          },
-          {
-            "path": "scripts/test_database.sh",
-            "contains": "scripts/test_study_submit.py"
-          }
-        ],
-        "reproduce": "Run `bash scripts/test_database.sh` against a fresh disposable PostgreSQL 17 database; inspect the exact-head database job.",
-        "limitation": "Native role/GUC fixtures and unsigned synthetic identity are not signed-JWT, GoTrue/PostgREST, hosted RLS, learner UI, or multi-device evidence. The default app save remains unconfigured; hosted acceptance is still pending."
-      },
+      "id": "study-submit-auth-gateway",
+      "status": "automated-baseline",
+      "scope": "Native Auth-role fixture verifies the public study-submit gateway derives ownership from the authenticated claim, preserves immutable retries and rejects owner/progress overrides.",
+      "issues": [
+        11,
+        18
+      ],
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/tests/study_submit.sql",
+          "contains": "study-submit N5 vocabulary fixture allocates the next available ordinal"
+        },
+        {
+          "path": "scripts/test_study_submit.py",
+          "contains": "PASS: authenticated submit owns only A/B identity"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "scripts/test_study_submit.py"
+        }
+      ],
+      "reproduce": "Run `bash scripts/test_database.sh` against a fresh disposable PostgreSQL 17 database; inspect the exact-head database job.",
+      "limitation": "Native role/GUC fixtures and unsigned synthetic identity are not signed-JWT, GoTrue/PostgREST, hosted RLS, learner UI, or multi-device evidence. The default app save remains unconfigured; hosted acceptance is still pending."
+    },
     {
       "id": "study-flows",
       "status": "pending-integration",
@@ -4300,6 +4300,31 @@
       ],
       "reproduce": "From apps/flutter_app run `flutter test test/features/quiz/quiz_report_v2_adapter_test.dart`; the complete Flutter job also runs the full suite.",
       "limitation": "Pure request/response projection only. No transport, public RPC/route, account persistence, hosted Auth, mastery, SRS or study credit. Legacy local v1 attempts are not uploaded because they lack distractor versions; the v1 contract/ledger remains unchanged."
+    },
+    {
+      "id": "quiz-report-v2-private-ledger",
+      "status": "automated-baseline",
+      "scope": "Private nd-quiz-report-2 receipt validation/storage with all four ordered choice versions, shared v1/v2 owner-event identity and immutable replay/conflict.",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "supabase/migrations/20261110100500_quiz_report_v2_ledger.sql",
+          "contains": "create function private.quiz_report_request_v2"
+        },
+        {
+          "path": "supabase/tests/quiz_report_ledger.sql",
+          "contains": "v2 changed distractor version conflicts under the original event"
+        },
+        {
+          "path": "scripts/test_database.sh",
+          "contains": "supabase/tests/quiz_report_ledger.sql"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "Run the disposable PostgreSQL 17 suite with `bash scripts/test_database.sh`; it applies the additive migration and executes `supabase/tests/quiz_report_ledger.sql`.",
+      "limitation": "Native disposable PostgreSQL TEST ONLY receipt evidence. No raw HTTP V2 decoder binding, verified-owner V2 host/route, public RPC/grant, hosted JWT/PostgREST learner acceptance, durable cross-device attempt sync, mastery, SRS or study credit."
     }
   ],
   "findings": [
