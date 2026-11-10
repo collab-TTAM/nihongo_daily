@@ -31,11 +31,13 @@ const messages: Record<WireError["code"], string> = {
 };
 
 class HttpFailure extends Error {
-  constructor(
-    readonly status: number,
-    readonly code: WireError["code"],
-  ) {
+  readonly status: number;
+  readonly code: WireError["code"];
+
+  constructor(status: number, code: WireError["code"]) {
     super(code);
+    this.status = status;
+    this.code = code;
   }
 }
 
