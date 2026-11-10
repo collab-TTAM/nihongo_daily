@@ -4358,6 +4358,23 @@
       ],
       "reproduce": "cd backend/ai && npm run check && npm test; inspect the exact-head ai-boundary Node and Deno checks.",
       "limitation": "This is a raw decoder component only. It does not verify Auth, current canonical content, a V2 transaction host, HTTP route/public RPC/grant, deployed JWT/PostgREST, durable learner attempts, mastery, SRS or study credit. No default save path is enabled."
+    },
+    {
+      "id": "quiz-report-v2-verified-owner-host",
+      "status": "automated-baseline",
+      "scope": "Internal nd-quiz-report-2 verified-owner host: strict raw ingress before Auth/JSONB, Supabase-verified owner, one owned PostgreSQL transaction, replay-first receipt lock, canonical ordered active content and all displayed versions, safe rollback and correlated response.",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_v2_host.native.ts",
+          "contains": "native verified-owner nd-quiz-report-2 host enforces replay-first source validation and A/B isolation"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "cd backend/ai && npm test && npm run check && npm run format:check && npm run test:postgres-quiz; full exact-head Actions",
+      "limitation": "Node tests use scripted ports; native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable rows. This does not prove hosted JWT/PostgREST, deployed configuration, default learner save, durable attempt UI, mastery/weak-points or Personal Alpha learner journeys. No public route/grant/default activation is installed."
     }
   ],
   "findings": [

@@ -15,7 +15,7 @@
     "test:postgres-text": "node --test test/postgres_text_context.native.ts",
     "test:postgres-conversation": "node --test test/postgres_conversation.native.ts",
     "test:postgres-assembly": "node --test test/trusted_runtime.native.ts",
-    "test:postgres-quiz": "node --test test/quiz_report_transaction.native.ts"
+    "test:postgres-quiz": "node --test test/quiz_report_transaction.native.ts && node --test test/quiz_report_v2_host.native.ts"
   },
   "dependencies": {
     "ajv": "8.20.0",

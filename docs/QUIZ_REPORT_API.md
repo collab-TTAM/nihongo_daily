@@ -503,3 +503,40 @@ host, current-content transaction, HTTP route, public RPC/grant, deployed
 PostgREST/Auth integration or learner save path. The private v2 ledger and
 current-content validator still require a same-connection verified-owner host;
 default app save, mastery, SRS and study credit remain disabled.
+
+
+## nd-quiz-report-2 verified-owner transaction host — internal only
+
+`backend/ai/src/quiz_report_v2_host.ts` now composes the existing strict raw-byte
+decoder, trusted Supabase Auth verifier, private v2 SQL ledger and canonical
+current-content validator. Raw bytes are copied and schema-validated before
+Auth or JSONB conversion. The verified Auth UUID alone supplies the owner claim;
+the host opens one fresh owned PostgreSQL connection, checks the private ledger
+capabilities, sets the owner claim and awaits replay/content/store on one
+transaction. It has bounded lock/statement/idle/overall deadlines, abort-driven
+connection close, rollback before commit, ambiguous-commit safe failure and
+fixed redacted errors. No request field selects an owner, table, schema or SQL.
+
+An authoritative replay hit returns the original correlated response before
+current curriculum checks. Only an explicit miss permits the required V2
+validator, which reconstructs canonical source order and checks the target plus
+all four displayed choice versions. The private store then enforces server time
+and the existing shared owner/event receipt. Transaction capabilities are
+serialized, drained and revoked after callback settlement.
+
+`createTrustedPostgresQuizReportV2Submitter` accepts trusted server configuration
+only. The component does not read environment variables, install an HTTP/Edge
+route, add grants, change Auth strategy, deploy, or enable the Flutter default
+save action. It stores a self-reported answer receipt only; it does not grant
+mastery, SRS state or study minutes. The app adapter remains a separate opt-in
+boundary.
+
+Node regressions cover raw rejection before Auth, verified owner binding,
+replay-first order, content rejection/rollback, missing privileges, malformed
+responses, cancellation, ambiguous commit and error redaction. The native
+PostgreSQL 17 regression exercises all three V2 fixtures, concurrent duplicate
+submission, source order/version validation, original replay after content
+retirement, changed-event conflict and A/B receipt isolation. Its Auth verifier
+is synthetic TEST ONLY and is not hosted learner proof. Hosted signed-JWT/
+PostgREST, live content import, default learner save, durable attempts,
+mastery/weak-points and complete learner acceptance remain separate work.
