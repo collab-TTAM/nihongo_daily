@@ -56,9 +56,21 @@ async function fixture() {
     "INSERT INTO public.conversation_scenarios(id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi,system_context) VALUES($1::uuid,'N5',0,1,true,'fixture','会話','fixture','固定文脈')",
     [scenario],
   );
-  await admin(
-    "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi) VALUES($1::uuid,'N5',0.2,1,true,'文法','～です','nghĩa','giải thích')",
-    [grammar],
+  const ordinalResult = await admin(
+    "SELECT COALESCE(MAX(source_ordinal), -1) + 1 AS next_ordinal FROM public.grammar WHERE jlpt_level = 'N5'",
+  );
+  const grammarOrdinal = Number(ordinalResult.rows[0]?.next_ordinal);
+  assert.ok(
+    Number.isSafeInteger(grammarOrdinal) && grammarOrdinal >= 0,
+    "fixture grammar source ordinal must be a nonnegative integer",
+  );
+  const grammarInsert = await admin(
+    "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal) VALUES($1::uuid,'N5',0.2,1,true,'文法','～です','nghĩa','giải thích',$2::integer) RETURNING source_ordinal",
+    [grammar, String(grammarOrdinal)],
+  );
+  assert.equal(
+    Number(grammarInsert.rows[0]?.source_ordinal),
+    grammarOrdinal,
   );
   return { user, other, scenario, grammar };
 }
