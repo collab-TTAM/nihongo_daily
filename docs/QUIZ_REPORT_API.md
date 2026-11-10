@@ -580,3 +580,36 @@ rejection before dispatch, streamed size and Content-Length checks, fixed error
 mapping/redaction, deadline and client cancellation. Exact-head AI boundary CI
 must pass before this baseline is treated as verified; hosted signed-JWT,
 PostgREST/RLS and learner acceptance remain separate.
+
+## Captured-session Flutter HTTP transport — 2026-11-10
+
+The opt-in Flutter boundary now has `QuizReportV2HttpTransport` and a
+read-only `SupabaseQuizReportV2Auth` observer. The observer snapshots only the
+SDK's current user ID, access token and local generation. It never decodes JWT
+claims as proof, signs in/out, refreshes, persists credentials or owns the
+Supabase client; the trusted server remains the only JWT verifier. A generation
+changes when the user or access token changes, including refresh rotation, so a
+request captured under an older token is fenced.
+
+The transport accepts only a caller-owned Supabase project origin and public
+publishable/anon key, constructs the fixed
+`/functions/v1/quiz-report-v2` path, and never reads URL/key from learner input.
+It posts the adapter's original bounded UTF-8 bytes with the captured Bearer
+token and public key, disables redirects and automatic retries, aborts on
+logout/account/token-generation replacement, bounds the response to 16 KiB,
+requires JSON plus `no-store`/`nosniff`, and validates the response against
+the immutable request. Server error text is never displayed; status/code pairs
+map to fixed Vietnamese messages.
+
+A timeout or connection loss is uncertain: the server may already have committed.
+The transport returns a retryable network error but never retries itself; the
+caller must keep the original `client_event_id`, inspect history and only then
+make an explicit same-event reconciliation attempt. A late response from a
+replaced account is rejected locally even if the original owner transaction
+committed.
+
+This is an opt-in client component only. The Supabase Edge route is not yet
+registered or deployed, the default quiz save action remains disabled, and no
+hosted signed-JWT/PostgREST/RLS, learner A/B, durable multi-device attempt,
+mastery, SRS or study-credit acceptance is claimed. SDK/Auth fixtures and Mock
+HTTP tests are not hosted learner proof.

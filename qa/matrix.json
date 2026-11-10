@@ -4409,6 +4409,43 @@
       ],
       "reproduce": "cd backend/ai && npm test",
       "limitation": "Internal handler only: no Edge route registration, hosted JWT/RLS, Flutter transport/default save, mastery, SRS or study credit. Exact-head CI is required."
+    },
+    {
+      "id": "quiz-report-v2-captured-http-transport",
+      "status": "automated-baseline",
+      "scope": "Opt-in nd-quiz-report-2 Flutter HTTP transport with caller-owned Supabase Auth capture, token-generation fencing, bounded raw request/response, fixed safe errors, cancellation and no automatic retry.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "posts exact raw bytes with captured bearer and public key"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "late account switch aborts request and rejects old response"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "maps a gateway auth rejection without exposing its body"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "timeout is uncertain and never automatically retries"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/supabase_quiz_report_v2_auth_test.dart",
+          "contains": "refresh rotation invalidates the captured generation"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/supabase_quiz_report_v2_auth_test.dart",
+          "contains": "account replacement and logout fence the prior account snapshot"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "From apps/flutter_app: flutter test test/features/quiz/quiz_report_v2_transport_test.dart test/features/quiz/supabase_quiz_report_v2_auth_test.dart; flutter analyze; inspect full exact-head CI.",
+      "limitation": "Opt-in client component with TEST ONLY Supabase SDK/Mock HTTP fixtures. No registered/deployed Edge route, hosted signed-JWT/PostgREST/RLS, real learner A/B, default save, server attempt history, mastery, SRS or study credit. Timeout remains uncertain; retain the original event ID and reconcile history before any explicit retry."
     }
   ],
   "findings": [
