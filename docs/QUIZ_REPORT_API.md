@@ -546,3 +546,37 @@ retirement, changed-event conflict and A/B receipt isolation. Its Auth verifier
 is synthetic TEST ONLY and is not hosted learner proof. Hosted signed-JWT/
 PostgREST, live content import, default learner save, durable attempts,
 mastery/weak-points and complete learner acceptance remain separate work.
+
+
+## Internal nd-quiz-report-2 HTTP ingress adapter — 2026-11-10
+
+The new backend/ai/src/quiz_report_v2_http.ts composes an internal
+Request/Response boundary around a caller-supplied trusted
+QuizReportV2Submitter. It accepts POST application/json only, requires one
+Bearer header and identity content-encoding, enforces the 16 KiB raw-body cap
+while reading the stream, verifies a declared Content-Length against actual
+bytes, and forwards the exact byte sequence without JSON parsing or
+re-encoding. The existing trusted submitter remains responsible for strict
+UTF-8/duplicate-key/schema validation, Supabase Auth verification, canonical
+content checks and the owner-locked transaction.
+
+The HTTP adapter propagates client cancellation and a bounded deadline to the
+submitter, cancels incomplete request streams, returns no-store/nosniff
+responses, and maps only fixed Vietnamese error messages/statuses. Rate-limit
+and network errors are retryable; validation and conflict errors are not. A
+timeout does not prove rollback or absence of a committed receipt; clients must
+retain the original client_event_id and inspect history before an explicit
+retry.
+
+This is an internal handler, not a deployed Edge Function, public route, RPC,
+grant or default app save path. It reads no environment variables and accepts
+no learner-selected project URL, key, owner or database. The caller must bind
+the existing trusted submitter with server-only configuration in a separately
+reviewed deployment step. No mastery, SRS state or study minutes are granted.
+
+Node regressions cover exact raw-byte forwarding (including duplicate JSON
+members, left for the strict host decoder), method/media/encoding/bearer
+rejection before dispatch, streamed size and Content-Length checks, fixed error
+mapping/redaction, deadline and client cancellation. Exact-head AI boundary CI
+must pass before this baseline is treated as verified; hosted signed-JWT,
+PostgREST/RLS and learner acceptance remain separate.

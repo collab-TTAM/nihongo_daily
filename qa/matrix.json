@@ -4379,6 +4379,36 @@
       ],
       "reproduce": "cd backend/ai && npm test && npm run check && npm run format:check && npm run test:postgres-quiz; full exact-head Actions",
       "limitation": "Node tests use scripted ports; native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable rows. This does not prove hosted JWT/PostgREST, deployed configuration, default learner save, durable attempt UI, mastery/weak-points or Personal Alpha learner journeys. No public route/grant/default activation is installed."
+    },
+    {
+      "id": "quiz-report-v2-http-ingress",
+      "status": "automated-baseline",
+      "scope": "Internal raw HTTP ingress for authenticated nd-quiz-report-2 submissions",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_v2_http.test.ts",
+          "contains": "forwards exact raw bytes to the trusted submitter"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_http.test.ts",
+          "contains": "rejects method, media type, encoding and bearer before submitter"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_http.test.ts",
+          "contains": "rejects oversized streams and content-length mismatches"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_http.test.ts",
+          "contains": "aborts a pending submitter on deadline and client cancellation"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm test",
+      "limitation": "Internal handler only: no Edge route registration, hosted JWT/RLS, Flutter transport/default save, mastery, SRS or study credit. Exact-head CI is required."
     }
   ],
   "findings": [
