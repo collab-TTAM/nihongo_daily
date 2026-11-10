@@ -11470,3 +11470,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Changed paths: `supabase/tests/daily_plan.sql` and this status file. No production code, schema/index/RLS, Auth/provider, default-save, Pro-owned N4 content, deployment, merge or release change.
 - The cloud authoring runtime has no PostgreSQL/Dart/Flutter SDK; no local SQL, formatter, analyzer, Flutter test or build pass is claimed. New exact-head Actions must run the disposable PostgreSQL suite and all dependent Flutter/Windows jobs.
 - Next: inspect every latest-attempt job and step for the new exact HEAD. If all required checks pass, resume the separate quiz-report v2 private-ledger transaction bridge and typed Dart adapter; keep PR #41 Draft and Issue #13 open until hosted ownership/mastery/weak-point acceptance is separately evidenced.
+
+
+## PR #41 — Daily Plan aggregate assertion correction — 2026-11-10 UTC
+
+- Exact-head Actions [42701255244](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42701255244) targets `1c963f6f4dfbd123629bf29a93603a251f506d9f`. Repo-sanity, AI boundary and Windows completed SUCCESS with all returned steps; Database failed in `supabase/tests/daily_plan.sql` because the aggregate assertion referenced `b.max_ordinal` outside GROUP BY/an aggregate. Flutter was SKIPPED after the database prerequisite failed.
+- Corrected both N5 and N4 vocabulary aggregate assertions to compare against `min(b.max_ordinal)`, preserving the captured one-row-per-level baseline. The N5 maximum assertion is corrected likewise. Fixture allocation, N4/N5 independence, timezone cutoffs, snapshot/retry, ownership, RLS and rollback assertions remain unchanged. No migration/index/RLS or production behavior changed.
+- Changed paths: `supabase/tests/daily_plan.sql` and this status file. The cloud authoring runtime has no PostgreSQL/Dart/Flutter SDK; no local SQL/format/analyze/test/build pass is claimed. Exact-head Actions for the successor commit must run the database suite and all dependent jobs.
+- Next: inspect every latest-attempt job and step for the successor HEAD. If green, continue the next unblocked Personal Alpha integration increment; keep PR #41 Draft and Issue #11 open until typed learner session ingestion, hosted ownership and full learner acceptance are evidenced.

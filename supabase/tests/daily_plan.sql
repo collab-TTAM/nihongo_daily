@@ -57,8 +57,8 @@ insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active
 select plan_test.assert_true(
   (select count(*)=3
       and count(distinct v.source_ordinal)=3
-      and min(v.source_ordinal)=b.max_ordinal+1
-      and max(v.source_ordinal)=b.max_ordinal+3
+      and min(v.source_ordinal)=min(b.max_ordinal)+1
+      and max(v.source_ordinal)=min(b.max_ordinal)+3
    from public.vocabulary v
    join vocabulary_ordinal_baseline b on b.jlpt_level='N5'
    where v.jlpt_level='N5'
@@ -70,7 +70,7 @@ select plan_test.assert_true(
   'daily plan N5 vocabulary fixtures allocate consecutive available ordinals'
 );
 select plan_test.assert_true(
-  (select count(*)=1 and min(v.source_ordinal)=b.max_ordinal+1
+  (select count(*)=1 and min(v.source_ordinal)=min(b.max_ordinal)+1
    from public.vocabulary v
    join vocabulary_ordinal_baseline b on b.jlpt_level='N4'
    where v.jlpt_level='N4'
