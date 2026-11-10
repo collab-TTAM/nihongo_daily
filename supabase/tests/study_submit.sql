@@ -25,8 +25,23 @@ select submit_test.ok((select prosecdef and proconfig @> array['search_path=""']
 insert into auth.users values ('e2100000-0000-4000-8000-000000000001'),
  ('e2100000-0000-4000-8000-000000000002'),('e2100000-0000-4000-8000-000000000003');
 insert into public.profiles(id) values ('e2100000-0000-4000-8000-000000000001'),('e2100000-0000-4000-8000-000000000002');
+create temp table submit_vocabulary_ordinal_baseline as
+select coalesce(max(source_ordinal), -1) as max_ordinal
+from public.vocabulary
+where jlpt_level='N5';
+
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
-values ('e2200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',0);
+select 'e2200000-0000-4000-8000-000000000001','N5',0.1,1,true,'水','みず','nước','noun','TEST ONLY',max_ordinal+1
+from submit_vocabulary_ordinal_baseline;
+
+select submit_test.ok(
+  (select count(*)=1 and min(v.source_ordinal)=min(b.max_ordinal)+1
+   from public.vocabulary v
+   cross join submit_vocabulary_ordinal_baseline b
+   where v.id='e2200000-0000-4000-8000-000000000001'
+     and v.jlpt_level='N5'),
+  'study-submit N5 vocabulary fixture allocates the next available ordinal'
+);
 set local role anon;
 select submit_test.ok(submit_test.denied($s$select public.submit_study_session('{}')$s$),'anon actual call denied');
 reset role;

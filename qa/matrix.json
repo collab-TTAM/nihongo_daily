@@ -922,6 +922,32 @@
       "limitation": "Home shows a process-local preview allocation; no get_daily_plan/session write service."
     },
     {
+        "id": "study-submit-auth-gateway",
+        "status": "automated-baseline",
+        "scope": "Native Auth-role fixture verifies the public study-submit gateway derives ownership from the authenticated claim, preserves immutable retries and rejects owner/progress overrides.",
+        "issues": [
+          11,
+          18
+        ],
+        "ci_job": "database",
+        "anchors": [
+          {
+            "path": "supabase/tests/study_submit.sql",
+            "contains": "study-submit N5 vocabulary fixture allocates the next available ordinal"
+          },
+          {
+            "path": "scripts/test_study_submit.py",
+            "contains": "PASS: authenticated submit owns only A/B identity"
+          },
+          {
+            "path": "scripts/test_database.sh",
+            "contains": "scripts/test_study_submit.py"
+          }
+        ],
+        "reproduce": "Run `bash scripts/test_database.sh` against a fresh disposable PostgreSQL 17 database; inspect the exact-head database job.",
+        "limitation": "Native role/GUC fixtures and unsigned synthetic identity are not signed-JWT, GoTrue/PostgREST, hosted RLS, learner UI, or multi-device evidence. The default app save remains unconfigured; hosted acceptance is still pending."
+      },
+    {
       "id": "study-flows",
       "status": "pending-integration",
       "scope": "Vocabulary/grammar and listening/reading learner screens",
