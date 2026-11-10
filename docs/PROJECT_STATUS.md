@@ -1,3 +1,13 @@
+## PR #41 — native text-context fixture source ordinals — 2026-11-10 UTC
+
+- Exact-head Actions [42748662784](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42748662784), attempt 1, targets `16c0bb8fd1bbff1a789c936f248f9e295d6b91f1`. Repo-sanity, AI boundary and Windows passed; Database failed in `backend/ai/test/postgres_text_context.native.ts`: the shared TEST ONLY fixture inserted active grammar without the newly required per-level `source_ordinal`. The fixture's vocabulary insert had the same latent mismatch. Flutter was skipped after Database failed; no full CI pass is claimed.
+- Corrected only that fixture: read the next available ordinal independently for the requested level in both grammar and vocabulary, require nonnegative integer allocations, insert both rows with those ordinals, and assert the values returned by PostgreSQL. The unique indexes and active-content constraints remain unchanged; all provider dispatch, content retirement/version, A/B, cancellation, transaction/COMMIT and safe-error assertions are retained.
+- Changed paths: `backend/ai/test/postgres_text_context.native.ts` and this status handoff. Complete recursive parent tree was read untruncated (945 entries / 825 blobs); no production source, migration, RLS/grants, Auth/provider, default-save, Pro-owned N4, deployment or release changes.
+- Cloud authoring did not run the pinned Node 24/PostgreSQL command locally; exact-head Actions is required. No new test/analyze/build success is claimed yet.
+- Next: inspect every latest-attempt job and step on the successor exact HEAD; fix only observed failures. Keep PR #41 Draft and Issues #11/#13 open; hosted learner ownership/mastery/weak-point and full Personal Alpha evidence remain outstanding. PR #37's Windows vault component CI is green, but hosted signed-JWT A/B, deployed PostgREST/RLS, restart/expiry and physical multi-device proof remain open.
+
+---
+
 ## Exact-head review queue grammar source-ordinal fixture repair — 2026-11-09 UTC
 
 - Run `core-20261109T2005Z-pr41-review-queue-grammar-ordinal`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `bebdcf048d8083c6ef2dc1dffbcab8f880cac845`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

@@ -54,13 +54,37 @@ async function fixture(level = "N5") {
     "INSERT INTO public.profiles(id,preferred_jlpt) VALUES($1::uuid,$2::public.jlpt_level)",
     [user, level],
   );
-  await admin(
-    "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,'文法','～です','nghĩa','giải thích')",
-    [grammar, level],
+  const ordinals = await admin(
+    `SELECT
+       (SELECT coalesce(max(source_ordinal), -1) + 1
+        FROM public.grammar
+        WHERE jlpt_level = $1::public.jlpt_level) AS grammar,
+       (SELECT coalesce(max(source_ordinal), -1) + 1
+        FROM public.vocabulary
+        WHERE jlpt_level = $1::public.jlpt_level) AS vocabulary`,
+    [level],
   );
-  await admin(
-    "INSERT INTO public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,'猫','ねこ','mèo','noun','fixture')",
-    [vocabulary, level],
+  const grammarOrdinal = Number(ordinals.rows[0]?.grammar);
+  const vocabularyOrdinal = Number(ordinals.rows[0]?.vocabulary);
+  assert.ok(
+    Number.isSafeInteger(grammarOrdinal) &&
+      grammarOrdinal >= 0 &&
+      Number.isSafeInteger(vocabularyOrdinal) &&
+      vocabularyOrdinal >= 0,
+    "fixture source ordinals must be nonnegative integers",
+  );
+  const grammarInsert = await admin(
+    "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,'文法','～です','nghĩa','giải thích',$3::integer) RETURNING source_ordinal",
+    [grammar, level, grammarOrdinal],
+  );
+  assert.equal(Number(grammarInsert.rows[0]?.source_ordinal), grammarOrdinal);
+  const vocabularyInsert = await admin(
+    "INSERT INTO public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal) VALUES($1::uuid,$2::public.jlpt_level,0.2,1,true,'猫','ねこ','mèo','noun','fixture',$3::integer) RETURNING source_ordinal",
+    [vocabulary, level, vocabularyOrdinal],
+  );
+  assert.equal(
+    Number(vocabularyInsert.rows[0]?.source_ordinal),
+    vocabularyOrdinal,
   );
   const request = {
     jlpt_level: level,
