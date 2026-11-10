@@ -705,9 +705,7 @@ void main() {
       expect(storedSecret, refreshSecret);
 
       final profileCountBeforeRefresh = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .length;
       authWait = Completer<http.Response>();
       final lateARefresh = authWait!;

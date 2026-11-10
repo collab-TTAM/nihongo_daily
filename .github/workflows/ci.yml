@@ -177,29 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnose pinned Dart formatter output (temporary)
-        shell: bash
-        run: |
-          set -euo pipefail
-          files=(
-            test/features/srs/session_lifecycle_fixtures.dart
-            test/features/srs/windows_persistent_supabase_runtime_test.dart
-          )
-          backup_dir="$(mktemp -d)"
-          for file in "${files[@]}"; do
-            mkdir -p "$backup_dir/$(dirname "$file")"
-            cp "$file" "$backup_dir/$file"
-          done
-          restore() {
-            for file in "${files[@]}"; do
-              cp "$backup_dir/$file" "$file"
-            done
-            rm -rf "$backup_dir"
-          }
-          trap restore EXIT
-          dart format "${files[@]}"
-          git --no-pager diff --no-ext-diff --unified=3 -- "${files[@]}"
-
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

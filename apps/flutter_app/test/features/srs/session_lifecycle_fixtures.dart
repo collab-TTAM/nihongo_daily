@@ -585,10 +585,7 @@ Future<void> verifyLifecycle(String scenario) async {
         'logout did not clear the saved session before refresh settled',
       );
       await fails(login());
-      check(
-        sdk.logins == 1,
-        'replacement login raced the late User A refresh',
-      );
+      check(sdk.logins == 1, 'replacement login raced the late User A refresh');
 
       sdk.authWait!.complete();
       await pending;
