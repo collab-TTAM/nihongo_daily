@@ -32,13 +32,13 @@ String _token(String userId, String sessionId, int generation) {
               'provider': 'email',
               'providers': ['email'],
             },
-            'user_metadata': {},
+            'user_metadata': <String, Object?>{},
             'generation': generation,
           }),
         ),
       )
       .replaceAll('=', '');
-  return 'eyJhbGciOiJub25lIn0.' + payload + '.fixture-signature';
+  return 'eyJhbGciOiJub25lIn0.${payload}.fixture-signature';
 }
 
 Map<String, Object?> _authResponse(
@@ -53,7 +53,7 @@ Map<String, Object?> _authResponse(
     'expires_in': 3600,
     'expires_at':
         now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
-    'refresh_token': 'fixture-refresh-' + generation.toString(),
+    'refresh_token': 'fixture-refresh-${generation}',
     'user': {
       'id': userId,
       'aud': 'authenticated',
@@ -65,7 +65,7 @@ Map<String, Object?> _authResponse(
         'provider': 'email',
         'providers': ['email'],
       },
-      'user_metadata': {},
+      'user_metadata': <String, Object?>{},
       'created_at': '2026-01-01T00:00:00.000Z',
     },
   };

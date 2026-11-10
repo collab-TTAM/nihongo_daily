@@ -9,10 +9,10 @@ import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_transport.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
 
 String _id(int value) =>
-    'a2000000-0000-4000-8000-' + value.toString().padLeft(12, '0');
+    'a2000000-0000-4000-8000-${value.toString().padLeft(12, '0')}';
 
 String _event(int value) =>
-    'a3000000-0000-4000-8000-' + value.toString().padLeft(12, '0');
+    'a3000000-0000-4000-8000-${value.toString().padLeft(12, '0')}';
 
 QuizReportV2Request _report() => QuizReportV2Request.fromVocabularyAttempt(
   VocabularyQuizAttempt.fromJson({
@@ -174,7 +174,9 @@ void main() {
     final outbound = await requestSeen.future;
 
     auth.switchAccount();
-    await outbound.abortTrigger.timeout(const Duration(seconds: 1));
+    final abortTrigger = outbound.abortTrigger;
+    expect(abortTrigger, isNotNull);
+    await abortTrigger!.timeout(const Duration(seconds: 1));
     responseGate.complete(_success(report));
 
     await expectLater(
@@ -206,7 +208,9 @@ void main() {
     final outbound = await requestSeen.future;
 
     auth.rotateToken();
-    await outbound.abortTrigger.timeout(const Duration(seconds: 1));
+    final abortTrigger = outbound.abortTrigger;
+    expect(abortTrigger, isNotNull);
+    await abortTrigger!.timeout(const Duration(seconds: 1));
     responseGate.complete(_success(report));
 
     await expectLater(

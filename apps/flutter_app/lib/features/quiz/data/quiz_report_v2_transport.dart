@@ -248,7 +248,7 @@ final class QuizReportV2HttpTransport {
               'accept': 'application/json',
               'content-type': 'application/json; charset=utf-8',
               'apikey': _publishableKey,
-              'authorization': 'Bearer ' + captured.accessToken,
+              'authorization': 'Bearer ${captured.accessToken}',
             })
             ..bodyBytes = raw;
 
