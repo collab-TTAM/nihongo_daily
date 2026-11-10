@@ -125,6 +125,7 @@ function oneRow(
 export function createQuizReportV2SqlTransaction(
   query: QuizReportV2Query,
   validateCurrentContent: QuizReportV2CurrentContentValidator,
+  signal: AbortSignal = new AbortController().signal,
 ): QuizReportV2Transaction {
   async function call(
     sql: string,
@@ -174,7 +175,8 @@ export function createQuizReportV2SqlTransaction(
 
   return Object.freeze({
     replay: (request: QuizReportV2Request) => call(replaySql, request, true),
-    validateCurrentContent,
+    validateCurrentContent: (request) =>
+      validateCurrentContent(query, request, signal),
     store: async (request: QuizReportV2Request) => {
       const response = await call(storeSql, request, false);
       if (response === null) throw internal();
@@ -411,13 +413,12 @@ class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
 
       const transaction = createQuizReportV2SqlTransaction(
         (sql, values) => query(sql, values),
-        async (request) => {
+        async (currentQuery, request, signal) => {
           alive();
-          await wait(
-            this.validateCurrentContent(query, request, controller.signal),
-          );
+          await wait(this.validateCurrentContent(currentQuery, request, signal));
           alive();
         },
+        controller.signal,
       );
       const result = await work(transaction);
       alive();

@@ -6,10 +6,7 @@ import { readFileSync } from "node:fs";
 import { Client } from "pg";
 import { BoundaryError } from "../src/contracts.ts";
 import type { AuthVerifier } from "../src/ports.ts";
-import type {
-  PostgresConnection,
-  PostgresResult,
-} from "../src/postgres_connection.ts";
+import type { PostgresConnection } from "../src/postgres_connection.ts";
 import {
   submitVerifiedQuizReportV2,
   type QuizReportV2CurrentContentValidator,
@@ -47,8 +44,10 @@ type MutableAnswer = {
   choices: string[];
   choice_content_versions: number[];
 };
-type MutableRequest = Omit<QuizReportV2Request, "answers"> & {
-  answers: MutableAnswer[];
+type MutableRequest = {
+  -readonly [Key in keyof QuizReportV2Request]: Key extends "answers"
+    ? MutableAnswer[]
+    : QuizReportV2Request[Key];
 };
 type SourceRow = {
   id: string;
