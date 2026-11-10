@@ -1,3 +1,12 @@
+## PR #41 — pinned Prettier diagnostic for V2 quiz decoder — 2026-11-10 UTC
+
+- Exact-head Actions [42806403973](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42806403973) targets `20a2420a45d77b2ba68ee75b8c308bf7f07ee271`. Repo-sanity completed SUCCESS; ai-boundary failed only at pinned Prettier `npm run format:check` for the two new V2 decoder files. The Node TypeScript check, tests and Deno checks were skipped; database and Windows were still in progress at observation. This is not a full CI pass.
+- Added a temporary read-only formatter diagnostic before the unchanged strict format gate. It backs up only `src/quiz_report_v2.ts` and `test/quiz_report_v2.test.ts`, runs the repository-pinned Prettier 3.6.2, prints the exact diff, and restores both files in an EXIT trap before the strict gate.
+- No source assertions, behavior, test coverage, security gate or strict formatter requirement is weakened. The diagnostic will be removed in the formatter-repair commit.
+- No Auth/provider, route/grant, migration/RLS, default save, Pro-owned #14/#38/N4, deployment, merge or release change. Next: inspect the emitted diff, apply only those formatter hunks, correct any actual TypeScript/test issue, remove the temporary step, and inspect all jobs on the successor exact HEAD.
+
+---
+
 ## PR #41 — strict nd-quiz-report-2 raw ingress decoder — 2026-11-10 UTC
 
 - Run `core-20261110T1108Z-pr41-v2-raw-ingress-decoder` on `automation/issue-11-plan-sdk-integration`; parent HEAD `e876e300ef97b0b13ec8dd564b7754447daa6f11`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

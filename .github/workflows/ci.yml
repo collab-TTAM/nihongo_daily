@@ -334,6 +334,25 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
+      - name: Diagnose pinned Prettier output for V2 quiz report files (read-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(src/quiz_report_v2.ts test/quiz_report_v2.test.ts)
+          temp_dir="$(mktemp -d)"
+          restore() {
+            for file in "${files[@]}"; do
+              cp "$temp_dir/$file" "$file"
+            done
+            rm -rf "$temp_dir"
+          }
+          trap restore EXIT
+          for file in "${files[@]}"; do
+            mkdir -p "$temp_dir/$(dirname "$file")"
+            cp "$file" "$temp_dir/$file"
+          done
+          npx prettier --write "${files[@]}"
+          git --no-pager diff --no-ext-diff -- "${files[@]}"
       - run: npm run format:check
       - run: npm run check
       - run: npm test
