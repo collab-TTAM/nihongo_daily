@@ -61,8 +61,25 @@ def seed() -> None:
     for scenario in (SCENARIO, OTHER_SCENARIO):
         sql("INSERT INTO public.conversation_scenarios(id,jlpt_level,difficulty,content_version,is_active,title_vi,title_ja,description_vi,system_context) "
             f"VALUES({uuid_sql(scenario)},'N5',0,1,true,'fixture','会話','fixture','固定文脈');")
-    sql("INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi) "
-        f"VALUES({uuid_sql(GRAMMAR)},'N5',0.2,1,true,'文法','～です','nghĩa','giải thích');")
+    grammar_ordinal = sql(
+        "SELECT COALESCE(MAX(source_ordinal), -1) + 1 "
+        "FROM public.grammar WHERE jlpt_level='N5';"
+    )
+    check(
+        re.fullmatch(r"(?:0|[1-9][0-9]*)", grammar_ordinal) is not None,
+        "Invalid N5 grammar fixture ordinal",
+    )
+    sql(
+        "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal) "
+        f"VALUES({uuid_sql(GRAMMAR)},'N5',0.2,1,true,'文法','～です','nghĩa','giải thích',{int(grammar_ordinal)});"
+    )
+    stored_ordinal = sql(
+        f"SELECT source_ordinal FROM public.grammar WHERE id={uuid_sql(GRAMMAR)};"
+    )
+    check(
+        stored_ordinal == grammar_ordinal,
+        "Stored N5 grammar fixture ordinal differs",
+    )
 
 
 def request(base: str, path: str, body: object = None, *, token: str = "A",

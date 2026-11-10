@@ -68,10 +68,7 @@ async function fixture() {
     "INSERT INTO public.grammar(id,jlpt_level,difficulty,content_version,is_active,title,pattern,meaning_vi,explanation_vi,source_ordinal) VALUES($1::uuid,'N5',0.2,1,true,'文法','～です','nghĩa','giải thích',$2::integer) RETURNING source_ordinal",
     [grammar, String(grammarOrdinal)],
   );
-  assert.equal(
-    Number(grammarInsert.rows[0]?.source_ordinal),
-    grammarOrdinal,
-  );
+  assert.equal(Number(grammarInsert.rows[0]?.source_ordinal), grammarOrdinal);
   return { user, other, scenario, grammar };
 }
 type Fixture = Awaited<ReturnType<typeof fixture>>;

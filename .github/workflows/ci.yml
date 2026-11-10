@@ -334,18 +334,6 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
-      - name: Diagnose pinned Prettier output (temporary)
-        run: |
-          set -eu
-          file=test/trusted_runtime.native.ts
-          backup="$RUNNER_TEMP/trusted_runtime.native.ts"
-          cp "$file" "$backup"
-          restore() {
-            cp "$backup" "$file"
-          }
-          trap restore EXIT
-          ./node_modules/.bin/prettier --write "$file"
-          git diff -- "$file"
       - run: npm run format:check
       - run: npm run check
       - run: npm test
