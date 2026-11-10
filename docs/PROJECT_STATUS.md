@@ -11593,3 +11593,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Separate post-write review found that combining JSONB type checks, array-length calls and numeric casts in one boolean expression could rely on PostgreSQL expression evaluation order for malformed non-array/oversized values. The V2 helper now stages type, lexeme and int32 range checks before array operations/casts.
 - Added native negative cases for non-array answers/choices/version arrays, zero/overflow versions and the reverse V1/V2 event-key collision. Preserved the original QA matrix formatting instead of reformatting an unrelated pre-existing entry. Initial commit `c4c9a3ea52fcb2d0648e266221148958a39a9183` is superseded; only the successor exact-head CI is authoritative.
 - No route/grant/deployment/default save or learner credit was enabled. Native PostgreSQL execution remains pending exact-head CI.
+
+
+### Exact-head CI failure and test-query correction — 2026-11-10 UTC
+
+- Exact-head Actions [42799313164](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42799313164), attempt 1, targeted `17df15fd50b277564fbbe08647f68a6130c696b1`. Repo-sanity and AI-boundary jobs passed all returned steps. The database job failed in `supabase/tests/quiz_report_ledger.sql:66`: V2 negative assertions referenced the fixture column `request` without a `FROM quiz_v2_cases` source. The migration applied; V2 store/replay and changed-distractor-version conflict assertions passed before the test-query error. This was a test scoping defect, not evidence of a ledger function failure.
+- Corrected all ten V2 fixture-driven negative assertions to select from `quiz_v2_cases`; no schema/function behavior was changed. The Windows job was still in progress and Flutter had not started at the last job poll; neither is counted as a pass. The successor exact-head workflow is the only authoritative CI result.
+- Next: inspect every job and step for the corrected exact HEAD; if the SQL suite passes, proceed with the V2 raw-ingress/verified-owner host as a separate reviewable increment. No hosted route, grants, deployment, default save or learner credit is enabled.
