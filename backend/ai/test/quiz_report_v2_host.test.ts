@@ -229,6 +229,15 @@ test("invalid v2 raw input is rejected before Auth or PostgreSQL", async () => {
     ),
     /^Error: VALIDATION_FAILURE$/,
   );
+  await assert.rejects(
+    submitVerifiedQuizReportV2(
+      schema,
+      new Uint8Array(16385),
+      "verified-token",
+      deps.value,
+    ),
+    /^Error: VALIDATION_FAILURE$/,
+  );
   assert.equal(verified, 0);
   assert.equal(deps.opened(), 0);
   assert.equal(connection.calls.length, 0);

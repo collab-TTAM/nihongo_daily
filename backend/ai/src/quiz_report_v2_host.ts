@@ -256,6 +256,9 @@ export async function submitQuizReportV2InTransaction(
   };
   try {
     check();
+    if (!(raw instanceof Uint8Array) || raw.byteLength > 16384) {
+      throw new BoundaryError("VALIDATION_FAILURE");
+    }
     const captured = raw.slice();
     const request = createQuizReportV2Decoder(schema)(captured);
     const decodeResponse = createQuizReportV2ResponseDecoder(schema, captured);
@@ -470,7 +473,10 @@ export async function submitVerifiedQuizReportV2(
     throw new BoundaryError("UNAUTHORIZED");
   }
 
-  const captured = raw instanceof Uint8Array ? raw.slice() : new Uint8Array();
+  if (!(raw instanceof Uint8Array) || raw.byteLength > 16384) {
+    throw new BoundaryError("VALIDATION_FAILURE");
+  }
+  const captured = raw.slice();
   try {
     createQuizReportV2Decoder(schema)(captured);
   } catch (error) {

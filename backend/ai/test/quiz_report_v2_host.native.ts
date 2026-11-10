@@ -106,6 +106,8 @@ async function seedAndCanonicalize(
   const replacements = new Map(
     originalIds.map((id) => [id, randomUUID()] as const),
   );
+  const originallyCorrect =
+    mutable.answers[0]!.selected_id === mutable.answers[0]!.item_id;
   const request: MutableRequest = {
     ...mutable,
     client_event_id: randomUUID(),
@@ -207,7 +209,9 @@ async function seedAndCanonicalize(
   answer.choices = choices.map((row) => row.id);
   answer.choice_content_versions = choices.map((row) => row.content_version);
   answer.content_version = target.content_version;
-  answer.selected_id = target.id;
+  answer.selected_id = originallyCorrect
+    ? target.id
+    : choices.find((row) => row.id !== target.id)!.id;
   return request;
 }
 
