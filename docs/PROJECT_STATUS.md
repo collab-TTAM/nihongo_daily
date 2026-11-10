@@ -1,3 +1,13 @@
+## PR #41 — quiz report v2 adapter analyzer repair — 2026-11-10 UTC
+
+- Exact-head Actions [42773890747](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42773890747) targets `e677e678927baa9dea5c742f9d917da64f0878e5`. Repo-sanity, database, AI boundary and Windows completed SUCCESS with every returned step successful. Flutter dependency lock and Dart format passed; `flutter analyze` failed on two `PreviewLevel.label` getter resolutions in `quiz_report_v2_adapter.dart` and two `prefer_interpolation_to_compose_strings` infos in the adapter test. Flutter tests and all downstream probes/Web build were skipped; this run is not green.
+- Fixed the compile issue by importing the existing `PreviewLevelLabel` extension from `shared/models/preview_level.dart`; no duplicate level mapping or model change. Rewrote only the two TEST ONLY UUID helper concatenations with interpolation, preserving generated IDs.
+- Changed paths: `apps/flutter_app/lib/features/quiz/data/quiz_report_v2_adapter.dart`, `apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart`, and this status handoff. The existing adapter tests already assert N4/N5 wire level projection and remain unchanged otherwise. No route/RPC/grant/default save, schema/RLS, Auth/provider, mastery/study-credit, Pro-owned #14/#38/N4 source/content, deployment or release change.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. The exact-head Actions rerun is required for the corrected source. PR #41 remains Draft; Issues #11/#13 remain open.
+- Next: inspect every job and step of the latest-attempt workflow on the successor exact HEAD. Require Flutter analyze, full tests, dependent native/Chrome probes and Web build to pass; fix only observed failures. Keep PR #41 Draft and preserve the Pro-owned content review boundary.
+
+---
+
 ## PR #41 — native text-context ordinal bind typing — 2026-11-10 UTC
 
 - Exact-head Actions [42754409650](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42754409650) on `203706515fe6fe786cdb627cc0d0cc92622d5a49` passed `npm run format:check`, then failed `npm run check` at the two new fixture bind arrays because the existing TEST ONLY `admin` helper accepts `string[]`, not numeric parameters. Node tests were skipped; Database was still running and Windows was queued at observation, so this run is not green.
