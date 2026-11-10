@@ -1,3 +1,14 @@
+## PR #41 — strict nd-quiz-report-2 raw ingress decoder — 2026-11-10 UTC
+
+- Run `core-20261110T1108Z-pr41-v2-raw-ingress-decoder` on `automation/issue-11-plan-sdk-integration`; parent HEAD `e876e300ef97b0b13ec8dd564b7754447daa6f11`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added `backend/ai/src/quiz_report_v2.ts` and `backend/ai/test/quiz_report_v2.test.ts`. The separate v2 request/response decoders apply the existing raw UTF-8/16 KiB/duplicate-key/integer-lexeme/depth/token guard before schema validation/JSONB; they enforce unique targets, offered IDs, four aligned choice versions and target-slot version equality, then freeze snapshots and correlate response identity/counts.
+- Updated `docs/QUIZ_REPORT_API.md`, `qa/matrix.json` (new `quiz-report-v2-raw-ingress-decoder` anchors) and this status handoff. Existing v1 decoder, v1 contract/ledger, v2 SQL ledger, route/grants, Auth/provider, schema/RLS, default save and Pro-owned #14/#38/N4 scope are unchanged.
+- Authoring checks: complete parent tree was fetched recursively (948 entries, untruncated); no local Node 24 dependency install/TypeScript/Prettier/Deno test was run in this GitHub-only authoring session. Exact-head Actions is the required executable verification; no test/build pass is claimed yet.
+- PR #41 remains Draft; Issue #13 remains open. PR #37 remains separately RELEASED with green component CI, while protected hosted signed-JWT A/B, deployed PostgREST/RLS and physical learner restart/expiry/multi-device evidence remain external.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. If CI passes, proceed to the separate verified-owner V2 host with the mandatory V2 content callback on the same connection/transaction; keep public activation and learner save disabled pending review.
+  
+---
+
 ## PR #41 — quiz report v2 adapter analyzer repair — 2026-11-10 UTC
 
 - Exact-head Actions [42773890747](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42773890747) targets `e677e678927baa9dea5c742f9d917da64f0878e5`. Repo-sanity, database, AI boundary and Windows completed SUCCESS with every returned step successful. Flutter dependency lock and Dart format passed; `flutter analyze` failed on two `PreviewLevel.label` getter resolutions in `quiz_report_v2_adapter.dart` and two `prefer_interpolation_to_compose_strings` infos in the adapter test. Flutter tests and all downstream probes/Web build were skipped; this run is not green.

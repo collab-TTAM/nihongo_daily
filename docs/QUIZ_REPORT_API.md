@@ -473,3 +473,33 @@ PostgREST grant, client dispatch, default save, mastery, SRS or study credit.
 The raw UTF-8/duplicate-key/integer-lexeme guard must still run before JSONB
 conversion, and the V2 current-content validator must run after replay miss on
 the same verified-owner transaction.
+
+
+## Strict raw nd-quiz-report-2 ingress decoder — 2026-11-10
+
+`backend/ai/src/quiz_report_v2.ts` provides separate request and response
+decoders for the undeployed v2 contract. Both accept raw UTF-8 bytes and call
+the existing `parseQuizReportJsonBody` guard before schema validation or any
+JSONB conversion. The shared guard enforces the 16 KiB limit, fatal UTF-8,
+duplicate-object-key rejection, PostgreSQL-compatible strings, integer-only
+number lexemes (so `1.0` and `1e0` are rejected), depth/token bounds and no
+trailing JSON.
+
+The request decoder validates the v2 schema, distinct answer targets, offered
+target/selection IDs and the captured version at every choice position. The
+target's displayed choice version must equal its explicit `content_version`.
+Returned requests, answers, choice IDs and choice-version arrays are frozen.
+The response decoder repeats the raw guard, validates the seven-field schema
+and correlates event/type/kind/level/exact timestamp plus answer/correct counts
+against the immutable request.
+
+Tests use all three canonical v2 fixtures and cover duplicate keys, fractional
+and exponent number spellings, malformed UTF-8, oversize payloads, duplicate
+targets/choices, target-slot mismatch, invalid calendar values, immutable
+snapshots and response identity/count mismatch.
+
+This closes only the raw decoder component gap. It is not a verified-owner V2
+host, current-content transaction, HTTP route, public RPC/grant, deployed
+PostgREST/Auth integration or learner save path. The private v2 ledger and
+current-content validator still require a same-connection verified-owner host;
+default app save, mastery, SRS and study credit remain disabled.
