@@ -11681,3 +11681,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Cloud authoring runtime does not provide the repository's pinned Node 24/Prettier toolchain; no local formatter/typecheck/Node/Deno test is claimed. Exact-head GitHub Actions is the verification gate.
 - This is not a registered Edge route or deployed endpoint. No public RPC/grant, migration/RLS, Auth strategy/provider, default Flutter save, mastery/SRS/study credit, deployment, merge/release or Pro-owned #14/#38/N4 path changed.
 - Next: inspect every latest-attempt AI boundary, database, repo-sanity, Windows and Flutter job/step on the new exact HEAD. Fix only observed failures; keep PR #41 Draft and Issue #13 open. Hosted signed-JWT/PostgREST/RLS, learner A/B and durable attempt/mastery acceptance remain open.
+
+
+## PR #41 — exact-head Prettier diagnostic handoff — 2026-11-10 UTC
+
+- Exact-head Actions [42854211176](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42854211176), attempt 1, targets `fa2acaf8630eb817c65e41bdbe8b2486cff50c57`. Repo-sanity (13/13), database (24/24), Windows (18/18) and Flutter (35/35) completed SUCCESS. AI boundary failed only `npm run format:check`: pinned Prettier reported `src/quiz_report_v2_http.ts` and `test/quiz_report_v2_http.test.ts`; subsequent TypeScript, Node/Deno and Edge steps were SKIPPED, not passes. No other failure was observed.
+- Added a temporary read-only CI diagnostic immediately before the unchanged strict format gate. It runs pinned Prettier to stdout for only those two files and prints unified diffs without modifying the checkout; the strict `npm run format:check` still runs and remains mandatory. This commit is diagnostic only.
+- No source/test assertions, API handler semantics, route/grant, migration/RLS, Auth/provider, default save, mastery/SRS/study credit, Pro-owned #14/#38/N4 content/data/manifest/tests/docs, deployment, merge or release change.
+- Cloud authoring runtime has no pinned Node 24/Prettier/Dart/Flutter toolchain; no local formatter/typecheck/Node/Deno/Flutter/native SQL/build pass is claimed. Next: inspect the diagnostic output on this exact HEAD, apply only the emitted formatter hunks, remove the temporary step, then require fresh exact-head CI with every job and step successful. Keep PR #41 Draft and Issue #13 open.
