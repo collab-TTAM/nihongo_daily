@@ -3642,3 +3642,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Separate post-write diff review of `a942dfa7dcbafcc4d6dde42100aa7317f20fdc5f` caught a misplaced closing delimiter around the new TEST ONLY test before its CI result was relied upon. Corrected the test insertion after the preceding test's complete closing call; no prior test body/assertion or production source changed.
 - The first source commit's queued CI is not accepted as evidence for the corrected tree. The follow-up exact-head CI must run the formatter, analyzer, full Flutter suite, actual Chrome IndexedDB test and all remaining required jobs/steps.
+
+
+## Pinned formatter diagnostic — browser IndexedDB regression — 2026-11-11T04:07Z
+
+- Run `core-20261111T0407Z-pr37-pinned-format-repair`; branch `automation/issue-22-atomic-review`; diagnostic parent HEAD `c090dee54360db99109a0924f482cfc36942b59d`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [42952315959](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42952315959), attempt 1, targets the parent. Repo-sanity, database, AI boundary, disposable Supabase integration and Windows completed SUCCESS with all returned steps successful. Flutter failed only `dart format --output=none --set-exit-if-changed .`, reporting `test/features/srs/browser_review_store_check.dart`; analyze, complete Flutter suite, browser checks and Web build were SKIPPED, not passes.
+- This commit adds a temporary read-only pinned Dart 3.35.4 formatter diagnostic for that TEST ONLY file. It backs up/restores the source in an EXIT trap and prints the exact unified diff before the unchanged strict formatter gate. No test assertions, production code, Auth/provider, RPC/schema/RLS or default runtime behavior changed.
+- Changed paths in this diagnostic commit: `.github/workflows/ci.yml` and this status file only. The diagnostic run must be inspected for exact formatter output; then apply only that output, remove the temporary diagnostic, re-review the final diff and require complete exact-head CI.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run. Pro-owned #14/#38/N4 remains excluded. PR #37 stays Draft; #20/#22/#15 stay open. No merge, deployment or release.
