@@ -459,3 +459,21 @@ test pass is claimed. Exact-head Actions must complete the new step successfully
 This is component evidence only, not hosted Auth/JWT/RLS, backup, sync, hardware
 power-loss or learner acceptance. The quiz journals remain opt-in and do not
 activate default save, mastery or study credit.
+
+
+## Undeployed nd-quiz-report-2 Supabase Edge binding — 2026-11-11
+
+The QA inventory now contains 175 cases. A new automated-baseline case covers
+the fixed server-only Edge binding, strict required environment names, exact
+HTTPS/loopback origin allowlist, credential-free CORS preflight, rejection
+before submitter dispatch, redacted failures, explicit gateway
+`verify_jwt = true`, Deno type-check and a no-remote bundled function entrypoint.
+Its function-specific CI step is case-scoped in `ci_steps`; the stable global
+historical gate list is unchanged.
+
+This verifies source/configuration structure and the Deno bundle only. It does
+not execute a deployed Supabase Edge Runtime, configure the required protected
+environment, prove gateway signature/expiry or PostgREST/TLS/RLS, or show a
+hosted A/B learner save. The function is undeployed and the default quiz save,
+mastery, SRS mutation and study credit remain disabled. All 14 Personal Alpha
+release groups remain pending.

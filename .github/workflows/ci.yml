@@ -351,6 +351,17 @@ jobs:
         run: deno task test
       - name: Verify Deno native HTTP and permission boundaries
         run: deno task test:web
+      - name: Verify bundled quiz report v2 Supabase Edge Function
+        run: |
+          deno fmt --check edge/quiz_report_v2_edge.ts ../../supabase/functions/quiz-report-v2/index.ts
+          deno task bundle:quiz-report-v2
+          python3 - <<'PY'
+          import tomllib
+          from pathlib import Path
+          config = tomllib.loads(Path("../../supabase/config.toml").read_text(encoding="utf-8"))
+          assert config.get("functions", {}).get("quiz-report-v2", {}).get("verify_jwt") is True
+          print("quiz-report-v2 gateway JWT verification is explicitly enabled")
+          PY
       - name: Verify bundled Supabase Edge user worker
         run: |
           deno fmt --check edge

@@ -568,11 +568,15 @@ timeout does not prove rollback or absence of a committed receipt; clients must
 retain the original client_event_id and inspect history before an explicit
 retry.
 
-This is an internal handler, not a deployed Edge Function, public route, RPC,
-grant or default app save path. It reads no environment variables and accepts
-no learner-selected project URL, key, owner or database. The caller must bind
-the existing trusted submitter with server-only configuration in a separately
-reviewed deployment step. No mastery, SRS state or study minutes are granted.
+The internal handler is now wrapped by an undeployed Supabase Edge Function at
+`supabase/functions/quiz-report-v2/index.ts`; `supabase/config.toml` explicitly
+keeps `verify_jwt = true`. The binding reads fixed server environment variables,
+validates an exact-origin CORS allowlist and dynamically loads the trusted
+PostgreSQL submitter only after installing the real Node compatibility globals
+required by the pinned `pg` dependency. It never accepts a learner-selected
+project URL, key, owner or database. The route is not deployed, and no hosted
+JWT/PostgREST/Edge-runtime evidence or default app save path is implied. No
+mastery, SRS state or study minutes are granted.
 
 Node regressions cover exact raw-byte forwarding (including duplicate JSON
 members, left for the strict host decoder), method/media/encoding/bearer
@@ -613,3 +617,36 @@ registered or deployed, the default quiz save action remains disabled, and no
 hosted signed-JWT/PostgREST/RLS, learner A/B, durable multi-device attempt,
 mastery, SRS or study-credit acceptance is claimed. SDK/Auth fixtures and Mock
 HTTP tests are not hosted learner proof.
+
+
+## Undeployed Supabase Edge binding — 2026-11-11
+
+The fixed function path is `/functions/v1/quiz-report-v2`. Its source entrypoint
+is `supabase/functions/quiz-report-v2/index.ts`, with explicit gateway
+`verify_jwt = true` in `supabase/config.toml`. The gateway JWT check is retained;
+the handler additionally calls the configured project's Auth `/user` endpoint
+through `SupabaseAuthVerifier` before opening PostgreSQL. The verified Auth UUID
+alone supplies the owner claim for the existing replay-first private transaction.
+
+Required server-only environment names are:
+
+- `ND_QUIZ_REPORT_SUPABASE_URL`: fixed HTTPS project origin.
+- `ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY`: the project's anon/publishable key,
+  never a service-role API key.
+- `ND_QUIZ_REPORT_DATABASE_URL`: backend-only PostgreSQL URL accepted by the
+  existing verified-TLS factory; query strings and fragments are rejected.
+- `ND_QUIZ_REPORT_ALLOWED_ORIGINS`: comma-separated exact origins. Wildcards,
+  credentials, paths, query strings, fragments and public HTTP origins fail
+  closed; HTTP is allowed only for explicitly listed loopback development.
+
+The function never reads a URL/key from request data, does not enable credentialed
+CORS, and reflects only an exact allowlisted Origin. Preflight permits POST and
+the bounded Supabase transport headers only. Native requests without Origin are
+not given CORS headers. Unexpected errors remain fixed/redacted and responses
+remain no-store/nosniff.
+
+This is source registration and Deno bundle/test coverage only. No Supabase
+project environment has been configured, no function has been deployed, and no
+hosted signed-JWT A/B, PostgREST/RLS, real Edge-runtime TLS/CA or learner save
+acceptance is claimed. The Flutter transport remains opt-in; default quiz save,
+mastery, SRS mutation and study credit remain disabled.

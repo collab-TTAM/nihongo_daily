@@ -4475,6 +4475,39 @@
       ],
       "reproduce": "In apps/flutter_app on Windows-2022: flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart test/features/quiz/native_grammar_quiz_journal_test.dart",
       "limitation": "The Windows runner exercises TEST ONLY local-file and OS-lease behavior. It does not prove hosted Supabase Auth/JWT/RLS, encrypted backup, cross-device sync, forced OS termination, hardware power-loss durability or learner acceptance. Native quiz history remains opt-in; no default save, mastery or study credit is activated."
+    },
+    {
+      "id": "quiz-report-v2-edge-binding",
+      "status": "automated-baseline",
+      "scope": "Undeployed nd-quiz-report-2 Supabase Edge binding with fixed server environment, explicit gateway JWT verification, exact-origin CORS and the existing verified-owner transaction.",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "backend/ai/test/quiz_report_v2_edge.test.ts",
+          "contains": "preflight echoes only exact allowlisted origin and required headers"
+        },
+        {
+          "path": "backend/ai/edge/quiz_report_v2_edge.ts",
+          "contains": "ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY"
+        },
+        {
+          "path": "supabase/config.toml",
+          "contains": "verify_jwt = true"
+        },
+        {
+          "path": "supabase/functions/quiz-report-v2/index.ts",
+          "contains": "createTrustedPostgresQuizReportV2Submitter"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd backend/ai && npm ci --ignore-scripts --no-audit --no-fund && deno task check && deno task test && deno task bundle:quiz-report-v2",
+      "limitation": "Deno unit/type/bundle and TOML config checks are source evidence only. The function is not deployed and its protected environment is not configured; no actual Supabase Edge Runtime, gateway JWT signature/expiry, PostgREST/TLS/CA/RLS, hosted A/B learner save or multi-device acceptance is proven. Default quiz save, mastery, SRS mutation and study credit remain disabled.",
+      "ci_steps": [
+        "Verify bundled quiz report v2 Supabase Edge Function"
+      ]
     }
   ],
   "findings": [

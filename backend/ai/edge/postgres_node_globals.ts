@@ -1,4 +1,4 @@
-// TEST ONLY CommonJS bootstrap. Actual Node builtins, no stubs or host env copy.
+// Deno CommonJS compatibility bootstrap. Actual Node builtins; no stubs or host env copy.
 import { Buffer } from "node:buffer";
 import process from "node:process";
 

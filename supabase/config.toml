@@ -1,0 +1,2 @@
+[functions.quiz-report-v2]
+verify_jwt = true

@@ -219,3 +219,23 @@ existing validated completion/ACL/RLS/claim lifetime remain intact. Retained run
 adds72 SQL assertions/eight native races. No trusted upstream verifier/runtime
 recovery/endpoint is installed; SQL identity matching is not provider proof. See
 [AI_CONVERSATION_RECONCILIATION.md](../docs/AI_CONVERSATION_RECONCILIATION.md).
+
+
+## Undeployed quiz-report-v2 Edge binding
+
+`functions.quiz-report-v2.verify_jwt` is explicitly true in
+`config.toml`. The source entrypoint is
+`functions/quiz-report-v2/index.ts`; it binds the existing strict raw-byte
+HTTP adapter and verified-owner PostgreSQL submitter without adding a migration,
+RPC or client grant. Configure only these protected server-side variables in
+a disposable staging project before any separately approved deployment:
+`ND_QUIZ_REPORT_SUPABASE_URL`,
+`ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY`,
+`ND_QUIZ_REPORT_DATABASE_URL`, and
+`ND_QUIZ_REPORT_ALLOWED_ORIGINS`. The database URL remains backend-only and
+must satisfy the existing verified-TLS factory's query-free URL contract.
+Origins are exact allowlist entries; there is no wildcard or credentialed CORS.
+
+The source is not deployed and no hosted Auth/JWT/PostgREST/RLS or learner
+acceptance is claimed. Do not enable the Flutter default quiz save from this
+component/CI evidence alone. No mastery, SRS mutation or study credit is granted.
