@@ -173,7 +173,6 @@ function dependencies(
   };
 }
 
-
 function lookupDependencies(
   connection: FakeConnection,
   verify: AuthVerifier["verify"] = async () => ({ id: owner }),
@@ -558,7 +557,10 @@ test("verified-owner v2 receipt lookup miss remains unresolved without store per
   });
   const sql = connection.calls.map((call) => call.sql);
   assert.ok(sql.some((value) => value === replaySql));
-  assert.equal(sql.some((value) => value === storeSql), false);
+  assert.equal(
+    sql.some((value) => value === storeSql),
+    false,
+  );
   assert.equal(
     sql.some((value) => value === "SELECT canonical current content"),
     false,

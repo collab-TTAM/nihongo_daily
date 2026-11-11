@@ -507,8 +507,14 @@ test(
         expected,
       );
       assert.equal(validations, 1);
-      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
-      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      assert.equal(
+        await receiptCount(admin, ownerA, request.client_event_id),
+        1,
+      );
+      assert.equal(
+        await receiptCount(admin, ownerB, request.client_event_id),
+        0,
+      );
 
       const beforeLookupSql = sqlCalls.length;
       const found = await lookupVerifiedQuizReportV2Receipt(
@@ -554,12 +560,10 @@ test(
 
       const openedBeforeInvalidAuth = opened;
       await assert.rejects(
-        lookupVerifiedQuizReportV2Receipt(
-          schema,
-          raw,
-          "invalid-token",
-          { auth, connections },
-        ),
+        lookupVerifiedQuizReportV2Receipt(schema, raw, "invalid-token", {
+          auth,
+          connections,
+        }),
         (error: unknown) =>
           error instanceof BoundaryError && error.code === "UNAUTHORIZED",
       );
@@ -584,8 +588,14 @@ test(
           .length,
         3,
       );
-      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
-      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      assert.equal(
+        await receiptCount(admin, ownerA, request.client_event_id),
+        1,
+      );
+      assert.equal(
+        await receiptCount(admin, ownerB, request.client_event_id),
+        0,
+      );
       console.log(
         "PASS: native verified-owner nd-quiz-report-2 receipt lookup; replay-only, correlated response and A/B isolation (TEST ONLY synthetic Auth)",
       );

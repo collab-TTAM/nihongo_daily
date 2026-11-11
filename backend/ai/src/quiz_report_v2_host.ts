@@ -472,26 +472,23 @@ class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
         validateCurrentContent
           ? async (currentQuery, request, signal) => {
               alive();
-              await wait(
-                validateCurrentContent(currentQuery, request, signal),
-              );
+              await wait(validateCurrentContent(currentQuery, request, signal));
               alive();
             }
           : undefined,
         controller.signal,
       );
-      const capabilities: QuizReportV2Transaction =
-        lookupOnly
-          ? Object.freeze<QuizReportV2Transaction>({
-              replay: (request) => transaction.replay(request),
-              validateCurrentContent: async () => {
-                throw internal();
-              },
-              store: async () => {
-                throw internal();
-              },
-            })
-          : transaction;
+      const capabilities: QuizReportV2Transaction = lookupOnly
+        ? Object.freeze<QuizReportV2Transaction>({
+            replay: (request) => transaction.replay(request),
+            validateCurrentContent: async () => {
+              throw internal();
+            },
+            store: async () => {
+              throw internal();
+            },
+          })
+        : transaction;
       const result = await work(capabilities);
       alive();
 
