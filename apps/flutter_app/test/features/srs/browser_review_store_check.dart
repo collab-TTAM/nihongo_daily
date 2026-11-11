@@ -446,6 +446,7 @@ void main() {
         throwsA(isA<ReviewStorageFailure>()),
       );
     },
+  );
 
   test(
     'real IndexedDB corruption fails closed without rewriting state',
@@ -469,5 +470,5 @@ void main() {
       expect(await _readRawState(database), corrupted);
     },
   );
-  );
+
 }

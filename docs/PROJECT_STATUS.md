@@ -3636,3 +3636,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - No production storage/Auth/provider/RPC/schema/RLS/default activation, Pro-owned #14/#38/N4, deployment, merge or release change. Browser Auth/RPC remain TEST ONLY; this is not hosted learner A/B, physical multi-device sync, quota/eviction or power-loss proof.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK or browser runtime; local format/analyze/Chrome tests/build were not run. The new test and full existing suite require exact-head GitHub Actions; no new-head pass is claimed.
 - Next: inspect every latest-attempt job/step on the new exact HEAD, especially Flutter format/analyze/full tests and the actual Chrome IndexedDB/reload steps; fix only observed failures without weakening assertions. Keep #37 Draft and #20/#22/#15 open until hosted and two-client acceptance is observed.
+
+
+## Browser IndexedDB test structure correction — 2026-11-11T03:12Z
+
+- Separate post-write diff review of `a942dfa7dcbafcc4d6dde42100aa7317f20fdc5f` caught a misplaced closing delimiter around the new TEST ONLY test before its CI result was relied upon. Corrected the test insertion after the preceding test's complete closing call; no prior test body/assertion or production source changed.
+- The first source commit's queued CI is not accepted as evidence for the corrected tree. The follow-up exact-head CI must run the formatter, analyzer, full Flutter suite, actual Chrome IndexedDB test and all remaining required jobs/steps.
