@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:js_interop';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/srs/data/browser_review_store.dart';
@@ -10,6 +11,158 @@ import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
 
 import 'transactional_review_fixtures.dart' as fixture;
 import 'receipt_retention_fixtures.dart' as retention;
+
+@JS('indexedDB')
+external _TestIndexedDbFactory? get _testIndexedDb;
+
+extension type _TestIndexedDbFactory(JSObject _) implements JSObject {
+  external _TestOpenRequest open(String name, int version);
+}
+
+extension type _TestRequest(JSObject _) implements JSObject {
+  external JSAny? get result;
+  external set onsuccess(JSFunction listener);
+  external set onerror(JSFunction listener);
+}
+
+extension type _TestOpenRequest(JSObject _) implements _TestRequest {
+  external set onblocked(JSFunction listener);
+}
+
+extension type _TestDatabase(JSObject _) implements JSObject {
+  external _TestTransaction transaction(String store, String mode);
+  external void close();
+}
+
+extension type _TestTransaction(JSObject _) implements JSObject {
+  external _TestObjectStore objectStore(String name);
+  external set oncomplete(JSFunction listener);
+  external set onabort(JSFunction listener);
+  external set onerror(JSFunction listener);
+}
+
+extension type _TestObjectStore(JSObject _) implements JSObject {
+  external _TestRequest put(JSAny value, JSAny key);
+
+  @JS('get')
+  external _TestRequest read(JSAny key);
+}
+
+Future<_TestDatabase> _openTestDatabase(String name) async {
+  final factory = _testIndexedDb;
+  if (factory == null) throw StateError('IndexedDB unavailable in test');
+  final opened = Completer<_TestDatabase>();
+  final request = factory.open(name, 1);
+
+  void fail() {
+    if (!opened.isCompleted) {
+      opened.completeError(StateError('IndexedDB test open failed'));
+    }
+  }
+
+  request.onblocked = ((JSAny? _) {
+    fail();
+  }).toJS;
+  request.onerror = ((JSAny? _) {
+    fail();
+  }).toJS;
+  request.onsuccess = ((JSAny? _) {
+    try {
+      final database = _TestDatabase(request.result! as JSObject);
+      if (opened.isCompleted) {
+        database.close();
+      } else {
+        opened.complete(database);
+      }
+    } on Object {
+      fail();
+    }
+  }).toJS;
+  return opened.future;
+}
+
+Future<void> _writeRawState(String name, String raw) async {
+  final database = await _openTestDatabase(name);
+  try {
+    final committed = Completer<void>();
+    final transaction = database.transaction('journal', 'readwrite');
+
+    void fail() {
+      if (!committed.isCompleted) {
+        committed.completeError(StateError('IndexedDB test write failed'));
+      }
+    }
+
+    transaction.oncomplete = ((JSAny? _) {
+      if (!committed.isCompleted) committed.complete();
+    }).toJS;
+    transaction.onabort = ((JSAny? _) {
+      fail();
+    }).toJS;
+    transaction.onerror = ((JSAny? _) {
+      fail();
+    }).toJS;
+    transaction.objectStore('journal').put(raw.toJS, 'state'.toJS);
+    await committed.future;
+  } finally {
+    database.close();
+  }
+}
+
+Future<String?> _readRawState(String name) async {
+  final database = await _openTestDatabase(name);
+  try {
+    final committed = Completer<String?>();
+    final transaction = database.transaction('journal', 'readonly');
+    var read = false;
+    String? value;
+
+    void fail() {
+      if (!committed.isCompleted) {
+        committed.completeError(StateError('IndexedDB test read failed'));
+      }
+    }
+
+    transaction.oncomplete = ((JSAny? _) {
+      if (committed.isCompleted) return;
+      if (read) {
+        committed.complete(value);
+      } else {
+        fail();
+      }
+    }).toJS;
+    transaction.onabort = ((JSAny? _) {
+      fail();
+    }).toJS;
+    transaction.onerror = ((JSAny? _) {
+      fail();
+    }).toJS;
+
+    final request = transaction.objectStore('journal').read('state'.toJS);
+    request.onerror = ((JSAny? _) {
+      fail();
+    }).toJS;
+    request.onsuccess = ((JSAny? _) {
+      try {
+        final raw = request.result;
+        if (raw == null) {
+          value = null;
+        } else if (raw.isA<JSString>()) {
+          value = (raw as JSString).toDart;
+        } else {
+          throw StateError('Unexpected IndexedDB test value');
+        }
+        read = true;
+      } on Object {
+        fail();
+      }
+    }).toJS;
+    return await committed.future;
+  } finally {
+    database.close();
+  }
+}
+
 
 // Actual browser IndexedDB; Auth/RPC responses below are TEST ONLY.
 final class _Auth implements ReviewAuth {
@@ -293,5 +446,28 @@ void main() {
         throwsA(isA<ReviewStorageFailure>()),
       );
     },
+
+  test(
+    'real IndexedDB corruption fails closed without rewriting state',
+    () async {
+      final database = name();
+      final seed = await openBrowserReviewStore(databaseName: database);
+      await seed.close();
+
+      const corrupted = '{"version":1,"version":1,"records":[]}';
+      await _writeRawState(database, corrupted);
+      final store = await openBrowserReviewStore(databaseName: database);
+      try {
+        await expectLater(
+          store.list(fixture.owner),
+          throwsA(isA<ReviewStorageFailure>()),
+        );
+      } finally {
+        await store.close();
+      }
+
+      expect(await _readRawState(database), corrupted);
+    },
+  );
   );
 }

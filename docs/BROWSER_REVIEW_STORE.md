@@ -65,11 +65,11 @@ python3 ../../scripts/verify_browser_review_restart.py build/browser-restart
 ```
 
 Seven pure-ledger tests use TEST ONLY atomic ports (rollback, canonical corruption,
-reservations, immutable outcomes, uncertain results, full event cap and concurrency). Five Chrome
+reservations, immutable outcomes, uncertain results, full event cap and concurrency). Seven Chrome
 tests use actual IndexedDB: close/reopen/exact time/account projection, two actual
 connections contending for duplicate/distinct/conflicting writes, a delayed User A
 recovery snapshot rejected after the captured Auth session switches to User B,
-durable receipt replay/rejection immutability and safe uncertain/closed behavior.
+durable receipt replay/rejection immutability, safe uncertain/closed behavior, and duplicate-key corruption that fails closed without rewriting the committed state.
 The switch regression retains A's pending event and confirms B's owner projection
 remains empty; its Auth port is TEST ONLY and does not prove hosted A/B identity. Mock Auth/RPC
 cannot establish hosted signatures or learner acceptance. Browser quota failures

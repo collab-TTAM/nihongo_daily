@@ -178,10 +178,11 @@ has 37 groups with all 14 release integrations pending; no hosted acceptance.
 ## Browser transactional review baseline
 
 `browser-transactional-review` requires pure ledger checks, actual Chrome
-IndexedDB connection contention/reopen and compiled-Dart real page refresh/
-second-tab preservation. See BROWSER_REVIEW_STORE.md. QA38 groups, all 14
-release gates pending. Fixture Auth/RPC, modeled quota/rollback and a localhost
-probe do not prove configured live learning or eviction/power-loss survival.
+IndexedDB connection contention/reopen, corrupted-state fail-closed/no-rewrite,
+and compiled-Dart real page refresh/second-tab preservation. See
+BROWSER_REVIEW_STORE.md. The inventory contains 53 assurance cases; all 14
+release gates remain pending. Fixture Auth/RPC, modeled quota/rollback and a
+localhost probe do not prove configured live learning or eviction/power-loss survival.
 
 ## Receipt-cache retention baseline
 

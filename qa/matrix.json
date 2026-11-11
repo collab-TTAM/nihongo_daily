@@ -543,7 +543,7 @@
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",
-      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -561,6 +561,10 @@
         {
           "path": "scripts/verify_browser_review_restart.py",
           "contains": "await_status(\"RECEIPT_COMMITTED\")"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "real IndexedDB corruption fails closed without rewriting state"
         }
       ],
       "issues": [
