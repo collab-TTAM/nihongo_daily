@@ -501,9 +501,9 @@ void main() {
           anyOf(original['response_ms'], changed['response_ms']),
         );
 
-        final ownerRecord = (await a.list(fixture.owner)).singleWhere(
-          (record) => record.eventId == accepted.eventId,
-        );
+        final ownerRecord = (await a.list(
+          fixture.owner,
+        )).singleWhere((record) => record.eventId == accepted.eventId);
         expect(ownerRecord.isPending, isTrue);
         expect(
           ownerRecord.request['response_ms'],
