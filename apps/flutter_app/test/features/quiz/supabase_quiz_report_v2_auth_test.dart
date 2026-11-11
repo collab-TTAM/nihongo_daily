@@ -117,31 +117,31 @@ void main() {
         isReady: () => ready,
         readinessChanges: readiness.stream,
       );
-  
+
       await sdk.auth.signInWithPassword(
         email: 'learner@example.test',
         password: 'fixture-password',
       );
       expect(auth.capture(), isNull);
-  
+
       ready = true;
       readiness.add(null);
       final captured = auth.capture();
       expect(captured, isNotNull);
       expect(auth.isCurrent(captured!), isTrue);
-  
+
       ready = false;
       readiness.add(null);
       expect(auth.capture(), isNull);
       expect(auth.isCurrent(captured), isFalse);
-  
+
       ready = true;
       readiness.add(null);
       final replacement = auth.capture();
       expect(replacement, isNotNull);
       expect(replacement!.generation, greaterThan(captured.generation));
       expect(auth.isCurrent(captured), isFalse);
-  
+
       await auth.dispose();
       await sdk.dispose();
       await readiness.close();
