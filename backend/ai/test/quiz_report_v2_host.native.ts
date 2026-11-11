@@ -8,6 +8,7 @@ import { BoundaryError } from "../src/contracts.ts";
 import type { AuthVerifier } from "../src/ports.ts";
 import type { PostgresConnection } from "../src/postgres_connection.ts";
 import {
+  lookupVerifiedQuizReportV2Receipt,
   submitVerifiedQuizReportV2,
   type QuizReportV2CurrentContentValidator,
 } from "../src/quiz_report_v2_host.ts";
@@ -419,6 +420,167 @@ test(
       assert.equal(opened, beforeUnauthorized);
       console.log(
         "PASS: native verified-owner nd-quiz-report-2 host; source order/versions, duplicate replay, rollback, A/B isolation (TEST ONLY synthetic Auth)",
+      );
+    } finally {
+      await admin.end();
+    }
+  },
+);
+
+test(
+  "native verified-owner nd-quiz-report-2 receipt lookup is replay-only and owner-bound",
+  { timeout: 30000 },
+  async () => {
+    const admin = client();
+    await admin.connect();
+    try {
+      const ownerA = randomUUID();
+      const ownerB = randomUUID();
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerA,
+      ]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerB,
+      ]);
+
+      const tokens = new Map([
+        ["verified-A", ownerA],
+        ["verified-B", ownerB],
+      ]);
+      let verifiedOwner = "";
+      let opened = 0;
+      let validations = 0;
+      const sqlCalls: string[] = [];
+      const auth: AuthVerifier = {
+        verify: async (bearer, signal) => {
+          if (signal.aborted) {
+            throw new BoundaryError("NETWORK_UNAVAILABLE");
+          }
+          const id = tokens.get(bearer) ?? null;
+          verifiedOwner = id ?? "";
+          return id ? { id } : null;
+        },
+      };
+      const connections = () => {
+        opened++;
+        const inner = nativeConnectionFactory();
+        return {
+          connect: () => inner.connect(),
+          query: async (sql: string, values?: string[]) => {
+            sqlCalls.push(sql);
+            return inner.query(sql, values);
+          },
+          close: () => inner.close(),
+        };
+      };
+      const validateCurrentContent: QuizReportV2CurrentContentValidator =
+        async (
+          query: QuizReportContentV2Query,
+          request: QuizReportV2Request,
+          signal: AbortSignal,
+        ) => {
+          validations++;
+          const identity = await query("SELECT auth.uid()::text AS owner");
+          assert.equal(identity.command, "SELECT");
+          assert.equal(identity.rows[0]?.owner, verifiedOwner);
+          await validateCurrentQuizReportContentV2(query, request, signal);
+        };
+
+      const request = await seedAndCanonicalize(admin, fixtures[0]!);
+      const raw = new TextEncoder().encode(JSON.stringify(request));
+      const expected: QuizReportV2Response = {
+        ...fixtures[0]!.response,
+        client_event_id: request.client_event_id,
+      };
+      const submissionDependencies = {
+        auth,
+        connections,
+        validateCurrentContent,
+      };
+      assert.deepEqual(
+        await submitVerifiedQuizReportV2(
+          schema,
+          raw,
+          "verified-A",
+          submissionDependencies,
+        ),
+        expected,
+      );
+      assert.equal(validations, 1);
+      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
+      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+
+      const beforeLookupSql = sqlCalls.length;
+      const found = await lookupVerifiedQuizReportV2Receipt(
+        schema,
+        raw,
+        "verified-A",
+        { auth, connections },
+      );
+      assert.deepEqual(found, { status: "found", response: expected });
+
+      const missing = await lookupVerifiedQuizReportV2Receipt(
+        schema,
+        raw,
+        "verified-B",
+        { auth, connections },
+      );
+      assert.deepEqual(missing, {
+        status: "unresolved",
+        client_event_id: request.client_event_id,
+      });
+
+      const changed = structuredClone(request) as MutableRequest;
+      changed.answers[0]!.selected_id = changed.answers[0]!.choices.find(
+        (id) => id !== changed.answers[0]!.item_id,
+      )!;
+      await assert.rejects(
+        lookupVerifiedQuizReportV2Receipt(
+          schema,
+          new TextEncoder().encode(JSON.stringify(changed)),
+          "verified-A",
+          { auth, connections },
+        ),
+        (error: unknown) =>
+          error instanceof BoundaryError && error.code === "SYNC_CONFLICT",
+      );
+
+      const openedBeforeInvalidAuth = opened;
+      await assert.rejects(
+        lookupVerifiedQuizReportV2Receipt(
+          schema,
+          raw,
+          "invalid-token",
+          { auth, connections },
+        ),
+        (error: unknown) =>
+          error instanceof BoundaryError && error.code === "UNAUTHORIZED",
+      );
+      assert.equal(opened, openedBeforeInvalidAuth);
+      assert.equal(validations, 1);
+
+      const lookupSql = sqlCalls.slice(beforeLookupSql);
+      assert.equal(
+        lookupSql.some((sql) => sql.includes("private.store_quiz_report_v2")),
+        false,
+      );
+      assert.equal(
+        lookupSql.some(
+          (sql) =>
+            sql.includes("FROM public.vocabulary") ||
+            sql.includes("FROM public.grammar"),
+        ),
+        false,
+      );
+      assert.equal(
+        lookupSql.filter((sql) => sql.includes("private.replay_quiz_report_v2"))
+          .length,
+        3,
+      );
+      assert.equal(await receiptCount(admin, ownerA, request.client_event_id), 1);
+      assert.equal(await receiptCount(admin, ownerB, request.client_event_id), 0);
+      console.log(
+        "PASS: native verified-owner nd-quiz-report-2 receipt lookup; replay-only, correlated response and A/B isolation (TEST ONLY synthetic Auth)",
       );
     } finally {
       await admin.end();

@@ -45,6 +45,22 @@ export interface QuizReportV2SubmissionDependencies {
   readonly timeoutMs?: number;
 }
 
+export interface QuizReportV2ReceiptLookupDependencies {
+  readonly auth: AuthVerifier;
+  readonly connections: () => PostgresConnection;
+  readonly timeoutMs?: number;
+}
+
+export type QuizReportV2ReceiptLookupResult =
+  | { readonly status: "found"; readonly response: QuizReportV2Response }
+  | { readonly status: "unresolved"; readonly client_event_id: string };
+
+export type QuizReportV2ReceiptLookup = (
+  accessToken: string,
+  raw: Uint8Array,
+  signal?: AbortSignal,
+) => Promise<QuizReportV2ReceiptLookupResult>;
+
 export interface TrustedQuizReportV2Configuration {
   readonly projectUrl: string;
   readonly publicKey: string;
@@ -68,6 +84,12 @@ const permissionSql =
   "has_function_privilege(current_user, 'private.store_quiz_report_v2(jsonb)', 'EXECUTE') AS store_execute, " +
   "has_table_privilege(current_user, 'private.quiz_report_receipts', 'SELECT') AS receipt_select, " +
   "has_table_privilege(current_user, 'private.quiz_report_receipts', 'INSERT') AS receipt_insert";
+
+const lookupPermissionSql =
+  "SELECT " +
+  "has_schema_privilege(current_user, 'private', 'USAGE') AS schema_usage, " +
+  "has_function_privilege(current_user, 'private.replay_quiz_report_v2(jsonb)', 'EXECUTE') AS replay_execute, " +
+  "has_table_privilege(current_user, 'private.quiz_report_receipts', 'SELECT') AS receipt_select";
 
 const setupSql = [
   ["SET LOCAL lock_timeout = '1000ms'", "SET"],
@@ -124,7 +146,7 @@ function oneRow(
 /** Fixed parameterized bridge to the private v2 ledger; it opens no transaction. */
 export function createQuizReportV2SqlTransaction(
   query: QuizReportV2Query,
-  validateCurrentContent: QuizReportV2CurrentContentValidator,
+  validateCurrentContent?: QuizReportV2CurrentContentValidator,
   signal: AbortSignal = new AbortController().signal,
 ): QuizReportV2Transaction {
   async function call(
@@ -175,8 +197,10 @@ export function createQuizReportV2SqlTransaction(
 
   return Object.freeze({
     replay: (request: QuizReportV2Request) => call(replaySql, request, true),
-    validateCurrentContent: (request: QuizReportV2Request) =>
-      validateCurrentContent(query, request, signal),
+    validateCurrentContent: async (request: QuizReportV2Request) => {
+      if (!validateCurrentContent) throw internal();
+      await validateCurrentContent(query, request, signal);
+    },
     store: async (request: QuizReportV2Request) => {
       const response = await call(storeSql, request, false);
       if (response === null) throw internal();
@@ -289,20 +313,27 @@ export async function submitQuizReportV2InTransaction(
 class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
   private readonly ownerId: string;
   private readonly connections: () => PostgresConnection;
-  private readonly validateCurrentContent: QuizReportV2CurrentContentValidator;
+  private readonly validateCurrentContent:
+    | QuizReportV2CurrentContentValidator
+    | undefined;
   private readonly timeoutMs: number;
+  private readonly mode: "submit" | "lookup";
 
   constructor(
     ownerId: string,
     connections: () => PostgresConnection,
-    validateCurrentContent: QuizReportV2CurrentContentValidator,
+    validateCurrentContent: QuizReportV2CurrentContentValidator | undefined,
     timeoutMs: number,
+    mode: "submit" | "lookup" = "submit",
   ) {
     if (
       !UUID.test(ownerId) ||
       ownerId !== ownerId.toLowerCase() ||
       typeof connections !== "function" ||
-      typeof validateCurrentContent !== "function" ||
+      (mode === "submit" && typeof validateCurrentContent !== "function") ||
+      (validateCurrentContent !== undefined &&
+        typeof validateCurrentContent !== "function") ||
+      (mode !== "submit" && mode !== "lookup") ||
       !Number.isInteger(timeoutMs) ||
       timeoutMs < 1 ||
       timeoutMs > 15000
@@ -313,12 +344,29 @@ class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
     this.connections = connections;
     this.validateCurrentContent = validateCurrentContent;
     this.timeoutMs = timeoutMs;
+    this.mode = mode;
   }
 
-  async run(
+  run(
     work: (tx: QuizReportV2Transaction) => Promise<QuizReportV2Response>,
     parentSignal?: AbortSignal,
   ): Promise<QuizReportV2Response> {
+    if (this.mode !== "submit") return Promise.reject(internal());
+    return this.runInTransaction(work, parentSignal);
+  }
+
+  runLookup<T>(
+    work: (tx: QuizReportV2Transaction) => Promise<T>,
+    parentSignal?: AbortSignal,
+  ): Promise<T> {
+    if (this.mode !== "lookup") return Promise.reject(internal());
+    return this.runInTransaction(work, parentSignal);
+  }
+
+  private async runInTransaction<T>(
+    work: (tx: QuizReportV2Transaction) => Promise<T>,
+    parentSignal?: AbortSignal,
+  ): Promise<T> {
     const controller = new AbortController();
     let connection: PostgresConnection | undefined;
     let closed = false;
@@ -377,19 +425,26 @@ class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
       await wait(connection.connect());
       alive();
 
-      const permissions = oneRow(await query(permissionSql), [
-        "schema_usage",
-        "replay_execute",
-        "store_execute",
-        "receipt_select",
-        "receipt_insert",
-      ]);
+      const lookupOnly = this.mode === "lookup";
+      const permissions = oneRow(
+        await query(lookupOnly ? lookupPermissionSql : permissionSql),
+        lookupOnly
+          ? ["schema_usage", "replay_execute", "receipt_select"]
+          : [
+              "schema_usage",
+              "replay_execute",
+              "store_execute",
+              "receipt_select",
+              "receipt_insert",
+            ],
+      );
       if (
         permissions.schema_usage !== true ||
         permissions.replay_execute !== true ||
-        permissions.store_execute !== true ||
         permissions.receipt_select !== true ||
-        permissions.receipt_insert !== true
+        (!lookupOnly &&
+          (permissions.store_execute !== true ||
+            permissions.receipt_insert !== true))
       ) {
         throw internal();
       }
@@ -411,18 +466,33 @@ class PostgresQuizReportV2Host implements QuizReportV2TransactionHost {
       );
       if (identity.owner_id !== this.ownerId) throw internal();
 
+      const validateCurrentContent = this.validateCurrentContent;
       const transaction = createQuizReportV2SqlTransaction(
         (sql, values) => query(sql, values),
-        async (currentQuery, request, signal) => {
-          alive();
-          await wait(
-            this.validateCurrentContent(currentQuery, request, signal),
-          );
-          alive();
-        },
+        validateCurrentContent
+          ? async (currentQuery, request, signal) => {
+              alive();
+              await wait(
+                validateCurrentContent(currentQuery, request, signal),
+              );
+              alive();
+            }
+          : undefined,
         controller.signal,
       );
-      const result = await work(transaction);
+      const capabilities: QuizReportV2Transaction =
+        lookupOnly
+          ? Object.freeze<QuizReportV2Transaction>({
+              replay: (request) => transaction.replay(request),
+              validateCurrentContent: async () => {
+                throw internal();
+              },
+              store: async () => {
+                throw internal();
+              },
+            })
+          : transaction;
+      const result = await work(capabilities);
       alive();
 
       commitStarted = true;
@@ -516,6 +586,98 @@ export async function submitVerifiedQuizReportV2(
   return submitQuizReportV2InTransaction(schema, captured, host, activeSignal);
 }
 
+/**
+ * Reconcile an uncertain v2 submission using its original immutable request.
+ * A miss is deliberately unresolved: it never grants permission to resubmit.
+ */
+export async function lookupVerifiedQuizReportV2Receipt(
+  schema: AnySchemaObject,
+  raw: Uint8Array,
+  accessToken: string,
+  dependencies: QuizReportV2ReceiptLookupDependencies,
+  signal?: AbortSignal,
+): Promise<QuizReportV2ReceiptLookupResult> {
+  if (
+    typeof accessToken !== "string" ||
+    accessToken.length === 0 ||
+    accessToken.length > 8192 ||
+    !dependencies ||
+    typeof dependencies.auth?.verify !== "function" ||
+    typeof dependencies.connections !== "function"
+  ) {
+    throw new BoundaryError("UNAUTHORIZED");
+  }
+  if (!(raw instanceof Uint8Array) || raw.byteLength > 16384) {
+    throw new BoundaryError("VALIDATION_FAILURE");
+  }
+
+  const captured = raw.slice();
+  let request: QuizReportV2Request;
+  let decodeResponse: ReturnType<typeof createQuizReportV2ResponseDecoder>;
+  try {
+    request = createQuizReportV2Decoder(schema)(captured);
+    decodeResponse = createQuizReportV2ResponseDecoder(schema, captured);
+  } catch (error) {
+    if (error instanceof BoundaryError) throw new BoundaryError(error.code);
+    throw internal();
+  }
+
+  const activeSignal = signal ?? new AbortController().signal;
+  if (activeSignal.aborted) throw unavailable();
+
+  let identity: { id: string } | null;
+  try {
+    identity = await dependencies.auth.verify(accessToken, activeSignal);
+  } catch (error) {
+    throw safeAuthError(error);
+  }
+  if (
+    !identity ||
+    typeof identity.id !== "string" ||
+    !UUID.test(identity.id) ||
+    identity.id !== identity.id.toLowerCase()
+  ) {
+    throw new BoundaryError("UNAUTHORIZED");
+  }
+  if (activeSignal.aborted) throw unavailable();
+
+  let host: PostgresQuizReportV2Host;
+  try {
+    host = new PostgresQuizReportV2Host(
+      identity.id,
+      dependencies.connections,
+      undefined,
+      dependencies.timeoutMs ?? 5000,
+      "lookup",
+    );
+  } catch {
+    throw internal();
+  }
+
+  try {
+    return await host.runLookup(
+      (source) =>
+        withQuizReportV2TransactionScope(source, async (tx) => {
+          if (activeSignal.aborted) throw unavailable();
+          const replay = await tx.replay(request);
+          if (activeSignal.aborted) throw unavailable();
+          if (replay === null) {
+            return {
+              status: "unresolved",
+              client_event_id: request.client_event_id,
+            } as const;
+          }
+          const response = decodeResponse(replay);
+          if (activeSignal.aborted) throw unavailable();
+          return { status: "found", response } as const;
+        }),
+      activeSignal,
+    );
+  } catch (error) {
+    throw safeTransactionError(error);
+  }
+}
+
 /** Trusted server factory only; it installs no route, grant, listener or default app save. */
 export function createTrustedPostgresQuizReportV2Submitter(
   schema: AnySchemaObject,
@@ -546,6 +708,37 @@ export function createTrustedPostgresQuizReportV2Submitter(
             validateCurrentQuizReportContentV2(query, request, activeSignal),
           timeoutMs,
         },
+        signal,
+      );
+  } catch {
+    throw new Error("Invalid trusted quiz report v2 configuration");
+  }
+}
+
+/** Trusted server factory for internal receipt reconciliation; it installs no route or app action. */
+export function createTrustedPostgresQuizReportV2ReceiptLookup(
+  schema: AnySchemaObject,
+  configuration: TrustedQuizReportV2Configuration,
+  timeoutMs = 5000,
+): QuizReportV2ReceiptLookup {
+  try {
+    if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 15000) {
+      throw new Error();
+    }
+    const auth = new SupabaseAuthVerifier(
+      configuration.projectUrl,
+      configuration.publicKey,
+    );
+    const connections = createOwnedPostgresFactory(
+      configuration.databaseUrl,
+      "nihongo-ai-quiz-receipt-lookup",
+    );
+    return (accessToken, raw, signal) =>
+      lookupVerifiedQuizReportV2Receipt(
+        schema,
+        raw,
+        accessToken,
+        { auth, connections, timeoutMs },
         signal,
       );
   } catch {

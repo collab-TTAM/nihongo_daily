@@ -9,6 +9,7 @@ import type {
 } from "../src/postgres_connection.ts";
 import {
   createQuizReportV2SqlTransaction,
+  lookupVerifiedQuizReportV2Receipt,
   submitQuizReportV2InTransaction,
   submitVerifiedQuizReportV2,
   withQuizReportV2TransactionScope,
@@ -56,8 +57,10 @@ class FakeConnection implements PostgresConnection {
     | "permission-error"
     | "commit-error"
     | "identity-mismatch"
-    | "bad-response";
+    | "bad-response"
+    | "lookup-denied";
   readonly response: unknown;
+  readonly replayResult: (() => Promise<PostgresResult>) | undefined;
 
   constructor(
     mode:
@@ -67,11 +70,14 @@ class FakeConnection implements PostgresConnection {
       | "permission-error"
       | "commit-error"
       | "identity-mismatch"
-      | "bad-response" = "miss",
+      | "bad-response"
+      | "lookup-denied" = "miss",
     response: unknown = fixture.response,
+    replayResult?: () => Promise<PostgresResult>,
   ) {
     this.mode = mode;
     this.response = response;
+    this.replayResult = replayResult;
   }
 
   async connect(): Promise<void> {}
@@ -81,6 +87,15 @@ class FakeConnection implements PostgresConnection {
     if (sql.includes("has_schema_privilege")) {
       if (this.mode === "permission-error") {
         throw new Error("PRIVATE SQL TOKEN");
+      }
+      if (!sql.includes("private.store_quiz_report_v2")) {
+        return result("SELECT", [
+          {
+            schema_usage: true,
+            replay_execute: true,
+            receipt_select: this.mode !== "lookup-denied",
+          },
+        ]);
       }
       return result("SELECT", [
         {
@@ -105,6 +120,7 @@ class FakeConnection implements PostgresConnection {
       ]);
     }
     if (sql === replaySql) {
+      if (this.replayResult) return await this.replayResult();
       const response =
         this.mode === "hit"
           ? JSON.stringify(this.response)
@@ -153,6 +169,24 @@ function dependencies(
         return connection;
       },
       validateCurrentContent,
+    },
+  };
+}
+
+
+function lookupDependencies(
+  connection: FakeConnection,
+  verify: AuthVerifier["verify"] = async () => ({ id: owner }),
+) {
+  let opened = 0;
+  return {
+    opened: () => opened,
+    value: {
+      auth: { verify },
+      connections: () => {
+        opened++;
+        return connection;
+      },
     },
   };
 }
@@ -485,4 +519,161 @@ test("v2 transaction scope revokes escaped capabilities after callback settlemen
     /^Error: INTERNAL_ERROR$/,
   );
   assert.deepEqual(calls, ["replay"]);
+});
+
+test("verified-owner v2 receipt lookup is replay-only and returns a correlated receipt", async () => {
+  const connection = new FakeConnection("hit");
+  const deps = lookupDependencies(connection, async (token) => {
+    assert.equal(token, "verified-token");
+    return { id: owner };
+  });
+  const found = await lookupVerifiedQuizReportV2Receipt(
+    schema,
+    encode(fixture.request),
+    "verified-token",
+    deps.value,
+  );
+  assert.deepEqual(found, { status: "found", response: fixture.response });
+  const sql = connection.calls.map((call) => call.sql);
+  assert.equal(sql.filter((value) => value === replaySql).length, 1);
+  assert.ok(sql.indexOf(replaySql) < sql.indexOf("COMMIT"));
+  assert.equal(sql.includes(storeSql), false);
+  assert.equal(sql.includes("SELECT canonical current content"), false);
+  assert.equal(connection.closed, true);
+  assert.equal(deps.opened(), 1);
+});
+
+test("verified-owner v2 receipt lookup miss remains unresolved without store permission", async () => {
+  const connection = new FakeConnection("miss");
+  const deps = lookupDependencies(connection);
+  const missing = await lookupVerifiedQuizReportV2Receipt(
+    schema,
+    encode(fixture.request),
+    "verified-token",
+    deps.value,
+  );
+  assert.deepEqual(missing, {
+    status: "unresolved",
+    client_event_id: fixture.request.client_event_id,
+  });
+  const sql = connection.calls.map((call) => call.sql);
+  assert.ok(sql.some((value) => value === replaySql));
+  assert.equal(sql.some((value) => value === storeSql), false);
+  assert.equal(
+    sql.some((value) => value === "SELECT canonical current content"),
+    false,
+  );
+  assert.equal(sql.includes("COMMIT"), true);
+  assert.equal(connection.closed, true);
+});
+
+test("v2 receipt lookup rejects invalid raw input and Auth before opening PostgreSQL", async () => {
+  const connection = new FakeConnection();
+  let verified = 0;
+  const deps = lookupDependencies(connection, async () => {
+    verified++;
+    return null;
+  });
+  await assert.rejects(
+    lookupVerifiedQuizReportV2Receipt(
+      schema,
+      encode({ ...fixture.request, user_id: owner }),
+      "verified-token",
+      deps.value,
+    ),
+    /^Error: VALIDATION_FAILURE$/,
+  );
+  assert.equal(verified, 0);
+  assert.equal(deps.opened(), 0);
+  await assert.rejects(
+    lookupVerifiedQuizReportV2Receipt(
+      schema,
+      encode(fixture.request),
+      "invalid-token",
+      deps.value,
+    ),
+    /^Error: UNAUTHORIZED$/,
+  );
+  assert.equal(verified, 1);
+  assert.equal(deps.opened(), 0);
+  assert.equal(connection.calls.length, 0);
+});
+
+test("v2 receipt lookup requires only the private replay read capability", async () => {
+  const connection = new FakeConnection("lookup-denied");
+  const deps = lookupDependencies(connection);
+  await assert.rejects(
+    lookupVerifiedQuizReportV2Receipt(
+      schema,
+      encode(fixture.request),
+      "verified-token",
+      deps.value,
+    ),
+    /^Error: INTERNAL_ERROR$/,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql.startsWith("BEGIN")),
+    false,
+  );
+  assert.equal(connection.closed, true);
+});
+
+test("v2 receipt lookup cancellation during replay closes without commit", async () => {
+  let releaseReplay!: () => void;
+  let replayStarted!: () => void;
+  const entered = new Promise<void>((resolve) => {
+    replayStarted = resolve;
+  });
+  const pendingReplay = new Promise<PostgresResult>((resolve) => {
+    releaseReplay = () => resolve(result("SELECT", [{ response: null }]));
+  });
+  const connection = new FakeConnection("miss", fixture.response, async () => {
+    replayStarted();
+    return pendingReplay;
+  });
+  const deps = lookupDependencies(connection);
+  const controller = new AbortController();
+  const pending = lookupVerifiedQuizReportV2Receipt(
+    schema,
+    encode(fixture.request),
+    "verified-token",
+    deps.value,
+    controller.signal,
+  );
+  await entered;
+  controller.abort("PRIVATE DATABASE DETAIL");
+  await assert.rejects(pending, /^Error: NETWORK_UNAVAILABLE$/);
+  assert.equal(connection.closed, true);
+  assert.equal(
+    connection.calls.some((call) => call.sql === "COMMIT"),
+    false,
+  );
+  releaseReplay();
+  await Promise.resolve();
+});
+
+test("v2 receipt lookup rejects a mismatched echoed event before commit", async () => {
+  const connection = new FakeConnection("hit", {
+    ...fixture.response,
+    client_event_id: "e3100000-0000-4000-8000-000000000099",
+  });
+  const deps = lookupDependencies(connection);
+  await assert.rejects(
+    lookupVerifiedQuizReportV2Receipt(
+      schema,
+      encode(fixture.request),
+      "verified-token",
+      deps.value,
+    ),
+    /^Error: INTERNAL_ERROR$/,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql === "ROLLBACK"),
+    true,
+  );
+  assert.equal(
+    connection.calls.some((call) => call.sql === "COMMIT"),
+    false,
+  );
+  assert.equal(connection.closed, true);
 });

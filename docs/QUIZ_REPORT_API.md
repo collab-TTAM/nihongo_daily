@@ -688,3 +688,35 @@ the inner HTTP boundary retains its bounded read/reader-cancel/release logic.
 Accepted requests reach that boundary unchanged and are not cancelled before
 it finishes consuming the raw bytes. This is in-process Node/Deno regression
 evidence, not a deployed Edge or hosted learner acceptance claim.
+
+## Internal v2 receipt lookup after an uncertain submission
+
+The trusted backend now exposes an internal
+`lookupVerifiedQuizReportV2Receipt` helper and a fixed-configuration factory.
+The caller must retain and supply the original immutable v2 request bytes,
+not only a client event ID. The helper applies the same strict raw decoder,
+verifies the Bearer token through the configured Supabase Auth verifier before
+opening PostgreSQL, binds only that verified UUID to `auth.uid()` inside one
+bounded owner transaction, and invokes only
+`private.replay_quiz_report_v2`. Lookup mode checks only private-schema usage,
+replay-function execution and receipt SELECT capability; its transaction
+surface rejects content validation and store calls.
+
+A found receipt is decoded against the captured original request before
+COMMIT, including the event ID, level, quiz type, practice kind, completion
+instant and answer counts. A changed request under the same owner/event returns
+the existing safe `SYNC_CONFLICT`; another owner sees no receipt. A successful
+miss returns `status: unresolved` with the captured event ID. It is not a
+negative acknowledgement and never authorizes resubmission. The caller must
+retain the original event ID/request and reconcile again later; no automatic
+retry is introduced. Auth failure opens no database connection, while
+cancellation, timeout or malformed receipt remains a safe failure rather than
+an unresolved miss.
+
+This is a replay-only internal server capability using the existing private
+ledger and owner advisory lock. It adds no migration, grant, public RPC, HTTP
+route, Edge registration, default quiz save, mastery, SRS mutation or study
+credit. Unit tests cover invalid input/Auth, read-capability denial, cancellation,
+miss/found, response correlation and absence of content/store dispatch. Native
+disposable PostgreSQL covers synthetic TEST ONLY Auth A/B ownership and changed
+payload conflict; it is not hosted JWT/PostgREST/RLS or learner evidence.

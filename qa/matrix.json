@@ -4366,19 +4366,31 @@
     {
       "id": "quiz-report-v2-verified-owner-host",
       "status": "automated-baseline",
-      "scope": "Internal nd-quiz-report-2 verified-owner host: strict raw ingress before Auth/JSONB, Supabase-verified owner, one owned PostgreSQL transaction, replay-first receipt lock, canonical ordered active content and all displayed versions, safe rollback and correlated response.",
+      "scope": "Internal nd-quiz-report-2 verified-owner host: strict raw ingress before Auth/JSONB, Supabase-verified owner, one owned PostgreSQL transaction, replay-first receipt lock, canonical ordered active content and all displayed versions, safe rollback and correlated response. Internal replay-only receipt reconciliation accepts the original immutable v2 request, verifies Auth before DB, and returns a correlated found receipt or unresolved miss without content/store dispatch.",
       "ci_job": "database",
       "anchors": [
         {
           "path": "backend/ai/test/quiz_report_v2_host.native.ts",
           "contains": "native verified-owner nd-quiz-report-2 host enforces replay-first source validation and A/B isolation"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_host.test.ts",
+          "contains": "verified-owner v2 receipt lookup is replay-only and returns a correlated receipt"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_host.test.ts",
+          "contains": "v2 receipt lookup cancellation during replay closes without commit"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_host.native.ts",
+          "contains": "native verified-owner nd-quiz-report-2 receipt lookup is replay-only and owner-bound"
         }
       ],
       "issues": [
         13
       ],
       "reproduce": "cd backend/ai && npm test && npm run check && npm run format:check && npm run test:postgres-quiz; full exact-head Actions",
-      "limitation": "Node tests use scripted ports; native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable rows. This does not prove hosted JWT/PostgREST, deployed configuration, default learner save, durable attempt UI, mastery/weak-points or Personal Alpha learner journeys. No public route/grant/default activation is installed."
+      "limitation": "Node tests use scripted ports and native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable rows. The internal lookup returns unresolved on a miss and never authorizes resubmission; no public route, hosted JWT/PostgREST/RLS, durable learner A/B, mastery, SRS or study-credit acceptance is proven."
     },
     {
       "id": "quiz-report-v2-http-ingress",
