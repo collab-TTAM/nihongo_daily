@@ -100,17 +100,19 @@ final class _AbortableMockClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    final response = request.finalize().drain<void>().then(
-      (_) => _handler(request),
-    ).then(
-      (value) => http.StreamedResponse(
-        Stream<List<int>>.value(value.bodyBytes),
-        value.statusCode,
-        contentLength: value.bodyBytes.length,
-        request: request,
-        headers: value.headers,
-      ),
-    );
+    final response = request
+        .finalize()
+        .drain<void>()
+        .then((_) => _handler(request))
+        .then(
+          (value) => http.StreamedResponse(
+            Stream<List<int>>.value(value.bodyBytes),
+            value.statusCode,
+            contentLength: value.bodyBytes.length,
+            request: request,
+            headers: value.headers,
+          ),
+        );
 
     final abortTrigger = request is http.AbortableRequest
         ? request.abortTrigger

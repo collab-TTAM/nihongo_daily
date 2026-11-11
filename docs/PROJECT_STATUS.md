@@ -11761,3 +11761,12 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Cloud authoring runtime lacks the pinned Flutter/Dart SDK; no local Dart format/analyze/Flutter test/Web/Windows build is claimed. Exact-head Actions is required to verify the correction.
 - PR #41 remains Draft; Issue #13 remains open for durable user-owned attempts/history, reviewed mastery/weak-point and progress UI. Hosted signed-JWT/PostgREST/RLS and learner A/B remain unverified. PR #37 remains a separate Draft with component CI green but external hosted acceptance pending. Pro-owned #14/#38/N4 scope is untouched.
 - Next: inspect every latest-attempt job/step on the successor exact HEAD; require all format/analyze/tests, browser/native probes and Web/Windows builds to complete SUCCESS before continuing transport integration.
+
+
+## Exact-head Dart formatter correction — 2026-11-11T00:13Z
+
+- PR [#41](https://github.com/collab-TTAM/nihongo_daily/pull/41), branch `automation/issue-11-plan-sdk-integration`, parent `71d0fd86c065676ab050c1bc544c40f8b92cee84`; exact-head Actions [42921398811](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42921398811), attempt 1, run `head_sha` matched the parent.
+- Observed latest-attempt jobs: AI boundary 19/19 steps SUCCESS; repository sanity 13/13 SUCCESS; database 25/25 SUCCESS; Windows 18/18 SUCCESS. Flutter failed only strict Dart formatting in `apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart`; Flutter analyze/tests and dependent Chrome/native/Web checks were skipped, not passes.
+- Applied only the pinned Dart 3.35.4 formatter hunk in `_AbortableMockClient.send` (request finalization/drain/handler chain line wrapping). Cancellation behavior, assertions, request bytes and production source are unchanged.
+- Cloud authoring runtime lacks the pinned Dart/Flutter SDK; no local format/analyze/test/build pass is claimed. The successor exact-head CI is the verification gate.
+- Next: inspect every latest-attempt job and step on the successor HEAD; require Flutter format/analyze/full tests plus dependent Chrome/native/Web/Windows checks to complete SUCCESS before further integration. PR remains Draft; no hosted learner/Auth A/B or Personal Alpha release evidence is implied.
