@@ -543,7 +543,7 @@
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",
-      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization, captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID owner isolation, captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -557,6 +557,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
           "contains": "late User A recovery cannot publish after account switch"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "concurrent changed replay conflict preserves winner and owner isolation"
         },
         {
           "path": "scripts/verify_browser_review_restart.py",

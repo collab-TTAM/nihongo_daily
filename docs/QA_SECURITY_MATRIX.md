@@ -178,7 +178,7 @@ has 37 groups with all 14 release integrations pending; no hosted acceptance.
 ## Browser transactional review baseline
 
 `browser-transactional-review` requires pure ledger checks, actual Chrome
-IndexedDB connection contention/reopen, corrupted-state fail-closed/no-rewrite,
+IndexedDB connection contention/reopen, concurrent changed-payload conflict and same-event-ID owner isolation, corrupted-state fail-closed/no-rewrite,
 and compiled-Dart real page refresh/second-tab preservation. See
 BROWSER_REVIEW_STORE.md. The inventory contains 53 assurance cases; all 14
 release gates remain pending. Fixture Auth/RPC, modeled quota/rollback and a

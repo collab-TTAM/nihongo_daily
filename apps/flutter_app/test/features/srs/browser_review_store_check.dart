@@ -469,4 +469,67 @@ void main() {
       expect(await _readRawState(database), corrupted);
     },
   );
+
+  test(
+    'real IndexedDB concurrent changed replay conflict preserves winner and owner isolation',
+    () async {
+      final database = name();
+      final a = await openBrowserReviewStore(databaseName: database);
+      final b = await openBrowserReviewStore(databaseName: database);
+      try {
+        final original = fixture.request(801);
+        final changed = {...original, 'response_ms': 124};
+
+        Future<Object> capture(Future<StoredReview> operation) async {
+          try {
+            return await operation;
+          } on Object catch (error) {
+            return error;
+          }
+        }
+
+        final outcomes = await Future.wait([
+          capture(a.stage(fixture.owner, original)),
+          capture(b.stage(fixture.owner, changed)),
+        ]);
+        final accepted = outcomes.whereType<StoredReview>().single;
+        final rejected = outcomes.whereType<ReviewTransportFailure>().single;
+        expect(rejected.code, ReviewErrorCode.syncConflict);
+        expect(accepted.eventId, original['client_event_id']);
+        expect(
+          accepted.request['response_ms'],
+          anyOf(original['response_ms'], changed['response_ms']),
+        );
+
+        final ownerRecord = (await a.list(fixture.owner)).singleWhere(
+          (record) => record.eventId == accepted.eventId,
+        );
+        expect(ownerRecord.isPending, isTrue);
+        expect(
+          ownerRecord.request['response_ms'],
+          accepted.request['response_ms'],
+        );
+        expect(await b.list(fixture.other), isEmpty);
+
+        final sharedId = fixture.request(802);
+        final otherOwner = {...sharedId, 'response_ms': 125};
+        await Future.wait([
+          a.stage(fixture.owner, sharedId),
+          b.stage(fixture.other, otherOwner),
+        ]);
+        final ownerCopy = (await a.list(fixture.owner)).singleWhere(
+          (record) => record.eventId == sharedId['client_event_id'],
+        );
+        final otherCopy = (await b.list(fixture.other)).single;
+        expect(ownerCopy.eventId, otherCopy.eventId);
+        expect(ownerCopy.request['response_ms'], 123);
+        expect(otherCopy.request['response_ms'], 125);
+        expect((await a.list(fixture.other)), isEmpty);
+        expect((await b.list(fixture.owner)), hasLength(2));
+      } finally {
+        await a.close();
+        await b.close();
+      }
+    },
+  );
 }
