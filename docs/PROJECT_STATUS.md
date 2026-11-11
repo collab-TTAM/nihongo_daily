@@ -1,3 +1,13 @@
+## PR #41 — Windows native quiz-history execution — 2026-11-11 UTC
+
+- Run `core-20261111T0112Z-windows-quiz-history`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `6777e47bc81554e85e2587df4f3a3f38d1331c17`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added the required Windows-2022 job step `Verify native quiz history journals on Windows` to execute the existing vocabulary and grammar native journal tests against real files. Vocabulary coverage includes a separate Dart child process after flush and an OS lease check; grammar coverage includes owner separation, replay/conflict, drain, corruption, bounds and link rejection.
+- `qa/matrix.json` now tracks the Windows gate and one `windows-native-quiz-history` automated-baseline case; `docs/QA_SECURITY_MATRIX.md` inventory count is synchronized to 174. Existing test files and product behavior are unchanged.
+- Static authoring checks: workflow insertion anchor is unique; JSON parses; both test anchors exist in the complete tree. The cloud authoring runtime has no Windows OS or pinned Flutter SDK, so local Flutter/Windows execution was not run. No local test/build pass is claimed.
+- Full recursive tree was read from the exact parent and is the basis for the commit; the resulting tree is checked for path/mode/type preservation and unchanged blob SHAs before the ref update.
+- Limits: local journal component only; no hosted Auth/JWT/RLS, encryption/backup, multi-device sync, hardware power-loss or learner acceptance. No default save, mastery, study credit, Pro-owned N4 content, Auth/provider, schema/RLS, deployment or release change. Keep PR #41 Draft and #13 open.
+- Next: inspect latest-attempt exact-head CI and every job/step; repair only observed failures, or hand off if checks remain pending.
+
 ## PR #41 — bounded Flutter nd-quiz-report-2 raw-body encoder — 2026-11-10 UTC
 
 - Run `core-20261110T1509Z-pr41-bounded-v2-wire-encoder`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `886968218ffa8d8be21953846c502b2a929496b7`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

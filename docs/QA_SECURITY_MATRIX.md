@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-166 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+174 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -437,3 +437,23 @@ the declared repo-sanity job block by `scripts/verify_qa.py`. The global
 unmodified Actions snapshots are not retroactively required to contain steps
 added after their source commit. The case-specific commands are still required
 to exist in the current workflow and cannot be moved to another job.
+
+
+## Windows-native quiz history execution — 2026-11-11
+
+The Windows-2022 CI job now runs both existing native quiz journal suites with
+real temporary files. The vocabulary suite starts a separate Dart process to
+verify flushed history survives process exit and the exclusive OS lease rejects
+a second writer. The grammar suite exercises owner isolation, exact replay and
+conflict, close/drain, incomplete-tail repair, complete-corruption preservation,
+record/byte bounds and link rejection. The Windows gate is named
+`Verify native quiz history journals on Windows`; its exact test anchors and reproduction command are tracked in
+`qa/matrix.json`.
+
+This adds one automated-baseline case (inventory: 174). The test files themselves
+are unchanged; the new Windows job step is the execution coverage. The cloud
+authoring runtime has no Windows OS or pinned Flutter SDK, so no local Windows
+test pass is claimed. Exact-head Actions must complete the new step successfully.
+This is component evidence only, not hosted Auth/JWT/RLS, backup, sync, hardware
+power-loss or learner acceptance. The quiz journals remain opt-in and do not
+activate default save, mastery or study credit.

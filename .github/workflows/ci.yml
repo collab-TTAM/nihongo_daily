@@ -223,6 +223,8 @@ jobs:
         run: dart run tool/verify_study_recovery.dart
       - name: Verify completed-study events across process restart
         run: dart run tool/verify_study_session_recovery.dart
+      - name: Verify native quiz history journals on Windows
+        run: flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart test/features/quiz/native_grammar_quiz_journal_test.dart
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-windows-preview

@@ -65,6 +65,7 @@
       "Verify lossless native journal compaction",
       "Verify native durable review restart",
       "Verify durable study recovery with real disk",
+      "Verify native quiz history journals on Windows",
       "Run actions/upload-artifact@v4"
     ],
     "ai-boundary": [
@@ -4446,6 +4447,35 @@
       ],
       "reproduce": "From apps/flutter_app: flutter test test/features/quiz/quiz_report_v2_transport_test.dart test/features/quiz/supabase_quiz_report_v2_auth_test.dart; flutter analyze; inspect full exact-head CI.",
       "limitation": "Opt-in client component with TEST ONLY Supabase SDK/Mock HTTP fixtures. No registered/deployed Edge route, hosted signed-JWT/PostgREST/RLS, real learner A/B, default save, server attempt history, mastery, SRS or study credit. Timeout remains uncertain; retain the original event ID and reconcile history before any explicit retry."
+    },
+    {
+      "id": "windows-native-quiz-history",
+      "status": "automated-baseline",
+      "scope": "The Windows-2022 job executes the existing vocabulary and grammar native quiz-journal suites against real temporary files. The vocabulary suite launches a separate Dart process to verify flushed reports survive process exit and the OS file lease blocks a second writer; the grammar suite covers owner isolation, replay/conflict, drain, corruption, bounds and link rejection.",
+      "ci_job": "windows",
+      "ci_steps": [
+        "Verify native quiz history journals on Windows"
+      ],
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart",
+          "contains": "separate processes retain flushed data and enforce active lease"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/native_grammar_quiz_journal_test.dart",
+          "contains": "grammar journal same-directory lease rejects second writer without damage"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "contains": "- name: Verify native quiz history journals on Windows"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "In apps/flutter_app on Windows-2022: flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart test/features/quiz/native_grammar_quiz_journal_test.dart",
+      "limitation": "The Windows runner exercises TEST ONLY local-file and OS-lease behavior. It does not prove hosted Supabase Auth/JWT/RLS, encrypted backup, cross-device sync, forced OS termination, hardware power-loss durability or learner acceptance. Native quiz history remains opt-in; no default save, mastery or study credit is activated."
     }
   ],
   "findings": [
