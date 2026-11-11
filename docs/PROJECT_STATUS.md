@@ -1,3 +1,10 @@
+## PR #41 — deterministic own-profile failure barrier test — 2026-11-11 UTC
+
+- Run `core-20261111T0212Z-pr41-await-profile-error-test`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `232c92e3b9f54a2c12cd6abec3101fce44533837`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Observed exact-head Actions [42939184980](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42939184980), latest attempt 1, on this exact parent. `repo-sanity` 13/13, `ai-boundary` 18/18, `database` 25/25 and `windows` 18/18 returned steps SUCCESS; Windows also executed the new native quiz-history journal step successfully. Flutter format and analyze succeeded, but `flutter test` reported 1 failure among 1,806 tests: `persistent_ai_text_runtime_test.dart` expected `AccountPhase.profileError` after eight zero-duration flushes but still observed `loadingProfile`. All dependent Flutter/Chrome/native/Web checks were skipped, not passes.
+- Corrected only the TEST ONLY profile-failure case: subscribe to `runtime.account.changes.firstWhere(profileError)` before sign-in and await that explicit state with a bounded five-second timeout. The existing assertions remain: AI repository is absent and no AI request is sent until explicit successful profile retry. No production Auth/runtime logic, assertions, schema/RLS, default activation, Pro-owned N4, deployment, merge or release change.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local Flutter format/analyze/test/build pass is claimed. The new exact-head Actions run is the verification gate. PR #41 remains Draft; hosted learner/Auth A/B and Personal Alpha release evidence remain outstanding.
+
 ## PR #41 — QA historical-snapshot compatibility correction — 2026-11-11 UTC
 
 - Run `core-20261111T0112Z-windows-quiz-history`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `ad6c3220654829c6b48229a9caff18ba14b4f05e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

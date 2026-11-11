@@ -2080,11 +2080,14 @@ void main() {
     () async {
       profileStatus = 500;
       await runtime.start();
+      final profileError = runtime.account.changes.firstWhere(
+        (state) => state.phase == AccountPhase.profileError,
+      );
       await runtime.account.signIn(
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
-      await lifecycle.flush();
+      await profileError.timeout(const Duration(seconds: 5));
       expect(runtime.account.state.phase, AccountPhase.profileError);
       expect(runtime.createAiTextRepository(), isNull);
       expect(aiHttp.requests, isEmpty);
