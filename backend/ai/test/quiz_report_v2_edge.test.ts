@@ -33,7 +33,9 @@ function baseHandler(calls: { count: number }) {
   };
 }
 
-test("rejects wildcard, credentials, paths and non-HTTPS public origins", () => {
+test(
+  "rejects wildcard, credentials, paths and non-HTTPS public origins",
+  () => {
   for (const value of [
     "",
     "*",
@@ -54,9 +56,12 @@ test("rejects wildcard, credentials, paths and non-HTTPS public origins", () => 
     ),
     trustedOrigins,
   );
-});
+  },
+);
 
-test("reads only fixed server environment names and rejects missing or padded values", () => {
+test(
+  "reads only fixed server environment names and rejects missing or padded values",
+  () => {
   const values = new Map([
     ["ND_QUIZ_REPORT_SUPABASE_URL", "https://project.supabase.co"],
     [
@@ -105,9 +110,12 @@ test("reads only fixed server environment names and rejects missing or padded va
       ),
     /Invalid trusted quiz report v2 server configuration/,
   );
-});
+  },
+);
 
-test("preflight echoes only exact allowlisted origin and required headers", async () => {
+test(
+  "preflight echoes only exact allowlisted origin and required headers",
+  async () => {
   const calls = { count: 0 };
   const handler = createQuizReportV2EdgeHandler(
     baseHandler(calls),
@@ -142,9 +150,12 @@ test("preflight echoes only exact allowlisted origin and required headers", asyn
   );
   assert.equal(response.headers.get("cache-control"), "no-store");
   assert.equal(calls.count, 0);
-});
+  },
+);
 
-test("disallowed origin and unsupported preflight headers never reach submitter", async () => {
+test(
+  "disallowed origin and unsupported preflight headers never reach submitter",
+  async () => {
   const calls = { count: 0 };
   const handler = createQuizReportV2EdgeHandler(
     baseHandler(calls),
@@ -170,9 +181,12 @@ test("disallowed origin and unsupported preflight headers never reach submitter"
     browserOrigin,
   );
   assert.equal(calls.count, 0);
-});
+  },
+);
 
-test("allowed browser POST forwards request and preserves safe headers", async () => {
+test(
+  "allowed browser POST forwards request and preserves safe headers",
+  async () => {
   const calls = { count: 0 };
   const handler = createQuizReportV2EdgeHandler(
     baseHandler(calls),
@@ -191,9 +205,12 @@ test("allowed browser POST forwards request and preserves safe headers", async (
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.match(response.headers.get("vary") ?? "", /Origin/i);
   assert.equal(calls.count, 1);
-});
+  },
+);
 
-test("native request without Origin reaches the fixed handler without CORS reflection", async () => {
+test(
+  "native request without Origin reaches the fixed handler without CORS reflection",
+  async () => {
   const calls = { count: 0 };
   const handler = createQuizReportV2EdgeHandler(
     baseHandler(calls),
@@ -203,7 +220,8 @@ test("native request without Origin reaches the fixed handler without CORS refle
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("access-control-allow-origin"), null);
   assert.equal(calls.count, 1);
-});
+  },
+);
 
 test("preflight rejects methods other than POST", async () => {
   const handler = createQuizReportV2EdgeHandler(

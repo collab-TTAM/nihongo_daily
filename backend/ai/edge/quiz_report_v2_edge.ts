@@ -29,7 +29,9 @@ function requiredEnvironmentValue(
 }
 
 /** Exact origins only; HTTP is accepted solely for explicit loopback development. */
-export function parseQuizReportV2AllowedOrigins(raw: string): readonly string[] {
+export function parseQuizReportV2AllowedOrigins(
+  raw: string,
+): readonly string[] {
   if (
     typeof raw !== "string" ||
     raw.length === 0 ||
@@ -56,8 +58,7 @@ export function parseQuizReportV2AllowedOrigins(raw: string): readonly string[] 
       throw configurationError();
     }
     const hostname = url.hostname.toLowerCase();
-    const loopback =
-      hostname === "localhost" ||
+    const loopback = hostname === "localhost" ||
       hostname === "127.0.0.1" ||
       hostname === "[::1]" ||
       hostname === "::1";
@@ -159,7 +160,11 @@ function withCors(
   appendVary(
     headers,
     preflight
-      ? ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"]
+      ? [
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers",
+      ]
       : ["Origin"],
   );
   return new Response(response.body, {
@@ -218,10 +223,9 @@ export function createQuizReportV2EdgeHandler(
         );
       }
       const requested = request.headers.get("access-control-request-headers");
-      const names =
-        requested === null || requested.trim().length === 0
-          ? []
-          : requested.split(",").map((value) => value.trim().toLowerCase());
+      const names = requested === null || requested.trim().length === 0
+        ? []
+        : requested.split(",").map((value) => value.trim().toLowerCase());
       if (
         names.some(
           (name) => name.length === 0 || !allowedRequestHeaders.has(name),
