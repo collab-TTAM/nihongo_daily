@@ -1,3 +1,10 @@
+## PR #41 — QA historical-snapshot compatibility correction — 2026-11-11 UTC
+
+- Run `core-20261111T0112Z-windows-quiz-history`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `ad6c3220654829c6b48229a9caff18ba14b4f05e`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Observed exact-head Actions [42938878302](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42938878302), attempt 1: `repo-sanity` failed in three `qa/test_verify_qa.py` historical evidence snapshot regressions. The new Windows step had been added to global `ci_gates.windows`, causing old snapshots (which predate the step) to fail the unchanged exact-gate assertion. The `windows` job was skipped; `ai-boundary` and `database` were still in progress at inspection. No Windows journal test, full CI pass or new learner evidence is claimed.
+- Corrected `qa/matrix.json`: the historical global `ci_gates.windows` list is restored unchanged; the new step remains required through case-scoped `ci_steps` on `windows-native-quiz-history`. `scripts/verify_qa.py` already validates case-scoped steps against the current Windows job block, while preserving historical snapshot compatibility. Updated `docs/QA_SECURITY_MATRIX.md` to explain this distinction.
+- Next exact-head Actions must prove repo-sanity, all existing gates, and the new Windows journal test. No test weakening, snapshot rewriting, Auth/provider, schema/RLS, Pro/N4, deployment, merge or release change.
+
 ## PR #41 — Windows native quiz-history execution — 2026-11-11 UTC
 
 - Run `core-20261111T0112Z-windows-quiz-history`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `6777e47bc81554e85e2587df4f3a3f38d1331c17`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

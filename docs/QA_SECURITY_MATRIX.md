@@ -448,7 +448,9 @@ a second writer. The grammar suite exercises owner isolation, exact replay and
 conflict, close/drain, incomplete-tail repair, complete-corruption preservation,
 record/byte bounds and link rejection. The Windows gate is named
 `Verify native quiz history journals on Windows`; its exact test anchors and reproduction command are tracked in
-`qa/matrix.json`.
+`qa/matrix.json`. This step is case-scoped in `ci_steps`, not added to the global
+historical `ci_gates` list, so previously saved Actions snapshots are not
+retroactively required to contain a later workflow step.
 
 This adds one automated-baseline case (inventory: 174). The test files themselves
 are unchanged; the new Windows job step is the execution coverage. The cloud
