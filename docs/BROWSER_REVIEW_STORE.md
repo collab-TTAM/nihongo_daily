@@ -25,10 +25,13 @@ does not claim single client RPC dispatch across tabs: the existing server event
 identity/atomic RPC remains responsible for server replay and duplicate effects.
 
 Canonical version-1 JSON has exact root/record fields, no duplicate keys/events,
-strict owner UUID and request/outcome validation. Owner projections never return
-another account's records. No tokens, headers, curriculum display text, raw errors
-or derived SRS updates are stored. Owner UUIDs are isolation keys, not credentials;
-captured Auth plus server authorization/RLS still apply. Same-origin scripts and
+strict owner UUID and request/outcome validation. `list(userId)` filters by the
+explicit owner key supplied by its caller. Two handles opened on the same
+origin/database are not separate account identities: either handle can request
+either owner's projection. This is local partitioning, not an authorization
+boundary. No tokens, headers, curriculum display text, raw errors or derived SRS
+updates are stored. Owner UUIDs are isolation keys, not credentials; captured
+Auth plus server authorization/RLS still apply. Same-origin scripts and
 XSS can access browser data; this is not encryption or a defense against hostile
 code on the same origin. No Auth strategy, RLS, provider, deployment, secret or
 dependency change. Reference: https://www.w3.org/TR/IndexedDB/ (transaction
@@ -65,9 +68,7 @@ python3 ../../scripts/verify_browser_review_restart.py build/browser-restart
 ```
 
 Seven pure-ledger tests use TEST ONLY atomic ports (rollback, canonical corruption,
-reservations, immutable outcomes, uncertain results, full event cap and concurrency). Eight Chrome tests use actual IndexedDB: close/reopen/exact time/account projection, two actual connections contending for duplicate/distinct/conflicting writes, including changed-payload conflict and same-event-ID owner isolation, a delayed User A
-recovery snapshot rejected after the captured Auth session switches to User B,
-durable receipt replay/rejection immutability, safe uncertain/closed behavior, and duplicate-key corruption that fails closed without rewriting the committed state.
+reservations, immutable outcomes, uncertain results, full event cap and concurrency). Eight Chrome tests use actual IndexedDB: close/reopen/exact time/account projection, two actual connections contending for duplicate/distinct/conflicting writes, including changed-payload conflict and same-event-ID rows under distinct explicit owner keys. Both handles must return the same filtered projection for a supplied key; this is not per-connection Auth isolation. A delayed User A recovery snapshot is rejected after the captured Auth session switches to User B; durable receipt replay/rejection immutability, safe uncertain/closed behavior, and duplicate-key corruption that fails closed without rewriting the committed state are also covered.
 The switch regression retains A's pending event and confirms B's owner projection
 remains empty; its Auth port is TEST ONLY and does not prove hosted A/B identity. Mock Auth/RPC
 cannot establish hosted signatures or learner acceptance. Browser quota failures

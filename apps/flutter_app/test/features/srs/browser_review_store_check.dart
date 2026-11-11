@@ -471,7 +471,7 @@ void main() {
   );
 
   test(
-    'real IndexedDB concurrent changed replay conflict preserves winner and owner isolation',
+    'real IndexedDB concurrent changed replay conflict preserves winner and explicit owner-key projections',
     () async {
       final database = name();
       final a = await openBrowserReviewStore(databaseName: database);
@@ -517,15 +517,40 @@ void main() {
           a.stage(fixture.owner, sharedId),
           b.stage(fixture.other, otherOwner),
         ]);
-        final ownerCopy = (await a.list(fixture.owner)).singleWhere(
+        final ownerRecordsFromA = await a.list(fixture.owner);
+        final otherRecordsFromA = await a.list(fixture.other);
+        final ownerRecordsFromB = await b.list(fixture.owner);
+        final otherRecordsFromB = await b.list(fixture.other);
+
+        expect(ownerRecordsFromA, hasLength(2));
+        expect(otherRecordsFromA, hasLength(1));
+        expect(ownerRecordsFromB, hasLength(2));
+        expect(otherRecordsFromB, hasLength(1));
+        expect(
+          ownerRecordsFromA.every((record) => record.userId == fixture.owner),
+          isTrue,
+        );
+        expect(
+          otherRecordsFromA.every((record) => record.userId == fixture.other),
+          isTrue,
+        );
+        expect(
+          ownerRecordsFromA.map((record) => record.eventId),
+          unorderedEquals(ownerRecordsFromB.map((record) => record.eventId)),
+        );
+        expect(
+          otherRecordsFromA.map((record) => record.eventId),
+          unorderedEquals(otherRecordsFromB.map((record) => record.eventId)),
+        );
+
+        final ownerCopy = ownerRecordsFromA.singleWhere(
           (record) => record.eventId == sharedId['client_event_id'],
         );
-        final otherCopy = (await b.list(fixture.other)).single;
+        final otherCopy = otherRecordsFromA.single;
         expect(ownerCopy.eventId, otherCopy.eventId);
         expect(ownerCopy.request['response_ms'], 123);
         expect(otherCopy.request['response_ms'], 125);
-        expect((await a.list(fixture.other)), isEmpty);
-        expect((await b.list(fixture.owner)), hasLength(2));
+        expect(otherRecordsFromB.single.request['response_ms'], 125);
       } finally {
         await a.close();
         await b.close();

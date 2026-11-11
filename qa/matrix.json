@@ -543,7 +543,7 @@
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",
-      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID owner isolation, captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID rows under distinct explicit owner keys; both handles return the same filtered projection for a supplied key (not per-connection Auth isolation), captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -560,7 +560,7 @@
         },
         {
           "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
-          "contains": "concurrent changed replay conflict preserves winner and owner isolation"
+          "contains": "concurrent changed replay conflict preserves winner and explicit owner-key projections"
         },
         {
           "path": "scripts/verify_browser_review_restart.py",
@@ -577,7 +577,7 @@
         20
       ],
       "reproduce": "flutter test test/features/srs/transactional_review_store_test.dart; flutter test --platform chrome test/features/srs/browser_review_store_check.dart; dart compile js tool/verify_browser_reload.dart -o build/browser-restart/main.js; python3 ../../scripts/verify_browser_review_restart.py build/browser-restart (from apps/flutter_app, ChromeDriver required)",
-      "limitation": "Actual Chrome IndexedDB/reloads with TEST ONLY Auth/RPC. Not hosted learner acceptance, real browser power-loss/quota/eviction, secure token persistence, other browsers or terminal retention. Default runtime null."
+      "limitation": "Actual Chrome IndexedDB/reloads with TEST ONLY Auth/RPC. Owner-key filtering is local partitioning only, not per-connection authorization or hosted A/B identity. Not hosted learner acceptance, real browser power-loss/quota/eviction, secure token persistence, other browsers or terminal retention. Default runtime null."
     },
     {
       "id": "native-journal-compaction",
