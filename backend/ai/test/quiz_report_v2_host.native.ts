@@ -531,9 +531,16 @@ test(
       });
 
       const changed = structuredClone(request) as MutableRequest;
-      changed.answers[0]!.selected_id = changed.answers[0]!.choices.find(
-        (id) => id !== changed.answers[0]!.item_id,
-      )!;
+      const changedAnswer = changed.answers[0]!;
+      const alternative = changedAnswer.choices.find(
+        (id) => id !== changedAnswer.selected_id,
+      );
+      assert.ok(alternative);
+      changedAnswer.selected_id = alternative;
+      assert.notEqual(
+        changedAnswer.selected_id,
+        request.answers[0]!.selected_id,
+      );
       await assert.rejects(
         lookupVerifiedQuizReportV2Receipt(
           schema,
