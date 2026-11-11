@@ -11830,3 +11830,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Parent/expected HEAD `2d714c4de31f2d6cc88d8e0a770028f8d9646056`; exact-head Actions [43003593156](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43003593156), attempt 1: repo-sanity SUCCESS 13/13; AI boundary failed only Prettier 3.6.2 format check for `backend/ai/test/quiz_report_v2_edge.test.ts`; database and Windows were still running, Flutter was not published. No downstream test/build pass is claimed.
 - The prior callback-indentation correction did not fully satisfy Prettier. Added a temporary read-only diagnostic command that writes formatter output only to `$RUNNER_TEMP` and prints a unified diff. The existing `npm run format:check` remains unchanged and still fails on unformatted source; no test/security gate is bypassed.
 - Next: apply only the exact Prettier diff, remove the temporary diagnostic workflow step, then rerun exact-head CI. No production behavior, Edge config, schema/RLS, Auth/provider or Pro-owned N4 source changed.
+
+
+## PR #41 — apply exact Prettier output and remove diagnostic — 2026-11-11T10:30Z
+
+- Parent/expected HEAD `b5cbca23d5dd41c88be685412e8d13aa6b2fcf08`; diagnostic Actions [43003824867](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43003824867), attempt 1, emitted the exact Prettier 3.6.2 unified diff. GitHub log masking hid two TEST ONLY fixture values (loopback credential and database URL); both were restored from the checked-out source blob byte-for-byte before applying the diff.
+- Applied the formatter's exact output to `backend/ai/test/quiz_report_v2_edge.test.ts` and removed the temporary diagnostic step from `.github/workflows/ci.yml`. The normal `npm run format:check` remains unchanged. Test names, fixture values and assertions are preserved; only formatting changed.
+- Diagnostic-head CI observed repo-sanity SUCCESS 13/13; AI boundary still failed at the original format check after emitting the diff; database and Windows were in progress and Flutter was not published. No type/test/Flutter/build/full-CI pass is claimed.
+- Next: inspect all latest-attempt jobs on the final successor HEAD. No production behavior, Edge config, DB/RLS, Auth/provider or Pro-owned N4 source changed.
