@@ -21,6 +21,8 @@ import '../../ai/data/supabase_ai_text_transport.dart';
 import '../../daily_plan/data/captured_daily_plan_gateway.dart';
 import '../../quiz/data/grammar_quiz_attempt_store.dart';
 import '../../quiz/data/grammar_quiz_history_repository.dart';
+import '../../quiz/data/quiz_report_v2_transport.dart';
+import '../../quiz/data/supabase_quiz_report_v2_auth.dart';
 import '../../quiz/data/vocabulary_quiz_attempt_store.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
@@ -45,6 +47,7 @@ import 'account_session_refresh.dart';
 final class PersistentSupabaseRuntime
     implements
         GrammarQuizHistorySource,
+        QuizReportV2TransportSource,
         AccountSessionNoticeSource,
         AccountSessionRefreshAction,
         AiTextRepositorySource,
@@ -61,17 +64,20 @@ final class PersistentSupabaseRuntime
     ConversationReceiptStore? conversationReceiptStore,
     http.Client? httpClient,
     http.Client? aiHttpClient,
+    http.Client? quizReportHttpClient,
     DateTime Function()? now,
     bool automaticRefresh = false,
     bool aiTextEnabled = false,
     bool aiConversationEnabled = false,
+    bool quizReportTransportEnabled = false,
     Duration requestTimeout = const Duration(seconds: 15),
   }) : _commandScope = conversationReceiptStore?.scope,
        _studyStore = studyStore,
        _quizStore = quizStore,
        _grammarStore = grammarStore,
        _aiTextEnabled = aiTextEnabled,
-       _aiConversationEnabled = aiConversationEnabled {
+       _aiConversationEnabled = aiConversationEnabled,
+       _quizReportTransportEnabled = quizReportTransportEnabled {
     if (kIsWeb) {
       // The pinned SDK broadcasts Auth session objects between browser tabs.
       // No browser token persistence/restore is authorized by this assembly.
@@ -131,6 +137,21 @@ final class PersistentSupabaseRuntime
           ? persistence
           : _ReceiptAccountAccess(persistence, _signOutWithReceipt),
     );
+    if (_quizReportTransportEnabled) {
+      final auth = SupabaseQuizReportV2Auth(
+        client: _client,
+        isReady: _quizReportReady,
+        readinessChanges: account.changes.map<void>((_) {}),
+      );
+      _quizReportAuth = auth;
+      _quizReportTransport = QuizReportV2HttpTransport(
+        projectUrl: url,
+        publishableKey: key,
+        auth: auth,
+        client: quizReportHttpClient,
+        timeout: requestTimeout,
+      );
+    }
     if (conversationReceiptStore == null) {
       _aiOwner = AiTextRuntimeOwner(
         createTransport: ({required auth, required isReady}) =>
@@ -286,6 +307,10 @@ final class PersistentSupabaseRuntime
   final _quizOperations = VocabularyQuizOperationDrain();
   final _grammarOperations = GrammarQuizOperationDrain();
   final _studyOperations = StudySessionOperationDrain();
+  final bool _quizReportTransportEnabled;
+  SupabaseQuizReportV2Auth? _quizReportAuth;
+  QuizReportV2HttpTransport? _quizReportTransport;
+  bool _quizReportClosing = false;
   late final SupabaseClient _client;
   late final BoundedSessionHttp _network;
   late final SupabaseReviewBinding _binding;
@@ -510,6 +535,26 @@ final class PersistentSupabaseRuntime
     }
   }
 
+  bool _quizReportReady() {
+    if (!_quizReportTransportEnabled || _quizReportClosing || _closing != null) {
+      return false;
+    }
+    final session = account.readySession;
+    if (session == null || account.readyRuntime == null) return false;
+    try {
+      return _client.auth.currentSession?.user.id.toLowerCase() ==
+          session.userId;
+    } on Object {
+      return false;
+    }
+  }
+
+  /// Runtime-owned opt-in transport; unavailable until vault and own-profile
+  /// readiness have both settled. Callers must not dispose this transport.
+  @override
+  QuizReportV2HttpTransport? get quizReportV2Transport =>
+      _quizReportReady() ? _quizReportTransport : null;
+
   /// Optional borrowed local storage, bound to this exact ready runtime.
   /// Caller retains the store until close() drains all accepted operations.
   VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() {
@@ -618,12 +663,16 @@ final class PersistentSupabaseRuntime
 
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.
   Future<void> close() => _closing ??= () async {
+    _quizReportClosing = true;
+    _quizReportTransport?.dispose();
     _commandTerminal = true;
     final commandClosing = _drainCommandProtection();
     final aiClosing =
         _receiptOwner?.close() ??
         _aiOwner.close(); // Revoke before first await.
     account.dispose();
+    final quizReportAuthClosing =
+        _quizReportAuth?.dispose() ?? Future<void>.value();
     _refreshScheduler?.dispose();
     await _noticeSubscription?.cancel();
     _notice = AccountSessionNotice.none;
@@ -640,6 +689,7 @@ final class PersistentSupabaseRuntime
       _grammarOperations.revokeAndDrain(),
       aiClosing,
       commandClosing,
+      quizReportAuthClosing,
     ]);
     await _port.close();
     _binding.dispose();

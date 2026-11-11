@@ -22,6 +22,7 @@ import '../features/daily_plan/data/durable_study_session_repository.dart';
 import '../features/daily_plan/data/native_study_session_journal.dart';
 import '../features/quiz/data/native_grammar_quiz_journal.dart';
 import '../features/quiz/data/grammar_quiz_history_repository.dart';
+import '../features/quiz/data/quiz_report_v2_transport.dart';
 import '../features/quiz/data/native_vocabulary_quiz_journal.dart';
 import '../features/quiz/data/vocabulary_quiz_history_repository.dart';
 import '../features/srs/application/srs_study_runtime.dart';
@@ -37,6 +38,7 @@ final class StagingBuildSettings {
     this.publicKey = '',
     this.automaticRefresh = 'false',
     this.grammarHistory = 'false',
+    this.quizReportTransport = 'false',
   });
   static const compiled = StagingBuildSettings(
     mode: String.fromEnvironment('ND_MODE'),
@@ -44,6 +46,10 @@ final class StagingBuildSettings {
     publicKey: String.fromEnvironment('ND_SUPABASE_PUBLIC_KEY'),
     grammarHistory: String.fromEnvironment(
       'ND_GRAMMAR_HISTORY',
+      defaultValue: 'false',
+    ),
+    quizReportTransport: String.fromEnvironment(
+      'ND_QUIZ_REPORT_TRANSPORT',
       defaultValue: 'false',
     ),
     automaticRefresh: String.fromEnvironment(
@@ -56,11 +62,13 @@ final class StagingBuildSettings {
   final String publicKey;
   final String automaticRefresh;
   final String grammarHistory;
+  final String quizReportTransport;
   bool get isPreview => mode.isEmpty || mode == 'preview';
   StagingConfiguration configuration() {
     if (mode != 'staging' ||
         !const {'true', 'false'}.contains(automaticRefresh) ||
-        !const {'true', 'false'}.contains(grammarHistory)) {
+        !const {'true', 'false'}.contains(grammarHistory) ||
+        !const {'true', 'false'}.contains(quizReportTransport)) {
       throw const FormatException('Build configuration unavailable');
     }
     return StagingConfiguration(
@@ -68,6 +76,7 @@ final class StagingBuildSettings {
       SupabaseReviewBinding.validatePublicKey(publicKey),
       automaticRefresh == 'true',
       grammarHistoryEnabled: grammarHistory == 'true',
+      quizReportTransportEnabled: quizReportTransport == 'true',
     );
   }
 }
@@ -78,11 +87,13 @@ final class StagingConfiguration {
     this.publicKey,
     this.automaticRefresh, {
     this.grammarHistoryEnabled = false,
+    this.quizReportTransportEnabled = false,
   });
   final String projectUrl;
   final String publicKey;
   final bool automaticRefresh;
   final bool grammarHistoryEnabled;
+  final bool quizReportTransportEnabled;
 }
 
 typedef StagingOwner =
@@ -138,6 +149,7 @@ Future<StagingOwner> openWindowsStagingOwner(
       quizStore: quizJournal,
       grammarStore: grammarJournal,
       automaticRefresh: config.automaticRefresh,
+      quizReportTransportEnabled: config.quizReportTransportEnabled,
     );
     return WindowsStagingOwner(
       PersistentAccountStartup(runtime),
@@ -178,6 +190,7 @@ final class WindowsStagingOwner
         DurableStudySessionSource,
         VocabularyQuizHistorySource,
         GrammarQuizHistorySource,
+        QuizReportV2TransportSource,
         AiTextRepositorySource,
         AiConversationSource,
         AiConversationScenarioSource {
@@ -218,6 +231,9 @@ final class WindowsStagingOwner
   @override
   GrammarQuizHistoryRepository? createGrammarQuizHistoryRepository() =>
       _closing == null ? session.createGrammarQuizHistoryRepository() : null;
+  @override
+  QuizReportV2HttpTransport? get quizReportV2Transport =>
+      _closing == null ? session.quizReportV2Transport : null;
   @override
   DailyPlanRepository? createDailyPlanRepository() =>
       _closing == null ? session.createDailyPlanRepository() : null;

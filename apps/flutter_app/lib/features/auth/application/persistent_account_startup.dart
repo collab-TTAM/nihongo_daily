@@ -8,6 +8,7 @@ import '../../ai/data/captured_conversation_session.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/data/durable_study_session_repository.dart';
 import '../../quiz/data/grammar_quiz_history_repository.dart';
+import '../../quiz/data/quiz_report_v2_transport.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import '../../srs/application/srs_study_runtime.dart';
 import '../data/persistent_account_access.dart';
@@ -28,6 +29,7 @@ final class PersistentAccountStartup
         DurableStudySessionSource,
         VocabularyQuizHistorySource,
         GrammarQuizHistorySource,
+        QuizReportV2TransportSource,
         AiTextRepositorySource,
         AiConversationSource,
         AiConversationScenarioSource {
@@ -55,6 +57,9 @@ final class PersistentAccountStartup
   @override
   GrammarQuizHistoryRepository? createGrammarQuizHistoryRepository() =>
       runtime.createGrammarQuizHistoryRepository();
+  @override
+  QuizReportV2HttpTransport? get quizReportV2Transport =>
+      runtime.quizReportV2Transport;
   @override
   DailyPlanRepository? createDailyPlanRepository() =>
       runtime.createDailyPlanRepository();

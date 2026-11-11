@@ -13,6 +13,9 @@ import 'package:nihongo_daily/features/auth/application/account_session_notice.d
 import 'package:nihongo_daily/features/auth/application/account_session_refresh.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
+import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_transport.dart';
+import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -104,6 +107,31 @@ void main() {
               );
       }
       if (request.url.path == '/auth/v1/logout') return http.Response('', 204);
+      if (request.url.path == '/functions/v1/quiz-report-v2') {
+        final payload = jsonDecode(request.body) as Map<String, dynamic>;
+        final answers = payload['answers'] as List<dynamic>;
+        final correctCount = answers.where((raw) {
+          final answer = raw as Map<String, dynamic>;
+          return answer['selected_id'] == answer['item_id'];
+        }).length;
+        return http.Response(
+          jsonEncode({
+            'client_event_id': payload['client_event_id'],
+            'quiz_type': payload['quiz_type'],
+            'practice_kind': payload['practice_kind'],
+            'jlpt_level': payload['jlpt_level'],
+            'completed_at': payload['completed_at'],
+            'answer_count': answers.length,
+            'correct_count': correctCount,
+          }),
+          200,
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'cache-control': 'no-store',
+            'x-content-type-options': 'nosniff',
+          },
+        );
+      }
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
         return profileWait?.future ??
             Future.value(
@@ -559,4 +587,98 @@ void main() {
       }
     });
   }
+  test(
+    'caller-owned quiz report transport waits for persisted Auth and own profile',
+    () async {
+      await runtime.close();
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        quizReportHttpClient: network,
+        quizReportTransportEnabled: true,
+        now: () => now,
+      );
+      expect(runtime.quizReportV2Transport, isNull);
+
+      await runtime.start();
+      expect(runtime.quizReportV2Transport, isNull);
+      profileWait = Completer<http.Response>();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+      expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+      expect(runtime.quizReportV2Transport, isNull);
+
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(wire.a)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await waitForReady();
+
+      final transport = runtime.quizReportV2Transport;
+      expect(transport, isNotNull);
+      final report = QuizReportV2Request.fromVocabularyAttempt(
+        VocabularyQuizAttempt.fromJson({
+          'format_version': 2,
+          'event_id': 'a3000000-0000-4000-8000-000000000001',
+          'level': 'N5',
+          'completed_at': now.toIso8601String(),
+          'answers': [
+            {
+              'item_id': 'a4000000-0000-4000-8000-000000000001',
+              'content_version': 2,
+              'selected_id': 'a4000000-0000-4000-8000-000000000001',
+              'choices': [
+                'a4000000-0000-4000-8000-000000000001',
+                'a4000000-0000-4000-8000-000000000002',
+                'a4000000-0000-4000-8000-000000000003',
+                'a4000000-0000-4000-8000-000000000004',
+              ],
+              'choice_content_versions': [2, 1, 2, 1],
+            },
+          ],
+        }),
+      );
+      final response = await transport!.submit(report);
+      expect(response.answerCount, 1);
+      expect(response.correctCount, 1);
+
+      final edgeRequests = requests
+          .where((request) => request.url.path == '/functions/v1/quiz-report-v2')
+          .toList();
+      expect(edgeRequests, hasLength(1));
+      expect(
+        edgeRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+      expect(edgeRequests.single.headers['apikey'], wire.key);
+      expect(edgeRequests.single.bodyBytes, report.encodeRawBody());
+
+      await runtime.account.signOut();
+      expect(runtime.quizReportV2Transport, isNull);
+      await expectLater(
+        transport.submit(report),
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'readiness revoked',
+            QuizReportV2TransportCode.unauthorized,
+          ),
+        ),
+      );
+      expect(
+        requests.where((request) => request.url.path == '/functions/v1/quiz-report-v2'),
+        hasLength(1),
+      );
+    },
+  );
+
 }

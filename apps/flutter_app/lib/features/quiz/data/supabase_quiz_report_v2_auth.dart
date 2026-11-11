@@ -7,25 +7,40 @@ import 'quiz_report_v2_transport.dart';
 /// Read-only view of the caller-owned Supabase SDK Auth lifecycle.
 /// The server, not this local snapshot, verifies the bearer JWT.
 final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
-  SupabaseQuizReportV2Auth({required SupabaseClient client})
-    : _client = client {
+  SupabaseQuizReportV2Auth({
+    required SupabaseClient client,
+    bool Function()? isReady,
+    Stream<void>? readinessChanges,
+  }) : _client = client,
+       _isReady = isReady ?? _alwaysReady {
     _syncFromSdk(notify: false);
     _subscription = _client.auth.onAuthStateChange.listen(
       (_) => _syncFromSdk(),
       onError: (Object _, StackTrace __) => _fail(),
       onDone: _fail,
     );
+    if (readinessChanges != null) {
+      _readinessSubscription = readinessChanges.listen(
+        (_) => _syncFromSdk(),
+        onError: (Object _, StackTrace __) => _fail(),
+        onDone: _fail,
+      );
+    }
   }
 
   static final RegExp _uuid = RegExp(
     r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
   );
 
+  static bool _alwaysReady() => true;
+
   final SupabaseClient _client;
+  final bool Function() _isReady;
   final StreamController<void> _changes = StreamController<void>.broadcast(
     sync: true,
   );
   StreamSubscription<AuthState>? _subscription;
+  StreamSubscription<void>? _readinessSubscription;
   String? _userId;
   String? _accessToken;
   int _generation = 0;
@@ -62,8 +77,14 @@ final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
     if (_closed || _failed) return;
     String? nextUserId;
     String? nextAccessToken;
+    bool ready;
     try {
-      final session = _client.auth.currentSession;
+      ready = _isReady();
+    } on Object {
+      ready = false;
+    }
+    try {
+      final session = ready ? _client.auth.currentSession : null;
       final userId = session?.user.id.toLowerCase();
       final accessToken = session?.accessToken;
       if (userId != null &&
@@ -111,6 +132,8 @@ final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
     if (!_changes.isClosed) _changes.add(null);
     await _subscription?.cancel();
     _subscription = null;
+    await _readinessSubscription?.cancel();
+    _readinessSubscription = null;
     await _changes.close();
   }
 }

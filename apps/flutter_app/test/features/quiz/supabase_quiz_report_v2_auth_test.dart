@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -86,6 +87,62 @@ void main() {
 
     await auth.dispose();
     await sdk.dispose();
+    client.close();
+  });
+
+  test('own-profile readiness gates and retires captured generations', () async {
+    final readiness = StreamController<void>.broadcast(sync: true);
+    var ready = false;
+    final client = MockClient((request) async {
+      if (request.url.path.endsWith('/auth/v1/token') &&
+          request.url.queryParameters['grant_type'] == 'password') {
+        return http.Response(
+          jsonEncode(_authResponse(_userA, _sessionA, 0)),
+          200,
+          headers: {'content-type': 'application/json'},
+        );
+      }
+      return http.Response('{}', 404);
+    });
+    final sdk = SupabaseClient(
+      _projectUrl,
+      _publishableKey,
+      httpClient: client,
+      authOptions: AuthClientOptions(autoRefreshToken: false),
+    );
+    final auth = SupabaseQuizReportV2Auth(
+      client: sdk,
+      isReady: () => ready,
+      readinessChanges: readiness.stream,
+    );
+
+    await sdk.auth.signInWithPassword(
+      email: 'learner@example.test',
+      password: 'fixture-password',
+    );
+    expect(auth.capture(), isNull);
+
+    ready = true;
+    readiness.add(null);
+    final captured = auth.capture();
+    expect(captured, isNotNull);
+    expect(auth.isCurrent(captured!), isTrue);
+
+    ready = false;
+    readiness.add(null);
+    expect(auth.capture(), isNull);
+    expect(auth.isCurrent(captured), isFalse);
+
+    ready = true;
+    readiness.add(null);
+    final replacement = auth.capture();
+    expect(replacement, isNotNull);
+    expect(replacement!.generation, greaterThan(captured.generation));
+    expect(auth.isCurrent(captured), isFalse);
+
+    await auth.dispose();
+    await sdk.dispose();
+    await readiness.close();
     client.close();
   });
 

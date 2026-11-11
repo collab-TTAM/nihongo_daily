@@ -650,3 +650,29 @@ project environment has been configured, no function has been deployed, and no
 hosted signed-JWT A/B, PostgREST/RLS, real Edge-runtime TLS/CA or learner save
 acceptance is claimed. The Flutter transport remains opt-in; default quiz save,
 mastery, SRS mutation and study credit remain disabled.
+
+## Caller-owned runtime transport gate — 2026-11-11
+
+The opt-in PersistentSupabaseRuntime can now expose the existing
+QuizReportV2HttpTransport through QuizReportV2TransportSource. The trusted
+staging build flag is ND_QUIZ_REPORT_TRANSPORT; it defaults to false and is
+validated before any disk/SDK resource is opened. The default preview has no
+source/provider override. AccountStartupController and the Windows staging
+owner forward the borrowed capability, while the Riverpod provider additionally
+requires AccountPhase.ready, an own profile and a live study runtime.
+
+The runtime owns the transport and its read-only SupabaseQuizReportV2Auth
+observer. The observer now also listens to account/profile readiness changes;
+a transition away from the ready owner invalidates its generation, so a held
+request cannot survive profile revocation even if the SDK access token itself
+has not changed. The existing transport continues to capture the exact token,
+abort on generation change, validate the correlated response and never retry
+automatically. Runtime shutdown aborts the transport and disposes the observer
+before the Supabase SDK client.
+
+This is transport availability only. No quiz screen invokes it, no local
+history is marked saved by it, and no default/preview save action is enabled.
+The caller must explicitly submit an immutable v2 report and reconcile an
+uncertain event ID against authoritative history before any retry. The Edge
+Function remains undeployed/unconfigured; no hosted JWT/PostgREST/RLS, learner
+A/B, server history read, mastery, SRS or study-credit acceptance is claimed.

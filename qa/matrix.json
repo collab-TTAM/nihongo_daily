@@ -4444,8 +4444,8 @@
       "issues": [
         13
       ],
-      "reproduce": "From apps/flutter_app: flutter test test/features/quiz/quiz_report_v2_transport_test.dart test/features/quiz/supabase_quiz_report_v2_auth_test.dart; flutter analyze; inspect full exact-head CI.",
-      "limitation": "Opt-in client component with TEST ONLY Supabase SDK/Mock HTTP fixtures. No registered/deployed Edge route, hosted signed-JWT/PostgREST/RLS, real learner A/B, default save, server attempt history, mastery, SRS or study credit. Timeout remains uncertain; retain the original event ID and reconcile history before any explicit retry."
+      "reproduce": "From apps/flutter_app run flutter test test/features/quiz/quiz_report_v2_transport_test.dart test/features/quiz/supabase_quiz_report_v2_auth_test.dart test/features/srs/persistent_supabase_runtime_test.dart test/features/srs/staging_bootstrap_test.dart test/features/quiz/quiz_report_v2_provider_test.dart; flutter analyze; inspect full exact-head CI.",
+      "limitation": "Opt-in transport is forwarded only by a caller-owned persistent runtime behind trusted ND_QUIZ_REPORT_TRANSPORT=true and the persisted-session/own-profile readiness barrier; default preview/provider and quiz save UI remain disabled. SDK/Mock HTTP fixtures do not prove deployed Edge, signed JWT/PostgREST/RLS, hosted A/B, server history read, mastery or study credit. Timeout remains uncertain; retain the original event ID and reconcile history before explicit retry."
     },
     {
       "id": "windows-native-quiz-history",

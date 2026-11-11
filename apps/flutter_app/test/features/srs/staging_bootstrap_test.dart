@@ -15,6 +15,7 @@ void main() {
   test('staging settings validate before any resource construction', () {
     final valid = configured.configuration();
     expect(valid.automaticRefresh, isFalse);
+    expect(valid.quizReportTransportEnabled, isFalse);
     for (final settings in [
       const StagingBuildSettings(mode: 'other'),
       const StagingBuildSettings(mode: 'staging'),
@@ -34,12 +35,27 @@ void main() {
         publicKey: 'sb_publishable_TEST_ONLY_1234567890',
         automaticRefresh: 'yes',
       ),
+      const StagingBuildSettings(
+        mode: 'staging',
+        projectUrl: 'https://example.supabase.invalid',
+        publicKey: 'sb_publishable_TEST_ONLY_1234567890',
+        quizReportTransport: 'yes',
+      ),
     ]) {
       expect(
         settings.configuration,
         throwsA(anyOf(isA<FormatException>(), isA<ArgumentError>())),
       );
     }
+  });
+  test('quiz report transport activation is an explicit build choice', () {
+    final settings = StagingBuildSettings(
+      mode: 'staging',
+      projectUrl: configured.projectUrl,
+      publicKey: configured.publicKey,
+      quizReportTransport: 'true',
+    );
+    expect(settings.configuration().quizReportTransportEnabled, isTrue);
   });
   test('automatic refresh activation is an explicit build choice', () {
     final settings = StagingBuildSettings(

@@ -464,3 +464,8 @@ final class QuizReportV2HttpTransport {
     if (_ownsClient) _client.close();
   }
 }
+
+/// Borrowed from the caller-owned Supabase runtime; callers must not dispose it.
+abstract interface class QuizReportV2TransportSource {
+  QuizReportV2HttpTransport? get quizReportV2Transport;
+}
