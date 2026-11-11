@@ -177,15 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Capture pinned formatter diff for browser corruption regression (read-only)
-        run: |
-          file=test/features/srs/browser_review_store_check.dart
-          backup=$(mktemp)
-          cp "$file" "$backup"
-          restore() { cp "$backup" "$file"; rm -f "$backup"; }
-          trap restore EXIT
-          dart format "$file"
-          diff -u "$backup" "$file" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

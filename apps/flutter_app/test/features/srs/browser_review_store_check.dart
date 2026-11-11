@@ -163,7 +163,6 @@ Future<String?> _readRawState(String name) async {
   }
 }
 
-
 // Actual browser IndexedDB; Auth/RPC responses below are TEST ONLY.
 final class _Auth implements ReviewAuth {
   @override
@@ -470,5 +469,4 @@ void main() {
       expect(await _readRawState(database), corrupted);
     },
   );
-
 }
