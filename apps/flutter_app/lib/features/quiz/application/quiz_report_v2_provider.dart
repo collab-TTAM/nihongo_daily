@@ -10,20 +10,21 @@ final quizReportV2TransportSourceProvider =
 
 /// No transport is visible until the persisted Auth session and own profile are
 /// ready. The transport repeats this fence for every captured request.
-final quizReportV2TransportProvider =
-    Provider<QuizReportV2HttpTransport?>((ref) {
-      final state = ref.watch(accountStateProvider);
-      final account = ref.watch(accountRuntimeProvider);
-      final source = ref.watch(quizReportV2TransportSourceProvider);
-      if (state.phase != AccountPhase.ready ||
-          state.profile == null ||
-          account?.readySession == null ||
-          account?.readyRuntime == null) {
-        return null;
-      }
-      try {
-        return source?.quizReportV2Transport;
-      } on Object {
-        return null;
-      }
-    });
+final quizReportV2TransportProvider = Provider<QuizReportV2HttpTransport?>((
+  ref,
+) {
+  final state = ref.watch(accountStateProvider);
+  final account = ref.watch(accountRuntimeProvider);
+  final source = ref.watch(quizReportV2TransportSourceProvider);
+  if (state.phase != AccountPhase.ready ||
+      state.profile == null ||
+      account?.readySession == null ||
+      account?.readyRuntime == null) {
+    return null;
+  }
+  try {
+    return source?.quizReportV2Transport;
+  } on Object {
+    return null;
+  }
+});

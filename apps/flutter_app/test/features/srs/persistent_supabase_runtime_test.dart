@@ -652,7 +652,9 @@ void main() {
       expect(response.correctCount, 1);
 
       final edgeRequests = requests
-          .where((request) => request.url.path == '/functions/v1/quiz-report-v2')
+          .where(
+            (request) => request.url.path == '/functions/v1/quiz-report-v2',
+          )
           .toList();
       expect(edgeRequests, hasLength(1));
       expect(
@@ -675,10 +677,11 @@ void main() {
         ),
       );
       expect(
-        requests.where((request) => request.url.path == '/functions/v1/quiz-report-v2'),
+        requests.where(
+          (request) => request.url.path == '/functions/v1/quiz-report-v2',
+        ),
         hasLength(1),
       );
     },
   );
-
 }

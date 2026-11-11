@@ -536,7 +536,9 @@ final class PersistentSupabaseRuntime
   }
 
   bool _quizReportReady() {
-    if (!_quizReportTransportEnabled || _quizReportClosing || _closing != null) {
+    if (!_quizReportTransportEnabled ||
+        _quizReportClosing ||
+        _closing != null) {
       return false;
     }
     final session = account.readySession;
