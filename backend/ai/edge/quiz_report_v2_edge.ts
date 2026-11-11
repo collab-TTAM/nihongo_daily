@@ -187,7 +187,7 @@ export function createQuizReportV2EdgeHandler(
   );
   const allowed = new Set(validatedOrigins);
 
-  return async (request) => {
+  const dispatch: RequestHandler = async (request) => {
     const origin = request.headers.get("origin");
     if (origin !== null && !allowed.has(origin)) {
       const denied = failure(
@@ -266,5 +266,19 @@ export function createQuizReportV2EdgeHandler(
       );
     }
     return origin === null ? response : withCors(response, origin);
+  };
+
+  return async (request) => {
+    try {
+      return await dispatch(request);
+    } finally {
+      // Early CORS/preflight replies never enter the HTTP reader's cleanup.
+      // Initiate cancellation, but never wait for an untrusted stream source.
+      try {
+        void request.body?.cancel().catch(() => {});
+      } catch {
+        // A consumed/locked body must not replace the safe response.
+      }
+    }
   };
 }

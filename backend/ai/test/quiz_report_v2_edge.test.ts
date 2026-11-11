@@ -236,3 +236,127 @@ test("unexpected handler errors are redacted and CORS-readable", async () => {
   assert.doesNotMatch(body, /PRIVATE DATABASE URL AND TOKEN/);
   assert.match(body, /INTERNAL_ERROR/);
 });
+
+for (const [label, method, headers, status] of [
+  ["denied origin", "POST", { origin: "https://attacker.example" }, 403],
+  ["native OPTIONS", "OPTIONS", {}, 405],
+  [
+    "wrong preflight method",
+    "OPTIONS",
+    { origin: browserOrigin, "access-control-request-method": "DELETE" },
+    405,
+  ],
+  [
+    "wrong preflight header",
+    "OPTIONS",
+    {
+      origin: browserOrigin,
+      "access-control-request-method": "POST",
+      "access-control-request-headers": "x-private",
+    },
+    403,
+  ],
+  [
+    "accepted preflight",
+    "OPTIONS",
+    { origin: browserOrigin, "access-control-request-method": "POST" },
+    204,
+  ],
+] as const) {
+  test(`cancels unread body on ${label} without dispatch`, async () => {
+    let cancellations = 0;
+    let dispatches = 0;
+    const body = new ReadableStream<Uint8Array>({
+      cancel() {
+        cancellations++;
+      },
+    });
+    const init: RequestInit & { duplex: "half" } = {
+      method,
+      headers,
+      body,
+      duplex: "half",
+    };
+    const candidate = new Request(
+      "https://project.example/functions/v1/quiz-report-v2",
+      init,
+    );
+    const handler = createQuizReportV2EdgeHandler(async () => {
+      dispatches++;
+      throw new Error("must not dispatch");
+    }, trustedOrigins);
+    const response = await handler(candidate);
+    assert.equal(response.status, status);
+    assert.equal(cancellations, 1);
+    assert.equal(dispatches, 0);
+  });
+}
+
+test("cleanup cannot delay or replace the safe handler failure", async () => {
+  for (const mode of ["reject", "stall"] as const) {
+    let cancelled = false;
+    const body = new ReadableStream<Uint8Array>({
+      cancel() {
+        cancelled = true;
+        return mode === "reject"
+          ? Promise.reject(new Error("PRIVATE CANCEL"))
+          : new Promise<void>(() => {});
+      },
+    });
+    const init: RequestInit & { duplex: "half" } = {
+      method: "POST",
+      headers: { origin: browserOrigin },
+      body,
+      duplex: "half",
+    };
+    const handler = createQuizReportV2EdgeHandler(async () => {
+      throw new Error("PRIVATE HANDLER");
+    }, trustedOrigins);
+    const response = await handler(
+      new Request("https://project.example/functions/v1/quiz-report-v2", init),
+    );
+    assert.equal(cancelled, true);
+    assert.equal(response.status, 500);
+    assert.equal(
+      response.headers.get("access-control-allow-origin"),
+      browserOrigin,
+    );
+    assert.doesNotMatch(await response.text(), /PRIVATE/);
+    await new Promise<void>((resolve) => setImmediate(resolve));
+  }
+});
+
+test("accepted body remains readable byte-for-byte until handler settles", async () => {
+  const bytes = new TextEncoder().encode(
+    '{"duplicate":1,"duplicate":2,"jp":"あ"}',
+  );
+  let cancellations = 0;
+  const body = new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(bytes);
+      controller.close();
+    },
+    cancel() {
+      cancellations++;
+    },
+  });
+  const init: RequestInit & { duplex: "half" } = {
+    method: "POST",
+    headers: { origin: browserOrigin },
+    body,
+    duplex: "half",
+  };
+  const candidate = new Request(
+    "https://project.example/functions/v1/quiz-report-v2",
+    init,
+  );
+  const handler = createQuizReportV2EdgeHandler(async (received) => {
+    await Promise.resolve();
+    assert.equal(received, candidate);
+    assert.equal(cancellations, 0);
+    assert.deepEqual(new Uint8Array(await received.arrayBuffer()), bytes);
+    return new Response("{}", { headers: { "cache-control": "no-store" } });
+  }, trustedOrigins);
+  assert.equal((await handler(candidate)).status, 200);
+  assert.equal(cancellations, 0);
+});

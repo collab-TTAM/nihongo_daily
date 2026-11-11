@@ -676,3 +676,15 @@ The caller must explicitly submit an immutable v2 report and reconcile an
 uncertain event ID against authoritative history before any retry. The Edge
 Function remains undeployed/unconfigured; no hosted JWT/PostgREST/RLS, learner
 A/B, server history read, mastery, SRS or study-credit acceptance is claimed.
+
+## Edge request-body lifetime
+
+The CORS wrapper initiates cancellation of any remaining request body after
+its response path settles, including denied origins, all preflight replies and
+unexpected handler failures. Cancellation is best effort and is never awaited:
+an untrusted stream's rejected or stalled cancel callback cannot replace or
+hold the safe response. A locked reader remains its owner's responsibility;
+the inner HTTP boundary retains its bounded read/reader-cancel/release logic.
+Accepted requests reach that boundary unchanged and are not cancelled before
+it finishes consuming the raw bytes. This is in-process Node/Deno regression
+evidence, not a deployed Edge or hosted learner acceptance claim.
