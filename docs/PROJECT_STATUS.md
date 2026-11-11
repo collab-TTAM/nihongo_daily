@@ -11823,3 +11823,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Observed at checkpoint: repo-sanity SUCCESS 13/13; AI boundary failed only at Prettier 3.6.2 format check for `backend/ai/test/quiz_report_v2_edge.test.ts`; database and Windows were still running and Flutter had not been published. No test/build pass is inferred from pending or skipped jobs.
 - Corrected only the indentation of the six callback bodies after the formatter-expanded long `test(...)` headers. Assertions, fixtures, string values and behavior remain unchanged. No production source, Edge configuration, QA gates, schema/RLS, Auth/provider or Pro-owned N4 path changed.
 - Next: inspect all jobs/steps on the successor exact HEAD; no merge/release until the complete required suite passes.
+
+
+## PR #41 — read-only Prettier diagnostic — 2026-11-11T10:27Z
+
+- Parent/expected HEAD `2d714c4de31f2d6cc88d8e0a770028f8d9646056`; exact-head Actions [43003593156](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43003593156), attempt 1: repo-sanity SUCCESS 13/13; AI boundary failed only Prettier 3.6.2 format check for `backend/ai/test/quiz_report_v2_edge.test.ts`; database and Windows were still running, Flutter was not published. No downstream test/build pass is claimed.
+- The prior callback-indentation correction did not fully satisfy Prettier. Added a temporary read-only diagnostic command that writes formatter output only to `$RUNNER_TEMP` and prints a unified diff. The existing `npm run format:check` remains unchanged and still fails on unformatted source; no test/security gate is bypassed.
+- Next: apply only the exact Prettier diff, remove the temporary diagnostic workflow step, then rerun exact-head CI. No production behavior, Edge config, schema/RLS, Auth/provider or Pro-owned N4 source changed.

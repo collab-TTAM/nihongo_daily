@@ -336,6 +336,10 @@ jobs:
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
+      - name: Temporary Prettier diagnostic (remove after inspection)
+        run: |
+          npx prettier test/quiz_report_v2_edge.test.ts > "$RUNNER_TEMP/quiz_report_v2_edge.test.ts"
+          diff -u test/quiz_report_v2_edge.test.ts "$RUNNER_TEMP/quiz_report_v2_edge.test.ts" || true
       - run: npm run format:check
       - run: npm run check
       - run: npm test
