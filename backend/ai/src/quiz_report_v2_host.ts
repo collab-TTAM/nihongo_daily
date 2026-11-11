@@ -728,7 +728,7 @@ export function createTrustedPostgresQuizReportV2ReceiptLookup(
     );
     const connections = createOwnedPostgresFactory(
       configuration.databaseUrl,
-      "nihongo-ai-quiz-receipt-lookup",
+      "nihongo-ai-quiz-report",
     );
     return (accessToken, raw, signal) =>
       lookupVerifiedQuizReportV2Receipt(
