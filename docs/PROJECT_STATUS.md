@@ -11815,3 +11815,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Cloud authoring runtime has no pinned Node/Deno/PostgreSQL/Flutter SDK; no local formatter/type/test/bundle/analyze/build pass is claimed. Exact-head GitHub Actions is the verification gate.
 - PR #37 is separately RELEASED at `129046c1f0aa5a12c8a20e901616b9a941cecfed`; exact-head run [42964303842](https://github.com/collab-TTAM/nihongo_daily/actions/runs/42964303842) completed six jobs and all 101 returned steps successfully. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical Windows restart/expiry remain external acceptance gates.
 - Next: inspect every latest-attempt job and step on the new PR #41 HEAD; only after exact-head checks are green continue issue #13 hosted mastery/progress integration. PR #41 stays Draft; #11/#13/#20/#22/#15 remain open. Pro-owned #14/#38/N4 paths remain untouched.
+
+
+## PR #41 — pinned Prettier callback indentation correction — 2026-11-11T10:18Z
+
+- Parent/expected HEAD `2cdd1255f4814686d4cdbc34aa1e74039d9abe00`; run [43003264289](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43003264289), attempt 1, exact-head.
+- Observed at checkpoint: repo-sanity SUCCESS 13/13; AI boundary failed only at Prettier 3.6.2 format check for `backend/ai/test/quiz_report_v2_edge.test.ts`; database and Windows were still running and Flutter had not been published. No test/build pass is inferred from pending or skipped jobs.
+- Corrected only the indentation of the six callback bodies after the formatter-expanded long `test(...)` headers. Assertions, fixtures, string values and behavior remain unchanged. No production source, Edge configuration, QA gates, schema/RLS, Auth/provider or Pro-owned N4 path changed.
+- Next: inspect all jobs/steps on the successor exact HEAD; no merge/release until the complete required suite passes.

@@ -36,190 +36,190 @@ function baseHandler(calls: { count: number }) {
 test(
   "rejects wildcard, credentials, paths and non-HTTPS public origins",
   () => {
-  for (const value of [
-    "",
-    "*",
-    "null",
-    "http://learn.example",
-    "https://user:password@learn.example",
-    "https://learn.example/path",
-    "https://learn.example?query=1",
-    "https://learn.example#fragment",
-    "https://learn.example/",
-    "https://learn.example,https://learn.example",
-  ]) {
-    assert.throws(() => parseQuizReportV2AllowedOrigins(value));
-  }
-  assert.deepEqual(
-    parseQuizReportV2AllowedOrigins(
-      "https://learn.example,http://localhost:3000",
-    ),
-    trustedOrigins,
-  );
+    for (const value of [
+      "",
+      "*",
+      "null",
+      "http://learn.example",
+      "https://user:password@learn.example",
+      "https://learn.example/path",
+      "https://learn.example?query=1",
+      "https://learn.example#fragment",
+      "https://learn.example/",
+      "https://learn.example,https://learn.example",
+    ]) {
+      assert.throws(() => parseQuizReportV2AllowedOrigins(value));
+    }
+    assert.deepEqual(
+      parseQuizReportV2AllowedOrigins(
+        "https://learn.example,http://localhost:3000",
+      ),
+      trustedOrigins,
+    );
   },
 );
 
 test(
   "reads only fixed server environment names and rejects missing or padded values",
   () => {
-  const values = new Map([
-    ["ND_QUIZ_REPORT_SUPABASE_URL", "https://project.supabase.co"],
-    [
+    const values = new Map([
+      ["ND_QUIZ_REPORT_SUPABASE_URL", "https://project.supabase.co"],
+      [
+        "ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY",
+        "sb_publishable_TEST_ONLY_1234567890",
+      ],
+      [
+        "ND_QUIZ_REPORT_DATABASE_URL",
+        "postgresql://quiz_backend:TEST_ONLY@db.example:5432/postgres",
+      ],
+      ["ND_QUIZ_REPORT_ALLOWED_ORIGINS", browserOrigin],
+    ]);
+    const reads: string[] = [];
+    const configuration = readQuizReportV2EdgeConfiguration((name) => {
+      reads.push(name);
+      return values.get(name);
+    });
+    assert.deepEqual(reads, [
+      "ND_QUIZ_REPORT_SUPABASE_URL",
       "ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY",
-      "sb_publishable_TEST_ONLY_1234567890",
-    ],
-    [
       "ND_QUIZ_REPORT_DATABASE_URL",
-      "postgresql://quiz_backend:TEST_ONLY@db.example:5432/postgres",
-    ],
-    ["ND_QUIZ_REPORT_ALLOWED_ORIGINS", browserOrigin],
-  ]);
-  const reads: string[] = [];
-  const configuration = readQuizReportV2EdgeConfiguration((name) => {
-    reads.push(name);
-    return values.get(name);
-  });
-  assert.deepEqual(reads, [
-    "ND_QUIZ_REPORT_SUPABASE_URL",
-    "ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY",
-    "ND_QUIZ_REPORT_DATABASE_URL",
-    "ND_QUIZ_REPORT_ALLOWED_ORIGINS",
-  ]);
-  assert.deepEqual(configuration.allowedOrigins, [browserOrigin]);
-  assert.equal(configuration.trusted.projectUrl, "https://project.supabase.co");
-  assert.equal(
-    configuration.trusted.publicKey,
-    values.get("ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY"),
-  );
-  assert.equal(Object.isFrozen(configuration), true);
-  assert.equal(Object.isFrozen(configuration.trusted), true);
+      "ND_QUIZ_REPORT_ALLOWED_ORIGINS",
+    ]);
+    assert.deepEqual(configuration.allowedOrigins, [browserOrigin]);
+    assert.equal(configuration.trusted.projectUrl, "https://project.supabase.co");
+    assert.equal(
+      configuration.trusted.publicKey,
+      values.get("ND_QUIZ_REPORT_SUPABASE_PUBLIC_KEY"),
+    );
+    assert.equal(Object.isFrozen(configuration), true);
+    assert.equal(Object.isFrozen(configuration.trusted), true);
 
-  assert.throws(
-    () =>
-      readQuizReportV2EdgeConfiguration((name) =>
-        name === "ND_QUIZ_REPORT_ALLOWED_ORIGINS" ? browserOrigin : undefined
-      ),
-    /Invalid trusted quiz report v2 server configuration/,
-  );
-  assert.throws(
-    () =>
-      readQuizReportV2EdgeConfiguration((name) =>
-        name === "ND_QUIZ_REPORT_SUPABASE_URL"
-          ? " https://project.supabase.co "
-          : values.get(name)
-      ),
-    /Invalid trusted quiz report v2 server configuration/,
-  );
+    assert.throws(
+      () =>
+        readQuizReportV2EdgeConfiguration((name) =>
+          name === "ND_QUIZ_REPORT_ALLOWED_ORIGINS" ? browserOrigin : undefined
+        ),
+      /Invalid trusted quiz report v2 server configuration/,
+    );
+    assert.throws(
+      () =>
+        readQuizReportV2EdgeConfiguration((name) =>
+          name === "ND_QUIZ_REPORT_SUPABASE_URL"
+            ? " https://project.supabase.co "
+            : values.get(name)
+        ),
+      /Invalid trusted quiz report v2 server configuration/,
+    );
   },
 );
 
 test(
   "preflight echoes only exact allowlisted origin and required headers",
   async () => {
-  const calls = { count: 0 };
-  const handler = createQuizReportV2EdgeHandler(
-    baseHandler(calls),
-    trustedOrigins,
-  );
-  const response = await handler(
-    request("OPTIONS", {
-      origin: browserOrigin,
-      "access-control-request-method": "POST",
-      "access-control-request-headers":
-        "authorization, apikey, content-type, x-client-info",
-    }),
-  );
-  assert.equal(response.status, 204);
-  assert.equal(
-    response.headers.get("access-control-allow-origin"),
-    browserOrigin,
-  );
-  assert.equal(
-    response.headers.get("access-control-allow-methods"),
-    "POST, OPTIONS",
-  );
-  assert.equal(
-    response.headers.get("access-control-allow-headers"),
-    "authorization, apikey, content-type, x-client-info",
-  );
-  assert.equal(response.headers.get("access-control-allow-credentials"), null);
-  assert.match(response.headers.get("vary") ?? "", /Origin/i);
-  assert.match(
-    response.headers.get("vary") ?? "",
-    /Access-Control-Request-Method/i,
-  );
-  assert.equal(response.headers.get("cache-control"), "no-store");
-  assert.equal(calls.count, 0);
+    const calls = { count: 0 };
+    const handler = createQuizReportV2EdgeHandler(
+      baseHandler(calls),
+      trustedOrigins,
+    );
+    const response = await handler(
+      request("OPTIONS", {
+        origin: browserOrigin,
+        "access-control-request-method": "POST",
+        "access-control-request-headers":
+          "authorization, apikey, content-type, x-client-info",
+      }),
+    );
+    assert.equal(response.status, 204);
+    assert.equal(
+      response.headers.get("access-control-allow-origin"),
+      browserOrigin,
+    );
+    assert.equal(
+      response.headers.get("access-control-allow-methods"),
+      "POST, OPTIONS",
+    );
+    assert.equal(
+      response.headers.get("access-control-allow-headers"),
+      "authorization, apikey, content-type, x-client-info",
+    );
+    assert.equal(response.headers.get("access-control-allow-credentials"), null);
+    assert.match(response.headers.get("vary") ?? "", /Origin/i);
+    assert.match(
+      response.headers.get("vary") ?? "",
+      /Access-Control-Request-Method/i,
+    );
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(calls.count, 0);
   },
 );
 
 test(
   "disallowed origin and unsupported preflight headers never reach submitter",
   async () => {
-  const calls = { count: 0 };
-  const handler = createQuizReportV2EdgeHandler(
-    baseHandler(calls),
-    trustedOrigins,
-  );
-  const denied = await handler(
-    request("POST", { origin: "https://attacker.example" }),
-  );
-  assert.equal(denied.status, 403);
-  assert.equal(denied.headers.get("access-control-allow-origin"), null);
-  assert.equal(denied.headers.get("cache-control"), "no-store");
+    const calls = { count: 0 };
+    const handler = createQuizReportV2EdgeHandler(
+      baseHandler(calls),
+      trustedOrigins,
+    );
+    const denied = await handler(
+      request("POST", { origin: "https://attacker.example" }),
+    );
+    assert.equal(denied.status, 403);
+    assert.equal(denied.headers.get("access-control-allow-origin"), null);
+    assert.equal(denied.headers.get("cache-control"), "no-store");
 
-  const unsupported = await handler(
-    request("OPTIONS", {
-      origin: browserOrigin,
-      "access-control-request-method": "POST",
-      "access-control-request-headers": "authorization, x-private-header",
-    }),
-  );
-  assert.equal(unsupported.status, 403);
-  assert.equal(
-    unsupported.headers.get("access-control-allow-origin"),
-    browserOrigin,
-  );
-  assert.equal(calls.count, 0);
+    const unsupported = await handler(
+      request("OPTIONS", {
+        origin: browserOrigin,
+        "access-control-request-method": "POST",
+        "access-control-request-headers": "authorization, x-private-header",
+      }),
+    );
+    assert.equal(unsupported.status, 403);
+    assert.equal(
+      unsupported.headers.get("access-control-allow-origin"),
+      browserOrigin,
+    );
+    assert.equal(calls.count, 0);
   },
 );
 
 test(
   "allowed browser POST forwards request and preserves safe headers",
   async () => {
-  const calls = { count: 0 };
-  const handler = createQuizReportV2EdgeHandler(
-    baseHandler(calls),
-    trustedOrigins,
-  );
-  const response = await handler(
-    request("POST", { origin: browserOrigin }),
-  );
-  assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { accepted: true });
-  assert.equal(
-    response.headers.get("access-control-allow-origin"),
-    browserOrigin,
-  );
-  assert.equal(response.headers.get("cache-control"), "no-store");
-  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
-  assert.match(response.headers.get("vary") ?? "", /Origin/i);
-  assert.equal(calls.count, 1);
+    const calls = { count: 0 };
+    const handler = createQuizReportV2EdgeHandler(
+      baseHandler(calls),
+      trustedOrigins,
+    );
+    const response = await handler(
+      request("POST", { origin: browserOrigin }),
+    );
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { accepted: true });
+    assert.equal(
+      response.headers.get("access-control-allow-origin"),
+      browserOrigin,
+    );
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+    assert.match(response.headers.get("vary") ?? "", /Origin/i);
+    assert.equal(calls.count, 1);
   },
 );
 
 test(
   "native request without Origin reaches the fixed handler without CORS reflection",
   async () => {
-  const calls = { count: 0 };
-  const handler = createQuizReportV2EdgeHandler(
-    baseHandler(calls),
-    trustedOrigins,
-  );
-  const response = await handler(request("POST"));
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get("access-control-allow-origin"), null);
-  assert.equal(calls.count, 1);
+    const calls = { count: 0 };
+    const handler = createQuizReportV2EdgeHandler(
+      baseHandler(calls),
+      trustedOrigins,
+    );
+    const response = await handler(request("POST"));
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("access-control-allow-origin"), null);
+    assert.equal(calls.count, 1);
   },
 );
 
