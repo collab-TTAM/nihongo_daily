@@ -862,3 +862,14 @@ A token rotation, account replacement or close during cleanup suppresses the
 old result. Listener cleanup failures become fixed internal errors and release
 the transport's in-flight bookkeeping. The original HTTP deadline and drain
 ordering still apply. This check supplies no local-history release authority.
+
+
+### Transport close during Auth listener cleanup
+
+If the caller closes the transport after a lookup response has been decoded but
+while cancellation of the captured Auth listener is still pending, close
+immediately rejects new dispatch and waits for the accepted operation to drain.
+After listener cleanup, the transport rechecks its lifetime and suppresses the
+otherwise valid receipt with the fixed `NETWORK_UNAVAILABLE` error. The owner
+must await this close before disposing the Auth observer. This does not release
+local history or authorize a new submit.

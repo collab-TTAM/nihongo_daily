@@ -699,4 +699,69 @@ void main() {
       await auth.dispose();
     },
   );
+
+  test(
+    'close drains lookup while Auth listener cancellation is pending',
+    () async {
+      final cleanupStarted = Completer<void>();
+      final finishCleanup = Completer<void>();
+      final auth = _FakeAuth(
+        onCancel: () {
+          cleanupStarted.complete();
+          return finishCleanup.future;
+        },
+      );
+      final report = _report();
+      var calls = 0;
+      final client = MockClient((request) async {
+        calls++;
+        expect(request.url.path, '/functions/v1/quiz-report-v2-lookup');
+        return _lookupFound(report);
+      });
+      final transport = _transport(auth: auth, client: client);
+      addTearDown(() async {
+        if (!finishCleanup.isCompleted) finishCleanup.complete();
+        await transport.close();
+        client.close();
+        await auth.dispose();
+      });
+
+      final pending = transport.lookupReceipt(report);
+      await cleanupStarted.future.timeout(const Duration(seconds: 1));
+
+      var closed = false;
+      final closing = transport.close().then<void>((_) {
+        closed = true;
+      });
+      await Future<void>.delayed(Duration.zero);
+      expect(closed, isFalse);
+      await expectLater(
+        transport.lookupReceipt(report),
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'code',
+            QuizReportV2TransportCode.networkUnavailable,
+          ),
+        ),
+      );
+      expect(calls, 1);
+
+      finishCleanup.complete();
+      await expectLater(
+        pending,
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'code',
+            QuizReportV2TransportCode.networkUnavailable,
+          ),
+        ),
+      );
+      await closing.timeout(const Duration(seconds: 1));
+      expect(closed, isTrue);
+      expect(calls, 1);
+    },
+  );
+
 }

@@ -4503,6 +4503,10 @@
         {
           "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
           "contains": "decodes unresolved lookup as uncertainty without a receipt"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "close drains lookup while Auth listener cancellation is pending"
         }
       ],
       "issues": [
