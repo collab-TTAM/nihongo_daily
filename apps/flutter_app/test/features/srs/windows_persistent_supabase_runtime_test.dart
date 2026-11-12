@@ -1427,6 +1427,83 @@ void main() {
     },
   );
 
+  test(
+    'Windows caller close retries failed rotation clear before releasing owned runtime',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_WINDOWS_CLOSE_ROTATION_INITIAL';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(storedSecret, refreshSecret);
+
+      // The native write may commit even when its acknowledgement is lost.
+      // A failed compensation leaves an uncertain secret that close must drain.
+      failWriteAfterCommit = true;
+      failClear = true;
+      refreshSecret = 'TEST_ONLY_WINDOWS_CLOSE_ROTATION_COMMITTED';
+      await expectLater(
+        runtime.refresh(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+
+      expect(storedSecret, 'TEST_ONLY_WINDOWS_CLOSE_ROTATION_COMMITTED');
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+      final failedWrite = timeline.lastIndexOf('vault.write');
+      final failedClear = timeline.lastIndexOf('vault.clear');
+      expect(failedWrite, greaterThan(timeline.lastIndexOf('auth.refresh')));
+      expect(failedClear, greaterThan(failedWrite));
+
+      await expectLater(runtime.close(), throwsA(isA<SessionVaultFailure>()));
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(storedSecret, 'TEST_ONLY_WINDOWS_CLOSE_ROTATION_COMMITTED');
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, ['vault.clear', 'vault.clear']);
+      expect(
+        () => PersistentSupabaseRuntime(
+          projectUrl: wire.origin,
+          publishableKey: wire.key,
+          vault: createWindowsSessionCredentialVault(wire.origin),
+          store: journal,
+          httpClient: network,
+          now: () => now,
+        ),
+        throwsA(isA<SessionVaultFailure>()),
+        reason: 'failed rotation cleanup must retain exclusive vault ownership',
+      );
+
+      failClear = false;
+      await runtime.close();
+      expect(storedSecret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(timeline.where((value) => value == 'vault.clear'), hasLength(3));
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder.last, 'owner.release');
+      expect(
+        closeOrder.lastIndexOf('vault.clear'),
+        lessThan(closeOrder.lastIndexOf('owner.release')),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+    },
+  );
+
   test('Windows caller close retries a failed native owner release', () async {
     await runtime.start();
     expect(ownerLeaseCalls, ['acquireOwner']);

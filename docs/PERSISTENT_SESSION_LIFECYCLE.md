@@ -842,3 +842,30 @@ the access owner's logout future settles. These are deterministic in-memory
 SDK/vault and controller tests, not hosted learner A/B or native delayed
 Credential Manager fault injection. No token values are logged, no plaintext
 fallback is added, and no Auth provider/strategy or RLS change is made.
+
+
+## Caller close after an ambiguous Windows refresh rotation write — 2026-11-12
+
+A caller-owned SDK refresh can rotate the refresh secret while the Windows
+credential backend commits the new value but loses its acknowledgement. If the
+compensating exact-project clear also fails, persistence remains failed and the
+caller must not release either the Dart project owner or native process lease.
+A subsequent close retries SDK sign-out and the serialized vault clear. Only a
+successful clear may release the owner; the uncertain value must never restore
+a session or authorize an own-profile request.
+
+The pinned-Supabase-SDK/Windows-MethodChannel regression establishes User A,
+commits A's synthetic rotated value at the credential write boundary, then
+returns a redacted platform failure. The compensating clear and first
+caller-close clear both fail. The test requires the owner lease to remain held
+and rejects a competing runtime. After storage recovers, a second explicit
+close clears the value before releasing the owner. The existing native process
+probe separately covers a real post-CredWrite unavailable result against a
+PID-qualified .invalid Credential Manager entry.
+
+The caller-close test injects the failure through a TEST ONLY MethodChannel
+handler; it does not simulate a delayed/native Credential Manager failure or
+hosted signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff, power loss or
+physical multi-device recovery. No production Auth/provider strategy, plaintext
+fallback, token logging, schema/RLS, default activation or Pro-owned N4 content
+is changed.

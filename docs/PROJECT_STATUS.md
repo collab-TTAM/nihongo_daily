@@ -1,3 +1,14 @@
+## PR #37 caller-close retry after uncertain Windows refresh rotation — 2026-11-12T16:14Z
+
+- Run `core-20261112T1614Z-pr37-close-uncertain-rotation-clear` is RELEASED after persistence. Branch `automation/issue-22-atomic-review`; parent `730aec01ce534de57c6958b7a9417625feb0cb22`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head Actions [43235211522](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43235211522) completed SUCCESS on this exact parent: all 6/6 jobs and 101/101 returned steps succeeded (repo-sanity, database, AI boundary, disposable Supabase integration, Windows and Flutter). This is parent evidence only; the new head requires its own run.
+- Added one TEST ONLY pinned-Supabase-SDK + production Dart Windows MethodChannel regression. A's refresh write commits the synthetic rotated secret but loses its acknowledgement; compensating clear and first caller-close clear fail. The caller stays fenced, retains the Dart/native owner and rejects a competing runtime. After storage recovers, a second explicit close clears the uncertain secret before releasing the owner.
+- Changed exactly four paths: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json` (one anchor in the existing persistent-session-lifecycle case; case count unchanged), and `docs/PROJECT_STATUS.md`. No production Auth/provider, API/schema/RLS/migration, default activation, Pro-owned N4, deployment, merge or release change.
+- Separate post-write review is required: complete recursive tree/path/mode/type comparison, exact changed-blob readback, and parent diff. Cloud runtime lacks the pinned Dart/Flutter SDK; local format/analyze/test/build were not run. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical two-device proof remain outstanding.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open until their hosted/learner acceptance is observed.
+
+---
+
 ## PR #37 pinned Dart formatter correction — 2026-11-12T13:25Z
 
 - Run `core-20261112T1324Z-pr37-dart-format-account-fixtures` is RELEASED. Branch `automation/issue-22-atomic-review`; parent HEAD `46a671519d5fc8030336e981441ef37c85cbfc24`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
