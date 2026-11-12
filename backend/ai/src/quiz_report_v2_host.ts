@@ -179,6 +179,7 @@ export function createQuizReportV2SqlTransaction(
       }
       return bytes;
     } catch (error) {
+      if (error instanceof BoundaryError) throw safeTransactionError(error);
       if (error && typeof error === "object") {
         const value = error as { code?: unknown; message?: unknown };
         if (value.code === "P0001") {
