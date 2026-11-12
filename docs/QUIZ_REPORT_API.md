@@ -844,3 +844,12 @@ This is lifecycle/fixture evidence only. Lookup remains read-only; unresolved
 never authorizes submit, retry or local-history release. Default preview/save
 remains disabled. No hosted receipt, learner A/B, PostgREST/RLS or Personal Alpha
 acceptance is inferred.
+
+### Strict JSON at the Flutter quiz transport boundary
+
+Quiz submit and lookup decode bounded response bytes with the same strict JSON
+guard as the conversation transport. The guard rejects duplicate object keys,
+including escaped equivalents and nested receipt fields, before Dart JSON
+decoding can overwrite them. UTF-8, BOM and nesting checks apply to success
+and structured error responses. Malformed replies map to the existing safe
+internal error. A rejected lookup yields no receipt and no resubmission authority.

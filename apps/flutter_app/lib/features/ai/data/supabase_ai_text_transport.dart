@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:supabase/supabase.dart';
 
+import '../../../shared/network/strict_json.dart';
 import '../../srs/data/review_repository.dart';
 import '../../srs/data/supabase_review_binding.dart';
 import '../application/ai_text_runtime_owner.dart';
@@ -421,7 +422,7 @@ final class SupabaseAiTextTransport
       if (declared != null && bytes.length != declared) {
         throw const FormatException();
       }
-      final raw = _decodeJson(bytes.takeBytes());
+      final raw = decodeStrictJson(bytes.takeBytes());
       guard();
       if (response.statusCode != 200) {
         throw _httpFailure(response.statusCode, raw);
@@ -495,7 +496,9 @@ _Token _captureToken(Session session, ReviewSession owner, DateTime now) {
   if (parts.length != 3 || parts.any((p) => p.isEmpty)) {
     throw const FormatException();
   }
-  final payload = _decodeJson(base64Url.decode(base64Url.normalize(parts[1])));
+  final payload = decodeStrictJson(
+    base64Url.decode(base64Url.normalize(parts[1])),
+  );
   if (payload is! Map<String, Object?> ||
       payload['role'] != 'authenticated' ||
       payload['sub'] is! String ||
@@ -630,52 +633,6 @@ AiTextFailure _httpFailure(int status, [Object? raw]) {
   };
   // No automatic retry; uncertain requests may already have incurred provider cost.
   return AiTextFailure(code);
-}
-
-/// Preflight bounded JSON nesting and duplicate (including escaped) keys before
-/// dart:convert can overwrite them. dart:convert still validates full grammar.
-Object? _decodeJson(List<int> bytes) {
-  if (bytes.length >= 3 &&
-      bytes[0] == 239 &&
-      bytes[1] == 187 &&
-      bytes[2] == 191) {
-    throw const FormatException();
-  }
-  final text = utf8.decode(bytes, allowMalformed: false);
-  final stack = <_JsonFrame>[];
-  for (var i = 0; i < text.length; i++) {
-    final c = text.codeUnitAt(i);
-    if (c == 34) {
-      final start = i++;
-      while (i < text.length && text.codeUnitAt(i) != 34) {
-        if (text.codeUnitAt(i) == 92) i++;
-        i++;
-      }
-      if (i >= text.length) throw const FormatException();
-      if (stack.isNotEmpty && stack.last.expectKey) {
-        final key = jsonDecode(text.substring(start, i + 1)) as String;
-        if (!stack.last.keys.add(key)) throw const FormatException();
-        stack.last.expectKey = false;
-      }
-    } else if (c == 123 || c == 91) {
-      if (stack.length >= 16) throw const FormatException();
-      stack.add(_JsonFrame(c == 123));
-    } else if (c == 125 || c == 93) {
-      if (stack.isEmpty) throw const FormatException();
-      stack.removeLast();
-    } else if (c == 44 && stack.isNotEmpty) {
-      stack.last.expectKey = stack.last.object;
-    }
-  }
-  if (stack.isNotEmpty) throw const FormatException();
-  return jsonDecode(text);
-}
-
-final class _JsonFrame {
-  _JsonFrame(this.object) : expectKey = object;
-  final bool object;
-  bool expectKey;
-  final keys = <String>{};
 }
 
 final class _Attempt {

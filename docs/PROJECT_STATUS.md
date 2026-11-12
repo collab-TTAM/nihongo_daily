@@ -12001,3 +12001,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Exact-head Actions 43269222951 attempt 1: AI, database, repo-sanity and Windows passed all steps. Required Windows receipt lifecycle marker observed (TEST ONLY). Flutter failed strict Dart format, so analyze, tests and build were skipped.
 - Applied exact diff from Flutter job 131362030207, removing one trailing blank line in each of quiz_report_v2_transport_test.dart and persistent_supabase_runtime_test.dart. Verified formatter post-image blob prefixes, reviewed diff and retained assertions and CI gates. QA inventory, 56 QA tests and whitespace check passed. Flutter SDK unavailable locally.
 - Verify all jobs and required steps on the new head, then continue caller-owned reconciliation with verified conditional release. Hosted learner evidence and Personal Alpha acceptance pending. PR #41 remains draft and #13 open.
+
+### PR #41 strict quiz receipt JSON — 2026-11-12T18:46Z
+
+- core-20261112T1845-strict-receipt-json on automation/issue-11-plan-sdk-integration, parent f69a9818d4e37e0a17926838e90e794d96d1094c and main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c. Exact-head Actions 43274310379 attempt 1 passed 5 jobs and 114 steps. Required Windows TEST ONLY receipt marker observed.
+- Moved the existing conversation JSON guard unchanged to shared/network/strict_json.dart. Quiz transport now uses it for success and structured errors. Duplicate envelope or nested receipt keys fail closed before correlation. Added focused lookup regression using ambiguous replies that permissive JSON decoding normalizes to the valid result.
+- QA inventory, 56 QA tests, guard parity review and whitespace check passed. No local Flutter SDK; Dart formatting, analyzer, regression and builds require Actions on the new head.
+- Next verify all required CI steps, then continue authenticated receipt reconciliation with verified conditional release. Default save, retry and deployment remain disabled. PR #41 remains draft and #13 open. Hosted learner and Personal Alpha acceptance pending.

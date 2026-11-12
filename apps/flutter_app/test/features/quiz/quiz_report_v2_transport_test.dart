@@ -481,6 +481,46 @@ void main() {
     },
   );
 
+  test('lookup rejects duplicate envelope and nested receipt keys', () async {
+    final auth = _FakeAuth();
+    final report = _report();
+    final found = _lookupFound(report).body;
+    final bodies = [
+      found.replaceFirst('{"status"', '{"status":"unresolved","status"'),
+      found.replaceFirst(
+        '"correct_count":1',
+        '"correct_count":0,"correct_count":1',
+      ),
+    ];
+    var calls = 0;
+    final client = MockClient((request) async {
+      expect(request.url.path, '/functions/v1/quiz-report-v2-lookup');
+      return http.Response(bodies[calls++], 200, headers: _headers);
+    });
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
+
+    for (final body in bodies) {
+      expect(body, isNot(found));
+      expect(jsonDecode(body), jsonDecode(found));
+      await expectLater(
+        transport.lookupReceipt(report),
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'code',
+            QuizReportV2TransportCode.internalError,
+          ),
+        ),
+      );
+    }
+    expect(calls, 2);
+  });
+
   test(
     'unresolved receipt lookup never dispatches submit or claims a receipt',
     () async {

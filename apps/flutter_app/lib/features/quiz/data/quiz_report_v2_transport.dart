@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
+import '../../../shared/network/strict_json.dart';
 import '../../srs/data/supabase_review_binding.dart';
 import 'quiz_report_v2_adapter.dart';
 
@@ -364,7 +364,7 @@ final class QuizReportV2HttpTransport {
       requireCurrent();
 
       if (response.statusCode == 200) {
-        final decoded = jsonDecode(utf8.decode(responseBytes));
+        final decoded = decodeStrictJson(responseBytes);
         try {
           return decodeSuccess(decoded);
         } on Object {
@@ -478,7 +478,7 @@ final class QuizReportV2HttpTransport {
     int status,
     Uint8List raw,
   ) {
-    final value = jsonDecode(utf8.decode(raw));
+    final value = decodeStrictJson(raw);
     if (value is! Map<String, Object?> ||
         value.length != 3 ||
         !value.keys.toSet().containsAll({'code', 'message_vi', 'retryable'}) ||
