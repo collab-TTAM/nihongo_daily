@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   createQuizReportV2EdgeHandler,
+  createQuizReportV2ReceiptLookupEdgeHandler,
   parseQuizReportV2AllowedOrigins,
   readQuizReportV2EdgeConfiguration,
 } from "../edge/quiz_report_v2_edge.ts";
@@ -359,4 +360,133 @@ test("accepted body remains readable byte-for-byte until handler settles", async
   }, trustedOrigins);
   assert.equal((await handler(candidate)).status, 200);
   assert.equal(cancellations, 0);
+});
+
+function lookupRequest(
+  headers: Record<string, string> = {},
+  signal?: AbortSignal,
+) {
+  return new Request("https://project.example/internal-lookup", {
+    method: "POST",
+    headers: {
+      origin: browserOrigin,
+      "content-type": "application/json",
+      authorization: "Bearer TEST_ONLY",
+      ...headers,
+    },
+    body: '{"original":"bytes"}',
+    signal,
+  });
+}
+
+test("lookup composition gates CORS and Bearer before invoking lookup", async () => {
+  let calls = 0;
+  const handler = createQuizReportV2ReceiptLookupEdgeHandler(async () => {
+    calls++;
+    return {
+      status: "unresolved",
+      client_event_id: "e4200000-0000-4000-8000-000000000001",
+    };
+  }, trustedOrigins);
+  const preflight = await handler(
+    request("OPTIONS", {
+      origin: browserOrigin,
+      "access-control-request-method": "POST",
+    }),
+  );
+  assert.equal(preflight.status, 204);
+  const denied = await handler(
+    lookupRequest({ origin: "https://attacker.example" }),
+  );
+  assert.equal(denied.status, 403);
+  assert.equal(denied.headers.get("access-control-allow-origin"), null);
+  const unauthenticated = await handler(lookupRequest({ authorization: "" }));
+  assert.equal(unauthenticated.status, 401);
+  assert.equal(
+    unauthenticated.headers.get("access-control-allow-origin"),
+    browserOrigin,
+  );
+  assert.equal(unauthenticated.headers.get("www-authenticate"), "Bearer");
+  assert.equal(calls, 0);
+});
+
+test("lookup composition preserves unresolved and raw bytes without save fallback", async () => {
+  let calls = 0;
+  const outcome = {
+    status: "unresolved" as const,
+    client_event_id: "e4200000-0000-4000-8000-000000000001",
+  };
+  const handler = createQuizReportV2ReceiptLookupEdgeHandler(
+    async (token, raw, signal) => {
+      calls++;
+      assert.equal(token, "TEST_ONLY");
+      assert.equal(new TextDecoder().decode(raw), '{"original":"bytes"}');
+      assert.equal(signal?.aborted, false);
+      return outcome;
+    },
+    trustedOrigins,
+  );
+  const response = await handler(lookupRequest());
+  assert.equal(response.status, 200);
+  assert.equal(
+    response.headers.get("access-control-allow-origin"),
+    browserOrigin,
+  );
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  assert.equal(response.headers.get("access-control-allow-credentials"), null);
+  assert.deepEqual(await response.json(), outcome);
+  assert.equal(calls, 1);
+});
+
+test("lookup composition redacts failure without turning it into unresolved", async () => {
+  const handler = createQuizReportV2ReceiptLookupEdgeHandler(async () => {
+    throw new Error("PRIVATE DATABASE TOKEN");
+  }, trustedOrigins);
+  const response = await handler(lookupRequest());
+  assert.equal(response.status, 500);
+  assert.equal(
+    response.headers.get("access-control-allow-origin"),
+    browserOrigin,
+  );
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  const body = await response.text();
+  assert.doesNotMatch(body, /PRIVATE|unresolved/);
+  assert.equal(JSON.parse(body).code, "INTERNAL_ERROR");
+});
+
+test("lookup composition cancels borrowed work and preserves CORS on disconnect", async () => {
+  const controller = new AbortController();
+  let entered!: () => void;
+  let release!: () => void;
+  let active: AbortSignal | undefined;
+  const started = new Promise<void>((resolve) => {
+    entered = resolve;
+  });
+  const handler = createQuizReportV2ReceiptLookupEdgeHandler(
+    async (_token, _raw, signal) => {
+      active = signal;
+      entered();
+      await new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      return {
+        status: "unresolved",
+        client_event_id: "e4200000-0000-4000-8000-000000000001",
+      };
+    },
+    trustedOrigins,
+  );
+  const pending = handler(lookupRequest({}, controller.signal));
+  await started;
+  controller.abort();
+  const response = await pending;
+  assert.equal(response.status, 503);
+  assert.equal(
+    response.headers.get("access-control-allow-origin"),
+    browserOrigin,
+  );
+  assert.equal((await response.json()).code, "NETWORK_UNAVAILABLE");
+  assert.equal(active?.aborted, true);
+  release();
+  await new Promise<void>((resolve) => setImmediate(resolve));
 });

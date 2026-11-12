@@ -1,3 +1,5 @@
+import { createQuizReportV2ReceiptLookupHttpHandler } from "../src/quiz_report_v2_http.ts";
+import type { QuizReportV2ReceiptLookup } from "../src/quiz_report_v2_host.ts";
 import type { TrustedQuizReportV2Configuration } from "../src/quiz_report_v2_host.ts";
 
 export interface QuizReportV2EdgeConfiguration {
@@ -281,4 +283,19 @@ export function createQuizReportV2EdgeHandler(
       }
     }
   };
+}
+
+/** Compose exact-origin CORS with the bounded replay-only HTTP boundary.
+ * The caller supplies a trusted verified-owner lookup, never a submit fallback.
+ * This installs no route and performs no environment reads or network I/O.
+ */
+export function createQuizReportV2ReceiptLookupEdgeHandler(
+  lookup: QuizReportV2ReceiptLookup,
+  allowedOrigins: readonly string[],
+  timeoutMs = 15000,
+): RequestHandler {
+  return createQuizReportV2EdgeHandler(
+    createQuizReportV2ReceiptLookupHttpHandler(lookup, timeoutMs),
+    allowedOrigins,
+  );
 }

@@ -764,3 +764,19 @@ request bytes and reconcile again later. This is a contract/decoder increment
 only: no lookup HTTP route, Edge binding, grant, default app save, mastery, SRS
 mutation or study credit is activated. V1 request/response and the existing v2
 submit request/response definitions remain unchanged.
+
+## Lookup CORS/HTTP composition
+
+`createQuizReportV2ReceiptLookupEdgeHandler` composes the existing exact-origin
+CORS gate with the bounded lookup HTTP handler. The caller supplies a trusted
+verified-owner lookup and fixed allowed origins; this factory reads no
+request-selected project/key and registers no route. Accepted preflight and
+rejected origins never invoke lookup. Allowed-origin authentication/errors
+remain CORS-readable with no-store headers; CORS grants no ownership authority.
+Raw POST bytes, cancellation and deadline flow through the existing HTTP
+boundary. There is no submit fallback or retry, and unresolved stays unknown.
+
+Composition tests use TEST ONLY callbacks, not live Auth/SQL. They cover ingress
+gates, exact bytes/unresolved, redacted failures and disconnect propagation.
+Trusted deployment assembly, public lookup registration, caller-owned client
+transport/conditional reconciliation and hosted learner proof remain pending.
