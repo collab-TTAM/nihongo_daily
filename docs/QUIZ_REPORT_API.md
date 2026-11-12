@@ -780,3 +780,18 @@ Composition tests use TEST ONLY callbacks, not live Auth/SQL. They cover ingress
 gates, exact bytes/unresolved, redacted failures and disconnect propagation.
 Trusted deployment assembly, public lookup registration, caller-owned client
 transport/conditional reconciliation and hosted learner proof remain pending.
+
+## Supabase receipt lookup entrypoint
+
+The fixed lookup path is `/functions/v1/quiz-report-v2-lookup`. Its source
+entrypoint uses the same four server-only environment settings as submit and
+explicit gateway `verify_jwt = true`. It initializes the Node compatibility
+globals before loading PostgreSQL. The trusted lookup verifies the bearer with
+Supabase Auth, derives the owner from the verified UUID and uses only the
+existing private replay transaction. The handler accepts the original v2
+request bytes and returns a correlated `found` or `unresolved` result.
+An unresolved result provides no permission to resend the report.
+
+CI type-checks and bundles both entrypoints and checks both JWT registrations.
+The lookup source is registered for future deployment. Hosted JWT, TLS/RLS,
+learner A/B and app reconciliation remain to be verified before activation.

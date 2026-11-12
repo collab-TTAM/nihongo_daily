@@ -354,13 +354,16 @@ jobs:
       - name: Verify bundled quiz report v2 Supabase Edge Function
         run: |
           deno fmt --check edge/quiz_report_v2_edge.ts ../../supabase/functions/quiz-report-v2/index.ts
+          deno fmt --check ../../supabase/functions/quiz-report-v2-lookup/index.ts
           deno task bundle:quiz-report-v2
+          deno task bundle:quiz-report-v2-lookup
           python3 - <<'PY'
           import tomllib
           from pathlib import Path
           config = tomllib.loads(Path("../../supabase/config.toml").read_text(encoding="utf-8"))
           assert config.get("functions", {}).get("quiz-report-v2", {}).get("verify_jwt") is True
-          print("quiz-report-v2 gateway JWT verification is explicitly enabled")
+          assert config.get("functions", {}).get("quiz-report-v2-lookup", {}).get("verify_jwt") is True
+          print("Both quiz v2 functions explicitly enable gateway JWT verification")
           PY
       - name: Verify bundled Supabase Edge user worker
         run: |
