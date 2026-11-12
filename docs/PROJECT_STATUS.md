@@ -1,3 +1,13 @@
+## Pinned Dart formatter correction — 2026-11-12T05:14Z
+
+- Branch: `automation/issue-22-atomic-review`; parent HEAD: `c06bec101f235cc98201759b4354835b0937a057`; base main: `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43140668303](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43140668303), attempt 1, targets this parent. Database, repo-sanity, AI boundary, disposable Supabase integration and Windows completed SUCCESS; Flutter failed only the strict pinned Dart 3.35.4 formatter. The log names only `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`; analyze, full Flutter tests and downstream browser/native/Web checks were SKIPPED, not passes.
+- Applied only the formatter-required line wrapping of the existing `needsCleanup` boolean expression in `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`. No control flow, assertions, Auth/session behavior, vault ordering, dependencies, API, schema, RLS or CI gates changed.
+- The cloud authoring runtime has no pinned Dart/Flutter SDK; local format/analyze/test/build were not run. The corrected PR head requires fresh complete exact-head Actions evidence.
+- Next: inspect every latest-attempt job and critical step on the corrected PR HEAD; record full evidence before any further source change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical two-device sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open. Pro-owned #14/#38/N4 remains untouched.
+
+---
+
 ## Windows native owner-acquisition fail-closed regression — 2026-11-09T14:10Z
 
 - Branch `automation/issue-22-atomic-review`; source commit `a338dc5b6fdc9c4a71ba1eddc825583363fa1610` (parent `bbbb706bc621da45a92437a8bd1487db07328dc9`); base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

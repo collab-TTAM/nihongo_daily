@@ -318,7 +318,10 @@ final class PersistentAccountAccess implements AccountAccess {
     late final bool needsCleanup;
     try {
       needsCleanup =
-          _failed || _cleanupRequired || _pending != null || _sdk.currentSession != null;
+          _failed ||
+          _cleanupRequired ||
+          _pending != null ||
+          _sdk.currentSession != null;
     } on Object {
       _fail();
       return Future.error(_failure());
