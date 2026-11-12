@@ -315,8 +315,20 @@ final class PersistentAccountAccess implements AccountAccess {
         currentSession != null) {
       return Future.error(_failure());
     }
+    late final bool needsCleanup;
+    try {
+      needsCleanup =
+          _failed || _cleanupRequired || _pending != null || _sdk.currentSession != null;
+    } on Object {
+      _fail();
+      return Future.error(_failure());
+    }
+    // Invalidate any out-of-band rotation before the replacement Auth request.
+    _revoke(SessionPersistencePhase.restoring);
     return _runTracked(() async {
-      if (_failed) {
+      if (needsCleanup) {
+        // A session whose rotated secret is not accepted must be signed out and
+        // its exact-project vault slot cleared before a new password grant.
         await _cleanup();
         if (_closed || _logout != null || _cancelledOperation) throw _failure();
         _failed = false;

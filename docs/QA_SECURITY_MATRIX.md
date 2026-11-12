@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-53 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+54 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -64,6 +64,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `kanji-capture` | flutter | Bounded capture/time/multiple pointers, undo/clear and synthetic scoring. Synthetic fixtures never establish canonical stroke order, recognition or learner grades. |
 | `preview-ui` | flutter | Navigation, recovery, loading/error/retry/empty and large text layouts. Widget tests exercise a labeled demo; no interactive web/Windows or account/study flow evidence. |
 | `empty-vault-first-login` | flutter | First configured start with no saved secret stays signed out without Auth/profile calls; first password login saves rotation before own-profile readiness. TEST ONLY SDK/MockClient/in-memory vault, not hosted Auth or OS vault proof. |
+| `pending-rotation-replacement-login` | flutter | A pending out-of-band A refresh write is generation-fenced and drained/cleared before B password Auth; only B's rotated secret can be accepted. In-memory SDK/vault fixture, not hosted A/B or native fault injection. |
 | `ai-boundary-faults` | ai-boundary | Missing/expired/forged identity, limits, provider malformed output/timeout and safe errors. Auth/limiter/provider ports are test fixtures, not JWT verification or distributed rate limiting. |
 | `ai-retry-recovery` | ai-boundary | Duplicate concurrent requests, changed input, pending recovery, commit failure and immutable results. Memory test store and lookup fixture are not durable process restart or provider reconciliation. |
 | `dependency-audit` | ai-boundary | Pinned patched Ajv, production audit and unchanged generated schema projections. Production npm audit snapshot alone does not establish security of Flutter/native/dev dependencies or application. |
@@ -295,3 +296,14 @@ arbitrary same-user software; separate Windows logon sessions are not
 coordinated. The Windows job must pass on the exact source head before this
 case is counted as observed evidence. It remains TEST ONLY native/process
 evidence, not hosted signed-JWT learner or multi-device proof.
+
+
+## Pending rotation during replacement account login — 2026-11-12
+
+The pending-rotation-replacement-login case covers the race where an out-of-band
+SDK refresh rotates A while its vault write is pending and the user starts a
+password login for B. The persistence layer invalidates A's captured generation
+and orders SDK sign-out plus exact-project clear after the pending write, before
+dispatching B's password grant. CI must execute the lifecycle fixture on the
+exact source head. This remains an in-memory lifecycle regression, not hosted
+JWT/RLS or native Credential Manager fault-injection evidence.

@@ -756,3 +756,22 @@ schema/RLS, default activation, or Pro-owned N4 content changes.
 A credential backend can return an error after the underlying write may already have committed. The persistence layer must treat that result as uncertain: revoke the captured session immediately, attempt an exact-project clear, and retain the exclusive owner if the compensating clear fails. Caller close must retry SDK sign-out and vault clear; the native/Dart owner is released only after a later clear succeeds. A subsequent account cannot inherit the uncertain refresh token.
 
 The deterministic lifecycle fixture simulates a rotation write that stores the new synthetic value and then throws, followed by a failed clear. It verifies no accepted session remains, the first caller close fails while retaining ownership, and a second close clears the uncertain value before releasing both owner slots. This is a conservative TEST ONLY backend fixture, not proof that Windows Credential Manager itself can partially commit and return an error. The separate Windows process probe continues to verify normal OS-backed persistence/rotation; hosted signed-JWT learner acceptance remains outstanding.
+
+
+## Replacement login drains an out-of-band refresh rotation — 2026-11-12
+
+A same-session SDK refresh event can arrive outside the caller's explicit
+refresh operation. While its rotated secret is waiting for the credential vault,
+the accepted-session gate is revoked. If the learner starts a replacement
+account's password login during that window, the old captured generation must
+be invalidated synchronously. The old SDK session is signed out and the exact
+project credential slot is cleared behind the pending write before the new
+password grant is dispatched. This prevents a late A write from publishing A
+again or allowing A's own-profile request while B is being authenticated.
+
+The TEST ONLY replacement-login-drains-pending-rotation lifecycle case holds
+A's vault rotation write, starts B login, proves B Auth has not yet been
+dispatched, then releases the write and verifies clear -> B password grant ->
+B rotated-secret write. Only B is accepted. The fixture uses an in-memory SDK
+and vault; it is not hosted learner A/B, native Credential Manager fault
+injection, or deployed PostgREST/RLS evidence.

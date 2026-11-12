@@ -1275,6 +1275,24 @@
       "limitation": "Pinned Supabase SDK with TEST ONLY MockClient, synthetic identity and in-memory vault. Verifies first-install sequencing only; not hosted JWT/Auth/RLS or actual Windows Credential Manager execution. Default preview remains unconfigured."
     },
     {
+      "id": "pending-rotation-replacement-login",
+      "status": "automated-baseline",
+      "scope": "An out-of-band same-session refresh rotation pending in the vault is generation-fenced; the old SDK session is signed out and its exact project slot cleared before a replacement account password grant, so only the new rotated secret can become ready.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "'replacement-login-drains-pending-rotation'"
+        }
+      ],
+      "issues": [
+        20,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/session_lifecycle_test.dart --plain-name 'persistent session lifecycle: replacement-login-drains-pending-rotation'",
+      "limitation": "Deterministic in-memory SDK/vault lifecycle fixture. It does not prove hosted signed-JWT learner A/B, native Credential Manager fault injection, deployed PostgREST/RLS or physical multi-device sync."
+    },
+    {
       "id": "local-auth-process-restore",
       "status": "automated-baseline",
       "scope": "Disposable GoTrue refresh-token restoration in a fresh child process followed by same-owner own-profile provisioning",

@@ -157,6 +157,7 @@ const scenarios = [
   'rotation-barrier',
   'logout-during-refresh',
   'account-switch',
+  'replacement-login-drains-pending-rotation',
   'logout-during-write',
   'logout-during-restore',
   'logout-during-login',
@@ -315,6 +316,55 @@ Future<void> verifyLifecycle(String scenario) async {
             access.currentSession?.userId == owner &&
             backend.secret == sdk.secret,
         'empty-vault startup rejected the first explicit login',
+      );
+      return;
+    }
+    if (scenario == 'replacement-login-drains-pending-rotation') {
+      await login();
+      backend.writeWait = Completer<void>();
+      sdk.change(owner, 'TEST_ONLY_A_ROTATED_PENDING', sameSession: true);
+      await flush();
+      check(
+        backend.writes == 2 && access.currentSession == null,
+        'out-of-band A rotation did not hold the persistence barrier',
+      );
+
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_AFTER_PENDING_ROTATION';
+      sdk.authWait = Completer<void>();
+      final replacement = access.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await flush();
+      check(
+        access.currentSession == null &&
+            sdk.logins == 1 &&
+            sdk.logouts == 1 &&
+            backend.secret == 'TEST_ONLY_ROTATED_1',
+        'replacement Auth bypassed the pending A rotation drain',
+      );
+
+      backend.writeWait!.complete();
+      for (var i = 0; i < 8 && sdk.logins < 2; i++) {
+        await flush();
+      }
+      check(
+        backend.secret == null &&
+            access.currentSession == null &&
+            sdk.logins == 2 &&
+            sdk.logouts == 1,
+        'B password grant did not wait for A write and exact-project clear',
+      );
+
+      sdk.authWait!.complete();
+      await replacement;
+      check(
+        access.currentSession?.userId == other &&
+            backend.secret == 'TEST_ONLY_B_AFTER_PENDING_ROTATION' &&
+            backend.operations.join(' -> ') ==
+                'read -> write -> write -> clear -> write',
+        'replacement login did not persist only B after draining A',
       );
       return;
     }
