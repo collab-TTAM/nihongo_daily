@@ -178,22 +178,19 @@ void main() {
     expect(response.correctCount, 1);
   });
 
-  test(
-    'decodes a found lookup only when its response matches the request',
-    () {
-      final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
-      final lookup = request.decodeLookupResponse({
-        'status': 'found',
-        'response': _response(request),
-      });
+  test('decodes a found lookup only when its response matches the request', () {
+    final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
+    final lookup = request.decodeLookupResponse({
+      'status': 'found',
+      'response': _response(request),
+    });
 
-      expect(lookup.clientEventId, request.clientEventId);
-      expect(lookup.hasReceipt, isTrue);
-      expect(lookup.isUnresolved, isFalse);
-      expect(lookup.response?.answerCount, 2);
-      expect(lookup.response?.correctCount, 1);
-    },
-  );
+    expect(lookup.clientEventId, request.clientEventId);
+    expect(lookup.hasReceipt, isTrue);
+    expect(lookup.isUnresolved, isFalse);
+    expect(lookup.response?.answerCount, 2);
+    expect(lookup.response?.correctCount, 1);
+  });
 
   test('decodes unresolved lookup as uncertainty without a receipt', () {
     final request = QuizReportV2Request.fromGrammarAttempt(_grammar());
@@ -210,10 +207,7 @@ void main() {
 
   test('rejects malformed or mismatched lookup responses', () {
     final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
-    final wrongEvent = {
-      'status': 'unresolved',
-      'client_event_id': _event(9),
-    };
+    final wrongEvent = {'status': 'unresolved', 'client_event_id': _event(9)};
     expect(
       () => request.decodeLookupResponse(wrongEvent),
       throwsFormatException,
@@ -229,8 +223,7 @@ void main() {
       throwsFormatException,
     );
 
-    final mismatchedFound = _response(request)
-      ..['client_event_id'] = _event(9);
+    final mismatchedFound = _response(request)..['client_event_id'] = _event(9);
     expect(
       () => request.decodeLookupResponse({
         'status': 'found',

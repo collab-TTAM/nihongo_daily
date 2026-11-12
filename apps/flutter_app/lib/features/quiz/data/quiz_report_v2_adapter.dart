@@ -246,16 +246,11 @@ final class QuizReportV2Request {
     }
     final status = value['status'];
     if (status == 'unresolved') {
-      final json = _strictObject(value, {
-        'status',
-        'client_event_id',
-      });
+      final json = _strictObject(value, {'status', 'client_event_id'});
       if (json['client_event_id'] != clientEventId) {
         throw const FormatException('Invalid quiz report lookup response');
       }
-      return QuizReportV2LookupResult._(
-        clientEventId: clientEventId,
-      );
+      return QuizReportV2LookupResult._(clientEventId: clientEventId);
     }
     if (status == 'found') {
       final json = _strictObject(value, {'status', 'response'});

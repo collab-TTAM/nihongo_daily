@@ -147,9 +147,7 @@ final class QuizReportV2HttpTransport {
 
   /// Replay-only lookup of the exact original request. It never submits or
   /// retries; unresolved remains unknown until a later explicit reconciliation.
-  Future<QuizReportV2LookupResult> lookupReceipt(
-    QuizReportV2Request report,
-  ) =>
+  Future<QuizReportV2LookupResult> lookupReceipt(QuizReportV2Request report) =>
       _send<QuizReportV2LookupResult>(
         report,
         endpoint: _lookupEndpoint,

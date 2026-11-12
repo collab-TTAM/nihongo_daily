@@ -52,10 +52,7 @@ http.Response _success(QuizReportV2Request report) =>
     http.Response(jsonEncode(_response(report)), 200, headers: _headers);
 
 http.Response _lookupFound(QuizReportV2Request report) => http.Response(
-  jsonEncode({
-    'status': 'found',
-    'response': _response(report),
-  }),
+  jsonEncode({'status': 'found', 'response': _response(report)}),
   200,
   headers: _headers,
 );
