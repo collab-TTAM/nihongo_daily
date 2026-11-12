@@ -316,10 +316,11 @@ final class PersistentAccountAccess implements AccountAccess {
         _closed ||
         (!_allowed && !_failed) ||
         _operation != null ||
-        _logout != null ||
-        currentSession != null) {
+        _logout != null) {
       return Future.error(_failure());
     }
+    // An explicit replacement sign-in is allowed while a session is visible;
+    // the captured cleanup predicate below drains that session before new Auth.
     late final bool needsCleanup;
     try {
       needsCleanup =

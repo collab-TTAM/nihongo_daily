@@ -331,33 +331,45 @@ Future<void> verifyLifecycle(String scenario) async {
       final replacementError = fails(
         access.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD'),
       );
-      await flush();
-      check(
-        backend.clears == 1 &&
-            access.currentSession == null &&
-            backend.secret == 'TEST_ONLY_ROTATED_1',
-        'out-of-band sign-out did not hold the credential clear',
-      );
+      try {
+        await flush();
+        check(
+          backend.clears == 1 &&
+              access.currentSession == null &&
+              backend.secret == 'TEST_ONLY_ROTATED_1',
+          'out-of-band sign-out did not hold the credential clear',
+        );
 
-      check(
-        sdk.logins == 1 &&
-            sdk.logouts == 1 &&
-            backend.clears == 1 &&
-            access.currentSession == null,
-        'replacement password Auth bypassed the pending clear',
-      );
+        check(
+          sdk.logins == 1 &&
+              sdk.logouts == 1 &&
+              backend.clears == 1 &&
+              access.currentSession == null,
+          'replacement password Auth bypassed the pending clear',
+        );
 
-      backend.clearWait!.complete();
-      await replacementError;
-      check(
-        sdk.logins == 1 &&
-            sdk.session == null &&
-            backend.secret == 'TEST_ONLY_ROTATED_1' &&
-            access.phase == SessionPersistencePhase.failed,
-        'failed out-of-band/compensating clear allowed replacement Auth',
-      );
-
-      backend.failClear = false;
+        backend.clearWait!.complete();
+        await replacementError;
+        check(
+          sdk.logins == 1 &&
+              sdk.session == null &&
+              backend.secret == 'TEST_ONLY_ROTATED_1' &&
+              access.phase == SessionPersistencePhase.failed,
+          'failed out-of-band/compensating clear allowed replacement Auth',
+        );
+      } finally {
+        // Never let a failed assertion strand the shared project owner behind
+        // a held fake clear and cascade into later lifecycle scenarios.
+        if (!backend.clearWait!.isCompleted) {
+          backend.clearWait!.complete();
+        }
+        backend.failClear = false;
+        try {
+          await replacementError;
+        } on Object {
+          // Drain the fixture operation while preserving the original failure.
+        }
+      }
       await login();
       check(
         sdk.logins == 2 &&

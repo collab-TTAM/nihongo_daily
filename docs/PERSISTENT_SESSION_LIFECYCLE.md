@@ -795,3 +795,29 @@ and exact-project clear, then persists only B's rotated refresh secret. This is
 in-memory SDK/vault evidence, not hosted learner A/B or native Credential Manager
 fault injection. No token values are logged, no plaintext fallback is added, and
 no Auth provider/strategy or RLS change is made.
+
+
+## Explicit replacement sign-in while an accepted session is visible — 2026-11-12
+
+An explicit caller-initiated sign-in is also the account-switch operation. It is
+not rejected merely because the currently accepted SDK session is still visible
+at synchronous preflight. The persistence owner captures that session as
+requiring cleanup, revokes the old generation, and performs SDK sign-out plus
+the exact-project credential clear before dispatching the replacement password
+grant. If an out-of-band null-session event was already queued, its pending-clear
+counter keeps the replacement operation behind that clear as well.
+
+A failed out-of-band clear and failed compensating clear leave the persistence
+owner failed and keep the old credential unaccepted. No replacement Auth or
+own-profile request is dispatched. A later explicit retry after storage recovers
+must clear the old slot before the new account can be authenticated and its
+rotated refresh secret persisted.
+
+The TEST ONLY regression
+`replacement-login-waits-for-out-of-band-session-clear` holds the queued clear,
+starts replacement sign-in while the old session is still visible, verifies
+that Auth is not dispatched, fails both cleanup attempts, then recovers storage
+and verifies clear -> replacement Auth -> replacement rotation write. Its
+in-memory SDK/vault are not hosted learner A/B or native Credential Manager
+failure evidence. No Auth provider/strategy, plaintext fallback, token logging,
+schema/RLS, default activation, or Pro-owned N4 content is changed.
