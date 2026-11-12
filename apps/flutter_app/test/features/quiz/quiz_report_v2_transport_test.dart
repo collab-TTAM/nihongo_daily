@@ -597,5 +597,4 @@ void main() {
       await auth.dispose();
     },
   );
-
 }

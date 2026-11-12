@@ -11994,3 +11994,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 
 - Independent post-write review found that package:http's `MockClient` handler receives a reconstructed plain `Request`, not the original `AbortableRequest`. Removed the invalid test-only cast. The runtime test still holds the response future and proves `close()` remains pending until the accepted lookup settles; the separate custom BaseClient transport test continues to assert the actual abort signal and no post-close dispatch.
 - Also applied the deterministic Dart formatter layout to the derived correct-count fixture. No production behavior, assertion removal, retry behavior or CI gate changed.
+
+### PR #41 receipt drain test formatting — 2026-11-12T17:52Z
+
+- core-20261112T1751-drain-format on automation/issue-11-plan-sdk-integration, parent 970b2c2e407f68ebacb0763e87ab37092ff1ea87 and main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c. Prior writer released in comment 6830865701.
+- Exact-head Actions 43269222951 attempt 1: AI, database, repo-sanity and Windows passed all steps. Required Windows receipt lifecycle marker observed (TEST ONLY). Flutter failed strict Dart format, so analyze, tests and build were skipped.
+- Applied exact diff from Flutter job 131362030207, removing one trailing blank line in each of quiz_report_v2_transport_test.dart and persistent_supabase_runtime_test.dart. Verified formatter post-image blob prefixes, reviewed diff and retained assertions and CI gates. QA inventory, 56 QA tests and whitespace check passed. Flutter SDK unavailable locally.
+- Verify all jobs and required steps on the new head, then continue caller-owned reconciliation with verified conditional release. Hosted learner evidence and Personal Alpha acceptance pending. PR #41 remains draft and #13 open.
