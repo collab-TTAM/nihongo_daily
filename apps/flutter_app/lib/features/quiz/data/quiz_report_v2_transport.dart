@@ -268,6 +268,7 @@ final class QuizReportV2HttpTransport {
       return value;
     }
 
+    late final T result;
     try {
       subscription = _auth.sessionChanges.listen(
         (_) {
@@ -366,14 +367,15 @@ final class QuizReportV2HttpTransport {
       if (response.statusCode == 200) {
         final decoded = decodeStrictJson(responseBytes);
         try {
-          return decodeSuccess(decoded);
+          result = decodeSuccess(decoded);
         } on Object {
           throw const QuizReportV2TransportFailure(
             QuizReportV2TransportCode.internalError,
           );
         }
+      } else {
+        throw _decodeFailure(response.statusCode, responseBytes);
       }
-      throw _decodeFailure(response.statusCode, responseBytes);
     } on QuizReportV2TransportFailure {
       rethrow;
     } on TimeoutException {
@@ -423,9 +425,20 @@ final class QuizReportV2HttpTransport {
         QuizReportV2TransportCode.internalError,
       );
     } finally {
-      await subscription?.cancel();
-      _activeAborts.remove(abort);
+      try {
+        await subscription?.cancel();
+      } on Object {
+        throw const QuizReportV2TransportFailure(
+          QuizReportV2TransportCode.internalError,
+        );
+      } finally {
+        _activeAborts.remove(abort);
+      }
     }
+
+    // Auth or the transport can retire while listener cleanup is pending.
+    requireCurrent();
+    return result;
   }
 
   static bool _validToken(String value) =>

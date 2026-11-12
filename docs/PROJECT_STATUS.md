@@ -12008,3 +12008,10 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Moved the existing conversation JSON guard unchanged to shared/network/strict_json.dart. Quiz transport now uses it for success and structured errors. Duplicate envelope or nested receipt keys fail closed before correlation. Added focused lookup regression using ambiguous replies that permissive JSON decoding normalizes to the valid result.
 - QA inventory, 56 QA tests, guard parity review and whitespace check passed. No local Flutter SDK; Dart formatting, analyzer, regression and builds require Actions on the new head.
 - Next verify all required CI steps, then continue authenticated receipt reconciliation with verified conditional release. Default save, retry and deployment remain disabled. PR #41 remains draft and #13 open. Hosted learner and Personal Alpha acceptance pending.
+
+### PR #41 receipt publication after Auth cleanup — 2026-11-12T19:54Z
+
+- core-20261112T1954-quiz-lookup-retirement on automation/issue-11-plan-sdk-integration, parent 9a7fcd2795c3d1fc031c590019577bc62bb1ba5e and main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c. Exact-head CI 43283771206 attempt 1 passed 5 jobs and 114 steps. Required Windows TEST ONLY receipt marker observed.
+- Quiz transport now revalidates the captured Auth generation and transport lifetime after awaiting listener cancellation, before publishing a receipt or submit success. Cleanup failure stays redacted and removes active abort bookkeeping. Added focused Flutter regressions for rotation during delayed cleanup and cleanup failure.
+- QA inventory, 56 QA tests, whitespace and separate diff review passed. Flutter SDK unavailable locally; new formatting, analyzer, regressions and builds await Actions.
+- Next verify every required CI step, then continue authenticated reconciliation and verified conditional release. Default save, redispatch, hosted learner and Personal Alpha acceptance remain pending. PR #41 remains draft and #13 open.

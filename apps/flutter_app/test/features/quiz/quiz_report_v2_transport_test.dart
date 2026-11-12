@@ -58,7 +58,10 @@ http.Response _lookupFound(QuizReportV2Request report) => http.Response(
 );
 
 final class _FakeAuth implements QuizReportV2Auth {
-  _FakeAuth() : _events = StreamController<void>.broadcast(sync: true);
+  _FakeAuth({Future<void> Function()? onCancel})
+    : _events = onCancel == null
+          ? StreamController<void>.broadcast(sync: true)
+          : StreamController<void>(sync: true, onCancel: onCancel);
 
   final StreamController<void> _events;
   String? token = 'access-token-A';
@@ -589,6 +592,65 @@ void main() {
       await auth.dispose();
     },
   );
+  test('lookup rechecks Auth after listener cleanup', () async {
+    final cleanupStarted = Completer<void>();
+    final finishCleanup = Completer<void>();
+    final auth = _FakeAuth(
+      onCancel: () {
+        cleanupStarted.complete();
+        return finishCleanup.future;
+      },
+    );
+    final client = MockClient((_) async => _lookupFound(_report()));
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      if (!finishCleanup.isCompleted) finishCleanup.complete();
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
+
+    final pending = transport.lookupReceipt(_report());
+    final rejected = expectLater(
+      pending,
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.unauthorized,
+        ),
+      ),
+    );
+    await cleanupStarted.future.timeout(const Duration(seconds: 1));
+    auth.rotateToken();
+    finishCleanup.complete();
+    await rejected;
+  });
+
+  test('lookup redacts Auth listener cleanup failures', () async {
+    final auth = _FakeAuth(
+      onCancel: () => Future<void>.error(StateError('private cleanup detail')),
+    );
+    final client = MockClient((_) async => _lookupFound(_report()));
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
+
+    await expectLater(
+      transport.lookupReceipt(_report()),
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.internalError,
+        ),
+      ),
+    );
+  });
+
   test(
     'close aborts and drains an in-flight receipt lookup before release',
     () async {

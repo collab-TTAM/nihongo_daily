@@ -853,3 +853,12 @@ including escaped equivalents and nested receipt fields, before Dart JSON
 decoding can overwrite them. UTF-8, BOM and nesting checks apply to success
 and structured error responses. Malformed replies map to the existing safe
 internal error. A rejected lookup yields no receipt and no resubmission authority.
+
+### Receipt publication after Auth cleanup
+
+Submit and lookup wait for Auth listener cancellation before returning a
+successful result, then recheck the captured generation and transport lifetime.
+A token rotation, account replacement or close during cleanup suppresses the
+old result. Listener cleanup failures become fixed internal errors and release
+the transport's in-flight bookkeeping. The original HTTP deadline and drain
+ordering still apply. This check supplies no local-history release authority.
