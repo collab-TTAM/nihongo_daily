@@ -612,10 +612,18 @@ void main() {
         isEmpty,
       );
 
-      // Capture A's actual delayed rotation before switching the fixture identity.
+      // Capture A's actual delayed rotation before starting caller-owned logout.
       final lateAResponse = authResponse();
-      await runtime.account.signOut();
+      var logoutSettled = false;
+      final logout = runtime.account.signOut().then((_) {
+        logoutSettled = true;
+      });
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signingOut);
+      expect(runtime.account.readyRuntime, isNull);
       expect(storedSecret, isNull);
+      expect(logoutSettled, isFalse);
       expect(
         timeline.lastIndexOf('vault.clear'),
         greaterThan(timeline.indexOf('vault.read')),
@@ -626,13 +634,14 @@ void main() {
       authSession = wire.sid2;
       refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_LATE_RESTORE';
 
-      // The owned startup request still has to settle and clean up before B can
-      // start another Auth operation on this exclusively-owned SDK client.
+      // A replacement login is rejected while logout still drains A's startup
+      // refresh; it must not dispatch another Auth request or load a profile.
       await runtime.account.signIn(
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
-      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.account.state.phase, AccountPhase.signingOut);
+      expect(logoutSettled, isFalse);
       expect(
         requests.where((request) => request.url.path == '/auth/v1/token'),
         hasLength(1),
@@ -646,7 +655,9 @@ void main() {
 
       lateARefresh.complete(lateAResponse);
       await startupFailure;
+      await logout;
       await fixture.flush();
+      expect(logoutSettled, isTrue);
 
       expect(storedSecret, isNull);
       expect(runtime.persistence.currentSession, isNull);
@@ -736,9 +747,16 @@ void main() {
       );
 
       final lateAResponse = authResponse();
-      await runtime.account.signOut();
-      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      var logoutSettled = false;
+      final logout = runtime.account.signOut().then((_) {
+        logoutSettled = true;
+      });
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signingOut);
+      expect(runtime.account.readyRuntime, isNull);
       expect(storedSecret, isNull);
+      expect(logoutSettled, isFalse);
 
       authWait = null;
       authUser = wire.b;
@@ -748,7 +766,8 @@ void main() {
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
-      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.account.state.phase, AccountPhase.signingOut);
+      expect(logoutSettled, isFalse);
       expect(
         requests.where((request) => request.url.path == '/auth/v1/token'),
         hasLength(2),
@@ -763,7 +782,9 @@ void main() {
 
       lateARefresh.complete(lateAResponse);
       await refreshFailure;
+      await logout;
       await fixture.flush();
+      expect(logoutSettled, isTrue);
       expect(storedSecret, isNull);
       expect(runtime.persistence.currentSession, isNull);
       expect(runtime.account.readyRuntime, isNull);
