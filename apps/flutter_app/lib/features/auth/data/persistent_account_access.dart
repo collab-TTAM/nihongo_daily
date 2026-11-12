@@ -335,7 +335,15 @@ final class PersistentAccountAccess implements AccountAccess {
     // Invalidate any out-of-band rotation before the replacement Auth request.
     _revoke(SessionPersistencePhase.restoring);
     return _runTracked(() async {
-      if (needsCleanup) {
+      // A null-session SDK event can already be queued when the synchronous
+      // preflight above runs. Recheck after reserving the operation, immediately
+      // before dispatch, so that queued clear cannot race a replacement grant.
+      if (needsCleanup ||
+          _failed ||
+          _cleanupRequired ||
+          _pendingSessionClears > 0 ||
+          _pending != null ||
+          _sdk.currentSession != null) {
         // A session whose rotated secret is not accepted must be signed out and
         // its exact-project vault slot cleared before a new password grant.
         await _cleanup();

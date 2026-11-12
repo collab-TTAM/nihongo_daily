@@ -324,7 +324,13 @@ Future<void> verifyLifecycle(String scenario) async {
       await login();
       backend.clearWait = Completer<void>();
       backend.failClear = true;
-      sdk.change(null, null);
+      // Queue SDK delivery before signIn reserves its operation microtask.
+      scheduleMicrotask(() => sdk.change(null, null));
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_AFTER_OUT_OF_BAND_CLEAR';
+      final replacementError = fails(
+        access.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD'),
+      );
       await flush();
       check(
         backend.clears == 1 &&
@@ -333,12 +339,6 @@ Future<void> verifyLifecycle(String scenario) async {
         'out-of-band sign-out did not hold the credential clear',
       );
 
-      sdk.nextOwner = other;
-      sdk.nextSecret = 'TEST_ONLY_B_AFTER_OUT_OF_BAND_CLEAR';
-      final replacementError = fails(
-        access.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD'),
-      );
-      await flush();
       check(
         sdk.logins == 1 &&
             sdk.logouts == 1 &&

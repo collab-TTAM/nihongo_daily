@@ -782,7 +782,8 @@ injection, or deployed PostgREST/RLS evidence.
 An SDK null-session event may arrive outside an explicit caller-owned logout.
 The event immediately revokes the accepted session and queues an exact-project
 credential clear. A replacement password login must not dispatch while that clear
-is still pending. The pending-clear count is separate from the null-event
+is still pending, including when the SDK broadcast was queued before the login's
+tracked operation microtask but delivered after its synchronous preflight. The pending-clear count is separate from the null-event
 coalescing flag: the latter remains set after cleanup to suppress duplicate SDK
 notifications, while the count reaches zero only when every queued clear settles.
 
