@@ -679,3 +679,72 @@ test("v2 receipt lookup rejects a mismatched echoed event before commit", async 
   );
   assert.equal(connection.closed, true);
 });
+
+for (const operation of ["replay", "store"] as const) {
+  test(`v2 SQL ${operation} reconstructs only allowlisted boundary errors`, async () => {
+    for (const code of [
+      "VALIDATION_FAILURE",
+      "SYNC_CONFLICT",
+      "UNAUTHORIZED",
+      "NETWORK_UNAVAILABLE",
+      "FORBIDDEN",
+      "RATE_LIMITED",
+      "NOT_FOUND",
+      "PROVIDER_UNAVAILABLE",
+      "INTERNAL_ERROR",
+    ] as const) {
+      const original = new BoundaryError(code);
+      original.message = "TEST ONLY private driver detail";
+      original.cause = new Error("TEST ONLY private cause");
+      const tx = createQuizReportV2SqlTransaction(async () => {
+        throw original;
+      });
+      const expected = [
+        "VALIDATION_FAILURE",
+        "SYNC_CONFLICT",
+        "UNAUTHORIZED",
+        "NETWORK_UNAVAILABLE",
+      ].includes(code)
+        ? code
+        : "INTERNAL_ERROR";
+      await assert.rejects(tx[operation](fixture.request), (error: unknown) => {
+        assert.ok(error instanceof BoundaryError);
+        assert.notEqual(error, original);
+        assert.equal(error.code, expected);
+        assert.equal(error.message, expected);
+        assert.equal(error.cause, undefined);
+        assert.ok(!JSON.stringify(error).includes("private"));
+        return true;
+      });
+    }
+  });
+
+  test(`v2 SQL ${operation} rejects forged codes and preserves exact P0001 mapping`, async () => {
+    const cases = [
+      [{ code: "NETWORK_UNAVAILABLE", message: "private" }, "INTERNAL_ERROR"],
+      [
+        Object.assign(new Error("private"), { code: "UNAUTHORIZED" }),
+        "INTERNAL_ERROR",
+      ],
+      [{ code: "P0001", message: "UNAUTHORIZED" }, "UNAUTHORIZED"],
+      [{ code: "P0001", message: "VALIDATION_FAILURE" }, "VALIDATION_FAILURE"],
+      [{ code: "P0001", message: "SYNC_CONFLICT" }, "SYNC_CONFLICT"],
+      [{ code: "P0001", message: "NETWORK_UNAVAILABLE" }, "INTERNAL_ERROR"],
+      [{ code: "P0001", message: "SYNC_CONFLICT private" }, "INTERNAL_ERROR"],
+      [{ code: "23505", message: "SYNC_CONFLICT" }, "INTERNAL_ERROR"],
+      [null, "INTERNAL_ERROR"],
+    ] as const;
+    for (const [original, expected] of cases) {
+      const tx = createQuizReportV2SqlTransaction(async () => {
+        throw original;
+      });
+      await assert.rejects(tx[operation](fixture.request), (error: unknown) => {
+        assert.ok(error instanceof BoundaryError);
+        assert.equal(error.code, expected);
+        assert.equal(error.message, expected);
+        assert.equal(error.cause, undefined);
+        return true;
+      });
+    }
+  });
+}
