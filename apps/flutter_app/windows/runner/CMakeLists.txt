@@ -33,6 +33,13 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_BUILD=${FLUTT
 # Disable Windows macros that collide with C++ standard library functions.
 target_compile_definitions(${BINARY_NAME} PRIVATE "NOMINMAX")
 
+# Test-only native fault injection is opt-in and OFF for every normal build.
+option(ND_SESSION_VAULT_TEST_HOOKS
+  "Enable TEST ONLY Windows credential fault injection for the bridge fixture" OFF)
+if(ND_SESSION_VAULT_TEST_HOOKS)
+  target_compile_definitions(${BINARY_NAME} PRIVATE "NIHONGO_SESSION_VAULT_TEST_HOOKS")
+endif()
+
 # Add dependency libraries and include directories. Add any application-specific
 # dependencies here.
 target_link_libraries(${BINARY_NAME} PRIVATE flutter flutter_wrapper_app)

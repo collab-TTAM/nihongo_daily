@@ -1,6 +1,7 @@
 // TEST ONLY executable entrypoint; never packaged as the learner preview.
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'windows_runtime_fixture.dart';
@@ -36,6 +37,7 @@ Future<void> main(List<String> arguments) async {
             'directory-write',
             'directory-reopen',
             'directory-clear',
+            'native-test-hook-absent',
           }.contains(phase) ||
           runtimePhases.contains(phase) ||
           exitPhases.contains(phase),
@@ -131,6 +133,21 @@ Future<void> main(List<String> arguments) async {
       case 'absent':
         require(await vault.readRefreshToken() == null);
         require(await other.readRefreshToken() == null);
+      case 'native-test-hook-absent':
+        var exposed = false;
+        try {
+          exposed =
+              await const MethodChannel('nihongo_daily/session_vault_v1')
+                  .invokeMethod<bool>('testInjectFault', {
+                    'target': vault.target,
+                    'operation': 'read',
+                    'fault': 'fail_before',
+                  }) ==
+              true;
+        } on MissingPluginException {
+          exposed = false;
+        }
+        require(!exposed);
     }
     stdout.writeln('Windows Dart/native bridge phase passed');
     exit(0);

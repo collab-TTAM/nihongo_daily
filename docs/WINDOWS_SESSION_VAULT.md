@@ -269,3 +269,28 @@ profile handler is a test double rather than deployed PostgREST. This adds
 OS-backed process-boundary evidence for the persist-before-profile readiness
 barrier; it is not hosted signed-JWT Auth, deployed RLS/PostgREST, a physical
 learner login, OS logoff/power-loss or multi-device acceptance.
+
+
+## Caller-owned runtime with native Credential Manager read-failure injection
+
+The TEST ONLY bridge runner now exercises one end-to-end failure path through
+the production C++ helper, registered MethodChannel,
+`WindowsSessionCredentialVault`, `PersistentAccountAccess` and
+`PersistentSupabaseRuntime`. A per-run GUID `.invalid` project target
+contains a synthetic A refresh secret. The test-only helper returns
+`unavailable` once before calling `CredReadW`; the Dart startup owner must
+remain failed/unready without sending Auth or own-profile traffic, while the
+stored A value remains intact.
+
+After the one-shot fault is consumed, explicit B password login must clear the
+exact-project slot before the grant, persist B's rotated refresh value before
+the own-profile request, and leave A's journal records invisible to B. B logout
+must clear the slot. The same harness then reconfigures the bridge runner with
+`ND_SESSION_VAULT_TEST_HOOKS=OFF` and verifies the injection method is absent.
+The CMake option defaults OFF and is enabled only in the CI fixture build;
+staging and normal preview builds are performed after the OFF rebuild.
+
+This is deterministic helper-boundary fault injection, not spontaneous Windows
+Credential Manager failure, hosted signed-JWT Auth/PostgREST/RLS, OS logoff,
+power loss or physical multi-device evidence. HTTP/Auth responses remain
+TEST ONLY fixtures; no credential values or raw native errors are logged.

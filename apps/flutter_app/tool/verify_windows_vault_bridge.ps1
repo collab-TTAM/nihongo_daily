@@ -109,6 +109,8 @@ try {
     Invoke-Bridge 'runtime-logout'
     Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-rejected'
+    Invoke-Bridge 'runtime-native-read-failure'
+    Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-late-refresh'
     # Close a fresh owner during held startup restore, then prove a new process
     # observes the cleared OS credential slot.
@@ -122,3 +124,12 @@ try {
     # Cleanup runs on failure too; cleanup errors fail CI instead of being hidden.
     Invoke-Bridge 'clear'
 }
+
+# Remove the compile-time hook and rebuild the same TEST ONLY Dart entrypoint.
+# The following staging and learner-preview builds also inherit OFF from CMake.
+cmake -S windows -B build/windows/x64 -DND_SESSION_VAULT_TEST_HOOKS=OFF
+if ($LASTEXITCODE -ne 0) { throw 'Disabling native vault test hooks failed' }
+cmake --build build/windows/x64 --config Release --target nihongo_daily
+if ($LASTEXITCODE -ne 0) { throw 'Rebuilding without native vault test hooks failed' }
+Invoke-Bridge 'native-test-hook-absent'
+Write-Output 'Native vault test hooks absent from uninstrumented runner'

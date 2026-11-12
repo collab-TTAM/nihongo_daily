@@ -273,6 +273,13 @@ jobs:
       - run: flutter pub get --enforce-lockfile
       - name: Build TEST ONLY Dart-to-Windows vault bridge
         run: flutter build windows --release --target tool/windows_vault_bridge.dart
+      - name: Enable TEST ONLY native vault fault injection in bridge runner
+        shell: pwsh
+        run: |
+          cmake -S windows -B build/windows/x64 -DND_SESSION_VAULT_TEST_HOOKS=ON
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build build/windows/x64 --config Release --target nihongo_daily
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Verify actual Dart-to-Windows vault bridge across processes
         shell: pwsh
         run: ./tool/verify_windows_vault_bridge.ps1

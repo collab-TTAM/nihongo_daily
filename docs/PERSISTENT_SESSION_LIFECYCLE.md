@@ -869,3 +869,35 @@ hosted signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff, power loss or
 physical multi-device recovery. No production Auth/provider strategy, plaintext
 fallback, token logging, schema/RLS, default activation or Pro-owned N4 content
 is changed.
+
+
+## Native Windows read failure through the caller-owned runtime — 2026-11-12
+
+The Windows bridge fixture now injects a one-shot `read/fail_before` fault at
+the native Credential Manager helper boundary, before `CredReadW`. The fault
+travels through the real registered MethodChannel and
+`WindowsSessionCredentialVault` into the caller-owned
+`PersistentSupabaseRuntime`.
+
+The phase first writes a synthetic User A refresh secret to a GUID-scoped
+`.invalid` Credential Manager target. The next native read returns the fixed
+unavailable result. Startup must fail closed: no refresh/password Auth request,
+no own-profile request and no ready study runtime. A subsequent read confirms
+the original A value was not deleted by the transient failure. Explicit
+same-runtime User B login then requires the exact project slot to be cleared
+before the password grant; B's rotated refresh value must be readable before
+the captured B own-profile request. The phase verifies no A profile/journal
+visibility, then logs out and confirms the slot is empty.
+
+The CMake option `ND_SESSION_VAULT_TEST_HOOKS` defaults OFF. CI enables it
+only after building the isolated `tool/windows_vault_bridge.dart` runner.
+After the fixture and cleanup, the PowerShell harness reconfigures and rebuilds
+that runner with the option OFF, invokes `native-test-hook-absent`, and requires
+the test method to be unavailable before the staging and ordinary preview
+builds. The packaged runner never includes the fault-injection method.
+
+This is deterministic TEST ONLY injection before the native API call, not a
+claim that Windows spontaneously failed, not hosted Auth/JWT/PostgREST/RLS,
+and not physical multi-device acceptance. Auth HTTP and JWT remain synthetic
+MockClient fixtures; no token or raw native error is logged, no plaintext
+fallback is introduced, and the normal app/Auth strategy is unchanged.

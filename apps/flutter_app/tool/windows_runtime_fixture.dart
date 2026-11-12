@@ -5,8 +5,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
@@ -21,6 +24,7 @@ const runtimePhases = {
   'runtime-rejected',
   'runtime-late-refresh',
   'runtime-close-restore',
+  'runtime-native-read-failure',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
 const _ownerB = 'a1000000-0000-4000-8000-000000000002';
@@ -44,6 +48,25 @@ const _pending = <String, Object>{
 void _check(bool value) {
   if (!value) {
     throw const FormatException('Runtime fixture verification failed');
+  }
+}
+
+Future<void> _injectNativeVaultFault(
+  String target, {
+  required String operation,
+  required String fault,
+}) async {
+  try {
+    final injected = await const MethodChannel(
+      'nihongo_daily/session_vault_v1',
+    ).invokeMethod<bool>('testInjectFault', {
+      'target': target,
+      'operation': operation,
+      'fault': fault,
+    });
+    _check(injected == true);
+  } on Object {
+    throw const FormatException('Native vault fault injection unavailable');
   }
 }
 
@@ -161,6 +184,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         _check(grant == 'password');
         _check(body['email'] == 'fixture@example.invalid');
         _check(body['password'] == 'TEST_ONLY_PASSWORD');
+        if (phase == 'runtime-native-read-failure') {
+          // Explicit recovery must clear the unread A slot before password Auth.
+          _check(await vault.readRefreshToken() == null);
+        }
       }
       return authResponse();
     }
@@ -170,7 +197,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       // The real OS write must already be observable before profile dispatch.
       _check(await vault.readRefreshToken() == secret);
       if (phase == 'runtime-late-refresh' ||
-          phase == 'runtime-restore-profile-held') {
+          phase == 'runtime-restore-profile-held' ||
+          phase == 'runtime-native-read-failure') {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
       if (phase == 'runtime-restore-profile-held') {
@@ -326,6 +354,61 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       );
       await ready();
       _check(authCalls == 2 && profileCalls == 1);
+      _check(profileOwners.length == 1 && profileOwners.single == _ownerB);
+      _check(await vault.readRefreshToken() == _third);
+      final profileRequest = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .single;
+      _check(
+        profileRequest.headers['authorization'] == 'Bearer ${accessToken()}',
+      );
+      _check((await journal.list(_ownerB)).isEmpty);
+      await runtime.account.signOut();
+      _check(runtime.account.readyRuntime == null);
+      _check(await vault.readRefreshToken() == null);
+      _check(logoutCalls >= 1);
+      await pending();
+    } else if (phase == 'runtime-native-read-failure') {
+      _check(await vault.readRefreshToken() == null);
+      await vault.writeRefreshToken(_first);
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'read',
+        fault: 'fail_before',
+      );
+      var failed = false;
+      try {
+        await runtime.start();
+      } on SessionVaultFailure catch (error) {
+        failed = error.code == SessionVaultError.unavailable;
+      }
+      _check(
+        failed &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 0 &&
+            profileCalls == 0,
+      );
+      _check(await vault.readRefreshToken() == _first);
+
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(authCalls == 1 && profileCalls == 1);
+      _check(
+        requests
+            .where(
+              (request) =>
+                  request.url.path == '/auth/v1/token' &&
+                  request.url.queryParameters['grant_type'] == 'refresh_token',
+            )
+            .isEmpty,
+      );
       _check(profileOwners.length == 1 && profileOwners.single == _ownerB);
       _check(await vault.readRefreshToken() == _third);
       final profileRequest = requests
