@@ -288,7 +288,10 @@ Future<void> verifyAccount(String scenario) async {
         'account UI reported logout before its access owner drained',
       );
       await controller.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD');
-      check(access.signInCalls == 0, 'replacement login bypassed the logout fence');
+      check(
+        access.signInCalls == 0,
+        'replacement login bypassed the logout fence',
+      );
       access.signOutWait!.complete();
       await logout;
       check(

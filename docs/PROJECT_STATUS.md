@@ -1,3 +1,14 @@
+## PR #37 pinned Dart formatter correction — 2026-11-12T13:25Z
+
+- Run `core-20261112T1324Z-pr37-dart-format-account-fixtures` is RELEASED. Branch `automation/issue-22-atomic-review`; parent HEAD `46a671519d5fc8030336e981441ef37c85cbfc24`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43216038187](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43216038187), attempt 1, targets the parent HEAD and completed FAILURE only at strict pinned Dart 3.35.4 formatting: `apps/flutter_app/test/features/srs/account_fixtures.dart` was the single changed file. Repository sanity 12/12, database 12/12, AI boundary 12/12, Windows 17/17 and disposable Supabase integration 13/13 all succeeded. Flutter analyze, tests and downstream probes were SKIPPED, not passes.
+- Applied only the formatter-required multiline layout to the TEST ONLY `check(access.signInCalls == 0, ...)` assertion in `apps/flutter_app/test/features/srs/account_fixtures.dart`; no assertion, scenario, production behavior or security boundary changed.
+- Changed paths: this test fixture and `docs/PROJECT_STATUS.md`. Full parent tree was read recursively without truncation (335 entries: 270 blobs, 65 trees); all unrelated paths/modes/types and untouched blob SHAs are preserved. The new exact-head Actions run is the verification gate; no new-head format/analyze/test/build pass is claimed yet.
+- Cloud authoring runtime has no pinned Dart/Flutter SDK, so local formatter/analyzer/test/build were not run. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real learner expiry/restart and physical two-device sync remain unproven. PR #37 stays Draft; #20/#22/#15 remain open. Pro-owned #14/#38/N4 scope remains excluded.
+- Next: inspect every latest-attempt job/step for the new exact HEAD; fix only observed failures, then continue #20/#22/#15 acceptance without changing Auth strategy/provider, schema/RLS, default activation, deployment or release gates.
+
+---
+
 ## PR #37 explicit logout drain barrier — 2026-11-12T12:13:44.381Z
 
 - Run `core-20261112T121142Z-pr37-logout-drain`; branch `automation/issue-22-atomic-review`; parent HEAD `cbfa09e7712182147e289b953c4316e98e24f861`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
