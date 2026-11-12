@@ -21,6 +21,7 @@ final class FakeAccountAccess implements AccountAccess {
   Completer<void>? signInWait;
   bool failSignIn = false;
   bool failSignOut = false;
+  Completer<void>? signOutWait;
   @override
   Future<void> signIn(String email, String password) async {
     signInCalls++;
@@ -32,6 +33,7 @@ final class FakeAccountAccess implements AccountAccess {
   @override
   Future<void> signOut() async {
     signOutCalls++;
+    await signOutWait?.future;
     if (failSignOut) throw StateError('PRIVATE TOKEN');
     change(null);
   }
@@ -267,6 +269,34 @@ Future<void> verifyAccount(String scenario) async {
         controller.state.phase == AccountPhase.signedOut,
         'logout retry failed',
       );
+    } else if (scenario == 'sign-out-waits-for-access-drain') {
+      access.change(owner);
+      await flush();
+      check(
+        controller.state.phase == AccountPhase.ready &&
+            controller.readyRuntime != null,
+        'account was not ready before explicit logout',
+      );
+      access.signOutWait = Completer<void>();
+      var logoutSettled = false;
+      final logout = controller.signOut().then((_) => logoutSettled = true);
+      await flush();
+      check(
+        !logoutSettled &&
+            controller.state.phase == AccountPhase.signingOut &&
+            controller.readyRuntime == null,
+        'account UI reported logout before its access owner drained',
+      );
+      await controller.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD');
+      check(access.signInCalls == 0, 'replacement login bypassed the logout fence');
+      access.signOutWait!.complete();
+      await logout;
+      check(
+        logoutSettled &&
+            controller.state.phase == AccountPhase.signedOut &&
+            controller.readyRuntime == null,
+        'account UI did not settle signed out after the access drain',
+      );
     } else if (scenario == 'late-signin-after-logout') {
       access.signInWait = Completer();
       final login = controller.signIn(
@@ -347,6 +377,7 @@ const scenarios = [
   'profile-retry',
   'late-profile',
   'logout-failure',
+  'sign-out-waits-for-access-drain',
   'late-signin-after-logout',
   'closed-lifecycle',
   'reentrant-revoke',

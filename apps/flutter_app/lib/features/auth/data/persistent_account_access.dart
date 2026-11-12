@@ -297,7 +297,9 @@ final class PersistentAccountAccess implements AccountAccess {
           // Keep the operation owned until cleanup completes: a new login must
           // not race the sign-out/clear of this cancelled Auth request.
           await _cleanup();
-          if (!_closed && !_failed) {
+          // Keep readiness revoked until an explicit logout has drained this
+          // cancelled Auth operation and its final cleanup.
+          if (!_closed && !_failed && _logout == null) {
             _allowed = true;
             _phase = SessionPersistencePhase.idle;
             _notify();
@@ -403,10 +405,27 @@ final class PersistentAccountAccess implements AccountAccess {
     _allowed = false;
     if (_operation != null) _cancelledOperation = true;
     _revoke(SessionPersistencePhase.idle);
+    final operation = _operation;
     final result = () async {
       try {
         await _cleanup();
-        if (!_closed && _operation == null) {
+        // The first clear revokes the visible session immediately, but a
+        // cancelled SDK request may still return and install a late session.
+        // Keep logout pending until that request's final sign-out and clear
+        // have drained, so the caller cannot offer replacement login too soon.
+        if (operation != null) {
+          try {
+            await operation;
+          } on Object {
+            // A cancelled Auth operation is expected to fail after revocation.
+          }
+        }
+        await _drainTail();
+        if (_cleanupRequired) {
+          // A late refresh write may have committed before reporting failure.
+          await _cleanup();
+        }
+        if (!_closed && _operation == null && !_cleanupRequired) {
           _failed = false;
           _allowed = true;
           _phase = SessionPersistencePhase.idle;

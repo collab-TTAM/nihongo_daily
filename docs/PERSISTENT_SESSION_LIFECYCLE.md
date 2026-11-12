@@ -821,3 +821,24 @@ and verifies clear -> replacement Auth -> replacement rotation write. Its
 in-memory SDK/vault are not hosted learner A/B or native Credential Manager
 failure evidence. No Auth provider/strategy, plaintext fallback, token logging,
 schema/RLS, default activation, or Pro-owned N4 content is changed.
+
+
+## Explicit logout waits for late Auth operations — 2026-11-12
+
+A successful caller-owned logout now remains pending after its immediate SDK
+sign-out and project-scoped credential clear if a restore, password grant, or
+refresh request was already in flight. The cancelled operation is allowed to
+settle, its final SDK sign-out and serialized vault clear are drained, and any
+uncertain cleanup is retried before the logout future resolves. The accepted
+session gate stays revoked throughout this interval, and replacement login is
+rejected until the logout owner releases its operation slot.
+
+The TEST ONLY lifecycle cases hold restore, login, and refresh responses and
+assert that logout has not completed after the first clear. They release the
+late response, verify the final cleanup, then permit a replacement login. A
+separate account-controller fixture verifies the learner remains in the
+signing-out state, with no ready study runtime and no replacement login, until
+the access owner's logout future settles. These are deterministic in-memory
+SDK/vault and controller tests, not hosted learner A/B or native delayed
+Credential Manager fault injection. No token values are logged, no plaintext
+fallback is added, and no Auth provider/strategy or RLS change is made.

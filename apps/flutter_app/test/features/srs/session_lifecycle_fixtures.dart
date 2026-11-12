@@ -266,9 +266,17 @@ Future<void> verifyLifecycle(String scenario) async {
         'restore bypassed server',
       );
       if (scenario == 'logout-during-restore') {
-        await access.signOut();
+        var logoutSettled = false;
+        final logout = access.signOut().then((_) => logoutSettled = true);
+        await flush();
+        check(
+          !logoutSettled && access.currentSession == null,
+          'logout resolved before the held restore drained',
+        );
+        await fails(login());
         sdk.authWait!.complete();
         await startError;
+        await logout;
         check(
           backend.secret == null &&
               sdk.session == null &&
@@ -464,14 +472,25 @@ Future<void> verifyLifecycle(String scenario) async {
     if (scenario == 'login-during-late-cleanup') {
       sdk.authWait = Completer();
       final error = fails(login());
-      await access.signOut();
+      var logoutSettled = false;
+      final logout = access.signOut().then((_) => logoutSettled = true);
+      await flush();
+      check(
+        sdk.logouts == 1 && backend.secret == null && !logoutSettled,
+        'logout did not clear immediately while waiting for Auth',
+      );
       sdk.logoutWait = Completer();
       sdk.authWait!.complete();
       await flush();
       await fails(login());
       check(sdk.logins == 1, 'new login raced cancelled operation cleanup');
+      check(
+        sdk.logouts == 2 && !logoutSettled,
+        'logout resolved before the final SDK cleanup',
+      );
       sdk.logoutWait!.complete();
       await error;
+      await logout;
       check(
         sdk.session == null && backend.secret == null,
         'late cleanup retained credentials',
@@ -574,13 +593,24 @@ Future<void> verifyLifecycle(String scenario) async {
         check(sdk.logins == 1, 'duplicate login');
       } else {
         final failure = fails(first);
-        final close = scenario == 'dispose-during-auth'
-            ? access.close()
-            : access.signOut();
-        if (scenario == 'logout-during-login') await close;
-        sdk.authWait!.complete();
-        await failure;
-        await close;
+        if (scenario == 'logout-during-login') {
+          var logoutSettled = false;
+          final close = access.signOut().then((_) => logoutSettled = true);
+          await flush();
+          check(
+            !logoutSettled && access.currentSession == null,
+            'logout resolved before the held password Auth drained',
+          );
+          await fails(login());
+          sdk.authWait!.complete();
+          await failure;
+          await close;
+        } else {
+          final close = access.close();
+          sdk.authWait!.complete();
+          await failure;
+          await close;
+        }
         check(
           backend.secret == null &&
               sdk.session == null &&
@@ -692,16 +722,19 @@ Future<void> verifyLifecycle(String scenario) async {
         'explicit refresh published before its rotated secret was saved',
       );
 
-      await access.signOut();
+      var logoutSettled = false;
+      final logout = access.signOut().then((_) => logoutSettled = true);
+      await flush();
       check(
-        backend.secret == null && sdk.session == null,
-        'logout did not clear the saved session before refresh settled',
+        !logoutSettled && backend.secret == null && sdk.session == null,
+        'logout did not clear immediately while awaiting the late refresh drain',
       );
       await fails(login());
       check(sdk.logins == 1, 'replacement login raced the late User A refresh');
 
       sdk.authWait!.complete();
       await pending;
+      await logout;
       await flush();
       check(
         backend.secret == null &&

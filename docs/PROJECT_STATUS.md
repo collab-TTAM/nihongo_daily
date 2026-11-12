@@ -1,3 +1,15 @@
+## PR #37 explicit logout drain barrier — 2026-11-12T12:13:44.381Z
+
+- Run `core-20261112T121142Z-pr37-logout-drain`; branch `automation/issue-22-atomic-review`; parent HEAD `cbfa09e7712182147e289b953c4316e98e24f861`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Parent exact-head Actions [43208386909](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43208386909) completed SUCCESS on `cbfa09e7712182147e289b953c4316e98e24f861`: all six jobs and every returned step succeeded (database 12, repo-sanity 12, AI boundary 12, disposable Supabase integration 13, Windows 17, Flutter 35). This is parent evidence only.
+- Change: successful explicit logout keeps the session gate revoked while a cancelled restore/login/refresh drains; it waits for the in-flight operation, final serialized vault work and any required cleanup retry before resolving. This prevents the account screen from offering a replacement login while a late SDK response can still arrive.
+- TEST ONLY coverage: held restore/login/refresh responses, blocked replacement login, delayed final SDK cleanup, and account-controller signing-out UI/readiness. Paths: `persistent_account_access.dart`, `session_lifecycle_fixtures.dart`, `account_fixtures.dart`, `PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, this status file.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build are not run. New exact-head Actions is the verification gate; no new-head pass is claimed yet.
+- Limits: in-memory fixtures are not hosted signed-JWT learner A/B, deployed PostgREST/RLS, or native delayed Credential Manager proof. #20/#22/#15 remain open; PR #37 remains Draft. Pro-owned #14/#38/N4 files are excluded. No Auth strategy/provider, API/schema/RLS, default activation, deployment, merge or release change.
+- Next: inspect every latest-attempt job and required step on the new exact HEAD. Fix only observed failures; if only CI is pending, release the worker with a durable handoff.
+
+---
+
 ## PR #37 replacement-login cleanup gate — 2026-11-12T11:14Z
 
 - Branch: `automation/issue-22-atomic-review`; parent HEAD: `4abbef96711539fc73fc7045456964b1a3ce1974`; base main: `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
