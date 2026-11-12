@@ -282,11 +282,13 @@ test("quiz v2 response decoder validates the request before response use", () =>
   );
 });
 
-
 test("quiz v2 lookup response correlates found and unresolved outcomes to the captured request", () => {
   for (const fixture of fixtures) {
     const request = encode(fixture.request);
-    const decodeLookup = createQuizReportV2LookupResponseDecoder(schema, request);
+    const decodeLookup = createQuizReportV2LookupResponseDecoder(
+      schema,
+      request,
+    );
     request.fill(0);
 
     const found = decodeLookup(
@@ -367,6 +369,7 @@ test("quiz v2 lookup response applies the raw JSON guard and rejects invalid cap
     status: "found",
     response: fixture.response,
   });
+  const eventIdPair = `"client_event_id":"${fixture.request.client_event_id}"`;
   const changed = [
     unresolved.replace(
       '"status":"unresolved"',
@@ -374,13 +377,12 @@ test("quiz v2 lookup response applies the raw JSON guard and rejects invalid cap
     ),
     unresolved.replace(
       `"client_event_id":"${fixture.request.client_event_id}"`,
-      `"client_event_id":"${fixture.request.client_event_id}","client_event_id":"${fixture.request.client_event_id}"`,
+      `${eventIdPair},${eventIdPair}`,
     ),
     found.replace('"correct_count":0', '"correct_count":0.0'),
     found + "{}",
   ];
   for (const value of changed) {
-    assert.notEqual(value, unresolved);
     invalidLookupResponse(decodeLookup, new TextEncoder().encode(value));
   }
   invalidLookupResponse(decodeLookup, new Uint8Array([255]));

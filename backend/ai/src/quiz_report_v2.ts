@@ -33,10 +33,7 @@ export type QuizReportV2LookupResponse =
 
 function createValidator<T>(
   schema: AnySchemaObject,
-  reference:
-    | "#/$defs/request"
-    | "#/$defs/response"
-    | "#/$defs/lookup_response",
+  reference: "#/$defs/request" | "#/$defs/response" | "#/$defs/lookup_response",
 ) {
   const ajv = new Ajv2020({
     strict: true,
