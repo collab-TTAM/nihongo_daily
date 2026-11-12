@@ -307,3 +307,17 @@ and orders SDK sign-out plus exact-project clear after the pending write, before
 dispatching B's password grant. CI must execute the lifecycle fixture on the
 exact source head. This remains an in-memory lifecycle regression, not hosted
 JWT/RLS or native Credential Manager fault-injection evidence.
+
+
+## Out-of-band logout clear fences replacement login — 2026-11-12
+
+A null-session SDK event queues a project-scoped vault clear. The new lifecycle
+regression holds that clear, attempts a replacement login, and asserts that B's
+password grant is not dispatched until the clear settles. It then injects a clear
+failure and a failed compensating cleanup, verifies A remains stored only as an
+unaccepted TEST ONLY fixture and B remains blocked, and retries cleanup after
+the backend recovers before accepting B's rotation write.
+
+This proves the Dart persistence ordering with in-memory SDK/vault fixtures.
+It is not hosted JWT/RLS A/B evidence or a native Credential Manager delayed
+failure probe. Existing Windows native process/vault tests remain unchanged.

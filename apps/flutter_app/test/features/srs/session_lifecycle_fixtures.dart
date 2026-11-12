@@ -158,6 +158,7 @@ const scenarios = [
   'logout-during-refresh',
   'account-switch',
   'replacement-login-drains-pending-rotation',
+  'replacement-login-waits-for-out-of-band-session-clear',
   'logout-during-write',
   'logout-during-restore',
   'logout-during-login',
@@ -316,6 +317,56 @@ Future<void> verifyLifecycle(String scenario) async {
             access.currentSession?.userId == owner &&
             backend.secret == sdk.secret,
         'empty-vault startup rejected the first explicit login',
+      );
+      return;
+    }
+    if (scenario == 'replacement-login-waits-for-out-of-band-session-clear') {
+      await login();
+      backend.clearWait = Completer<void>();
+      backend.failClear = true;
+      sdk.change(null, null);
+      await flush();
+      check(
+        backend.clears == 1 &&
+            access.currentSession == null &&
+            backend.secret == 'TEST_ONLY_ROTATED_1',
+        'out-of-band sign-out did not hold the credential clear',
+      );
+
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_AFTER_OUT_OF_BAND_CLEAR';
+      final replacementError = fails(
+        access.signIn('fixture@example.invalid', 'TEST_ONLY_PASSWORD'),
+      );
+      await flush();
+      check(
+        sdk.logins == 1 &&
+            sdk.logouts == 1 &&
+            backend.clears == 1 &&
+            access.currentSession == null,
+        'replacement password Auth bypassed the pending clear',
+      );
+
+      backend.clearWait!.complete();
+      await replacementError;
+      check(
+        sdk.logins == 1 &&
+            sdk.session == null &&
+            backend.secret == 'TEST_ONLY_ROTATED_1' &&
+            access.phase == SessionPersistencePhase.failed,
+        'failed out-of-band/compensating clear allowed replacement Auth',
+      );
+
+      backend.failClear = false;
+      await login();
+      check(
+        sdk.logins == 2 &&
+            sdk.logouts == 2 &&
+            access.currentSession?.userId == other &&
+            backend.secret == 'TEST_ONLY_B_AFTER_OUT_OF_BAND_CLEAR' &&
+            backend.operations.join(' -> ') ==
+                'read -> write -> clear -> clear -> clear -> write',
+        'explicit cleanup retry did not clear A before persisting B',
       );
       return;
     }

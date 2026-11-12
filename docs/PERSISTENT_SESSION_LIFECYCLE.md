@@ -775,3 +775,22 @@ dispatched, then releases the write and verifies clear -> B password grant ->
 B rotated-secret write. Only B is accepted. The fixture uses an in-memory SDK
 and vault; it is not hosted learner A/B, native Credential Manager fault
 injection, or deployed PostgREST/RLS evidence.
+
+
+## Replacement login waits for an out-of-band logout clear — 2026-11-12
+
+An SDK null-session event may arrive outside an explicit caller-owned logout.
+The event immediately revokes the accepted session and queues an exact-project
+credential clear. A replacement password login must not dispatch while that clear
+is still pending. The pending-clear count is separate from the null-event
+coalescing flag: the latter remains set after cleanup to suppress duplicate SDK
+notifications, while the count reaches zero only when every queued clear settles.
+
+The TEST ONLY lifecycle regression holds the first out-of-band clear, starts
+User B login and verifies that no B password grant is dispatched. The held clear
+then fails, as does the compensating clear; A's stored test secret remains and B
+is still fenced. After storage recovers, an explicit B login retries SDK sign-out
+and exact-project clear, then persists only B's rotated refresh secret. This is
+in-memory SDK/vault evidence, not hosted learner A/B or native Credential Manager
+fault injection. No token values are logged, no plaintext fallback is added, and
+no Auth provider/strategy or RLS change is made.

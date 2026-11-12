@@ -64,6 +64,8 @@ final class PersistentAccountAccess implements AccountAccess {
   // One SDK sign-out can reach both lifecycle observers. Coalesce delayed
   // null-session notifications until a new session is observed.
   bool _noSessionClearPending = false;
+  // Out-of-band null-session clears must drain before a replacement password grant.
+  int _pendingSessionClears = 0;
   SessionPersistencePhase _phase = SessionPersistencePhase.idle;
   SessionPersistencePhase get phase => _phase;
 
@@ -128,6 +130,7 @@ final class PersistentAccountAccess implements AccountAccess {
       if (session == null) {
         if (_noSessionClearPending) return;
         _noSessionClearPending = true;
+        _pendingSessionClears++;
         _revoke(SessionPersistencePhase.idle);
         unawaited(
           _enqueue(() async {
@@ -136,6 +139,8 @@ final class PersistentAccountAccess implements AccountAccess {
             } on Object {
               _cleanupRequired = true;
               _fail();
+            } finally {
+              _pendingSessionClears--;
             }
           }),
         );
@@ -320,6 +325,7 @@ final class PersistentAccountAccess implements AccountAccess {
       needsCleanup =
           _failed ||
           _cleanupRequired ||
+          _pendingSessionClears > 0 ||
           _pending != null ||
           _sdk.currentSession != null;
     } on Object {
