@@ -585,7 +585,7 @@ test(
       );
       assert.equal(
         lookupSql.filter((sql) =>
-          sql.trimStart().startsWith("SELECT private.replay_quiz_report_v2(")
+          sql.trimStart().startsWith("SELECT private.replay_quiz_report_v2("),
         ).length,
         3,
       );

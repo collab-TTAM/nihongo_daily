@@ -335,10 +335,6 @@ jobs:
           cache: npm
           cache-dependency-path: backend/ai/package-lock.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Print pinned Prettier diff for native quiz v2 test
-        run: |
-          node_modules/.bin/prettier test/quiz_report_v2_host.native.ts > "$RUNNER_TEMP/quiz_report_v2_host.native.formatted.ts"
-          diff -u test/quiz_report_v2_host.native.ts "$RUNNER_TEMP/quiz_report_v2_host.native.formatted.ts" || true
       - run: npm audit --omit=dev --audit-level=moderate
       - run: npm run format:check
       - run: npm run check
