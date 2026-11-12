@@ -795,3 +795,31 @@ An unresolved result provides no permission to resend the report.
 CI type-checks and bundles both entrypoints and checks both JWT registrations.
 The lookup source is registered for future deployment. Hosted JWT, TLS/RLS,
 learner A/B and app reconciliation remain to be verified before activation.
+
+## Caller-owned Flutter v2 receipt lookup — 2026-11-12
+
+The existing opt-in `QuizReportV2HttpTransport` now exposes
+`lookupReceipt(originalReport)` against the fixed
+`/functions/v1/quiz-report-v2-lookup` path. It sends the exact same bounded
+original request bytes and uses the same caller-owned Supabase Auth snapshot,
+generation checks, abort-on-account/token/profile replacement, timeout,
+response-size and safe-header/error rules as submit. No learner-supplied URL,
+key or endpoint is accepted.
+
+The adapter strictly decodes the `found` / `unresolved` union against that
+original request. A found response must match its event/type/kind/level/exact
+completion instant and derived answer counts. An unresolved result must echo
+the original event ID and carries no response. Extra/missing fields, changed
+event IDs or mismatched nested responses fail closed.
+
+Lookup is read-only and makes exactly one lookup request. It never calls submit,
+retries, marks local history saved, mutates progress/mastery/SRS or grants study
+credit. Unresolved is not a negative acknowledgement and never authorizes
+resubmission; retain the exact original attempt/event ID and reconcile again
+later. The existing caller-owned runtime/provider readiness gate remains
+opt-in; default preview and quiz save UI stay disabled.
+
+Flutter Mock HTTP/SDK tests cover exact original bytes, fixed endpoint,
+found/unresolved correlation, no submit fallback and late account replacement.
+This does not prove a deployed Edge Function, hosted signed-JWT/PostgREST/RLS,
+learner A/B, durable multi-device attempt sync or Personal Alpha acceptance.

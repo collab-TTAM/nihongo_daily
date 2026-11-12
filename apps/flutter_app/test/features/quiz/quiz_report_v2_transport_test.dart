@@ -51,6 +51,15 @@ const _headers = {
 http.Response _success(QuizReportV2Request report) =>
     http.Response(jsonEncode(_response(report)), 200, headers: _headers);
 
+http.Response _lookupFound(QuizReportV2Request report) => http.Response(
+  jsonEncode({
+    'status': 'found',
+    'response': _response(report),
+  }),
+  200,
+  headers: _headers,
+);
+
 final class _FakeAuth implements QuizReportV2Auth {
   _FakeAuth() : _events = StreamController<void>.broadcast(sync: true);
 
@@ -418,4 +427,105 @@ void main() {
     client.close();
     await auth.dispose();
   });
+
+  test(
+    'lookup receipt posts original bytes to the fixed replay-only endpoint',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      final expectedBody = report.encodeRawBody();
+      final client = MockClient((request) async {
+        expect(request.method, 'POST');
+        expect(request.url.path, '/functions/v1/quiz-report-v2-lookup');
+        expect(request.followRedirects, isFalse);
+        expect(request.maxRedirects, 0);
+        expect(request.headers['authorization'], 'Bearer access-token-A');
+        expect(
+          request.headers['apikey'],
+          'sb_publishable_TEST_ONLY_1234567890',
+        );
+        expect(request.bodyBytes, expectedBody);
+        return _lookupFound(report);
+      });
+      final transport = _transport(auth: auth, client: client);
+
+      final result = await transport.lookupReceipt(report);
+
+      expect(result.clientEventId, report.clientEventId);
+      expect(result.hasReceipt, isTrue);
+      expect(result.response?.correctCount, 1);
+      transport.dispose();
+      client.close();
+      await auth.dispose();
+    },
+  );
+
+  test(
+    'unresolved receipt lookup never dispatches submit or claims a receipt',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      var calls = 0;
+      final client = MockClient((request) async {
+        calls++;
+        expect(request.url.path, '/functions/v1/quiz-report-v2-lookup');
+        return http.Response(
+          jsonEncode({
+            'status': 'unresolved',
+            'client_event_id': report.clientEventId,
+          }),
+          200,
+          headers: _headers,
+        );
+      });
+      final transport = _transport(auth: auth, client: client);
+
+      final result = await transport.lookupReceipt(report);
+
+      expect(calls, 1);
+      expect(result.isUnresolved, isTrue);
+      expect(result.hasReceipt, isFalse);
+      expect(result.response, isNull);
+      transport.dispose();
+      client.close();
+      await auth.dispose();
+    },
+  );
+
+  test(
+    'late account switch aborts receipt lookup and rejects the old receipt',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      final responseGate = Completer<http.Response>();
+      final requestSeen = Completer<http.AbortableRequest>();
+      final client = _AbortableMockClient((request) {
+        requestSeen.complete(request as http.AbortableRequest);
+        return responseGate.future;
+      });
+      final transport = _transport(auth: auth, client: client);
+      final pending = transport.lookupReceipt(report);
+      final outbound = await requestSeen.future;
+
+      auth.switchAccount();
+      final abortTrigger = outbound.abortTrigger;
+      expect(abortTrigger, isNotNull);
+      await abortTrigger!.timeout(const Duration(seconds: 1));
+      responseGate.complete(_lookupFound(report));
+
+      await expectLater(
+        pending,
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (error) => error.code,
+            'code',
+            QuizReportV2TransportCode.unauthorized,
+          ),
+        ),
+      );
+      transport.dispose();
+      client.close();
+      await auth.dispose();
+    },
+  );
 }

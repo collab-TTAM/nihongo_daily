@@ -237,6 +237,35 @@ final class QuizReportV2Request {
       correctCount: correctCount,
     );
   }
+
+  /// Decodes only the replay-only lookup union against this original request.
+  /// A miss remains unresolved; it is never permission to submit again.
+  QuizReportV2LookupResult decodeLookupResponse(Object? value) {
+    if (value is! Map<String, Object?>) {
+      throw const FormatException('Invalid quiz report lookup response');
+    }
+    final status = value['status'];
+    if (status == 'unresolved') {
+      final json = _strictObject(value, {
+        'status',
+        'client_event_id',
+      });
+      if (json['client_event_id'] != clientEventId) {
+        throw const FormatException('Invalid quiz report lookup response');
+      }
+      return QuizReportV2LookupResult._(
+        clientEventId: clientEventId,
+      );
+    }
+    if (status == 'found') {
+      final json = _strictObject(value, {'status', 'response'});
+      return QuizReportV2LookupResult._(
+        clientEventId: clientEventId,
+        response: decodeResponse(json['response']),
+      );
+    }
+    throw const FormatException('Invalid quiz report lookup response');
+  }
 }
 
 final class QuizReportV2Response {
@@ -247,4 +276,19 @@ final class QuizReportV2Response {
 
   final int answerCount;
   final int correctCount;
+}
+
+/// A correlated receipt result. A missing receipt is explicitly unresolved,
+/// not a negative acknowledgement and not a retry instruction.
+final class QuizReportV2LookupResult {
+  const QuizReportV2LookupResult._({
+    required this.clientEventId,
+    this.response,
+  });
+
+  final String clientEventId;
+  final QuizReportV2Response? response;
+
+  bool get hasReceipt => response != null;
+  bool get isUnresolved => response == null;
 }

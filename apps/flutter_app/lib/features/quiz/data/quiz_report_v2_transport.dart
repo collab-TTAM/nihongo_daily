@@ -91,7 +91,7 @@ final class QuizReportV2TransportFailure implements Exception {
 
 /// Opt-in HTTP transport only. It never changes local history or marks an
 /// attempt saved. The caller owns Auth readiness and must retain the original
-/// event ID after an uncertain timeout/connection failure.
+/// immutable report/event ID after an uncertain timeout or connection failure.
 final class QuizReportV2HttpTransport {
   QuizReportV2HttpTransport({
     required String projectUrl,
@@ -133,10 +133,34 @@ final class QuizReportV2HttpTransport {
   final Set<void Function()> _activeAborts = {};
   bool _closed = false;
 
-  Uri get _endpoint =>
+  Uri get _submitEndpoint =>
       Uri.parse(_origin).replace(path: '/functions/v1/quiz-report-v2');
+  Uri get _lookupEndpoint =>
+      Uri.parse(_origin).replace(path: '/functions/v1/quiz-report-v2-lookup');
 
-  Future<QuizReportV2Response> submit(QuizReportV2Request report) async {
+  Future<QuizReportV2Response> submit(QuizReportV2Request report) =>
+      _send<QuizReportV2Response>(
+        report,
+        endpoint: _submitEndpoint,
+        decodeSuccess: report.decodeResponse,
+      );
+
+  /// Replay-only lookup of the exact original request. It never submits or
+  /// retries; unresolved remains unknown until a later explicit reconciliation.
+  Future<QuizReportV2LookupResult> lookupReceipt(
+    QuizReportV2Request report,
+  ) =>
+      _send<QuizReportV2LookupResult>(
+        report,
+        endpoint: _lookupEndpoint,
+        decodeSuccess: report.decodeLookupResponse,
+      );
+
+  Future<T> _send<T>(
+    QuizReportV2Request report, {
+    required Uri endpoint,
+    required T Function(Object?) decodeSuccess,
+  }) async {
     if (_closed) {
       throw const QuizReportV2TransportFailure(
         QuizReportV2TransportCode.networkUnavailable,
@@ -239,7 +263,7 @@ final class QuizReportV2HttpTransport {
       final outbound =
           http.AbortableRequest(
               'POST',
-              _endpoint,
+              endpoint,
               abortTrigger: abortSignal.future,
             )
             ..followRedirects = false
@@ -265,8 +289,8 @@ final class QuizReportV2HttpTransport {
 
       final actualUrl = response.request?.url;
       if ((actualUrl != null &&
-              (actualUrl.origin != _endpoint.origin ||
-                  actualUrl.path != _endpoint.path)) ||
+              (actualUrl.origin != endpoint.origin ||
+                  actualUrl.path != endpoint.path)) ||
           (response.statusCode >= 300 && response.statusCode < 400)) {
         cancelResponse(response.stream);
         throw const QuizReportV2TransportFailure(
@@ -318,7 +342,7 @@ final class QuizReportV2HttpTransport {
       if (response.statusCode == 200) {
         final decoded = jsonDecode(utf8.decode(responseBytes));
         try {
-          return report.decodeResponse(decoded);
+          return decodeSuccess(decoded);
         } on Object {
           throw const QuizReportV2TransportFailure(
             QuizReportV2TransportCode.internalError,

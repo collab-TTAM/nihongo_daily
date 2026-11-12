@@ -178,6 +178,75 @@ void main() {
     expect(response.correctCount, 1);
   });
 
+  test(
+    'decodes a found lookup only when its response matches the request',
+    () {
+      final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
+      final lookup = request.decodeLookupResponse({
+        'status': 'found',
+        'response': _response(request),
+      });
+
+      expect(lookup.clientEventId, request.clientEventId);
+      expect(lookup.hasReceipt, isTrue);
+      expect(lookup.isUnresolved, isFalse);
+      expect(lookup.response?.answerCount, 2);
+      expect(lookup.response?.correctCount, 1);
+    },
+  );
+
+  test('decodes unresolved lookup as uncertainty without a receipt', () {
+    final request = QuizReportV2Request.fromGrammarAttempt(_grammar());
+    final lookup = request.decodeLookupResponse({
+      'status': 'unresolved',
+      'client_event_id': request.clientEventId,
+    });
+
+    expect(lookup.clientEventId, request.clientEventId);
+    expect(lookup.hasReceipt, isFalse);
+    expect(lookup.isUnresolved, isTrue);
+    expect(lookup.response, isNull);
+  });
+
+  test('rejects malformed or mismatched lookup responses', () {
+    final request = QuizReportV2Request.fromVocabularyAttempt(_vocabulary());
+    final wrongEvent = {
+      'status': 'unresolved',
+      'client_event_id': _event(9),
+    };
+    expect(
+      () => request.decodeLookupResponse(wrongEvent),
+      throwsFormatException,
+    );
+
+    final extraField = {
+      'status': 'unresolved',
+      'client_event_id': request.clientEventId,
+      'response': _response(request),
+    };
+    expect(
+      () => request.decodeLookupResponse(extraField),
+      throwsFormatException,
+    );
+
+    final mismatchedFound = _response(request)
+      ..['client_event_id'] = _event(9);
+    expect(
+      () => request.decodeLookupResponse({
+        'status': 'found',
+        'response': mismatchedFound,
+      }),
+      throwsFormatException,
+    );
+    expect(
+      () => request.decodeLookupResponse({
+        'status': 'unknown',
+        'client_event_id': request.clientEventId,
+      }),
+      throwsFormatException,
+    );
+  });
+
   test('rejects response identity, shape and count mismatches', () {
     final request = QuizReportV2Request.fromGrammarAttempt(_grammar());
     final changedEvent = _response(request)..['client_event_id'] = _event(9);
