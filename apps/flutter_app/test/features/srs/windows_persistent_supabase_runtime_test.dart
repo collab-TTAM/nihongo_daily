@@ -477,10 +477,7 @@ void main() {
           .where((request) => request.url.path == '/auth/v1/token')
           .toList();
       expect(authRequests, hasLength(1));
-      expect(
-        authRequests.single.url.queryParameters['grant_type'],
-        'password',
-      );
+      expect(authRequests.single.url.queryParameters['grant_type'], 'password');
       final profileRequests = requests
           .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
