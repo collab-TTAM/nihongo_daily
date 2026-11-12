@@ -11874,3 +11874,18 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Corrected the lookup factory to reuse the existing fixed `nihongo-ai-quiz-report` application name (no allowlist expansion), and narrowed the native assertion to count only actual `SELECT private.replay_quiz_report_v2(` statements, excluding the read-permission check. No SQL, permission, replay, Auth or store behavior changed.
 - Paths: `backend/ai/src/quiz_report_v2_host.ts`, `backend/ai/test/quiz_report_v2_host.native.ts`, `docs/PROJECT_STATUS.md`.
 - Next: rerun exact-head CI and inspect every job/step; ensure TypeScript, unit tests, native PostgreSQL, Windows and any published dependent jobs complete. Keep PR #41 Draft and Issue #13 open. No route, migration/grant, default save, Auth strategy/provider, Pro N4, deployment, merge or release change.
+
+
+## PR #37 — exact-head caller-owned session/IndexedDB CI — 2026-11-12T01:08Z
+
+- Draft PR #37 remains on `automation/issue-22-atomic-review`, HEAD `1c15c94b37b962d5128c02a95a4b71fcfb944fe5`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43111222748](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43111222748), attempt 1, completed SUCCESS: 6/6 jobs and 101/101 returned steps succeeded (database 12, repo-sanity 12, AI boundary 12, disposable Supabase integration 13, Windows 17, Flutter 35). Flutter format/analyze/full suite, Chrome IndexedDB, browser reload and Web release build passed; Windows release, native vault/process bridge and durable study probes passed.
+- This is component, fixture and disposable local-stack evidence only. Hosted signed-JWT learner A/B, deployed hosted PostgREST/RLS, hosted expiry/restart and physical two-device sync remain unverified. Keep #20/#22/#15 open and PR #37 Draft; no merge/deployment/Personal Alpha claim.
+
+## PR #41 — pinned Prettier diagnostic checkpoint — 2026-11-12T01:08Z
+
+- Run `core-20261112T0108Z-pr41-prettier-quiz-v2-native`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `2a8e87164826b72bb97011c67e112ae896ef4a94`; parent tree `3b147d9bb98b2e517c19e724663a67bd6157fb78`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. Parent recursive tree was complete/untruncated at 967 entries (845 blobs, 122 trees).
+- Exact-head Actions [43120948540](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43120948540), attempt 1, targets that parent. Repo-sanity, database (including native PostgreSQL v2 receipt lookup), Windows and Flutter all completed SUCCESS. AI boundary failed only `npm run format:check` on TEST ONLY `backend/ai/test/quiz_report_v2_host.native.ts`; TypeScript, unit tests and Deno/Edge steps were skipped, not passes.
+- Added a temporary diagnostic step to `.github/workflows/ci.yml` that prints a unified diff from the lockfile-pinned Prettier 3.6.2 binary for only that test file. The strict `npm run format:check` remains unchanged and will still gate the job. No source/test assertions or production behavior are changed by the diagnostic.
+- Next: inspect the diagnostic step in the new exact-head Actions log; apply only the emitted formatter hunk, remove the temporary workflow step, independently review the final diff/tree and require every exact-head job/step to succeed. Keep PR #41 Draft; no merge or release.
+- Pro-owned #14/#38/N4/data/manifest/content-test/docs paths remain untouched. Existing N4-derived app assets already present in this broad PR remain unmodified and gated for coordinator review after Pro PR #38. No Auth strategy/provider, RLS/grant, default-save, deployment, collection or AI-spend change.
