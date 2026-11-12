@@ -441,81 +441,80 @@ void main() {
   test(
     'Windows transient vault read failure stays fenced until explicit login recovery',
     () async {
-    storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
-    failRead = true;
+      storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
+      failRead = true;
 
-    await expectLater(
-      runtime.start(),
-      throwsA(
-        isA<ReviewTransportFailure>().having(
-          (error) => error.toString().contains('PRIVATE'),
-          'redacted storage error',
-          false,
+      await expectLater(
+        runtime.start(),
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (error) => error.toString().contains('PRIVATE'),
+            'redacted storage error',
+            false,
+          ),
         ),
-      ),
-    );
+      );
 
-    expect(timeline, ['vault.read']);
-    expect(requests, isEmpty);
-    expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
-    expect(runtime.account.readyRuntime, isNull);
+      expect(timeline, ['vault.read']);
+      expect(requests, isEmpty);
+      expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
+      expect(runtime.account.readyRuntime, isNull);
 
-    // A transient read error is non-destructive. Explicit login on this same
-    // owner must clear the unread secret before sending a new password grant.
-    failRead = false;
-    authUser = wire.b;
-    authSession = wire.sid2;
-    refreshSecret = 'TEST_ONLY_B_AFTER_TRANSIENT_READ_FAILURE';
+      // A transient read error is non-destructive. Explicit login on this same
+      // owner must clear the unread secret before sending a new password grant.
+      failRead = false;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_AFTER_TRANSIENT_READ_FAILURE';
 
-    await runtime.account.signIn(
-      'fixture@example.invalid',
-      'TEST_ONLY_PASSWORD',
-    );
-    await waitForReady();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
 
-    final authRequests = requests
-        .where((request) => request.url.path == '/auth/v1/token')
-        .toList();
-    expect(authRequests, hasLength(1));
-    expect(
-      authRequests.single.url.queryParameters['grant_type'],
-      'password',
-    );
-    final profileRequests = requests
-        .where(
-          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-        )
-        .toList();
-    expect(profileRequests, hasLength(1));
-    expect(
-      profileRequests.single.headers['authorization'],
-      'Bearer ${wire.token(wire.b, wire.sid2, now)}',
-    );
-    expect(runtime.account.state.profile?.id, wire.b);
-    expect(runtime.persistence.currentSession?.userId, wire.b);
-    expect(storedSecret, refreshSecret);
-    expect(
-      timeline.lastIndexOf('vault.clear'),
-      greaterThan(timeline.indexOf('vault.read')),
-    );
-    expect(
-      timeline.lastIndexOf('vault.clear'),
-      lessThan(timeline.indexOf('auth.password')),
-    );
-    expect(
-      timeline.indexOf('auth.password'),
-      lessThan(timeline.lastIndexOf('vault.write')),
-    );
-    expect(
-      timeline.lastIndexOf('vault.write'),
-      lessThan(timeline.lastIndexOf('profile.ensure')),
-    );
-    expect(
-      timeline.where((value) => value == 'auth.refresh'),
-      isEmpty,
-      reason: 'the unread User A secret must never reach Auth',
-    );
-  });
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      expect(authRequests, hasLength(1));
+      expect(
+        authRequests.single.url.queryParameters['grant_type'],
+        'password',
+      );
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.indexOf('vault.read')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        lessThan(timeline.indexOf('auth.password')),
+      );
+      expect(
+        timeline.indexOf('auth.password'),
+        lessThan(timeline.lastIndexOf('vault.write')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('profile.ensure')),
+      );
+      expect(
+        timeline.where((value) => value == 'auth.refresh'),
+        isEmpty,
+        reason: 'the unread User A secret must never reach Auth',
+      );
+    },
+  );
 
   test('Windows vault write failure clears and blocks own profile', () async {
     storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
