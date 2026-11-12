@@ -114,6 +114,30 @@ class QuizReportV2ContractTests(unittest.TestCase):
                 self.request,
             )
 
+    def test_lookup_response_contract_is_strict_and_correlated(self):
+        found = {"status": "found", "response": copy.deepcopy(self.response)}
+        unresolved = {
+            "status": "unresolved",
+            "client_event_id": self.request["client_event_id"],
+        }
+        quiz.validate_lookup_response(found, self.request)
+        quiz.validate_lookup_response(unresolved, self.request)
+
+        invalid = [
+            {"status": "unknown", "client_event_id": self.request["client_event_id"]},
+            {"status": "unresolved", "client_event_id": "a3000000-0000-4000-8000-000000000099"},
+            dict(unresolved, response=copy.deepcopy(self.response)),
+            dict(unresolved, user_id="forged"),
+            {"status": "found", "response": dict(self.response, client_event_id="a3000000-0000-4000-8000-000000000099")},
+            {"status": "found", "response": dict(self.response, correct_count=0)},
+            {"status": "found", "response": dict(self.response, user_id="forged")},
+            dict(found, client_event_id=self.request["client_event_id"]),
+        ]
+        for payload in invalid:
+            with self.subTest(payload=payload):
+                with self.assertRaises(ValueError):
+                    quiz.validate_lookup_response(payload, self.request)
+
     def test_bounded_duplicate_aware_raw_json(self):
         raw = json.dumps(self.request).encode()
         padded = raw + b" " * (quiz.MAX_REQUEST_BYTES - len(raw))

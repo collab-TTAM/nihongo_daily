@@ -5,7 +5,9 @@ import type { AnySchemaObject } from "ajv";
 import { BoundaryError } from "../src/contracts.ts";
 import {
   createQuizReportV2Decoder,
+  createQuizReportV2LookupResponseDecoder,
   createQuizReportV2ResponseDecoder,
+  type QuizReportV2LookupResponse,
   type QuizReportV2Request,
   type QuizReportV2Response,
 } from "../src/quiz_report_v2.ts";
@@ -53,6 +55,18 @@ const invalid = (raw: Uint8Array) =>
       error instanceof BoundaryError &&
       error.code === "VALIDATION_FAILURE" &&
       error.message === "VALIDATION_FAILURE",
+  );
+
+const invalidLookupResponse = (
+  response: (raw: Uint8Array) => QuizReportV2LookupResponse,
+  raw: Uint8Array,
+) =>
+  assert.throws(
+    () => response(raw),
+    (error: unknown) =>
+      error instanceof BoundaryError &&
+      error.code === "INTERNAL_ERROR" &&
+      error.message === "INTERNAL_ERROR",
   );
 
 const invalidResponse = (
@@ -260,6 +274,121 @@ test("quiz v2 response decoder validates the request before response use", () =>
   assert.throws(
     () =>
       createQuizReportV2ResponseDecoder(
+        schema,
+        encode({ ...fresh(), user_id: "forged" }),
+      ),
+    (error: unknown) =>
+      error instanceof BoundaryError && error.code === "VALIDATION_FAILURE",
+  );
+});
+
+
+test("quiz v2 lookup response correlates found and unresolved outcomes to the captured request", () => {
+  for (const fixture of fixtures) {
+    const request = encode(fixture.request);
+    const decodeLookup = createQuizReportV2LookupResponseDecoder(schema, request);
+    request.fill(0);
+
+    const found = decodeLookup(
+      encode({ status: "found", response: fixture.response }),
+    );
+    assert.deepEqual(found, { status: "found", response: fixture.response });
+    assert.ok(Object.isFrozen(found));
+    if (found.status !== "found") throw new Error("Expected found receipt");
+    assert.ok(Object.isFrozen(found.response));
+    assert.equal(Reflect.set(found.response, "correct_count", 99), false);
+
+    const unresolved = decodeLookup(
+      encode({
+        status: "unresolved",
+        client_event_id: fixture.request.client_event_id,
+      }),
+    );
+    assert.deepEqual(unresolved, {
+      status: "unresolved",
+      client_event_id: fixture.request.client_event_id,
+    });
+    assert.ok(Object.isFrozen(unresolved));
+  }
+});
+
+test("quiz v2 lookup response rejects malformed variants and mismatched request identity", () => {
+  const fixture = fixtures[0]!;
+  const decodeLookup = createQuizReportV2LookupResponseDecoder(
+    schema,
+    encode(fixture.request),
+  );
+  const otherEvent = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+  const invalid: unknown[] = [
+    {},
+    { status: "unknown", client_event_id: fixture.request.client_event_id },
+    {
+      status: "unresolved",
+      client_event_id: otherEvent,
+    },
+    {
+      status: "unresolved",
+      client_event_id: fixture.request.client_event_id,
+      response: fixture.response,
+    },
+    {
+      status: "found",
+      response: { ...fixture.response, client_event_id: otherEvent },
+    },
+    {
+      status: "found",
+      response: { ...fixture.response, correct_count: 1 },
+    },
+    {
+      status: "found",
+      response: { ...fixture.response, user_id: "forged" },
+    },
+    {
+      status: "found",
+      response: fixture.response,
+      client_event_id: fixture.request.client_event_id,
+    },
+  ];
+  for (const value of invalid) {
+    invalidLookupResponse(decodeLookup, encode(value));
+  }
+});
+
+test("quiz v2 lookup response applies the raw JSON guard and rejects invalid captured requests", () => {
+  const fixture = fixtures[0]!;
+  const request = encode(fixture.request);
+  const decodeLookup = createQuizReportV2LookupResponseDecoder(schema, request);
+  request.fill(0);
+  const unresolved = JSON.stringify({
+    status: "unresolved",
+    client_event_id: fixture.request.client_event_id,
+  });
+  const found = JSON.stringify({
+    status: "found",
+    response: fixture.response,
+  });
+  const changed = [
+    unresolved.replace(
+      '"status":"unresolved"',
+      '"status":"unresolved","status":"unresolved"',
+    ),
+    unresolved.replace(
+      `"client_event_id":"${fixture.request.client_event_id}"`,
+      `"client_event_id":"${fixture.request.client_event_id}","client_event_id":"${fixture.request.client_event_id}"`,
+    ),
+    found.replace('"correct_count":0', '"correct_count":0.0'),
+    found + "{}",
+  ];
+  for (const value of changed) {
+    assert.notEqual(value, unresolved);
+    invalidLookupResponse(decodeLookup, new TextEncoder().encode(value));
+  }
+  invalidLookupResponse(decodeLookup, new Uint8Array([255]));
+  invalidLookupResponse(decodeLookup, new Uint8Array(16385));
+
+  assert.throws(
+    () =>
+      createQuizReportV2LookupResponseDecoder(
         schema,
         encode({ ...fresh(), user_id: "forged" }),
       ),

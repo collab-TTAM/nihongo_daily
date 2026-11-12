@@ -743,3 +743,24 @@ This helper registers no public route or Edge Function and changes no frozen
 endpoint contract. CORS/Edge assembly, a reviewed public lookup contract,
 caller-owned client transport/reconciliation and hosted learner verification
 remain outstanding; default quiz save stays disabled.
+
+
+## Request-correlated nd-quiz-report-2 lookup response — 2026-11-12
+
+The separate v2 schema now defines `lookup_response` as a strict discriminated
+union: `found` carries the original `response`; `unresolved` carries only the
+captured `client_event_id`. The new
+`createQuizReportV2LookupResponseDecoder(schema, originalRequestBytes)`
+captures and validates the original immutable request before decoding lookup
+bytes. A found receipt must match every request identity field and the expected
+answer/correct counts; an unresolved result must echo the same event ID. Both
+branches reject extra/missing fields, use the bounded duplicate-aware raw JSON
+guard, and return frozen objects. A malformed lookup result is a safe
+`INTERNAL_ERROR`; an invalid captured request remains `VALIDATION_FAILURE`.
+
+An unresolved lookup is deliberately not a negative acknowledgement and never
+authorizes resubmission. The caller must retain the original event ID and exact
+request bytes and reconcile again later. This is a contract/decoder increment
+only: no lookup HTTP route, Edge binding, grant, default app save, mastery, SRS
+mutation or study credit is activated. V1 request/response and the existing v2
+submit request/response definitions remain unchanged.

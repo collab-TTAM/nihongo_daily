@@ -77,6 +77,15 @@ def validate_response(payload, request=None):
             raise ValueError("Mismatched quiz response counts")
 
 
+def validate_lookup_response(payload, request):
+    _validate("lookup_response", payload)
+    validate_request(request)
+    if payload["status"] == "found":
+        validate_response(payload["response"], request)
+    elif payload["client_event_id"] != request["client_event_id"]:
+        raise ValueError("Mismatched unresolved quiz event identity")
+
+
 def _pairs(pairs):
     result = {}
     for key, value in pairs:
@@ -119,6 +128,16 @@ def validate_fixtures():
     for case in cases:
         parse_request(json.dumps(case["request"]).encode("utf-8"))
         validate_response(case["response"], case["request"])
+        validate_lookup_response(
+            {"status": "found", "response": case["response"]}, case["request"]
+        )
+        validate_lookup_response(
+            {
+                "status": "unresolved",
+                "client_event_id": case["request"]["client_event_id"],
+            },
+            case["request"],
+        )
     return len(cases)
 
 

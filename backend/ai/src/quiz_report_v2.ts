@@ -27,9 +27,16 @@ export interface QuizReportV2Response
   readonly correct_count: number;
 }
 
+export type QuizReportV2LookupResponse =
+  | { readonly status: "found"; readonly response: QuizReportV2Response }
+  | { readonly status: "unresolved"; readonly client_event_id: string };
+
 function createValidator<T>(
   schema: AnySchemaObject,
-  reference: "#/$defs/request" | "#/$defs/response",
+  reference:
+    | "#/$defs/request"
+    | "#/$defs/response"
+    | "#/$defs/lookup_response",
 ) {
   const ajv = new Ajv2020({
     strict: true,
@@ -100,6 +107,34 @@ export function createQuizReportV2Decoder(schema: AnySchemaObject) {
  * Correlate a strict response to the immutable raw request before accepting it.
  * A matching response is not proof of Auth ownership or durable persistence.
  */
+function correlateQuizReportV2Response(
+  request: QuizReportV2Request,
+  response: QuizReportV2Response,
+): QuizReportV2Response {
+  const identity = [
+    "client_event_id",
+    "quiz_type",
+    "practice_kind",
+    "jlpt_level",
+    "completed_at",
+  ] as const;
+  const correct = request.answers.filter(
+    (answer) => answer.item_id === answer.selected_id,
+  ).length;
+  if (
+    identity.some((key) => response[key] !== request[key]) ||
+    response.answer_count !== request.answers.length ||
+    response.correct_count !== correct
+  ) {
+    throw new Error();
+  }
+  return Object.freeze(response);
+}
+
+/**
+ * Correlate a strict submit response to the immutable raw request.
+ * A matching response is not proof of Auth ownership or durable persistence.
+ */
 export function createQuizReportV2ResponseDecoder(
   schema: AnySchemaObject,
   requestRaw: Uint8Array,
@@ -109,30 +144,53 @@ export function createQuizReportV2ResponseDecoder(
     schema,
     "#/$defs/response",
   );
-  const correct = request.answers.filter(
-    (answer) => answer.item_id === answer.selected_id,
-  ).length;
-  const identity = [
-    "client_event_id",
-    "quiz_type",
-    "practice_kind",
-    "jlpt_level",
-    "completed_at",
-  ] as const;
 
   return (raw: Uint8Array): QuizReportV2Response => {
     try {
       const decoded = parseQuizReportJsonBody(raw);
       if (validate(decoded) !== true) throw new Error();
-      const response = decoded as unknown as QuizReportV2Response;
-      if (
-        identity.some((key) => response[key] !== request[key]) ||
-        response.answer_count !== request.answers.length ||
-        response.correct_count !== correct
-      ) {
-        throw new Error();
+      return correlateQuizReportV2Response(
+        request,
+        decoded as unknown as QuizReportV2Response,
+      );
+    } catch {
+      throw new BoundaryError("INTERNAL_ERROR");
+    }
+  };
+}
+
+/**
+ * Decode the internal receipt-lookup union against the original immutable
+ * request. An unresolved result is deliberately not a negative acknowledgement.
+ */
+export function createQuizReportV2LookupResponseDecoder(
+  schema: AnySchemaObject,
+  requestRaw: Uint8Array,
+) {
+  const request = createQuizReportV2Decoder(schema)(requestRaw);
+  const validate = createValidator<QuizReportV2LookupResponse>(
+    schema,
+    "#/$defs/lookup_response",
+  );
+
+  return (raw: Uint8Array): QuizReportV2LookupResponse => {
+    try {
+      const decoded = parseQuizReportJsonBody(raw);
+      if (validate(decoded) !== true) throw new Error();
+      const lookup = decoded as unknown as QuizReportV2LookupResponse;
+      if (lookup.status === "unresolved") {
+        if (lookup.client_event_id !== request.client_event_id) {
+          throw new Error();
+        }
+        return Object.freeze({
+          status: "unresolved",
+          client_event_id: request.client_event_id,
+        });
       }
-      return Object.freeze(response);
+      return Object.freeze({
+        status: "found",
+        response: correlateQuizReportV2Response(request, lookup.response),
+      });
     } catch {
       throw new BoundaryError("INTERNAL_ERROR");
     }

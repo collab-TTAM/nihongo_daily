@@ -4185,6 +4185,14 @@
         {
           "path": "contracts/quiz/v2/schema.json",
           "contains": "choice_content_versions"
+        },
+        {
+          "path": "contracts/test_quiz_report_v2_contracts.py",
+          "contains": "test_lookup_response_contract_is_strict_and_correlated"
+        },
+        {
+          "path": "contracts/quiz/v2/schema.json",
+          "contains": "lookup_response"
         }
       ],
       "issues": [
@@ -4355,6 +4363,22 @@
         {
           "path": "backend/ai/test/quiz_report_v2.test.ts",
           "contains": "quiz v2 response applies the same raw JSON guard"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2.test.ts",
+          "contains": "quiz v2 lookup response correlates found and unresolved outcomes to the captured request"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2.test.ts",
+          "contains": "quiz v2 lookup response rejects malformed variants and mismatched request identity"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2.test.ts",
+          "contains": "quiz v2 lookup response applies the raw JSON guard and rejects invalid captured requests"
+        },
+        {
+          "path": "backend/ai/src/quiz_report_v2.ts",
+          "contains": "createQuizReportV2LookupResponseDecoder"
         }
       ],
       "issues": [

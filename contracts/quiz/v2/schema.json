@@ -210,7 +210,43 @@
           }
         }
       ]
+    },
+    "lookup_response": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "response"
+          ],
+          "properties": {
+            "status": {
+              "const": "found"
+            },
+            "response": {
+              "$ref": "#/$defs/response"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "client_event_id"
+          ],
+          "properties": {
+            "status": {
+              "const": "unresolved"
+            },
+            "client_event_id": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        }
+      ]
     }
   },
-  "$comment": "V2 captures all displayed choice versions. A trusted server must reconstruct exact choice order from persisted source_ordinal; this contract is undeployed and has no public route."
+  "$comment": "V2 captures all displayed choice versions. A trusted server must reconstruct exact choice order from persisted source_ordinal; this contract is undeployed and has no public route. Internal receipt lookup is a strict found/unresolved union; unresolved is not retry authority."
 }
