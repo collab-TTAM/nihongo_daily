@@ -746,8 +746,8 @@ void main() {
       final closing = runtime.close().then<void>((_) {
         closed = true;
       });
-      final abortable = outbound as http.AbortableRequest;
-      await abortable.abortTrigger!.timeout(const Duration(seconds: 1));
+      // MockClient reconstructs a plain Request; the held response still
+      // proves runtime close cannot finish before the accepted lookup settles.
       expect(closed, isFalse);
 
       lookupResponse.complete(
@@ -761,7 +761,9 @@ void main() {
               'jlpt_level': report.jlptLevel,
               'completed_at': report.completedAt,
               'answer_count': report.answers.length,
-              'correct_count': report.answers.where((answer) => answer.isCorrect).length,
+              'correct_count': report.answers
+                  .where((answer) => answer.isCorrect)
+                  .length,
             },
           }),
           200,

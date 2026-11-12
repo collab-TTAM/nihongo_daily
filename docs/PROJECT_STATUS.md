@@ -11988,3 +11988,9 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
   outstanding.
 - Next: inspect every latest-attempt job/step on the new exact HEAD; fix only
   observed failures. If CI remains pending, hand off without duplicate source.
+
+
+### Runtime receipt-drain test fixture review — 2026-11-12T17:24Z
+
+- Independent post-write review found that package:http's `MockClient` handler receives a reconstructed plain `Request`, not the original `AbortableRequest`. Removed the invalid test-only cast. The runtime test still holds the response future and proves `close()` remains pending until the accepted lookup settles; the separate custom BaseClient transport test continues to assert the actual abort signal and no post-close dispatch.
+- Also applied the deterministic Dart formatter layout to the derived correct-count fixture. No production behavior, assertion removal, retry behavior or CI gate changed.
