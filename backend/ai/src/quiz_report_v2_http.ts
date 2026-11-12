@@ -1,5 +1,8 @@
 import { BoundaryError } from "./contracts.ts";
-import type { QuizReportV2Submitter } from "./quiz_report_v2_host.ts";
+import type {
+  QuizReportV2Submitter,
+  QuizReportV2ReceiptLookup,
+} from "./quiz_report_v2_host.ts";
 import type { error as WireError } from "./wire.ts";
 
 export const quizReportV2MaxRawBodyBytes = 16 * 1024;
@@ -176,8 +179,29 @@ export function createQuizReportV2HttpHandler(
   submit: QuizReportV2Submitter,
   timeoutMs = 15000,
 ): (request: Request) => Promise<Response> {
+  return createQuizReportV2OperationHttpHandler(submit, timeoutMs);
+}
+
+/** Internal replay-only boundary; unresolved never authorizes resubmission.
+ * Requires the trusted verified-owner lookup. Installs no route or save fallback.
+ */
+export function createQuizReportV2ReceiptLookupHttpHandler(
+  lookup: QuizReportV2ReceiptLookup,
+  timeoutMs = 15000,
+): (request: Request) => Promise<Response> {
+  return createQuizReportV2OperationHttpHandler(lookup, timeoutMs);
+}
+
+function createQuizReportV2OperationHttpHandler<T>(
+  operation: (
+    token: string,
+    raw: Uint8Array,
+    signal?: AbortSignal,
+  ) => Promise<T>,
+  timeoutMs: number,
+): (request: Request) => Promise<Response> {
   if (
-    typeof submit !== "function" ||
+    typeof operation !== "function" ||
     !Number.isInteger(timeoutMs) ||
     timeoutMs < 1 ||
     timeoutMs > 30000
@@ -244,7 +268,7 @@ export function createQuizReportV2HttpHandler(
       );
       alive();
       const pending = Promise.resolve().then(() =>
-        submit(bearer, raw, controller.signal),
+        operation(bearer, raw, controller.signal),
       );
       const response = await awaitWithSignal(pending, controller.signal);
       alive();

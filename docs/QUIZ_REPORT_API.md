@@ -720,3 +720,26 @@ credit. Unit tests cover invalid input/Auth, read-capability denial, cancellatio
 miss/found, response correlation and absence of content/store dispatch. Native
 disposable PostgreSQL covers synthetic TEST ONLY Auth A/B ownership and changed
 payload conflict; it is not hosted JWT/PostgREST/RLS or learner evidence.
+
+## Internal receipt lookup HTTP adapter
+
+`createQuizReportV2ReceiptLookupHttpHandler` accepts only a trusted
+`QuizReportV2ReceiptLookup` assembled by the server. It shares the existing
+submit HTTP boundary's POST-only JSON/Bearer checks, 16 KiB raw-byte limit,
+content-length/encoding checks, bounded deadline, disconnect cancellation,
+no-store response headers and safe error mapping. It forwards the original
+bytes without parsing or normalizing them; strict decoding, verified Auth and
+request-correlated receipt validation remain the trusted lookup's responsibility.
+
+Successful lookup returns HTTP 200 with the existing internal discriminated
+result: `{status: "found", response: ...}` or
+`{status: "unresolved", client_event_id: ...}`. Unresolved is not absence proof
+or retry authority. A conflict, cancellation or internal failure remains an
+error and is never converted to unresolved. The adapter invokes the lookup
+once, has no submit fallback and suppresses late results after cancellation.
+The submit wrapper retains its original response shape and behavior.
+
+This helper registers no public route or Edge Function and changes no frozen
+endpoint contract. CORS/Edge assembly, a reviewed public lookup contract,
+caller-owned client transport/reconciliation and hosted learner verification
+remain outstanding; default quiz save stays disabled.

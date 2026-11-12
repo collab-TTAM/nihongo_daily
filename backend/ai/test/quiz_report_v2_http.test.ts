@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { BoundaryError } from "../src/contracts.ts";
 import {
   createQuizReportV2HttpHandler,
+  createQuizReportV2ReceiptLookupHttpHandler,
   quizReportV2MaxRawBodyBytes,
 } from "../src/quiz_report_v2_http.ts";
 import type { QuizReportV2Submitter } from "../src/quiz_report_v2_host.ts";
@@ -240,3 +241,110 @@ test("aborts a pending submitter on deadline and client cancellation", async () 
   await Promise.resolve();
   await safeError(response, 503, "NETWORK_UNAVAILABLE", true);
 });
+
+for (const status of ["found", "unresolved"] as const) {
+  test(`lookup HTTP preserves ${status} without retry or save fallback`, async () => {
+    let calls = 0;
+    const outcome =
+      status === "found"
+        ? { status, response: saved }
+        : { status, client_event_id: saved.client_event_id };
+    const handler = createQuizReportV2ReceiptLookupHttpHandler(
+      async (token, raw, signal) => {
+        calls++;
+        assert.equal(token, "fixture-token");
+        assert.deepEqual(raw, rawBody);
+        assert.equal(signal?.aborted, false);
+        return outcome;
+      },
+    );
+    const response = await handler(request());
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.deepEqual(await response.json(), outcome);
+    assert.equal(calls, 1);
+  });
+}
+
+test("lookup HTTP rejects invalid ingress before lookup", async () => {
+  let calls = 0;
+  const handler = createQuizReportV2ReceiptLookupHttpHandler(async () => {
+    calls++;
+    return { status: "unresolved", client_event_id: saved.client_event_id };
+  });
+  const cases: Array<[Request, number, string]> = [
+    [request(null, {}, undefined, "GET"), 405, "VALIDATION_FAILURE"],
+    [request(rawBody, { authorization: "" }), 401, "UNAUTHORIZED"],
+    [
+      request(rawBody, { "content-type": "text/plain" }),
+      415,
+      "VALIDATION_FAILURE",
+    ],
+    [
+      request(rawBody, { "content-encoding": "gzip" }),
+      415,
+      "VALIDATION_FAILURE",
+    ],
+    [
+      request(new Uint8Array(quizReportV2MaxRawBodyBytes + 1)),
+      413,
+      "VALIDATION_FAILURE",
+    ],
+    [request(rawBody, { "content-length": "1" }), 400, "VALIDATION_FAILURE"],
+  ];
+  for (const [candidate, status, code] of cases) {
+    await safeError(await handler(candidate), status, code, false);
+  }
+  assert.equal(calls, 0);
+});
+
+test("lookup HTTP preserves conflict and redacts unknown failures instead of unresolved", async () => {
+  for (const error of [
+    new BoundaryError("SYNC_CONFLICT"),
+    new Error("PRIVATE SQL TOKEN"),
+  ]) {
+    const handler = createQuizReportV2ReceiptLookupHttpHandler(async () => {
+      throw error;
+    });
+    await safeError(
+      await handler(request()),
+      error instanceof BoundaryError ? 409 : 500,
+      error instanceof BoundaryError ? "SYNC_CONFLICT" : "INTERNAL_ERROR",
+      false,
+    );
+  }
+});
+
+for (const reason of ["client", "deadline"] as const) {
+  test(`lookup HTTP ${reason} cancellation suppresses late found receipt`, async () => {
+    const controller = new AbortController();
+    let release!: () => void;
+    let entered!: () => void;
+    const started = new Promise<void>((resolve) => {
+      entered = resolve;
+    });
+    let signal: AbortSignal | undefined;
+    let calls = 0;
+    const handler = createQuizReportV2ReceiptLookupHttpHandler(
+      async (_token, _raw, active) => {
+        calls++;
+        signal = active;
+        entered();
+        await new Promise<void>((resolve) => {
+          release = resolve;
+        });
+        return { status: "found", response: saved };
+      },
+      reason === "deadline" ? 100 : 15000,
+    );
+    const pending = handler(request(rawBody, {}, controller.signal));
+    await started;
+    if (reason === "client") controller.abort();
+    const response = await pending;
+    await safeError(response, 503, "NETWORK_UNAVAILABLE", true);
+    assert.equal(signal?.aborted, true);
+    release();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(calls, 1);
+  });
+}
