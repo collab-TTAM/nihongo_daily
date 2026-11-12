@@ -4489,6 +4489,14 @@
           "contains": "late account switch aborts receipt lookup and rejects the old receipt"
         },
         {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "close aborts and drains an in-flight receipt lookup before release"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "runtime close drains caller-owned quiz receipt lookup before disposing Auth observer"
+        },
+        {
           "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_adapter_test.dart",
           "contains": "decodes a found lookup only when its response matches the request"
         },

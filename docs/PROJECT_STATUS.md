@@ -11958,3 +11958,33 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Parent Actions 43246946422 attempt 1: AI, repo-sanity, database and Windows passed all steps. Windows receipt lifecycle marker observed (TEST ONLY). Flutter failed strict Dart format, so analyze, tests and build were skipped.
 - Applied the exact formatter diff emitted by Flutter job 131283119753 to quiz_report_v2_adapter.dart, quiz_report_v2_transport.dart and their two test files. All four post-image blob prefixes match the job diff. Separate diff review, git diff --check and QA inventory passed. Assertions, runtime behavior and CI gates unchanged. Flutter SDK unavailable locally. New head requires full CI.
 - Next inspect all five jobs/steps on the new head, then continue authenticated lookup reconciliation and verified conditional release. Hosted learner proof and Personal Alpha acceptance remain pending. PR #41 stays draft and #13 open.
+
+
+## PR #41 — caller-owned quiz receipt transport drain — 2026-11-12T17:13Z
+
+- Run `core-20261112T1713Z-pr41-receipt-lookup-drain`; branch
+  `automation/issue-11-plan-sdk-integration`; parent
+  `f125502ff6548b91856d6f8e9272b3652a3846cf`; base main
+  `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact parent Actions [43263928614](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43263928614)
+  completed SUCCESS on the exact parent HEAD: all five jobs and every returned
+  step succeeded. This run adds transport/runtime lifecycle coverage only.
+- `QuizReportV2HttpTransport.close()` now revokes new calls, aborts active
+  requests, drains all accepted send operations, and closes only an internally
+  owned HTTP client. The caller-owned runtime awaits that drain before disposing
+  the Auth observer and Supabase SDK client. A late found response after close is
+  rejected; borrowed HTTP clients remain caller-owned.
+- Added TEST ONLY transport and actual-SDK runtime regressions for held lookup,
+  close ordering, late response rejection and no new dispatch after close.
+  Updated `docs/QUIZ_REPORT_API.md`, `docs/QA_SECURITY_MATRIX.md` and the
+  existing quiz-report QA anchors. No new QA case or release claim was added.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/
+  test/build were not run. New exact-head Actions must verify the full Flutter,
+  Windows, database, AI and repository gates before this checkpoint is accepted.
+- No default quiz save, automatic retry, local-history release, Auth strategy/
+  provider, schema/migration/grant/RLS, AI spend, Pro-owned #14/#38/N4/content
+  paths, deployment, merge or release change. Hosted signed-JWT learner A/B,
+  deployed PostgREST/RLS, real remote receipts and Personal Alpha evidence remain
+  outstanding.
+- Next: inspect every latest-attempt job/step on the new exact HEAD; fix only
+  observed failures. If CI remains pending, hand off without duplicate source.

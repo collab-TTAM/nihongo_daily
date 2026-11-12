@@ -666,15 +666,14 @@ final class PersistentSupabaseRuntime
   /// Shutdown preserves confirmed stored credentials; explicit logout clears.
   Future<void> close() => _closing ??= () async {
     _quizReportClosing = true;
-    _quizReportTransport?.dispose();
+    final quizReportTransportClosing =
+        _quizReportTransport?.close() ?? Future<void>.value();
     _commandTerminal = true;
     final commandClosing = _drainCommandProtection();
     final aiClosing =
         _receiptOwner?.close() ??
         _aiOwner.close(); // Revoke before first await.
     account.dispose();
-    final quizReportAuthClosing =
-        _quizReportAuth?.dispose() ?? Future<void>.value();
     _refreshScheduler?.dispose();
     await _noticeSubscription?.cancel();
     _notice = AccountSessionNotice.none;
@@ -691,8 +690,10 @@ final class PersistentSupabaseRuntime
       _grammarOperations.revokeAndDrain(),
       aiClosing,
       commandClosing,
-      quizReportAuthClosing,
+      quizReportTransportClosing,
     ]);
+    // Keep the borrowed SDK Auth observer alive until every report request settles.
+    await _quizReportAuth?.dispose();
     await _port.close();
     _binding.dispose();
     await _client.dispose();

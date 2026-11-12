@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-174 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+175 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -477,3 +477,18 @@ environment, prove gateway signature/expiry or PostgREST/TLS/RLS, or show a
 hosted A/B learner save. The function is undeployed and the default quiz save,
 mastery, SRS mutation and study credit remain disabled. All 14 Personal Alpha
 release groups remain pending.
+
+
+## Caller-owned quiz receipt close/drain — 2026-11-12 UTC
+
+The Flutter baseline now covers transport-level abort/drain of an active replay-only
+lookup and the owning Supabase runtime's shutdown ordering. Close rejects new calls,
+aborts active requests, waits for accepted operations to settle, and keeps the
+borrowed Auth observer alive until that drain completes. A late found response
+after session/runtime revocation is rejected; an unresolved lookup still cannot
+trigger submit/retry or release local history.
+
+The transport test uses a held TEST ONLY HTTP client; the runtime test uses the
+actual pinned Supabase SDK with fixture HTTP/OS. These checks establish component
+lifecycle ordering only, not hosted signed-JWT learner A/B, deployed PostgREST/RLS,
+remote receipt availability, multi-device sync or Personal Alpha acceptance.

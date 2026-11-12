@@ -823,3 +823,24 @@ Flutter Mock HTTP/SDK tests cover exact original bytes, fixed endpoint,
 found/unresolved correlation, no submit fallback and late account replacement.
 This does not prove a deployed Edge Function, hosted signed-JWT/PostgREST/RLS,
 learner A/B, durable multi-device attempt sync or Personal Alpha acceptance.
+
+
+## Caller-owned receipt lookup shutdown — 2026-11-12
+
+The opt-in Dart transport now tracks each active submit/lookup operation. Its
+awaitable `close()` revokes new dispatch immediately, aborts active HTTP requests,
+waits for every accepted operation to settle, and only then closes an HTTP client
+that the transport itself created. A supplied client remains borrowed and is not
+closed by the transport. `dispose()` remains a fire-and-forget compatibility
+wrapper; owners of dependent resources must await `close()`.
+
+`PersistentSupabaseRuntime.close()` first revokes the transport getter and
+starts transport close, then invalidates account readiness. It awaits transport
+drain before disposing the borrowed Supabase Auth observer, closing the SDK port
+or disposing the Supabase client. This preserves the request's cancellation and
+safe-error boundary while preventing an active lookup from outliving its owner.
+
+This is lifecycle/fixture evidence only. Lookup remains read-only; unresolved
+never authorizes submit, retry or local-history release. Default preview/save
+remains disabled. No hosted receipt, learner A/B, PostgREST/RLS or Personal Alpha
+acceptance is inferred.

@@ -684,4 +684,110 @@ void main() {
       );
     },
   );
+  test(
+    'runtime close drains caller-owned quiz receipt lookup before disposing Auth observer',
+    () async {
+      await runtime.close();
+      final lookupSeen = Completer<http.Request>();
+      final lookupResponse = Completer<http.Response>();
+      final lookupRequests = <http.Request>[];
+      final lookupClient = MockClient((request) async {
+        lookupRequests.add(request);
+        lookupSeen.complete(request);
+        return lookupResponse.future;
+      });
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        quizReportHttpClient: lookupClient,
+        quizReportTransportEnabled: true,
+        now: () => now,
+      );
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final transport = runtime.quizReportV2Transport;
+      expect(transport, isNotNull);
+      final report = QuizReportV2Request.fromVocabularyAttempt(
+        VocabularyQuizAttempt.fromJson({
+          'format_version': 2,
+          'event_id': 'a3000000-0000-4000-8000-000000000001',
+          'level': 'N5',
+          'completed_at': now.toIso8601String(),
+          'answers': [
+            {
+              'item_id': 'a4000000-0000-4000-8000-000000000001',
+              'content_version': 2,
+              'selected_id': 'a4000000-0000-4000-8000-000000000001',
+              'choices': [
+                'a4000000-0000-4000-8000-000000000001',
+                'a4000000-0000-4000-8000-000000000002',
+                'a4000000-0000-4000-8000-000000000003',
+                'a4000000-0000-4000-8000-000000000004',
+              ],
+              'choice_content_versions': [2, 1, 2, 1],
+            },
+          ],
+        }),
+      );
+      final pending = transport!.lookupReceipt(report);
+      final outbound = await lookupSeen.future;
+      expect(outbound.url.path, '/functions/v1/quiz-report-v2-lookup');
+      expect(outbound.bodyBytes, report.encodeRawBody());
+
+      var closed = false;
+      final closing = runtime.close().then<void>((_) {
+        closed = true;
+      });
+      final abortable = outbound as http.AbortableRequest;
+      await abortable.abortTrigger!.timeout(const Duration(seconds: 1));
+      expect(closed, isFalse);
+
+      lookupResponse.complete(
+        http.Response(
+          jsonEncode({
+            'status': 'found',
+            'response': {
+              'client_event_id': report.clientEventId,
+              'quiz_type': report.quizType,
+              'practice_kind': report.practiceKind,
+              'jlpt_level': report.jlptLevel,
+              'completed_at': report.completedAt,
+              'answer_count': report.answers.length,
+              'correct_count': report.answers.where((answer) => answer.isCorrect).length,
+            },
+          }),
+          200,
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'cache-control': 'no-store',
+            'x-content-type-options': 'nosniff',
+          },
+        ),
+      );
+      await expectLater(
+        pending,
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'closed session',
+            QuizReportV2TransportCode.unauthorized,
+          ),
+        ),
+      );
+      await closing.timeout(const Duration(seconds: 5));
+      expect(closed, isTrue);
+      expect(lookupRequests, hasLength(1));
+      expect(runtime.quizReportV2Transport, isNull);
+      lookupClient.close();
+    },
+  );
+
 }

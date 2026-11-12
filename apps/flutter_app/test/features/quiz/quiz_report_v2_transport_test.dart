@@ -135,6 +135,30 @@ final class _AbortableMockClient extends http.BaseClient {
   void close() {}
 }
 
+final class _DrainClient extends http.BaseClient {
+  final requestSeen = Completer<http.AbortableRequest>();
+  final release = Completer<void>();
+  var closed = false;
+  var sends = 0;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    sends++;
+    final outbound = request as http.AbortableRequest;
+    requestSeen.complete(outbound);
+    final abortTrigger = outbound.abortTrigger;
+    if (abortTrigger == null) {
+      throw http.ClientException('Missing abort trigger', request.url);
+    }
+    await abortTrigger;
+    await release.future;
+    throw http.ClientException('Aborted', request.url);
+  }
+
+  @override
+  void close() => closed = true;
+}
+
 QuizReportV2HttpTransport _transport({
   required _FakeAuth auth,
   required http.Client client,
@@ -525,4 +549,53 @@ void main() {
       await auth.dispose();
     },
   );
+  test(
+    'close aborts and drains an in-flight receipt lookup before release',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      final client = _DrainClient();
+      final transport = _transport(auth: auth, client: client);
+      final pending = transport.lookupReceipt(report);
+      final outbound = await client.requestSeen.future;
+
+      var closed = false;
+      final closing = transport.close().then<void>((_) {
+        closed = true;
+      });
+      await outbound.abortTrigger!.timeout(const Duration(seconds: 1));
+      expect(closed, isFalse);
+      expect(client.closed, isFalse);
+      await expectLater(
+        transport.lookupReceipt(report),
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (error) => error.code,
+            'code',
+            QuizReportV2TransportCode.networkUnavailable,
+          ),
+        ),
+      );
+      expect(client.sends, 1);
+
+      client.release.complete();
+      await expectLater(
+        pending,
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (error) => error.code,
+            'code',
+            QuizReportV2TransportCode.networkUnavailable,
+          ),
+        ),
+      );
+      await closing.timeout(const Duration(seconds: 1));
+      expect(closed, isTrue);
+      expect(client.closed, isFalse);
+      transport.dispose();
+      client.close();
+      await auth.dispose();
+    },
+  );
+
 }

@@ -131,6 +131,8 @@ final class QuizReportV2HttpTransport {
   final http.Client _client;
   final bool _ownsClient;
   final Set<void Function()> _activeAborts = {};
+  final Set<Completer<void>> _activeOperations = {};
+  Future<void>? _closing;
   bool _closed = false;
 
   Uri get _submitEndpoint =>
@@ -155,6 +157,30 @@ final class QuizReportV2HttpTransport {
       );
 
   Future<T> _send<T>(
+    QuizReportV2Request report, {
+    required Uri endpoint,
+    required T Function(Object?) decodeSuccess,
+  }) {
+    if (_closed) {
+      return Future<T>.error(
+        const QuizReportV2TransportFailure(
+          QuizReportV2TransportCode.networkUnavailable,
+        ),
+      );
+    }
+    final settled = Completer<void>();
+    _activeOperations.add(settled);
+    return _sendActive<T>(
+      report,
+      endpoint: endpoint,
+      decodeSuccess: decodeSuccess,
+    ).whenComplete(() {
+      _activeOperations.remove(settled);
+      if (!settled.isCompleted) settled.complete();
+    });
+  }
+
+  Future<T> _sendActive<T>(
     QuizReportV2Request report, {
     required Uri endpoint,
     required T Function(Object?) decodeSuccess,
@@ -477,13 +503,32 @@ final class QuizReportV2HttpTransport {
     return QuizReportV2TransportFailure(code);
   }
 
-  void dispose() {
-    if (_closed) return;
+  /// Revoke new calls, abort active requests and drain them before release.
+  /// The caller-owned runtime must await this before disposing its Auth observer.
+  Future<void> close() => _closing ??= _close();
+
+  Future<void> _close() async {
     _closed = true;
     for (final abort in _activeAborts.toList()) {
       abort();
     }
-    if (_ownsClient) _client.close();
+    while (_activeOperations.isNotEmpty) {
+      await Future.wait(
+        _activeOperations.map((operation) => operation.future).toList(),
+      );
+    }
+    if (_ownsClient) {
+      try {
+        _client.close();
+      } on Object {
+        // Raw client cleanup details never cross this boundary.
+      }
+    }
+  }
+
+  /// Fire-and-forget compatibility. Resource owners must await [close].
+  void dispose() {
+    unawaited(close());
   }
 }
 
