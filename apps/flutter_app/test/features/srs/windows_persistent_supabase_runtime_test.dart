@@ -41,6 +41,7 @@ void main() {
   late Completer<void>? writeWait;
   late bool failRead;
   late bool failWrite;
+  late bool failWriteAfterCommit;
   late bool failClear;
   late bool failOwnerAcquire;
   late bool failOwnerRelease;
@@ -97,6 +98,7 @@ void main() {
     writeWait = null;
     failRead = false;
     failWrite = false;
+    failWriteAfterCommit = false;
     failClear = false;
     failOwnerAcquire = false;
     failOwnerRelease = false;
@@ -152,6 +154,13 @@ void main() {
           }
           await (writeWait?.future ?? Future<void>.value());
           storedSecret = token;
+          if (failWriteAfterCommit) {
+            throw PlatformException(
+              code: 'PRIVATE_STORAGE',
+              message: 'PRIVATE_REFRESH_SECRET',
+              details: {'token': 'PRIVATE_REFRESH_SECRET'},
+            );
+          }
           return true;
         case 'clear':
           closeOrder.add('vault.clear');
@@ -1231,6 +1240,110 @@ void main() {
       expect(passwordIndex, greaterThan(cleanupIndex));
       expect(savedIndex, greaterThan(passwordIndex));
       expect(profileIndex, greaterThan(savedIndex));
+    },
+  );
+
+  test(
+    'Windows ambiguous rotation write commit and failed clear stay fenced until B retry',
+    () async {
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_A_INITIAL_REFRESH';
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      List<http.Request> authRequests() => requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      List<http.Request> profileRequests() => requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      final initialProfileCount = profileRequests().length;
+      expect(initialProfileCount, 1);
+
+      failWriteAfterCommit = true;
+      failClear = true;
+      refreshSecret = 'TEST_ONLY_A_COMMITTED_WITHOUT_ACK';
+      await expectLater(
+        runtime.refresh(),
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (error) => error.toString().contains('PRIVATE'),
+            'redacted platform failure',
+            false,
+          ),
+        ),
+      );
+
+      expect(storedSecret, 'TEST_ONLY_A_COMMITTED_WITHOUT_ACK');
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(profileRequests(), hasLength(initialProfileCount));
+      final failedWrite = timeline.lastIndexOf('vault.write');
+      final failedCompensation = timeline.lastIndexOf('vault.clear');
+      expect(failedCompensation, greaterThan(failedWrite));
+
+      // A's write committed, but its acknowledgement and compensating clear
+      // both failed. B must remain blocked until an explicit cleanup succeeds.
+      failWriteAfterCommit = false;
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_AMBIGUOUS_A_WRITE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, 'TEST_ONLY_A_COMMITTED_WITHOUT_ACK');
+      expect(authRequests(), hasLength(2));
+      expect(
+        authRequests()
+            .map((request) => request.url.queryParameters['grant_type'])
+            .toList(),
+        ['password', 'refresh_token'],
+      );
+      expect(profileRequests(), hasLength(initialProfileCount));
+      final blockedRetryClear = timeline.lastIndexOf('vault.clear');
+      expect(blockedRetryClear, greaterThan(failedCompensation));
+
+      failClear = false;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      expect(
+        authRequests()
+            .map((request) => request.url.queryParameters['grant_type'])
+            .toList(),
+        ['password', 'refresh_token', 'password'],
+      );
+      expect(profileRequests(), hasLength(initialProfileCount + 1));
+      expect(
+        profileRequests().last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+
+      final successfulClear = timeline.lastIndexOf('vault.clear');
+      final replacementPassword = timeline.lastIndexOf('auth.password');
+      final replacementWrite = timeline.lastIndexOf('vault.write');
+      final replacementProfile = timeline.lastIndexOf('profile.ensure');
+      expect(successfulClear, greaterThan(blockedRetryClear));
+      expect(successfulClear, lessThan(replacementPassword));
+      expect(replacementPassword, lessThan(replacementWrite));
+      expect(replacementWrite, lessThan(replacementProfile));
     },
   );
 

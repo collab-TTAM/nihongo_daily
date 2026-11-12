@@ -1,3 +1,15 @@
+## Windows ambiguous refresh-write acknowledgement and cleanup retry — 2026-11-12T06:13Z
+
+- Branch: `automation/issue-22-atomic-review`; parent HEAD: `477f6919316f5df598715c97c68d2a924de00c02`; base main: `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added a TEST ONLY regression in `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart` using the pinned Supabase SDK and production Dart Windows MethodChannel vault adapter. The channel commits A's rotated refresh secret, then returns a redacted platform failure; the compensating clear also fails. The runtime must remain failed/unready, reject B's password grant/profile, and accept B only after explicit cleanup succeeds, followed by B rotation write before own-profile.
+- Added a QA anchor to the existing `persistent-session-lifecycle` case and clarified `docs/PERSISTENT_SESSION_LIFECYCLE.md` that this is mocked MethodChannel runtime evidence. The separate Windows native probe remains the evidence for actual Credential Manager post-CredWrite fault injection. No new QA case count, production Auth/provider, schema/RLS, migration, default activation, or Pro-owned content change.
+- Parent exact-head Actions [43160796830](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43160796830) completed SUCCESS on `477f6919316f5df598715c97c68d2a924de00c02`: all 6 jobs and every returned step succeeded, including Flutter format/analyze/full suite, Windows native vault/runtime probes, disposable local Supabase and Web release build. This is parent evidence only.
+- Cloud authoring runtime has no pinned Dart/Flutter SDK; local formatter/analyze/test/build were not run. The new source head requires fresh exact-head CI; no test pass is claimed yet.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical two-device sync remain unverified. PR #37 remains Draft; #20/#22/#15 remain open; Pro-owned #14/#38/N4 scope is untouched.
+- Next: inspect every latest-attempt job/step for the new exact HEAD. Fix only observed failures; if only CI remains pending, release the worker with a durable handoff rather than duplicate implementation.
+
+---
+
 ## Pinned Dart formatter correction — 2026-11-12T05:14Z
 
 - Branch: `automation/issue-22-atomic-review`; parent HEAD: `c06bec101f235cc98201759b4354835b0937a057`; base main: `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
