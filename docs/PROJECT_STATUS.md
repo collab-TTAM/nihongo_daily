@@ -3850,3 +3850,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Parent exact-head Actions [43357923821](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43357923821) passed all 6 jobs / 101 returned steps on `ff7b6fc9b7cc6dcdd0b15e12d1b24e3db2b79725`; it is parent evidence only. Cloud authoring runtime has no pinned Dart/Flutter SDK, so local format/analyze/test/build are not run. New exact-head Actions is required; no new-source pass is claimed yet.
 - No Auth strategy/provider, API/schema/RLS, migration, default activation, Pro-owned #14/#38/N4, deployment, merge or release change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, expiry/restart and physical multi-device evidence remain outstanding.
 - Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed failures and keep PR #37 Draft / #20/#22/#15 open until their full hosted acceptance is observed.
+
+
+## PR #37 exact formatter diagnostic — 2026-11-13T05:13Z
+
+- Run `core-20261113T0513Z-pr37-dart-format-owner-gate`; branch `automation/issue-22-atomic-review`; parent HEAD `704cfc056c22e18d9ddace26a11a3807a561f921`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43365290746](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43365290746) completed FAILURE only at pinned Dart 3.35.4 formatting: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart` is the sole formatter-reported file. Repository sanity 12/12, AI boundary 12/12, database 12/12, disposable Supabase integration 13/13 and Windows 17/17 completed SUCCESS. Flutter analyze, full tests and downstream probes were SKIPPED, not passes.
+- Added a temporary read-only formatter-diff diagnostic after the strict formatter step so the next exact-head run prints only the formatter hunk. The strict gate remains unchanged; diagnostic is intended to be removed in the immediate formatter-fix commit.
+- No production behavior, Auth/provider, API/schema/RLS, default activation, Pro-owned #14/#38/N4, deployment or release changes. Cloud authoring runtime has no pinned Dart/Flutter SDK; GitHub Actions is the formatter authority.
+- Next: inspect the diagnostic diff, apply only the exact formatter output to this TEST ONLY file, remove the diagnostic step, then rerun all exact-head checks.

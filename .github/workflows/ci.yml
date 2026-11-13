@@ -178,6 +178,13 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed .
+      - name: Print exact Dart formatter diff for Windows runtime test
+        if: always()
+        shell: bash
+        run: |
+          formatted="$RUNNER_TEMP/windows_persistent_supabase_runtime_test.formatted.dart"
+          dart format --output=show test/features/srs/windows_persistent_supabase_runtime_test.dart > "$formatted"
+          diff -u test/features/srs/windows_persistent_supabase_runtime_test.dart "$formatted" || true
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
         run: flutter test --concurrency=1 --reporter expanded
