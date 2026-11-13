@@ -95,10 +95,15 @@ void main() {
         final a = await store.list(_ownerA);
         final b = await store.list(_ownerB);
         expect(a, hasLength(2));
-        expect(a.first.event.clientEventId, acknowledged.clientEventId);
-        expect(a.first.acknowledged, isTrue);
-        expect(a.last.isPending, isTrue);
-        expect(sameStudyEvent(a.last.event, pending), isTrue);
+        final acknowledgedRecord = a.singleWhere(
+          (row) => row.event.clientEventId == acknowledged.clientEventId,
+        );
+        final pendingRecord = a.singleWhere(
+          (row) => row.event.clientEventId == pending.clientEventId,
+        );
+        expect(acknowledgedRecord.acknowledged, isTrue);
+        expect(pendingRecord.isPending, isTrue);
+        expect(sameStudyEvent(pendingRecord.event, pending), isTrue);
         expect(b, hasLength(1));
         expect(b.single.rejection, DailyPlanErrorCode.validationFailure);
         expect(await store.list('b2000000-0000-4000-8000-000000000003'), isEmpty);

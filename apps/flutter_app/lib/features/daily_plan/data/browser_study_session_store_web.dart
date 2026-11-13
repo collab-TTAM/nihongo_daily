@@ -222,9 +222,210 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
     String eventId,
     DailyPlanErrorCode? rejection,
   ) => _serial(
-    () => _transact(true, (current, replace) {
+    () => _transact<bool>(true, (current, replace) {
       if (!RegExp(
-        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
+
+  @override
+  Future<void> acknowledge(String userId, String eventId) =>
+      _settle(userId, eventId, null);
+
+  @override
+  Future<void> reject(
+    String userId,
+    String eventId,
+    DailyPlanErrorCode code,
+  ) {
+    if (!isDefinitiveStudyRejection(DailyPlanFailure(code))) {
+      return Future.error(const StudySessionStorageFailure());
+    }
+    return _settle(userId, eventId, code);
+  }
+
+  Future<R> _serial<R>(Future<R> Function() operation) {
+    if (!_accepting || _closed) {
+      return Future<R>.error(const StudySessionStorageFailure());
+    }
+    final result = _tail.then((_) async {
+      if (_closed) throw const StudySessionStorageFailure();
+      try {
+        return await operation();
+      } on DailyPlanFailure catch (failure) {
+        if (failure.code == DailyPlanErrorCode.syncConflict) rethrow;
+        throw const StudySessionStorageFailure();
+      } on StudySessionStorageFailure {
+        rethrow;
+      } on Object {
+        throw const StudySessionStorageFailure();
+      }
+    });
+    _tail = result.then<void>((_) {}, onError: (Object _, StackTrace __) {});
+    return result;
+  }
+
+  Future<R> _transact<R>(
+    bool write,
+    R Function(String? current, void Function(String) replace) operation,
+  ) {
+    if (_closed) return Future<R>.error(const StudySessionStorageFailure());
+    final done = Completer<R>();
+    Object? failure;
+    late R value;
+    var ready = false;
+    _Transaction? transaction;
+    try {
+      final tx = _database.transaction(
+        'journal',
+        write ? 'readwrite' : 'readonly',
+      );
+      transaction = tx;
+      void fail() {
+        if (!done.isCompleted) {
+          done.completeError(
+            failure ?? const StudySessionStorageFailure(),
+          );
+        }
+      }
+
+      tx.onabort = ((JSAny? _) {
+        fail();
+      }).toJS;
+      tx.onerror = ((JSAny? _) {
+        failure ??= const StudySessionStorageFailure();
+        // Browser default aborts; never preventDefault or claim success.
+      }).toJS;
+      tx.oncomplete = ((JSAny? _) {
+        if (done.isCompleted) return;
+        if (!ready || failure != null || _closed) {
+          fail();
+        } else {
+          // Only transaction completion commits a study-session write.
+          done.complete(value);
+        }
+      }).toJS;
+
+      final store = tx.objectStore('journal');
+      final read = store.read('state'.toJS);
+      read.onerror = ((JSAny? _) {
+        failure ??= const StudySessionStorageFailure();
+      }).toJS;
+      read.onsuccess = ((JSAny? _) {
+        if (done.isCompleted) return;
+        try {
+          final raw = read.result;
+          if (raw != null && !raw.isA<JSString>()) {
+            throw const StudySessionStorageFailure();
+          }
+          // Queue read/modify/write synchronously inside the request callback;
+          // no await/microtask gap can deactivate the IndexedDB transaction.
+          value = operation(
+            raw == null ? null : (raw as JSString).toDart,
+            (next) {
+              if (!write || _closed) {
+                throw const StudySessionStorageFailure();
+              }
+              store.put(next.toJS, 'state'.toJS);
+            },
+          );
+          ready = true;
+        } on Object catch (error) {
+          failure = error is DailyPlanFailure &&
+                  error.code == DailyPlanErrorCode.syncConflict
+              ? error
+              : const StudySessionStorageFailure();
+          try {
+            tx.abort();
+          } on Object {
+            fail();
+          }
+        }
+      }).toJS;
+    } on Object {
+      failure = const StudySessionStorageFailure();
+      try {
+        transaction?.abort();
+      } on Object {
+        // The transaction may already have completed or aborted.
+      }
+      if (!done.isCompleted) {
+        done.completeError(const StudySessionStorageFailure());
+      }
+    }
+    return done.future;
+  }
+
+  void _closeDatabase() {
+    if (_closed) return;
+    _accepting = false;
+    _closed = true;
+    try {
+      _database.close();
+    } on Object {
+      // No raw browser exception crosses the storage boundary.
+    }
+  }
+
+  @override
+  Future<void> close() => _closing ??= _close();
+
+  Future<void> _close() async {
+    _accepting = false;
+    await _tail;
+    if (!_closed) _closeDatabase();
+  }
+}
+
+Future<_Database> _openDatabase(String databaseName) async {
+  if (!RegExp(r'^[a-z0-9-]{1,80}$').hasMatch(databaseName)) {
+    throw const StudySessionStorageFailure();
+  }
+  final completer = Completer<_Database>();
+  try {
+    final factory = _factory;
+    if (factory == null) throw const StudySessionStorageFailure();
+    final request = factory.open(databaseName, 1);
+    void fail() {
+      if (!completer.isCompleted) {
+        completer.completeError(const StudySessionStorageFailure());
+      }
+    }
+
+    request.onupgradeneeded = ((JSAny? _) {
+      try {
+        _Database(request.result! as JSObject).createObjectStore('journal');
+      } on Object {
+        try {
+          request.transaction?.abort();
+        } on Object {
+          // The browser may already have aborted the upgrade.
+        }
+        fail();
+      }
+    }).toJS;
+    request.onerror = ((JSAny? _) {
+      fail();
+    }).toJS;
+    request.onblocked = ((JSAny? _) {
+      fail();
+    }).toJS;
+    request.onsuccess = ((JSAny? _) {
+      try {
+        final database = _Database(request.result! as JSObject);
+        if (completer.isCompleted) {
+          database.close(); // A late success cannot leak a connection.
+        } else {
+          completer.complete(database);
+        }
+      } on Object {
+        fail();
+      }
+    }).toJS;
+    return await completer.future;
+  } on Object {
+    throw const StudySessionStorageFailure();
+  }
+}
+,
       ).hasMatch(eventId)) {
         throw const StudySessionStorageFailure();
       }
@@ -242,7 +443,7 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
       if (!previous.isPending) {
         if (previous.acknowledged == nextRecord.acknowledged &&
             previous.rejection == nextRecord.rejection) {
-          return;
+          return true;
         }
         throw const StudySessionStorageFailure();
       }
@@ -251,7 +452,8 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
       final encoded = _encodeState(next);
       _checkCapacity(next, encoded);
       replace(encoded);
-    }),
+      return true;
+    }).then<void>((_) {}),
   );
 
   @override
