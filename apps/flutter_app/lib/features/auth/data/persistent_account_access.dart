@@ -56,6 +56,9 @@ final class PersistentAccountAccess implements AccountAccess {
   bool _failed = false;
   bool _closed = false;
   bool _authInFlight = false;
+  // True once an SDK restore/login/refresh may have installed or rotated a session.
+  // Closing before that dispatch is cancellation of local startup, not logout.
+  bool _authMutationDispatched = false;
   bool _cancelledOperation = false;
   // A failed sign-out/rotation cleanup must be retried before close releases
   // this target owner; otherwise a stale OS credential could survive shutdown.
@@ -151,6 +154,7 @@ final class PersistentAccountAccess implements AccountAccess {
         return;
       }
       _noSessionClearPending = false;
+      _authMutationDispatched = true;
       if (secret == null) {
         _fail();
         return;
@@ -256,6 +260,7 @@ final class PersistentAccountAccess implements AccountAccess {
         _notify();
         return;
       }
+      _authMutationDispatched = true;
       await _sdk.restore(secret);
       await _settle();
     });
@@ -298,9 +303,12 @@ final class PersistentAccountAccess implements AccountAccess {
       _authInFlight = false;
       try {
         if (_closed || _cancelledOperation) {
-          // Keep the operation owned until cleanup completes: a new login must
-          // not race the sign-out/clear of this cancelled Auth request.
-          await _cleanup();
+          // A close during owner acquisition or vault read has not dispatched
+          // Auth and must preserve the untouched saved refresh secret. Once an
+          // SDK mutation may have installed/rotated a session, drain and clear it.
+          if (_authMutationDispatched || _cleanupRequired) {
+            await _cleanup();
+          }
           // Keep readiness revoked until an explicit logout has drained this
           // cancelled Auth operation and its final cleanup.
           if (!_closed && !_failed && _logout == null) {
@@ -358,6 +366,7 @@ final class PersistentAccountAccess implements AccountAccess {
         _failed = false;
         _allowed = true;
       }
+      _authMutationDispatched = true;
       await _sdk.signIn(email, password);
       await _settle();
     });
@@ -371,6 +380,7 @@ final class PersistentAccountAccess implements AccountAccess {
     }
     _revoke(SessionPersistencePhase.saving);
     return _runTracked(() async {
+      _authMutationDispatched = true;
       await _sdk.refresh();
       await _settle();
     });
@@ -400,6 +410,7 @@ final class PersistentAccountAccess implements AccountAccess {
       throw _failure();
     }
     _cleanupRequired = false;
+    _authMutationDispatched = false;
   }
 
   @override

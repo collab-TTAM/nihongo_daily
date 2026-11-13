@@ -154,7 +154,7 @@ void main() {
   });
 
   test(
-    'caller close waits for a pending vault read and rejects late restore',
+    'caller close preserves a saved refresh token before Auth restore dispatch',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
       backend.readWait = Completer<void>();
@@ -188,11 +188,35 @@ void main() {
       await closing;
 
       expect(runtime.persistence.phase, SessionPersistencePhase.closed);
-      expect(backend.operations, ['read', 'clear']);
-      expect(backend.secret, isNull);
+      expect(backend.operations, ['read']);
+      expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
       expect(
         requests.where((request) => request.url.path == '/auth/v1/token'),
         isEmpty,
+      );
+      expect(
+        requests.where((request) => request.url.path.contains('ensure_profile')),
+        isEmpty,
+      );
+
+      // A fresh owner can still restore the untouched token. The cancelled
+      // startup never sent it to Auth, so clearing it would sign out the learner.
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+      await runtime.start();
+      await waitForReady();
+      expect(backend.operations, ['read', 'read', 'write']);
+      expect(backend.secret, isNot('TEST_ONLY_SAVED_SDK'));
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
       );
       expect(
         requests.where(

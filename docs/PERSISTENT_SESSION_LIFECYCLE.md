@@ -917,3 +917,30 @@ owned SDK sign-out and exact-project vault clear before a replacement password
 grant, then persists the new refresh token before own-profile readiness. The
 gate does not infer identity from a stored token and does not bypass the
 session-generation or storage barriers.
+
+
+## Caller close before the first Auth dispatch preserves the saved session
+
+Closing an owned runtime while Windows native owner acquisition or the subsequent
+vault read is still pending is cancellation of local startup, not logout. No
+refresh token has been sent to Supabase and no SDK session can be installed by
+that startup. The caller waits for the pending operation, releases the native
+owner lease, and preserves the previously confirmed Credential Manager value.
+A fresh caller can then acquire the same project lease, send the saved refresh
+token to Supabase, persist the server-rotated value, and wait for its own profile
+before exposing study readiness.
+
+The boundary changes once an SDK restore, password grant, or refresh request is
+dispatched. A close during that in-flight mutation must still drain the late SDK
+response, sign out the owned client, and clear the exact project slot before
+releasing its owner; a failed cleanup retains ownership for explicit retry.
+Explicit logout remains destructive and continues to clear before replacement
+password authentication.
+
+The pinned-SDK/MockClient test now closes during a held vault read and proves
+that the token remains available to a replacement runtime. The Windows
+MethodChannel regression holds native owner acquisition itself, closes the
+caller, verifies no read/Auth/profile/clear occurred and the native lease was
+released, then restores the saved token through a fresh caller and checks
+rotation-write-before-profile ordering. These are TEST ONLY lifecycle/bridge
+fixtures, not hosted signed-JWT learner A/B or physical restart proof.

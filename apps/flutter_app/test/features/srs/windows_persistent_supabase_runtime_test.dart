@@ -46,6 +46,7 @@ void main() {
   late bool failClear;
   late bool failOwnerAcquire;
   late bool failOwnerRelease;
+  late Completer<void>? ownerAcquireWait;
   late bool rejectRefresh;
   final requests = <http.Request>[];
   final timeline = <String>[];
@@ -103,6 +104,7 @@ void main() {
     failClear = false;
     failOwnerAcquire = false;
     failOwnerRelease = false;
+    ownerAcquireWait = null;
     rejectRefresh = false;
 
     messenger.setMockMethodCallHandler(channel, (call) async {
@@ -115,6 +117,7 @@ void main() {
         case 'acquireOwner':
           ownerLeaseCalls.add(call.method);
           startupOrder.add('owner.acquire');
+          await (ownerAcquireWait?.future ?? Future<void>.value());
           if (failOwnerAcquire) return false;
           return true;
         case 'releaseOwner':
@@ -321,6 +324,72 @@ void main() {
       await runtime.close();
       expect(ownerLeaseCalls, ['acquireOwner', 'acquireOwner', 'releaseOwner']);
       expect(closeOrder.last, 'owner.release');
+    },
+  );
+
+  test(
+    'Windows caller close during owner acquisition preserves saved refresh token',
+    () async {
+      storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
+      ownerAcquireWait = Completer<void>();
+
+      final startup = PersistentAccountStartup(runtime);
+      final starting = startup.start();
+      final startFailure = expectLater(
+        starting,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(startupOrder, ['owner.acquire']);
+      expect(timeline, isEmpty);
+      expect(requests, isEmpty);
+
+      final closing = runtime.close();
+      await fixture.flush();
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
+      expect(closeOrder, isEmpty);
+
+      ownerAcquireWait!.complete();
+      await startFailure;
+      await closing;
+
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder, ['owner.release']);
+      expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
+      expect(timeline, isEmpty);
+      expect(requests, isEmpty);
+
+      // A replacement owner must be able to restore the untouched secret.
+      ownerAcquireWait = null;
+      vault = createWindowsSessionCredentialVault(wire.origin);
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+      await runtime.start();
+      await waitForReady();
+
+      expect(storedSecret, refreshSecret);
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(
+        timeline.indexOf('auth.refresh'),
+        greaterThan(timeline.indexOf('vault.read')),
+      );
+      expect(
+        timeline.indexOf('vault.write'),
+        greaterThan(timeline.indexOf('auth.refresh')),
+      );
+      expect(
+        timeline.indexOf('profile.ensure'),
+        greaterThan(timeline.indexOf('vault.write')),
+      );
     },
   );
 
