@@ -271,7 +271,8 @@ void main() {
       expect(
         startup.canOfferLogin,
         isFalse,
-        reason: 'password login must remain fenced until the native owner is acquired',
+        reason:
+            'password login must remain fenced until the native owner is acquired',
       );
       expect(ownerLeaseCalls, ['acquireOwner']);
       expect(startupOrder, ['owner.acquire']);
@@ -468,7 +469,8 @@ void main() {
       expect(
         PersistentAccountStartup(runtime).canOfferLogin,
         isTrue,
-        reason: 'a recoverable read failure may offer login while the owner lease is held',
+        reason:
+            'a recoverable read failure may offer login while the owner lease is held',
       );
 
       // A transient read error is non-destructive. Explicit login on this same

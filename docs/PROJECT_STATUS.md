@@ -3859,3 +3859,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added a temporary read-only formatter-diff diagnostic after the strict formatter step so the next exact-head run prints only the formatter hunk. The strict gate remains unchanged; diagnostic is intended to be removed in the immediate formatter-fix commit.
 - No production behavior, Auth/provider, API/schema/RLS, default activation, Pro-owned #14/#38/N4, deployment or release changes. Cloud authoring runtime has no pinned Dart/Flutter SDK; GitHub Actions is the formatter authority.
 - Next: inspect the diagnostic diff, apply only the exact formatter output to this TEST ONLY file, remove the diagnostic step, then rerun all exact-head checks.
+
+
+## PR #37 pinned Dart formatter correction — 2026-11-13T05:22Z
+
+- Run core-20261113T0522Z-pr37-apply-pinned-dart-format-fix; branch automation/issue-22-atomic-review; parent HEAD f8bde2486d376f57c49ba12766633b2041539f54; base main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+- Exact-head diagnostic Actions 43371363574 (https://github.com/collab-TTAM/nihongo_daily/actions/runs/43371363574), attempt 1, targets this parent and completed FAILURE only at strict Dart 3.35.4 formatting. The read-only diagnostic identified two required wraps in the TEST ONLY Windows runtime test: owner-acquisition reason and recoverable-read reason. The temporary diagnostic step itself succeeded. Repository sanity 12/12, AI boundary 12/12, database 12/12, disposable Supabase integration 13/13 and Windows 17/17 succeeded; Flutter analyze, full tests and downstream checks were SKIPPED, not passes.
+- This correction applies only those two formatter wraps and removes the temporary diagnostic. No test assertion, expected behavior, production Auth, provider, API/schema/RLS, default activation, Pro-owned #14/#38/N4, deployment or release change.
+- Cloud authoring runtime has no pinned Dart/Flutter SDK; local format/analyze/test/build were not run. The new exact-head CI must prove formatter, analyzer, full Flutter suite, Web build and all other required jobs.
+- Next: inspect every latest-attempt job/step on the corrected HEAD; continue the caller-owned Windows Auth lifecycle only after CI evidence. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted restart/expiry and physical two-device sync remain outstanding.
