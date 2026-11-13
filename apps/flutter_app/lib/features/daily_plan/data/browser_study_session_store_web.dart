@@ -161,10 +161,7 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
     ]);
   }
 
-  void _checkCapacity(
-    Map<String, StoredStudySession> records,
-    String encoded,
-  ) {
+  void _checkCapacity(Map<String, StoredStudySession> records, String encoded) {
     final pending = records.values.where((record) => record.isPending).length;
     if (records.length > maxEvents ||
         utf8.encode(encoded).length + pending * terminalReservation >
@@ -177,17 +174,18 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
   Future<List<StoredStudySession>> list(String userId) => _serial(
     () => _transact(false, (current, _) {
       final owner = ReviewSession(userId: userId).userId;
-      final result = _decodeState(current).values
-          .where((record) => record.userId == owner)
-          .toList()
-        ..sort((left, right) {
-          final time = left.event.startedAt.compareTo(right.event.startedAt);
-          return time != 0
-              ? time
-              : left.event.clientEventId.compareTo(
-                  right.event.clientEventId,
-                );
-        });
+      final result =
+          _decodeState(
+            current,
+          ).values.where((record) => record.userId == owner).toList()..sort((
+            left,
+            right,
+          ) {
+            final time = left.event.startedAt.compareTo(right.event.startedAt);
+            return time != 0
+                ? time
+                : left.event.clientEventId.compareTo(right.event.clientEventId);
+          });
       return List<StoredStudySession>.unmodifiable(result);
     }),
   );
@@ -260,11 +258,7 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
       _settle(userId, eventId, null);
 
   @override
-  Future<void> reject(
-    String userId,
-    String eventId,
-    DailyPlanErrorCode code,
-  ) {
+  Future<void> reject(String userId, String eventId, DailyPlanErrorCode code) {
     if (!isDefinitiveStudyRejection(DailyPlanFailure(code))) {
       return Future.error(const StudySessionStorageFailure());
     }
@@ -310,9 +304,7 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
       transaction = tx;
       void fail() {
         if (!done.isCompleted) {
-          done.completeError(
-            failure ?? const StudySessionStorageFailure(),
-          );
+          done.completeError(failure ?? const StudySessionStorageFailure());
         }
       }
 
@@ -347,18 +339,18 @@ final class _IndexedDbStudySessionStore implements BrowserStudySessionStore {
           }
           // Queue read/modify/write synchronously inside the request callback;
           // no await/microtask gap can deactivate the IndexedDB transaction.
-          value = operation(
-            raw == null ? null : (raw as JSString).toDart,
-            (next) {
-              if (!write || _closed) {
-                throw const StudySessionStorageFailure();
-              }
-              store.put(next.toJS, 'state'.toJS);
-            },
-          );
+          value = operation(raw == null ? null : (raw as JSString).toDart, (
+            next,
+          ) {
+            if (!write || _closed) {
+              throw const StudySessionStorageFailure();
+            }
+            store.put(next.toJS, 'state'.toJS);
+          });
           ready = true;
         } on Object catch (error) {
-          failure = error is DailyPlanFailure &&
+          failure =
+              error is DailyPlanFailure &&
                   error.code == DailyPlanErrorCode.syncConflict
               ? error
               : const StudySessionStorageFailure();

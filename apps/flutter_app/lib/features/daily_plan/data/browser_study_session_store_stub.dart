@@ -1,8 +1,7 @@
 import 'durable_study_session_repository.dart';
 
 /// Browser-only storage capability. Native callers use NativeStudySessionJournal.
-abstract interface class BrowserStudySessionStore
-    implements StudySessionStore {
+abstract interface class BrowserStudySessionStore implements StudySessionStore {
   Future<void> close();
 }
 

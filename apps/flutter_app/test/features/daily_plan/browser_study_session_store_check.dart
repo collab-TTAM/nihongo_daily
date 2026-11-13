@@ -49,10 +49,16 @@ void main() {
           first.stage(_ownerB, original),
         ]);
         expect(saved, hasLength(3));
-        expect(saved.take(2).every((row) => sameStudyEvent(row.event, original)), isTrue);
+        expect(
+          saved.take(2).every((row) => sameStudyEvent(row.event, original)),
+          isTrue,
+        );
         expect(await first.list(_ownerA), hasLength(1));
         expect(await second.list(_ownerB), hasLength(1));
-        expect(await first.list('b2000000-0000-4000-8000-000000000003'), isEmpty);
+        expect(
+          await first.list('b2000000-0000-4000-8000-000000000003'),
+          isEmpty,
+        );
         await expectLater(
           second.stage(_ownerA, _event(1, area: DailyPlanArea.kanji)),
           throwsA(
@@ -63,7 +69,10 @@ void main() {
             ),
           ),
         );
-        expect((await first.list(_ownerA)).single.event.area, DailyPlanArea.vocabulary);
+        expect(
+          (await first.list(_ownerA)).single.event.area,
+          DailyPlanArea.vocabulary,
+        );
       } finally {
         await first.close();
         await second.close();
@@ -106,7 +115,10 @@ void main() {
         expect(sameStudyEvent(pendingRecord.event, pending), isTrue);
         expect(b, hasLength(1));
         expect(b.single.rejection, DailyPlanErrorCode.validationFailure);
-        expect(await store.list('b2000000-0000-4000-8000-000000000003'), isEmpty);
+        expect(
+          await store.list('b2000000-0000-4000-8000-000000000003'),
+          isEmpty,
+        );
       } finally {
         await store.close();
       }
@@ -114,7 +126,9 @@ void main() {
   );
 
   test('terminal transitions are idempotent and pending-only', () async {
-    final store = await openBrowserStudySessionStore(databaseName: name('terminal'));
+    final store = await openBrowserStudySessionStore(
+      databaseName: name('terminal'),
+    );
     try {
       final acknowledged = _event(5);
       await store.stage(_ownerA, acknowledged);
@@ -181,7 +195,9 @@ void main() {
   });
 
   test('512-event bound and invalid database names fail closed', () async {
-    final store = await openBrowserStudySessionStore(databaseName: name('bounds'));
+    final store = await openBrowserStudySessionStore(
+      databaseName: name('bounds'),
+    );
     try {
       await Future.wait([
         for (var i = 1; i <= 512; i++) store.stage(_ownerA, _event(i)),
