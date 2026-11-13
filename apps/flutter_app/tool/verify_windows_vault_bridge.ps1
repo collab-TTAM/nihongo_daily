@@ -3,19 +3,21 @@ $scope = 'bridge-' + [Guid]::NewGuid().ToString('N')
 $exe = (Resolve-Path 'build/windows/x64/runner/Release/nihongo_daily.exe').Path
 
 function Invoke-Bridge([string] $phase) {
+    Write-Output "Windows bridge phase started: $phase"
     $process = Start-Process -FilePath $exe -ArgumentList @($phase, $scope) -WorkingDirectory (Split-Path $exe) -PassThru
     try {
         if (-not $process.WaitForExit(60000)) {
             $process.Kill()
             $process.WaitForExit()
-            throw 'Windows bridge phase timed out'
+            throw "Windows bridge phase '$phase' timed out"
         }
         if ($process.ExitCode -ne 0) {
-            throw 'Windows bridge phase failed'
+            throw "Windows bridge phase '$phase' failed (exit code $($process.ExitCode))"
         }
     } finally {
         $process.Dispose()
     }
+    Write-Output "Windows bridge phase passed: $phase"
 }
 
 function Wait-ExitMarker([System.Diagnostics.Process] $process, [string] $path) {

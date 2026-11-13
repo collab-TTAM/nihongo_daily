@@ -379,8 +379,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       var failed = false;
       try {
         await runtime.start();
-      } on SessionVaultFailure catch (error) {
-        failed = error.code == SessionVaultError.unavailable;
+      } on ReviewTransportFailure catch (error) {
+        // PersistentAccountAccess deliberately maps storage faults to its
+        // fixed public UNAUTHORIZED boundary; raw vault errors stay internal.
+        failed = error.code == ReviewErrorCode.unauthorized;
       }
       _check(
         failed &&
