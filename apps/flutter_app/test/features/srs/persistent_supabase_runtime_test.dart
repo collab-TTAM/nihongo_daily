@@ -224,7 +224,7 @@ void main() {
         requests.where(
           (request) => request.url.path.contains('ensure_profile'),
         ),
-        isEmpty,
+        hasLength(1),
       );
     },
   );
