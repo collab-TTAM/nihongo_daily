@@ -177,23 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Show pinned Dart formatter diff for persistent Supabase runtime test (read-only)
-        shell: bash
-        run: |
-          set -euo pipefail
-          path=test/features/srs/persistent_supabase_runtime_test.dart
-          temp_dir="$(mktemp -d)"
-          trap 'rm -rf "$temp_dir"' EXIT
-          formatted="$temp_dir/$(basename "$path")"
-          cp "$path" "$formatted"
-          dart format "$formatted" >/dev/null
-          if diff -u --label "$path (source)" --label "$path (Dart 3.35.4)" "$path" "$formatted"; then
-            echo "::notice::No formatter diff for $path"
-          else
-            diff_status=$?
-            if [ "$diff_status" -ne 1 ]; then exit "$diff_status"; fi
-            echo "::notice::Formatter diff shown for $path"
-          fi
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

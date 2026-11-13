@@ -195,7 +195,9 @@ void main() {
         isEmpty,
       );
       expect(
-        requests.where((request) => request.url.path.contains('ensure_profile')),
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
         isEmpty,
       );
 
