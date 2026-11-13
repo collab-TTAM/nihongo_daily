@@ -9,7 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
-import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
@@ -253,16 +252,27 @@ void main() {
       failOwnerAcquire = true;
 
       final startup = PersistentAccountStartup(runtime);
-      final controller = AccountStartupController(() async => startup);
-      await controller.start();
-
-      expect(controller.phase, AccountStartupPhase.restoreError);
+      await expectLater(
+        startup.start(),
+        throwsA(
+          isA<ReviewTransportFailure>()
+              .having(
+                (error) => error.code,
+                'safe error code',
+                ReviewErrorCode.unauthorized,
+              )
+              .having(
+                (error) => error.toString().contains('PRIVATE_REFRESH_SECRET'),
+                'redacted owner error',
+                false,
+              ),
+        ),
+      );
       expect(
-        controller.canOfferLogin,
+        startup.canOfferLogin,
         isFalse,
         reason: 'password login must remain fenced until the native owner is acquired',
       );
-      expect(controller.account, isNull);
       expect(ownerLeaseCalls, ['acquireOwner']);
       expect(startupOrder, ['owner.acquire']);
       expect(timeline, isEmpty);
@@ -271,7 +281,7 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
 
-      await controller.close();
+      await runtime.close();
 
       expect(ownerLeaseCalls, ['acquireOwner']);
       expect(closeOrder, isEmpty);
