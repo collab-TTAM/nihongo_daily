@@ -3832,3 +3832,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - No assertion/test case, production behavior, Auth/provider strategy, API/schema/RLS, default activation, Pro-owned #14/#38/N4 content or release configuration changed. No local Dart/Flutter SDK is available in the cloud authoring runtime; new format/analyze/test/build evidence must come from exact-head CI.
 - Complete parent tree was read recursively and untruncated: 335 entries. First correction tree preserved every path/mode/type and every untouched blob; only the two TEST ONLY Dart files and CI workflow changed. create_tree used exact parent base_tree_sha 103882e6ea98115e6f58539558d88d85d2726029; final status update is recorded in the PR checkpoint comment.
 - Next: inspect every latest-attempt job and step on the corrected PR HEAD. Fix only observed failures; do not count skipped/pending jobs as passes. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real expiry/restart and physical multi-device proof remain outstanding; keep #37 Draft and #20/#22/#15 open.
+
+
+## Flutter analyzer repair — 2026-11-13T03:13Z
+
+- Exact source HEAD before repair: `8a52d430d7723f6b0e5e69ed0d809816b357ca0e`; branch `automation/issue-22-atomic-review`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43350804396](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43350804396), attempt 1, completed FAILURE only in the Flutter job. Repository sanity, database, AI boundary, disposable Supabase integration and Windows all completed SUCCESS. Flutter dependency install and strict Dart 3.35.4 format passed; `flutter analyze` found one unused import at `tool/windows_runtime_fixture.dart:13`. Full Flutter suite and all downstream Flutter checks were SKIPPED, not passes.
+- Removed only the unused TEST ONLY import of `session_credential_vault.dart`; no fixture behavior, assertions, production code or security gates changed. Cloud authoring runtime has no Flutter SDK; this repair has not been locally analyzed or tested.
+- Next: inspect every latest-attempt job and step on the new exact HEAD. Keep PR #37 Draft and #20/#22/#15 open pending hosted signed-JWT learner A/B, deployed PostgREST/RLS, restart/expiry and physical multi-device evidence. Pro-owned #14/#38/N4 remains excluded.
