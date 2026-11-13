@@ -280,8 +280,10 @@ Future<void> verifyLifecycle(String scenario) async {
         check(
           backend.secret == null &&
               sdk.session == null &&
-              access.currentSession == null,
-          'late restore resurrected',
+              access.currentSession == null &&
+              sdk.logouts == 2 &&
+              backend.clears == 2,
+          'late restore resurrected or final cleanup did not drain',
         );
       } else {
         backend.writeWait = Completer();
@@ -492,8 +494,12 @@ Future<void> verifyLifecycle(String scenario) async {
       await error;
       await logout;
       check(
-        sdk.session == null && backend.secret == null,
-        'late cleanup retained credentials',
+        sdk.session == null &&
+            backend.secret == null &&
+            sdk.logouts == 2 &&
+            backend.clears == 2 &&
+            backend.operations.join(' -> ') == 'read -> clear -> clear',
+        'late cleanup retained credentials or skipped the post-Auth clear',
       );
       return;
     }
@@ -614,8 +620,10 @@ Future<void> verifyLifecycle(String scenario) async {
         check(
           backend.secret == null &&
               sdk.session == null &&
-              access.currentSession == null,
-          'late login resurrected',
+              access.currentSession == null &&
+              (scenario != 'logout-during-login' ||
+                  (sdk.logouts == 2 && backend.clears == 2)),
+          'late login resurrected or final cleanup did not drain',
         );
       }
       return;

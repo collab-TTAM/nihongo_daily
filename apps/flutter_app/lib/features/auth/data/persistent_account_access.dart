@@ -43,6 +43,7 @@ final class PersistentAccountAccess implements AccountAccess {
   late final Stream<void> sessionChanges = _events.stream;
   StreamSubscription<void>? _subscription;
   Future<void> _tail = Future<void>.value();
+  Future<void> _cleanupTail = Future<void>.value();
   Future<void>? _operation;
   Future<void>? _logout;
   Future<void>? _close;
@@ -386,8 +387,24 @@ final class PersistentAccountAccess implements AccountAccess {
     });
   }
 
-  Future<void> _cleanup() async {
+  Future<void> _cleanup({bool authOperationDrained = true}) {
+    // A logout may run while restore/login/refresh is still awaiting the SDK.
+    // Serialize its immediate revocation with the post-response cleanup so a
+    // late Auth mutation cannot race a replacement sign-in or vault write.
+    final result = _cleanupTail.then(
+      (_) => _performCleanup(authOperationDrained: authOperationDrained),
+    );
+    _cleanupTail = result.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    return result;
+  }
+
+  Future<void> _performCleanup({required bool authOperationDrained}) async {
     if (!_vaultOwnerAcquired) throw _failure();
+    final preserveLateAuthCleanup =
+        !authOperationDrained && (_authMutationDispatched || _cleanupRequired);
     var failed = false;
     // Mark cleanup before SDK sign-out; its duplicate/late null-session events
     // must not enqueue a second clear after a replacement login has started.
@@ -409,8 +426,12 @@ final class PersistentAccountAccess implements AccountAccess {
       _fail();
       throw _failure();
     }
-    _cleanupRequired = false;
-    _authMutationDispatched = false;
+    // The first clear is not final while an SDK mutation is still in flight:
+    // its late response may install a new session/rotated secret. Keep the
+    // cleanup obligation so _run's drained-operation path signs out and clears
+    // again before the waiting logout can settle.
+    _cleanupRequired = preserveLateAuthCleanup;
+    if (authOperationDrained) _authMutationDispatched = false;
   }
 
   @override
@@ -423,7 +444,7 @@ final class PersistentAccountAccess implements AccountAccess {
     final operation = _operation;
     final result = () async {
       try {
-        await _cleanup();
+        await _cleanup(authOperationDrained: operation == null);
         // The first clear revokes the visible session immediately, but a
         // cancelled SDK request may still return and install a late session.
         // Keep logout pending until that request's final sign-out and clear

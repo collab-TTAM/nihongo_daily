@@ -944,3 +944,28 @@ caller, verifies no read/Auth/profile/clear occurred and the native lease was
 released, then restores the saved token through a fresh caller and checks
 rotation-write-before-profile ordering. These are TEST ONLY lifecycle/bridge
 fixtures, not hosted signed-JWT learner A/B or physical restart proof.
+
+
+## Logout while a caller-owned Auth mutation is in flight
+
+Explicit logout revokes the visible account immediately and clears the exact
+project credential slot. If restore, password sign-in or refresh has already
+been dispatched, that first clear is provisional: the SDK request may still
+complete late and install a session or rotate its refresh token. The runtime
+therefore retains a cleanup obligation while the operation drains, serializes
+the follow-up SDK sign-out and vault clear after that response, and keeps the
+logout future pending until the second cleanup finishes. Replacement password
+authentication remains blocked for the whole drain.
+
+The cleanup queue prevents the immediate logout and late-response cleanup from
+running concurrent SDK sign-outs or racing vault writes. If either cleanup
+fails, readiness remains revoked, the native project owner is retained and the
+existing explicit cleanup retry path is required before another account can be
+accepted. This does not add automatic Auth retries, a new provider, plaintext
+fallback or default runtime activation.
+
+The TEST ONLY lifecycle matrix asserts two SDK sign-outs and two exact-slot
+clears for logout during restore, logout during password login, and login
+attempts while the late cleanup is held. The final clear is observed only after
+the held Auth response drains. These fixture assertions are not hosted
+signed-JWT learner or physical Windows restart evidence.
