@@ -4,6 +4,7 @@ import 'dart:js_interop';
 
 import '../../srs/data/review_repository.dart';
 import '../domain/completed_study_session.dart';
+import 'browser_study_session_store_stub.dart' show BrowserStudySessionStore;
 import 'daily_plan_repository.dart';
 import 'durable_study_session_repository.dart';
 
