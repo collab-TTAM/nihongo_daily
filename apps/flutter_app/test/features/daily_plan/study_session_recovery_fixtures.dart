@@ -103,6 +103,8 @@ final class StudyFaultStore implements StudySessionStore {
   bool failAck = false;
   Completer<void>? stageWait;
   Completer<void>? staged;
+  void Function()? onStage;
+  int stageCalls = 0;
   @override
   Future<List<StoredStudySession>> list(String userId) async {
     if (failList) throw StateError('PRIVATE DISK PATH');
@@ -114,7 +116,9 @@ final class StudyFaultStore implements StudySessionStore {
     String userId,
     CompletedStudySession event,
   ) async {
+    stageCalls++;
     if (failStage) throw StateError('PRIVATE DISK PATH');
+    onStage?.call();
     final record = await base.stage(userId, event);
     if (!(staged?.isCompleted ?? true)) staged!.complete();
     await stageWait?.future;
@@ -171,6 +175,7 @@ const studyRecoveryScenarios = [
   'integrity',
   'capacity',
   'shutdown',
+  'reentrantShutdown',
 ];
 Future<void> verifyStudyRecovery(String scenario) async {
   final directory = await Directory.systemTemp.createTemp('nd-study-recovery-');
@@ -475,6 +480,45 @@ Future<void> verifyStudyRecovery(String scenario) async {
       checkStudy(
         closed && (await journal.list(studyOwner)).single.isPending,
         'Close lost uncertain event',
+      );
+    } else if (scenario == 'reentrantShutdown') {
+      final operations = StudySessionOperationDrain();
+      repository = studyRepository(auth, server, fault, operations: operations);
+      waiting = Completer<void>();
+      fault.stageWait = waiting;
+      fault.staged = Completer<void>();
+      var closed = false;
+      late Future<void> closing;
+      fault.onStage = () {
+        closing = operations.revokeAndDrain().then((_) => closed = true);
+      };
+      final sending = studyFailure(
+        repository.submit(event),
+        code: DailyPlanErrorCode.unauthorized,
+      );
+      await fault.staged!.future;
+      checkStudy(operations.isClosing, 'Reentrant close did not revoke');
+      checkStudy(
+        !closed,
+        'Reentrant close released before staged operation settled',
+      );
+      await studyFailure(
+        repository.submit(studyEvent(2)),
+        code: DailyPlanErrorCode.unauthorized,
+      );
+      checkStudy(
+        fault.stageCalls == 1,
+        'Post-revoke submit invoked the store stage callback',
+      );
+      checkStudy(!closed, 'Reentrant close released the held stage');
+      waiting.complete();
+      await sending;
+      await closing;
+      checkStudy(
+        closed &&
+            server.writes == 0 &&
+            (await journal.list(studyOwner)).single.isPending,
+        'Reentrant shutdown lost the staged event or dispatched RPC',
       );
     } else if (scenario == 'capacity') {
       await studyFailure(

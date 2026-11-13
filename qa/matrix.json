@@ -4604,6 +4604,32 @@
       ],
       "reproduce": "In apps/flutter_app: flutter test --platform chrome test/features/daily_plan/browser_study_session_store_check.dart; flutter test test/features/daily_plan/browser_study_session_store_test.dart; full exact-head CI",
       "limitation": "Actual browser-local IndexedDB component only; owner UUID is a partition key, not authentication. Not wired into default Auth/Daily Plan runtime, no memory fallback, encryption, browser eviction recovery, hosted JWT/RLS, backup or cross-device transport. Chrome CI does not prove learner login or Personal Alpha sync."
+    },
+    {
+      "id": "owned-study-operation-drain",
+      "status": "automated-baseline",
+      "scope": "Accepted completed-study recovery and submit operations are reserved before invoking store/RPC callbacks; reentrant stage-triggered shutdown drains the exact operation and rejects later work before storage",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/daily_plan/data/durable_study_session_repository.dart",
+          "contains": "Future<T> track<T>(Future<T> Function() start)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "'reentrantShutdown'"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "Reentrant close released before staged operation settled"
+        }
+      ],
+      "issues": [
+        11,
+        15
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/daily_plan/study_session_recovery_test.dart; dart run tool/verify_study_session_recovery.dart; retained Linux/Windows CI.",
+      "limitation": "Real disposable native journal with TEST ONLY Auth/RPC callbacks proves local operation draining only. It does not prove hosted JWT/RLS, actual learner identity, power-loss durability or multi-device sync."
     }
   ],
   "findings": [

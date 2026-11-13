@@ -102,3 +102,10 @@ removed. Production code, timers, Auth lifecycle and all CI gates are unchanged.
 Targeted Dart analysis, pinned formatter, diagnostic, QA17 and whitespace passed.
 The local Flutter test command was rejected by automatic review after metadata
 access; full corrected-source execution is pending new exact-head CI.
+
+
+## Reentrant operation reservation — 2026-11-13
+
+`StudySessionOperationDrain.track` now accepts an operation callback and reserves its completion future before invoking that callback. Recovery reads and submits therefore enter the runtime drain before any store or RPC implementation can synchronously reenter account shutdown. Once revoked, the drain rejects new reservations; draining no longer relies on a deferred microtask to discover work that has already started.
+
+The `reentrantShutdown` real-disk scenario makes `StudySessionStore.stage` synchronously start owner shutdown and then hold its durable write. Close remains pending until that exact stage settles, a later submit is rejected without invoking the store, the immutable pending event remains recoverable, and no RPC is dispatched under the revoked lease. The existing held-RPC shutdown scenario remains unchanged.

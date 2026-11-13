@@ -18,8 +18,15 @@ final class StudySessionOperationDrain {
   Future<void>? _closing;
   bool get isClosing => _revoked;
 
-  Future<T> track<T>(Future<T> operation) {
-    final settled = operation.then<void>(
+  Future<T> track<T>(Future<T> Function() start) {
+    if (_revoked) {
+      return Future<T>.error(
+        const DailyPlanFailure(DailyPlanErrorCode.unauthorized),
+      );
+    }
+    // Reserve before invoking storage/RPC code, which may reenter owner close.
+    final result = Completer<T>();
+    final settled = result.future.then<void>(
       (_) {},
       onError: (Object _, StackTrace __) {},
     );
@@ -29,14 +36,23 @@ final class StudySessionOperationDrain {
         _pending.remove(settled);
       }),
     );
-    return operation;
+    try {
+      start().then<void>(
+        result.complete,
+        onError: (Object error, StackTrace stackTrace) {
+          result.completeError(error, stackTrace);
+        },
+      );
+    } on Object catch (error, stackTrace) {
+      result.completeError(error, stackTrace);
+    }
+    return result.future;
   }
 
   Future<void> revokeAndDrain() => _closing ??= _drain();
   Future<void> _drain() async {
     _revoked = true;
-    // Include registration from a reentrant store stage before awaiting it.
-    await Future<void>.value();
+    // Every accepted operation was reserved before its callback ran.
     while (_pending.isNotEmpty) {
       await Future.wait(_pending.toList());
     }
@@ -153,11 +169,11 @@ final class DurableStudySessionRepository {
     throw const DailyPlanFailure(DailyPlanErrorCode.unauthorized);
   }
 
-  Future<T> _track<T>(Future<T> operation) =>
-      operations?.track(operation) ?? operation;
+  Future<T> _track<T>(Future<T> Function() start) =>
+      operations?.track(start) ?? start();
 
   Future<List<CompletedStudySession>> recoverPending() =>
-      _track(_recoverPending());
+      _track(_recoverPending);
 
   Future<List<CompletedStudySession>> _recoverPending() async {
     final session = _capture();
@@ -197,7 +213,7 @@ final class DurableStudySessionRepository {
       }
       return active.result;
     }
-    final result = _track(_submit(session, event));
+    final result = _track(() => _submit(session, event));
     final dispatch = _StudyDispatch(session, event, result);
     _active[key] = dispatch;
     void clear() {
