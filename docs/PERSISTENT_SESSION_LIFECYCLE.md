@@ -969,3 +969,26 @@ clears for logout during restore, logout during password login, and login
 attempts while the late cleanup is held. The final clear is observed only after
 the held Auth response drains. These fixture assertions are not hosted
 signed-JWT learner or physical Windows restart evidence.
+
+
+## Startup restore with failed logout cleanup — 2026-11-13
+
+A saved User A refresh token may be in flight when the learner explicitly logs
+out. This Windows pinned-SDK/MethodChannel regression holds the startup refresh
+response and makes both the immediate logout clear and the post-response
+compensating clear fail. A remains unready, the uncertain saved value is not
+accepted, and User B's password grant/profile request stays blocked both before
+and after the late A response drains.
+
+Only an explicit cleanup retry after storage recovers may clear the exact
+project-scoped slot and return the account to signed-out. User B can then sign
+in; the new rotated refresh value must be persisted before B's own-profile
+request. This covers the combined startup-restore + failed-storage + late-auth
+ordering, not just a normal ready-session logout or a pending password-login
+write.
+
+The failure is injected through a TEST ONLY MethodChannel handler and the
+Supabase HTTP response is synthetic. It does not prove hosted signed-JWT learner
+A/B, deployed PostgREST/RLS, spontaneous Credential Manager failure, physical
+restart or multi-device sync. No token is logged and no plaintext fallback or
+default Auth activation is introduced.

@@ -847,6 +847,165 @@ void main() {
   );
 
   test(
+    'Windows startup restore with failed logout clear stays fenced until explicit retry before User B',
+    () async {
+      storedSecret = 'TEST_ONLY_SAVED_A_REFRESH';
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_LATE_A_ROTATED_REFRESH';
+      authWait = Completer<http.Response>();
+      final lateARefresh = authWait!;
+
+      final starting = runtime.start();
+      final startupFailure = expectLater(
+        starting,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(timeline, ['vault.read', 'auth.refresh']);
+      expect(runtime.persistence.phase, SessionPersistencePhase.restoring);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      failClear = true;
+      await runtime.account.signOut();
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, 'TEST_ONLY_SAVED_A_REFRESH');
+      expect(
+        timeline.where((value) => value == 'vault.clear'),
+        hasLength(1),
+      );
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.indexOf('auth.logout')),
+      );
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_RESTORE_CLEAR_FAILURE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      authUser = wire.a;
+      authSession = wire.sid1;
+      refreshSecret = 'TEST_ONLY_LATE_A_ROTATED_REFRESH';
+      authWait = null;
+      lateARefresh.complete(authResponse());
+      await startupFailure;
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, 'TEST_ONLY_SAVED_A_REFRESH');
+      expect(
+        timeline.where((value) => value == 'vault.clear'),
+        hasLength(2),
+        reason: 'the post-response cleanup must retry the exact project slot',
+      );
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.indexOf('auth.refresh')),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_REFRESH_AFTER_RESTORE_CLEAR_RETRY';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      expect(runtime.account.state.phase, AccountPhase.signOutError);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
+        reason: 'User B must remain blocked after the late A response',
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+
+      failClear = false;
+      await runtime.account.signOut();
+      await fixture.flush();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.persistence.phase, SessionPersistencePhase.idle);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(storedSecret, isNull);
+      final successfulClear = timeline.lastIndexOf('vault.clear');
+      expect(
+        successfulClear,
+        greaterThan(timeline.lastIndexOf('auth.logout')),
+      );
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      expect(authRequests, hasLength(2));
+      expect(
+        authRequests.first.url.queryParameters['grant_type'],
+        'refresh_token',
+      );
+      expect(authRequests.last.url.queryParameters['grant_type'], 'password');
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(storedSecret, refreshSecret);
+      expect(successfulClear, lessThan(timeline.lastIndexOf('vault.write')));
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('profile.ensure')),
+      );
+    },
+  );
+
+  test(
     'late User A explicit refresh is drained and cleared before User B can authenticate',
     () async {
       await runtime.start();
