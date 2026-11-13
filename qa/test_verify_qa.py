@@ -52,13 +52,30 @@ class QaEvidenceTests(unittest.TestCase):
         self.assertEqual(qa.validate_ci(self.matrix, self.evidence, HEAD),
                          f"https://github.com/{qa.REPOSITORY}/actions/runs/123")
 
-    def test_saved_native_rerun_snapshot_has_one_complete_latest_attempt(self):
-        # Captured Actions metadata, not generated success or hosted acceptance.
+    def _saved_native_snapshot(self):
         evidence = qa.read_json(
             ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        gates = qa.read_json(
+            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2-ci-gates.json")
+        self.assertEqual(evidence["run"]["head_sha"], gates["source_commit"])
+        self.assertEqual(evidence["run"]["id"], gates["source_run_id"])
+        self.assertEqual(evidence["run"]["run_attempt"], gates["source_run_attempt"])
+        self.assertEqual(gates["source_matrix_blob_sha"],
+                         "8874b6bb1ddc331248397f7a3d9704aa8cd6ddb6")
+        self.assertEqual(gates["source_workflow_blob_sha"],
+                         "1781354f064cabd4b53fc87aff69013ebc9a4b6b")
+        self.assertEqual(set(gates["ci_gates"]), qa.REQUIRED_JOBS)
+        self.assertNotIn(
+            "Verify browser completed-study transactions in Chrome",
+            gates["ci_gates"]["flutter"])
+        return evidence, {"ci_gates": gates["ci_gates"]}
+
+    def test_saved_native_rerun_snapshot_has_one_complete_latest_attempt(self):
+        # Captured Actions metadata, not generated success or hosted acceptance.
+        evidence, historical_matrix = self._saved_native_snapshot()
         head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
         self.assertEqual(evidence["run"]["run_attempt"], 2)
-        self.assertEqual(qa.validate_ci(self.matrix, evidence, head),
+        self.assertEqual(qa.validate_ci(historical_matrix, evidence, head),
                          "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40840683867")
         for job in evidence["jobs"]["jobs"]:
             with self.subTest(job=job["name"]):
@@ -104,10 +121,9 @@ class QaEvidenceTests(unittest.TestCase):
                         qa.validate_ci(self.matrix, evidence, HEAD)
 
     def test_saved_native_snapshot_rejects_mixed_job_resource_links(self):
-        evidence = qa.read_json(
-            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        evidence, historical_matrix = self._saved_native_snapshot()
         head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
-        qa.validate_ci(self.matrix, evidence, head)
+        qa.validate_ci(historical_matrix, evidence, head)
         for slot in range(5):
             with self.subTest(slot=slot):
                 mixed = deepcopy(evidence)
@@ -147,10 +163,9 @@ class QaEvidenceTests(unittest.TestCase):
         qa.validate_ci(self.matrix, self.evidence, HEAD)
 
     def test_saved_native_snapshot_rejects_relabelled_step_resources(self):
-        evidence = qa.read_json(
-            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        evidence, historical_matrix = self._saved_native_snapshot()
         head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
-        qa.validate_ci(self.matrix, evidence, head)
+        qa.validate_ci(historical_matrix, evidence, head)
         for slot in range(5):
             with self.subTest(slot=slot):
                 mixed = deepcopy(evidence)

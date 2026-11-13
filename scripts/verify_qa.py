@@ -105,6 +105,9 @@ def validate_matrix(matrix, root=ROOT):
 
 
 def validate_ci(matrix, evidence, expected_head):
+    """Validate evidence against the CI gate manifest from that run's source revision."""
+    # Historical snapshots must use their own captured gate inventory; today's
+    # matrix may contain later steps that did not exist when the run executed.
     require(re.fullmatch(r"[0-9a-f]{40}", expected_head or ""), "expected full head SHA required")
     run = evidence["run"]
     require(run["head_sha"] == expected_head, "CI belongs to another head")
