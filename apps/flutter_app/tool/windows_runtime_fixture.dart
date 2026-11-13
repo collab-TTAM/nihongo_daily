@@ -57,13 +57,12 @@ Future<void> _injectNativeVaultFault(
   required String fault,
 }) async {
   try {
-    final injected = await const MethodChannel(
-      'nihongo_daily/session_vault_v1',
-    ).invokeMethod<bool>('testInjectFault', {
-      'target': target,
-      'operation': operation,
-      'fault': fault,
-    });
+    final injected = await const MethodChannel('nihongo_daily/session_vault_v1')
+        .invokeMethod<bool>('testInjectFault', {
+          'target': target,
+          'operation': operation,
+          'fault': fault,
+        });
     _check(injected == true);
   } on Object {
     throw const FormatException('Native vault fault injection unavailable');

@@ -177,23 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Show pinned Dart formatter diff for Windows bridge fixtures (read-only)
-        shell: bash
-        run: |
-          set -euo pipefail
-          temp_dir="$(mktemp -d)"
-          trap 'rm -rf "$temp_dir"' EXIT
-          for path in tool/windows_runtime_fixture.dart tool/windows_vault_bridge.dart; do
-            formatted="$temp_dir/$(basename "$path")"
-            cp "$path" "$formatted"
-            dart format "$formatted" >/dev/null
-            set +e
-            diff -u --label "$path (source)" --label "$path (Dart 3.35.4)" "$path" "$formatted"
-            diff_status=$?
-            set -e
-            if [ "$diff_status" -gt 1 ]; then exit "$diff_status"; fi
-            if [ "$diff_status" -eq 1 ]; then echo "::notice::Formatter diff shown for $path"; fi
-          done
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

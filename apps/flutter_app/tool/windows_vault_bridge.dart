@@ -137,12 +137,13 @@ Future<void> main(List<String> arguments) async {
         var exposed = false;
         try {
           exposed =
-              await const MethodChannel('nihongo_daily/session_vault_v1')
-                  .invokeMethod<bool>('testInjectFault', {
-                    'target': vault.target,
-                    'operation': 'read',
-                    'fault': 'fail_before',
-                  }) ==
+              await const MethodChannel(
+                'nihongo_daily/session_vault_v1',
+              ).invokeMethod<bool>('testInjectFault', {
+                'target': vault.target,
+                'operation': 'read',
+                'fault': 'fail_before',
+              }) ==
               true;
         } on MissingPluginException {
           exposed = false;
