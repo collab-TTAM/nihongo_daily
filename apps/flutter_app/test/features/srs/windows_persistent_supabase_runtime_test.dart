@@ -881,10 +881,7 @@ void main() {
       expect(runtime.persistence.phase, SessionPersistencePhase.failed);
       expect(runtime.account.readyRuntime, isNull);
       expect(storedSecret, 'TEST_ONLY_SAVED_A_REFRESH');
-      expect(
-        timeline.where((value) => value == 'vault.clear'),
-        hasLength(1),
-      );
+      expect(timeline.where((value) => value == 'vault.clear'), hasLength(1));
       expect(
         timeline.lastIndexOf('vault.clear'),
         greaterThan(timeline.indexOf('auth.logout')),
@@ -966,10 +963,7 @@ void main() {
       expect(runtime.persistence.currentSession, isNull);
       expect(storedSecret, isNull);
       final successfulClear = timeline.lastIndexOf('vault.clear');
-      expect(
-        successfulClear,
-        greaterThan(timeline.lastIndexOf('auth.logout')),
-      );
+      expect(successfulClear, greaterThan(timeline.lastIndexOf('auth.logout')));
 
       await runtime.account.signIn(
         'fixture@example.invalid',
