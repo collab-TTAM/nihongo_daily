@@ -69,6 +69,10 @@ final class PersistentAccountAccess implements AccountAccess {
   SessionPersistencePhase _phase = SessionPersistencePhase.idle;
   SessionPersistencePhase get phase => _phase;
 
+  /// A restore error may expose explicit login only while this runtime still
+  /// owns the exact vault target. Failed native owner acquisition stays fenced.
+  bool get hasVaultOwner => _vaultOwnerAcquired && !_closed;
+
   @override
   ReviewSession? get currentSession {
     if (_closed || _failed || !_allowed || _accepted == null) return null;

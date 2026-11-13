@@ -901,3 +901,19 @@ claim that Windows spontaneously failed, not hosted Auth/JWT/PostgREST/RLS,
 and not physical multi-device acceptance. Auth HTTP and JWT remain synthetic
 MockClient fixtures; no token or raw native error is logged, no plaintext
 fallback is introduced, and the normal app/Auth strategy is unchanged.
+
+## Startup login gate requires the native owner lease — 2026-11-13
+
+The configured startup screen may expose its explicit password-login form after
+a restore/read failure only while the same caller-owned runtime still holds the
+project-scoped credential-vault owner lease. If Windows Credential Manager
+ownership cannot be acquired, the saved value is left untouched, no Auth or
+own-profile request is dispatched, and the login form remains unavailable;
+the user may retry startup after the competing owner releases the slot.
+
+Once the owner lease has been acquired, a transient read or rejected refresh
+can expose the existing explicit recovery path. That path still drains the
+owned SDK sign-out and exact-project vault clear before a replacement password
+grant, then persists the new refresh token before own-profile readiness. The
+gate does not infer identity from a stored token and does not bypass the
+session-generation or storage barriers.

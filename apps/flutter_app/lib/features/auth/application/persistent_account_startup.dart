@@ -24,6 +24,7 @@ final class PersistentAccountStartup
   AccountController<SrsStudyRuntime> get account => runtime.account;
   @override
   bool get canOfferLogin =>
+      runtime.persistence.hasVaultOwner &&
       runtime.persistence.phase == SessionPersistencePhase.failed &&
       runtime.persistence.currentSession == null &&
       runtime.account.readyRuntime == null;

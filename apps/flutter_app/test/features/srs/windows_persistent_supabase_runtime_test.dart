@@ -9,6 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
+import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
@@ -250,23 +252,17 @@ void main() {
       storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
       failOwnerAcquire = true;
 
-      await expectLater(
-        runtime.start(),
-        throwsA(
-          isA<ReviewTransportFailure>()
-              .having(
-                (error) => error.code,
-                'safe error code',
-                ReviewErrorCode.unauthorized,
-              )
-              .having(
-                (error) => error.toString().contains('PRIVATE_REFRESH_SECRET'),
-                'redacted owner error',
-                false,
-              ),
-        ),
-      );
+      final startup = PersistentAccountStartup(runtime);
+      final controller = AccountStartupController(() async => startup);
+      await controller.start();
 
+      expect(controller.phase, AccountStartupPhase.restoreError);
+      expect(
+        controller.canOfferLogin,
+        isFalse,
+        reason: 'password login must remain fenced until the native owner is acquired',
+      );
+      expect(controller.account, isNull);
       expect(ownerLeaseCalls, ['acquireOwner']);
       expect(startupOrder, ['owner.acquire']);
       expect(timeline, isEmpty);
@@ -275,7 +271,7 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       expect(PersistentAccountAccess.isTargetOwned(vault.target), isTrue);
 
-      await runtime.close();
+      await controller.close();
 
       expect(ownerLeaseCalls, ['acquireOwner']);
       expect(closeOrder, isEmpty);
@@ -459,6 +455,11 @@ void main() {
       expect(requests, isEmpty);
       expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
       expect(runtime.account.readyRuntime, isNull);
+      expect(
+        PersistentAccountStartup(runtime).canOfferLogin,
+        isTrue,
+        reason: 'a recoverable read failure may offer login while the owner lease is held',
+      );
 
       // A transient read error is non-destructive. Explicit login on this same
       // owner must clear the unread secret before sending a new password grant.
