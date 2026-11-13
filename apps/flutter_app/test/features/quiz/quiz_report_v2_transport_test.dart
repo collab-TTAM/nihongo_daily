@@ -763,5 +763,4 @@ void main() {
       expect(calls, 1);
     },
   );
-
 }
