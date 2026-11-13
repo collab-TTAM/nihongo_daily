@@ -103,3 +103,16 @@ event saved until durable backend acknowledgment. Automatic profile-local today,
 real JWT/A-B/restart/two-device acceptance and all14 live release gates remain.
 Keep #41 draft and #11 open. No deployment, schema/RLS, dependencies, main/source
 PR merge, Pro/reader content or schedule is changed by this module.
+
+
+## Browser IndexedDB store
+
+The conditional Web implementation `openBrowserStudySessionStore` now provides
+the existing `StudySessionStore` contract using a separate IndexedDB database.
+Its read/modify/write is one synchronous IndexedDB transaction; writes resolve
+only on transaction completion. It retains canonical event validation, owner/event
+isolation, immutable replay/conflict, terminal transitions, 1 MiB/512-record bounds,
+256-byte pending terminal reservation and close/drain. The native stub returns a
+fixed storage failure, never an in-memory fallback. See BROWSER_STUDY_SESSION_STORE.md
+for Chrome checks and limitations. The component is not wired into default Auth,
+Daily Plan, automatic save/retry or multi-device sync.

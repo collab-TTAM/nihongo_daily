@@ -111,6 +111,8 @@ jobs:
         run: flutter test --platform chrome test/features/srs/browser_review_store_check.dart
       - name: Verify browser quiz history transactions in Chrome
         run: flutter test --platform chrome test/features/quiz/browser_quiz_history_check.dart
+      - name: Verify browser completed-study transactions in Chrome
+        run: flutter test --platform chrome test/features/daily_plan/browser_study_session_store_check.dart
       - name: Verify browser review page reload
         run: |
           mkdir -p build/browser-restart

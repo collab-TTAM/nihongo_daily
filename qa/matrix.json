@@ -52,7 +52,8 @@
       "Verify actual Kanji capture wire payloads",
       "Validate actual Dart Kanji output against frozen contracts",
       "Run flutter build web --release",
-      "Run actions/upload-artifact@v4"
+      "Run actions/upload-artifact@v4",
+      "Verify browser completed-study transactions in Chrome"
     ],
     "windows": [
       "Run flutter pub get --enforce-lockfile",
@@ -4576,6 +4577,33 @@
       "ci_steps": [
         "Verify bundled quiz report v2 Supabase Edge Function"
       ]
+    },
+    {
+      "id": "browser-study-session-store",
+      "status": "automated-baseline",
+      "scope": "Web-only durable completed-study journal using actual IndexedDB transactions; owner/event isolation, immutable replay/conflict, terminal transitions, cross-connection serialization, close/drain and bounded capacity",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/browser_study_session_store_check.dart",
+          "contains": "real IndexedDB two connections serialize duplicate and distinct study writes"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/daily_plan/data/browser_study_session_store_web.dart",
+          "contains": "Only transaction completion commits a study-session write."
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/browser_study_session_store_test.dart",
+          "contains": "native platform never substitutes an in-memory study store"
+        }
+      ],
+      "issues": [
+        11,
+        15,
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test --platform chrome test/features/daily_plan/browser_study_session_store_check.dart; flutter test test/features/daily_plan/browser_study_session_store_test.dart; full exact-head CI",
+      "limitation": "Actual browser-local IndexedDB component only; owner UUID is a partition key, not authentication. Not wired into default Auth/Daily Plan runtime, no memory fallback, encryption, browser eviction recovery, hosted JWT/RLS, backup or cross-device transport. Chrome CI does not prove learner login or Personal Alpha sync."
     }
   ],
   "findings": [
