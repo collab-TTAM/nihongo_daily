@@ -12056,3 +12056,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Bounded fix: preserve an exact gate manifest from the historical source matrix, bind its source commit/matrix/workflow blob SHAs and run ID/attempt in the regression helper, and validate only that historical snapshot against its own gates. Current `qa/matrix.json` and the new Chrome gate remain unchanged and required for current CI.
 - Paths: `qa/test_verify_qa.py`, `scripts/verify_qa.py`, `qa/evidence/20261029-native-receipts-9c986e0-attempt2-ci-gates.json`, `docs/QA_HISTORICAL_EVIDENCE.md`, `docs/PROJECT_STATUS.md`. No application/Auth/schema/RLS/default-save/N4/Pro change.
 - Exact-head CI for the corrected commit is pending; inspect every latest-attempt job/step before any pass claim. Cloud runtime lacks Flutter/Dart SDK; this bounded Python QA fix is verified by the retained GitHub Actions workflow.
+
+
+## Core worker diff-review correction — 2026-11-13T10:11Z
+
+- Review of source commit `413816e4864661f102b02ed17d44b75f1afd617f` found that the three negative mutation branches in the saved native snapshot tests still invoked `validate_ci` with the current matrix. That caused the new historical-manifest fix to fail before reaching the intended mixed-attempt/URL/step assertions.
+- Corrected exactly those three TEST ONLY arguments to use the already source-bound historical gate manifest. Current synthetic tests continue using the current matrix. No production or release gate changed.
+- Parent exact-head CI [43407582806](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43407582806) was started on the pre-review commit and is superseded by this follow-up; its result is not evidence for the final head.
+- Follow-up exact-head CI is pending. Next inspect all jobs/steps on the final head before RELEASED.

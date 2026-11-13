@@ -83,7 +83,7 @@ class QaEvidenceTests(unittest.TestCase):
                 next(j for j in mixed["jobs"]["jobs"]
                      if j["name"] == job["name"])["run_attempt"] = 1
                 with self.assertRaisesRegex(ValueError, "mixed run/head/attempt"):
-                    qa.validate_ci(self.matrix, mixed, head)
+                    qa.validate_ci(historical_matrix, mixed, head)
 
     def test_job_resource_ids_are_positive_integers_and_unique(self):
         for slot in range(5):
@@ -130,7 +130,7 @@ class QaEvidenceTests(unittest.TestCase):
                 mixed["jobs"]["jobs"][slot]["html_url"] = (
                     evidence["jobs"]["jobs"][(slot + 1) % 5]["html_url"])
                 with self.assertRaisesRegex(ValueError, "wrong job evidence URL"):
-                    qa.validate_ci(self.matrix, mixed, head)
+                    qa.validate_ci(historical_matrix, mixed, head)
 
     def test_step_resource_numbers_are_positive_integers(self):
         for slot in range(5):
@@ -173,7 +173,7 @@ class QaEvidenceTests(unittest.TestCase):
                 # Keep every successful name/status; duplicate one resource number.
                 steps[1]["number"] = steps[0]["number"]
                 with self.assertRaisesRegex(ValueError, "unordered or duplicate step resources"):
-                    qa.validate_ci(self.matrix, mixed, head)
+                    qa.validate_ci(historical_matrix, mixed, head)
 
     def test_rejects_stale_head(self):
         self.evidence["run"]["head_sha"] = "b" * 40
