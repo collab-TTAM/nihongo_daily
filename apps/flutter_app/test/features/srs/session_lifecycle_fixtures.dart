@@ -917,7 +917,8 @@ Future<void> verifyLifecycle(String scenario) async {
             !backend.ownerHeld &&
             !PersistentAccountAccess.isTargetOwned(vault.target) &&
             backend.ownerReleases == 1 &&
-            backend.operations.join(' -> ') == 'read -> write -> clear -> clear',
+            backend.operations.join(' -> ') ==
+                'read -> write -> clear -> clear',
         'close retry did not sign out and clear before owner release '
         '($cleanupDiagnostics)',
       );
