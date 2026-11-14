@@ -899,13 +899,27 @@ Future<void> verifyLifecycle(String scenario) async {
       );
       backend.failClear = false;
       await access.close();
+      final cleanupDiagnostics = [
+        'secretCleared=${backend.secret == null}',
+        'sdkSignedOut=${sdk.session == null}',
+        'logoutCalls=${sdk.logouts}',
+        'clearCalls=${backend.clears}',
+        'nativeOwnerHeld=${backend.ownerHeld}',
+        'dartOwnerHeld=${PersistentAccountAccess.isTargetOwned(vault.target)}',
+        'nativeOwnerReleases=${backend.ownerReleases}',
+        'operations=${backend.operations.join(' -> ')}',
+      ].join(', ');
       check(
         backend.secret == null &&
             sdk.session == null &&
             sdk.logouts == 2 &&
+            backend.clears == 2 &&
             !backend.ownerHeld &&
-            !PersistentAccountAccess.isTargetOwned(vault.target),
-        'close retry did not sign out and clear before owner release',
+            !PersistentAccountAccess.isTargetOwned(vault.target) &&
+            backend.ownerReleases == 1 &&
+            backend.operations.join(' -> ') == 'read -> write -> clear -> clear',
+        'close retry did not sign out and clear before owner release '
+        '($cleanupDiagnostics)',
       );
     }
   } finally {
