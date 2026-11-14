@@ -34,6 +34,11 @@ key or JWT signing secret.
 - An unauthenticated profile query is denied.
 - Logging out A revokes A's rotated refresh token while B remains usable and
   cannot read A's profile.
+- A cannot update B's allowlisted `preferred_jlpt` setting, and B cannot update
+  A's; each target user's own read must remain unchanged.
+- Each test user can update only its own `preferred_jlpt`, and repeating
+  `ensure_profile({})` must preserve that existing value. The probe restores
+  the original preference in a finally path before finishing.
 
 The HTTP client is pinned to a validated *.supabase.co origin, rejects redirects,
 bounds response bodies and never prints request/response bodies, emails,
@@ -53,3 +58,10 @@ Do not mark QA case auth-live complete until this workflow succeeds against the
 approved non-production environment and the remaining Flutter startup/restart
 acceptance has been observed. Record exact run, head SHA, environment and
 redacted result in docs/PROJECT_STATUS.md.
+
+
+The probe temporarily changes only the two pre-provisioned staging users'
+`preferred_jlpt` value to N4, verifies that repeated caller-bound bootstrap
+does not reset it, then restores the original N5 default and verifies the
+restoration. No other profile setting is written. Do not point this workflow at
+production or real learner accounts.

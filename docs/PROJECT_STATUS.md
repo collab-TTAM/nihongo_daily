@@ -4063,3 +4063,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Local Python execution was not available in this GitHub-only authoring step; the existing repo-sanity CI invokes the offline hosted-probe tests and QA inventory. Exact-head Actions is the verification gate; no CI pass is claimed here.
 - No staging secrets were read, no hosted workflow dispatched, and no production Auth/provider/schema/RLS/default activation or Pro-owned #14/#38/N4 path changed. Hosted signed-JWT A/B remains pending.
 - Next: inspect every latest-attempt job and step on the new exact HEAD. If CI passes, the next human-dependent evidence is the protected non-production staging workflow with two pre-provisioned accounts; do not claim hosted acceptance before its exact run succeeds.
+
+
+## Core worker checkpoint — ACTIVE implementation — 2026-11-14T16:07Z
+
+- Run `core-20261114T1607Z-pr37-hosted-profile-idempotency-rls` on `automation/issue-22-atomic-review`, parent HEAD `3689844f92ce1ee000eb3c0bed261d09d6eea09c`, base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Bounded #20 acceptance increment: extend the manual-only hosted A/B probe to test both directions of cross-owner `profiles.preferred_jlpt` UPDATE isolation, and verify that repeated `ensure_profile({})` preserves an existing user preference. The probe temporarily changes only each pre-provisioned staging user's `preferred_jlpt` from the new-profile N5 default to N4 and restores the original value in a `finally` path.
+- Added offline fake-server regression modes for a cross-owner update leak and bootstrap resetting an existing preference. Updated hosted/profile docs and the `auth-live` QA anchors. No migration, grant/RLS policy, Auth/provider strategy, production runtime, secret access or hosted dispatch changed.
+- Changed paths: `scripts/hosted_supabase_probe.py`, `scripts/test_hosted_supabase_probe.py`, `docs/OWN_PROFILE_BOOTSTRAP.md`, `docs/HOSTED_SUPABASE_ACCEPTANCE.md`, `qa/matrix.json`, `docs/PROJECT_STATUS.md`.
+- Cloud authoring has no Python/Flutter/PostgreSQL checkout for this GitHub-only step; local tests/format/analyze/build were not run. Exact-head GitHub Actions is the verification gate. Offline fake-server tests are not hosted Supabase proof.
+- Next: inspect all latest-attempt CI jobs/steps for the final exact HEAD. Keep #20/#22/#15 and PR #37 Draft until hosted signed-JWT A/B and the separate learner startup/restart/two-device gates are observed.

@@ -126,3 +126,19 @@ requires the probe to fail, so a future regression in the probe cannot silently
 turn an accepted override into a passing result. This strengthens the pending
 hosted acceptance; it is not a hosted run. The protected staging environment,
 two pre-provisioned accounts and explicit workflow dispatch are still required.
+
+
+## Hosted profile update isolation and bootstrap idempotency
+
+The manual non-production A/B probe also exercises the allowlisted
+`preferred_jlpt` profile update. User A attempts to change User B's setting
+and vice versa; the probe verifies through the target user's own session that
+the value remains unchanged. Each user then changes only their own setting to
+N4, repeats `ensure_profile({})`, and verifies the RPC returns and preserves
+that existing setting. A finally path restores each pre-probe value (the new
+test profiles' N5 default) and verifies the restoration.
+
+The offline fake-server regressions deliberately model a cross-owner UPDATE
+leak and an `ensure_profile` implementation that resets existing settings.
+Both must make the probe fail. These are opt-in staging checks, not deployed
+learner evidence; no migration, grants or RLS policy are changed.

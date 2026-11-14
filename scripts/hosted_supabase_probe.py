@@ -147,15 +147,18 @@ def refresh(request,previous: Session,label: str) -> Session:
     require(current.refresh!=previous.refresh,f"{label} refresh token did not rotate")
     return current
 
-def ensure_profile(request,current: Session,label: str) -> None:
+def ensure_profile(request,current: Session,label: str) -> dict:
     status,body=request("POST","/rest/v1/rpc/ensure_profile",{"p_request":{}},current.access)
     fields={"id","display_name","preferred_jlpt","daily_target_minutes","timezone"}
     require(status==200 and isinstance(body,dict) and set(body)==fields,
             f"{label} own-profile bootstrap response is invalid")
     require(body["id"]==current.user_id,f"{label} profile is not caller-owned")
-    require(isinstance(body["display_name"],str) and body["preferred_jlpt"] in {"N5","N4","N3","N2","N1"}
+    require(isinstance(body["display_name"],str)
+            and isinstance(body["preferred_jlpt"],str)
+            and body["preferred_jlpt"] in {"N5","N4","N3","N2","N1"}
             and type(body["daily_target_minutes"]) is int and 7<=body["daily_target_minutes"]<=1440
             and isinstance(body["timezone"],str),f"{label} profile fields are invalid")
+    return body
 
 def reject_profile_overrides(request, current: Session, other_user_id: str, label: str) -> None:
     """Require the hosted RPC to reject all caller-controlled profile identity/settings."""
@@ -195,6 +198,47 @@ def profile_ids(request,current: Session,target: str,label: str) -> list[str]:
             raise ProbeFailure(f"{label} profile row identity is invalid") from None
     return result
 
+def profile_preference(request,current: Session,target: str,label: str) -> str:
+    query=urllib.parse.urlencode({"id":"eq."+target,"select":"id,preferred_jlpt"})
+    status,body=request("GET","/rest/v1/profiles?"+query,None,current.access)
+    require(status==200 and isinstance(body,list) and len(body)==1,
+            f"{label} profile preference read failed")
+    row=body[0]
+    require(isinstance(row,dict) and set(row)=={"id","preferred_jlpt"}
+            and row["id"]==target and isinstance(row["preferred_jlpt"],str)
+            and row["preferred_jlpt"] in {"N5","N4","N3","N2","N1"},
+            f"{label} profile preference response is invalid")
+    return row["preferred_jlpt"]
+
+def patch_profile_preference(request,current: Session,target: str,level: str,label: str) -> int:
+    status,_=request("PATCH","/rest/v1/profiles?"+urllib.parse.urlencode({"id":"eq."+target}),
+                     {"preferred_jlpt":level},current.access)
+    return status
+
+def reject_cross_owner_profile_update(request,actor: Session,target: Session,label: str) -> None:
+    status=patch_profile_preference(request,actor,target.user_id,"N1",label)
+    require(status in {200,204,401,403},f"{label} cross-owner profile update returned an unexpected status")
+    require(profile_preference(request,target,target.user_id,label+" target")=="N5",
+            f"{label} cross-owner profile update changed another user's profile")
+
+def verify_profile_preference_preserved(request,current: Session,label: str) -> None:
+    original=profile_preference(request,current,current.user_id,label+" before update")
+    require(original=="N5",f"{label} newly provisioned profile did not start at the N5 default")
+    try:
+        status=patch_profile_preference(request,current,current.user_id,"N4",label)
+        require(status in {200,204},f"{label} own profile preference update failed")
+        require(profile_preference(request,current,current.user_id,label+" updated")=="N4",
+                f"{label} own profile preference update was not persisted")
+        repeated=ensure_profile(request,current,label+" repeated bootstrap")
+        require(repeated["preferred_jlpt"]=="N4"
+                and profile_preference(request,current,current.user_id,label+" after bootstrap")=="N4",
+                f"{label} ensure_profile reset an existing preference")
+    finally:
+        restore_status=patch_profile_preference(request,current,current.user_id,original,label+" restore")
+        require(restore_status in {200,204},f"{label} could not restore the original profile preference")
+        require(profile_preference(request,current,current.user_id,label+" restored")==original,
+                f"{label} original profile preference was not restored")
+
 def run_probe(config: Config,request) -> None:
     """Use two pre-provisioned staging users; never creates or deletes accounts."""
     status,body=request("POST","/auth/v1/token?grant_type=password",
@@ -223,6 +267,10 @@ def run_probe(config: Config,request) -> None:
             "RLS exposed User B profile to User A")
     require(profile_ids(request,user_b,user_a.user_id,"User B cross read")==[],
             "RLS exposed User A profile to User B")
+    reject_cross_owner_profile_update(request,user_a,user_b,"User A -> User B")
+    reject_cross_owner_profile_update(request,user_b,user_a,"User B -> User A")
+    verify_profile_preference_preserved(request,user_a,"User A")
+    verify_profile_preference_preserved(request,user_b,"User B")
     anonymous_status,_=request("GET","/rest/v1/profiles?select=id&limit=1",None,None)
     require(anonymous_status in {401,403},"profiles endpoint accepted an unauthenticated request")
     status,_=request("POST","/auth/v1/logout",None,user_a.access)
