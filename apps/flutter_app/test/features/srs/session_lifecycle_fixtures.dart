@@ -868,10 +868,12 @@ Future<void> verifyLifecycle(String scenario) async {
       await fails(login());
     } else if (scenario == 'closed-stream' ||
         scenario == 'stream-error-after-ready') {
-      await login();
+      // The shared setup above already completed this scenario's only login.
       final saved = backend.secret;
       check(
-        saved != null &&
+        sdk.logins == 1 &&
+            backend.writes == 1 &&
+            saved != null &&
             saved == sdk.secret &&
             access.currentSession?.userId == owner,
         'stream failure fixture did not begin with a persisted session',
