@@ -107,6 +107,9 @@ final class PersistentAccountAccess implements AccountAccess {
 
   void _fail() {
     if (_closed) return;
+    // Once an SDK Auth mutation may have installed or rotated a session, a
+    // broken event stream must not let caller close release a stale credential.
+    if (_authMutationDispatched) _cleanupRequired = true;
     _failed = true;
     _allowed = false;
     _revoke(SessionPersistencePhase.failed);

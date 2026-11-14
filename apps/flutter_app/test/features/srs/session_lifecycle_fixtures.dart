@@ -116,7 +116,7 @@ final class MemorySdk implements RefreshableAccountAccess {
   void change(String? id, String? token, {bool sameSession = false}) {
     if (!sameSession) session = id == null ? null : ReviewSession(userId: id);
     secret = token;
-    events.add(null);
+    if (!events.isClosed) events.add(null);
   }
 
   Future<void> authenticate() async {
@@ -176,6 +176,7 @@ const scenarios = [
   'same-session-secret-rotation-during-write',
   'duplicate-auth',
   'closed-stream',
+  'stream-error-after-ready',
   'queued-old-rotation',
   'exclusive-owner',
   'logout-failure-late-login',
@@ -855,13 +856,46 @@ Future<void> verifyLifecycle(String scenario) async {
         'shutdown deleted saved session',
       );
       await fails(login());
-    } else if (scenario == 'closed-stream') {
-      await sdk.events.close();
+    } else if (scenario == 'closed-stream' ||
+        scenario == 'stream-error-after-ready') {
+      await login();
+      final saved = backend.secret;
+      check(
+        saved != null &&
+            saved == sdk.secret &&
+            access.currentSession?.userId == owner,
+        'stream failure fixture did not begin with a persisted session',
+      );
+      backend.failClear = true;
+      if (scenario == 'closed-stream') {
+        await sdk.events.close();
+      } else {
+        sdk.events.addError(StateError('PRIVATE AUTH STREAM'));
+      }
       await flush();
       check(
         access.currentSession == null &&
-            access.phase == SessionPersistencePhase.failed,
-        'closed stream left access open',
+            access.phase == SessionPersistencePhase.failed &&
+            backend.secret == saved,
+        'failed Auth stream left the session ready or changed the saved secret',
+      );
+      await fails(access.close());
+      check(
+        backend.secret == saved &&
+            sdk.session == null &&
+            backend.ownerHeld &&
+            PersistentAccountAccess.isTargetOwned(vault.target),
+        'failed cleanup released the owner or lost the retryable credential',
+      );
+      backend.failClear = false;
+      await access.close();
+      check(
+        backend.secret == null &&
+            sdk.session == null &&
+            sdk.logouts == 2 &&
+            !backend.ownerHeld &&
+            !PersistentAccountAccess.isTargetOwned(vault.target),
+        'close retry did not sign out and clear before owner release',
       );
     }
   } finally {
