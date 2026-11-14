@@ -36,18 +36,18 @@ Future<void> quizProbe(String command, Directory directory) async {
   final root = configuredRoot ?? inferredRoot;
   if (root == null) throw StateError('Dart SDK is required for process tests');
   final suffix = Platform.isWindows ? '.exe' : '';
-  final dart = Directory(root)
-      .absolute
-      .uri
-      .resolve('bin/cache/dart-sdk/bin/dart$suffix')
-      .toFilePath();
-  final fixture =
-      File('test/features/quiz/quiz_journal_fixtures.dart').absolute.path;
-  final child = await Process.start(
-    dart,
-    ['run', fixture, command, directory.path],
-    workingDirectory: Directory.current.path,
-  );
+  final dart = Directory(
+    root,
+  ).absolute.uri.resolve('bin/cache/dart-sdk/bin/dart$suffix').toFilePath();
+  final fixture = File(
+    'test/features/quiz/quiz_journal_fixtures.dart',
+  ).absolute.path;
+  final child = await Process.start(dart, [
+    'run',
+    fixture,
+    command,
+    directory.path,
+  ], workingDirectory: Directory.current.path);
   final output = _readBoundedProcessOutput(child.stdout);
   final errors = _readBoundedProcessOutput(child.stderr);
   try {

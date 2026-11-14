@@ -93,3 +93,30 @@ Parent78fbfae0 CI39484645098 attempt1 subsequently passed all five jobs/every
 required step,634 Flutter/five Chrome/Web/Windows. All13 actual file/process
 store tests passed on Linux. The new optional captured-session repository is
 separately awaiting current-head CI; /quiz still does not open or use this store.
+
+
+## Windows child-process Dart VM dependency boundary — 2026-11-14
+
+The Windows journal test launches `quiz_journal_fixtures.dart` with the standalone
+Dart VM. The production journal source must therefore remain Flutter-independent.
+Exact-head Actions [43539947981](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43539947981)
+showed the child failing before its stage command: the journal imported
+`package:flutter/foundation.dart` only to annotate `openForTesting`, which
+transitively loaded `dart:ui`; that library is unavailable to a standalone Dart
+VM. The same run also exposed the pinned formatter layout in the process helper.
+Flutter analyze/full tests and downstream probes were skipped after formatting
+failed; they are not passes.
+
+Removed only that unnecessary Flutter import/annotation. The fault-injection
+factory remains explicitly named and documented TEST ONLY; production `open`
+still supplies its fixed real write-and-flush callback. Added a repo-sanity
+regression that prevents reintroducing a direct Flutter/`dart:ui` dependency,
+while the existing Windows test continues to execute the actual child `stage`
+and OS-lease process checks. The helper now matches the pinned Dart formatter.
+No journal format, write protocol, owner isolation, default save activation,
+Auth, schema/RLS or server credit behavior changed.
+
+This is a source-level dependency guard plus a real Windows child-process test,
+not hosted Auth/JWT/RLS or learner/multi-device evidence. Require a new exact-head
+Actions run to verify formatter, analyzer, full Flutter tests, both Windows
+journal suites and all downstream build/database/AI gates.

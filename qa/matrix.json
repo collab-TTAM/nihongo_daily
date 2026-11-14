@@ -4555,7 +4555,7 @@
         18
       ],
       "reproduce": "In apps/flutter_app on Windows-2022: flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart test/features/quiz/native_grammar_quiz_journal_test.dart",
-      "limitation": "The Windows runner exercises TEST ONLY local-file and OS-lease behavior. Exact-head Actions 43533012357 failed one vocabulary child stage with exit code 254 after 23/24 journal tests passed; this correction adds bounded stdout/stderr diagnostics and a normalized Dart SDK path, and must be re-verified on a new exact head. It does not prove hosted Supabase Auth/JWT/RLS, encrypted backup, cross-device sync, forced OS termination, hardware power-loss durability or learner acceptance. Native quiz history remains opt-in; no default save, mastery or study credit is activated."
+      "limitation": "The Windows-2022 job executes TEST ONLY local-file and OS-lease behavior. The standalone Dart child must be able to import the journal without Flutter/dart:ui; a repo-sanity regression guards that direct dependency and the Windows process test verifies actual stage/lease behavior. Exact-head run 43539947981 failed because package:flutter/foundation.dart (used only for @visibleForTesting) transitively imported dart:ui in the child VM; the same run failed pinned formatting, so analyze/full tests/downstream probes were skipped. The new exact-head run must verify both fixes. This does not prove hosted Supabase Auth/JWT/RLS, encrypted backup, cross-device sync, forced OS termination, hardware power-loss durability or learner acceptance. Native quiz history remains opt-in; no default save, mastery or study credit is activated."
     },
     {
       "id": "quiz-report-v2-edge-binding",
@@ -4642,6 +4642,39 @@
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/daily_plan/study_session_recovery_test.dart; dart run tool/verify_study_session_recovery.dart; retained Linux/Windows CI.",
       "limitation": "Real disposable native journal with TEST ONLY Auth/RPC callbacks proves local operation draining only. It does not prove hosted JWT/RLS, actual learner identity, power-loss durability or multi-device sync."
+    },
+    {
+      "id": "native-quiz-journal-dart-vm-boundary",
+      "status": "automated-baseline",
+      "scope": "Keep the native vocabulary quiz journal import graph compatible with the standalone Dart VM used by the real Windows child-process stage/lease regression; no Flutter foundation or dart:ui dependency.",
+      "ci_job": "repo-sanity",
+      "ci_steps": [
+        "Validate QA inventory and evidence regressions"
+      ],
+      "anchors": [
+        {
+          "path": "qa/test_native_quiz_journal_pure_dart.py",
+          "contains": "test_native_journal_has_no_flutter_dependency"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/data/native_vocabulary_quiz_journal.dart",
+          "contains": "TEST ONLY: inject write/flush behavior"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_journal_fixtures.dart",
+          "contains": "NativeVocabularyQuizJournal.open(directory)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart",
+          "contains": "separate processes retain flushed data and enforce active lease"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "Run python3 -m unittest qa.test_native_quiz_journal_pure_dart -v; in apps/flutter_app run flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart on Windows-2022. Require exact-head CI.",
+      "limitation": "The Python guard checks the journal's direct imports; the Windows child-process test verifies the actual transitive Dart VM load and OS lease. Both are local component evidence only, not hosted Auth/JWT/RLS, learner acceptance or multi-device sync."
     }
   ],
   "findings": [

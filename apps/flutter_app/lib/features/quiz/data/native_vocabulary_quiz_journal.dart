@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart' show visibleForTesting;
-
 import '../domain/vocabulary_quiz_attempt.dart';
 import '../domain/vocabulary_quiz_progress.dart';
 import 'vocabulary_quiz_attempt_store.dart';
@@ -35,7 +33,8 @@ final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
   static Future<NativeVocabularyQuizJournal> open(Directory directory) =>
       _open(directory, _appendAndFlush);
 
-  @visibleForTesting
+  /// TEST ONLY: inject write/flush behavior for fault-injection tests.
+  /// Production callers must use [open], which always writes and flushes.
   static Future<NativeVocabularyQuizJournal> openForTesting(
     Directory directory, {
     required Future<void> Function(RandomAccessFile, List<int>) writeAndFlush,
