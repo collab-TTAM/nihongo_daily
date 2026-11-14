@@ -370,6 +370,12 @@ final class PersistentAccountAccess implements AccountAccess {
         _failed = false;
         _allowed = true;
       }
+      // Logout can cancel this reserved operation before its deferred runner
+      // reaches Auth. Recheck immediately before dispatch to avoid creating a
+      // server session after the caller has already logged out.
+      if (_closed || _logout != null || _cancelledOperation) {
+        throw _failure();
+      }
       _authMutationDispatched = true;
       await _sdk.signIn(email, password);
       await _settle();
@@ -384,6 +390,11 @@ final class PersistentAccountAccess implements AccountAccess {
     }
     _revoke(SessionPersistencePhase.saving);
     return _runTracked(() async {
+      // The same pre-dispatch fence applies to an explicit refresh cancelled
+      // by logout after this operation reserved its slot.
+      if (_closed || _logout != null || _cancelledOperation) {
+        throw _failure();
+      }
       _authMutationDispatched = true;
       await _sdk.refresh();
       await _settle();

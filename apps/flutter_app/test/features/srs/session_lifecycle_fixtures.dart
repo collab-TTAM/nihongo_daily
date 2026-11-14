@@ -117,6 +117,7 @@ final class MemorySdk implements RefreshableAccountAccess {
   int logouts = 0;
   int logins = 0;
   int restores = 0;
+  int refreshes = 0;
   @override
   ReviewSession? get currentSession => session;
   @override
@@ -149,7 +150,10 @@ final class MemorySdk implements RefreshableAccountAccess {
   }
 
   @override
-  Future<void> refresh() => authenticate();
+  Future<void> refresh() {
+    refreshes++;
+    return authenticate();
+  }
   @override
   Future<void> signOut() async {
     logouts++;
@@ -161,6 +165,8 @@ final class MemorySdk implements RefreshableAccountAccess {
 
 const scenarios = [
   'empty-start',
+  'logout-before-login-dispatch',
+  'logout-before-refresh-dispatch',
   'empty-start-login',
   'restore-barrier',
   'login-barrier',
@@ -331,6 +337,45 @@ Future<void> verifyLifecycle(String scenario) async {
       return;
     }
     await access.start();
+    if (scenario == 'logout-before-login-dispatch') {
+      final pendingLogin = fails(login());
+      final logout = access.signOut();
+      await flush();
+      await pendingLogin;
+      await logout;
+      check(
+        sdk.logins == 0 &&
+            sdk.logouts == 1 &&
+            sdk.session == null &&
+            backend.secret == null &&
+            backend.clears == 1 &&
+            access.currentSession == null &&
+            access.phase == SessionPersistencePhase.idle &&
+            backend.operations.join(' -> ') == 'read -> clear',
+        'logout dispatched a reserved password grant after cancellation',
+      );
+      return;
+    }
+    if (scenario == 'logout-before-refresh-dispatch') {
+      await login();
+      final pendingRefresh = fails(access.refresh());
+      final logout = access.signOut();
+      await flush();
+      await pendingRefresh;
+      await logout;
+      check(
+        sdk.refreshes == 0 &&
+            sdk.logouts == 1 &&
+            sdk.session == null &&
+            backend.secret == null &&
+            backend.clears == 1 &&
+            access.currentSession == null &&
+            access.phase == SessionPersistencePhase.idle &&
+            backend.operations.join(' -> ') == 'read -> write -> clear',
+        'logout dispatched a reserved refresh after cancellation',
+      );
+      return;
+    }
     if (scenario == 'empty-start-login') {
       await login();
       check(

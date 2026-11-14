@@ -83,6 +83,15 @@ responses from granting access. Logout/disposal during an Auth request keeps the
 gate fenced and cleans again after that request settles, including SDK logout
 failure followed by late sign-in success. Explicit retry is required after errors.
 
+A sign-in or explicit refresh reserves its operation slot before the deferred
+runner dispatches the SDK request. If logout arrives in that gap, the runner
+rechecks the captured cancellation/logout fence immediately before Auth dispatch
+and sends no request. This prevents a post-logout password grant or refresh from
+creating a server session after local logout. The `logout-before-login-dispatch`
+and `logout-before-refresh-dispatch` lifecycle cases assert zero Auth dispatch
+and successful vault cleanup. They are deterministic coordinator fixtures, not
+hosted Auth proof.
+
 Every session rotation/account change revokes the old persistence gate until the
 new secret is saved. No profile or study request is issued through the account
 runtime before that barrier. Getter checks also reject a changed SDK identity or
@@ -110,7 +119,7 @@ revocation, OS-logoff/power-loss recovery or protection from same-OS-user proces
 ## Reproduction and separate review
 
 In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
-`flutter test`. Thirty-five pure cases cover empty/refresh startup, persistence
+`flutter test`. Thirty-seven pure cases cover empty/refresh startup, persistence
 barriers, same-session rotation, account switches, older in-flight writes,
 logout during write/restore/login, storage/read/clear/SDK errors and explicit
 retry, revocation, owner exclusivity, stream closure and disposal. Pinned-SDK HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
