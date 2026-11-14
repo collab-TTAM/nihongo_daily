@@ -65,3 +65,7 @@ The probe temporarily changes only the two pre-provisioned staging users'
 does not reset it, then restores the original N5 default and verifies the
 restoration. No other profile setting is written. Do not point this workflow at
 production or real learner accounts.
+
+## CI guard for the protected staging boundary
+
+The existing repo-sanity step `Verify hosted Supabase probe safety and behavior` also runs static workflow regressions. They require a manual-only `workflow_dispatch`, a required boolean confirmation defaulting to false, a job condition tied to that confirmation, the `supabase-staging` environment, read-only `contents` permission, non-cancelling concurrency, and exactly the six documented staging secrets. The workflow is constrained to checkout, Python setup and the hosted probe command. These checks protect the workflow definition; they do not prove that environment reviewers, secrets or the two pre-provisioned accounts exist, and they are not hosted learner evidence.

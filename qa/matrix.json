@@ -1156,7 +1156,7 @@
         18
       ],
       "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial and logout revocation; record exact run/head. Separately verify configured Flutter startup/restart. Offline adversarial probe tests also model an endpoint that accepts each forged field and require the probe to fail. The probe temporarily changes only each staging user's preferred_jlpt to N4, repeats ensure_profile({}), verifies preservation, then restores the original N5 value; it also attempts A/B cross-owner updates and verifies neither target changes.",
-      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey. The new override cases are offline fake-server coverage until the protected staging workflow is dispatched; they do not themselves prove deployed SQL behavior. These new update/idempotency checks remain offline fake-server coverage until the protected staging workflow runs; only the pre-provisioned test users' preferred_jlpt is temporarily changed and restored.",
+      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey. The new override cases are offline fake-server coverage until the protected staging workflow is dispatched; they do not themselves prove deployed SQL behavior. These new update/idempotency checks remain offline fake-server coverage until the protected staging workflow runs; only the pre-provisioned test users' preferred_jlpt is temporarily changed and restored. Static CI regressions also guard the manual dispatch/confirmation, protected environment, read-only permission and exact staging-secret boundary; they do not prove the environment secrets or two test accounts are configured.",
       "anchors": [
         {
           "path": "scripts/hosted_supabase_probe.py",
@@ -1185,6 +1185,18 @@
         {
           "path": "scripts/test_hosted_supabase_probe.py",
           "contains": "def test_bootstrap_does_not_reset_existing_preference("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_staging_workflow_requires_explicit_non_production_confirmation(self):"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_staging_workflow_uses_only_protected_staging_secrets(self):"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_staging_workflow_is_read_only_and_does_not_auto_cancel(self):"
         }
       ]
     },

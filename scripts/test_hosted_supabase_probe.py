@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Offline regressions for the opt-in hosted Supabase acceptance probe."""
 from __future__ import annotations
-import base64,json,sys,unittest,urllib.parse
+import base64,json,re,sys,unittest,urllib.parse
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import hosted_supabase_probe as probe
@@ -183,6 +183,75 @@ class HostedConfigTests(unittest.TestCase):
             probe.load_config({})
         self.assertIn("ND_STAGING_SUPABASE_URL",str(caught.exception))
         self.assertNotIn("TEST_ONLY",str(caught.exception))
+
+
+class HostedWorkflowSafetyTests(unittest.TestCase):
+    """Protect the manual staging boundary from accidental CI secret exposure."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.workflow = (
+            Path(__file__).resolve().parents[1]
+            / ".github"
+            / "workflows"
+            / "hosted-supabase-acceptance.yml"
+        ).read_text(encoding="utf-8")
+
+    def test_staging_workflow_requires_explicit_non_production_confirmation(self):
+        workflow = self.workflow
+        self.assertRegex(workflow, r"(?m)^on:\s*$")
+        self.assertRegex(workflow, r"(?m)^  workflow_dispatch:\s*$")
+        self.assertNotRegex(workflow, r"(?m)^  (?:pull_request|push|schedule):")
+        match = re.search(
+            r"(?ms)^      confirm_non_production:\n(?P<body>(?:        .*\n)+)",
+            workflow,
+        )
+        self.assertIsNotNone(match)
+        self.assertIn("type: boolean", match.group("body"))
+        self.assertIn("required: true", match.group("body"))
+        self.assertIn("default: false", match.group("body"))
+        self.assertRegex(
+            workflow,
+            r"(?m)^    if: \$\{\{ inputs\.confirm_non_production \}\}$",
+        )
+
+    def test_staging_workflow_uses_only_protected_staging_secrets(self):
+        workflow = self.workflow
+        self.assertRegex(workflow, r"(?m)^    environment: supabase-staging$")
+        expected = {
+            "ND_STAGING_SUPABASE_URL",
+            "ND_STAGING_SUPABASE_PUBLISHABLE_KEY",
+            "ND_STAGING_USER_A_EMAIL",
+            "ND_STAGING_USER_A_PASSWORD",
+            "ND_STAGING_USER_B_EMAIL",
+            "ND_STAGING_USER_B_PASSWORD",
+        }
+        referenced = set(
+            re.findall(r"\$\{\{\s*secrets\.([A-Z0-9_]+)\s*\}\}", workflow)
+        )
+        self.assertEqual(referenced, expected)
+        for name in expected:
+            self.assertRegex(
+                workflow,
+                rf"(?m)^\s+{name}:\s*\$\{{\{{\s*secrets\.{name}\s*\}}\}}$",
+            )
+        self.assertNotRegex(workflow, r"(?i)service[_-]?role|jwt[_-]?secret")
+        self.assertEqual(
+            re.findall(r"(?m)^\s+- uses: ([^\s]+)$", workflow),
+            ["actions/checkout@v4", "actions/setup-python@v5"],
+        )
+        self.assertIn("run: python3 scripts/hosted_supabase_probe.py", workflow)
+
+    def test_staging_workflow_is_read_only_and_does_not_auto_cancel(self):
+        workflow = self.workflow
+        self.assertRegex(workflow, r"(?ms)^permissions:\n  contents: read\n")
+        self.assertRegex(
+            workflow,
+            r"(?ms)^concurrency:\n"
+            r"  group: hosted-supabase-acceptance\n"
+            r"  cancel-in-progress: false\n",
+        )
+        self.assertRegex(workflow, r"(?m)^    timeout-minutes: 10$")
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
