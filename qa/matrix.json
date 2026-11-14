@@ -267,12 +267,12 @@
           "contains": "persistent session lifecycle"
         },
         {
-          "path": "apps/flutter_app/test/features/srs/session_lifecycle_test.dart",
-          "contains": "persistent session lifecycle: closed-stream"
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "'closed-stream'"
         },
         {
-          "path": "apps/flutter_app/test/features/srs/session_lifecycle_test.dart",
-          "contains": "persistent session lifecycle: stream-error-after-ready"
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "'stream-error-after-ready'"
         },
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
