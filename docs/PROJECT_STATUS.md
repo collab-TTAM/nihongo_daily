@@ -12108,3 +12108,13 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK. No local format/analyze/test/build pass is claimed. Exact-head GitHub Actions was triggered by the final PR update and must verify Dart format/analyze, full Flutter suite, native Linux/Windows quiz journals, Chrome/Web and all retained database/AI/repository jobs; no skipped/pending job counts as pass.
 - This is local native storage fault-injection evidence only, not hosted Auth/JWT/RLS, learner acceptance, mastery, sync or multi-device proof. PR #41 remains Draft; #13/#11/#15/#20/#22 remain open. Pro-owned #14/#38/N4 remains excluded.
 - Next: inspect the latest exact-head Actions attempt and every job/step; fix only observed failures, or leave a pending-only handoff without duplicate source work.
+
+
+---
+
+## PR #41 — quiz journal test formatting review — 2026-11-14T00:15Z
+
+- Run `core-20261114T0006Z-pr41-quiz-journal-write-failure` continues on `automation/issue-11-plan-sdk-integration`; format-review source commit `4cb79caf42a728580ddf1f7cb5f427e7d61ec982` (parent `963bd8490925d7136af6abec118191ab72312b16`).
+- Separate diff review found two new async test declarations needed the pinned Dart formatter's multiline callback layout and two-space body indentation, plus one extra blank line. Applied only that formatting correction to `apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart`; test bodies, injected failures, assertions and production behavior are unchanged.
+- The earlier Actions run [43532740934](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43532740934) targets the pre-correction status head and remains pending; it is not evidence for the corrected source. A fresh exact-head run is required after this status commit; no new format/analyze/test/build pass is claimed.
+- Next: inspect the latest attempt and every job/step on the final PR HEAD, then fix only observed diagnostics. All hosted learner, JWT/RLS, mastery and multi-device limitations remain unchanged.
