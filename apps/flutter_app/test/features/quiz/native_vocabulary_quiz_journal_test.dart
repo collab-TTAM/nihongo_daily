@@ -24,13 +24,13 @@ Future<String> _readBoundedProcessOutput(Stream<List<int>> stream) async {
     remaining -= count;
     if (count < decoded.length) truncated = true;
   }
-  if (truncated) output.write('\\n<output truncated>');
+  if (truncated) output.write('\n<output truncated>');
   return output.toString();
 }
 
 Future<void> quizProbe(String command, Directory directory) async {
   final configuredRoot = Platform.environment['FLUTTER_ROOT'];
-  final executable = Platform.resolvedExecutable.replaceAll('\\\\', '/');
+  final executable = Platform.resolvedExecutable.replaceAll('\\', '/');
   final marker = executable.indexOf('/bin/cache/');
   final inferredRoot = marker < 0 ? null : executable.substring(0, marker);
   final root = configuredRoot ?? inferredRoot;
@@ -41,7 +41,8 @@ Future<void> quizProbe(String command, Directory directory) async {
       .uri
       .resolve('bin/cache/dart-sdk/bin/dart$suffix')
       .toFilePath();
-  final fixture = File('test/features/quiz/quiz_journal_fixtures.dart').absolute.path;
+  final fixture =
+      File('test/features/quiz/quiz_journal_fixtures.dart').absolute.path;
   final child = await Process.start(
     dart,
     ['run', fixture, command, directory.path],
@@ -59,9 +60,9 @@ Future<void> quizProbe(String command, Directory directory) async {
       0,
       reason: [
         'Native child process must verify $command (exit $code).',
-        if (stdout.isNotEmpty) 'stdout:\\n$stdout',
-        if (stderr.isNotEmpty) 'stderr:\\n$stderr',
-      ].join('\\n'),
+        if (stdout.isNotEmpty) 'stdout:\n$stdout',
+        if (stderr.isNotEmpty) 'stderr:\n$stderr',
+      ].join('\n'),
     );
   } on Object {
     child.kill();
@@ -492,7 +493,10 @@ void main() {
     );
     expect(output, startsWith('x'));
     expect(output, endsWith('<output truncated>'));
-    expect(output.length, lessThanOrEqualTo(4096 + '\\n<output truncated>'.length));
+    expect(
+      output.length,
+      lessThanOrEqualTo(4096 + '\n<output truncated>'.length),
+    );
   });
 
   test(
