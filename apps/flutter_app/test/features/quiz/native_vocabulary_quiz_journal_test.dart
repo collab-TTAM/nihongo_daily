@@ -322,8 +322,9 @@ void main() {
     expect(await file.length(), NativeVocabularyQuizJournal.maxBytes + 1);
   });
 
-
-  test('partial write failure poisons journal and exact retry recovers', () async {
+  test(
+    'partial write failure poisons journal and exact retry recovers',
+    () async {
     final report = quizReport(701);
     final failed = await NativeVocabularyQuizJournal.openForTesting(
       directory,
@@ -363,9 +364,12 @@ void main() {
     expect(sameVocabularyQuizAttempt(saved.attempt, report), isTrue);
     expect(await restored.list(quizOwner), hasLength(1));
     expect(await file.readAsLines(), hasLength(1));
-  });
+    },
+  );
 
-  test('post-flush failure reopens and exact replay avoids duplicate', () async {
+  test(
+    'post-flush failure reopens and exact replay avoids duplicate',
+    () async {
     final report = quizReport(702);
     final failed = await NativeVocabularyQuizJournal.openForTesting(
       directory,
@@ -408,7 +412,8 @@ void main() {
     expect(sameVocabularyQuizAttempt(replay.attempt, report), isTrue);
     expect(await file.length(), length);
     expect(await file.readAsLines(), hasLength(1));
-  });
+    },
+  );
 
   test('invalid owners and duplicate open preserve the writer', () async {
     final store = await open();
