@@ -12,6 +12,63 @@ import '../../daily_plan/data/daily_plan_repository.dart';
 import '../../daily_plan/domain/daily_plan.dart';
 import '../../daily_plan/presentation/daily_plan_labels.dart';
 import '../../daily_plan/presentation/study_day_button.dart';
+import '../../quiz/application/grammar_quiz_history_provider.dart';
+import '../../quiz/application/quiz_history_provider.dart';
+import '../../quiz/data/grammar_quiz_history_repository.dart';
+import '../../quiz/data/vocabulary_quiz_history_repository.dart';
+import '../../quiz/domain/grammar_quiz_attempt.dart';
+import '../../quiz/domain/vocabulary_quiz_attempt.dart';
+
+final class _QuizHistoryTotals {
+  const _QuizHistoryTotals({
+    required this.attempts,
+    required this.answers,
+    required this.correct,
+  });
+
+  final int attempts;
+  final int answers;
+  final int correct;
+}
+
+final class _QuizHistorySummary {
+  const _QuizHistorySummary({
+    required this.vocabulary,
+    required this.grammarPrimary,
+    required this.grammarCorrection,
+  });
+
+  final _QuizHistoryTotals? vocabulary;
+  final _QuizHistoryTotals? grammarPrimary;
+  final _QuizHistoryTotals? grammarCorrection;
+}
+
+_QuizHistoryTotals _vocabularyTotals(
+  List<OwnedVocabularyQuizAttempt> records,
+) {
+  final answers = records
+      .expand((record) => record.attempt.answers)
+      .toList(growable: false);
+  return _QuizHistoryTotals(
+    attempts: records.length,
+    answers: answers.length,
+    correct: answers.where((answer) => answer.isCorrect).length,
+  );
+}
+
+_QuizHistoryTotals _grammarTotals(List<OwnedGrammarQuizAttempt> records) {
+  final answers = records
+      .expand((record) => record.attempt.answers)
+      .toList(growable: false);
+  return _QuizHistoryTotals(
+    attempts: records.length,
+    answers: answers.length,
+    correct: answers.where((answer) => answer.isCorrect).length,
+  );
+}
+
+String _quizTotalsLabel(String title, _QuizHistoryTotals totals) =>
+    '$title · ${totals.attempts} lượt · ${totals.correct}/${totals.answers} câu đúng';
 
 class ProgressOverviewScreen extends ConsumerStatefulWidget {
   const ProgressOverviewScreen({super.key});
@@ -30,6 +87,9 @@ class _ProgressOverviewScreenState
   String? _planTimezone;
   String? _message;
   bool _loading = false;
+  _QuizHistorySummary? _quizSummary;
+  bool _quizLoading = false;
+  bool _quizFailed = false;
   int _generation = 0;
 
   void _clearForReplacement() {
@@ -41,6 +101,9 @@ class _ProgressOverviewScreenState
     _planTimezone = null;
     _message = null;
     _loading = false;
+    _quizSummary = null;
+    _quizLoading = false;
+    _quizFailed = false;
   }
 
   bool _isCurrent({
@@ -143,6 +206,106 @@ class _ProgressOverviewScreenState
     }
   }
 
+  bool _isQuizCurrent({
+    required String owner,
+    required int generation,
+    required VocabularyQuizHistoryRepository? vocabulary,
+    required GrammarQuizHistoryRepository? grammar,
+  }) {
+    if (!mounted || generation != _generation) return false;
+    final account = ref.read(accountStateProvider);
+    return account.phase == AccountPhase.ready &&
+        account.profile?.id == owner &&
+        identical(ref.read(quizHistoryRepositoryProvider), vocabulary) &&
+        identical(ref.read(grammarQuizHistoryRepositoryProvider), grammar);
+  }
+
+  Future<void> _loadQuizSummary() async {
+    if (_quizLoading) return;
+    final account = ref.read(accountStateProvider);
+    final owner = account.profile?.id;
+    final vocabulary = ref.read(quizHistoryRepositoryProvider);
+    final grammar = ref.read(grammarQuizHistoryRepositoryProvider);
+    if (account.phase != AccountPhase.ready ||
+        owner == null ||
+        (vocabulary == null && grammar == null)) {
+      return;
+    }
+
+    final generation = _generation;
+    setState(() {
+      _quizLoading = true;
+      _quizFailed = false;
+      _quizSummary = null;
+    });
+
+    try {
+      final vocabularyRecords = vocabulary == null
+          ? null
+          : await vocabulary.load();
+      if (!_isQuizCurrent(
+        owner: owner,
+        generation: generation,
+        vocabulary: vocabulary,
+        grammar: grammar,
+      )) {
+        return;
+      }
+
+      final grammarRecords = grammar == null ? null : await grammar.load();
+      if (!_isQuizCurrent(
+        owner: owner,
+        generation: generation,
+        vocabulary: vocabulary,
+        grammar: grammar,
+      )) {
+        return;
+      }
+
+      final primary = grammarRecords
+          ?.where(
+            (record) =>
+                record.attempt.kind == GrammarQuizAttemptKind.primary,
+          )
+          .toList(growable: false);
+      final correction = grammarRecords
+          ?.where(
+            (record) =>
+                record.attempt.kind == GrammarQuizAttemptKind.correction,
+          )
+          .toList(growable: false);
+      setState(() {
+        _quizSummary = _QuizHistorySummary(
+          vocabulary: vocabularyRecords == null
+              ? null
+              : _vocabularyTotals(vocabularyRecords),
+          grammarPrimary: primary == null ? null : _grammarTotals(primary),
+          grammarCorrection: correction == null
+              ? null
+              : _grammarTotals(correction),
+        );
+      });
+    } on Object {
+      if (_isQuizCurrent(
+        owner: owner,
+        generation: generation,
+        vocabulary: vocabulary,
+        grammar: grammar,
+      )) {
+        setState(() => _quizFailed = true);
+      }
+    } finally {
+      if (_isQuizCurrent(
+        owner: owner,
+        generation: generation,
+        vocabulary: vocabulary,
+        grammar: grammar,
+      )) {
+        setState(() => _quizLoading = false);
+      }
+    }
+  }
+
   @override
   void dispose() {
     _date.clear();
@@ -155,6 +318,12 @@ class _ProgressOverviewScreenState
     ref.listen(dailyPlanRepositoryProvider, (_, _) {
       _clearForReplacement();
     });
+    ref.listen(quizHistoryRepositoryProvider, (_, _) {
+      _clearForReplacement();
+    });
+    ref.listen(grammarQuizHistoryRepositoryProvider, (_, _) {
+      _clearForReplacement();
+    });
     ref.listen(accountStateProvider, (previous, next) {
       if (previous?.phase != next.phase ||
           previous?.profile?.id != next.profile?.id ||
@@ -165,6 +334,8 @@ class _ProgressOverviewScreenState
 
     final account = ref.watch(accountStateProvider);
     final repository = ref.watch(dailyPlanRepositoryProvider);
+    final vocabularyHistory = ref.watch(quizHistoryRepositoryProvider);
+    final grammarHistory = ref.watch(grammarQuizHistoryRepositoryProvider);
     final profile = account.profile;
     final ready =
         account.phase == AccountPhase.ready &&
@@ -305,6 +476,66 @@ class _ProgressOverviewScreenState
           'Báo cáo quiz hiện là lịch sử cục bộ theo tài khoản. '
           'Không cộng điểm quiz thành thời gian học hoặc trạng thái MASTERED.',
         ),
+        if (vocabularyHistory == null && grammarHistory == null)
+          const Text('Lịch sử quiz trên thiết bị chưa được cấu hình.'),
+        if (vocabularyHistory != null || grammarHistory != null)
+          FilledButton.icon(
+            key: const Key('progress-load-quiz'),
+            onPressed: _quizLoading
+                ? null
+                : () => unawaited(_loadQuizSummary()),
+            icon: const Icon(Icons.assessment_outlined),
+            label: Text(
+              _quizLoading
+                  ? 'Đang tải lịch sử quiz…'
+                  : 'Tải tóm tắt quiz trên thiết bị',
+            ),
+          ),
+        if (_quizLoading) ...[
+          const LinearProgressIndicator(),
+          const Text('Đang đọc lịch sử quiz trên thiết bị…'),
+        ],
+        if (_quizFailed)
+          const Text(
+            'Không thể đọc lịch sử quiz. Bạn có thể thử tải lại.',
+            key: Key('progress-quiz-error'),
+          ),
+        if (_quizSummary != null) ...[
+          if (_quizSummary!.vocabulary == null)
+            const Text('Từ vựng: lịch sử chưa được cấu hình.')
+          else
+            Text(
+              _quizTotalsLabel(
+                'Từ vựng (N5 + N4)',
+                _quizSummary!.vocabulary!,
+              ),
+              key: const Key('progress-quiz-vocabulary-summary'),
+            ),
+          if (_quizSummary!.grammarPrimary == null)
+            const Text('Ngữ pháp chính: lịch sử chưa được cấu hình.')
+          else
+            Text(
+              _quizTotalsLabel(
+                'Ngữ pháp chính (N5 + N4)',
+                _quizSummary!.grammarPrimary!,
+              ),
+              key: const Key('progress-quiz-grammar-primary-summary'),
+            ),
+          if (_quizSummary!.grammarCorrection == null)
+            const Text('Ngữ pháp sửa: lịch sử chưa được cấu hình.')
+          else
+            Text(
+              _quizTotalsLabel(
+                'Ngữ pháp sửa (N5 + N4)',
+                _quizSummary!.grammarCorrection!,
+              ),
+              key: const Key('progress-quiz-grammar-correction-summary'),
+            ),
+          const Text(
+            'Số liệu chỉ phản ánh lượt đã lưu trên thiết bị; không xác nhận '
+            'mức thành thạo, thời gian học hoặc đồng bộ máy chủ.',
+          ),
+        ],
         OutlinedButton(
           key: const Key('progress-vocabulary'),
           onPressed: () => context.go('/progress'),

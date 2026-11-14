@@ -9,10 +9,19 @@ import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/auth/application/account_provider.dart';
 import 'package:nihongo_daily/features/daily_plan/application/daily_plan_provider.dart';
 import 'package:nihongo_daily/features/daily_plan/data/daily_plan_repository.dart';
+import 'package:nihongo_daily/features/quiz/application/grammar_quiz_history_provider.dart';
+import 'package:nihongo_daily/features/quiz/application/quiz_history_provider.dart';
+import 'package:nihongo_daily/features/quiz/data/grammar_quiz_attempt_store.dart';
+import 'package:nihongo_daily/features/quiz/data/grammar_quiz_history_repository.dart';
+import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_attempt_store.dart';
+import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_history_repository.dart';
+import 'package:nihongo_daily/features/quiz/domain/grammar_quiz_attempt.dart';
+import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
 
 import '../srs/account_fixtures.dart' as account;
 import '../srs/account_widget_test.dart' show Harness;
 import '../daily_plan/study_session_recovery_fixtures.dart' show studyPlan;
+import '../quiz/quiz_journal_fixtures.dart' show quizReport;
 
 // TEST ONLY Auth/RPC ports. No hosted learner or multi-device proof.
 final class _ProgressSource implements DailyPlanRepositorySource {
@@ -67,21 +76,155 @@ final class _ProgressGateway implements DailyPlanStudyDayGateway {
   }
 }
 
+
+final class _VocabularyPorts
+    implements VocabularyQuizHistorySource, VocabularyQuizAttemptStore {
+  _VocabularyPorts(this.harness);
+
+  final Harness harness;
+  final operations = VocabularyQuizOperationDrain();
+  List<OwnedVocabularyQuizAttempt> records = [];
+  Completer<void>? readWait;
+  bool failRead = false;
+  int reads = 0;
+  int writes = 0;
+
+  @override
+  VocabularyQuizHistoryRepository? createVocabularyQuizHistoryRepository() {
+    final ready = harness.runtime.readyRuntime;
+    if (ready == null) return null;
+    return VocabularyQuizHistoryRepository(
+      auth: harness.access,
+      store: this,
+      isReady: () => identical(harness.runtime.readyRuntime, ready),
+      operations: operations,
+    );
+  }
+
+  @override
+  Future<List<OwnedVocabularyQuizAttempt>> list(String ownerId) async {
+    reads++;
+    await readWait?.future;
+    if (failRead) throw StateError('PRIVATE VOCABULARY HISTORY');
+    return records.where((record) => record.ownerId == ownerId).toList();
+  }
+
+  @override
+  Future<OwnedVocabularyQuizAttempt> append(
+    String ownerId,
+    VocabularyQuizAttempt attempt,
+  ) {
+    writes++;
+    return Future.error(StateError('Progress overview must never write'));
+  }
+
+  Future<void> close() async {
+    if (readWait != null && !readWait!.isCompleted) readWait!.complete();
+    await operations.revokeAndDrain();
+  }
+}
+
+final class _GrammarPorts
+    implements GrammarQuizHistorySource, GrammarQuizAttemptStore {
+  _GrammarPorts(this.harness);
+
+  final Harness harness;
+  final operations = GrammarQuizOperationDrain();
+  List<OwnedGrammarQuizAttempt> records = [];
+  Completer<void>? readWait;
+  bool failRead = false;
+  int reads = 0;
+  int writes = 0;
+
+  @override
+  GrammarQuizHistoryRepository? createGrammarQuizHistoryRepository() {
+    final ready = harness.runtime.readyRuntime;
+    if (ready == null) return null;
+    return GrammarQuizHistoryRepository(
+      auth: harness.access,
+      store: this,
+      isReady: () => identical(harness.runtime.readyRuntime, ready),
+      operations: operations,
+    );
+  }
+
+  @override
+  Future<List<OwnedGrammarQuizAttempt>> list(String ownerId) async {
+    reads++;
+    await readWait?.future;
+    if (failRead) throw StateError('PRIVATE GRAMMAR HISTORY');
+    return records.where((record) => record.ownerId == ownerId).toList();
+  }
+
+  @override
+  Future<OwnedGrammarQuizAttempt> append(
+    String ownerId,
+    GrammarQuizAttempt attempt,
+  ) {
+    writes++;
+    return Future.error(StateError('Progress overview must never write'));
+  }
+
+  Future<void> close() async {
+    if (readWait != null && !readWait!.isCompleted) readWait!.complete();
+    await operations.revokeAndDrain();
+  }
+}
+
+GrammarQuizAttempt _grammarReport(
+  int id, {
+  required GrammarQuizAttemptKind kind,
+  bool correct = false,
+}) {
+  final tail = id.toString().padLeft(12, '0');
+  const target = 'b6000000-0000-4000-8000-000000000001';
+  const wrong = 'b6000000-0000-4000-8000-000000000002';
+  return GrammarQuizAttempt.fromJson({
+    'format_version': 1,
+    'quiz_type': 'grammar_meaning',
+    'practice_kind': kind.name,
+    'event_id': 'b5000000-0000-4000-8000-$tail',
+    'level': 'N5',
+    'completed_at': '2026-10-20T00:02:00.000Z',
+    'answers': [
+      {
+        'item_id': target,
+        'content_version': 1,
+        'selected_id': correct ? target : wrong,
+        'choices': [
+          target,
+          wrong,
+          'b6000000-0000-4000-8000-000000000003',
+          'b6000000-0000-4000-8000-000000000004',
+        ],
+      },
+    ],
+  });
+}
+
 Future<ProviderContainer> _mount(
   WidgetTester tester,
   Harness harness,
   _ProgressSource source, {
   bool configured = true,
+  _VocabularyPorts? vocabularyPorts,
+  _GrammarPorts? grammarPorts,
 }) async {
   final container = ProviderContainer(
     overrides: [
       if (configured) accountRuntimeProvider.overrideWithValue(harness.runtime),
       if (configured) dailyPlanSourceProvider.overrideWithValue(source),
+      if (configured && vocabularyPorts != null)
+        quizHistorySourceProvider.overrideWithValue(vocabularyPorts),
+      if (configured && grammarPorts != null)
+        grammarQuizHistorySourceProvider.overrideWithValue(grammarPorts),
     ],
   );
   addTearDown(() async {
     await tester.pumpWidget(const SizedBox());
     container.dispose();
+    await vocabularyPorts?.close();
+    await grammarPorts?.close();
     await harness.close();
   });
   await tester.pumpWidget(
@@ -207,6 +350,123 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
     expect(source.planReads, 1);
+  });
+
+
+  testWidgets(
+    'overview loads separate local quiz totals only on explicit action',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final vocabulary = _VocabularyPorts(harness)
+        ..records = [
+          OwnedVocabularyQuizAttempt(account.owner, quizReport(1, correct: true)),
+          OwnedVocabularyQuizAttempt(account.owner, quizReport(2)),
+        ];
+      final grammar = _GrammarPorts(harness)
+        ..records = [
+          OwnedGrammarQuizAttempt(
+            account.owner,
+            _grammarReport(1, kind: GrammarQuizAttemptKind.primary, correct: true),
+          ),
+          OwnedGrammarQuizAttempt(
+            account.owner,
+            _grammarReport(2, kind: GrammarQuizAttemptKind.correction),
+          ),
+        ];
+      await _mount(
+        tester,
+        harness,
+        source,
+        vocabularyPorts: vocabulary,
+        grammarPorts: grammar,
+      );
+
+      expect(vocabulary.reads, 0);
+      expect(grammar.reads, 0);
+      await tester.ensureVisible(find.byKey(const Key('progress-load-quiz')));
+      await tester.tap(find.byKey(const Key('progress-load-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(vocabulary.reads, 1);
+      expect(grammar.reads, 1);
+      expect(find.text('Từ vựng (N5 + N4) · 2 lượt · 1/2 câu đúng'), findsOneWidget);
+      expect(find.text('Ngữ pháp chính (N5 + N4) · 1 lượt · 1/1 câu đúng'), findsOneWidget);
+      expect(find.text('Ngữ pháp sửa (N5 + N4) · 1 lượt · 0/1 câu đúng'), findsOneWidget);
+      expect(vocabulary.writes, 0);
+      expect(grammar.writes, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('overview quiz history error is redacted and can be retried', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    final vocabulary = _VocabularyPorts(harness)..failRead = true;
+    final grammar = _GrammarPorts(harness);
+    await _mount(
+      tester,
+      harness,
+      source,
+      vocabularyPorts: vocabulary,
+      grammarPorts: grammar,
+    );
+
+    await tester.ensureVisible(find.byKey(const Key('progress-load-quiz')));
+    await tester.tap(find.byKey(const Key('progress-load-quiz')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('progress-quiz-error')), findsOneWidget);
+    expect(find.textContaining('PRIVATE'), findsNothing);
+    expect(grammar.reads, 0);
+
+    vocabulary.failRead = false;
+    await tester.tap(find.byKey(const Key('progress-load-quiz')));
+    await tester.pumpAndSettle();
+    expect(vocabulary.reads, 2);
+    expect(grammar.reads, 1);
+    expect(find.byKey(const Key('progress-quiz-error')), findsNothing);
+    expect(find.text('Ngữ pháp chính (N5 + N4) · 0 lượt · 0/0 câu đúng'), findsOneWidget);
+    expect(vocabulary.writes, 0);
+    expect(grammar.writes, 0);
+  });
+
+  testWidgets('late quiz history cannot publish after account replacement', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    final vocabulary = _VocabularyPorts(harness)
+      ..records = [
+        OwnedVocabularyQuizAttempt(account.owner, quizReport(1, correct: true)),
+      ]
+      ..readWait = Completer<void>();
+    final grammar = _GrammarPorts(harness);
+    await _mount(
+      tester,
+      harness,
+      source,
+      vocabularyPorts: vocabulary,
+      grammarPorts: grammar,
+    );
+
+    await tester.ensureVisible(find.byKey(const Key('progress-load-quiz')));
+    await tester.tap(find.byKey(const Key('progress-load-quiz')));
+    await tester.pump();
+    expect(vocabulary.reads, 1);
+
+    harness.access.change(account.other);
+    await tester.pumpAndSettle();
+    vocabulary.readWait!.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('progress-quiz-vocabulary-summary')), findsNothing);
+    expect(find.textContaining('1 lượt'), findsNothing);
+    expect(grammar.reads, 0);
+    expect(vocabulary.writes, 0);
+    expect(grammar.writes, 0);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('overview links keep vocabulary and grammar reports separate', (

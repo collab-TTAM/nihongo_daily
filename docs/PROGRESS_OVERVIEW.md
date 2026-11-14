@@ -28,6 +28,17 @@ minutes, certified mastery, the reserved SRS MASTERED state or cross-device
 sync. The overview links to them without merging their counters into the
 server-owned Daily Plan.
 
+## Local quiz snapshot
+
+The overview also offers an explicit read-only snapshot when owner-bound local
+quiz repositories are configured. It reads vocabulary, grammar-primary and
+grammar-correction history separately; it never combines the two grammar kinds
+or treats quiz answers as Daily Plan minutes, certified mastery, SRS state or
+server sync. Opening the page does not read quiz history. A manual load uses the
+current account repositories, hides late results after account replacement and
+shows a fixed Vietnamese error with an explicit retry. The snapshot performs no
+writes or remote submission.
+
 ## Verification boundary
 
 Progress overview widget tests use TEST ONLY Auth/RPC gateways. Exact-head

@@ -4092,7 +4092,7 @@
     {
       "id": "progress-overview",
       "status": "pending-integration",
-      "scope": "Server-derived Daily Plan study minutes with separate vocabulary/grammar quiz report navigation",
+      "scope": "Server-derived Daily Plan minutes plus an explicit read-only local quiz snapshot with separate vocabulary, grammar-primary and grammar-correction totals; no cross-kind/mastery/time aggregation.",
       "issues": [
         11,
         13,
@@ -4114,10 +4114,22 @@
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
           "contains": "overview links keep vocabulary and grammar reports separate"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "overview loads separate local quiz totals only on explicit action"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "overview quiz history error is redacted and can be retried"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late quiz history cannot publish after account replacement"
         }
       ],
-      "reproduce": "Open /overview in preview and configured test account; explicitly choose the server profile day, load a plan, inspect minutes and block status, retry a safe network error, replace the account during a held response, and open the separate quiz reports.",
-      "limitation": "Auth/RPC gateways are TEST ONLY. No hosted learner identity, authoritative mastery, cross-device sync or Personal Alpha acceptance is established."
+      "reproduce": "Open /overview in preview and configured test account; explicitly choose the server profile day and load a plan; explicitly load local quiz history; verify separate vocabulary/grammar-primary/grammar-correction totals, redacted retry, zero writes and suppression after account replacement; open the separate quiz reports.",
+      "limitation": "Auth/RPC/local-history ports are TEST ONLY. The overview reads only local owner-bound history and never submits it. No hosted learner identity, authoritative mastery, cross-device sync or Personal Alpha acceptance is established."
     },
     {
       "id": "quiz-report-verified-owner-host",
