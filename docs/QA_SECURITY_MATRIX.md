@@ -446,7 +446,7 @@ real temporary files. The vocabulary suite starts a separate Dart process to
 verify flushed history survives process exit and the exclusive OS lease rejects
 a second writer. The grammar suite exercises owner isolation, exact replay and
 conflict, close/drain, incomplete-tail repair, complete-corruption preservation,
-record/byte bounds and link rejection. The Windows gate is named
+record/byte bounds and link rejection. The vocabulary suite also injects a partial write and a post-flush reported failure, proving fail-closed poisoning, incomplete-tail-only repair, exact-event replay and no duplicate record. The Windows gate is named
 `Verify native quiz history journals on Windows`; its exact test anchors and reproduction command are tracked in
 `qa/matrix.json`. This step is case-scoped in `ci_steps`, not added to the global
 historical `ci_gates` list, so previously saved Actions snapshots are not

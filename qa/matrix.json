@@ -4536,6 +4536,14 @@
         {
           "path": ".github/workflows/ci.yml",
           "contains": "- name: Verify native quiz history journals on Windows"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart",
+          "contains": "partial write failure poisons journal and exact retry recovers"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart",
+          "contains": "post-flush failure reopens and exact replay avoids duplicate"
         }
       ],
       "issues": [

@@ -24,8 +24,12 @@ owners may use the same event ID. Reads return immutable owner-filtered lists.
 A failed write/flush poisons the open instance: later reads/writes fail until
 close/reopen. The outcome may be uncertain, so callers must retain and retry the
 same immutable event rather than inventing another ID. Reopen can recover a
-complete flushed line and exact replay avoids duplicates. An injected write/flush
-failure test is still outstanding; the poisoning path has source review only.
+complete flushed line and exact replay avoids duplicates. The TEST ONLY `openForTesting` writer seam injects both a partial-write
+failure and an error reported after a complete write/flush. Each case proves the
+live instance rejects later reads/writes with a fixed safe error. Reopen repairs
+only an incomplete EOF tail, or restores the already-complete line; retrying the
+same event then produces exactly one record. Production `open` always uses the
+real write-and-flush implementation and never accepts a caller-supplied writer.
 
 Restore validates all complete lines before repairing only an incomplete EOF
 tail under the lease. Strict attempt decoding accepts legacy v1 and provenance-complete v2 snapshots; exact writer encoding rejects unknown versions/keys, malformed owners, duplicate JSON keys, changed
@@ -53,7 +57,7 @@ contract or dependency changes.
 New Flutter tests use real disposable files for immutable reopen, interleaved
 owners/equal event IDs, concurrent replay/conflict, queued-work close/drain,
 incomplete-tail repair, complete corruption/duplicate-key/canonical rejection,
-record and byte limits, bootstrap failure and ownership cleanup. A pure Dart
+record and byte limits, bootstrap failure and ownership cleanup. Injected partial-write and post-flush failures verify poisoned-instance rejection, incomplete-tail-only repair, exact replay and no duplicate append. A pure Dart
 child exits after flush without graceful close; another child must fail to
 acquire an active lease. Reopening after release and exact child replay are
 checked. The reports are explicitly synthetic local fixtures, not Auth evidence.

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../domain/vocabulary_quiz_attempt.dart';
 import '../domain/vocabulary_quiz_progress.dart';
 import 'vocabulary_quiz_attempt_store.dart';
@@ -10,7 +12,12 @@ import 'vocabulary_quiz_attempt_store.dart';
 /// One writer isolate owns a trusted private directory and the OS lease.
 /// Flush supports process restart, not certified hardware power-loss durability.
 final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
-  NativeVocabularyQuizJournal._(this._directory, this._lease, this._file);
+  NativeVocabularyQuizJournal._(
+    this._directory,
+    this._lease,
+    this._file,
+    this._writeAndFlush,
+  );
 
   static const maxBytes = 1024 * 1024;
   static const maxEvents = 512;
@@ -18,13 +25,26 @@ final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
   final String _directory;
   final RandomAccessFile _lease;
   final RandomAccessFile _file;
+  final Future<void> Function(RandomAccessFile, List<int>) _writeAndFlush;
   final _records = <String, OwnedVocabularyQuizAttempt>{};
   Future<void> _tail = Future.value();
   Future<void>? _closing;
   bool _accepting = true;
   bool _broken = false;
 
-  static Future<NativeVocabularyQuizJournal> open(Directory directory) async {
+  static Future<NativeVocabularyQuizJournal> open(Directory directory) =>
+      _open(directory, _appendAndFlush);
+
+  @visibleForTesting
+  static Future<NativeVocabularyQuizJournal> openForTesting(
+    Directory directory, {
+    required Future<void> Function(RandomAccessFile, List<int>) writeAndFlush,
+  }) => _open(directory, writeAndFlush);
+
+  static Future<NativeVocabularyQuizJournal> _open(
+    Directory directory,
+    Future<void> Function(RandomAccessFile, List<int>) writeAndFlush,
+  ) async {
     String? path;
     RandomAccessFile? lease;
     RandomAccessFile? file;
@@ -43,7 +63,12 @@ final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
       lease = await File(lockPath).open(mode: FileMode.append);
       await lease.lock(FileLock.exclusive);
       file = await File(dataPath).open(mode: FileMode.append);
-      final journal = NativeVocabularyQuizJournal._(path, lease, file);
+      final journal = NativeVocabularyQuizJournal._(
+        path,
+        lease,
+        file,
+        writeAndFlush,
+      );
       await journal._restore();
       return journal;
     } on Object {
@@ -60,6 +85,14 @@ final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
     } on Object {
       // Never expose paths or raw filesystem errors during failed open.
     }
+  }
+
+  static Future<void> _appendAndFlush(
+    RandomAccessFile file,
+    List<int> bytes,
+  ) async {
+    await file.writeFrom(bytes);
+    await file.flush();
   }
 
   String _key(OwnedVocabularyQuizAttempt record) =>
@@ -173,8 +206,7 @@ final class NativeVocabularyQuizJournal implements VocabularyQuizAttemptStore {
     }
     try {
       await _file.setPosition(length);
-      await _file.writeFrom(bytes);
-      await _file.flush();
+      await _writeAndFlush(_file, bytes);
     } on Object {
       _broken = true; // Close/reopen before resolving an uncertain append.
       throw const VocabularyQuizStorageFailure();
