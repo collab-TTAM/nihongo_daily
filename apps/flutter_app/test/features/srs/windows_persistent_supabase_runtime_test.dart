@@ -1870,4 +1870,106 @@ void main() {
     expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
     expect(requests, isEmpty);
   });
+
+
+  test(
+    'Windows foreground resume after expired access lease clears vault before User B',
+    () async {
+      // Match the configured staging owner: refresh is opt-in and runs on resume.
+      await runtime.close();
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+        automaticRefresh: true,
+      );
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      expect(storedSecret, refreshSecret);
+      final profileCount = requests
+          .where(
+            (request) => request.url.path.contains('ensure_profile'),
+          )
+          .length;
+      final refreshCount = requests
+          .where(
+            (request) =>
+                request.url.path == '/auth/v1/token' &&
+                request.url.queryParameters['grant_type'] == 'refresh_token',
+          )
+          .length;
+      final revoked = runtime.account.changes.firstWhere(
+        (state) => state.phase == AccountPhase.signedOut,
+      );
+
+      // Simulate the desktop being suspended past the accepted JWT expiry.
+      // Foreground resume must not dispatch the stale lease or publish study.
+      now = now.add(const Duration(hours: 1, seconds: 1));
+      runtime.resume();
+      expect(runtime.account.readySession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      await revoked.timeout(const Duration(seconds: 5));
+      await fixture.flush();
+
+      expect(storedSecret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        runtime.account.state.phase,
+        AccountPhase.signedOut,
+      );
+      expect(
+        requests.where(
+          (request) =>
+              request.url.path == '/auth/v1/token' &&
+              request.url.queryParameters['grant_type'] == 'refresh_token',
+        ),
+        hasLength(refreshCount),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path.contains('ensure_profile'),
+        ),
+        hasLength(profileCount),
+      );
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.indexOf('vault.write')),
+      );
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_AFTER_EXPIRED_A';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(storedSecret, refreshSecret);
+      expect(
+        timeline.indexOf('vault.clear'),
+        lessThan(timeline.lastIndexOf('auth.password')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        lessThan(timeline.lastIndexOf('profile.ensure')),
+      );
+      final bProfile = requests.lastWhere(
+        (request) => request.url.path.contains('ensure_profile'),
+      );
+      expect(
+        bProfile.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+    },
+  );
 }

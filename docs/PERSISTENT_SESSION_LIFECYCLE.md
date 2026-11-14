@@ -992,3 +992,24 @@ Supabase HTTP response is synthetic. It does not prove hosted signed-JWT learner
 A/B, deployed PostgREST/RLS, spontaneous Credential Manager failure, physical
 restart or multi-device sync. No token is logged and no plaintext fallback or
 default Auth activation is introduced.
+
+
+## Foreground resume after access-token expiry
+
+The opt-in Windows staging owner rechecks its captured refresh lease when the
+application returns to the foreground. If the process was suspended beyond the
+accepted access-token expiry, the expired review connection is revoked before
+study access can resume. The scheduler does not replay the expired lease; the
+persistence observer clears the exact project-scoped Credential Manager slot.
+A replacement password grant is accepted only after that clear has drained,
+and its newly rotated refresh secret is persisted before the replacement
+own-profile request.
+
+The pinned-SDK/Windows-MethodChannel regression advances a TEST ONLY clock past
+the accepted JWT expiry, invokes the same foreground-resume entrypoint used by
+the configured host, and verifies no expired-session refresh/profile dispatch,
+no ready study runtime, clear-before-User-B-auth ordering and
+write-before-User-B-profile ordering. HTTP/JWT remain MockClient fixtures; this
+is not hosted signed-JWT or physical suspended-device evidence. No token is
+logged, no plaintext fallback is added, and the default preview remains
+unconfigured.
