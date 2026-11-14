@@ -1150,13 +1150,31 @@
     {
       "id": "auth-live",
       "status": "pending-integration",
-      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus separate Flutter startup/restart acceptance.",
+      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus separate Flutter startup/restart acceptance. The hosted probe also attempts caller-supplied owner, profile display-name and Auth user-metadata overrides before legitimate bootstrap, requiring fixed validation errors and no pre-bootstrap profile creation.",
       "issues": [
         20,
         18
       ],
-      "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial and logout revocation; record exact run/head. Separately verify configured Flutter startup/restart.",
-      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey."
+      "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial and logout revocation; record exact run/head. Separately verify configured Flutter startup/restart. Offline adversarial probe tests also model an endpoint that accepts each forged field and require the probe to fail.",
+      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey. The new override cases are offline fake-server coverage until the protected staging workflow is dispatched; they do not themselves prove deployed SQL behavior.",
+      "anchors": [
+        {
+          "path": "scripts/hosted_supabase_probe.py",
+          "contains": "def reject_profile_overrides("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_caller_owner_override_is_rejected_by_the_probe("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_profile_metadata_override_is_rejected_by_the_probe("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_auth_user_metadata_override_is_rejected_by_the_probe("
+        }
+      ]
     },
     {
       "id": "review-rpc",

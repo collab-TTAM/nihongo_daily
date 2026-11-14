@@ -4052,3 +4052,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths in this checkpoint: the fixture above and this status file. Cloud authoring runtime lacks the pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. The new exact-head Actions run is the execution gate.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real learner expiry/restart and physical two-device sync remain unproven. Keep PR #37 Draft and #20/#22/#15 open; no Auth strategy/provider, API/schema/RLS, default activation, Pro content, deployment, merge or release change.
 - Next: inspect every latest-attempt job and step on the corrected exact HEAD. If all required checks pass, continue the next unblocked Personal Alpha integration task; do not close #20/#22/#15 without their full acceptance.
+
+
+## Core worker checkpoint — RELEASED — 2026-11-14T15:11Z — hosted profile ownership probe
+
+- Run `core-20261114T1511Z-pr37-hosted-profile-spoof-probe` resumed PR #37 after the previous worker was RELEASED. Branch `automation/issue-22-atomic-review`; parent HEAD `b855c3ff493ee3a4f9bfcefb9256f79e2792297d`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Extended the opt-in hosted Supabase A/B acceptance probe to send forged `id`, `display_name` and `user_metadata` fields for both users before valid bootstrap. Each must produce the exact safe `VALIDATION_FAILURE` response, and both profiles must remain absent until the empty `ensure_profile({})` request.
+- Added offline fake-server regressions that deliberately accept each forged field and require the probe to fail. Updated the `auth-live` QA case anchors and `OWN_PROFILE_BOOTSTRAP.md`.
+- Paths: `scripts/hosted_supabase_probe.py`, `scripts/test_hosted_supabase_probe.py`, `qa/matrix.json`, `docs/OWN_PROFILE_BOOTSTRAP.md`, `docs/PROJECT_STATUS.md`.
+- Local Python execution was not available in this GitHub-only authoring step; the existing repo-sanity CI invokes the offline hosted-probe tests and QA inventory. Exact-head Actions is the verification gate; no CI pass is claimed here.
+- No staging secrets were read, no hosted workflow dispatched, and no production Auth/provider/schema/RLS/default activation or Pro-owned #14/#38/N4 path changed. Hosted signed-JWT A/B remains pending.
+- Next: inspect every latest-attempt job and step on the new exact HEAD. If CI passes, the next human-dependent evidence is the protected non-production staging workflow with two pre-provisioned accounts; do not claim hosted acceptance before its exact run succeeds.

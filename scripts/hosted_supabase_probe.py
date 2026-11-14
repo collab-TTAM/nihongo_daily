@@ -157,6 +157,30 @@ def ensure_profile(request,current: Session,label: str) -> None:
             and type(body["daily_target_minutes"]) is int and 7<=body["daily_target_minutes"]<=1440
             and isinstance(body["timezone"],str),f"{label} profile fields are invalid")
 
+def reject_profile_overrides(request, current: Session, other_user_id: str, label: str) -> None:
+    """Require the hosted RPC to reject all caller-controlled profile identity/settings."""
+    attempts = (
+        ("caller owner", {"id": other_user_id}),
+        ("profile metadata", {"display_name": "FORGED_PROFILE_NAME"}),
+        ("Auth user metadata", {"user_metadata": {"preferred_jlpt": "N1"}}),
+    )
+    for field, forged in attempts:
+        status, body = request(
+            "POST",
+            "/rest/v1/rpc/ensure_profile",
+            {"p_request": forged},
+            current.access,
+        )
+        require(
+            status == 200
+            and isinstance(body, dict)
+            and set(body) == {"code", "message_vi", "retryable"}
+            and body["code"] == "VALIDATION_FAILURE"
+            and body["message_vi"] == "Yêu cầu hồ sơ không hợp lệ."
+            and body["retryable"] is False,
+            f"{label} {field} override was accepted or returned an unsafe error",
+        )
+
 def profile_ids(request,current: Session,target: str,label: str) -> list[str]:
     query=urllib.parse.urlencode({"id":"eq."+target,"select":"id"})
     status,body=request("GET","/rest/v1/profiles?"+query,None,current.access)
@@ -182,6 +206,13 @@ def run_probe(config: Config,request) -> None:
     require(initial_a.user_id!=initial_b.user_id,"staging users must be distinct")
     user_a=refresh(request,initial_a,"User A")
     user_b=refresh(request,initial_b,"User B")
+    # Before legitimate bootstrap, neither caller may choose the owner or profile settings.
+    reject_profile_overrides(request,user_a,user_b.user_id,"User A")
+    reject_profile_overrides(request,user_b,user_a.user_id,"User B")
+    require(profile_ids(request,user_a,user_a.user_id,"User A before bootstrap")==[],
+            "forged User A bootstrap created a profile")
+    require(profile_ids(request,user_b,user_b.user_id,"User B before bootstrap")==[],
+            "forged User B bootstrap created a profile")
     ensure_profile(request,user_a,"User A")
     ensure_profile(request,user_b,"User B")
     require(profile_ids(request,user_a,user_a.user_id,"User A own read")==[user_a.user_id],

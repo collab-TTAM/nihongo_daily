@@ -18,11 +18,13 @@ def config():
                         "b@example.invalid","TEST_ONLY_PASSWORD_B")
 
 class FakeSupabase:
-    def __init__(self,*,leak=False,rotate=True,revoke=True,anonymous=False,fail_login=False):
+    def __init__(self,*,leak=False,rotate=True,revoke=True,anonymous=False,fail_login=False,accepted_overrides=()):
         self.users={"a@example.invalid":A,"b@example.invalid":B}
         self.passwords={"a@example.invalid":"TEST_ONLY_PASSWORD_A","b@example.invalid":"TEST_ONLY_PASSWORD_B"}
         self.leak,self.rotate,self.revoke=leak,rotate,revoke
         self.anonymous,self.fail_login=anonymous,fail_login
+        self.accepted_overrides=set(accepted_overrides)
+        self.profiles=set()
         self.counter,self.refresh_owners,self.access_owners=0,{},{}
     def new_session(self,user,refresh=None):
         self.counter+=1
@@ -52,6 +54,21 @@ class FakeSupabase:
             user=self.access_owners.get(access_token)
             if user is None:
                 return 401,{"message":"unauthorized"}
+            p_request=payload.get("p_request") if isinstance(payload,dict) else None
+            if p_request!={}:
+                fields=set(p_request) if isinstance(p_request,dict) else set()
+                if fields.intersection(self.accepted_overrides):
+                    owner=p_request.get("id",user)
+                    metadata=p_request.get("user_metadata")
+                    display=p_request.get("display_name","")
+                    if isinstance(metadata,dict):
+                        display=metadata.get("display_name",display)
+                    self.profiles.add(owner)
+                    return 200,{"id":owner,"display_name":display,"preferred_jlpt":"N5",
+                                "daily_target_minutes":120,"timezone":"Asia/Ho_Chi_Minh"}
+                return 200,{"code":"VALIDATION_FAILURE",
+                            "message_vi":"Yêu cầu hồ sơ không hợp lệ.","retryable":False}
+            self.profiles.add(user)
             return 200,{"id":user,"display_name":"","preferred_jlpt":"N5",
                         "daily_target_minutes":120,"timezone":"Asia/Ho_Chi_Minh"}
         if method=="GET" and path.startswith("/rest/v1/profiles?"):
@@ -64,7 +81,7 @@ class FakeSupabase:
             target=query.get("id",[""])[0].removeprefix("eq.")
             if self.leak and target!=owner:
                 return 200,[{"id":target}]
-            return 200,[{"id":owner}] if target==owner else []
+            return 200,[{"id":owner}] if target==owner and target in self.profiles else []
         if method=="POST" and path=="/auth/v1/logout":
             owner=self.access_owners.get(access_token)
             if owner is None:
@@ -76,7 +93,21 @@ class FakeSupabase:
 
 class HostedProbeTests(unittest.TestCase):
     def test_a_b_refresh_profile_rls_and_logout_flow(self):
-        probe.run_probe(config(),FakeSupabase())
+        fake=FakeSupabase()
+        probe.run_probe(config(),fake)
+        self.assertEqual(fake.profiles,{A,B})
+
+    def test_caller_owner_override_is_rejected_by_the_probe(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"caller owner override was accepted"):
+            probe.run_probe(config(),FakeSupabase(accepted_overrides={"id"}))
+
+    def test_profile_metadata_override_is_rejected_by_the_probe(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"profile metadata override was accepted"):
+            probe.run_probe(config(),FakeSupabase(accepted_overrides={"display_name"}))
+
+    def test_auth_user_metadata_override_is_rejected_by_the_probe(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"Auth user metadata override was accepted"):
+            probe.run_probe(config(),FakeSupabase(accepted_overrides={"user_metadata"}))
     def test_cross_owner_profile_visibility_fails(self):
         with self.assertRaisesRegex(probe.ProbeFailure,"RLS exposed"):
             probe.run_probe(config(),FakeSupabase(leak=True))

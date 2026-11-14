@@ -109,3 +109,20 @@ was created. This verifies expiry enforcement across both write endpoints in
 the disposable local stack only; it is not hosted Supabase, production JWT or
 learner A/B evidence. The app still accepts no learner-supplied URL/key, and no
 Auth strategy/provider or RLS change is made.
+
+
+## Hosted A/B probe — caller-controlled profile overrides
+
+The manual-only `hosted-supabase-acceptance.yml` probe now sends three adversarial
+`ensure_profile` requests for each pre-provisioned test account before the valid
+empty bootstrap: a different caller `id`, a forged `display_name`, and a forged
+`user_metadata` object. Each must return the exact safe
+`VALIDATION_FAILURE` object. The probe then verifies both own-profile reads are
+still empty before calling `ensure_profile({})`, after which normal caller-bound
+bootstrap and A/B RLS checks continue.
+
+The offline fake-server suite also models each vulnerable acceptance mode and
+requires the probe to fail, so a future regression in the probe cannot silently
+turn an accepted override into a passing result. This strengthens the pending
+hosted acceptance; it is not a hosted run. The protected staging environment,
+two pre-provisioned accounts and explicit workflow dispatch are still required.
