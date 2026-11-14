@@ -7,6 +7,7 @@ import '../../settings/application/preview_preferences.dart';
 import '../application/vocabulary_quiz_provider.dart';
 import '../application/quiz_history_provider.dart';
 import '../application/quiz_attempt_factory.dart';
+import '../application/quiz_report_v2_provider.dart';
 import 'vocabulary_quiz_panel.dart';
 
 class VocabularyQuizScreen extends ConsumerWidget {
@@ -18,6 +19,7 @@ class VocabularyQuizScreen extends ConsumerWidget {
     final content = ref.watch(vocabularyQuizProvider(level));
     final history = ref.watch(quizHistoryRepositoryProvider);
     final capture = ref.watch(quizAttemptFactoryProvider);
+    final reportTransport = ref.watch(quizReportV2TransportProvider);
     return PageBody(
       children: [
         const PageHeading(
@@ -67,10 +69,11 @@ class VocabularyQuizScreen extends ConsumerWidget {
               const Text('Chưa đủ từ có cách đọc khác nhau để tạo bộ câu hỏi.')
             else
               VocabularyQuizPanel(
-                key: ObjectKey(questions),
+                key: ValueKey((questions, history, capture, reportTransport)),
                 questions: questions,
                 history: history,
                 capture: capture,
+                reportTransport: reportTransport,
               ),
           ],
         ),

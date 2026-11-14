@@ -873,3 +873,33 @@ After listener cleanup, the transport rechecks its lifetime and suppresses the
 otherwise valid receipt with the fixed `NETWORK_UNAVAILABLE` error. The owner
 must await this close before disposing the Auth observer. This does not release
 local history or authorize a new submit.
+
+
+## Explicit nd-quiz-report-2 learner action — 2026-11-15
+
+The vocabulary and grammar completion panels now expose a separate
+`QuizReportV2Action` only when the caller-owned quiz-report transport is
+published after account/session and own-profile readiness. The default source
+provider remains null, so the preview has no implicit server save and no
+unconfigured endpoint. The local-device save button and its success state are
+unchanged and independent.
+
+The report request is captured once from the completed v2 attempt. Only an
+explicit learner tap calls `submit`. A correlated successful response is
+reported as a server receipt; it does not update local history, Daily Plan
+minutes, SRS, mastery or progress.
+
+A network/provider/internal failure is treated as an uncertain outcome. The
+action blocks another submit and offers only `lookupReceipt` using the exact
+same immutable request/event ID. A found receipt is accepted only after the
+existing strict response correlation; unresolved remains unknown and permits
+only another explicit lookup. A known rate-limit rejection permits a separately
+tapped retry with the same event identity. No timer, automatic retry, new event
+ID, local-save success or score-derived mastery is created.
+
+Widget regressions cover explicit dispatch, rate-limit retry, uncertain
+lookup-only recovery, unresolved/found receipts, late account replacement and
+narrow/double-text layouts. These use a fake submitter and are not hosted JWT,
+Edge, PostgREST/RLS or learner A/B evidence. Keep #13/#18 open until durable
+server attempt history, reviewed mastery/weak-point behavior and the integrated
+learner journey have their own evidence.

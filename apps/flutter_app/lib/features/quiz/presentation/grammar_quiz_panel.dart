@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../application/grammar_quiz_attempt_factory.dart';
 import '../data/grammar_quiz_history_repository.dart';
+import '../data/quiz_report_v2_transport.dart';
 import '../domain/grammar_quiz.dart';
 import '../domain/grammar_quiz_attempt.dart';
 import 'grammar_quiz_save_action.dart';
@@ -13,6 +14,7 @@ class GrammarQuizPanel extends StatefulWidget {
     required this.history,
     required this.capture,
     this.baseKind = GrammarQuizAttemptKind.primary,
+    this.reportTransport,
   });
 
   final List<GrammarQuizQuestion> questions;
@@ -20,6 +22,7 @@ class GrammarQuizPanel extends StatefulWidget {
   final GrammarQuizHistoryRepository? history;
   final GrammarQuizAttemptFactory capture;
   final GrammarQuizAttemptKind baseKind;
+  final QuizReportV2Submitter? reportTransport;
 
   @override
   State<GrammarQuizPanel> createState() => _GrammarQuizPanelState();
@@ -148,6 +151,7 @@ class _GrammarQuizPanelState extends State<GrammarQuizPanel> {
             history: widget.history,
             capture: widget.capture,
             isCurrent: () => _current(round),
+            reportTransport: widget.reportTransport,
           ),
           Text(
             'Kết quả theo bài gốc: ${round.score} / ${round.questions.length}',

@@ -4687,6 +4687,39 @@
       ],
       "reproduce": "Run python3 -m unittest qa.test_native_quiz_journal_pure_dart -v; in apps/flutter_app run flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart on Windows-2022. Require exact-head CI.",
       "limitation": "The Python guard checks the journal's direct imports; the Windows child-process test verifies the actual transitive Dart VM load and OS lease. Both are local component evidence only, not hosted Auth/JWT/RLS, learner acceptance or multi-device sync."
+    },
+    {
+      "id": "quiz-report-v2-explicit-action",
+      "status": "automated-baseline",
+      "scope": "Completed vocabulary and grammar rounds expose a separate explicit nd-quiz-report-2 server action when a caller-owned ready transport is present; local device history remains a separate operation. An uncertain submit is reconciled only by replay-only lookup of the exact immutable request.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/quiz/presentation/quiz_report_v2_action.dart",
+          "contains": "Future<void> _lookup() async"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_action_test.dart",
+          "contains": "uncertain submit exposes only replay lookup and never resubmits"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_action_test.dart",
+          "contains": "late account change suppresses a completed report response"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/presentation/vocabulary_quiz_panel.dart",
+          "contains": "QuizReportV2Action"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/presentation/grammar_quiz_save_action.dart",
+          "contains": "QuizReportV2Action"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/quiz/quiz_report_v2_action_test.dart test/features/quiz/quiz_report_v2_provider_test.dart; flutter analyze; flutter test; inspect all exact-head CI jobs and steps.",
+      "limitation": "The default transport source remains null; the action is hidden unless an explicitly caller-owned ready runtime supplies it. Fake submitter tests verify UI state transitions only, not deployed Edge, signed JWT, PostgREST/RLS, hosted A/B, durable cross-device attempts, mastery, SRS or study credit. Uncertain responses never authorize resubmit; only rate-limit rejection permits a separately tapped same-event retry. All Personal Alpha hosted gates remain pending."
     }
   ],
   "findings": [

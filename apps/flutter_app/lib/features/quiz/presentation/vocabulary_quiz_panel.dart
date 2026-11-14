@@ -6,9 +6,12 @@ import '../../daily_plan/application/srs_session_recorder_provider.dart';
 import '../../daily_plan/domain/daily_plan.dart';
 import '../../daily_plan/presentation/study_session_timer_panel.dart';
 import '../application/quiz_attempt_factory.dart';
+import '../data/quiz_report_v2_adapter.dart';
+import '../data/quiz_report_v2_transport.dart';
 import '../data/vocabulary_quiz_history_repository.dart';
 import '../domain/vocabulary_quiz.dart';
 import '../domain/vocabulary_quiz_attempt.dart';
+import 'quiz_report_v2_action.dart';
 
 class VocabularyQuizPanel extends ConsumerStatefulWidget {
   const VocabularyQuizPanel({
@@ -18,12 +21,14 @@ class VocabularyQuizPanel extends ConsumerStatefulWidget {
     required this.capture,
     this.enableStudyTimer = true,
     this.isCurrent,
+    this.reportTransport,
   });
   final List<QuizQuestion> questions;
   final VocabularyQuizHistoryRepository? history;
   final QuizAttemptFactory capture;
   final bool enableStudyTimer;
   final bool Function()? isCurrent;
+  final QuizReportV2Submitter? reportTransport;
 
   @override
   ConsumerState<VocabularyQuizPanel> createState() =>
@@ -35,6 +40,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   late QuizRound _round;
   VocabularyQuizHistoryRepository? _roundHistory;
   VocabularyQuizAttempt? _attempt;
+  QuizReportV2Request? _report;
   bool _saving = false;
   bool _saved = false;
   bool _saveFailed = false;
@@ -48,10 +54,14 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
   @override
   void didUpdateWidget(covariant VocabularyQuizPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!identical(oldWidget.history, widget.history)) {
+    if (!identical(oldWidget.history, widget.history) ||
+        !identical(oldWidget.reportTransport, widget.reportTransport)) {
       _saving = false;
       _saved = false;
       _saveFailed = false;
+      _attempt = null;
+      _report = null;
+      _captureFailed = false;
     }
   }
 
@@ -65,6 +75,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
     _round = QuizRound(widget.questions.skip(_offset).take(10).toList());
     _roundHistory = widget.history;
     _attempt = null;
+    _report = null;
     _saving = false;
     _saved = false;
     _saveFailed = false;
@@ -94,9 +105,14 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
     if (!_current(expected)) return;
     if (_roundHistory != null && !_eligible) return;
     if (expected.advance(questionId)) {
-      if (expected.isComplete && _eligible) {
+      if (expected.isComplete &&
+          (_eligible || widget.reportTransport != null)) {
         try {
           _attempt = widget.capture(expected);
+          final submitter = widget.reportTransport;
+          if (submitter != null) {
+            _report = QuizReportV2Request.fromVocabularyAttempt(_attempt!);
+          }
         } on Object {
           _captureFailed = true;
         }
@@ -153,6 +169,26 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
     );
   }
 
+  Widget _reportAction(QuizRound round) {
+    final attempt = _attempt;
+    final report = _report;
+    final submitter = widget.reportTransport;
+    if (attempt == null || report == null || submitter == null) {
+      return const SizedBox.shrink();
+    }
+    return QuizReportV2Action(
+      key: ValueKey(report.clientEventId),
+      request: report,
+      submitter: submitter,
+      isCurrent: () =>
+          _current(round) &&
+          (_roundHistory == null || _eligible) &&
+          identical(_attempt, attempt) &&
+          identical(_report, report) &&
+          identical(widget.reportTransport, submitter),
+    );
+  }
+
   Widget _quizBody(BuildContext context, QuizRound round) {
     if (_roundHistory != null && !_eligible) {
       return Column(
@@ -176,7 +212,7 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
             key: const Key('quiz-result'),
           ),
           if (_eligible) ...[
-            if (_captureFailed)
+            if (_captureFailed && _attempt == null)
               const Text('Chưa thể chuẩn bị kết quả để lưu. Hãy làm lại bộ.'),
             FilledButton(
               key: const Key('quiz-save'),
@@ -196,11 +232,17 @@ class _VocabularyQuizPanelState extends ConsumerState<VocabularyQuizPanel> {
                 'hoặc xem lịch sử.',
                 key: Key('quiz-save-error'),
               ),
-          ] else
+          ] else if (widget.reportTransport == null)
             const Text(
               'Bộ này chưa gắn với tài khoản có kho lưu. '
               'Hãy mở tài khoản rồi bắt đầu lại bộ mới để lưu.',
             ),
+          if (widget.reportTransport != null) ...[
+            if (_report != null && _attempt != null)
+              _reportAction(round)
+            else if (_captureFailed)
+              const Text('Chưa thể chuẩn bị báo cáo máy chủ. Hãy làm lại bộ.'),
+          ],
           if (round.incorrect.isNotEmpty) ...[
             const Text('Xem lại các từ trả lời sai'),
             for (final entry in round.incorrect)

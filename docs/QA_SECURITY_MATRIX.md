@@ -492,3 +492,18 @@ The transport test uses a held TEST ONLY HTTP client; the runtime test uses the
 actual pinned Supabase SDK with fixture HTTP/OS. These checks establish component
 lifecycle ordering only, not hosted signed-JWT learner A/B, deployed PostgREST/RLS,
 remote receipt availability, multi-device sync or Personal Alpha acceptance.
+
+
+## Explicit quiz-report action and receipt reconciliation — 2026-11-15
+
+The QA inventory increases from 178 to 179 cases. The new
+`quiz-report-v2-explicit-action` case anchors the completed vocabulary/grammar
+UI, explicit submit action, exact-request receipt lookup, rate-limit-only manual
+retry, and late account-change suppression.
+
+The action is available only when a caller-owned ready runtime explicitly
+provides the transport. The default preview source remains null. A local device
+history write is still separate from a server report; a server receipt does not
+establish mastery, SRS, study time or progress. Fake submitter widget tests are
+component evidence only, not hosted JWT/Edge/PostgREST/RLS or multi-device
+acceptance.

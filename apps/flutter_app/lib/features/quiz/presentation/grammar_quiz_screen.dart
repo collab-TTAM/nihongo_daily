@@ -8,6 +8,7 @@ import '../../settings/application/preview_preferences.dart';
 import '../application/grammar_quiz_provider.dart';
 import '../application/grammar_quiz_history_provider.dart';
 import '../application/grammar_quiz_attempt_factory.dart';
+import '../application/quiz_report_v2_provider.dart';
 import 'grammar_quiz_panel.dart';
 
 class GrammarQuizScreen extends ConsumerStatefulWidget {
@@ -34,12 +35,14 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
       grammarQuizAttemptFactoryProvider,
       (_, _) => _generation++,
     );
+    ref.listenManual(quizReportV2TransportProvider, (_, _) => _generation++);
   }
 
   @override
   Widget build(BuildContext context) {
     final history = ref.watch(grammarQuizHistoryRepositoryProvider);
     final capture = ref.watch(grammarQuizAttemptFactoryProvider);
+    final reportTransport = ref.watch(quizReportV2TransportProvider);
     final level = ref.watch(previewLevelProvider);
     final source = ref.watch(curriculumRepositoryProvider);
     final content = ref.watch(grammarQuizProvider(level));
@@ -49,6 +52,7 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
         generation == _generation &&
         identical(ref.read(grammarQuizHistoryRepositoryProvider), history) &&
         identical(ref.read(grammarQuizAttemptFactoryProvider), capture) &&
+        identical(ref.read(quizReportV2TransportProvider), reportTransport) &&
         ref.read(previewLevelProvider) == level &&
         identical(ref.read(curriculumRepositoryProvider), source) &&
         identical(ref.read(grammarQuizProvider(level)), content);
@@ -101,10 +105,11 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
               const Text('Chưa đủ mẫu có nghĩa khác nhau để tạo bộ câu hỏi.')
             else
               GrammarQuizPanel(
-                key: ValueKey((content, generation, history, capture)),
+                key: ValueKey((content, generation, history, capture, reportTransport)),
                 history: history,
                 capture: capture,
                 questions: questions,
+                reportTransport: reportTransport,
                 isCurrent: current,
               ),
           ],

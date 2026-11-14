@@ -89,10 +89,15 @@ final class QuizReportV2TransportFailure implements Exception {
   String toString() => 'QuizReportV2TransportFailure(${code.wireCode})';
 }
 
+abstract interface class QuizReportV2Submitter {
+  Future<QuizReportV2Response> submit(QuizReportV2Request report);
+  Future<QuizReportV2LookupResult> lookupReceipt(QuizReportV2Request report);
+}
+
 /// Opt-in HTTP transport only. It never changes local history or marks an
 /// attempt saved. The caller owns Auth readiness and must retain the original
 /// immutable report/event ID after an uncertain timeout or connection failure.
-final class QuizReportV2HttpTransport {
+final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
   QuizReportV2HttpTransport({
     required String projectUrl,
     required String publishableKey,
@@ -547,5 +552,5 @@ final class QuizReportV2HttpTransport {
 
 /// Borrowed from the caller-owned Supabase runtime; callers must not dispose it.
 abstract interface class QuizReportV2TransportSource {
-  QuizReportV2HttpTransport? get quizReportV2Transport;
+  QuizReportV2Submitter? get quizReportV2Transport;
 }
