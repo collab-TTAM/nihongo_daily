@@ -4544,6 +4544,10 @@
         {
           "path": "apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart",
           "contains": "post-flush failure reopens and exact replay avoids duplicate"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/native_vocabulary_quiz_journal_test.dart",
+          "contains": "child process failure diagnostics are bounded"
         }
       ],
       "issues": [
@@ -4551,7 +4555,7 @@
         18
       ],
       "reproduce": "In apps/flutter_app on Windows-2022: flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart test/features/quiz/native_grammar_quiz_journal_test.dart",
-      "limitation": "The Windows runner exercises TEST ONLY local-file and OS-lease behavior. It does not prove hosted Supabase Auth/JWT/RLS, encrypted backup, cross-device sync, forced OS termination, hardware power-loss durability or learner acceptance. Native quiz history remains opt-in; no default save, mastery or study credit is activated."
+      "limitation": "The Windows runner exercises TEST ONLY local-file and OS-lease behavior. Exact-head Actions 43533012357 failed one vocabulary child stage with exit code 254 after 23/24 journal tests passed; this correction adds bounded stdout/stderr diagnostics and a normalized Dart SDK path, and must be re-verified on a new exact head. It does not prove hosted Supabase Auth/JWT/RLS, encrypted backup, cross-device sync, forced OS termination, hardware power-loss durability or learner acceptance. Native quiz history remains opt-in; no default save, mastery or study credit is activated."
     },
     {
       "id": "quiz-report-v2-edge-binding",

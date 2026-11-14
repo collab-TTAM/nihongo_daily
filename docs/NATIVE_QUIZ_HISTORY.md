@@ -66,11 +66,16 @@ Run from apps/flutter_app:
 
     flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart
 
-Existing Flutter CI discovers these tests on Linux, including their actual Dart
-child processes. This increment does not change the workflow; new-store native
-Windows execution remains unverified. Existing Windows build/native checks do
-not constitute execution of this new journal. No local execution environment is
-available, so all new format/analyze/test results require exact-head Actions.
+The Windows-2022 job explicitly executes both native journal suites; the
+Linux full Flutter job also includes them after the strict format gate. Exact-head
+Actions [43533012357](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43533012357)
+failed the first Windows child `stage` probe with exit code 254 (23 other journal
+tests passed). The helper previously discarded child stdout/stderr. It now
+normalizes the Dart executable path from `FLUTTER_ROOT`, captures each stream
+with a 4 KiB bound and redacts the temporary directory in failure output. A
+regression checks the diagnostic bound. This is a diagnostic correction, not a
+Windows pass; the next exact-head Actions run must verify child startup, OS lease
+and both suites. No local Flutter/Dart SDK is available.
 
 Parent43094ac2 CI39480610637 latest attempt1 completed all five jobs/every required
 step:621 Flutter tests (including all16 history-model cases), five Chrome tests,

@@ -9,27 +9,60 @@ import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_progress.dart
 
 import 'quiz_journal_fixtures.dart';
 
+Future<String> _readBoundedProcessOutput(Stream<List<int>> stream) async {
+  final output = StringBuffer();
+  var remaining = 4096;
+  var truncated = false;
+  await for (final chunk in stream) {
+    if (remaining == 0) {
+      truncated = true;
+      continue;
+    }
+    final decoded = utf8.decode(chunk, allowMalformed: true);
+    final count = decoded.length < remaining ? decoded.length : remaining;
+    output.write(decoded.substring(0, count));
+    remaining -= count;
+    if (count < decoded.length) truncated = true;
+  }
+  if (truncated) output.write('\\n<output truncated>');
+  return output.toString();
+}
+
 Future<void> quizProbe(String command, Directory directory) async {
-  final executable = Platform.resolvedExecutable.replaceAll('\\', '/');
-  final marker = executable.indexOf('/bin/cache/');
   final configuredRoot = Platform.environment['FLUTTER_ROOT'];
+  final executable = Platform.resolvedExecutable.replaceAll('\\\\', '/');
+  final marker = executable.indexOf('/bin/cache/');
   final inferredRoot = marker < 0 ? null : executable.substring(0, marker);
   final root = configuredRoot ?? inferredRoot;
   if (root == null) throw StateError('Dart SDK is required for process tests');
   final suffix = Platform.isWindows ? '.exe' : '';
-  final dart = '$root/bin/cache/dart-sdk/bin/dart$suffix';
-  final child = await Process.start(dart, [
-    'run',
-    'test/features/quiz/quiz_journal_fixtures.dart',
-    command,
-    directory.path,
-  ]);
-  final output = child.stdout.drain<void>();
-  final errors = child.stderr.drain<void>();
+  final dart = Directory(root)
+      .absolute
+      .uri
+      .resolve('bin/cache/dart-sdk/bin/dart$suffix')
+      .toFilePath();
+  final fixture = File('test/features/quiz/quiz_journal_fixtures.dart').absolute.path;
+  final child = await Process.start(
+    dart,
+    ['run', fixture, command, directory.path],
+    workingDirectory: Directory.current.path,
+  );
+  final output = _readBoundedProcessOutput(child.stdout);
+  final errors = _readBoundedProcessOutput(child.stderr);
   try {
     final code = await child.exitCode.timeout(const Duration(seconds: 30));
-    await Future.wait([output, errors]);
-    expect(code, 0, reason: 'Native child process must verify $command');
+    final diagnostics = await Future.wait([output, errors]);
+    final stdout = diagnostics[0].replaceAll(directory.path, '<temp-dir>');
+    final stderr = diagnostics[1].replaceAll(directory.path, '<temp-dir>');
+    expect(
+      code,
+      0,
+      reason: [
+        'Native child process must verify $command (exit $code).',
+        if (stdout.isNotEmpty) 'stdout:\\n$stdout',
+        if (stderr.isNotEmpty) 'stderr:\\n$stderr',
+      ].join('\\n'),
+    );
   } on Object {
     child.kill();
     await child.exitCode;
@@ -453,23 +486,32 @@ void main() {
     }
   });
 
+  test('child process failure diagnostics are bounded', () async {
+    final output = await _readBoundedProcessOutput(
+      Stream<List<int>>.fromIterable([List<int>.filled(5000, 120)]),
+    );
+    expect(output, startsWith('x'));
+    expect(output, endsWith('<output truncated>'));
+    expect(output.length, lessThanOrEqualTo(4096 + '\\n<output truncated>'.length));
+  });
+
   test(
     'separate processes retain flushed data and enforce active lease',
     () async {
-        await quizProbe('stage', directory);
-        final store = await open();
-        final records = await store.list(quizOwner);
-        expect(records.single.attempt.eventId, quizReport(1).eventId);
-        await quizProbe('locked', directory);
-        await store.append(quizOwner, quizReport(2));
-        await store.close();
-        await quizProbe(
-          'stage',
-          directory,
-        ); // Exact restart replay does not append.
-        final restored = await open();
-        expect(await restored.list(quizOwner), hasLength(2));
-        expect(await quizData(directory).readAsLines(), hasLength(2));
+      await quizProbe('stage', directory);
+      final store = await open();
+      final records = await store.list(quizOwner);
+      expect(records.single.attempt.eventId, quizReport(1).eventId);
+      await quizProbe('locked', directory);
+      await store.append(quizOwner, quizReport(2));
+      await store.close();
+      await quizProbe(
+        'stage',
+        directory,
+      ); // Exact restart replay does not append.
+      final restored = await open();
+      expect(await restored.list(quizOwner), hasLength(2));
+      expect(await quizData(directory).readAsLines(), hasLength(2));
     },
     timeout: const Timeout(Duration(minutes: 2)),
   );
