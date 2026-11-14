@@ -3925,3 +3925,44 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Exact-head Actions [43471304097](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43471304097) targets `ac481d396c7c968aca8950f8051518243fc6d51b`. At the latest observation, repo-sanity and AI boundary completed SUCCESS (all 12 steps each); database, Windows and disposable Supabase integration were IN_PROGRESS with pending steps; the Flutter job had not yet been published. No format/analyze/full-test/Web/Windows/Supabase/full-CI pass is claimed for this head.
 - Cloud authoring runtime has no pinned Dart/Flutter SDK, so local format/analyze/test/build were not run. No production Auth/provider, API/schema/RLS, default runtime activation, Pro-owned #14/#38/N4 files, deployment, merge or release change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, learner restart/expiry and physical two-device sync remain unverified.
 - Next: inspect every latest-attempt job and required step on the exact source/status HEAD; fix only observed failures. If CI is pending, release the worker with this durable handoff rather than duplicate source changes. Keep PR #37 Draft and #20/#22/#15 open.
+
+
+## Core worker handoff — PR #37 Windows expired-access resume — 2026-11-14 UTC
+
+- Branch `automation/issue-22-atomic-review`; source commit
+  `bf1d9bca4160eeea8e52fa846a2699b6f052f50e`, parent
+  `d2991e88f0944d9dcd5a045d1f14bfbc3130cb17`. Existing PR #37 remains Draft.
+- Changed exactly three paths: `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`,
+  `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and `qa/matrix.json`. Added a pinned-SDK
+  Windows MethodChannel regression for foreground resume after the accepted
+  access-token lease expires: study readiness is revoked, no expired-session
+  refresh/profile request is dispatched, the project vault clear drains before
+  replacement User B password Auth, and B's rotated refresh token is persisted
+  before B's own-profile request. The lifecycle doc and existing QA baseline
+  record the exact scope and TEST ONLY limits. No production Auth/provider,
+  schema/RLS, default activation, Pro-owned content or deployment changed.
+- Separate post-write diff/tree review: compare reports exactly those three
+  paths (+102 test, +21 lifecycle documentation, +5/-1 QA). Complete recursive
+  trees are untruncated at 335 entries with identical path/mode/type sets;
+  267 untouched blobs are preserved and all three changed blob readbacks match.
+  `create_tree` used exact `base_tree_sha=876204f3dfebccd4e8fa6f157421cc906f20eb6b`;
+  the source commit is single-parent; `update_ref` used matching
+  `expected_sha=d2991e88f0944d9dcd5a045d1f14bfbc3130cb17`, `force=false`.
+  Branch readback matched the source commit.
+- Exact-head Actions [43550944004](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43550944004),
+  attempt 1, targets the exact source commit above. At this checkpoint:
+  repo-sanity 12/12 and AI boundary 12/12 completed SUCCESS; database was still
+  running post-checkout/container cleanup; Windows was at pinned Flutter SDK
+  setup; disposable Supabase integration was at service startup; Flutter had
+  not yet been published. Pending, in-progress or unpublished jobs are not
+  passes. No new-head format/analyze/full-test/build/full-CI pass is claimed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK, so local
+  format/analyze/test/build were not run. The regression uses TEST ONLY
+  MockClient/MethodChannel and does not establish hosted signed-JWT learner A/B,
+  deployed PostgREST/RLS, real learner expiry/restart or physical multi-device
+  acceptance. Protected non-production Supabase staging and two pre-provisioned
+  test identities remain the external gate; no secret values were accessed or
+  requested.
+- Next: inspect every latest-attempt job and required step on the final status
+  HEAD; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open.
+  No merge, deployment, issue closure or release.
