@@ -177,10 +177,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnostic only - show pinned Dart formatter diff
-        run: |
-          dart format --output=show test/features/srs/windows_persistent_supabase_runtime_test.dart > "$RUNNER_TEMP/format.dart"
-          diff -u test/features/srs/windows_persistent_supabase_runtime_test.dart "$RUNNER_TEMP/format.dart" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

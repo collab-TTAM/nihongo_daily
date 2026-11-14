@@ -3994,3 +3994,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   exact HEAD; apply only the observed formatter hunk, remove the temporary
   diagnostic, then require a fresh full exact-head CI result. Keep PR #37 Draft
   and #20/#22/#15 open.
+
+## Exact-head formatter correction checkpoint — PR #37 — 2026-11-14 UTC
+
+- Run `core-20261114T0514Z-pr37-format-correction` is RELEASED after persistence. Branch `automation/issue-22-atomic-review`; parent `3df9f131376ac53ff587cb7365117dc87bd71598`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43551208130](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43551208130) targets the parent. Database, repo-sanity, AI boundary, Windows and disposable Supabase integration completed SUCCESS with every returned step successful. Flutter failed only the strict pinned Dart 3.35.4 formatter in `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`; Flutter analyze, full tests and dependent browser/build probes were SKIPPED, not passes.
+- Applied only the three formatter-emitted changes to the Windows expired-access foreground-resume regression: removed one extra blank line, compacted the profile-count `.where`, and compacted the signed-out phase assertion. Test assertions/behavior are unchanged. Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`; the strict formatter/analyze/test/build gates remain unchanged.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real expired-session learner restart and physical multi-device proof remain unverified. No Auth/provider strategy, schema/RLS, default runtime, production deployment or Pro-owned #14/#38/N4 path changed.
+- Next: inspect every latest-attempt job/step for the new exact HEAD; require formatter, analyze, full Flutter suite, Windows, disposable Supabase and Web release build before integration. Keep PR #37 Draft and #20/#22/#15 open.

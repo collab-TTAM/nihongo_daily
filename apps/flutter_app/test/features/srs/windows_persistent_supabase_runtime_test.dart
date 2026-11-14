@@ -1871,7 +1871,6 @@ void main() {
     expect(requests, isEmpty);
   });
 
-
   test(
     'Windows foreground resume after expired access lease clears vault before User B',
     () async {
@@ -1895,9 +1894,7 @@ void main() {
 
       expect(storedSecret, refreshSecret);
       final profileCount = requests
-          .where(
-            (request) => request.url.path.contains('ensure_profile'),
-          )
+          .where((request) => request.url.path.contains('ensure_profile'))
           .length;
       final refreshCount = requests
           .where(
@@ -1921,10 +1918,7 @@ void main() {
 
       expect(storedSecret, isNull);
       expect(runtime.account.readyRuntime, isNull);
-      expect(
-        runtime.account.state.phase,
-        AccountPhase.signedOut,
-      );
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
       expect(
         requests.where(
           (request) =>
