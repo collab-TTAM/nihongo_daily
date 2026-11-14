@@ -118,7 +118,7 @@ class HostedProbeTests(unittest.TestCase):
         self.assertEqual(fake.profiles,{A,B})
         self.assertEqual(fake.preferences,{A:"N5",B:"N5"})
 
-    def test_caller_owner_override_is_rejected_by_the_probe):
+    def test_caller_owner_override_is_rejected_by_the_probe(self):
         with self.assertRaisesRegex(probe.ProbeFailure,"caller owner override was accepted"):
             probe.run_probe(config(),FakeSupabase(accepted_overrides={"id"}))
 

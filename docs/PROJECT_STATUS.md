@@ -4073,3 +4073,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `scripts/hosted_supabase_probe.py`, `scripts/test_hosted_supabase_probe.py`, `docs/OWN_PROFILE_BOOTSTRAP.md`, `docs/HOSTED_SUPABASE_ACCEPTANCE.md`, `qa/matrix.json`, `docs/PROJECT_STATUS.md`.
 - Cloud authoring has no Python/Flutter/PostgreSQL checkout for this GitHub-only step; local tests/format/analyze/build were not run. Exact-head GitHub Actions is the verification gate. Offline fake-server tests are not hosted Supabase proof.
 - Next: inspect all latest-attempt CI jobs/steps for the final exact HEAD. Keep #20/#22/#15 and PR #37 Draft until hosted signed-JWT A/B and the separate learner startup/restart/two-device gates are observed.
+
+
+## Review correction — hosted profile probe tests — 2026-11-14T16:12Z
+
+- Separate diff review of `39ca27012c2b85247e13aed4d609b77acb47cb80` caught a missing opening parenthesis in the existing caller-owner override test method declaration, introduced by the test-fixture edit. Corrected the declaration only; test body and assertions are unchanged.
+- This is a TEST ONLY syntax correction. The exact-head CI run for the parent is superseded; verify the new final HEAD and all latest-attempt jobs before claiming any Python/QA/Flutter/Windows result.
