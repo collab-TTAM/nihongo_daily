@@ -1,3 +1,13 @@
+## Session lifecycle fixture cleanup correction — 2026-11-14T11:10Z
+
+- Resume PR [#37](https://github.com/collab-TTAM/nihongo_daily/pull/37), branch `automation/issue-22-atomic-review`, parent HEAD `bc42d6efa055bc27fa7c614461da5a86be6f7ae8`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43585074513](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43585074513), attempt 1, targets the parent and completed FAILURE only in the Flutter complete suite. Repo-sanity 12/12, AI boundary 12/12, database 12/12, disposable Supabase integration 13/13 and Windows 18/18 succeeded. Flutter format/analyze succeeded; the suite reached 431 passing and 10 failures. The first failure was the new `closed-stream` TEST ONLY scenario: it expected `SessionVaultFailure`, but the generic helper caught only `ReviewTransportFailure`. That aborted its fixture cleanup and leaked the static owner, causing subsequent lifecycle scenarios to fail at construction; no independent production failure was observed in those cascades.
+- Corrected the fixture with a vault-specific redacted-failure assertion and a failure-safe finalizer that drains held TEST ONLY barriers, clears injected faults, retries owned close and closes the event stream once. The two stream-failure scenarios still require failed cleanup to retain the owner and a later close to sign out/clear before release. Production Auth/session behavior is unchanged.
+- Changed paths: `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart` and this status file. Cloud runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI is required before claiming the fix passes.
+- Next: inspect the new exact-head run and every latest-attempt job/step. Preserve strict format/analyze/tests/build and all Auth/RLS/security gates; keep PR #37 Draft and #20/#22/#15 open. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real restart/expiry and physical two-device sync remain unproven.
+
+---
+
 ## PR #37 caller-close retry after uncertain Windows refresh rotation — 2026-11-12T16:14Z
 
 - Run `core-20261112T1614Z-pr37-close-uncertain-rotation-clear` is RELEASED after persistence. Branch `automation/issue-22-atomic-review`; parent `730aec01ce534de57c6958b7a9417625feb0cb22`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

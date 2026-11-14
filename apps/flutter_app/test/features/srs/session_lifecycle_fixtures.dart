@@ -26,6 +26,16 @@ Future<void> fails(Future<void> operation) async {
   throw StateError('operation unexpectedly succeeded');
 }
 
+Future<void> failsVault(Future<void> operation) async {
+  try {
+    await operation;
+  } on SessionVaultFailure catch (error) {
+    check(!error.toString().contains('PRIVATE'), 'unsafe vault error');
+    return;
+  }
+  throw StateError('vault operation unexpectedly succeeded');
+}
+
 final class MemoryVault
     implements SessionCredentialBackend, SessionCredentialOwnerLeaseBackend {
   String? secret;
@@ -879,7 +889,7 @@ Future<void> verifyLifecycle(String scenario) async {
             backend.secret == saved,
         'failed Auth stream left the session ready or changed the saved secret',
       );
-      await fails(access.close());
+      await failsVault(access.close());
       check(
         backend.secret == saved &&
             sdk.session == null &&
@@ -899,7 +909,29 @@ Future<void> verifyLifecycle(String scenario) async {
       );
     }
   } finally {
-    await access.close();
-    await sdk.events.close();
+    // Drain TEST ONLY barriers and remove injected failures before releasing the
+    // shared project owner, even when an earlier assertion fails.
+    for (final pending in [
+      backend.readWait,
+      backend.writeWait,
+      backend.clearWait,
+      sdk.authWait,
+      sdk.logoutWait,
+    ]) {
+      if (pending != null && !pending.isCompleted) pending.complete();
+    }
+    backend.failRead = false;
+    backend.failWrite = false;
+    backend.failClear = false;
+    backend.commitWriteThenFail = false;
+    backend.failAcquireOwner = false;
+    backend.failReleaseOwner = false;
+    sdk.failAuth = false;
+    sdk.failLogout = false;
+    try {
+      await access.close();
+    } finally {
+      if (!sdk.events.isClosed) await sdk.events.close();
+    }
   }
 }
