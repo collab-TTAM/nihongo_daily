@@ -4,6 +4,11 @@ The machine-readable source is `contracts/v0.1/models.schema.json` (named `$defs
 
 ## Transport, types and ownership
 
+Additive due-queue read bridge nd-review-queue-1 is separately versioned in
+contracts/review_queue/v1/schema.json and docs/REVIEW_QUEUE.md. It does not alter
+the eight frozen v0.1 operations below; get_review_queue remains a local,
+undeployed implementation until concrete SDK/Auth integration is verified.
+
 JSON uses snake_case, UUID strings and real YYYY-MM-DD calendar dates. Instants use the RFC3339 subset YYYY-MM-DDTHH:MM:SS with optional fractional seconds and UTC Z or an explicit offset; uppercase T/Z, seconds 00–59, no local timestamps or leap-second inputs. Database instants use timestamptz; responses normalize to UTC. Unknown payload fields are rejected.
 
 Every endpoint authenticates using Supabase Auth and derives the user from verified identity. Requests never accept user_id or arbitrary message roles. Flutter calls typed repositories, not raw feature tables. RPC adapters map named request fields to parameters and normalize transport failures into the shared error model; Edge Functions accept the same request JSON.
@@ -38,7 +43,7 @@ The default 120-minute plan has seven unique blocks: SRS 20, VOCABULARY 15, KANJ
 
 Reject inconsistent rating/is_correct. response_ms is an integer 0–3,600,000. Difficulty/retrievability use [0,1]; stability and interval_days use days. interval_days may be fractional for sub-day learning. Scheduling uses elapsed time from the valid event instant, not local date rounding. The pure nd-srs-1 scheduler is specified in docs/SRS_ALGORITHM.md and implemented in the Dart SRS domain. Authenticated transaction/replay integration remains #22; this is not a deployed endpoint.
 
-`(user_id, client_event_id)` identifies a review. Verify item_type/item_id in the selected active curriculum table, bind/create the user's unique learning item, then atomically append the event and update scheduling state. Replay identical fields returns the stored original response without incrementing counters; changed fields under the same ID return SYNC_CONFLICT. Retain the event instant on retry. New events older than last_review_at return SYNC_CONFLICT; future events beyond five minutes from server time return VALIDATION_FAILURE. Check duplicates before stale-time rejection. These remain backend acceptance criteria for #22; storage/RLS is delivered by #3 and the pure scheduler by #4. They are not implemented transactions yet.
+`(user_id, client_event_id)` identifies a review. Verify item_type/item_id in the selected active curriculum table, bind/create the user's unique learning item, then atomically append the event and update scheduling state. Replay identical fields returns the stored original response without incrementing counters; changed fields under the same ID return SYNC_CONFLICT. Retain the event instant on retry. New events older than last_review_at return SYNC_CONFLICT; future events beyond five minutes from server time return VALIDATION_FAILURE. Check duplicates before stale-time rejection. These remain backend acceptance criteria for #22; storage/RLS is delivered by #3 and the pure scheduler by #4. The local SQL transaction increment is specified in docs/SRS_RPC.md; hosted/typed UI integration is still unverified.
 
 SRS states remain NEW, LEARNING, REVIEW, MASTERED, RELEARNING. MASTERED is reserved and not emitted by the initial scheduler; mastery is derived separately for progress. Reviewed responses have next_review_at and review_count >= 1. NEW items may have null database review dates.
 
@@ -54,4 +59,32 @@ Provider selection, audio upload/streaming, billing and credentials are not froz
 
 ## Validation and limits
 
+Separately versioned addition: `submit_study_session` is specified in
+`contracts/study/v1` and reviewed in STUDY_SESSION_API.md. It records an
+authenticated own-account self-reported completed interval, accepts no owner or
+derived minutes and reuses the frozen daily-plan/error responses. This addition
+does not mutate the v0.1 endpoint registry or models and is not a hosted-service
+or attention/mastery claim. Actual owned SDK/UI integration remains outstanding.
+
 Run the commands in README. JSON Schema formats are asserted explicitly by the validator; cross-field plan totals/types and stroke indices/times are checked separately. Select a named definition; the root schema alone is only a definition library. Backend tests must still verify auth, RLS, scoped idempotency, curriculum existence, skew, ownership and provider limits. Fixture validation is not evidence of deployed security.
+
+## Local submit_review transaction increment — Issue #22
+
+Migration 20261013200000_submit_review.sql defines public.submit_review(p_request jsonb).
+RpcReviewRepository's injected transport calls rpc('submit_review', params: {'p_request':
+review.toJson()}); the inner seven-field wire request and five-field response
+are unchanged. Strict request/canonical replay/server scheduling is implemented
+locally; typed Dart response/error decoding and immutable session-bound retries
+are also implemented. No concrete SDK binding, hosted endpoint, JWT/PostgREST or
+Flutter review screen integration is claimed.
+See SRS_RPC.md for safe error objects, exact fractional retry identity, UTC
+microsecond policy, resource limits and the still-open #22 acceptance.
+
+## Separately versioned quiz report boundary (specified only)
+
+`contracts/quiz/v1` defines nd-quiz-report-1 for proposed
+`submit_quiz_report(p_request)`. See QUIZ_REPORT_API.md for the executable strict
+validator, immutable report identity, kind mapping and required future Auth/atomic
+receipt/content checks. An additive private ledger migration is implemented but undeployed; no public
+endpoint, strict raw-ingress/current-content adapter, upload/default activation or
+hosted evidence is delivered. See the JSONB normalization caveat in QUIZ_REPORT_API.md. The eight frozen v0.1 operations remain intact.

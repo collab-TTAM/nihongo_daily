@@ -2,6 +2,7 @@ import { Ajv2020 } from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import type { ValidateFunction, AnySchemaObject } from "ajv";
 import type * as Wire from "./wire.ts";
+import { parseStrictJson } from "./strict_json.ts";
 
 export const operations = [
   "tutor_explain",
@@ -98,7 +99,7 @@ export function parseBounded(
   if (new TextEncoder().encode(text).byteLength > maxBytes)
     throw new BoundaryError(code);
   try {
-    return JSON.parse(text) as unknown;
+    return parseStrictJson(text);
   } catch {
     throw new BoundaryError(code);
   }

@@ -18,7 +18,11 @@ def timestamp_with_offset(value):
     """Enforce the documented timestamp subset without optional dependencies."""
     if not isinstance(value, str):
         return True  # JSON Schema's type keyword handles non-strings.
-    pattern = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})"
+    # Do not delegate clock/offset bounds to a host parser that may normalize
+    # rollover (24:00) or offset minutes. Calendar validity still uses datetime.
+    clock = r"(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
+    zone = r"(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])"
+    pattern = rf"[0-9]{{4}}-[0-9]{{2}}-[0-9]{{2}}T{clock}(?:\.[0-9]+)?{zone}"
     if re.fullmatch(pattern, value) is None:
         return False
     return datetime.fromisoformat(value.replace("Z", "+00:00")).tzinfo is not None
@@ -126,4 +130,14 @@ def validate_baseline(root=ROOT):
 
 
 if __name__ == "__main__":
-    print(f"Validated v0.1 contracts and {validate_baseline()} fixtures")
+    if __package__:
+        from .validate_quiz_report_v2 import validate_fixtures as validate_quiz_report_v2_fixtures
+    else:
+        from validate_quiz_report_v2 import validate_fixtures as validate_quiz_report_v2_fixtures
+
+    baseline_count = validate_baseline()
+    quiz_v2_count = validate_quiz_report_v2_fixtures()
+    print(
+        f"Validated v0.1 contracts ({baseline_count} fixtures) and "
+        f"nd-quiz-report-2 ({quiz_v2_count} fixtures)"
+    )
