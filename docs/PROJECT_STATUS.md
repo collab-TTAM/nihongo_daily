@@ -3966,3 +3966,31 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every latest-attempt job and required step on the final status
   HEAD; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open.
   No merge, deployment, issue closure or release.
+
+
+## Exact-head formatter diagnostic checkpoint — PR #37 — 2026-11-14 UTC
+
+- Source commit `bf1d9bca4160eeea8e52fa846a2699b6f052f50e` introduced one TEST ONLY
+  Windows foreground-resume/expired-access-lease regression in
+  `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`,
+  plus its lifecycle documentation and QA anchor. A separate diff/tree review
+  confirmed only those three paths changed; no production Auth/provider,
+  schema/RLS, default activation or Pro-owned content changed.
+- Exact source-head Actions [43550944004](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43550944004),
+  attempt 1, reported the single new test file as not matching pinned Dart
+  3.35.4 formatting. Flutter analyze, full tests and downstream Flutter
+  probes/builds were skipped. Repo-sanity, AI boundary and database completed
+  SUCCESS; Windows and disposable Supabase integration were still in progress
+  at the last observation. This is not a full-CI pass.
+- Added a temporary read-only formatter diagnostic immediately before the
+  unchanged strict format gate in `.github/workflows/ci.yml` so the next
+  exact-head run emits the formatter's precise diff. It does not rewrite the
+  source or change/skip the gate. Remove this diagnostic in the formatter-only
+  correction after reading the log.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/
+  test/build were not run. Hosted signed-JWT learner A/B, deployed PostgREST/RLS,
+  real learner expiry/restart and physical multi-device proof remain pending.
+- Next: inspect the diagnostic output and all latest-attempt jobs/steps on that
+  exact HEAD; apply only the observed formatter hunk, remove the temporary
+  diagnostic, then require a fresh full exact-head CI result. Keep PR #37 Draft
+  and #20/#22/#15 open.
