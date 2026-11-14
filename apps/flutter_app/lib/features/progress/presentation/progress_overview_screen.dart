@@ -43,9 +43,7 @@ final class _QuizHistorySummary {
   final _QuizHistoryTotals? grammarCorrection;
 }
 
-_QuizHistoryTotals _vocabularyTotals(
-  List<OwnedVocabularyQuizAttempt> records,
-) {
+_QuizHistoryTotals _vocabularyTotals(List<OwnedVocabularyQuizAttempt> records) {
   final answers = records
       .expand((record) => record.attempt.answers)
       .toList(growable: false);
@@ -264,8 +262,7 @@ class _ProgressOverviewScreenState
 
       final primary = grammarRecords
           ?.where(
-            (record) =>
-                record.attempt.kind == GrammarQuizAttemptKind.primary,
+            (record) => record.attempt.kind == GrammarQuizAttemptKind.primary,
           )
           .toList(growable: false);
       final correction = grammarRecords
@@ -505,10 +502,7 @@ class _ProgressOverviewScreenState
             const Text('Từ vựng: lịch sử chưa được cấu hình.')
           else
             Text(
-              _quizTotalsLabel(
-                'Từ vựng (N5 + N4)',
-                _quizSummary!.vocabulary!,
-              ),
+              _quizTotalsLabel('Từ vựng (N5 + N4)', _quizSummary!.vocabulary!),
               key: const Key('progress-quiz-vocabulary-summary'),
             ),
           if (_quizSummary!.grammarPrimary == null)

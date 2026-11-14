@@ -76,7 +76,6 @@ final class _ProgressGateway implements DailyPlanStudyDayGateway {
   }
 }
 
-
 final class _VocabularyPorts
     implements VocabularyQuizHistorySource, VocabularyQuizAttemptStore {
   _VocabularyPorts(this.harness);
@@ -352,7 +351,6 @@ void main() {
     expect(source.planReads, 1);
   });
 
-
   testWidgets(
     'overview loads separate local quiz totals only on explicit action',
     (tester) async {
@@ -360,14 +358,21 @@ void main() {
       final source = _ProgressSource(harness);
       final vocabulary = _VocabularyPorts(harness)
         ..records = [
-          OwnedVocabularyQuizAttempt(account.owner, quizReport(1, correct: true)),
+          OwnedVocabularyQuizAttempt(
+            account.owner,
+            quizReport(1, correct: true),
+          ),
           OwnedVocabularyQuizAttempt(account.owner, quizReport(2)),
         ];
       final grammar = _GrammarPorts(harness)
         ..records = [
           OwnedGrammarQuizAttempt(
             account.owner,
-            _grammarReport(1, kind: GrammarQuizAttemptKind.primary, correct: true),
+            _grammarReport(
+              1,
+              kind: GrammarQuizAttemptKind.primary,
+              correct: true,
+            ),
           ),
           OwnedGrammarQuizAttempt(
             account.owner,
@@ -390,9 +395,18 @@ void main() {
 
       expect(vocabulary.reads, 1);
       expect(grammar.reads, 1);
-      expect(find.text('Từ vựng (N5 + N4) · 2 lượt · 1/2 câu đúng'), findsOneWidget);
-      expect(find.text('Ngữ pháp chính (N5 + N4) · 1 lượt · 1/1 câu đúng'), findsOneWidget);
-      expect(find.text('Ngữ pháp sửa (N5 + N4) · 1 lượt · 0/1 câu đúng'), findsOneWidget);
+      expect(
+        find.text('Từ vựng (N5 + N4) · 2 lượt · 1/2 câu đúng'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Ngữ pháp chính (N5 + N4) · 1 lượt · 1/1 câu đúng'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Ngữ pháp sửa (N5 + N4) · 1 lượt · 0/1 câu đúng'),
+        findsOneWidget,
+      );
       expect(vocabulary.writes, 0);
       expect(grammar.writes, 0);
       expect(tester.takeException(), isNull);
@@ -427,7 +441,10 @@ void main() {
     expect(vocabulary.reads, 2);
     expect(grammar.reads, 1);
     expect(find.byKey(const Key('progress-quiz-error')), findsNothing);
-    expect(find.text('Ngữ pháp chính (N5 + N4) · 0 lượt · 0/0 câu đúng'), findsOneWidget);
+    expect(
+      find.text('Ngữ pháp chính (N5 + N4) · 0 lượt · 0/0 câu đúng'),
+      findsOneWidget,
+    );
     expect(vocabulary.writes, 0);
     expect(grammar.writes, 0);
   });
@@ -461,7 +478,10 @@ void main() {
     vocabulary.readWait!.complete();
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('progress-quiz-vocabulary-summary')), findsNothing);
+    expect(
+      find.byKey(const Key('progress-quiz-vocabulary-summary')),
+      findsNothing,
+    );
     expect(find.textContaining('1 lượt'), findsNothing);
     expect(grammar.reads, 0);
     expect(vocabulary.writes, 0);
