@@ -57,9 +57,7 @@ final class _Submitter implements QuizReportV2Submitter {
   }
 
   @override
-  Future<QuizReportV2LookupResult> lookupReceipt(
-    QuizReportV2Request request,
-  ) {
+  Future<QuizReportV2LookupResult> lookupReceipt(QuizReportV2Request request) {
     lookups.add(request);
     final handler = onLookup;
     return handler == null
@@ -228,25 +226,26 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('explicit report action fits narrow layout at double text scale', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(320, 800);
-    tester.view.devicePixelRatio = 1;
-    tester.platformDispatcher.textScaleFactorTestValue = 2;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  testWidgets(
+    'explicit report action fits narrow layout at double text scale',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 800);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
-    final request = _report();
-    final submitter = _Submitter();
-    await tester.pumpWidget(
-      _host(request: request, submitter: submitter, isCurrent: () => true),
-    );
-    await tester.tap(find.byKey(const Key('quiz-report-submit')));
-    await tester.pumpAndSettle();
+      final request = _report();
+      final submitter = _Submitter();
+      await tester.pumpWidget(
+        _host(request: request, submitter: submitter, isCurrent: () => true),
+      );
+      await tester.tap(find.byKey(const Key('quiz-report-submit')));
+      await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('quiz-report-confirmed')), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      expect(find.byKey(const Key('quiz-report-confirmed')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

@@ -105,7 +105,13 @@ class _GrammarQuizScreenState extends ConsumerState<GrammarQuizScreen> {
               const Text('Chưa đủ mẫu có nghĩa khác nhau để tạo bộ câu hỏi.')
             else
               GrammarQuizPanel(
-                key: ValueKey((content, generation, history, capture, reportTransport)),
+                key: ValueKey((
+                  content,
+                  generation,
+                  history,
+                  capture,
+                  reportTransport,
+                )),
                 history: history,
                 capture: capture,
                 questions: questions,
