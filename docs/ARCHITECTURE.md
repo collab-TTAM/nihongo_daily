@@ -29,3 +29,12 @@ lib/
 Read/mutation flow: UI -> Riverpod application service -> typed repository -> RPC/Edge adapter -> authenticated backend -> RLS/persistence. Clients do not directly overwrite derived SRS/progress. Content adapters combine normalized examples into wire objects. Demo repositories are clearly labeled.
 
 Offline events retain client_event_id and occurred_at; sync resends immutable events, deduplicates receipts and displays SYNC_CONFLICT for stale/conflicting writes. It never overwrites newer state or another user's data. Account changes isolate/clear user caches. Full sync is later integration work, not a baseline implementation.
+
+The opt-in bounded native append journal and write-before-dispatch repository
+are specified in DURABLE_REVIEW_JOURNAL.md. They preserve the existing RPC/auth
+boundaries and server-authoritative schedule. This is a transient equivalent
+local store (no dependencies), not the full SQLite/browser cache/sync layer;
+Opt-in UI recovery and lossless native compaction are documented in
+STUDY_RECOVERY.md and JOURNAL_COMPACTION.md. Opt-in browser transactions are
+specified in BROWSER_REVIEW_STORE.md; the default runtime remains unconfigured.
+Secure session storage, terminal retention and hosted acceptance remain pending.
