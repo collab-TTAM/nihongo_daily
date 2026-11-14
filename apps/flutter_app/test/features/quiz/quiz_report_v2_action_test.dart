@@ -166,6 +166,7 @@ void main() {
       expect(submitter.submissions, hasLength(1));
       expect(find.byKey(const Key('quiz-report-confirmed')), findsOneWidget);
       expect(find.byKey(const Key('quiz-report-lookup')), findsNothing);
+      expect(find.byKey(const Key('quiz-report-submit-error')), findsNothing);
     },
   );
 
@@ -215,6 +216,9 @@ void main() {
     await tester.pump();
     expect(submitter.submissions, hasLength(1));
     current = false;
+    await tester.pumpWidget(
+      _host(request: request, submitter: submitter, isCurrent: () => current),
+    );
     gate.complete(request.decodeResponse(_response(request)));
     await tester.pumpAndSettle();
 

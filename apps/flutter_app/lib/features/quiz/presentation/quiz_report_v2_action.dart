@@ -121,6 +121,9 @@ class _QuizReportV2ActionState extends State<QuizReportV2Action> {
           _confirmed = true;
           _uncertain = false;
           _unresolved = false;
+          _submitFailure = null;
+          _lookupFailure = null;
+          _retryRateLimited = false;
         } else if (result.isUnresolved) {
           _unresolved = true;
         } else {
