@@ -325,93 +325,93 @@ void main() {
   test(
     'partial write failure poisons journal and exact retry recovers',
     () async {
-    final report = quizReport(701);
-    final failed = await NativeVocabularyQuizJournal.openForTesting(
-      directory,
-      writeAndFlush: (file, bytes) async {
-        await file.writeFrom(bytes.take(bytes.length ~/ 2).toList());
-        throw StateError('PRIVATE injected partial write failure');
-      },
-    );
-    journal = failed;
-    Object? failure;
-    try {
-      await failed.append(quizOwner, report);
-    } on Object catch (error) {
-      failure = error;
-    }
-    expect(failure, isA<VocabularyQuizStorageFailure>());
-    expect(failure.toString(), isNot(contains('PRIVATE')));
-    await expectLater(
-      failed.list(quizOwner),
-      throwsA(isA<VocabularyQuizStorageFailure>()),
-    );
-    await expectLater(
-      failed.append(quizOwner, report),
-      throwsA(isA<VocabularyQuizStorageFailure>()),
-    );
+      final report = quizReport(701);
+      final failed = await NativeVocabularyQuizJournal.openForTesting(
+        directory,
+        writeAndFlush: (file, bytes) async {
+          await file.writeFrom(bytes.take(bytes.length ~/ 2).toList());
+          throw StateError('PRIVATE injected partial write failure');
+        },
+      );
+      journal = failed;
+      Object? failure;
+      try {
+        await failed.append(quizOwner, report);
+      } on Object catch (error) {
+        failure = error;
+      }
+      expect(failure, isA<VocabularyQuizStorageFailure>());
+      expect(failure.toString(), isNot(contains('PRIVATE')));
+      await expectLater(
+        failed.list(quizOwner),
+        throwsA(isA<VocabularyQuizStorageFailure>()),
+      );
+      await expectLater(
+        failed.append(quizOwner, report),
+        throwsA(isA<VocabularyQuizStorageFailure>()),
+      );
 
-    final file = quizData(directory);
-    final partial = await file.readAsBytes();
-    expect(partial, isNotEmpty);
-    expect(partial.last, isNot(10));
-    await failed.close();
-    journal = null;
+      final file = quizData(directory);
+      final partial = await file.readAsBytes();
+      expect(partial, isNotEmpty);
+      expect(partial.last, isNot(10));
+      await failed.close();
+      journal = null;
 
-    final restored = await open();
-    expect(await restored.list(quizOwner), isEmpty);
-    final saved = await restored.append(quizOwner, report);
-    expect(sameVocabularyQuizAttempt(saved.attempt, report), isTrue);
-    expect(await restored.list(quizOwner), hasLength(1));
-    expect(await file.readAsLines(), hasLength(1));
+      final restored = await open();
+      expect(await restored.list(quizOwner), isEmpty);
+      final saved = await restored.append(quizOwner, report);
+      expect(sameVocabularyQuizAttempt(saved.attempt, report), isTrue);
+      expect(await restored.list(quizOwner), hasLength(1));
+      expect(await file.readAsLines(), hasLength(1));
     },
   );
 
   test(
     'post-flush failure reopens and exact replay avoids duplicate',
     () async {
-    final report = quizReport(702);
-    final failed = await NativeVocabularyQuizJournal.openForTesting(
-      directory,
-      writeAndFlush: (file, bytes) async {
-        await file.writeFrom(bytes);
-        await file.flush();
-        throw StateError('PRIVATE injected flush acknowledgement failure');
-      },
-    );
-    journal = failed;
-    Object? failure;
-    try {
-      await failed.append(quizOwner, report);
-    } on Object catch (error) {
-      failure = error;
-    }
-    expect(failure, isA<VocabularyQuizStorageFailure>());
-    expect(failure.toString(), isNot(contains('PRIVATE')));
-    await expectLater(
-      failed.list(quizOwner),
-      throwsA(isA<VocabularyQuizStorageFailure>()),
-    );
-    await expectLater(
-      failed.append(quizOwner, report),
-      throwsA(isA<VocabularyQuizStorageFailure>()),
-    );
+      final report = quizReport(702);
+      final failed = await NativeVocabularyQuizJournal.openForTesting(
+        directory,
+        writeAndFlush: (file, bytes) async {
+          await file.writeFrom(bytes);
+          await file.flush();
+          throw StateError('PRIVATE injected flush acknowledgement failure');
+        },
+      );
+      journal = failed;
+      Object? failure;
+      try {
+        await failed.append(quizOwner, report);
+      } on Object catch (error) {
+        failure = error;
+      }
+      expect(failure, isA<VocabularyQuizStorageFailure>());
+      expect(failure.toString(), isNot(contains('PRIVATE')));
+      await expectLater(
+        failed.list(quizOwner),
+        throwsA(isA<VocabularyQuizStorageFailure>()),
+      );
+      await expectLater(
+        failed.append(quizOwner, report),
+        throwsA(isA<VocabularyQuizStorageFailure>()),
+      );
 
-    final file = quizData(directory);
-    final committed = await file.readAsBytes();
-    expect(committed.last, 10);
-    await failed.close();
-    journal = null;
+      final file = quizData(directory);
+      final committed = await file.readAsBytes();
+      expect(committed.last, 10);
+      await failed.close();
+      journal = null;
 
-    final restored = await open();
-    final history = await restored.list(quizOwner);
-    expect(history, hasLength(1));
-    expect(sameVocabularyQuizAttempt(history.single.attempt, report), isTrue);
-    final length = await file.length();
-    final replay = await restored.append(quizOwner, report);
-    expect(sameVocabularyQuizAttempt(replay.attempt, report), isTrue);
-    expect(await file.length(), length);
-    expect(await file.readAsLines(), hasLength(1));
+      final restored = await open();
+      final history = await restored.list(quizOwner);
+      expect(history, hasLength(1));
+      expect(sameVocabularyQuizAttempt(history.single.attempt, report), isTrue);
+      final length = await file.length();
+      final replay = await restored.append(quizOwner, report);
+      expect(sameVocabularyQuizAttempt(replay.attempt, report), isTrue);
+      expect(await file.length(), length);
+      expect(await file.readAsLines(), hasLength(1));
     },
   );
 
@@ -456,20 +456,20 @@ void main() {
   test(
     'separate processes retain flushed data and enforce active lease',
     () async {
-      await quizProbe('stage', directory);
-      final store = await open();
-      final records = await store.list(quizOwner);
-      expect(records.single.attempt.eventId, quizReport(1).eventId);
-      await quizProbe('locked', directory);
-      await store.append(quizOwner, quizReport(2));
-      await store.close();
-      await quizProbe(
-        'stage',
-        directory,
-      ); // Exact restart replay does not append.
-      final restored = await open();
-      expect(await restored.list(quizOwner), hasLength(2));
-      expect(await quizData(directory).readAsLines(), hasLength(2));
+        await quizProbe('stage', directory);
+        final store = await open();
+        final records = await store.list(quizOwner);
+        expect(records.single.attempt.eventId, quizReport(1).eventId);
+        await quizProbe('locked', directory);
+        await store.append(quizOwner, quizReport(2));
+        await store.close();
+        await quizProbe(
+          'stage',
+          directory,
+        ); // Exact restart replay does not append.
+        final restored = await open();
+        expect(await restored.list(quizOwner), hasLength(2));
+        expect(await quizData(directory).readAsLines(), hasLength(2));
     },
     timeout: const Timeout(Duration(minutes: 2)),
   );
