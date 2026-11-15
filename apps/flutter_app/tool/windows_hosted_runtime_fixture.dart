@@ -85,7 +85,8 @@ void _check(bool value) {
   }
 }
 
-/// Auth-only fixture store. No review event is staged or dispatched by this probe.
+/// Auth-only fixture store. No review event is staged or dispatched by this
+/// probe.
 final class _EmptyReviewStore implements DurableReviewStore {
   @override
   Future<List<StoredReview>> list(String userId) =>
@@ -231,7 +232,8 @@ Future<void> main(List<String> arguments) async {
     await verifyWindowsHostedRuntimePhase(arguments.single, settings);
     passed = true;
   } on Object {
-    // Do not print exception text, emails, passwords, access tokens or refresh tokens.
+    // Do not print exception text, emails, passwords, access tokens or refresh
+    // tokens.
     stderr.writeln('Hosted Windows runtime verification failed');
   }
   await stdout.flush();
