@@ -177,6 +177,17 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
+      - name: Diagnose pinned Dart formatter diff (read-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          diagnostic_dir="$(mktemp -d .dart_tool/format-diagnostic.XXXXXX)"
+          trap 'rm -rf "$diagnostic_dir"' EXIT
+          source_file="test/features/srs/session_lifecycle_fixtures.dart"
+          copy_file="$diagnostic_dir/session_lifecycle_fixtures.dart"
+          cp "$source_file" "$copy_file"
+          dart format "$copy_file"
+          diff -u --label "$source_file (HEAD)" --label "$source_file (Dart 3.35.4)" "$source_file" "$copy_file" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
