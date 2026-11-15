@@ -294,7 +294,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "Platform.environment",
             "createWindowsSessionCredentialVault",
             "PersistentSupabaseRuntime",
-            "verifyWindowsHostedRuntimePhase",
+            "_verifyWindowsHostedRuntimePhase",
             "runtime.account.signIn",
             "runtime.account.signOut",
             "waitForCurrentProfile",
@@ -312,6 +312,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             fixture,
             r"(?i)(?:stdout|stderr)\.writeln\([^)]*(?:email|password|refresh|token|secret)",
         )
+        self.assertNotRegex(fixture, r"(?m)^Future<void> verifyWindowsHostedRuntimePhase\\(")
         self.assertIn("ArgumentList @($phase)", script)
         self.assertIn("WaitForExit(90000)", script)
         self.assertIn("Invoke-HostedPhase 'restore-a'", script)

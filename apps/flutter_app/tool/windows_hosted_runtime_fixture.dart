@@ -127,7 +127,7 @@ Future<void> _signInAndWait(
   _requireReady(runtime);
 }
 
-Future<void> verifyWindowsHostedRuntimePhase(
+Future<void> _verifyWindowsHostedRuntimePhase(
   String phase,
   _HostedSettings settings,
 ) async {
@@ -221,7 +221,7 @@ Future<void> main(List<String> arguments) async {
       throw const FormatException('Hosted Windows runtime phase unavailable');
     }
     final settings = _settings();
-    await verifyWindowsHostedRuntimePhase(arguments.single, settings);
+    await _verifyWindowsHostedRuntimePhase(arguments.single, settings);
     passed = true;
   } on Object {
     // Do not print exception text, emails, passwords, access tokens or refresh
