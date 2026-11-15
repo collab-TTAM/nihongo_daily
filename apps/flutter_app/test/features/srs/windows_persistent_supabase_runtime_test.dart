@@ -683,6 +683,109 @@ void main() {
     },
   );
 
+  test(
+    'Windows corrupt stored refresh is rejected before Auth and cleanup retry fences User B',
+    () async {
+      const corruptRefresh = 'TEST_ONLY_CORRUPT_WINDOWS_REFRESH\n';
+      storedSecret = corruptRefresh;
+
+      await expectLater(
+        runtime.start(),
+        throwsA(
+          isA<ReviewTransportFailure>()
+              .having(
+                (error) => error.code,
+                'safe startup error',
+                ReviewErrorCode.unauthorized,
+              )
+              .having(
+                (error) => error.toString().contains(
+                  'TEST_ONLY_CORRUPT_WINDOWS_REFRESH',
+                ),
+                'redacted stored value',
+                false,
+              ),
+        ),
+      );
+
+      expect(timeline, ['vault.read']);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+        reason: 'a malformed persisted value must never reach Supabase Auth',
+      );
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        PersistentAccountStartup(runtime).canOfferLogin,
+        isTrue,
+        reason: 'the owner lease is still held',
+      );
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      refreshSecret = 'TEST_ONLY_B_AFTER_CORRUPT_REFRESH';
+      failClear = true;
+
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, corruptRefresh);
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        isEmpty,
+        reason: 'User B stays fenced while corrupt-slot cleanup fails',
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        isEmpty,
+      );
+      expect(timeline.where((event) => event == 'auth.refresh'), isEmpty);
+      expect(timeline.where((event) => event == 'auth.password'), isEmpty);
+      final failedClear = timeline.lastIndexOf('vault.clear');
+      expect(failedClear, greaterThan(timeline.indexOf('vault.read')));
+
+      failClear = false;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final successfulClear = timeline.lastIndexOf('vault.clear');
+      final passwordAuth = timeline.indexOf('auth.password');
+      final rotatedWrite = timeline.lastIndexOf('vault.write');
+      final profileRead = timeline.lastIndexOf('profile.ensure');
+      expect(successfulClear, greaterThan(failedClear));
+      expect(passwordAuth, greaterThan(successfulClear));
+      expect(rotatedWrite, greaterThan(passwordAuth));
+      expect(profileRead, greaterThan(rotatedWrite));
+      expect(storedSecret, refreshSecret);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(runtime.account.state.profile?.id, wire.b);
+
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      expect(authRequests, hasLength(1));
+      expect(authRequests.single.url.queryParameters['grant_type'], 'password');
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(profileRequests, hasLength(1));
+      expect(
+        profileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+    },
+  );
+
   test('Windows vault write failure clears and blocks own profile', () async {
     storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
     failWrite = true;

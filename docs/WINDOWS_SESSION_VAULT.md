@@ -314,3 +314,24 @@ This is deterministic helper-boundary fault injection, not spontaneous Windows
 Credential Manager failure, hosted signed-JWT Auth/PostgREST/RLS, OS logoff,
 power loss or physical multi-device evidence. HTTP/Auth responses remain
 TEST ONLY fixtures; no credential values or raw native errors are logged.
+
+
+## Malformed stored refresh is rejected before Windows Auth dispatch
+
+The TEST ONLY pinned-Supabase-SDK/Windows MethodChannel runtime suite returns a
+malformed persisted refresh value (a string outside the vault's printable-token
+contract). Startup must fail closed before any `/auth/v1/token` or own-profile
+request; the value is never forwarded to Auth. While the caller still owns the
+project vault, the existing explicit-login recovery path may be offered.
+
+The regression then injects a failed exact-target clear. User B's password grant
+and profile request must remain blocked, the corrupt value remains unchanged, and
+the public error contains no stored value or platform details. After an explicit
+retry succeeds, the corrupt slot is cleared before B's password grant; B's
+rotated refresh secret is persisted before the captured B own-profile request/
+readiness.
+
+This is a TEST ONLY MethodChannel response and synthetic Auth HTTP/JWT fixture,
+not a claim that the packaged app or hosted Auth was exercised. The separate
+Windows native probe's corrupt-OS-blob case remains the Credential Manager
+boundary evidence. No plaintext fallback or automatic cleanup retry is added.
