@@ -2231,10 +2231,12 @@ void main() {
         expect(runtime.account.state.phase, AccountPhase.loadingProfile);
         expect(runtime.account.readyRuntime, isNull);
         expect(storedSecret, refreshSecret);
-        expect(
-          timeline,
-          ['vault.read', 'auth.refresh', 'vault.write', 'profile.ensure'],
-        );
+        expect(timeline, [
+          'vault.read',
+          'auth.refresh',
+          'vault.write',
+          'profile.ensure',
+        ]);
         final profileRequest = requests.singleWhere(
           (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
         );
