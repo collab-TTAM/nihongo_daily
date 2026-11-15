@@ -226,7 +226,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('quiz-save')), findsNothing);
     expect(captures, 0);
-    await tapQuiz(tester, find.text('Làm lại bộ này'));
+    // Account-bound panel replacement starts a fresh round; the guest result
+    // is never transferred to the newly ready account.
+    expect(find.text('Câu 1 / 1'), findsOneWidget);
+    expect(find.byKey(const Key('quiz-feedback')), findsNothing);
     await finish(tester);
     expect(captures, 1);
     await tapQuiz(tester, find.byKey(const Key('quiz-save')));
@@ -284,8 +287,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(captures, 0);
     expect(store.attempts, isEmpty);
+    // A same-user session replacement also retires the unfinished round.
+    expect(find.text('Câu 1 / 1'), findsOneWidget);
     expect(find.byKey(const Key('quiz-feedback')), findsNothing);
-    await tapQuiz(tester, find.text('Làm lại bộ này'));
     await finish(tester);
     expect(captures, 1);
     await tapQuiz(tester, find.byKey(const Key('quiz-save')));

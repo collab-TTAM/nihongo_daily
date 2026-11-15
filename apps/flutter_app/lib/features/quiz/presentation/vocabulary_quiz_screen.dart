@@ -68,12 +68,17 @@ class VocabularyQuizScreen extends ConsumerWidget {
             if (questions.isEmpty)
               const Text('Chưa đủ từ có cách đọc khác nhau để tạo bộ câu hỏi.')
             else
-              VocabularyQuizPanel(
-                key: ValueKey((questions, history, capture, reportTransport)),
-                questions: questions,
-                history: history,
-                capture: capture,
-                reportTransport: reportTransport,
+              KeyedSubtree(
+                // Retire the round when its account-bound capabilities change.
+                key: ValueKey((history, capture, reportTransport)),
+                child: VocabularyQuizPanel(
+                  // Keep the exact question snapshot as the panel's identity.
+                  key: ObjectKey(questions),
+                  questions: questions,
+                  history: history,
+                  capture: capture,
+                  reportTransport: reportTransport,
+                ),
               ),
           ],
         ),
