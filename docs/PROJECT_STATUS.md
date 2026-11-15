@@ -4281,3 +4281,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no PowerShell, Flutter/Dart SDK or Windows Credential Manager. No local Windows/Flutter run or hosted staging dispatch was performed; the new Python regressions and strict format/analyze/full suite/build are delegated to exact-head GitHub Actions. No staging secrets were read or requested.
 - No Auth strategy/provider, migration, schema, RLS, default app activation, production, deployment, Pro-owned content, merge or issue closure changed. PR #37 remains Draft. Hosted signed-JWT learner A/B, actual protected Windows process restore/logout, deployed PostgREST/RLS and physical multi-device sync remain unverified.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures. Dispatch staging only after the protected environment is configured/approved; then record redacted run/head evidence. Keep #20/#22/#15/#18 and QA auth-live pending until their complete acceptance is observed.
+
+
+## Hosted Windows harness regex follow-up — 2026-11-15 UTC
+
+- A second readback caught that the first test-only follow-up still emitted doubled backslashes in raw Python regular expressions. Replaced the two new assertions with single-escape raw patterns so they match actual whitespace, PowerShell braces and literal environment-variable prefixes. The PowerShell harness behavior is unchanged.
+- Paths: `scripts/test_hosted_supabase_probe.py`, `docs/PROJECT_STATUS.md`. The next exact-head CI is the test evidence; neither prior commit's CI is treated as proof for this correction.

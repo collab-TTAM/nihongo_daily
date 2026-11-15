@@ -334,6 +334,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         )
 
 
+
     def test_windows_harness_runs_the_exact_fresh_process_sequence_and_always_cleans_up(self):
         script = (
             Path(__file__).resolve().parents[1]
@@ -342,7 +343,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             / "tool"
             / "verify_windows_hosted_runtime.ps1"
         ).read_text(encoding="utf-8")
-        phases = re.findall(r"(?m)^\\s*Invoke-HostedPhase '([^']+)'$", script)
+        phases = re.findall(r"(?m)^\s*Invoke-HostedPhase '([^']+)'$", script)
         self.assertEqual(
             phases,
             ["cleanup", "login-a", "restore-a", "logout-a", "login-b", "cleanup"],
@@ -356,9 +357,9 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("$process.Dispose()", script)
         self.assertRegex(
             script,
-            r"(?ms)\\} finally \\{\\s*try \\{\\s*"
-            r"Invoke-HostedPhase 'cleanup'\\s*\\}\\s*catch \\{\\s*"
-            r"\\$cleanupFailure = \\$true\\s*\\}\\s*\\}",
+            r"(?ms)\} finally \{\s*try \{\s*"
+            r"Invoke-HostedPhase 'cleanup'\s*\}\s*catch \{\s*"
+            r"\$cleanupFailure = \$true\s*\}\s*\}",
         )
 
     def test_windows_harness_preserves_primary_phase_and_redacts_cleanup_errors(self):
@@ -377,9 +378,10 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "Windows hosted runtime final cleanup could not be verified", script
         )
         self.assertNotRegex(
-            script, r"(?im)^\\s*Write-(?:Output|Host|Error)\\s+\\$_"
+            script, r"(?im)^\s*Write-(?:Output|Host|Error)\s+\$_"
         )
-        self.assertNotRegex(script, r"(?i)\\$env:ND_STAGING_")
+        self.assertNotRegex(script, r"(?i)\$env:ND_STAGING_")
+
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
