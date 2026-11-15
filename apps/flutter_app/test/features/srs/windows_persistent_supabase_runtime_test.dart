@@ -394,6 +394,89 @@ void main() {
   );
 
   test(
+    'Windows caller close during vault read preserves the saved token',
+    () async {
+      storedSecret = 'TEST_ONLY_SAVED_WINDOWS_REFRESH';
+      readWait = Completer<void>();
+
+      final startup = PersistentAccountStartup(runtime);
+      final starting = startup.start();
+      final startFailure = expectLater(
+        starting,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await fixture.flush();
+
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(startupOrder, ['owner.acquire', 'vault.read']);
+      expect(timeline, ['vault.read']);
+      expect(runtime.persistence.phase, SessionPersistencePhase.restoring);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(requests, isEmpty);
+
+      final closing = runtime.close();
+      await fixture.flush();
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+      expect(requests, isEmpty);
+
+      readWait!.complete();
+      await startFailure;
+      await closing;
+
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder, ['owner.release']);
+      expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_REFRESH');
+      expect(timeline, ['vault.read']);
+      expect(requests, isEmpty);
+
+      // A replacement owner can still restore the untouched secret.
+      readWait = null;
+      vault = createWindowsSessionCredentialVault(wire.origin);
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+      await runtime.start();
+      await waitForReady();
+
+      expect(storedSecret, refreshSecret);
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(timeline.where((event) => event == 'vault.read'), hasLength(2));
+      expect(
+        timeline.lastIndexOf('vault.read'),
+        lessThan(timeline.indexOf('auth.refresh')),
+      );
+      expect(
+        timeline.indexOf('vault.write'),
+        greaterThan(timeline.indexOf('auth.refresh')),
+      );
+      expect(
+        timeline.indexOf('profile.ensure'),
+        greaterThan(timeline.indexOf('vault.write')),
+      );
+      expect(
+        requests.where((request) => request.url.path == '/auth/v1/token'),
+        hasLength(1),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+    },
+  );
+
+  test(
     'Windows runtime leases vault before read and releases on close',
     () async {
       await runtime.start();

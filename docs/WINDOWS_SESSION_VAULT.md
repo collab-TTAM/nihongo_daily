@@ -75,6 +75,26 @@ recovery order. The standalone native probe separately covers real process-lease
 contention and abandoned-mutex recovery; neither fixture is hosted learner Auth
 proof.
 
+## Caller close while the native vault read is pending
+
+After the Windows owner lease is acquired, startup may still be waiting for
+Credential Manager to return the saved refresh secret. Caller close must revoke
+readiness immediately but retain the native owner until that read settles. If
+close wins before the SDK Auth restore is dispatched, it must not sign out or
+clear the saved credential. Once the read drains, the owner lease can be
+released; a fresh owner can then perform server refresh, persist the rotated
+secret, and only afterward request the learner's own profile.
+
+The Windows MethodChannel/runtime regression holds the native-style read,
+starts caller close, and verifies there is no Auth token request, profile
+request, vault clear, or owner release while the read is held. After releasing
+the read it verifies that the saved secret remains intact and the lease is
+released. A replacement runtime then restores the same secret and checks
+refresh -> rotated-secret write -> own-profile ordering. This is a TEST ONLY
+mocked MethodChannel lifecycle test, not actual hosted Auth or Credential
+Manager execution; the separate Windows native probe remains the OS-backed
+storage/lease evidence.
+
 ## Reproduction and evidence limits
 
 In `apps/flutter_app`:
