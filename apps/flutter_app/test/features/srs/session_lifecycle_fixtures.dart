@@ -660,7 +660,10 @@ Future<void> verifyLifecycle(String scenario) async {
         final failure = fails(first);
         if (scenario == 'logout-during-login') {
           await flush();
-          check(sdk.logins == 1, 'password Auth did not dispatch before logout');
+          check(
+            sdk.logins == 1,
+            'password Auth did not dispatch before logout',
+          );
           var logoutSettled = false;
           final close = access.signOut().then((_) => logoutSettled = true);
           await flush();
