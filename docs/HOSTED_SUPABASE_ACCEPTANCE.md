@@ -32,8 +32,11 @@ key or JWT signing secret.
 - ensure_profile({}) returns exactly the caller-owned profile contract.
 - Each user reads its own profile; cross-owner profile queries return no rows.
 - An unauthenticated profile query is denied.
-- Logging out A revokes A's rotated refresh token while B remains usable and
-  cannot read A's profile.
+- User A is opened in two independent Auth sessions. Logging out the current A
+  session with `scope=local` revokes only that session's rotated refresh token;
+  A's second session and B's independent session must still refresh and read
+  only their own profile. A global/default logout would incorrectly invalidate
+  A's second session and fail this acceptance.
 - A cannot update B's allowlisted `preferred_jlpt` setting, and B cannot update
   A's; each target user's own read must remain unchanged.
 - Each test user can update only its own `preferred_jlpt`, and repeating

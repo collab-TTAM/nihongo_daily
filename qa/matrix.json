@@ -1158,13 +1158,13 @@
     {
       "id": "auth-live",
       "status": "pending-integration",
-      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus separate Flutter startup/restart acceptance. The hosted probe also attempts caller-supplied owner, profile display-name and Auth user-metadata overrides before legitimate bootstrap, requiring fixed validation errors and no pre-bootstrap profile creation. It also checks cross-owner profile UPDATE isolation and idempotent ensure_profile preservation of a temporarily changed preferred_jlpt setting.",
+      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus separate Flutter startup/restart acceptance. The probe creates two independent sessions for User A and one for User B; explicit scope=local logout must revoke only the current A refresh token while A's second session and B remain refreshable. It also checks caller-supplied owner/profile/Auth metadata overrides, cross-owner reads/updates, anonymous denial and idempotent ensure_profile preservation.",
       "issues": [
         20,
         18
       ],
-      "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial and logout revocation; record exact run/head. Separately verify configured Flutter startup/restart. Offline adversarial probe tests also model an endpoint that accepts each forged field and require the probe to fail. The probe temporarily changes only each staging user's preferred_jlpt to N4, repeats ensure_profile({}), verifies preservation, then restores the original N5 value; it also attempts A/B cross-owner updates and verifies neither target changes.",
-      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey. The new override cases are offline fake-server coverage until the protected staging workflow is dispatched; they do not themselves prove deployed SQL behavior. These new update/idempotency checks remain offline fake-server coverage until the protected staging workflow runs; only the pre-provisioned test users' preferred_jlpt is temporarily changed and restored. Static CI regressions also guard the manual dispatch/confirmation, protected environment, read-only permission and exact staging-secret boundary; they do not prove the environment secrets or two test accounts are configured.",
+      "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, two independent A sessions, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial, and scope=local logout that revokes only the current A refresh token while the second A session and B still refresh. Record exact run/head. Separately verify configured Flutter startup/restart. Offline adversarial probe tests model forged profile fields and a global/default logout that revokes A's second session. The probe temporarily changes only each staging user's preferred_jlpt to N4, repeats ensure_profile({}), verifies preservation, then restores the original N5 value; it also attempts A/B cross-owner updates and verifies neither target changes.",
+      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey. The new override cases are offline fake-server coverage until the protected staging workflow is dispatched; they do not themselves prove deployed SQL behavior. These new update/idempotency checks remain offline fake-server coverage until the protected staging workflow runs; only the pre-provisioned test users' preferred_jlpt is temporarily changed and restored. Static CI regressions also guard the manual dispatch/confirmation, protected environment, read-only permission and exact staging-secret boundary; they do not prove the environment secrets or two test accounts are configured. The new two-session/local-logout case is offline fake-server coverage until the protected staging workflow is dispatched; it does not prove deployed Supabase scope semantics.",
       "anchors": [
         {
           "path": "scripts/hosted_supabase_probe.py",
@@ -1205,6 +1205,14 @@
         {
           "path": "scripts/test_hosted_supabase_probe.py",
           "contains": "def test_staging_workflow_is_read_only_and_does_not_auto_cancel(self):"
+        },
+        {
+          "path": "scripts/hosted_supabase_probe.py",
+          "contains": "\"/auth/v1/logout?scope=local\""
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_global_logout_cannot_pass_local_session_acceptance(self):"
         }
       ]
     },

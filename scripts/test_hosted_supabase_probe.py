@@ -29,12 +29,14 @@ class FakeSupabase:
         self.profiles=set()
         self.preferences={}
         self.counter,self.refresh_owners,self.access_owners=0,{},{}
-    def new_session(self,user,refresh=None):
+        self.logout_scopes=[]
+    def new_session(self,user,refresh=None,session_id=None):
         self.counter+=1
+        session_id=session_id or f"TEST_ONLY_SESSION_{self.counter}"
         access=f"TEST_ONLY_ACCESS_{self.counter}_{user}"
         token=refresh or f"TEST_ONLY_REFRESH_{self.counter}_{user}"
-        self.access_owners[access]=user
-        self.refresh_owners[token]=user
+        self.access_owners[access]=(user,session_id)
+        self.refresh_owners[token]=(user,session_id)
         return 200,{"user":{"id":user},"access_token":access,"refresh_token":token}
     def __call__(self,method,path,payload=None,access_token=None):
         if method=="POST" and path=="/auth/v1/token?grant_type=password":
@@ -46,17 +48,19 @@ class FakeSupabase:
             return self.new_session(self.users[email])
         if method=="POST" and path=="/auth/v1/token?grant_type=refresh_token":
             token=payload["refresh_token"]
-            user=self.refresh_owners.get(token)
-            if user is None:
+            identity=self.refresh_owners.get(token)
+            if identity is None:
                 return 400,{"message":"invalid"}
+            user,session_id=identity
             if self.rotate:
                 self.refresh_owners.pop(token,None)
-                return self.new_session(user)
-            return self.new_session(user,token)
+                return self.new_session(user,session_id=session_id)
+            return self.new_session(user,token,session_id)
         if method=="POST" and path=="/rest/v1/rpc/ensure_profile":
-            user=self.access_owners.get(access_token)
-            if user is None:
+            identity=self.access_owners.get(access_token)
+            if identity is None:
                 return 401,{"message":"unauthorized"}
+            user=identity[0]
             p_request=payload.get("p_request") if isinstance(payload,dict) else None
             if p_request!={}:
                 fields=set(p_request) if isinstance(p_request,dict) else set()
@@ -79,7 +83,8 @@ class FakeSupabase:
             return 200,{"id":user,"display_name":"","preferred_jlpt":self.preferences[user],
                         "daily_target_minutes":120,"timezone":"Asia/Ho_Chi_Minh"}
         if method=="PATCH" and path.startswith("/rest/v1/profiles?"):
-            actor=self.access_owners.get(access_token)
+            identity=self.access_owners.get(access_token)
+            actor=identity[0] if identity is not None else None
             if actor is None:
                 return 401,{"message":"unauthorized"}
             query=urllib.parse.parse_qs(urllib.parse.urlsplit(path).query)
@@ -90,7 +95,8 @@ class FakeSupabase:
         if method=="GET" and path.startswith("/rest/v1/profiles?"):
             if access_token is None:
                 return (200,[]) if self.anonymous else (401,{"message":"unauthorized"})
-            owner=self.access_owners.get(access_token)
+            identity=self.access_owners.get(access_token)
+            owner=identity[0] if identity is not None else None
             if owner is None:
                 return 401,{"message":"unauthorized"}
             query=urllib.parse.parse_qs(urllib.parse.urlsplit(path).query)
@@ -102,12 +108,23 @@ class FakeSupabase:
                     return 200,[{"id":owner,"preferred_jlpt":self.preferences[owner]}]
                 return 200,[{"id":owner}]
             return 200,[]
-        if method=="POST" and path=="/auth/v1/logout":
-            owner=self.access_owners.get(access_token)
-            if owner is None:
+        if method=="POST" and path.startswith("/auth/v1/logout"):
+            identity=self.access_owners.get(access_token)
+            if identity is None:
                 return 401,{"message":"unauthorized"}
+            owner,session_id=identity
+            query=urllib.parse.parse_qs(urllib.parse.urlsplit(path).query)
+            scope=query.get("scope",["global"])[0]
+            self.logout_scopes.append(scope)
+            if scope not in {"local","global"}:
+                return 400,{"message":"invalid scope"}
             if self.revoke:
-                self.refresh_owners={t:u for t,u in self.refresh_owners.items() if u!=owner}
+                if scope=="local":
+                    self.refresh_owners={t:value for t,value in self.refresh_owners.items()
+                                         if value[1]!=session_id}
+                else:
+                    self.refresh_owners={t:value for t,value in self.refresh_owners.items()
+                                         if value[0]!=owner}
             return 204,None
         return 404,{"message":"not found"}
 
@@ -117,6 +134,19 @@ class HostedProbeTests(unittest.TestCase):
         probe.run_probe(config(),fake)
         self.assertEqual(fake.profiles,{A,B})
         self.assertEqual(fake.preferences,{A:"N5",B:"N5"})
+        self.assertEqual(fake.logout_scopes,["local"])
+
+    def test_global_logout_cannot_pass_local_session_acceptance(self):
+        fake=FakeSupabase()
+        def force_global_logout(method,path,payload=None,access_token=None):
+            if method=="POST" and path=="/auth/v1/logout?scope=local":
+                path="/auth/v1/logout?scope=global"
+            return fake(method,path,payload,access_token)
+        with self.assertRaisesRegex(
+            probe.ProbeFailure,
+            "User A second session after local logout refresh Auth response failed",
+        ):
+            probe.run_probe(config(),force_global_logout)
 
     def test_caller_owner_override_is_rejected_by_the_probe(self):
         with self.assertRaisesRegex(probe.ProbeFailure,"caller owner override was accepted"):

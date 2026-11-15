@@ -245,11 +245,20 @@ def run_probe(config: Config,request) -> None:
                         {"email":config.email_a,"password":config.password_a},None)
     initial_a=session(status,body,"User A")
     status,body=request("POST","/auth/v1/token?grant_type=password",
+                        {"email":config.email_a,"password":config.password_a},None)
+    initial_a_other=session(status,body,"User A second session")
+    status,body=request("POST","/auth/v1/token?grant_type=password",
                         {"email":config.email_b,"password":config.password_b},None)
     initial_b=session(status,body,"User B")
-    require(initial_a.user_id!=initial_b.user_id,"staging users must be distinct")
+    require(initial_a.user_id==initial_a_other.user_id and initial_a.user_id!=initial_b.user_id,
+            "staging users must be distinct and User A must have two sessions")
+    require(initial_a.refresh!=initial_a_other.refresh,
+            "User A sessions must have independent refresh tokens")
     user_a=refresh(request,initial_a,"User A")
+    other_a=refresh(request,initial_a_other,"User A second session")
     user_b=refresh(request,initial_b,"User B")
+    require(user_a.refresh!=other_a.refresh,
+            "User A refresh sessions must remain independent")
     # Before legitimate bootstrap, neither caller may choose the owner or profile settings.
     reject_profile_overrides(request,user_a,user_b.user_id,"User A")
     reject_profile_overrides(request,user_b,user_a.user_id,"User B")
@@ -273,12 +282,16 @@ def run_probe(config: Config,request) -> None:
     verify_profile_preference_preserved(request,user_b,"User B")
     anonymous_status,_=request("GET","/rest/v1/profiles?select=id&limit=1",None,None)
     require(anonymous_status in {401,403},"profiles endpoint accepted an unauthenticated request")
-    status,_=request("POST","/auth/v1/logout",None,user_a.access)
-    require(status in {200,204},"User A logout failed")
+    status,_=request("POST","/auth/v1/logout?scope=local",None,user_a.access)
+    require(status in {200,204},"User A local logout failed")
     status,_=request("POST","/auth/v1/token?grant_type=refresh_token",{"refresh_token":user_a.refresh},None)
-    require(status in {400,401,403},"User A refresh token remained usable after logout")
-    require(profile_ids(request,user_b,user_b.user_id,"User B after A logout")==[user_b.user_id],
-            "User A logout affected User B")
+    require(status in {400,401,403},"User A current refresh token remained usable after local logout")
+    other_a=refresh(request,other_a,"User A second session after local logout")
+    require(profile_ids(request,other_a,user_a.user_id,"User A second session after local logout")==[user_a.user_id],
+            "User A local logout revoked its other session")
+    user_b=refresh(request,user_b,"User B after User A local logout")
+    require(profile_ids(request,user_b,user_b.user_id,"User B after A local logout")==[user_b.user_id],
+            "User A local logout affected User B")
     require(profile_ids(request,user_b,user_a.user_id,"User B after A logout isolation")==[],
             "User B can read User A profile")
 
@@ -289,7 +302,7 @@ def main() -> int:
     except ProbeFailure as error:
         print("Hosted Supabase acceptance failed: "+str(error),file=sys.stderr)
         return 1
-    print("Hosted Supabase acceptance passed: distinct A/B identities, refresh rotation, caller-bound profiles, cross-owner RLS, anonymous denial and logout revocation.")
+    print("Hosted Supabase acceptance passed: distinct A/B identities, two independent A sessions, refresh rotation, caller-bound profiles, cross-owner RLS, anonymous denial and local logout isolation.")
     return 0
 
 if __name__=="__main__":
