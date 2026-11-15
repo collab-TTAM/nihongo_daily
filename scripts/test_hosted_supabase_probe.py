@@ -19,7 +19,9 @@ def config():
 
 class FakeSupabase:
     def __init__(self,*,leak=False,rotate=True,revoke=True,anonymous=False,fail_login=False,
-                 accepted_overrides=(),cross_update=False,reset_profile_settings=False):
+                 accepted_overrides=(),cross_update=False,reset_profile_settings=False,
+                 review_leak=False,no_active_content=False,accept_changed_review=False,
+                 mutate_review_replay=False,anonymous_review=False):
         self.users={"a@example.invalid":A,"b@example.invalid":B}
         self.passwords={"a@example.invalid":"TEST_ONLY_PASSWORD_A","b@example.invalid":"TEST_ONLY_PASSWORD_B"}
         self.leak,self.rotate,self.revoke=leak,rotate,revoke
@@ -30,6 +32,14 @@ class FakeSupabase:
         self.preferences={}
         self.counter,self.refresh_owners,self.access_owners=0,{},{}
         self.logout_scopes=[]
+        self.review_leak=review_leak
+        self.no_active_content=no_active_content
+        self.accept_changed_review=accept_changed_review
+        self.mutate_review_replay=mutate_review_replay
+        self.anonymous_review=anonymous_review
+        self.review_item="c3000000-0000-4000-8000-000000000003"
+        self.review_cards={}
+        self.review_events={}
     def new_session(self,user,refresh=None,session_id=None):
         self.counter+=1
         session_id=session_id or f"TEST_ONLY_SESSION_{self.counter}"
@@ -56,6 +66,54 @@ class FakeSupabase:
                 self.refresh_owners.pop(token,None)
                 return self.new_session(user,session_id=session_id)
             return self.new_session(user,token,session_id)
+        if method=="GET" and path.startswith("/rest/v1/vocabulary?"):
+            identity=self.access_owners.get(access_token)
+            if identity is None:
+                return 401,{"message":"unauthorized"}
+            if self.no_active_content:
+                return 200,[]
+            return 200,[{"id":self.review_item}]
+        if method=="POST" and path=="/rest/v1/rpc/submit_review":
+            identity=self.access_owners.get(access_token)
+            if identity is None:
+                if self.anonymous_review:
+                    return 200,{"srs_state":"LEARNING","next_review_at":"2026-01-01T00:10:00.000000Z",
+                                "interval_days":10.0/1440,"difficulty":0.48,"review_count":1}
+                return 401,{"message":"unauthorized"}
+            owner=identity[0]
+            payload=payload.get("p_request") if isinstance(payload,dict) else None
+            if not isinstance(payload,dict):
+                return 200,{"code":"VALIDATION_FAILURE","message_vi":"Dữ liệu ôn tập không hợp lệ.","retryable":False}
+            event_key=(owner,payload.get("client_event_id"))
+            previous=self.review_events.get(event_key)
+            if previous is not None:
+                previous_request,previous_response=previous
+                if previous_request!=payload:
+                    if self.accept_changed_review:
+                        return 200,dict(previous_response)
+                    return 200,{"code":"SYNC_CONFLICT",
+                                "message_vi":"Lượt ôn tập xung đột với dữ liệu đã lưu.","retryable":False}
+                response=dict(previous_response)
+                if self.mutate_review_replay:
+                    response["review_count"]+=1
+                return 200,response
+            card_key=(owner,payload.get("item_type"),payload.get("item_id"))
+            card=self.review_cards.get(card_key,{"review_count":0,"correct_count":0,"incorrect_count":0})
+            next_card={
+                "review_count":card["review_count"]+1,
+                "correct_count":card["correct_count"]+(1 if payload.get("is_correct") is True else 0),
+                "incorrect_count":card["incorrect_count"]+(1 if payload.get("is_correct") is False else 0),
+            }
+            response={
+                "srs_state":"LEARNING",
+                "next_review_at":"2026-01-01T00:10:00.000000Z",
+                "interval_days":10.0/1440,
+                "difficulty":0.48,
+                "review_count":next_card["review_count"],
+            }
+            self.review_cards[card_key]=next_card
+            self.review_events[event_key]=(dict(payload),dict(response))
+            return 200,response
         if method=="POST" and path=="/rest/v1/rpc/ensure_profile":
             identity=self.access_owners.get(access_token)
             if identity is None:
@@ -82,6 +140,40 @@ class FakeSupabase:
                 self.preferences[user]="N5"
             return 200,{"id":user,"display_name":"","preferred_jlpt":self.preferences[user],
                         "daily_target_minutes":120,"timezone":"Asia/Ho_Chi_Minh"}
+        if method=="GET" and path.startswith("/rest/v1/user_learning_items?"):
+            identity=self.access_owners.get(access_token)
+            if identity is None:
+                return 401,{"message":"unauthorized"}
+            actor=identity[0]
+            query=urllib.parse.parse_qs(urllib.parse.urlsplit(path).query)
+            item_id=query.get("item_id",[""])[0].removeprefix("eq.")
+            item_type=query.get("item_type",[""])[0].removeprefix("eq.")
+            user_filter=query.get("user_id",[""])[0].removeprefix("eq.")
+            rows=[]
+            for (owner,kind,content_id),card in self.review_cards.items():
+                if content_id!=item_id or kind!=item_type:
+                    continue
+                if user_filter and owner!=user_filter:
+                    continue
+                if not self.review_leak and owner!=actor:
+                    continue
+                rows.append({"user_id":owner,"item_type":kind,"item_id":content_id,**card})
+            return 200,rows
+        if method=="GET" and path.startswith("/rest/v1/review_events?"):
+            identity=self.access_owners.get(access_token)
+            if identity is None:
+                return 401,{"message":"unauthorized"}
+            actor=identity[0]
+            query=urllib.parse.parse_qs(urllib.parse.urlsplit(path).query)
+            event_id=query.get("client_event_id",[""])[0].removeprefix("eq.")
+            rows=[]
+            for (owner,stored_event_id),_ in self.review_events.items():
+                if stored_event_id!=event_id:
+                    continue
+                if not self.review_leak and owner!=actor:
+                    continue
+                rows.append({"user_id":owner,"client_event_id":stored_event_id})
+            return 200,rows
         if method=="PATCH" and path.startswith("/rest/v1/profiles?"):
             identity=self.access_owners.get(access_token)
             actor=identity[0] if identity is not None else None
@@ -135,6 +227,36 @@ class HostedProbeTests(unittest.TestCase):
         self.assertEqual(fake.profiles,{A,B})
         self.assertEqual(fake.preferences,{A:"N5",B:"N5"})
         self.assertEqual(fake.logout_scopes,["local"])
+
+    def test_hosted_review_rpc_replay_conflict_and_owner_isolation(self):
+        fake=FakeSupabase()
+        probe.run_probe(config(),fake)
+        self.assertEqual(
+            set(fake.review_cards),
+            {(A,"VOCABULARY",fake.review_item),(B,"VOCABULARY",fake.review_item)},
+        )
+        self.assertEqual(len(fake.review_events),2)
+        self.assertTrue(all(card["review_count"]==1 for card in fake.review_cards.values()))
+
+    def test_hosted_review_rpc_requires_active_n5_content(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"active N5 vocabulary is unavailable"):
+            probe.run_probe(config(),FakeSupabase(no_active_content=True))
+
+    def test_hosted_review_rpc_rejects_cross_owner_review_visibility(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"RLS exposed another user's review"):
+            probe.run_probe(config(),FakeSupabase(review_leak=True))
+
+    def test_hosted_review_rpc_requires_changed_payload_conflict(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"changed replay did not return a safe SYNC_CONFLICT"):
+            probe.run_probe(config(),FakeSupabase(accept_changed_review=True))
+
+    def test_hosted_review_rpc_requires_original_replay(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"identical replay did not return the original response"):
+            probe.run_probe(config(),FakeSupabase(mutate_review_replay=True))
+
+    def test_hosted_review_rpc_rejects_anonymous_execution(self):
+        with self.assertRaisesRegex(probe.ProbeFailure,"unauthenticated submit_review was accepted"):
+            probe.run_probe(config(),FakeSupabase(anonymous_review=True))
 
     def test_global_logout_cannot_pass_local_session_acceptance(self):
         fake=FakeSupabase()

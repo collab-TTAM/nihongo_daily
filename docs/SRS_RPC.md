@@ -130,6 +130,24 @@ Primary design references checked 2026-10-13:
 - https://supabase.com/docs/guides/database/functions (caller-bound definer boundary)
 - https://supabase.com/docs/guides/database/postgres/row-level-security (auth.uid/RLS)
 
+## Hosted A/B submit_review acceptance
+
+The protected manual workflow includes a two-user GoTrue/PostgREST probe that
+calls the staging project's public.submit_review RPC. It reads one existing active
+N5 vocabulary row, submits one unique immutable event for A and B, verifies the
+five-field response, exact original replay, changed-payload SYNC_CONFLICT, and
+one authoritative counter increment. It then checks that each caller can read
+only its own user_learning_items and review_events rows and that an
+unauthenticated RPC invocation is denied.
+
+The probe does not seed or mutate curriculum. The staging project must already
+have the reviewed migration and at least one active N5 vocabulary row. Each run
+retains one review event per dedicated staging account; use disposable accounts.
+Offline fake tests protect the probe logic, but the QA review-rpc case remains
+pending until the protected workflow actually runs against the non-production
+project. This is hosted RPC evidence, not expiry, offline-sync or full learner UI
+acceptance.
+
 ## Typed Dart repository increment
 
 `apps/flutter_app/lib/features/srs/data/review_repository.dart` adds ReviewRepository

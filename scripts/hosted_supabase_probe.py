@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Manual-only hosted Supabase staging probe. Never prints credentials or tokens."""
 from __future__ import annotations
-import base64, binascii, json, os, re, sys, urllib.error, urllib.parse, urllib.request, uuid
+import base64, binascii, json, math, os, re, sys, urllib.error, urllib.parse, urllib.request, uuid
+from datetime import datetime, timezone
 from dataclasses import dataclass
 MAX_BODY = 1024 * 1024
 ENV_KEYS = ("ND_STAGING_SUPABASE_URL","ND_STAGING_SUPABASE_PUBLISHABLE_KEY","ND_STAGING_USER_A_EMAIL","ND_STAGING_USER_A_PASSWORD","ND_STAGING_USER_B_EMAIL","ND_STAGING_USER_B_PASSWORD")
@@ -239,6 +240,173 @@ def verify_profile_preference_preserved(request,current: Session,label: str) -> 
         require(profile_preference(request,current,current.user_id,label+" restored")==original,
                 f"{label} original profile preference was not restored")
 
+def active_n5_vocabulary_id(request, current: Session, label: str) -> str:
+    query=urllib.parse.urlencode({
+        "select":"id","jlpt_level":"eq.N5","is_active":"eq.true","order":"id.asc","limit":"1"
+    })
+    status,body=request("GET","/rest/v1/vocabulary?"+query,None,current.access)
+    require(status==200 and isinstance(body,list) and len(body)>=1,
+            f"{label} active N5 vocabulary is unavailable in staging")
+    row=body[0]
+    require(isinstance(row,dict) and set(row)=={"id"} and isinstance(row["id"],str),
+            f"{label} active N5 vocabulary row is invalid")
+    try:
+        return str(uuid.UUID(row["id"]))
+    except (ValueError,TypeError,AttributeError):
+        raise ProbeFailure(f"{label} active N5 vocabulary identity is invalid") from None
+
+def review_card_rows(request,current: Session,item_id: str,label: str) -> list[dict]:
+    query=urllib.parse.urlencode({
+        "select":"user_id,item_type,item_id,review_count,correct_count,incorrect_count",
+        "item_type":"eq.VOCABULARY","item_id":"eq."+item_id,
+    })
+    status,body=request("GET","/rest/v1/user_learning_items?"+query,None,current.access)
+    require(status==200 and isinstance(body,list),f"{label} review-state read failed")
+    rows=[]
+    for row in body:
+        fields={"user_id","item_type","item_id","review_count","correct_count","incorrect_count"}
+        require(isinstance(row,dict) and set(row)==fields,
+                f"{label} review-state row is invalid")
+        require(row["user_id"]==current.user_id,
+                f"{label} RLS exposed another user's review state")
+        require(row["item_type"]=="VOCABULARY" and row["item_id"]==item_id,
+                f"{label} review-state item identity is invalid")
+        counts=(row["review_count"],row["correct_count"],row["incorrect_count"])
+        require(all(type(value) is int and value>=0 for value in counts)
+                and row["correct_count"]+row["incorrect_count"]==row["review_count"],
+                f"{label} review-state counters are invalid")
+        rows.append(row)
+    require(len(rows)<=1,f"{label} review-state uniqueness is invalid")
+    return rows
+
+def review_event_rows(request,current: Session,event_id: str,label: str) -> list[dict]:
+    query=urllib.parse.urlencode({
+        "select":"user_id,client_event_id","client_event_id":"eq."+event_id,
+    })
+    status,body=request("GET","/rest/v1/review_events?"+query,None,current.access)
+    require(status==200 and isinstance(body,list),f"{label} review-event read failed")
+    rows=[]
+    for row in body:
+        require(isinstance(row,dict) and set(row)=={"user_id","client_event_id"},
+                f"{label} review-event row is invalid")
+        require(row["user_id"]==current.user_id,
+                f"{label} RLS exposed another user's review event")
+        require(row["client_event_id"]==event_id,
+                f"{label} review-event identity is invalid")
+        rows.append(row)
+    require(len(rows)<=1,f"{label} review-event uniqueness is invalid")
+    return rows
+
+def _review_success(status: int,body,label: str) -> dict:
+    fields={"srs_state","next_review_at","interval_days","difficulty","review_count"}
+    require(status==200 and isinstance(body,dict) and set(body)==fields,
+            f"{label} submit_review response shape is invalid")
+    require(body["srs_state"] in {"LEARNING","REVIEW","RELEARNING"},
+            f"{label} submit_review state is invalid")
+    due=body["next_review_at"]
+    require(isinstance(due,str) and 1<=len(due)<=64,
+            f"{label} submit_review due time is invalid")
+    try:
+        parsed=datetime.fromisoformat(due.replace("Z","+00:00"))
+    except (TypeError,ValueError,OverflowError):
+        raise ProbeFailure(f"{label} submit_review due time is invalid") from None
+    require(parsed.tzinfo is not None and parsed.utcoffset() is not None,
+            f"{label} submit_review due time is not timezone-aware")
+    try:
+        interval=float(body["interval_days"])
+        difficulty=float(body["difficulty"])
+    except (TypeError,ValueError,OverflowError):
+        raise ProbeFailure(f"{label} submit_review numeric fields are invalid") from None
+    require(type(body["interval_days"]) in (int,float) and math.isfinite(interval)
+            and 0<interval<=365,
+            f"{label} submit_review interval is invalid")
+    require(type(body["difficulty"]) in (int,float) and math.isfinite(difficulty)
+            and 0<=difficulty<=1,
+            f"{label} submit_review difficulty is invalid")
+    require(type(body["review_count"]) is int and body["review_count"]>=1,
+            f"{label} submit_review count is invalid")
+    return body
+
+def _new_review_request(item_id: str) -> dict:
+    return {
+        "client_event_id":str(uuid.uuid4()),
+        "item_type":"VOCABULARY",
+        "item_id":item_id,
+        "rating":2,
+        "is_correct":True,
+        "response_ms":1234,
+        "occurred_at":datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00","Z"),
+    }
+
+def verify_hosted_review_rpc(request,user_a: Session,user_b: Session) -> None:
+    """Exercise the deployed atomic RPC and owner RLS with dedicated staging users."""
+    item_id=active_n5_vocabulary_id(request,user_a,"User A")
+    require(active_n5_vocabulary_id(request,user_b,"User B")==item_id,
+            "A/B staging users do not share the same active N5 vocabulary item")
+    event_a=_new_review_request(item_id)
+    anonymous_status,_=request(
+        "POST","/rest/v1/rpc/submit_review",{"p_request":event_a},None
+    )
+    require(anonymous_status in {401,403},
+            "unauthenticated submit_review was accepted")
+
+    def submit_once(current: Session,label: str) -> str:
+        before_rows=review_card_rows(request,current,item_id,label+" before")
+        before=before_rows[0] if before_rows else {
+            "review_count":0,"correct_count":0,"incorrect_count":0
+        }
+        payload=_new_review_request(item_id)
+        status,body=request(
+            "POST","/rest/v1/rpc/submit_review",{"p_request":payload},current.access
+        )
+        saved=_review_success(status,body,label+" first submit")
+        require(saved["review_count"]==before["review_count"]+1,
+                f"{label} first submit did not increment exactly once")
+
+        replay_status,replay_body=request(
+            "POST","/rest/v1/rpc/submit_review",{"p_request":payload},current.access
+        )
+        replay=_review_success(replay_status,replay_body,label+" identical replay")
+        require(replay==saved,
+                f"{label} identical replay did not return the original response")
+
+        changed=dict(payload)
+        changed["response_ms"]+=1
+        conflict_status,conflict_body=request(
+            "POST","/rest/v1/rpc/submit_review",{"p_request":changed},current.access
+        )
+        expected_error={
+            "code":"SYNC_CONFLICT",
+            "message_vi":"Lượt ôn tập xung đột với dữ liệu đã lưu.",
+            "retryable":False,
+        }
+        require(conflict_status==200 and conflict_body==expected_error,
+                f"{label} changed replay did not return a safe SYNC_CONFLICT")
+
+        after_rows=review_card_rows(request,current,item_id,label+" after")
+        require(len(after_rows)==1,f"{label} review state was not persisted exactly once")
+        after=after_rows[0]
+        require(after["review_count"]==before["review_count"]+1
+                and after["correct_count"]==before["correct_count"]+1
+                and after["incorrect_count"]==before["incorrect_count"],
+                f"{label} replay changed authoritative review counters")
+        event_rows=review_event_rows(request,current,payload["client_event_id"],label)
+        require(len(event_rows)==1,
+                f"{label} review event was not persisted exactly once")
+        return payload["client_event_id"]
+
+    # User A's second independent Auth session must share only A's review state.
+    event_a_id=submit_once(user_a,"User A")
+    event_b_id=submit_once(user_b,"User B")
+    require(review_card_rows(request,user_a,item_id,"User A after B submit"),
+            "User A review state disappeared after User B submit")
+    require(review_card_rows(request,user_b,item_id,"User B after A submit"),
+            "User B review state disappeared after User A submit")
+    require(review_event_rows(request,user_a,event_b_id,"User A cross-owner event")==[],
+            "RLS exposed User B review event to User A")
+    require(review_event_rows(request,user_b,event_a_id,"User B cross-owner event")==[],
+            "RLS exposed User A review event to User B")
+
 def run_probe(config: Config,request) -> None:
     """Use two pre-provisioned staging users; never creates or deletes accounts."""
     status,body=request("POST","/auth/v1/token?grant_type=password",
@@ -280,6 +448,7 @@ def run_probe(config: Config,request) -> None:
     reject_cross_owner_profile_update(request,user_b,user_a,"User B -> User A")
     verify_profile_preference_preserved(request,user_a,"User A")
     verify_profile_preference_preserved(request,user_b,"User B")
+    verify_hosted_review_rpc(request,other_a,user_b)
     anonymous_status,_=request("GET","/rest/v1/profiles?select=id&limit=1",None,None)
     require(anonymous_status in {401,403},"profiles endpoint accepted an unauthenticated request")
     status,_=request("POST","/auth/v1/logout?scope=local",None,user_a.access)
@@ -302,7 +471,7 @@ def main() -> int:
     except ProbeFailure as error:
         print("Hosted Supabase acceptance failed: "+str(error),file=sys.stderr)
         return 1
-    print("Hosted Supabase acceptance passed: distinct A/B identities, two independent A sessions, refresh rotation, caller-bound profiles, cross-owner RLS, anonymous denial and local logout isolation.")
+    print("Hosted Supabase acceptance passed: distinct A/B identities, two independent A sessions, refresh rotation, caller-bound profiles, authenticated A/B review replay/conflict, review/event RLS, anonymous denial and local logout isolation.")
     return 0
 
 if __name__=="__main__":

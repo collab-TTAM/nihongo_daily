@@ -17,7 +17,10 @@ After this workflow reaches the repository default branch:
 3. Pre-provision two distinct, email-confirmed test users in that non-production
    project. The probe never signs up or deletes users. ensure_profile may create
    a missing own profile but does not change profile settings.
-4. Add environment reviewers/branch restrictions if separate human approval is
+4. Apply the reviewed submit_review migration and ensure at least one active N5
+   vocabulary row exists. The probe reads this row; it never seeds, inserts,
+   updates or deletes curriculum content.
+5. Add environment reviewers/branch restrictions if separate human approval is
    required before staging secrets are released to the job.
 
 Dispatch .github/workflows/hosted-supabase-acceptance.yml manually and set
@@ -42,6 +45,12 @@ key or JWT signing secret.
 - Each test user can update only its own `preferred_jlpt`, and repeating
   `ensure_profile({})` must preserve that existing value. The probe restores
   the original preference in a finally path before finishing.
+- The probe also submits one fresh submit_review event for each dedicated test
+  account against the same existing active N5 vocabulary row. It verifies exact
+  original replay, changed-payload SYNC_CONFLICT, one counter increment and
+  owner-only user_learning_items / review_events visibility. An unauthenticated
+  RPC call must be denied. These two review events are intentionally retained;
+  use disposable staging accounts, and do not use real learner accounts.
 
 The HTTP client is pinned to a validated *.supabase.co origin, rejects redirects,
 bounds response bodies and never prints request/response bodies, emails,
@@ -51,7 +60,11 @@ local guard only; Supabase verifies the actual key on the server.
 ## Evidence limits
 
 The Python probe is hosted GoTrue/PostgREST/Auth/RLS API evidence using two
-pre-provisioned test accounts. The same manual workflow now also builds and runs
+pre-provisioned test accounts, including the real authenticated submit_review
+RPC and owner-isolated review/event reads. It requires an already migrated staging
+project with at least one active N5 vocabulary row; it never changes shared content.
+Each run appends one review event per dedicated staging account and does not delete
+those rows. The same manual workflow also builds and runs
 an actual Windows runtime fixture; that adds Credential Manager process-restore
 evidence only when the Windows job itself passes. Neither path proves a
 cryptographically expired JWT, physical multi-device offline sync or the
@@ -64,11 +77,12 @@ non-production environment. Record exact run, head SHA, environment and
 redacted result in docs/PROJECT_STATUS.md.
 
 
-The probe temporarily changes only the two pre-provisioned staging users'
-`preferred_jlpt` value to N4, verifies that repeated caller-bound bootstrap
-does not reset it, then restores the original N5 default and verifies the
-restoration. No other profile setting is written. Do not point this workflow at
-production or real learner accounts.
+The profile-settings portion temporarily changes only the two pre-provisioned
+staging users' `preferred_jlpt` value to N4, verifies that repeated caller-bound
+bootstrap does not reset it, then restores the original N5 default. No other
+profile setting is written. The review-RPC portion appends one event per test
+account and intentionally does not delete review data. Use disposable staging
+accounts; do not point this workflow at production or real learner accounts.
 
 ## CI guard for the protected staging boundary
 

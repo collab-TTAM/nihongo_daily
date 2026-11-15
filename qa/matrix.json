@@ -1243,13 +1243,27 @@
     {
       "id": "review-rpc",
       "status": "pending-integration",
-      "scope": "Authoritative atomic review scheduling/replay/rollback",
+      "scope": "Authoritative atomic review scheduling/replay/rollback plus protected hosted A/B submit_review replay, changed-payload conflict and review/event RLS.",
       "issues": [
         22,
         18
       ],
-      "reproduce": "Execute real submit_review under A/B: duplicate/changed/concurrent payloads, stale new event, future skew, inactive/wrong-type curriculum, forced rollback and Dart/SQL parity; observe counters/original responses.",
-      "limitation": "Local atomic SQL RPC, typed Dart repository and SRS controller/screen have executable fixture tests; real JWT/PostgREST, concrete SDK/Auth/due queue, persisted learner UI journey and durable retries remain pending."
+      "reproduce": "python3 -m unittest discover -s scripts -p 'test_hosted_supabase_probe.py' -v; On a protected non-production Supabase project with the reviewed migration, at least one active N5 vocabulary row and two dedicated test users, manually dispatch hosted-supabase-acceptance.yml with confirm_non_production=true; also run bash scripts/test_database.sh and the Dart/SQL parity and native concurrency checks.",
+      "limitation": "Local atomic SQL RPC, typed Dart repository and SRS controller/screen have executable fixture tests; the hosted A/B RPC probe is implemented but no protected staging run is observed. Concrete SDK/Auth/due-queue UI binding, expired-token behavior, physical multi-device offline sync and persisted learner UI journey remain pending.",
+      "anchors": [
+        {
+          "path": "scripts/hosted_supabase_probe.py",
+          "contains": "def verify_hosted_review_rpc("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_hosted_review_rpc_replay_conflict_and_owner_isolation(self):"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_hosted_review_rpc_requires_changed_payload_conflict(self):"
+        }
+      ]
     },
     {
       "id": "daily-plan",
