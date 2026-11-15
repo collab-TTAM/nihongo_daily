@@ -355,11 +355,16 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("$process.Kill()", script)
         self.assertIn("$process.WaitForExit()", script)
         self.assertIn("$process.Dispose()", script)
-        self.assertRegex(
+        self.assertIn(
+            """} finally {
+    try {
+        # Always retry exact-project cleanup after the process sequence.
+        Invoke-HostedPhase 'cleanup'
+    } catch {
+        $cleanupFailure = $true
+    }
+}""",
             script,
-            r"(?ms)\} finally \{\s*try \{\s*"
-            r"Invoke-HostedPhase 'cleanup'\s*\}\s*catch \{\s*"
-            r"\$cleanupFailure = \$true\s*\}\s*\}",
         )
 
     def test_windows_harness_preserves_primary_phase_and_redacts_cleanup_errors(self):

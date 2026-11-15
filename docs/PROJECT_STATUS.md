@@ -4287,3 +4287,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - A second readback caught that the first test-only follow-up still emitted doubled backslashes in raw Python regular expressions. Replaced the two new assertions with single-escape raw patterns so they match actual whitespace, PowerShell braces and literal environment-variable prefixes. The PowerShell harness behavior is unchanged.
 - Paths: `scripts/test_hosted_supabase_probe.py`, `docs/PROJECT_STATUS.md`. The next exact-head CI is the test evidence; neither prior commit's CI is treated as proof for this correction.
+
+
+## Final cleanup assertion stabilization — 2026-11-15 UTC
+
+- The first exact-head run [43745602240](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43745602240) showed the new PowerShell cleanup test correctly found the phase order but its regular expression omitted the explanatory comment inside the `finally` block. Replaced only that structural regex with an exact multiline assertion of the cleanup block, retaining the requirement that cleanup is inside `finally` and records cleanup failure. The phase-order, timeout/kill/wait, redaction and workflow safety assertions remain.
+- This avoids regex escaping ambiguity and still fails if final cleanup is moved, omitted or no longer records failure. No PowerShell runtime behavior or CI gate changed.
