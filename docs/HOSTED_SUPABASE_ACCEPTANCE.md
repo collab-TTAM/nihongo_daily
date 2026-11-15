@@ -118,3 +118,10 @@ Windows logoff/power-loss, run the learner GUI or prove physical multi-device
 offline sync. The API probe separately verifies refresh-token rotation and
 deployed A/B RLS. Until the workflow is dispatched and its complete latest
 attempt is observed, all hosted learner QA cases remain pending.
+
+
+## Windows harness failure and cleanup reporting
+
+The PowerShell driver records only the fixed phase identifier when a child process fails. Once the executable is resolved and the phase sequence starts, a final exact-project Credential Manager cleanup is attempted in `finally`, even after a failed login, restore or logout phase. If the primary phase and cleanup both fail, the reported message names the failed phase and says cleanup could not be verified; if only cleanup fails, a fixed cleanup error is returned. Raw PowerShell error records, environment values and credential material are never echoed. The 90-second child-process timeout still kills and waits for the process before the phase is reported.
+
+Offline repo-sanity regressions protect the exact fresh-process phase order, timeout/kill/wait behavior, unconditional final cleanup and redacted primary/cleanup failure reporting. These static tests protect the harness definition; they do not substitute for dispatching the protected staging workflow.

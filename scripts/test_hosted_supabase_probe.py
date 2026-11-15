@@ -333,5 +333,53 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             12,
         )
 
+
+    def test_windows_harness_runs_the_exact_fresh_process_sequence_and_always_cleans_up(self):
+        script = (
+            Path(__file__).resolve().parents[1]
+            / "apps"
+            / "flutter_app"
+            / "tool"
+            / "verify_windows_hosted_runtime.ps1"
+        ).read_text(encoding="utf-8")
+        phases = re.findall(r"(?m)^\\s*Invoke-HostedPhase '([^']+)'$", script)
+        self.assertEqual(
+            phases,
+            ["cleanup", "login-a", "restore-a", "logout-a", "login-b", "cleanup"],
+        )
+        self.assertIn(
+            "Start-Process -FilePath $exe -ArgumentList @($phase)", script
+        )
+        self.assertIn("$process.WaitForExit(90000)", script)
+        self.assertIn("$process.Kill()", script)
+        self.assertIn("$process.WaitForExit()", script)
+        self.assertIn("$process.Dispose()", script)
+        self.assertRegex(
+            script,
+            r"(?ms)\\} finally \\{\\s*try \\{\\s*"
+            r"Invoke-HostedPhase 'cleanup'\\s*\\}\\s*catch \\{\\s*"
+            r"\\$cleanupFailure = \\$true\\s*\\}\\s*\\}",
+        )
+
+    def test_windows_harness_preserves_primary_phase_and_redacts_cleanup_errors(self):
+        script = (
+            Path(__file__).resolve().parents[1]
+            / "apps"
+            / "flutter_app"
+            / "tool"
+            / "verify_windows_hosted_runtime.ps1"
+        ).read_text(encoding="utf-8")
+        self.assertIn("$phaseFailure = $currentPhase", script)
+        self.assertIn("$cleanupFailure = $true", script)
+        self.assertIn("Windows hosted runtime phase '$phaseFailure' failed", script)
+        self.assertIn("final cleanup could not be verified", script)
+        self.assertIn(
+            "Windows hosted runtime final cleanup could not be verified", script
+        )
+        self.assertNotRegex(
+            script, r"(?im)^\\s*Write-(?:Output|Host|Error)\\s+\\$_"
+        )
+        self.assertNotRegex(script, r"(?i)\\$env:ND_STAGING_")
+
 if __name__=="__main__":
     unittest.main(verbosity=2)
