@@ -93,10 +93,7 @@ final class _EmptyReviewStore implements DurableReviewStore {
       Future<List<StoredReview>>.value(const <StoredReview>[]);
 
   @override
-  Future<StoredReview> stage(
-    String userId,
-    Map<String, Object> request,
-  ) =>
+  Future<StoredReview> stage(String userId, Map<String, Object> request) =>
       Future<StoredReview>.error(const ReviewStorageFailure());
 
   @override
@@ -104,15 +101,10 @@ final class _EmptyReviewStore implements DurableReviewStore {
     String userId,
     String eventId,
     ReviewSuccess receipt,
-  ) =>
-      Future<void>.error(const ReviewStorageFailure());
+  ) => Future<void>.error(const ReviewStorageFailure());
 
   @override
-  Future<void> reject(
-    String userId,
-    String eventId,
-    ReviewFailure rejection,
-  ) =>
+  Future<void> reject(String userId, String eventId, ReviewFailure rejection) =>
       Future<void>.error(const ReviewStorageFailure());
 }
 
