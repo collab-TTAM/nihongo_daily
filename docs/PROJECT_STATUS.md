@@ -4200,3 +4200,42 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Exact-head Actions [43723485017](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43723485017), attempt 1, targets this source commit. At the latest observation: repo-sanity, AI boundary and database jobs SUCCESS; Supabase integration, Windows and Flutter jobs IN_PROGRESS. Flutter format succeeded; analyzer was still running. The new test/full Flutter suite/native checks/builds and overall CI are not yet verified.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK, so no local Flutter format/analyze/test/build is claimed. The test uses a TEST ONLY MethodChannel and synthetic Auth HTTP/JWT; native corrupt-blob probe is separate. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real learner restart/expiry and physical two-device sync remain unproven.
 - Next: inspect every latest-attempt job/step for exact final PR HEAD after the status checkpoint; fix only observed failures. Keep PR #37 Draft and #20/#22/#15/#18 open until their full acceptance evidence exists.
+
+
+## Hosted Windows Auth/session process-restore probe — 2026-11-15T15:12Z
+
+- PR #37 / branch automation/issue-22-atomic-review; source base HEAD
+  9b09900924627b894f617f52c00ffec032697c53; base main
+  78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+- Extended the existing manual-only supabase-staging workflow to run on
+  GitHub-hosted windows-2022. After the existing hosted GoTrue/PostgREST A/B
+  probe, it builds a separate TEST harness entrypoint and runs fresh Windows
+  processes for A login/clean close, A vault restore/profile after restart,
+  A local logout/clear, B login/profile/logout, and exact-target cleanup.
+- Added apps/flutter_app/tool/windows_hosted_runtime_fixture.dart using the
+  real caller-owned Supabase SDK/runtime and Windows Credential Manager channel;
+  it reads only the six protected staging environment values, validates the
+  exact HTTPS *.supabase.co origin and public key, uses no MockClient or
+  unsigned JWT, prints no credential values, and never enters the learner
+  default entrypoint. An empty in-memory review store prevents any study event
+  dispatch. Added apps/flutter_app/tool/verify_windows_hosted_runtime.ps1,
+  static workflow/fixture boundary tests, QA auth-live anchors/limitations and
+  hosted acceptance documentation.
+- Paths: .github/workflows/hosted-supabase-acceptance.yml,
+  apps/flutter_app/tool/windows_hosted_runtime_fixture.dart,
+  apps/flutter_app/tool/verify_windows_hosted_runtime.ps1,
+  scripts/test_hosted_supabase_probe.py, qa/matrix.json,
+  docs/HOSTED_SUPABASE_ACCEPTANCE.md, docs/PROJECT_STATUS.md.
+- This is a harness-only change. No staging workflow was dispatched and no
+  secrets were read/requested; no Auth strategy/provider, schema/migration,
+  grants/RLS, default runtime, production, deployment or Pro-owned #14/#38/N4
+  content changed. The cleanup phase is restricted to the ephemeral hosted
+  Windows runner and clears only the project-scoped Credential Manager target.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK. No local format,
+  analyze, test or Windows build is claimed. Exact-head GitHub Actions must
+  verify static tests and compile the normal project; the manual protected
+  workflow remains unrun. It does not yet prove expired JWT, OS logoff/power
+  loss, physical multi-device sync, GUI learner flow or Personal Alpha.
+- Next: inspect every job/step on the exact source HEAD; keep #20/#18 and QA
+  auth-live pending until the protected manual workflow passes both API and
+  Windows phases. Do not dispatch without the approved protected environment.

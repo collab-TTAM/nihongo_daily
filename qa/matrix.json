@@ -1162,13 +1162,13 @@
     {
       "id": "auth-live",
       "status": "pending-integration",
-      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus separate Flutter startup/restart acceptance. The probe creates two independent sessions for User A and one for User B; explicit scope=local logout must revoke only the current A refresh token while A's second session and B remain refreshable. It also checks caller-supplied owner/profile/Auth metadata overrides, cross-owner reads/updates, anonymous denial and idempotent ensure_profile preservation.",
+      "scope": "Hosted non-production password login/logout, refresh rotation, caller-bound profile provisioning and A/B RLS, plus actual Windows Credential Manager cross-process startup restore and account switching on a GitHub-hosted Windows runner.",
       "issues": [
         20,
         18
       ],
-      "reproduce": "After the workflow reaches main, configure the supabase-staging GitHub environment and dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. Verify A/B login, two independent A sessions, refresh rotation, ensure_profile, own/cross-owner reads, unauthenticated denial, and scope=local logout that revokes only the current A refresh token while the second A session and B still refresh. Record exact run/head. Separately verify configured Flutter startup/restart. Offline adversarial probe tests model forged profile fields and a global/default logout that revokes A's second session. The probe temporarily changes only each staging user's preferred_jlpt to N4, repeats ensure_profile({}), verifies preservation, then restores the original N5 value; it also attempts A/B cross-owner updates and verifies neither target changes.",
-      "limitation": "No staging secrets or hosted run observed yet. The probe is API-level only and does not prove Flutter Windows vault restoration, validly signed expired JWT, physical multi-device sync or learner journey. The new override cases are offline fake-server coverage until the protected staging workflow is dispatched; they do not themselves prove deployed SQL behavior. These new update/idempotency checks remain offline fake-server coverage until the protected staging workflow runs; only the pre-provisioned test users' preferred_jlpt is temporarily changed and restored. Static CI regressions also guard the manual dispatch/confirmation, protected environment, read-only permission and exact staging-secret boundary; they do not prove the environment secrets or two test accounts are configured. The new two-session/local-logout case is offline fake-server coverage until the protected staging workflow is dispatched; it does not prove deployed Supabase scope semantics.",
+      "reproduce": "After the workflow reaches the default branch, configure the protected supabase-staging environment and two distinct pre-provisioned non-production users, then manually dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. The API probe verifies A/B ownership, two independent A sessions, refresh rotation, ensure_profile, own/cross-owner reads and updates, anonymous denial, and scope=local logout. The Windows 2022 job then runs fresh processes in order: A password login and clean close, A refresh-token restore/profile after process restart, A local logout/credential clear, B password login/profile/logout, and exact-target cleanup. Record the exact run/head and redacted result.",
+      "limitation": "No staging secrets or hosted run observed yet. The Windows fixture uses the real Windows Credential Manager MethodChannel, caller-owned Supabase SDK, GoTrue and PostgREST; it uses an empty in-memory review store and does not exercise learner UI or review submission. It proves process-boundary restore only when the protected workflow actually passes; it does not force a cryptographically expired JWT, OS logoff/power-loss, physical multi-device offline sync or the complete learner journey. The workflow is manual-only, requires explicit non-production confirmation and a protected environment, and must run only on the ephemeral GitHub-hosted windows-2022 runner because cleanup clears that runner user's exact project credential target. Keep pending until the hosted run is observed.",
       "anchors": [
         {
           "path": "scripts/hosted_supabase_probe.py",
@@ -1217,6 +1217,22 @@
         {
           "path": "scripts/test_hosted_supabase_probe.py",
           "contains": "def test_global_logout_cannot_pass_local_session_acceptance(self):"
+        },
+        {
+          "path": ".github/workflows/hosted-supabase-acceptance.yml",
+          "contains": "run: .\\tool\\verify_windows_hosted_runtime.ps1"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_hosted_runtime_fixture.dart",
+          "contains": "Future<void> verifyWindowsHostedRuntimePhase("
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_hosted_runtime.ps1",
+          "contains": "Invoke-HostedPhase 'restore-a'"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_windows_hosted_runtime_fixture_is_live_and_redacted(self):"
         }
       ]
     },

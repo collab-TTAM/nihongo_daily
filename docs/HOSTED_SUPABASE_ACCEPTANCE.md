@@ -50,16 +50,17 @@ local guard only; Supabase verifies the actual key on the server.
 
 ## Evidence limits
 
-This is hosted GoTrue/PostgREST/Auth/RLS API evidence using two pre-provisioned
-test accounts. It does not prove the Flutter Windows Credential Manager bridge,
-Flutter startup/restart on a learner device, a cryptographically expired JWT,
-physical multi-device offline sync or the complete learner journey. Those
-remain separate #20/#15/#18 acceptance work. Existing SDK/Windows/SQL/local
+The Python probe is hosted GoTrue/PostgREST/Auth/RLS API evidence using two
+pre-provisioned test accounts. The same manual workflow now also builds and runs
+an actual Windows runtime fixture; that adds Credential Manager process-restore
+evidence only when the Windows job itself passes. Neither path proves a
+cryptographically expired JWT, physical multi-device offline sync or the
+complete learner journey. Those remain separate #20/#15/#18 acceptance work. Existing SDK/Windows/SQL/local
 Supabase CI remains component evidence only.
 
-Do not mark QA case auth-live complete until this workflow succeeds against the
-approved non-production environment and the remaining Flutter startup/restart
-acceptance has been observed. Record exact run, head SHA, environment and
+Do not mark QA case auth-live complete until both the hosted API probe and the
+Windows runtime process-restore phases succeed against the approved
+non-production environment. Record exact run, head SHA, environment and
 redacted result in docs/PROJECT_STATUS.md.
 
 
@@ -72,3 +73,48 @@ production or real learner accounts.
 ## CI guard for the protected staging boundary
 
 The existing repo-sanity step `Verify hosted Supabase probe safety and behavior` also runs static workflow regressions. They require a manual-only `workflow_dispatch`, a required boolean confirmation defaulting to false, a job condition tied to that confirmation, the `supabase-staging` environment, read-only `contents` permission, non-cancelling concurrency, and exactly the six documented staging secrets. The workflow is constrained to checkout, Python setup and the hosted probe command. These checks protect the workflow definition; they do not prove that environment reviewers, secrets or the two pre-provisioned accounts exist, and they are not hosted learner evidence.
+
+
+## Windows hosted runtime process restore
+
+After the Python A/B probe succeeds, the same protected job builds the alternate
+tool/windows_hosted_runtime_fixture.dart entrypoint and executes
+tool/verify_windows_hosted_runtime.ps1 on GitHub-hosted windows-2022. The
+fixture uses the production PersistentSupabaseRuntime, pinned Supabase SDK,
+real Windows Credential Manager MethodChannel and real hosted GoTrue/PostgREST.
+It does not use MockClient, unsigned JWTs or TEST ONLY Auth responses.
+
+The PowerShell driver starts a fresh Windows process for each phase:
+
+1. login-a: empty vault, password-login User A, wait for the captured
+   own-profile barrier, then cleanly close while preserving the refresh token.
+2. restore-a: a new process restores A through the saved refresh token and
+   waits for A's own profile before closing again.
+3. logout-a: a new process restores A, performs the SDK's local logout and
+   verifies the exact project credential slot is empty.
+4. login-b: a new process starts signed out, authenticates User B, verifies
+   B's own-profile barrier, then logs out and verifies the slot is empty.
+5. cleanup: clear only this project's credential target before and after the
+   sequence, including the failure path.
+
+The fixture validates the configured origin as an exact *.supabase.co HTTPS
+origin and validates the public key. It reads the six documented values only
+from the protected job-step environment; credentials are not command-line
+arguments, printed, or uploaded as artifacts. The review store is an empty
+in-memory fixture: no review event is created, queued or submitted. Profile
+provisioning uses the existing ensure_profile({}) contract and may create a
+missing profile for either pre-provisioned test user; it does not update learner
+preferences or delete accounts.
+
+Runner boundary: the script clears the project-scoped Credential Manager
+target for the current Windows OS user. It must run only on the ephemeral
+GitHub-hosted windows-2022 runner, never on a self-hosted/shared machine. The
+workflow pins that runner and requires the protected supabase-staging
+environment plus confirm_non_production=true.
+
+This adds hosted Windows process-restart and account-switch evidence when the
+manual workflow actually passes. It does not force access-token expiry, test
+Windows logoff/power-loss, run the learner GUI or prove physical multi-device
+offline sync. The API probe separately verifies refresh-token rotation and
+deployed A/B RLS. Until the workflow is dispatched and its complete latest
+attempt is observed, all hosted learner QA cases remain pending.

@@ -268,9 +268,12 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertNotRegex(workflow, r"(?i)service[_-]?role|jwt[_-]?secret")
         self.assertEqual(
             re.findall(r"(?m)^\s+- uses: ([^\s]+)$", workflow),
-            ["actions/checkout@v4", "actions/setup-python@v5"],
+            ["actions/checkout@v4", "actions/setup-python@v5", "subosito/flutter-action@v2"],
         )
-        self.assertIn("run: python3 scripts/hosted_supabase_probe.py", workflow)
+        self.assertIn("run: python scripts/hosted_supabase_probe.py", workflow)
+        self.assertRegex(workflow, r"(?m)^    runs-on: windows-2022$")
+        self.assertIn("flutter build windows --release -t tool/windows_hosted_runtime_fixture.dart", workflow)
+        self.assertIn("run: .\\tool\\verify_windows_hosted_runtime.ps1", workflow)
 
     def test_staging_workflow_is_read_only_and_does_not_auto_cancel(self):
         workflow = self.workflow
@@ -281,7 +284,53 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             r"  group: hosted-supabase-acceptance\n"
             r"  cancel-in-progress: false\n",
         )
-        self.assertRegex(workflow, r"(?m)^    timeout-minutes: 10$")
+        self.assertRegex(workflow, r"(?m)^    timeout-minutes: 30$")
+
+    def test_windows_hosted_runtime_fixture_is_live_and_redacted(self):
+        root = Path(__file__).resolve().parents[1]
+        fixture = (root / "apps" / "flutter_app" / "tool" / "windows_hosted_runtime_fixture.dart").read_text(encoding="utf-8")
+        script = (root / "apps" / "flutter_app" / "tool" / "verify_windows_hosted_runtime.ps1").read_text(encoding="utf-8")
+        for marker in (
+            "Platform.environment",
+            "createWindowsSessionCredentialVault",
+            "PersistentSupabaseRuntime",
+            "verifyWindowsHostedRuntimePhase",
+            "runtime.account.signIn",
+            "runtime.account.signOut",
+            "waitForCurrentProfile",
+            "SessionPersistencePhase.ready",
+            "login-a",
+            "restore-a",
+            "logout-a",
+            "login-b",
+            "cleanup",
+        ):
+            self.assertIn(marker, fixture)
+        self.assertNotIn("MockClient", fixture)
+        self.assertNotIn("TEST_ONLY_", fixture)
+        self.assertNotRegex(
+            fixture,
+            r"(?i)(?:stdout|stderr)\.writeln\([^)]*(?:email|password|refresh|token|secret)",
+        )
+        self.assertIn("ArgumentList @($phase)", script)
+        self.assertIn("WaitForExit(90000)", script)
+        self.assertIn("Invoke-HostedPhase 'restore-a'", script)
+        self.assertIn("Invoke-HostedPhase 'cleanup'", script)
+        self.assertNotIn("ND_STAGING_", script)
+
+    def test_windows_hosted_runtime_runs_after_the_http_probe_without_build_secrets(self):
+        workflow = self.workflow
+        http_probe = workflow.index("run: python scripts/hosted_supabase_probe.py")
+        build = workflow.index("flutter build windows --release -t tool/windows_hosted_runtime_fixture.dart")
+        runtime = workflow.index(r"run: .\tool\verify_windows_hosted_runtime.ps1")
+        self.assertLess(http_probe, build)
+        self.assertLess(build, runtime)
+        self.assertRegex(workflow, r"(?m)^    runs-on: windows-2022$")
+        self.assertNotRegex(workflow, r"(?m)^    env:\s*$")
+        self.assertEqual(
+            len(re.findall(r"secrets\.ND_STAGING_[A-Z0-9_]+", workflow)),
+            12,
+        )
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
