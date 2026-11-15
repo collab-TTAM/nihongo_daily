@@ -434,6 +434,11 @@ void main() {
       expect(requests.every((request) => !request.followRedirects), isTrue);
 
       await runtime.account.signOut();
+      final logoutRequests = requests
+          .where((request) => request.url.path == '/auth/v1/logout')
+          .toList();
+      expect(logoutRequests, hasLength(1));
+      expect(logoutRequests.single.url.queryParameters, {'scope': 'local'});
       expect(storedSecret, isNull);
       expect(timeline, contains('auth.logout'));
       expect(
