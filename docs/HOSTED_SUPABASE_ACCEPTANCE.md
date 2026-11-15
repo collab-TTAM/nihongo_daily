@@ -72,7 +72,7 @@ production or real learner accounts.
 
 ## CI guard for the protected staging boundary
 
-The existing repo-sanity step `Verify hosted Supabase probe safety and behavior` also runs static workflow regressions. They require a manual-only `workflow_dispatch`, a required boolean confirmation defaulting to false, a job condition tied to that confirmation, the `supabase-staging` environment, read-only `contents` permission, non-cancelling concurrency, and exactly the six documented staging secrets. The workflow is constrained to checkout, Python setup and the hosted probe command. These checks protect the workflow definition; they do not prove that environment reviewers, secrets or the two pre-provisioned accounts exist, and they are not hosted learner evidence.
+The existing repo-sanity step `Verify hosted Supabase probe safety and behavior` also runs static workflow regressions. They require a manual-only `workflow_dispatch`, a required boolean confirmation defaulting to false, a job condition tied to that confirmation, the `supabase-staging` environment, read-only `contents` permission, non-cancelling concurrency, and exactly the six documented staging secrets. The workflow is constrained to checkout, Python setup, pinned Flutter setup and the reviewed probe/build/PowerShell commands. Only the Python probe and Windows runtime steps receive the six secrets; the Flutter setup and build steps do not. These checks protect the workflow definition; they do not prove that environment reviewers, secrets or the two pre-provisioned accounts exist, and they are not hosted learner evidence.
 
 
 ## Windows hosted runtime process restore

@@ -4202,11 +4202,18 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every latest-attempt job/step for exact final PR HEAD after the status checkpoint; fix only observed failures. Keep PR #37 Draft and #20/#22/#15/#18 open until their full acceptance evidence exists.
 
 
-## Hosted Windows Auth/session process-restore probe — 2026-11-15T15:12Z
+## Hosted Windows Auth/session process-restore probe — 2026-11-15 UTC
 
-- PR #37 / branch automation/issue-22-atomic-review; source base HEAD
-  9b09900924627b894f617f52c00ffec032697c53; base main
+- PR #37 / branch automation/issue-22-atomic-review; source commit
+  0bf7486d72c5d43f9fe999fcbfc87bc6e431ff4a (parent
+  9b09900924627b894f617f52c00ffec032697c53); base main
   78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+- Separate tree review: exact parent tree e5950d4860f7c99325c16b6d3ab50b0ae1bfa7cf
+  had 335 entries / 270 blobs; final tree 707d9c337120be1016d659004e8011e05b04329c
+  has 337 / 272, both untruncated. Exactly two new files, no removed paths or
+  mode/type changes; five existing blobs changed and 265 original blobs were
+  preserved. create_tree used the exact parent base_tree_sha; single-parent
+  commit and expected-head update_ref used force=false.
 - Extended the existing manual-only supabase-staging workflow to run on
   GitHub-hosted windows-2022. After the existing hosted GoTrue/PostgREST A/B
   probe, it builds a separate TEST harness entrypoint and runs fresh Windows
@@ -4239,3 +4246,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every job/step on the exact source HEAD; keep #20/#18 and QA
   auth-live pending until the protected manual workflow passes both API and
   Windows phases. Do not dispatch without the approved protected environment.
+
+
+- First exact-head CI [43729373172](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43729373172), attempt 1, targets 0bf7486d72c5d43f9fe999fcbfc87bc6e431ff4a. Observed final jobs: ai-boundary SUCCESS, database SUCCESS, repo-sanity FAILURE, Windows/Supabase-integration/Flutter SKIPPED. repo-sanity failed in existing QA negative test test_command_in_wrong_job_does_not_count_as_coverage: the newly added .github/workflows QA anchor pre-created its directory, and that test's subsequent mkdir(parents=True) did not allow an existing directory. The workflow itself was already covered by scripts/test_hosted_supabase_probe.py; remove only the redundant workflow-path anchor, preserve all assertions and keep auth-live pending.
+- The docs CI-guard paragraph now describes the Python/Flutter/Windows steps and the two secret-bearing steps accurately. No code assertion or release gate is weakened. The follow-up commit will be checked on its own exact HEAD; no pass is claimed for 43729373172.

@@ -1219,10 +1219,6 @@
           "contains": "def test_global_logout_cannot_pass_local_session_acceptance(self):"
         },
         {
-          "path": ".github/workflows/hosted-supabase-acceptance.yml",
-          "contains": "run: .\\tool\\verify_windows_hosted_runtime.ps1"
-        },
-        {
           "path": "apps/flutter_app/tool/windows_hosted_runtime_fixture.dart",
           "contains": "Future<void> verifyWindowsHostedRuntimePhase("
         },
