@@ -4107,3 +4107,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Exact-head Actions [43652664794](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43652664794) on this HEAD completed with five jobs successful and Flutter failed only the strict Dart 3.35.4 formatter in `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart`. Flutter analyze, full suite and dependent steps were skipped, not passes.
 - Added a temporary read-only formatter-output diff step immediately before the unchanged strict format gate. This is diagnostic only; no product/test assertion behavior changed. Complete recursive source tree was re-read at 335 entries (270 blobs / 65 trees), untruncated; base tree is `1f1c9cbf919ae66d862b4ca6839403ca4560591c`.
 - Next: inspect the diagnostic run and exact emitted hunk, remove the temporary step, apply only that formatter output, append final CI evidence, and re-review the exact diff/tree. Pro-owned #14/#38/N4 remains excluded. Hosted A/B, learner restart/expiry and physical two-device evidence remain pending.
+
+
+## Exact-head session lifecycle formatter correction — 2026-11-15
+
+- Resumed PR #37 after the prior worker released. Exact diagnostic Actions run [43657070032](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43657070032) targets parent HEAD fe16a749ec8dfaf5bb0e5700a40f275f9a26898d. repo-sanity, database/RLS, AI boundary, Windows and disposable local Supabase integration completed SUCCESS with every listed step.
+- Flutter failed only the strict Dart 3.35.4 formatter. Its read-only diff identified two whitespace-only changes in apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart: a blank line before the signOut @override and the formatter-required final blank line. Analyze, full Flutter tests and downstream browser/native/Web checks were skipped, not passed.
+- Applied exactly those formatter changes; no test assertion or production code changed. Removed the temporary read-only formatter-diff step from .github/workflows/ci.yml and retained the repository-wide strict dart format --output=none --set-exit-if-changed . gate.
+- No Auth strategy/provider, migration/grant/RLS, default runtime, hosted workflow dispatch, Pro-owned #14/#38/N4, deployment, merge or release change.
+- Next: inspect every latest-attempt job and step on the new exact PR #37 HEAD. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real learner restart/expiry and physical two-device sync remain unproven.

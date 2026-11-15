@@ -154,6 +154,7 @@ final class MemorySdk implements RefreshableAccountAccess {
     refreshes++;
     return authenticate();
   }
+
   @override
   Future<void> signOut() async {
     logouts++;
@@ -997,3 +998,4 @@ Future<void> verifyLifecycle(String scenario) async {
     }
   }
 }
+
