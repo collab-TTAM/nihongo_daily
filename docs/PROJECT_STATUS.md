@@ -4261,3 +4261,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Authoring runtime has no pinned Flutter/Dart SDK, so no local Flutter format/analyze/test/build is claimed. Exact-head CI must prove format, analyze, full Flutter suite, Windows native probes, disposable Supabase and Web build on the corrected commit.
 - No staging workflow dispatch or secret access; no production/Auth provider strategy, migration/RLS, default app activation, Pro-owned #14/#38/N4, deployment, merge or issue closure.
 - Next: inspect every latest-attempt job/step for the corrected exact HEAD; fix only observed failures. Hosted signed-JWT learner A/B, protected staging run, real Windows learner restart/expiry, physical two-device sync and integrated Personal Alpha journey remain outstanding.
+
+
+## Core worker follow-up — analyzer regression assertion review — 2026-11-15 UTC
+
+- Parent/final sequence: `612446cbd3053f2e7b9bc97c22cb576a5fdb61f4` -> follow-up commit to be recorded after expected-head publication; branch `automation/issue-22-atomic-review`.
+- Separate post-write review caught an over-escaped raw-regex in the new static negative assertion. Replaced it with a literal `assertNotIn` check for the former public signature; this keeps the intended analyzer-regression guard unambiguous and does not alter fixture/runtime behavior.
+- Paths: `scripts/test_hosted_supabase_probe.py`, `docs/PROJECT_STATUS.md`. The prior fixture helper rename to library-private remains unchanged.
+- Exact-head CI for the final follow-up must run the hosted probe safety tests, Flutter format/analyze/full suite, Windows native checks, disposable Supabase and Web release. No local Dart/Flutter SDK is available in the authoring runtime.
