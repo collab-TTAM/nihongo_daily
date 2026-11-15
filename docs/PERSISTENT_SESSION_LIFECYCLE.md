@@ -1028,3 +1028,25 @@ write-before-User-B-profile ordering. HTTP/JWT remain MockClient fixtures; this
 is not hosted signed-JWT or physical suspended-device evidence. No token is
 logged, no plaintext fallback is added, and the default preview remains
 unconfigured.
+
+
+## Per-operation Auth dispatch and cancellation — 2026-11-15
+
+A reserved caller-owned operation is not proof that a Supabase Auth request was
+sent. The persistence owner now resets a per-operation dispatch marker when it
+reserves each slot and sets it immediately before `restore`, `signIn` or
+`refresh`. If logout cancels a slot before that boundary, the first logout
+cleanup is sufficient even when an earlier successful session had set the
+lifetime mutation marker; it must not trigger a duplicate sign-out/clear. If the
+current operation was actually dispatched, logout keeps the first credential
+clear provisional, waits for the held SDK response, then performs the
+compensating sign-out/clear before resolving or permitting another account.
+
+The `logout-before-refresh-dispatch` case deliberately cancels without yielding
+to the deferred runner and requires exactly one refresh-free cleanup. The
+`logout-during-login` and `login-during-late-cleanup` cases now flush and
+assert that the password grant entered the held SDK call before testing
+in-flight cancellation. This makes the distinction explicit without removing
+or weakening either pre-dispatch or late-response assertions. These are
+TEST ONLY in-memory lifecycle cases; hosted signed-JWT learner acceptance is
+still separate.

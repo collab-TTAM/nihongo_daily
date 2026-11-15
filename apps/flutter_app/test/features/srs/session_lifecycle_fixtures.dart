@@ -531,6 +531,8 @@ Future<void> verifyLifecycle(String scenario) async {
     if (scenario == 'login-during-late-cleanup') {
       sdk.authWait = Completer();
       final error = fails(login());
+      await flush();
+      check(sdk.logins == 1, 'password Auth did not dispatch before logout');
       var logoutSettled = false;
       final logout = access.signOut().then((_) => logoutSettled = true);
       await flush();
@@ -657,6 +659,8 @@ Future<void> verifyLifecycle(String scenario) async {
       } else {
         final failure = fails(first);
         if (scenario == 'logout-during-login') {
+          await flush();
+          check(sdk.logins == 1, 'password Auth did not dispatch before logout');
           var logoutSettled = false;
           final close = access.signOut().then((_) => logoutSettled = true);
           await flush();

@@ -60,6 +60,10 @@ final class PersistentAccountAccess implements AccountAccess {
   // True once an SDK restore/login/refresh may have installed or rotated a session.
   // Closing before that dispatch is cancellation of local startup, not logout.
   bool _authMutationDispatched = false;
+  // True only after this reserved operation crosses into the SDK Auth call.
+  // A previous successful login must not make a cancelled pre-dispatch refresh
+  // trigger a second compensating sign-out and vault clear.
+  bool _operationAuthDispatched = false;
   bool _cancelledOperation = false;
   // A failed sign-out/rotation cleanup must be retried before close releases
   // this target owner; otherwise a stale OS credential could survive shutdown.
@@ -265,6 +269,7 @@ final class PersistentAccountAccess implements AccountAccess {
         return;
       }
       _authMutationDispatched = true;
+      _operationAuthDispatched = true;
       await _sdk.restore(secret);
       await _settle();
     });
@@ -279,6 +284,7 @@ final class PersistentAccountAccess implements AccountAccess {
     // Cancellation can arrive after this slot is published but before the
     // deferred runner starts. Reset before publication, never inside _run.
     _cancelledOperation = false;
+    _operationAuthDispatched = false;
     _operation = result;
     unawaited(
       Future<void>.microtask(() async {
@@ -310,7 +316,7 @@ final class PersistentAccountAccess implements AccountAccess {
           // A close during owner acquisition or vault read has not dispatched
           // Auth and must preserve the untouched saved refresh secret. Once an
           // SDK mutation may have installed/rotated a session, drain and clear it.
-          if (_authMutationDispatched || _cleanupRequired) {
+          if (_operationAuthDispatched || _cleanupRequired) {
             await _cleanup();
           }
           // Keep readiness revoked until an explicit logout has drained this
@@ -377,6 +383,7 @@ final class PersistentAccountAccess implements AccountAccess {
         throw _failure();
       }
       _authMutationDispatched = true;
+      _operationAuthDispatched = true;
       await _sdk.signIn(email, password);
       await _settle();
     });
@@ -396,6 +403,7 @@ final class PersistentAccountAccess implements AccountAccess {
         throw _failure();
       }
       _authMutationDispatched = true;
+      _operationAuthDispatched = true;
       await _sdk.refresh();
       await _settle();
     });
@@ -418,7 +426,7 @@ final class PersistentAccountAccess implements AccountAccess {
   Future<void> _performCleanup({required bool authOperationDrained}) async {
     if (!_vaultOwnerAcquired) throw _failure();
     final preserveLateAuthCleanup =
-        !authOperationDrained && (_authMutationDispatched || _cleanupRequired);
+        !authOperationDrained && (_operationAuthDispatched || _cleanupRequired);
     var failed = false;
     // Mark cleanup before SDK sign-out; its duplicate/late null-session events
     // must not enqueue a second clear after a replacement login has started.
@@ -445,7 +453,10 @@ final class PersistentAccountAccess implements AccountAccess {
     // cleanup obligation so _run's drained-operation path signs out and clears
     // again before the waiting logout can settle.
     _cleanupRequired = preserveLateAuthCleanup;
-    if (authOperationDrained) _authMutationDispatched = false;
+    if (authOperationDrained || !_operationAuthDispatched) {
+      _authMutationDispatched = false;
+      _operationAuthDispatched = false;
+    }
   }
 
   @override
