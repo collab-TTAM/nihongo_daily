@@ -95,6 +95,24 @@ mocked MethodChannel lifecycle test, not actual hosted Auth or Credential
 Manager execution; the separate Windows native probe remains the OS-backed
 storage/lease evidence.
 
+## Caller-owned startup publication gate
+
+The configured host composes `PersistentAccountStartup` with
+`AccountStartupController`. When a saved refresh secret exists, startup must
+wait for the server refresh and the Windows vault's acknowledgement of the
+rotated refresh secret. Only then may the account controller request the
+captured user's own profile. The outer startup controller remains in
+`loading` with `account == null` while either the vault write or profile
+response is pending; it publishes the account only after both barriers settle.
+
+The pinned-SDK Windows MethodChannel regression holds the rotation write and
+own-profile response independently. It verifies refresh -> vault write ->
+own-profile order, the captured User A Authorization header, no early account
+publication, and final readiness for User A only. This is TEST ONLY synthetic
+Auth HTTP plus a mocked MethodChannel; it proves caller/startup composition,
+not hosted Auth, actual Credential Manager execution in this test, default app
+activation or a learner UI journey.
+
 ## Reproduction and evidence limits
 
 In `apps/flutter_app`:
@@ -103,6 +121,7 @@ In `apps/flutter_app`:
 dart run tool/verify_session_vault.dart
 flutter test test/features/srs/session_credential_vault_test.dart
 flutter test test/features/srs/windows_session_credential_vault_test.dart
+flutter test test/features/srs/windows_persistent_supabase_runtime_test.dart --plain-name 'Windows startup publishes account only after restored rotation and own profile'
 ```
 
 On a disposable Windows 2022/VS2022 CI host:

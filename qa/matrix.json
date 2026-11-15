@@ -449,6 +449,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
           "contains": "Windows corrupt stored refresh is rejected before Auth and cleanup retry fences User B"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows startup publishes account only after restored rotation and own profile"
         }
       ],
       "issues": [

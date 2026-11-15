@@ -9,11 +9,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
+import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_account_startup.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
+import 'package:nihongo_daily/features/srs/application/srs_study_runtime.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 
@@ -40,6 +42,9 @@ void main() {
   late Completer<http.Response>? authWait;
   late Completer<void>? readWait;
   late Completer<void>? writeWait;
+  late Completer<void>? writeStarted;
+  late Completer<void>? profileRequested;
+  late Completer<http.Response>? profileWait;
   late bool failRead;
   late bool failWrite;
   late bool failWriteAfterCommit;
@@ -98,6 +103,9 @@ void main() {
     authWait = null;
     readWait = null;
     writeWait = null;
+    writeStarted = null;
+    profileRequested = null;
+    profileWait = null;
     failRead = false;
     failWrite = false;
     failWriteAfterCommit = false;
@@ -145,6 +153,9 @@ void main() {
           return storedSecret;
         case 'write':
           timeline.add('vault.write');
+          if (writeStarted != null && !writeStarted!.isCompleted) {
+            writeStarted!.complete();
+          }
           if (failWrite) {
             throw PlatformException(
               code: 'PRIVATE_STORAGE',
@@ -214,6 +225,11 @@ void main() {
       }
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
         timeline.add('profile.ensure');
+        if (profileRequested != null && !profileRequested!.isCompleted) {
+          profileRequested!.complete();
+        }
+        final heldProfile = profileWait;
+        if (heldProfile != null) return heldProfile.future;
         return http.Response(
           jsonEncode(profile.profile(authUser)),
           200,
@@ -239,6 +255,15 @@ void main() {
     }
     if (writeWait != null && !writeWait!.isCompleted) {
       writeWait!.complete();
+    }
+    if (profileWait != null && !profileWait!.isCompleted) {
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(authUser)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
     }
     await runtime.close();
     await journal.close();
@@ -2157,4 +2182,108 @@ void main() {
       );
     },
   );
+
+  test(
+    'Windows startup publishes account only after restored rotation and own profile',
+    () async {
+      storedSecret = 'TEST_ONLY_SAVED_WINDOWS_STARTUP_REFRESH';
+      writeWait = Completer<void>();
+      writeStarted = Completer<void>();
+      profileRequested = Completer<void>();
+      profileWait = Completer<http.Response>();
+
+      final controller =
+          AccountStartupController<AccountController<SrsStudyRuntime>>(
+            () async => PersistentAccountStartup(runtime),
+          );
+      Future<void>? starting;
+      try {
+        starting = controller.start();
+        await writeStarted!.future.timeout(const Duration(seconds: 5));
+
+        expect(controller.phase, AccountStartupPhase.loading);
+        expect(controller.account, isNull);
+        expect(runtime.persistence.phase, SessionPersistencePhase.saving);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(storedSecret, 'TEST_ONLY_SAVED_WINDOWS_STARTUP_REFRESH');
+        expect(timeline, ['vault.read', 'auth.refresh', 'vault.write']);
+        expect(
+          requests.where((request) => request.url.path == '/auth/v1/token'),
+          hasLength(1),
+        );
+        expect(
+          requests.single.url.queryParameters['grant_type'],
+          'refresh_token',
+        );
+        expect(
+          requests.where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          ),
+          isEmpty,
+          reason: 'profile must wait for the rotated Windows refresh secret',
+        );
+
+        writeWait!.complete();
+        await profileRequested!.future.timeout(const Duration(seconds: 5));
+
+        expect(controller.phase, AccountStartupPhase.loading);
+        expect(controller.account, isNull);
+        expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(storedSecret, refreshSecret);
+        expect(
+          timeline,
+          ['vault.read', 'auth.refresh', 'vault.write', 'profile.ensure'],
+        );
+        final profileRequest = requests.singleWhere(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        );
+        expect(
+          profileRequest.headers['authorization'],
+          'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+        );
+
+        profileWait!.complete(
+          http.Response(
+            jsonEncode(profile.profile(wire.a)),
+            200,
+            headers: {'content-type': 'application/json'},
+          ),
+        );
+        await starting.timeout(const Duration(seconds: 5));
+
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(identical(controller.account, runtime.account), isTrue);
+        expect(runtime.account.state.phase, AccountPhase.ready);
+        expect(runtime.account.state.profile?.id, wire.a);
+        expect(runtime.account.readyRuntime, isNotNull);
+
+        await controller.close().timeout(const Duration(seconds: 5));
+        expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+        expect(closeOrder, ['owner.release']);
+      } finally {
+        if (writeWait != null && !writeWait!.isCompleted) {
+          writeWait!.complete();
+        }
+        if (profileWait != null && !profileWait!.isCompleted) {
+          profileWait!.complete(
+            http.Response(
+              jsonEncode(profile.profile(authUser)),
+              200,
+              headers: {'content-type': 'application/json'},
+            ),
+          );
+        }
+        if (starting != null) {
+          try {
+            await starting.timeout(const Duration(seconds: 5));
+          } on Object {
+            // Preserve the first assertion failure while draining the fixture.
+          }
+        }
+        await controller.close().timeout(const Duration(seconds: 5));
+      }
+    },
+  );
+
 }
