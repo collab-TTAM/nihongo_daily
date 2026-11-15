@@ -88,33 +88,31 @@ void _check(bool value) {
 /// Auth-only fixture store. No review event is staged or dispatched by this probe.
 final class _EmptyReviewStore implements DurableReviewStore {
   @override
-  Future<List<StoredReview>> list(String userId) async => const <StoredReview>[];
+  Future<List<StoredReview>> list(String userId) =>
+      Future<List<StoredReview>>.value(const <StoredReview>[]);
 
   @override
   Future<StoredReview> stage(
     String userId,
     Map<String, Object> request,
-  ) async {
-    throw const ReviewStorageFailure();
-  }
+  ) =>
+      Future<StoredReview>.error(const ReviewStorageFailure());
 
   @override
   Future<void> acknowledge(
     String userId,
     String eventId,
     ReviewSuccess receipt,
-  ) async {
-    throw const ReviewStorageFailure();
-  }
+  ) =>
+      Future<void>.error(const ReviewStorageFailure());
 
   @override
   Future<void> reject(
     String userId,
     String eventId,
     ReviewFailure rejection,
-  ) async {
-    throw const ReviewStorageFailure();
-  }
+  ) =>
+      Future<void>.error(const ReviewStorageFailure());
 }
 
 void _requireReady(PersistentSupabaseRuntime runtime) {
