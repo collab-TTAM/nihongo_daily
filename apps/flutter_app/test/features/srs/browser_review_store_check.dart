@@ -48,10 +48,7 @@ extension type _TestObjectStore(JSObject _) implements JSObject {
   external _TestRequest read(JSAny key);
 }
 
-Future<_TestDatabase> _openTestDatabase(
-  String name, {
-  int version = 1,
-}) async {
+Future<_TestDatabase> _openTestDatabase(String name, {int version = 1}) async {
   final factory = _testIndexedDb;
   if (factory == null) throw StateError('IndexedDB unavailable in test');
   final opened = Completer<_TestDatabase>();
@@ -84,11 +81,7 @@ Future<_TestDatabase> _openTestDatabase(
   return opened.future;
 }
 
-Future<void> _writeRawState(
-  String name,
-  String raw, {
-  int version = 1,
-}) async {
+Future<void> _writeRawState(String name, String raw, {int version = 1}) async {
   final database = await _openTestDatabase(name, version: version);
   try {
     final committed = Completer<void>();
@@ -116,10 +109,7 @@ Future<void> _writeRawState(
   }
 }
 
-Future<String?> _readRawState(
-  String name, {
-  int version = 1,
-}) async {
+Future<String?> _readRawState(String name, {int version = 1}) async {
   final database = await _openTestDatabase(name, version: version);
   try {
     final committed = Completer<String?>();
