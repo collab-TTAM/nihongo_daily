@@ -4380,3 +4380,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `scripts/hosted_supabase_probe.py`, `scripts/test_hosted_supabase_probe.py`, `qa/matrix.json`, `docs/HOSTED_SUPABASE_ACCEPTANCE.md`, `docs/PROJECT_STATUS.md`. Source implementation commit: `6ad8ea266de15ed5d226b3cb4b35520c3ebd2a43`.
 - Previous exact-head Actions [43873951684](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43873951684) is run-level COMPLETED/SUCCESS on parent `a58b344232dc2306f9b81a8f4dd22203352952e2`; all six job conclusions and all returned steps were SUCCESS. GitHub's repo-sanity job payload anomalously reported `status=in_progress` despite a non-null completed_at and every step completed successfully; this inconsistency is not treated as clean release evidence. No local Python execution is claimed in this cloud authoring run.
 - No hosted workflow dispatch or staging secrets were used. Hosted signed-JWT A/B, protected Windows fresh-process restore, deployed PostgREST/RLS and real learner acceptance remain pending. Next: inspect every latest-attempt job/step on the new exact head, then continue #20/#22/#15 only from observed evidence.
+
+
+## Hosted probe exact-head CI progress — 2026-11-16
+
+- PR #37 / `automation/issue-22-atomic-review` exact HEAD `8e205e2e511f1aca883d90c089dbbafcb26d40ac`; Actions [43888728844](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43888728844), attempt 1, run metadata confirms the same `head_sha`.
+- Observed complete: `repo-sanity` SUCCESS, including `scripts/verify_qa.py` regression suite (23 tests) and `scripts/test_hosted_supabase_probe.py` (32 tests, including both new cleanup regressions); `ai-boundary` SUCCESS with every returned step.
+- At this checkpoint, `database` is still reported IN_PROGRESS although all returned steps through `Complete job` are SUCCESS; disposable `supabase-integration` is IN_PROGRESS at local service startup; `windows` is IN_PROGRESS at Flutter setup; `flutter` is QUEUED. No failed/skipped step has been observed, but these incomplete job states are not passes and no full-CI claim is made.
+- No hosted workflow dispatch, staging secret access, hosted JWT/RLS learner proof or Windows hosted-session run occurred. The local disposable Supabase job and native/Flutter jobs remain CI component evidence only.
+- Next: inspect every latest-attempt job/step on the next exact head; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open until hosted A/B, deployed RLS, expiry/restart and multi-device acceptance are observed.
