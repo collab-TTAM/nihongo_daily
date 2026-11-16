@@ -339,6 +339,11 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
       - run: npm run format:check
+      - name: Print pinned Prettier diff for quiz history route tests
+        if: failure()
+        run: |
+          npx prettier --write test/quiz_report_v2_edge.test.ts test/quiz_report_v2_http.test.ts
+          git diff -- test/quiz_report_v2_edge.test.ts test/quiz_report_v2_http.test.ts
       - run: npm run check
       - run: npm test
       - uses: denoland/setup-deno@v2

@@ -4784,6 +4784,9 @@
       "limitation": "The Edge function is not deployed and the Dart history UI is not connected. Node/Deno bundle tests do not prove hosted signed-JWT/PostgREST/RLS, real learner A/B, cross-device history, mastery, SRS or study credit. No migration, grant, RLS, Auth strategy/provider or default save change is included.",
       "ci_steps": [
         "Verify bundled quiz report v2 Supabase Edge Function"
+      ],
+      "issues": [
+        13
       ]
     }
   ],
