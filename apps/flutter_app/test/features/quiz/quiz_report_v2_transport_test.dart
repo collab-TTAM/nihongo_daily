@@ -801,10 +801,7 @@ void main() {
       expect(request.followRedirects, isFalse);
       expect(request.maxRedirects, 0);
       expect(request.headers['authorization'], 'Bearer access-token-A');
-      expect(
-        request.headers['apikey'],
-        'sb_publishable_TEST_ONLY_1234567890',
-      );
+      expect(request.headers['apikey'], 'sb_publishable_TEST_ONLY_1234567890');
       expect(request.bodyBytes, expectedBody);
       return _historySuccess(report);
     });
@@ -832,100 +829,101 @@ void main() {
       () => QuizReportV2HistoryQuery(quizType: 'conversation'),
       throwsFormatException,
     );
-    expect(
-      () => QuizReportV2HistoryQuery(limit: 101),
-      throwsFormatException,
-    );
+    expect(() => QuizReportV2HistoryQuery(limit: 101), throwsFormatException);
   });
 
-  test('history decoder rejects filter mismatch and forged continuation', () async {
-    final auth = _FakeAuth();
-    final report = _report();
-    final query = QuizReportV2HistoryQuery(
-      jlptLevel: 'N5',
-      quizType: 'vocabulary_reading',
-      limit: 1,
-    );
-    final entry = Map<String, Object?>.from(_historyEntry(report));
-    final wrongRequest = Map<String, Object?>.from(
-      entry['request']! as Map<String, Object?>,
-    )..['jlpt_level'] = 'N4';
-    entry['request'] = wrongRequest;
-    final wrongFilter = jsonEncode({
-      'items': [entry],
-      'next_cursor': null,
-    });
-    final wrongCursor = jsonEncode({
-      'items': [_historyEntry(report)],
-      'next_cursor': {
-        'received_at': '2026-11-10T05:00:00.123456Z',
-        'client_event_id': _event(2),
-      },
-    });
-    for (final body in [wrongFilter, wrongCursor]) {
-      final client = MockClient(
-        (_) async => http.Response(body, 200, headers: _headers),
+  test(
+    'history decoder rejects filter mismatch and forged continuation',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      final query = QuizReportV2HistoryQuery(
+        jlptLevel: 'N5',
+        quizType: 'vocabulary_reading',
+        limit: 1,
       );
+      final entry = Map<String, Object?>.from(_historyEntry(report));
+      final wrongRequest = Map<String, Object?>.from(
+        entry['request']! as Map<String, Object?>,
+      )..['jlpt_level'] = 'N4';
+      entry['request'] = wrongRequest;
+      final wrongFilter = jsonEncode({
+        'items': [entry],
+        'next_cursor': null,
+      });
+      final wrongCursor = jsonEncode({
+        'items': [_historyEntry(report)],
+        'next_cursor': {
+          'received_at': '2026-11-10T05:00:00.123456Z',
+          'client_event_id': _event(2),
+        },
+      });
+      for (final body in [wrongFilter, wrongCursor]) {
+        final client = MockClient(
+          (_) async => http.Response(body, 200, headers: _headers),
+        );
+        final transport = _transport(auth: auth, client: client);
+        await expectLater(
+          transport.readHistory(query),
+          throwsA(
+            isA<QuizReportV2TransportFailure>().having(
+              (failure) => failure.code,
+              'code',
+              QuizReportV2TransportCode.internalError,
+            ),
+          ),
+        );
+        await transport.close();
+        client.close();
+      }
+      await auth.dispose();
+    },
+  );
+
+  test(
+    'late account switch aborts history read and rejects the old page',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      final responseGate = Completer<http.Response>();
+      final requestSeen = Completer<http.AbortableRequest>();
+      final client = _AbortableMockClient((request) {
+        requestSeen.complete(request as http.AbortableRequest);
+        return responseGate.future;
+      });
       final transport = _transport(auth: auth, client: client);
+      final pending = transport.readHistory(
+        QuizReportV2HistoryQuery(limit: 20),
+      );
+      final outbound = await requestSeen.future;
+
+      auth.switchAccount();
+      final abortTrigger = outbound.abortTrigger;
+      expect(abortTrigger, isNotNull);
+      await abortTrigger!.timeout(const Duration(seconds: 1));
+      responseGate.complete(_historySuccess(report));
+
       await expectLater(
-        transport.readHistory(query),
+        pending,
         throwsA(
           isA<QuizReportV2TransportFailure>().having(
             (failure) => failure.code,
             'code',
-            QuizReportV2TransportCode.internalError,
+            QuizReportV2TransportCode.unauthorized,
           ),
         ),
       );
       await transport.close();
       client.close();
-    }
-    await auth.dispose();
-  });
-
-  test('late account switch aborts history read and rejects the old page', () async {
-    final auth = _FakeAuth();
-    final report = _report();
-    final responseGate = Completer<http.Response>();
-    final requestSeen = Completer<http.AbortableRequest>();
-    final client = _AbortableMockClient((request) {
-      requestSeen.complete(request as http.AbortableRequest);
-      return responseGate.future;
-    });
-    final transport = _transport(auth: auth, client: client);
-    final pending = transport.readHistory(
-      QuizReportV2HistoryQuery(limit: 20),
-    );
-    final outbound = await requestSeen.future;
-
-    auth.switchAccount();
-    final abortTrigger = outbound.abortTrigger;
-    expect(abortTrigger, isNotNull);
-    await abortTrigger!.timeout(const Duration(seconds: 1));
-    responseGate.complete(_historySuccess(report));
-
-    await expectLater(
-      pending,
-      throwsA(
-        isA<QuizReportV2TransportFailure>().having(
-          (failure) => failure.code,
-          'code',
-          QuizReportV2TransportCode.unauthorized,
-        ),
-      ),
-    );
-    await transport.close();
-    client.close();
-    await auth.dispose();
-  });
+      await auth.dispose();
+    },
+  );
 
   test('close drains an in-flight read-only history request', () async {
     final auth = _FakeAuth();
     final client = _DrainClient();
     final transport = _transport(auth: auth, client: client);
-    final pending = transport.readHistory(
-      QuizReportV2HistoryQuery(limit: 20),
-    );
+    final pending = transport.readHistory(QuizReportV2HistoryQuery(limit: 20));
     final outbound = await client.requestSeen.future;
 
     var closed = false;
@@ -1022,37 +1020,40 @@ void main() {
     expect(calls, 0);
   });
 
-  test('token rotation aborts history read captured under the old generation', () async {
-    final auth = _FakeAuth();
-    final report = _report();
-    final responseGate = Completer<http.Response>();
-    final requestSeen = Completer<http.AbortableRequest>();
-    final client = _AbortableMockClient((request) {
-      requestSeen.complete(request as http.AbortableRequest);
-      return responseGate.future;
-    });
-    final transport = _transport(auth: auth, client: client);
-    addTearDown(() async {
-      await transport.close();
-      client.close();
-      await auth.dispose();
-    });
-    final pending = transport.readHistory(QuizReportV2HistoryQuery());
-    final outbound = await requestSeen.future;
+  test(
+    'token rotation aborts history read captured under the old generation',
+    () async {
+      final auth = _FakeAuth();
+      final report = _report();
+      final responseGate = Completer<http.Response>();
+      final requestSeen = Completer<http.AbortableRequest>();
+      final client = _AbortableMockClient((request) {
+        requestSeen.complete(request as http.AbortableRequest);
+        return responseGate.future;
+      });
+      final transport = _transport(auth: auth, client: client);
+      addTearDown(() async {
+        await transport.close();
+        client.close();
+        await auth.dispose();
+      });
+      final pending = transport.readHistory(QuizReportV2HistoryQuery());
+      final outbound = await requestSeen.future;
 
-    auth.rotateToken();
-    await outbound.abortTrigger!.timeout(const Duration(seconds: 1));
-    responseGate.complete(_historySuccess(report));
+      auth.rotateToken();
+      await outbound.abortTrigger!.timeout(const Duration(seconds: 1));
+      responseGate.complete(_historySuccess(report));
 
-    await expectLater(
-      pending,
-      throwsA(
-        isA<QuizReportV2TransportFailure>().having(
-          (failure) => failure.code,
-          'code',
-          QuizReportV2TransportCode.unauthorized,
+      await expectLater(
+        pending,
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'code',
+            QuizReportV2TransportCode.unauthorized,
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
 }

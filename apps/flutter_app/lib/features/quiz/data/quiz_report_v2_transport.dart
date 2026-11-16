@@ -172,9 +172,7 @@ final class QuizReportV2HttpTransport
 
   /// Reads immutable server receipts; it never writes, retries or grants credit.
   @override
-  Future<QuizReportV2HistoryPage> readHistory(
-    QuizReportV2HistoryQuery query,
-  ) {
+  Future<QuizReportV2HistoryPage> readHistory(QuizReportV2HistoryQuery query) {
     late final Uint8List raw;
     try {
       raw = Uint8List.fromList(query.encodeRawBody());
@@ -207,11 +205,7 @@ final class QuizReportV2HttpTransport
         ),
       );
     }
-    return _sendRaw<T>(
-      raw,
-      endpoint: endpoint,
-      decodeSuccess: decodeSuccess,
-    );
+    return _sendRaw<T>(raw, endpoint: endpoint, decodeSuccess: decodeSuccess);
   }
 
   Future<T> _sendRaw<T>(

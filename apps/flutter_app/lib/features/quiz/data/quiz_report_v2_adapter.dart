@@ -383,7 +383,6 @@ final class QuizReportV2LookupResult {
   bool get isUnresolved => response == null;
 }
 
-
 /// Cursor for the server's immutable, owner-scoped receipt history.
 final class QuizReportV2HistoryCursor {
   const QuizReportV2HistoryCursor({
@@ -458,6 +457,7 @@ final class QuizReportV2HistoryQuery {
     this.limit = 20,
     this.cursor,
   }) {
+    final cursor = this.cursor;
     if ((jlptLevel != null && jlptLevel != 'N5' && jlptLevel != 'N4') ||
         (quizType != null &&
             quizType != 'vocabulary_reading' &&
@@ -498,6 +498,7 @@ final class QuizReportV2HistoryQuery {
   }
 
   QuizReportV2HistoryPage decodePage(Object? value) {
+    final cursor = this.cursor;
     final json = _strictObject(value, {'items', 'next_cursor'});
     final rawItems = json['items'];
     if (rawItems is! List || rawItems.length > limit) {
@@ -565,9 +566,6 @@ final class QuizReportV2HistoryQuery {
         throw const FormatException('Invalid quiz report history continuation');
       }
     }
-    return QuizReportV2HistoryPage._(
-      items: items,
-      nextCursor: nextCursor,
-    );
+    return QuizReportV2HistoryPage._(items: items, nextCursor: nextCursor);
   }
 }
