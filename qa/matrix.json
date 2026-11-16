@@ -632,7 +632,7 @@
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",
-      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID rows under distinct explicit owner keys; both handles return the same filtered projection for a supplied key (not per-connection Auth isolation), captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID rows under distinct explicit owner keys; both handles return the same filtered projection for a supplied key (not per-connection Auth isolation), captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state; external IndexedDB versionchange closes stale v1 handles without rewriting the committed pending journal",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -658,6 +658,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
           "contains": "real IndexedDB corruption fails closed without rewriting state"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "real IndexedDB versionchange closes stale handle and preserves committed journal"
         }
       ],
       "issues": [

@@ -4407,3 +4407,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Corrected `refresh_owned` to separate the stable cleanup-map key from the original diagnostic label. Later A/B refresh calls retain their pre-existing phase labels while still registering the returned rotated session before identity/rotation checks. No assertions were weakened or removed.
 - Changed source path: `scripts/hosted_supabase_probe.py`; this status entry records the observed failure and correction. No Auth/provider, API/schema/RLS, hosted dispatch/secrets, production, default runtime or Pro-owned N4 changes.
 - New exact-head CI must run the full six-job suite; no pass is claimed for the corrected head yet.
+
+
+## IndexedDB versionchange fail-closed regression — 2026-11-16 UTC
+
+- Run `core-20261116T2008Z-pr37-indexeddb-versionchange-guard`; PR #37 branch `automation/issue-22-atomic-review`; parent HEAD `b6ff2fbc1243dc39cb66f7377a9c659c6c5f8857`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Added an actual-Chrome IndexedDB regression to `apps/flutter_app/test/features/srs/browser_review_store_check.dart`: stage one immutable pending event, open the same disposable database at version 2 from another connection, require the old v1 handle to close and reject subsequent reads with the fixed `ReviewStorageFailure`, then read the committed v1 snapshot through a v2 test handle and verify owner, request, pending state and absence of receipt/rejection are unchanged.
+- The test helper now accepts an explicit database version for test-only opens. The production browser store remains schema v1; no migration, auto-reopen, deletion, eviction or default runtime activation was introduced.
+- Updated `qa/matrix.json` case `browser-transactional-review` with the exact new test anchor and `docs/BROWSER_REVIEW_STORE.md` from eight to nine actual IndexedDB Chrome tests, including the versionchange boundary.
+- Changed paths: `apps/flutter_app/test/features/srs/browser_review_store_check.dart`, `qa/matrix.json`, `docs/BROWSER_REVIEW_STORE.md`, `docs/PROJECT_STATUS.md`. The test is authored but not locally executed in this cloud runtime (no Flutter/Dart SDK). Exact-head GitHub Actions is the required formatter/analyzer/Chrome/Web/Windows/SQL/AI verification; no new-head pass is claimed at this checkpoint.
+- Next: inspect the complete latest-attempt jobs/steps on the final commit, fix only observed failures, then continue hosted signed-JWT A/B and two-device offline acceptance. PR #37 remains Draft; #20/#22/#15 remain open. No hosted staging dispatch/secrets, Auth/provider, SQL/RLS, production or Pro-owned #14/#38/N4 changes.

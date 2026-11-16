@@ -48,11 +48,14 @@ extension type _TestObjectStore(JSObject _) implements JSObject {
   external _TestRequest read(JSAny key);
 }
 
-Future<_TestDatabase> _openTestDatabase(String name) async {
+Future<_TestDatabase> _openTestDatabase(
+  String name, {
+  int version = 1,
+}) async {
   final factory = _testIndexedDb;
   if (factory == null) throw StateError('IndexedDB unavailable in test');
   final opened = Completer<_TestDatabase>();
-  final request = factory.open(name, 1);
+  final request = factory.open(name, version);
 
   void fail() {
     if (!opened.isCompleted) {
@@ -82,7 +85,7 @@ Future<_TestDatabase> _openTestDatabase(String name) async {
 }
 
 Future<void> _writeRawState(String name, String raw) async {
-  final database = await _openTestDatabase(name);
+  final database = await _openTestDatabase(name, version: version);
   try {
     final committed = Completer<void>();
     final transaction = database.transaction('journal', 'readwrite');
@@ -109,7 +112,7 @@ Future<void> _writeRawState(String name, String raw) async {
   }
 }
 
-Future<String?> _readRawState(String name) async {
+Future<String?> _readRawState(String name, {int version = 1}) async {
   final database = await _openTestDatabase(name);
   try {
     final committed = Completer<String?>();
@@ -295,6 +298,40 @@ void main() {
         expect(pending.isPending, isTrue);
       } finally {
         await store.close();
+      }
+    },
+  );
+
+  test(
+    'real IndexedDB versionchange closes stale handle and preserves committed journal',
+    () async {
+      final database = name();
+      final store = await openBrowserReviewStore(databaseName: database);
+      final original = fixture.request(900);
+      await store.stage(fixture.owner, original);
+
+      // A second connection upgrades the test database. The v1 owner must
+      // close on versionchange and fail closed on later access.
+      final upgraded = await _openTestDatabase(database, version: 2);
+      try {
+        await expectLater(
+          store.list(fixture.owner),
+          throwsA(isA<ReviewStorageFailure>()),
+        );
+        final raw = await _readRawState(database, version: 2);
+        expect(raw, isNotNull);
+        final snapshot = jsonDecode(raw!) as Map<String, dynamic>;
+        expect(snapshot['version'], 1);
+        final records = snapshot['records'] as List<dynamic>;
+        expect(records, hasLength(1));
+        final record = records.single as Map<String, dynamic>;
+        expect(record['user_id'], fixture.owner);
+        expect(record['request'], original);
+        expect(record['receipt'], isNull);
+        expect(record['rejection'], isNull);
+      } finally {
+        await store.close();
+        upgraded.close();
       }
     },
   );

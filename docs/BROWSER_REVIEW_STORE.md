@@ -68,9 +68,14 @@ python3 ../../scripts/verify_browser_review_restart.py build/browser-restart
 ```
 
 Seven pure-ledger tests use TEST ONLY atomic ports (rollback, canonical corruption,
-reservations, immutable outcomes, uncertain results, full event cap and concurrency). Eight Chrome tests use actual IndexedDB: close/reopen/exact time/account projection, two actual connections contending for duplicate/distinct/conflicting writes, including changed-payload conflict and same-event-ID rows under distinct explicit owner keys. Both handles must return the same filtered projection for a supplied key; this is not per-connection Auth isolation. A delayed User A recovery snapshot is rejected after the captured Auth session switches to User B; durable receipt replay/rejection immutability, safe uncertain/closed behavior, and duplicate-key corruption that fails closed without rewriting the committed state are also covered.
+reservations, immutable outcomes, uncertain results, full event cap and concurrency). Nine Chrome tests use actual IndexedDB: close/reopen/exact time/account projection, two actual connections contending for duplicate/distinct/conflicting writes, including changed-payload conflict and same-event-ID rows under distinct explicit owner keys. Both handles must return the same filtered projection for a supplied key; this is not per-connection Auth isolation. A delayed User A recovery snapshot is rejected after the captured Auth session switches to User B; durable receipt replay/rejection immutability, safe uncertain/closed behavior, and duplicate-key corruption that fails closed without rewriting the committed state are also covered.
 The switch regression retains A's pending event and confirms B's owner projection
-remains empty; its Auth port is TEST ONLY and does not prove hosted A/B identity. Mock Auth/RPC
+remains empty; its Auth port is TEST ONLY and does not prove hosted A/B identity.
+A version-2 test connection also exercises real `onversionchange` delivery: the
+old v1 handle closes, later operations return the fixed storage failure, and the
+committed pending snapshot remains readable unchanged from the v2 test handle.
+This is an external upgrade in the disposable test database only; the app still
+opens schema v1 and adds no automatic migration or version-2 compatibility. Mock Auth/RPC
 cannot establish hosted signatures or learner acceptance. Browser quota failures
 are modeled by the atomic port, not induced on actual Chrome.
 
