@@ -349,23 +349,17 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
           cursor: cursor,
         ),
       );
-      if (!mounted ||
-          !widget.isCurrent() ||
-          revision != _requestRevision) {
+      if (!mounted || !widget.isCurrent() || revision != _requestRevision) {
         return;
       }
       setState(() => _page = page);
     } on Object {
-      if (!mounted ||
-          !widget.isCurrent() ||
-          revision != _requestRevision) {
+      if (!mounted || !widget.isCurrent() || revision != _requestRevision) {
         return;
       }
       setState(() => _failed = true);
     } finally {
-      if (mounted &&
-          widget.isCurrent() &&
-          revision == _requestRevision) {
+      if (mounted && widget.isCurrent() && revision == _requestRevision) {
         setState(() => _loading = false);
       }
     }
@@ -476,9 +470,7 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
                 ? 'server-quiz-history-refresh'
                 : 'server-quiz-history-load',
           ),
-          onPressed: _loading
-              ? null
-              : () => unawaited(_load(reset: true)),
+          onPressed: _loading ? null : () => unawaited(_load(reset: true)),
           child: Text(
             _failed
                 ? 'Thử tải lại lịch sử máy chủ'

@@ -9,8 +9,9 @@ import 'package:nihongo_daily/features/quiz/application/quiz_report_v2_provider.
 import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
 import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_transport.dart';
 
-final _selectedReaderProvider =
-    StateProvider<QuizReportV2HistoryReader?>((ref) => null);
+final _selectedReaderProvider = StateProvider<QuizReportV2HistoryReader?>(
+  (ref) => null,
+);
 
 String _uuid(int value) =>
     '00000000-0000-4000-8000-${value.toString().padLeft(12, '0')}';
@@ -85,26 +86,28 @@ final class _FakeHistoryReader implements QuizReportV2HistoryReader {
   }
 
   QuizReportV2HistoryPage pageFor(QuizReportV2HistoryQuery query) {
-    final filtered = records.where((record) {
-      final request = record['request']! as Map<String, Object?>;
-      final receivedAt = record['received_at']! as String;
-      final eventId = request['client_event_id']! as String;
-      final levelMatches =
-          query.jlptLevel == null || request['jlpt_level'] == query.jlptLevel;
-      final typeMatches =
-          query.quizType == null || request['quiz_type'] == query.quizType;
-      final cursor = query.cursor;
-      final cursorMatches =
-          cursor == null ||
-          receivedAt.compareTo(cursor.receivedAt) < 0 ||
-          (receivedAt == cursor.receivedAt &&
-              eventId.compareTo(cursor.clientEventId) < 0);
-      return levelMatches && typeMatches && cursorMatches;
-    }).toList()..sort(
-      (left, right) => (right['received_at']! as String).compareTo(
-        left['received_at']! as String,
-      ),
-    );
+    final filtered =
+        records.where((record) {
+          final request = record['request']! as Map<String, Object?>;
+          final receivedAt = record['received_at']! as String;
+          final eventId = request['client_event_id']! as String;
+          final levelMatches =
+              query.jlptLevel == null ||
+              request['jlpt_level'] == query.jlptLevel;
+          final typeMatches =
+              query.quizType == null || request['quiz_type'] == query.quizType;
+          final cursor = query.cursor;
+          final cursorMatches =
+              cursor == null ||
+              receivedAt.compareTo(cursor.receivedAt) < 0 ||
+              (receivedAt == cursor.receivedAt &&
+                  eventId.compareTo(cursor.clientEventId) < 0);
+          return levelMatches && typeMatches && cursorMatches;
+        }).toList()..sort(
+          (left, right) => (right['received_at']! as String).compareTo(
+            left['received_at']! as String,
+          ),
+        );
     final items = filtered.take(query.limit).toList(growable: false);
     Map<String, Object?>? nextCursor;
     if (filtered.length > items.length && items.isNotEmpty) {
@@ -154,11 +157,7 @@ Future<void> _tap(WidgetTester tester, String key) async {
   await tester.pump();
 }
 
-Future<void> _select(
-  WidgetTester tester,
-  String key,
-  String label,
-) async {
+Future<void> _select(WidgetTester tester, String key, String label) async {
   final selector = find.byKey(Key(key));
   await tester.ensureVisible(selector);
   await tester.tap(selector);
@@ -176,9 +175,7 @@ void main() {
           _entry(
             id,
             level: id.isEven ? 'N4' : 'N5',
-            quizType: id % 3 == 0
-                ? 'grammar_meaning'
-                : 'vocabulary_reading',
+            quizType: id % 3 == 0 ? 'grammar_meaning' : 'vocabulary_reading',
             correct: id.isOdd,
           ),
       ];
