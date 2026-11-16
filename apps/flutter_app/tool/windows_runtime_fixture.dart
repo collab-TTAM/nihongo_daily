@@ -24,6 +24,7 @@ const runtimePhases = {
   'runtime-late-refresh',
   'runtime-close-restore',
   'runtime-native-read-failure',
+  'runtime-native-rotation-write-failure',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
 const _ownerB = 'a1000000-0000-4000-8000-000000000002';
@@ -186,6 +187,15 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           // Explicit recovery must clear the unread A slot before password Auth.
           _check(await vault.readRefreshToken() == null);
         }
+        if (phase == 'runtime-native-rotation-write-failure') {
+          // A's ambiguous native write must be cleared before B's grant.
+          _check(await vault.readRefreshToken() == null);
+          if (authCalls == 2) {
+            _check(userId == _ownerB && logoutCalls >= 1);
+          } else {
+            _check(authCalls == 1 && userId == _owner);
+          }
+        }
       }
       return authResponse();
     }
@@ -196,8 +206,12 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(await vault.readRefreshToken() == secret);
       if (phase == 'runtime-late-refresh' ||
           phase == 'runtime-restore-profile-held' ||
-          phase == 'runtime-native-read-failure') {
+          phase == 'runtime-native-read-failure' ||
+          phase == 'runtime-native-rotation-write-failure') {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
+      }
+      if (phase == 'runtime-native-rotation-write-failure') {
+        _check(userId == _ownerB && profileCalls == 1);
       }
       if (phase == 'runtime-restore-profile-held') {
         final wait = heldProfile;
@@ -422,6 +436,61 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(runtime.account.readyRuntime == null);
       _check(await vault.readRefreshToken() == null);
       _check(logoutCalls >= 1);
+      await pending();
+    } else if (phase == 'runtime-native-rotation-write-failure') {
+      _check(await vault.readRefreshToken() == null);
+      await journal.stage(_owner, _pending);
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'write',
+        fault: 'commit_then_fail',
+      );
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'clear',
+        fault: 'fail_before',
+      );
+
+      // The real CredWriteW commits A's rotated value but the bridge reports an
+      // ambiguous failure; the first compensating CredDeleteW also fails.
+      secret = _second;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      _check(
+        runtime.account.state.phase == AccountPhase.signInError &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 1 &&
+            profileCalls == 0 &&
+            profileOwners.isEmpty,
+      );
+      _check(await vault.readRefreshToken() == _second);
+
+      // B is accepted only after explicit cleanup retries A sign-out + clear.
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(
+        authCalls == 2 &&
+            profileCalls == 1 &&
+            profileOwners.length == 1 &&
+            profileOwners.single == _ownerB,
+      );
+      _check(await vault.readRefreshToken() == _third);
+      _check((await journal.list(_ownerB)).isEmpty);
+      await runtime.account.signOut();
+      _check(
+        runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 2,
+      );
       await pending();
     } else if (phase == 'runtime-rejected') {
       _check(await vault.readRefreshToken() == null);

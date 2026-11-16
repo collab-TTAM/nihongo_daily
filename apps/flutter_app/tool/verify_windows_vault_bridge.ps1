@@ -113,6 +113,10 @@ try {
     Invoke-Bridge 'runtime-rejected'
     Invoke-Bridge 'runtime-native-read-failure'
     Invoke-Bridge 'runtime-signedout'
+    # Exercise a real CredWriteW commit/ambiguous error plus failed clear through
+    # the pinned SDK owner; B must wait for A's exact-slot cleanup before Auth.
+    Invoke-Bridge 'runtime-native-rotation-write-failure'
+    Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-late-refresh'
     # Close a fresh owner during held startup restore, then prove a new process
     # observes the cleared OS credential slot.
