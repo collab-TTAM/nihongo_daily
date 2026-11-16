@@ -339,6 +339,11 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
       - run: npm run format:check
+      - name: Print exact Prettier correction for quiz history reader (diagnostic only)
+        if: failure()
+        run: |
+          npx prettier --write src/quiz_report_v2_history.ts test/quiz_report_v2_history.test.ts test/quiz_report_v2_host.native.ts
+          git --no-pager diff --unified=2 -- src/quiz_report_v2_history.ts test/quiz_report_v2_history.test.ts test/quiz_report_v2_host.native.ts
       - run: npm run check
       - run: npm test
       - uses: denoland/setup-deno@v2
