@@ -152,9 +152,17 @@ Future<void> main(List<String> arguments) async {
     }
     stdout.writeln('Windows Dart/native bridge phase passed');
     exit(0);
-  } on Object {
-    // Never emit native exception details or credential data.
+  } on Object catch (_, stackTrace) {
+    // Stack locations identify the TEST ONLY assertion without exposing error
+    // messages, request bodies, refresh tokens or native credential details.
     stderr.writeln('Windows Dart/native bridge verification failed');
+    for (final frame in stackTrace
+        .toString()
+        .split('\n')
+        .where((line) => line.startsWith('#'))
+        .take(12)) {
+      stderr.writeln(frame);
+    }
     exit(1);
   }
 }

@@ -4,7 +4,10 @@ $exe = (Resolve-Path 'build/windows/x64/runner/Release/nihongo_daily.exe').Path
 
 function Invoke-Bridge([string] $phase) {
     Write-Output "Windows bridge phase started: $phase"
-    $process = Start-Process -FilePath $exe -ArgumentList @($phase, $scope) -WorkingDirectory (Split-Path $exe) -PassThru
+    $diagnosticId = [Guid]::NewGuid().ToString('N')
+    $stdoutPath = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-bridge-$diagnosticId.out")
+    $stderrPath = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-bridge-$diagnosticId.err")
+    $process = Start-Process -FilePath $exe -ArgumentList @($phase, $scope) -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
     try {
         if (-not $process.WaitForExit(60000)) {
             $process.Kill()
@@ -12,10 +15,18 @@ function Invoke-Bridge([string] $phase) {
             throw "Windows bridge phase '$phase' timed out"
         }
         if ($process.ExitCode -ne 0) {
+            # The TEST ONLY runner emits only a fixed message and bounded stack
+            # locations. Never print exception text, request bodies or tokens.
+            if (Test-Path -LiteralPath $stderrPath -PathType Leaf) {
+                foreach ($line in @(Get-Content -LiteralPath $stderrPath -Tail 12)) {
+                    Write-Output $line
+                }
+            }
             throw "Windows bridge phase '$phase' failed (exit code $($process.ExitCode))"
         }
     } finally {
         $process.Dispose()
+        Remove-Item -LiteralPath $stdoutPath, $stderrPath -Force -ErrorAction SilentlyContinue
     }
     Write-Output "Windows bridge phase passed: $phase"
 }
