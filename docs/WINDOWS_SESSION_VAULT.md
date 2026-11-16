@@ -359,17 +359,17 @@ boundary evidence. No plaintext fallback or automatic cleanup retry is added.
 ## Caller-owned runtime fences an ambiguous native refresh rotation write
 
 The TEST ONLY Windows runner now exercises a failure that previously existed
-only in the standalone native vault probe. The pinned Supabase SDK completes
-User A's password grant and rotates its refresh secret. The test-only native hook
-allows the real `CredWriteW` to commit that value, then returns the fixed
-unavailable result to the MethodChannel caller (`commit_then_fail`). A second
-one-shot hook makes the immediately compensating `CredDeleteW` fail before the
-OS call.
+only in the standalone native vault probe. The pinned Supabase SDK first establishes a ready User A session and persists
+its initial refresh token. The caller-owned runtime then performs an explicit
+refresh. The test-only native hook allows the real `CredWriteW` to commit the
+rotated value, then returns the fixed unavailable result to the MethodChannel
+caller (`commit_then_fail`). A second one-shot hook makes the immediately
+compensating `CredDeleteW` fail before the OS call.
 
-The caller-owned `PersistentAccountAccess` must remain failed/unready: no
-`ensure_profile` request for A is allowed, and the test confirms the ambiguous
-rotated value is still in the actual project-scoped Windows Credential Manager
-slot after the failed clear. A subsequent explicit B sign-in must first drain
+The caller-owned `PersistentAccountAccess` must revoke A's readiness and
+remain failed/unready: no second `ensure_profile` request for A is allowed,
+and the test confirms the ambiguous rotated value is still in the actual
+project-scoped Windows Credential Manager slot after the failed clear. A subsequent explicit B sign-in must first drain
 SDK sign-out and retry the exact-slot clear; the password grant handler verifies
 the slot is empty before it returns B's Auth response. B's newly rotated value
 must be readable before the only own-profile request, which must carry B's

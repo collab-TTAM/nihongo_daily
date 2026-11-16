@@ -162,7 +162,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         final expected =
             phase == 'runtime-restore-profile-held' ||
                 phase == 'runtime-late-refresh' ||
-                phase == 'runtime-close-restore'
+                phase == 'runtime-close-restore' ||
+                phase == 'runtime-native-rotation-write-failure'
             ? _first
             : phase == 'runtime-restore'
             ? _second
@@ -188,12 +189,13 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           _check(await vault.readRefreshToken() == null);
         }
         if (phase == 'runtime-native-rotation-write-failure') {
-          // A's ambiguous native write must be cleared before B's grant.
+          // The initial A grant and replacement B grant both start from a
+          // cleared slot; the refresh grant is handled separately above.
           _check(await vault.readRefreshToken() == null);
-          if (authCalls == 2) {
-            _check(userId == _ownerB && logoutCalls >= 1);
+          if (authCalls == 1) {
+            _check(userId == _owner);
           } else {
-            _check(authCalls == 1 && userId == _owner);
+            _check(authCalls == 3 && userId == _ownerB && logoutCalls >= 1);
           }
         }
       }
@@ -211,7 +213,11 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
       if (phase == 'runtime-native-rotation-write-failure') {
-        _check(userId == _ownerB && profileCalls == 1);
+        if (profileCalls == 1) {
+          _check(userId == _owner);
+        } else {
+          _check(profileCalls == 2 && userId == _ownerB);
+        }
       }
       if (phase == 'runtime-restore-profile-held') {
         final wait = heldProfile;
@@ -451,20 +457,44 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         fault: 'fail_before',
       );
 
-      // The real CredWriteW commits A's rotated value but the bridge reports an
-      // ambiguous failure; the first compensating CredDeleteW also fails.
-      secret = _second;
       await runtime.account.signIn(
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
       );
+      await ready();
       _check(
-        runtime.account.state.phase == AccountPhase.signInError &&
+        authCalls == 1 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner &&
+            await vault.readRefreshToken() == _first,
+      );
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'write',
+        fault: 'commit_then_fail',
+      );
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'clear',
+        fault: 'fail_before',
+      );
+
+      // A's real CredWriteW commits the rotated token but reports unavailable;
+      // the first compensating CredDeleteW also fails before the OS call.
+      secret = _second;
+      var refreshFailed = false;
+      try {
+        await runtime.refresh();
+      } on ReviewTransportFailure catch (error) {
+        refreshFailed = error.code == ReviewErrorCode.unauthorized;
+      }
+      _check(
+        refreshFailed &&
             runtime.persistence.phase == SessionPersistencePhase.failed &&
             runtime.account.readyRuntime == null &&
-            authCalls == 1 &&
-            profileCalls == 0 &&
-            profileOwners.isEmpty,
+            authCalls == 2 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner,
       );
       _check(await vault.readRefreshToken() == _second);
 
@@ -478,10 +508,11 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       );
       await ready();
       _check(
-        authCalls == 2 &&
-            profileCalls == 1 &&
-            profileOwners.length == 1 &&
-            profileOwners.single == _ownerB,
+        authCalls == 3 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.first == _owner &&
+            profileOwners.last == _ownerB,
       );
       _check(await vault.readRefreshToken() == _third);
       _check((await journal.list(_ownerB)).isEmpty);
