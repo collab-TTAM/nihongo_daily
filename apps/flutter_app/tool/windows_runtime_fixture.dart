@@ -446,17 +446,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     } else if (phase == 'runtime-native-rotation-write-failure') {
       _check(await vault.readRefreshToken() == null);
       await journal.stage(_owner, _pending);
-      await _injectNativeVaultFault(
-        vault.target,
-        operation: 'write',
-        fault: 'commit_then_fail',
-      );
-      await _injectNativeVaultFault(
-        vault.target,
-        operation: 'clear',
-        fault: 'fail_before',
-      );
-
+      // Establish a healthy A session first. The one-shot native faults must
+      // be consumed by the subsequent refresh rotation, not the password grant.
       await runtime.account.signIn(
         'fixture@example.invalid',
         'TEST_ONLY_PASSWORD',
