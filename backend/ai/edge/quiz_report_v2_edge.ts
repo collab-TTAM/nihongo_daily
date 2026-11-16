@@ -304,7 +304,6 @@ export function createQuizReportV2ReceiptLookupEdgeHandler(
   );
 }
 
-
 /** Compose exact-origin CORS with the bounded, verified-owner history reader. */
 export function createQuizReportV2HistoryEdgeHandler(
   history: QuizReportV2HistoryReader,
