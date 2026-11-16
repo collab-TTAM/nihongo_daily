@@ -4358,3 +4358,15 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed source paths in this diagnostic checkpoint: `apps/flutter_app/tool/windows_runtime_fixture.dart`, `.github/workflows/ci.yml`, and this status document. No production Auth/session code, schema/RLS, default runtime, hosted staging, secrets or Pro-owned N4 files changed.
 - Local Flutter/Dart/Windows execution is unavailable in this cloud authoring runtime. The new exact-head Actions run must verify the fixture correction and capture formatter output; no new-head test/build pass is claimed yet. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real Windows restart/expiry and physical multi-device sync remain unproven. PR #37 remains Draft; #20/#22/#15 remain open.
 - Next: inspect all latest-attempt jobs/steps for this diagnostic head, apply the exact pinned formatter output, remove the temporary step, and require the full six-job CI suite on the corrected final head.
+
+
+## Core worker checkpoint — RELEASED — 2026-11-16T13:07Z
+
+- Run `core-20261116T1307Z-pr37-exact-formatter-correction` is RELEASED. Branch `automation/issue-22-atomic-review`; parent HEAD `1878675e37b7c6dc12f8f2e3dca4dcecf511aece`; base `main` `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Applied the exact pinned Dart 3.35.4 formatter output emitted by [Actions 43855394620](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43855394620) to `apps/flutter_app/tool/windows_vault_bridge.dart`. Formatting only: no assertions, control flow, string literals, runtime behavior or security policy changed.
+- Removed only the temporary read-only formatter preview from `.github/workflows/ci.yml`; the repository-wide strict Dart format gate remains unchanged.
+- Exact parent CI `43855394620`, attempt 1, targets `1878675e37b7c6dc12f8f2e3dca4dcecf511aece` and completed FAILURE only at Flutter's strict formatter. Repo-sanity, AI boundary, database, Windows and disposable local Supabase integration all completed SUCCESS with every returned step successful. Flutter analyze, complete tests, downstream lifecycle/browser checks and Web build were SKIPPED, not passes.
+- Full parent tree was recursively read without truncation: 337 entries (272 blobs / 65 trees). No paths, modes or object types are added/removed; only the two intended source blobs and this status blob change. Pro-owned #14/#38/N4 paths remain excluded.
+- Cloud authoring runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head CI is the verification gate. This formatter correction is not hosted Auth, learner A/B, deployed RLS/PostgREST, expiry/restart or multi-device evidence.
+- Next: inspect every latest-attempt job/step on the corrected exact HEAD. If all required checks pass, continue #22 atomic-review/hosted acceptance and #20/#15 integration gaps without merging this incomplete draft.
+
