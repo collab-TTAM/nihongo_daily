@@ -435,12 +435,12 @@ def run_probe(config: Config,request) -> None:
     primary_failure = None
     cleanup_failures: tuple[str, ...] = ()
 
-    def refresh_owned(label: str, previous: Session) -> Session:
+    def refresh_owned(key: str, previous: Session, label: str | None = None) -> Session:
         return refresh(
             request,
             previous,
-            label,
-            on_rotated=lambda current: active_sessions.__setitem__(label,current),
+            label or key,
+            on_rotated=lambda current: active_sessions.__setitem__(key,current),
         )
 
     try:
@@ -494,10 +494,10 @@ def run_probe(config: Config,request) -> None:
         status,_=request("POST","/auth/v1/token?grant_type=refresh_token",{"refresh_token":user_a.refresh},None)
         require(status in {400,401,403},"User A current refresh token remained usable after local logout")
         active_sessions.pop("User A", None)
-        other_a=refresh_owned("User A second session",other_a)
+        other_a=refresh_owned("User A second session",other_a,"User A second session after local logout")
         require(profile_ids(request,other_a,user_a.user_id,"User A second session after local logout")==[user_a.user_id],
                 "User A local logout revoked its other session")
-        user_b=refresh_owned("User B",user_b)
+        user_b=refresh_owned("User B",user_b,"User B after User A local logout")
         require(profile_ids(request,user_b,user_b.user_id,"User B after A local logout")==[user_b.user_id],
                 "User A local logout affected User B")
         require(profile_ids(request,user_b,user_a.user_id,"User B after A logout isolation")==[],

@@ -4399,3 +4399,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Updated the `auth-live` QA anchor and `docs/HOSTED_SUPABASE_ACCEPTANCE.md`. No SQL/API/schema/RLS/Auth provider, default runtime, production, Pro-owned #14/#38/N4, hosted dispatch, secrets or staging account data changed.
 - Parent exact-head Actions [43889073496](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43889073496) targets `964d1b06b53dacdec1ba3ea12302833f67eb1b4e` and completed SUCCESS across all six jobs and every listed step; this is parent evidence only. New-head CI is required for this change. Cloud source authoring runtime has no repository checkout or Python test environment, so no local test result is claimed.
 - Next: inspect every latest-attempt job/step for the new exact HEAD. If green, continue the remaining #20/#22 hosted learner gates and #15 physical multi-device acceptance. The protected staging workflow remains manual-only and undispatched; PR #37 stays Draft.
+
+
+## Hosted refresh cleanup diagnostic-label correction — 2026-11-16
+
+- Exact-head Actions [43899638995](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43899638995) targets `e315c0271d7d5ba0565b5607bf23fe39622706bf`. Repo-sanity failed only in the retained `test_global_logout_cannot_pass_local_session_acceptance`: the cleanup-owner refactor changed the safe phase label from “User A second session after local logout” to the shorter dictionary key. The newly added rotated-identity cleanup regression passed. AI boundary and database completed SUCCESS with every listed step; Windows, disposable Supabase integration and Flutter were SKIPPED after repo-sanity failed.
+- Corrected `refresh_owned` to separate the stable cleanup-map key from the original diagnostic label. Later A/B refresh calls retain their pre-existing phase labels while still registering the returned rotated session before identity/rotation checks. No assertions were weakened or removed.
+- Changed source path: `scripts/hosted_supabase_probe.py`; this status entry records the observed failure and correction. No Auth/provider, API/schema/RLS, hosted dispatch/secrets, production, default runtime or Pro-owned N4 changes.
+- New exact-head CI must run the full six-job suite; no pass is claimed for the corrected head yet.
