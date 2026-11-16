@@ -13,10 +13,10 @@ final _selectedReaderProvider =
     StateProvider<QuizReportV2HistoryReader?>((ref) => null);
 
 String _uuid(int value) =>
-    '00000000-0000-4000-8000-\${value.toString().padLeft(12, '0')}';
+    '00000000-0000-4000-8000-${value.toString().padLeft(12, '0')}';
 
 String _receivedAt(int value) =>
-    '2026-11-16T10:00:\${value.toString().padLeft(2, '0')}.000000Z';
+    '2026-11-16T10:00:${value.toString().padLeft(2, '0')}.000000Z';
 
 Map<String, Object?> _entry(
   int id, {
@@ -150,7 +150,8 @@ Future<void> _tap(WidgetTester tester, String key) async {
   final button = find.byKey(Key(key));
   await tester.ensureVisible(button);
   await tester.tap(button);
-  await tester.pumpAndSettle();
+  await tester.pump();
+  await tester.pump();
 }
 
 Future<void> _select(
@@ -190,7 +191,7 @@ void main() {
       expect(reader.queries.first.quizType, isNull);
       expect(find.text('20 kết quả trên trang 1'), findsOneWidget);
       expect(
-        find.byKey(ValueKey('server-quiz-history-\${_uuid(22)}')),
+        find.byKey(ValueKey('server-quiz-history-${_uuid(22)}')),
         findsOneWidget,
       );
 
@@ -199,7 +200,7 @@ void main() {
       expect(reader.queries.last.cursor?.receivedAt, _receivedAt(3));
       expect(find.text('2 kết quả trên trang 2'), findsOneWidget);
       expect(
-        find.byKey(ValueKey('server-quiz-history-\${_uuid(2)}')),
+        find.byKey(ValueKey('server-quiz-history-${_uuid(2)}')),
         findsOneWidget,
       );
 
@@ -242,7 +243,10 @@ void main() {
     final replacement = _FakeHistoryReader([_entry(1)]);
     final container = await _mount(tester, first);
 
-    await _tap(tester, 'server-quiz-history-load');
+    final load = find.byKey(const Key('server-quiz-history-load'));
+    await tester.ensureVisible(load);
+    await tester.tap(load);
+    await tester.pump();
     expect(first.queries, hasLength(1));
     container.read(_selectedReaderProvider.notifier).state = null;
     await tester.pumpAndSettle();
@@ -250,7 +254,7 @@ void main() {
     first.wait!.complete(first.pageFor(first.queries.single));
     await tester.pumpAndSettle();
     expect(
-      find.byKey(ValueKey('server-quiz-history-\${_uuid(22)}')),
+      find.byKey(ValueKey('server-quiz-history-${_uuid(22)}')),
       findsNothing,
     );
 
@@ -258,11 +262,11 @@ void main() {
     await tester.pumpAndSettle();
     await _tap(tester, 'server-quiz-history-load');
     expect(
-      find.byKey(ValueKey('server-quiz-history-\${_uuid(1)}')),
+      find.byKey(ValueKey('server-quiz-history-${_uuid(1)}')),
       findsOneWidget,
     );
     expect(
-      find.byKey(ValueKey('server-quiz-history-\${_uuid(22)}')),
+      find.byKey(ValueKey('server-quiz-history-${_uuid(22)}')),
       findsNothing,
     );
     expect(tester.takeException(), isNull);

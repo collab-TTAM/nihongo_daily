@@ -66,3 +66,16 @@ Inspect every job and step in the latest attempt for the new exact HEAD.
 Fix only observed failures; if all checks pass, continue the next unblocked
 quiz/progress integration. Hosted Edge/Auth/PostgREST/RLS, A/B learner,
 mastery/weak-point and complete Personal Alpha evidence remain outstanding.
+
+
+## Source review correction — 2026-11-16T18:24Z
+
+The first source commit \`dfbddcc3fd51911f41e2dc6a90005501b955a642\`
+was reviewed before CI. The review found that Dart interpolation markers had
+been escaped as literal text in the generated screen/test strings. This was
+corrected before treating the increment as verified. The held-response widget
+test now pumps once while the reader is pending instead of waiting for an
+indeterminate progress animation to settle.
+
+The correction commit and exact-head CI result are recorded in the next
+checkpoint. No N4 content or security boundary was changed.

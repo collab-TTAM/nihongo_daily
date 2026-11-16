@@ -276,7 +276,6 @@ class _HistoryPanelState extends State<_HistoryPanel> {
   }
 }
 
-
 class _ServerHistoryPanel extends StatefulWidget {
   const _ServerHistoryPanel({
     super.key,
@@ -499,7 +498,7 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
           ),
         if (page != null) ...[
           Text(
-            '\${page.items.length} kết quả trên trang \${_pageIndex + 1}',
+            '${page.items.length} kết quả trên trang ${_pageIndex + 1}',
             key: const Key('server-quiz-history-summary'),
           ),
           if (page.items.isEmpty)
@@ -510,17 +509,17 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
           for (final entry in page.items)
             ListTile(
               key: ValueKey(
-                'server-quiz-history-\${entry.request.clientEventId}',
+                'server-quiz-history-${entry.request.clientEventId}',
               ),
               title: Text(
-                '\${entry.request.jlptLevel} · \${_typeLabel(entry)} · '
-                '\${entry.response.correctCount} / '
-                '\${entry.response.answerCount}',
+                '${entry.request.jlptLevel} · ${_typeLabel(entry)} · '
+                '${entry.response.correctCount} / '
+                '${entry.response.answerCount}',
               ),
               subtitle: Text(
-                'Hoàn thành (UTC): \${entry.request.completedAt}\n'
+                'Hoàn thành (UTC): ${entry.request.completedAt}\n'
                 'Máy chủ nhận (giờ địa phương): '
-                '\${DateTime.parse(entry.receivedAt).toLocal()}',
+                '${DateTime.parse(entry.receivedAt).toLocal()}',
               ),
             ),
           if (page.items.isNotEmpty) ...[
