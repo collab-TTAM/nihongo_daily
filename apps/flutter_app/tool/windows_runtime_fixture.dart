@@ -445,7 +445,16 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       await pending();
     } else if (phase == 'runtime-native-rotation-write-failure') {
       _check(await vault.readRefreshToken() == null);
-      await journal.stage(_owner, _pending);
+      // Explicit startup acquires the owned vault before offering password Auth.
+      await runtime.start();
+      _check(
+        runtime.persistence.phase == SessionPersistencePhase.idle &&
+            runtime.persistence.hasVaultOwner &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 0 &&
+            profileCalls == 0 &&
+            await vault.readRefreshToken() == null,
+      );
       // Establish a healthy A session first. The one-shot native faults must
       // be consumed by the subsequent refresh rotation, not the password grant.
       await runtime.account.signIn(
@@ -459,6 +468,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             profileOwners.single == _owner &&
             await vault.readRefreshToken() == _first,
       );
+      // Keep an A-owned pending event across the failed rotation and account switch.
+      await journal.stage(_owner, _pending);
       await _injectNativeVaultFault(
         vault.target,
         operation: 'write',
