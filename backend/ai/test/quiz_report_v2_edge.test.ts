@@ -492,7 +492,6 @@ test("lookup composition cancels borrowed work and preserves CORS on disconnect"
   await new Promise<void>((resolve) => setImmediate(resolve));
 });
 
-
 test("history Edge route forwards the bearer and exact filters through bounded CORS", async () => {
   const body = JSON.stringify({
     jlpt_level: "N5",
@@ -527,7 +526,10 @@ test("history Edge route forwards the bearer and exact filters through bounded C
   );
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("cache-control"), "no-store");
-  assert.equal(response.headers.get("access-control-allow-origin"), browserOrigin);
+  assert.equal(
+    response.headers.get("access-control-allow-origin"),
+    browserOrigin,
+  );
   assert.equal(response.headers.get("access-control-allow-credentials"), null);
   assert.deepEqual(await response.json(), page);
   assert.equal(activeSignal?.aborted, true);

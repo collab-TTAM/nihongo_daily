@@ -350,7 +350,6 @@ for (const reason of ["client", "deadline"] as const) {
   });
 }
 
-
 test("history HTTP forwards the exact bounded filter and returns its read-only page", async () => {
   const body = encoder.encode(
     JSON.stringify({
@@ -364,12 +363,14 @@ test("history HTTP forwards the exact bounded filter and returns its read-only p
   let receivedToken: string | undefined;
   let receivedBytes: Uint8Array | undefined;
   let receivedSignal: AbortSignal | undefined;
-  const handler = createQuizReportV2HistoryHttpHandler(async (token, raw, signal) => {
-    receivedToken = token;
-    receivedBytes = raw.slice();
-    receivedSignal = signal;
-    return page;
-  });
+  const handler = createQuizReportV2HistoryHttpHandler(
+    async (token, raw, signal) => {
+      receivedToken = token;
+      receivedBytes = raw.slice();
+      receivedSignal = signal;
+      return page;
+    },
+  );
   const response = await handler(request(body));
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("cache-control"), "no-store");
@@ -383,10 +384,5 @@ test("history HTTP redacts reader failures instead of returning database details
   const handler = createQuizReportV2HistoryHttpHandler(async () => {
     throw new Error("PRIVATE HISTORY DATABASE TOKEN");
   });
-  await safeError(
-    await handler(request()),
-    500,
-    "INTERNAL_ERROR",
-    false,
-  );
+  await safeError(await handler(request()), 500, "INTERNAL_ERROR", false);
 });
