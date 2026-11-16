@@ -3,6 +3,7 @@ import type {
   QuizReportV2Submitter,
   QuizReportV2ReceiptLookup,
 } from "./quiz_report_v2_host.ts";
+import type { QuizReportV2HistoryReader } from "./quiz_report_v2_history.ts";
 import type { error as WireError } from "./wire.ts";
 
 export const quizReportV2MaxRawBodyBytes = 16 * 1024;
@@ -190,6 +191,14 @@ export function createQuizReportV2ReceiptLookupHttpHandler(
   timeoutMs = 15000,
 ): (request: Request) => Promise<Response> {
   return createQuizReportV2OperationHttpHandler(lookup, timeoutMs);
+}
+
+/** Internal read-only history boundary; the verified reader owns Auth and RLS. */
+export function createQuizReportV2HistoryHttpHandler(
+  history: QuizReportV2HistoryReader,
+  timeoutMs = 15000,
+): (request: Request) => Promise<Response> {
+  return createQuizReportV2OperationHttpHandler(history, timeoutMs);
 }
 
 function createQuizReportV2OperationHttpHandler<T>(

@@ -1,4 +1,8 @@
-import { createQuizReportV2ReceiptLookupHttpHandler } from "../src/quiz_report_v2_http.ts";
+import {
+  createQuizReportV2HistoryHttpHandler,
+  createQuizReportV2ReceiptLookupHttpHandler,
+} from "../src/quiz_report_v2_http.ts";
+import type { QuizReportV2HistoryReader } from "../src/quiz_report_v2_history.ts";
 import type { QuizReportV2ReceiptLookup } from "../src/quiz_report_v2_host.ts";
 import type { TrustedQuizReportV2Configuration } from "../src/quiz_report_v2_host.ts";
 
@@ -296,6 +300,19 @@ export function createQuizReportV2ReceiptLookupEdgeHandler(
 ): RequestHandler {
   return createQuizReportV2EdgeHandler(
     createQuizReportV2ReceiptLookupHttpHandler(lookup, timeoutMs),
+    allowedOrigins,
+  );
+}
+
+
+/** Compose exact-origin CORS with the bounded, verified-owner history reader. */
+export function createQuizReportV2HistoryEdgeHandler(
+  history: QuizReportV2HistoryReader,
+  allowedOrigins: readonly string[],
+  timeoutMs = 15000,
+): RequestHandler {
+  return createQuizReportV2EdgeHandler(
+    createQuizReportV2HistoryHttpHandler(history, timeoutMs),
     allowedOrigins,
   );
 }

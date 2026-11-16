@@ -3,3 +3,6 @@ verify_jwt = true
 
 [functions.quiz-report-v2-lookup]
 verify_jwt = true
+
+[functions.quiz-report-v2-history]
+verify_jwt = true

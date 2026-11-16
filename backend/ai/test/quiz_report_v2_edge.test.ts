@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   createQuizReportV2EdgeHandler,
+  createQuizReportV2HistoryEdgeHandler,
   createQuizReportV2ReceiptLookupEdgeHandler,
   parseQuizReportV2AllowedOrigins,
   readQuizReportV2EdgeConfiguration,
@@ -489,4 +490,69 @@ test("lookup composition cancels borrowed work and preserves CORS on disconnect"
   assert.equal(active?.aborted, true);
   release();
   await new Promise<void>((resolve) => setImmediate(resolve));
+});
+
+
+test("history Edge route forwards the bearer and exact filters through bounded CORS", async () => {
+  const body = JSON.stringify({
+    jlpt_level: "N5",
+    quiz_type: "vocabulary_reading",
+    limit: 20,
+    cursor: null,
+  });
+  const page = { items: [], next_cursor: null };
+  let calls = 0;
+  let activeSignal: AbortSignal | undefined;
+  const handler = createQuizReportV2HistoryEdgeHandler(
+    async (token, raw, signal) => {
+      calls++;
+      assert.equal(token, "TEST_ONLY_VERIFIED_BEARER");
+      assert.equal(new TextDecoder().decode(raw), body);
+      assert.equal(signal?.aborted, false);
+      activeSignal = signal;
+      return page;
+    },
+    trustedOrigins,
+  );
+  const response = await handler(
+    new Request("https://project.example/functions/v1/quiz-report-v2-history", {
+      method: "POST",
+      headers: {
+        origin: browserOrigin,
+        authorization: "Bearer TEST_ONLY_VERIFIED_BEARER",
+        "content-type": "application/json; charset=utf-8",
+      },
+      body,
+    }),
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  assert.equal(response.headers.get("access-control-allow-origin"), browserOrigin);
+  assert.equal(response.headers.get("access-control-allow-credentials"), null);
+  assert.deepEqual(await response.json(), page);
+  assert.equal(activeSignal?.aborted, true);
+  assert.equal(calls, 1);
+});
+
+test("history Edge route rejects an untrusted origin before opening the reader", async () => {
+  let calls = 0;
+  const handler = createQuizReportV2HistoryEdgeHandler(async () => {
+    calls++;
+    return { items: [], next_cursor: null };
+  }, trustedOrigins);
+  const response = await handler(
+    new Request("https://project.example/functions/v1/quiz-report-v2-history", {
+      method: "POST",
+      headers: {
+        origin: "https://attacker.example",
+        authorization: "Bearer TEST_ONLY",
+        "content-type": "application/json",
+      },
+      body: "{}",
+    }),
+  );
+  assert.equal(response.status, 403);
+  assert.equal(response.headers.get("access-control-allow-origin"), null);
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  assert.equal(calls, 0);
 });

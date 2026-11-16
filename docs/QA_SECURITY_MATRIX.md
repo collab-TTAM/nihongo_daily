@@ -527,3 +527,26 @@ disposable receipts; it is not hosted JWT/PostgREST/RLS or learner evidence.
 Pagination bounds returned rows, but no dedicated history index was added, so
 scan/sort cost can grow with an owner's receipt count. Issue #13 and Personal
 Alpha remain open.
+
+
+## Verified-owner v2 quiz history Edge route — 2026-11-16 UTC
+
+The internal receipt reader is now composed into the dedicated
+`quiz-report-v2-history` Supabase Edge Function. The function reuses the fixed
+trusted server configuration and has an explicit `verify_jwt = true` gateway
+setting; the existing Supabase Auth verifier still checks the bearer before
+PostgreSQL is opened. The read-only transaction retains its verified
+`auth.uid()` owner, RLS/SELECT checks, fixed N5/N4 and vocabulary/grammar filters,
+and 1–100 keyset pagination.
+
+The HTTP/Edge composition adds bounded raw-body and deadline handling,
+no-store safe responses, exact-origin credential-free CORS, and a dedicated
+Deno bundle/type-check target. Tests verify exact bearer/filter forwarding and
+that an untrusted origin cannot reach the reader. No learner-supplied owner or
+SQL is accepted; no write path, migration, grant, RLS, Auth strategy or provider
+change is introduced.
+
+This endpoint is authored and CI-verified only after its exact-head workflow
+completes. It is not deployed and does not yet provide a Flutter history UI,
+hosted signed-JWT/PostgREST/RLS learner A/B, durable cross-device history,
+mastery, SRS or study credit. Issue #13 and Personal Alpha remain open.

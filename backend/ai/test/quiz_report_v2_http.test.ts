@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { BoundaryError } from "../src/contracts.ts";
 import {
+  createQuizReportV2HistoryHttpHandler,
   createQuizReportV2HttpHandler,
   createQuizReportV2ReceiptLookupHttpHandler,
   quizReportV2MaxRawBodyBytes,
@@ -348,3 +349,44 @@ for (const reason of ["client", "deadline"] as const) {
     assert.equal(calls, 1);
   });
 }
+
+
+test("history HTTP forwards the exact bounded filter and returns its read-only page", async () => {
+  const body = encoder.encode(
+    JSON.stringify({
+      jlpt_level: "N5",
+      quiz_type: "vocabulary_reading",
+      limit: 20,
+      cursor: null,
+    }),
+  );
+  const page = { items: [], next_cursor: null };
+  let receivedToken: string | undefined;
+  let receivedBytes: Uint8Array | undefined;
+  let receivedSignal: AbortSignal | undefined;
+  const handler = createQuizReportV2HistoryHttpHandler(async (token, raw, signal) => {
+    receivedToken = token;
+    receivedBytes = raw.slice();
+    receivedSignal = signal;
+    return page;
+  });
+  const response = await handler(request(body));
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  assert.deepEqual(await response.json(), page);
+  assert.equal(receivedToken, "fixture-token");
+  assert.deepEqual(receivedBytes, body);
+  assert.equal(receivedSignal?.aborted, true);
+});
+
+test("history HTTP redacts reader failures instead of returning database details", async () => {
+  const handler = createQuizReportV2HistoryHttpHandler(async () => {
+    throw new Error("PRIVATE HISTORY DATABASE TOKEN");
+  });
+  await safeError(
+    await handler(request()),
+    500,
+    "INTERNAL_ERROR",
+    false,
+  );
+});

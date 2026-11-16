@@ -4748,6 +4748,43 @@
       "ci_steps": [
         "Verify quiz report coordinator and SQL bridge with native PostgreSQL"
       ]
+    },
+    {
+      "id": "quiz-report-v2-history-edge",
+      "status": "automated-baseline",
+      "scope": "Expose the verified-owner, read-only nd-quiz-report-2 receipt history through a dedicated Supabase Edge Function with explicit gateway JWT verification, fixed server configuration, exact-origin credential-free CORS, bounded HTTP and no-store safe errors.",
+      "ci_job": "ai-boundary",
+      "anchors": [
+        {
+          "path": "supabase/functions/quiz-report-v2-history/index.ts",
+          "contains": "createTrustedPostgresQuizReportV2HistoryReader"
+        },
+        {
+          "path": "backend/ai/edge/quiz_report_v2_edge.ts",
+          "contains": "createQuizReportV2HistoryEdgeHandler"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_edge.test.ts",
+          "contains": "history Edge route forwards the bearer and exact filters through bounded CORS"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_http.test.ts",
+          "contains": "history HTTP forwards the exact bounded filter and returns its read-only page"
+        },
+        {
+          "path": "supabase/config.toml",
+          "contains": "[functions.quiz-report-v2-history]\nverify_jwt = true"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "contains": "deno task bundle:quiz-report-v2-history"
+        }
+      ],
+      "reproduce": "From backend/ai run npm run format:check, npm run check, npm test, deno task check, deno task test and deno task bundle:quiz-report-v2-history; inspect every exact-head Actions job and step.",
+      "limitation": "The Edge function is not deployed and the Dart history UI is not connected. Node/Deno bundle tests do not prove hosted signed-JWT/PostgREST/RLS, real learner A/B, cross-device history, mastery, SRS or study credit. No migration, grant, RLS, Auth strategy/provider or default save change is included.",
+      "ci_steps": [
+        "Verify bundled quiz report v2 Supabase Edge Function"
+      ]
     }
   ],
   "findings": [

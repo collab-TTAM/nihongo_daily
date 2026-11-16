@@ -933,10 +933,13 @@ and score counts are correlated before an immutable history entry is returned.
 Malformed rows, wrong owners, response mismatches and unexpected DB envelopes
 fail closed; SQL/driver details are not returned.
 
-The internal factory `createTrustedPostgresQuizReportV2HistoryReader` accepts
-only trusted server configuration. No route, migration, grant, RLS policy,
-Auth strategy, app startup binding, mastery calculation, SRS mutation or study
-credit is added by this increment.
+The factory `createTrustedPostgresQuizReportV2HistoryReader` accepts only
+trusted server configuration. A dedicated `quiz-report-v2-history` Supabase
+Edge Function now composes this reader with the existing fixed server
+configuration, gateway JWT verification, exact-origin CORS and bounded HTTP
+boundary. The route remains read-only; no migration, grant, RLS policy, Auth
+strategy, Dart app binding, mastery calculation, SRS mutation or study credit
+is added.
 
 Node tests cover strict request rejection, Auth-before-DB, fixed filters,
 bounded pagination, cursor replay, malformed stored rows, RLS/permission
@@ -949,3 +952,36 @@ The page size is bounded, but this increment does not add a dedicated
 `(user_id, received_at, client_event_id)` index; PostgreSQL may still scan/sort
 an owner's receipts as history grows. No hosted learner history UI or
 cross-device Personal Alpha proof is implied.
+
+
+## Authenticated read-only v2 quiz history Edge endpoint — 2026-11-16
+
+The additive function is `POST /functions/v1/quiz-report-v2-history`. Its
+`supabase/config.toml` entry explicitly keeps `verify_jwt = true`; the function
+also passes the bearer to the existing `SupabaseAuthVerifier` before opening
+PostgreSQL. The function reads only fixed deployment configuration. Learner
+requests cannot select a project, public key, database URL, owner, SQL, table,
+columns or sort expression.
+
+The exact request contains only four fields:
+
+- `jlpt_level`: `N5`, `N4` or `null`.
+- `quiz_type`: `vocabulary_reading`, `grammar_meaning` or `null`.
+- `limit`: integer from 1 through 100.
+- `cursor`: `null` or the exact `received_at` / `client_event_id` pair returned
+  by the previous page.
+
+The response contains immutable `items` with `received_at`, the original
+validated `request` and correlated `response`, plus `next_cursor`. The verified
+reader binds the verified subject to `auth.uid()`, requires RLS and SELECT
+capability, and uses a read-only transaction. Exact-origin CORS is credential-
+free; the HTTP boundary limits raw bodies to 16 KiB, bounds the request to 15
+seconds, returns `no-store` responses and redacts internal failures.
+
+Node tests cover exact-byte forwarding and safe failure mapping. Edge tests
+cover bearer/filter forwarding, exact-origin CORS and rejection before reader
+dispatch for an untrusted origin. Deno type-check and a dedicated Edge bundle
+check include the new function. These are source/CI checks only: the function
+has not been deployed, no hosted signed-JWT/PostgREST/RLS learner A/B is claimed,
+and the Flutter history screen is not yet connected to this endpoint. It does
+not update local history, mastery, SRS or study minutes.
