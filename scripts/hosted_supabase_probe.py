@@ -141,9 +141,13 @@ def session(status: int,body,label: str) -> Session:
             f"{label} refresh token is invalid")
     return Session(user_id,access,refresh)
 
-def refresh(request,previous: Session,label: str) -> Session:
+def refresh(request,previous: Session,label: str,on_rotated=None) -> Session:
     status,body=request("POST","/auth/v1/token?grant_type=refresh_token",{"refresh_token":previous.refresh},None)
     current=session(status,body,label+" refresh")
+    # The server may already have consumed the previous token. Transfer cleanup
+    # ownership before identity/rotation assertions can raise a safe failure.
+    if on_rotated is not None:
+        on_rotated(current)
     require(current.user_id==previous.user_id,f"{label} refresh changed identity")
     require(current.refresh!=previous.refresh,f"{label} refresh token did not rotate")
     return current
@@ -430,6 +434,15 @@ def run_probe(config: Config,request) -> None:
     active_sessions: dict[str, Session] = {}
     primary_failure = None
     cleanup_failures: tuple[str, ...] = ()
+
+    def refresh_owned(label: str, previous: Session) -> Session:
+        return refresh(
+            request,
+            previous,
+            label,
+            on_rotated=lambda current: active_sessions.__setitem__(label,current),
+        )
+
     try:
         status,body=request("POST","/auth/v1/token?grant_type=password",
                             {"email":config.email_a,"password":config.password_a},None)
@@ -447,12 +460,9 @@ def run_probe(config: Config,request) -> None:
                 "staging users must be distinct and User A must have two sessions")
         require(initial_a.refresh!=initial_a_other.refresh,
                 "User A sessions must have independent refresh tokens")
-        user_a=refresh(request,initial_a,"User A")
-        active_sessions["User A"] = user_a
-        other_a=refresh(request,initial_a_other,"User A second session")
-        active_sessions["User A second session"] = other_a
-        user_b=refresh(request,initial_b,"User B")
-        active_sessions["User B"] = user_b
+        user_a=refresh_owned("User A",initial_a)
+        other_a=refresh_owned("User A second session",initial_a_other)
+        user_b=refresh_owned("User B",initial_b)
         require(user_a.refresh!=other_a.refresh,
                 "User A refresh sessions must remain independent")
         # Before legitimate bootstrap, neither caller may choose the owner or profile settings.
@@ -484,12 +494,10 @@ def run_probe(config: Config,request) -> None:
         status,_=request("POST","/auth/v1/token?grant_type=refresh_token",{"refresh_token":user_a.refresh},None)
         require(status in {400,401,403},"User A current refresh token remained usable after local logout")
         active_sessions.pop("User A", None)
-        other_a=refresh(request,other_a,"User A second session after local logout")
-        active_sessions["User A second session"] = other_a
+        other_a=refresh_owned("User A second session",other_a)
         require(profile_ids(request,other_a,user_a.user_id,"User A second session after local logout")==[user_a.user_id],
                 "User A local logout revoked its other session")
-        user_b=refresh(request,user_b,"User B after User A local logout")
-        active_sessions["User B"] = user_b
+        user_b=refresh_owned("User B",user_b)
         require(profile_ids(request,user_b,user_b.user_id,"User B after A local logout")==[user_b.user_id],
                 "User A local logout affected User B")
         require(profile_ids(request,user_b,user_a.user_id,"User B after A logout isolation")==[],

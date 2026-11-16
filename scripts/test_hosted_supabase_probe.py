@@ -19,13 +19,15 @@ def config():
 
 class FakeSupabase:
     def __init__(self,*,leak=False,rotate=True,revoke=True,anonymous=False,fail_login=False,
-                 accepted_overrides=(),cross_update=False,reset_profile_settings=False,
-                 review_leak=False,no_active_content=False,accept_changed_review=False,
-                 mutate_review_replay=False,anonymous_review=False):
+                 refresh_identity_mismatch=False,accepted_overrides=(),cross_update=False,
+                 reset_profile_settings=False,review_leak=False,no_active_content=False,
+                 accept_changed_review=False,mutate_review_replay=False,anonymous_review=False):
         self.users={"a@example.invalid":A,"b@example.invalid":B}
         self.passwords={"a@example.invalid":"TEST_ONLY_PASSWORD_A","b@example.invalid":"TEST_ONLY_PASSWORD_B"}
         self.leak,self.rotate,self.revoke=leak,rotate,revoke
         self.anonymous,self.fail_login=anonymous,fail_login
+        self.refresh_identity_mismatch=refresh_identity_mismatch
+        self.refresh_identity_mismatch_used=False
         self.accepted_overrides=set(accepted_overrides)
         self.cross_update,self.reset_profile_settings=cross_update,reset_profile_settings
         self.profiles=set()
@@ -62,6 +64,10 @@ class FakeSupabase:
             if identity is None:
                 return 400,{"message":"invalid"}
             user,session_id=identity
+            if self.refresh_identity_mismatch and not self.refresh_identity_mismatch_used:
+                self.refresh_identity_mismatch_used=True
+                self.refresh_owners.pop(token,None)
+                return self.new_session(B)
             if self.rotate:
                 self.refresh_owners.pop(token,None)
                 return self.new_session(user,session_id=session_id)
@@ -236,6 +242,14 @@ class HostedProbeTests(unittest.TestCase):
         self.assertEqual(fake.logout_scopes,["local","local","local"])
         self.assertEqual(fake.refresh_owners,{})
         self.assertEqual(fake.profiles,{A,B})
+
+    def test_rotated_session_is_registered_before_identity_guard_and_cleaned(self):
+        fake=FakeSupabase(refresh_identity_mismatch=True)
+        with self.assertRaisesRegex(probe.ProbeFailure,"User A refresh changed identity"):
+            probe.run_probe(config(),fake)
+        self.assertTrue(fake.refresh_identity_mismatch_used)
+        self.assertEqual(fake.logout_scopes,["local","local","local"])
+        self.assertEqual(fake.refresh_owners,{})
 
     def test_cleanup_failure_preserves_primary_probe_failure(self):
         fake=FakeSupabase()

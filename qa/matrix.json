@@ -1180,7 +1180,7 @@
         18
       ],
       "reproduce": "python3 scripts/test_hosted_supabase_probe.py; After the workflow reaches the default branch, configure the protected supabase-staging environment and two distinct pre-provisioned non-production users, then manually dispatch hosted-supabase-acceptance.yml with confirm_non_production=true. The API probe verifies A/B ownership, two independent A sessions, refresh rotation, ensure_profile, own/cross-owner reads and updates, anonymous denial, and scope=local logout. The Windows 2022 job then runs fresh processes in order: A password login and clean close, A refresh-token restore/profile after process restart, A local logout/credential clear, B password login/profile/logout, and exact-target cleanup. Record the exact run/head and redacted result.",
-      "limitation": "No staging secrets or hosted run observed yet. The Windows fixture uses the real Windows Credential Manager MethodChannel, caller-owned Supabase SDK, GoTrue and PostgREST; it uses an empty in-memory review store and does not exercise learner UI or review submission. It proves process-boundary restore only when the protected workflow actually passes; it does not force a cryptographically expired JWT, OS logoff/power-loss, physical multi-device offline sync or the complete learner journey. The workflow is manual-only, requires explicit non-production confirmation and a protected environment, and must run only on the ephemeral GitHub-hosted windows-2022 runner because cleanup clears that runner user's exact project credential target. Keep pending until the hosted run is observed.",
+      "limitation": "No staging secrets or hosted run observed yet. The Windows fixture uses the real Windows Credential Manager MethodChannel, caller-owned Supabase SDK, GoTrue and PostgREST; it uses an empty in-memory review store and does not exercise learner UI or review submission. It proves process-boundary restore only when the protected workflow actually passes; it does not force a cryptographically expired JWT, OS logoff/power-loss, physical multi-device offline sync or the complete learner journey. The workflow is manual-only, requires explicit non-production confirmation and a protected environment, and must run only on the ephemeral GitHub-hosted windows-2022 runner because cleanup clears that runner user's exact project credential target. Keep pending until the hosted run is observed. An offline regression also forces a refresh response whose returned identity changes after the old refresh token is consumed; the returned session is registered for local cleanup before the identity guard fails, so no rotated session is orphaned.",
       "anchors": [
         {
           "path": "scripts/hosted_supabase_probe.py",
@@ -1261,6 +1261,10 @@
         {
           "path": "scripts/test_hosted_supabase_probe.py",
           "contains": "def test_windows_harness_preserves_primary_phase_and_redacts_cleanup_errors(self):"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_rotated_session_is_registered_before_identity_guard_and_cleaned(self):"
         }
       ]
     },

@@ -154,3 +154,8 @@ if a primary probe assertion already failed, that failure is preserved and a
 fixed redacted cleanup warning is appended. Offline regressions cover both
 failure-path cleanup and preservation of the original failure. This does not
 replace hosted execution or the protected environment review.
+
+
+## Refresh identity mismatch cleanup
+
+After a refresh response has been shape-validated, the probe transfers cleanup ownership to the returned session before checking that the user identity is unchanged or that the refresh token rotated. This ordering matters because the server may already have consumed the previous refresh token. If the response unexpectedly identifies another user, the primary identity failure remains fixed/redacted, while the finally path locally logs out the returned session and every other still-owned session. The offline regression forces this case and requires all refresh sessions to be revoked; it does not simulate a hosted provider incident or replace the protected staging run.
