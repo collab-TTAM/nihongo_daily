@@ -4720,6 +4720,34 @@
       ],
       "reproduce": "From apps/flutter_app run flutter test test/features/quiz/quiz_report_v2_action_test.dart test/features/quiz/quiz_report_v2_provider_test.dart; flutter analyze; flutter test; inspect all exact-head CI jobs and steps.",
       "limitation": "The default transport source remains null; the action is hidden unless an explicitly caller-owned ready runtime supplies it. Fake submitter tests verify UI state transitions only, not deployed Edge, signed JWT, PostgREST/RLS, hosted A/B, durable cross-device attempts, mastery, SRS or study credit. Uncertain responses never authorize resubmit; only rate-limit rejection permits a separately tapped same-event retry. All Personal Alpha hosted gates remain pending."
+    },
+    {
+      "id": "quiz-report-v2-history-read",
+      "status": "automated-baseline",
+      "scope": "Internal read-only nd-quiz-report-2 history over immutable private receipts: Supabase Auth before DB, verified auth.uid owner, fixed N5/N4 and vocabulary/grammar filters, bounded 1–100 keyset pages, strict request/response correlation, read-only transaction and no owner-supplied query/write capability.",
+      "ci_job": "database",
+      "anchors": [
+        {
+          "path": "backend/ai/src/quiz_report_v2_history.ts",
+          "contains": "WHERE user_id = auth.uid()"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_history.test.ts",
+          "contains": "history uses verified auth.uid, fixed filters and bounded keyset pages"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_host.native.ts",
+          "contains": "native verified-owner nd-quiz-report-2 history reader paginates and isolates A/B"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "cd backend/ai && npm test && npm run check && npm run format:check && npm run test:postgres-quiz; inspect all exact-head GitHub Actions jobs and steps.",
+      "limitation": "Node tests use scripted ports; native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable data. No hosted signed-JWT/PostgREST/RLS, public route, app history UI, durable cross-device learner history, mastery, SRS or study credit is proven. No dedicated history index was added; bounded page size does not bound scan/sort cost.",
+      "ci_steps": [
+        "Verify quiz report coordinator and SQL bridge with native PostgreSQL"
+      ]
     }
   ],
   "findings": [

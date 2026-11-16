@@ -903,3 +903,49 @@ narrow/double-text layouts. These use a fake submitter and are not hosted JWT,
 Edge, PostgREST/RLS or learner A/B evidence. Keep #13/#18 open until durable
 server attempt history, reviewed mastery/weak-point behavior and the integrated
 learner journey have their own evidence.
+
+
+## Internal read-only v2 quiz history — 2026-11-16
+
+\`backend/ai/src/quiz_report_v2_history.ts\` adds a server-only reader over the
+immutable \`private.quiz_report_receipts\` ledger. It is not a Supabase Edge
+Function, public route, Dart provider, default save path or deployed feature.
+
+The request is a strict raw-JSON object with exactly four keys:
+\`jlpt_level\` (\`N5\`, \`N4\` or \`null\`), \`quiz_type\`
+(\`vocabulary_reading\`, \`grammar_meaning\` or \`null\`), \`limit\` (integer 1–100),
+and \`cursor\` (\`null\` or the exact \`received_at\` / \`client_event_id\` pair returned
+by the previous page). Duplicate keys, extra owner/query fields, invalid
+filters, malformed cursors and out-of-range limits fail before Auth or DB.
+
+The reader verifies the Supabase access token before opening PostgreSQL. It
+binds only that verified identity to the transaction, confirms \`auth.uid()\`
+matches, requires private-schema/table SELECT permission and enabled RLS, then
+uses a read-only transaction. The fixed parameterized query includes
+\`WHERE user_id = auth.uid()\`; learner input cannot provide an owner, SQL, table,
+column, sort expression or arbitrary filter. Pages are ordered by server
+\`received_at DESC, client_event_id DESC\` and use that pair as a keyset cursor.
+
+Each returned JSONB request is decoded against the trusted nd-quiz-report-2
+schema. Its event ID and requested filters must match the selected row. The
+stored response is decoded against that exact request and its echoed identity
+and score counts are correlated before an immutable history entry is returned.
+Malformed rows, wrong owners, response mismatches and unexpected DB envelopes
+fail closed; SQL/driver details are not returned.
+
+The internal factory \`createTrustedPostgresQuizReportV2HistoryReader\` accepts
+only trusted server configuration. No route, migration, grant, RLS policy,
+Auth strategy, app startup binding, mastery calculation, SRS mutation or study
+credit is added by this increment.
+
+Node tests cover strict request rejection, Auth-before-DB, fixed filters,
+bounded pagination, cursor replay, malformed stored rows, RLS/permission
+failure, owner claim mismatch and cancellation. A disposable native PostgreSQL
+test creates synthetic A/B users, submits test receipts, then verifies page
+boundaries, N4/type filters and owner isolation. These are component tests,
+not hosted signed-JWT/PostgREST/RLS or real learner evidence.
+
+The page size is bounded, but this increment does not add a dedicated
+\`(user_id, received_at, client_event_id)\` index; PostgreSQL may still scan/sort
+an owner's receipts as history grows. No hosted learner history UI or
+cross-device Personal Alpha proof is implied.

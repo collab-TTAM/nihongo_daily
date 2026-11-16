@@ -1,7 +1,6 @@
 # QA/security regression matrix — Issue #8
 
-Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-175 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 180 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -507,3 +506,24 @@ history write is still separate from a server report; a server receipt does not
 establish mastery, SRS, study time or progress. Fake submitter widget tests are
 component evidence only, not hosted JWT/Edge/PostgREST/RLS or multi-device
 acceptance.
+
+
+## Verified-owner v2 quiz history reader — 2026-11-16 UTC
+
+The internal \`quiz_report_v2_history.ts\` reader returns only the verified
+caller's immutable receipt history. It verifies Auth before PostgreSQL, binds
+the verified owner to \`auth.uid()\`, checks the private table's SELECT
+capability and enabled RLS, and executes in a read-only transaction. The only
+filters are fixed N5/N4 and vocabulary/grammar enums; page size is 1–100 and
+keyset order is server \`received_at\` plus event UUID. Stored request/response
+JSONB is decoded and correlated before return. No owner-supplied query, SQL,
+write capability, public route, migration, grant or default app binding exists.
+
+The new Node test covers invalid/duplicate request keys, invalid Auth,
+owner-supplied field rejection, parameterized filters/cursors, malformed
+receipts, RLS/permission failure, identity mismatch and cancellation. The
+native PostgreSQL A/B test uses synthetic TEST ONLY Auth identities and
+disposable receipts; it is not hosted JWT/PostgREST/RLS or learner evidence.
+Pagination bounds returned rows, but no dedicated history index was added, so
+scan/sort cost can grow with an owner's receipt count. Issue #13 and Personal
+Alpha remain open.

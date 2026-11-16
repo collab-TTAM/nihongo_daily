@@ -13,6 +13,10 @@ import {
   type QuizReportV2CurrentContentValidator,
 } from "../src/quiz_report_v2_host.ts";
 import {
+  readVerifiedQuizReportV2History,
+  type QuizReportV2HistoryRequest,
+} from "../src/quiz_report_v2_history.ts";
+import {
   validateCurrentQuizReportContentV2,
   type QuizReportContentV2Query,
 } from "../src/quiz_report_content_v2.ts";
@@ -599,6 +603,231 @@ test(
       );
       console.log(
         "PASS: native verified-owner nd-quiz-report-2 receipt lookup; replay-only, correlated response and A/B isolation (TEST ONLY synthetic Auth)",
+      );
+    } finally {
+      await admin.end();
+    }
+  },
+);
+
+
+test(
+  "native verified-owner nd-quiz-report-2 history reader paginates and isolates A/B",
+  { timeout: 30000 },
+  async () => {
+    const admin = client();
+    await admin.connect();
+    try {
+      const ownerA = randomUUID();
+      const ownerB = randomUUID();
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerA]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerB]);
+
+      const tokens = new Map([
+        ["verified-A", ownerA],
+        ["verified-B", ownerB],
+      ]);
+      let verifiedOwner = "";
+      let opened = 0;
+      const sqlCalls: string[] = [];
+      const auth: AuthVerifier = {
+        verify: async (bearer, signal) => {
+          if (signal.aborted) {
+            throw new BoundaryError("NETWORK_UNAVAILABLE");
+          }
+          const id = tokens.get(bearer) ?? null;
+          verifiedOwner = id ?? "";
+          return id ? { id } : null;
+        },
+      };
+      const connections = () => {
+        opened++;
+        const inner = nativeConnectionFactory();
+        return {
+          connect: () => inner.connect(),
+          query: async (sql: string, values?: string[]) => {
+            sqlCalls.push(sql);
+            return inner.query(sql, values);
+          },
+          close: () => inner.close(),
+        };
+      };
+      const validateCurrentContent: QuizReportV2CurrentContentValidator =
+        async (
+          query: QuizReportContentV2Query,
+          request: QuizReportV2Request,
+          signal: AbortSignal,
+        ) => {
+          const identity = await query("SELECT auth.uid()::text AS owner");
+          assert.equal(identity.command, "SELECT");
+          assert.equal(identity.rows[0]?.owner, verifiedOwner);
+          await validateCurrentQuizReportContentV2(query, request, signal);
+        };
+      const submissionDependencies = {
+        auth,
+        connections,
+        validateCurrentContent,
+      };
+      const ownerAReceipts: Array<{
+        request: QuizReportV2Request;
+        response: QuizReportV2Response;
+      }> = [];
+      const ownerACases = [
+        { fixture: fixtures[0]!, level: "N5" as const },
+        { fixture: fixtures[1]!, level: "N5" as const },
+        { fixture: fixtures[0]!, level: "N4" as const },
+      ];
+      for (const entry of ownerACases) {
+        const selectedFixture = {
+          ...entry.fixture,
+          request: {
+            ...entry.fixture.request,
+            jlpt_level: entry.level,
+          },
+        };
+        const request = await seedAndCanonicalize(admin, selectedFixture);
+        const response = await submitVerifiedQuizReportV2(
+          schema,
+          new TextEncoder().encode(JSON.stringify(request)),
+          "verified-A",
+          submissionDependencies,
+        );
+        ownerAReceipts.push({ request, response });
+      }
+
+      const ownerBFixture = fixtures[1]!;
+      const ownerBRequest = await seedAndCanonicalize(admin, ownerBFixture);
+      const ownerBResponse = await submitVerifiedQuizReportV2(
+        schema,
+        new TextEncoder().encode(JSON.stringify(ownerBRequest)),
+        "verified-B",
+        submissionDependencies,
+      );
+
+      const historyRaw = (request: QuizReportV2HistoryRequest) =>
+        new TextEncoder().encode(JSON.stringify(request));
+      const firstRequest: QuizReportV2HistoryRequest = {
+        jlpt_level: null,
+        quiz_type: null,
+        limit: 2,
+        cursor: null,
+      };
+      const beforeHistory = sqlCalls.length;
+      const first = await readVerifiedQuizReportV2History(
+        schema,
+        historyRaw(firstRequest),
+        "verified-A",
+        { auth, connections },
+      );
+      assert.equal(first.items.length, 2);
+      assert.ok(first.next_cursor);
+      const second = await readVerifiedQuizReportV2History(
+        schema,
+        historyRaw({ ...firstRequest, cursor: first.next_cursor }),
+        "verified-A",
+        { auth, connections },
+      );
+      assert.equal(second.items.length, 1);
+      assert.equal(second.next_cursor, null);
+      const allA = [...first.items, ...second.items];
+      assert.equal(allA.length, 3);
+      assert.equal(
+        new Set(allA.map((item) => item.request.client_event_id)).size,
+        3,
+      );
+      assert.deepEqual(
+        new Set(allA.map((item) => item.request.client_event_id)),
+        new Set(ownerAReceipts.map((item) => item.request.client_event_id)),
+      );
+      assert.deepEqual(
+        new Set(allA.map((item) => item.response.client_event_id)),
+        new Set(ownerAReceipts.map((item) => item.response.client_event_id)),
+      );
+
+      const n4 = await readVerifiedQuizReportV2History(
+        schema,
+        historyRaw({
+          jlpt_level: "N4",
+          quiz_type: null,
+          limit: 10,
+          cursor: null,
+        }),
+        "verified-A",
+        { auth, connections },
+      );
+      assert.equal(n4.items.length, 1);
+      assert.equal(n4.items[0]!.request.jlpt_level, "N4");
+
+      const grammar = await readVerifiedQuizReportV2History(
+        schema,
+        historyRaw({
+          jlpt_level: null,
+          quiz_type: "grammar_meaning",
+          limit: 10,
+          cursor: null,
+        }),
+        "verified-A",
+        { auth, connections },
+      );
+      assert.equal(grammar.items.length, 1);
+      assert.equal(grammar.items[0]!.request.quiz_type, "grammar_meaning");
+
+      const ownerBHistory = await readVerifiedQuizReportV2History(
+        schema,
+        historyRaw({ ...firstRequest, limit: 10 }),
+        "verified-B",
+        { auth, connections },
+      );
+      assert.deepEqual(
+        ownerBHistory.items.map((item) => item.request.client_event_id),
+        [ownerBRequest.client_event_id],
+      );
+      assert.deepEqual(ownerBHistory.items[0]!.response, ownerBResponse);
+      assert.ok(
+        !allA.some(
+          (item) => item.request.client_event_id === ownerBRequest.client_event_id,
+        ),
+      );
+
+      const beforeInvalidAuth = opened;
+      await assert.rejects(
+        readVerifiedQuizReportV2History(
+          schema,
+          historyRaw(firstRequest),
+          "invalid-token",
+          { auth, connections },
+        ),
+        (error: unknown) =>
+          error instanceof BoundaryError && error.code === "UNAUTHORIZED",
+      );
+      assert.equal(opened, beforeInvalidAuth);
+
+      const readSql = sqlCalls.slice(beforeHistory);
+      const historySql = readSql.filter((sql) =>
+        sql.includes("FROM private.quiz_report_receipts")
+      );
+      assert.ok(historySql.length >= 5);
+      assert.ok(
+        historySql.every((sql) => sql.includes("user_id = auth.uid()")),
+      );
+      assert.ok(
+        readSql.some((sql) =>
+          sql === "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY"
+        ),
+      );
+      assert.ok(
+        !readSql.some((sql) =>
+          /^\s*(INSERT|UPDATE|DELETE|TRUNCATE)\b/i.test(sql)
+        ),
+      );
+      assert.ok(
+        !readSql.some((sql) =>
+          sql.includes("private.store_quiz_report_v2") ||
+          sql.includes("private.replay_quiz_report_v2")
+        ),
+      );
+      console.log(
+        "PASS: native verified-owner nd-quiz-report-2 history; bounded keyset pages, fixed filters and A/B isolation (TEST ONLY synthetic Auth)",
       );
     } finally {
       await admin.end();
