@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/models/preview_level.dart';
 import '../../../shared/widgets/page_body.dart';
 import '../application/quiz_history_provider.dart';
+import '../application/quiz_report_v2_provider.dart';
+import '../data/quiz_report_v2_adapter.dart';
+import '../data/quiz_report_v2_transport.dart';
 import '../data/vocabulary_quiz_history_repository.dart';
 import '../domain/vocabulary_quiz_attempt.dart';
 
@@ -14,6 +17,7 @@ class QuizHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.watch(quizHistoryRepositoryProvider);
+    final serverReader = ref.watch(quizReportV2HistoryReaderProvider);
     return PageBody(
       children: [
         const PageHeading(
@@ -22,6 +26,17 @@ class QuizHistoryScreen extends ConsumerWidget {
               'Kết quả đã lưu của tài khoản hiện tại trên thiết bị này. '
               'Chưa đồng bộ hoặc xác định mức ghi nhớ.',
         ),
+        if (serverReader != null) ...[
+          _ServerHistoryPanel(
+            key: ObjectKey(serverReader),
+            reader: serverReader,
+            isCurrent: () => identical(
+              ref.read(quizReportV2HistoryReaderProvider),
+              serverReader,
+            ),
+          ),
+          const Divider(),
+        ],
         if (repository == null) ...[
           const Text('Lịch sử chưa khả dụng. Hãy mở tài khoản đã cấu hình.'),
           OutlinedButton(
@@ -255,6 +270,273 @@ class _HistoryPanelState extends State<_HistoryPanel> {
                 '${record.attempt.completedAt.toIso8601String()}',
               ),
             ),
+        ],
+      ],
+    );
+  }
+}
+
+
+class _ServerHistoryPanel extends StatefulWidget {
+  const _ServerHistoryPanel({
+    super.key,
+    required this.reader,
+    required this.isCurrent,
+  });
+
+  final QuizReportV2HistoryReader reader;
+  final bool Function() isCurrent;
+
+  @override
+  State<_ServerHistoryPanel> createState() => _ServerHistoryPanelState();
+}
+
+enum _ServerHistoryLevel {
+  all('Tất cả cấp độ', null),
+  n5('N5', 'N5'),
+  n4('N4', 'N4');
+
+  const _ServerHistoryLevel(this.label, this.value);
+  final String label;
+  final String? value;
+}
+
+enum _ServerHistoryType {
+  all('Tất cả dạng quiz', null),
+  vocabulary('Từ vựng · đọc', 'vocabulary_reading'),
+  grammar('Ngữ pháp', 'grammar_meaning');
+
+  const _ServerHistoryType(this.label, this.value);
+  final String label;
+  final String? value;
+}
+
+class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
+  static const _pageSize = 20;
+
+  _ServerHistoryLevel _level = _ServerHistoryLevel.all;
+  _ServerHistoryType _type = _ServerHistoryType.all;
+  QuizReportV2HistoryPage? _page;
+  List<QuizReportV2HistoryCursor?> _cursorHistory = [null];
+  int _pageIndex = 0;
+  int _requestRevision = 0;
+  bool _requested = false;
+  bool _loading = false;
+  bool _failed = false;
+
+  Future<void> _load({
+    QuizReportV2HistoryCursor? cursor,
+    bool reset = false,
+  }) async {
+    if (!mounted || !widget.isCurrent()) return;
+    if (reset) {
+      _cursorHistory = [null];
+      _pageIndex = 0;
+      cursor = null;
+    }
+    final revision = ++_requestRevision;
+    setState(() {
+      _requested = true;
+      _loading = true;
+      _failed = false;
+      _page = null;
+    });
+    try {
+      final page = await widget.reader.readHistory(
+        QuizReportV2HistoryQuery(
+          jlptLevel: _level.value,
+          quizType: _type.value,
+          limit: _pageSize,
+          cursor: cursor,
+        ),
+      );
+      if (!mounted ||
+          !widget.isCurrent() ||
+          revision != _requestRevision) {
+        return;
+      }
+      setState(() => _page = page);
+    } on Object {
+      if (!mounted ||
+          !widget.isCurrent() ||
+          revision != _requestRevision) {
+        return;
+      }
+      setState(() => _failed = true);
+    } finally {
+      if (mounted &&
+          widget.isCurrent() &&
+          revision == _requestRevision) {
+        setState(() => _loading = false);
+      }
+    }
+  }
+
+  void _changeLevel(_ServerHistoryLevel? value) {
+    if (value == null || !mounted || !widget.isCurrent()) return;
+    final reload = _requested;
+    _requestRevision++;
+    setState(() {
+      _level = value;
+      _page = null;
+      _cursorHistory = [null];
+      _pageIndex = 0;
+      _loading = false;
+      _failed = false;
+    });
+    if (reload) unawaited(_load());
+  }
+
+  void _changeType(_ServerHistoryType? value) {
+    if (value == null || !mounted || !widget.isCurrent()) return;
+    final reload = _requested;
+    _requestRevision++;
+    setState(() {
+      _type = value;
+      _page = null;
+      _cursorHistory = [null];
+      _pageIndex = 0;
+      _loading = false;
+      _failed = false;
+    });
+    if (reload) unawaited(_load());
+  }
+
+  void _loadOlder() {
+    final cursor = _page?.nextCursor;
+    if (cursor == null || _loading || !widget.isCurrent()) return;
+    final nextIndex = _pageIndex + 1;
+    setState(() {
+      _cursorHistory = [..._cursorHistory.take(nextIndex), cursor];
+      _pageIndex = nextIndex;
+    });
+    unawaited(_load(cursor: cursor));
+  }
+
+  void _loadNewer() {
+    if (_pageIndex == 0 || _loading || !widget.isCurrent()) return;
+    final previousIndex = _pageIndex - 1;
+    final cursor = _cursorHistory[previousIndex];
+    setState(() => _pageIndex = previousIndex);
+    unawaited(_load(cursor: cursor));
+  }
+
+  String _typeLabel(QuizReportV2HistoryEntry entry) {
+    final request = entry.request;
+    if (request.quizType == 'vocabulary_reading') {
+      return 'Từ vựng · đọc';
+    }
+    return request.practiceKind == 'primary'
+        ? 'Ngữ pháp · nghĩa chính'
+        : 'Ngữ pháp · sửa lỗi';
+  }
+
+  @override
+  void dispose() {
+    _requestRevision++;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final page = _page;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const PageHeading(
+          title: 'Lịch sử quiz trên máy chủ',
+          subtitle:
+              'Biên nhận chỉ đọc của tài khoản đã đăng nhập. Không cộng vào '
+              'tiến độ, mức ghi nhớ hoặc thời gian học.',
+        ),
+        DropdownButton<_ServerHistoryLevel>(
+          key: const Key('server-quiz-history-level'),
+          value: _level,
+          isExpanded: true,
+          items: [
+            for (final value in _ServerHistoryLevel.values)
+              DropdownMenuItem(value: value, child: Text(value.label)),
+          ],
+          onChanged: _loading ? null : _changeLevel,
+        ),
+        DropdownButton<_ServerHistoryType>(
+          key: const Key('server-quiz-history-type'),
+          value: _type,
+          isExpanded: true,
+          items: [
+            for (final value in _ServerHistoryType.values)
+              DropdownMenuItem(value: value, child: Text(value.label)),
+          ],
+          onChanged: _loading ? null : _changeType,
+        ),
+        OutlinedButton(
+          key: Key(
+            _failed
+                ? 'server-quiz-history-retry'
+                : _requested
+                ? 'server-quiz-history-refresh'
+                : 'server-quiz-history-load',
+          ),
+          onPressed: _loading
+              ? null
+              : () => unawaited(_load(reset: true)),
+          child: Text(
+            _failed
+                ? 'Thử tải lại lịch sử máy chủ'
+                : _requested
+                ? 'Làm mới lịch sử máy chủ'
+                : 'Tải lịch sử máy chủ',
+          ),
+        ),
+        if (_loading) ...[
+          const LinearProgressIndicator(),
+          const Text('Đang đọc biên nhận…'),
+        ],
+        if (_failed)
+          const Text(
+            'Không thể đọc lịch sử máy chủ. Hãy thử lại khi kết nối ổn định.',
+            key: Key('server-quiz-history-error'),
+          ),
+        if (page != null) ...[
+          Text(
+            '\${page.items.length} kết quả trên trang \${_pageIndex + 1}',
+            key: const Key('server-quiz-history-summary'),
+          ),
+          if (page.items.isEmpty)
+            const Text(
+              'Chưa có biên nhận quiz trên máy chủ cho bộ lọc này.',
+              key: Key('server-quiz-history-empty'),
+            ),
+          for (final entry in page.items)
+            ListTile(
+              key: ValueKey(
+                'server-quiz-history-\${entry.request.clientEventId}',
+              ),
+              title: Text(
+                '\${entry.request.jlptLevel} · \${_typeLabel(entry)} · '
+                '\${entry.response.correctCount} / '
+                '\${entry.response.answerCount}',
+              ),
+              subtitle: Text(
+                'Hoàn thành (UTC): \${entry.request.completedAt}\n'
+                'Máy chủ nhận (giờ địa phương): '
+                '\${DateTime.parse(entry.receivedAt).toLocal()}',
+              ),
+            ),
+          if (page.items.isNotEmpty) ...[
+            OutlinedButton(
+              key: const Key('server-quiz-history-newer'),
+              onPressed: _pageIndex == 0 || _loading ? null : _loadNewer,
+              child: const Text('Kết quả mới hơn'),
+            ),
+            OutlinedButton(
+              key: const Key('server-quiz-history-older'),
+              onPressed: page.nextCursor == null || _loading
+                  ? null
+                  : _loadOlder,
+              child: const Text('Kết quả cũ hơn'),
+            ),
+          ],
         ],
       ],
     );

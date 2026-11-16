@@ -1018,3 +1018,27 @@ server-history screen is not connected, the Edge Function remains undeployed,
 and no hosted signed-JWT/PostgREST/RLS or learner A/B evidence is claimed.
 Server receipts remain separate from local device history, study minutes,
 mastery, SRS state and study credit.
+
+
+## Learner-facing server quiz history screen — 2026-11-16
+
+The quiz history route now exposes a separate **server receipt** section only
+when the caller-owned quiz-report transport is published by a ready Auth
+session, verified own profile and active runtime. The existing device-local
+history remains separate and is not merged with server receipts.
+
+The server section supports fixed N5/N4 and vocabulary/grammar filters, a
+20-row page, older/newer keyset navigation using only the server-issued
+\`received_at\` / \`client_event_id\` cursor, and explicit refresh. It shows the
+validated original request's level/type, correct-answer count and UTC completion
+time alongside the server receipt time. Loading, redacted error and empty states
+are explicit. Filter changes reset the cursor; a request revision and captured
+reader identity prevent late results from an old reader being rendered after
+replacement.
+
+This is a read-only receipt view. It does not write attempts, retry uncertain
+submissions, derive mastery/weak points, change SRS, record study minutes or
+grant study credit. The default preview still publishes no transport and
+therefore shows no server-history section. The Edge Function is still not
+deployed; CI/widget fixtures are not hosted learner evidence, and local-device
+history remains a distinct store.
