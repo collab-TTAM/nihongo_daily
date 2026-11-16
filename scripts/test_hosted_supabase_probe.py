@@ -226,7 +226,32 @@ class HostedProbeTests(unittest.TestCase):
         probe.run_probe(config(),fake)
         self.assertEqual(fake.profiles,{A,B})
         self.assertEqual(fake.preferences,{A:"N5",B:"N5"})
-        self.assertEqual(fake.logout_scopes,["local"])
+        self.assertEqual(fake.logout_scopes,["local","local","local"])
+        self.assertEqual(fake.refresh_owners,{})
+
+    def test_probe_failure_still_cleans_all_remaining_local_sessions(self):
+        fake=FakeSupabase(no_active_content=True)
+        with self.assertRaisesRegex(probe.ProbeFailure,"active N5 vocabulary is unavailable"):
+            probe.run_probe(config(),fake)
+        self.assertEqual(fake.logout_scopes,["local","local","local"])
+        self.assertEqual(fake.refresh_owners,{})
+        self.assertEqual(fake.profiles,{A,B})
+
+    def test_cleanup_failure_preserves_primary_probe_failure(self):
+        fake=FakeSupabase()
+        def fail_logout(method,path,payload=None,access_token=None):
+            if method=="POST" and path=="/auth/v1/logout?scope=local":
+                return 503,{"message":"SENSITIVE_STAGING_RESPONSE"}
+            return fake(method,path,payload,access_token)
+
+        with self.assertRaisesRegex(
+            probe.ProbeFailure,
+            "User A local logout failed; local staging-session cleanup could not be verified",
+        ) as raised:
+            probe.run_probe(config(),fail_logout)
+        self.assertNotIn("SENSITIVE_STAGING_RESPONSE",str(raised.exception))
+        self.assertNotIn("TEST_ONLY_PASSWORD_A",str(raised.exception))
+        self.assertNotIn("TEST_ONLY_ACCESS",str(raised.exception))
 
     def test_hosted_review_rpc_replay_conflict_and_owner_isolation(self):
         fake=FakeSupabase()

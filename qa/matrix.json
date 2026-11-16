@@ -1231,6 +1231,18 @@
           "contains": "def test_global_logout_cannot_pass_local_session_acceptance(self):"
         },
         {
+          "path": "scripts/hosted_supabase_probe.py",
+          "contains": "def _cleanup_staging_sessions("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_probe_failure_still_cleans_all_remaining_local_sessions(self):"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_cleanup_failure_preserves_primary_probe_failure(self):"
+        },
+        {
           "path": "apps/flutter_app/tool/windows_hosted_runtime_fixture.dart",
           "contains": "Future<void> _verifyWindowsHostedRuntimePhase("
         },

@@ -407,62 +407,108 @@ def verify_hosted_review_rpc(request,user_a: Session,user_b: Session) -> None:
     require(review_event_rows(request,user_b,event_a_id,"User B cross-owner event")==[],
             "RLS exposed User A review event to User B")
 
+def _cleanup_staging_sessions(request, sessions: dict[str, Session]) -> tuple[str, ...]:
+    """Best-effort local logout for every still-owned staging session."""
+    failures = []
+    for label, current in reversed(tuple(sessions.items())):
+        try:
+            status, _ = request(
+                "POST",
+                "/auth/v1/logout?scope=local",
+                None,
+                current.access,
+            )
+            if status not in {200, 204}:
+                failures.append(label)
+        except Exception:
+            failures.append(label)
+    return tuple(failures)
+
+
 def run_probe(config: Config,request) -> None:
     """Use two pre-provisioned staging users; never creates or deletes accounts."""
-    status,body=request("POST","/auth/v1/token?grant_type=password",
-                        {"email":config.email_a,"password":config.password_a},None)
-    initial_a=session(status,body,"User A")
-    status,body=request("POST","/auth/v1/token?grant_type=password",
-                        {"email":config.email_a,"password":config.password_a},None)
-    initial_a_other=session(status,body,"User A second session")
-    status,body=request("POST","/auth/v1/token?grant_type=password",
-                        {"email":config.email_b,"password":config.password_b},None)
-    initial_b=session(status,body,"User B")
-    require(initial_a.user_id==initial_a_other.user_id and initial_a.user_id!=initial_b.user_id,
-            "staging users must be distinct and User A must have two sessions")
-    require(initial_a.refresh!=initial_a_other.refresh,
-            "User A sessions must have independent refresh tokens")
-    user_a=refresh(request,initial_a,"User A")
-    other_a=refresh(request,initial_a_other,"User A second session")
-    user_b=refresh(request,initial_b,"User B")
-    require(user_a.refresh!=other_a.refresh,
-            "User A refresh sessions must remain independent")
-    # Before legitimate bootstrap, neither caller may choose the owner or profile settings.
-    reject_profile_overrides(request,user_a,user_b.user_id,"User A")
-    reject_profile_overrides(request,user_b,user_a.user_id,"User B")
-    require(profile_ids(request,user_a,user_a.user_id,"User A before bootstrap")==[],
-            "forged User A bootstrap created a profile")
-    require(profile_ids(request,user_b,user_b.user_id,"User B before bootstrap")==[],
-            "forged User B bootstrap created a profile")
-    ensure_profile(request,user_a,"User A")
-    ensure_profile(request,user_b,"User B")
-    require(profile_ids(request,user_a,user_a.user_id,"User A own read")==[user_a.user_id],
-            "User A cannot read its own profile")
-    require(profile_ids(request,user_b,user_b.user_id,"User B own read")==[user_b.user_id],
-            "User B cannot read its own profile")
-    require(profile_ids(request,user_a,user_b.user_id,"User A cross read")==[],
-            "RLS exposed User B profile to User A")
-    require(profile_ids(request,user_b,user_a.user_id,"User B cross read")==[],
-            "RLS exposed User A profile to User B")
-    reject_cross_owner_profile_update(request,user_a,user_b,"User A -> User B")
-    reject_cross_owner_profile_update(request,user_b,user_a,"User B -> User A")
-    verify_profile_preference_preserved(request,user_a,"User A")
-    verify_profile_preference_preserved(request,user_b,"User B")
-    verify_hosted_review_rpc(request,other_a,user_b)
-    anonymous_status,_=request("GET","/rest/v1/profiles?select=id&limit=1",None,None)
-    require(anonymous_status in {401,403},"profiles endpoint accepted an unauthenticated request")
-    status,_=request("POST","/auth/v1/logout?scope=local",None,user_a.access)
-    require(status in {200,204},"User A local logout failed")
-    status,_=request("POST","/auth/v1/token?grant_type=refresh_token",{"refresh_token":user_a.refresh},None)
-    require(status in {400,401,403},"User A current refresh token remained usable after local logout")
-    other_a=refresh(request,other_a,"User A second session after local logout")
-    require(profile_ids(request,other_a,user_a.user_id,"User A second session after local logout")==[user_a.user_id],
-            "User A local logout revoked its other session")
-    user_b=refresh(request,user_b,"User B after User A local logout")
-    require(profile_ids(request,user_b,user_b.user_id,"User B after A local logout")==[user_b.user_id],
-            "User A local logout affected User B")
-    require(profile_ids(request,user_b,user_a.user_id,"User B after A logout isolation")==[],
-            "User B can read User A profile")
+    active_sessions: dict[str, Session] = {}
+    primary_failure = None
+    cleanup_failures: tuple[str, ...] = ()
+    try:
+        status,body=request("POST","/auth/v1/token?grant_type=password",
+                            {"email":config.email_a,"password":config.password_a},None)
+        initial_a=session(status,body,"User A")
+        active_sessions["User A"] = initial_a
+        status,body=request("POST","/auth/v1/token?grant_type=password",
+                            {"email":config.email_a,"password":config.password_a},None)
+        initial_a_other=session(status,body,"User A second session")
+        active_sessions["User A second session"] = initial_a_other
+        status,body=request("POST","/auth/v1/token?grant_type=password",
+                            {"email":config.email_b,"password":config.password_b},None)
+        initial_b=session(status,body,"User B")
+        active_sessions["User B"] = initial_b
+        require(initial_a.user_id==initial_a_other.user_id and initial_a.user_id!=initial_b.user_id,
+                "staging users must be distinct and User A must have two sessions")
+        require(initial_a.refresh!=initial_a_other.refresh,
+                "User A sessions must have independent refresh tokens")
+        user_a=refresh(request,initial_a,"User A")
+        active_sessions["User A"] = user_a
+        other_a=refresh(request,initial_a_other,"User A second session")
+        active_sessions["User A second session"] = other_a
+        user_b=refresh(request,initial_b,"User B")
+        active_sessions["User B"] = user_b
+        require(user_a.refresh!=other_a.refresh,
+                "User A refresh sessions must remain independent")
+        # Before legitimate bootstrap, neither caller may choose the owner or profile settings.
+        reject_profile_overrides(request,user_a,user_b.user_id,"User A")
+        reject_profile_overrides(request,user_b,user_a.user_id,"User B")
+        require(profile_ids(request,user_a,user_a.user_id,"User A before bootstrap")==[],
+                "forged User A bootstrap created a profile")
+        require(profile_ids(request,user_b,user_b.user_id,"User B before bootstrap")==[],
+                "forged User B bootstrap created a profile")
+        ensure_profile(request,user_a,"User A")
+        ensure_profile(request,user_b,"User B")
+        require(profile_ids(request,user_a,user_a.user_id,"User A own read")==[user_a.user_id],
+                "User A cannot read its own profile")
+        require(profile_ids(request,user_b,user_b.user_id,"User B own read")==[user_b.user_id],
+                "User B cannot read its own profile")
+        require(profile_ids(request,user_a,user_b.user_id,"User A cross read")==[],
+                "RLS exposed User B profile to User A")
+        require(profile_ids(request,user_b,user_a.user_id,"User B cross read")==[],
+                "RLS exposed User A profile to User B")
+        reject_cross_owner_profile_update(request,user_a,user_b,"User A -> User B")
+        reject_cross_owner_profile_update(request,user_b,user_a,"User B -> User A")
+        verify_profile_preference_preserved(request,user_a,"User A")
+        verify_profile_preference_preserved(request,user_b,"User B")
+        verify_hosted_review_rpc(request,other_a,user_b)
+        anonymous_status,_=request("GET","/rest/v1/profiles?select=id&limit=1",None,None)
+        require(anonymous_status in {401,403},"profiles endpoint accepted an unauthenticated request")
+        status,_=request("POST","/auth/v1/logout?scope=local",None,user_a.access)
+        require(status in {200,204},"User A local logout failed")
+        status,_=request("POST","/auth/v1/token?grant_type=refresh_token",{"refresh_token":user_a.refresh},None)
+        require(status in {400,401,403},"User A current refresh token remained usable after local logout")
+        active_sessions.pop("User A", None)
+        other_a=refresh(request,other_a,"User A second session after local logout")
+        active_sessions["User A second session"] = other_a
+        require(profile_ids(request,other_a,user_a.user_id,"User A second session after local logout")==[user_a.user_id],
+                "User A local logout revoked its other session")
+        user_b=refresh(request,user_b,"User B after User A local logout")
+        active_sessions["User B"] = user_b
+        require(profile_ids(request,user_b,user_b.user_id,"User B after A local logout")==[user_b.user_id],
+                "User A local logout affected User B")
+        require(profile_ids(request,user_b,user_a.user_id,"User B after A logout isolation")==[],
+                "User B can read User A profile")
+    except ProbeFailure as error:
+        primary_failure = error
+    finally:
+        cleanup_failures = _cleanup_staging_sessions(request, active_sessions)
+
+    if primary_failure is not None:
+        if cleanup_failures:
+            raise ProbeFailure(
+                f"{primary_failure}; local staging-session cleanup could not be verified"
+            ) from None
+        raise primary_failure
+    require(
+        not cleanup_failures,
+        "local staging-session cleanup could not be verified",
+    )
 
 def main() -> int:
     try:

@@ -4370,3 +4370,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no Dart/Flutter SDK; local format/analyze/test/build were not run. New exact-head CI is the verification gate. This formatter correction is not hosted Auth, learner A/B, deployed RLS/PostgREST, expiry/restart or multi-device evidence.
 - Next: inspect every latest-attempt job/step on the corrected exact HEAD. If all required checks pass, continue #22 atomic-review/hosted acceptance and #20/#15 integration gaps without merging this incomplete draft.
 
+
+
+## Hosted staging probe session cleanup — 2026-11-16
+
+- Run `core-20261116T1434Z-pr37-hosted-probe-session-cleanup`; branch `automation/issue-22-atomic-review`; parent HEAD `a58b344232dc2306f9b81a8f4dd22203352952e2`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. Core worker was RELEASED after the preceding exact-head checkpoint; Pro-owned #14/#38/N4 remains excluded.
+- Bounded Issue #20 improvement: `scripts/hosted_supabase_probe.py` now tracks the three pre-provisioned sessions through refresh rotation and attempts local-only logout for every remaining session in reverse creation order from a finally path. The explicitly tested User A local logout is removed from the cleanup set only after its rotated refresh token is confirmed revoked. Global logout, account creation/deletion, profile deletion and review-event deletion are not used.
+- Added offline regressions for successful cleanup, cleanup after an earlier probe assertion fails, and cleanup failure without masking the primary safe error. Added executable QA anchors and documented the non-production staging behavior.
+- Changed paths: `scripts/hosted_supabase_probe.py`, `scripts/test_hosted_supabase_probe.py`, `qa/matrix.json`, `docs/HOSTED_SUPABASE_ACCEPTANCE.md`, `docs/PROJECT_STATUS.md`. Source commit SHA is recorded in the immediately following PR checkpoint comment.
+- Previous exact-head Actions [43873951684](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43873951684) is run-level COMPLETED/SUCCESS on parent `a58b344232dc2306f9b81a8f4dd22203352952e2`; all six job conclusions and all returned steps were SUCCESS. GitHub's repo-sanity job payload anomalously reported `status=in_progress` despite a non-null completed_at and every step completed successfully; this inconsistency is not treated as clean release evidence. No local Python execution is claimed in this cloud authoring run.
+- No hosted workflow dispatch or staging secrets were used. Hosted signed-JWT A/B, protected Windows fresh-process restore, deployed PostgREST/RLS and real learner acceptance remain pending. Next: inspect every latest-attempt job/step on the new exact head, then continue #20/#22/#15 only from observed evidence.

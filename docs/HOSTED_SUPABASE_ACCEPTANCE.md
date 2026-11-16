@@ -139,3 +139,18 @@ attempt is observed, all hosted learner QA cases remain pending.
 The PowerShell driver records only the fixed phase identifier when a child process fails. Once the executable is resolved and the phase sequence starts, a final exact-project Credential Manager cleanup is attempted in `finally`, even after a failed login, restore or logout phase. If the primary phase and cleanup both fail, the reported message names the failed phase and says cleanup could not be verified; if only cleanup fails, a fixed cleanup error is returned. Raw PowerShell error records, environment values and credential material are never echoed. The 90-second child-process timeout still kills and waits for the process before the phase is reported.
 
 Offline repo-sanity regressions protect the exact fresh-process phase order, timeout/kill/wait behavior, unconditional final cleanup and redacted primary/cleanup failure reporting. These static tests protect the harness definition; they do not substitute for dispatching the protected staging workflow.
+
+
+## Hosted staging probe session cleanup
+
+The manual Python probe tracks the current access token for each of its three
+pre-provisioned sessions as refresh rotates. The explicitly tested User A local
+logout remains separate so the probe can prove that A's second session and User B
+remain usable. After the normal flow, or after any probe failure, a finally path
+attempts local-only logout for every still-owned session in reverse creation
+order. It never uses global logout, creates/deletes accounts, or deletes profiles
+or review events. If cleanup fails after a successful probe, the workflow fails;
+if a primary probe assertion already failed, that failure is preserved and a
+fixed redacted cleanup warning is appended. Offline regressions cover both
+failure-path cleanup and preservation of the original failure. This does not
+replace hosted execution or the protected environment review.
