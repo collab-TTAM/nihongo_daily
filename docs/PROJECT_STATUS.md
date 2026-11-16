@@ -12245,3 +12245,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Updated `docs/QUIZ_REPORT_API.md` and `qa/matrix.json`. This status update appends to the complete prior history; the original content is preserved byte-for-byte.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/tests/build are not claimed. Exact-head GitHub Actions is the verification gate. The Edge function remains undeployed and the learner-facing server-history UI is not connected; no hosted signed-JWT/PostgREST/RLS, learner A/B, cross-device history, mastery or study-credit acceptance is claimed.
 - Next: inspect every latest-attempt job/step on the final exact HEAD. If green, connect the read-only page to a separate explicit server-history UI with filter/pagination and owner-replacement tests; do not merge or close #13 until hosted and integrated acceptance is observed.
+
+
+## Quiz history transport review follow-up — 2026-11-16
+
+- Follow-up source commit `db1fef89146fc3b5d013dd2a752610284a34168d` (parent `c8529b31c60d2dda8fe572fc016cf6f36e882457`) removes formatter-sensitive blank lines, wraps the timestamp parser, and removes an unnecessary nullable cast.
+- Added three more Dart regressions: valid keyset cursor/continuation, no-session no-dispatch, and token-generation rotation abort. The transport suite now contains eight history-specific tests including fixed endpoint, bounded filters, strict filter/cursor checks, late account switch and close/drain.
+- Diff review was performed against the exact source commit. Full recursive tree remains 986 entries; only the three expected paths changed in the follow-up, with all 858 unrelated blobs preserved. The status file itself was not rewritten by this source commit.
+- Exact-head Actions for the final status commit are required before calling format/analyze/test/build green. No local Flutter SDK or hosted Edge credentials are available in the authoring runtime; no hosted learner proof is claimed.
