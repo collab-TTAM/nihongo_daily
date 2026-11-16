@@ -985,3 +985,37 @@ check include the new function. These are source/CI checks only: the function
 has not been deployed, no hosted signed-JWT/PostgREST/RLS learner A/B is claimed,
 and the Flutter history screen is not yet connected to this endpoint. It does
 not update local history, mastery, SRS or study minutes.
+
+
+## Captured-session Flutter history transport — 2026-11-16
+
+The opt-in `QuizReportV2HttpTransport` also implements a read-only
+`QuizReportV2HistoryReader` for the fixed
+`/functions/v1/quiz-report-v2-history` path. It accepts only the typed
+`QuizReportV2HistoryQuery`: optional N5/N4 and vocabulary/grammar filters,
+a 1–100 page size, and the server-issued received-at/event-ID cursor. The
+request contains no owner, project, table, SQL, arbitrary endpoint or learner
+supplied key.
+
+The same caller-owned `QuizReportV2Auth` snapshot is captured for every page.
+The access-token generation and user ID are checked before dispatch, during
+the request, after the response and after Auth-listener cleanup. Account
+replacement, token rotation, runtime close or listener failure aborts the
+request and suppresses the old page. The transport uses the fixed project
+origin/public key supplied by trusted startup, disables redirects, enforces
+the existing 16 KiB response bound, requires no-store/nosniff JSON, and never
+logs or displays a token or raw server error. It performs no automatic retry.
+
+The typed decoder validates exact envelope/entry/request/response keys,
+original event and answer identity, selected-choice counts, fixed filters,
+UTC receipt timestamps, descending key order, duplicate event IDs and
+continuation cursor equality with the last returned item. It rejects a forged
+or mismatched cursor rather than silently displaying an inconsistent page.
+The provider additionally requires the existing ready account/profile/runtime
+and remains null in the default preview.
+
+This increment only exposes the transport capability. The learner-facing
+server-history screen is not connected, the Edge Function remains undeployed,
+and no hosted signed-JWT/PostgREST/RLS or learner A/B evidence is claimed.
+Server receipts remain separate from local device history, study minutes,
+mastery, SRS state and study credit.

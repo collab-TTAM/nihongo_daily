@@ -9,5 +9,6 @@ void main() {
 
     expect(container.read(quizReportV2TransportSourceProvider), isNull);
     expect(container.read(quizReportV2TransportProvider), isNull);
+    expect(container.read(quizReportV2HistoryReaderProvider), isNull);
   });
 }

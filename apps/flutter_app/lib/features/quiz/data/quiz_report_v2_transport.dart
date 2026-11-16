@@ -94,10 +94,15 @@ abstract interface class QuizReportV2Submitter {
   Future<QuizReportV2LookupResult> lookupReceipt(QuizReportV2Request report);
 }
 
+abstract interface class QuizReportV2HistoryReader {
+  Future<QuizReportV2HistoryPage> readHistory(QuizReportV2HistoryQuery query);
+}
+
 /// Opt-in HTTP transport only. It never changes local history or marks an
 /// attempt saved. The caller owns Auth readiness and must retain the original
 /// immutable report/event ID after an uncertain timeout or connection failure.
-final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
+final class QuizReportV2HttpTransport
+    implements QuizReportV2Submitter, QuizReportV2HistoryReader {
   QuizReportV2HttpTransport({
     required String projectUrl,
     required String publishableKey,
@@ -144,6 +149,8 @@ final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
       Uri.parse(_origin).replace(path: '/functions/v1/quiz-report-v2');
   Uri get _lookupEndpoint =>
       Uri.parse(_origin).replace(path: '/functions/v1/quiz-report-v2-lookup');
+  Uri get _historyEndpoint =>
+      Uri.parse(_origin).replace(path: '/functions/v1/quiz-report-v2-history');
 
   @override
   Future<QuizReportV2Response> submit(QuizReportV2Request report) =>
@@ -163,8 +170,52 @@ final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
         decodeSuccess: report.decodeLookupResponse,
       );
 
+  /// Reads immutable server receipts; it never writes, retries or grants credit.
+  @override
+  Future<QuizReportV2HistoryPage> readHistory(
+    QuizReportV2HistoryQuery query,
+  ) {
+    late final Uint8List raw;
+    try {
+      raw = Uint8List.fromList(query.encodeRawBody());
+    } on Object {
+      return Future<QuizReportV2HistoryPage>.error(
+        const QuizReportV2TransportFailure(
+          QuizReportV2TransportCode.validationFailure,
+        ),
+      );
+    }
+    return _sendRaw<QuizReportV2HistoryPage>(
+      raw,
+      endpoint: _historyEndpoint,
+      decodeSuccess: query.decodePage,
+    );
+  }
+
   Future<T> _send<T>(
     QuizReportV2Request report, {
+    required Uri endpoint,
+    required T Function(Object?) decodeSuccess,
+  }) {
+    late final Uint8List raw;
+    try {
+      raw = Uint8List.fromList(report.encodeRawBody());
+    } on Object {
+      return Future<T>.error(
+        const QuizReportV2TransportFailure(
+          QuizReportV2TransportCode.validationFailure,
+        ),
+      );
+    }
+    return _sendRaw<T>(
+      raw,
+      endpoint: endpoint,
+      decodeSuccess: decodeSuccess,
+    );
+  }
+
+  Future<T> _sendRaw<T>(
+    Uint8List raw, {
     required Uri endpoint,
     required T Function(Object?) decodeSuccess,
   }) {
@@ -175,10 +226,17 @@ final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
         ),
       );
     }
+    if (raw.isEmpty || raw.length > 16 * 1024) {
+      return Future<T>.error(
+        const QuizReportV2TransportFailure(
+          QuizReportV2TransportCode.validationFailure,
+        ),
+      );
+    }
     final settled = Completer<void>();
     _activeOperations.add(settled);
     return _sendActive<T>(
-      report,
+      raw,
       endpoint: endpoint,
       decodeSuccess: decodeSuccess,
     ).whenComplete(() {
@@ -188,7 +246,7 @@ final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
   }
 
   Future<T> _sendActive<T>(
-    QuizReportV2Request report, {
+    Uint8List raw, {
     required Uri endpoint,
     required T Function(Object?) decodeSuccess,
   }) async {
@@ -198,15 +256,7 @@ final class QuizReportV2HttpTransport implements QuizReportV2Submitter {
       );
     }
 
-    late final Uint8List raw;
-    try {
-      raw = Uint8List.fromList(report.encodeRawBody());
-    } on Object {
-      throw const QuizReportV2TransportFailure(
-        QuizReportV2TransportCode.validationFailure,
-      );
-    }
-    if (raw.isEmpty || raw.length > QuizReportV2Request.maxRawBodyBytes) {
+    if (raw.isEmpty || raw.length > 16 * 1024) {
       throw const QuizReportV2TransportFailure(
         QuizReportV2TransportCode.validationFailure,
       );

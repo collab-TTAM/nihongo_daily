@@ -28,6 +28,31 @@ String _completedAt(DateTime value) {
   return encoded;
 }
 
+
+bool _validQuizReportInstant(String value, {bool requireMicroseconds = false}) {
+  if (!_quizReportV2Instant.hasMatch(value) ||
+      (requireMicroseconds &&
+          !RegExp(
+            r'^(20[0-9]{2}|2100)-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}Z$',
+          ).hasMatch(value))) {
+    return false;
+  }
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null || !parsed.isUtc) return false;
+  final fraction = RegExp(r'\.([0-9]{1,6})Z$').firstMatch(value)?.group(1) ?? '';
+  final microseconds = fraction.isEmpty
+      ? 0
+      : int.parse(fraction.padRight(6, '0'));
+  return parsed.year == int.parse(value.substring(0, 4)) &&
+      parsed.month == int.parse(value.substring(5, 7)) &&
+      parsed.day == int.parse(value.substring(8, 10)) &&
+      parsed.hour == int.parse(value.substring(11, 13)) &&
+      parsed.minute == int.parse(value.substring(14, 16)) &&
+      parsed.second == int.parse(value.substring(17, 19)) &&
+      parsed.millisecond == microseconds ~/ 1000 &&
+      parsed.microsecond == microseconds % 1000;
+}
+
 QuizReportV2Answer _answer({
   required String itemId,
   required int contentVersion,
@@ -124,6 +149,75 @@ final class QuizReportV2Request {
             answers.length) {
       throw const FormatException('Invalid quiz report request');
     }
+  }
+
+  factory QuizReportV2Request.fromJson(Object? value) {
+    final json = _strictObject(value, {
+      'client_event_id',
+      'quiz_type',
+      'practice_kind',
+      'jlpt_level',
+      'completed_at',
+      'answers',
+    });
+    final eventId = json['client_event_id'];
+    final quizType = json['quiz_type'];
+    final practiceKind = json['practice_kind'];
+    final jlptLevel = json['jlpt_level'];
+    final completedAt = json['completed_at'];
+    final rawAnswers = json['answers'];
+    if (eventId is! String ||
+        quizType is! String ||
+        (practiceKind != null && practiceKind is! String) ||
+        jlptLevel is! String ||
+        completedAt is! String ||
+        !_validQuizReportInstant(completedAt) ||
+        rawAnswers is! List ||
+        rawAnswers.isEmpty ||
+        rawAnswers.length > 10) {
+      throw const FormatException('Invalid quiz report history request');
+    }
+    final answers = <QuizReportV2Answer>[];
+    for (final rawAnswer in rawAnswers) {
+      final answer = _strictObject(rawAnswer, {
+        'item_id',
+        'content_version',
+        'selected_id',
+        'choices',
+        'choice_content_versions',
+      });
+      final itemId = answer['item_id'];
+      final contentVersion = answer['content_version'];
+      final selectedId = answer['selected_id'];
+      final choices = answer['choices'];
+      final versions = answer['choice_content_versions'];
+      if (itemId is! String ||
+          contentVersion is! int ||
+          selectedId is! String ||
+          choices is! List ||
+          choices.any((choice) => choice is! String) ||
+          versions is! List ||
+          versions.any((version) => version is! int)) {
+        throw const FormatException('Invalid quiz report history answer');
+      }
+      answers.add(
+        _answer(
+          itemId: itemId,
+          contentVersion: contentVersion,
+          selectedId: selectedId,
+          choices: choices.cast<String>(),
+          choiceContentVersions: versions.cast<int>(),
+        ),
+      );
+    }
+    return QuizReportV2Request._(
+      clientEventId: _eventId(eventId),
+      quizType: quizType,
+      practiceKind: practiceKind as String?,
+      jlptLevel: jlptLevel,
+      completedAt: completedAt,
+      answers: answers,
+    );
   }
 
   factory QuizReportV2Request.fromVocabularyAttempt(
@@ -286,4 +380,193 @@ final class QuizReportV2LookupResult {
 
   bool get hasReceipt => response != null;
   bool get isUnresolved => response == null;
+}
+
+ 
+/// Cursor for the server's immutable, owner-scoped receipt history.
+final class QuizReportV2HistoryCursor {
+  const QuizReportV2HistoryCursor({
+    required this.receivedAt,
+    required this.clientEventId,
+  });
+
+  final String receivedAt;
+  final String clientEventId;
+
+  Map<String, Object?> toJson() => {
+    'received_at': receivedAt,
+    'client_event_id': clientEventId,
+  };
+}
+
+final class QuizReportV2HistoryEntry {
+  const QuizReportV2HistoryEntry({
+    required this.receivedAt,
+    required this.request,
+    required this.response,
+  });
+
+  final String receivedAt;
+  final QuizReportV2Request request;
+  final QuizReportV2Response response;
+}
+
+final class QuizReportV2HistoryPage {
+  QuizReportV2HistoryPage._({
+    required List<QuizReportV2HistoryEntry> items,
+    required this.nextCursor,
+  }) : items = List.unmodifiable(items);
+
+  final List<QuizReportV2HistoryEntry> items;
+  final QuizReportV2HistoryCursor? nextCursor;
+}
+
+QuizReportV2HistoryCursor? _decodeQuizReportV2HistoryCursor(Object? value) {
+  if (value == null) return null;
+  final json = _strictObject(value, {'received_at', 'client_event_id'});
+  final receivedAt = json['received_at'];
+  final eventId = json['client_event_id'];
+  if (receivedAt is! String ||
+      !_validQuizReportInstant(receivedAt, requireMicroseconds: true) ||
+      eventId is! String ||
+      !_quizReportV2Uuid.hasMatch(eventId) ||
+      eventId != eventId.toLowerCase()) {
+    throw const FormatException('Invalid quiz report history cursor');
+  }
+  return QuizReportV2HistoryCursor(
+    receivedAt: receivedAt,
+    clientEventId: eventId,
+  );
+}
+
+int _compareQuizReportV2HistoryKey(
+  String leftReceivedAt,
+  String leftEventId,
+  String rightReceivedAt,
+  String rightEventId,
+) {
+  final time = leftReceivedAt.compareTo(rightReceivedAt);
+  return time == 0 ? leftEventId.compareTo(rightEventId) : time;
+}
+
+/// Fixed read-only filters; the owner, project, table and query are never inputs.
+final class QuizReportV2HistoryQuery {
+  QuizReportV2HistoryQuery({
+    this.jlptLevel,
+    this.quizType,
+    this.limit = 20,
+    this.cursor,
+  }) {
+    if ((jlptLevel != null && jlptLevel != 'N5' && jlptLevel != 'N4') ||
+        (quizType != null &&
+            quizType != 'vocabulary_reading' &&
+            quizType != 'grammar_meaning') ||
+        limit < 1 ||
+        limit > 100 ||
+        (cursor != null &&
+            (!_validQuizReportInstant(
+                  cursor.receivedAt,
+                  requireMicroseconds: true,
+                ) ||
+                !_quizReportV2Uuid.hasMatch(cursor.clientEventId) ||
+                cursor.clientEventId != cursor.clientEventId.toLowerCase()))) {
+      throw const FormatException('Invalid quiz report history filter');
+    }
+  }
+
+  static const int maxRawBodyBytes = 16 * 1024;
+
+  final String? jlptLevel;
+  final String? quizType;
+  final int limit;
+  final QuizReportV2HistoryCursor? cursor;
+
+  Map<String, Object?> toJson() => {
+    'jlpt_level': jlptLevel,
+    'quiz_type': quizType,
+    'limit': limit,
+    'cursor': cursor?.toJson(),
+  };
+
+  List<int> encodeRawBody() {
+    final bytes = utf8.encode(jsonEncode(toJson()));
+    if (bytes.isEmpty || bytes.length > maxRawBodyBytes) {
+      throw const FormatException('Invalid quiz report history request size');
+    }
+    return List<int>.unmodifiable(bytes);
+  }
+
+  QuizReportV2HistoryPage decodePage(Object? value) {
+    final json = _strictObject(value, {'items', 'next_cursor'});
+    final rawItems = json['items'];
+    if (rawItems is! List || rawItems.length > limit) {
+      throw const FormatException('Invalid quiz report history page');
+    }
+
+    final items = <QuizReportV2HistoryEntry>[];
+    final seen = <String>{};
+    for (final rawItem in rawItems) {
+      final item = _strictObject(rawItem, {
+        'received_at',
+        'request',
+        'response',
+      });
+      final receivedAt = item['received_at'];
+      if (receivedAt is! String ||
+          !_validQuizReportInstant(receivedAt, requireMicroseconds: true)) {
+        throw const FormatException('Invalid quiz report history timestamp');
+      }
+      final request = QuizReportV2Request.fromJson(item['request']);
+      if ((jlptLevel != null && request.jlptLevel != jlptLevel) ||
+          (quizType != null && request.quizType != quizType) ||
+          !seen.add(request.clientEventId)) {
+        throw const FormatException('Invalid quiz report history identity');
+      }
+      if (cursor != null &&
+          _compareQuizReportV2HistoryKey(
+                receivedAt,
+                request.clientEventId,
+                cursor.receivedAt,
+                cursor.clientEventId,
+              ) >=
+              0) {
+        throw const FormatException('Invalid quiz report history cursor page');
+      }
+      if (items.isNotEmpty) {
+        final previous = items.last;
+        if (_compareQuizReportV2HistoryKey(
+              previous.receivedAt,
+              previous.request.clientEventId,
+              receivedAt,
+              request.clientEventId,
+            ) <=
+            0) {
+          throw const FormatException('Unordered quiz report history page');
+        }
+      }
+      items.add(
+        QuizReportV2HistoryEntry(
+          receivedAt: receivedAt,
+          request: request,
+          response: request.decodeResponse(item['response']),
+        ),
+      );
+    }
+
+    final nextCursor = _decodeQuizReportV2HistoryCursor(json['next_cursor']);
+    if (nextCursor != null) {
+      if (items.length != limit || items.isEmpty) {
+        throw const FormatException('Invalid quiz report history continuation');
+      }
+      final last = items.last;
+      if (nextCursor.receivedAt != last.receivedAt ||
+          nextCursor.clientEventId != last.request.clientEventId) {
+        throw const FormatException('Invalid quiz report history continuation');
+      }
+    }
+    return QuizReportV2HistoryPage._(
+      items: items,
+      nextCursor: nextCursor,
+    );
+  }
 }

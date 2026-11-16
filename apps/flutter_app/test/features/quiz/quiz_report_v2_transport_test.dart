@@ -57,6 +57,29 @@ http.Response _lookupFound(QuizReportV2Request report) => http.Response(
   headers: _headers,
 );
 
+
+Map<String, Object?> _historyEntry(
+  QuizReportV2Request report, {
+  String receivedAt = '2026-11-10T05:00:00.123456Z',
+}) => {
+  'received_at': receivedAt,
+  'request': report.toJson(),
+  'response': _response(report),
+};
+
+http.Response _historySuccess(
+  QuizReportV2Request report, {
+  String receivedAt = '2026-11-10T05:00:00.123456Z',
+  Object? nextCursor,
+}) => http.Response(
+  jsonEncode({
+    'items': [_historyEntry(report, receivedAt: receivedAt)],
+    'next_cursor': nextCursor,
+  }),
+  200,
+  headers: _headers,
+);
+
 final class _FakeAuth implements QuizReportV2Auth {
   _FakeAuth({Future<void> Function()? onCancel})
     : _events = onCancel == null
@@ -763,4 +786,182 @@ void main() {
       expect(calls, 1);
     },
   );
+  test('history read uses fixed endpoint and captured owner session', () async {
+    final auth = _FakeAuth();
+    final report = _report();
+    final query = QuizReportV2HistoryQuery(
+      jlptLevel: 'N5',
+      quizType: 'vocabulary_reading',
+      limit: 20,
+    );
+    final expectedBody = query.encodeRawBody();
+    final client = MockClient((request) async {
+      expect(request.method, 'POST');
+      expect(request.url.path, '/functions/v1/quiz-report-v2-history');
+      expect(request.followRedirects, isFalse);
+      expect(request.maxRedirects, 0);
+      expect(request.headers['authorization'], 'Bearer access-token-A');
+      expect(
+        request.headers['apikey'],
+        'sb_publishable_TEST_ONLY_1234567890',
+      );
+      expect(request.bodyBytes, expectedBody);
+      return _historySuccess(report);
+    });
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
+
+    final page = await transport.readHistory(query);
+
+    expect(page.items, hasLength(1));
+    expect(page.items.single.request.clientEventId, report.clientEventId);
+    expect(page.items.single.response.correctCount, 1);
+    expect(page.nextCursor, isNull);
+  });
+
+  test('history query rejects invalid filters and page bounds', () {
+    expect(
+      () => QuizReportV2HistoryQuery(jlptLevel: 'N1'),
+      throwsFormatException,
+    );
+    expect(
+      () => QuizReportV2HistoryQuery(quizType: 'conversation'),
+      throwsFormatException,
+    );
+    expect(
+      () => QuizReportV2HistoryQuery(limit: 101),
+      throwsFormatException,
+    );
+  });
+
+  test('history decoder rejects filter mismatch and forged continuation', () async {
+    final auth = _FakeAuth();
+    final report = _report();
+    final query = QuizReportV2HistoryQuery(
+      jlptLevel: 'N5',
+      quizType: 'vocabulary_reading',
+      limit: 1,
+    );
+    final entry = Map<String, Object?>.from(_historyEntry(report));
+    final wrongRequest = Map<String, Object?>.from(
+      entry['request']! as Map<String, Object?>,
+    )..['jlpt_level'] = 'N4';
+    entry['request'] = wrongRequest;
+    final wrongFilter = jsonEncode({
+      'items': [entry],
+      'next_cursor': null,
+    });
+    final wrongCursor = jsonEncode({
+      'items': [_historyEntry(report)],
+      'next_cursor': {
+        'received_at': '2026-11-10T05:00:00.123456Z',
+        'client_event_id': _event(2),
+      },
+    });
+    for (final body in [wrongFilter, wrongCursor]) {
+      final client = MockClient(
+        (_) async => http.Response(body, 200, headers: _headers),
+      );
+      final transport = _transport(auth: auth, client: client);
+      await expectLater(
+        transport.readHistory(query),
+        throwsA(
+          isA<QuizReportV2TransportFailure>().having(
+            (failure) => failure.code,
+            'code',
+            QuizReportV2TransportCode.internalError,
+          ),
+        ),
+      );
+      await transport.close();
+      client.close();
+    }
+    await auth.dispose();
+  });
+
+  test('late account switch aborts history read and rejects the old page', () async {
+    final auth = _FakeAuth();
+    final report = _report();
+    final responseGate = Completer<http.Response>();
+    final requestSeen = Completer<http.AbortableRequest>();
+    final client = _AbortableMockClient((request) {
+      requestSeen.complete(request as http.AbortableRequest);
+      return responseGate.future;
+    });
+    final transport = _transport(auth: auth, client: client);
+    final pending = transport.readHistory(
+      QuizReportV2HistoryQuery(limit: 20),
+    );
+    final outbound = await requestSeen.future;
+
+    auth.switchAccount();
+    final abortTrigger = outbound.abortTrigger;
+    expect(abortTrigger, isNotNull);
+    await abortTrigger!.timeout(const Duration(seconds: 1));
+    responseGate.complete(_historySuccess(report));
+
+    await expectLater(
+      pending,
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.unauthorized,
+        ),
+      ),
+    );
+    await transport.close();
+    client.close();
+    await auth.dispose();
+  });
+
+  test('close drains an in-flight read-only history request', () async {
+    final auth = _FakeAuth();
+    final client = _DrainClient();
+    final transport = _transport(auth: auth, client: client);
+    final pending = transport.readHistory(
+      QuizReportV2HistoryQuery(limit: 20),
+    );
+    final outbound = await client.requestSeen.future;
+
+    var closed = false;
+    final closing = transport.close().then<void>((_) {
+      closed = true;
+    });
+    await outbound.abortTrigger!.timeout(const Duration(seconds: 1));
+    expect(closed, isFalse);
+    expect(client.closed, isFalse);
+    await expectLater(
+      transport.readHistory(QuizReportV2HistoryQuery()),
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.networkUnavailable,
+        ),
+      ),
+    );
+    client.release.complete();
+    await expectLater(
+      pending,
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.networkUnavailable,
+        ),
+      ),
+    );
+    await closing.timeout(const Duration(seconds: 1));
+    expect(closed, isTrue);
+    expect(client.closed, isFalse);
+    client.close();
+    await auth.dispose();
+  });
+
+
 }

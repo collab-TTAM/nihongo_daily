@@ -4781,12 +4781,48 @@
         }
       ],
       "reproduce": "From backend/ai run npm run format:check, npm run check, npm test, deno task check, deno task test and deno task bundle:quiz-report-v2-history; inspect every exact-head Actions job and step.",
-      "limitation": "The Edge function is not deployed and the Dart history UI is not connected. Node/Deno bundle tests do not prove hosted signed-JWT/PostgREST/RLS, real learner A/B, cross-device history, mastery, SRS or study credit. No migration, grant, RLS, Auth strategy/provider or default save change is included.",
+      "limitation": "The Edge function is not deployed. The Flutter captured-session history transport is opt-in, but no learner-facing history screen is connected. Node/Deno and Dart fixture tests do not prove hosted signed-JWT/PostgREST/RLS, real learner A/B, cross-device history, mastery, SRS or study credit. No migration, grant, RLS, Auth strategy/provider or default save change is included.",
       "ci_steps": [
         "Verify bundled quiz report v2 Supabase Edge Function"
       ],
       "issues": [
         13
+      ]
+    },
+    {
+      "id": "quiz-report-v2-history-client-transport",
+      "status": "automated-baseline",
+      "scope": "The opt-in Flutter client reads immutable nd-quiz-report-2 receipts through the fixed history Edge path, using the caller-owned captured Auth generation, bounded filters/pages, strict request/response correlation and account-switch cancellation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/quiz/data/quiz_report_v2_transport.dart",
+          "contains": "Future<QuizReportV2HistoryPage> readHistory("
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/data/quiz_report_v2_adapter.dart",
+          "contains": "QuizReportV2HistoryPage decodePage(Object? value)"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "history read uses fixed endpoint and captured owner session"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_transport_test.dart",
+          "contains": "late account switch aborts history read and rejects the old page"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/application/quiz_report_v2_provider.dart",
+          "contains": "quizReportV2HistoryReaderProvider"
+        }
+      ],
+      "issues": [
+        13
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/quiz/quiz_report_v2_transport_test.dart test/features/quiz/quiz_report_v2_provider_test.dart; flutter analyze; flutter test; inspect all exact-head CI jobs and steps.",
+      "limitation": "This is an opt-in transport/provider only. The default source remains null; no learner-facing server-history UI, deployed Edge function, hosted signed-JWT/PostgREST/RLS or learner A/B proof exists. It performs read-only receipt retrieval and grants no mastery, SRS state or study credit.",
+      "ci_steps": [
+        "Run flutter test"
       ]
     }
   ],

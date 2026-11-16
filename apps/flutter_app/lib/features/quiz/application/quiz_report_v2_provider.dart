@@ -26,3 +26,11 @@ final quizReportV2TransportProvider = Provider<QuizReportV2Submitter?>((ref) {
     return null;
   }
 });
+
+/// Read-only server history is available only when the same owned transport
+/// implements it; the default preview and unconfigured runtime expose none.
+final quizReportV2HistoryReaderProvider =
+    Provider<QuizReportV2HistoryReader?>((ref) {
+      final transport = ref.watch(quizReportV2TransportProvider);
+      return transport is QuizReportV2HistoryReader ? transport : null;
+    });
