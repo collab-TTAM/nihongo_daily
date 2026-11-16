@@ -4417,3 +4417,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Updated `qa/matrix.json` case `browser-transactional-review` with the exact new test anchor and `docs/BROWSER_REVIEW_STORE.md` from eight to nine actual IndexedDB Chrome tests, including the versionchange boundary.
 - Changed paths: `apps/flutter_app/test/features/srs/browser_review_store_check.dart`, `qa/matrix.json`, `docs/BROWSER_REVIEW_STORE.md`, `docs/PROJECT_STATUS.md`. The test is authored but not locally executed in this cloud runtime (no Flutter/Dart SDK). Exact-head GitHub Actions is the required formatter/analyzer/Chrome/Web/Windows/SQL/AI verification; no new-head pass is claimed at this checkpoint.
 - Next: inspect the complete latest-attempt jobs/steps on the final commit, fix only observed failures, then continue hosted signed-JWT A/B and two-device offline acceptance. PR #37 remains Draft; #20/#22/#15 remain open. No hosted staging dispatch/secrets, Auth/provider, SQL/RLS, production or Pro-owned #14/#38/N4 changes.
+
+
+## IndexedDB versionchange CI correction — 2026-11-16 UTC
+
+- Run `core-20261116T2113Z-pr37-indexeddb-helper-and-format-correction`; branch `automation/issue-22-atomic-review`; parent HEAD `368b319280f3887c5bdbaee1ff9094c115c91f39`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [43948439153](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43948439153), attempt 1, confirms the only failure is strict Dart formatting in `apps/flutter_app/test/features/srs/browser_review_store_check.dart`; all other five jobs and every returned step passed, while Flutter analyze/tests/browser/native/Web steps were skipped after the format failure.
+- Source review also found the new test helper's `_writeRawState` referenced an undeclared `version`, and `_readRawState` accepted but did not forward its version. Correct both test-only helpers so the v2 read path actually opens v2 and the writer defaults to v1.
+- A temporary CI-only diagnostic prints the pinned Dart 3.35.4 formatter diff for this one file; the original strict whole-package format gate remains immediately after it. Remove the diagnostic after applying the exact formatter output. No production browser store/schema migration, Auth/provider, SQL/RLS, default runtime, hosted dispatch/secrets or Pro-owned N4 change.
+- This checkpoint is not a test/build pass. Next: apply the exact pinned formatter diff, remove the temporary step, run all six CI jobs/steps on the final source head and retain the versionchange assertions.

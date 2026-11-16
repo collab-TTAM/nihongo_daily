@@ -84,7 +84,11 @@ Future<_TestDatabase> _openTestDatabase(
   return opened.future;
 }
 
-Future<void> _writeRawState(String name, String raw) async {
+Future<void> _writeRawState(
+  String name,
+  String raw, {
+  int version = 1,
+}) async {
   final database = await _openTestDatabase(name, version: version);
   try {
     final committed = Completer<void>();
@@ -112,8 +116,11 @@ Future<void> _writeRawState(String name, String raw) async {
   }
 }
 
-Future<String?> _readRawState(String name, {int version = 1}) async {
-  final database = await _openTestDatabase(name);
+Future<String?> _readRawState(
+  String name, {
+  int version = 1,
+}) async {
+  final database = await _openTestDatabase(name, version: version);
   try {
     final committed = Completer<String?>();
     final transaction = database.transaction('journal', 'readonly');
