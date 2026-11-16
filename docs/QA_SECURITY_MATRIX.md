@@ -510,12 +510,12 @@ acceptance.
 
 ## Verified-owner v2 quiz history reader — 2026-11-16 UTC
 
-The internal \`quiz_report_v2_history.ts\` reader returns only the verified
+The internal `quiz_report_v2_history.ts` reader returns only the verified
 caller's immutable receipt history. It verifies Auth before PostgreSQL, binds
-the verified owner to \`auth.uid()\`, checks the private table's SELECT
+the verified owner to `auth.uid()`, checks the private table's SELECT
 capability and enabled RLS, and executes in a read-only transaction. The only
 filters are fixed N5/N4 and vocabulary/grammar enums; page size is 1–100 and
-keyset order is server \`received_at\` plus event UUID. Stored request/response
+keyset order is server `received_at` plus event UUID. Stored request/response
 JSONB is decoded and correlated before return. No owner-supplied query, SQL,
 write capability, public route, migration, grant or default app binding exists.
 

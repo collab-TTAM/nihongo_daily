@@ -427,13 +427,13 @@ study credit is enabled by this step.
 
 ## Typed Dart nd-quiz-report-2 projection — 2026-11-10
 
-\`QuizReportV2Request.fromVocabularyAttempt\` and
-\`QuizReportV2Request.fromGrammarAttempt\` project immutable local attempt snapshots
-into the separate v2 request shape. They require local \`format_version: 2\`; legacy
+`QuizReportV2Request.fromVocabularyAttempt` and
+`QuizReportV2Request.fromGrammarAttempt` project immutable local attempt snapshots
+into the separate v2 request shape. They require local `format_version: 2`; legacy
 v1 snapshots are rejected because they never captured all four displayed choice
 versions. The adapter preserves event ID, exact canonical UTC completion text,
 level, grammar primary/correction kind, answer order, four choice IDs and their
-parallel content versions. Vocabulary \`practice_kind\` remains null.
+parallel content versions. Vocabulary `practice_kind` remains null.
 
 The request and answer snapshots are immutable and serialize only the six v2
 request fields. They do not serialize owner identity, local format version, score,
@@ -907,24 +907,24 @@ learner journey have their own evidence.
 
 ## Internal read-only v2 quiz history — 2026-11-16
 
-\`backend/ai/src/quiz_report_v2_history.ts\` adds a server-only reader over the
-immutable \`private.quiz_report_receipts\` ledger. It is not a Supabase Edge
+`backend/ai/src/quiz_report_v2_history.ts` adds a server-only reader over the
+immutable `private.quiz_report_receipts` ledger. It is not a Supabase Edge
 Function, public route, Dart provider, default save path or deployed feature.
 
 The request is a strict raw-JSON object with exactly four keys:
-\`jlpt_level\` (\`N5\`, \`N4\` or \`null\`), \`quiz_type\`
-(\`vocabulary_reading\`, \`grammar_meaning\` or \`null\`), \`limit\` (integer 1–100),
-and \`cursor\` (\`null\` or the exact \`received_at\` / \`client_event_id\` pair returned
+`jlpt_level` (`N5`, `N4` or `null`), `quiz_type`
+(`vocabulary_reading`, `grammar_meaning` or `null`), `limit` (integer 1–100),
+and `cursor` (`null` or the exact `received_at` / `client_event_id` pair returned
 by the previous page). Duplicate keys, extra owner/query fields, invalid
 filters, malformed cursors and out-of-range limits fail before Auth or DB.
 
 The reader verifies the Supabase access token before opening PostgreSQL. It
-binds only that verified identity to the transaction, confirms \`auth.uid()\`
+binds only that verified identity to the transaction, confirms `auth.uid()`
 matches, requires private-schema/table SELECT permission and enabled RLS, then
 uses a read-only transaction. The fixed parameterized query includes
-\`WHERE user_id = auth.uid()\`; learner input cannot provide an owner, SQL, table,
+`WHERE user_id = auth.uid()`; learner input cannot provide an owner, SQL, table,
 column, sort expression or arbitrary filter. Pages are ordered by server
-\`received_at DESC, client_event_id DESC\` and use that pair as a keyset cursor.
+`received_at DESC, client_event_id DESC` and use that pair as a keyset cursor.
 
 Each returned JSONB request is decoded against the trusted nd-quiz-report-2
 schema. Its event ID and requested filters must match the selected row. The
@@ -933,7 +933,7 @@ and score counts are correlated before an immutable history entry is returned.
 Malformed rows, wrong owners, response mismatches and unexpected DB envelopes
 fail closed; SQL/driver details are not returned.
 
-The internal factory \`createTrustedPostgresQuizReportV2HistoryReader\` accepts
+The internal factory `createTrustedPostgresQuizReportV2HistoryReader` accepts
 only trusted server configuration. No route, migration, grant, RLS policy,
 Auth strategy, app startup binding, mastery calculation, SRS mutation or study
 credit is added by this increment.
@@ -946,6 +946,6 @@ boundaries, N4/type filters and owner isolation. These are component tests,
 not hosted signed-JWT/PostgREST/RLS or real learner evidence.
 
 The page size is bounded, but this increment does not add a dedicated
-\`(user_id, received_at, client_event_id)\` index; PostgreSQL may still scan/sort
+`(user_id, received_at, client_event_id)` index; PostgreSQL may still scan/sort
 an owner's receipts as history grows. No hosted learner history UI or
 cross-device Personal Alpha proof is implied.
