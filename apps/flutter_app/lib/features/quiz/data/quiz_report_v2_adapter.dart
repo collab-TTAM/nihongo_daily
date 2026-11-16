@@ -28,7 +28,6 @@ String _completedAt(DateTime value) {
   return encoded;
 }
 
-
 bool _validQuizReportInstant(String value, {bool requireMicroseconds = false}) {
   if (!_quizReportV2Instant.hasMatch(value) ||
       (requireMicroseconds &&
@@ -39,7 +38,8 @@ bool _validQuizReportInstant(String value, {bool requireMicroseconds = false}) {
   }
   final parsed = DateTime.tryParse(value);
   if (parsed == null || !parsed.isUtc) return false;
-  final fraction = RegExp(r'\.([0-9]{1,6})Z$').firstMatch(value)?.group(1) ?? '';
+  final fraction =
+      RegExp(r'\.([0-9]{1,6})Z$').firstMatch(value)?.group(1) ?? '';
   final microseconds = fraction.isEmpty
       ? 0
       : int.parse(fraction.padRight(6, '0'));
@@ -163,12 +163,13 @@ final class QuizReportV2Request {
     final eventId = json['client_event_id'];
     final quizType = json['quiz_type'];
     final practiceKind = json['practice_kind'];
+    final decodedPracticeKind = practiceKind is String ? practiceKind : null;
     final jlptLevel = json['jlpt_level'];
     final completedAt = json['completed_at'];
     final rawAnswers = json['answers'];
     if (eventId is! String ||
         quizType is! String ||
-        (practiceKind != null && practiceKind is! String) ||
+        (practiceKind != null && decodedPracticeKind == null) ||
         jlptLevel is! String ||
         completedAt is! String ||
         !_validQuizReportInstant(completedAt) ||
@@ -213,7 +214,7 @@ final class QuizReportV2Request {
     return QuizReportV2Request._(
       clientEventId: _eventId(eventId),
       quizType: quizType,
-      practiceKind: practiceKind as String?,
+      practiceKind: decodedPracticeKind,
       jlptLevel: jlptLevel,
       completedAt: completedAt,
       answers: answers,
@@ -382,7 +383,7 @@ final class QuizReportV2LookupResult {
   bool get isUnresolved => response == null;
 }
 
- 
+
 /// Cursor for the server's immutable, owner-scoped receipt history.
 final class QuizReportV2HistoryCursor {
   const QuizReportV2HistoryCursor({

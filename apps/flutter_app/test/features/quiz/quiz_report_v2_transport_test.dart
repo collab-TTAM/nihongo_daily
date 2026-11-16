@@ -57,7 +57,6 @@ http.Response _lookupFound(QuizReportV2Request report) => http.Response(
   headers: _headers,
 );
 
-
 Map<String, Object?> _historyEntry(
   QuizReportV2Request report, {
   String receivedAt = '2026-11-10T05:00:00.123456Z',
@@ -786,6 +785,7 @@ void main() {
       expect(calls, 1);
     },
   );
+
   test('history read uses fixed endpoint and captured owner session', () async {
     final auth = _FakeAuth();
     final report = _report();
@@ -963,5 +963,96 @@ void main() {
     await auth.dispose();
   });
 
+  test('history keyset page accepts a valid cursor and continuation', () async {
+    final auth = _FakeAuth();
+    final report = _report();
+    final query = QuizReportV2HistoryQuery(
+      limit: 1,
+      cursor: QuizReportV2HistoryCursor(
+        receivedAt: '2026-11-11T05:00:00.123456Z',
+        clientEventId: _event(2),
+      ),
+    );
+    final next = {
+      'received_at': '2026-11-10T05:00:00.123456Z',
+      'client_event_id': report.clientEventId,
+    };
+    final client = MockClient((request) async {
+      expect(request.bodyBytes, query.encodeRawBody());
+      return _historySuccess(report, nextCursor: next);
+    });
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
 
+    final page = await transport.readHistory(query);
+
+    expect(page.items, hasLength(1));
+    expect(page.nextCursor?.receivedAt, next['received_at']);
+    expect(page.nextCursor?.clientEventId, report.clientEventId);
+  });
+
+  test('no captured session never dispatches history read', () async {
+    final auth = _FakeAuth()..token = null;
+    var calls = 0;
+    final client = MockClient((_) async {
+      calls++;
+      return _historySuccess(_report());
+    });
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
+
+    await expectLater(
+      transport.readHistory(QuizReportV2HistoryQuery()),
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.unauthorized,
+        ),
+      ),
+    );
+    expect(calls, 0);
+  });
+
+  test('token rotation aborts history read captured under the old generation', () async {
+    final auth = _FakeAuth();
+    final report = _report();
+    final responseGate = Completer<http.Response>();
+    final requestSeen = Completer<http.AbortableRequest>();
+    final client = _AbortableMockClient((request) {
+      requestSeen.complete(request as http.AbortableRequest);
+      return responseGate.future;
+    });
+    final transport = _transport(auth: auth, client: client);
+    addTearDown(() async {
+      await transport.close();
+      client.close();
+      await auth.dispose();
+    });
+    final pending = transport.readHistory(QuizReportV2HistoryQuery());
+    final outbound = await requestSeen.future;
+
+    auth.rotateToken();
+    await outbound.abortTrigger!.timeout(const Duration(seconds: 1));
+    responseGate.complete(_historySuccess(report));
+
+    await expectLater(
+      pending,
+      throwsA(
+        isA<QuizReportV2TransportFailure>().having(
+          (failure) => failure.code,
+          'code',
+          QuizReportV2TransportCode.unauthorized,
+        ),
+      ),
+    );
+  });
 }

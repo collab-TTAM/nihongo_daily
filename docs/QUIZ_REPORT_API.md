@@ -986,7 +986,6 @@ has not been deployed, no hosted signed-JWT/PostgREST/RLS learner A/B is claimed
 and the Flutter history screen is not yet connected to this endpoint. It does
 not update local history, mastery, SRS or study minutes.
 
-
 ## Captured-session Flutter history transport — 2026-11-16
 
 The opt-in `QuizReportV2HttpTransport` also implements a read-only
