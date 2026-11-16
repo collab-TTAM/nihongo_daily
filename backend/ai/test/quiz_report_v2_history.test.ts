@@ -92,11 +92,13 @@ class FakeConnection implements PostgresConnection {
   async query(sql: string, values?: string[]): Promise<PostgresResult> {
     this.calls.push({ sql, values });
     if (sql.includes("has_schema_privilege")) {
-      return result("SELECT", [{
-        schema_usage: true,
-        receipt_select: this.mode !== "permission-denied",
-        rls_enabled: this.mode !== "permission-denied",
-      }]);
+      return result("SELECT", [
+        {
+          schema_usage: true,
+          receipt_select: this.mode !== "permission-denied",
+          rls_enabled: this.mode !== "permission-denied",
+        },
+      ]);
     }
     if (sql.startsWith("BEGIN")) return result("BEGIN");
     if (sql.startsWith("SET LOCAL")) return result("SET");
@@ -105,9 +107,11 @@ class FakeConnection implements PostgresConnection {
       return result("SELECT", [{ owner_id: this.owner }]);
     }
     if (sql === "SELECT auth.uid()::text AS owner_id") {
-      return result("SELECT", [{
-        owner_id: this.mode === "identity-mismatch" ? otherOwner : this.owner,
-      }]);
+      return result("SELECT", [
+        {
+          owner_id: this.mode === "identity-mismatch" ? otherOwner : this.owner,
+        },
+      ]);
     }
     if (sql.includes("FROM private.quiz_report_receipts")) {
       if (this.mode === "query-error") throw new Error("PRIVATE SQL TOKEN");
@@ -172,7 +176,12 @@ test("history rejects owner-supplied fields, invalid filters, cursors and limits
   ];
   for (const raw of invalid) {
     await assert.rejects(
-      readVerifiedQuizReportV2History(schema, raw, "verified-token", deps.value),
+      readVerifiedQuizReportV2History(
+        schema,
+        raw,
+        "verified-token",
+        deps.value,
+      ),
       /^Error: VALIDATION_FAILURE$/,
     );
   }
@@ -201,18 +210,9 @@ test("invalid Auth never opens the owner-scoped history connection", async () =>
 
 test("history uses verified auth.uid, fixed filters and bounded keyset pages", async () => {
   const rows = [
-    row(
-      "e3100000-0000-4000-8000-000000000011",
-      "2026-11-15T12:00:00.000001Z",
-    ),
-    row(
-      "e3100000-0000-4000-8000-000000000012",
-      "2026-11-15T11:00:00.000001Z",
-    ),
-    row(
-      "e3100000-0000-4000-8000-000000000013",
-      "2026-11-15T10:00:00.000001Z",
-    ),
+    row("e3100000-0000-4000-8000-000000000011", "2026-11-15T12:00:00.000001Z"),
+    row("e3100000-0000-4000-8000-000000000012", "2026-11-15T11:00:00.000001Z"),
+    row("e3100000-0000-4000-8000-000000000013", "2026-11-15T10:00:00.000001Z"),
   ];
   const firstConnection = new FakeConnection(rows);
   const firstDeps = dependencies(firstConnection, async (token) => {
@@ -238,11 +238,14 @@ test("history uses verified auth.uid, fixed filters and bounded keyset pages", a
     client_event_id: rows[1]!.client_event_id,
   });
   const firstHistoryCall = firstConnection.calls.find((call) =>
-    call.sql.includes("FROM private.quiz_report_receipts")
+    call.sql.includes("FROM private.quiz_report_receipts"),
   );
   assert.ok(firstHistoryCall);
   assert.match(firstHistoryCall.sql, /user_id = auth\.uid\(\)/);
-  assert.match(firstHistoryCall.sql, /ORDER BY received_at DESC, client_event_id DESC/);
+  assert.match(
+    firstHistoryCall.sql,
+    /ORDER BY received_at DESC, client_event_id DESC/,
+  );
   assert.deepEqual(firstHistoryCall.values, [
     "N5",
     "vocabulary_reading",
@@ -251,13 +254,13 @@ test("history uses verified auth.uid, fixed filters and bounded keyset pages", a
     "3",
   ]);
   assert.ok(
-    firstConnection.calls.some((call) =>
-      call.sql === "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY"
+    firstConnection.calls.some(
+      (call) => call.sql === "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY",
     ),
   );
   assert.ok(
     !firstConnection.calls.some((call) =>
-      /^\s*(INSERT|UPDATE|DELETE|TRUNCATE)\b/i.test(call.sql)
+      /^\s*(INSERT|UPDATE|DELETE|TRUNCATE)\b/i.test(call.sql),
     ),
   );
   assert.equal(firstConnection.closed, true);
@@ -280,7 +283,7 @@ test("history uses verified auth.uid, fixed filters and bounded keyset pages", a
   );
   assert.equal(second.next_cursor, null);
   const secondHistoryCall = secondConnection.calls.find((call) =>
-    call.sql.includes("FROM private.quiz_report_receipts")
+    call.sql.includes("FROM private.quiz_report_receipts"),
   );
   assert.deepEqual(secondHistoryCall?.values, [
     "N5",
@@ -339,11 +342,13 @@ test("history fails closed on mismatched stored request, response or filter", as
     client_event_id: wrongFilter.client_event_id,
     jlpt_level: "N4" as const,
   };
-  const filteredConnection = new FakeConnection([{
-    ...wrongFilter,
-    request_json: JSON.stringify(request),
-    response_json: JSON.stringify(response),
-  }]);
+  const filteredConnection = new FakeConnection([
+    {
+      ...wrongFilter,
+      request_json: JSON.stringify(request),
+      response_json: JSON.stringify(response),
+    },
+  ]);
   const filteredDeps = dependencies(filteredConnection);
   await assert.rejects(
     readVerifiedQuizReportV2History(
@@ -391,7 +396,7 @@ test("history verifies auth.uid before selecting and rolls back identity mismatc
   assert.ok(connection.calls.some((call) => call.sql === "ROLLBACK"));
   assert.ok(
     !connection.calls.some((call) =>
-      call.sql.includes("FROM private.quiz_report_receipts")
+      call.sql.includes("FROM private.quiz_report_receipts"),
     ),
   );
   assert.equal(connection.closed, true);

@@ -610,7 +610,6 @@ test(
   },
 );
 
-
 test(
   "native verified-owner nd-quiz-report-2 history reader paginates and isolates A/B",
   { timeout: 30000 },
@@ -620,8 +619,12 @@ test(
     try {
       const ownerA = randomUUID();
       const ownerB = randomUUID();
-      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerA]);
-      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [ownerB]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerA,
+      ]);
+      await admin.query("INSERT INTO auth.users(id) VALUES($1::uuid)", [
+        ownerB,
+      ]);
 
       const tokens = new Map([
         ["verified-A", ownerA],
@@ -785,7 +788,8 @@ test(
       assert.deepEqual(ownerBHistory.items[0]!.response, ownerBResponse);
       assert.ok(
         !allA.some(
-          (item) => item.request.client_event_id === ownerBRequest.client_event_id,
+          (item) =>
+            item.request.client_event_id === ownerBRequest.client_event_id,
         ),
       );
 
@@ -804,26 +808,27 @@ test(
 
       const readSql = sqlCalls.slice(beforeHistory);
       const historySql = readSql.filter((sql) =>
-        sql.includes("FROM private.quiz_report_receipts")
+        sql.includes("FROM private.quiz_report_receipts"),
       );
       assert.ok(historySql.length >= 5);
       assert.ok(
         historySql.every((sql) => sql.includes("user_id = auth.uid()")),
       );
       assert.ok(
-        readSql.some((sql) =>
-          sql === "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY"
+        readSql.some(
+          (sql) => sql === "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY",
         ),
       );
       assert.ok(
         !readSql.some((sql) =>
-          /^\s*(INSERT|UPDATE|DELETE|TRUNCATE)\b/i.test(sql)
+          /^\s*(INSERT|UPDATE|DELETE|TRUNCATE)\b/i.test(sql),
         ),
       );
       assert.ok(
-        !readSql.some((sql) =>
-          sql.includes("private.store_quiz_report_v2") ||
-          sql.includes("private.replay_quiz_report_v2")
+        !readSql.some(
+          (sql) =>
+            sql.includes("private.store_quiz_report_v2") ||
+            sql.includes("private.replay_quiz_report_v2"),
         ),
       );
       console.log(

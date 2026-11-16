@@ -79,8 +79,9 @@ const invalid = () => new BoundaryError("VALIDATION_FAILURE");
 const unavailable = () => new BoundaryError("NETWORK_UNAVAILABLE");
 
 function exactKeys(value: Record<string, unknown>, keys: readonly string[]) {
-  return Object.keys(value).sort().join("\u0000") ===
-    [...keys].sort().join("\u0000");
+  return (
+    Object.keys(value).sort().join("\u0000") === [...keys].sort().join("\u0000")
+  );
 }
 
 function validReceivedAt(value: unknown): value is string {
@@ -93,8 +94,10 @@ function validReceivedAt(value: unknown): value is string {
     return false;
   }
   const instant = new Date(value);
-  return Number.isFinite(instant.getTime()) &&
-    instant.toISOString().slice(0, 19) === value.slice(0, 19);
+  return (
+    Number.isFinite(instant.getTime()) &&
+    instant.toISOString().slice(0, 19) === value.slice(0, 19)
+  );
 }
 
 function parseHistoryCursor(value: unknown): QuizReportV2HistoryCursor | null {
@@ -140,8 +143,11 @@ export function decodeQuizReportV2HistoryRequest(
   const limit = value.limit;
   if (
     !(level === null || level === "N5" || level === "N4") ||
-    !(quizType === null || quizType === "vocabulary_reading" ||
-      quizType === "grammar_meaning") ||
+    !(
+      quizType === null ||
+      quizType === "vocabulary_reading" ||
+      quizType === "grammar_meaning"
+    ) ||
     typeof limit !== "number" ||
     !Number.isSafeInteger(limit) ||
     limit < 1 ||
@@ -237,9 +243,10 @@ function readEntry(
 
   let response: QuizReportV2Response;
   try {
-    response = createQuizReportV2ResponseDecoder(schema, requestRaw)(
-      new TextEncoder().encode(row.response_json),
-    );
+    response = createQuizReportV2ResponseDecoder(
+      schema,
+      requestRaw,
+    )(new TextEncoder().encode(row.response_json));
   } catch {
     throw internal();
   }
@@ -379,9 +386,7 @@ export async function readVerifiedQuizReportV2History(
       throw internal();
     }
 
-    const begun = await query(
-      "BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY",
-    );
+    const begun = await query("BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY");
     if (begun.command !== "BEGIN") throw unavailable();
     transactionOpen = true;
     for (const [sql, command] of setupSql) {
@@ -423,7 +428,9 @@ export async function readVerifiedQuizReportV2History(
       "received_at",
       "request_json",
       "response_json",
-    ].sort().join("\u0000");
+    ]
+      .sort()
+      .join("\u0000");
     const seen = new Set<string>();
     const entries: QuizReportV2HistoryEntry[] = [];
     for (const row of rows.rows) {
@@ -449,12 +456,13 @@ export async function readVerifiedQuizReportV2History(
     const hasMore = entries.length > request.limit;
     const items = Object.freeze(entries.slice(0, request.limit));
     const last = items.at(-1);
-    const nextCursor = hasMore && last
-      ? Object.freeze({
-        received_at: last.received_at,
-        client_event_id: last.request.client_event_id,
-      })
-      : null;
+    const nextCursor =
+      hasMore && last
+        ? Object.freeze({
+            received_at: last.received_at,
+            client_event_id: last.request.client_event_id,
+          })
+        : null;
 
     alive();
     commitStarted = true;
