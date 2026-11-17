@@ -4724,7 +4724,7 @@
     {
       "id": "quiz-report-v2-history-read",
       "status": "automated-baseline",
-      "scope": "Internal read-only nd-quiz-report-2 history over immutable private receipts: Supabase Auth before DB, verified auth.uid owner, fixed N5/N4 and vocabulary/grammar filters, bounded 1–100 keyset pages, strict request/response correlation, read-only transaction and no owner-supplied query/write capability.",
+      "scope": "Internal read-only nd-quiz-report-2 history over immutable private receipts: Supabase Auth before DB, verified auth.uid owner, fixed N5/N4 and vocabulary/grammar filters, bounded 1–100 keyset pages, strict request/response correlation, read-only transaction and no owner-supplied query/write capability. and a dedicated owner/time/event keyset index for descending receipt pagination",
       "ci_job": "database",
       "anchors": [
         {
@@ -4738,13 +4738,21 @@
         {
           "path": "backend/ai/test/quiz_report_v2_host.native.ts",
           "contains": "native verified-owner nd-quiz-report-2 history reader paginates and isolates A/B"
+        },
+        {
+          "path": "supabase/migrations/20261117041500_quiz_report_history_keyset_index.sql",
+          "contains": "quiz_report_receipts_history_page_idx"
+        },
+        {
+          "path": "backend/ai/test/quiz_report_v2_host.native.ts",
+          "contains": "quiz_report_receipts_history_page_idx"
         }
       ],
       "issues": [
         13
       ],
       "reproduce": "cd backend/ai && npm test && npm run check && npm run format:check && npm run test:postgres-quiz; inspect all exact-head GitHub Actions jobs and steps.",
-      "limitation": "Node tests use scripted ports; native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable data. No hosted signed-JWT/PostgREST/RLS, public route, app history UI, durable cross-device learner history, mastery, SRS or study credit is proven. No dedicated history index was added; bounded page size does not bound scan/sort cost.",
+      "limitation": "Node tests use scripted ports; native PostgreSQL uses synthetic TEST ONLY Auth identities and disposable data. No hosted signed-JWT/PostgREST/RLS, public route, app history UI, durable cross-device learner history, mastery, SRS or study credit is proven. The owner/time/event index and continuation-page query plan are verified on disposable native PostgreSQL; this is not a production-scale benchmark.",
       "ci_steps": [
         "Verify quiz report coordinator and SQL bridge with native PostgreSQL"
       ]

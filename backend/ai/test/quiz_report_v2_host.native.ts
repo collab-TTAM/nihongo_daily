@@ -247,6 +247,51 @@ async function receiptCount(
   return result.rows[0]?.count;
 }
 
+async function assertHistoryPageIndex(
+  admin: Client,
+  ownerId: string,
+  cursor: { received_at: string; client_event_id: string },
+) {
+  const index = await admin.query(
+    "SELECT indexdef FROM pg_indexes WHERE schemaname='private' " +
+      "AND tablename='quiz_report_receipts' AND indexname=$1",
+    ["quiz_report_receipts_history_page_idx"],
+  );
+  assert.equal(index.rowCount, 1);
+  assert.match(
+    String(index.rows[0]?.indexdef ?? ""),
+    /USING btree \\(user_id, received_at DESC, client_event_id DESC\\)/i,
+  );
+
+  await admin.query("SET enable_seqscan=off");
+  try {
+    const plan = await admin.query(
+      "EXPLAIN (FORMAT JSON) SELECT client_event_id " +
+        "FROM private.quiz_report_receipts WHERE user_id=$1::uuid " +
+        "AND ($2='' OR request_json->>'jlpt_level'=$2) " +
+        "AND ($3='' OR request_json->>'quiz_type'=$3) " +
+        "AND ($4='' OR (received_at,client_event_id) < " +
+        "(NULLIF($4,'')::timestamptz,NULLIF($5,'')::uuid)) " +
+        "ORDER BY received_at DESC,client_event_id DESC LIMIT $6::integer",
+      [
+        ownerId,
+        "N5",
+        "vocabulary_reading",
+        cursor.received_at,
+        cursor.client_event_id,
+        "2",
+      ],
+    );
+    const planText = JSON.stringify(plan.rows[0]?.["QUERY PLAN"] ?? plan.rows);
+    assert.ok(
+      planText.includes("quiz_report_receipts_history_page_idx"),
+      "owner-scoped quiz history continuation did not use the ordered keyset index",
+    );
+  } finally {
+    await admin.query("RESET enable_seqscan");
+  }
+}
+
 test(
   "native verified-owner nd-quiz-report-2 host enforces replay-first source validation and A/B isolation",
   { timeout: 30000 },
@@ -724,6 +769,7 @@ test(
       );
       assert.equal(first.items.length, 2);
       assert.ok(first.next_cursor);
+      await assertHistoryPageIndex(admin, ownerA, first.next_cursor);
       const second = await readVerifiedQuizReportV2History(
         schema,
         historyRaw({ ...firstRequest, cursor: first.next_cursor }),

@@ -948,10 +948,15 @@ test creates synthetic A/B users, submits test receipts, then verifies page
 boundaries, N4/type filters and owner isolation. These are component tests,
 not hosted signed-JWT/PostgREST/RLS or real learner evidence.
 
-The page size is bounded, but this increment does not add a dedicated
-`(user_id, received_at, client_event_id)` index; PostgreSQL may still scan/sort
-an owner's receipts as history grows. No hosted learner history UI or
-cross-device Personal Alpha proof is implied.
+The additive migration `20261117041500_quiz_report_history_keyset_index.sql`
+adds `private.quiz_report_receipts_history_page_idx` on
+`(user_id, received_at DESC, client_event_id DESC)`. This matches owner equality,
+the descending tuple cursor and page order. Level/type filters remain bounded
+JSONB predicates after the index range; this is not a per-filter index or a
+production-scale benchmark. The native PostgreSQL history test asserts the
+catalog definition and checks that an actual continuation-page `EXPLAIN` uses
+the ordered index. It does not prove hosted learner history or cross-device
+Personal Alpha acceptance.
 
 
 ## Authenticated read-only v2 quiz history Edge endpoint — 2026-11-16
