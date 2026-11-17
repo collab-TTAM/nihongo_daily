@@ -39,6 +39,22 @@ current account repositories, hides late results after account replacement and
 shows a fixed Vietnamese error with an explicit retry. The snapshot performs no
 writes or remote submission.
 
+## Server quiz receipt snapshot
+
+When the caller-owned `QuizReportV2HistoryReader` is published by a ready
+Auth/profile/runtime, `/overview` offers an explicit read of the first 20
+server receipts. The page summary reports only the number of receipts and
+correct/answer counts in that page; it is not an all-time total. A separate
+link opens `/quiz/history` for N5/N4 and quiz-type filters plus keyset paging.
+The page is never fetched automatically, and the preview/default reader remains
+null.
+
+The server snapshot is separate from local device journals and Daily Plan
+minutes. It does not derive mastery, SRS state, study credit or weak points.
+Errors are redacted and manually retryable. Reader replacement, account change
+or late completion cannot publish an old page. Widget fixtures do not prove
+that the Edge Function is deployed or that hosted JWT/PostgREST/RLS works.
+
 ## Verification boundary
 
 Progress overview widget tests use TEST ONLY Auth/RPC gateways. Exact-head

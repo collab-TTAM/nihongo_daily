@@ -14,7 +14,10 @@ import '../../daily_plan/presentation/daily_plan_labels.dart';
 import '../../daily_plan/presentation/study_day_button.dart';
 import '../../quiz/application/grammar_quiz_history_provider.dart';
 import '../../quiz/application/quiz_history_provider.dart';
+import '../../quiz/application/quiz_report_v2_provider.dart';
 import '../../quiz/data/grammar_quiz_history_repository.dart';
+import '../../quiz/data/quiz_report_v2_adapter.dart';
+import '../../quiz/data/quiz_report_v2_transport.dart';
 import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import '../../quiz/domain/grammar_quiz_attempt.dart';
 import '../../quiz/domain/vocabulary_quiz_attempt.dart';
@@ -88,6 +91,10 @@ class _ProgressOverviewScreenState
   _QuizHistorySummary? _quizSummary;
   bool _quizLoading = false;
   bool _quizFailed = false;
+  QuizReportV2HistoryPage? _serverQuizPage;
+  QuizReportV2HistoryReader? _serverQuizReader;
+  bool _serverQuizLoading = false;
+  bool _serverQuizFailed = false;
   int _generation = 0;
 
   void _clearForReplacement() {
@@ -102,6 +109,10 @@ class _ProgressOverviewScreenState
     _quizSummary = null;
     _quizLoading = false;
     _quizFailed = false;
+    _serverQuizPage = null;
+    _serverQuizReader = null;
+    _serverQuizLoading = false;
+    _serverQuizFailed = false;
   }
 
   bool _isCurrent({
@@ -218,6 +229,18 @@ class _ProgressOverviewScreenState
         identical(ref.read(grammarQuizHistoryRepositoryProvider), grammar);
   }
 
+  bool _isServerQuizCurrent({
+    required String owner,
+    required int generation,
+    required QuizReportV2HistoryReader reader,
+  }) {
+    if (!mounted || generation != _generation) return false;
+    final account = ref.read(accountStateProvider);
+    return account.phase == AccountPhase.ready &&
+        account.profile?.id == owner &&
+        identical(ref.read(quizReportV2HistoryReaderProvider), reader);
+  }
+
   Future<void> _loadQuizSummary() async {
     if (_quizLoading) return;
     final account = ref.read(accountStateProvider);
@@ -303,6 +326,52 @@ class _ProgressOverviewScreenState
     }
   }
 
+  Future<void> _loadServerQuizSummary() async {
+    if (_serverQuizLoading) return;
+    final account = ref.read(accountStateProvider);
+    final owner = account.profile?.id;
+    final reader = ref.read(quizReportV2HistoryReaderProvider);
+    if (account.phase != AccountPhase.ready || owner == null || reader == null) {
+      return;
+    }
+
+    final generation = _generation;
+    setState(() {
+      _serverQuizReader = reader;
+      _serverQuizLoading = true;
+      _serverQuizFailed = false;
+      _serverQuizPage = null;
+    });
+
+    try {
+      final page = await reader.readHistory(QuizReportV2HistoryQuery(limit: 20));
+      if (!_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+      )) {
+        return;
+      }
+      setState(() => _serverQuizPage = page);
+    } on Object {
+      if (_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+      )) {
+        setState(() => _serverQuizFailed = true);
+      }
+    } finally {
+      if (_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+      )) {
+        setState(() => _serverQuizLoading = false);
+      }
+    }
+  }
+
   @override
   void dispose() {
     _date.clear();
@@ -321,6 +390,9 @@ class _ProgressOverviewScreenState
     ref.listen(grammarQuizHistoryRepositoryProvider, (_, _) {
       _clearForReplacement();
     });
+    ref.listen(quizReportV2HistoryReaderProvider, (_, _) {
+      _clearForReplacement();
+    });
     ref.listen(accountStateProvider, (previous, next) {
       if (previous?.phase != next.phase ||
           previous?.profile?.id != next.profile?.id ||
@@ -333,6 +405,22 @@ class _ProgressOverviewScreenState
     final repository = ref.watch(dailyPlanRepositoryProvider);
     final vocabularyHistory = ref.watch(quizHistoryRepositoryProvider);
     final grammarHistory = ref.watch(grammarQuizHistoryRepositoryProvider);
+    final serverHistoryReader = ref.watch(quizReportV2HistoryReaderProvider);
+    final serverHistoryStateCurrent =
+        identical(_serverQuizReader, serverHistoryReader);
+    final serverQuizPage =
+        serverHistoryStateCurrent ? _serverQuizPage : null;
+    final serverQuizLoading =
+        serverHistoryStateCurrent && _serverQuizLoading;
+    final serverQuizFailed = serverHistoryStateCurrent && _serverQuizFailed;
+    var serverQuizAnswers = 0;
+    var serverQuizCorrect = 0;
+    if (serverQuizPage != null) {
+      for (final entry in serverQuizPage.items) {
+        serverQuizAnswers += entry.response.answerCount;
+        serverQuizCorrect += entry.response.correctCount;
+      }
+    }
     final profile = account.profile;
     final ready =
         account.phase == AccountPhase.ready &&
@@ -470,7 +558,7 @@ class _ProgressOverviewScreenState
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const Text(
-          'Báo cáo quiz hiện là lịch sử cục bộ theo tài khoản. '
+          'Lịch sử cục bộ và biên nhận máy chủ được hiển thị riêng. '
           'Không cộng điểm quiz thành thời gian học hoặc trạng thái MASTERED.',
         ),
         if (vocabularyHistory == null && grammarHistory == null)
@@ -528,6 +616,64 @@ class _ProgressOverviewScreenState
           const Text(
             'Số liệu chỉ phản ánh lượt đã lưu trên thiết bị; không xác nhận '
             'mức thành thạo, thời gian học hoặc đồng bộ máy chủ.',
+          ),
+        ],
+        const SizedBox(height: 16),
+        Text(
+          'Biên nhận quiz trên máy chủ',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const Text(
+          'Chỉ đọc biên nhận của phiên đã sẵn sàng. Trang tóm tắt không phải '
+          'tổng lịch sử, mức thành thạo hay thời gian học.',
+        ),
+        if (serverHistoryReader == null)
+          const Text('Biên nhận máy chủ chưa được cấu hình cho phiên này.')
+        else ...[
+          FilledButton.icon(
+            key: const Key('progress-load-server-quiz'),
+            onPressed: serverQuizLoading
+                ? null
+                : () => unawaited(_loadServerQuizSummary()),
+            icon: const Icon(Icons.cloud_download_outlined),
+            label: Text(
+              serverQuizFailed
+                  ? 'Thử tải lại biên nhận quiz trên máy chủ'
+                  : serverQuizPage == null
+                  ? 'Tải biên nhận quiz trên máy chủ'
+                  : 'Làm mới biên nhận quiz trên máy chủ',
+            ),
+          ),
+          if (serverQuizLoading) ...[
+            const LinearProgressIndicator(),
+            const Text('Đang đọc biên nhận quiz trên máy chủ…'),
+          ],
+          if (serverQuizFailed)
+            const Text(
+              'Không thể đọc biên nhận quiz trên máy chủ. Bạn có thể thử lại.',
+              key: Key('progress-server-quiz-error'),
+            ),
+          if (serverQuizPage != null) ...[
+            if (serverQuizPage.items.isEmpty)
+              const Text(
+                'Chưa có biên nhận quiz trên máy chủ.',
+                key: Key('progress-server-quiz-empty'),
+              )
+            else
+              Text(
+                '${serverQuizPage.items.length} biên nhận trên trang mới nhất · '
+                '$serverQuizCorrect/$serverQuizAnswers câu đúng',
+                key: const Key('progress-server-quiz-summary'),
+              ),
+            const Text(
+              'Chỉ tóm tắt tối đa 20 biên nhận mới nhất. Mở lịch sử để lọc '
+              'và xem các trang cũ hơn.',
+            ),
+          ],
+          OutlinedButton(
+            key: const Key('progress-open-server-quiz-history'),
+            onPressed: () => context.go('/quiz/history'),
+            child: const Text('Mở lịch sử quiz trên máy chủ'),
           ),
         ],
         OutlinedButton(

@@ -988,8 +988,9 @@ cover bearer/filter forwarding, exact-origin CORS and rejection before reader
 dispatch for an untrusted origin. Deno type-check and a dedicated Edge bundle
 check include the new function. These are source/CI checks only: the function
 has not been deployed, no hosted signed-JWT/PostgREST/RLS learner A/B is claimed,
-and the Flutter history screen is not yet connected to this endpoint. It does
-not update local history, mastery, SRS or study minutes.
+The later opt-in Flutter history route and overview receipt summary depend on
+this undeployed endpoint and a caller-owned ready runtime. They do not update
+local history, mastery, SRS or study minutes.
 
 ## Captured-session Flutter history transport — 2026-11-16
 
@@ -1018,11 +1019,12 @@ or mismatched cursor rather than silently displaying an inconsistent page.
 The provider additionally requires the existing ready account/profile/runtime
 and remains null in the default preview.
 
-This increment only exposes the transport capability. The learner-facing
-server-history screen is not connected, the Edge Function remains undeployed,
-and no hosted signed-JWT/PostgREST/RLS or learner A/B evidence is claimed.
-Server receipts remain separate from local device history, study minutes,
-mastery, SRS state and study credit.
+The transport is consumed by the separate quiz-history route and an explicit
+first-page receipt summary on `/overview`. Both are opt-in and remain absent
+from the default preview. The Edge Function remains undeployed, and no hosted
+signed-JWT/PostgREST/RLS or learner A/B evidence is claimed. Server receipts
+remain separate from local device history, study minutes, mastery, SRS state
+and study credit.
 
 
 ## Learner-facing server quiz history screen — 2026-11-16
@@ -1047,3 +1049,9 @@ grant study credit. The default preview still publishes no transport and
 therefore shows no server-history section. The Edge Function is still not
 deployed; CI/widget fixtures are not hosted learner evidence, and local-device
 history remains a distinct store.
+
+The global `/overview` also offers an explicit first-page summary from the same
+reader when a ready caller-owned runtime publishes it. It requests at most 20
+receipts, shows only that page's count and correct/answer totals, and links to
+this route for filters and older pages. It never treats the page as an all-time
+total or merges server receipts with local history or Daily Plan minutes.

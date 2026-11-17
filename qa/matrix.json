@@ -4092,7 +4092,7 @@
     {
       "id": "progress-overview",
       "status": "pending-integration",
-      "scope": "Server-derived Daily Plan minutes plus an explicit read-only local quiz snapshot with separate vocabulary, grammar-primary and grammar-correction totals; no cross-kind/mastery/time aggregation.",
+      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals and a separate first-page caller-owned server receipt summary; no cross-kind/mastery/time aggregation.",
       "issues": [
         11,
         13,
@@ -4126,10 +4126,27 @@
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
           "contains": "late quiz history cannot publish after account replacement"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
+          "contains": "quizReportV2HistoryReaderProvider"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "overview server quiz receipts are explicit and separate from local history"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "server receipt read failure is redacted and manually retryable"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late server receipt page cannot publish after account replacement"
         }
       ],
-      "reproduce": "Open /overview in preview and configured test account; explicitly choose the server profile day and load a plan; explicitly load local quiz history; verify separate vocabulary/grammar-primary/grammar-correction totals, redacted retry, zero writes and suppression after account replacement; open the separate quiz reports.",
-      "limitation": "Auth/RPC/local-history ports are TEST ONLY. The overview reads only local owner-bound history and never submits it. No hosted learner identity, authoritative mastery, cross-device sync or Personal Alpha acceptance is established."
+      "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, confirm it stays separate from local vocabulary/grammar totals, retry a redacted failure, suppress late A results after account replacement, and open /quiz/history for full keyset browsing.",
+      "limitation": "Auth/RPC/reader ports are TEST ONLY. The first-page receipt summary is read-only and never merges with local history or Daily Plan minutes. The Edge function is undeployed; no hosted JWT/PostgREST/RLS, learner A/B, all-time total, authoritative mastery, cross-device sync or Personal Alpha acceptance is established.",
+      "ci_job": "flutter"
     },
     {
       "id": "quiz-report-verified-owner-host",

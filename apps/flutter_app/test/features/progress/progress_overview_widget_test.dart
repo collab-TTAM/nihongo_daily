@@ -11,10 +11,13 @@ import 'package:nihongo_daily/features/daily_plan/application/daily_plan_provide
 import 'package:nihongo_daily/features/daily_plan/data/daily_plan_repository.dart';
 import 'package:nihongo_daily/features/quiz/application/grammar_quiz_history_provider.dart';
 import 'package:nihongo_daily/features/quiz/application/quiz_history_provider.dart';
+import 'package:nihongo_daily/features/quiz/application/quiz_report_v2_provider.dart';
 import 'package:nihongo_daily/features/quiz/data/grammar_quiz_attempt_store.dart';
 import 'package:nihongo_daily/features/quiz/data/grammar_quiz_history_repository.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_attempt_store.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_history_repository.dart';
+import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
+import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_transport.dart';
 import 'package:nihongo_daily/features/quiz/domain/grammar_quiz_attempt.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
 
@@ -201,6 +204,70 @@ GrammarQuizAttempt _grammarReport(
   });
 }
 
+Map<String, Object?> _serverQuizHistoryPage({bool correct = true}) {
+  const eventId = '00000000-0000-4000-8000-000000000001';
+  const targetId = '10000000-0000-4000-8000-000000000001';
+  const choices = [
+    targetId,
+    '10000000-0000-4000-8000-000000000002',
+    '10000000-0000-4000-8000-000000000003',
+    '10000000-0000-4000-8000-000000000004',
+  ];
+  const completedAt = '2026-11-17T09:59:00Z';
+  return {
+    'items': [
+      {
+        'received_at': '2026-11-17T10:00:00.000000Z',
+        'request': {
+          'client_event_id': eventId,
+          'quiz_type': 'vocabulary_reading',
+          'practice_kind': null,
+          'jlpt_level': 'N5',
+          'completed_at': completedAt,
+          'answers': [
+            {
+              'item_id': targetId,
+              'content_version': 1,
+              'selected_id': correct ? targetId : choices[1],
+              'choices': choices,
+              'choice_content_versions': [1, 1, 1, 1],
+            },
+          ],
+        },
+        'response': {
+          'client_event_id': eventId,
+          'quiz_type': 'vocabulary_reading',
+          'practice_kind': null,
+          'jlpt_level': 'N5',
+          'completed_at': completedAt,
+          'answer_count': 1,
+          'correct_count': correct ? 1 : 0,
+        },
+      },
+    ],
+    'next_cursor': null,
+  };
+}
+
+final class _ServerHistoryReader implements QuizReportV2HistoryReader {
+  int reads = 0;
+  QuizReportV2HistoryQuery? lastQuery;
+  Map<String, Object?> response = _serverQuizHistoryPage();
+  Completer<void>? readWait;
+  bool failRead = false;
+
+  @override
+  Future<QuizReportV2HistoryPage> readHistory(
+    QuizReportV2HistoryQuery query,
+  ) async {
+    reads++;
+    lastQuery = query;
+    await readWait?.future;
+    if (failRead) throw StateError('PRIVATE SERVER HISTORY');
+    return query.decodePage(response);
+  }
+}
+
 Future<ProviderContainer> _mount(
   WidgetTester tester,
   Harness harness,
@@ -208,6 +275,7 @@ Future<ProviderContainer> _mount(
   bool configured = true,
   _VocabularyPorts? vocabularyPorts,
   _GrammarPorts? grammarPorts,
+  _ServerHistoryReader? serverHistoryReader,
 }) async {
   final container = ProviderContainer(
     overrides: [
@@ -217,6 +285,8 @@ Future<ProviderContainer> _mount(
         quizHistorySourceProvider.overrideWithValue(vocabularyPorts),
       if (configured && grammarPorts != null)
         grammarQuizHistorySourceProvider.overrideWithValue(grammarPorts),
+      if (configured && serverHistoryReader != null)
+        quizReportV2HistoryReaderProvider.overrideWithValue(serverHistoryReader),
     ],
   );
   addTearDown(() async {
@@ -255,6 +325,7 @@ void main() {
     expect(find.text('Tiến độ học tập'), findsOneWidget);
     expect(find.text('Mở tài khoản'), findsOneWidget);
     expect(find.byKey(const Key('progress-date')), findsNothing);
+    expect(find.byKey(const Key('progress-load-server-quiz')), findsNothing);
     expect(source.planReads, 0);
     expect(source.dayReads, 0);
     expect(tester.takeException(), isNull);
@@ -488,6 +559,150 @@ void main() {
     expect(grammar.writes, 0);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'overview server quiz receipts are explicit and separate from local history',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader();
+      final vocabulary = _VocabularyPorts(harness);
+      final grammar = _GrammarPorts(harness);
+      final container = await _mount(
+        tester,
+        harness,
+        source,
+        vocabularyPorts: vocabulary,
+        grammarPorts: grammar,
+        serverHistoryReader: reader,
+      );
+
+      expect(reader.reads, 0);
+      expect(vocabulary.reads, 0);
+      expect(grammar.reads, 0);
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 1);
+      expect(reader.lastQuery?.limit, 20);
+      expect(reader.lastQuery?.jlptLevel, isNull);
+      expect(reader.lastQuery?.quizType, isNull);
+      expect(reader.lastQuery?.cursor, isNull);
+      expect(
+        find.text('1 biên nhận trên trang mới nhất · 1/1 câu đúng'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('progress-quiz-vocabulary-summary')),
+        findsNothing,
+      );
+      expect(vocabulary.reads, 0);
+      expect(grammar.reads, 0);
+      expect(vocabulary.writes, 0);
+      expect(grammar.writes, 0);
+      expect(
+        find.byKey(const Key('progress-open-server-quiz-history')),
+        findsOneWidget,
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-open-server-quiz-history')),
+      );
+      await tester.tap(
+        find.byKey(const Key('progress-open-server-quiz-history')),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        container.read(routerProvider).routeInformationProvider.value.uri.path,
+        '/quiz/history',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'server receipt read failure is redacted and manually retryable',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()..failRead = true;
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 1);
+      expect(
+        find.byKey(const Key('progress-server-quiz-error')),
+        findsOneWidget,
+      );
+      expect(find.textContaining('PRIVATE'), findsNothing);
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+
+      reader.failRead = false;
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 2);
+      expect(
+        find.byKey(const Key('progress-server-quiz-error')),
+        findsNothing,
+      );
+      expect(
+        find.text('1 biên nhận trên trang mới nhất · 1/1 câu đúng'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'late server receipt page cannot publish after account replacement',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()..readWait = Completer<void>();
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pump();
+      expect(reader.reads, 1);
+      expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsOneWidget);
+
+      harness.access.change(account.other);
+      await tester.pumpAndSettle();
+      reader.readWait!.complete();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(find.textContaining('biên nhận trên trang mới nhất'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('overview links keep vocabulary and grammar reports separate', (
     tester,
