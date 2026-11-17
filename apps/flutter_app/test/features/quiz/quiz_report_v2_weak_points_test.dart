@@ -45,8 +45,9 @@ Map<String, Object?> _answer(
   final versions = shown.map((e) => e.contentVersion).toList();
   final targetIndex = shown.indexWhere((e) => e.id == target.id);
   if (targetVersion != null) versions[targetIndex] = targetVersion;
-  if (distractorVersion != null)
+  if (distractorVersion != null) {
     versions[shown.indexWhere((e) => e.id != target.id)] = distractorVersion;
+  }
   return {
     'item_id': target.id,
     'content_version': targetVersion ?? target.contentVersion,

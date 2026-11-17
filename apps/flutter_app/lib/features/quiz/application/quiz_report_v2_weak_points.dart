@@ -60,8 +60,9 @@ bool _sameDisplayedChoices(
 ) {
   if (current.length != 4 ||
       reported.choices.length != 4 ||
-      reported.choiceContentVersions.length != 4)
+      reported.choiceContentVersions.length != 4) {
     return false;
+  }
   for (var index = 0; index < 4; index++) {
     if (current[index].id != reported.choices[index] ||
         current[index].contentVersion !=
@@ -89,11 +90,13 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
   final questionSets = <String, Map<String, _CurrentQuestion>>{};
   for (final key in keys) {
     final source = currentContent[key];
-    if (source == null)
+    if (source == null) {
       throw const FormatException('Current quiz content unavailable');
+    }
     final split = key.split(':');
-    if (split.length != 2)
+    if (split.length != 2) {
       throw const FormatException('Invalid quiz report content scope');
+    }
     final level = switch (split[1]) {
       'N5' => PreviewLevel.n5,
       'N4' => PreviewLevel.n4,
@@ -143,8 +146,9 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
       final question = questions[answer.itemId];
       if (question == null ||
           question.target.contentVersion != answer.contentVersion ||
-          !_sameDisplayedChoices(question.choices, answer))
+          !_sameDisplayedChoices(question.choices, answer)) {
         continue;
+      }
       final stateKey = '$key|${request.practiceKind ?? ''}|${answer.itemId}';
       final previous = states[stateKey];
       if (previous == null) {

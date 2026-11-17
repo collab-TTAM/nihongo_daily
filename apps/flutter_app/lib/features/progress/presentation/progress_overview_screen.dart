@@ -522,8 +522,9 @@ class _ProgressOverviewScreenState
         generation: generation,
         reader: reader,
         curriculum: curriculum,
-      ))
+      )) {
         return;
+      }
       final keys = <String>{
         for (final item in page.items)
           quizReportV2ContentKey(item.request.quizType, item.request.jlptLevel),
@@ -534,8 +535,9 @@ class _ProgressOverviewScreenState
       try {
         for (final key in keys) {
           final split = key.split(':');
-          if (split.length != 2)
+          if (split.length != 2) {
             throw const FormatException('Invalid quiz content scope');
+          }
           final kind = switch (split[0]) {
             'vocabulary_reading' => CurriculumKind.vocabulary,
             'grammar_meaning' => CurriculumKind.grammar,
@@ -552,8 +554,9 @@ class _ProgressOverviewScreenState
             generation: generation,
             reader: reader,
             curriculum: curriculum,
-          ))
+          )) {
             return;
+          }
         }
         weakPoints = deriveQuizReportV2WeakPoints(
           page: page,
@@ -565,8 +568,9 @@ class _ProgressOverviewScreenState
           generation: generation,
           reader: reader,
           curriculum: curriculum,
-        ))
+        )) {
           return;
+        }
         weakPointsUnavailable = true;
       }
       if (!_isServerQuizCurrent(
@@ -574,8 +578,9 @@ class _ProgressOverviewScreenState
         generation: generation,
         reader: reader,
         curriculum: curriculum,
-      ))
+      )) {
         return;
+      }
       setState(() {
         _serverQuizPage = page;
         _serverQuizWeakPoints = weakPoints;
