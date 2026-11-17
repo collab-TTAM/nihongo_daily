@@ -355,48 +355,84 @@ final class _ServerHistoryReader implements QuizReportV2HistoryReader {
   }
 }
 
-
 final class _ProgressCurriculumRepository implements CurriculumRepository {
   _ProgressCurriculumRepository(this.content);
-  final Map<String,List<CurriculumEntry>> content;
-  final calls=<String>[];
+  final Map<String, List<CurriculumEntry>> content;
+  final calls = <String>[];
   Completer<void>? wait;
   @override
-  Future<List<CurriculumEntry>> load(CurriculumKind kind,PreviewLevel level) async {
-    final type=kind==CurriculumKind.vocabulary?'vocabulary_reading':'grammar_meaning';
-    final label=level==PreviewLevel.n5?'N5':'N4';
-    final key='$type:$label';
+  Future<List<CurriculumEntry>> load(
+    CurriculumKind kind,
+    PreviewLevel level,
+  ) async {
+    final type = kind == CurriculumKind.vocabulary
+        ? 'vocabulary_reading'
+        : 'grammar_meaning';
+    final label = level == PreviewLevel.n5 ? 'N5' : 'N4';
+    final key = '$type:$label';
     calls.add(key);
     await wait?.future;
-    return content[key]??const <CurriculumEntry>[];
+    return content[key] ?? const <CurriculumEntry>[];
   }
 }
-List<CurriculumEntry> _serverVocabularySource()=>[
-  for(var i=0;i<4;i++)
+
+List<CurriculumEntry> _serverVocabularySource() => [
+  for (var i = 0; i < 4; i++)
     CurriculumEntry(
-      id:'10000000-0000-4000-8000-${(i+1).toString().padLeft(12,'0')}',
-      kind:CurriculumKind.vocabulary,level:PreviewLevel.n5,contentVersion:1,
-      heading:'語$i',caption:'TEST ONLY',reading:'ご$i',meaningVi:'Nghĩa $i',
-      explanationVi:'Giải thích $i',hasAudioReference:false,notes:const [],
-      mistakes:const [],examples:const [],
+      id: '10000000-0000-4000-8000-${(i + 1).toString().padLeft(12, '0')}',
+      kind: CurriculumKind.vocabulary,
+      level: PreviewLevel.n5,
+      contentVersion: 1,
+      heading: '語$i',
+      caption: 'TEST ONLY',
+      reading: 'ご$i',
+      meaningVi: 'Nghĩa $i',
+      explanationVi: 'Giải thích $i',
+      hasAudioReference: false,
+      notes: const [],
+      mistakes: const [],
+      examples: const [],
     ),
 ];
-Map<String,Object?> _serverQuizReceiptForQuestion({
-  required int eventNumber,required QuizQuestion question,required bool correct,
-  required String receivedAt,required String completedAt,
+Map<String, Object?> _serverQuizReceiptForQuestion({
+  required int eventNumber,
+  required QuizQuestion question,
+  required bool correct,
+  required String receivedAt,
+  required String completedAt,
 }) {
-  final id='a3000000-0000-4000-8000-${eventNumber.toString().padLeft(12,'0')}';
-  final choices=question.choices;
-  final selected=correct?question.target.id:choices.firstWhere((e)=>e.id!=question.target.id).id;
-  final answer=<String,Object?>{
-    'item_id':question.target.id,'content_version':question.target.contentVersion,
-    'selected_id':selected,'choices':choices.map((e)=>e.id).toList(),
-    'choice_content_versions':choices.map((e)=>e.contentVersion).toList(),
+  final id =
+      'a3000000-0000-4000-8000-${eventNumber.toString().padLeft(12, '0')}';
+  final choices = question.choices;
+  final selected = correct
+      ? question.target.id
+      : choices.firstWhere((e) => e.id != question.target.id).id;
+  final answer = <String, Object?>{
+    'item_id': question.target.id,
+    'content_version': question.target.contentVersion,
+    'selected_id': selected,
+    'choices': choices.map((e) => e.id).toList(),
+    'choice_content_versions': choices.map((e) => e.contentVersion).toList(),
   };
   return {
-    'received_at':receivedAt,
-    'request':{'client_event_id':id,'quiz_type':'vocabulary_reading','practice_kind':null,'jlpt_level':'N5','completed_at':completedAt,'answers':[answer]},
-    'response':{'client_event_id':id,'quiz_type':'vocabulary_reading','practice_kind':null,'jlpt_level':'N5','completed_at':completedAt,'answer_count':1,'correct_count':correct?1:0},
+    'received_at': receivedAt,
+    'request': {
+      'client_event_id': id,
+      'quiz_type': 'vocabulary_reading',
+      'practice_kind': null,
+      'jlpt_level': 'N5',
+      'completed_at': completedAt,
+      'answers': [answer],
+    },
+    'response': {
+      'client_event_id': id,
+      'quiz_type': 'vocabulary_reading',
+      'practice_kind': null,
+      'jlpt_level': 'N5',
+      'completed_at': completedAt,
+      'answer_count': 1,
+      'correct_count': correct ? 1 : 0,
+    },
   };
 }
 
@@ -956,58 +992,135 @@ void main() {
     );
   });
 
-  testWidgets('server weak-point suggestions use only exact current target and choice provenance',(tester) async {
-    final harness=Harness();
-    final source=_ProgressSource(harness);
-    final vocabulary=_VocabularyPorts(harness);
-    final grammar=_GrammarPorts(harness);
-    final entries=_serverVocabularySource();
-    final question=buildVocabularyQuiz(entries,PreviewLevel.n5).first;
-    final reader=_ServerHistoryReader()..response={
-      'items':[
-        _serverQuizReceiptForQuestion(eventNumber:61,question:question,correct:false,receivedAt:'2026-11-17T10:00:02.000000Z',completedAt:'2026-11-17T09:59:02Z'),
-        _serverQuizReceiptForQuestion(eventNumber:60,question:question,correct:false,receivedAt:'2026-11-17T10:00:01.000000Z',completedAt:'2026-11-17T09:59:01Z'),
-      ],'next_cursor':null,
-    };
-    final curriculum=_ProgressCurriculumRepository({'vocabulary_reading:N5':entries});
-    await _mount(tester,harness,source,vocabularyPorts:vocabulary,grammarPorts:grammar,serverHistoryReader:reader,curriculumRepository:curriculum);
-    expect(reader.reads,0);expect(curriculum.calls,isEmpty);
-    await tester.ensureVisible(find.byKey(const Key('progress-load-server-quiz')));
-    await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-    await tester.pumpAndSettle();
-    expect(reader.reads,1);expect(curriculum.calls,['vocabulary_reading:N5']);
-    expect(find.byKey(Key('progress-server-quiz-weak-point-vocabulary_reading-none-N5-${question.target.id}')),findsOneWidget);
-    expect(find.textContaining('N5 · Từ vựng · ${question.target.heading}'),findsOneWidget);
-    expect(find.textContaining('Sai 2 lần trong trang này'),findsOneWidget);
-    expect(find.byKey(const Key('progress-server-quiz-weak-points-heading')),findsOneWidget);
-    expect(vocabulary.reads,0);expect(grammar.reads,0);
-    expect(vocabulary.writes,0);expect(grammar.writes,0);
-    expect(tester.takeException(),isNull);
-  });
+  testWidgets(
+    'server weak-point suggestions use only exact current target and choice provenance',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final vocabulary = _VocabularyPorts(harness);
+      final grammar = _GrammarPorts(harness);
+      final entries = _serverVocabularySource();
+      final question = buildVocabularyQuiz(entries, PreviewLevel.n5).first;
+      final reader = _ServerHistoryReader()
+        ..response = {
+          'items': [
+            _serverQuizReceiptForQuestion(
+              eventNumber: 61,
+              question: question,
+              correct: false,
+              receivedAt: '2026-11-17T10:00:02.000000Z',
+              completedAt: '2026-11-17T09:59:02Z',
+            ),
+            _serverQuizReceiptForQuestion(
+              eventNumber: 60,
+              question: question,
+              correct: false,
+              receivedAt: '2026-11-17T10:00:01.000000Z',
+              completedAt: '2026-11-17T09:59:01Z',
+            ),
+          ],
+          'next_cursor': null,
+        };
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': entries,
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        vocabularyPorts: vocabulary,
+        grammarPorts: grammar,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
+      expect(reader.reads, 0);
+      expect(curriculum.calls, isEmpty);
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+      expect(reader.reads, 1);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
+      expect(
+        find.byKey(
+          Key(
+            'progress-server-quiz-weak-point-vocabulary_reading-none-N5-${question.target.id}',
+          ),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('N5 · Từ vựng · ${question.target.heading}'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Sai 2 lần trong trang này'), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress-server-quiz-weak-points-heading')),
+        findsOneWidget,
+      );
+      expect(vocabulary.reads, 0);
+      expect(grammar.reads, 0);
+      expect(vocabulary.writes, 0);
+      expect(grammar.writes, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-  testWidgets('late weak-point content read is discarded after account replacement',(tester) async {
-    final harness=Harness();
-    final source=_ProgressSource(harness);
-    final entries=_serverVocabularySource();
-    final question=buildVocabularyQuiz(entries,PreviewLevel.n5).first;
-    final reader=_ServerHistoryReader()..response={
-      'items':[_serverQuizReceiptForQuestion(eventNumber:71,question:question,correct:false,receivedAt:'2026-11-17T10:00:01.000000Z',completedAt:'2026-11-17T09:59:01Z')],
-      'next_cursor':null,
-    };
-    final curriculum=_ProgressCurriculumRepository({'vocabulary_reading:N5':entries})..wait=Completer<void>();
-    await _mount(tester,harness,source,serverHistoryReader:reader,curriculumRepository:curriculum);
-    await tester.ensureVisible(find.byKey(const Key('progress-load-server-quiz')));
-    await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-    await tester.pump();
-    expect(reader.reads,1);expect(curriculum.calls,['vocabulary_reading:N5']);
-    harness.access.change(account.other);
-    await tester.pumpAndSettle();
-    curriculum.wait!.complete();
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('progress-server-quiz-summary')),findsNothing);
-    expect(find.byKey(const Key('progress-server-quiz-weak-points-heading')),findsNothing);
-    expect(find.textContaining('N5 · Từ vựng · ${question.target.heading}'),findsNothing);
-    expect(tester.takeException(),isNull);
-  });
-
+  testWidgets(
+    'late weak-point content read is discarded after account replacement',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final entries = _serverVocabularySource();
+      final question = buildVocabularyQuiz(entries, PreviewLevel.n5).first;
+      final reader = _ServerHistoryReader()
+        ..response = {
+          'items': [
+            _serverQuizReceiptForQuestion(
+              eventNumber: 71,
+              question: question,
+              correct: false,
+              receivedAt: '2026-11-17T10:00:01.000000Z',
+              completedAt: '2026-11-17T09:59:01Z',
+            ),
+          ],
+          'next_cursor': null,
+        };
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': entries,
+      })..wait = Completer<void>();
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pump();
+      expect(reader.reads, 1);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
+      harness.access.change(account.other);
+      await tester.pumpAndSettle();
+      curriculum.wait!.complete();
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-server-quiz-weak-points-heading')),
+        findsNothing,
+      );
+      expect(
+        find.textContaining('N5 · Từ vựng · ${question.target.heading}'),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

@@ -54,12 +54,18 @@ final class _WeakPointState {
   DateTime lastCompletedAt;
 }
 
-bool _sameDisplayedChoices(List<CurriculumEntry> current, QuizReportV2Answer reported) {
-  if (current.length != 4 || reported.choices.length != 4 ||
-      reported.choiceContentVersions.length != 4) return false;
+bool _sameDisplayedChoices(
+  List<CurriculumEntry> current,
+  QuizReportV2Answer reported,
+) {
+  if (current.length != 4 ||
+      reported.choices.length != 4 ||
+      reported.choiceContentVersions.length != 4)
+    return false;
   for (var index = 0; index < 4; index++) {
     if (current[index].id != reported.choices[index] ||
-        current[index].contentVersion != reported.choiceContentVersions[index]) {
+        current[index].contentVersion !=
+            reported.choiceContentVersions[index]) {
       return false;
     }
   }
@@ -83,9 +89,11 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
   final questionSets = <String, Map<String, _CurrentQuestion>>{};
   for (final key in keys) {
     final source = currentContent[key];
-    if (source == null) throw const FormatException('Current quiz content unavailable');
+    if (source == null)
+      throw const FormatException('Current quiz content unavailable');
     final split = key.split(':');
-    if (split.length != 2) throw const FormatException('Invalid quiz report content scope');
+    if (split.length != 2)
+      throw const FormatException('Invalid quiz report content scope');
     final level = switch (split[1]) {
       'N5' => PreviewLevel.n5,
       'N4' => PreviewLevel.n4,
@@ -95,12 +103,18 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
     switch (split[0]) {
       case 'vocabulary_reading':
         for (final question in buildVocabularyQuiz(source, level)) {
-          questions[question.target.id] = _CurrentQuestion(question.target, question.choices);
+          questions[question.target.id] = _CurrentQuestion(
+            question.target,
+            question.choices,
+          );
         }
         break;
       case 'grammar_meaning':
         for (final question in buildGrammarQuiz(source, level)) {
-          questions[question.target.id] = _CurrentQuestion(question.target, question.choices);
+          questions[question.target.id] = _CurrentQuestion(
+            question.target,
+            question.choices,
+          );
         }
         break;
       default:
@@ -111,9 +125,9 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
 
   final ordered = List<QuizReportV2HistoryEntry>.of(page.items)
     ..sort((left, right) {
-      final time = DateTime.parse(left.request.completedAt).compareTo(
-        DateTime.parse(right.request.completedAt),
-      );
+      final time = DateTime.parse(
+        left.request.completedAt,
+      ).compareTo(DateTime.parse(right.request.completedAt));
       return time == 0
           ? left.request.clientEventId.compareTo(right.request.clientEventId)
           : time;
@@ -129,7 +143,8 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
       final question = questions[answer.itemId];
       if (question == null ||
           question.target.contentVersion != answer.contentVersion ||
-          !_sameDisplayedChoices(question.choices, answer)) continue;
+          !_sameDisplayedChoices(question.choices, answer))
+        continue;
       final stateKey = '$key|${request.practiceKind ?? ''}|${answer.itemId}';
       final previous = states[stateKey];
       if (previous == null) {
@@ -157,16 +172,22 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
   }
 
   final result = states.values
-      .where((state) => state.incorrectCount > 0 &&
-          !state.lastAnswerCorrect && !state.ambiguousAtLatestTime)
-      .map((state) => QuizReportV2WeakPoint(
-            entry: state.entry,
-            quizType: state.quizType,
-            jlptLevel: state.jlptLevel,
-            practiceKind: state.practiceKind,
-            incorrectCount: state.incorrectCount,
-            lastCompletedAt: state.lastCompletedAt,
-          ))
+      .where(
+        (state) =>
+            state.incorrectCount > 0 &&
+            !state.lastAnswerCorrect &&
+            !state.ambiguousAtLatestTime,
+      )
+      .map(
+        (state) => QuizReportV2WeakPoint(
+          entry: state.entry,
+          quizType: state.quizType,
+          jlptLevel: state.jlptLevel,
+          practiceKind: state.practiceKind,
+          incorrectCount: state.incorrectCount,
+          lastCompletedAt: state.lastCompletedAt,
+        ),
+      )
       .toList();
   result.sort((left, right) {
     final count = right.incorrectCount.compareTo(left.incorrectCount);

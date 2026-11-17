@@ -12292,3 +12292,13 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - New unit/widget regressions cover empty history, repeated wrong then correct, grammar-kind separation, stale target/version/order, ambiguous equal-time outcomes, missing current snapshot, N5/N4 separation, explicit load and late account replacement. Exact-head CI is required; no local Flutter SDK run is claimed.
 - Hosted Edge deployment, signed-JWT/PostgREST/RLS learner A/B, real account restart/expiry and physical multi-device sync remain separate blockers. Keep PR #41 Draft and Issue #13 open.
 - Next: inspect every latest-attempt job/step for the exact new head; fix only observed diagnostics.
+
+
+## PR #41 — pinned Dart 3.35.4 formatter repair — 2026-11-17 13:10 UTC
+
+- Core run `core-20261117T1310Z-pr41-exact-pinned-dart-format-repair` RELEASED after publishing the exact formatter correction. Branch `automation/issue-11-plan-sdk-integration`; parent `8e8dd41e6d51145fffb9c30911b2b9695c3894e0`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.
+- Exact-head Actions [44079346940](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44079346940), attempt 1, targeted `8e8dd41e6d51145fffb9c30911b2b9695c3894e0` and completed FAILURE. `repo-sanity`, `database`, `ai-boundary` and `windows` jobs and every returned step succeeded. The `flutter` job failed only at `dart format --output=none --set-exit-if-changed .`; `flutter analyze`, `flutter test`, Chrome checks and Web build were skipped, not passed.
+- Applied only the exact formatter diff printed by pinned Dart 3.35.4 to `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `apps/flutter_app/lib/features/quiz/application/quiz_report_v2_weak_points.dart` and `apps/flutter_app/test/features/quiz/quiz_report_v2_weak_points_test.dart`. No behavior, assertions, tests, content or security gates changed.
+- No local Flutter SDK was available in this cloud authoring runtime; no local Dart/Flutter format, analyze, test or build pass is claimed. The new exact-head Actions run is the verification gate.
+- PR #41 remains Draft; Issue #13 remains open. PR #37 remains separate; hosted signed-JWT learner A/B, deployed PostgREST/RLS, real expiry/restart and physical two-device acceptance remain external staging gates. Pro-owned PR #38 / Issue #14 / N4 files remain untouched.
+- Next: inspect all latest-attempt jobs and every returned step for the new exact HEAD; fix only observed diagnostics. Do not merge until acceptance and required exact-head checks are complete.

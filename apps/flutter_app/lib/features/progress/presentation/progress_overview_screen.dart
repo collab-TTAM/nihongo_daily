@@ -211,7 +211,6 @@ String _quizLevelTotalsLabel(_QuizHistoryTotals totals) =>
     'N5 · ${totals.n5.attempts} lượt · ${totals.n5.correct}/${totals.n5.answers} câu đúng; '
     'N4 · ${totals.n4.attempts} lượt · ${totals.n4.correct}/${totals.n4.answers} câu đúng';
 
-
 String _serverWeakPointTitle(QuizReportV2WeakPoint point) {
   final type = point.quizType == 'vocabulary_reading'
       ? 'Từ vựng'
@@ -227,7 +226,6 @@ String _serverWeakPointSubtitle(QuizReportV2WeakPoint point) {
       : point.entry.meaningVi;
   return '$detail · Sai ${point.incorrectCount} lần trong trang này';
 }
-
 
 class ProgressOverviewScreen extends ConsumerStatefulWidget {
   const ProgressOverviewScreen({super.key});
@@ -516,19 +514,28 @@ class _ProgressOverviewScreenState
     });
 
     try {
-      final page = await reader.readHistory(QuizReportV2HistoryQuery(limit: 20));
-      if (!_isServerQuizCurrent(owner: owner, generation: generation, reader: reader, curriculum: curriculum)) return;
+      final page = await reader.readHistory(
+        QuizReportV2HistoryQuery(limit: 20),
+      );
+      if (!_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      ))
+        return;
       final keys = <String>{
         for (final item in page.items)
           quizReportV2ContentKey(item.request.quizType, item.request.jlptLevel),
       }.toList()..sort();
-      final currentContent = <String,List<CurriculumEntry>>{};
+      final currentContent = <String, List<CurriculumEntry>>{};
       var weakPoints = const <QuizReportV2WeakPoint>[];
       var weakPointsUnavailable = false;
       try {
         for (final key in keys) {
           final split = key.split(':');
-          if (split.length != 2) throw const FormatException('Invalid quiz content scope');
+          if (split.length != 2)
+            throw const FormatException('Invalid quiz content scope');
           final kind = switch (split[0]) {
             'vocabulary_reading' => CurriculumKind.vocabulary,
             'grammar_meaning' => CurriculumKind.grammar,
@@ -540,25 +547,56 @@ class _ProgressOverviewScreenState
             _ => throw const FormatException('Invalid quiz content level'),
           };
           currentContent[key] = await curriculum.load(kind, level);
-          if (!_isServerQuizCurrent(owner: owner, generation: generation, reader: reader, curriculum: curriculum)) return;
+          if (!_isServerQuizCurrent(
+            owner: owner,
+            generation: generation,
+            reader: reader,
+            curriculum: curriculum,
+          ))
+            return;
         }
-        weakPoints = deriveQuizReportV2WeakPoints(page: page, currentContent: currentContent);
+        weakPoints = deriveQuizReportV2WeakPoints(
+          page: page,
+          currentContent: currentContent,
+        );
       } on Object {
-        if (!_isServerQuizCurrent(owner: owner, generation: generation, reader: reader, curriculum: curriculum)) return;
+        if (!_isServerQuizCurrent(
+          owner: owner,
+          generation: generation,
+          reader: reader,
+          curriculum: curriculum,
+        ))
+          return;
         weakPointsUnavailable = true;
       }
-      if (!_isServerQuizCurrent(owner: owner, generation: generation, reader: reader, curriculum: curriculum)) return;
+      if (!_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      ))
+        return;
       setState(() {
         _serverQuizPage = page;
         _serverQuizWeakPoints = weakPoints;
         _serverQuizWeakPointsUnavailable = weakPointsUnavailable;
       });
     } on Object {
-      if (_isServerQuizCurrent(owner: owner, generation: generation, reader: reader, curriculum: curriculum)) {
+      if (_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      )) {
         setState(() => _serverQuizFailed = true);
       }
     } finally {
-      if (_isServerQuizCurrent(owner: owner, generation: generation, reader: reader, curriculum: curriculum)) {
+      if (_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      )) {
         setState(() => _serverQuizLoading = false);
       }
     }
@@ -602,13 +640,17 @@ class _ProgressOverviewScreenState
     final grammarHistory = ref.watch(grammarQuizHistoryRepositoryProvider);
     final serverHistoryReader = ref.watch(quizReportV2HistoryReaderProvider);
     final curriculum = ref.watch(curriculumRepositoryProvider);
-    final serverHistoryStateCurrent = identical(_serverQuizReader, serverHistoryReader) &&
+    final serverHistoryStateCurrent =
+        identical(_serverQuizReader, serverHistoryReader) &&
         identical(_serverQuizCurriculum, curriculum);
     final serverQuizPage = serverHistoryStateCurrent ? _serverQuizPage : null;
     final serverQuizLoading = serverHistoryStateCurrent && _serverQuizLoading;
     final serverQuizFailed = serverHistoryStateCurrent && _serverQuizFailed;
-    final serverQuizWeakPoints = serverHistoryStateCurrent ? _serverQuizWeakPoints : null;
-    final serverQuizWeakPointsUnavailable = serverHistoryStateCurrent && _serverQuizWeakPointsUnavailable;
+    final serverQuizWeakPoints = serverHistoryStateCurrent
+        ? _serverQuizWeakPoints
+        : null;
+    final serverQuizWeakPointsUnavailable =
+        serverHistoryStateCurrent && _serverQuizWeakPointsUnavailable;
     final serverQuizSummary = serverQuizPage == null
         ? null
         : _serverQuizPageSummary(serverQuizPage);
@@ -901,18 +943,31 @@ class _ProgressOverviewScreenState
               'và xem các trang cũ hơn.',
             ),
             if (serverQuizWeakPointsUnavailable)
-              const Text('Chưa thể đối chiếu nội dung hiện tại nên không hiển thị gợi ý ôn lại.', key: Key('progress-server-quiz-weak-points-unavailable'))
+              const Text(
+                'Chưa thể đối chiếu nội dung hiện tại nên không hiển thị gợi ý ôn lại.',
+                key: Key('progress-server-quiz-weak-points-unavailable'),
+              )
             else if (serverQuizWeakPoints != null) ...[
-              const Text('Gợi ý ôn lại từ câu sai còn khớp nội dung hiện tại trong trang biên nhận này:', key: Key('progress-server-quiz-weak-points-heading')),
+              const Text(
+                'Gợi ý ôn lại từ câu sai còn khớp nội dung hiện tại trong trang biên nhận này:',
+                key: Key('progress-server-quiz-weak-points-heading'),
+              ),
               if (serverQuizWeakPoints.isEmpty)
-                const Text('Không có mục sai còn khớp nội dung hiện tại trong trang này.', key: Key('progress-server-quiz-weak-points-empty')),
+                const Text(
+                  'Không có mục sai còn khớp nội dung hiện tại trong trang này.',
+                  key: Key('progress-server-quiz-weak-points-empty'),
+                ),
               for (final point in serverQuizWeakPoints.take(5))
                 ListTile(
-                  key: ValueKey('progress-server-quiz-weak-point-${point.quizType}-${point.practiceKind ?? 'none'}-${point.jlptLevel}-${point.entry.id}'),
+                  key: ValueKey(
+                    'progress-server-quiz-weak-point-${point.quizType}-${point.practiceKind ?? 'none'}-${point.jlptLevel}-${point.entry.id}',
+                  ),
                   title: Text(_serverWeakPointTitle(point)),
                   subtitle: Text(_serverWeakPointSubtitle(point)),
                 ),
-              const Text('Đây là gợi ý ôn lại từ biên nhận tự báo cáo, không phải xác nhận thành thạo, trạng thái SRS hay thời gian học.'),
+              const Text(
+                'Đây là gợi ý ôn lại từ biên nhận tự báo cáo, không phải xác nhận thành thạo, trạng thái SRS hay thời gian học.',
+              ),
             ],
           ],
           OutlinedButton(
