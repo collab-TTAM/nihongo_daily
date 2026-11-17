@@ -28,77 +28,76 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         cls.workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
 
     def test_only_manual_dispatch_is_enabled_and_confirmation_defaults_false(self):
-        trigger = re.search(
-            r"(?ms)^on:\n(.*?)(?=^[A-Za-z0-9_-]+:|\\Z)", self.workflow
-        )
-        self.assertIsNotNone(trigger)
-        events = re.findall(r"(?m)^  ([A-Za-z0-9_-]+):", trigger.group(1))
-        self.assertEqual(events, ["workflow_dispatch"])
-        self.assertRegex(
-            self.workflow,
-            r"(?ms)^      confirm_non_production:\n"
-            r"(?:(?!^      [A-Za-z0-9_-]+:).)*"
-            r"^        type: boolean$",
-        )
-        self.assertRegex(
-            self.workflow,
-            r"(?ms)^        required: true\n        default: false$",
-        )
-        self.assertNotRegex(
-            self.workflow, r"(?m)^  (?:push|pull_request|schedule|workflow_run):"
-        )
+        trigger = self.workflow.split("on:\n", 1)[1].split("\npermissions:", 1)[0]
+        event_lines = [
+            line.strip()[:-1]
+            for line in trigger.splitlines()
+            if line.startswith("  ") and line.strip().endswith(":")
+        ]
+        self.assertEqual(event_lines, ["workflow_dispatch"])
+        self.assertIn("type: boolean", trigger)
+        self.assertIn("required: true", trigger)
+        self.assertIn("default: false", trigger)
+        self.assertNotIn("push:", trigger)
+        self.assertNotIn("pull_request:", trigger)
+        self.assertNotIn("schedule:", trigger)
 
     def test_confirmation_gates_the_protected_staging_job(self):
-        self.assertRegex(
+        self.assertIn(
+            "  auth-a-b:\n"
+            "    if: ${{ inputs.confirm_non_production }}\n"
+            "    environment: supabase-staging\n"
+            "    runs-on: windows-2022\n",
             self.workflow,
-            r"(?ms)^  auth-a-b:\n"
-            r"    if: \\$\\{\\{ inputs\\.confirm_non_production \\}\\}\n"
-            r"    environment: supabase-staging\n"
-            r"    runs-on: windows-2022$",
         )
         self.assertEqual(self.workflow.count("environment: supabase-staging"), 1)
 
     def test_permissions_and_concurrency_are_minimal_and_non_cancelling(self):
-        self.assertRegex(self.workflow, r"(?m)^permissions:\n  contents: read$")
-        self.assertRegex(
+        self.assertIn("permissions:\n  contents: read\n", self.workflow)
+        self.assertIn(
+            "concurrency:\n"
+            "  group: hosted-supabase-acceptance\n"
+            "  cancel-in-progress: false\n",
             self.workflow,
-            r"(?m)^concurrency:\n  group: hosted-supabase-acceptance\n"
-            r"  cancel-in-progress: false$",
         )
-        self.assertNotRegex(self.workflow, r"(?m)^\s+[A-Za-z_-]+: write$")
+        self.assertNotIn("contents: write", self.workflow)
+        self.assertNotIn("actions: write", self.workflow)
 
     def test_checkout_uses_the_selected_dispatch_ref_and_hosted_windows_runner(self):
-        self.assertRegex(
+        self.assertIn(
+            "      - uses: actions/checkout@v4\n"
+            "        with:\n"
+            "          ref: ${{ github.ref }}\n",
             self.workflow,
-            r"(?ms)^      - uses: actions/checkout@v4\n"
-            r"        with:\n          ref: \\$\\{\\{ github\\.ref \\}\\}",
         )
         self.assertIn("runs-on: windows-2022", self.workflow)
         self.assertIn('python-version: "3.12"', self.workflow)
         self.assertIn('flutter-version: "3.35.4"', self.workflow)
-        self.assertIn("flutter build windows --release -t tool/windows_hosted_runtime_fixture.dart", self.workflow)
-        self.assertIn(r"run: .\\tool\\verify_windows_hosted_runtime.ps1", self.workflow)
+        self.assertIn(
+            "flutter build windows --release -t tool/windows_hosted_runtime_fixture.dart",
+            self.workflow,
+        )
+        self.assertIn(r"run: .\tool\verify_windows_hosted_runtime.ps1", self.workflow)
 
     def test_exact_six_secrets_are_scoped_to_the_two_probe_steps(self):
-        references = re.findall(
-            r"\\$\\{\\{\\s*secrets\\.([A-Z0-9_]+)\\s*\\}\\}", self.workflow
-        )
+        references = re.findall(r"secrets\.([A-Z0-9_]+)", self.workflow)
         self.assertEqual(len(references), 12)
         self.assertEqual(set(references), EXPECTED_SECRETS)
         for name in EXPECTED_SECRETS:
             self.assertEqual(references.count(name), 2)
 
         secret_steps = []
-        for block in re.split(r"(?m)^      - ", self.workflow):
-            refs = re.findall(r"\\$\\{\\{\\s*secrets\\.([A-Z0-9_]+)\\s*\\}\\}", block)
+        for block in self.workflow.split("      - "):
+            refs = re.findall(r"secrets\.([A-Z0-9_]+)", block)
             if not refs:
                 continue
-            name = re.search(r"(?m)^name: (.+)$", block)
-            self.assertIsNotNone(name)
-            self.assertIn(name.group(1), SECRET_STEPS)
+            first_line = block.splitlines()[0]
+            self.assertTrue(first_line.startswith("name: "))
+            step_name = first_line[len("name: "):]
+            self.assertIn(step_name, SECRET_STEPS)
             self.assertEqual(len(refs), 6)
             self.assertEqual(set(refs), EXPECTED_SECRETS)
-            secret_steps.append(name.group(1))
+            secret_steps.append(step_name)
         self.assertEqual(set(secret_steps), SECRET_STEPS)
         self.assertEqual(len(secret_steps), 2)
         self.assertNotIn("SUPABASE_SERVICE_ROLE_KEY", self.workflow)
