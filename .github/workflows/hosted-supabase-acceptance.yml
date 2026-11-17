@@ -1,0 +1,58 @@
+name: Hosted Supabase Acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_non_production:
+        description: Confirm isolated non-production Supabase project and two test accounts
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: hosted-supabase-acceptance
+  cancel-in-progress: false
+jobs:
+  auth-a-b:
+    if: ${{ inputs.confirm_non_production }}
+    environment: supabase-staging
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify hosted Auth, profile ownership and A/B RLS
+        run: python scripts/hosted_supabase_probe.py
+        env:
+          ND_STAGING_SUPABASE_URL: ${{ secrets.ND_STAGING_SUPABASE_URL }}
+          ND_STAGING_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.ND_STAGING_SUPABASE_PUBLISHABLE_KEY }}
+          ND_STAGING_USER_A_EMAIL: ${{ secrets.ND_STAGING_USER_A_EMAIL }}
+          ND_STAGING_USER_A_PASSWORD: ${{ secrets.ND_STAGING_USER_A_PASSWORD }}
+          ND_STAGING_USER_B_EMAIL: ${{ secrets.ND_STAGING_USER_B_EMAIL }}
+          ND_STAGING_USER_B_PASSWORD: ${{ secrets.ND_STAGING_USER_B_PASSWORD }}
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.4"
+          channel: stable
+          cache: true
+      - name: Resolve Flutter dependencies
+        working-directory: apps/flutter_app
+        run: flutter pub get --enforce-lockfile
+      - name: Build real Windows hosted-session fixture
+        working-directory: apps/flutter_app
+        run: flutter build windows --release -t tool/windows_hosted_runtime_fixture.dart
+      - name: Verify Windows Credential Manager restore and account switch
+        working-directory: apps/flutter_app
+        shell: pwsh
+        run: .\tool\verify_windows_hosted_runtime.ps1
+        env:
+          ND_STAGING_SUPABASE_URL: ${{ secrets.ND_STAGING_SUPABASE_URL }}
+          ND_STAGING_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.ND_STAGING_SUPABASE_PUBLISHABLE_KEY }}
+          ND_STAGING_USER_A_EMAIL: ${{ secrets.ND_STAGING_USER_A_EMAIL }}
+          ND_STAGING_USER_A_PASSWORD: ${{ secrets.ND_STAGING_USER_A_PASSWORD }}
+          ND_STAGING_USER_B_EMAIL: ${{ secrets.ND_STAGING_USER_B_EMAIL }}
+          ND_STAGING_USER_B_PASSWORD: ${{ secrets.ND_STAGING_USER_B_PASSWORD }}
