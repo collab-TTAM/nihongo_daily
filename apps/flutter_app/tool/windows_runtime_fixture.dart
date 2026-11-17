@@ -10,7 +10,9 @@ import 'package:http/testing.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
+import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 
@@ -23,6 +25,9 @@ const runtimePhases = {
   'runtime-rejected',
   'runtime-late-refresh',
   'runtime-close-restore',
+  'runtime-owner-hold',
+  'runtime-owner-contend',
+  'runtime-owner-reacquire',
   'runtime-native-read-failure',
   'runtime-native-rotation-write-failure',
 };
@@ -76,6 +81,151 @@ Directory runtimeFixtureDirectory(String scope) {
   );
 }
 
+
+final class _EmptyReviewStore implements DurableReviewStore {
+  @override
+  Future<List<StoredReview>> list(String userId) async =>
+      const <StoredReview>[];
+
+  @override
+  Future<StoredReview> stage(String userId, Map<String, Object> request) =>
+      Future<StoredReview>.error(const ReviewStorageFailure());
+
+  @override
+  Future<void> acknowledge(
+    String userId,
+    String eventId,
+    ReviewSuccess receipt,
+  ) => Future<void>.error(const ReviewStorageFailure());
+
+  @override
+  Future<void> reject(
+    String userId,
+    String eventId,
+    ReviewFailure rejection,
+  ) => Future<void>.error(const ReviewStorageFailure());
+}
+
+Future<void> _verifyNativeOwnerLeasePhase(String phase, String scope) async {
+  final origin = 'https://$scope.invalid';
+  final vault = createWindowsSessionCredentialVault(origin);
+  final directory = runtimeFixtureDirectory(scope);
+  await directory.create(recursive: true);
+  final requests = <http.Request>[];
+  final network = MockClient((request) async {
+    requests.add(request);
+    throw const FormatException('Unexpected owner-lease request');
+  });
+  final runtime = PersistentSupabaseRuntime(
+    projectUrl: origin,
+    publishableKey: 'sb_publishable_TEST_ONLY_1234567890',
+    vault: vault,
+    store: _EmptyReviewStore(),
+    httpClient: network,
+  );
+  var closed = false;
+  try {
+    if (phase == 'runtime-owner-hold') {
+      await runtime.start();
+      _check(
+        runtime.persistence.phase == SessionPersistencePhase.idle &&
+            runtime.persistence.hasVaultOwner &&
+            PersistentAccountAccess.isTargetOwned(vault.target) &&
+            runtime.account.readyRuntime == null &&
+            requests.isEmpty,
+      );
+      await File(
+        '${directory.path}${Platform.pathSeparator}owner-ready',
+      ).writeAsString('TEST_ONLY_OWNER_READY', flush: true);
+      final release = File(
+        '${directory.path}${Platform.pathSeparator}owner-release',
+      );
+      final deadline = DateTime.now().add(const Duration(seconds: 45));
+      while (!await release.exists() && DateTime.now().isBefore(deadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 25));
+      }
+      _check(await release.exists());
+      _check(await release.readAsString() == 'TEST_ONLY_OWNER_RELEASE');
+      await runtime.close();
+      closed = true;
+      _check(
+        !runtime.persistence.hasVaultOwner &&
+            !PersistentAccountAccess.isTargetOwned(vault.target) &&
+            runtime.account.readyRuntime == null &&
+            requests.isEmpty,
+      );
+      await File(
+        '${directory.path}${Platform.pathSeparator}owner-done',
+      ).writeAsString('TEST_ONLY_OWNER_RELEASED', flush: true);
+    } else if (phase == 'runtime-owner-contend') {
+      // If start tries a native read before the cross-process lease is won,
+      // this one-shot fault will be consumed and the regression will fail.
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'read',
+        fault: 'fail_before',
+      );
+      var rejected = false;
+      try {
+        await runtime.start();
+      } on ReviewTransportFailure catch (error) {
+        rejected = error.code == ReviewErrorCode.unauthorized;
+      }
+      _check(
+        rejected &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            !runtime.persistence.hasVaultOwner &&
+            runtime.account.readyRuntime == null &&
+            requests.isEmpty,
+      );
+      var competingLeaseAcquired = false;
+      try {
+        await vault.acquireOwner();
+        competingLeaseAcquired = true;
+      } on SessionVaultFailure catch (error) {
+        _check(error.code == SessionVaultError.unavailable);
+      }
+      if (competingLeaseAcquired) await vault.releaseOwner();
+      _check(!competingLeaseAcquired);
+      var readFaultPreserved = false;
+      try {
+        await vault.readRefreshToken();
+      } on SessionVaultFailure catch (error) {
+        readFaultPreserved = error.code == SessionVaultError.unavailable;
+      }
+      _check(readFaultPreserved);
+      _check(await vault.readRefreshToken() == null);
+      await runtime.close();
+      closed = true;
+      _check(
+        !PersistentAccountAccess.isTargetOwned(vault.target) &&
+            requests.isEmpty,
+      );
+    } else {
+      await runtime.start();
+      _check(
+        runtime.persistence.phase == SessionPersistencePhase.idle &&
+            runtime.persistence.hasVaultOwner &&
+            runtime.account.readyRuntime == null &&
+            requests.isEmpty,
+      );
+      await runtime.close();
+      closed = true;
+      _check(
+        !runtime.persistence.hasVaultOwner &&
+            !PersistentAccountAccess.isTargetOwned(vault.target) &&
+            requests.isEmpty,
+      );
+    }
+  } finally {
+    try {
+      if (!closed) await runtime.close();
+    } finally {
+      network.close();
+    }
+  }
+}
+
 String _segment(Object value) =>
     base64Url.encode(utf8.encode(jsonEncode(value))).replaceAll('=', '');
 
@@ -85,6 +235,14 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   final origin = 'https://$scope.invalid';
   final vault = createWindowsSessionCredentialVault(origin);
   final now = DateTime.now().toUtc();
+  if (const {
+    'runtime-owner-hold',
+    'runtime-owner-contend',
+    'runtime-owner-reacquire',
+  }.contains(phase)) {
+    await _verifyNativeOwnerLeasePhase(phase, scope);
+    return;
+  }
   final journal = await NativeReviewJournal.open(directory);
   var authCalls = 0;
   var profileCalls = 0;

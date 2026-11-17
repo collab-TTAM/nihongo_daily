@@ -387,3 +387,29 @@ composition with synthetic TEST ONLY Auth HTTP/JWT responses. It is not hosted
 GoTrue/PostgREST, signed-JWT learner A/B, spontaneous OS failure, power-loss or
 physical multi-device proof. The normal preview remains unconfigured and no
 production Auth, schema/RLS or plaintext fallback is changed.
+
+
+## Native owner-lease contention across independent runner processes
+
+The Windows CI bridge now starts `runtime-owner-hold` in one fresh Flutter
+runner process. That process acquires the canonical project-scoped native
+mutex, confirms the empty-vault startup is idle/unready with no Auth or profile
+traffic, and publishes a bounded ready marker while retaining the lease.
+
+A second independent runner process then starts `runtime-owner-contend` for the
+same target. It installs a one-shot TEST ONLY native read failure before calling
+`PersistentSupabaseRuntime.start()`. The start must fail closed at native owner
+acquisition, before `CredReadW`, Auth or own-profile dispatch. A second direct
+native lease acquisition must also be rejected. The still-pending read fault is
+consumed only by a subsequent explicit vault read, proving the contender did
+not reach storage. After the first process receives its release marker and
+closes normally, a third fresh process runs `runtime-owner-reacquire` and must
+acquire/release the same target successfully.
+
+This is actual Windows named-mutex and Flutter MethodChannel process-boundary
+evidence for cooperating Nihongo Daily runtimes in one Windows logon session.
+It uses an empty project slot, TEST ONLY public configuration and no Auth/JWT
+or learner data. It does not coordinate separate Windows logon sessions or
+arbitrary same-user software, and does not replace hosted signed-JWT learner
+acceptance or OS logoff/power-loss testing. The compile-time fault hook remains
+limited to the CI bridge build and is disabled before staging/preview rebuilds.

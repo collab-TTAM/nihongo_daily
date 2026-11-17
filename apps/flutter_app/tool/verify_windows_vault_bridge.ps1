@@ -31,6 +31,70 @@ function Invoke-Bridge([string] $phase) {
     Write-Output "Windows bridge phase passed: $phase"
 }
 
+function Wait-BridgeMarker([System.Diagnostics.Process] $process, [string] $path, [string] $expected) {
+    $deadline = [DateTime]::UtcNow.AddSeconds(60)
+    while ([DateTime]::UtcNow -lt $deadline) {
+        if (Test-Path -LiteralPath $path -PathType Leaf) {
+            try {
+                if ([System.IO.File]::ReadAllText($path) -ceq $expected) { return }
+            } catch [System.IO.IOException] {
+                # The runner may still be completing the marker write.
+            }
+        }
+        $process.Refresh()
+        if ($process.HasExited) { throw 'Windows owner lease holder exited early' }
+        Start-Sleep -Milliseconds 25
+    }
+    throw 'Windows owner lease marker timed out'
+}
+
+function Invoke-OwnerLeaseContention() {
+    $directory = Join-Path ([System.IO.Path]::GetTempPath()) ('nd-' + $scope)
+    New-Item -ItemType Directory -Path $directory -Force | Out-Null
+    $readyPath = Join-Path $directory 'owner-ready'
+    $releasePath = Join-Path $directory 'owner-release'
+    $donePath = Join-Path $directory 'owner-done'
+    Remove-Item -LiteralPath @($readyPath, $releasePath, $donePath) -Force -ErrorAction SilentlyContinue
+    $diagnosticId = [Guid]::NewGuid().ToString('N')
+    $stdoutPath = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$diagnosticId.out")
+    $stderrPath = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$diagnosticId.err")
+    $holder = $null
+    try {
+        $holder = Start-Process -FilePath $exe -ArgumentList @('runtime-owner-hold', $scope) -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
+        Wait-BridgeMarker $holder $readyPath 'TEST_ONLY_OWNER_READY'
+        # This is a separate runner process and native mutex handle. It must fail
+        # before its one-shot read fault can be consumed by the vault read path.
+        Invoke-Bridge 'runtime-owner-contend'
+        [System.IO.File]::WriteAllText($releasePath, 'TEST_ONLY_OWNER_RELEASE')
+        if (-not $holder.WaitForExit(60000)) { throw 'Windows owner lease holder timed out' }
+        if ($holder.ExitCode -ne 0) {
+            if (Test-Path -LiteralPath $stderrPath -PathType Leaf) {
+                foreach ($line in @(Get-Content -LiteralPath $stderrPath -Tail 12)) { Write-Output $line }
+            }
+            throw 'Windows owner lease holder failed'
+        }
+        if (-not (Test-Path -LiteralPath $donePath -PathType Leaf)) { throw 'Windows owner lease release marker missing' }
+        if ([System.IO.File]::ReadAllText($donePath) -cne 'TEST_ONLY_OWNER_RELEASED') { throw 'Windows owner lease release marker invalid' }
+        Write-Output 'Windows cross-process native owner lease contention passed'
+        # A third process proves the first lease was released, not merely that
+        # the competing process failed for an unrelated startup reason.
+        Invoke-Bridge 'runtime-owner-reacquire'
+    } finally {
+        if ($null -ne $holder) {
+            $holder.Refresh()
+            if (-not $holder.HasExited) {
+                [System.IO.File]::WriteAllText($releasePath, 'TEST_ONLY_OWNER_RELEASE')
+                if (-not $holder.WaitForExit(10000)) {
+                    $holder.Kill()
+                    $holder.WaitForExit()
+                }
+            }
+            $holder.Dispose()
+        }
+        Remove-Item -LiteralPath @($stdoutPath, $stderrPath) -Force -ErrorAction SilentlyContinue
+    }
+}
+
 function Wait-ExitMarker([System.Diagnostics.Process] $process, [string] $path) {
     $deadline = [DateTime]::UtcNow.AddSeconds(60)
     $observedFile = $false
@@ -134,6 +198,8 @@ try {
     Invoke-Bridge 'runtime-close-restore'
     Invoke-Bridge 'runtime-signedout'
     Write-Output 'Windows persistent SDK runtime cross-process verification passed'
+    Invoke-Bridge 'clear'
+    Invoke-OwnerLeaseContention
     Invoke-WindowExit 'exit-drain'
     Invoke-WindowExit 'exit-cancel'
     Write-Output 'Windows actual cancelable window close and owned drain verification passed'
