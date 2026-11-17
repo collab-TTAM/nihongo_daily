@@ -1514,6 +1514,23 @@
       ],
       "reproduce": "Run scripts/test_supabase_local.py against the fresh disposable local Supabase stack after migrations and the TEST ONLY vocabulary seed.",
       "limitation": "The refresh secret crosses a private stdin pipe and the rotated secret is returned only through captured stdout; neither is written to disk or printed. This is local GoTrue/PostgREST process-boundary evidence, not the Flutter Windows vault, hosted learner Auth, deployed RLS or physical-device restart."
+    },
+    {
+      "id": "restored-profile-retry",
+      "status": "automated-baseline",
+      "scope": "After startup refresh rotation is persisted, a transient own-profile failure keeps study fenced; explicit retry reuses the accepted captured session without another Auth refresh or vault write.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "restored session profile retry reuses persisted rotation without another Auth refresh"
+        }
+      ],
+      "issues": [
+        20
+      ],
+      "reproduce": "In apps/flutter_app: flutter test test/features/srs/persistent_supabase_runtime_test.dart --plain-name 'restored session profile retry reuses persisted rotation without another Auth refresh'",
+      "limitation": "Pinned Supabase SDK with TEST ONLY MockClient, synthetic identity and in-memory vault. It verifies caller-owned startup/profile retry ordering, not hosted learner Auth/RLS or actual Windows Credential Manager execution."
     }
   ],
   "findings": [

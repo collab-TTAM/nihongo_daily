@@ -1050,3 +1050,23 @@ in-flight cancellation. This makes the distinction explicit without removing
 or weakening either pre-dispatch or late-response assertions. These are
 TEST ONLY in-memory lifecycle cases; hosted signed-JWT learner acceptance is
 still separate.
+
+
+## Retry own-profile provisioning after a successful session restore
+
+A stored refresh token can be accepted by Supabase and its rotated value can be
+acknowledged by the caller-owned vault while the subsequent `ensure_profile`
+request temporarily fails. This is not an Auth restore failure: the outer startup
+owner remains active, but the account stays in `profileError` and the study runtime
+remains unavailable. The existing explicit profile retry reuses the exact accepted
+session and captured Authorization identity. It must not issue another refresh,
+rewrite the already-persisted secret, or publish study access until the own-profile
+response is validated.
+
+The pinned-SDK/MockClient regression holds the initial own-profile request, proves
+the startup owner is still loading and study-fenced, then returns a TEST ONLY 503.
+After startup settles in the profile-error state, it retries the profile request
+with a successful response and asserts the same user/session, exactly one Auth
+refresh, and exactly one vault rotation write across both requests. This is a
+caller-owned lifecycle regression, not hosted learner Auth/RLS or actual Windows
+Credential Manager proof.

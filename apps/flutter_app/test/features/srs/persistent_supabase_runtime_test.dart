@@ -1766,4 +1766,112 @@ void main() {
       }
     },
   );
+
+  test(
+    'restored session profile retry reuses persisted rotation without another Auth refresh',
+    () async {
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      profileWait = Completer<http.Response>();
+      final controller =
+          AccountStartupController<AccountController<SrsStudyRuntime>>(
+            () async => PersistentAccountStartup(runtime),
+          );
+      var startupCompleted = false;
+      try {
+        final starting = controller.start();
+        await waitForCondition(
+          () => profileWasRequested,
+          reason: 'restored session did not reach own-profile provisioning',
+        );
+
+        expect(controller.phase, AccountStartupPhase.loading);
+        expect(controller.account, isNull);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.secret, secret);
+        expect(backend.operations, ['read', 'write']);
+        final authRequests = requests
+            .where((request) => request.url.path == '/auth/v1/token')
+            .toList();
+        expect(authRequests, hasLength(1));
+        expect(
+          authRequests.single.url.queryParameters['grant_type'],
+          'refresh_token',
+        );
+
+        profileWait!.complete(
+          http.Response(
+            '{"message":"TEST ONLY PROFILE FAILURE"}',
+            503,
+          ),
+        );
+        await waitForCondition(
+          () => profileResponseWasReturned,
+          reason: 'held failed own-profile response did not return',
+        );
+        await starting.timeout(const Duration(seconds: 5));
+        startupCompleted = true;
+
+        expect(controller.phase, AccountStartupPhase.active);
+        expect(identical(controller.account, runtime.account), isTrue);
+        expect(runtime.account.state.phase, AccountPhase.profileError);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(runtime.persistence.phase, SessionPersistencePhase.ready);
+        expect(backend.secret, secret);
+        expect(backend.operations, ['read', 'write']);
+
+        final firstProfileRequests = requests
+            .where((request) => request.url.path.contains('ensure_profile'))
+            .toList();
+        expect(firstProfileRequests, hasLength(1));
+        expect(
+          firstProfileRequests.single.headers['authorization'],
+          'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+        );
+
+        // Retry only the captured user's profile request. The accepted SDK
+        // session and its persisted refresh rotation must not be refreshed or
+        // rewritten merely because profile provisioning was temporarily down.
+        profileWait = null;
+        await runtime.account.retryProfile().timeout(
+          const Duration(seconds: 5),
+        );
+
+        expect(runtime.account.state.phase, AccountPhase.ready);
+        expect(runtime.account.readyRuntime, isNotNull);
+        expect(runtime.persistence.currentSession?.userId, wire.a);
+        expect(runtime.persistence.phase, SessionPersistencePhase.ready);
+        expect(backend.secret, secret);
+        expect(backend.operations, ['read', 'write']);
+        expect(
+          requests.where((request) => request.url.path == '/auth/v1/token'),
+          hasLength(1),
+        );
+        final profileRequests = requests
+            .where((request) => request.url.path.contains('ensure_profile'))
+            .toList();
+        expect(profileRequests, hasLength(2));
+        expect(
+          profileRequests.every(
+            (request) =>
+                request.headers['authorization'] ==
+                'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+          ),
+          isTrue,
+        );
+      } finally {
+        if (profileWait != null && !profileWait!.isCompleted) {
+          profileWait!.complete(
+            http.Response(
+              jsonEncode(profile.profile(wire.a)),
+              200,
+              headers: {'content-type': 'application/json'},
+            ),
+          );
+        }
+        if (!startupCompleted) runtime.account.dispose();
+        await controller.close().timeout(const Duration(seconds: 5));
+      }
+    },
+  );
+
 }
