@@ -1277,6 +1277,10 @@
         {
           "path": "scripts/test_hosted_supabase_probe.py",
           "contains": "def test_rotated_session_is_registered_before_identity_guard_and_cleaned(self):"
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_windows_harness_terminates_timed_out_process_tree_with_bounded_reap(self):"
         }
       ]
     },

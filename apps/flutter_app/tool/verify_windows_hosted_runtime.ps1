@@ -6,8 +6,24 @@ function Invoke-HostedPhase([string] $phase) {
     $process = Start-Process -FilePath $exe -ArgumentList @($phase) -WorkingDirectory (Split-Path $exe) -PassThru -NoNewWindow
     try {
         if (-not $process.WaitForExit(90000)) {
-            $process.Kill()
-            $process.WaitForExit()
+            # The phase can exit between the timeout and kill checks. Refresh
+            # before killing, and tolerate only that natural-exit race.
+            $process.Refresh()
+            if (-not $process.HasExited) {
+                try {
+                    $process.Kill($true)
+                } catch {
+                    $process.Refresh()
+                    if (-not $process.HasExited) {
+                        throw "Windows hosted runtime phase '$phase' timed out; child termination could not be requested"
+                    }
+                }
+            }
+            # Never wait indefinitely after a timeout. Final project cleanup
+            # still runs in the caller's finally block if termination is stuck.
+            if (-not $process.WaitForExit(15000)) {
+                throw "Windows hosted runtime phase '$phase' timed out; child termination could not be verified"
+            }
             throw "Windows hosted runtime phase '$phase' timed out"
         }
         if ($process.ExitCode -ne 0) {

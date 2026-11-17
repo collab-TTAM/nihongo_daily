@@ -513,8 +513,9 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "Start-Process -FilePath $exe -ArgumentList @($phase)", script
         )
         self.assertIn("$process.WaitForExit(90000)", script)
-        self.assertIn("$process.Kill()", script)
-        self.assertIn("$process.WaitForExit()", script)
+        self.assertIn("$process.Kill($true)", script)
+        self.assertIn("$process.WaitForExit(15000)", script)
+        self.assertNotRegex(script, r"\$process\.WaitForExit\(\s*\)")
         self.assertIn("$process.Dispose()", script)
         self.assertIn(
             """} finally {
@@ -527,6 +528,31 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
 }""",
             script,
         )
+
+    def test_windows_harness_terminates_timed_out_process_tree_with_bounded_reap(self):
+        script = (
+            Path(__file__).resolve().parents[1]
+            / "apps"
+            / "flutter_app"
+            / "tool"
+            / "verify_windows_hosted_runtime.ps1"
+        ).read_text(encoding="utf-8")
+        timeout = script.index("if (-not $process.WaitForExit(90000))")
+        refresh = script.index("$process.Refresh()", timeout)
+        alive = script.index("if (-not $process.HasExited)", refresh)
+        kill_tree = script.index("$process.Kill($true)", alive)
+        bounded_reap = script.index(
+            "if (-not $process.WaitForExit(15000))", kill_tree
+        )
+        self.assertLess(timeout, refresh)
+        self.assertLess(refresh, alive)
+        self.assertLess(alive, kill_tree)
+        self.assertLess(kill_tree, bounded_reap)
+        self.assertIn("child termination could not be requested", script)
+        self.assertIn("child termination could not be verified", script)
+        self.assertNotRegex(script, r"\$process\.WaitForExit\(\s*\)")
+        self.assertIn("$process.Dispose()", script)
+        self.assertIn("Invoke-HostedPhase 'cleanup'", script)
 
     def test_windows_harness_preserves_primary_phase_and_redacts_cleanup_errors(self):
         script = (
