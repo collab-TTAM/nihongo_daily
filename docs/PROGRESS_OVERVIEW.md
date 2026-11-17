@@ -52,9 +52,15 @@ The page is never fetched automatically, and the preview/default reader remains
 null.
 
 The server snapshot is separate from local device journals and Daily Plan
-minutes. It does not derive mastery, SRS state, study credit or weak points.
-Errors are redacted and manually retryable. Reader replacement, account change
-or late completion cannot publish an old page. Widget fixtures do not prove
+minutes. From that explicitly loaded page, the overview derives a bounded
+review suggestion only when the target, ordered choices and all four displayed
+content versions match the current deterministic vocabulary/grammar builder.
+It keeps N5/N4 and grammar-primary/correction separate, counts repeated wrong
+answers in the page, and removes an item when its latest unambiguous completion
+is correct. Equal-time contradictory outcomes and stale content are omitted.
+If current content cannot be loaded, receipt totals remain visible but no
+suggestion is shown. This is not mastery, SRS state, study credit or an all-time
+model. Reader, content-repository or account replacement suppresses late results. Widget fixtures do not prove
 that the Edge Function is deployed or that hosted JWT/PostgREST/RLS works.
 
 ## Verification boundary

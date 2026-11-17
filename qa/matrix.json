@@ -4092,7 +4092,7 @@
     {
       "id": "progress-overview",
       "status": "pending-integration",
-      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate first-page caller-owned server receipt summary with N5/N4 and quiz-kind breakdown; no cross-kind/mastery/time aggregation.",
+      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate first-page caller-owned server receipt summary with current-content weak-point suggestions; no cross-kind/mastery/time aggregation.",
       "issues": [
         11,
         13,
@@ -4165,7 +4165,7 @@
         }
       ],
       "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, confirm its N5/N4 and vocabulary/grammar-primary/grammar-correction breakdown stays separate from local totals, retry a redacted failure, suppress late A results after account replacement, and open /quiz/history for full keyset browsing.",
-      "limitation": "Auth/RPC/reader ports are TEST ONLY. The first-page receipt breakdown is read-only and never merges with local history or Daily Plan minutes. It is limited to at most 20 newest receipts, not an all-time total or mastery/weak-point calculation. The Edge function is undeployed; no hosted JWT/PostgREST/RLS, learner A/B, cross-device sync or Personal Alpha acceptance is established.",
+      "limitation": "TEST ONLY reader/current curriculum ports. First-page breakdown is limited to 20 newest receipts. Suggestions require exact current target version, ordered choice IDs and all displayed versions; they are not all-time, mastery, SRS, study minutes or study credit. Edge remains undeployed; hosted JWT/PostgREST/RLS, learner A/B, cross-device and Personal Alpha acceptance remain unproven.",
       "ci_job": "flutter"
     },
     {
@@ -4869,6 +4869,35 @@
       "ci_steps": [
         "Run flutter test"
       ]
+    },
+    {
+      "id": "server-quiz-current-content-weak-points",
+      "status": "automated-baseline",
+      "scope": "Read-only recommendations from an explicitly loaded owner-bound quiz receipt page; require exact current target, ordered choices and all displayed content versions, separate level/quiz/grammar-kind evidence, and suppress ambiguous equal-time outcomes.",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_weak_points_test.dart",
+          "contains": "stale target, reordered choices and changed choice versions are excluded"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_weak_points_test.dart",
+          "contains": "contradictory outcomes at the same completion instant are omitted"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "server weak-point suggestions use only exact current target and choice provenance"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late weak-point content read is discarded after account replacement"
+        }
+      ],
+      "reproduce": "Run flutter test test/features/quiz/quiz_report_v2_weak_points_test.dart test/features/progress/progress_overview_widget_test.dart; then flutter analyze and exact-head CI.",
+      "limitation": "TEST ONLY receipt reader and synthetic current curriculum prove component behavior only. First-page only (max 20); not all-time, mastery, SRS, study credit, hosted Auth/JWT/RLS or multi-device evidence.",
+      "issues": [
+        13
+      ],
+      "ci_job": "flutter"
     }
   ],
   "findings": [

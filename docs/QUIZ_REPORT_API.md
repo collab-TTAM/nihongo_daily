@@ -1055,3 +1055,27 @@ reader when a ready caller-owned runtime publishes it. It requests at most 20
 receipts, shows only that page's count and correct/answer totals, and links to
 this route for filters and older pages. It never treats the page as an all-time
 total or merges server receipts with local history or Daily Plan minutes.
+
+
+## Current-content weak-point suggestions on Progress Overview — 2026-11-17
+
+The caller-owned first-page history snapshot can produce a bounded read-only
+review suggestion on /overview. It loads only curriculum type/level pairs
+represented by that page. Each answer is eligible only when its target version,
+exact ordered choice IDs and all four displayed choice versions match the
+current deterministic quiz builder. Stale targets, changed distractors/order
+and old versions are omitted.
+
+Repeated wrong answers are counted only within the loaded page. A later
+unambiguous correct answer removes that item; equal-time contradictory outcomes
+are omitted rather than arbitrarily ordered. Vocabulary, N5/N4,
+grammar-primary and grammar-correction remain separate. Only the top five
+recommendations are displayed.
+
+This is a review suggestion from learner self-reports, not a linguistic grade,
+certified mastery, SRS MASTERED, study minutes or study credit. It is not
+all-time: the overview reads at most 20 receipts. Current-content read failure
+leaves receipt totals visible but suppresses suggestions. Account, reader or
+content-repository replacement suppresses late results. New tests use TEST ONLY
+readers and synthetic curriculum; the Edge history function remains undeployed,
+so no hosted learner or Personal Alpha acceptance is inferred.

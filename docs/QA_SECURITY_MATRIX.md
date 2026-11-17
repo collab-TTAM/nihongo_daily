@@ -1,6 +1,6 @@
 # QA/security regression matrix — Issue #8
 
-Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 180 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 183 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -550,3 +550,19 @@ This endpoint is authored and CI-verified only after its exact-head workflow
 completes. It is not deployed and does not yet provide a Flutter history UI,
 hosted signed-JWT/PostgREST/RLS learner A/B, durable cross-device history,
 mastery, SRS or study credit. Issue #13 and Personal Alpha remain open.
+
+
+## Server quiz weak-point projection — 2026-11-17
+
+The explicit /overview receipt snapshot derives up to five review suggestions
+only from the loaded page and current deterministic curriculum. Exact target
+version, ordered choice IDs and all displayed versions must match;
+vocabulary/N5/N4/grammar-primary/grammar-correction stay separate. Repeated
+wrong answers are counted within the page; a later correct answer clears the
+current suggestion; equal-time contradictory outcomes are omitted. Current
+content read failure suppresses suggestions without hiding receipt totals.
+
+The server-quiz-current-content-weak-points automated-baseline case adds pure
+and widget regression anchors. TEST ONLY readers/content snapshots do not
+complete quiz-progress/progress-overview release groups or prove hosted
+Auth/JWT/RLS, deployment, mastery or sync.

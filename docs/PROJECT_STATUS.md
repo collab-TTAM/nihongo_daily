@@ -12281,3 +12281,14 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Parent exact-head Actions [44016107915](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44016107915) completed SUCCESS on `9bd99a12caab5e78c778f3b89ecb4fbaa59a6933`: all five published jobs and every returned step succeeded. This is parent evidence only; new source requires a fresh exact-head run. The cloud authoring runtime has no Flutter/Dart SDK, so no local format/analyze/widget/build result is claimed.
 - Limits: the history Edge Function is undeployed; TEST ONLY reader/Auth fixtures are not hosted signed-JWT/PostgREST/RLS, learner A/B or physical multi-device proof. PR #37 hosted Auth/offline acceptance remains separate and blocked on protected staging configuration. Pro-owned PR #38 / Issue #14 / N4 files and tests are untouched.
 - Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed failures. Keep PR #41 Draft and Issue #13 open pending hosted attempts, reviewed mastery/weak-point and release acceptance.
+
+
+## Server quiz current-content weak-point suggestions — 2026-11-17 UTC
+
+- PR #41 branch automation/issue-11-plan-sdk-integration; run core-20261117T1139Z-pr41-server-current-content-weak-points. Parent HEAD 3b60282c1b8833aa8159d6f032ce80e6120381b8; base main 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+- /overview derives up to five read-only review suggestions from the explicitly loaded first page of caller-owned server receipts. It loads only represented curriculum type/level pairs and requires the current deterministic quiz builder to reproduce the exact target version, ordered four choice IDs and all four displayed versions.
+- Repeated wrong answers are counted within the page; a later unambiguous correct answer clears the item. N5/N4, vocabulary, grammar-primary and grammar-correction remain separate. Equal-time contradictory outcomes and stale target/choice provenance are omitted. If current curriculum cannot be read, receipt totals remain visible but suggestions are suppressed. Late reads after account/repository replacement are discarded.
+- No local journal merge/write, mastery certification, SRS MASTERED, study minutes/credit, API/schema/migration/grant/RLS/Auth/provider, default transport activation or Pro-owned #14/#38/N4 content/tests/docs change.
+- New unit/widget regressions cover empty history, repeated wrong then correct, grammar-kind separation, stale target/version/order, ambiguous equal-time outcomes, missing current snapshot, N5/N4 separation, explicit load and late account replacement. Exact-head CI is required; no local Flutter SDK run is claimed.
+- Hosted Edge deployment, signed-JWT/PostgREST/RLS learner A/B, real account restart/expiry and physical multi-device sync remain separate blockers. Keep PR #41 Draft and Issue #13 open.
+- Next: inspect every latest-attempt job/step for the exact new head; fix only observed diagnostics.
