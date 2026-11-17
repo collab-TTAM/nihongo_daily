@@ -804,7 +804,7 @@ class _ProgressOverviewScreenState
               'Không thể đọc biên nhận quiz trên máy chủ. Bạn có thể thử lại.',
               key: Key('progress-server-quiz-error'),
             ),
-          if (serverQuizPage != null) ...[
+          if (serverQuizPage != null && serverQuizSummary != null) ...[
             if (serverQuizPage.items.isEmpty)
               const Text(
                 'Chưa có biên nhận quiz trên máy chủ.',
@@ -813,7 +813,7 @@ class _ProgressOverviewScreenState
             else
               Text(
                 '${serverQuizPage.items.length} biên nhận trên trang mới nhất · '
-                '${serverQuizSummary!.correct}/'
+                '${serverQuizSummary.correct}/'
                 '${serverQuizSummary.answers} câu đúng',
                 key: const Key('progress-server-quiz-summary'),
               ),

@@ -742,69 +742,67 @@ void main() {
     },
   );
 
-  testWidgets(
-    'server receipt page summary separates N5/N4 and quiz kinds',
-    (tester) async {
-      final harness = Harness();
-      final source = _ProgressSource(harness);
-      final reader = _ServerHistoryReader()
-        ..response = _serverQuizMixedHistoryPage();
-      final vocabulary = _VocabularyPorts(harness);
-      final grammar = _GrammarPorts(harness);
-      await _mount(
-        tester,
-        harness,
-        source,
-        vocabularyPorts: vocabulary,
-        grammarPorts: grammar,
-        serverHistoryReader: reader,
-      );
+  testWidgets('server receipt page summary separates N5/N4 and quiz kinds', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    final reader = _ServerHistoryReader()
+      ..response = _serverQuizMixedHistoryPage();
+    final vocabulary = _VocabularyPorts(harness);
+    final grammar = _GrammarPorts(harness);
+    await _mount(
+      tester,
+      harness,
+      source,
+      vocabularyPorts: vocabulary,
+      grammarPorts: grammar,
+      serverHistoryReader: reader,
+    );
 
-      expect(reader.reads, 0);
-      await tester.ensureVisible(
-        find.byKey(const Key('progress-load-server-quiz')),
-      );
-      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-      await tester.pumpAndSettle();
+    expect(reader.reads, 0);
+    await tester.ensureVisible(
+      find.byKey(const Key('progress-load-server-quiz')),
+    );
+    await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+    await tester.pumpAndSettle();
 
-      expect(reader.reads, 1);
-      expect(reader.lastQuery?.limit, 20);
-      expect(reader.lastQuery?.jlptLevel, isNull);
-      expect(reader.lastQuery?.quizType, isNull);
-      expect(reader.lastQuery?.cursor, isNull);
-      expect(
-        find.text('3 biên nhận trên trang mới nhất · 2/3 câu đúng'),
-        findsOneWidget,
-      );
-      expect(
-        find.text(
-          'Từ vựng · N5 1 biên nhận · 1/1 câu đúng · '
-          'N4 0 biên nhận · 0/0 câu đúng',
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.text(
-          'Ngữ pháp chính · N5 0 biên nhận · 0/0 câu đúng · '
-          'N4 1 biên nhận · 0/1 câu đúng',
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.text(
-          'Ngữ pháp sửa · N5 0 biên nhận · 0/0 câu đúng · '
-          'N4 1 biên nhận · 1/1 câu đúng',
-        ),
-        findsOneWidget,
-      );
-      expect(vocabulary.reads, 0);
-      expect(grammar.reads, 0);
-      expect(vocabulary.writes, 0);
-      expect(grammar.writes, 0);
-      expect(tester.takeException(), isNull);
-    },
-  );
-
+    expect(reader.reads, 1);
+    expect(reader.lastQuery?.limit, 20);
+    expect(reader.lastQuery?.jlptLevel, isNull);
+    expect(reader.lastQuery?.quizType, isNull);
+    expect(reader.lastQuery?.cursor, isNull);
+    expect(
+      find.text('3 biên nhận trên trang mới nhất · 2/3 câu đúng'),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Từ vựng · N5 1 biên nhận · 1/1 câu đúng · '
+        'N4 0 biên nhận · 0/0 câu đúng',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Ngữ pháp chính · N5 0 biên nhận · 0/0 câu đúng · '
+        'N4 1 biên nhận · 0/1 câu đúng',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Ngữ pháp sửa · N5 0 biên nhận · 0/0 câu đúng · '
+        'N4 1 biên nhận · 1/1 câu đúng',
+      ),
+      findsOneWidget,
+    );
+    expect(vocabulary.reads, 0);
+    expect(grammar.reads, 0);
+    expect(vocabulary.writes, 0);
+    expect(grammar.writes, 0);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets(
     'server receipt read failure is redacted and manually retryable',
     (tester) async {
