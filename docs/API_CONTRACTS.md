@@ -54,4 +54,11 @@ Provider selection, audio upload/streaming, billing and credentials are not froz
 
 ## Validation and limits
 
+Separately versioned addition: `submit_study_session` is specified in
+`contracts/study/v1` and reviewed in STUDY_SESSION_API.md. It records an
+authenticated own-account self-reported completed interval, accepts no owner or
+derived minutes and reuses the frozen daily-plan/error responses. This addition
+does not mutate the v0.1 endpoint registry or models and is not a hosted-service
+or attention/mastery claim. Actual owned SDK/UI integration remains outstanding.
+
 Run the commands in README. JSON Schema formats are asserted explicitly by the validator; cross-field plan totals/types and stroke indices/times are checked separately. Select a named definition; the root schema alone is only a definition library. Backend tests must still verify auth, RLS, scoped idempotency, curriculum existence, skew, ownership and provider limits. Fixture validation is not evidence of deployed security.
