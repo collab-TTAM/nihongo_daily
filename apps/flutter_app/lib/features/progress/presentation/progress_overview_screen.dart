@@ -97,16 +97,15 @@ _QuizLevelTotals _grammarLevelTotals(
   );
 }
 
-_QuizHistoryTotals _grammarTotals(
-  List<OwnedGrammarQuizAttempt> records,
-) => _QuizHistoryTotals(
-  n5: _grammarLevelTotals(
-    records.where((record) => record.attempt.level == PreviewLevel.n5),
-  ),
-  n4: _grammarLevelTotals(
-    records.where((record) => record.attempt.level == PreviewLevel.n4),
-  ),
-);
+_QuizHistoryTotals _grammarTotals(List<OwnedGrammarQuizAttempt> records) =>
+    _QuizHistoryTotals(
+      n5: _grammarLevelTotals(
+        records.where((record) => record.attempt.level == PreviewLevel.n5),
+      ),
+      n4: _grammarLevelTotals(
+        records.where((record) => record.attempt.level == PreviewLevel.n4),
+      ),
+    );
 
 String _quizTotalsLabel(String title, _QuizHistoryTotals totals) =>
     '$title · ${totals.attempts} lượt · ${totals.correct}/${totals.answers} câu đúng';

@@ -455,10 +455,7 @@ void main() {
           ),
           OwnedGrammarQuizAttempt(
             account.owner,
-            _grammarReport(
-              2,
-              kind: GrammarQuizAttemptKind.correction,
-            ),
+            _grammarReport(2, kind: GrammarQuizAttemptKind.correction),
           ),
           OwnedGrammarQuizAttempt(
             account.owner,
@@ -499,9 +496,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.text(
-          'N5 · 2 lượt · 1/2 câu đúng; N4 · 1 lượt · 1/1 câu đúng',
-        ),
+        find.text('N5 · 2 lượt · 1/2 câu đúng; N4 · 1 lượt · 1/1 câu đúng'),
         findsOneWidget,
       );
       expect(
@@ -509,9 +504,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.text(
-          'N5 · 1 lượt · 1/1 câu đúng; N4 · 1 lượt · 0/1 câu đúng',
-        ),
+        find.text('N5 · 1 lượt · 1/1 câu đúng; N4 · 1 lượt · 0/1 câu đúng'),
         findsOneWidget,
       );
       expect(
@@ -519,9 +512,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.text(
-          'N5 · 1 lượt · 0/1 câu đúng; N4 · 1 lượt · 1/1 câu đúng',
-        ),
+        find.text('N5 · 1 lượt · 0/1 câu đúng; N4 · 1 lượt · 1/1 câu đúng'),
         findsOneWidget,
       );
       expect(vocabulary.writes, 0);
