@@ -12312,3 +12312,14 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Local Flutter/Dart execution is unavailable in the cloud authoring runtime; the pinned CI is the verification source. New exact-head CI must run analyze, full tests, Chrome transaction checks and Web release before any pass claim.
 - No N4-owned data/tests/docs, API/schema/RLS/Auth/provider strategy, default transport, hosted staging secrets/dispatch, production deployment, merge or release changed. TEST ONLY/current-content receipt fixtures are not hosted signed-JWT learner A/B or physical multi-device proof. PR #41 remains Draft; Issue #13 remains open.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics.
+
+
+## Core worker handoff — PR #41 reconciled with latest main — 2026-11-17T23:05Z
+
+- Run `core-20261117T2305Z-pr41-reconcile-main-hosted-workflow`; branch `automation/issue-11-plan-sdk-integration`; source parent `b9195070d5d69c3c256b093c64ddc01649ae8374`; merged main parent `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- PR #37 / `automation/issue-22-atomic-review` remains Draft for hosted learner acceptance. Its exact-head Actions [44188511253](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44188511253) completed all six jobs and every returned step successfully on `7cc6218c8650f81399a7423ee9e417540be06182`. This is component CI, not hosted learner evidence.
+- Reconciled the one main commit from PR #42 into this PR #41 branch. Added the manual-only protected `supabase-staging` acceptance workflow, its five static safety regressions and operator documentation; added the exact safety test to repo-sanity while preserving this branch's stricter formatter diagnostic and all app-specific jobs.
+- `backend/ai/package-lock.json` was intentionally retained from this branch: it already resolves patched `fast-uri@3.1.9` with the same registry integrity as main and also contains the branch's required PostgreSQL test dependencies. No dependency was downgraded or removed.
+- Full pre-write recursive tree: 998 entries / 873 blobs, untruncated. Intended changes are limited to the CI workflow, four main-only hosted-acceptance files and this status append. No Pro-owned `data/n4`, manifest, content tests/docs or PR #38 branch was edited.
+- PR #41's prior exact-head Actions [44102969480](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44102969480) passed all five jobs/every returned step on parent `b9195070d5d69c3c256b093c64ddc01649ae8374`; the new merge head requires its own complete CI. No hosted workflow dispatch, secrets, staging-user access, Auth strategy/provider change, schema/RLS change, default runtime activation, production deployment, merge or release.
+- Next: inspect the latest-attempt workflow and every job/step on the new exact PR #41 head; only then continue remaining #11/#13/#34 work and hosted acceptance gates.
