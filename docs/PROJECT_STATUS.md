@@ -4502,3 +4502,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed exactly two paths in this checkpoint: the test file above and `docs/PROJECT_STATUS.md`. The cloud authoring runtime has no Dart/Flutter SDK, so local format/analyze/test/build were not run. New exact-head CI is required before claiming formatter or Flutter test success.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real Windows staging restore/expiry and physical multi-device sync remain unverified. The manual protected workflow is not dispatched; no staging secrets were accessed. Keep PR #37 Draft and #20/#22/#15 open; no merge, deployment or issue closure.
 - Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics while retaining all assertions and security gates.
+
+
+## Restored-profile retry — exact pinned Dart formatter correction — 2026-11-17T22:14Z
+
+- Run `core-20261117T2214Z-pr37-exact-dart-format-repair`; branch `automation/issue-22-atomic-review`; parent HEAD `ed26c2e9a18a6929527f9cb637ee829f83e37125`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Diagnostic exact-head Actions [44167615741](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44167615741), attempt 1, ran the pinned Dart 3.35.4 formatter on only `persistent_supabase_runtime_test.dart`. It emitted exactly one whitespace-only hunk: the TEST ONLY 503 `http.Response` constructor is formatted on one line. The diagnostic step mutated the runner worktree before the strict formatter gate, so the run's all-green formatter result is not proof that the committed source was already formatted.
+- Applied only that exact formatter hunk, removed the temporary diagnostic workflow step, and retained the strict `dart format --output=none --set-exit-if-changed .` gate, analyzer, full Flutter suite, Chrome/native checks, Web/Windows builds and all database/AI/Supabase jobs.
+- Changed exactly three existing paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, and this status file. No test assertions/behavior or production Auth/vault logic changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. The corrected commit requires fresh exact-head Actions evidence before any pass claim.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, protected staging Windows restore/expiry, and physical multi-device offline sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open; no staging dispatch/secrets, Auth strategy/provider, schema/RLS, default activation, Pro-owned #14/#38/N4 content, deployment, merge or release change.
+- Next: inspect every latest-attempt job and every returned step on the corrected exact HEAD; fix only observed diagnostics while preserving all assertions and security gates.

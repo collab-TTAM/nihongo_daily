@@ -1799,10 +1799,7 @@ void main() {
         );
 
         profileWait!.complete(
-          http.Response(
-            '{"message":"TEST ONLY PROFILE FAILURE"}',
-            503,
-          ),
+          http.Response('{"message":"TEST ONLY PROFILE FAILURE"}', 503),
         );
         await waitForCondition(
           () => profileResponseWasReturned,
