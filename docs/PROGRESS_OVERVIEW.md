@@ -36,8 +36,9 @@ grammar-correction history separately; it never combines the two grammar kinds
 or treats quiz answers as Daily Plan minutes, certified mastery, SRS state or
 server sync. Opening the page does not read quiz history. A manual load uses the
 current account repositories, hides late results after account replacement and
-shows a fixed Vietnamese error with an explicit retry. The snapshot performs no
-writes or remote submission.
+shows a fixed Vietnamese error with an explicit retry. The summary keeps N5 and
+N4 totals separate within vocabulary, grammar-primary and grammar-correction.
+The snapshot performs no writes or remote submission.
 
 ## Server quiz receipt snapshot
 

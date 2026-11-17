@@ -20,6 +20,7 @@ import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
 import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_transport.dart';
 import 'package:nihongo_daily/features/quiz/domain/grammar_quiz_attempt.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
+import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 import '../srs/account_fixtures.dart' as account;
 import '../srs/account_widget_test.dart' show Harness;
@@ -177,6 +178,7 @@ GrammarQuizAttempt _grammarReport(
   int id, {
   required GrammarQuizAttemptKind kind,
   bool correct = false,
+  PreviewLevel level = PreviewLevel.n5,
 }) {
   final tail = id.toString().padLeft(12, '0');
   const target = 'b6000000-0000-4000-8000-000000000001';
@@ -186,7 +188,7 @@ GrammarQuizAttempt _grammarReport(
     'quiz_type': 'grammar_meaning',
     'practice_kind': kind.name,
     'event_id': 'b5000000-0000-4000-8000-$tail',
-    'level': 'N5',
+    'level': level.name.toUpperCase(),
     'completed_at': '2026-10-20T00:02:00.000Z',
     'answers': [
       {
@@ -425,7 +427,7 @@ void main() {
   });
 
   testWidgets(
-    'overview loads separate local quiz totals only on explicit action',
+    'overview loads separate local quiz totals with N5/N4 breakdown only on explicit action',
     (tester) async {
       final harness = Harness();
       final source = _ProgressSource(harness);
@@ -436,6 +438,10 @@ void main() {
             quizReport(1, correct: true),
           ),
           OwnedVocabularyQuizAttempt(account.owner, quizReport(2)),
+          OwnedVocabularyQuizAttempt(
+            account.owner,
+            quizReport(3, correct: true, level: PreviewLevel.n4),
+          ),
         ];
       final grammar = _GrammarPorts(harness)
         ..records = [
@@ -449,7 +455,27 @@ void main() {
           ),
           OwnedGrammarQuizAttempt(
             account.owner,
-            _grammarReport(2, kind: GrammarQuizAttemptKind.correction),
+            _grammarReport(
+              2,
+              kind: GrammarQuizAttemptKind.correction,
+            ),
+          ),
+          OwnedGrammarQuizAttempt(
+            account.owner,
+            _grammarReport(
+              3,
+              kind: GrammarQuizAttemptKind.primary,
+              level: PreviewLevel.n4,
+            ),
+          ),
+          OwnedGrammarQuizAttempt(
+            account.owner,
+            _grammarReport(
+              4,
+              kind: GrammarQuizAttemptKind.correction,
+              correct: true,
+              level: PreviewLevel.n4,
+            ),
           ),
         ];
       await _mount(
@@ -469,15 +495,33 @@ void main() {
       expect(vocabulary.reads, 1);
       expect(grammar.reads, 1);
       expect(
-        find.text('Từ vựng (N5 + N4) · 2 lượt · 1/2 câu đúng'),
+        find.text('Từ vựng (N5 + N4) · 3 lượt · 2/3 câu đúng'),
         findsOneWidget,
       );
       expect(
-        find.text('Ngữ pháp chính (N5 + N4) · 1 lượt · 1/1 câu đúng'),
+        find.text(
+          'N5 · 2 lượt · 1/2 câu đúng; N4 · 1 lượt · 1/1 câu đúng',
+        ),
         findsOneWidget,
       );
       expect(
-        find.text('Ngữ pháp sửa (N5 + N4) · 1 lượt · 0/1 câu đúng'),
+        find.text('Ngữ pháp chính (N5 + N4) · 2 lượt · 1/2 câu đúng'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'N5 · 1 lượt · 1/1 câu đúng; N4 · 1 lượt · 0/1 câu đúng',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Ngữ pháp sửa (N5 + N4) · 2 lượt · 1/2 câu đúng'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'N5 · 1 lượt · 0/1 câu đúng; N4 · 1 lượt · 1/1 câu đúng',
+        ),
         findsOneWidget,
       );
       expect(vocabulary.writes, 0);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../shared/models/preview_level.dart';
 import '../../../shared/widgets/page_body.dart';
 import '../../auth/application/account_controller.dart';
 import '../../auth/application/account_provider.dart';
@@ -22,8 +23,8 @@ import '../../quiz/data/vocabulary_quiz_history_repository.dart';
 import '../../quiz/domain/grammar_quiz_attempt.dart';
 import '../../quiz/domain/vocabulary_quiz_attempt.dart';
 
-final class _QuizHistoryTotals {
-  const _QuizHistoryTotals({
+final class _QuizLevelTotals {
+  const _QuizLevelTotals({
     required this.attempts,
     required this.answers,
     required this.correct,
@@ -32,6 +33,17 @@ final class _QuizHistoryTotals {
   final int attempts;
   final int answers;
   final int correct;
+}
+
+final class _QuizHistoryTotals {
+  const _QuizHistoryTotals({required this.n5, required this.n4});
+
+  final _QuizLevelTotals n5;
+  final _QuizLevelTotals n4;
+
+  int get attempts => n5.attempts + n4.attempts;
+  int get answers => n5.answers + n4.answers;
+  int get correct => n5.correct + n4.correct;
 }
 
 final class _QuizHistorySummary {
@@ -46,30 +58,62 @@ final class _QuizHistorySummary {
   final _QuizHistoryTotals? grammarCorrection;
 }
 
-_QuizHistoryTotals _vocabularyTotals(List<OwnedVocabularyQuizAttempt> records) {
-  final answers = records
+_QuizLevelTotals _vocabularyLevelTotals(
+  Iterable<OwnedVocabularyQuizAttempt> records,
+) {
+  final rows = records.toList(growable: false);
+  final answers = rows
       .expand((record) => record.attempt.answers)
       .toList(growable: false);
-  return _QuizHistoryTotals(
-    attempts: records.length,
+  return _QuizLevelTotals(
+    attempts: rows.length,
     answers: answers.length,
     correct: answers.where((answer) => answer.isCorrect).length,
   );
 }
 
-_QuizHistoryTotals _grammarTotals(List<OwnedGrammarQuizAttempt> records) {
-  final answers = records
+_QuizHistoryTotals _vocabularyTotals(
+  List<OwnedVocabularyQuizAttempt> records,
+) => _QuizHistoryTotals(
+  n5: _vocabularyLevelTotals(
+    records.where((record) => record.attempt.level == PreviewLevel.n5),
+  ),
+  n4: _vocabularyLevelTotals(
+    records.where((record) => record.attempt.level == PreviewLevel.n4),
+  ),
+);
+
+_QuizLevelTotals _grammarLevelTotals(
+  Iterable<OwnedGrammarQuizAttempt> records,
+) {
+  final rows = records.toList(growable: false);
+  final answers = rows
       .expand((record) => record.attempt.answers)
       .toList(growable: false);
-  return _QuizHistoryTotals(
-    attempts: records.length,
+  return _QuizLevelTotals(
+    attempts: rows.length,
     answers: answers.length,
     correct: answers.where((answer) => answer.isCorrect).length,
   );
 }
+
+_QuizHistoryTotals _grammarTotals(
+  List<OwnedGrammarQuizAttempt> records,
+) => _QuizHistoryTotals(
+  n5: _grammarLevelTotals(
+    records.where((record) => record.attempt.level == PreviewLevel.n5),
+  ),
+  n4: _grammarLevelTotals(
+    records.where((record) => record.attempt.level == PreviewLevel.n4),
+  ),
+);
 
 String _quizTotalsLabel(String title, _QuizHistoryTotals totals) =>
     '$title · ${totals.attempts} lượt · ${totals.correct}/${totals.answers} câu đúng';
+
+String _quizLevelTotalsLabel(_QuizHistoryTotals totals) =>
+    'N5 · ${totals.n5.attempts} lượt · ${totals.n5.correct}/${totals.n5.answers} câu đúng; '
+    'N4 · ${totals.n4.attempts} lượt · ${totals.n4.correct}/${totals.n4.answers} câu đúng';
 
 class ProgressOverviewScreen extends ConsumerStatefulWidget {
   const ProgressOverviewScreen({super.key});
@@ -597,6 +641,11 @@ class _ProgressOverviewScreenState
               _quizTotalsLabel('Từ vựng (N5 + N4)', _quizSummary!.vocabulary!),
               key: const Key('progress-quiz-vocabulary-summary'),
             ),
+          if (_quizSummary!.vocabulary != null)
+            Text(
+              _quizLevelTotalsLabel(_quizSummary!.vocabulary!),
+              key: const Key('progress-quiz-vocabulary-level-summary'),
+            ),
           if (_quizSummary!.grammarPrimary == null)
             const Text('Ngữ pháp chính: lịch sử chưa được cấu hình.')
           else
@@ -607,6 +656,11 @@ class _ProgressOverviewScreenState
               ),
               key: const Key('progress-quiz-grammar-primary-summary'),
             ),
+          if (_quizSummary!.grammarPrimary != null)
+            Text(
+              _quizLevelTotalsLabel(_quizSummary!.grammarPrimary!),
+              key: const Key('progress-quiz-grammar-primary-level-summary'),
+            ),
           if (_quizSummary!.grammarCorrection == null)
             const Text('Ngữ pháp sửa: lịch sử chưa được cấu hình.')
           else
@@ -616,6 +670,11 @@ class _ProgressOverviewScreenState
                 _quizSummary!.grammarCorrection!,
               ),
               key: const Key('progress-quiz-grammar-correction-summary'),
+            ),
+          if (_quizSummary!.grammarCorrection != null)
+            Text(
+              _quizLevelTotalsLabel(_quizSummary!.grammarCorrection!),
+              key: const Key('progress-quiz-grammar-correction-level-summary'),
             ),
           const Text(
             'Số liệu chỉ phản ánh lượt đã lưu trên thiết bị; không xác nhận '

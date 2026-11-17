@@ -4092,7 +4092,7 @@
     {
       "id": "progress-overview",
       "status": "pending-integration",
-      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals and a separate first-page caller-owned server receipt summary; no cross-kind/mastery/time aggregation.",
+      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate first-page caller-owned server receipt summary; no cross-kind/mastery/time aggregation.",
       "issues": [
         11,
         13,
@@ -4117,7 +4117,7 @@
         },
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
-          "contains": "overview loads separate local quiz totals only on explicit action"
+          "contains": "overview loads separate local quiz totals with N5/N4 breakdown only on explicit action"
         },
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
@@ -4142,6 +4142,18 @@
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
           "contains": "late server receipt page cannot publish after account replacement"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
+          "contains": "progress-quiz-vocabulary-level-summary"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
+          "contains": "progress-quiz-grammar-primary-level-summary"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
+          "contains": "progress-quiz-grammar-correction-level-summary"
         }
       ],
       "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, confirm it stays separate from local vocabulary/grammar totals, retry a redacted failure, suppress late A results after account replacement, and open /quiz/history for full keyset browsing.",

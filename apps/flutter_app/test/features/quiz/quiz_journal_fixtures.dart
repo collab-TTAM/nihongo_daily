@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:nihongo_daily/features/quiz/data/native_vocabulary_quiz_journal.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_attempt_store.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
+import 'package:nihongo_daily/shared/models/preview_level.dart';
 
 const quizOwner = 'a1000000-0000-4000-8000-000000000001';
 const quizOther = 'a1000000-0000-4000-8000-000000000002';
@@ -16,12 +17,16 @@ const quizChoices = [
   'a2000000-0000-4000-8000-000000000004',
 ];
 
-VocabularyQuizAttempt quizReport(int number, {bool correct = false}) {
+VocabularyQuizAttempt quizReport(
+  int number, {
+  bool correct = false,
+  PreviewLevel level = PreviewLevel.n5,
+}) {
   final tail = number.toString().padLeft(12, '0');
   return VocabularyQuizAttempt.fromJson({
     'format_version': 1,
     'event_id': 'a3000000-0000-4000-8000-$tail',
-    'level': 'N5',
+    'level': level.name.toUpperCase(),
     'completed_at': '2026-10-20T00:01:00.000Z',
     'answers': [
       {
