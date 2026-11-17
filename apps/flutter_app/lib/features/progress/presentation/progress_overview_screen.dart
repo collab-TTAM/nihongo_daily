@@ -331,7 +331,9 @@ class _ProgressOverviewScreenState
     final account = ref.read(accountStateProvider);
     final owner = account.profile?.id;
     final reader = ref.read(quizReportV2HistoryReaderProvider);
-    if (account.phase != AccountPhase.ready || owner == null || reader == null) {
+    if (account.phase != AccountPhase.ready ||
+        owner == null ||
+        reader == null) {
       return;
     }
 
@@ -344,7 +346,9 @@ class _ProgressOverviewScreenState
     });
 
     try {
-      final page = await reader.readHistory(QuizReportV2HistoryQuery(limit: 20));
+      final page = await reader.readHistory(
+        QuizReportV2HistoryQuery(limit: 20),
+      );
       if (!_isServerQuizCurrent(
         owner: owner,
         generation: generation,
@@ -406,12 +410,12 @@ class _ProgressOverviewScreenState
     final vocabularyHistory = ref.watch(quizHistoryRepositoryProvider);
     final grammarHistory = ref.watch(grammarQuizHistoryRepositoryProvider);
     final serverHistoryReader = ref.watch(quizReportV2HistoryReaderProvider);
-    final serverHistoryStateCurrent =
-        identical(_serverQuizReader, serverHistoryReader);
-    final serverQuizPage =
-        serverHistoryStateCurrent ? _serverQuizPage : null;
-    final serverQuizLoading =
-        serverHistoryStateCurrent && _serverQuizLoading;
+    final serverHistoryStateCurrent = identical(
+      _serverQuizReader,
+      serverHistoryReader,
+    );
+    final serverQuizPage = serverHistoryStateCurrent ? _serverQuizPage : null;
+    final serverQuizLoading = serverHistoryStateCurrent && _serverQuizLoading;
     final serverQuizFailed = serverHistoryStateCurrent && _serverQuizFailed;
     var serverQuizAnswers = 0;
     var serverQuizCorrect = 0;

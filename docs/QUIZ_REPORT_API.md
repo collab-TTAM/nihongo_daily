@@ -987,9 +987,9 @@ Node tests cover exact-byte forwarding and safe failure mapping. Edge tests
 cover bearer/filter forwarding, exact-origin CORS and rejection before reader
 dispatch for an untrusted origin. Deno type-check and a dedicated Edge bundle
 check include the new function. These are source/CI checks only: the function
-has not been deployed, no hosted signed-JWT/PostgREST/RLS learner A/B is claimed,
-The later opt-in Flutter history route and overview receipt summary depend on
-this undeployed endpoint and a caller-owned ready runtime. They do not update
+has not been deployed, and no hosted signed-JWT/PostgREST/RLS learner A/B is
+claimed. The later opt-in Flutter history route and overview receipt summary
+depend on this undeployed endpoint and a caller-owned ready runtime. They do not update
 local history, mastery, SRS or study minutes.
 
 ## Captured-session Flutter history transport — 2026-11-16

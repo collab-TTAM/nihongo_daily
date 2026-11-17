@@ -286,7 +286,9 @@ Future<ProviderContainer> _mount(
       if (configured && grammarPorts != null)
         grammarQuizHistorySourceProvider.overrideWithValue(grammarPorts),
       if (configured && serverHistoryReader != null)
-        quizReportV2HistoryReaderProvider.overrideWithValue(serverHistoryReader),
+        quizReportV2HistoryReaderProvider.overrideWithValue(
+          serverHistoryReader,
+        ),
     ],
   );
   addTearDown(() async {
@@ -629,12 +631,7 @@ void main() {
       final harness = Harness();
       final source = _ProgressSource(harness);
       final reader = _ServerHistoryReader()..failRead = true;
-      await _mount(
-        tester,
-        harness,
-        source,
-        serverHistoryReader: reader,
-      );
+      await _mount(tester, harness, source, serverHistoryReader: reader);
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-server-quiz')),
@@ -658,10 +655,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(reader.reads, 2);
-      expect(
-        find.byKey(const Key('progress-server-quiz-error')),
-        findsNothing,
-      );
+      expect(find.byKey(const Key('progress-server-quiz-error')), findsNothing);
       expect(
         find.text('1 biên nhận trên trang mới nhất · 1/1 câu đúng'),
         findsOneWidget,
@@ -688,7 +682,10 @@ void main() {
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
       await tester.pump();
       expect(reader.reads, 1);
-      expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsOneWidget);
+      expect(
+        find.text('Đang đọc biên nhận quiz trên máy chủ…'),
+        findsOneWidget,
+      );
 
       harness.access.change(account.other);
       await tester.pumpAndSettle();
@@ -699,7 +696,10 @@ void main() {
         find.byKey(const Key('progress-server-quiz-summary')),
         findsNothing,
       );
-      expect(find.textContaining('biên nhận trên trang mới nhất'), findsNothing);
+      expect(
+        find.textContaining('biên nhận trên trang mới nhất'),
+        findsNothing,
+      );
       expect(tester.takeException(), isNull);
     },
   );
