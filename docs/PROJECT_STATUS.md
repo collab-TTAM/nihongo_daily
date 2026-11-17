@@ -359,3 +359,79 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
   without waiting for live secrets; do not close #22 without its full acceptance.
   Then #31 runtime binding and #11 plan/session work by dependency. #18 remains
   blocked by integrated Personal Alpha evidence; independent development continues.
+
+## Original curriculum browser — 2026-10-19 UTC
+
+- Single core run core-20261019T1358-curriculum-browser, main-based branch
+  automation/issue-12-curriculum-browser from 78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c.
+  #2/#3/#5 closed and original N5 exports present; #12 permits independent reader
+  work before Daily Plan/study-event linking. Full #12 acceptance stays open.
+- Resumed/reviewed #37 first: exact source afa572a27f050048990ad4feb07fd6f01758e7e2
+  passed all five jobs in CI39263961507, 381 Flutter + five Chrome tests and all
+  downstream/native/SQL/build gates. That source is still an unmerged draft, not
+  hosted learner proof or current main. Its Auth/SRS files are not copied here.
+- Added typed/version-preserving vocabulary/grammar projection and repository,
+  actual canonical N5 assets (24 vocabulary/10 grammar), list/detail navigation,
+  level filtering, Japanese readings/Vietnamese usage/notes/mistakes/examples,
+  safe loading/error/empty/manual retry and explicit missing N4/audio/progress.
+  N4 returns unavailable/empty without substituting N5 or fixture content.
+- Five repository/asset/decoder and six widget cases authored; existing default
+  home/study CTA opens actual vocabulary content. New widgets include both
+  screens at 320px/200% text. No content/data/manifest/Pro N4 paths or content
+  validators/tests or dependencies/API/schema/Auth/RLS changes. No study writes.
+- Local QA17 regressions, main-based inventory27 and git diff --check passed;
+  original-export spot-check confirms required display fields/24+10 rows. No
+  local Dart/Flutter/format/analyze/build/contract-validator pass claimed (SDK/
+  jsonschema unavailable). Exact-source Actions still required before pass.
+- Keep focused PR draft and #12 open: validated study events/progress, full
+  coverage/curation/audio/hosted learner acceptance still missing. Pro #14/#38
+  remains independent and untouched. All 14 live release groups remain pending.
+  Coordination heartbeat/release and exact source/CI are persisted in PR bodies.
+
+- First reader source 9781260cc2dde6d04aa7de891a4467f5a21813a7 / CI39266546355
+  stopped at formatting in four new files. Preserve the required format step
+  name and strict failure; on failure only, print the SDK-formatted Dart diff
+  from the disposable runner so a cloud worker without SDK can apply the exact
+  correction. No automatic commit, test skip or success fallback; format still
+  exits 1 on a mismatch. Fresh corrected-source full CI is required.
+- Reviewed pinned Flutter 3.35.4 asset copying: output paths join the asset key.
+  Package unchanged N5 exports inside app assets instead of parent-relative keys;
+  actual rootBundle-to-canonical equality remains mandatory in repository tests.
+  Canonical data/N4 files remain untouched; new-source build/test proof pending.
+
+- CI39267476608 at 3aecbbcfbe1b3f3eef1bcdbcdeb6c811c9fc2e2a exposed the exact
+  pinned-SDK diff while correctly failing format. Applied that four-file diff
+  unchanged after git apply --check; test cases/assertions/behavior retained.
+  This resolves formatting only; corrected-source analyze/tests/native/build
+  acceptance remains pending until its own complete exact-head CI is observed.
+
+## Curriculum CI correction — 2026-10-19, core-20261019T1425-curriculum-ci
+
+- Fresh clone matches PR #39 source `a5e2a8689e5a2239e2fc13cd7eacd364a2cc18af`; main remains `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`. Previous core marker released; this run owns only the focused reader CI correction. Pro #14/#38/N4 unchanged.
+- Exact-source CI39268039284 completed: repo-sanity, database, ai-boundary and Windows build passed. Flutter format/analyze passed; tests had 97 passes/3 failures, so downstream wire checks/Web build were skipped and are not passes.
+- Both 320px/200% widget failures tapped off-screen tiles. Tests now scroll the actual tile into view, assert hit-testability, open detail, check original explanation/example and return to the list. Original no-overflow assertions remain. No production layout, viewport, text scale, content or timeout changed.
+- The default home-to-vocabulary test timed out at pumpAndSettle while waiting for real asset-backed provider work under its fake clock. It now observes and awaits the actual default provider in tester.runAsync, keeps that provider alive through route navigation and releases its listener at teardown. No repository override, fixture substitution or removed navigation/content assertion.
+- Local pinned Dart 3.9.2 format check passed for both changed tests (0 changed); SDK package include resolution warns because flutter_lints is unavailable. Offline dependency resolution explicitly fails on missing flutter_lints 5.0.0; Flutter analyze/test/build therefore require exact-new-head CI. No local Flutter test/build pass claimed. QA inventory27 and all 17 QA regression tests passed; separate diff review and git diff --check passed.
+- Changed only app_test.dart, curriculum_widget_test.dart and this handoff. Keep #39 draft/#12 open; original exports/assets/11 cases and strict CI gates retained. All 14 live Personal Alpha groups remain pending.
+- Next: verify every required latest-attempt job/step for the correction head. Fix any actual failure without increasing timeout or dropping assertions; if only CI pending, persist/release rather than duplicate work. No merge/deployment/Auth/security/provider/spend/schedule change.
+
+## Original reader navigation — core-20261019T1434-reader-navigation
+
+- Fresh GitHub fetch checked out source `fda843c612c4fc15ed78ef83a70ca98ff660076f` / tree `0d838027d73c75ea0314332da29b6284c20d8ad2` with all 139 files; main still `78a44faf`. Previous core marker released; this is the only active core writer. Pro #14/#38/N4/content unchanged.
+- Baseline exact-head CI39269306693 attempt1 passed all five jobs and every required step. Observed logs: format36/0changed, analyze no issues, 100 Flutter tests, SRS/Kanji wire checks, Web/Windows release builds and both artifacts. This is reader build/test evidence, not hosted learner or full #12 acceptance.
+- Added previous/next detail navigation in original export order, explicit first/last/single-entry button boundaries and neutral item-position label. New details start at top; list return restores its former position, level selection clears it. Scroll controller is screen-owned/disposed and delayed layout adjustments are fenced by navigation revision/mounted checks. PageBody accepts an optional scroll controller; existing callers keep their default behavior.
+- Four new widget cases use actual original entries to cover vocabulary/grammar boundary traversal, single-entry bounds and scroll continuity. Both existing 320px/200% cases now traverse to another real item; unavailable-N4 checks also require hidden navigation and reset scroll. No existing assertion/case removed, no timeout/lint/security gate change.
+- Changed source: curriculum_screen.dart and shared/widgets/page_body.dart; test: curriculum_widget_test.dart; docs: CURRICULUM_BROWSER.md and this handoff. No original exports/assets, Pro content/shared content files, schema/API/Auth/provider/dependency/CI change.
+- Local pinned Dart format check passed (3 files/0 changes, missing flutter_lints include warning); QA inventory27, all 17 QA regressions and git diff --check passed. Production/test diffs reviewed separately. Flutter analyze/test/build require exact-new-head Actions because SDK package dependencies (flutter_lints) are not cached. Do not reuse the baseline CI as a new-source pass.
+- Keep #39/#37 draft and #12/#20/#22/#15 open; all 14 live Personal Alpha groups remain pending. Next: inspect exact new head/latest-attempt CI and fix failures preserving assertions, then continue a bounded eligible product step. No merge/deployment/security/spend/schedule change.
+
+## Original reader search — core-20261019T1442-reader-search
+
+- Fresh GitHub worktree starts at `8b7398ab4f20fe3090ebe11ed305425069924fc8`, tree `7acf8d1664d274a82702adbe464d1ebf09e59ccf`; all139 baseline files retained. Prior worker released; one core writer, Pro #14/#38/N4 reserved. Exact baseline CI39270656448 attempt1 passed every required step/all five jobs, 104 Flutter tests and Web/Windows release artifacts. This is historical evidence, not new-source verification.
+- Added local search for expression/pattern, reading, Vietnamese meaning/title. Case/accent folding supports composed and combining Vietnamese characters; original display text/IDs/versions/export order remain unchanged. The UI limits queries to128 characters; queries are screen-local, not logged/transmitted/account-stored. No dependency/network/schema/API/Auth/progress write.
+- Query changes clear selected detail and list scroll. Detail/back retain query, adjacent actions use filtered order, clear restores all content; no matches differs from unbundled N4. Opening a detail dismisses the search keyboard. Text controller is screen-owned/disposed.
+- Added three original-export search unit cases and three widget cases: Japanese/reading/accentless Vietnamese, original grammar pattern/title/order, blank/literal/no-match/immutability, search/clear, filtered next/back, editing details and unavailable N4. Both existing320px/200% cases search/clear too. All existing cases/assertions retained; no timeout/lint/security gate relaxed.
+- Local pure Dart smoke executed the actual new search implementation against original N5 exports and passed Japanese/reading/Vietnamese case/combining-accent/order/no-match/immutability checks. It constructed domain projections directly and does not verify the decoder, widgets, Auth or build. Pinned Dart format4/0changed passed with missing flutter_lints include warnings; QA inventory27, all17 QA regressions and git diff --check passed. Separate production/test diff review completed.
+- Flutter analyze/full tests/build require exact-new-head Actions because SDK package dependencies are unavailable. Preserve strict gates and observe every required latest-attempt step for the new SHA before claiming success.
+- Changed only curriculum_search.dart, curriculum_screen.dart, the two app curriculum test files, CURRICULUM_BROWSER.md and this handoff. No original export/asset, Pro content/manifest/content-test path, #37 source or shared policy/CI/dependency change. Keep #39/#37 draft/#12 open; all14 live Personal Alpha groups pending. No merge/deployment/schedule/security/provider/spend change.
+- Next: inspect actual current head/latest-attempt CI, fix any failure preserving assertions. If only CI pending, persist/release; do not duplicate implementation or reuse baseline evidence as a new-source pass.

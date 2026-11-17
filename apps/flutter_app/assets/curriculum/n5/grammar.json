@@ -1,0 +1,328 @@
+[
+  {
+    "id": "919dfd9c-6a4c-543c-b48a-6056585c3d73",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Câu danh từ lịch sự",
+    "pattern": "N1 は N2 です",
+    "meaning_vi": "N1 là N2",
+    "explanation_vi": "は đánh dấu chủ đề; です kết thúc câu danh từ theo cách lịch sự. Không dùng mẫu này thay cho động từ hành động.",
+    "usage_notes_vi": [
+      "は viết là は nhưng đọc là わ khi là trợ từ."
+    ],
+    "common_mistakes": [
+      "Không thêm です sau dạng 食べます."
+    ],
+    "related_grammar_ids": [
+      "b370afd6-bf38-5d57-824a-6a61a2683c1b",
+      "e6012900-b5a3-5ac5-a4a3-203ba63dd6ab"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "私は学生です。",
+        "reading_ja": "わたしはがくせいです。",
+        "translation_vi": "Tôi là học sinh/sinh viên."
+      },
+      {
+        "sentence_ja": "ここは学校です。",
+        "reading_ja": "ここはがっこうです。",
+        "translation_vi": "Đây là trường học."
+      }
+    ]
+  },
+  {
+    "id": "b370afd6-bf38-5d57-824a-6a61a2683c1b",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Phủ định câu danh từ",
+    "pattern": "N1 は N2 ではありません",
+    "meaning_vi": "N1 không phải là N2",
+    "explanation_vi": "Thay です bằng ではありません để phủ định câu danh từ một cách lịch sự.",
+    "usage_notes_vi": [
+      "じゃありません là cách nói tương đương trong hội thoại."
+    ],
+    "common_mistakes": [
+      "Không áp dụng trực tiếp mẫu này cho tính từ い."
+    ],
+    "related_grammar_ids": [
+      "919dfd9c-6a4c-543c-b48a-6056585c3d73",
+      "e6012900-b5a3-5ac5-a4a3-203ba63dd6ab"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "私は先生ではありません。",
+        "reading_ja": "わたしはせんせいではありません。",
+        "translation_vi": "Tôi không phải là giáo viên."
+      },
+      {
+        "sentence_ja": "今日は休みではありません。",
+        "reading_ja": "きょうはやすみではありません。",
+        "translation_vi": "Hôm nay không phải là ngày nghỉ."
+      }
+    ]
+  },
+  {
+    "id": "e6012900-b5a3-5ac5-a4a3-203ba63dd6ab",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Câu hỏi lịch sự",
+    "pattern": "N1 は N2 ですか",
+    "meaning_vi": "N1 có phải là N2 không?",
+    "explanation_vi": "Thêm か cuối câu lịch sự để hỏi. Trong văn viết thường dùng dấu 。; không cần đổi trật tự từ.",
+    "usage_notes_vi": [
+      "Câu trả lời có thể bắt đầu bằng はい hoặc いいえ."
+    ],
+    "common_mistakes": [
+      "Không tự động thêm あなた khi ngữ cảnh đã rõ người nghe."
+    ],
+    "related_grammar_ids": [
+      "919dfd9c-6a4c-543c-b48a-6056585c3d73",
+      "b370afd6-bf38-5d57-824a-6a61a2683c1b"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "あの人は先生ですか。",
+        "reading_ja": "あのひとはせんせいですか。",
+        "translation_vi": "Người kia có phải là giáo viên không?"
+      },
+      {
+        "sentence_ja": "これは新しい本ですか。",
+        "reading_ja": "これはあたらしいほんですか。",
+        "translation_vi": "Đây có phải là một cuốn sách mới không?"
+      }
+    ]
+  },
+  {
+    "id": "f4c053ef-0248-58c7-8465-f41abd76b379",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Sở hữu và bổ nghĩa bằng の",
+    "pattern": "N1 の N2",
+    "meaning_vi": "N2 của N1; N2 thuộc/ liên quan đến N1",
+    "explanation_vi": "の nối hai danh từ; danh từ chính đứng sau の. Nghĩa cụ thể phụ thuộc quan hệ giữa hai danh từ.",
+    "usage_notes_vi": [
+      "私の本 là sách của tôi; 日本語の本 là sách tiếng Nhật."
+    ],
+    "common_mistakes": [
+      "Không đảo 私の本 thành 本の私 khi muốn nói sách của tôi."
+    ],
+    "related_grammar_ids": [
+      "919dfd9c-6a4c-543c-b48a-6056585c3d73"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "これは私の本です。",
+        "reading_ja": "これはわたしのほんです。",
+        "translation_vi": "Đây là sách của tôi."
+      },
+      {
+        "sentence_ja": "日本語の本を読みます。",
+        "reading_ja": "にほんごのほんをよみます。",
+        "translation_vi": "Tôi đọc sách tiếng Nhật."
+      }
+    ]
+  },
+  {
+    "id": "a9104c3d-474e-5882-8e63-4a5c3b7559be",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Tân ngữ với を",
+    "pattern": "N を Vます",
+    "meaning_vi": "làm hành động V với N",
+    "explanation_vi": "を đánh dấu đối tượng trực tiếp của một số động từ, như 食べる, 飲む, 読む.",
+    "usage_notes_vi": [
+      "を thường được phát âm là お."
+    ],
+    "common_mistakes": [
+      "Không dùng を để chỉ nơi thực hiện hành động."
+    ],
+    "related_grammar_ids": [
+      "d9c904fc-1ff0-511f-ba67-d813037fc2db",
+      "1075924b-a051-523a-848f-43b074470590"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "水を飲みます。",
+        "reading_ja": "みずをのみます。",
+        "translation_vi": "Tôi uống nước."
+      },
+      {
+        "sentence_ja": "新聞を読みます。",
+        "reading_ja": "しんぶんをよみます。",
+        "translation_vi": "Tôi đọc báo."
+      }
+    ]
+  },
+  {
+    "id": "d9c904fc-1ff0-511f-ba67-d813037fc2db",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nơi thực hiện hành động",
+    "pattern": "場所 で Vます",
+    "meaning_vi": "làm V ở địa điểm",
+    "explanation_vi": "で đánh dấu nơi diễn ra hành động; với tồn tại あります／います, dùng に thay vì で.",
+    "usage_notes_vi": [
+      "学校で勉強します nói hành động học ở trường."
+    ],
+    "common_mistakes": [
+      "Không dùng 学校でいます khi chỉ nói đang ở trường."
+    ],
+    "related_grammar_ids": [
+      "a9104c3d-474e-5882-8e63-4a5c3b7559be",
+      "13637b53-a3e6-5561-85c9-2137b3bf87c3"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "家でご飯を食べます。",
+        "reading_ja": "いえでごはんをたべます。",
+        "translation_vi": "Tôi ăn cơm ở nhà."
+      },
+      {
+        "sentence_ja": "図書館で勉強します。",
+        "reading_ja": "としょかんでべんきょうします。",
+        "translation_vi": "Tôi học ở thư viện."
+      }
+    ]
+  },
+  {
+    "id": "5a6e1a1d-350c-5431-96da-114095a836ee",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Nơi đến với へ／に",
+    "pattern": "場所 へ／に 行きます",
+    "meaning_vi": "đi đến địa điểm",
+    "explanation_vi": "へ nhấn hướng đi; に có thể đánh dấu đích đến với 行く. Cả hai đều dùng được trong các ví dụ này.",
+    "usage_notes_vi": [
+      "へ viết là へ nhưng đọc là え khi là trợ từ."
+    ],
+    "common_mistakes": [
+      "Không dùng で thay cho へ／に để chỉ đích đến."
+    ],
+    "related_grammar_ids": [
+      "d9c904fc-1ff0-511f-ba67-d813037fc2db"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "明日、学校へ行きます。",
+        "reading_ja": "あした、がっこうへいきます。",
+        "translation_vi": "Ngày mai tôi đi đến trường."
+      },
+      {
+        "sentence_ja": "友達と駅に行きます。",
+        "reading_ja": "ともだちとえきにいきます。",
+        "translation_vi": "Tôi đi đến ga với bạn."
+      }
+    ]
+  },
+  {
+    "id": "13637b53-a3e6-5561-85c9-2137b3bf87c3",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Tồn tại với あります／います",
+    "pattern": "場所 に N が あります／います",
+    "meaning_vi": "có N ở địa điểm",
+    "explanation_vi": "Dùng あります cho đồ vật/cây cối và います cho người/động vật trong cách dùng cơ bản. に đánh dấu nơi tồn tại; が đánh dấu vật/người tồn tại.",
+    "usage_notes_vi": [
+      "Cây có sự sống nhưng thường dùng あります."
+    ],
+    "common_mistakes": [
+      "Không chọn います cho cây chỉ vì cây có sự sống."
+    ],
+    "related_grammar_ids": [
+      "d9c904fc-1ff0-511f-ba67-d813037fc2db"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "庭に木があります。",
+        "reading_ja": "にわにきがあります。",
+        "translation_vi": "Có một cái cây ở trong vườn."
+      },
+      {
+        "sentence_ja": "教室に先生がいます。",
+        "reading_ja": "きょうしつにせんせいがいます。",
+        "translation_vi": "Có giáo viên ở trong lớp học."
+      }
+    ]
+  },
+  {
+    "id": "1075924b-a051-523a-848f-43b074470590",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Động từ lịch sự phủ định",
+    "pattern": "Vません",
+    "meaning_vi": "không làm V",
+    "explanation_vi": "Thay đuôi ます bằng ません để phủ định ở dạng lịch sự không quá khứ. Dạng này có thể nói về hiện tại hoặc tương lai tùy ngữ cảnh.",
+    "usage_notes_vi": [
+      "食べます → 食べません; 飲みます → 飲みません."
+    ],
+    "common_mistakes": [
+      "Không ghép động từ từ điển với ません: 食べるません là sai."
+    ],
+    "related_grammar_ids": [
+      "a9104c3d-474e-5882-8e63-4a5c3b7559be",
+      "a3a2cb58-17df-5391-bb3a-c240aa15c8db"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "朝、コーヒーを飲みません。",
+        "reading_ja": "あさ、コーヒーをのみません。",
+        "translation_vi": "Buổi sáng tôi không uống cà phê."
+      },
+      {
+        "sentence_ja": "明日、学校へ行きません。",
+        "reading_ja": "あした、がっこうへいきません。",
+        "translation_vi": "Ngày mai tôi không đi đến trường."
+      }
+    ]
+  },
+  {
+    "id": "a3a2cb58-17df-5391-bb3a-c240aa15c8db",
+    "jlpt_level": "N5",
+    "difficulty": 0.2,
+    "content_version": 1,
+    "is_active": true,
+    "title": "Động từ lịch sự quá khứ",
+    "pattern": "Vました／Vませんでした",
+    "meaning_vi": "đã làm V / đã không làm V",
+    "explanation_vi": "Thay đuôi ます bằng ました để nói hành động đã xảy ra; phủ định quá khứ là ませんでした.",
+    "usage_notes_vi": [
+      "Dùng với 昨日 hoặc thời điểm quá khứ đã rõ."
+    ],
+    "common_mistakes": [
+      "Không dùng ませんでした như phủ định tương lai."
+    ],
+    "related_grammar_ids": [
+      "1075924b-a051-523a-848f-43b074470590"
+    ],
+    "examples": [
+      {
+        "sentence_ja": "昨日、本を読みました。",
+        "reading_ja": "きのう、ほんをよみました。",
+        "translation_vi": "Hôm qua tôi đã đọc sách."
+      },
+      {
+        "sentence_ja": "昨日、映画を見ませんでした。",
+        "reading_ja": "きのう、えいがをみませんでした。",
+        "translation_vi": "Hôm qua tôi đã không xem phim."
+      }
+    ]
+  }
+]

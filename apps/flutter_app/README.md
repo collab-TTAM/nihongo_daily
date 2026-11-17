@@ -1,5 +1,10 @@
 # Nihongo Daily Flutter shell
 
+Vocabulary/grammar routes now browse the original N5 seed directly from bundled
+canonical exports. List/detail navigation, level selection, examples and explicit
+missing audio/N4 are documented in ../../docs/CURRICULUM_BROWSER.md. This is
+read-only browsing, not a study session, saved progress or complete curriculum.
+
 This is an explicitly labeled UI preview, not Personal Alpha. No login, real
 curriculum study flow, integrated SRS review, real grading, progress persistence, network adapter or live
 AI/voice is implemented. N5/N4 selections and theme preferences last only for the
@@ -47,6 +52,8 @@ claimed by this shell.
   preview repository does not implement or change the get_daily_plan contract.
 - `features/settings/`: process-local preview preferences; no Supabase writes.
 - `features/study/`: discovery of planned modules.
+- `features/curriculum/`: typed original-seed asset reader and vocabulary/grammar
+  list/detail UI. No Auth, learner state or write capability.
 - `features/srs/`: pure versioned scheduler; not integrated into review UI.
 - `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
