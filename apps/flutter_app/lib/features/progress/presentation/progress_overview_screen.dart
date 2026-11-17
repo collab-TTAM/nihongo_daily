@@ -58,6 +58,52 @@ final class _QuizHistorySummary {
   final _QuizHistoryTotals? grammarCorrection;
 }
 
+final class _ServerQuizTotals {
+  const _ServerQuizTotals({
+    required this.receipts,
+    required this.answers,
+    required this.correct,
+  });
+
+  final int receipts;
+  final int answers;
+  final int correct;
+}
+
+final class _ServerQuizPageSummary {
+  const _ServerQuizPageSummary({
+    required this.vocabularyN5,
+    required this.vocabularyN4,
+    required this.grammarPrimaryN5,
+    required this.grammarPrimaryN4,
+    required this.grammarCorrectionN5,
+    required this.grammarCorrectionN4,
+  });
+
+  final _ServerQuizTotals vocabularyN5;
+  final _ServerQuizTotals vocabularyN4;
+  final _ServerQuizTotals grammarPrimaryN5;
+  final _ServerQuizTotals grammarPrimaryN4;
+  final _ServerQuizTotals grammarCorrectionN5;
+  final _ServerQuizTotals grammarCorrectionN4;
+
+  int get answers =>
+      vocabularyN5.answers +
+      vocabularyN4.answers +
+      grammarPrimaryN5.answers +
+      grammarPrimaryN4.answers +
+      grammarCorrectionN5.answers +
+      grammarCorrectionN4.answers;
+
+  int get correct =>
+      vocabularyN5.correct +
+      vocabularyN4.correct +
+      grammarPrimaryN5.correct +
+      grammarPrimaryN4.correct +
+      grammarCorrectionN5.correct +
+      grammarCorrectionN4.correct;
+}
+
 _QuizLevelTotals _vocabularyLevelTotals(
   Iterable<OwnedVocabularyQuizAttempt> records,
 ) {
@@ -106,6 +152,54 @@ _QuizHistoryTotals _grammarTotals(List<OwnedGrammarQuizAttempt> records) =>
         records.where((record) => record.attempt.level == PreviewLevel.n4),
       ),
     );
+
+_ServerQuizTotals _serverQuizTotals(
+  Iterable<QuizReportV2HistoryEntry> entries,
+) {
+  final rows = entries.toList(growable: false);
+  var answers = 0;
+  var correct = 0;
+  for (final entry in rows) {
+    answers += entry.response.answerCount;
+    correct += entry.response.correctCount;
+  }
+  return _ServerQuizTotals(
+    receipts: rows.length,
+    answers: answers,
+    correct: correct,
+  );
+}
+
+_ServerQuizPageSummary _serverQuizPageSummary(QuizReportV2HistoryPage page) {
+  final items = page.items;
+
+  _ServerQuizTotals totals(String quizType, String level, [String? kind]) =>
+      _serverQuizTotals(
+        items.where(
+          (entry) =>
+              entry.request.quizType == quizType &&
+              entry.request.jlptLevel == level &&
+              entry.request.practiceKind == kind,
+        ),
+      );
+
+  return _ServerQuizPageSummary(
+    vocabularyN5: totals('vocabulary_reading', 'N5'),
+    vocabularyN4: totals('vocabulary_reading', 'N4'),
+    grammarPrimaryN5: totals('grammar_meaning', 'N5', 'primary'),
+    grammarPrimaryN4: totals('grammar_meaning', 'N4', 'primary'),
+    grammarCorrectionN5: totals('grammar_meaning', 'N5', 'correction'),
+    grammarCorrectionN4: totals('grammar_meaning', 'N4', 'correction'),
+  );
+}
+
+String _serverQuizLevelTotalsLabel(
+  String title,
+  _ServerQuizTotals n5,
+  _ServerQuizTotals n4,
+) =>
+    '$title · N5 ${n5.receipts} biên nhận · ${n5.correct}/${n5.answers} câu đúng'
+    ' · N4 ${n4.receipts} biên nhận · ${n4.correct}/${n4.answers} câu đúng';
 
 String _quizTotalsLabel(String title, _QuizHistoryTotals totals) =>
     '$title · ${totals.attempts} lượt · ${totals.correct}/${totals.answers} câu đúng';
@@ -460,14 +554,9 @@ class _ProgressOverviewScreenState
     final serverQuizPage = serverHistoryStateCurrent ? _serverQuizPage : null;
     final serverQuizLoading = serverHistoryStateCurrent && _serverQuizLoading;
     final serverQuizFailed = serverHistoryStateCurrent && _serverQuizFailed;
-    var serverQuizAnswers = 0;
-    var serverQuizCorrect = 0;
-    if (serverQuizPage != null) {
-      for (final entry in serverQuizPage.items) {
-        serverQuizAnswers += entry.response.answerCount;
-        serverQuizCorrect += entry.response.correctCount;
-      }
-    }
+    final serverQuizSummary = serverQuizPage == null
+        ? null
+        : _serverQuizPageSummary(serverQuizPage);
     final profile = account.profile;
     final ready =
         account.phase == AccountPhase.ready &&
@@ -724,9 +813,34 @@ class _ProgressOverviewScreenState
             else
               Text(
                 '${serverQuizPage.items.length} biên nhận trên trang mới nhất · '
-                '$serverQuizCorrect/$serverQuizAnswers câu đúng',
+                '${serverQuizSummary!.correct}/'
+                '${serverQuizSummary.answers} câu đúng',
                 key: const Key('progress-server-quiz-summary'),
               ),
+            Text(
+              _serverQuizLevelTotalsLabel(
+                'Từ vựng',
+                serverQuizSummary.vocabularyN5,
+                serverQuizSummary.vocabularyN4,
+              ),
+              key: const Key('progress-server-quiz-vocabulary-summary'),
+            ),
+            Text(
+              _serverQuizLevelTotalsLabel(
+                'Ngữ pháp chính',
+                serverQuizSummary.grammarPrimaryN5,
+                serverQuizSummary.grammarPrimaryN4,
+              ),
+              key: const Key('progress-server-quiz-grammar-primary-summary'),
+            ),
+            Text(
+              _serverQuizLevelTotalsLabel(
+                'Ngữ pháp sửa',
+                serverQuizSummary.grammarCorrectionN5,
+                serverQuizSummary.grammarCorrectionN4,
+              ),
+              key: const Key('progress-server-quiz-grammar-correction-summary'),
+            ),
             const Text(
               'Chỉ tóm tắt tối đa 20 biên nhận mới nhất. Mở lịch sử để lọc '
               'và xem các trang cũ hơn.',

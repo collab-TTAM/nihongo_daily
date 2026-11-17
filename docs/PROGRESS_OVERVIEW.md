@@ -44,9 +44,10 @@ The snapshot performs no writes or remote submission.
 
 When the caller-owned `QuizReportV2HistoryReader` is published by a ready
 Auth/profile/runtime, `/overview` offers an explicit read of the first 20
-server receipts. The page summary reports only the number of receipts and
-correct/answer counts in that page; it is not an all-time total. A separate
-link opens `/quiz/history` for N5/N4 and quiz-type filters plus keyset paging.
+server receipts. The page summary reports the receipt and correct/answer totals
+for that page, plus separate N5/N4 counts for vocabulary, grammar-primary and
+grammar-correction. These are still first-page counts, not all-time totals. A
+separate link opens `/quiz/history` for filters and keyset paging.
 The page is never fetched automatically, and the preview/default reader remains
 null.
 

@@ -4092,7 +4092,7 @@
     {
       "id": "progress-overview",
       "status": "pending-integration",
-      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate first-page caller-owned server receipt summary; no cross-kind/mastery/time aggregation.",
+      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate first-page caller-owned server receipt summary with N5/N4 and quiz-kind breakdown; no cross-kind/mastery/time aggregation.",
       "issues": [
         11,
         13,
@@ -4154,10 +4154,18 @@
         {
           "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
           "contains": "progress-quiz-grammar-correction-level-summary"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "server receipt page summary separates N5/N4 and quiz kinds"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
+          "contains": "progress-server-quiz-grammar-correction-summary"
         }
       ],
-      "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, confirm it stays separate from local vocabulary/grammar totals, retry a redacted failure, suppress late A results after account replacement, and open /quiz/history for full keyset browsing.",
-      "limitation": "Auth/RPC/reader ports are TEST ONLY. The first-page receipt summary is read-only and never merges with local history or Daily Plan minutes. The Edge function is undeployed; no hosted JWT/PostgREST/RLS, learner A/B, all-time total, authoritative mastery, cross-device sync or Personal Alpha acceptance is established.",
+      "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, confirm its N5/N4 and vocabulary/grammar-primary/grammar-correction breakdown stays separate from local totals, retry a redacted failure, suppress late A results after account replacement, and open /quiz/history for full keyset browsing.",
+      "limitation": "Auth/RPC/reader ports are TEST ONLY. The first-page receipt breakdown is read-only and never merges with local history or Daily Plan minutes. It is limited to at most 20 newest receipts, not an all-time total or mastery/weak-point calculation. The Edge function is undeployed; no hosted JWT/PostgREST/RLS, learner A/B, cross-device sync or Personal Alpha acceptance is established.",
       "ci_job": "flutter"
     },
     {

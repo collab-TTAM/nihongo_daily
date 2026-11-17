@@ -251,6 +251,88 @@ Map<String, Object?> _serverQuizHistoryPage({bool correct = true}) {
   };
 }
 
+Map<String, Object?> _serverQuizReceipt({
+  required int eventNumber,
+  required String level,
+  required String quizType,
+  required String? practiceKind,
+  required String receivedAt,
+  required String completedAt,
+  required bool correct,
+}) {
+  final eventId =
+      '00000000-0000-4000-8000-${eventNumber.toString().padLeft(12, '0')}';
+  const targetId = '10000000-0000-4000-8000-000000000001';
+  const choices = [
+    targetId,
+    '10000000-0000-4000-8000-000000000002',
+    '10000000-0000-4000-8000-000000000003',
+    '10000000-0000-4000-8000-000000000004',
+  ];
+  final request = {
+    'client_event_id': eventId,
+    'quiz_type': quizType,
+    'practice_kind': practiceKind,
+    'jlpt_level': level,
+    'completed_at': completedAt,
+    'answers': [
+      {
+        'item_id': targetId,
+        'content_version': 1,
+        'selected_id': correct ? targetId : choices[1],
+        'choices': choices,
+        'choice_content_versions': [1, 1, 1, 1],
+      },
+    ],
+  };
+  return {
+    'received_at': receivedAt,
+    'request': request,
+    'response': {
+      'client_event_id': eventId,
+      'quiz_type': quizType,
+      'practice_kind': practiceKind,
+      'jlpt_level': level,
+      'completed_at': completedAt,
+      'answer_count': 1,
+      'correct_count': correct ? 1 : 0,
+    },
+  };
+}
+
+Map<String, Object?> _serverQuizMixedHistoryPage() => {
+  'items': [
+    _serverQuizReceipt(
+      eventNumber: 3,
+      level: 'N4',
+      quizType: 'grammar_meaning',
+      practiceKind: 'correction',
+      receivedAt: '2026-11-17T10:00:03.000000Z',
+      completedAt: '2026-11-17T09:59:03Z',
+      correct: true,
+    ),
+    _serverQuizReceipt(
+      eventNumber: 2,
+      level: 'N4',
+      quizType: 'grammar_meaning',
+      practiceKind: 'primary',
+      receivedAt: '2026-11-17T10:00:02.000000Z',
+      completedAt: '2026-11-17T09:59:02Z',
+      correct: false,
+    ),
+    _serverQuizReceipt(
+      eventNumber: 1,
+      level: 'N5',
+      quizType: 'vocabulary_reading',
+      practiceKind: null,
+      receivedAt: '2026-11-17T10:00:01.000000Z',
+      completedAt: '2026-11-17T09:59:01Z',
+      correct: true,
+    ),
+  ],
+  'next_cursor': null,
+};
+
 final class _ServerHistoryReader implements QuizReportV2HistoryReader {
   int reads = 0;
   QuizReportV2HistoryQuery? lastQuery;
@@ -656,6 +738,69 @@ void main() {
         container.read(routerProvider).routeInformationProvider.value.uri.path,
         '/quiz/history',
       );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'server receipt page summary separates N5/N4 and quiz kinds',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()
+        ..response = _serverQuizMixedHistoryPage();
+      final vocabulary = _VocabularyPorts(harness);
+      final grammar = _GrammarPorts(harness);
+      await _mount(
+        tester,
+        harness,
+        source,
+        vocabularyPorts: vocabulary,
+        grammarPorts: grammar,
+        serverHistoryReader: reader,
+      );
+
+      expect(reader.reads, 0);
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 1);
+      expect(reader.lastQuery?.limit, 20);
+      expect(reader.lastQuery?.jlptLevel, isNull);
+      expect(reader.lastQuery?.quizType, isNull);
+      expect(reader.lastQuery?.cursor, isNull);
+      expect(
+        find.text('3 biên nhận trên trang mới nhất · 2/3 câu đúng'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Từ vựng · N5 1 biên nhận · 1/1 câu đúng · '
+          'N4 0 biên nhận · 0/0 câu đúng',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Ngữ pháp chính · N5 0 biên nhận · 0/0 câu đúng · '
+          'N4 1 biên nhận · 0/1 câu đúng',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Ngữ pháp sửa · N5 0 biên nhận · 0/0 câu đúng · '
+          'N4 1 biên nhận · 1/1 câu đúng',
+        ),
+        findsOneWidget,
+      );
+      expect(vocabulary.reads, 0);
+      expect(grammar.reads, 0);
+      expect(vocabulary.writes, 0);
+      expect(grammar.writes, 0);
       expect(tester.takeException(), isNull);
     },
   );
