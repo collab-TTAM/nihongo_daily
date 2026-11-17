@@ -4475,3 +4475,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed exactly five existing paths: `apps/flutter_app/tool/verify_windows_hosted_runtime.ps1`, `scripts/test_hosted_supabase_probe.py`, `qa/matrix.json`, `docs/HOSTED_SUPABASE_ACCEPTANCE.md`, and this status file. No hosted workflow dispatch, staging secrets/accounts, Auth strategy/provider, SQL/schema/RLS, default runtime, Pro-owned #14/#38/N4, production, deployment, merge or release change.
 - Cloud authoring runtime has no Windows/PowerShell/Flutter SDK, so no local PowerShell, Python suite, Dart format/analyze/test or build is claimed. The new exact-head Actions run must execute repo-sanity regression, all retained Flutter/Windows/Supabase/database/AI jobs before this change is verified. Hosted signed-JWT A/B and real learner restart/expiry remain pending; physical multi-device offline/reconnect remains #15 acceptance. Keep PR #37 Draft and #20/#22/#15 open.
 - Next: inspect all latest-attempt jobs/steps on the new exact HEAD; fix only observed failures. The protected `supabase-staging` workflow remains manual-only and undispatched; no secrets were requested or used.
+
+
+## PR #42 main reconciliation — 2026-11-17T17:15Z
+
+- Main advanced from `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c` to `61604bc21da64a0dd94dbb97ba3c4b1d035430a6` through PR #42. PR #37 is being synchronized with that single main commit while retaining its caller-owned Supabase/Auth, Windows vault, durable review, local integration and full CI work.
+- Reconciliation adds the main-branch manual hosted-workflow safety regression and selected-ref checkout, preserves PR #37's hosted-probe/Windows runtime coverage, includes the operator guide and PR #42 handoff, and confirms the branch already contains patched `fast-uri` 3.1.9.
+- No hosted workflow dispatch, staging secret access, production deployment, Auth/provider strategy, schema/RLS, default runtime activation or Pro-owned #14/#38/N4 content change is made.
+- Exact-head CI for the reconciled merge commit is the next verification gate. PR #37 remains Draft; hosted learner A/B, Windows staging restore and physical multi-device acceptance remain open.

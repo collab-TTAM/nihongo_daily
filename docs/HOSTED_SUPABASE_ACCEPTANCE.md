@@ -28,6 +28,14 @@ confirm_non_production=true. A false confirmation starts no job. The workflow
 uses only the supabase-staging environment secrets and never uses a service-role
 key or JWT signing secret.
 
+When using **Actions → Hosted Supabase Acceptance → Run workflow**, select
+`automation/issue-22-atomic-review` in the branch/ref selector. The workflow file
+must first exist on the default branch, but the job explicitly checks out the
+selected `github.ref`; selecting `main` would test main's source, not the still-draft
+PR #37 candidate. Keep `confirm_non_production` false until the protected staging
+environment, two disposable accounts and reviewed migration/content prerequisites
+are ready.
+
 ## Assertions
 
 - Password login returns two distinct Auth user IDs.

@@ -72,6 +72,8 @@ jobs:
           python3 -m unittest discover -s qa -p 'test_*.py' -v
       - name: Verify hosted Supabase probe safety and behavior
         run: python3 scripts/test_hosted_supabase_probe.py
+      - name: Verify hosted Supabase workflow remains manual and secret-scoped
+        run: python3 scripts/test_hosted_workflow.py
 
   supabase-integration:
     needs: repo-sanity
