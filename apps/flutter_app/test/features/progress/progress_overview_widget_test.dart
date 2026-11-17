@@ -669,12 +669,7 @@ void main() {
       final harness = Harness();
       final source = _ProgressSource(harness);
       final reader = _ServerHistoryReader()..readWait = Completer<void>();
-      await _mount(
-        tester,
-        harness,
-        source,
-        serverHistoryReader: reader,
-      );
+      await _mount(tester, harness, source, serverHistoryReader: reader);
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-server-quiz')),
