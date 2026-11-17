@@ -4724,7 +4724,7 @@
     {
       "id": "quiz-report-v2-history-read",
       "status": "automated-baseline",
-      "scope": "Internal read-only nd-quiz-report-2 history over immutable private receipts: Supabase Auth before DB, verified auth.uid owner, fixed N5/N4 and vocabulary/grammar filters, bounded 1–100 keyset pages, strict request/response correlation, read-only transaction and no owner-supplied query/write capability. and a dedicated owner/time/event keyset index for descending receipt pagination",
+      "scope": "Internal read-only nd-quiz-report-2 history over immutable private receipts: Supabase Auth before DB, verified auth.uid owner, fixed N5/N4 and vocabulary/grammar filters, bounded 1–100 keyset pages, strict request/response correlation, read-only transaction and no owner-supplied query/write capability; dedicated owner/time/event keyset index for descending receipt pagination",
       "ci_job": "database",
       "anchors": [
         {

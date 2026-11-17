@@ -258,9 +258,10 @@ async function assertHistoryPageIndex(
     ["quiz_report_receipts_history_page_idx"],
   );
   assert.equal(index.rowCount, 1);
-  assert.match(
-    String(index.rows[0]?.indexdef ?? ""),
-    /USING btree \\(user_id, received_at DESC, client_event_id DESC\\)/i,
+  assert.ok(
+    String(index.rows[0]?.indexdef ?? "").includes(
+      "USING btree (user_id, received_at DESC, client_event_id DESC)",
+    ),
   );
 
   await admin.query("SET enable_seqscan=off");
