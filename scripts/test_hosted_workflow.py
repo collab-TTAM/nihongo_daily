@@ -32,7 +32,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         event_lines = [
             line.strip()[:-1]
             for line in trigger.splitlines()
-            if line.startswith("  ") and line.strip().endswith(":")
+            if line.startswith("  ") and not line.startswith("    ") and line.strip().endswith(":")
         ]
         self.assertEqual(event_lines, ["workflow_dispatch"])
         self.assertIn("type: boolean", trigger)
