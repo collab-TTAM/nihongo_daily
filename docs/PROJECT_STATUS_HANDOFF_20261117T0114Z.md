@@ -1,24 +1,28 @@
-# Project status handoff — 2026-11-17T01:14Z
+# Project status handoff — 2026-11-17T02:14Z
 
-## PR #37 — pinned Dart formatter correction
+## PR #37 — pinned Dart formatter correction (source repair committed)
 
 - Branch: `automation/issue-22-atomic-review`
-- Parent / expected HEAD: `d152bc82e9774c7dbf5ba5440de4891290bc5637`
+- Parent / expected HEAD: `ba9fe73d2b836652d29acf2ff876224aa30b8280`
 - Base: `main` at `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`
-- Run marker: `core-20261117T0114Z-pr37-pinned-dart-format-correction` (ACTIVE before source publication; see PR #37 conversation).
+- Run marker: `core-20261117T0214Z-pr37-apply-pinned-formatter` was ACTIVE before source publication and is now RELEASED in the PR #37 conversation.
 
 ### Observed exact-head failure
 
-GitHub Actions [43987093688](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43987093688), attempt 1, ran on exact HEAD `d152bc82e9774c7dbf5ba5440de4891290bc5637`. Five jobs completed successfully with every listed step successful: `repo-sanity`, `ai-boundary`, `database`, `windows`, and `supabase-integration`. Flutter failed only at strict `dart format --output=none --set-exit-if-changed .`, which reported `tool/windows_runtime_fixture.dart` as the sole file needing formatting. Flutter analyze, the full suite, Chrome IndexedDB checks, Web build and artifact upload were skipped after that failure; they are not passes.
+GitHub Actions [43994336960](https://github.com/collab-TTAM/nihongo_daily/actions/runs/43994336960), attempt 1, ran on exact HEAD `ba9fe73d2b836652d29acf2ff876224aa30b8280`. Five jobs (`repo-sanity`, `ai-boundary`, `database`, `windows`, `supabase-integration`) completed SUCCESS and every returned step succeeded. Flutter failed only at strict `dart format --output=none --set-exit-if-changed .`; the pinned Dart 3.35.4 preview identified exactly two formatting hunks in `tool/windows_runtime_fixture.dart`. Flutter analyze, full tests, Chrome/browser checks and Web build were skipped after format failure, not passes.
 
-### Bounded diagnostic
+### Correction committed
 
-A temporary read-only pinned Dart 3.35.4 formatter preview is inserted immediately before the unchanged strict format gate. It writes formatted output only to the runner temp directory and prints a unified diff; it does not edit repository files. The strict gate remains enabled. Apply only the exact formatter diff in the next checkpoint, then remove the temporary diagnostic step and rerun the complete six-job workflow on the corrected HEAD.
+Applied only:
+- remove one redundant blank line before `_EmptyReviewStore`;
+- collapse the `reject(String userId, String eventId, ReviewFailure rejection)` override signature to the exact pinned formatter layout.
 
-### Boundaries
+Removed the temporary read-only preview step from `.github/workflows/ci.yml`; the strict formatter gate remains unchanged. No assertions or runtime semantics changed.
 
-No assertions, runtime behavior, Windows native code, Auth/provider strategy, SQL/schema/RLS, default app activation, hosted staging/secrets, deployment or Pro-owned #14/#38/N4 content are changed. This is formatter diagnosis only; cloud authoring runtime lacks the pinned Flutter/Dart SDK, so no local Flutter command is claimed.
+### Boundaries and verification
+
+No production Auth/provider, vault behavior, API/schema/RLS, default runtime, hosted staging/secrets, deployment, or Pro-owned #14/#38/N4 content changed. The cloud authoring runtime lacks the pinned Flutter/Dart SDK, so local format/analyze/tests/build were not run. The corrected source has a new exact-head CI run pending; do not claim verification until all required jobs and steps complete successfully.
 
 ### Next
 
-Fetch the exact-head diagnostic run and its complete latest-attempt jobs/steps; retrieve the formatter diff from the Flutter job log; apply it without semantic edits; remove the diagnostic; update this handoff with exact CI evidence. Keep PR #37 Draft and #20/#22/#15 open until their complete learner/hosted acceptance is met.
+Inspect the complete latest-attempt jobs/steps on the corrected exact HEAD. Keep PR #37 Draft and #20/#22/#15 open until hosted signed-JWT A/B, deployed PostgREST/RLS, actual learner restart/expiry and physical multi-device offline/reconnect acceptance are recorded.

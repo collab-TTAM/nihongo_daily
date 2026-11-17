@@ -81,7 +81,6 @@ Directory runtimeFixtureDirectory(String scope) {
   );
 }
 
-
 final class _EmptyReviewStore implements DurableReviewStore {
   @override
   Future<List<StoredReview>> list(String userId) async =>
@@ -99,11 +98,8 @@ final class _EmptyReviewStore implements DurableReviewStore {
   ) => Future<void>.error(const ReviewStorageFailure());
 
   @override
-  Future<void> reject(
-    String userId,
-    String eventId,
-    ReviewFailure rejection,
-  ) => Future<void>.error(const ReviewStorageFailure());
+  Future<void> reject(String userId, String eventId, ReviewFailure rejection) =>
+      Future<void>.error(const ReviewStorageFailure());
 }
 
 Future<void> _verifyNativeOwnerLeasePhase(String phase, String scope) async {
