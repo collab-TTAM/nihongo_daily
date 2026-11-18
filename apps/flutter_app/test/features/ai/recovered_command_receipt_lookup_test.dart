@@ -161,6 +161,143 @@ void main() {
     }
   }
 
+  ConversationReceiptSnapshot completed(PendingConversationCommandEnvelope c) =>
+      ConversationReceiptSnapshot.fromRows(c.reference, [
+        {
+          'user_id': owner,
+          'operation': c.reference.operation.wireName,
+          'client_event_id': c.reference.clientEventId,
+          'status': 'COMPLETED',
+          'response_json':
+              fixtures['${c.reference.operation.wireName}_response'],
+        },
+      ]);
+  for (final operation in ['start', 'turn', 'finish']) {
+    test(
+      '$operation completion handle requires completed original read',
+      () async {
+        final original = command(operation);
+        for (final rows in <List<Object?>>[
+          [],
+          [
+            {
+              'user_id': owner,
+              'operation': original.reference.operation.wireName,
+              'client_event_id': original.reference.clientEventId,
+              'status': 'PENDING',
+              'response_json': null,
+            },
+          ],
+        ]) {
+          port.result = ConversationReceiptSnapshot.fromRows(
+            original.reference,
+            rows,
+          );
+          expect(await reader.lookupCompletion(original), isNull);
+        }
+        port.result = completed(original);
+        final handle = (await reader.lookupCompletion(original))!;
+        expect(handle.isCurrent, isTrue);
+        final pair = handle.capture()!;
+        expect(pair.command, same(original));
+        expect(pair.receipt, same(port.result));
+        expect(handle.toString(), 'CapturedConversationCompletion');
+        expect(port.operation, operation);
+        expect(
+          port.request,
+          same(original.start ?? original.turn ?? original.finish),
+        );
+        expect(port.calls, 3);
+        expect(port.legacyCalls, 0);
+        // Inspection performs no more read and cannot reset the existing reader.
+        expect(handle.capture()!.receipt, same(pair.receipt));
+        expect(port.calls, 3);
+        expect(reader.isCurrent, isTrue);
+      },
+    );
+  }
+  for (final retire in ['readiness', 'session', 'refresh', 'revoke']) {
+    test('completion handle redacts permanently after $retire', () async {
+      final original = command('turn');
+      port.result = completed(original);
+      final handle = (await reader.lookupCompletion(original))!;
+      expect(handle.capture(), isNotNull);
+      final capturedSession = auth.session;
+      switch (retire) {
+        case 'readiness':
+          ready = false;
+        case 'session':
+          auth.session = ReviewSession(userId: other);
+        case 'refresh':
+          auth.session = ReviewSession(userId: owner);
+        case 'revoke':
+          reader.revoke();
+      }
+      expect(handle.capture(), isNull);
+      ready = true;
+      auth.session = capturedSession;
+      expect(handle.isCurrent, isFalse);
+      expect(handle.capture(), isNull);
+      expect(port.calls, 1);
+      expect(port.legacyCalls, 0);
+    });
+  }
+  test('completion capture redacts during readiness getter reentry', () async {
+    final callbackAuth = CallbackAuth();
+    final currentReader = CapturedConversationReceiptLookup(
+      auth: callbackAuth,
+      port: port,
+      isReady: () => true,
+    );
+    final original = command('finish');
+    port.result = completed(original);
+    final handle = (await currentReader.lookupCompletion(original))!;
+    var nestedReads = 0;
+    callbackAuth.beforeRead = () {
+      nestedReads++;
+      expect(handle.capture(), isNull);
+    };
+    expect(handle.capture()!.command, same(original));
+    expect(nestedReads, 2);
+    callbackAuth.beforeRead = null;
+    expect(handle.isCurrent, isTrue);
+    expect(port.calls, 1);
+  });
+  test('legacy reader cannot mint a completion handle', () async {
+    final legacy = LegacyPort();
+    final legacyReader = CapturedConversationReceiptLookup(
+      auth: auth,
+      port: legacy,
+      isReady: () => true,
+    );
+    await expectLater(
+      legacyReader.lookupCompletion(command('finish')),
+      throwsA(failure(AiTextErrorCode.internalError)),
+    );
+    expect(legacy.legacyCalls, 0);
+  });
+  for (final lateError in [false, true]) {
+    test('late completion cannot mint handle error=$lateError', () async {
+      final original = command('start');
+      final held = Completer<ConversationReceiptSnapshot>();
+      port.action = () => held.future;
+      final pending = expectLater(
+        reader.lookupCompletion(original),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      reader.revoke();
+      if (lateError) {
+        held.completeError(StateError('PRIVATE_RESULT'));
+      } else {
+        held.complete(completed(original));
+      }
+      await pending;
+      expect(port.calls, 1);
+      expect(port.legacyCalls, 0);
+      expect(reader.isCurrent, isFalse);
+    });
+  }
+
   test('legacy metadata port is never a fallback', () async {
     final legacy = LegacyPort();
     final legacyReader = CapturedConversationReceiptLookup(

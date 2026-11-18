@@ -105,6 +105,17 @@ final class CapturedConversationReceiptLookup {
     ),
   };
 
+  /// Capture only a completed original-bound read on this exact reader lease.
+  /// Null remains ambiguous, never permission to clear, retry or dispatch.
+  Future<CapturedConversationCompletion?> lookupCompletion(
+    PendingConversationCommandEnvelope command,
+  ) async {
+    final receipt = await lookupCommand(command);
+    _check();
+    if (receipt.status != ConversationReceiptStatus.completed) return null;
+    return CapturedConversationCompletion._(this, command, receipt);
+  }
+
   Future<ConversationReceiptSnapshot> lookupStart(
     ConversationReceiptReference reference,
     StartConversationRequest original,
@@ -181,4 +192,34 @@ final class CapturedConversationReceiptLookup {
       throw const AiTextFailure(AiTextErrorCode.internalError);
     }
   }
+}
+
+/// An opaque association from a trusted original-read port and current lease.
+/// Not hosted provenance, transcript applicability, or pending-release authority.
+/// No public constructor, decoder, storage, dispatch or application capability.
+final class CapturedConversationCompletion {
+  const CapturedConversationCompletion._(
+    this._reader,
+    this._command,
+    this._receipt,
+  );
+  final CapturedConversationReceiptLookup _reader;
+  final PendingConversationCommandEnvelope _command;
+  final ConversationReceiptSnapshot _receipt;
+
+  bool get isCurrent => _reader.isCurrent;
+
+  /// One synchronous currentness check before exposing the immutable pair.
+  /// Previously captured data cannot be recalled; never log or persist it.
+  ({
+    PendingConversationCommandEnvelope command,
+    ConversationReceiptSnapshot receipt,
+  })?
+  capture() {
+    if (!isCurrent) return null;
+    return (command: _command, receipt: _receipt);
+  }
+
+  @override
+  String toString() => 'CapturedConversationCompletion';
 }

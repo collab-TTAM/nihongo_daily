@@ -776,3 +776,29 @@ learner/Auth/RLS/provider, durable payload storage or conditional release. Defau
 AI off/memory-only/singlepending/all14 hosted groups unchanged; trustedroot/backend/
 captured storage lifecycle/uncertainty/application-release/retentionapproval open.
 No production source/Authstrategy/API/RLS/content/Pro/retention-policy change.
+
+
+## Captured original completion handle — 2026-11-18
+
+CapturedConversationReceiptLookup.lookupCompletion(command) makes exactly the
+existing original-bound lookupCommand read. Only COMPLETED yields a
+CapturedConversationCompletion; UNKNOWN/PENDING yield null and remain ambiguous.
+Legacy metadata-only readers are never a fallback. The handle has no public
+constructor/decoder, and retains the exact immutable original envelope and typed
+receipt from that read. It is bound to the SAME reader and captured Auth lease.
+A synchronous capture() rechecks readiness and returns the pair, or null after
+retirement, refresh/account change, or during readiness reentry. Retirement is
+permanent, even if the original account/session object later returns. Inspection
+adds no network/storage I/O. Its toString contains neither input nor output.
+Previously captured plaintext cannot be recalled; never log or persist the pair.
+
+This is a local association minted through a trusted original-read port, not a
+cryptographic attestation or independently verified hosted/provider provenance.
+Custom ports must still perform original request/response association correctly;
+the type does not upgrade an untrusted port. It grants no receipt clear, transcript
+application, retry, mutation-lane reset or next-command permission. Future release
+must separately validate exact pending/original state, transcript applicability,
+current captured generation, actual I/O drain and durable conditional deletion.
+No default UI/runtime acquires it, no new payload persistence/transport/Auth owner,
+server endpoint or security policy is introduced. TEST ONLY component cases do not
+satisfy hosted learner acceptance.
