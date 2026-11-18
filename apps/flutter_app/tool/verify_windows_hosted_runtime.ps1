@@ -1,4 +1,7 @@
 $ErrorActionPreference = 'Stop'
+if ($env:GITHUB_ACTIONS -ne 'true' -or $env:RUNNER_ENVIRONMENT -ne 'github-hosted') {
+    throw 'Windows hosted runtime probe requires a GitHub-hosted runner'
+}
 $exe = (Resolve-Path 'build/windows/x64/runner/Release/nihongo_daily.exe').Path
 
 function Invoke-HostedPhase([string] $phase) {

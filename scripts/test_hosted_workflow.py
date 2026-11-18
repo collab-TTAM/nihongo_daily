@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "hosted-supabase-acceptance.yml"
+WINDOWS_DRIVER_PATH = ROOT / "apps" / "flutter_app" / "tool" / "verify_windows_hosted_runtime.ps1"
 EXPECTED_SECRETS = {
     "ND_STAGING_SUPABASE_URL",
     "ND_STAGING_SUPABASE_PUBLISHABLE_KEY",
@@ -26,6 +27,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        cls.windows_driver = WINDOWS_DRIVER_PATH.read_text(encoding="utf-8")
 
     def test_only_manual_dispatch_is_enabled_and_confirmation_defaults_false(self):
         trigger = self.workflow.split("on:\n", 1)[1].split("\npermissions:", 1)[0]
@@ -102,6 +104,24 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertEqual(len(secret_steps), 2)
         self.assertNotIn("SUPABASE_SERVICE_ROLE_KEY", self.workflow)
         self.assertNotIn("JWT_SECRET", self.workflow)
+
+
+    def test_windows_cleanup_driver_requires_ephemeral_github_hosted_runner_before_side_effects(self):
+        guard = (
+            "if ($env:GITHUB_ACTIONS -ne 'true' -or "
+            "$env:RUNNER_ENVIRONMENT -ne 'github-hosted') {"
+        )
+        self.assertIn(guard, self.windows_driver)
+        self.assertIn(
+            "throw 'Windows hosted runtime probe requires a GitHub-hosted runner'",
+            self.windows_driver,
+        )
+        guard_position = self.windows_driver.index(guard)
+        self.assertLess(guard_position, self.windows_driver.index("$exe = (Resolve-Path"))
+        self.assertLess(
+            guard_position,
+            self.windows_driver.index("Invoke-HostedPhase 'cleanup'"),
+        )
 
 
 if __name__ == "__main__":

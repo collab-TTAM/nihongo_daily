@@ -4586,3 +4586,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A new exact-head Actions run must complete every required job and step before any pass claim.
 - No production Auth/provider strategy, API/schema/RLS, default runtime activation, hosted staging dispatch/secrets, Pro-owned #14/#38/N4 content, merge or deployment change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical Windows restore/expiry and multi-device sync remain unverified.
 - Next: inspect all latest-attempt jobs and steps on the new exact HEAD; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open.
+
+
+## Windows hosted acceptance runner trust guard — 2026-11-18T15:14Z
+
+- Run `core-20261118T1514Z-pr37-hosted-runner-guard` resumed PR [#37](https://github.com/collab-TTAM/nihongo_daily/pull/37), branch `automation/issue-22-atomic-review`, parent HEAD `caef372ecdfa9ff91f909788579a416eaf4a5773`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Hardened `apps/flutter_app/tool/verify_windows_hosted_runtime.ps1`: before resolving the executable or entering the pre-test/final Credential Manager cleanup phases, it now requires `GITHUB_ACTIONS=true` and `RUNNER_ENVIRONMENT=github-hosted`. A self-hosted/shared Windows runner cannot trigger cleanup merely by carrying the `windows-2022` label.
+- Added an offline regression in `scripts/test_hosted_workflow.py` proving both environment checks exist before executable resolution and before the first cleanup phase. Updated the existing `auth-live` QA case anchor/reproduction and `docs/HOSTED_SUPABASE_ACCEPTANCE.md`; no new QA case or acceptance status was promoted.
+- Parent exact-head CI [44292545976](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44292545976) on `caef372ecdfa9ff91f909788579a416eaf4a5773` was re-read: all 6 jobs and every returned step SUCCESS. This is parent evidence only. New exact-head CI must execute the added regression and all required jobs before any new-head pass is claimed.
+- No staging dispatch/secrets, Auth/provider strategy, schema/RLS, production deletion, default runtime activation, Pro-owned #14/#38/N4 content, merge, deployment or release change. Cloud authoring runtime has no pinned Flutter/Dart SDK; local PowerShell/Flutter execution was not run. The static regression will run in repo-sanity CI.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. If all pass, continue the remaining #20/#22/#15 hosted and learner acceptance; do not treat local/disposable fixtures as hosted proof.

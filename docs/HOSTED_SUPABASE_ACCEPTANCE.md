@@ -133,6 +133,12 @@ target for the current Windows OS user. It must run only on the ephemeral
 GitHub-hosted windows-2022 runner, never on a self-hosted/shared machine. The
 workflow pins that runner and requires the protected supabase-staging
 environment plus confirm_non_production=true.
+Before resolving the executable or starting either pre-test or final cleanup, the
+PowerShell driver also requires `GITHUB_ACTIONS=true` and
+`RUNNER_ENVIRONMENT=github-hosted`. A self-hosted runner cannot pass this guard
+merely by carrying the `windows-2022` label. The offline workflow-safety suite
+checks that the guard appears before every cleanup side effect. This is a
+fail-closed runner-trust check, not evidence that a hosted workflow was dispatched.
 
 This adds hosted Windows process-restart and account-switch evidence when the
 manual workflow actually passes. It does not force access-token expiry, test
