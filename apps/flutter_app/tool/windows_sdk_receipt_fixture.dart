@@ -10,6 +10,7 @@ import 'package:supabase/supabase.dart';
 import 'package:nihongo_daily/features/ai/application/account_receipt_ai_runtime.dart';
 import 'package:nihongo_daily/features/ai/application/supabase_account_receipt_ai_runtime.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_receipt_lookup.dart';
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/windows_conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
@@ -83,6 +84,8 @@ final class _Http extends http.BaseClient {
   int receiptReads = 0;
   int originalReceiptReads = 0;
   bool originalReceipt = false;
+  bool completionReceipt = false;
+  int completionReceiptReads = 0;
   bool protectedReceipt = false;
   int protectedReceiptReads = 0;
   bool omitOriginalRequest = false;
@@ -200,7 +203,10 @@ final class _Http extends http.BaseClient {
             r.headers['cache-control'] == 'no-store',
       );
       _check(await _read(scope) == _expected(scope));
-      if (protectedReceipt) {
+      if (completionReceipt) {
+        _check(originalReceipt && !protectedReceipt);
+        completionReceiptReads++;
+      } else if (protectedReceipt) {
         _check(originalReceipt);
         protectedReceiptReads++;
       } else if (originalReceipt) {
@@ -1328,8 +1334,84 @@ Future<void> verifyWindowsOwnedReceiptPhase(
               refreshCalls == 1,
         );
         network.protectedReceipt = false;
+        // This original is supplied by the TEST ONLY host, never reconstructed
+        // from native metadata. Keep every earlier read counter unchanged.
+        network.completionReceipt = true;
+        network.originalReceipt = true;
+        final completionCommand = PendingConversationCommandEnvelope.fromStart(
+          projectUrl: origin,
+          ownerId: _user,
+          request: _request,
+        );
+        CapturedConversationCompletion? capturedCompletion;
+        for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+          network.receiptStatus = status;
+          final completion = await reader.lookupCompletion(completionCommand);
+          if (status == 'COMPLETED') {
+            _check(completion != null && completion.isCurrent);
+            final pair = completion!.capture()!;
+            _check(
+              identical(pair.command, completionCommand) &&
+                  pair.receipt.start!.sessionId == _event &&
+                  pair.receipt.start!.assistantMessage.textJa == 'TEST ONLY' &&
+                  pair.receipt.turn == null &&
+                  pair.receipt.finish == null &&
+                  identical(completion.capture()!.receipt, pair.receipt) &&
+                  completion.toString() == 'CapturedConversationCompletion',
+            );
+            capturedCompletion = completion;
+          } else {
+            _check(completion == null);
+          }
+          _check(
+            await vault.readRefreshToken() == rotated &&
+                await _read(scope) == _expected(scope) &&
+                refreshCalls == 1 &&
+                network.sends == 0,
+          );
+          for (final event in [
+            _event,
+            'b2000000-0000-4000-8000-000000000002',
+          ]) {
+            var rejected = false;
+            try {
+              await session.start(
+                StartConversationRequest(
+                  scenarioId: _user,
+                  level: AiTextLevel.n5,
+                  clientEventId: event,
+                ),
+              );
+            } on AiTextRequestPending {
+              rejected = event != _event;
+            } on AiTextFailure catch (error) {
+              rejected =
+                  event == _event && error.code == AiTextErrorCode.syncConflict;
+            }
+            _check(rejected && network.sends == 0);
+          }
+          _check(await _read(scope) == _expected(scope));
+        }
+        final completedHandle = capturedCompletion!;
+        _check(
+          network.completionReceiptReads == 3 &&
+              network.additionalReceiptReads == 6 &&
+              network.additionalMismatchReads == 5 &&
+              network.protectedReceiptReads == 4 &&
+              network.originalReceiptReads == 5 &&
+              network.receiptReads == 3,
+        );
+        network.completionReceipt = false;
         network.originalReceipt = false;
         await runtime.close();
+        _check(
+          !completedHandle.isCurrent &&
+              completedHandle.capture() == null &&
+              network.completionReceiptReads == 3 &&
+              network.sends == 0 &&
+              await vault.readRefreshToken() == rotated &&
+              await _read(scope) == _expected(scope),
+        );
         _check(!protector.isCurrent);
         _check(runtime.createWindowsPendingCommandProtector() == null);
         var staleProtectRejected = false;

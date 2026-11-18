@@ -56,3 +56,31 @@ journeys and authenticated receipt lookup/verified conditional release before
 later commands. No default activation, automatic replay/new event, frozen API/
 SQL/RLS/Auth strategy/CI/dependency/Pro/provider/collection/spend/release change.
 Learner route remains memory-only/one pending command; all14 hosted gates pending.
+
+
+## Owned completion handle reopen acceptance — 2026-11-18
+
+The existing mandatory receipt-owned-reopen process now makes three additional
+original-command reads through production PersistentSupabaseRuntime's reader,
+private SDK and actual Windows refresh/receipt vault. The TEST ONLY host supplies
+the full original start DTO explicitly; native metadata never reconstructs it.
+UNKNOWN/PENDING yield no handle. COMPLETED returns the same immutable original
+and typed start result, supports no-I/O repeat capture and fixed redacted text.
+Every status preserves the actual rotated refresh secret and exact native pending
+reference; both original-event conflict and different-event pending denial must
+still prevent mutation HTTP. Owned close retires/redacts the completion handle
+while preserving token/receipt metadata. Existing shutdown/logout/absence/cleanup
+phases remain mandatory with their original deadlines and assertions.
+
+A separate completionReceiptReads counter advances only after every existing
+fixed endpoint/query/body/bearer/no-store/native-reference assertion. It must be
+exactly three without changing legacy/original/protected/additional/mismatch read
+counts. The completion flag defaults off and is cleared before close. The runner
+adds the following marker only after the whole owned reopen invocation succeeds:
+Windows OWNED completion handle unknown/pending/completed/capture/stale-close/preserve/no-redispatch passed (TEST ONLY Auth/HTTP)
+
+Native Windows/Flutter/PowerShell execution is locally UNRUN; exact-head CI must
+observe the new marker and all retained required steps. Auth/JWT/profile/HTTP
+responses remain synthetic, so this is not hosted JWT/RLS/provider/learner proof.
+There is no new plaintext payload persistence, clear/retry/new-command grant,
+transcript application or conditional release/default activation.

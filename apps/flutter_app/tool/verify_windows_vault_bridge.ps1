@@ -172,6 +172,7 @@ try {
     Invoke-Bridge 'receipt-owned-reopen'
     Write-Output 'Windows OWNED receipt lookup unknown/pending/completed preserve/no-redispatch/stale-reader passed (TEST ONLY Auth/HTTP)'
     Write-Output 'Windows OWNED original receipt match/status/mismatch/legacy/stale/no-redispatch passed (TEST ONLY Auth/HTTP)'
+    Write-Output 'Windows OWNED completion handle unknown/pending/completed/capture/stale-close/preserve/no-redispatch passed (TEST ONLY Auth/HTTP)'
     Write-Output 'Windows OWNED SDK/profile command protection all3/corrupt/foreign/stale-close/preserve/no-redispatch passed (TEST ONLY, no payload persistence)'
     Write-Output 'Windows OWNED protected receipt start/status/corrupt/mismatch/stale/preserve/no-redispatch passed (TEST ONLY Auth/HTTP, no payload persistence)'
     Write-Output 'Windows OWNED protected receipt foreign account/project entropy/envelope/no-HTTP/preserve passed (TEST ONLY Auth/HTTP, no payload persistence)'
