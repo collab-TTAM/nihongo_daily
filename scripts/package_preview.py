@@ -88,19 +88,34 @@ def package(root, platform, source, checkout, run_url, attempt):
     return verify(root)
 
 
+def verify_ci(root, platform, source, checkout, run_url, attempt):
+    validate_provenance(source, checkout, run_url, attempt)
+    if platform not in ('web', 'windows'):
+        raise ValueError('Invalid expected platform')
+    manifest = verify(root)
+    expected = {'platform': platform, 'source_head_sha': source,
+                'checkout_sha': checkout, 'ci_run_url': run_url, 'run_attempt': attempt}
+    if any(manifest[key] != value for key, value in expected.items()):
+        raise ValueError('Preview provenance mismatch')
+    return manifest
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--platform', choices=['web', 'windows'])
-    parser.add_argument('--verify', action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--verify', action='store_true')
+    mode.add_argument('--verify-ci', action='store_true')
     args = parser.parse_args()
     if args.verify:
         result = verify(args.root)
     else:
         checkout = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-        result = package(args.root, args.platform, os.environ['ND_PREVIEW_SOURCE_SHA'], checkout,
-                         f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
-                         int(os.environ['GITHUB_RUN_ATTEMPT']))
+        operation = verify_ci if args.verify_ci else package
+        result = operation(args.root, args.platform, os.environ['ND_PREVIEW_SOURCE_SHA'], checkout,
+                           f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+                           int(os.environ['GITHUB_RUN_ATTEMPT']))
     print(f"Verified {result['platform']} preview inventory: {len(result['files'])} files")
 
 

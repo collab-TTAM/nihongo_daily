@@ -70,6 +70,10 @@ Keep the complete extracted bundle. To check its files from a source checkout:
 `python scripts/package_preview.py --verify --root /path/to/extracted/bundle`.
 Checksums detect changed/missing/extra visible files; they are not a signature or
 proof that all CI jobs passed. Compare provenance with the exact GitHub run.
+CI also downloads each preview by the exact artifact ID returned by its upload,
+then checks the extracted bytes and platform/source/checkout/run/attempt against
+the current runner using `--verify-ci`. That step must pass on the chosen run;
+the mere existence of an artifact still does not imply successful CI.
 The default preview remains unconfigured; these bundles do not establish hosted
 Auth/save/AI, Windows interactive smoke or Personal Alpha acceptance.
 

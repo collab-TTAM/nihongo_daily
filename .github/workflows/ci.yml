@@ -184,10 +184,22 @@ jobs:
           ND_PREVIEW_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python scripts/package_preview.py --platform web --root apps/flutter_app/build/web
       - uses: actions/upload-artifact@v4
+        id: web-preview-upload
         with:
           name: flutter-web-preview
           path: apps/flutter_app/build/web
           if-no-files-found: error
+      - name: Download exact uploaded web preview
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ steps.web-preview-upload.outputs.artifact-id }}
+          path: ${{ runner.temp }}/verified-web-preview
+          merge-multiple: true
+      - name: Verify downloaded web preview bytes and provenance
+        working-directory: .
+        env:
+          ND_PREVIEW_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/package_preview.py --verify-ci --platform web --root "${{ runner.temp }}/verified-web-preview"
 
   windows:
     needs: repo-sanity
@@ -242,10 +254,22 @@ jobs:
           ND_PREVIEW_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python scripts/package_preview.py --platform windows --root apps/flutter_app/build/windows/x64/runner/Release
       - uses: actions/upload-artifact@v4
+        id: windows-preview-upload
         with:
           name: flutter-windows-preview
           path: apps/flutter_app/build/windows/x64/runner/Release
           if-no-files-found: error
+      - name: Download exact uploaded Windows preview
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ steps.windows-preview-upload.outputs.artifact-id }}
+          path: ${{ runner.temp }}/verified-windows-preview
+          merge-multiple: true
+      - name: Verify downloaded Windows preview bytes and provenance
+        working-directory: .
+        env:
+          ND_PREVIEW_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/package_preview.py --verify-ci --platform windows --root "${{ runner.temp }}/verified-windows-preview"
 
   database:
     runs-on: ubuntu-latest

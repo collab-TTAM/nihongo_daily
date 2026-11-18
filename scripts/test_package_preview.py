@@ -6,8 +6,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 
-from scripts.package_preview import MANIFEST, README, package, verify
+from scripts.package_preview import MANIFEST, README, package, verify, verify_ci
 
 
 class PreviewPackageTest(unittest.TestCase):
@@ -98,6 +99,37 @@ class PreviewPackageTest(unittest.TestCase):
         self.assertNotIn('.last_build_id', [item['path'] for item in result['files']])
         self.assertEqual(verify(self.root), result)
 
+    def test_zip_roundtrip_binds_expected_ci_identity_for_both_platforms(self):
+        for platform in ['web', 'windows']:
+            with self.subTest(platform=platform), tempfile.TemporaryDirectory() as temp:
+                self.root = Path(temp) / 'build'
+                self.root.mkdir()
+                self.build(platform)
+                original = self.package(platform)
+                archive = Path(temp) / 'artifact.zip'
+                with zipfile.ZipFile(archive, 'w') as bundle:
+                    for path in self.root.rglob('*'):
+                        if path.is_file():
+                            bundle.write(path, path.relative_to(self.root))
+                extracted = Path(temp) / 'download'
+                with zipfile.ZipFile(archive) as bundle:
+                    bundle.extractall(extracted)
+                self.assertEqual(original, verify_ci(extracted, platform, self.source,
+                                                     self.checkout, self.run, 2))
+                for key, value in [('source_head_sha', 'c' * 40),
+                                   ('checkout_sha', 'd' * 40),
+                                   ('ci_run_url', self.run + '4'), ('run_attempt', 3),
+                                   ('platform', 'windows' if platform == 'web' else 'web')]:
+                    with self.subTest(key=key):
+                        path = extracted / MANIFEST
+                        modified = original | {key: value}
+                        path.write_text(json.dumps(modified), encoding='utf-8')
+                        self.assertEqual(verify(extracted), modified)
+                        with self.assertRaisesRegex(ValueError, 'provenance mismatch'):
+                            verify_ci(extracted, platform, self.source,
+                                      self.checkout, self.run, 2)
+                        path.write_text(json.dumps(original), encoding='utf-8')
+
     def test_manifest_cannot_redirect_inventory_reads_outside_bundle(self):
         self.build()
         self.package()
@@ -126,6 +158,16 @@ class PreviewPackageTest(unittest.TestCase):
             ['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip())
         subprocess.run([sys.executable, str(script), '--root', str(self.root),
                         '--verify'], env={}, check=True, capture_output=True)
+        verified = subprocess.run([sys.executable, str(script), '--root', str(self.root),
+                                   '--platform', 'web', '--verify-ci'], cwd=repo, env=env,
+                                  capture_output=True)
+        self.assertEqual(verified.returncode, 0, verified.stderr)
+        rejected = subprocess.run([sys.executable, str(script), '--root', str(self.root),
+                                   '--platform', 'web', '--verify-ci'], cwd=repo,
+                                  env=env | {'GITHUB_RUN_ATTEMPT': '3'}, capture_output=True)
+        self.assertNotEqual(rejected.returncode, 0)
+        self.assertIn(b'Preview provenance mismatch', rejected.stderr)
+
 
 
 if __name__ == '__main__':
