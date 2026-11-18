@@ -791,4 +791,163 @@ void main() {
       lookupClient.close();
     },
   );
+  for (final mode in ['refresh', 'refresh-write-failure', 'logout']) {
+    test('owned quiz history rejects late response after $mode', () async {
+      await runtime.close();
+      final entered = Completer<http.BaseRequest>();
+      final held = Completer<http.StreamedResponse>();
+      final historyRequests = <http.BaseRequest>[];
+      http.StreamedResponse emptyPage(http.BaseRequest? request) =>
+          http.StreamedResponse(
+            Stream.value(utf8.encode('{"items":[],"next_cursor":null}')),
+            200,
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+              'cache-control': 'no-store',
+              'x-content-type-options': 'nosniff',
+            },
+            request: request,
+          );
+      final historyClient = _StreamClient((request) async {
+        historyRequests.add(request);
+        if (historyRequests.length == 1) {
+          entered.complete(request);
+          return held.future; // TEST ONLY: deliberately ignores abort.
+        }
+        return emptyPage(request);
+      });
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        quizReportHttpClient: historyClient,
+        quizReportTransportEnabled: true,
+        now: () => now,
+      );
+      Future<void>? rejected;
+      Future<void>? lifecycle;
+      try {
+        await runtime.start();
+        await runtime.account.signIn(
+          'fixture@example.invalid',
+          'TEST_ONLY_PASSWORD',
+        );
+        await waitForReady();
+        final transport = runtime.quizReportV2Transport!;
+        final query = QuizReportV2HistoryQuery(limit: 20);
+        final oldBearer = 'Bearer ${wire.token(wire.a, wire.sid1, now)}';
+        rejected = expectLater(
+          transport.readHistory(query),
+          throwsA(
+            isA<QuizReportV2TransportFailure>().having(
+              (failure) => failure.code,
+              'retired history request',
+              QuizReportV2TransportCode.unauthorized,
+            ),
+          ),
+        );
+        final outbound = await entered.future.timeout(
+          const Duration(seconds: 5),
+        );
+        expect(outbound.url.path, '/functions/v1/quiz-report-v2-history');
+        expect(outbound.method, 'POST');
+        expect(outbound.followRedirects, isFalse);
+        expect(outbound.headers['authorization'], oldBearer);
+        expect(outbound.headers['apikey'], wire.key);
+        expect((outbound as http.Request).bodyBytes, query.encodeRawBody());
+        expect(backend.secret, secret);
+        final profileReads = requests
+            .where(
+              (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+            )
+            .length;
+        if (mode == 'logout') {
+          lifecycle = runtime.account.signOut();
+          expect(runtime.quizReportV2Transport, isNull);
+          await lifecycle;
+          expect(backend.secret, isNull);
+        } else {
+          final writes = backend.writes;
+          backend.writeWait = Completer<void>();
+          backend.failWrite = mode == 'refresh-write-failure';
+          secret = 'TEST_ONLY_ROTATED_HISTORY';
+          now = now.add(const Duration(minutes: 1));
+          final refreshing = runtime.refresh();
+          lifecycle = backend.failWrite
+              ? fixture.fails(refreshing)
+              : refreshing;
+          expect(runtime.quizReportV2Transport, isNull);
+          await fixture.flush();
+          expect(backend.writes, writes + 1);
+          expect(runtime.account.readyRuntime, isNull);
+          expect(runtime.quizReportV2Transport, isNull);
+          expect(
+            requests
+                .where(
+                  (request) =>
+                      request.url.path == '/rest/v1/rpc/ensure_profile',
+                )
+                .length,
+            profileReads,
+          );
+          backend.writeWait!.complete();
+          await lifecycle;
+          if (backend.failWrite) {
+            expect(backend.secret, isNull);
+            expect(runtime.account.readyRuntime, isNull);
+            expect(runtime.quizReportV2Transport, isNull);
+          } else {
+            await waitForReady();
+            expect(backend.secret, secret);
+          }
+        }
+        expect(historyRequests, hasLength(1)); // No automatic retry/read.
+        held.complete(emptyPage(outbound));
+        await rejected;
+        if (mode != 'refresh') {
+          backend.failWrite = false;
+          backend.writeWait = null;
+          now = now.add(const Duration(minutes: 1));
+          await runtime.account.signIn(
+            'fixture@example.invalid',
+            'TEST_ONLY_PASSWORD',
+          );
+          await waitForReady();
+        }
+        expect(backend.secret, secret);
+        final fresh = runtime.quizReportV2Transport!;
+        expect(
+          identical(fresh, transport),
+          isTrue,
+        ); // Same owned transport/SDK.
+        expect((await fresh.readHistory(query)).items, isEmpty);
+        expect(historyRequests, hasLength(2));
+        expect(
+          historyRequests.last.headers['authorization'],
+          'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+        );
+        expect(historyRequests.last.headers['authorization'], isNot(oldBearer));
+        await runtime.close();
+        expect(
+          historyClient.closed,
+          isFalse,
+        ); // Borrowed client belongs to host.
+        expect(backend.secret, secret); // Close preserves confirmed rotation.
+      } finally {
+        backend.failWrite = false;
+        if (backend.writeWait?.isCompleted == false) {
+          backend.writeWait!.complete();
+        }
+        if (!held.isCompleted) {
+          held.complete(emptyPage(null));
+        }
+        await lifecycle;
+        await rejected;
+        await runtime.close();
+        historyClient.close();
+      }
+    });
+  }
 }

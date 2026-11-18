@@ -411,3 +411,25 @@ API/RLS/storage policy/default activation change. PR41 draft/issue20 open/all14
 hosted groups pending. Commit/tree/new CI in PR checkpoint. Next inspect exact
 head/latestattempt all5/EVERYstep/new2 and retained SDK/native markers; fix actual
 diagnostics preserving assertions. Pending-only handoff/no duplication/longpolling.
+
+
+## Owned quiz-history lifecycle regression — 2026-11-18
+
+The production host now has three additional integration regressions around its
+existing opt-in quiz-history transport. They use the actual pinned private SDK,
+PersistentSupabaseRuntime, account/profile controller and persistent Auth barrier;
+Auth/profile HTTP, credential backend and quiz-history HTTP are TEST ONLY.
+
+A held history response deliberately ignores abort across refresh, failed rotated
+refresh-secret storage, or explicit logout. Each case requires the old valid
+response to fail unauthorized instead of publishing. During held vault writes,
+neither profile reads nor quiz transport readiness may advance. A write failure
+must clear credentials and keep access unavailable. Explicit login recovers the
+failed/logout cases; a fresh explicit read uses the new bearer on the same owned
+transport. No automatic history retry occurs. Runtime close preserves confirmed
+credentials and leaves the borrowed HTTP client for the caller to close.
+
+These tests add no default activation, provider mutation, receipt-clear/replay
+permission or conditional release. They do not prove hosted signed JWT/RLS,
+native Credential Manager faults, cross-device sync or learner acceptance. The
+new source head must pass its own full Actions checks before acceptance is claimed.
