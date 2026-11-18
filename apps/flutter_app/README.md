@@ -63,6 +63,16 @@ launch `nihongo_daily.exe` alongside the accompanying DLLs and data folder. For
 web, serve the folder with `python -m http.server 8080` and open localhost:8080;
 do not open index.html directly. These artifacts are previews, not deployments.
 
+New CI bundles include `PREVIEW_README.md` (Vietnamese instructions) and
+`preview-manifest.json`: source PR head, actual checkout commit (which may be a
+synthetic PR merge), CI URL/attempt and SHA256 inventory of uploaded visible files.
+Keep the complete extracted bundle. To check its files from a source checkout:
+`python scripts/package_preview.py --verify --root /path/to/extracted/bundle`.
+Checksums detect changed/missing/extra visible files; they are not a signature or
+proof that all CI jobs passed. Compare provenance with the exact GitHub run.
+The default preview remains unconfigured; these bundles do not establish hosted
+Auth/save/AI, Windows interactive smoke or Personal Alpha acceptance.
+
 Web uses Flutter's default hash routes, for example `/#/kanji`, so refreshing a
 deep link does not require custom server rewrites. Missing paths show a recovery
 page. Native app routes use the same GoRouter configuration. An iOS platform

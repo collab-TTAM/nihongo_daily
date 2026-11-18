@@ -65,6 +65,8 @@ jobs:
         run: python3 scripts/export_quiz_source_order.py --level N5 > "$RUNNER_TEMP/quiz-source-order-n5.json"
       - name: Run quiz source-order export regressions
         run: python3 -m unittest scripts.test_quiz_source_order_export -v
+      - name: Verify preview packaging provenance and integrity
+        run: python3 -m unittest scripts.test_package_preview -v
       - name: Validate frozen contracts and regression cases
         run: |
           python3 contracts/validate.py
@@ -176,6 +178,11 @@ jobs:
         working-directory: .
         run: python3 -m contracts.validate_kanji_wire apps/flutter_app/build/kanji-wire-output.json
       - run: flutter build web --release
+      - name: Record web preview provenance and checksums
+        working-directory: .
+        env:
+          ND_PREVIEW_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/package_preview.py --platform web --root apps/flutter_app/build/web
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-web-preview
@@ -229,6 +236,11 @@ jobs:
         run: dart run tool/verify_study_session_recovery.dart
       - name: Verify native quiz history journals on Windows
         run: flutter test test/features/quiz/native_vocabulary_quiz_journal_test.dart test/features/quiz/native_grammar_quiz_journal_test.dart
+      - name: Record Windows preview provenance and checksums
+        working-directory: .
+        env:
+          ND_PREVIEW_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/package_preview.py --platform windows --root apps/flutter_app/build/windows/x64/runner/Release
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-windows-preview
