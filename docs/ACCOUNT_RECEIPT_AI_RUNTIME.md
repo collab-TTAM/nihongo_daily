@@ -273,3 +273,31 @@ provider, learner activation, cross-process CAS, hardware-loss or reconciliation
 proof. One pending mutation/default AI unavailable/all14 release gates remain;
 next storage-failure/account-change cases and authenticated lookup/verified
 conditional release before sequential conversation commands.
+
+## Explicit borrowed receipt reader — 2026-11-18
+
+AccountReceiptAiRuntime.createConversationReceiptLookup now exposes the existing
+cached CapturedConversationReceiptLookup on its SAME ReceiptAiRuntimeOwner lease.
+It uses the exact account ready-runtime/session/generation checks already shared
+by text, conversation and scenarios. Construction/acquisition sends nothing and
+has no receipt-store read/write/clear. Hosts can observe the existing shared
+aiConversationChanges stream; no second subscription owner or SDK is introduced.
+The same-Supabase factory already forwards this read port on its owned transport.
+A generic legacy inner transport lacking the read port still fails with the
+existing fixed error; there is no fallback to local metadata or fake success.
+
+The lookup remains read-only. UNKNOWN/PENDING/COMPLETED cannot reset the sibling
+conversation, clear pending metadata or grant replay/another command. Original
+command correlation uses the existing explicit reader API where the configured
+transport supports it. Authenticated server verification and verified conditional
+application/release are separate remaining requirements. Default/staging sources,
+learner recovery and the one-pending-mutation limitation remain unchanged.
+
+Three component regressions cover cached/no-I/O acquisition and all three statuses
+with unchanged pending metadata/no mutation dispatch; refresh during an ignored
+late read with old-capability revocation, actual transport drain and fresh lease;
+and explicit local sign-out cleanup waiting for that same read before clearing.
+Existing startup/vault/profile/foreign-account/reentry tests additionally require
+this reader unavailable wherever the old source is unavailable. Auth/vault/profile/
+receipt ports are TEST ONLY; they do not prove actual SDK/Windows/hosted learner
+acceptance. New exact-head Flutter/native/build CI remains required.

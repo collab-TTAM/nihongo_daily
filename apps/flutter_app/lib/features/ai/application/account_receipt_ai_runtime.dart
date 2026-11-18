@@ -7,6 +7,7 @@ import '../data/ai_conversation_scenario_source.dart';
 import '../data/captured_ai_text_repository.dart';
 import '../data/captured_conversation_session.dart';
 import '../data/captured_conversation_scenarios.dart';
+import '../data/captured_conversation_receipt_lookup.dart';
 import '../data/conversation_receipt_store.dart';
 import 'ai_text_runtime_owner.dart';
 import 'receipt_ai_runtime_owner.dart';
@@ -141,6 +142,19 @@ final class AccountReceiptAiRuntime<T extends Object>
     final ready = _readyRuntime!;
     final session = _session!;
     return _owner.runtime.acquireScenarios(
+      auth: _auth!,
+      generation: _generation!,
+      isReady: () => _matches(ready, session),
+    );
+  }
+
+  /// Borrowed read-only capability on the same ready account/AI lease.
+  /// Acquisition sends nothing and never clears metadata or grants replay.
+  CapturedConversationReceiptLookup? createConversationReceiptLookup() {
+    if (!_prepare()) return null;
+    final ready = _readyRuntime!;
+    final session = _session!;
+    return _owner.runtime.acquireReceiptLookup(
       auth: _auth!,
       generation: _generation!,
       isReady: () => _matches(ready, session),

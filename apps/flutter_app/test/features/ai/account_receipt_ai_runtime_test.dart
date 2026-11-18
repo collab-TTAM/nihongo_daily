@@ -5,6 +5,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/ai/application/account_receipt_ai_runtime.dart';
+import 'package:nihongo_daily/features/ai/application/ai_text_runtime_owner.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_receipt_lookup.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_mutation.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.dart';
+import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_receipt_snapshot.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart';
@@ -49,6 +55,71 @@ final class _Backend implements SecureConversationReceiptBackend {
   }
 }
 
+final class _ReceiptReader
+    implements
+        OwnedAiTextTransport,
+        ConversationReceiptReadPort,
+        ConversationMutationTransport,
+        ConversationScenarioReadPort {
+  _ReceiptReader(this.reply);
+  final Future<ConversationReceiptSnapshot> Function(
+    ConversationReceiptReference,
+  )
+  reply;
+  final delegate = ports.Inner();
+  Future<ConversationReceiptSnapshot>? pending;
+  int reads = 0;
+  @override
+  bool get isCurrent => delegate.isCurrent;
+  @override
+  void revoke() => delegate.revoke();
+  @override
+  Future<void> close() async {
+    try {
+      await pending;
+    } on Object {
+      // TEST ONLY: drain consumes a late port failure, not cleanup failure.
+    }
+    await delegate.close();
+  }
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupReceipt(
+    ConversationReceiptReference reference,
+  ) {
+    reads++;
+    return pending = reply(reference);
+  }
+
+  @override
+  Future<Object?> invoke({
+    required ReviewSession capturedSession,
+    required String operation,
+    required Map<String, Object> body,
+  }) => delegate.invoke(
+    capturedSession: capturedSession,
+    operation: operation,
+    body: body,
+  );
+
+  @override
+  Future<Object?> read({
+    required ReviewSession capturedSession,
+    required AiTextLevel level,
+  }) => delegate.read(capturedSession: capturedSession, level: level);
+
+  @override
+  Future<Object?> tutorExplain({
+    required ReviewSession capturedSession,
+    required Map<String, Object> body,
+  }) => delegate.tutorExplain(capturedSession: capturedSession, body: body);
+  @override
+  Future<Object?> correctSentence({
+    required ReviewSession capturedSession,
+    required Map<String, Object> body,
+  }) => delegate.correctSentence(capturedSession: capturedSession, body: body);
+}
+
 void main() {
   late lifecycle.MemorySdk sdk;
   late lifecycle.MemoryVault vault;
@@ -64,6 +135,7 @@ void main() {
   var profileCalls = 0;
   Future<Object?>? wire;
   var failInnerClose = false;
+  OwnedAiTextTransport Function()? receiptReaderFactory;
   ReviewAuth Function(ReviewAuth)? authAccessor;
 
   OwnProfile profile(String id) => decodeOwnProfile(profiles.profile(id), id);
@@ -94,7 +166,7 @@ void main() {
         }
         inners.add(inner);
         return ReceiptGuardedAiTransport(
-          inner: inner,
+          inner: receiptReaderFactory?.call() ?? inner,
           store: store,
           auth: auth,
           capturedSession: auth.currentSession!,
@@ -108,6 +180,7 @@ void main() {
     expect(host.createAiTextRepository(), isNull);
     expect(host.createAiConversationSession(), isNull);
     expect(host.createAiConversationScenarios(), isNull);
+    expect(host.createConversationReceiptLookup(), isNull);
   }
 
   Future<void> login() async {
@@ -139,6 +212,7 @@ void main() {
     profileCalls = 0;
     wire = null;
     failInnerClose = false;
+    receiptReaderFactory = null;
     authAccessor = null;
     inners.clear();
     backend = _Backend();
@@ -504,4 +578,157 @@ void main() {
       expect(persistence.currentSession, isNotNull);
     },
   );
+
+  test(
+    'account receipt reader is cached, read-only and cannot release pending metadata',
+    () async {
+      final reference = ConversationReceiptReference.fromStart(
+        projectUrl: ports.scope.projectOrigin,
+        ownerId: ports.owner,
+        request: ports.start,
+      );
+      backend.value = reference.encode();
+      var rows = <Object?>[];
+      final readers = <_ReceiptReader>[];
+      receiptReaderFactory = () {
+        final inner = _ReceiptReader(
+          (ref) async => ConversationReceiptSnapshot.fromRows(ref, rows),
+        );
+        readers.add(inner);
+        return inner;
+      };
+      unavailable();
+      expect(readers, isEmpty);
+      await login();
+      final reader = host.createConversationReceiptLookup()!;
+      expect(identical(host.createConversationReceiptLookup(), reader), isTrue);
+      final session = host.createAiConversationSession()!;
+      expect(host.createAiTextRepository(), isNotNull);
+      expect(host.createAiConversationScenarios(), isNotNull);
+      expect(readers, hasLength(1));
+      expect(readers.single.reads, 0);
+      expect(backend.calls, isEmpty);
+      for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+        rows = status == 'UNKNOWN'
+            ? []
+            : [
+                {
+                  'user_id': ports.owner,
+                  'operation': reference.operation.wireName,
+                  'client_event_id': ports.event,
+                  'status': status,
+                  'response_json': status == 'COMPLETED'
+                      ? fixtures['start_conversation_response']
+                      : null,
+                },
+              ];
+        final result = await reader.lookup(reference);
+        expect(result.status.name, status.toLowerCase());
+        expect(backend.value, reference.encode());
+        expect(backend.calls, isEmpty);
+        expect(identical(host.createAiConversationSession(), session), isTrue);
+      }
+      await expectLater(
+        session.start(ports.start),
+        throwsA(ports.code(AiTextErrorCode.syncConflict)),
+      );
+      expect(readers.single.delegate.sends, 0);
+      expect(readers.single.reads, 3);
+      expect(backend.value, reference.encode());
+      expect(backend.calls, isNot(contains('clear')));
+    },
+  );
+
+  for (final mode in ['refresh', 'signout']) {
+    test(
+      'account receipt reader drains ignored late response during $mode',
+      () async {
+        final reference = ConversationReceiptReference.fromStart(
+          projectUrl: ports.scope.projectOrigin,
+          ownerId: ports.owner,
+          request: ports.start,
+        );
+        backend.value = reference.encode();
+        final held = Completer<ConversationReceiptSnapshot>();
+        final entered = Completer<void>();
+        final readers = <_ReceiptReader>[];
+        receiptReaderFactory = () {
+          final first = readers.isEmpty;
+          final inner = _ReceiptReader((ref) {
+            if (first) {
+              entered.complete();
+              return held.future;
+            }
+            return Future.value(
+              ConversationReceiptSnapshot.fromRows(ref, <Object?>[]),
+            );
+          });
+          readers.add(inner);
+          return inner;
+        };
+        await login();
+        final old = host.createConversationReceiptLookup()!;
+        final rejected = expectLater(
+          old.lookup(reference),
+          throwsA(ports.code(AiTextErrorCode.unauthorized)),
+        );
+        Future<void>? shutdown;
+        try {
+          await entered.future;
+          if (mode == 'refresh') {
+            sdk.nextSecret = 'TEST_ONLY_RECEIPT_REFRESH';
+            await persistence.refresh();
+            await lifecycle.flush();
+          } else {
+            shutdown = host.clearForSignOut();
+          }
+          expect(old.isCurrent, isFalse);
+          expect(host.createConversationReceiptLookup(), isNull);
+          expect(readers, hasLength(1));
+          expect(readers.single.delegate.closes, 0);
+          expect(backend.value, reference.encode());
+          expect(backend.calls, isNot(contains('clear')));
+          held.complete(
+            ConversationReceiptSnapshot.fromRows(reference, <Object?>[]),
+          );
+          await rejected;
+          if (shutdown != null) await shutdown;
+          await lifecycle.flush();
+          expect(readers.first.delegate.closes, 1);
+          if (mode == 'refresh') {
+            final next = host.createConversationReceiptLookup()!;
+            expect(identical(old, next), isFalse);
+            expect(readers, hasLength(2));
+            expect(
+              (await next.lookup(reference)).status,
+              ConversationReceiptStatus.unknown,
+            );
+            expect(backend.value, reference.encode());
+            expect(backend.calls, isNot(contains('clear')));
+          } else {
+            expect(host.createConversationReceiptLookup(), isNull);
+            expect(backend.value, isNull);
+            expect(backend.calls, ['clear']);
+            expect(
+              persistence.currentSession,
+              isNotNull,
+            ); // Host still owns Auth logout.
+          }
+          await expectLater(
+            old.lookup(reference),
+            throwsA(ports.code(AiTextErrorCode.unauthorized)),
+          );
+          expect(readers.first.reads, 1);
+        } finally {
+          if (!held.isCompleted) {
+            held.complete(
+              ConversationReceiptSnapshot.fromRows(reference, <Object?>[]),
+            );
+          }
+          await rejected;
+          await shutdown;
+        }
+      },
+    );
+  }
 }
