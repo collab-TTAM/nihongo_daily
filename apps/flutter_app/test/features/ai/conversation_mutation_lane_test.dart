@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/ai/data/conversation_mutation_lane.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_mutation.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
@@ -60,6 +61,145 @@ void main() {
             )
             as Map<String, Object?>;
   });
+  for (final transition in ['refresh', 'account', 'revoke']) {
+    test('last readiness cannot revive lane after $transition', () async {
+      final auth = Auth();
+      final original = auth.currentSession;
+      final port = Port();
+      var armed = false;
+      var reads = 0;
+      late ConversationMutationLane lane;
+      lane = ConversationMutationLane(
+        auth: auth,
+        transport: port,
+        isReady: () {
+          if (armed && ++reads == 2) {
+            if (transition == 'revoke') {
+              lane.revoke();
+            } else {
+              auth.currentSession = ReviewSession(
+                userId: transition == 'refresh' ? id : e2,
+              );
+            }
+          }
+          return true;
+        },
+      );
+      await lane.start(start());
+      expect(lane.retainedMutationCount, 1);
+      armed = true;
+      expect(lane.isCurrent, isFalse);
+      expect(reads, 2);
+      expect(lane.retainedMutationCount, 0);
+      armed = false;
+      auth.currentSession = original;
+      expect(lane.isCurrent, isFalse);
+      await expectLater(
+        lane.turn(turn()),
+        throwsA(code(AiTextErrorCode.unauthorized)),
+      );
+      expect(port.calls, hasLength(1));
+    });
+  }
+  test(
+    'nested readiness inspection cannot establish lane currentness',
+    () async {
+      final auth = Auth();
+      final port = Port();
+      var armed = false;
+      var probing = false;
+      final nested = <bool>[];
+      late ConversationMutationLane lane;
+      lane = ConversationMutationLane(
+        auth: auth,
+        transport: port,
+        isReady: () {
+          if (armed && !probing) {
+            probing = true;
+            nested.add(lane.isCurrent);
+            probing = false;
+          }
+          return true;
+        },
+      );
+      armed = true;
+      expect(lane.isCurrent, isTrue);
+      expect(nested, [false, false]);
+      expect(port.calls, isEmpty);
+      armed = false;
+      await lane.start(start());
+      expect(port.calls, hasLength(1));
+    },
+  );
+  test(
+    'external readiness inspection cannot dispatch nested mutation',
+    () async {
+      final auth = Auth();
+      final port = Port();
+      var armed = false;
+      Future<void>? nested;
+      late ConversationMutationLane lane;
+      lane = ConversationMutationLane(
+        auth: auth,
+        transport: port,
+        isReady: () {
+          if (armed) {
+            armed = false;
+            nested = expectLater(
+              lane.finish(finish()),
+              throwsA(isA<AiTextRequestPending>()),
+            );
+          }
+          return true;
+        },
+      );
+      armed = true;
+      expect(lane.isCurrent, isTrue);
+      await nested;
+      expect(port.calls, isEmpty);
+      expect(lane.retainedMutationCount, 0);
+      expect(lane.hasUnresolvedMutation, isFalse);
+      await lane.start(start());
+      expect(port.calls, hasLength(1));
+    },
+  );
+  test(
+    'last readiness refresh redacts the session retained original',
+    () async {
+      final auth = Auth();
+      final original = auth.currentSession;
+      final port = Port()
+        ..reply = (_) =>
+            throw const AiTextFailure(AiTextErrorCode.providerUnavailable);
+      var armed = false;
+      var reads = 0;
+      final session = CapturedConversationSession(
+        auth: auth,
+        transport: port,
+        isReady: () {
+          if (armed && ++reads == 2) {
+            auth.currentSession = ReviewSession(userId: id);
+          }
+          return true;
+        },
+      );
+      await expectLater(
+        session.start(start()),
+        throwsA(code(AiTextErrorCode.providerUnavailable)),
+      );
+      expect(session.retainedCommand, isNotNull);
+      expect(session.hasUnresolvedMutation, isTrue);
+      armed = true;
+      expect(session.retainedCommand, isNull);
+      expect(reads, 2);
+      expect(session.snapshot.phase, ConversationSessionPhase.revoked);
+      armed = false;
+      auth.currentSession = original;
+      expect(session.retainedCommand, isNull);
+      expect(session.isCurrent, isFalse);
+      expect(port.calls, hasLength(1));
+    },
+  );
   test(
     'one lane serializes typed operations and reuses identical event success locally',
     () async {

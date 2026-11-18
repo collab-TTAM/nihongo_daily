@@ -39,6 +39,7 @@ final class ConversationMutationLane {
   _Slot? _held;
   bool _executing = false;
   bool _revoked = false;
+  bool _checking = false;
   bool get hasUnresolvedMutation => _pendingKey != null;
   int get retainedMutationCount => _slots.length;
   bool get isBusy {
@@ -49,13 +50,21 @@ final class ConversationMutationLane {
   }
 
   bool get isCurrent {
-    if (_revoked) return false;
+    // Supplied readiness/Auth getters cannot establish nested currentness.
+    if (_revoked || _checking) return false;
+    _checking = true;
     try {
-      if (_ready() && identical(_auth.currentSession, _session) && _ready()) {
+      if (_ready() &&
+          identical(_auth.currentSession, _session) &&
+          _ready() &&
+          identical(_auth.currentSession, _session) &&
+          !_revoked) {
         return true;
       }
     } on Object {
       /* Fixed unavailable below. */
+    } finally {
+      _checking = false;
     }
     revoke();
     return false;
@@ -136,7 +145,7 @@ final class ConversationMutationLane {
     _Slot Function() create,
   ) async {
     // Reserve before supplied readiness/Auth getters or factories can reenter.
-    if (_executing) throw const AiTextRequestPending();
+    if (_executing || _checking) throw const AiTextRequestPending();
     _executing = true;
     try {
       _requireCurrent();

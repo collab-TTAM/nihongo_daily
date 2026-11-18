@@ -147,3 +147,24 @@ version or real Auth/provider provenance. Every existing Node/security gate rema
 Parent691a797 passed allfive jobs/every step in CI39831337442/latest attempt1; new
 Deno gates/native42 require their own source's exact-head checks. Defaults stay
 unconfigured, #31 open/#41 draft/all14 hosted learner release groups pending.
+
+
+## Mutation lane final readiness fence — 2026-11-19
+
+ConversationMutationLane now checks captured Auth identity again after the last
+external readiness callback and checks permanent revocation before returning
+currentness. Previously a callback returning true could replace the session or
+revoke the lane after its only identity check, allowing a stale current hint.
+This could expose CapturedConversationSession's retained original after a
+same-owner refresh. The lane now uses a finally-released checking guard: nested
+currentness probes return false; a nested submission during an external current
+inspection receives AiTextRequestPending before any slot or dispatch is created.
+Existing serialization, exact replay fingerprints, uncertainty and actual-wire
+busy/drain rules remain unchanged. Retirement still discards in-memory slots
+and never grants retry, clears durable receipt metadata or applies completion.
+
+Six TEST ONLY regressions cover final-readiness same-owner refresh/account
+replacement/revoke, nested inspection, nested submission from external inspection,
+and retained session redaction after refresh. Each fails on the exact parent
+source. Component evidence is not hosted Auth/RLS/provider proof; full current-
+head CI/native gates and reviewed conditional application-release remain required.
