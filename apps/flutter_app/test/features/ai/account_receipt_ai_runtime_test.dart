@@ -731,4 +731,98 @@ void main() {
       },
     );
   }
+  for (final lateError in [false, true]) {
+    final outcome = lateError ? 'error' : 'success';
+    test(
+      'account receipt reader A-B-A rejects late $outcome without clearing metadata',
+      () async {
+        final reference = ConversationReceiptReference.fromStart(
+          projectUrl: ports.scope.projectOrigin,
+          ownerId: ports.owner,
+          request: ports.start,
+        );
+        backend.value = reference.encode();
+        final held = Completer<ConversationReceiptSnapshot>();
+        final entered = Completer<void>();
+        final readers = <_ReceiptReader>[];
+        receiptReaderFactory = () {
+          final first = readers.isEmpty;
+          final inner = _ReceiptReader((ref) {
+            if (first) {
+              entered.complete();
+              return held.future;
+            }
+            return Future.value(
+              ConversationReceiptSnapshot.fromRows(ref, <Object?>[]),
+            );
+          });
+          readers.add(inner);
+          return inner;
+        };
+        await login();
+        final old = host.createConversationReceiptLookup()!;
+        final rejected = expectLater(
+          old.lookup(reference),
+          throwsA(ports.code(AiTextErrorCode.unauthorized)),
+        );
+        try {
+          await entered.future;
+          sdk.change(lifecycle.other, 'TEST_ONLY_RECEIPT_B');
+          await lifecycle.flush();
+          expect(account.readySession!.userId, lifecycle.other);
+          expect(old.isCurrent, isFalse);
+          unavailable();
+          expect(readers, hasLength(1));
+          expect(backend.value, reference.encode());
+          expect(backend.calls, isEmpty);
+
+          sdk.change(ports.owner, 'TEST_ONLY_RECEIPT_RETURN_A');
+          await lifecycle.flush();
+          expect(account.readySession!.userId, ports.owner);
+          expect(old.isCurrent, isFalse);
+          unavailable(); // The original read still owns the shared drain.
+          expect(readers, hasLength(1));
+          expect(backend.value, reference.encode());
+          expect(backend.calls, isEmpty);
+
+          if (lateError) {
+            held.completeError(StateError('PRIVATE_LATE_RECEIPT'));
+          } else {
+            held.complete(
+              ConversationReceiptSnapshot.fromRows(reference, <Object?>[]),
+            );
+          }
+          await rejected;
+          await lifecycle.flush();
+          expect(readers.first.delegate.closes, 1);
+          expect(readers.first.reads, 1);
+          final fresh = host.createConversationReceiptLookup()!;
+          expect(identical(fresh, old), isFalse);
+          expect(readers, hasLength(2));
+          expect(
+            (await fresh.lookup(reference)).status,
+            ConversationReceiptStatus.unknown,
+          );
+          expect(readers.last.reads, 1);
+          expect(readers.every((reader) => reader.delegate.sends == 0), isTrue);
+          expect(backend.value, reference.encode());
+          expect(backend.calls, isEmpty);
+          await expectLater(
+            old.lookup(reference),
+            throwsA(ports.code(AiTextErrorCode.unauthorized)),
+          );
+          expect(readers.first.reads, 1);
+        } finally {
+          if (!held.isCompleted) {
+            held.complete(
+              ConversationReceiptSnapshot.fromRows(reference, <Object?>[]),
+            );
+          }
+          await rejected;
+          await lifecycle.flush();
+        }
+      },
+    );
+  }
+
 }

@@ -293,11 +293,14 @@ transport supports it. Authenticated server verification and verified conditiona
 application/release are separate remaining requirements. Default/staging sources,
 learner recovery and the one-pending-mutation limitation remain unchanged.
 
-Three component regressions cover cached/no-I/O acquisition and all three statuses
-with unchanged pending metadata/no mutation dispatch; refresh during an ignored
-late read with old-capability revocation, actual transport drain and fresh lease;
-and explicit local sign-out cleanup waiting for that same read before clearing.
-Existing startup/vault/profile/foreign-account/reentry tests additionally require
-this reader unavailable wherever the old source is unavailable. Auth/vault/profile/
-receipt ports are TEST ONLY; they do not prove actual SDK/Windows/hosted learner
-acceptance. New exact-head Flutter/native/build CI remains required.
+Five component regressions cover cached/no-I/O acquisition and all three statuses
+with unchanged pending metadata/no mutation dispatch; ignored late reads across
+refresh and local sign-out with old-capability revocation and actual transport
+drain; and A-B-A account replacement while a read is held, for both late success
+and late error. The old reader remains unauthorized, metadata is unchanged, no
+store clear/write or mutation dispatch occurs, and a fresh A reader appears only
+after the old transport drains. Existing startup/vault/profile/foreign-account/
+reentry tests additionally require this reader unavailable wherever the old
+source is unavailable. Auth/vault/profile/receipt ports are TEST ONLY; they do
+not prove actual SDK/Windows/hosted learner acceptance. New exact-head
+Flutter/native/build CI remains required.
