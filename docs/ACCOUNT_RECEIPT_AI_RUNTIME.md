@@ -327,3 +327,19 @@ production refresh-vault startup, native Windows storage faults or real learner
 restoration. They add no default activation, provider call, metadata-derived replay
 or verified conditional release. New-head full Flutter/native/build CI is required;
 local standalone SDK harness observations are recorded separately in PROJECT_STATUS.
+
+## Same-SDK rejection before release — 2026-11-18
+
+Two negative account-factory tests cover seven malformed/misassociated stored-row
+variants for each of PENDING and COMPLETED: legacy row without request_json,
+changed original scenario, extra original field, foreign owner, foreign event,
+duplicate rows and invalid/inconsistent response. Each expected fixed/redacted
+error must follow one validated original-bound GET. A separate post-assertion
+counter prevents failed HTTP-request setup from masquerading as decoder rejection.
+
+After every rejected read the exact pending reference and sibling session remain,
+with zero store operations, no hidden retry and no new capability. The final
+mutation remains blocked before HTTP; close preserves metadata and borrowed SDK/
+HTTP ownership. This checks the full same-SDK factory composition around the
+already reviewed decoder, not a new decoder or conditional-release implementation.
+Auth/JWT/profile/HTTP/secure backend are TEST ONLY; hosted proof remains required.

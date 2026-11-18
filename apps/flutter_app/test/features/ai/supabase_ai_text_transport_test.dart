@@ -990,6 +990,101 @@ void main() {
     );
   }
 
+  for (final status in ['PENDING', 'COMPLETED']) {
+    test(
+      'same SDK account receipt reader rejects uncorrelated $status rows',
+      () async {
+        const op = 'start_conversation';
+        final ref = receiptReference(op);
+        final original = StartConversationRequest.fromJson(request(op));
+        final backend = _ReceiptBackend()..value = ref.encode();
+        final owner = accountReceipt(backend);
+        await settleAccount();
+        final reader = owner.createConversationReceiptLookup()!;
+        final conversation = owner.createAiConversationSession()!;
+        final badRows = <List<Object?>>[
+          [receiptRow(op, status)],
+          [
+            originalRow(op, status)
+              ..['request_json'] = {...request(op), 'scenario_id': userB},
+          ],
+          [
+            originalRow(op, status)
+              ..['request_json'] = {...request(op), 'extra': true},
+          ],
+          [originalRow(op, status)..['user_id'] = userB],
+          [originalRow(op, status)..['client_event_id'] = sid],
+          [originalRow(op, status), originalRow(op, status)],
+          [
+            originalRow(op, status)
+              ..['response_json'] = {'TEST_ONLY_PRIVATE_RESPONSE': true},
+          ],
+        ];
+        var validatedRequests = 0;
+        for (var index = 0; index < badRows.length; index++) {
+          network.onSend = (r) async {
+            expect(r.method, 'GET');
+            expect(r.url.origin, origin);
+            expect(r.url.path, '/rest/v1/operation_receipts');
+            expect(r.url.queryParameters, {
+              'select':
+                  'user_id,operation,client_event_id,request_json,status,response_json',
+              'user_id': 'eq.$userA',
+              'operation': 'eq.$op',
+              'client_event_id': 'eq.${ref.clientEventId}',
+              'limit': '2',
+            });
+            expect((r as http.Request).body, isEmpty);
+            expect(
+              r.headers['authorization'],
+              'Bearer ${token(now, userA, generation)}',
+            );
+            expect(r.headers['apikey'], key);
+            expect(r.headers['cache-control'], 'no-store');
+            expect(r.followRedirects, isFalse);
+            validatedRequests++; // Setup/assertion failure cannot masquerade as decoder rejection.
+            return response(jsonEncode(badRows[index]));
+          };
+          await expectLater(
+            reader.lookupStart(ref, original),
+            throwsA(
+              failure(AiTextErrorCode.internalError).having(
+                (e) => e.toString().contains('PRIVATE'),
+                'redacted',
+                false,
+              ),
+            ),
+          );
+          expect(validatedRequests, index + 1);
+          expect(network.requests, hasLength(index + 1));
+          expect(backend.value, ref.encode());
+          expect(backend.calls, isEmpty);
+          expect(reader.isCurrent, isTrue);
+          expect(
+            identical(owner.createConversationReceiptLookup(), reader),
+            isTrue,
+          );
+          expect(
+            identical(owner.createAiConversationSession(), conversation),
+            isTrue,
+          );
+        }
+        await expectLater(
+          conversation.start(original),
+          throwsA(failure(AiTextErrorCode.syncConflict)),
+        );
+        expect(network.requests, hasLength(badRows.length));
+        expect(network.requests.every((r) => r.method == 'GET'), isTrue);
+        expect(backend.value, ref.encode());
+        expect(backend.calls, everyElement('read'));
+        await owner.close();
+        expect(backend.value, ref.encode());
+        expect(sdk.auth.currentSession, isNotNull);
+        expect(network.closed, isFalse);
+      },
+    );
+  }
+
   for (final bad in ['project', 'key']) {
     test(
       'same SDK receipt factory rejects $bad mismatch before store ownership transfer',
