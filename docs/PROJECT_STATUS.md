@@ -4636,3 +4636,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added a temporary read-only formatter diff diagnostic immediately before the unchanged strict format gate. It writes formatted output to the runner temp directory and prints a unified diff; it does not modify the checkout or relax the gate.
 - No test assertion, runtime/Auth/provider, API/schema/RLS, QA severity, default app behavior, Pro-owned #14/#38/N4 content, staging secret or deployment setting changed. Cloud authoring runtime has no pinned Flutter/Dart SDK, so no local format/analyze/test/build is claimed.
 - Next: inspect the diagnostic hunk from the new exact-head CI, remove this temporary step, apply only the formatter-produced change, then require every exact-head CI job and step to pass. Keep PR #37 Draft and hosted signed-JWT learner A/B, deployed PostgREST/RLS, expiry/restart and physical multi-device acceptance open.
+
+## Exact pinned Dart EOF formatter repair — 2026-11-18T23:14Z
+
+- PR #37 branch `automation/issue-22-atomic-review`, parent HEAD `d8ab029ea79e66d03d34947b8325e71c87168e98`, base `main` `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44409276678](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44409276678), attempt 1, completed FAILURE only in Flutter strict Dart 3.35.4 formatting. The read-only diagnostic showed the formatter removes one extra blank line at EOF from `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`. Flutter analyze, full Flutter suite and downstream Flutter steps were SKIPPED; repo-sanity, AI boundary, database, Windows and disposable local Supabase jobs completed SUCCESS.
+- Applied only that EOF normalization (one terminal newline retained), removed the temporary formatter diagnostic from `.github/workflows/ci.yml`, and preserved strict format/analyze/test/build gates and all test assertions. No runtime behavior or product code changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyze/test/build were not run. New exact-head Actions must verify the correction and every required step.
+- No hosted staging dispatch/secrets, Auth/provider strategy, schema/RLS, default runtime, Pro-owned #14/#38/N4, merge, deployment or release. PR #37 remains Draft; #20/#22/#15 and hosted learner acceptance remain open.
+- Next: inspect all jobs and every latest-attempt step for the new HEAD; fix only observed failures. Do not count skipped steps as passes or claim Personal Alpha from local disposable integration.
