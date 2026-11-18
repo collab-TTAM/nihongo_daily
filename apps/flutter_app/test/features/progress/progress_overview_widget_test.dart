@@ -1110,10 +1110,7 @@ void main() {
         find.byKey(const Key('progress-server-quiz-summary')),
         findsNothing,
       );
-      expect(
-        find.text('Đang tải trang biên nhận tiếp theo…'),
-        findsNothing,
-      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsNothing);
       reader.readWait!.complete();
       await tester.pump();
       await tester.pump();
