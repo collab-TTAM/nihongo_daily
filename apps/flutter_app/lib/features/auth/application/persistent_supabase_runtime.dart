@@ -192,6 +192,11 @@ final class _BoundedSessionHttp extends http.BaseClient {
     return failure;
   }
 
+  Duration _remaining(Stopwatch elapsed) {
+    final remaining = timeout - elapsed.elapsed;
+    return remaining.isNegative ? Duration.zero : remaining;
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final authRequest = request.url.path.startsWith('/auth/v1/');
@@ -225,7 +230,7 @@ final class _BoundedSessionHttp extends http.BaseClient {
       final bytes = BytesBuilder(copy: false);
       final iterator = StreamIterator(response.stream);
       try {
-        while (await iterator.moveNext().timeout(timeout - elapsed.elapsed)) {
+        while (await iterator.moveNext().timeout(_remaining(elapsed))) {
           final chunk = iterator.current;
           if (bytes.length + chunk.length > maximum) {
             throw const ReviewTransportFailure(ReviewErrorCode.internalError);
@@ -233,7 +238,20 @@ final class _BoundedSessionHttp extends http.BaseClient {
           bytes.add(chunk);
         }
       } finally {
-        await iterator.cancel();
+        final cancellation = iterator.cancel();
+        try {
+          await cancellation.timeout(_remaining(elapsed));
+        } on TimeoutException {
+          // Cancellation has started, but a stalled stream callback must not
+          // extend the Auth request beyond its original deadline.
+          unawaited(
+            cancellation.then<void>(
+              (_) {},
+              onError: (Object _, StackTrace __) {},
+            ),
+          );
+          throw TimeoutException('Session response cancellation unavailable');
+        }
       }
       return http.StreamedResponse(
         Stream.value(bytes.takeBytes()),

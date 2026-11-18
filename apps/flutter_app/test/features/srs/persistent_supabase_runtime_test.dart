@@ -24,10 +24,50 @@ import 'session_lifecycle_fixtures.dart' as fixture;
 import 'supabase_review_binding_test.dart' as wire;
 import 'own_profile_fixtures.dart' as profile;
 
+final class _DelayedCancellationClient extends http.BaseClient {
+  final cancellationAck = Completer<void>();
+  final requests = <http.BaseRequest>[];
+  var cancellationStarted = false;
+  late final body = StreamController<List<int>>(
+    onCancel: () {
+      cancellationStarted = true;
+      return cancellationAck.future;
+    },
+  );
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    requests.add(request);
+    if (request.url.path == '/auth/v1/token') {
+      return http.StreamedResponse(
+        body.stream,
+        200,
+        headers: {'content-type': 'application/json'},
+        request: request,
+      );
+    }
+    return http.StreamedResponse(
+      const Stream<List<int>>.empty(),
+      request.url.path == '/auth/v1/logout' ? 204 : 404,
+      request: request,
+    );
+  }
+
+  void releaseCancellation() {
+    if (!cancellationAck.isCompleted) cancellationAck.complete();
+  }
+
+  @override
+  void close() {
+    releaseCancellation();
+    unawaited(body.close());
+  }
+}
+
 void main() {
   late fixture.MemoryVault backend;
   late SessionCredentialVault vault;
-  late MockClient network;
+  late http.Client network;
   late PersistentSupabaseRuntime runtime;
   late DateTime now;
   late Directory directory;
@@ -1203,6 +1243,72 @@ void main() {
       isEmpty,
     );
   });
+
+  test(
+    'SDK body deadline returns while response cancellation acknowledgement is stalled',
+    () async {
+      await runtime.close();
+      network.close();
+      final client = _DelayedCancellationClient();
+      network = client;
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+        requestTimeout: const Duration(milliseconds: 40),
+      );
+      backend.secret = 'TEST_ONLY_SAVED_SDK';
+      final elapsed = Stopwatch()..start();
+      final starting = runtime.start();
+      try {
+        await expectLater(
+          starting.timeout(const Duration(seconds: 2)),
+          throwsA(
+            isA<ReviewTransportFailure>()
+                .having(
+                  (failure) => failure.code,
+                  'code',
+                  ReviewErrorCode.networkUnavailable,
+                )
+                .having((failure) => failure.retryable, 'retryable', isTrue),
+          ),
+        );
+        expect(elapsed.elapsed, lessThan(const Duration(seconds: 1)));
+        expect(client.cancellationStarted, isTrue);
+        expect(client.cancellationAck.isCompleted, isFalse);
+        expect(runtime.persistence.currentSession, isNull);
+        expect(runtime.account.readyRuntime, isNull);
+        expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
+        expect(
+          client.requests.map((request) => request.url.path),
+          contains('/auth/v1/token'),
+        );
+        expect(
+          client.requests.map((request) => request.url.path),
+          isNot(contains('/rest/v1/rpc/ensure_profile')),
+        );
+      } finally {
+        client.releaseCancellation();
+        try {
+          await starting;
+        } on Object {
+          // The expected bounded transport failure is already asserted above.
+        }
+      }
+
+      await runtime.account.signOut();
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.persistence.phase, SessionPersistencePhase.idle);
+      expect(backend.secret, isNull);
+      expect(
+        client.requests.map((request) => request.url.path),
+        isNot(contains('/rest/v1/rpc/ensure_profile')),
+      );
+    },
+  );
 
   test(
     'SDK timeout discards late response and never dispatches profile',

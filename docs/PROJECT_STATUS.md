@@ -4513,3 +4513,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. The corrected commit requires fresh exact-head Actions evidence before any pass claim.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, protected staging Windows restore/expiry, and physical multi-device offline sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open; no staging dispatch/secrets, Auth strategy/provider, schema/RLS, default activation, Pro-owned #14/#38/N4 content, deployment, merge or release change.
 - Next: inspect every latest-attempt job and every returned step on the corrected exact HEAD; fix only observed diagnostics while preserving all assertions and security gates.
+
+
+## Bounded Auth response cancellation — 2026-11-18T04:06Z
+
+- Run `core-20261118T0406Z-pr37-bounded-auth-body-cancel`; branch `automation/issue-22-atomic-review`; parent HEAD `7cc6218c8650f81399a7423ee9e417540be06182`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added a pinned-SDK TEST ONLY regression where Auth response headers arrive but the body never completes and the stream's cancellation acknowledgement is held. The request must return a fixed retryable NETWORK_UNAVAILABLE within its original deadline, initiate stream cancellation without awaiting an unbounded onCancel future, never expose a partial/late body to SDK/profile provisioning, and require explicit cleanup before the saved refresh secret is cleared.
+- Hardened `_BoundedSessionHttp` to use the remaining request deadline for response-body reads and cancellation acknowledgement. If cancellation acknowledgement stalls, cancellation remains initiated and its completion is safely observed asynchronously; it cannot keep the caller waiting past the original Auth deadline. No token/error/body logging or plaintext fallback added.
+- Changed: `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, and this status file.
+- Cloud authoring runtime lacks the pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head Actions is required for formatter, analyzer, full Flutter suite, Windows, Chrome/Web and database/AI jobs.
+- No Auth strategy/provider, schema/RLS, default app activation, hosted dispatch/secrets, Pro-owned #14/#38/N4 content, deployment, merge or release change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real Windows hosted restore, cryptographic expiry and physical multi-device sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Do not claim a hosted learner result from this pinned-SDK/TEST ONLY stream fixture.
