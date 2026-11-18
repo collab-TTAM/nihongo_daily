@@ -1,3 +1,13 @@
+## PR #37 pending Windows rotation-write close regression — formatter diagnostic — 2026-11-18T20:21Z
+
+- Run `core-20261118T2021Z-pr37-format-diagnostic`; branch `automation/issue-22-atomic-review`; parent HEAD `cedcdfaeafbf011977f7715d7de0154a6c29b510`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- The preceding source increment added the TEST ONLY Windows caller-close/pending-rotation-write regression, lifecycle documentation and one existing QA anchor. The full recursive tree review preserved all unrelated blobs.
+- Exact-head Actions [44389051027](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44389051027), attempt 1, targets `cedcdfaeafbf011977f7715d7de0154a6c29b510`. Repo-sanity (13/13), database (12/12) and AI boundary (12/12) completed SUCCESS. Flutter failed only `dart format --output=none --set-exit-if-changed .`, which reported `windows_persistent_supabase_runtime_test.dart` changed; analyze/full Flutter suite and all downstream Flutter checks were SKIPPED, not passes. Windows and disposable Supabase integration were still IN_PROGRESS at the last read, so their outcomes are not claimed.
+- This commit adds a temporary read-only `dart format --output=show` + `diff` step for that one TEST ONLY file immediately before the unchanged strict format gate. It does not rewrite the working tree, alter tests, or weaken any gate. The next source commit must apply only the emitted formatter hunk and remove the temporary diagnostic.
+- No local Flutter/Dart SDK or Windows OS is available in the cloud authoring runtime; no local format/analyze/test/native build is claimed. No staging secrets were read/dispatched. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, restart/expiry and physical multi-device acceptance remain pending.
+
+---
+
 ## Session lifecycle fixture cleanup correction — 2026-11-14T11:10Z
 
 - Resume PR [#37](https://github.com/collab-TTAM/nihongo_daily/pull/37), branch `automation/issue-22-atomic-review`, parent HEAD `bc42d6efa055bc27fa7c614461da5a86be6f7ae8`; base main `78a44faf09c03a8a214f10a2e0a0b5fa90a26f4c`.

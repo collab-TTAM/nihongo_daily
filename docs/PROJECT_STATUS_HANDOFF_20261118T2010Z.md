@@ -43,3 +43,10 @@ Changed paths:
 Inspect every latest-attempt job and required step for the exact new PR HEAD.
 Keep PR #37 Draft and #20/#22/#15/#18 open until hosted learner and release
 acceptance is actually observed.
+
+
+## Follow-up exact-head CI observation — 2026-11-18T20:21Z
+
+- Exact-head Actions [44389051027](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44389051027), attempt 1, targeted `cedcdfaeafbf011977f7715d7de0154a6c29b510`.
+- Repo-sanity, database and AI boundary succeeded. Flutter failed strict Dart 3.35.4 formatting in `windows_persistent_supabase_runtime_test.dart`; Flutter analyze, complete suite, lifecycle/vault/profile/browser/native/Web checks were skipped. Windows and disposable Supabase jobs remained in progress at observation.
+- The next commit adds a temporary read-only pinned formatter diff diagnostic for that one file. Do not count this run as a complete CI pass or as test evidence for the new regression.
