@@ -595,6 +595,13 @@ Supabase client; the trusted server remains the only JWT verifier. A generation
 changes when the user or access token changes, including refresh rotation, so a
 request captured under an older token is fenced.
 
+The observer rechecks terminal disposal/failure after the supplied readiness
+callback and after synchronization before returning a capture/current verdict.
+A callback may synchronously retire the observer even while returning true;
+retirement prevents further SDK-token reads or credential-state repopulation.
+This does not sign out or dispose the borrowed SDK, and grants no retry/release
+authority. Regression fixtures use synthetic Auth responses, not hosted JWT proof.
+
 The transport accepts only a caller-owned Supabase project origin and public
 publishable/anon key, constructs the fixed
 `/functions/v1/quiz-report-v2` path, and never reads URL/key from learner input.

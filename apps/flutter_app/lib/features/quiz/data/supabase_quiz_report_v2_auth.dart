@@ -54,6 +54,7 @@ final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
   QuizReportV2CapturedSession? capture() {
     if (_closed || _failed) return null;
     _syncFromSdk();
+    if (_closed || _failed) return null;
     final userId = _userId;
     final accessToken = _accessToken;
     if (userId == null || accessToken == null) return null;
@@ -68,6 +69,7 @@ final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
   bool isCurrent(QuizReportV2CapturedSession captured) {
     if (_closed || _failed) return false;
     _syncFromSdk();
+    if (_closed || _failed) return false;
     return captured.generation == _generation &&
         captured.userId == _userId &&
         captured.accessToken == _accessToken;
@@ -83,6 +85,9 @@ final class SupabaseQuizReportV2Auth implements QuizReportV2Auth {
     } on Object {
       ready = false;
     }
+    // A supplied readiness callback can synchronously retire this observer.
+    // Never read or repopulate private SDK credentials after that boundary.
+    if (_closed || _failed) return;
     try {
       final session = ready ? _client.auth.currentSession : null;
       final userId = session?.user.id.toLowerCase();

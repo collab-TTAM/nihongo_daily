@@ -292,4 +292,69 @@ void main() {
     await sdk.dispose();
     client.close();
   });
+
+  for (final mode in ['dispose', 'stream-error']) {
+    test('readiness callback cannot capture credentials after $mode', () async {
+      var tokenRequests = 0;
+      final client = MockClient((request) async {
+        if (request.url.path.endsWith('/auth/v1/token')) {
+          tokenRequests++;
+          return http.Response(
+            jsonEncode(_authResponse(_userA, _sessionA, 0)),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        return http.Response('{}', 404);
+      });
+      final sdk = SupabaseClient(
+        _projectUrl,
+        _publishableKey,
+        httpClient: client,
+        authOptions: AuthClientOptions(autoRefreshToken: false),
+      );
+      final readiness = StreamController<void>.broadcast(sync: true);
+      late SupabaseQuizReportV2Auth auth;
+      var retireOnRead = false;
+      Future<void>? closing;
+      await sdk.auth.signInWithPassword(
+        email: 'learner@example.test',
+        password: 'fixture-password',
+      );
+      auth = SupabaseQuizReportV2Auth(
+        client: sdk,
+        readinessChanges: readiness.stream,
+        isReady: () {
+          if (retireOnRead) {
+            retireOnRead = false;
+            if (mode == 'dispose') {
+              closing = auth.dispose();
+            } else {
+              readiness.addError(StateError('TEST ONLY PRIVATE ERROR'));
+            }
+          }
+          return true; // Readiness cannot override terminal retirement.
+        },
+      );
+      try {
+        final before = auth.capture();
+        expect(before, isNotNull);
+        expect(auth.isCurrent(before!), isTrue);
+        retireOnRead = true;
+        expect(auth.capture(), isNull);
+        expect(auth.isCurrent(before), isFalse);
+        expect(auth.capture(), isNull);
+        await closing;
+        expect(auth.capture(), isNull);
+        expect(sdk.auth.currentSession, isNotNull); // Borrowed SDK stays alive.
+        expect(tokenRequests, 1); // Observer never logs in or refreshes.
+      } finally {
+        await closing;
+        await auth.dispose();
+        await readiness.close();
+        await sdk.dispose();
+        client.close();
+      }
+    });
+  }
 }
