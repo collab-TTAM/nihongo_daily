@@ -804,6 +804,192 @@ void main() {
     },
   );
 
+  test(
+    'same SDK account receipt reader correlates originals without releasing pending',
+    () async {
+      const op = 'start_conversation';
+      final ref = receiptReference(op);
+      final original = StartConversationRequest.fromJson(request(op));
+      final backend = _ReceiptBackend()..value = ref.encode();
+      final profile = Completer<OwnProfile>();
+      final owner = accountReceipt(backend, profileWait: profile);
+      expect(owner.createConversationReceiptLookup(), isNull);
+      expect(network.requests, isEmpty);
+      profile.complete(
+        decodeOwnProfile({
+          'id': userA,
+          'display_name': 'TEST ONLY',
+          'preferred_jlpt': 'N5',
+          'daily_target_minutes': 120,
+          'timezone': 'Asia/Saigon',
+        }, userA),
+      );
+      await settleAccount();
+      final reader = owner.createConversationReceiptLookup()!;
+      expect(
+        identical(owner.createConversationReceiptLookup(), reader),
+        isTrue,
+      );
+      final conversation = owner.createAiConversationSession()!;
+      expect(network.requests, isEmpty);
+      expect(backend.calls, isEmpty);
+      for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+        network.onSend = (r) async {
+          expect(r.method, 'GET');
+          expect(r.url.origin, origin);
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          expect(r.url.queryParameters, {
+            'select':
+                'user_id,operation,client_event_id,request_json,status,response_json',
+            'user_id': 'eq.$userA',
+            'operation': 'eq.$op',
+            'client_event_id': 'eq.${ref.clientEventId}',
+            'limit': '2',
+          });
+          expect((r as http.Request).body, isEmpty);
+          expect(
+            r.headers['authorization'],
+            'Bearer ${token(now, userA, generation)}',
+          );
+          expect(r.headers['apikey'], key);
+          expect(r.headers['cache-control'], 'no-store');
+          expect(r.followRedirects, isFalse);
+          expect(r.maxRedirects, 0);
+          expect(backend.value, ref.encode());
+          return response(
+            jsonEncode(status == 'UNKNOWN' ? [] : [originalRow(op, status)]),
+          );
+        };
+        final result = await reader.lookupStart(ref, original);
+        expect(result.status.name, status.toLowerCase());
+        expect(result.start != null, status == 'COMPLETED');
+        expect(backend.value, ref.encode());
+        expect(backend.calls, isEmpty);
+        expect(
+          identical(owner.createAiConversationSession(), conversation),
+          isTrue,
+        );
+      }
+      await expectLater(
+        conversation.start(original),
+        throwsA(failure(AiTextErrorCode.syncConflict)),
+      );
+      expect(network.requests, hasLength(3));
+      expect(network.requests.every((r) => r.method == 'GET'), isTrue);
+      expect(backend.calls, everyElement('read'));
+      await owner.close();
+      await expectLater(
+        reader.lookupStart(ref, original),
+        throwsA(failure(AiTextErrorCode.unauthorized)),
+      );
+      expect(network.requests, hasLength(3));
+      expect(backend.value, ref.encode());
+      expect(sdk.auth.currentSession, isNotNull);
+      expect(network.closed, isFalse);
+    },
+  );
+
+  for (final error in [false, true]) {
+    test(
+      'same SDK account receipt reader fences A-B-A late error=$error',
+      () async {
+        const op = 'start_conversation';
+        final ref = receiptReference(op);
+        final original = StartConversationRequest.fromJson(request(op));
+        final backend = _ReceiptBackend()..value = ref.encode();
+        final owner = accountReceipt(backend);
+        await settleAccount();
+        final reader = owner.createConversationReceiptLookup()!;
+        final held = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        final aborted = Completer<void>();
+        network.onSend = (r) {
+          expect(r.method, 'GET');
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          expect(r.url.queryParameters['user_id'], 'eq.$userA');
+          expect(
+            r.url.queryParameters['client_event_id'],
+            'eq.${ref.clientEventId}',
+          );
+          expect(r.headers['authorization'], 'Bearer ${token(now, userA, 0)}');
+          final req = r as http.AbortableRequest;
+          unawaited(req.abortTrigger!.then((_) => aborted.complete()));
+          entered.complete();
+          return held
+              .future; // TEST ONLY: actual HTTP client deliberately ignores abort.
+        };
+        final rejected = expectLater(
+          reader.lookupStart(ref, original),
+          throwsA(
+            failure(AiTextErrorCode.unauthorized).having(
+              (e) => e.toString().contains('PRIVATE'),
+              'redacted',
+              false,
+            ),
+          ),
+        );
+        try {
+          await entered.future.timeout(const Duration(seconds: 5));
+          nextUser = userB;
+          await login();
+          await settleAccount();
+          await aborted.future.timeout(const Duration(seconds: 5));
+          expect(reader.isCurrent, isFalse);
+          expect(owner.createConversationReceiptLookup(), isNull);
+          nextUser = userA;
+          generation++;
+          await login();
+          await settleAccount();
+          expect(owner.createConversationReceiptLookup(), isNull);
+          expect(network.requests, hasLength(1));
+          expect(backend.calls, isEmpty);
+          expect(backend.value, ref.encode());
+          if (error) {
+            held.completeError(StateError('TEST_ONLY_PRIVATE_LATE_RECEIPT'));
+          } else {
+            held.complete(response(jsonEncode([originalRow(op, 'COMPLETED')])));
+          }
+          await rejected;
+          await settleAccount();
+          final next = owner.createConversationReceiptLookup()!;
+          expect(identical(next, reader), isFalse);
+          network.onSend = (r) async {
+            expect(r.method, 'GET');
+            expect(
+              r.headers['authorization'],
+              'Bearer ${token(now, userA, generation)}',
+            );
+            return response(jsonEncode([originalRow(op, 'COMPLETED')]));
+          };
+          expect(
+            (await next.lookupStart(ref, original)).status,
+            ConversationReceiptStatus.completed,
+          );
+          await expectLater(
+            reader.lookupStart(ref, original),
+            throwsA(failure(AiTextErrorCode.unauthorized)),
+          );
+          await expectLater(
+            owner.createAiConversationSession()!.start(original),
+            throwsA(failure(AiTextErrorCode.syncConflict)),
+          );
+          expect(network.requests, hasLength(2));
+          expect(network.requests.every((r) => r.method == 'GET'), isTrue);
+          expect(backend.value, ref.encode());
+          expect(backend.calls, everyElement('read'));
+          await owner.close();
+          expect(sdk.auth.currentSession!.user.id, userA);
+          expect(network.closed, isFalse);
+        } finally {
+          if (!held.isCompleted) {
+            held.completeError(StateError('TEST_ONLY_CLEANUP'));
+          }
+          await rejected;
+        }
+      },
+    );
+  }
+
   for (final bad in ['project', 'key']) {
     test(
       'same SDK receipt factory rejects $bad mismatch before store ownership transfer',

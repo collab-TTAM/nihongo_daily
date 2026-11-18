@@ -304,3 +304,26 @@ reentry tests additionally require this reader unavailable wherever the old
 source is unavailable. Auth/vault/profile/receipt ports are TEST ONLY; they do
 not prove actual SDK/Windows/hosted learner acceptance. New exact-head
 Flutter/native/build CI remains required.
+
+## Same-SDK original-bound reader acceptance — 2026-11-18
+
+Three additional tests compose the actual pinned Supabase client/binding,
+AccountController, same-SDK receipt factory, captured reader and HTTP transport.
+The first holds own-profile readiness, checks cached no-I/O acquisition, then
+performs original-bound start receipt GETs for UNKNOWN/PENDING/COMPLETED. It checks
+the fixed endpoint, six selected fields, captured owner/event/bearer/key, empty
+body and no-store/no-redirects. The pending reference and sibling session remain
+unchanged; even a completed result cannot permit a mutation or receipt clear.
+
+Two tests hold an actual HTTP request that ignores abort while the SDK logs into
+B then A. B cannot acquire the fixed-A reader, returning A remains blocked until
+the original HTTP settles, and late success/private error is unauthorized. A new
+reader uses A's new bearer only after drain; the old reader cannot dispatch,
+pending metadata survives, and the same SDK/HTTP remain caller-owned after close.
+
+Auth/JWT/profile/receipt responses and secure backend are TEST ONLY. These tests
+exercise actual SDK and captured transport components, not hosted JWT/RLS,
+production refresh-vault startup, native Windows storage faults or real learner
+restoration. They add no default activation, provider call, metadata-derived replay
+or verified conditional release. New-head full Flutter/native/build CI is required;
+local standalone SDK harness observations are recorded separately in PROJECT_STATUS.
