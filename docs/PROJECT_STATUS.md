@@ -4564,3 +4564,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Full recursive source tree was checked; exact-head CI is still required. Cloud runtime lacks Flutter/Dart SDK; no local format/analyze/test/build is claimed.
 - Hosted signed-JWT learner A/B, deployed RLS/PostgREST, hosted expiry/restart and physical multi-device acceptance remain outstanding. PR #37 stays Draft; #20/#22/#15 stay open.
 - Next: inspect every latest-attempt job/step on the new HEAD and fix only observed failures.
+
+
+## PR #37 formatter re-diagnosis — 2026-11-18T10:13Z
+
+- Run `core-20261118T1013Z-pr37-investigate-repeat-dart-format-failure`; branch `automation/issue-22-atomic-review`; parent `e610288c5e23ce94b36dc457fd41a2323fdb2477`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44274083964](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44274083964), attempt 1, completed with repo-sanity (13/13), AI boundary (12/12), database/RLS (12/12), Windows (18/18) and disposable Supabase integration (13/13) SUCCESS. Flutter failed the strict Dart 3.35.4 formatter because `persistent_supabase_runtime_test.dart` is still reported as changed; analyze, full tests, browser/native checks and Web build were skipped.
+- The prior diagnostic [44265761049](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44265761049) on parent `5160ada` showed three formatting hunks, and commit `e610288` applied those hunks. The new exact-head run still reports the file changed, so this checkpoint adds a read-only pinned-formatter diff step before the unchanged strict gate to expose the remaining discrepancy. The diagnostic uses `--output=show` and `diff`; it does not mutate source. The strict formatter gate and all downstream checks remain unchanged.
+- Changed paths for this diagnostic checkpoint: `.github/workflows/ci.yml`, `docs/PROJECT_STATUS.md`, and this handoff. No test assertion or production Auth/vault code changes.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. New exact-head CI is required; the diagnostic run itself is not a pass.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device acceptance remain unverified. PR #37 stays Draft; #20/#22/#15 remain open. Pro-owned #14/#38/N4 remains untouched.
+- Next: inspect the new diagnostic diff on the exact HEAD, apply only the confirmed formatter output to the TEST ONLY file, remove the temporary diagnostic step, and rerun every required job/step.
