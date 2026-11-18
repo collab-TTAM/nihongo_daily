@@ -417,7 +417,7 @@ class _ProgressOverviewScreenState
     required String owner,
     required int generation,
     required QuizReportV2HistoryReader reader,
-    required CurriculumRepository curriculum,
+    required CurriculumRepository? curriculum,
   }) {
     if (!mounted || generation != _generation) return false;
     final account = ref.read(accountStateProvider);
