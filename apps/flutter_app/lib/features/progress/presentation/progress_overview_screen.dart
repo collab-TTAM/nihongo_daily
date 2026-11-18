@@ -512,8 +512,7 @@ class _ProgressOverviewScreenState
     }
   }
 
-  Future<_ServerQuizWeakPointSnapshot?>
-  _loadServerQuizWeakPointSnapshot({
+  Future<_ServerQuizWeakPointSnapshot?> _loadServerQuizWeakPointSnapshot({
     required List<QuizReportV2HistoryEntry> entries,
     required Map<String, List<CurriculumEntry>> existingContent,
     required String owner,

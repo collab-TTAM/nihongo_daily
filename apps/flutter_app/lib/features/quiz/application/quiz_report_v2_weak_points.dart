@@ -54,7 +54,9 @@ List<QuizReportV2HistoryEntry> mergeQuizReportV2HistoryPages(
       }
       if (merged.isNotEmpty &&
           _compareQuizReportV2HistoryEntries(merged.last, entry) <= 0) {
-        throw const FormatException('Quiz receipt pages are not keyset ordered');
+        throw const FormatException(
+          'Quiz receipt pages are not keyset ordered',
+        );
       }
       merged.add(entry);
     }

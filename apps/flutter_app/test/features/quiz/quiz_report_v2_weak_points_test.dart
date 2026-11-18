@@ -317,14 +317,42 @@ void main() {
     final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
     final correctAnswer = _answer(question.target, question.choices, true);
     final newer = _page([
-      _receipt(51, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:02.000000Z', '2026-11-17T09:00:02Z', [correctAnswer]),
+      _receipt(
+        51,
+        'vocabulary_reading',
+        'N5',
+        null,
+        '2026-11-17T10:00:02.000000Z',
+        '2026-11-17T09:00:02Z',
+        [correctAnswer],
+      ),
     ]);
     final older = _page([
-      _receipt(52, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:01.000000Z', '2026-11-17T09:00:01Z', [correctAnswer]),
+      _receipt(
+        52,
+        'vocabulary_reading',
+        'N5',
+        null,
+        '2026-11-17T10:00:01.000000Z',
+        '2026-11-17T09:00:01Z',
+        [correctAnswer],
+      ),
     ]);
-    expect(mergeQuizReportV2HistoryPages([newer, older]).map((entry) => entry.request.clientEventId), [_event(51), _event(52)]);
-    expect(() => mergeQuizReportV2HistoryPages([newer, newer]), throwsFormatException);
-    expect(() => mergeQuizReportV2HistoryPages([older, newer]), throwsFormatException);
+    expect(
+      mergeQuizReportV2HistoryPages([
+        newer,
+        older,
+      ]).map((entry) => entry.request.clientEventId),
+      [_event(51), _event(52)],
+    );
+    expect(
+      () => mergeQuizReportV2HistoryPages([newer, newer]),
+      throwsFormatException,
+    );
+    expect(
+      () => mergeQuizReportV2HistoryPages([older, newer]),
+      throwsFormatException,
+    );
   });
 
   test('weak points reconcile the latest answer across separate pages', () {
@@ -332,17 +360,35 @@ void main() {
     final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
     final pages = [
       _page([
-        _receipt(61, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:02.000000Z', '2026-11-17T09:59:00Z', [_answer(question.target, question.choices, false)]),
+        _receipt(
+          61,
+          'vocabulary_reading',
+          'N5',
+          null,
+          '2026-11-17T10:00:02.000000Z',
+          '2026-11-17T09:59:00Z',
+          [_answer(question.target, question.choices, false)],
+        ),
       ]),
       _page([
-        _receipt(62, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:01.000000Z', '2026-11-17T10:00:00Z', [_answer(question.target, question.choices, true)]),
+        _receipt(
+          62,
+          'vocabulary_reading',
+          'N5',
+          null,
+          '2026-11-17T10:00:01.000000Z',
+          '2026-11-17T10:00:00Z',
+          [_answer(question.target, question.choices, true)],
+        ),
       ]),
     ];
     final entries = mergeQuizReportV2HistoryPages(pages);
     expect(
       deriveQuizReportV2WeakPointsFromEntries(
         entries: entries,
-        currentContent: {quizReportV2ContentKey('vocabulary_reading', 'N5'): source},
+        currentContent: {
+          quizReportV2ContentKey('vocabulary_reading', 'N5'): source,
+        },
       ),
       isEmpty,
     );
@@ -366,8 +412,19 @@ void main() {
     ];
     final firstPage = _page(receipts, limit: 100);
     final extraPage = _page([
-      _receipt(101, 'vocabulary_reading', 'N5', null, '2026-11-17T09:59:59.000000Z', '2026-11-17T09:00:00Z', [correctAnswer]),
+      _receipt(
+        101,
+        'vocabulary_reading',
+        'N5',
+        null,
+        '2026-11-17T09:59:59.000000Z',
+        '2026-11-17T09:00:00Z',
+        [correctAnswer],
+      ),
     ], limit: 1);
-    expect(() => mergeQuizReportV2HistoryPages([firstPage, extraPage]), throwsFormatException);
+    expect(
+      () => mergeQuizReportV2HistoryPages([firstPage, extraPage]),
+      throwsFormatException,
+    );
   });
 }

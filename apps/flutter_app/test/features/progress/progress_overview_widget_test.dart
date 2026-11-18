@@ -351,8 +351,7 @@ List<Map<String, Object?>> _serverQuizContinuationPages() {
         practiceKind: null,
         receivedAt:
             '2026-11-17T10:00:${(20 - index).toString().padLeft(2, '0')}.000000Z',
-        completedAt:
-            '2026-11-17T09:00:${index.toString().padLeft(2, '0')}Z',
+        completedAt: '2026-11-17T09:00:${index.toString().padLeft(2, '0')}Z',
         correct: true,
       ),
     _serverQuizReceiptForQuestion(
@@ -378,7 +377,10 @@ List<Map<String, Object?>> _serverQuizContinuationPages() {
   );
   return [
     {'items': firstPage, 'next_cursor': cursor},
-    {'items': [secondPage], 'next_cursor': null},
+    {
+      'items': [secondPage],
+      'next_cursor': null,
+    },
   ];
 }
 
@@ -409,7 +411,9 @@ final class _ServerHistoryReader implements QuizReportV2HistoryReader {
     }
     final raw = responses.isEmpty
         ? response
-        : responses[call - 1 < responses.length ? call - 1 : responses.length - 1];
+        : responses[call - 1 < responses.length
+              ? call - 1
+              : responses.length - 1];
     return query.decodePage(raw);
   }
 }
@@ -857,10 +861,7 @@ void main() {
       expect(reader.lastQuery?.jlptLevel, isNull);
       expect(reader.lastQuery?.quizType, isNull);
       expect(reader.lastQuery?.cursor, isNull);
-      expect(
-        find.text('1 biên nhận đã tải · 1/1 câu đúng'),
-        findsOneWidget,
-      );
+      expect(find.text('1 biên nhận đã tải · 1/1 câu đúng'), findsOneWidget);
       expect(
         find.byKey(const Key('progress-quiz-vocabulary-summary')),
         findsNothing,
@@ -920,10 +921,7 @@ void main() {
     expect(reader.lastQuery?.jlptLevel, isNull);
     expect(reader.lastQuery?.quizType, isNull);
     expect(reader.lastQuery?.cursor, isNull);
-    expect(
-      find.text('3 biên nhận đã tải · 2/3 câu đúng'),
-      findsOneWidget,
-    );
+    expect(find.text('3 biên nhận đã tải · 2/3 câu đúng'), findsOneWidget);
     expect(
       find.text(
         'Từ vựng · N5 1 biên nhận · 1/1 câu đúng · '
@@ -978,20 +976,40 @@ void main() {
       expect(reader.reads, 1);
       expect(reader.queries.single.cursor, isNull);
       expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
-      expect(find.textContaining('Sai 1 lần trong các trang đã tải'), findsOneWidget);
-      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsOneWidget);
+      expect(
+        find.textContaining('Sai 1 lần trong các trang đã tải'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+        findsOneWidget,
+      );
 
-      await tester.ensureVisible(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+      );
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
       await tester.pumpAndSettle();
 
       expect(reader.reads, 2);
       expect(reader.queries[1].limit, 20);
-      expect(reader.queries[1].cursor?.receivedAt, '2026-11-17T10:00:00.000000Z');
-      expect(reader.queries[1].cursor?.clientEventId, 'a3000000-0000-4000-8000-000000000020');
+      expect(
+        reader.queries[1].cursor?.receivedAt,
+        '2026-11-17T10:00:00.000000Z',
+      );
+      expect(
+        reader.queries[1].cursor?.clientEventId,
+        'a3000000-0000-4000-8000-000000000020',
+      );
       expect(find.text('21 biên nhận đã tải · 20/21 câu đúng'), findsOneWidget);
-      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsNothing);
-      expect(find.byKey(const Key('progress-server-quiz-weak-points-empty')), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-server-quiz-weak-points-empty')),
+        findsOneWidget,
+      );
       expect(curriculum.calls, ['vocabulary_reading:N5']);
       expect(tester.takeException(), isNull);
     },
@@ -1007,26 +1025,42 @@ void main() {
         ..failReadOnCall = 2;
       await _mount(tester, harness, source, serverHistoryReader: reader);
 
-      await tester.ensureVisible(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
       await tester.pumpAndSettle();
       expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
 
-      await tester.ensureVisible(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+      );
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
       await tester.pumpAndSettle();
       expect(reader.reads, 2);
-      expect(find.byKey(const Key('progress-server-quiz-more-error')), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress-server-quiz-more-error')),
+        findsOneWidget,
+      );
       expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
-      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+        findsOneWidget,
+      );
 
       reader.failReadOnCall = null;
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
       await tester.pumpAndSettle();
       expect(reader.reads, 3);
-      expect(reader.queries[1].cursor?.clientEventId, reader.queries[2].cursor?.clientEventId);
+      expect(
+        reader.queries[1].cursor?.clientEventId,
+        reader.queries[2].cursor?.clientEventId,
+      );
       expect(find.text('21 biên nhận đã tải · 20/21 câu đúng'), findsOneWidget);
-      expect(find.byKey(const Key('progress-server-quiz-more-error')), findsNothing);
+      expect(
+        find.byKey(const Key('progress-server-quiz-more-error')),
+        findsNothing,
+      );
     },
   );
 
@@ -1041,12 +1075,16 @@ void main() {
         ..readWaitOnCall = 2;
       await _mount(tester, harness, source, serverHistoryReader: reader);
 
-      await tester.ensureVisible(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
       await tester.pumpAndSettle();
       expect(reader.reads, 1);
 
-      await tester.ensureVisible(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+      );
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
       await tester.pump();
       expect(reader.reads, 2);
@@ -1057,8 +1095,14 @@ void main() {
       reader.readWait!.complete();
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('progress-server-quiz-summary')), findsNothing);
-      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsNothing);
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+        findsNothing,
+      );
       expect(tester.takeException(), isNull);
     },
   );
@@ -1093,10 +1137,7 @@ void main() {
 
       expect(reader.reads, 2);
       expect(find.byKey(const Key('progress-server-quiz-error')), findsNothing);
-      expect(
-        find.text('1 biên nhận đã tải · 1/1 câu đúng'),
-        findsOneWidget,
-      );
+      expect(find.text('1 biên nhận đã tải · 1/1 câu đúng'), findsOneWidget);
     },
   );
 
@@ -1128,10 +1169,7 @@ void main() {
         find.byKey(const Key('progress-server-quiz-summary')),
         findsNothing,
       );
-      expect(
-        find.textContaining('biên nhận đã tải'),
-        findsNothing,
-      );
+      expect(find.textContaining('biên nhận đã tải'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
@@ -1224,7 +1262,10 @@ void main() {
         find.textContaining('N5 · Từ vựng · ${question.target.heading}'),
         findsOneWidget,
       );
-      expect(find.textContaining('Sai 2 lần trong các trang đã tải'), findsOneWidget);
+      expect(
+        find.textContaining('Sai 2 lần trong các trang đã tải'),
+        findsOneWidget,
+      );
       expect(
         find.byKey(const Key('progress-server-quiz-weak-points-heading')),
         findsOneWidget,
