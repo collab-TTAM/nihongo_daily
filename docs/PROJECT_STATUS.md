@@ -4575,3 +4575,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. New exact-head CI is required; the diagnostic run itself is not a pass.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device acceptance remain unverified. PR #37 stays Draft; #20/#22/#15 remain open. Pro-owned #14/#38/N4 remains untouched.
 - Next: inspect the new diagnostic diff on the exact HEAD, apply only the confirmed formatter output to the TEST ONLY file, remove the temporary diagnostic step, and rerun every required job/step.
+
+
+## PR #37 exact EOF formatter repair — 2026-11-18T11:08Z
+
+- Run `core-20261118T1108Z-pr37-dart-format-gate-repair`; branch `automation/issue-22-atomic-review`; parent HEAD `503aa920daeb208b5fe1d76560bef81b18229e48`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44284156817](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44284156817), attempt 1, completed FAILURE only in Flutter's strict Dart 3.35.4 format gate. The diagnostic printed one remaining hunk at EOF: remove the extra blank line after the final closing brace in `persistent_supabase_runtime_test.dart`. Repo-sanity 13/13, AI boundary 12/12, database 12/12, disposable Supabase integration 13/13 and Windows 18/18 completed SUCCESS; Flutter analyze, full suite and downstream checks were SKIPPED after format failure, not passes.
+- Applied exactly that EOF whitespace correction to the TEST ONLY file and removed the temporary non-mutating diagnostic step. The repository-wide strict formatter, analyzer, full tests, browser/Web, Windows, SQL and Supabase integration gates remain unchanged; no assertions or runtime behavior changed.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, and this status file. Full recursive parent tree was read untruncated (343 entries: 278 blobs / 65 trees); tree update is based on the exact parent tree and preserves all other entries.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A new exact-head Actions run must complete every required job and step before any pass claim.
+- No production Auth/provider strategy, API/schema/RLS, default runtime activation, hosted staging dispatch/secrets, Pro-owned #14/#38/N4 content, merge or deployment change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical Windows restore/expiry and multi-device sync remain unverified.
+- Next: inspect all latest-attempt jobs and steps on the new exact HEAD; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open.
