@@ -1083,7 +1083,16 @@ void main() {
         ..responses = _serverQuizContinuationPages()
         ..readWait = Completer<void>()
         ..readWaitOnCall = 2;
-      await _mount(tester, harness, source, serverHistoryReader: reader);
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': _serverVocabularySource(),
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-server-quiz')),
@@ -1095,6 +1104,7 @@ void main() {
       );
       expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
       expect(reader.reads, 1);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-more-server-quiz')),
@@ -1102,6 +1112,11 @@ void main() {
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
       await tester.pump();
       expect(reader.reads, 2);
+      expect(reader.queries[1].cursor, isNotNull);
+      expect(
+        reader.queries[1].cursor?.clientEventId,
+        'a3000000-0000-4000-8000-000000000020',
+      );
       expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsOneWidget);
 
       harness.access.change(account.other);
@@ -1132,7 +1147,16 @@ void main() {
       final harness = Harness();
       final source = _ProgressSource(harness);
       final reader = _ServerHistoryReader()..failRead = true;
-      await _mount(tester, harness, source, serverHistoryReader: reader);
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': _serverVocabularySource(),
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-server-quiz')),
@@ -1145,6 +1169,7 @@ void main() {
       expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
 
       expect(reader.reads, 1);
+      expect(curriculum.calls, isEmpty);
       expect(
         find.byKey(const Key('progress-server-quiz-error')),
         findsOneWidget,
@@ -1164,6 +1189,9 @@ void main() {
       expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
 
       expect(reader.reads, 2);
+      expect(reader.queries[0].cursor, isNull);
+      expect(reader.queries[1].cursor, isNull);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
       expect(find.byKey(const Key('progress-server-quiz-error')), findsNothing);
       expect(find.text('1 biên nhận đã tải · 1/1 câu đúng'), findsOneWidget);
     },
