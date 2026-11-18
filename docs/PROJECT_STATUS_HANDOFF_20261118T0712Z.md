@@ -27,3 +27,8 @@ No production Auth behavior, SDK/provider strategy, schema/RLS, default activati
 ## Verification limits and next action
 
 The cloud authoring runtime has no pinned Flutter/Dart SDK; no local formatter/analyzer/test/build was run. Require exact-head CI for formatter, analyzer, full Flutter suite, Chrome/Web, Windows, database, disposable Supabase and AI-boundary checks. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, real Windows learner restart/expiry and physical two-device sync remain unverified. Keep PR #37 Draft and #20/#22/#15 open. Inspect every latest-attempt job and step before any further code change; do not treat a skipped downstream step as passing.
+
+
+## Separate diff-review correction
+
+The first post-write review found the pre-existing `One bounded attempt` class doc comment was attached to the new test factory. A follow-up moves it back directly above `_BoundedSessionHttp`; the test factory retains its own `@visibleForTesting` documentation. This is comment placement only. The parent CI [44259407797](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44259407797) was still running at the observation; the follow-up commit needs its own exact-head CI.

@@ -4547,3 +4547,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `apps/flutter_app/lib/features/auth/application/persistent_supabase_runtime.dart` (TEST ONLY-visible transport factory), `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` (direct bounded-request regression and cancellation-error fixture), `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, this status file, and `docs/PROJECT_STATUS_HANDOFF_20261118T0712Z.md`.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. The new exact-head Actions run must verify Dart 3.35.4 formatting, analyzer, complete Flutter suite, Chrome/Web, Windows, database, disposable Supabase and AI-boundary jobs. No hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical Windows learner restart or two-device sync is claimed.
 - Next: inspect every latest-attempt job/step on the new exact HEAD; if all required checks pass, release this worker and resume the highest-priority unblocked #20/#22/#15 acceptance. Keep PR #37 Draft and #20/#22/#15 open; do not merge on component fixtures alone.
+
+
+### Separate diff-review correction — 2026-11-18T07:12Z
+
+- Post-write review of `33db0b36a627e439ff0c01b8648ac8d66cb91fe9` found the pre-existing `One bounded attempt` class documentation had become attached to the new test factory after insertion. Moved that comment back immediately above `_BoundedSessionHttp`; the factory retains its own `@visibleForTesting` documentation. No behavior or test assertion changed.
+- This follow-up is a documentation-placement correction only. Exact-head CI [44259407797](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44259407797) was still in progress at the review snapshot (repo-sanity and AI boundary succeeded; database, disposable Supabase and Windows were running; Flutter was not yet published). The follow-up HEAD requires a fresh full exact-head CI run.
