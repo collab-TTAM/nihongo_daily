@@ -238,20 +238,17 @@ final class _BoundedSessionHttp extends http.BaseClient {
           bytes.add(chunk);
         }
       } finally {
-        final cancellation = iterator.cancel();
-        try {
-          await cancellation.timeout(_remaining(elapsed));
-        } on TimeoutException {
-          // Cancellation has started, but a stalled stream callback must not
-          // extend the Auth request beyond its original deadline.
-          unawaited(
-            cancellation.then<void>(
-              (_) {},
-              onError: (Object _, StackTrace __) {},
-            ),
-          );
-          throw TimeoutException('Session response cancellation unavailable');
-        }
+        // Start cancellation immediately, but never await its acknowledgement:
+        // an untrusted stream's onCancel callback may remain pending forever.
+        // Only a fully buffered response can reach the SDK, so detaching this
+        // cleanup cannot expose a partial or late Auth response.
+        final cancellation = Future<void>.sync(iterator.cancel);
+        unawaited(
+          cancellation.then<void>(
+            (_) {},
+            onError: (Object _, StackTrace __) {},
+          ),
+        );
       }
       return http.StreamedResponse(
         Stream.value(bytes.takeBytes()),

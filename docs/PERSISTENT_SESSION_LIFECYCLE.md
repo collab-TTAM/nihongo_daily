@@ -29,10 +29,7 @@ and account state contain no credentials. SDK logs are disabled before client
 creation. Auth HTTP accepts only same-origin Auth/REST paths, disables redirects,
 limits responses to 1MiB and bounds each full headers/body HTTP attempt to 15 seconds. The pinned SDK internally retries refresh transport/5xx failures under its existing retry policy, even with auto-refresh disabled; a full Auth operation can exceed 15 seconds. The persistence/controller layer adds no retry loop or timer.
 Timeout/oversize/transport failures are fixed safe errors. A late timed-out
-response cannot reach the SDK; the late response stream is cancelled. Response
-body consumption and cancellation acknowledgement share the original request
-deadline: cancellation starts immediately, but a stalled stream `onCancel`
-callback is detached with an error handler instead of extending the Auth call.
+response cannot reach the SDK; the late response stream is cancelled. Response-body consumption uses the original request deadline. When reading ends or times out, stream cancellation starts immediately; its acknowledgement is detached with a terminal error handler and is never awaited by the Auth call. A stalled `onCancel` callback therefore cannot extend the request. The SDK receives only a fully buffered response, never a partial or late body.
 The pinned-SDK regression holds that acknowledgement and verifies the startup
 failure returns within the deadline, no profile is requested, and explicit
 cleanup clears the saved refresh secret before another login.
