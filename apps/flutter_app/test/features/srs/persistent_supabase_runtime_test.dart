@@ -27,6 +27,7 @@ import 'own_profile_fixtures.dart' as profile;
 final class _DelayedCancellationClient extends http.BaseClient {
   final cancellationAck = Completer<void>();
   final requests = <http.BaseRequest>[];
+  int? declaredContentLength;
   var cancellationStarted = false;
   late final body = StreamController<List<int>>(
     onCancel: () {
@@ -43,6 +44,7 @@ final class _DelayedCancellationClient extends http.BaseClient {
         body.stream,
         200,
         headers: {'content-type': 'application/json'},
+        contentLength: declaredContentLength,
         request: request,
       );
     }
@@ -1289,6 +1291,53 @@ void main() {
         expect(client.requests.single.url.path, '/auth/v1/token');
 
         // A late cancellation error is cleanup-only and must be handled.
+        client.failCancellation();
+        await Future<void>.delayed(Duration.zero);
+      } finally {
+        client.releaseCancellation();
+        bounded.close();
+      }
+    },
+  );
+
+  test(
+    'oversized declared Auth response returns while cancellation acknowledgement is stalled',
+    () async {
+      await runtime.close();
+      network.close();
+      final client = _DelayedCancellationClient()
+        ..declaredContentLength = 1024 * 1024 + 1;
+      network = client;
+      final bounded = createBoundedSessionHttpForTesting(
+        inner: client,
+        origin: Uri.parse(wire.origin),
+        timeout: const Duration(milliseconds: 40),
+      );
+      final elapsed = Stopwatch()..start();
+      try {
+        await expectLater(
+          bounded
+              .send(
+                http.Request('POST', Uri.parse('${wire.origin}/auth/v1/token')),
+              )
+              .timeout(const Duration(seconds: 2)),
+          throwsA(
+            isA<ReviewTransportFailure>()
+                .having(
+                  (failure) => failure.code,
+                  'code',
+                  ReviewErrorCode.internalError,
+                )
+                .having((failure) => failure.retryable, 'retryable', isFalse),
+          ),
+        );
+        expect(elapsed.elapsed, lessThan(const Duration(seconds: 1)));
+        expect(client.cancellationStarted, isTrue);
+        expect(client.cancellationAck.isCompleted, isFalse);
+        expect(client.requests, hasLength(1));
+        expect(client.requests.single.url.path, '/auth/v1/token');
+
+        // The detached cleanup must consume a late cancellation error.
         client.failCancellation();
         await Future<void>.delayed(Duration.zero);
       } finally {

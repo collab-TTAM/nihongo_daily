@@ -233,7 +233,17 @@ final class _BoundedSessionHttp extends http.BaseClient {
       );
       const maximum = 1024 * 1024;
       if ((response.contentLength ?? 0) > maximum) {
-        await response.stream.listen((_) {}).cancel();
+        // An oversized response is unusable. Start cancellation without
+        // waiting for an untrusted stream's onCancel acknowledgement.
+        final cancellation = Future<void>.sync(
+          () => response.stream.listen((_) {}).cancel(),
+        );
+        unawaited(
+          cancellation.then<void>(
+            (_) {},
+            onError: (Object _, StackTrace __) {},
+          ),
+        );
         throw const ReviewTransportFailure(ReviewErrorCode.internalError);
       }
       final bytes = BytesBuilder(copy: false);
