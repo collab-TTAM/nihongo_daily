@@ -176,6 +176,15 @@ final class PersistentSupabaseRuntime
 }
 
 /// One bounded attempt; timed-out responses cannot reach the SDK later.
+/// Builds the production bounded transport for a focused transport test.
+/// This is not an application configuration or learner-facing entry point.
+@visibleForTesting
+http.Client createBoundedSessionHttpForTesting({
+  required http.Client inner,
+  required Uri origin,
+  required Duration timeout,
+}) => _BoundedSessionHttp(inner, false, origin, timeout);
+
 final class _BoundedSessionHttp extends http.BaseClient {
   _BoundedSessionHttp(this.inner, this.owns, this.origin, this.timeout);
   final http.Client inner;

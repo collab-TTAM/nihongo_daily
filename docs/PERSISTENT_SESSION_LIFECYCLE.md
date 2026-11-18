@@ -30,9 +30,7 @@ creation. Auth HTTP accepts only same-origin Auth/REST paths, disables redirects
 limits responses to 1MiB and bounds each full headers/body HTTP attempt to 15 seconds. The pinned SDK internally retries refresh transport/5xx failures under its existing retry policy, even with auto-refresh disabled; a full Auth operation can exceed 15 seconds. The persistence/controller layer adds no retry loop or timer.
 Timeout/oversize/transport failures are fixed safe errors. A late timed-out
 response cannot reach the SDK; the late response stream is cancelled. Response-body consumption uses the original request deadline. When reading ends or times out, stream cancellation starts immediately; its acknowledgement is detached with a terminal error handler and is never awaited by the Auth call. A stalled `onCancel` callback therefore cannot extend the request. The SDK receives only a fully buffered response, never a partial or late body.
-The pinned-SDK regression holds that acknowledgement and verifies the startup
-failure returns within the deadline, no profile is requested, and explicit
-cleanup clears the saved refresh secret before another login.
+The TEST ONLY transport regression exercises the bounded client directly: one Auth HTTP attempt must map its body deadline to retryable `NETWORK_UNAVAILABLE` while the `onCancel` acknowledgement is still pending, and a later cancellation error must be handled. The separate pinned-SDK runtime regression verifies that a timed-out late Auth response cannot dispatch own-profile provisioning. The pinned SDK may retry transport failures, so a complete `start()` can outlast one request deadline; this transport test does not claim otherwise.
 
 The SDK and its mutation methods stay private. SDK automatic refresh is disabled;
 `refresh()` is explicit and applies the same persistence barrier. No automatic

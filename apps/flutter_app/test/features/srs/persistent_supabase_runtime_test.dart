@@ -57,6 +57,12 @@ final class _DelayedCancellationClient extends http.BaseClient {
     if (!cancellationAck.isCompleted) cancellationAck.complete();
   }
 
+  void failCancellation() {
+    if (!cancellationAck.isCompleted) {
+      cancellationAck.completeError(StateError('TEST ONLY cancellation failure'));
+    }
+  }
+
   @override
   void close() {
     releaseCancellation();
@@ -1245,27 +1251,28 @@ void main() {
   });
 
   test(
-    'SDK body deadline returns while response cancellation acknowledgement is stalled',
+    'bounded Auth HTTP request returns while cancellation acknowledgement is stalled',
     () async {
       await runtime.close();
       network.close();
       final client = _DelayedCancellationClient();
       network = client;
-      runtime = PersistentSupabaseRuntime(
-        projectUrl: wire.origin,
-        publishableKey: wire.key,
-        vault: vault,
-        store: journal,
-        httpClient: network,
-        now: () => now,
-        requestTimeout: const Duration(milliseconds: 40),
+      final bounded = createBoundedSessionHttpForTesting(
+        inner: client,
+        origin: Uri.parse(wire.origin),
+        timeout: const Duration(milliseconds: 40),
       );
-      backend.secret = 'TEST_ONLY_SAVED_SDK';
       final elapsed = Stopwatch()..start();
-      final starting = runtime.start();
       try {
         await expectLater(
-          starting.timeout(const Duration(seconds: 2)),
+          bounded
+              .send(
+                http.Request(
+                  'POST',
+                  Uri.parse('${wire.origin}/auth/v1/token'),
+                ),
+              )
+              .timeout(const Duration(seconds: 2)),
           throwsA(
             isA<ReviewTransportFailure>()
                 .having(
@@ -1279,34 +1286,16 @@ void main() {
         expect(elapsed.elapsed, lessThan(const Duration(seconds: 1)));
         expect(client.cancellationStarted, isTrue);
         expect(client.cancellationAck.isCompleted, isFalse);
-        expect(runtime.persistence.currentSession, isNull);
-        expect(runtime.account.readyRuntime, isNull);
-        expect(backend.secret, 'TEST_ONLY_SAVED_SDK');
-        expect(
-          client.requests.map((request) => request.url.path),
-          contains('/auth/v1/token'),
-        );
-        expect(
-          client.requests.map((request) => request.url.path),
-          isNot(contains('/rest/v1/rpc/ensure_profile')),
-        );
+        expect(client.requests, hasLength(1));
+        expect(client.requests.single.url.path, '/auth/v1/token');
+
+        // A late cancellation error is cleanup-only and must be handled.
+        client.failCancellation();
+        await Future<void>.delayed(Duration.zero);
       } finally {
         client.releaseCancellation();
-        try {
-          await starting;
-        } on Object {
-          // The expected bounded transport failure is already asserted above.
-        }
+        bounded.close();
       }
-
-      await runtime.account.signOut();
-      expect(runtime.account.state.phase, AccountPhase.signedOut);
-      expect(runtime.persistence.phase, SessionPersistencePhase.idle);
-      expect(backend.secret, isNull);
-      expect(
-        client.requests.map((request) => request.url.path),
-        isNot(contains('/rest/v1/rpc/ensure_profile')),
-      );
     },
   );
 
