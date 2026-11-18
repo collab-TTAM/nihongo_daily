@@ -545,6 +545,16 @@ Future<ProviderContainer> _mount(
   return container;
 }
 
+Future<void> _pumpUntilVisible(WidgetTester tester, Finder finder) async {
+  // Do not wait for an indeterminate LinearProgressIndicator to become idle.
+  // Wait for the state the test actually needs, then assert loading has ended.
+  for (var attempt = 0; attempt < 100; attempt++) {
+    if (finder.evaluate().isNotEmpty) return;
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  expect(finder, findsOneWidget);
+}
+
 Finder _todayButton() => find.descendant(
   of: find.byKey(const Key('progress-today')),
   matching: find.byType(OutlinedButton),
@@ -1079,7 +1089,11 @@ void main() {
         find.byKey(const Key('progress-load-server-quiz')),
       );
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-      await tester.pumpAndSettle();
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-summary')),
+      );
+      expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
       expect(reader.reads, 1);
 
       await tester.ensureVisible(
@@ -1091,9 +1105,18 @@ void main() {
       expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsOneWidget);
 
       harness.access.change(account.other);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(
+        find.text('Đang tải trang biên nhận tiếp theo…'),
+        findsNothing,
+      );
       reader.readWait!.complete();
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump();
 
       expect(
         find.byKey(const Key('progress-server-quiz-summary')),
@@ -1118,7 +1141,11 @@ void main() {
         find.byKey(const Key('progress-load-server-quiz')),
       );
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-      await tester.pumpAndSettle();
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-error')),
+      );
+      expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
 
       expect(reader.reads, 1);
       expect(
@@ -1133,7 +1160,11 @@ void main() {
 
       reader.failRead = false;
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-      await tester.pumpAndSettle();
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-summary')),
+      );
+      expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
 
       expect(reader.reads, 2);
       expect(find.byKey(const Key('progress-server-quiz-error')), findsNothing);
