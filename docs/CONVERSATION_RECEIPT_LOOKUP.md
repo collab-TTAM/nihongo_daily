@@ -802,3 +802,29 @@ current captured generation, actual I/O drain and durable conditional deletion.
 No default UI/runtime acquires it, no new payload persistence/transport/Auth owner,
 server endpoint or security policy is introduced. TEST ONLY component cases do not
 satisfy hosted learner acceptance.
+
+
+## Same caller-owned SDK completion acceptance — 2026-11-18
+
+Five additional SDK cases exercise lookupCompletion through the SAME supplied
+Supabase client, AccountController, original-bound transport, receipt decorator
+and store owner. All three commands use exact fixed six-column authenticated GETs
+and original fixtures; UNKNOWN/PENDING produce no handle, COMPLETED retains the
+exact original envelope and typed response. Inspection adds no HTTP/storage I/O.
+Each completed read still leaves preexisting metadata unchanged and an explicit
+mutation blocked before HTTP. Close redacts the handle and preserves pending,
+while borrowed SDK/Auth and HTTP remain alive.
+
+Two cases first capture a valid handle, then hold a further actual AbortableRequest
+across SDK A-B-A with ignored abort. The first handle redacts on B and stays retired
+on returning A; no fresh reader exists until the original HTTP actually drains.
+Late success/private failure must reject UNAUTHORIZED, not mint a handle. A fresh
+reader afterward captures with the new A bearer; both old handle and old reader
+remain retired, and metadata still blocks mutation. Request assertion counters
+advance only after fixed endpoint/query/body/header checks, preventing swallowed
+setup errors from passing as expected transport rejection.
+
+Auth/JWT/profile/HTTP/backend ports are TEST ONLY. Actual SDK execution is not
+hosted JWT/RLS/provider proof, Windows OS vault execution, transcript application
+or conditional release. New exact-head Actions remains required for full Flutter/
+native/build evidence; local evidence is recorded in PROJECT_STATUS and PR41.

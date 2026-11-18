@@ -26,6 +26,7 @@ import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
+import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
 import 'package:supabase/supabase.dart';
@@ -978,6 +979,208 @@ void main() {
           expect(backend.value, ref.encode());
           expect(backend.calls, everyElement('read'));
           await owner.close();
+          expect(sdk.auth.currentSession!.user.id, userA);
+          expect(network.closed, isFalse);
+        } finally {
+          if (!held.isCompleted) {
+            held.completeError(StateError('TEST_ONLY_CLEANUP'));
+          }
+          await rejected;
+        }
+      },
+    );
+  }
+
+  PendingConversationCommandEnvelope completionCommand(String op) =>
+      switch (op) {
+        'start_conversation' => PendingConversationCommandEnvelope.fromStart(
+          projectUrl: origin,
+          ownerId: userA,
+          request: StartConversationRequest.fromJson(request(op)),
+        ),
+        'conversation_turn' => PendingConversationCommandEnvelope.fromTurn(
+          projectUrl: origin,
+          ownerId: userA,
+          request: ConversationTurnRequest.fromJson(request(op)),
+        ),
+        _ => PendingConversationCommandEnvelope.fromFinish(
+          projectUrl: origin,
+          ownerId: userA,
+          request: FinishConversationRequest.fromJson(request(op)),
+        ),
+      };
+  void checkCompletionGet(
+    http.BaseRequest r,
+    ConversationReceiptReference ref,
+  ) {
+    expect(r.method, 'GET');
+    expect(r.url.origin, origin);
+    expect(r.url.path, '/rest/v1/operation_receipts');
+    expect(r.url.queryParameters, {
+      'select':
+          'user_id,operation,client_event_id,request_json,status,response_json',
+      'user_id': 'eq.$userA',
+      'operation': 'eq.${ref.operation.wireName}',
+      'client_event_id': 'eq.${ref.clientEventId}',
+      'limit': '2',
+    });
+    expect((r as http.Request).body, isEmpty);
+    expect(
+      r.headers['authorization'],
+      'Bearer ${token(now, userA, generation)}',
+    );
+    expect(r.headers['apikey'], key);
+    expect(r.headers['cache-control'], 'no-store');
+    expect(r.followRedirects, isFalse);
+    expect(r.maxRedirects, 0);
+  }
+
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    test(
+      'same SDK completion handle retains exact $op without release',
+      () async {
+        final original = completionCommand(op);
+        final ref = original.reference;
+        final backend = _ReceiptBackend()..value = ref.encode();
+        final owner = accountReceipt(backend);
+        await settleAccount();
+        final reader = owner.createConversationReceiptLookup()!;
+        final conversation = owner.createAiConversationSession()!;
+        var validatedReads = 0;
+        for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
+          network.onSend = (r) async {
+            checkCompletionGet(r, ref);
+            expect(backend.value, ref.encode());
+            validatedReads++;
+            return response(
+              jsonEncode(status == 'UNKNOWN' ? [] : [originalRow(op, status)]),
+            );
+          };
+          final handle = await reader.lookupCompletion(original);
+          if (status == 'COMPLETED') {
+            final pair = handle!.capture()!;
+            expect(pair.command, same(original));
+            expect(pair.receipt.status, ConversationReceiptStatus.completed);
+            final actual =
+                pair.receipt.start?.toJson() ??
+                pair.receipt.turn?.toJson() ??
+                pair.receipt.finish!.toJson();
+            expect(actual, fixture(op, 'response'));
+            expect(handle.isCurrent, isTrue);
+            expect(handle.toString(), 'CapturedConversationCompletion');
+            expect(identical(handle.capture()!.receipt, pair.receipt), isTrue);
+            expect(backend.calls, isEmpty);
+            await expectLater(
+              conversation.start(
+                StartConversationRequest.fromJson(
+                  request('start_conversation'),
+                ),
+              ),
+              throwsA(failure(AiTextErrorCode.syncConflict)),
+            );
+            expect(backend.calls, ['read']);
+            expect(network.requests, hasLength(3));
+            await owner.close();
+            expect(handle.capture(), isNull);
+            expect(handle.isCurrent, isFalse);
+          } else {
+            expect(handle, isNull);
+          }
+          expect(backend.calls, status == 'COMPLETED' ? ['read'] : isEmpty);
+          expect(backend.value, ref.encode());
+        }
+        expect(validatedReads, 3);
+        expect(network.requests, hasLength(3));
+        expect(sdk.auth.currentSession!.user.id, userA);
+        expect(network.closed, isFalse);
+        expect(conversation.isCurrent, isFalse);
+        expect(backend.value, ref.encode());
+      },
+    );
+  }
+  for (final error in [false, true]) {
+    test(
+      'same SDK completion handle retires before A-B-A late error=$error',
+      () async {
+        const op = 'start_conversation';
+        final original = completionCommand(op);
+        final ref = original.reference;
+        final backend = _ReceiptBackend()..value = ref.encode();
+        final owner = accountReceipt(backend);
+        await settleAccount();
+        final reader = owner.createConversationReceiptLookup()!;
+        var validatedReads = 0;
+        network.onSend = (r) async {
+          checkCompletionGet(r, ref);
+          validatedReads++;
+          return response(jsonEncode([originalRow(op, 'COMPLETED')]));
+        };
+        final handle = (await reader.lookupCompletion(original))!;
+        expect(handle.capture()!.command, same(original));
+        final held = Completer<http.StreamedResponse>();
+        final entered = Completer<void>();
+        final aborted = Completer<void>();
+        network.onSend = (r) {
+          checkCompletionGet(r, ref);
+          validatedReads++;
+          final req = r as http.AbortableRequest;
+          unawaited(req.abortTrigger!.then((_) => aborted.complete()));
+          entered.complete();
+          return held.future; // TEST ONLY ignores actual HTTP abort.
+        };
+        final rejected = expectLater(
+          reader.lookupCompletion(original),
+          throwsA(failure(AiTextErrorCode.unauthorized)),
+        );
+        try {
+          await entered.future.timeout(const Duration(seconds: 5));
+          nextUser = userB;
+          await login();
+          await settleAccount();
+          await aborted.future.timeout(const Duration(seconds: 5));
+          expect(handle.capture(), isNull);
+          expect(reader.isCurrent, isFalse);
+          expect(owner.createConversationReceiptLookup(), isNull);
+          nextUser = userA;
+          generation++;
+          await login();
+          await settleAccount();
+          expect(handle.capture(), isNull);
+          expect(owner.createConversationReceiptLookup(), isNull);
+          expect(backend.calls, isEmpty);
+          expect(backend.value, ref.encode());
+          if (error) {
+            held.completeError(StateError('TEST_ONLY_PRIVATE_LATE_COMPLETION'));
+          } else {
+            held.complete(response(jsonEncode([originalRow(op, 'COMPLETED')])));
+          }
+          await rejected;
+          await settleAccount();
+          final fresh = owner.createConversationReceiptLookup()!;
+          expect(fresh, isNot(same(reader)));
+          network.onSend = (r) async {
+            checkCompletionGet(r, ref);
+            validatedReads++;
+            return response(jsonEncode([originalRow(op, 'COMPLETED')]));
+          };
+          final freshHandle = (await fresh.lookupCompletion(original))!;
+          expect(freshHandle.capture()!.command, same(original));
+          expect(handle.capture(), isNull);
+          await expectLater(
+            owner.createAiConversationSession()!.start(original.start!),
+            throwsA(failure(AiTextErrorCode.syncConflict)),
+          );
+          expect(validatedReads, 3);
+          expect(network.requests, hasLength(3));
+          expect(network.requests.every((r) => r.method == 'GET'), isTrue);
+          expect(backend.calls, everyElement('read'));
+          expect(backend.value, ref.encode());
+          await owner.close();
+          expect(freshHandle.capture(), isNull);
           expect(sdk.auth.currentSession!.user.id, userA);
           expect(network.closed, isFalse);
         } finally {
