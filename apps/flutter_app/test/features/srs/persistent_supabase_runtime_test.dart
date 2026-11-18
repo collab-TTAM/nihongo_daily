@@ -59,7 +59,9 @@ final class _DelayedCancellationClient extends http.BaseClient {
 
   void failCancellation() {
     if (!cancellationAck.isCompleted) {
-      cancellationAck.completeError(StateError('TEST ONLY cancellation failure'));
+      cancellationAck.completeError(
+        StateError('TEST ONLY cancellation failure'),
+      );
     }
   }
 
@@ -1267,10 +1269,7 @@ void main() {
         await expectLater(
           bounded
               .send(
-                http.Request(
-                  'POST',
-                  Uri.parse('${wire.origin}/auth/v1/token'),
-                ),
+                http.Request('POST', Uri.parse('${wire.origin}/auth/v1/token')),
               )
               .timeout(const Duration(seconds: 2)),
           throwsA(
@@ -1966,3 +1965,4 @@ void main() {
     },
   );
 }
+

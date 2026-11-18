@@ -4553,3 +4553,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Post-write review of `33db0b36a627e439ff0c01b8648ac8d66cb91fe9` found the pre-existing `One bounded attempt` class documentation had become attached to the new test factory after insertion. Moved that comment back immediately above `_BoundedSessionHttp`; the factory retains its own `@visibleForTesting` documentation. No behavior or test assertion changed.
 - This follow-up is a documentation-placement correction only. Exact-head CI [44259407797](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44259407797) was still in progress at the review snapshot (repo-sanity and AI boundary succeeded; database, disposable Supabase and Windows were running; Flutter was not yet published). The follow-up HEAD requires a fresh full exact-head CI run.
+
+
+## PR #37 exact Dart formatter repair — 2026-11-18T09:07Z
+
+- Run `core-20261118T0907Z-pr37-exact-dart-format-repair`; branch `automation/issue-22-atomic-review`; parent `5160ada3bfd58645c8b2baf30dd7b888699c39f6`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head CI [44265761049](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44265761049): repo-sanity 13/13, AI boundary 12/12, database/RLS 12/12, Windows 18/18 and disposable Supabase 13/13 succeeded. Flutter failed only pinned Dart 3.35.4 format on `persistent_supabase_runtime_test.dart`; analyze/full tests/Web steps were skipped.
+- Applied exact formatter hunks and removed the temporary diagnostic step. Strict format/analyze/test/build gates and assertions remain; no production Auth/provider/schema/RLS/default runtime or Pro N4 changes.
+- Paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, this status file and `docs/PROJECT_STATUS_HANDOFF_20261118T0907Z.md`.
+- Full recursive source tree was checked; exact-head CI is still required. Cloud runtime lacks Flutter/Dart SDK; no local format/analyze/test/build is claimed.
+- Hosted signed-JWT learner A/B, deployed RLS/PostgREST, hosted expiry/restart and physical multi-device acceptance remain outstanding. PR #37 stays Draft; #20/#22/#15 stay open.
+- Next: inspect every latest-attempt job/step on the new HEAD and fix only observed failures.
