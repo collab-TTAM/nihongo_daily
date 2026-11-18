@@ -140,6 +140,73 @@ void main() {
     store = ConversationReceiptStore(scope: scope, backend: backend);
     addTearDown(store.close);
   });
+  test('nested readiness inspection cannot establish currentness', () async {
+    late ReceiptGuardedAiTransport t;
+    var probing = false;
+    final nested = <bool>[];
+    t = open(
+      ready: () {
+        if (!probing) {
+          probing = true;
+          nested.add(t.isCurrent);
+          probing = false;
+        }
+        return true;
+      },
+    );
+    addTearDown(t.close);
+    expect(t.isCurrent, isTrue);
+    expect(nested, [false, false]);
+    expect(inner.reads, 0);
+    expect(inner.sends, 0);
+    expect(backend.value, isNull);
+    t.revoke();
+    expect(t.isCurrent, isFalse);
+    expect(nested, [false, false]);
+  });
+  test('readiness reentry cannot forward a nested scenario read', () async {
+    final reference = ConversationReceiptReference.fromStart(
+      projectUrl: scope.projectOrigin,
+      ownerId: owner,
+      request: start,
+    );
+    backend.value = reference.encode();
+    late ReceiptGuardedAiTransport t;
+    Future<Object?>? nested;
+    var entered = false;
+    t = open(
+      ready: () {
+        if (!entered) {
+          entered = true;
+          nested = Future<Object?>.sync(
+            () => t.read(
+              capturedSession: auth.currentSession!,
+              level: AiTextLevel.n5,
+            ),
+          );
+        }
+        return true;
+      },
+    );
+    addTearDown(t.close);
+    expect(t.isCurrent, isFalse);
+    await expectLater(nested!, throwsA(code(AiTextErrorCode.unauthorized)));
+    expect(t.isCurrent, isFalse);
+    expect(inner.revoked, isTrue);
+    expect(inner.reads, 0);
+    expect(inner.sends, 0);
+    expect(backend.value, reference.encode());
+    await expectLater(
+      t.invoke(
+        capturedSession: auth.currentSession!,
+        operation: 'start_conversation',
+        body: start.toJson(),
+      ),
+      throwsA(code(AiTextErrorCode.unauthorized)),
+    );
+    expect(inner.sends, 0);
+    expect(backend.value, reference.encode());
+  });
   final requests = <String, Map<String, Object>>{
     'start_conversation': start.toJson(),
     'conversation_turn': ConversationTurnRequest(

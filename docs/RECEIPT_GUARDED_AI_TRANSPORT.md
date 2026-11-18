@@ -55,3 +55,17 @@ CAS, secure multi-process ownership or metadata-derived dispatch grant is claime
 Next explicitly compose store creation/close/sign-out clear with Windows lifecycle,
 exercise actual SDK/runtime storage failure/refresh/account transitions, and add
 authenticated receipt reconciliation before enabling this in learner composition.
+
+
+## Readiness reentry fence — 2026-11-18
+
+ReceiptGuardedAiTransport now rejects nested isCurrent checks while its outer
+readiness/Auth/inner-transport check is unsettled. A callback may inspect the
+capability, but that nested inspection returns false without recursive getters.
+An attempted nested read fails UNAUTHORIZED before forwarding and permanently
+revokes the decorator; the outer check cannot publish currentness afterward.
+The checking flag is released in finally, including callback exceptions. Existing
+pending metadata, mutation attempt, actual drain and owned cleanup rules remain.
+Two TEST ONLY port regressions cover harmless inspection and an attempted nested
+scenario read with preexisting pending metadata. This is component verification,
+not hosted Auth/provider proof or permission to clear/replay a pending command.

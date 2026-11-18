@@ -45,12 +45,15 @@ final class ReceiptGuardedAiTransport
   ConversationReceiptDispatch<Object?>? _gate;
   bool _attempted = false;
   bool _revoked = false;
+  bool _checking = false;
   bool _cleanupFailed = false;
   Future<void>? _closing;
 
   @override
   bool get isCurrent {
-    if (_revoked) return false;
+    // External readiness/Auth/inner getters cannot establish a nested lease.
+    if (_revoked || _checking) return false;
+    _checking = true;
     try {
       if (_ready() &&
           identical(_auth.currentSession, _session) &&
@@ -62,12 +65,18 @@ final class ReceiptGuardedAiTransport
       }
     } on Object {
       /* Fixed failure below. */
+    } finally {
+      _checking = false;
     }
     revoke();
     return false;
   }
 
   void _check(ReviewSession session) {
+    // A nested operation retires the lease, even if its caller catches failure.
+    if (_checking) {
+      revoke();
+    }
     if (!identical(session, _session) || !isCurrent) {
       throw const AiTextFailure(AiTextErrorCode.unauthorized);
     }
