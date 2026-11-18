@@ -413,3 +413,27 @@ or learner data. It does not coordinate separate Windows logon sessions or
 arbitrary same-user software, and does not replace hosted signed-JWT learner
 acceptance or OS logoff/power-loss testing. The compile-time fault hook remains
 limited to the CI bridge build and is disabled before staging/preview rebuilds.
+
+## Caller close while a Windows refresh-token rotation write is pending
+
+The TEST ONLY pinned-SDK/Windows MethodChannel regression starts with a saved
+User A refresh secret, restores it through the owned SDK, and waits until the
+rotated secret is confirmed in the vault and the own profile is ready. It then
+holds a second refresh rotation at the native-vault write acknowledgement and
+starts caller close while that write is pending.
+
+Close must revoke profile/study readiness immediately but must not clear the
+slot or release the Windows owner lease while the write is still unresolved.
+After the write is released, the in-flight refresh is treated as interrupted:
+the owned SDK performs local sign-out, the exact project slot is cleared, and
+only then may the native owner lease be released. A replacement runtime must
+observe an empty slot and issue neither another refresh nor an own-profile
+request.
+
+This is a TEST ONLY MockClient/MethodChannel lifecycle regression. It proves
+ordering and close-drain behavior at the Dart Windows adapter boundary; it does
+not simulate a spontaneous delayed `CredWriteW` OS failure or prove hosted
+GoTrue/PostgREST, signed-JWT learner A/B, OS logoff/power loss, or physical
+multi-device sync. The separate Windows native process probes remain the
+Credential Manager/owner-lease evidence.
+

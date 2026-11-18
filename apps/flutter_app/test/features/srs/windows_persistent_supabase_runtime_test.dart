@@ -502,6 +502,124 @@ void main() {
   );
 
   test(
+    'Windows caller close drains a pending rotation write before clearing and releasing owner',
+    () async {
+      storedSecret = 'TEST_ONLY_WINDOWS_CLOSE_WRITE_SAVED';
+      refreshSecret = 'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION';
+      await runtime.start();
+      await waitForReady();
+
+      expect(storedSecret, refreshSecret);
+      expect(runtime.account.state.profile?.id, wire.a);
+
+      refreshSecret = 'TEST_ONLY_WINDOWS_CLOSE_WRITE_PENDING_ROTATION';
+      writeWait = Completer<void>();
+      writeStarted = Completer<void>();
+      final refreshing = runtime.refresh();
+      await writeStarted!.future.timeout(const Duration(seconds: 5));
+      await fixture.flush();
+
+      expect(
+        storedSecret,
+        'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION',
+      );
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+
+      var closeCompleted = false;
+      final closing = runtime.close().whenComplete(() {
+        closeCompleted = true;
+      });
+      await fixture.flush();
+
+      expect(closeCompleted, isFalse);
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+      expect(
+        storedSecret,
+        'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION',
+      );
+      expect(
+        timeline.where((event) => event == 'auth.logout'),
+        isEmpty,
+      );
+
+      writeWait!.complete();
+      await expectLater(
+        refreshing,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await closing;
+
+      expect(closeCompleted, isTrue);
+      expect(storedSecret, isNull);
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        timeline.lastIndexOf('vault.write'),
+        greaterThan(timeline.lastIndexOf('auth.refresh')),
+      );
+      expect(
+        timeline.lastIndexOf('auth.logout'),
+        greaterThan(timeline.lastIndexOf('vault.write')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.lastIndexOf('auth.logout')),
+      );
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder.last, 'owner.release');
+      expect(
+        closeOrder.lastIndexOf('vault.clear'),
+        lessThan(closeOrder.lastIndexOf('owner.release')),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+
+      // A replacement owner sees an empty slot; the interrupted rotation
+      // cannot be restored or used to request another profile.
+      writeWait = null;
+      writeStarted = null;
+      vault = createWindowsSessionCredentialVault(wire.origin);
+      runtime = PersistentSupabaseRuntime(
+        projectUrl: wire.origin,
+        publishableKey: wire.key,
+        vault: vault,
+        store: journal,
+        httpClient: network,
+        now: () => now,
+      );
+      await runtime.start();
+
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(storedSecret, isNull);
+      expect(
+        timeline.where((event) => event == 'auth.refresh'),
+        hasLength(2),
+      );
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+    },
+  );
+
+  test(
     'Windows runtime leases vault before read and releases on close',
     () async {
       await runtime.start();
