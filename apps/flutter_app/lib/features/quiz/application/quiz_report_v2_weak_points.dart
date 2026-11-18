@@ -121,15 +121,22 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
   currentContent: currentContent,
 );
 
-/// Derives suggestions from an explicitly bounded set of validated receipts.
+/// Derives suggestions from at most 100 uniquely identified validated receipts.
 /// This is not mastery, SRS state, study credit or an all-time model.
 List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPointsFromEntries({
   required Iterable<QuizReportV2HistoryEntry> entries,
   required Map<String, List<CurriculumEntry>> currentContent,
 }) {
-  final receipts = entries.toList(growable: false);
-  if (receipts.length > maxQuizReportV2OverviewReceipts) {
-    throw const FormatException('Invalid quiz report history snapshot');
+  final receipts = <QuizReportV2HistoryEntry>[];
+  final seen = <String>{};
+  for (final entry in entries) {
+    if (receipts.length >= maxQuizReportV2OverviewReceipts) {
+      throw const FormatException('Quiz receipt overview limit exceeded');
+    }
+    if (!seen.add(entry.request.clientEventId)) {
+      throw const FormatException('Duplicate quiz receipt in snapshot');
+    }
+    receipts.add(entry);
   }
   final keys = <String>{
     for (final item in receipts)

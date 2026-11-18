@@ -394,6 +394,56 @@ void main() {
     );
   });
 
+  test('duplicate receipt identity cannot inflate or clear weak points', () {
+    final source = _source(CurriculumKind.vocabulary);
+    final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
+    final original = _page([
+      _receipt(
+        71,
+        'vocabulary_reading',
+        'N5',
+        null,
+        '2026-11-17T10:00:01.000000Z',
+        '2026-11-17T09:00:00Z',
+        [_answer(question.target, question.choices, false)],
+      ),
+    ]).items.single;
+    final conflicting = _page([
+      _receipt(
+        71,
+        'vocabulary_reading',
+        'N5',
+        null,
+        '2026-11-17T10:00:02.000000Z',
+        '2026-11-17T09:01:00Z',
+        [_answer(question.target, question.choices, true)],
+      ),
+    ]).items.single;
+    final content = <String, List<CurriculumEntry>>{
+      quizReportV2ContentKey('vocabulary_reading', 'N5'): source,
+    };
+    expect(
+      deriveQuizReportV2WeakPointsFromEntries(
+        entries: [original],
+        currentContent: content,
+      ).single.incorrectCount,
+      1,
+    );
+    for (final snapshot in [
+      [original, original],
+      [original, conflicting],
+      [conflicting, original],
+    ]) {
+      expect(
+        () => deriveQuizReportV2WeakPointsFromEntries(
+          entries: snapshot,
+          currentContent: content,
+        ),
+        throwsFormatException,
+      );
+    }
+  });
+
   test('overview receipt aggregation is capped at one hundred items', () {
     final source = _source(CurriculumKind.vocabulary);
     final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
@@ -424,6 +474,28 @@ void main() {
     ], limit: 1);
     expect(
       () => mergeQuizReportV2HistoryPages([firstPage, extraPage]),
+      throwsFormatException,
+    );
+    expect(
+      deriveQuizReportV2WeakPointsFromEntries(
+        entries: firstPage.items,
+        currentContent: {
+          quizReportV2ContentKey('vocabulary_reading', 'N5'): source,
+        },
+      ),
+      isEmpty,
+    );
+    Iterable<QuizReportV2HistoryEntry> oversizedSnapshot() sync* {
+      yield* firstPage.items;
+      yield* extraPage.items;
+      throw StateError('Snapshot consumed beyond the receipt limit');
+    }
+
+    expect(
+      () => deriveQuizReportV2WeakPointsFromEntries(
+        entries: oversizedSnapshot(),
+        currentContent: const {},
+      ),
       throwsFormatException,
     );
   });

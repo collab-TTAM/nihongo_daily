@@ -53,6 +53,12 @@ counts, not all-time totals. A separate link opens `/quiz/history` for filters
 and unrestricted keyset browsing. No page is fetched automatically, and the
 preview/default reader remains null.
 
+The direct weak-point derivation entry point also rejects duplicate event IDs,
+including conflicting outcomes under one ID, before calculating suggestions.
+It consumes at most the 101st receipt to reject a snapshot over the 100-item
+limit, without exhausting a caller-supplied iterable. Repeated wrong answers
+count only when they belong to distinct receipt identities.
+
 The server snapshot is separate from local device journals and Daily Plan
 minutes. From that explicitly loaded page, the overview derives a bounded
 review suggestion only when the target, ordered choices and all four displayed
