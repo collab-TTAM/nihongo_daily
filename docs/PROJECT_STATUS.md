@@ -1,3 +1,14 @@
+## PR #37 Windows rotation-write close regression — formatter correction persisted — 2026-11-18T21:07Z
+
+- Run `core-20261118T2107Z-pr37-dart-format-repair`; branch `automation/issue-22-atomic-review`; parent `4eb71799425857c5b58a60e5e85d183fbf004a8e`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44389540839](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44389540839), attempt 1, targets parent `4eb71799425857c5b58a60e5e85d183fbf004a8e`. Repo-sanity (13/13), AI boundary (12/12), database (12/12), Windows (18/18) and disposable Supabase integration (13/13) completed SUCCESS. Flutter strict Dart 3.35.4 formatting failed only in `windows_persistent_supabase_runtime_test.dart`; analyze, full suite and downstream Flutter checks were SKIPPED, not passes.
+- Applied only the formatter output observed in that run: two stored-secret expectations, the logout-event expectation, the refresh failure expectation, the refresh-count expectation and the formatter-required blank line at EOF were normalized. All test assertions and production behavior are unchanged.
+- Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`; the strict repository-wide formatter, analyze, full Flutter suite, Windows, browser, Web build, SQL and disposable Supabase gates remain unchanged.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local format/analyze/test/build is claimed. New exact-head CI is required before the correction or regression is considered verified.
+- PR #37 remains Draft; #20/#22/#15/#18 and hosted signed-JWT learner A/B, deployed PostgREST/RLS, expiry/restart and physical multi-device acceptance remain open. No staging dispatch/secrets, Pro-owned #14/#38/N4, Auth strategy/provider, schema/RLS, merge, deployment or release changed.
+
+---
+
 ## PR #37 pending Windows rotation-write close regression — formatter diagnostic — 2026-11-18T20:21Z
 
 - Run `core-20261118T2021Z-pr37-format-diagnostic`; branch `automation/issue-22-atomic-review`; parent HEAD `cedcdfaeafbf011977f7715d7de0154a6c29b510`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.

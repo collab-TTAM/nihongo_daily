@@ -519,10 +519,7 @@ void main() {
       await writeStarted!.future.timeout(const Duration(seconds: 5));
       await fixture.flush();
 
-      expect(
-        storedSecret,
-        'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION',
-      );
+      expect(storedSecret, 'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION');
       expect(runtime.persistence.currentSession, isNull);
       expect(runtime.account.readyRuntime, isNull);
       expect(ownerLeaseCalls, ['acquireOwner']);
@@ -543,20 +540,11 @@ void main() {
       expect(closeCompleted, isFalse);
       expect(ownerLeaseCalls, ['acquireOwner']);
       expect(closeOrder, isEmpty);
-      expect(
-        storedSecret,
-        'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION',
-      );
-      expect(
-        timeline.where((event) => event == 'auth.logout'),
-        isEmpty,
-      );
+      expect(storedSecret, 'TEST_ONLY_WINDOWS_CLOSE_WRITE_INITIAL_ROTATION');
+      expect(timeline.where((event) => event == 'auth.logout'), isEmpty);
 
       writeWait!.complete();
-      await expectLater(
-        refreshing,
-        throwsA(isA<ReviewTransportFailure>()),
-      );
+      await expectLater(refreshing, throwsA(isA<ReviewTransportFailure>()));
       await closing;
 
       expect(closeCompleted, isTrue);
@@ -606,10 +594,7 @@ void main() {
 
       expect(runtime.account.state.phase, AccountPhase.signedOut);
       expect(storedSecret, isNull);
-      expect(
-        timeline.where((event) => event == 'auth.refresh'),
-        hasLength(2),
-      );
+      expect(timeline.where((event) => event == 'auth.refresh'), hasLength(2));
       expect(
         requests.where(
           (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
@@ -2406,3 +2391,4 @@ void main() {
     },
   );
 }
+
