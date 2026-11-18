@@ -4092,7 +4092,7 @@
     {
       "id": "progress-overview",
       "status": "pending-integration",
-      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate first-page caller-owned server receipt summary with current-content weak-point suggestions; no cross-kind/mastery/time aggregation.",
+      "scope": "Server-derived Daily Plan minutes plus explicit read-only local quiz totals with N5/N4 per-kind breakdown and a separate caller-owned server receipt summary with manual keyset continuation capped at 100 loaded receipts; current-content weak-point suggestions only across loaded pages, no cross-kind/mastery/time aggregation.",
       "issues": [
         11,
         13,
@@ -4162,10 +4162,34 @@
         {
           "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
           "contains": "progress-server-quiz-grammar-correction-summary"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "overview loads additional server quiz keyset pages explicitly and reconciles weak points"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "failed server quiz continuation preserves prior pages and retries the same cursor"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late server quiz continuation cannot publish after account replacement"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_weak_points_test.dart",
+          "contains": "keyset page merge rejects duplicates and order regressions"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_weak_points_test.dart",
+          "contains": "weak points reconcile the latest answer across separate pages"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_report_v2_weak_points_test.dart",
+          "contains": "overview receipt aggregation is capped at one hundred items"
         }
       ],
-      "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, confirm its N5/N4 and vocabulary/grammar-primary/grammar-correction breakdown stays separate from local totals, retry a redacted failure, suppress late A results after account replacement, and open /quiz/history for full keyset browsing.",
-      "limitation": "TEST ONLY reader/current curriculum ports. First-page breakdown is limited to 20 newest receipts. Suggestions require exact current target version, ordered choice IDs and all displayed versions; they are not all-time, mastery, SRS, study minutes or study credit. Edge remains undeployed; hosted JWT/PostgREST/RLS, learner A/B, cross-device and Personal Alpha acceptance remain unproven.",
+      "reproduce": "Open /overview with a TEST ONLY ready account and explicit reader; verify no auto-read, explicitly load the 20-row first page, load a continuation using the returned received_at/event-ID cursor, confirm totals and N5/N4/vocabulary/grammar-primary/grammar-correction breakdown across loaded pages, retry a failed continuation without losing prior pages, suppress a late continuation after account replacement, and open /quiz/history for unrestricted keyset browsing.",
+      "limitation": "TEST ONLY reader/current curriculum ports. Overview manually loads at most 100 server receipts in 20-row pages; summary and suggestions cover only loaded pages, not all-time history or mastery. Suggestions require exact current target version, ordered choice IDs and all displayed versions. Edge remains undeployed; hosted JWT/PostgREST/RLS, learner A/B, cross-device and Personal Alpha acceptance remain unproven.",
       "ci_job": "flutter"
     },
     {

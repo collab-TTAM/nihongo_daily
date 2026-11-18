@@ -26,6 +26,18 @@ import '../../quiz/domain/grammar_quiz_attempt.dart';
 import '../../quiz/domain/vocabulary_quiz_attempt.dart';
 import '../../quiz/application/quiz_report_v2_weak_points.dart';
 
+final class _ServerQuizWeakPointSnapshot {
+  const _ServerQuizWeakPointSnapshot({
+    required this.currentContent,
+    required this.points,
+    required this.unavailable,
+  });
+
+  final Map<String, List<CurriculumEntry>> currentContent;
+  final List<QuizReportV2WeakPoint> points;
+  final bool unavailable;
+}
+
 final class _QuizLevelTotals {
   const _QuizLevelTotals({
     required this.attempts,
@@ -173,8 +185,10 @@ _ServerQuizTotals _serverQuizTotals(
   );
 }
 
-_ServerQuizPageSummary _serverQuizPageSummary(QuizReportV2HistoryPage page) {
-  final items = page.items;
+_ServerQuizPageSummary _serverQuizPageSummary(
+  Iterable<QuizReportV2HistoryEntry> entries,
+) {
+  final items = entries.toList(growable: false);
 
   _ServerQuizTotals totals(String quizType, String level, [String? kind]) =>
       _serverQuizTotals(
@@ -224,7 +238,7 @@ String _serverWeakPointSubtitle(QuizReportV2WeakPoint point) {
   final detail = point.quizType == 'vocabulary_reading'
       ? '${point.entry.reading ?? ''} · ${point.entry.meaningVi}'
       : point.entry.meaningVi;
-  return '$detail · Sai ${point.incorrectCount} lần trong trang này';
+  return '$detail · Sai ${point.incorrectCount} lần trong các trang đã tải';
 }
 
 class ProgressOverviewScreen extends ConsumerStatefulWidget {
@@ -247,10 +261,14 @@ class _ProgressOverviewScreenState
   _QuizHistorySummary? _quizSummary;
   bool _quizLoading = false;
   bool _quizFailed = false;
-  QuizReportV2HistoryPage? _serverQuizPage;
+  List<QuizReportV2HistoryPage> _serverQuizPages = const [];
+  List<QuizReportV2HistoryEntry> _serverQuizEntries = const [];
+  Map<String, List<CurriculumEntry>> _serverQuizCurrentContent = const {};
   QuizReportV2HistoryReader? _serverQuizReader;
   bool _serverQuizLoading = false;
+  bool _serverQuizLoadingMore = false;
   bool _serverQuizFailed = false;
+  bool _serverQuizMoreFailed = false;
   List<QuizReportV2WeakPoint>? _serverQuizWeakPoints;
   bool _serverQuizWeakPointsUnavailable = false;
   CurriculumRepository? _serverQuizCurriculum;
@@ -268,10 +286,14 @@ class _ProgressOverviewScreenState
     _quizSummary = null;
     _quizLoading = false;
     _quizFailed = false;
-    _serverQuizPage = null;
+    _serverQuizPages = const [];
+    _serverQuizEntries = const [];
+    _serverQuizCurrentContent = const {};
     _serverQuizReader = null;
     _serverQuizLoading = false;
+    _serverQuizLoadingMore = false;
     _serverQuizFailed = false;
+    _serverQuizMoreFailed = false;
     _serverQuizWeakPoints = null;
     _serverQuizWeakPointsUnavailable = false;
     _serverQuizCurriculum = null;
@@ -490,8 +512,91 @@ class _ProgressOverviewScreenState
     }
   }
 
+  Future<_ServerQuizWeakPointSnapshot?>
+  _loadServerQuizWeakPointSnapshot({
+    required List<QuizReportV2HistoryEntry> entries,
+    required Map<String, List<CurriculumEntry>> existingContent,
+    required String owner,
+    required int generation,
+    required QuizReportV2HistoryReader reader,
+    required CurriculumRepository? curriculum,
+  }) async {
+    final currentContent = Map<String, List<CurriculumEntry>>.of(
+      existingContent,
+    );
+    if (entries.isEmpty) {
+      return _ServerQuizWeakPointSnapshot(
+        currentContent: Map.unmodifiable(currentContent),
+        points: const [],
+        unavailable: false,
+      );
+    }
+    if (curriculum == null) {
+      return _ServerQuizWeakPointSnapshot(
+        currentContent: Map.unmodifiable(currentContent),
+        points: const [],
+        unavailable: true,
+      );
+    }
+
+    final keys = <String>{
+      for (final item in entries)
+        quizReportV2ContentKey(item.request.quizType, item.request.jlptLevel),
+    }.toList()..sort();
+    try {
+      for (final key in keys) {
+        if (currentContent.containsKey(key)) continue;
+        final split = key.split(':');
+        if (split.length != 2) {
+          throw const FormatException('Invalid quiz content scope');
+        }
+        final kind = switch (split[0]) {
+          'vocabulary_reading' => CurriculumKind.vocabulary,
+          'grammar_meaning' => CurriculumKind.grammar,
+          _ => throw const FormatException('Invalid quiz content type'),
+        };
+        final level = switch (split[1]) {
+          'N5' => PreviewLevel.n5,
+          'N4' => PreviewLevel.n4,
+          _ => throw const FormatException('Invalid quiz content level'),
+        };
+        currentContent[key] = await curriculum.load(kind, level);
+        if (!_isServerQuizCurrent(
+          owner: owner,
+          generation: generation,
+          reader: reader,
+          curriculum: curriculum,
+        )) {
+          return null;
+        }
+      }
+      return _ServerQuizWeakPointSnapshot(
+        currentContent: Map.unmodifiable(currentContent),
+        points: deriveQuizReportV2WeakPointsFromEntries(
+          entries: entries,
+          currentContent: currentContent,
+        ),
+        unavailable: false,
+      );
+    } on Object {
+      if (!_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      )) {
+        return null;
+      }
+      return _ServerQuizWeakPointSnapshot(
+        currentContent: Map.unmodifiable(currentContent),
+        points: const [],
+        unavailable: true,
+      );
+    }
+  }
+
   Future<void> _loadServerQuizSummary() async {
-    if (_serverQuizLoading) return;
+    if (_serverQuizLoading || _serverQuizLoadingMore) return;
     final account = ref.read(accountStateProvider);
     final owner = account.profile?.id;
     final reader = ref.read(quizReportV2HistoryReaderProvider);
@@ -508,7 +613,10 @@ class _ProgressOverviewScreenState
       _serverQuizCurriculum = curriculum;
       _serverQuizLoading = true;
       _serverQuizFailed = false;
-      _serverQuizPage = null;
+      _serverQuizMoreFailed = false;
+      _serverQuizPages = const [];
+      _serverQuizEntries = const [];
+      _serverQuizCurrentContent = const {};
       _serverQuizWeakPoints = null;
       _serverQuizWeakPointsUnavailable = false;
     });
@@ -525,66 +633,31 @@ class _ProgressOverviewScreenState
       )) {
         return;
       }
-      final keys = <String>{
-        for (final item in page.items)
-          quizReportV2ContentKey(item.request.quizType, item.request.jlptLevel),
-      }.toList()..sort();
-      final currentContent = <String, List<CurriculumEntry>>{};
-      var weakPoints = const <QuizReportV2WeakPoint>[];
-      var weakPointsUnavailable = false;
-      try {
-        for (final key in keys) {
-          final split = key.split(':');
-          if (split.length != 2) {
-            throw const FormatException('Invalid quiz content scope');
-          }
-          final kind = switch (split[0]) {
-            'vocabulary_reading' => CurriculumKind.vocabulary,
-            'grammar_meaning' => CurriculumKind.grammar,
-            _ => throw const FormatException('Invalid quiz content type'),
-          };
-          final level = switch (split[1]) {
-            'N5' => PreviewLevel.n5,
-            'N4' => PreviewLevel.n4,
-            _ => throw const FormatException('Invalid quiz content level'),
-          };
-          currentContent[key] = await curriculum.load(kind, level);
-          if (!_isServerQuizCurrent(
+      final pages = <QuizReportV2HistoryPage>[page];
+      final entries = mergeQuizReportV2HistoryPages(pages);
+      final weakPointSnapshot = await _loadServerQuizWeakPointSnapshot(
+        entries: entries,
+        existingContent: const {},
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      );
+      if (weakPointSnapshot == null ||
+          !_isServerQuizCurrent(
             owner: owner,
             generation: generation,
             reader: reader,
             curriculum: curriculum,
           )) {
-            return;
-          }
-        }
-        weakPoints = deriveQuizReportV2WeakPoints(
-          page: page,
-          currentContent: currentContent,
-        );
-      } on Object {
-        if (!_isServerQuizCurrent(
-          owner: owner,
-          generation: generation,
-          reader: reader,
-          curriculum: curriculum,
-        )) {
-          return;
-        }
-        weakPointsUnavailable = true;
-      }
-      if (!_isServerQuizCurrent(
-        owner: owner,
-        generation: generation,
-        reader: reader,
-        curriculum: curriculum,
-      )) {
         return;
       }
       setState(() {
-        _serverQuizPage = page;
-        _serverQuizWeakPoints = weakPoints;
-        _serverQuizWeakPointsUnavailable = weakPointsUnavailable;
+        _serverQuizPages = List.unmodifiable(pages);
+        _serverQuizEntries = entries;
+        _serverQuizCurrentContent = weakPointSnapshot.currentContent;
+        _serverQuizWeakPoints = weakPointSnapshot.points;
+        _serverQuizWeakPointsUnavailable = weakPointSnapshot.unavailable;
       });
     } on Object {
       if (_isServerQuizCurrent(
@@ -603,6 +676,95 @@ class _ProgressOverviewScreenState
         curriculum: curriculum,
       )) {
         setState(() => _serverQuizLoading = false);
+      }
+    }
+  }
+
+  Future<void> _loadMoreServerQuizHistory() async {
+    if (_serverQuizLoading ||
+        _serverQuizLoadingMore ||
+        _serverQuizPages.isEmpty) {
+      return;
+    }
+    final account = ref.read(accountStateProvider);
+    final owner = account.profile?.id;
+    final reader = ref.read(quizReportV2HistoryReaderProvider);
+    final curriculum = ref.read(curriculumRepositoryProvider);
+    final pages = List<QuizReportV2HistoryPage>.of(_serverQuizPages);
+    final cursor = pages.last.nextCursor;
+    if (account.phase != AccountPhase.ready ||
+        owner == null ||
+        reader == null ||
+        cursor == null ||
+        _serverQuizEntries.length >= maxQuizReportV2OverviewReceipts) {
+      return;
+    }
+
+    final generation = _generation;
+    final remaining =
+        maxQuizReportV2OverviewReceipts - _serverQuizEntries.length;
+    final limit = remaining < 20 ? remaining : 20;
+    setState(() {
+      _serverQuizLoadingMore = true;
+      _serverQuizMoreFailed = false;
+    });
+
+    try {
+      final page = await reader.readHistory(
+        QuizReportV2HistoryQuery(limit: limit, cursor: cursor),
+      );
+      if (!_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      )) {
+        return;
+      }
+      final nextPages = <QuizReportV2HistoryPage>[...pages, page];
+      final entries = mergeQuizReportV2HistoryPages(nextPages);
+      final weakPointSnapshot = await _loadServerQuizWeakPointSnapshot(
+        entries: entries,
+        existingContent: _serverQuizCurrentContent,
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      );
+      if (weakPointSnapshot == null ||
+          !_isServerQuizCurrent(
+            owner: owner,
+            generation: generation,
+            reader: reader,
+            curriculum: curriculum,
+          )) {
+        return;
+      }
+      setState(() {
+        _serverQuizPages = List.unmodifiable(nextPages);
+        _serverQuizEntries = entries;
+        _serverQuizCurrentContent = weakPointSnapshot.currentContent;
+        _serverQuizWeakPoints = weakPointSnapshot.points;
+        _serverQuizWeakPointsUnavailable = weakPointSnapshot.unavailable;
+        _serverQuizMoreFailed = false;
+      });
+    } on Object {
+      if (_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      )) {
+        setState(() => _serverQuizMoreFailed = true);
+      }
+    } finally {
+      if (_isServerQuizCurrent(
+        owner: owner,
+        generation: generation,
+        reader: reader,
+        curriculum: curriculum,
+      )) {
+        setState(() => _serverQuizLoadingMore = false);
       }
     }
   }
@@ -648,9 +810,27 @@ class _ProgressOverviewScreenState
     final serverHistoryStateCurrent =
         identical(_serverQuizReader, serverHistoryReader) &&
         identical(_serverQuizCurriculum, curriculum);
-    final serverQuizPage = serverHistoryStateCurrent ? _serverQuizPage : null;
+    final serverQuizPages = serverHistoryStateCurrent
+        ? _serverQuizPages
+        : const <QuizReportV2HistoryPage>[];
+    final serverQuizPage = serverQuizPages.isEmpty
+        ? null
+        : serverQuizPages.last;
+    final serverQuizEntries = serverHistoryStateCurrent
+        ? _serverQuizEntries
+        : const <QuizReportV2HistoryEntry>[];
     final serverQuizLoading = serverHistoryStateCurrent && _serverQuizLoading;
+    final serverQuizLoadingMore =
+        serverHistoryStateCurrent && _serverQuizLoadingMore;
     final serverQuizFailed = serverHistoryStateCurrent && _serverQuizFailed;
+    final serverQuizMoreFailed =
+        serverHistoryStateCurrent && _serverQuizMoreFailed;
+    final serverQuizHasMore =
+        serverQuizPage?.nextCursor != null &&
+        serverQuizEntries.length < maxQuizReportV2OverviewReceipts;
+    final serverQuizAtLimit =
+        serverQuizPage?.nextCursor != null &&
+        serverQuizEntries.length >= maxQuizReportV2OverviewReceipts;
     final serverQuizWeakPoints = serverHistoryStateCurrent
         ? _serverQuizWeakPoints
         : null;
@@ -658,7 +838,7 @@ class _ProgressOverviewScreenState
         serverHistoryStateCurrent && _serverQuizWeakPointsUnavailable;
     final serverQuizSummary = serverQuizPage == null
         ? null
-        : _serverQuizPageSummary(serverQuizPage);
+        : _serverQuizPageSummary(serverQuizEntries);
     final profile = account.profile;
     final ready =
         account.phase == AccountPhase.ready &&
@@ -885,7 +1065,7 @@ class _ProgressOverviewScreenState
         else ...[
           FilledButton.icon(
             key: const Key('progress-load-server-quiz'),
-            onPressed: serverQuizLoading
+            onPressed: serverQuizLoading || serverQuizLoadingMore
                 ? null
                 : () => unawaited(_loadServerQuizSummary()),
             icon: const Icon(Icons.cloud_download_outlined),
@@ -907,14 +1087,14 @@ class _ProgressOverviewScreenState
               key: Key('progress-server-quiz-error'),
             ),
           if (serverQuizPage != null && serverQuizSummary != null) ...[
-            if (serverQuizPage.items.isEmpty)
+            if (serverQuizEntries.isEmpty)
               const Text(
                 'Chưa có biên nhận quiz trên máy chủ.',
                 key: Key('progress-server-quiz-empty'),
               )
             else
               Text(
-                '${serverQuizPage.items.length} biên nhận trên trang mới nhất · '
+                '${serverQuizEntries.length} biên nhận đã tải · '
                 '${serverQuizSummary.correct}/'
                 '${serverQuizSummary.answers} câu đúng',
                 key: const Key('progress-server-quiz-summary'),
@@ -943,10 +1123,34 @@ class _ProgressOverviewScreenState
               ),
               key: const Key('progress-server-quiz-grammar-correction-summary'),
             ),
-            const Text(
-              'Chỉ tóm tắt tối đa 20 biên nhận mới nhất. Mở lịch sử để lọc '
-              'và xem các trang cũ hơn.',
+            Text(
+              serverQuizAtLimit
+                  ? 'Đã đạt giới hạn 100 biên nhận cho tóm tắt này. Mở lịch sử để xem các trang cũ hơn.'
+                  : serverQuizHasMore
+                  ? 'Đã tải ${serverQuizEntries.length}/100 biên nhận trong tóm tắt này. Bạn có thể tải thêm; mở lịch sử để xem toàn bộ.'
+                  : 'Đã tải hết biên nhận hiện có trong truy vấn này.',
             ),
+            if (serverQuizHasMore)
+              OutlinedButton(
+                key: const Key('progress-load-more-server-quiz'),
+                onPressed: serverQuizLoadingMore
+                    ? null
+                    : () => unawaited(_loadMoreServerQuizHistory()),
+                child: Text(
+                  serverQuizMoreFailed
+                      ? 'Thử tải trang tiếp theo'
+                      : 'Tải thêm biên nhận',
+                ),
+              ),
+            if (serverQuizLoadingMore) ...[
+              const LinearProgressIndicator(),
+              const Text('Đang tải trang biên nhận tiếp theo…'),
+            ],
+            if (serverQuizMoreFailed)
+              const Text(
+                'Không thể tải trang tiếp theo. Các trang đã tải vẫn được giữ; bạn có thể thử lại.',
+                key: Key('progress-server-quiz-more-error'),
+              ),
             if (serverQuizWeakPointsUnavailable)
               const Text(
                 'Chưa thể đối chiếu nội dung hiện tại nên không hiển thị gợi ý ôn lại.',
@@ -954,12 +1158,12 @@ class _ProgressOverviewScreenState
               )
             else if (serverQuizWeakPoints != null) ...[
               const Text(
-                'Gợi ý ôn lại từ câu sai còn khớp nội dung hiện tại trong trang biên nhận này:',
+                'Gợi ý ôn lại từ câu sai còn khớp nội dung hiện tại trong các trang đã tải:',
                 key: Key('progress-server-quiz-weak-points-heading'),
               ),
               if (serverQuizWeakPoints.isEmpty)
                 const Text(
-                  'Không có mục sai còn khớp nội dung hiện tại trong trang này.',
+                  'Không có mục sai còn khớp nội dung hiện tại trong các trang đã tải.',
                   key: Key('progress-server-quiz-weak-points-empty'),
                 ),
               for (final point in serverQuizWeakPoints.take(5))

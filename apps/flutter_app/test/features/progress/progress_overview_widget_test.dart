@@ -262,15 +262,17 @@ Map<String, Object?> _serverQuizReceipt({
   required String receivedAt,
   required String completedAt,
   required bool correct,
+  int targetNumber = 1,
 }) {
   final eventId =
       '00000000-0000-4000-8000-${eventNumber.toString().padLeft(12, '0')}';
-  const targetId = '10000000-0000-4000-8000-000000000001';
-  const choices = [
+  final targetId =
+      '10000000-0000-4000-8000-${targetNumber.toString().padLeft(12, '0')}';
+  final choices = [
     targetId,
-    '10000000-0000-4000-8000-000000000002',
-    '10000000-0000-4000-8000-000000000003',
-    '10000000-0000-4000-8000-000000000004',
+    '10000000-0000-4000-8000-${(targetNumber + 1).toString().padLeft(12, '0')}',
+    '10000000-0000-4000-8000-${(targetNumber + 2).toString().padLeft(12, '0')}',
+    '10000000-0000-4000-8000-${(targetNumber + 3).toString().padLeft(12, '0')}',
   ];
   final request = {
     'client_event_id': eventId,
@@ -336,22 +338,79 @@ Map<String, Object?> _serverQuizMixedHistoryPage() => {
   'next_cursor': null,
 };
 
+List<Map<String, Object?>> _serverQuizContinuationPages() {
+  final source = _serverVocabularySource();
+  final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
+  final firstPage = <Map<String, Object?>>[
+    for (var index = 1; index < 20; index++)
+      _serverQuizReceipt(
+        eventNumber: index,
+        targetNumber: 100 + index,
+        level: 'N5',
+        quizType: 'vocabulary_reading',
+        practiceKind: null,
+        receivedAt:
+            '2026-11-17T10:00:${(20 - index).toString().padLeft(2, '0')}.000000Z',
+        completedAt:
+            '2026-11-17T09:00:${index.toString().padLeft(2, '0')}Z',
+        correct: true,
+      ),
+    _serverQuizReceiptForQuestion(
+      eventNumber: 20,
+      question: question,
+      correct: false,
+      receivedAt: '2026-11-17T10:00:00.000000Z',
+      completedAt: '2026-11-17T09:59:00Z',
+    ),
+  ];
+  final last = firstPage.last;
+  final request = last['request']! as Map<String, Object?>;
+  final cursor = {
+    'received_at': last['received_at'],
+    'client_event_id': request['client_event_id'],
+  };
+  final secondPage = _serverQuizReceiptForQuestion(
+    eventNumber: 21,
+    question: question,
+    correct: true,
+    receivedAt: '2026-11-17T09:59:59.000000Z',
+    completedAt: '2026-11-17T09:59:30Z',
+  );
+  return [
+    {'items': firstPage, 'next_cursor': cursor},
+    {'items': [secondPage], 'next_cursor': null},
+  ];
+}
+
 final class _ServerHistoryReader implements QuizReportV2HistoryReader {
   int reads = 0;
   QuizReportV2HistoryQuery? lastQuery;
+  final queries = <QuizReportV2HistoryQuery>[];
   Map<String, Object?> response = _serverQuizHistoryPage();
+  List<Map<String, Object?>> responses = [];
   Completer<void>? readWait;
+  int? readWaitOnCall;
   bool failRead = false;
+  int? failReadOnCall;
 
   @override
   Future<QuizReportV2HistoryPage> readHistory(
     QuizReportV2HistoryQuery query,
   ) async {
-    reads++;
+    final call = ++reads;
     lastQuery = query;
-    await readWait?.future;
-    if (failRead) throw StateError('PRIVATE SERVER HISTORY');
-    return query.decodePage(response);
+    queries.add(query);
+    if (readWait != null &&
+        (readWaitOnCall == null || readWaitOnCall == call)) {
+      await readWait!.future;
+    }
+    if (failRead || failReadOnCall == call) {
+      throw StateError('PRIVATE SERVER HISTORY');
+    }
+    final raw = responses.isEmpty
+        ? response
+        : responses[call - 1 < responses.length ? call - 1 : responses.length - 1];
+    return query.decodePage(raw);
   }
 }
 
@@ -799,7 +858,7 @@ void main() {
       expect(reader.lastQuery?.quizType, isNull);
       expect(reader.lastQuery?.cursor, isNull);
       expect(
-        find.text('1 biên nhận trên trang mới nhất · 1/1 câu đúng'),
+        find.text('1 biên nhận đã tải · 1/1 câu đúng'),
         findsOneWidget,
       );
       expect(
@@ -862,7 +921,7 @@ void main() {
     expect(reader.lastQuery?.quizType, isNull);
     expect(reader.lastQuery?.cursor, isNull);
     expect(
-      find.text('3 biên nhận trên trang mới nhất · 2/3 câu đúng'),
+      find.text('3 biên nhận đã tải · 2/3 câu đúng'),
       findsOneWidget,
     );
     expect(
@@ -892,6 +951,117 @@ void main() {
     expect(grammar.writes, 0);
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'overview loads additional server quiz keyset pages explicitly and reconciles weak points',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()
+        ..responses = _serverQuizContinuationPages();
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': _serverVocabularySource(),
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
+
+      expect(reader.reads, 0);
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+      expect(reader.reads, 1);
+      expect(reader.queries.single.cursor, isNull);
+      expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
+      expect(find.textContaining('Sai 1 lần trong các trang đã tải'), findsOneWidget);
+      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsOneWidget);
+
+      await tester.ensureVisible(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 2);
+      expect(reader.queries[1].limit, 20);
+      expect(reader.queries[1].cursor?.receivedAt, '2026-11-17T10:00:00.000000Z');
+      expect(reader.queries[1].cursor?.clientEventId, 'a3000000-0000-4000-8000-000000000020');
+      expect(find.text('21 biên nhận đã tải · 20/21 câu đúng'), findsOneWidget);
+      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsNothing);
+      expect(find.byKey(const Key('progress-server-quiz-weak-points-empty')), findsOneWidget);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'failed server quiz continuation preserves prior pages and retries the same cursor',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()
+        ..responses = _serverQuizContinuationPages()
+        ..failReadOnCall = 2;
+      await _mount(tester, harness, source, serverHistoryReader: reader);
+
+      await tester.ensureVisible(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+      expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
+
+      await tester.ensureVisible(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pumpAndSettle();
+      expect(reader.reads, 2);
+      expect(find.byKey(const Key('progress-server-quiz-more-error')), findsOneWidget);
+      expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
+      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsOneWidget);
+
+      reader.failReadOnCall = null;
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pumpAndSettle();
+      expect(reader.reads, 3);
+      expect(reader.queries[1].cursor?.clientEventId, reader.queries[2].cursor?.clientEventId);
+      expect(find.text('21 biên nhận đã tải · 20/21 câu đúng'), findsOneWidget);
+      expect(find.byKey(const Key('progress-server-quiz-more-error')), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'late server quiz continuation cannot publish after account replacement',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()
+        ..responses = _serverQuizContinuationPages()
+        ..readWait = Completer<void>()
+        ..readWaitOnCall = 2;
+      await _mount(tester, harness, source, serverHistoryReader: reader);
+
+      await tester.ensureVisible(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+      expect(reader.reads, 1);
+
+      await tester.ensureVisible(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pump();
+      expect(reader.reads, 2);
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsOneWidget);
+
+      harness.access.change(account.other);
+      await tester.pumpAndSettle();
+      reader.readWait!.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('progress-server-quiz-summary')), findsNothing);
+      expect(find.byKey(const Key('progress-load-more-server-quiz')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'server receipt read failure is redacted and manually retryable',
     (tester) async {
@@ -924,7 +1094,7 @@ void main() {
       expect(reader.reads, 2);
       expect(find.byKey(const Key('progress-server-quiz-error')), findsNothing);
       expect(
-        find.text('1 biên nhận trên trang mới nhất · 1/1 câu đúng'),
+        find.text('1 biên nhận đã tải · 1/1 câu đúng'),
         findsOneWidget,
       );
     },
@@ -959,7 +1129,7 @@ void main() {
         findsNothing,
       );
       expect(
-        find.textContaining('biên nhận trên trang mới nhất'),
+        find.textContaining('biên nhận đã tải'),
         findsNothing,
       );
       expect(tester.takeException(), isNull);
@@ -1054,7 +1224,7 @@ void main() {
         find.textContaining('N5 · Từ vựng · ${question.target.heading}'),
         findsOneWidget,
       );
-      expect(find.textContaining('Sai 2 lần trong trang này'), findsOneWidget);
+      expect(find.textContaining('Sai 2 lần trong các trang đã tải'), findsOneWidget);
       expect(
         find.byKey(const Key('progress-server-quiz-weak-points-heading')),
         findsOneWidget,

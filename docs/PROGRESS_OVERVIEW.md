@@ -44,20 +44,23 @@ The snapshot performs no writes or remote submission.
 
 When the caller-owned `QuizReportV2HistoryReader` is published by a ready
 Auth/profile/runtime, `/overview` offers an explicit read of the first 20
-server receipts. The page summary reports the receipt and correct/answer totals
-for that page, plus separate N5/N4 counts for vocabulary, grammar-primary and
-grammar-correction. These are still first-page counts, not all-time totals. A
-separate link opens `/quiz/history` for filters and keyset paging.
-The page is never fetched automatically, and the preview/default reader remains
-null.
+server receipts and a manual keyset continuation. The overview keeps at most
+100 explicitly loaded receipts (20 per request), validates page order and
+duplicate event IDs, and preserves earlier pages when a continuation fails.
+The summary reports totals across loaded pages with separate N5/N4 counts for
+vocabulary, grammar-primary and grammar-correction. These are loaded-page
+counts, not all-time totals. A separate link opens `/quiz/history` for filters
+and unrestricted keyset browsing. No page is fetched automatically, and the
+preview/default reader remains null.
 
 The server snapshot is separate from local device journals and Daily Plan
 minutes. From that explicitly loaded page, the overview derives a bounded
 review suggestion only when the target, ordered choices and all four displayed
 content versions match the current deterministic vocabulary/grammar builder.
-It keeps N5/N4 and grammar-primary/correction separate, counts repeated wrong
-answers in the page, and removes an item when its latest unambiguous completion
-is correct. Equal-time contradictory outcomes and stale content are omitted.
+It keeps N5/N4 and grammar-primary/correction separate across the explicitly
+loaded pages, counts repeated wrong answers, and removes an item when its latest
+unambiguous completion is correct. Equal-time contradictory outcomes, duplicate
+or out-of-order page entries and stale content are omitted.
 If current content cannot be loaded, receipt totals remain visible but no
 suggestion is shown. This is not mastery, SRS state, study credit or an all-time
 model. Reader, content-repository or account replacement suppresses late results. Widget fixtures do not prove

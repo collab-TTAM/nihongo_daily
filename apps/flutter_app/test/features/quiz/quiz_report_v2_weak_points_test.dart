@@ -92,14 +92,17 @@ Map<String, Object?> _receipt(
   };
 }
 
-QuizReportV2HistoryPage _page(List<Map<String, Object?>> items) {
+QuizReportV2HistoryPage _page(
+  List<Map<String, Object?>> items, {
+  int limit = 20,
+}) {
   final sorted = List<Map<String, Object?>>.of(items)
     ..sort(
       (a, b) =>
           (b['received_at'] as String).compareTo(a['received_at'] as String),
     );
   return QuizReportV2HistoryQuery(
-    limit: 20,
+    limit: limit,
   ).decodePage({'items': sorted, 'next_cursor': null});
 }
 
@@ -308,5 +311,63 @@ void main() {
       },
     );
     expect(result.map((p) => p.jlptLevel).toSet(), {'N5', 'N4'});
+  });
+  test('keyset page merge rejects duplicates and order regressions', () {
+    final source = _source(CurriculumKind.vocabulary);
+    final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
+    final correctAnswer = _answer(question.target, question.choices, true);
+    final newer = _page([
+      _receipt(51, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:02.000000Z', '2026-11-17T09:00:02Z', [correctAnswer]),
+    ]);
+    final older = _page([
+      _receipt(52, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:01.000000Z', '2026-11-17T09:00:01Z', [correctAnswer]),
+    ]);
+    expect(mergeQuizReportV2HistoryPages([newer, older]).map((entry) => entry.request.clientEventId), [_event(51), _event(52)]);
+    expect(() => mergeQuizReportV2HistoryPages([newer, newer]), throwsFormatException);
+    expect(() => mergeQuizReportV2HistoryPages([older, newer]), throwsFormatException);
+  });
+
+  test('weak points reconcile the latest answer across separate pages', () {
+    final source = _source(CurriculumKind.vocabulary);
+    final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
+    final pages = [
+      _page([
+        _receipt(61, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:02.000000Z', '2026-11-17T09:59:00Z', [_answer(question.target, question.choices, false)]),
+      ]),
+      _page([
+        _receipt(62, 'vocabulary_reading', 'N5', null, '2026-11-17T10:00:01.000000Z', '2026-11-17T10:00:00Z', [_answer(question.target, question.choices, true)]),
+      ]),
+    ];
+    final entries = mergeQuizReportV2HistoryPages(pages);
+    expect(
+      deriveQuizReportV2WeakPointsFromEntries(
+        entries: entries,
+        currentContent: {quizReportV2ContentKey('vocabulary_reading', 'N5'): source},
+      ),
+      isEmpty,
+    );
+  });
+
+  test('overview receipt aggregation is capped at one hundred items', () {
+    final source = _source(CurriculumKind.vocabulary);
+    final question = buildVocabularyQuiz(source, PreviewLevel.n5).first;
+    final correctAnswer = _answer(question.target, question.choices, true);
+    final receipts = [
+      for (var index = 1; index <= 100; index++)
+        _receipt(
+          index,
+          'vocabulary_reading',
+          'N5',
+          null,
+          '2026-11-17T10:${(index ~/ 60).toString().padLeft(2, '0')}:${(index % 60).toString().padLeft(2, '0')}.000000Z',
+          '2026-11-17T09:00:00Z',
+          [correctAnswer],
+        ),
+    ];
+    final firstPage = _page(receipts, limit: 100);
+    final extraPage = _page([
+      _receipt(101, 'vocabulary_reading', 'N5', null, '2026-11-17T09:59:59.000000Z', '2026-11-17T09:00:00Z', [correctAnswer]),
+    ], limit: 1);
+    expect(() => mergeQuizReportV2HistoryPages([firstPage, extraPage]), throwsFormatException);
   });
 }

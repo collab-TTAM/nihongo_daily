@@ -26,6 +26,41 @@ final class QuizReportV2WeakPoint {
 
 String quizReportV2ContentKey(String quizType, String jlptLevel) =>
     '$quizType:$jlptLevel';
+const maxQuizReportV2OverviewReceipts = 100;
+
+int _compareQuizReportV2HistoryEntries(
+  QuizReportV2HistoryEntry left,
+  QuizReportV2HistoryEntry right,
+) {
+  final time = left.receivedAt.compareTo(right.receivedAt);
+  return time == 0
+      ? left.request.clientEventId.compareTo(right.request.clientEventId)
+      : time;
+}
+
+/// Combines explicitly loaded keyset pages and rejects overlap/order regressions.
+List<QuizReportV2HistoryEntry> mergeQuizReportV2HistoryPages(
+  Iterable<QuizReportV2HistoryPage> pages,
+) {
+  final merged = <QuizReportV2HistoryEntry>[];
+  final seen = <String>{};
+  for (final page in pages) {
+    if (merged.length + page.items.length > maxQuizReportV2OverviewReceipts) {
+      throw const FormatException('Quiz receipt overview limit exceeded');
+    }
+    for (final entry in page.items) {
+      if (!seen.add(entry.request.clientEventId)) {
+        throw const FormatException('Duplicate quiz receipt across pages');
+      }
+      if (merged.isNotEmpty &&
+          _compareQuizReportV2HistoryEntries(merged.last, entry) <= 0) {
+        throw const FormatException('Quiz receipt pages are not keyset ordered');
+      }
+      merged.add(entry);
+    }
+  }
+  return List.unmodifiable(merged);
+}
 
 final class _CurrentQuestion {
   const _CurrentQuestion(this.target, this.choices);
@@ -75,16 +110,27 @@ bool _sameDisplayedChoices(
 
 /// Rebuilds current questions and requires exact target/choice provenance.
 /// Only a latest unambiguous wrong answer is suggested; grammar kinds stay
-/// separate. The input page is strict-decoded and caller-owned.
+/// separate. The single-page API remains for existing callers.
 List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
   required QuizReportV2HistoryPage page,
   required Map<String, List<CurriculumEntry>> currentContent,
+}) => deriveQuizReportV2WeakPointsFromEntries(
+  entries: page.items,
+  currentContent: currentContent,
+);
+
+/// Derives suggestions from an explicitly bounded set of validated receipts.
+/// This is not mastery, SRS state, study credit or an all-time model.
+List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPointsFromEntries({
+  required Iterable<QuizReportV2HistoryEntry> entries,
+  required Map<String, List<CurriculumEntry>> currentContent,
 }) {
-  if (page.items.length > 100) {
-    throw const FormatException('Invalid quiz report history page');
+  final receipts = entries.toList(growable: false);
+  if (receipts.length > maxQuizReportV2OverviewReceipts) {
+    throw const FormatException('Invalid quiz report history snapshot');
   }
   final keys = <String>{
-    for (final item in page.items)
+    for (final item in receipts)
       quizReportV2ContentKey(item.request.quizType, item.request.jlptLevel),
   };
   final questionSets = <String, Map<String, _CurrentQuestion>>{};
@@ -126,7 +172,7 @@ List<QuizReportV2WeakPoint> deriveQuizReportV2WeakPoints({
     questionSets[key] = questions;
   }
 
-  final ordered = List<QuizReportV2HistoryEntry>.of(page.items)
+  final ordered = List<QuizReportV2HistoryEntry>.of(receipts)
     ..sort((left, right) {
       final time = DateTime.parse(
         left.request.completedAt,
