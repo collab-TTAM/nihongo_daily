@@ -521,6 +521,147 @@ void main() {
         200,
         headers: {'content-type': 'application/json'},
       );
+  Future<
+    ({
+      CapturedConversationCompletion handle,
+      CapturedConversationSession flow,
+      _ReceiptBackend receipts,
+    })
+  >
+  ownedCompletion() async {
+    final receipts = await openReceiptRuntime();
+    receipts.value = receiptReference().encode();
+    await runtime.start();
+    await login();
+    final flow = runtime.createAiConversationSession()!;
+    final request = StartConversationRequest.fromJson(
+      fixtures['start_conversation_request'],
+    );
+    await expectLater(
+      flow.start(request),
+      throwsA(
+        isA<AiTextFailure>().having(
+          (error) => error.code,
+          'pending',
+          AiTextErrorCode.syncConflict,
+        ),
+      ),
+    );
+    expect(aiHttp.requests, isEmpty);
+    aiHttp.onSend = (request) async {
+      expect(request.method, 'GET');
+      expect(request.url.origin, wire.origin);
+      expect(request.url.path, '/rest/v1/operation_receipts');
+      expect(
+        request.headers['authorization'],
+        'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+      );
+      return originalAnswer('start_conversation', 'COMPLETED');
+    };
+    final reader = runtime.createConversationReceiptLookup()!;
+    final handle = (await reader.lookupCompletion(protectedCommand()))!;
+    return (handle: handle, flow: flow, receipts: receipts);
+  }
+
+  test(
+    'owned host applies exact SDK completion without dispatch and retains transport fence',
+    () async {
+      final p = await ownedCompletion();
+      expect(
+        await runtime.applyRetainedConversationCompletion(p.handle),
+        isTrue,
+      );
+      expect(runtime.createAiConversationSession(), same(p.flow));
+      expect(p.flow.snapshot.phase, ConversationSessionPhase.active);
+      expect(p.flow.snapshot.messages, hasLength(1));
+      expect(p.flow.retainedCommand, isNull);
+      expect(p.receipts.value, isNull);
+      expect(p.receipts.calls.where((call) => call == 'clear'), hasLength(1));
+      expect(await vault.readRefreshToken(), secret);
+      await p.flow.start(
+        StartConversationRequest.fromJson(
+          fixtures['start_conversation_request'],
+        ),
+      );
+      expect(p.flow.snapshot.messages, hasLength(1));
+      expect(aiHttp.requests, hasLength(1));
+      // The transport's independent one-dispatch/store claim is deliberately not
+      // reset by transcript application. This host remains unavailable for rollout.
+      final turn = ConversationTurnRequest.fromJson(
+        fixtures['conversation_turn_request'],
+      );
+      expect(turn.sessionId, p.flow.snapshot.sessionId);
+      final storeCalls = List<String>.from(p.receipts.calls);
+      await expectLater(
+        p.flow.turn(turn),
+        throwsA(
+          isA<AiTextFailure>().having(
+            (error) => error.code,
+            'still fenced',
+            AiTextErrorCode.syncConflict,
+          ),
+        ),
+      );
+      expect(p.flow.hasUnresolvedMutation, isTrue);
+      expect(p.receipts.calls, storeCalls);
+      expect(
+        aiHttp.requests.every((request) => request.method == 'GET'),
+        isTrue,
+      );
+      expect(aiHttp.requests, hasLength(1));
+    },
+  );
+
+  test(
+    'owned host completion after close cannot clear preserved metadata',
+    () async {
+      final p = await ownedCompletion();
+      await runtime.close();
+      expect(
+        await runtime.applyRetainedConversationCompletion(p.handle),
+        isFalse,
+      );
+      expect(p.receipts.value, receiptReference().encode());
+      expect(p.receipts.calls, isNot(contains('clear')));
+      expect(aiHttp.requests, hasLength(1));
+    },
+  );
+
+  test('owned host completion unavailable without receipt opt-in', () async {
+    final p = await ownedCompletion();
+    await runtime.close();
+    runtime = build(conversationEnabled: false);
+    expect(
+      await runtime.applyRetainedConversationCompletion(p.handle),
+      isFalse,
+    );
+    expect(p.receipts.value, receiptReference().encode());
+    expect(p.receipts.calls, isNot(contains('clear')));
+    expect(aiHttp.requests, hasLength(1));
+  });
+
+  test(
+    'owned host storage failure cannot publish completion or expose backend error',
+    () async {
+      final p = await ownedCompletion();
+      p.receipts.failClear = true;
+      await expectLater(
+        runtime.applyRetainedConversationCompletion(p.handle),
+        throwsA(
+          isA<AiTextFailure>().having(
+            (error) => error.code,
+            'fixed',
+            AiTextErrorCode.internalError,
+          ),
+        ),
+      );
+      expect(p.flow.snapshot.phase, ConversationSessionPhase.revoked);
+      expect(runtime.createAiConversationSession(), isNull);
+      expect(p.receipts.value, receiptReference().encode());
+      expect(aiHttp.requests, hasLength(1));
+    },
+  );
+
   Uint8List protectedLookupPlain(String op) {
     final command = switch (op) {
       'start_conversation' => PendingConversationCommandEnvelope.fromStart(

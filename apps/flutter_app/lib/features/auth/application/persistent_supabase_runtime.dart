@@ -71,7 +71,8 @@ final class PersistentSupabaseRuntime
     bool aiConversationEnabled = false,
     bool quizReportTransportEnabled = false,
     Duration requestTimeout = const Duration(seconds: 15),
-  }) : _commandScope = conversationReceiptStore?.scope,
+  }) : _ownedConversationReceiptStore = conversationReceiptStore,
+       _commandScope = conversationReceiptStore?.scope,
        _studyStore = studyStore,
        _quizStore = quizStore,
        _grammarStore = grammarStore,
@@ -227,6 +228,9 @@ final class PersistentSupabaseRuntime
       );
     }
   }
+  // Borrowed alias of the same store whose lifetime is managed by _receiptOwner.
+  // Never exposed to learners or owned/closed a second time.
+  final ConversationReceiptStore? _ownedConversationReceiptStore;
   final ConversationReceiptScope? _commandScope;
   WindowsPendingCommandProtector? _commandProtector;
   Future<void>? _commandDraining;
@@ -419,6 +423,57 @@ final class PersistentSupabaseRuntime
           identical(account.readySession, session) &&
           identical(_aiGeneration, generation),
     );
+  }
+
+  /// Explicit trusted-host recovery on the already-owned project/account store.
+  /// Only the exact retained reader/conversation lease may apply a completion.
+  /// No learner configuration, implicit read/dispatch or default UI activation.
+  Future<bool> applyRetainedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) async {
+    final store = _ownedConversationReceiptStore;
+    if (!_aiConversationEnabled ||
+        store == null ||
+        _receiptOwner == null ||
+        _closing != null ||
+        _receiptLogout != null ||
+        _commandRefresh != null ||
+        _commandTerminal ||
+        _commandDraining != null) {
+      return false;
+    }
+    _syncAiReadiness();
+    final ready = _aiReadyRuntime;
+    final generation = _aiGeneration;
+    final session = account.readySession;
+    if (ready == null ||
+        generation == null ||
+        session == null ||
+        session.userId != store.scope.ownerId) {
+      return false;
+    }
+    final applied = await _aiOwner.applyRetainedConversationCompletion(
+      completion,
+      store: store,
+    );
+    if (_closing != null ||
+        _receiptLogout != null ||
+        _commandRefresh != null ||
+        _commandTerminal ||
+        _commandDraining != null) {
+      return false;
+    }
+    _syncAiReadiness();
+    return applied &&
+        identical(_aiReadyRuntime, ready) &&
+        identical(_aiGeneration, generation) &&
+        identical(account.readyRuntime, ready) &&
+        identical(account.readySession, session) &&
+        _closing == null &&
+        _receiptLogout == null &&
+        _commandRefresh == null &&
+        !_commandTerminal &&
+        _commandDraining == null;
   }
 
   /// Explicit read-only composition, never storage/replay/release authority.

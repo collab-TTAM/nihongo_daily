@@ -231,6 +231,17 @@ final class CapturedConversationCompletion {
     return capture();
   }
 
+  /// Read-only provenance check for an owner's exact retained reader. Reject a
+  /// foreign reader before any supplied currentness getters are evaluated.
+  ({
+    PendingConversationCommandEnvelope command,
+    ConversationReceiptSnapshot receipt,
+  })?
+  captureForReader(CapturedConversationReceiptLookup reader) {
+    if (!identical(reader, _reader)) return null;
+    return capture();
+  }
+
   @override
   String toString() => 'CapturedConversationCompletion';
 }

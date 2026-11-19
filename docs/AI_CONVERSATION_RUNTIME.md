@@ -319,8 +319,8 @@ session state; false preconditions without lane retirement preserve prior pendin
 This publication is atomic within the captured session's isolate/guard, not a
 cross-process or durable payload transaction. Secure-store ownership/cleanup and
 runtime close/logout remain caller-owned. No original command/transcript is newly
-persisted; learner restart recovery is still memory-only. No UI/production-host
-activation or hosted Auth/JWT/RLS/provider/learner acceptance is claimed.
+persisted; learner restart recovery is still memory-only. No UI/default activation or hosted Auth/JWT/RLS/provider/learner acceptance
+is claimed. The explicit owned runtime action is described below.
 
 Twenty-eight TEST ONLY cases cover three-operation apply/replay/next-command rules,
 changed original with identical metadata, transcript sequence/message-ID rejection,
@@ -331,3 +331,46 @@ All187 component cases pass in a fresh exact23-file Dart3.9.2 graph with only
 flutter_test→test1.26.2 import adaptation and original fixtures. Focused analysis
 with the curly-braces rule is clean. Full Flutter/native/SDK host execution and
 all14 hosted release groups remain separate verification gates.
+
+
+## Owned runtime completion action — 2026-11-19
+
+`PersistentSupabaseRuntime.applyRetainedConversationCompletion(completion)` is an
+explicit opt-in host action, not a UI/default binding. It accepts no store, URL,
+key or caller session. It borrows the same private store alias whose ownership
+was already transferred to ReceiptAiRuntimeOwner by the constructor. Existing
+project/open-store validation, persisted Auth/profile readiness and owner partition
+checks remain; close/logout/refresh/terminal/draining guards and final generation/
+account identities fence the operation. There is no second SDK/store owner or
+change to cleanup order. Without receipt/conversation opt-in it returns false.
+
+The AI owner selects its existing retained conversation and receipt reader; it
+never creates/acquires a replacement capability during this action. The opaque
+handle's `captureForReader` checks exact reader identity before invoking supplied
+currentness getters. A sibling reader with the same Auth/session hint is rejected.
+The existing owner creation/drain reservation now covers application/storage I/O,
+blocks concurrent capability factories and causes close to await actual completion.
+After application, recheck epoch/lease/session/reader and fence sibling capabilities
+if the session retired. Unexpected operation failures expose only a fixed AI error.
+
+Important remaining transport barrier: transcript application does NOT reset
+ReceiptGuardedAiTransport._attempted or ConversationReceiptDispatch._usedStores.
+The production transport still permits only one dispatch attempt per store. Exact
+cached replay is local, but another mutation stays sync-conflict fenced even after
+successful application/confirmed metadata deletion. A true host-action result means
+transcript applied, NOT permission to send the next provider mutation. Do not enable
+learner rollout or reset either claim from metadata absence/success alone. Next
+implement separately reviewed conditional release tied to the exact owned dispatch
+gate/full original/current lease/actual I/O drain and confirmed completed receipt.
+
+Twelve new TEST ONLY owner cases cover all3operation owned application, exact-reader
+provenance before foreign getters, absent retained reader/conversation, foreign
+store, storage failure, concurrent acquisition/application, close actual storage
+drain, refresh and readiness reentry. All199 component tests pass in a fresh exact
+26-file Dart3.9.2 graph with only flutter_test→test1.26.2 adaptation/original fixtures;
+focused analysis with curly-braces rule is clean. Four added pinned-SDK tests in
+persistent_ai_text_runtime_test cover the real owned runtime/private SDK with
+synthetic Auth/HTTP/OS ports: apply plus cached replay and STILL-BLOCKED next mutation,
+close/preserved metadata, missing opt-in and fixed storage error. Those SDK tests,
+full Flutter/native Windows execution are locally UNRUN and require exact-head CI.
+No hosted JWT/RLS/provider/learner or physical OS failure proof is inferred.

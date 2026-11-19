@@ -6,6 +6,7 @@ import '../data/captured_conversation_mutation.dart';
 import '../data/captured_conversation_session.dart';
 import '../data/captured_conversation_scenarios.dart';
 import '../data/captured_conversation_receipt_lookup.dart';
+import '../data/conversation_receipt_store.dart';
 
 /// One owner-created ready generation. Never reuse after a readiness barrier.
 final class AiTextGeneration {}
@@ -233,6 +234,51 @@ final class AiTextRuntimeOwner {
       return null;
     } finally {
       orphan?.revoke();
+      _creating = null;
+      creating.complete();
+    }
+  }
+
+  /// Explicit application into this exact lease's existing conversation. Never
+  /// creates a capability or accepts a sibling/external reader's completion.
+  /// The existing creation/drain reservation also covers actual storage I/O.
+  Future<bool> applyRetainedConversationCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) async {
+    if (_closed || _failed || isDraining) return false;
+    final lease = _lease;
+    final flow = lease?.conversation;
+    final reader = lease?.receipts;
+    if (lease == null || flow == null || reader == null) return false;
+    final creating = Completer<void>();
+    _creating = creating; // Before any supplied capability/readiness getters.
+    final epoch = _epoch;
+    bool current() =>
+        !_closed &&
+        !_failed &&
+        epoch == _epoch &&
+        identical(_lease, lease) &&
+        identical(lease.conversation, flow) &&
+        identical(lease.receipts, reader);
+    try {
+      if (completion.captureForReader(reader) == null ||
+          !flow.isCurrent ||
+          !current()) {
+        return false;
+      }
+      final applied = await flow.applyRetainedCompletion(
+        completion,
+        store: store,
+      );
+      check(); // A failed/retired session must also fence sibling capabilities.
+      if (!current()) return false;
+      if (applied) _notify();
+      return applied;
+    } on Object {
+      invalidate();
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    } finally {
       _creating = null;
       creating.complete();
     }
