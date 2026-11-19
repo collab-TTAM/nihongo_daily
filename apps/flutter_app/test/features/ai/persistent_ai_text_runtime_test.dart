@@ -70,6 +70,8 @@ final class _ReceiptBackend implements SecureConversationReceiptBackend {
   bool failBeforeWrite = false;
   bool failAfterWrite = false;
   Completer<void>? writeWait;
+  Completer<void>? clearWait;
+  final clearEntered = Completer<void>();
   final entered = Completer<void>();
   final calls = <String>[];
   @override
@@ -92,6 +94,9 @@ final class _ReceiptBackend implements SecureConversationReceiptBackend {
   @override
   Future<void> clear(String target) async {
     calls.add('clear');
+    if (!clearEntered.isCompleted) clearEntered.complete();
+    final wait = clearWait;
+    if (wait != null) await wait.future;
     if (failClear) throw StateError('TEST_ONLY_PRIVATE_CLEAR');
     value = null;
   }
@@ -757,6 +762,126 @@ void main() {
       );
       expect(aiHttp.requests, hasLength(2));
     });
+  }
+
+  for (final fail in [false, true]) {
+    test('owned SDK held clear fences release failure=$fail', () async {
+      final p = await ownedCompletion();
+      final before = p.flow.snapshot;
+      final pending = p.receipts.value;
+      final held = Completer<void>();
+      p.receipts.clearWait = held;
+      p.receipts.failClear = fail;
+      final applying = runtime.applyRetainedConversationCompletion(p.handle);
+      final observed = fail
+          ? expectLater(
+              applying,
+              throwsA(aiCode(AiTextErrorCode.internalError)),
+            )
+          : expectLater(applying, completion(isTrue));
+      try {
+        await p.receipts.clearEntered.future;
+        expect(p.flow.snapshot, same(before));
+        expect(p.receipts.value, pending);
+        expect(
+          await runtime.releaseAppliedConversationCompletion(p.handle),
+          isFalse,
+        );
+        await expectLater(
+          p.flow.turn(
+            ConversationTurnRequest.fromJson(
+              fixtures['conversation_turn_request'],
+            ),
+          ),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+        expect(aiHttp.requests, hasLength(1));
+        held.complete();
+        await observed;
+        expect(
+          await runtime.releaseAppliedConversationCompletion(p.handle),
+          !fail,
+        );
+        expect(p.receipts.value, fail ? pending : isNull);
+        expect(
+          p.flow.snapshot.phase,
+          fail
+              ? ConversationSessionPhase.revoked
+              : ConversationSessionPhase.active,
+        );
+        expect(aiHttp.requests, hasLength(1));
+      } finally {
+        if (!held.isCompleted) held.complete();
+        await observed;
+      }
+    });
+  }
+
+  for (final transition in ['close', 'logout', 'refresh']) {
+    test(
+      'owned SDK $transition retires held clear without late grant',
+      () async {
+        final p = await ownedCompletion();
+        final pending = p.receipts.value;
+        final held = Completer<void>();
+        p.receipts.clearWait = held;
+        final applying = runtime.applyRetainedConversationCompletion(p.handle);
+        final observed = expectLater(applying, completion(isFalse));
+        Future<void>? ending;
+        try {
+          await p.receipts.clearEntered.future;
+          if (transition == 'refresh') {
+            generation++;
+            secret = 'TEST_ONLY_CLEAR_REFRESH';
+          }
+          ending = transition == 'close'
+              ? runtime.close()
+              : transition == 'logout'
+              ? runtime.account.signOut()
+              : runtime.refresh();
+          var settled = false;
+          final drained = ending.then((_) => settled = true);
+          expect(
+            await runtime.releaseAppliedConversationCompletion(p.handle),
+            isFalse,
+          );
+          expect(runtime.createAiConversationSession(), isNull);
+          expect(p.receipts.value, pending);
+          await Future<void>.delayed(Duration.zero);
+          if (transition != 'refresh') expect(settled, isFalse);
+          expect(aiHttp.requests, hasLength(1));
+          held.complete();
+          await observed;
+          await drained;
+          expect(p.flow.isCurrent, isFalse);
+          expect(p.receipts.value, isNull);
+          expect(
+            await runtime.releaseAppliedConversationCompletion(p.handle),
+            isFalse,
+          );
+          expect(aiHttp.requests, hasLength(1));
+          if (transition == 'logout') {
+            expect(await vault.readRefreshToken(), isNull);
+            user = wire.b;
+            generation++;
+            secret = 'TEST_ONLY_B_AFTER_CLEAR_DRAIN';
+            await login();
+            expect(runtime.account.readySession!.userId, wire.b);
+            expect(await vault.readRefreshToken(), secret);
+            expect(runtime.createAiConversationSession(), isNull);
+            expect(
+              await runtime.releaseAppliedConversationCompletion(p.handle),
+              isFalse,
+            );
+            expect(aiHttp.requests, hasLength(1));
+          }
+        } finally {
+          if (!held.isCompleted) held.complete();
+          await observed;
+          await ending;
+        }
+      },
+    );
   }
 
   for (final terminal in ['close', 'logout', 'refresh']) {

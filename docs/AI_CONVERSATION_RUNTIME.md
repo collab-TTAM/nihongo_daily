@@ -483,3 +483,31 @@ session (old standalone fails, valid timeline succeeds, duplicate ID/old sequenc
 fail, original fixtures unchanged). This is not execution of the SDK test file.
 Focused analysis/formatter/QA pass; new exact-head Flutter/SDK/native CI remains
 required. All14 hosted release groups remain pending.
+
+
+## Held secure-clear SDK acceptance — 2026-11-19
+
+Exact-head CI44559405494/latestattempt1 passed all6jobs/all127steps, including
+2050 Flutter tests, the corrected explicit SDK next-turn case and independent
+duplicate-ID/stale-sequence rejection, plus owned/browser/native/preview gates.
+Windows persistent-vault/same SDK/profile/receipt and conditional-clear markers
+were observed. These remain TEST ONLY SDK/Auth/HTTP/native component results;
+all14 hosted learner release groups remain pending.
+
+The SDK test backend now exposes an optional held-clear barrier/entry signal.
+Its default clear still executes without awaiting a new barrier; repeated clears
+signal entry only once. Five additional SDK cases exercise application while the
+same private store's clear is held: release/commands cannot overlap, prior metadata
+and transcript remain, only confirmed success allows explicit release, and failure
+maps to fixed internalError with metadata retained/no grant. During held clear,
+close/logout must await actual work, refresh must prevent capability replacement,
+and late application must return false/revoke rather than publish or release.
+The logout case then logs B in only after A's clear drains and proves A's handle
+cannot release/create B's AI partition; B's refresh secret remains intact.
+
+Every held operation is released in finally before awaiting observers/teardown.
+No production guard, timeout, SDK/store owner or default learner behavior changed.
+The5 new full SDK cases are locally UNRUN. Local286-test Dart verification includes
+283 retained components plus3 actual-store cases using the byte-extracted backend
+(normal held clear, guard loss and clear failure); this is not SDK/hosted proof.
+New exact-head Flutter/native CI is required before reporting those cases passed.
