@@ -220,6 +220,17 @@ final class CapturedConversationCompletion {
     return (command: _command, receipt: _receipt);
   }
 
+  /// Read-only host association with the exact borrowed Auth port, not merely
+  /// an equal user ID. A wrapper/different runtime must reacquire its own handle.
+  ({
+    PendingConversationCommandEnvelope command,
+    ConversationReceiptSnapshot receipt,
+  })?
+  captureForAuth(ReviewAuth auth) {
+    if (!identical(auth, _reader._auth)) return null;
+    return capture();
+  }
+
   @override
   String toString() => 'CapturedConversationCompletion';
 }

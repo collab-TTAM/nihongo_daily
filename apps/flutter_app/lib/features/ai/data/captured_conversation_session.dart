@@ -5,6 +5,8 @@ import '../domain/conversation_responses.dart';
 import '../domain/retained_conversation_command.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
+import 'captured_conversation_receipt_lookup.dart';
+import '../domain/conversation_receipt_snapshot.dart';
 import 'conversation_mutation_lane.dart';
 
 enum ConversationSessionPhase { notStarted, active, finished, revoked }
@@ -33,13 +35,15 @@ final class CapturedConversationSession {
     required bool Function() isReady,
     Duration timeout = const Duration(seconds: 15),
     int maxMutations = 100,
-  }) : _lane = ConversationMutationLane(
+  }) : _auth = auth,
+       _lane = ConversationMutationLane(
          auth: auth,
          transport: transport,
          isReady: isReady,
          timeout: timeout,
          maxMutations: maxMutations,
        );
+  final ReviewAuth _auth;
   final ConversationMutationLane _lane;
   final _turns = <String>{};
   String? _startEvent;
@@ -61,6 +65,51 @@ final class CapturedConversationSession {
   RetainedConversationCommand? get retainedCommand {
     if (_executing || _checking || !isCurrent || isBusy) return null;
     return _lane.hasUnresolvedMutation ? _retainedCommand : null;
+  }
+
+  /// Inspect a completion only for this idle session's exact retained command.
+  /// This never applies a result, clears pending metadata or permits a new event.
+  ConversationReceiptSnapshot? inspectRetainedCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (_revoked || _executing || isCheckingAvailability) return null;
+    _checking = true;
+    try {
+      if (!_lane.isCurrent) {
+        revoke();
+        return null;
+      }
+      if (_lane.isBusy || !_lane.hasUnresolvedMutation) return null;
+      final original = _retainedCommand;
+      final fingerprint = _retainedFingerprint;
+      if (original == null || fingerprint == null) return null;
+      final pair = completion.captureForAuth(_auth);
+      if (pair == null) return null;
+      final command = pair.command;
+      final body =
+          command.start?.toJson() ??
+          command.turn?.toJson() ??
+          command.finish!.toJson();
+      if ('${command.reference.operation.wireName}:${jsonEncode(body)}' !=
+          fingerprint) {
+        return null;
+      }
+      if (!completion.isCurrent) return null;
+      if (!_lane.isCurrent) {
+        revoke();
+        return null;
+      }
+      if (_revoked ||
+          _lane.isBusy ||
+          !_lane.hasUnresolvedMutation ||
+          !identical(original, _retainedCommand) ||
+          fingerprint != _retainedFingerprint) {
+        return null;
+      }
+      return pair.receipt;
+    } finally {
+      _checking = false;
+    }
   }
 
   /// Explicit host capability; legacy view remount policy stays unchanged.

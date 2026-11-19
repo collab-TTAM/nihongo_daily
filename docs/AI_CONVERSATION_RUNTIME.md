@@ -189,3 +189,28 @@ The controller regression asserts the hint is propagated, the nested view is
 unavailable/redacted, and the outer accepted command remains loading and can
 complete normally. This is a local reentrancy regression only; it does not
 establish hosted provider, receipt, Auth, RLS or learner evidence.
+
+
+## Inspect completion against the actual retained command — 2026-11-19
+
+CapturedConversationSession.inspectRetainedCompletion(handle) is an explicit
+synchronous read-only association. It accepts only an idle/current session with
+an unresolved mutation and its real retained original. Completion.captureForAuth
+requires the exact SAME borrowed Auth object as its reader, not only equal owner
+or ReviewSession hints. Trusted host ports must still bind the fixed project and
+correct authenticated original read; custom ports are not upgraded by this type.
+
+Compare the completion's operation plus canonical typed original JSON to the
+session's existing retained fingerprint. Every field/UUID spelling/code point/
+whitespace remains exact. Pre/post captured readiness, actual lane busy/drain,
+retained object/fingerprint and pending checks surround external getters. A
+finally-released inspection guard redacts reentry and blocks nested commands.
+A stale lease, different Auth port, changed command, in-flight/undrained operation
+or session without unresolved input yields null. No HTTP/storage call is made.
+
+The result is only the immutable receipt projection; it does not update the
+conversation snapshot, change retryability, clear/reset a pending slot, grant
+another event or prove transcript applicability/server reservation release.
+No default UI calls it and no transcript/payload is persisted. Current-state
+application validation and confirmed durable conditional release remain separate
+required work, together with hosted Auth/RLS/provider/learner acceptance.
