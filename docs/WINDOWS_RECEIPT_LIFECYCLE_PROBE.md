@@ -84,3 +84,32 @@ observe the new marker and all retained required steps. Auth/JWT/profile/HTTP
 responses remain synthetic, so this is not hosted JWT/RLS/provider/learner proof.
 There is no new plaintext payload persistence, clear/retry/new-command grant,
 transcript application or conditional release/default activation.
+
+
+## Owned prospective transcript preview — 2026-11-19
+
+The existing receipt-owned-reopen phase now inspects and previews the completed
+start through the production session and completion reader borrowed from the same
+PersistentSupabaseRuntime/private SDK. The actual persisted receipt first blocks
+mutation dispatch and the production session retains the host-supplied original.
+The completion must associate with that exact original/Auth and produce an active
+candidate with the same decoded first assistant message and sequence zero.
+The actual notStarted snapshot and retained-command objects must remain identical,
+the lane unresolved/current/idle and retry disabled after both same-event conflict
+and different-event pending denials. No additional HTTP reads or mutation sends
+are permitted; every old counter and native rotated token/pending assertion stays.
+Owned close must make inspection and preview return null, redact the retained
+command and revoke the live projection while preserving the actual native stores.
+
+The PowerShell runner emits this only after the entire owned reopen succeeds:
+Windows OWNED completion preview exact-original/unchanged-transcript/pending/stale-close/preserve/no-redispatch passed (TEST ONLY Auth/HTTP)
+
+All existing phases, finally cleanup, process deadlines and earlier markers remain
+mandatory. Native Windows/full Flutter/PowerShell execution is locally UNRUN;
+new exact-head CI must execute these assertions. Parent8b2e3f2 CI44441018779
+attempt1 passed all five jobs/all123 returned steps; its Windows log contains the
+persistent-vault and owned-completion-handle markers. That parent run does not
+verify this new preview probe. Auth/JWT/profile/HTTP remain TEST ONLY; the host,
+private SDK and native vault ownership are production composition. This is not
+hosted learner acceptance. No transcript application, conditional pending clear,
+retry/new-command authority, payload persistence or default activation is added.

@@ -11,6 +11,7 @@ import 'package:nihongo_daily/features/ai/application/account_receipt_ai_runtime
 import 'package:nihongo_daily/features/ai/application/supabase_account_receipt_ai_runtime.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_receipt_lookup.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/windows_conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
@@ -1343,6 +1344,19 @@ Future<void> verifyWindowsOwnedReceiptPhase(
           ownerId: _user,
           request: _request,
         );
+        // The production session retained the host-supplied original when the
+        // persisted native reference rejected mutation dispatch after reopen.
+        final snapshotBeforeCompletion = session.snapshot;
+        final retainedBeforeCompletion = session.retainedCommand;
+        _check(
+          snapshotBeforeCompletion.phase ==
+                  ConversationSessionPhase.notStarted &&
+              snapshotBeforeCompletion.sessionId == null &&
+              snapshotBeforeCompletion.messages.isEmpty &&
+              retainedBeforeCompletion != null &&
+              session.hasUnresolvedMutation &&
+              !session.canRetryRetained,
+        );
         CapturedConversationCompletion? capturedCompletion;
         for (final status in ['UNKNOWN', 'PENDING', 'COMPLETED']) {
           network.receiptStatus = status;
@@ -1358,6 +1372,28 @@ Future<void> verifyWindowsOwnedReceiptPhase(
                   pair.receipt.finish == null &&
                   identical(completion.capture()!.receipt, pair.receipt) &&
                   completion.toString() == 'CapturedConversationCompletion',
+            );
+            // Same borrowed Auth/private SDK and exact retained original must
+            // associate with the completion without applying or releasing it.
+            _check(
+              identical(
+                session.inspectRetainedCompletion(completion),
+                pair.receipt,
+              ),
+            );
+            final preview = session.previewRetainedCompletion(completion);
+            _check(
+              preview != null &&
+                  preview.phase == ConversationSessionPhase.active &&
+                  preview.sessionId == _event &&
+                  preview.summary == null &&
+                  preview.messages.length == 1 &&
+                  identical(
+                    preview.messages.single,
+                    pair.receipt.start!.assistantMessage,
+                  ) &&
+                  preview.messages.single.sequenceNo == 0 &&
+                  !identical(preview, snapshotBeforeCompletion),
             );
             capturedCompletion = completion;
           } else {
@@ -1392,6 +1428,14 @@ Future<void> verifyWindowsOwnedReceiptPhase(
           }
           _check(await _read(scope) == _expected(scope));
         }
+        _check(
+          identical(session.snapshot, snapshotBeforeCompletion) &&
+              identical(session.retainedCommand, retainedBeforeCompletion) &&
+              session.hasUnresolvedMutation &&
+              !session.canRetryRetained &&
+              !session.isBusy &&
+              session.isCurrent,
+        );
         final completedHandle = capturedCompletion!;
         _check(
           network.completionReceiptReads == 3 &&
@@ -1407,6 +1451,10 @@ Future<void> verifyWindowsOwnedReceiptPhase(
         _check(
           !completedHandle.isCurrent &&
               completedHandle.capture() == null &&
+              session.inspectRetainedCompletion(completedHandle) == null &&
+              session.previewRetainedCompletion(completedHandle) == null &&
+              session.snapshot.phase == ConversationSessionPhase.revoked &&
+              session.retainedCommand == null &&
               network.completionReceiptReads == 3 &&
               network.sends == 0 &&
               await vault.readRefreshToken() == rotated &&
