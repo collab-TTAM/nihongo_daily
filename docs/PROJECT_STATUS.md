@@ -4645,3 +4645,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyze/test/build were not run. New exact-head Actions must verify the correction and every required step.
 - No hosted staging dispatch/secrets, Auth/provider strategy, schema/RLS, default runtime, Pro-owned #14/#38/N4, merge, deployment or release. PR #37 remains Draft; #20/#22/#15 and hosted learner acceptance remain open.
 - Next: inspect all jobs and every latest-attempt step for the new HEAD; fix only observed failures. Do not count skipped steps as passes or claim Personal Alpha from local disposable integration.
+
+
+## Core worker handoff — 2026-11-19T08:10Z — native pre-commit rotation write failure
+
+- Run `core-20261119T0810Z-pr37-credwritew-rotation-failure`; branch `automation/issue-22-atomic-review`; parent HEAD `a4d48b21ad3dc29b1edc5d9ac476baba18ebc593`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added a separate TEST ONLY Windows runner phase for the native `CredWriteW` fail-before-commit path during User A's pinned-Supabase-SDK refresh rotation. The previous A value remains at the OS boundary until the caller's compensating exact-target clear; the runtime must revoke A readiness, issue no second A profile request, and leave the slot absent before explicit B password Auth. B's rotated value must be stored before B own-profile; B logout and a fresh process verify signed-out state. The existing commit-then-fail/failed-clear regression is preserved.
+- Paths: `apps/flutter_app/tool/windows_runtime_fixture.dart`, `apps/flutter_app/tool/verify_windows_vault_bridge.ps1`, `docs/WINDOWS_SESSION_VAULT.md`, `qa/matrix.json`, this status file, and `docs/PROJECT_STATUS_HANDOFF_20261119T0810Z.md`.
+- QA case `persistent-session-lifecycle` now has exact anchors for the new runtime phase and PowerShell invocation. Native fault injection remains compile-time TEST ONLY; the existing bridge script rebuilds with hooks OFF and checks their absence before normal preview/staging build.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local formatter/analyzer/Flutter test/native build was run. New exact-head GitHub Actions must run the new process phase and every retained job/step. No hosted JWT learner A/B, deployed PostgREST/RLS, spontaneous OS fault, logoff/power-loss or physical multi-device proof is claimed.
+- No production Auth/provider strategy, API/schema/RLS, default runtime, staging dispatch/secrets, Pro-owned #14/#38/N4, merge, deployment or release change. PR #37 remains Draft; #20/#22/#15/#18 remain open.
+- Next: inspect every latest-attempt job/step on the new exact HEAD; fix only observed failures, then resume hosted acceptance when the protected non-production environment is configured.

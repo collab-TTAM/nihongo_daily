@@ -30,6 +30,7 @@ const runtimePhases = {
   'runtime-owner-reacquire',
   'runtime-native-read-failure',
   'runtime-native-rotation-write-failure',
+  'runtime-native-rotation-write-fail-before',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
 const _ownerB = 'a1000000-0000-4000-8000-000000000002';
@@ -317,7 +318,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             phase == 'runtime-restore-profile-held' ||
                 phase == 'runtime-late-refresh' ||
                 phase == 'runtime-close-restore' ||
-                phase == 'runtime-native-rotation-write-failure'
+                phase == 'runtime-native-rotation-write-failure' ||
+                phase == 'runtime-native-rotation-write-fail-before'
             ? _first
             : phase == 'runtime-restore'
             ? _second
@@ -342,7 +344,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           // Explicit recovery must clear the unread A slot before password Auth.
           _check(await vault.readRefreshToken() == null);
         }
-        if (phase == 'runtime-native-rotation-write-failure') {
+        if (phase == 'runtime-native-rotation-write-failure' ||
+            phase == 'runtime-native-rotation-write-fail-before') {
           // The initial A grant and replacement B grant both start from a
           // cleared slot; the refresh grant is handled separately above.
           _check(await vault.readRefreshToken() == null);
@@ -363,10 +366,12 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       if (phase == 'runtime-late-refresh' ||
           phase == 'runtime-restore-profile-held' ||
           phase == 'runtime-native-read-failure' ||
-          phase == 'runtime-native-rotation-write-failure') {
+          phase == 'runtime-native-rotation-write-failure' ||
+          phase == 'runtime-native-rotation-write-fail-before') {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
-      if (phase == 'runtime-native-rotation-write-failure') {
+      if (phase == 'runtime-native-rotation-write-failure' ||
+          phase == 'runtime-native-rotation-write-fail-before') {
         if (profileCalls == 1) {
           _check(userId == _owner);
         } else {
@@ -669,6 +674,85 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             profileOwners.length == 2 &&
             profileOwners.first == _owner &&
             profileOwners.last == _ownerB,
+      );
+      _check(await vault.readRefreshToken() == _third);
+      _check((await journal.list(_ownerB)).isEmpty);
+      await runtime.account.signOut();
+      _check(
+        runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 2,
+      );
+      await pending();
+    } else if (phase == 'runtime-native-rotation-write-fail-before') {
+      _check(await vault.readRefreshToken() == null);
+      // Explicit startup acquires the owned vault before offering password Auth.
+      await runtime.start();
+      _check(
+        runtime.persistence.phase == SessionPersistencePhase.idle &&
+            runtime.persistence.hasVaultOwner &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 0 &&
+            profileCalls == 0 &&
+            await vault.readRefreshToken() == null,
+      );
+      // Establish A, then fail the next native write before CredWriteW executes.
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(
+        authCalls == 1 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner &&
+            await vault.readRefreshToken() == _first,
+      );
+      await journal.stage(_owner, _pending);
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'write',
+        fault: 'fail_before',
+      );
+
+      // The rotated SDK response is real to the pinned SDK, but the native
+      // helper rejects before CredWriteW. Persistence must revoke A and clear
+      // the old exact-project slot before any replacement account is accepted.
+      secret = _second;
+      var refreshFailed = false;
+      try {
+        await runtime.refresh();
+      } on ReviewTransportFailure catch (error) {
+        refreshFailed = error.code == ReviewErrorCode.unauthorized;
+      }
+      _check(
+        refreshFailed &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 2 &&
+            profileCalls == 1 &&
+            profileOwners.length == 1 &&
+            profileOwners.single == _owner,
+      );
+      // fail_before preserves A's old OS value until the compensating clear;
+      // successful clear must leave neither A's old nor the rejected rotation.
+      _check(await vault.readRefreshToken() == null);
+
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(
+        authCalls == 3 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.first == _owner &&
+            profileOwners.last == _ownerB &&
+            logoutCalls >= 1,
       );
       _check(await vault.readRefreshToken() == _third);
       _check((await journal.list(_ownerB)).isEmpty);

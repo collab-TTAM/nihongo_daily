@@ -389,6 +389,38 @@ physical multi-device proof. The normal preview remains unconfigured and no
 production Auth, schema/RLS or plaintext fallback is changed.
 
 
+## Caller-owned runtime fences a native refresh write that fails before commit
+
+The TEST ONLY Windows runner now exercises the complementary native failure
+mode to the existing ambiguous commit-then-fail case. It establishes a ready
+User A session and stores A's refresh token in the real project-scoped Windows
+Credential Manager slot. The next explicit SDK refresh returns a rotated
+refresh token, then a one-shot compile-time fault makes the native helper return
+unavailable before calling `CredWriteW`.
+
+The previous A token must remain in the OS slot at the native boundary, but the
+caller-owned persistence layer must revoke A readiness and successfully issue
+the compensating exact-target `CredDeleteW`. The fixture reads the real slot
+after the refresh failure and requires it to be absent; no second A
+`ensure_profile` request is allowed. Only after that cleanup may explicit
+User B login proceed. The password-grant handler verifies the slot is empty
+before Auth returns; B's rotated refresh token must be readable before B's
+captured own-profile request. B logout clears the slot, A's pending journal
+event remains invisible to B, and a separate fresh process confirms signed-out
+startup with no Auth/profile traffic.
+
+The existing commit-then-fail plus failed-clear regression remains unchanged.
+The new PowerShell phase runs in its own process and the existing bridge script
+still rebuilds with `ND_SESSION_VAULT_TEST_HOOKS=OFF` before the normal
+preview/staging build and verifies that the injection method is absent.
+
+This is actual Windows Credential Manager + MethodChannel + pinned-SDK owner
+composition with synthetic TEST ONLY Auth HTTP/JWT responses and deterministic
+pre-call fault injection. It is not a spontaneous Windows error, hosted
+GoTrue/PostgREST, signed-JWT learner A/B, OS logoff/power-loss or physical
+multi-device proof. No token or native error is logged, and the learner
+executable does not contain the test hook.
+
 ## Native owner-lease contention across independent runner processes
 
 The Windows CI bridge now starts `runtime-owner-hold` in one fresh Flutter
