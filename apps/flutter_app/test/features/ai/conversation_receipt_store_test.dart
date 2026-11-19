@@ -539,8 +539,9 @@ void main() {
           ..values[_target()] = _reference().encode()
           ..failClear = fault == 'clear'
           ..keepAfterClear = fault == 'silent';
-        if (fault == 'confirm-read')
+        if (fault == 'confirm-read') {
           backend.afterClear = () => backend.failRead = true;
+        }
         final store = _open(backend);
         await expectLater(
           store.clearMatching(_reference(), isCurrent: () => true),
