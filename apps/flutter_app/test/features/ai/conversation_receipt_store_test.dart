@@ -61,6 +61,9 @@ final class _Backend implements SecureConversationReceiptBackend {
   bool failWrite = false;
   bool ambiguousWrite = false;
   bool failClear = false;
+  bool keepAfterClear = false;
+  final clearEntered = Completer<void>();
+  void Function()? afterClear;
   @override
   Future<Object?> read(String target) async {
     calls.add('read');
@@ -86,9 +89,11 @@ final class _Backend implements SecureConversationReceiptBackend {
   @override
   Future<void> clear(String target) async {
     calls.add('clear-begin');
+    if (!clearEntered.isCompleted) clearEntered.complete();
     await clearWait?.future;
     if (failClear) throw StateError('TEST_ONLY_PRIVATE_CLEAR');
-    values.remove(target);
+    if (!keepAfterClear) values.remove(target);
+    afterClear?.call();
     calls.add('clear-end');
   }
 
@@ -424,4 +429,199 @@ void main() {
       expect(store.phase, ConversationReceiptStorePhase.revoked);
     },
   );
+
+  group('conditional clear storage step (TEST ONLY)', () {
+    test('only exact present reference clears and confirms absence', () async {
+      final backend = _Backend();
+      final store = _open(backend);
+      final original = _reference();
+      expect(
+        await store.clearMatching(original, isCurrent: () => true),
+        isFalse,
+      );
+      expect(backend.calls, ['read']);
+      await store.reserve(original);
+      backend.calls.clear();
+      for (final different in [
+        _reference(event: _next),
+        _reference(finish: true),
+      ]) {
+        expect(
+          await store.clearMatching(different, isCurrent: () => true),
+          isFalse,
+        );
+        expect(backend.values[_target()], original.encode());
+      }
+      expect(backend.calls, ['read', 'read']);
+      backend.calls.clear();
+      expect(
+        await store.clearMatching(original, isCurrent: () => true),
+        isTrue,
+      );
+      expect(backend.calls, ['read', 'clear-begin', 'clear-end', 'read']);
+      expect(backend.values, isEmpty);
+      expect(store.phase, ConversationReceiptStorePhase.open);
+      expect(
+        await store.clearMatching(original, isCurrent: () => true),
+        isFalse,
+      );
+    });
+
+    test(
+      'same logical owner with different UUID spelling cannot clear',
+      () async {
+        final original = _reference(finish: true);
+        final backend = _Backend()..values[_target()] = original.encode();
+        final store = _open(backend);
+        final different = _reference(owner: _owner.toUpperCase(), finish: true);
+        expect(store.scope.contains(different), isTrue);
+        expect(
+          await store.clearMatching(different, isCurrent: () => true),
+          isFalse,
+        );
+        expect(backend.calls, ['read']);
+        expect(backend.values[_target()], original.encode());
+        expect(
+          await store.clearMatching(original, isCurrent: () => true),
+          isTrue,
+        );
+      },
+    );
+
+    test('foreign scope and unavailable generation never clear', () async {
+      final backend = _Backend()..values[_target()] = _reference().encode();
+      final store = _open(backend);
+      for (final foreign in [
+        _reference(owner: _other),
+        _reference(project: '$_project:444'),
+      ]) {
+        await expectLater(
+          store.clearMatching(foreign, isCurrent: () => true),
+          throwsA(_error(ConversationReceiptStoreError.scope)),
+        );
+      }
+      expect(
+        await store.clearMatching(_reference(), isCurrent: () => false),
+        isFalse,
+      );
+      expect(
+        await store.clearMatching(
+          _reference(),
+          isCurrent: () => throw StateError('PRIVATE'),
+        ),
+        isFalse,
+      );
+      expect(backend.calls, isEmpty);
+      expect(backend.values[_target()], _reference().encode());
+    });
+
+    test('generation lost during actual read preserves metadata', () async {
+      final backend = _Backend()
+        ..values[_target()] = _reference().encode()
+        ..readWait = Completer<void>();
+      final store = _open(backend);
+      var current = true;
+      final clearing = store.clearMatching(
+        _reference(),
+        isCurrent: () => current,
+      );
+      await backend.readEntered.future;
+      current = false;
+      backend.readWait!.complete();
+      expect(await clearing, isFalse);
+      expect(backend.calls, ['read']);
+      expect(backend.values[_target()], _reference().encode());
+    });
+
+    for (final fault in ['clear', 'silent', 'confirm-read']) {
+      test('unconfirmed clear fails closed with safe error: $fault', () async {
+        final backend = _Backend()
+          ..values[_target()] = _reference().encode()
+          ..failClear = fault == 'clear'
+          ..keepAfterClear = fault == 'silent';
+        if (fault == 'confirm-read')
+          backend.afterClear = () => backend.failRead = true;
+        final store = _open(backend);
+        await expectLater(
+          store.clearMatching(_reference(), isCurrent: () => true),
+          throwsA(_error(ConversationReceiptStoreError.unavailable)),
+        );
+        expect(store.phase, ConversationReceiptStorePhase.failed);
+        final calls = List<String>.from(backend.calls);
+        await expectLater(
+          store.reserve(_reference(event: _next)),
+          throwsA(_error(ConversationReceiptStoreError.unavailable)),
+        );
+        expect(backend.calls, calls);
+        expect(backend.values.containsKey(_target()), fault != 'confirm-read');
+      });
+    }
+
+    test('late clear after generation loss never confirms release', () async {
+      final backend = _Backend()
+        ..values[_target()] = _reference().encode()
+        ..clearWait = Completer<void>();
+      final store = _open(backend);
+      var current = true;
+      final clearing = store.clearMatching(
+        _reference(),
+        isCurrent: () => current,
+      );
+      await backend.clearEntered.future;
+      current = false;
+      backend.clearWait!.complete();
+      expect(await clearing, isFalse);
+      expect(backend.calls, ['read', 'clear-begin', 'clear-end', 'read']);
+    });
+
+    test(
+      'close holds ownership until actual clear drains and rejects queued reserve',
+      () async {
+        final backend = _Backend()
+          ..values[_target()] = _reference().encode()
+          ..clearWait = Completer<void>();
+        final store = _open(backend);
+        final clearing = expectLater(
+          store.clearMatching(_reference(), isCurrent: () => true),
+          throwsA(_error(ConversationReceiptStoreError.revoked)),
+        );
+        await backend.clearEntered.future;
+        final queued = expectLater(
+          store.reserve(_reference(event: _next)),
+          throwsA(_error(ConversationReceiptStoreError.revoked)),
+        );
+        final closing = store.close();
+        expect(
+          () => ConversationReceiptStore(scope: _scope(), backend: backend),
+          throwsA(_error(ConversationReceiptStoreError.owned)),
+        );
+        backend.clearWait!.complete();
+        await Future.wait<void>([clearing, queued, closing]);
+        expect(backend.calls, ['read', 'clear-begin', 'clear-end']);
+        expect(store.phase, ConversationReceiptStorePhase.closed);
+        final fresh = _open(backend);
+        expect(await fresh.read(), isNull);
+      },
+    );
+
+    test(
+      'serialized queued replacement cannot be erased by old reference',
+      () async {
+        final backend = _Backend()
+          ..values[_target()] = _reference().encode()
+          ..clearWait = Completer<void>();
+        final store = _open(backend);
+        final first = store.clearMatching(_reference(), isCurrent: () => true);
+        await backend.clearEntered.future;
+        final replacement = store.reserve(_reference(event: _next));
+        final stale = store.clearMatching(_reference(), isCurrent: () => true);
+        backend.clearWait!.complete();
+        expect(await first, isTrue);
+        await replacement;
+        expect(await stale, isFalse);
+        expect(backend.values[_target()], _reference(event: _next).encode());
+        expect(backend.calls.where((c) => c == 'clear-begin'), hasLength(1));
+      },
+    );
+  });
 }

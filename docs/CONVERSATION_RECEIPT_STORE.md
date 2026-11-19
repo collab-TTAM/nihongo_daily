@@ -89,3 +89,44 @@ conversation_receipt_reference.dart, new conversation_receipt_store.dart,
 conversation_receipt_store_test.dart and this doc; PROJECT_STATUS.md, qa/matrix.json.
 Branch automation/issue-11-plan-sdk-integration, parenta6a2aeb892af3b51de806f80cc66a4c18b669b53;
 new commit/CI handoff in PR41/Issue17.
+
+
+## Exact-reference conditional clear storage step — 2026-11-19
+
+`clearMatching(reference, isCurrent: capturedHostCheck)` is an explicit trusted
+host storage primitive; no runtime/controller/default caller is installed.
+The host must first validate the authenticated COMPLETED receipt against the
+full retained original, current Auth/readiness and transcript, then keep that
+captured generation current throughout this storage step. Metadata and the
+callback alone do not establish completion or permission to send again.
+
+The operation shares the existing serial tail with reserve/read/signout/close.
+Foreign scope fails before I/O. A false or throwing currentness check denies the
+operation without exposing diagnostics. It loads the current native reference,
+checks the generation again and compares the entire canonical encoding, including
+project/owner/operation/event and original UUID spelling. Reference v1 contains no
+session ID or full request: those must be independently bound by the host
+completion/original validation, never inferred from this storage comparison. Missing or mismatched metadata returns false without
+clearing. Only an exact match calls the backend clear; a separate actual read must
+confirm absence before a final generation check can return true. Clear failure,
+confirmation read failure or retained data fail closed and forbid ordinary reuse.
+The explicit signout/close paths remain available for lifecycle cleanup.
+
+A late close/revocation cannot publish success, queued old work never accesses
+the backend after revocation, and ownership remains held until actual I/O drains.
+A generation lost during clear can leave metadata absent while returning false;
+this never grants lane/transcript/retry authority. Missing metadata on a later
+attempt likewise cannot fabricate release proof. A future host must retain its
+uncertain command and reconcile safely; there is no automatic retry or replay.
+The queue excludes same-isolate operations only, not competing processes/native
+CAS; trusted host process exclusion and the backend durability/bounds contract
+remain required. No payload/text/token persistence or plaintext fallback is added.
+
+Ten new TEST ONLY store regressions cover exact/missing/event/operation/UUID-spelling
+matching, foreign scope, lost/throwing generation, clear/read/silent-clear faults,
+late success, close ownership/drain/queued denial and queued replacement survival.
+All21 store tests (11 retained +10 new) and focused analysis pass in a disposable
+exact four-source Dart3.9.2 graph with only flutter_test→test1.26.2 import adaptation.
+Full Flutter/native Windows and hosted learner evidence remain separate CI/live
+gates. Confirmed store absence is not atomic session/lane application or a server
+receipt cancellation. All prior store/lifecycle behavior is retained.

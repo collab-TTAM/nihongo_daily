@@ -130,6 +130,53 @@ final class ConversationReceiptStore {
     });
   }
 
+  /// Trusted host storage step, not completion/retry/new-command authority.
+  /// The host must first verify an authenticated completed receipt against the
+  /// full original command and keep its captured generation current. Missing or
+  /// different metadata never confirms release. Exclusivity remains isolate-local;
+  /// the host must exclude competing processes. No default caller is installed.
+  Future<bool> clearMatching(
+    ConversationReceiptReference reference, {
+    required bool Function() isCurrent,
+  }) {
+    if (!scope.contains(reference)) {
+      return Future.error(_failure(ConversationReceiptStoreError.scope));
+    }
+    final encoded = reference.encode();
+    bool allowed() {
+      _check();
+      var current = false;
+      try {
+        current = isCurrent();
+      } on Object {
+        /* Untrusted diagnostics never escape this boundary. */
+      }
+      _check(); // A supplied lifecycle check may synchronously revoke the store.
+      return current;
+    }
+
+    return _serial(() async {
+      if (!allowed()) return false;
+      final previous = await _load();
+      if (!allowed() || previous == null || previous.encode() != encoded) {
+        return false;
+      }
+      try {
+        await _backend.clear(_target);
+      } on Object {
+        _failed = true;
+        throw _failure(ConversationReceiptStoreError.unavailable);
+      }
+      _check();
+      // A successful backend callback alone is not confirmed durable absence.
+      if (await _load() != null) {
+        _failed = true;
+        throw _failure(ConversationReceiptStoreError.unavailable);
+      }
+      return allowed(); // Late success grants nothing to a retired generation.
+    });
+  }
+
   /// Permanently revoke now; ordered clear follows all actual earlier I/O.
   /// Explicit retry after a failed clear is allowed, but never reopens this store.
   /// Local sign-out clear is not server receipt cancellation/new-event authority.
