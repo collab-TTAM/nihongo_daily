@@ -4752,3 +4752,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - No local Flutter/Dart SDK or Windows OS is available in the cloud authoring runtime, so no local format/analyze/Flutter test/build is claimed. The new exact-head CI is required. This remains disposable local Supabase/TEST ONLY component evidence, not hosted learner A/B, deployed RLS/PostgREST, production Credential Manager session recovery, or Personal Alpha acceptance. No hosted staging dispatch/secrets, Auth strategy/provider, migration/schema/RLS, app-default activation, Pro-owned #14/#38/N4, merge or release changed.
 - Next: inspect every latest-attempt job and every required step for the corrected exact HEAD; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15/#18 open pending hosted signed-JWT A/B, deployed PostgREST/RLS, expiry/restart, offline multi-device and user-facing learner evidence.
 
+
+### Follow-up exact-head CI diagnosis — 2026-11-19T23:16Z
+
+- Exact-head Actions [44635821507](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44635821507), attempt 1, targets 2bbf12a1b7ecf8c051549ef1e3128ac9b14f390b and completed FAILURE in repo-sanity. The new static regression expected the two chained sanitizer calls as value.replace(...), but the implementation correctly uses value.replace(...) followed by .replace(...); this is a test expectation defect, not a workflow/runtime failure.
+- Repo-sanity's other steps and the database/AI jobs succeeded. The hosted-probe regression step ran 23 tests with exactly this one failure; hosted-workflow safety and all dependent Windows/Supabase/Flutter jobs were SKIPPED. No skipped check is treated as pass.
+- Correct only the static expectations to match the chained calls; retain the masking and percent/CR/LF escaping implementation. A new exact-head run must execute the regression and all six jobs.
+

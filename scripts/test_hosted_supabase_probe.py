@@ -618,8 +618,8 @@ class LocalSupabaseWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("def escape_workflow_command(value):", block)
         for expression in (
             'value.replace("%", "%25")',
-            r'value.replace("\r", "%0D")',
-            r'value.replace("\n", "%0A")',
+            r'.replace("\r", "%0D")',
+            r'.replace("\n", "%0A")',
         ):
             self.assertIn(expression, block)
 
