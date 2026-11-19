@@ -265,9 +265,6 @@ jobs:
           path: apps/flutter_app/build/web
           if-no-files-found: error
 
-      - name: Emit formatted SDK runtime probe for one-time formatter reconciliation
-        if: always()
-        run: dart format --output=show tool/verify_supabase_sdk_runtime.dart
 
   windows:
     needs: repo-sanity

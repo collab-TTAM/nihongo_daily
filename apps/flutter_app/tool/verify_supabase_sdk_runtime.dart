@@ -65,9 +65,12 @@ Future<_Input> _readInput() async {
     final decoded = jsonDecode(await stdin.transform(utf8.decoder).join());
     if (decoded is! Map<String, Object?> ||
         decoded.length != 4 ||
-        !const {'api_url', 'anon_key', 'user_a', 'user_b'}.every(
-          decoded.containsKey,
-        ) ||
+        !const {
+          'api_url',
+          'anon_key',
+          'user_a',
+          'user_b',
+        }.every(decoded.containsKey) ||
         decoded['api_url'] != _apiUrl) {
       throw const FormatException();
     }
@@ -172,10 +175,7 @@ final class _LoopbackHttpClient extends http.BaseClient {
     final headers = Map<String, String>.from(request.headers)
       ..remove('content-length')
       ..remove('host');
-    final forwarded = http.Request(
-      request.method,
-      uri.replace(scheme: 'http'),
-    );
+    final forwarded = http.Request(request.method, uri.replace(scheme: 'http'));
     forwarded.headers.addAll(headers);
     forwarded.followRedirects = false;
     forwarded.maxRedirects = request.maxRedirects;
@@ -235,11 +235,7 @@ Future<_ReadyStudy> _waitReady(
   return _ReadyStudy(session!, study);
 }
 
-PreparedReview _prepare(
-  SrsStudyRuntime study,
-  SrsReview review,
-  String phase,
-) {
+PreparedReview _prepare(SrsStudyRuntime study, SrsReview review, String phase) {
   final prepared = study.reviews.prepare(review);
   if (prepared == null) throw _ProbeFailure(phase);
   return prepared;
@@ -250,11 +246,7 @@ ReviewSuccess _success(ReviewOutcome outcome, String phase) {
   return outcome;
 }
 
-void _expectOrder(
-  List<String> events,
-  List<String> expected,
-  String phase,
-) {
+void _expectOrder(List<String> events, List<String> expected, String phase) {
   var previous = -1;
   for (final event in expected) {
     final index = events.indexOf(event);
@@ -295,12 +287,7 @@ Future<void> main() async {
     journalDirectory = await Directory.systemTemp.createTemp(
       'nihongo-sdk-runtime-',
     );
-    bundle = await _openBundle(
-      journalDirectory,
-      input,
-      backend,
-      httpClient,
-    );
+    bundle = await _openBundle(journalDirectory, input, backend, httpClient);
 
     phase = 'empty-start';
     await bundle.runtime.start();
@@ -317,26 +304,15 @@ Future<void> main() async {
       input.userA.email,
       input.userA.password,
     );
-    final readyA = await _waitReady(
-      bundle.runtime,
-      input.userA.id,
-      phase,
-    );
-    _expectOrder(
-      events,
-      const [
-        'http:/auth/v1/token?grant_type=password',
-        'vault.write',
-        'http:/rest/v1/rpc/ensure_profile',
-      ],
-      'a-password-order',
-    );
+    final readyA = await _waitReady(bundle.runtime, input.userA.id, phase);
+    _expectOrder(events, const [
+      'http:/auth/v1/token?grant_type=password',
+      'vault.write',
+      'http:/rest/v1/rpc/ensure_profile',
+    ], 'a-password-order');
 
     phase = 'a-due-queue';
-    final dueA = await readyA.study.queue.load(
-      readyA.session,
-      PreviewLevel.n5,
-    );
+    final dueA = await readyA.study.queue.load(readyA.session, PreviewLevel.n5);
     _expect(
       dueA.length == 1 &&
           dueA.single.itemId == _dueItemId &&
@@ -349,9 +325,7 @@ Future<void> main() async {
     final reviewA = _review(ReviewRating.good, DateTime.now().toUtc());
     phase = 'a-submit';
     final receiptA = _success(
-      await readyA.study.reviews.submit(
-        _prepare(readyA.study, reviewA, phase),
-      ),
+      await readyA.study.reviews.submit(_prepare(readyA.study, reviewA, phase)),
       phase,
     );
     _expect(receiptA.reviewCount == 2, phase);
@@ -371,38 +345,22 @@ Future<void> main() async {
     _expect(backend.secret == firstRefreshToken, phase);
 
     phase = 'a-restore';
-    bundle = await _openBundle(
-      journalDirectory,
-      input,
-      backend,
-      httpClient,
-    );
+    bundle = await _openBundle(journalDirectory, input, backend, httpClient);
     events.clear();
     await bundle.runtime.start();
-    final readyA2 = await _waitReady(
-      bundle.runtime,
-      input.userA.id,
-      phase,
-    );
+    final readyA2 = await _waitReady(bundle.runtime, input.userA.id, phase);
     _expect(
       backend.secret != null && backend.secret != firstRefreshToken,
       phase,
     );
-    _expectOrder(
-      events,
-      const [
-        'http:/auth/v1/token?grant_type=refresh_token',
-        'vault.write',
-        'http:/rest/v1/rpc/ensure_profile',
-      ],
-      'a-restore-order',
-    );
+    _expectOrder(events, const [
+      'http:/auth/v1/token?grant_type=refresh_token',
+      'vault.write',
+      'http:/rest/v1/rpc/ensure_profile',
+    ], 'a-restore-order');
 
     phase = 'a-local-replay';
-    final beforeLocalReplay = _count(
-      events,
-      'http:/rest/v1/rpc/submit_review',
-    );
+    final beforeLocalReplay = _count(events, 'http:/rest/v1/rpc/submit_review');
     final localReplay = _success(
       await readyA2.study.reviews.submit(
         _prepare(readyA2.study, reviewA, phase),
@@ -427,42 +385,27 @@ Future<void> main() async {
           bundle.runtime.account.state.phase == AccountPhase.signedOut,
       phase,
     );
-    _expectOrder(
-      events,
-      const [
-        'http:/auth/v1/logout?scope=local',
-        'vault.clear',
-      ],
-      'a-logout-order',
-    );
+    _expectOrder(events, const [
+      'http:/auth/v1/logout?scope=local',
+      'vault.clear',
+    ], 'a-logout-order');
 
     phase = 'b-password-login';
     await bundle.runtime.account.signIn(
       input.userB.email,
       input.userB.password,
     );
-    final readyB = await _waitReady(
-      bundle.runtime,
-      input.userB.id,
-      phase,
-    );
-    _expectOrder(
-      events,
-      const [
-        'http:/auth/v1/logout?scope=local',
-        'vault.clear',
-        'http:/auth/v1/token?grant_type=password',
-        'vault.write',
-        'http:/rest/v1/rpc/ensure_profile',
-      ],
-      'b-password-order',
-    );
+    final readyB = await _waitReady(bundle.runtime, input.userB.id, phase);
+    _expectOrder(events, const [
+      'http:/auth/v1/logout?scope=local',
+      'vault.clear',
+      'http:/auth/v1/token?grant_type=password',
+      'vault.write',
+      'http:/rest/v1/rpc/ensure_profile',
+    ], 'b-password-order');
 
     phase = 'b-queue-isolation';
-    final dueB = await readyB.study.queue.load(
-      readyB.session,
-      PreviewLevel.n5,
-    );
+    final dueB = await readyB.study.queue.load(readyB.session, PreviewLevel.n5);
     final aRecordsAfterSwitch = await bundle.journal.list(input.userA.id);
     final bRecordsBeforeReview = await bundle.journal.list(input.userB.id);
     _expect(
@@ -475,9 +418,7 @@ Future<void> main() async {
     phase = 'b-same-event';
     final reviewB = _review(ReviewRating.easy, DateTime.now().toUtc());
     final receiptB = _success(
-      await readyB.study.reviews.submit(
-        _prepare(readyB.study, reviewB, phase),
-      ),
+      await readyB.study.reviews.submit(_prepare(readyB.study, reviewB, phase)),
       phase,
     );
     final bRecordsAfterReview = await bundle.journal.list(input.userB.id);
@@ -497,14 +438,10 @@ Future<void> main() async {
           bundle.runtime.account.state.phase == AccountPhase.signedOut,
       phase,
     );
-    _expectOrder(
-      events,
-      const [
-        'http:/auth/v1/logout?scope=local',
-        'vault.clear',
-      ],
-      phase,
-    );
+    _expectOrder(events, const [
+      'http:/auth/v1/logout?scope=local',
+      'vault.clear',
+    ], phase);
     await _closeBundle(bundle);
     bundle = null;
   } on Object catch (error) {
@@ -538,3 +475,4 @@ Future<void> main() async {
     exitCode = 1;
   }
 }
+

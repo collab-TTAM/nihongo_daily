@@ -146,6 +146,12 @@ def verify_flutter_sdk_runtime(
         ),
         "caller-owned Flutter SDK runtime probe redacts input credentials",
     )
+    require(
+        "eyJ" not in output
+        and "Bearer " not in output
+        and "Authorization:" not in output,
+        "caller-owned Flutter SDK runtime probe does not expose token material",
+    )
     safe_lines = [
         line.strip()
         for line in child.stdout.splitlines()
@@ -156,6 +162,25 @@ def verify_flutter_sdk_runtime(
         r"LOCAL_SUPABASE_SDK_RUNTIME_FAILED:[a-z0-9-]+", safe_status
     ):
         safe_status = "invalid-safe-status"
+    if safe_status != "LOCAL_SUPABASE_SDK_RUNTIME_OK":
+        diagnostics = [
+            line.strip()
+            for line in (child.stderr + child.stdout).splitlines()
+            if re.search(
+                r"(^Error:|: Error:|^Error when reading|^Compilation failed|^Unhandled exception)",
+                line,
+            )
+            and not any(
+                secret in line
+                for secret in (email_a, password_a, email_b, password_b, ANON_KEY)
+            )
+            and not any(
+                marker in line
+                for marker in ("eyJ", "Bearer ", "Authorization:")
+            )
+        ]
+        for line in diagnostics[-8:]:
+            print("Dart SDK runtime diagnostic (sanitized): " + line[:240])
     require(
         child.returncode == 0
         and safe_status == "LOCAL_SUPABASE_SDK_RUNTIME_OK",
