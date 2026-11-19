@@ -1071,3 +1071,27 @@ with a successful response and asserts the same user/session, exactly one Auth
 refresh, and exactly one vault rotation write across both requests. This is a
 caller-owned lifecycle regression, not hosted learner Auth/RLS or actual Windows
 Credential Manager proof.
+
+
+
+## Explicit logout retries a native Credential Manager delete failure — 2026-11-19
+
+The Windows runner now exercises the caller-owned runtime when the native
+`CredDeleteW` helper returns unavailable before deleting User A's saved refresh
+secret. The first logout immediately revokes account/study readiness, but the
+old exact-project credential remains in Credential Manager. The account stays
+in a sign-out error state and a replacement User B password attempt cannot
+reach Auth or own-profile provisioning.
+
+A second explicit logout retries the same retained owner and exact-target
+clear. Only after that clear succeeds may the account return to signed-out and
+accept User B. The test then requires B's rotated refresh token to be present
+before B's captured own-profile request, preserves A's pending journal isolation,
+and confirms B logout plus a fresh process leave the slot absent.
+
+The phase is executed through the production Windows MethodChannel and
+Credential Manager helper using a one-shot compile-time TEST ONLY fault hook.
+It proves deterministic caller-visible failure/retry ordering against actual
+OS storage, not a spontaneous Windows failure, hosted JWT/PostgREST/RLS,
+OS logoff/power loss or physical multi-device acceptance. The normal runner is
+rebuilt with native test hooks disabled before preview/staging builds.

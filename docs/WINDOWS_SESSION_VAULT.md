@@ -469,3 +469,31 @@ GoTrue/PostgREST, signed-JWT learner A/B, OS logoff/power loss, or physical
 multi-device sync. The separate Windows native process probes remain the
 Credential Manager/owner-lease evidence.
 
+
+
+## Caller-owned runtime retries an actual native logout clear failure
+
+The TEST ONLY Windows bridge now injects a one-shot `CredDeleteW` failure
+before the native delete call while User A is signed in through the pinned
+Supabase SDK and caller-owned runtime. The first explicit logout must revoke
+A's profile/study readiness but leave A's previous refresh secret in the real
+project-scoped Credential Manager slot. The account remains in its fixed
+sign-out error state; a User B password attempt is ignored and cannot issue
+Auth or own-profile traffic.
+
+A second, explicit logout call consumes the already-failed cleanup obligation.
+It must successfully sign out and clear the exact A project slot before the
+account returns to signed-out. Only then may B authenticate. The fixture checks
+that B's rotated refresh secret is readable before B's captured own-profile
+request, A's pending journal record remains invisible to B, and B logout clears
+the slot. The PowerShell harness starts a separate fresh runner afterward and
+requires signed-out startup with no Auth/profile requests.
+
+This phase uses the production Windows MethodChannel and Credential Manager
+helper with deterministic compile-time TEST ONLY fault injection. It verifies
+caller-owned logout ordering against actual OS credential state; it does not
+claim a spontaneous Windows API failure, hosted signed-JWT learner A/B,
+deployed PostgREST/RLS, OS logoff/power loss or physical multi-device sync.
+The fault hook remains absent from the normal learner executable because the
+bridge is rebuilt with `ND_SESSION_VAULT_TEST_HOOKS=OFF` before preview/staging
+builds.

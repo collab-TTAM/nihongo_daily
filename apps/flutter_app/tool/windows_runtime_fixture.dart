@@ -31,6 +31,7 @@ const runtimePhases = {
   'runtime-native-read-failure',
   'runtime-native-rotation-write-failure',
   'runtime-native-rotation-write-fail-before',
+  'runtime-native-logout-clear-failure',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
 const _ownerB = 'a1000000-0000-4000-8000-000000000002';
@@ -355,6 +356,15 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             _check(authCalls == 3 && userId == _ownerB && logoutCalls >= 1);
           }
         }
+        if (phase == 'runtime-native-logout-clear-failure') {
+          // Both password grants must begin only after A's native slot clears.
+          _check(await vault.readRefreshToken() == null);
+          if (authCalls == 1) {
+            _check(userId == _owner && logoutCalls == 0);
+          } else {
+            _check(authCalls == 2 && userId == _ownerB && logoutCalls >= 2);
+          }
+        }
       }
       return authResponse();
     }
@@ -367,11 +377,19 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           phase == 'runtime-restore-profile-held' ||
           phase == 'runtime-native-read-failure' ||
           phase == 'runtime-native-rotation-write-failure' ||
-          phase == 'runtime-native-rotation-write-fail-before') {
+          phase == 'runtime-native-rotation-write-fail-before' ||
+          phase == 'runtime-native-logout-clear-failure') {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
       if (phase == 'runtime-native-rotation-write-failure' ||
           phase == 'runtime-native-rotation-write-fail-before') {
+        if (profileCalls == 1) {
+          _check(userId == _owner);
+        } else {
+          _check(profileCalls == 2 && userId == _ownerB);
+        }
+      }
+      if (phase == 'runtime-native-logout-clear-failure') {
         if (profileCalls == 1) {
           _check(userId == _owner);
         } else {
@@ -761,6 +779,92 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         runtime.account.readyRuntime == null &&
             await vault.readRefreshToken() == null &&
             logoutCalls >= 2,
+      );
+      await pending();
+    } else if (phase == 'runtime-native-logout-clear-failure') {
+      _check(await vault.readRefreshToken() == null);
+      await runtime.start();
+      _check(
+        runtime.persistence.phase == SessionPersistencePhase.idle &&
+            runtime.persistence.hasVaultOwner &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 0 &&
+            profileCalls == 0,
+      );
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(
+        authCalls == 1 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner &&
+            await vault.readRefreshToken() == _first,
+      );
+      await journal.stage(_owner, _pending);
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'clear',
+        fault: 'fail_before',
+      );
+
+      // CredDeleteW fails before touching A's saved value. Logout must fail
+      // closed and retain that exact project slot for an explicit retry.
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signOutError &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 1 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner &&
+            await vault.readRefreshToken() == _first,
+      );
+
+      // A replacement B attempt cannot cross the failed-clear logout fence.
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      _check(
+        authCalls == 1 &&
+            profileCalls == 1 &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == _first,
+      );
+
+      // Only an explicit logout retry can clear A before B password Auth.
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.persistence.phase == SessionPersistencePhase.idle &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 2,
+      );
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(
+        authCalls == 2 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.first == _owner &&
+            profileOwners.last == _ownerB &&
+            await vault.readRefreshToken() == _third,
+      );
+      _check((await journal.list(_ownerB)).isEmpty);
+      await runtime.account.signOut();
+      _check(
+        runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 3,
       );
       await pending();
     } else if (phase == 'runtime-rejected') {

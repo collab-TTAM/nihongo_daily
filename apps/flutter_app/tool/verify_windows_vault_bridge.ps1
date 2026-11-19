@@ -196,6 +196,9 @@ try {
     # before B can authenticate, and a fresh process must remain signed out.
     Invoke-Bridge 'runtime-native-rotation-write-fail-before'
     Invoke-Bridge 'runtime-signedout'
+    # A failed native CredDeleteW must retain A and fence B until explicit logout retry.
+    Invoke-Bridge 'runtime-native-logout-clear-failure'
+    Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-late-refresh'
     # Close a fresh owner during held startup restore, then prove a new process
     # observes the cleared OS credential slot.
