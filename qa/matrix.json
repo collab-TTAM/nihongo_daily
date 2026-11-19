@@ -26,7 +26,7 @@
       "Export only validated local integration settings",
       "Install PostgreSQL client",
       "Seed one TEST ONLY active vocabulary item",
-      "Verify local GoTrue, PostgREST, rotation, replay, A/B RLS and caller-owned SDK runtime",
+      "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS",
       "Stop disposable local Supabase services"
     ],
     "flutter": [
@@ -1623,10 +1623,6 @@
         {
           "path": "scripts/test_supabase_local.py",
           "contains": "verify_flutter_sdk_runtime("
-        },
-        {
-          "path": ".github/workflows/ci.yml",
-          "contains": "Install pinned Flutter SDK for local Supabase runtime probe"
         }
       ],
       "issues": [

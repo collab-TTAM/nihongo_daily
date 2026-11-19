@@ -166,7 +166,7 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
       - name: Seed one TEST ONLY active vocabulary item
         run: psql "$DB_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/local_integration_seed.sql
-      - name: Verify local GoTrue, PostgREST, rotation, replay, A/B RLS and caller-owned SDK runtime
+      - name: Verify local GoTrue, PostgREST, rotation, replay and A/B RLS
         run: python3 scripts/test_supabase_local.py
       - name: Stop disposable local Supabase services
         if: always()
