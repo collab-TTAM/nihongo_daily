@@ -544,7 +544,7 @@ final class CapturedConversationApplication {
   String toString() => 'CapturedConversationApplication';
 }
 
-/** Optional same-lease transport action for consuming an applied completion. */
+/// Optional same-lease transport action for consuming an applied completion.
 abstract interface class AppliedConversationCompletionReleasePort {
   bool releaseAppliedCompletion(CapturedConversationApplication application);
 }
