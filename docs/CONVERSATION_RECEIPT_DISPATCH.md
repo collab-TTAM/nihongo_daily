@@ -105,12 +105,25 @@ between the final proof/identity checks and release. Nested release is excluded;
 consumed/stale/foreign proofs cannot free another claim. The old gate never sends
 again; a new explicit gate still reads/reserves storage before one dispatch.
 
-This primitive is not yet wired into ReceiptGuardedAiTransport or the owned SDK
-application action. Current production gates do not pass originalCommand and the
-transport's `_attempted` remains terminal, so next production mutation is still
-blocked. Normal successful HTTP response acknowledgement, owner/transport wiring,
-SDK/native lifecycle acceptance and hosted learner evidence remain next work.
-All14 hosted release groups remain pending; default learner AI stays off.
+The transport binding landed at 2026-11-19 12:52 UTC. The owner application
+path is now also wired: `AiTextRuntimeOwner.applyRetainedConversationCompletion`
+selects the exact lease's existing conversation, receipt reader and release-capable
+transport. It either reuses the same still-unconsumed application proof or applies
+the exact completion through the retained session, then consumes that proof through
+the same `ReceiptGuardedAiTransport`. Epoch, reader, session and transport identity
+are checked before and after; the creation/drain reservation spans storage I/O and
+proof consumption. `ReceiptAiRuntimeOwner` and `AccountReceiptAiRuntime` expose
+the explicit host action. If release is not yet possible, the method returns false
+without inventing success or retry authority; the same owner may explicitly retry
+while the proof remains current.
+
+The owner-level TEST ONLY regression verifies a failed first dispatch, rejects a
+completion from a foreign reader, applies the same-reader completed receipt, clears
+the exact pending metadata, consumes the proof and permits exactly one next turn.
+This is component/owner wiring only: no default route or learner UI activation,
+successful-HTTP acknowledgement, hosted Auth/JWT/RLS/provider proof, native SDK
+learner journey or cross-process store ownership. All14 hosted release groups
+remain pending; default learner AI stays off.
 
 
 Update 2026-11-19 12:52 UTC: ReceiptGuardedAiTransport now passes the full original

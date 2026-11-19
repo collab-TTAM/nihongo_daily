@@ -22,7 +22,8 @@ final class ReceiptGuardedAiTransport
         ConversationMutationTransport,
         ConversationScenarioReadPort,
         ConversationReceiptReadPort,
-        ConversationOriginalReceiptReadPort {
+        ConversationOriginalReceiptReadPort,
+        AppliedConversationCompletionReleasePort {
   ReceiptGuardedAiTransport({
     required OwnedAiTextTransport inner,
     required ConversationReceiptStore store,
@@ -165,6 +166,7 @@ final class ReceiptGuardedAiTransport
 
   /// Explicit trusted-host step; no owner/UI/default binding or implicit retry.
   /// Only the exact retained gate can consume a confirmed application proof.
+  @override
   bool releaseAppliedCompletion(CapturedConversationApplication application) {
     final gate = _gate;
     if (!_attempted ||

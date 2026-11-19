@@ -417,21 +417,24 @@ release and invoke are fenced throughout; failure after gate release retires the
 transport instead of reopening it. Close still drains actual work and owns only
 the transferred inner transport, never the borrowed secure store.
 
-This supersedes the earlier transport-does-not-pass-originalCommand checkpoint.
-The AI owner and PersistentSupabaseRuntime application action do NOT yet invoke
-this method, so their next mutation remains blocked. No default/route/learner
-binding or successful-HTTP acknowledgement was added. Raw successful HTTP, empty
-metadata and missing/UNKNOWN receipts still cannot permit another mutation.
-Next bind proof selection/consumption to the same retained owner lease/transport
-with epoch/exact-reader/final lifecycle guards and pinned SDK/native acceptance.
+The explicit owner application action is now wired to this release primitive.
+`AiTextRuntimeOwner.applyRetainedConversationCompletion` requires the same retained
+lease's conversation, original-bound receipt reader and
+`AppliedConversationCompletionReleasePort`. It first reuses a still-current
+unconsumed proof when an earlier explicit release attempt did not finish; otherwise
+it applies the completion through that exact flow/store, captures the proof and
+passes it to the same retained transport. It rechecks the owner epoch, reader,
+session and transport after storage and after release. A missing proof retires the
+owner; a release that is still unavailable returns false without automatic retry.
+`ReceiptAiRuntimeOwner` and `AccountReceiptAiRuntime` expose this host-only action.
+No default route, learner UI, SDK/Auth strategy or successful-HTTP acknowledgement
+was enabled.
 
-Eighteen new TEST ONLY cases cover all3ops full-original positive/mismatch sharing
-metadata, refresh/account/revoke/close/reader/store retirement, real held HTTP late
-success/error, nested release/invoke, close and final post-gate refresh. One test
-uses the SAME captured session/transport for pending start, completed application,
-explicit release, one next turn and still-blocked later finish. Other test rigs
-use explicitly injected independent flow/inner ports and are not owned SDK proof.
-All279 component cases pass (261 retained+18 new) in a fresh32-file Dart3.9.2 graph,
-with only flutter_test to pinned test1.26.2 import adaptation/original fixtures.
-Focused analysis is clean. Full Flutter/SDK/native builds need new-head CI;
-all14 hosted release groups remain pending and no hosted provenance is inferred.
+The new TEST ONLY owner regression drives a failed first start through the same
+ReceiptGuardedAiTransport, reads the completed original receipt through that
+transport's retained reader, rejects a foreign-reader completion, clears the exact
+pending metadata, consumes the captured application proof, and then sends exactly
+one next turn. Existing direct transport tests still cover held actual HTTP,
+late success/error, A-to-B/session replacement, close and reentrant release.
+These are injected component tests, not hosted learner proof. Pinned Flutter/Windows
+CI must validate this exact head; all14 hosted release groups remain pending.

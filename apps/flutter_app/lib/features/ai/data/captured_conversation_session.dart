@@ -543,3 +543,8 @@ final class CapturedConversationApplication {
   @override
   String toString() => 'CapturedConversationApplication';
 }
+
+/** Optional same-lease transport action for consuming an applied completion. */
+abstract interface class AppliedConversationCompletionReleasePort {
+  bool releaseAppliedCompletion(CapturedConversationApplication application);
+}

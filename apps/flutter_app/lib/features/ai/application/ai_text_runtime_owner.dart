@@ -242,6 +242,10 @@ final class AiTextRuntimeOwner {
   /// Explicit application into this exact lease's existing conversation. Never
   /// creates a capability or accepts a sibling/external reader's completion.
   /// The existing creation/drain reservation also covers actual storage I/O.
+  /// Apply an exact retained receipt and consume its proof through the same
+  /// transport lease before that lease can dispatch another mutation. If the
+  /// transport is still draining, the unconsumed proof remains available for an
+  /// explicit retry by this same owner; no automatic retry or HTTP acknowledgement.
   Future<bool> applyRetainedConversationCompletion(
     CapturedConversationCompletion completion, {
     required ConversationReceiptStore store,
@@ -250,9 +254,15 @@ final class AiTextRuntimeOwner {
     final lease = _lease;
     final flow = lease?.conversation;
     final reader = lease?.receipts;
-    if (lease == null || flow == null || reader == null) return false;
+    final transport = lease?.transport;
+    if (lease == null ||
+        flow == null ||
+        reader == null ||
+        transport is! AppliedConversationCompletionReleasePort) {
+      return false;
+    }
     final creating = Completer<void>();
-    _creating = creating; // Before any supplied capability/readiness getters.
+    _creating = creating; // Covers storage I/O and proof consumption.
     final epoch = _epoch;
     bool current() =>
         !_closed &&
@@ -260,21 +270,42 @@ final class AiTextRuntimeOwner {
         epoch == _epoch &&
         identical(_lease, lease) &&
         identical(lease.conversation, flow) &&
-        identical(lease.receipts, reader);
+        identical(lease.receipts, reader) &&
+        identical(lease.transport, transport);
+    var appliedNow = false;
     try {
       if (completion.captureForReader(reader) == null ||
           !flow.isCurrent ||
           !current()) {
         return false;
       }
-      final applied = await flow.applyRetainedCompletion(
+      var application = flow.captureAppliedCompletion(
         completion,
         store: store,
       );
-      check(); // A failed/retired session must also fence sibling capabilities.
+      if (application == null) {
+        final applied = await flow.applyRetainedCompletion(
+          completion,
+          store: store,
+        );
+        check(); // A failed/retired session must also fence sibling capabilities.
+        if (!current() || !applied) return false;
+        appliedNow = true;
+        application = flow.captureAppliedCompletion(
+          completion,
+          store: store,
+        );
+      }
+      if (application == null) {
+        invalidate(); // Transcript application without its proof is unusable.
+        return false;
+      }
+      if (!flow.isCurrent || !current()) return false;
+      final released = transport.releaseAppliedCompletion(application);
+      check(); // Includes the final post-release Auth/reader/transport checks.
       if (!current()) return false;
-      if (applied) _notify();
-      return applied;
+      if (appliedNow || released) _notify();
+      return released;
     } on Object {
       invalidate();
       throw const AiTextFailure(AiTextErrorCode.internalError);

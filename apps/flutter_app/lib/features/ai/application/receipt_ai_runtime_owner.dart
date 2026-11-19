@@ -1,6 +1,7 @@
 import 'dart:async';
 import '../../srs/data/review_repository.dart';
 import '../data/captured_ai_text_repository.dart';
+import '../data/captured_conversation_receipt_lookup.dart';
 import '../data/conversation_receipt_store.dart';
 import '../data/receipt_guarded_ai_transport.dart';
 import 'ai_text_runtime_owner.dart';
@@ -27,6 +28,18 @@ final class ReceiptAiRuntimeOwner {
   }
   final ConversationReceiptStore _store;
   late final AiTextRuntimeOwner runtime;
+  /// Trusted host action; never creates a reader or infers success from HTTP.
+  /// The exact proof is applied/released only through this owner's retained lease.
+  Future<bool> applyRetainedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (_preserveChosen || _signOutChosen) return Future.value(false);
+    return runtime.applyRetainedConversationCompletion(
+      completion,
+      store: _store,
+    );
+  }
+
   bool _preserveChosen = false;
   bool _signOutChosen = false;
   Future<void>? _preserving;

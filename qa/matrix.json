@@ -3200,12 +3200,16 @@
     {
       "id": "receipt-owned-ai-transport",
       "status": "automated-baseline",
-      "scope": "Opt-in owned AI transport composes immutable typed mutation wire with persisted receipt barrier and real runtime-owner retirement drain.",
+      "scope": "Opt-in owned AI transport composes immutable typed mutation wire with persisted receipt barrier, owner-bound applied-completion proof consumption and runtime-owner retirement drain.",
       "ci_job": "flutter",
       "anchors": [
         {
           "path": "apps/flutter_app/test/features/ai/receipt_guarded_ai_transport_test.dart",
           "contains": "runtime invalidation waits storage and prevents late first HTTP"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/receipt_transport_release_test.dart",
+          "contains": "owner applies and consumes exact completion proof before next mutation"
         }
       ],
       "issues": [
@@ -3213,8 +3217,8 @@
         18,
         20
       ],
-      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_guarded_ai_transport_test.dart",
-      "limitation": "Actual owner/session with TEST ONLY storage/transport ports; no SDK/Windows-backed runtime/default activation/authenticated reconciliation/hosted learner or cross-process ownership proof. One mutation only; all14 release groups pending."
+      "reproduce": "cd apps/flutter_app && flutter test test/features/ai/receipt_guarded_ai_transport_test.dart test/features/ai/receipt_transport_release_test.dart",
+      "limitation": "Owner-level proof selection/consumption uses TEST ONLY Auth/receipt storage/inner transport; no hosted JWT/RLS/provider or learner proof, no default route/activation, no successful-HTTP acknowledgement or cross-process store ownership. All14 hosted release groups remain pending."
     },
     {
       "id": "receipt-runtime-lifecycle",

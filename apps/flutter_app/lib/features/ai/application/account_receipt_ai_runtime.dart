@@ -173,6 +173,15 @@ final class AccountReceiptAiRuntime<T extends Object>
     );
   }
 
+  /// Explicit host-only application through the same retained account/reader/
+  /// session/transport lease. No default UI activation.
+  Future<bool> applyRetainedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (!_prepare()) return Future.value(false);
+    return _owner.applyRetainedConversationCompletion(completion);
+  }
+
   /// Preserve metadata, drain actual work and release this partition. Borrowed
   /// account/Auth remain owned by host. Cannot bypass a failed explicit clear.
   Future<void> close() => _stop(_owner.close);

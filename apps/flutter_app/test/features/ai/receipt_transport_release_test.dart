@@ -5,10 +5,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/features/ai/application/ai_text_runtime_owner.dart';
+import 'package:nihongo_daily/features/ai/application/receipt_ai_runtime_owner.dart';
 import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_mutation.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.dart';
 import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_receipt_lookup.dart';
+import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_receipt_snapshot.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
 import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart';
 import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
 import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
@@ -21,11 +27,15 @@ final class Inner
     implements
         OwnedAiTextTransport,
         ConversationMutationTransport,
-        ConversationScenarioReadPort {
+        ConversationScenarioReadPort,
+        ConversationReceiptReadPort,
+        ConversationOriginalReceiptReadPort {
   bool revoked = false;
   int sends = 0;
   int closes = 0;
   Completer<Object?>? wire;
+  ConversationReceiptSnapshot? receipt;
+  bool failNext = false;
   final entered = Completer<void>();
   Map<String, Object>? sent;
   @override
@@ -48,6 +58,10 @@ final class Inner
     if (!entered.isCompleted) {
       entered.complete();
     }
+    if (failNext) {
+      failNext = false;
+      throw StateError('TEST_ONLY_HTTP_FAILURE');
+    }
     return wire == null ? f.response(operation) : await wire!.future;
   }
 
@@ -56,6 +70,37 @@ final class Inner
     required ReviewSession capturedSession,
     required AiTextLevel level,
   }) async => <Object?>[];
+  Future<ConversationReceiptSnapshot> _readReceipt() async {
+    final value = receipt;
+    if (value == null) {
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    }
+    return value;
+  }
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupReceipt(
+    ConversationReceiptReference reference,
+  ) => _readReceipt();
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupStartReceipt(
+    ConversationReceiptReference reference,
+    StartConversationRequest original,
+  ) => _readReceipt();
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupTurnReceipt(
+    ConversationReceiptReference reference,
+    ConversationTurnRequest original,
+  ) => _readReceipt();
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupFinishReceipt(
+    ConversationReceiptReference reference,
+    FinishConversationRequest original,
+  ) => _readReceipt();
+
   @override
   Future<Object?> tutorExplain({
     required ReviewSession capturedSession,
@@ -138,6 +183,95 @@ void main() {
       expect(inner.closes, 1);
     },
   );
+  test(
+    'owner applies and consumes exact completion proof before next mutation',
+    () async {
+      final auth = f.Auth();
+      final pendingCommand = h.command(h.operations.first);
+      final backend = h.Backend(null);
+      final store = ConversationReceiptStore(
+        scope: pendingCommand.reference.scope,
+        backend: backend,
+      );
+      final inner = Inner()..failNext = true;
+      final owner = ReceiptAiRuntimeOwner(
+        store: store,
+        createTransport: ({
+          required auth,
+          required isReady,
+          required store,
+        }) => ReceiptGuardedAiTransport(
+          inner: inner,
+          store: store,
+          auth: auth,
+          capturedSession: auth.currentSession!,
+          isReady: isReady,
+        ),
+      );
+      addTearDown(owner.close);
+      final generation = AiTextGeneration();
+      bool ready() => true;
+      expect(
+        owner.runtime.acquire(
+          auth: auth,
+          generation: generation,
+          isReady: ready,
+        ),
+        isNotNull,
+      );
+      final flow = owner.runtime.acquireConversation(
+        auth: auth,
+        generation: generation,
+        isReady: ready,
+      )!;
+      final reader = owner.runtime.acquireReceiptLookup(
+        auth: auth,
+        generation: generation,
+        isReady: ready,
+      )!;
+      await expectLater(
+        flow.start(pendingCommand.start!),
+        throwsA(f.code(AiTextErrorCode.internalError)),
+      );
+      expect(backend.value, pendingCommand.reference.encode());
+      inner.receipt = ConversationReceiptSnapshot.fromRows(
+        pendingCommand.reference,
+        [
+          {
+            'user_id': f.owner,
+            'operation': pendingCommand.reference.operation.wireName,
+            'client_event_id': pendingCommand.reference.clientEventId,
+            'status': 'COMPLETED',
+            'response_json':
+                f.response(pendingCommand.reference.operation.wireName),
+          },
+        ],
+      );
+      final completion = await reader.lookupCompletion(pendingCommand);
+      expect(completion, isNotNull);
+      final foreign = await h.completion(auth, pendingCommand);
+      expect(
+        await owner.applyRetainedConversationCompletion(foreign.handle),
+        isFalse,
+      );
+      expect(backend.value, pendingCommand.reference.encode());
+      expect(
+        await owner.applyRetainedConversationCompletion(completion!),
+        isTrue,
+      );
+      expect(backend.value, isNull);
+      expect(
+        flow.captureAppliedCompletion(completion, store: store),
+        isNull,
+      );
+      final next = f.turn(event: f.otherEvent);
+      await flow.turn(next);
+      expect(inner.sends, 2);
+      expect(inner.sent, next.toJson());
+      expect(backend.value, isNotNull);
+    },
+  );
+
   for (final op in h.operations) {
     for (final changed in [false, true]) {
       test(
