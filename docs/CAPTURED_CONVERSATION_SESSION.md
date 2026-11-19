@@ -71,3 +71,38 @@ must verify this increment. Next add owned fixed-endpoint SDK/HTTP and actual
 session lifecycle/recovery tests before conversation UI. Main/staging AI stay
 off; all14 hosted release groups and provider/voice/collection/spend/human gates
 remain pending. No Auth strategy/provider/release permission follows.
+
+
+## Already-published completion inspection — 2026-11-20
+
+`inspectPublishedCompletion(completion, store)` is a synchronous, read-only
+normal-success prerequisite. It first requires the private lane's exact original
+and entire typed accepted-result match, a current original-bound reader, identical
+Auth and an existing open project/owner store. Receipt-reconciled cache entries
+remain ineligible, including after cached replay. Pending or actual in-flight work
+returns null. This does not read, clear or trust the metadata currently in storage.
+
+The result must also match the current published projection: start is the same
+start event/session and sole assistant message with no later turn/finish; turn
+is an accepted event in that active session and its complete assistant message
+is the last published message; finish is the same finish event/session and entire
+published summary. A lane-accepted result rejected by transcript validation grants
+nothing. Older cached replay cannot reset the view or make old completion current.
+
+The session reserves before external readiness/Auth/reader callbacks. After fresh
+reader and session checks, only local revoked/busy/unresolved/store-open and exact
+snapshot-identity checks precede returning that same immutable snapshot. Reentry
+cannot dispatch, and final callback reader/store retirement, refresh, revocation
+or readiness failure returns null. Observed lifecycle loss retains the existing
+permanent-revocation policy. No retained field or sensitive payload copy is added.
+
+Twenty-six TEST ONLY cases cover all operations, full input/result mismatch,
+reconciled cache replay, stale timeline, rejected publication, foreign Auth/store,
+uncertainty/late success/error, lifecycle and final callback reentry/retirement.
+These are component checks, not hosted learner or durable/native evidence.
+A non-null result is NOT application/release proof or permission to clear/send.
+No owner, SDK, learner UI or default binding is activated. Next implement guarded
+confirmed conditional clear and proof mint on the same owned lease, with exact
+snapshot identity revalidated after actual storage completion; keep existing
+uncertain recovery application/release separate. Normal-success acknowledgement,
+all14 hosted release groups and live/provider/voice/human gates remain pending.

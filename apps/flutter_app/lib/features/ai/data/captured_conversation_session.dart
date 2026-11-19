@@ -8,6 +8,7 @@ import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
 import 'captured_conversation_receipt_lookup.dart';
 import '../domain/conversation_receipt_snapshot.dart';
+import '../domain/conversation_receipt_reference.dart';
 import 'conversation_mutation_lane.dart';
 import 'conversation_receipt_store.dart';
 
@@ -112,6 +113,81 @@ final class CapturedConversationSession {
       return pair.receipt;
     } finally {
       _checking = false;
+    }
+  }
+
+  /// Inspect a normal accepted result against the already published transcript.
+  /// This is read-only: no receipt I/O, application proof, release or dispatch.
+  /// Cached results from an earlier transcript position cannot roll it back.
+  ConversationSessionSnapshot? inspectPublishedCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) {
+    if (_revoked || _executing || isCheckingAvailability) return null;
+    _executing = true; // Reserve before any external readiness/Auth callback.
+    try {
+      final before = _snapshot;
+      if (!isCurrent) return null;
+      final receipt = _lane.inspectAcceptedCompletion(completion, store: store);
+      if (receipt == null) return null;
+      final pair = completion.captureForAuth(_auth);
+      if (pair == null || !identical(receipt, pair.receipt)) return null;
+      final command = pair.command;
+      final event = command.reference.clientEventId.toLowerCase();
+      switch (command.reference.operation) {
+        case ConversationReceiptOperation.start:
+          if (before.phase != ConversationSessionPhase.active ||
+              before.messages.length != 1 ||
+              _turns.isNotEmpty ||
+              _finishEvent != null ||
+              _startEvent != event ||
+              receipt.start == null ||
+              !_sameSession(receipt.start!.sessionId) ||
+              jsonEncode(before.messages.single.toJson()) !=
+                  jsonEncode(receipt.start!.assistantMessage.toJson())) {
+            return null;
+          }
+        case ConversationReceiptOperation.turn:
+          if (before.phase != ConversationSessionPhase.active ||
+              before.messages.isEmpty ||
+              _finishEvent != null ||
+              !_turns.contains(event) ||
+              !_sameSession(command.turn!.sessionId) ||
+              receipt.turn == null ||
+              jsonEncode(before.messages.last.toJson()) !=
+                  jsonEncode(receipt.turn!.assistantMessage.toJson())) {
+            return null;
+          }
+        case ConversationReceiptOperation.finish:
+          if (before.phase != ConversationSessionPhase.finished ||
+              before.messages.isEmpty ||
+              _finishEvent != event ||
+              !_sameSession(command.finish!.sessionId) ||
+              before.summary == null ||
+              receipt.finish == null ||
+              jsonEncode(before.summary!.toJson()) !=
+                  jsonEncode(receipt.finish!.toJson())) {
+            return null;
+          }
+      }
+      if (!completion.isCurrent || !isCurrent) return null;
+      // Local checks only after the last external callback. No await or effect
+      // between these guards and returning the exact immutable published view.
+      if (_revoked ||
+          _checking ||
+          completion.isRevoked ||
+          _lane.isBusy ||
+          _lane.hasUnresolvedMutation ||
+          !identical(before, _snapshot) ||
+          store.phase != ConversationReceiptStorePhase.open) {
+        return null;
+      }
+      return before;
+    } on Object {
+      revoke();
+      return null;
+    } finally {
+      _executing = false;
     }
   }
 

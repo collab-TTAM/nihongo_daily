@@ -520,8 +520,13 @@ its existing successful mutation cache and exact original-bound completed receip
 It conservatively compares full command and full typed result, rejects pending/
 busy/stale/foreign/mismatched states and excludes receipt-reconciled cache slots.
 It sends nothing and performs no store read/clear or claim/proof transition.
-No session/owner/SDK/default path invokes it yet; normal-success acknowledgement
-remains incomplete. Next validate the exact already-published session snapshot,
-then separately implement guarded confirmed clear and proof mint/consumption on
-the SAME owned lease. Do not reuse this read result as release authority, infer
-success from metadata absence/UNKNOWN, or reimplement existing uncertain recovery.
+CapturedConversationSession.inspectPublishedCompletion now composes that check
+with the exact already-published snapshot and session event markers (see
+CAPTURED_CONVERSATION_SESSION.md). Old start/turn results after later progress,
+reconciled replay and lane success rejected by transcript validation cannot match.
+This synchronous inspection returns the same immutable view, performs no I/O and
+mints no proof. No owner/SDK/default path invokes it yet; normal-success
+acknowledgement remains incomplete. Next separately implement guarded confirmed
+clear and proof mint/consumption on the SAME owned lease, revalidating current
+snapshot identity across storage effects. Do not reuse this read result as release
+authority, infer success from metadata absence/UNKNOWN, or reimplement existing uncertain recovery.
