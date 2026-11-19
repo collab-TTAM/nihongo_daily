@@ -81,6 +81,18 @@ the real Dart decoder/RPC queue projection, then validates emitted JSON with
 used. This is observed SQL-to-Dart fixture data flow, not a PostgREST SDK request,
 real Auth/JWT/expired token, signed-in UI journey or multi-device evidence.
 
+The disposable local GoTrue/PostgREST integration separately calls the same
+`get_review_queue` RPC through HTTP using two independent User A sessions and
+User B. A TEST ONLY second vocabulary row receives a review event two hours in
+the past, making its ten-minute NEW-card interval due without privileged SQL
+mutation. Both A sessions must read the same single typed N5 item; B and A's
+N4 projection must be empty. The test checks the captured server time, due
+instant, explicit limit, rejection of a forged owner/invalid limit, expired-JWT
+rejection, and unchanged review-event/scheduling rows across queue reads. This
+is local signed-JWT/PostgREST evidence for the queue read and same-owner
+two-session projection only; it does not prove hosted service behavior,
+physical-device offline storage transfer or learner UI acceptance.
+
 `contracts/review_queue/v1/fixtures.json` and unit tests are hand-authored **TEST
 ONLY** inputs, not generated SQL evidence. Schema validation alone never proves
 their origin; local verifier success must be reported as fixture-only. Full #22

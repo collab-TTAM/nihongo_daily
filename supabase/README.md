@@ -38,7 +38,10 @@ ephemeral integration stack. It starts GoTrue and PostgREST against PostgreSQL
 17, applies the repository migrations, then creates two real local Auth users.
 The CI script verifies password sign-in, refresh-token rotation, logout
 revocation, a correctly signed expired JWT, caller-derived `ensure_profile`,
-atomic `submit_review` replay/conflict and A/B owner RLS through HTTP.
+atomic `submit_review` replay/conflict, and `get_review_queue` through HTTP.
+The queue case uses two independent User A sessions and User B to verify the
+same-owner due snapshot, B isolation, N5 filtering, bounds, expired-token
+rejection and read-only scheduling state.
 
 The synthetic vocabulary row is inserted only into the disposable local stack
 from `supabase/tests/local_integration_seed.sql`; it is not a canonical content

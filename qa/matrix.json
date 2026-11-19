@@ -962,6 +962,10 @@
         {
           "path": "scripts/test_supabase_local.py",
           "contains": "both owners commit the shared event UUID concurrently without receipt collision"
+        },
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "Local GoTrue/PostgREST due-queue sync passed"
         }
       ],
       "issues": [

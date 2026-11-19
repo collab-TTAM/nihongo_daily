@@ -26,6 +26,7 @@ API_URL = os.environ["API_URL"].rstrip("/")
 ANON_KEY = os.environ["ANON_KEY"]
 JWT_SECRET = os.environ["JWT_SECRET"]
 TEST_ITEM_ID = "00000000-0000-4000-8000-000000000001"
+TEST_DUE_ITEM_ID = "00000000-0000-4000-8000-000000000002"
 
 
 def require(condition: bool, message: str) -> None:
@@ -240,18 +241,24 @@ def expired_jwt(owner_id: str) -> str:
     return f"{signing_input}.{encoded}"
 
 
-def review_request() -> dict:
-    occurred_at = dt.datetime.now(dt.timezone.utc).isoformat(
+def review_request(
+    item_id: str = TEST_ITEM_ID,
+    occurred_at: dt.datetime | None = None,
+) -> dict:
+    instant = occurred_at or dt.datetime.now(dt.timezone.utc)
+    if instant.tzinfo is None or instant.utcoffset() is None:
+        raise ValueError("Review event time must include a timezone")
+    wire_time = instant.astimezone(dt.timezone.utc).isoformat(
         timespec="microseconds"
     ).replace("+00:00", "Z")
     return {
         "client_event_id": str(uuid.uuid4()),
         "item_type": "VOCABULARY",
-        "item_id": TEST_ITEM_ID,
+        "item_id": item_id,
         "rating": 2,
         "is_correct": True,
         "response_ms": 1250,
-        "occurred_at": occurred_at,
+        "occurred_at": wire_time,
     }
 
 
@@ -329,6 +336,13 @@ def main() -> None:
         expired,
     )
     require(status in (401, 403), "expired signed JWT rejected by review RPC")
+    status, _ = request(
+        "POST",
+        "/rest/v1/rpc/get_review_queue",
+        {"p_request": {"jlpt_level": "N5", "limit": 100}},
+        expired,
+    )
+    require(status in (401, 403), "expired signed JWT rejected by review queue RPC")
     require(
         rows(
             "review_events",
@@ -598,6 +612,108 @@ def main() -> None:
         "A cannot read B profile",
     )
 
+    # A second TEST ONLY vocabulary row lets two independent A sessions prove
+    # the real PostgREST due-queue projection without mutating learner data.
+    # The event is old enough for its NEW-card ten-minute interval to be due.
+    due_instant = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=2)
+    due_request = review_request(TEST_DUE_ITEM_ID, due_instant)
+    due_receipt = rpc("submit_review", due_request, token_a)
+    require(due_receipt.get("review_count") == 1, "A creates one authoritative due-queue item")
+    queue_request = {"jlpt_level": "N5", "limit": 100}
+    state_before_queue = rows(
+        "user_learning_items",
+        "id,item_id,review_count,correct_count,incorrect_count,next_review_at",
+        "user_id",
+        id_a,
+        token_a,
+    )
+    events_before_queue = rows("review_events", "client_event_id", "user_id", id_a, token_a)
+    queue_a = rpc("get_review_queue", queue_request, token_a)
+    queue_a_device = rpc("get_review_queue", queue_request, token_a_device)
+    queue_b = rpc("get_review_queue", queue_request, token_b)
+    queue_n4 = rpc("get_review_queue", {"jlpt_level": "N4", "limit": 100}, token_a)
+    queue_limited = rpc("get_review_queue", {"jlpt_level": "N5", "limit": 1}, token_a)
+    queue_fields = {"jlpt_level", "server_time", "items"}
+    item_fields = {
+        "item_type", "item_id", "prompt_ja", "reading_ja", "answer_vi", "next_review_at"
+    }
+    require(
+        isinstance(queue_a, dict)
+        and set(queue_a) == queue_fields
+        and queue_a["jlpt_level"] == "N5"
+        and isinstance(queue_a["server_time"], str)
+        and isinstance(queue_a["items"], list),
+        "A due-queue response has the exact bounded N5 envelope",
+    )
+    require(
+        len(queue_a["items"]) == 1
+        and isinstance(queue_a["items"][0], dict)
+        and set(queue_a["items"][0]) == item_fields,
+        "A due queue contains exactly one typed item",
+    )
+    due_item = queue_a["items"][0]
+    require(
+        due_item["item_type"] == "VOCABULARY"
+        and due_item["item_id"] == TEST_DUE_ITEM_ID
+        and due_item["prompt_ja"] == "同期テスト"
+        and due_item["reading_ja"] == "どうきテスト"
+        and due_item["answer_vi"] == "kiểm thử đồng bộ",
+        "A due queue maps the original TEST ONLY curriculum projection",
+    )
+    try:
+        server_time = dt.datetime.fromisoformat(queue_a["server_time"].replace("Z", "+00:00"))
+        due_time = dt.datetime.fromisoformat(due_item["next_review_at"].replace("Z", "+00:00"))
+    except (TypeError, ValueError, OverflowError):
+        require(False, "A due-queue instants are parseable")
+        server_time = due_time = dt.datetime.min.replace(tzinfo=dt.timezone.utc)
+    require(
+        server_time.tzinfo is not None and due_time.tzinfo is not None and due_time <= server_time,
+        "A due-queue item is due by the captured server time",
+    )
+    require(
+        isinstance(queue_a_device, dict)
+        and set(queue_a_device) == queue_fields
+        and queue_a_device["items"] == queue_a["items"],
+        "A's independent second session reads the same authoritative due queue",
+    )
+    require(
+        isinstance(queue_b, dict)
+        and set(queue_b) == queue_fields
+        and queue_b["jlpt_level"] == "N5"
+        and queue_b["items"] == [],
+        "B cannot see A's due queue",
+    )
+    require(
+        isinstance(queue_n4, dict)
+        and set(queue_n4) == queue_fields
+        and queue_n4["items"] == [],
+        "A's N4 queue excludes the N5 due item",
+    )
+    require(
+        isinstance(queue_limited, dict)
+        and set(queue_limited) == queue_fields
+        and queue_limited["items"] == queue_a["items"],
+        "The bounded limit returns the due item without reordering",
+    )
+    invalid_queue = rpc("get_review_queue", {"jlpt_level": "N5", "limit": 0}, token_a)
+    require(error_code(invalid_queue) == "VALIDATION_FAILURE", "Due-queue read rejects an out-of-range limit")
+    forged_queue = rpc(
+        "get_review_queue", {"jlpt_level": "N5", "limit": 100, "user_id": id_b}, token_a
+    )
+    require(error_code(forged_queue) == "VALIDATION_FAILURE", "Due-queue read rejects a caller-supplied owner")
+    state_after_queue = rows(
+        "user_learning_items",
+        "id,item_id,review_count,correct_count,incorrect_count,next_review_at",
+        "user_id",
+        id_a,
+        token_a,
+    )
+    events_after_queue = rows("review_events", "client_event_id", "user_id", id_a, token_a)
+    require(
+        state_after_queue == state_before_queue and events_after_queue == events_before_queue,
+        "Due-queue reads do not mutate scheduling state or review events",
+    )
+
     status, _ = request(
         "POST", "/auth/v1/logout?scope=global", access_token=token_a
     )
@@ -630,11 +746,12 @@ def main() -> None:
     require(status in (200, 204), "B GoTrue logout")
 
     print(
-        "Local Supabase GoTrue/PostgREST passed: two Auth users, four independent "
+        "Local GoTrue/PostgREST due-queue sync passed: two Auth users, four independent "
         "password sessions, fresh-process refresh restoration, global logout revocation, "
-        "profile bootstrap, signed-expired JWT rejection, concurrent same-owner replay, "
-        "historical replay after a later review without state rollback, changed/stale "
-        "conflicts, owner-scoped shared event IDs and A/B RLS isolation. LOCAL ONLY."
+        "profile bootstrap, expired-JWT queue rejection, concurrent same-owner replay, "
+        "historical replay without state rollback, changed/stale conflicts, owner-scoped "
+        "shared event IDs, same-owner cross-session due-queue projection, B isolation, "
+        "level/limit filtering and read-only state. LOCAL ONLY."
     )
 
 
