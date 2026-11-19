@@ -18,13 +18,15 @@
       "Publish actual native SQL queue projections"
     ],
     "supabase-integration": [
+      "Install pinned Flutter SDK for local Supabase runtime probe",
+      "Resolve pinned Flutter dependencies for local SDK integration",
       "Install pinned Supabase CLI",
       "Start disposable local Supabase services",
       "Apply repository migrations to the local stack",
       "Export only validated local integration settings",
       "Install PostgreSQL client",
       "Seed one TEST ONLY active vocabulary item",
-      "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS",
+      "Verify local GoTrue, PostgREST, rotation, replay, A/B RLS and caller-owned SDK runtime",
       "Stop disposable local Supabase services"
     ],
     "flutter": [
@@ -1607,6 +1609,33 @@
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/srs/persistent_supabase_runtime_test.dart --plain-name 'restored session profile retry reuses persisted rotation without another Auth refresh'",
       "limitation": "Pinned Supabase SDK with TEST ONLY MockClient, synthetic identity and in-memory vault. It verifies caller-owned startup/profile retry ordering, not hosted learner Auth/RLS or actual Windows Credential Manager execution."
+    },
+    {
+      "id": "caller-owned-sdk-runtime",
+      "status": "automated-baseline",
+      "scope": "Pinned Supabase SDK caller-owned runtime against disposable local GoTrue/PostgREST: password sign-in, refresh persistence before own-profile readiness, real due-queue and submit_review RPC, NativeReviewJournal close/reopen and local receipt replay, logout/clear ordering, A/B isolation and owner-scoped event identity. Server idempotent replay remains separately covered by the local Python integration.",
+      "ci_job": "supabase-integration",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/tool/verify_supabase_sdk_runtime.dart",
+          "contains": "LOCAL_SUPABASE_SDK_RUNTIME_OK"
+        },
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "verify_flutter_sdk_runtime("
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "contains": "Install pinned Flutter SDK for local Supabase runtime probe"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15
+      ],
+      "reproduce": "With a fresh disposable local Supabase stack and Flutter 3.35.4, run python3 scripts/test_supabase_local.py; it creates two ephemeral local users and pipes their credentials to the Dart probe over stdin.",
+      "limitation": "LOCAL ONLY. Uses a TEST ONLY in-memory credential backend and an exact-loopback HTTPS-to-HTTP bridge to the disposable local API; NativeReviewJournal is the real disk-backed journal. It does not exercise Windows Credential Manager in the same runtime, hosted signed-JWT/staging, the learner UI, physical multi-device offline sync, or release acceptance."
     }
   ],
   "findings": [

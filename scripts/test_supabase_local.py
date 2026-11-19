@@ -12,6 +12,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -97,6 +98,74 @@ def create_user(label: str):
     )
     require(status in (200, 201), f"{label} GoTrue signup ({status})")
     return password_login(email, password, label), email, password
+
+
+def verify_flutter_sdk_runtime(
+    user_a: dict,
+    email_a: str,
+    password_a: str,
+    user_b: dict,
+    email_b: str,
+    password_b: str,
+) -> None:
+    payload = {
+        "api_url": API_URL,
+        "anon_key": ANON_KEY,
+        "user_a": {
+            "id": user_a["user"]["id"],
+            "email": email_a,
+            "password": password_a,
+        },
+        "user_b": {
+            "id": user_b["user"]["id"],
+            "email": email_b,
+            "password": password_b,
+        },
+    }
+    app_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "apps", "flutter_app")
+    )
+    try:
+        child = subprocess.run(
+            ["dart", "run", "tool/verify_supabase_sdk_runtime.dart"],
+            cwd=app_dir,
+            input=json.dumps(payload, separators=(",", ":")),
+            text=True,
+            capture_output=True,
+            timeout=180,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        require(False, "caller-owned Flutter SDK runtime probe completed")
+        return
+    output = child.stdout + child.stderr
+    require(
+        all(
+            secret not in output
+            for secret in (email_a, password_a, email_b, password_b, ANON_KEY)
+        ),
+        "caller-owned Flutter SDK runtime probe redacts input credentials",
+    )
+    safe_lines = [
+        line.strip()
+        for line in child.stdout.splitlines()
+        if line.startswith("LOCAL_SUPABASE_SDK_RUNTIME_")
+    ]
+    safe_status = safe_lines[-1] if safe_lines else "missing-safe-status"
+    if safe_status != "LOCAL_SUPABASE_SDK_RUNTIME_OK" and not re.fullmatch(
+        r"LOCAL_SUPABASE_SDK_RUNTIME_FAILED:[a-z0-9-]+", safe_status
+    ):
+        safe_status = "invalid-safe-status"
+    require(
+        child.returncode == 0
+        and safe_status == "LOCAL_SUPABASE_SDK_RUNTIME_OK",
+        f"caller-owned Supabase SDK runtime ({safe_status})",
+    )
+    print(
+        "Caller-owned Supabase SDK runtime passed: refresh-before-profile, "
+        "NativeReviewJournal reopen/local replay, logout/clear ordering and "
+        "A/B isolation. LOCAL ONLY."
+    )
 
 
 def rpc(name: str, request_body: dict, access_token: str):
@@ -265,7 +334,7 @@ def review_request(
 def main() -> None:
     require(len(JWT_SECRET) >= 32, "local JWT verifier configuration")
     user_a, email_a, password_a = create_user("learner-a")
-    user_b, _, _ = create_user("learner-b")
+    user_b, email_b, password_b = create_user("learner-b")
     id_a = user_a["user"]["id"]
     id_b = user_b["user"]["id"]
     token_a = user_a["access_token"]
@@ -712,6 +781,10 @@ def main() -> None:
     require(
         state_after_queue == state_before_queue and events_after_queue == events_before_queue,
         "Due-queue reads do not mutate scheduling state or review events",
+    )
+
+    verify_flutter_sdk_runtime(
+        user_a, email_a, password_a, user_b, email_b, password_b
     )
 
     status, _ = request(

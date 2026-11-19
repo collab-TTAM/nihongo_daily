@@ -1138,3 +1138,37 @@ It verifies the Dart caller/session-generation boundary, not hosted signed-JWT
 A/B, deployed PostgREST/RLS, native Credential Manager, or physical multi-device
 acceptance. No token is logged, no default Auth/save-success path is enabled,
 and no plaintext fallback is introduced.
+
+
+## Local GoTrue/PostgREST through the caller-owned SDK runtime — 2026-11-19
+
+The disposable supabase-integration job now installs Flutter 3.35.4 and invokes
+apps/flutter_app/tool/verify_supabase_sdk_runtime.dart from
+scripts/test_supabase_local.py. The Python parent creates two ephemeral users
+on the fresh local GoTrue service and passes only their test credentials to the
+Dart child over stdin. The child accepts only the exact local API
+http://127.0.0.1:54321; its TEST ONLY HTTP bridge maps the runtime's trusted
+HTTPS origin to that one loopback service and rejects every other host/path.
+
+The probe constructs the production PersistentSupabaseRuntime with its caller-
+owned account lifecycle, a TEST ONLY in-memory credential backend, and the real
+disk-backed NativeReviewJournal. It verifies an empty vault stays signed out
+without Auth/profile requests; A's password session is persisted before
+ensure_profile; the real SDK loads the seeded due queue and submits
+submit_review; closing/reopening the runtime and journal restores A through
+GoTrue refresh before profile readiness; a settled receipt replays locally
+without another RPC; local logout precedes vault clear; and B cannot see A's
+queue/journal records while reusing the same event UUID in B's own owner scope.
+
+Only fixed phase identifiers are printed. The parent rejects child output that
+contains either ephemeral email/password or the local anon key. No refresh
+token, access token, Authorization header or request body is logged.
+
+Evidence boundary: this is a disposable local SDK/Auth/PostgREST integration
+using an in-memory TEST ONLY credential backend. NativeReviewJournal is real
+disk-backed storage, but the test does not run Windows Credential Manager in
+the same process, hosted signed-JWT/staging, the learner UI, physical multi-device
+offline sync, or a complete learner journey. The separate Windows runner remains
+the native Credential Manager process-boundary proof; the protected hosted
+workflow remains a human-gated release requirement. No default Auth/save-success
+path is enabled and no learner-supplied URL/key is accepted.

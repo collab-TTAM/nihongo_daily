@@ -1,7 +1,7 @@
 # QA/security regression matrix — Issue #8
 
 Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for
-54 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+56 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -37,6 +37,8 @@ revokes that rotated token. This is a process-boundary local-service check, not
 the Flutter OS vault or hosted learner acceptance; no token is logged or written
 to disk.
 
+The same job now runs apps/flutter_app/tool/verify_supabase_sdk_runtime.dart through the pinned Flutter SDK against that disposable stack. The probe uses the caller-owned PersistentSupabaseRuntime, a TEST ONLY in-memory credential backend and the real disk-backed NativeReviewJournal: it checks password login and refresh persistence before own-profile readiness, a real due-queue read and submit_review, journal close/reopen with local receipt replay, local logout before credential clear, and User A/User B isolation. Credentials are piped to the child over stdin; only a fixed pass/failure phase is emitted. The loopback adapter accepts only https://127.0.0.1:54321 and forwards to the local HTTP stack. This is local SDK/Auth/PostgREST composition evidence, not hosted signed-JWT acceptance, native Windows Credential Manager in the same run, the learner UI or physical multi-device proof.
+
 In `backend/ai`: `npm ci --ignore-scripts --no-audit --no-fund`,
 `npm audit --omit=dev --audit-level=moderate`, `npm run format:check`,
 `npm run check`, `npm test`. From root regenerate `wire.ts`, format in backend/ai,
@@ -58,6 +60,7 @@ runner. Build artifacts do not prove an interactive app launch or live learner f
 | `review-storage` | database | Immutable original result replay, changed-input conflict and native two-session uniqueness. Storage helper race is not an atomic submit_review endpoint or updated scheduler counters. |
 | `review-transaction` | database | Authenticated SQL RPC validation/replay/rollback, 26 SQL/Dart cases and five native races. SQL auth fixtures do not establish JWT/PostgREST/Flutter/UI integration. |
 | `local-two-session-sync` | supabase-integration | Disposable GoTrue/PostgREST, independent same-owner sessions plus a barrier-synchronized shared event UUID race across two owners, owner-specific receipts/replays/conflicts, authoritative reads and global logout. Not physical-device/hosted offline-sync proof. |
+| `caller-owned-sdk-runtime` | supabase-integration | Actual pinned Supabase SDK through the caller-owned runtime, local GoTrue/PostgREST, refresh-before-profile, real due queue and review RPC, disk journal reopen/local replay, logout/clear ordering and A/B isolation. TEST ONLY in-memory credential port and loopback bridge; not Windows Credential Manager, hosted learner, UI or physical multi-device proof. |
 | `ai-sql-receipts` | database | Private token ownership, scoped claim/completion, privileges and rollback. Helpers do not persist conversation messages/session in a real adapter transaction. |
 | `ai-claim-race` | database | Two native sessions grant exactly one dispatch owner. SQL claims do not prove upstream delivery, recovery or two distinct session events. |
 | `srs-policy` | flutter | Versioned 26 policy pairs, offsets, stale events and actual Dart wire output. Pure scheduler; no authenticated persistence, queue or integrated review UI. |
