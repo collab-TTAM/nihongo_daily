@@ -1117,3 +1117,24 @@ deterministic native fault injection, not a spontaneous OS failure, hosted
 signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff/power loss or physical
 multi-device acceptance. The bridge is rebuilt with test hooks disabled before
 normal preview/staging builds.
+
+## Late User A own-profile response after User B replacement — 2026-11-19
+
+The caller-owned runtime now has an integrated pinned-Supabase-SDK regression
+for a delayed own-profile response across an account replacement. User A signs
+in and reaches a held `ensure_profile` response. Explicit logout synchronously
+revokes A's profile/study readiness and clears the exact project refresh-secret
+slot. User B then signs in while its rotated refresh-secret write is held; no B
+own-profile request or study runtime may appear before that write is acknowledged.
+
+After B's own profile is accepted and B is ready, the test releases A's old
+profile response with A's captured Authorization identity. The stale response
+must not replace B's profile, persistence session, refresh secret or ready
+runtime. The test also checks the two captured profile Authorization headers
+and the read/write/clear/write storage operation order.
+
+This uses the pinned SDK with TEST ONLY MockClient and in-memory vault ports.
+It verifies the Dart caller/session-generation boundary, not hosted signed-JWT
+A/B, deployed PostgREST/RLS, native Credential Manager, or physical multi-device
+acceptance. No token is logged, no default Auth/save-success path is enabled,
+and no plaintext fallback is introduced.

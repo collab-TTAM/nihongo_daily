@@ -1701,6 +1701,127 @@ void main() {
   );
 
   test(
+    'late User A own-profile response after logout cannot replace User B readiness',
+    () async {
+      profileWait = Completer<http.Response>();
+      await runtime.start();
+
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_A_PROFILE_LATE_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForCondition(
+        () => profileWasRequested,
+        reason: 'User A sign-in did not reach its held own-profile request',
+      );
+
+      final lateAProfile = profileWait!;
+      profileWait = null;
+      expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, secret);
+      final firstProfileRequests = requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .toList();
+      expect(firstProfileRequests, hasLength(1));
+      expect(
+        firstProfileRequests.single.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+
+      await runtime.account.signOut().timeout(const Duration(seconds: 5));
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(backend.secret, isNull);
+      expect(backend.operations, ['read', 'write', 'clear']);
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_B_PROFILE_LATE_REFRESH';
+      backend.writeWait = Completer<void>();
+      final loginB = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForCondition(
+        () =>
+            backend.writes == 2 &&
+            runtime.persistence.phase == SessionPersistencePhase.saving,
+        reason: 'User B did not reach its refresh-secret write barrier',
+      );
+      expect(backend.secret, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+
+      backend.writeWait!.complete();
+      await loginB.timeout(const Duration(seconds: 5));
+      backend.writeWait = null;
+      await waitForReady();
+
+      List<http.Request> authRequests() => requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      List<http.Request> profileRequests() => requests
+          .where(
+            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+          )
+          .toList();
+      expect(
+        authRequests()
+            .map((request) => request.url.queryParameters['grant_type'])
+            .toList(),
+        ['password', 'password'],
+      );
+      expect(profileRequests(), hasLength(2));
+      expect(
+        profileRequests()[0].headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+      expect(
+        profileRequests()[1].headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(backend.secret, secret);
+      expect(backend.operations, ['read', 'write', 'clear', 'write']);
+
+      profileResponseWasReturned = false;
+      lateAProfile.complete(
+        http.Response(
+          jsonEncode(profile.profile(wire.a)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await waitForCondition(
+        () => profileResponseWasReturned,
+        reason: 'late User A own-profile response did not drain',
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(runtime.account.state.phase, AccountPhase.ready);
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(backend.secret, 'TEST_ONLY_B_PROFILE_LATE_REFRESH');
+      expect(profileRequests(), hasLength(2));
+    },
+  );
+
+  test(
     'configured host offers explicit login after rejected restore and clears before password auth',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
