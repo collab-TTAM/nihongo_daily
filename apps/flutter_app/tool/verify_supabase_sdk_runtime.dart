@@ -60,9 +60,9 @@ void _expect(bool value, String phase) {
   if (!value) throw _ProbeFailure(phase);
 }
 
-Future<_Input> _readInput() async {
+_Input _readInput(String rawInput) {
   try {
-    final decoded = jsonDecode(await stdin.transform(utf8.decoder).join());
+    final decoded = jsonDecode(rawInput);
     if (decoded is! Map<String, Object?> ||
         decoded.length != 4 ||
         !const {
@@ -274,13 +274,22 @@ SrsReview _review(ReviewRating rating, DateTime occurredAt) => SrsReview(
 );
 
 Future<void> main() async {
+  final rawInput = await stdin.transform(utf8.decoder).join();
+  final status = await runSupabaseSdkRuntimeProbe(rawInput);
+  stdout.writeln(status);
+  if (status != 'LOCAL_SUPABASE_SDK_RUNTIME_OK') {
+    exitCode = 1;
+  }
+}
+
+Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
   var phase = 'input';
   String? failure;
   _RuntimeBundle? bundle;
   Directory? journalDirectory;
   _LoopbackHttpClient? httpClient;
   try {
-    final input = await _readInput();
+    final input = _readInput(rawInput);
     final events = <String>[];
     final backend = _MemoryCredentialBackend(events);
     httpClient = _LoopbackHttpClient(events);
@@ -469,10 +478,8 @@ Future<void> main() async {
   }
 
   if (failure == null) {
-    stdout.writeln('LOCAL_SUPABASE_SDK_RUNTIME_OK');
-  } else {
-    stdout.writeln('LOCAL_SUPABASE_SDK_RUNTIME_FAILED:' + failure);
-    exitCode = 1;
+    return 'LOCAL_SUPABASE_SDK_RUNTIME_OK';
   }
+  return 'LOCAL_SUPABASE_SDK_RUNTIME_FAILED:$failure';
 }
 

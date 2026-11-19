@@ -188,6 +188,16 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
+      - name: Diagnose pinned Dart formatting for the local Supabase SDK probe
+        working-directory: apps/flutter_app
+        shell: bash
+        run: |
+          set -eu
+          for source in tool/verify_supabase_sdk_runtime.dart tool/verify_supabase_sdk_runtime_test.dart; do
+            formatted="$RUNNER_TEMP/$(basename "$source").formatted"
+            dart format --output=show "$source" > "$formatted"
+            diff -u "$source" "$formatted" || true
+          done
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

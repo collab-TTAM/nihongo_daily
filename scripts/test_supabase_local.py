@@ -16,6 +16,7 @@ import re
 import subprocess
 import sys
 import threading
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -126,17 +127,41 @@ def verify_flutter_sdk_runtime(
         os.path.join(os.path.dirname(__file__), "..", "apps", "flutter_app")
     )
     try:
-        child = subprocess.run(
-            ["dart", "run", "tool/verify_supabase_sdk_runtime.dart"],
-            cwd=app_dir,
-            input=json.dumps(payload, separators=(",", ":")),
-            text=True,
-            capture_output=True,
-            timeout=180,
-            check=False,
-        )
+        with tempfile.TemporaryDirectory(prefix="nihongo-sdk-runtime-") as temp_dir:
+            input_path = os.path.join(temp_dir, "input.json")
+            descriptor = os.open(
+                input_path,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+                0o600,
+            )
+            with os.fdopen(descriptor, "w", encoding="utf-8") as input_file:
+                json.dump(payload, input_file, separators=(",", ":"))
+            require(
+                os.stat(input_path).st_mode & 0o777 == 0o600,
+                "local SDK probe input is owner-only",
+            )
+            child_env = os.environ.copy()
+            for key in ("API_URL", "ANON_KEY", "DB_URL", "JWT_SECRET"):
+                child_env.pop(key, None)
+            child_env["NIHONGO_SUPABASE_SDK_RUNTIME_INPUT_FILE"] = input_path
+            child = subprocess.run(
+                [
+                    "flutter",
+                    "test",
+                    "--no-pub",
+                    "--reporter",
+                    "expanded",
+                    "tool/verify_supabase_sdk_runtime_test.dart",
+                ],
+                cwd=app_dir,
+                env=child_env,
+                text=True,
+                capture_output=True,
+                timeout=180,
+                check=False,
+            )
     except (OSError, subprocess.TimeoutExpired):
-        require(False, "caller-owned Flutter SDK runtime probe completed")
+        require(False, "caller-owned Flutter SDK test-runner probe completed")
         return
     output = child.stdout + child.stderr
     require(
@@ -152,11 +177,14 @@ def verify_flutter_sdk_runtime(
         and "Authorization:" not in output,
         "caller-owned Flutter SDK runtime probe does not expose token material",
     )
-    safe_lines = [
-        line.strip()
-        for line in child.stdout.splitlines()
-        if line.startswith("LOCAL_SUPABASE_SDK_RUNTIME_")
-    ]
+    safe_lines = []
+    for line in child.stdout.splitlines():
+        match = re.search(
+            r"(LOCAL_SUPABASE_SDK_RUNTIME_(?:OK|FAILED:[a-z0-9-]+))",
+            line,
+        )
+        if match is not None:
+            safe_lines.append(match.group(1))
     safe_status = safe_lines[-1] if safe_lines else "missing-safe-status"
     if safe_status != "LOCAL_SUPABASE_SDK_RUNTIME_OK" and not re.fullmatch(
         r"LOCAL_SUPABASE_SDK_RUNTIME_FAILED:[a-z0-9-]+", safe_status

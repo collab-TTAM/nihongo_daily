@@ -1172,3 +1172,15 @@ offline sync, or a complete learner journey. The separate Windows runner remains
 the native Credential Manager process-boundary proof; the protected hosted
 workflow remains a human-gated release requirement. No default Auth/save-success
 path is enabled and no learner-supplied URL/key is accepted.
+
+## Disposable local Supabase SDK probe
+
+The \`supabase-integration\` job runs the caller-owned runtime probe through
+\`flutter test --no-pub\`, not plain \`dart run\`: the runtime imports Flutter
+package code and must be compiled with the pinned Flutter SDK. Python creates a
+short-lived owner-only JSON input in a private temporary directory, removes
+local Supabase connection secrets from the child environment, and invokes the
+TEST ONLY wrapper in \`apps/flutter_app/tool/\`. The wrapper returns only a
+fixed safe status; credentials, JWTs and request headers are never logged.
+This disposable loopback probe is not hosted learner or production evidence.
+
