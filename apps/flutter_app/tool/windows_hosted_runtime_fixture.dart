@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
@@ -10,7 +11,15 @@ import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
 
-const _phases = {'login-a', 'restore-a', 'logout-a', 'login-b', 'cleanup'};
+const _phases = {
+  'login-a',
+  'restore-a',
+  'logout-a',
+  'prepare-revoked-a',
+  'restore-revoked-a',
+  'login-b',
+  'cleanup',
+};
 
 final class _HostedSettings {
   const _HostedSettings({
@@ -28,6 +37,33 @@ final class _HostedSettings {
   final String passwordA;
   final String emailB;
   final String passwordB;
+}
+
+final class _HostedProbeHttpClient extends http.BaseClient {
+  _HostedProbeHttpClient(this._inner);
+
+  final http.Client _inner;
+  final events = <String>[];
+  Future<void> Function()? beforePasswordAuth;
+  Future<void> Function()? beforeProfile;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    if (request.url.path == '/auth/v1/token') {
+      final grant = request.url.queryParameters['grant_type'] ?? 'unknown';
+      events.add('auth.$grant');
+      if (grant == 'password') await beforePasswordAuth?.call();
+    } else if (request.url.path == '/auth/v1/logout') {
+      events.add('auth.logout');
+    } else if (request.url.path == '/rest/v1/rpc/ensure_profile') {
+      await beforeProfile?.call();
+      events.add('profile.ensure');
+    }
+    return _inner.send(request);
+  }
+
+  @override
+  void close() => _inner.close();
 }
 
 String _required(String name) {
@@ -147,11 +183,24 @@ Future<void> _verifyWindowsHostedRuntimePhase(
     return;
   }
 
+  final httpClient = _HostedProbeHttpClient(http.Client());
+  if (phase == 'restore-revoked-a') {
+    httpClient.beforePasswordAuth = () async {
+      _check(await vault.readRefreshToken() == null);
+      httpClient.events.add('vault.empty-before-password');
+    };
+    httpClient.beforeProfile = () async {
+      final persisted = await vault.readRefreshToken();
+      _check(persisted != null && persisted.isNotEmpty);
+      httpClient.events.add('vault.persisted-before-profile');
+    };
+  }
   final runtime = PersistentSupabaseRuntime(
     projectUrl: settings.projectUrl,
     publishableKey: settings.publishableKey,
     vault: vault,
     store: _EmptyReviewStore(),
+    httpClient: httpClient,
   );
   var closed = false;
   try {
@@ -190,6 +239,68 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         await runtime.close();
         closed = true;
         break;
+      case 'prepare-revoked-a':
+        await runtime.start();
+        _check(runtime.persistence.phase == SessionPersistencePhase.idle);
+        _check(await vault.readRefreshToken() == null);
+        await _signInAndWait(runtime, settings.emailA, settings.passwordA);
+        final revoked = await vault.readRefreshToken();
+        if (revoked == null || revoked.isEmpty) {
+          throw const FormatException('Hosted refresh token unavailable');
+        }
+        await runtime.account.signOut();
+        _check(runtime.account.state.phase == AccountPhase.signedOut);
+        _check(runtime.persistence.currentSession == null);
+        _check(await vault.readRefreshToken() == null);
+        // TEST ONLY: local logout revokes this token; seed that same revoked
+        // value back into the OS slot so the next process tests real restore.
+        await vault.writeRefreshToken(revoked);
+        _check(await vault.readRefreshToken() == revoked);
+        await runtime.close();
+        closed = true;
+        _check(await vault.readRefreshToken() == revoked);
+        break;
+      case 'restore-revoked-a':
+        var restoreRejected = false;
+        try {
+          await runtime.start();
+        } on ReviewTransportFailure {
+          restoreRejected = true;
+        }
+        _check(restoreRejected);
+        _check(runtime.persistence.phase == SessionPersistencePhase.failed);
+        _check(runtime.account.state.phase == AccountPhase.signedOut);
+        _check(runtime.account.readyRuntime == null);
+        final rejected = await vault.readRefreshToken();
+        _check(rejected != null && rejected.isNotEmpty);
+        _check(
+          httpClient.events.where((event) => event == 'profile.ensure').isEmpty,
+        );
+
+        // Explicit login must clear the server-revoked value before password
+        // Auth, then persist the replacement rotation before own-profile.
+        await _signInAndWait(runtime, settings.emailA, settings.passwordA);
+        final events = httpClient.events;
+        final refreshIndex = events.indexOf('auth.refresh');
+        final passwordIndex = events.indexOf('auth.password');
+        final emptyIndex = events.indexOf('vault.empty-before-password');
+        final persistedIndex = events.indexOf('vault.persisted-before-profile');
+        final profileIndex = events.indexOf('profile.ensure');
+        _check(
+          refreshIndex >= 0 &&
+              passwordIndex > refreshIndex &&
+              emptyIndex > passwordIndex &&
+              persistedIndex > passwordIndex &&
+              profileIndex > persistedIndex &&
+              events.where((event) => event == 'profile.ensure').length == 1,
+        );
+        await runtime.account.signOut();
+        _check(runtime.account.state.phase == AccountPhase.signedOut);
+        _check(runtime.persistence.currentSession == null);
+        _check(await vault.readRefreshToken() == null);
+        await runtime.close();
+        closed = true;
+        break;
       case 'login-b':
         await runtime.start();
         _check(await vault.readRefreshToken() == null);
@@ -206,7 +317,11 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         throw const FormatException('Hosted Windows runtime phase unavailable');
     }
   } finally {
-    if (!closed) await runtime.close();
+    try {
+      if (!closed) await runtime.close();
+    } finally {
+      httpClient.close();
+    }
   }
 }
 

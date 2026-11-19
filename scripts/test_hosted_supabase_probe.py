@@ -463,6 +463,8 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "login-a",
             "restore-a",
             "logout-a",
+            "prepare-revoked-a",
+            "restore-revoked-a",
             "login-b",
             "cleanup",
         ):
@@ -507,7 +509,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         phases = re.findall(r"(?m)^\s*Invoke-HostedPhase '([^']+)'$", script)
         self.assertEqual(
             phases,
-            ["cleanup", "login-a", "restore-a", "logout-a", "login-b", "cleanup"],
+            ["cleanup", "login-a", "restore-a", "logout-a", "prepare-revoked-a", "restore-revoked-a", "login-b", "cleanup"],
         )
         self.assertIn(
             "Start-Process -FilePath $exe -ArgumentList @($phase)", script
@@ -574,6 +576,26 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         )
         self.assertNotRegex(script, r"(?i)\$env:ND_STAGING_")
 
+
+    def test_revoked_refresh_restore_requires_explicit_password_recovery(self):
+        root = Path(__file__).resolve().parents[1]
+        fixture = (root / "apps" / "flutter_app" / "tool" / "windows_hosted_runtime_fixture.dart").read_text(encoding="utf-8")
+        for marker in (
+            "case 'prepare-revoked-a':",
+            "case 'restore-revoked-a':",
+            "await vault.writeRefreshToken(revoked)",
+            "SessionPersistencePhase.failed",
+            "AccountPhase.signedOut",
+            "httpClient.beforePasswordAuth",
+            "vault.empty-before-password",
+            "httpClient.beforeProfile",
+            "vault.persisted-before-profile",
+            "events.indexOf('auth.refresh')",
+            "events.indexOf('auth.password')",
+        ):
+            self.assertIn(marker, fixture)
+        self.assertIn("Invoke-HostedPhase 'prepare-revoked-a'", self.windows_driver)
+        self.assertIn("Invoke-HostedPhase 'restore-revoked-a'", self.windows_driver)
 
 if __name__=="__main__":
     unittest.main(verbosity=2)

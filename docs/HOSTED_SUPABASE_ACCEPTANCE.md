@@ -173,3 +173,32 @@ replace hosted execution or the protected environment review.
 ## Refresh identity mismatch cleanup
 
 After a refresh response has been shape-validated, the probe transfers cleanup ownership to the returned session before checking that the user identity is unchanged or that the refresh token rotated. This ordering matters because the server may already have consumed the previous refresh token. If the response unexpectedly identifies another user, the primary identity failure remains fixed/redacted, while the finally path locally logs out the returned session and every other still-owned session. The offline regression forces this case and requires all refresh sessions to be revoked; it does not simulate a hosted provider incident or replace the protected staging run.
+
+
+## Server-revoked refresh restoration and explicit recovery
+
+The Windows process sequence now adds two manual-only phases after A's normal
+logout and before B's login:
+
+1. `prepare-revoked-a` signs A in with the caller-owned runtime, reads the
+   persisted refresh token from the exact project Credential Manager slot,
+   performs `scope=local` logout (which revokes that token), confirms the slot
+   is empty, then re-seeds the same revoked value directly into that slot for
+   this TEST ONLY scenario and exits cleanly.
+2. `restore-revoked-a` runs in a separate fresh process. GoTrue must reject
+   the revoked refresh token; the runtime remains failed/unready, retains the
+   rejected value for explicit recovery, and sends no `ensure_profile` request.
+   The explicit password login must observe an empty vault before its Auth
+   request, then observe the newly persisted rotated refresh secret before the
+   own-profile request. It finishes with local logout and an empty slot.
+
+The fixture's HTTP observer records only fixed route/grant labels and checks the
+OS vault at the password/profile boundaries. It never records request bodies,
+email/password values, access JWTs or refresh tokens. The token is held only in
+memory while being re-seeded; it is not written to a file or printed.
+
+This proves fresh-process recovery from a **server-revoked** saved refresh token
+when the protected staging workflow passes. It does not force a cryptographically
+expired JWT or prove provider-side expiry windows; those remain separate release
+evidence. The workflow stays manual-only and requires the protected
+`supabase-staging` environment and two disposable, email-confirmed accounts.

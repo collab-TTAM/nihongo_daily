@@ -51,6 +51,10 @@ try {
     Invoke-HostedPhase 'restore-a'
     $currentPhase = 'logout-a'
     Invoke-HostedPhase 'logout-a'
+    $currentPhase = 'prepare-revoked-a'
+    Invoke-HostedPhase 'prepare-revoked-a'
+    $currentPhase = 'restore-revoked-a'
+    Invoke-HostedPhase 'restore-revoked-a'
     $currentPhase = 'login-b'
     Invoke-HostedPhase 'login-b'
 } catch {
