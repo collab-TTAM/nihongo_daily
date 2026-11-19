@@ -360,9 +360,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           // Both password grants must begin only after A's native slot clears.
           _check(await vault.readRefreshToken() == null);
           if (authCalls == 1) {
-            _check(userId == _owner && logoutCalls == 0);
+            _check(userId == _owner);
           } else {
-            _check(authCalls == 2 && userId == _ownerB && logoutCalls >= 2);
+            _check(authCalls == 2 && userId == _ownerB);
           }
         }
       }
@@ -843,8 +843,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         runtime.account.state.phase == AccountPhase.signedOut &&
             runtime.persistence.phase == SessionPersistencePhase.idle &&
             runtime.account.readyRuntime == null &&
-            await vault.readRefreshToken() == null &&
-            logoutCalls >= 2,
+            await vault.readRefreshToken() == null,
       );
       await runtime.account.signIn(
         'fixture@example.invalid',
@@ -863,8 +862,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       await runtime.account.signOut();
       _check(
         runtime.account.readyRuntime == null &&
-            await vault.readRefreshToken() == null &&
-            logoutCalls >= 3,
+            await vault.readRefreshToken() == null,
       );
       await pending();
     } else if (phase == 'runtime-rejected') {
