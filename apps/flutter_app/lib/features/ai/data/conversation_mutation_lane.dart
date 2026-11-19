@@ -4,6 +4,8 @@ import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
+import 'captured_conversation_receipt_lookup.dart';
+import 'conversation_receipt_store.dart';
 
 /// One trusted owner's serialization lane. Caller must reuse it for all events
 /// in that ready generation and revoke on every readiness barrier.
@@ -141,6 +143,73 @@ final class ConversationMutationLane {
       jsonEncode(request.toJson()),
     ),
   );
+
+  /// Explicit trusted-host reconciliation, never inferred from metadata/absence.
+  /// Caller supplies the same owned project's secure store and must validate its
+  /// prospective transcript before invoking. No default/session/UI caller exists.
+  /// Cache the authenticated exact original result only after confirmed clear;
+  /// an ambiguous attempted clear permanently retires this generation.
+  Future<bool> reconcileCompleted(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) async {
+    if (_executing || _checking) throw const AiTextRequestPending();
+    _executing = true;
+    var attemptedClear = false;
+    try {
+      _requireCurrent();
+      final pair = completion.captureForAuth(_auth);
+      if (pair == null) return false;
+      final command = pair.command;
+      final body =
+          command.start?.toJson() ??
+          command.turn?.toJson() ??
+          command.finish!.toJson();
+      final key =
+          '${command.reference.operation.wireName}:${command.reference.clientEventId.toLowerCase()}';
+      final fingerprint = jsonEncode(body);
+      final slot = _slots[key];
+      if (_pendingKey != key ||
+          slot == null ||
+          slot.fingerprint != fingerprint ||
+          slot.isBusy() ||
+          !store.scope.contains(command.reference)) {
+        return false;
+      }
+      final result =
+          pair.receipt.start ?? pair.receipt.turn ?? pair.receipt.finish;
+      if (result == null) return false;
+      bool current() {
+        if (!completion.isCurrent || !isCurrent) return false;
+        return !_revoked &&
+            !_checking &&
+            store.phase == ConversationReceiptStorePhase.open &&
+            _pendingKey == key &&
+            identical(_slots[key], slot) &&
+            !slot.isBusy();
+      }
+
+      if (!current()) return false;
+      attemptedClear = true;
+      if (!await store.clearMatching(command.reference, isCurrent: current) ||
+          !current()) {
+        revoke();
+        return false;
+      }
+      // No external callbacks or await between replacing the exact slot and
+      // releasing pending. Future exact replay returns the typed result locally.
+      slot.revoke();
+      _slots[key] = _Slot(fingerprint, () async => result, () => false, () {});
+      _pendingKey = null;
+      _held = null;
+      return true;
+    } on Object {
+      if (attemptedClear) revoke();
+      rethrow;
+    } finally {
+      _executing = false;
+    }
+  }
 
   Future<T> _submit<T extends Object>(
     String operation,

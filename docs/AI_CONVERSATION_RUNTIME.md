@@ -235,3 +235,55 @@ No default controller/UI consumes it, no optimistic success or payload persisten
 is added, and recommendation references still cause no SRS/progress writes.
 Confirmed durable conditional pending release and atomic application into the
 live lane/session remain required; hosted Auth/RLS/provider/learner gates are open.
+
+
+## Explicit lane completion reconciliation — 2026-11-19
+
+`ConversationMutationLane.reconcileCompleted(completion, store: ownedStore)` is
+an explicit trusted-host operation. No session/controller/UI/default caller is
+installed. The caller owns the same project/account secure store and must first
+validate its prospective conversation transcript; this lane layer does not know
+conversation phase/sequence/message history. The opaque completion must come from
+the exact same borrowed Auth object and current captured session/readiness lease.
+Legacy metadata-only reads, UNKNOWN/PENDING/absent receipts and caller metadata
+cannot construct that capability or stand in for the full retained command.
+
+Before any storage I/O, reserve the lane against reentry/concurrent submissions,
+require the exact unresolved operation/event slot and byte-exact JSON original
+fingerprint, ensure the actual timed-out wire has drained, and check store scope.
+Hold the lane across `store.clearMatching`'s actual read/clear/confirmation read.
+Its supplied guard rechecks completion and lane lease, store-open state, matching
+pending key/slot identity and actual I/O drain at every storage boundary. After
+confirmed absence, recheck all guards. Without callbacks/await between updates,
+retire that exact mutation, replace only its slot with the immutable typed result
+and release the pending key. Exact original replay then returns the cached result
+without provider I/O; a different explicit event still traverses all normal lane
+capacity/currentness/fingerprint rules. All old slots/count limits are retained.
+
+Precondition mismatch returns false without touching storage. Once a conditional
+clear is attempted, false/missing/mismatch/retirement or any storage exception
+permanently retires the lane; errors remain fixed storage errors. This deliberately
+prefers a fresh lifecycle/reconciliation over retrying an ambiguous clear. No
+cached success or replacement event is authorized on that failed generation.
+The actual clear may already have removed metadata when a late readiness check
+fails; subsequent absence cannot be used as release/replay proof. The store still
+owns its cleanup policy and actual queue drain; the lane never closes it.
+
+This is not atomic session/transcript application, a cross-process transaction,
+server receipt deletion/cancellation or hosted Auth/JWT/RLS/learner acceptance.
+Store exclusion remains isolate-local, so trusted host process exclusion remains
+mandatory. A future captured-session method must keep its own mutation guard
+across the await, validate the unchanged original/transcript/current generation,
+and install the previously validated immutable projection before exposing a new
+command. No optimistic save, automatic dispatch, learner URL/key configuration,
+payload persistence, SRS recommendation application or default activation is added.
+
+Twenty-one TEST ONLY regressions cover all three operations' confirmed cache and
+explicit next event, changed full originals sharing identical metadata, foreign
+Auth/project, missing/mismatched metadata, three storage faults, concurrent calls,
+refresh/account/revoke/reader retirement during held clear, actual timed-out wire
+drain, signout during clear and final-readiness reentry. All159 component cases
+pass in a fresh exact22-file Dart3.9.2 graph (only flutter_test→test1.26.2 import
+adaptation; original fixtures), including old lane/session/reader/preview/store
+cases. Focused analysis is clean with the curly-braces rule enabled. Full Flutter/
+native/SDK host wiring and all14 hosted release groups remain separate gates.
