@@ -1724,9 +1724,7 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       expect(backend.secret, secret);
       final firstProfileRequests = requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
       expect(firstProfileRequests, hasLength(1));
       expect(
@@ -1773,9 +1771,7 @@ void main() {
           .where((request) => request.url.path == '/auth/v1/token')
           .toList();
       List<http.Request> profileRequests() => requests
-          .where(
-            (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
-          )
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
       expect(
         authRequests()
@@ -2135,3 +2131,4 @@ void main() {
     },
   );
 }
+
