@@ -598,5 +598,39 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("Invoke-HostedPhase 'prepare-revoked-a'", driver)
         self.assertIn("Invoke-HostedPhase 'restore-revoked-a'", driver)
 
+
+class LocalSupabaseWorkflowSafetyTests(unittest.TestCase):
+    def test_disposable_local_secrets_are_masked_before_github_env_export(self):
+        root = Path(__file__).resolve().parents[1]
+        workflow = (root / ".github" / "workflows" / "ci.yml").read_text(
+            encoding="utf-8"
+        )
+        start = workflow.index(
+            "      - name: Export only validated local integration settings"
+        )
+        end = workflow.index("      - name: Install PostgreSQL client", start)
+        block = workflow[start:end]
+
+        self.assertIn(
+            'for key in ("ANON_KEY", "DB_URL", "JWT_SECRET"):',
+            block,
+        )
+        self.assertIn("def escape_workflow_command(value):", block)
+        for expression in (
+            'value.replace("%", "%25")',
+            r'value.replace("\r", "%0D")',
+            r'value.replace("\n", "%0A")',
+        ):
+            self.assertIn(expression, block)
+
+        mask = block.index(
+            'print(f"::add-mask::{escape_workflow_command(values[key])}")'
+        )
+        export = block.index('with target.open("a", encoding="utf-8")')
+        self.assertLess(mask, export)
+        self.assertIn("for key in sorted(allowed):", block[export:])
+
+
+
 if __name__=="__main__":
     unittest.main(verbosity=2)

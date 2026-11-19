@@ -156,6 +156,16 @@ jobs:
           if len(values["JWT_SECRET"]) < 32 or not values["ANON_KEY"]:
               raise SystemExit("Local Supabase Auth settings are incomplete")
 
+          def escape_workflow_command(value):
+              return (
+                  value.replace("%", "%25")
+                  .replace("\r", "%0D")
+                  .replace("\n", "%0A")
+              )
+
+          for key in ("ANON_KEY", "DB_URL", "JWT_SECRET"):
+              print(f"::add-mask::{escape_workflow_command(values[key])}")
+
           with target.open("a", encoding="utf-8") as output:
               for key in sorted(allowed):
                   output.write(f"{key}={values[key]}\n")

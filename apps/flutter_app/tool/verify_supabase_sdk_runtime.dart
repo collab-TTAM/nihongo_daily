@@ -170,7 +170,7 @@ final class _LoopbackHttpClient extends http.BaseClient {
             !uri.path.startsWith('/rest/v1/'))) {
       throw const _ProbeFailure('http-origin');
     }
-    events.add('http:' + uri.path + (uri.hasQuery ? '?' + uri.query : ''));
+    events.add('http:${uri.path}${uri.hasQuery ? '?${uri.query}' : ''}');
     final body = await request.finalize().toBytes();
     final headers = Map<String, String>.from(request.headers)
       ..remove('content-length')

@@ -1623,6 +1623,10 @@
         {
           "path": "scripts/test_supabase_local.py",
           "contains": "verify_flutter_sdk_runtime("
+        },
+        {
+          "path": "scripts/test_hosted_supabase_probe.py",
+          "contains": "def test_disposable_local_secrets_are_masked_before_github_env_export"
         }
       ],
       "issues": [
@@ -1630,7 +1634,7 @@
         22,
         15
       ],
-      "reproduce": "With a fresh disposable local Supabase stack and Flutter 3.35.4, run python3 scripts/test_supabase_local.py; it creates two ephemeral local users and pipes their credentials to the Dart probe over stdin.",
+      "reproduce": "Run `python3 scripts/test_hosted_supabase_probe.py` for the CI export-boundary regression; with a fresh disposable local Supabase stack and Flutter 3.35.4, run `python3 scripts/test_supabase_local.py` for the full caller-owned SDK probe.",
       "limitation": "LOCAL ONLY. Uses a TEST ONLY in-memory credential backend and an exact-loopback HTTPS-to-HTTP bridge to the disposable local API; NativeReviewJournal is the real disk-backed journal. It does not exercise Windows Credential Manager in the same runtime, hosted signed-JWT/staging, the learner UI, physical multi-device offline sync, or release acceptance."
     }
   ],

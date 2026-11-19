@@ -19,7 +19,7 @@ void main() {
     final status = await probe.runSupabaseSdkRuntimeProbe(
       await inputFile.readAsString(),
     );
-    print(status);
+    stdout.writeln(status);
     expect(status, 'LOCAL_SUPABASE_SDK_RUNTIME_OK');
   });
 }
