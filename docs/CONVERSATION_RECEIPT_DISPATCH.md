@@ -111,3 +111,11 @@ transport's `_attempted` remains terminal, so next production mutation is still
 blocked. Normal successful HTTP response acknowledgement, owner/transport wiring,
 SDK/native lifecycle acceptance and hosted learner evidence remain next work.
 All14 hosted release groups remain pending; default learner AI stays off.
+
+
+Update 2026-11-19 12:52 UTC: ReceiptGuardedAiTransport now passes the full original
+and exposes explicit proof consumption through its exact retained gate, with
+release reentry fencing and a final transport lifecycle check before resetting
+its attempt flag. The owner/SDK application action remains unwired and defaults
+unchanged; configured owner next mutation is still blocked. See the same-transport
+section in AI_CONVERSATION_RUNTIME.md for observed tests and remaining boundaries.

@@ -402,3 +402,36 @@ retirement, held clear/actual wire drain, reentry and final-callback retirement.
 All246 component cases pass in a fresh29-file Dart3.9.2 graph with only the
 flutter_test to test1.26.2 import adaptation/original fixtures; focused analysis
 is clean. Full Flutter/native/SDK checks require new exact-head Actions.
+
+
+## Same-transport explicit proof consumption — 2026-11-19 12:52 UTC
+
+ReceiptGuardedAiTransport now captures the full immutable command in its existing
+dispatch gate. Its explicit releaseAppliedCompletion(application) reserves a
+release guard before external getters, requires an attempted/current retained gate,
+and delegates exact command/Auth/store/proof/actual-drain validation to that gate.
+After successful own-claim release it rechecks the transport's captured session,
+readiness and retirement/close/gate identity, then resets the attempted flag without
+an intervening callback or await. The retired old gate cannot send again. Nested
+release and invoke are fenced throughout; failure after gate release retires the
+transport instead of reopening it. Close still drains actual work and owns only
+the transferred inner transport, never the borrowed secure store.
+
+This supersedes the earlier transport-does-not-pass-originalCommand checkpoint.
+The AI owner and PersistentSupabaseRuntime application action do NOT yet invoke
+this method, so their next mutation remains blocked. No default/route/learner
+binding or successful-HTTP acknowledgement was added. Raw successful HTTP, empty
+metadata and missing/UNKNOWN receipts still cannot permit another mutation.
+Next bind proof selection/consumption to the same retained owner lease/transport
+with epoch/exact-reader/final lifecycle guards and pinned SDK/native acceptance.
+
+Eighteen new TEST ONLY cases cover all3ops full-original positive/mismatch sharing
+metadata, refresh/account/revoke/close/reader/store retirement, real held HTTP late
+success/error, nested release/invoke, close and final post-gate refresh. One test
+uses the SAME captured session/transport for pending start, completed application,
+explicit release, one next turn and still-blocked later finish. Other test rigs
+use explicitly injected independent flow/inner ports and are not owned SDK proof.
+All279 component cases pass (261 retained+18 new) in a fresh32-file Dart3.9.2 graph,
+with only flutter_test to pinned test1.26.2 import adaptation/original fixtures.
+Focused analysis is clean. Full Flutter/SDK/native builds need new-head CI;
+all14 hosted release groups remain pending and no hosted provenance is inferred.

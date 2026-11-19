@@ -2,6 +2,8 @@ import '../application/ai_text_runtime_owner.dart';
 import '../../srs/data/review_repository.dart';
 import '../domain/ai_text_models.dart';
 import '../domain/conversation_requests.dart';
+import '../domain/pending_conversation_command_envelope.dart';
+import 'captured_conversation_session.dart';
 import '../domain/conversation_receipt_reference.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
@@ -12,7 +14,8 @@ import 'captured_conversation_receipt_lookup.dart';
 import '../domain/conversation_receipt_snapshot.dart';
 
 /// Transfers transport ownership; borrows the secure store. Explicit factory
-/// composition only, never a default. One mutation until future reconciliation.
+/// composition only, never a default. One mutation until explicit verified
+/// application-proof release; no automatic acknowledgement or retry.
 final class ReceiptGuardedAiTransport
     implements
         OwnedAiTextTransport,
@@ -44,6 +47,7 @@ final class ReceiptGuardedAiTransport
   final bool Function() _ready;
   ConversationReceiptDispatch<Object?>? _gate;
   bool _attempted = false;
+  bool _releasing = false;
   bool _revoked = false;
   bool _checking = false;
   bool _cleanupFailed = false;
@@ -89,10 +93,12 @@ final class ReceiptGuardedAiTransport
     required Map<String, Object> body,
   }) async {
     // Claim before external getters and immutable decoding can reenter.
-    if (_attempted) throw const AiTextFailure(AiTextErrorCode.syncConflict);
+    if (_attempted || _releasing) {
+      throw const AiTextFailure(AiTextErrorCode.syncConflict);
+    }
     _attempted = true;
     _check(capturedSession);
-    final ConversationReceiptReference reference;
+    final PendingConversationCommandEnvelope command;
     final Map<String, Object> original;
     final project = _store.scope.projectOrigin;
     try {
@@ -100,7 +106,7 @@ final class ReceiptGuardedAiTransport
         case 'start_conversation':
           final request = StartConversationRequest.fromJson(body);
           original = request.toJson();
-          reference = ConversationReceiptReference.fromStart(
+          command = PendingConversationCommandEnvelope.fromStart(
             projectUrl: project,
             ownerId: _session.userId,
             request: request,
@@ -108,7 +114,7 @@ final class ReceiptGuardedAiTransport
         case 'conversation_turn':
           final request = ConversationTurnRequest.fromJson(body);
           original = request.toJson();
-          reference = ConversationReceiptReference.fromTurn(
+          command = PendingConversationCommandEnvelope.fromTurn(
             projectUrl: project,
             ownerId: _session.userId,
             request: request,
@@ -116,7 +122,7 @@ final class ReceiptGuardedAiTransport
         case 'finish_conversation':
           final request = FinishConversationRequest.fromJson(body);
           original = request.toJson();
-          reference = ConversationReceiptReference.fromFinish(
+          command = PendingConversationCommandEnvelope.fromFinish(
             projectUrl: project,
             ownerId: _session.userId,
             request: request,
@@ -131,7 +137,8 @@ final class ReceiptGuardedAiTransport
     final frozen = Map<String, Object>.unmodifiable(original);
     final gate = ConversationReceiptDispatch<Object?>(
       store: _store,
-      reference: reference,
+      reference: command.reference,
+      originalCommand: command,
       auth: _auth,
       capturedSession: _session,
       isReady: () => isCurrent,
@@ -153,6 +160,41 @@ final class ReceiptGuardedAiTransport
         ReceiptDispatchError.conflict => AiTextErrorCode.syncConflict,
         ReceiptDispatchError.unavailable => AiTextErrorCode.internalError,
       });
+    }
+  }
+
+  /// Explicit trusted-host step; no owner/UI/default binding or implicit retry.
+  /// Only the exact retained gate can consume a confirmed application proof.
+  bool releaseAppliedCompletion(CapturedConversationApplication application) {
+    final gate = _gate;
+    if (!_attempted ||
+        _releasing ||
+        _checking ||
+        _revoked ||
+        _closing != null ||
+        gate == null) {
+      return false;
+    }
+    _releasing = true; // Before any supplied Auth/readiness/proof callbacks.
+    try {
+      _check(_session);
+      if (!gate.releaseAppliedCompletion(application)) {
+        return false;
+      }
+      _check(_session);
+      if (_revoked || _closing != null || !identical(_gate, gate)) {
+        return false;
+      }
+      // No external callback/await between final lease check and opening one
+      // explicit next attempt. The old gate remains permanently retired.
+      _gate = null;
+      _attempted = false;
+      return true;
+    } on Object {
+      revoke();
+      return false;
+    } finally {
+      _releasing = false;
     }
   }
 

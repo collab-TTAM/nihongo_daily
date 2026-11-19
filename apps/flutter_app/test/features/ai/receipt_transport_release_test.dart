@@ -1,0 +1,370 @@
+// TEST ONLY independent captured flow/Auth/storage/inner HTTP ports.
+// Not owned SDK or hosted learner proof; owner action is intentionally unwired.
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:nihongo_daily/features/ai/application/ai_text_runtime_owner.dart';
+import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_mutation.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_scenarios.dart';
+import 'package:nihongo_daily/features/ai/data/captured_conversation_session.dart';
+import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart';
+import 'package:nihongo_daily/features/ai/domain/ai_text_models.dart';
+import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
+import 'package:nihongo_daily/features/srs/data/review_repository.dart';
+import 'captured_conversation_session_test.dart' as f;
+import 'lane_completion_reconciliation_test.dart' as h;
+import 'session_completion_application_test.dart' as s;
+
+final class Inner
+    implements
+        OwnedAiTextTransport,
+        ConversationMutationTransport,
+        ConversationScenarioReadPort {
+  bool revoked = false;
+  int sends = 0;
+  int closes = 0;
+  Completer<Object?>? wire;
+  final entered = Completer<void>();
+  Map<String, Object>? sent;
+  @override
+  bool get isCurrent => !revoked;
+  @override
+  void revoke() => revoked = true;
+  @override
+  Future<void> close() async {
+    closes++;
+  }
+
+  @override
+  Future<Object?> invoke({
+    required ReviewSession capturedSession,
+    required String operation,
+    required Map<String, Object> body,
+  }) async {
+    sends++;
+    sent = body;
+    if (!entered.isCompleted) {
+      entered.complete();
+    }
+    return wire == null ? f.response(operation) : await wire!.future;
+  }
+
+  @override
+  Future<Object?> read({
+    required ReviewSession capturedSession,
+    required AiTextLevel level,
+  }) async => <Object?>[];
+  @override
+  Future<Object?> tutorExplain({
+    required ReviewSession capturedSession,
+    required Map<String, Object> body,
+  }) async => null;
+  @override
+  Future<Object?> correctSentence({
+    required ReviewSession capturedSession,
+    required Map<String, Object> body,
+  }) async => null;
+}
+
+Future<Object?> invoke(
+  ReceiptGuardedAiTransport t,
+  f.Auth auth,
+  PendingConversationCommandEnvelope c,
+) => t.invoke(
+  capturedSession: auth.currentSession!,
+  operation: c.reference.operation.wireName,
+  body: c.start?.toJson() ?? c.turn?.toJson() ?? c.finish!.toJson(),
+);
+void main() {
+  setUpAll(() {
+    f.fixtures =
+        jsonDecode(
+              File('../../contracts/v0.1/fixtures.json').readAsStringSync(),
+            )
+            as Map<String, Object?>;
+  });
+  test(
+    'same captured session applies then explicitly releases one next turn',
+    () async {
+      final auth = f.Auth();
+      final c = h.command(h.operations.first);
+      final backend = h.Backend(c.reference.encode());
+      final store = h.store(backend);
+      final inner = Inner();
+      final t = ReceiptGuardedAiTransport(
+        inner: inner,
+        store: store,
+        auth: auth,
+        capturedSession: auth.currentSession!,
+        isReady: () => true,
+      );
+      addTearDown(t.close);
+      final flow = CapturedConversationSession(
+        auth: auth,
+        transport: t,
+        isReady: () => true,
+      );
+      await expectLater(
+        flow.start(c.start!),
+        throwsA(f.code(AiTextErrorCode.syncConflict)),
+      );
+      final completed = await h.completion(auth, c);
+      expect(
+        await flow.applyRetainedCompletion(completed.handle, store: store),
+        isTrue,
+      );
+      final before = flow.snapshot;
+      final proof = flow.captureAppliedCompletion(
+        completed.handle,
+        store: store,
+      )!;
+      expect(inner.sends, 0);
+      expect(t.releaseAppliedCompletion(proof), isTrue);
+      await flow.turn(f.turn(event: f.otherEvent));
+      expect(inner.sends, 1);
+      expect(flow.snapshot.messages.length, before.messages.length + 1);
+      expect(backend.value, isNotNull);
+      // Successful raw HTTP cannot acknowledge/clear the next pending command.
+      expect(t.releaseAppliedCompletion(proof), isFalse);
+      await expectLater(
+        flow.finish(f.finish()),
+        throwsA(f.code(AiTextErrorCode.syncConflict)),
+      );
+      expect(inner.sends, 1);
+      await t.close();
+      expect(backend.value, isNotNull);
+      expect(inner.closes, 1);
+    },
+  );
+  for (final op in h.operations) {
+    for (final changed in [false, true]) {
+      test(
+        '$op exact transport releases only matching original changed=$changed',
+        () async {
+          final p = await s.pending(op);
+          final c = h.command(op);
+          final backend = h.Backend(c.reference.encode());
+          final store = h.store(backend);
+          final inner = Inner();
+          final t = ReceiptGuardedAiTransport(
+            inner: inner,
+            store: store,
+            auth: p.auth,
+            capturedSession: p.auth.currentSession!,
+            isReady: () => true,
+          );
+          addTearDown(t.close);
+          await expectLater(
+            invoke(t, p.auth, h.command(op, changed: changed)),
+            throwsA(f.code(AiTextErrorCode.syncConflict)),
+          );
+          final completed = await h.completion(p.auth, c);
+          expect(
+            await p.flow.applyRetainedCompletion(
+              completed.handle,
+              store: store,
+            ),
+            isTrue,
+          );
+          final proof = p.flow.captureAppliedCompletion(
+            completed.handle,
+            store: store,
+          )!;
+          final calls = [...backend.calls];
+          expect(t.releaseAppliedCompletion(proof), !changed);
+          expect(backend.calls, calls);
+          expect(inner.sends, 0);
+          if (changed) {
+            await expectLater(
+              invoke(t, p.auth, c),
+              throwsA(f.code(AiTextErrorCode.syncConflict)),
+            );
+          } else {
+            final next = h.command('conversation_turn');
+            final result = await invoke(t, p.auth, next);
+            expect(result, isNotNull);
+            expect(inner.sends, 1);
+            expect(inner.sent, next.turn!.toJson());
+            expect(backend.value, next.reference.encode());
+            expect(t.releaseAppliedCompletion(proof), isFalse);
+            await expectLater(
+              invoke(t, p.auth, next),
+              throwsA(f.code(AiTextErrorCode.syncConflict)),
+            );
+            expect(inner.sends, 1);
+          }
+          await t.close();
+          expect(inner.closes, 1);
+        },
+      );
+    }
+  }
+  for (final transition in [
+    'refresh',
+    'account',
+    'revoke',
+    'close',
+    'reader',
+    'store',
+  ]) {
+    test('transport release cannot reopen after $transition', () async {
+      final p = await s.pending(h.operations.first);
+      final c = h.command(h.operations.first);
+      final backend = h.Backend(c.reference.encode());
+      final store = h.store(backend);
+      final inner = Inner();
+      final t = ReceiptGuardedAiTransport(
+        inner: inner,
+        store: store,
+        auth: p.auth,
+        capturedSession: p.auth.currentSession!,
+        isReady: () => true,
+      );
+      addTearDown(t.close);
+      await expectLater(
+        invoke(t, p.auth, c),
+        throwsA(f.code(AiTextErrorCode.syncConflict)),
+      );
+      final completed = await h.completion(p.auth, c);
+      expect(
+        await p.flow.applyRetainedCompletion(completed.handle, store: store),
+        isTrue,
+      );
+      final proof = p.flow.captureAppliedCompletion(
+        completed.handle,
+        store: store,
+      )!;
+      switch (transition) {
+        case 'refresh':
+          p.auth.currentSession = ReviewSession(userId: f.owner);
+        case 'account':
+          p.auth.currentSession = ReviewSession(userId: f.otherEvent);
+        case 'revoke':
+          t.revoke();
+        case 'close':
+          await t.close();
+        case 'reader':
+          completed.reader.revoke();
+        case 'store':
+          await store.close();
+      }
+      expect(t.releaseAppliedCompletion(proof), isFalse);
+      await expectLater(invoke(t, p.auth, c), throwsA(isA<AiTextFailure>()));
+      expect(inner.sends, 0);
+    });
+  }
+  for (final lateError in [false, true]) {
+    test(
+      'held actual transport cannot release early lateError=$lateError',
+      () async {
+        final p = await s.pending(h.operations.first);
+        final c = h.command(h.operations.first);
+        final backend = h.Backend(null);
+        final store = h.store(backend);
+        final inner = Inner()..wire = Completer<Object?>();
+        final t = ReceiptGuardedAiTransport(
+          inner: inner,
+          store: store,
+          auth: p.auth,
+          capturedSession: p.auth.currentSession!,
+          isReady: () => true,
+        );
+        addTearDown(t.close);
+        final sending = invoke(t, p.auth, c);
+        final observed = lateError
+            ? expectLater(sending, throwsA(isA<AiTextFailure>()))
+            : expectLater(sending, completion(isNotNull));
+        await inner.entered.future;
+        final completed = await h.completion(p.auth, c);
+        expect(
+          await p.flow.applyRetainedCompletion(completed.handle, store: store),
+          isTrue,
+        );
+        final proof = p.flow.captureAppliedCompletion(
+          completed.handle,
+          store: store,
+        )!;
+        expect(t.releaseAppliedCompletion(proof), isFalse);
+        await expectLater(
+          invoke(t, p.auth, c),
+          throwsA(f.code(AiTextErrorCode.syncConflict)),
+        );
+        if (lateError) {
+          inner.wire!.completeError(StateError('PRIVATE_HTTP'));
+        } else {
+          inner.wire!.complete(f.response(h.operations.first));
+        }
+        await observed;
+        await f.settle();
+        expect(t.releaseAppliedCompletion(proof), isTrue);
+        expect(inner.sends, 1);
+      },
+    );
+  }
+  for (final target in ['close', 'reentry', 'final-refresh']) {
+    test('release callbacks $target preserve fencing', () async {
+      final p = await s.pending(h.operations.first);
+      final c = h.command(h.operations.first);
+      final backend = h.Backend(c.reference.encode());
+      final store = h.store(backend);
+      final inner = Inner();
+      var armed = false;
+      var checks = 0;
+      late ReceiptGuardedAiTransport t;
+      late CapturedConversationApplication proof;
+      Future<Object?>? nested;
+      t = ReceiptGuardedAiTransport(
+        inner: inner,
+        store: store,
+        auth: p.auth,
+        capturedSession: p.auth.currentSession!,
+        isReady: () {
+          if (armed) {
+            checks++;
+            if (target == 'close') {
+              armed = false;
+              unawaited(t.close());
+            }
+            if (target == 'reentry') {
+              armed = false;
+              expect(t.releaseAppliedCompletion(proof), isFalse);
+              nested = invoke(t, p.auth, c);
+            }
+            // Initial transport check reads twice; gate checks call it twice more;
+            // replacement occurs during the transport check AFTER gate release.
+            if (target == 'final-refresh' && checks == 7) {
+              armed = false;
+              p.auth.currentSession = ReviewSession(userId: f.owner);
+            }
+          }
+          return true;
+        },
+      );
+      addTearDown(t.close);
+      await expectLater(
+        invoke(t, p.auth, c),
+        throwsA(f.code(AiTextErrorCode.syncConflict)),
+      );
+      final completed = await h.completion(p.auth, c);
+      expect(
+        await p.flow.applyRetainedCompletion(completed.handle, store: store),
+        isTrue,
+      );
+      proof = p.flow.captureAppliedCompletion(completed.handle, store: store)!;
+      armed = true;
+      expect(t.releaseAppliedCompletion(proof), target == 'reentry');
+      if (nested != null) {
+        await expectLater(
+          nested,
+          throwsA(f.code(AiTextErrorCode.syncConflict)),
+        );
+      }
+      expect(inner.sends, 0);
+      if (target != 'reentry') {
+        await expectLater(invoke(t, p.auth, c), throwsA(isA<AiTextFailure>()));
+      }
+    });
+  }
+}
