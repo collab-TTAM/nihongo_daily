@@ -52,3 +52,36 @@ port, then UI/recovery evidence. Server remains auth/receipt authority. Parent
 15f0eb1 CI40077403342 allfive/every step passed,952 Flutter/5 Chrome; new exact-head
 full CI is required. Main/staging AI stay off and all14 hosted release gates remain
 pending. No Auth strategy/provider/voice/collection/spend/release approval follows.
+
+
+## Read-only accepted-completion comparison — 2026-11-19
+
+inspectAcceptedCompletion(completion, store: ownedStore) is a bounded prerequisite
+for a future normal-success acknowledgement path. It accepts only an opaque
+original-bound completion on the identical Auth port/current generation. The lane
+must be idle with no unresolved event/actual held I/O; the existing store must be
+open and contain the command's project/owner scope. The complete operation/event/
+request fingerprint and the entire typed response encoding must match the lane's
+already accepted result. Changes to response text, IDs, session, scores/arrays,
+request text/scenario/session or wire UUID spelling remain conservative mismatches.
+
+A private slot retains only a reference to its existing typed accepted result;
+no duplicate payload, additional file, logs, new cache owner or collection. This
+reference is installed only after successful mutation/currentness checks and cleared
+on revoke. Receipt-reconciled synthetic cache slots are explicitly excluded, even
+after exact cached replay, so they cannot masquerade as observed HTTP success.
+The existing bounded slot count/lifetimes and mutation/retry/cache results remain.
+
+Inspection reserves the lane before supplied callbacks, redacts nested reads and
+fences nested submits, then rechecks completion/lane currentness followed by only
+local terminal/slot/result/store guards. Valid reads do not alter pending/result
+state, dispatch, read/clear metadata or perform storage I/O. Observed lifecycle loss
+can still revoke the lane under its existing policy. Returning a snapshot is NOT
+transcript applicability, hosted provenance, confirmed clear, application proof or
+permission to replay/send. No session/owner/default caller is wired yet.
+
+Twenty-four TEST ONLY regressions cover all3operations exact match/cache/no-I/O,
+changed full originals sharing metadata, changed typed results, foreign Auth/store,
+refresh/account/revoke/reader/store retirement, missing/unresolved slots, timeout/
+late success-error drain, final callback reentry/reader/store/refresh, and exclusion
+of receipt-reconciled cached replay. Exact local evidence is in PROJECT_STATUS.

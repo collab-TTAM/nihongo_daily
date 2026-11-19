@@ -2,6 +2,7 @@ import 'dart:convert';
 import '../../srs/data/review_repository.dart';
 import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
+import '../domain/conversation_receipt_snapshot.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
 import 'captured_conversation_receipt_lookup.dart';
@@ -79,6 +80,7 @@ final class ConversationMutationLane {
   void revoke() {
     _revoked = true;
     for (final slot in _slots.values) {
+      slot.accepted = null;
       slot.revoke();
     }
     _slots.clear();
@@ -144,6 +146,72 @@ final class ConversationMutationLane {
     ),
   );
 
+  /// Read-only comparison with an already accepted lane result. This is not
+  /// transcript applicability, storage confirmation, proof or dispatch authority.
+  /// The host must supply its existing owned store; no store I/O/ownership here.
+  ConversationReceiptSnapshot? inspectAcceptedCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) {
+    if (_revoked || _executing || _checking) return null;
+    _executing = true; // Before supplied reader/Auth/readiness can reenter.
+    try {
+      if (!isCurrent) return null;
+      final pair = completion.captureForAuth(_auth);
+      if (pair == null || _pendingKey != null || _held?.isBusy() == true) {
+        return null;
+      }
+      final command = pair.command;
+      final key =
+          '${command.reference.operation.wireName}:${command.reference.clientEventId.toLowerCase()}';
+      final body =
+          command.start?.toJson() ??
+          command.turn?.toJson() ??
+          command.finish!.toJson();
+      final slot = _slots[key];
+      final accepted = slot?.accepted;
+      if (slot == null ||
+          !slot.recordsMutationSuccess ||
+          accepted == null ||
+          slot.isBusy() ||
+          slot.fingerprint != jsonEncode(body) ||
+          store.phase != ConversationReceiptStorePhase.open ||
+          !store.scope.contains(command.reference)) {
+        return null;
+      }
+      final remote =
+          pair.receipt.start ?? pair.receipt.turn ?? pair.receipt.finish;
+      final encoded = _encodedResult(accepted);
+      if (encoded == null || encoded != _encodedResult(remote)) return null;
+      if (!completion.isCurrent || !isCurrent) return null;
+      // Only local checks after the final external currentness callback.
+      if (_revoked ||
+          _checking ||
+          completion.isRevoked ||
+          _pendingKey != null ||
+          _held?.isBusy() == true ||
+          !identical(_slots[key], slot) ||
+          !identical(slot.accepted, accepted) ||
+          slot.isBusy() ||
+          store.phase != ConversationReceiptStorePhase.open) {
+        return null;
+      }
+      return pair.receipt;
+    } on Object {
+      revoke();
+      return null;
+    } finally {
+      _executing = false;
+    }
+  }
+
+  String? _encodedResult(Object? result) => switch (result) {
+    StartConversationResponse value => jsonEncode(value.toJson()),
+    ConversationTurnResponse value => jsonEncode(value.toJson()),
+    FinishConversationResponse value => jsonEncode(value.toJson()),
+    _ => null,
+  };
+
   /// Explicit trusted-host reconciliation, never inferred from metadata/absence.
   /// Caller supplies the same owned project's secure store and must validate its
   /// prospective transcript before invoking. No default/session/UI caller exists.
@@ -199,7 +267,13 @@ final class ConversationMutationLane {
       // No external callbacks or await between replacing the exact slot and
       // releasing pending. Future exact replay returns the typed result locally.
       slot.revoke();
-      _slots[key] = _Slot(fingerprint, () async => result, () => false, () {});
+      _slots[key] = _Slot(
+        fingerprint,
+        () async => result,
+        () => false,
+        () {},
+        recordsMutationSuccess: false,
+      );
       _pendingKey = null;
       _held = null;
       return true;
@@ -242,6 +316,7 @@ final class ConversationMutationLane {
       _held = slot;
       final result = await slot.submit();
       _requireCurrent();
+      if (slot.recordsMutationSuccess) slot.accepted = result;
       _pendingKey = null;
       return result
           as T; // Private operation-scoped slot fixes its response type.
@@ -257,7 +332,15 @@ final class ConversationMutationLane {
 }
 
 final class _Slot {
-  const _Slot(this.fingerprint, this.submit, this.isBusy, this.revoke);
+  _Slot(
+    this.fingerprint,
+    this.submit,
+    this.isBusy,
+    this.revoke, {
+    this.recordsMutationSuccess = true,
+  });
+  final bool recordsMutationSuccess;
+  Object? accepted;
   final String fingerprint;
   final Future<Object> Function() submit;
   final bool Function() isBusy;

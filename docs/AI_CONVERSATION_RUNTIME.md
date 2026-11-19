@@ -511,3 +511,17 @@ The5 new full SDK cases are locally UNRUN. Local286-test Dart verification inclu
 283 retained components plus3 actual-store cases using the byte-extracted backend
 (normal held clear, guard loss and clear failure); this is not SDK/hosted proof.
 New exact-head Flutter/native CI is required before reporting those cases passed.
+
+
+## Normal-success acknowledgement prerequisite — 2026-11-19
+
+ConversationMutationLane now offers read-only inspectAcceptedCompletion against
+its existing successful mutation cache and exact original-bound completed receipt.
+It conservatively compares full command and full typed result, rejects pending/
+busy/stale/foreign/mismatched states and excludes receipt-reconciled cache slots.
+It sends nothing and performs no store read/clear or claim/proof transition.
+No session/owner/SDK/default path invokes it yet; normal-success acknowledgement
+remains incomplete. Next validate the exact already-published session snapshot,
+then separately implement guarded confirmed clear and proof mint/consumption on
+the SAME owned lease. Do not reuse this read result as release authority, infer
+success from metadata absence/UNKNOWN, or reimplement existing uncertain recovery.
