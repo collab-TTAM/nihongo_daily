@@ -40,6 +40,10 @@ final class ConversationMutationLane {
   bool _executing = false;
   bool _revoked = false;
   bool _checking = false;
+
+  /// Exposes the temporary readiness fence to captured consumers. Reentrant
+  /// readers must redact without interpreting this state as permanent revocation.
+  bool get isCheckingAvailability => _checking;
   bool get hasUnresolvedMutation => _pendingKey != null;
   int get retainedMutationCount => _slots.length;
   bool get isBusy {

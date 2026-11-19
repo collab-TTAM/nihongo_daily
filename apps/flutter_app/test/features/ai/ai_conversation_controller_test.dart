@@ -206,19 +206,29 @@ void main() {
       AiConversationController? controller;
       final nested = <Future<void>>[];
       var reenter = false;
+      var readinessReentries = 0;
       late CapturedConversationSession captured;
       captured = flow(
         port,
         ready: () {
           final view = controller;
           if (reenter && view != null) {
+            readinessReentries++;
+            expect(
+              captured.isCheckingAvailability,
+              isTrue,
+              reason: 'the lane readiness fence must reach captured readers',
+            );
+            expect(
+              captured.isCurrent,
+              isFalse,
+              reason: 'a reentrant currentness hint must not be accepted',
+            );
             nested.add(start(view, event: freshId));
             expect(view.canStart, isFalse);
             final nestedState = view.state;
-            if (captured.isCheckingAvailability) {
-              expect(nestedState.phase, AiConversationPhase.unavailable);
-              expect(nestedState.conversation, isNull);
-            }
+            expect(nestedState.phase, AiConversationPhase.unavailable);
+            expect(nestedState.conversation, isNull);
           }
           return true;
         },
@@ -233,6 +243,7 @@ void main() {
       reenter = true;
       final first = start(controller);
       await settle();
+      expect(readinessReentries, greaterThan(0));
       expect(controller.state.phase, AiConversationPhase.loading);
       await start(controller, event: freshId);
       await controller.turn(textJa: 'tap', clientEventId: turnId);

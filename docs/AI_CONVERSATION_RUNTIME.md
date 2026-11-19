@@ -168,3 +168,24 @@ replacement/revoke, nested inspection, nested submission from external inspectio
 and retained session redaction after refresh. Each fails on the exact parent
 source. Component evidence is not hosted Auth/RLS/provider proof; full current-
 head CI/native gates and reviewed conditional application-release remain required.
+
+
+## Captured-session readiness reentry propagation — 2026-11-19
+
+The mutation lane owns a temporary `isCheckingAvailability` guard while it
+calls the host-supplied readiness callback. That guard must also be visible to
+its `CapturedConversationSession` consumer. Previously the lane could be in
+that guard while the captured session's local guard was false. A controller
+read reentered from the host callback then called `session.isCurrent`; the
+lane correctly returned false to prevent nested currentness, but the session
+mistook that temporary result for permanent revocation and discarded the
+otherwise valid conversation. The view subsequently remained unavailable
+instead of showing the still-pending operation.
+
+The lane now exposes a read-only checking hint. The captured session combines
+its own and the lane's hints, redacts reentrant currentness without revoking,
+and rejects a nested command as pending before it can create or dispatch work.
+The controller regression asserts the hint is propagated, the nested view is
+unavailable/redacted, and the outer accepted command remains loading and can
+complete normally. This is a local reentrancy regression only; it does not
+establish hosted provider, receipt, Auth, RLS or learner evidence.

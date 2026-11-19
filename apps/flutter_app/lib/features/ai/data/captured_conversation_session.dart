@@ -115,16 +115,17 @@ final class CapturedConversationSession {
   bool _checking = false;
   bool _revoked = false;
 
-  /// Reentrant reads must redact while a supplied availability getter is active.
+  /// Reentrant reads must redact while either the captured session or its
+  /// underlying mutation lane is evaluating an external readiness callback.
   /// This hint grants no authority; callers still check isCurrent afterward.
-  bool get isCheckingAvailability => _checking;
-  bool get isBusy => _executing || _checking || _lane.isBusy;
+  bool get isCheckingAvailability => _checking || _lane.isCheckingAvailability;
+  bool get isBusy => _executing || isCheckingAvailability || _lane.isBusy;
   bool get hasUnresolvedMutation => _lane.hasUnresolvedMutation;
 
   bool get isCurrent {
     // Supplied getters may synchronously reenter a read. Do not expose retained
     // results while the outer availability check has not established readiness.
-    if (_revoked || _checking) return false;
+    if (_revoked || _checking || _lane.isCheckingAvailability) return false;
     _checking = true;
     try {
       if (!_lane.isCurrent) revoke();
@@ -262,7 +263,9 @@ final class CapturedConversationSession {
 
   Future<T> _run<T>(Future<T> Function() operation) async {
     // Reserve before supplied readiness/Auth/port code can synchronously reenter.
-    if (_executing || _checking) throw const AiTextRequestPending();
+    if (_executing || _checking || _lane.isCheckingAvailability) {
+      throw const AiTextRequestPending();
+    }
     _executing = true;
     try {
       _requireCurrent();
