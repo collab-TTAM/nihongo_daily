@@ -31,16 +31,18 @@ PendingConversationCommandEnvelope command(String op) => switch (op) {
     request: f.finish(),
   ),
 };
-ConversationReceiptSnapshot completed(PendingConversationCommandEnvelope c) =>
-    ConversationReceiptSnapshot.fromRows(c.reference, [
-      {
-        'user_id': f.owner,
-        'operation': c.reference.operation.wireName,
-        'client_event_id': c.reference.clientEventId,
-        'status': 'COMPLETED',
-        'response_json': f.response(c.reference.operation.wireName),
-      },
-    ]);
+ConversationReceiptSnapshot completed(
+  PendingConversationCommandEnvelope c, {
+  Map<String, Object?>? response,
+}) => ConversationReceiptSnapshot.fromRows(c.reference, [
+  {
+    'user_id': f.owner,
+    'operation': c.reference.operation.wireName,
+    'client_event_id': c.reference.clientEventId,
+    'status': 'COMPLETED',
+    'response_json': response ?? f.response(c.reference.operation.wireName),
+  },
+]);
 Future<void> submit(
   CapturedConversationSession flow,
   PendingConversationCommandEnvelope c,
@@ -86,8 +88,9 @@ void main() {
     ReviewAuth auth,
     PendingConversationCommandEnvelope c, {
     bool Function()? ready,
+    Map<String, Object?>? response,
   }) async {
-    final port = r.OriginalPort()..result = completed(c);
+    final port = r.OriginalPort()..result = completed(c, response: response);
     final reader = CapturedConversationReceiptLookup(
       auth: auth,
       port: port,
@@ -95,6 +98,140 @@ void main() {
     );
     return (handle: (await reader.lookupCompletion(c))!, port: port);
   }
+
+  for (final op in [
+    'start_conversation',
+    'conversation_turn',
+    'finish_conversation',
+  ]) {
+    test(
+      'preview $op validates candidate without installing or release',
+      () async {
+        final p = await pending(op);
+        final c = await completion(p.auth, command(op));
+        final before = p.flow.snapshot;
+        final retained = p.flow.retainedCommand;
+        final sends = p.port.calls.length;
+        final preview = p.flow.previewRetainedCompletion(c.handle)!;
+        expect(
+          preview.phase,
+          op == 'finish_conversation'
+              ? ConversationSessionPhase.finished
+              : ConversationSessionPhase.active,
+        );
+        expect(preview.sessionId, f.session);
+        expect(preview.messages.length, op == 'conversation_turn' ? 2 : 1);
+        expect(preview.summary != null, op == 'finish_conversation');
+        expect(() => preview.messages.clear(), throwsUnsupportedError);
+        expect(p.flow.snapshot, same(before));
+        expect(p.flow.retainedCommand, same(retained));
+        expect(p.flow.hasUnresolvedMutation, isTrue);
+        expect(p.flow.canRetryRetained, isFalse);
+        expect(p.port.calls, hasLength(sends));
+        expect(c.port.calls, 1);
+      },
+    );
+  }
+  for (final bad in ['sequence', 'duplicate_id']) {
+    test(
+      'preview rejects completed turn with $bad conflict against transcript',
+      () async {
+        final p = await pending('conversation_turn');
+        final response = f.response(
+          'conversation_turn',
+          sequence: bad == 'sequence' ? 0 : 2,
+          message: bad == 'duplicate_id'
+              ? f.message0.toUpperCase()
+              : f.message1,
+        );
+        final c = await completion(
+          p.auth,
+          command('conversation_turn'),
+          response: response,
+        );
+        final before = p.flow.snapshot;
+        expect(p.flow.inspectRetainedCompletion(c.handle), isNotNull);
+        expect(p.flow.previewRetainedCompletion(c.handle), isNull);
+        expect(p.flow.snapshot, same(before));
+        expect(p.flow.hasUnresolvedMutation, isTrue);
+        expect(p.flow.isCurrent, isTrue);
+        expect(p.port.calls, hasLength(2));
+        expect(c.port.calls, 1);
+      },
+    );
+  }
+  test('preview rejects recovered start with nonzero first sequence', () async {
+    final p = await pending('start_conversation');
+    final response = f.response('start_conversation');
+    (response['assistant_message']! as Map<String, Object?>)['sequence_no'] = 1;
+    final c = await completion(
+      p.auth,
+      command('start_conversation'),
+      response: response,
+    );
+    expect(p.flow.inspectRetainedCompletion(c.handle), isNotNull);
+    expect(p.flow.previewRetainedCompletion(c.handle), isNull);
+    expect(p.flow.snapshot.phase, ConversationSessionPhase.notStarted);
+    expect(p.flow.hasUnresolvedMutation, isTrue);
+    expect(p.port.calls, hasLength(1));
+  });
+  test(
+    'preview readiness reentry redacts nested candidate without retiring outer',
+    () async {
+      final p = await pending('start_conversation');
+      var armed = false;
+      var probes = 0;
+      late CapturedConversationCompletion handle;
+      final c = await completion(
+        p.auth,
+        command('start_conversation'),
+        ready: () {
+          if (armed) {
+            probes++;
+            expect(p.flow.previewRetainedCompletion(handle), isNull);
+          }
+          return true;
+        },
+      );
+      handle = c.handle;
+      armed = true;
+      final before = p.flow.snapshot;
+      expect(
+        p.flow.previewRetainedCompletion(handle)!.phase,
+        ConversationSessionPhase.active,
+      );
+      armed = false;
+      expect(probes, greaterThan(0));
+      expect(p.flow.snapshot, same(before));
+      expect(p.flow.isCurrent, isTrue);
+      expect(p.flow.isCheckingAvailability, isFalse);
+      expect(p.flow.hasUnresolvedMutation, isTrue);
+      expect(p.port.calls, hasLength(1));
+      expect(c.port.calls, 1);
+    },
+  );
+  test('preview final readiness revoke cannot publish candidate', () async {
+    final p = await pending('start_conversation');
+    var armed = false;
+    var checks = 0;
+    final c = await completion(
+      p.auth,
+      command('start_conversation'),
+      ready: () {
+        if (armed && ++checks == 5) p.flow.revoke();
+        return true;
+      },
+    );
+    armed = true;
+    expect(p.flow.previewRetainedCompletion(c.handle), isNull);
+    expect(checks, greaterThanOrEqualTo(5));
+    armed = false;
+    expect(p.flow.isCheckingAvailability, isFalse);
+    expect(p.flow.isCurrent, isFalse);
+    expect(p.flow.snapshot.phase, ConversationSessionPhase.revoked);
+    expect(p.port.calls, hasLength(1));
+    expect(c.port.calls, 1);
+  });
 
   for (final op in [
     'start_conversation',

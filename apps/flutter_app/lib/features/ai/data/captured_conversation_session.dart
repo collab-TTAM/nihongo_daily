@@ -112,6 +112,85 @@ final class CapturedConversationSession {
     }
   }
 
+  /// Validate a prospective transcript without installing it or releasing pending.
+  /// A non-null preview is not authority to apply, clear, retry or send again.
+  ConversationSessionSnapshot? previewRetainedCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    final receipt = inspectRetainedCompletion(completion);
+    if (receipt == null) return null;
+    _checking = true;
+    try {
+      final before = _snapshot;
+      final original = _retainedCommand;
+      final ConversationSessionSnapshot candidate;
+      switch (original) {
+        case RetainedConversationStart():
+          final result = receipt.start;
+          if (before.phase != ConversationSessionPhase.notStarted ||
+              _startEvent != null ||
+              result == null ||
+              result.assistantMessage.sequenceNo != 0) {
+            return null;
+          }
+          candidate = ConversationSessionSnapshot._(
+            ConversationSessionPhase.active,
+            sessionId: result.sessionId,
+            messages: [result.assistantMessage],
+          );
+        case RetainedConversationTurn(:final request):
+          final result = receipt.turn;
+          if (before.phase != ConversationSessionPhase.active ||
+              !_sameSession(request.sessionId) ||
+              before.messages.isEmpty ||
+              result == null) {
+            return null;
+          }
+          final message = result.assistantMessage;
+          if (message.sequenceNo <= before.messages.last.sequenceNo ||
+              before.messages.any(
+                (m) => m.id.toLowerCase() == message.id.toLowerCase(),
+              )) {
+            return null;
+          }
+          candidate = ConversationSessionSnapshot._(
+            ConversationSessionPhase.active,
+            sessionId: before.sessionId,
+            messages: [...before.messages, message],
+          );
+        case RetainedConversationFinish(:final request):
+          if (before.phase != ConversationSessionPhase.active ||
+              !_sameSession(request.sessionId) ||
+              receipt.finish == null) {
+            return null;
+          }
+          candidate = ConversationSessionSnapshot._(
+            ConversationSessionPhase.finished,
+            sessionId: before.sessionId,
+            messages: before.messages,
+            summary: receipt.finish,
+          );
+        case null:
+          return null;
+      }
+      if (!completion.isCurrent) return null;
+      if (!_lane.isCurrent) {
+        revoke();
+        return null;
+      }
+      if (_revoked ||
+          _lane.isBusy ||
+          !_lane.hasUnresolvedMutation ||
+          !identical(before, _snapshot) ||
+          !identical(original, _retainedCommand)) {
+        return null;
+      }
+      return candidate;
+    } finally {
+      _checking = false;
+    }
+  }
+
   /// Explicit host capability; legacy view remount policy stays unchanged.
   bool get canRetryRetained {
     if (_executing || _checking || !isCurrent) return false;

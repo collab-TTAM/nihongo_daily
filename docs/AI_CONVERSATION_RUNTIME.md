@@ -214,3 +214,24 @@ another event or prove transcript applicability/server reservation release.
 No default UI calls it and no transcript/payload is persisted. Current-state
 application validation and confirmed durable conditional release remain separate
 required work, together with hosted Auth/RLS/provider/learner acceptance.
+
+
+## Prospective transcript validation — 2026-11-19
+
+previewRetainedCompletion(handle) first requires inspectRetainedCompletion's
+same Auth/current lease/actual unresolved original/actual-I/O-drain association.
+It then constructs an immutable PROSPECTIVE ConversationSessionSnapshot without
+installing it. Recovered start requires notStarted/no accepted start and first
+assistant sequence zero. Turn requires active/same session/nonempty transcript,
+strictly advancing sequence and no case-insensitive message-ID reuse. Finish
+requires active/same session and a typed summary; messages/session are preserved.
+Invalid combinations yield null without changing the live transcript or pending.
+
+Before returning, recheck completion/lane readiness, actual busy/pending, revocation
+and identical retained-command/transcript objects. A finally-released guard
+redacts nested preview calls; late readiness revoke cannot publish a candidate.
+The preview is not an accepted application state or authority to clear/retry/send.
+No default controller/UI consumes it, no optimistic success or payload persistence
+is added, and recommendation references still cause no SRS/progress writes.
+Confirmed durable conditional pending release and atomic application into the
+live lane/session remain required; hosted Auth/RLS/provider/learner gates are open.
