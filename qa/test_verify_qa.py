@@ -2,6 +2,7 @@
 from copy import deepcopy
 import importlib.util
 import json
+import re
 from pathlib import Path
 import subprocess
 import shutil
@@ -14,6 +15,7 @@ spec = importlib.util.spec_from_file_location("verify_qa", ROOT / "scripts/verif
 qa = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(qa)
 HEAD = "a" * 40
+HISTORICAL_JOBS = {"repo-sanity", "database", "flutter", "windows", "ai-boundary"}
 
 
 def fixture(matrix):
@@ -64,7 +66,7 @@ class QaEvidenceTests(unittest.TestCase):
                          "8874b6bb1ddc331248397f7a3d9704aa8cd6ddb6")
         self.assertEqual(gates["source_workflow_blob_sha"],
                          "1781354f064cabd4b53fc87aff69013ebc9a4b6b")
-        self.assertEqual(set(gates["ci_gates"]), qa.REQUIRED_JOBS)
+        self.assertEqual(set(gates["ci_gates"]), HISTORICAL_JOBS)
         self.assertNotIn(
             "Verify browser completed-study transactions in Chrome",
             gates["ci_gates"]["flutter"])
@@ -86,7 +88,7 @@ class QaEvidenceTests(unittest.TestCase):
                     qa.validate_ci(historical_matrix, mixed, head)
 
     def test_job_resource_ids_are_positive_integers_and_unique(self):
-        for slot in range(5):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
             for value in (None, False, 0, -1, 1.0, "1"):
                 with self.subTest(slot=slot, value=value):
                     evidence = deepcopy(self.evidence)
@@ -97,7 +99,7 @@ class QaEvidenceTests(unittest.TestCase):
         self.rejected()
 
     def test_job_resource_links_bind_repository_run_and_job(self):
-        for slot in range(5):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
             for key, value in (
                 ("run_url", "https://api.github.com/repos/foreign/repo/actions/runs/123"),
                 ("run_url", f"https://api.github.com/repos/{qa.REPOSITORY}/actions/runs/124"),
@@ -112,7 +114,7 @@ class QaEvidenceTests(unittest.TestCase):
                         qa.validate_ci(self.matrix, evidence, HEAD)
 
     def test_job_run_identity_rejects_numeric_aliases(self):
-        for slot in range(5):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
             for key, value in (("run_id", 123.0), ("run_attempt", 2.0)):
                 with self.subTest(slot=slot, field=key):
                     evidence = deepcopy(self.evidence)
@@ -133,7 +135,7 @@ class QaEvidenceTests(unittest.TestCase):
                     qa.validate_ci(historical_matrix, mixed, head)
 
     def test_step_resource_numbers_are_positive_integers(self):
-        for slot in range(5):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
             for value in (None, False, True, 0, -1, 1.0, "1"):
                 with self.subTest(slot=slot, value=value):
                     evidence = deepcopy(self.evidence)
@@ -142,7 +144,7 @@ class QaEvidenceTests(unittest.TestCase):
                         qa.validate_ci(self.matrix, evidence, HEAD)
 
     def test_step_resource_numbers_reject_duplicates_and_reversed_order(self):
-        for slot in range(5):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
             for mode in ("duplicate", "reversed"):
                 with self.subTest(slot=slot, mode=mode):
                     evidence = deepcopy(self.evidence)
@@ -382,6 +384,35 @@ class QaEvidenceTests(unittest.TestCase):
                 ValueError, "case CI step missing from job repo-sanity"
             ):
                 qa.validate_matrix(self.matrix, root)
+
+    def test_preview_artifact_verification_waits_for_both_producers(self):
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text()
+
+        def job_block(name):
+            match = re.search(
+                rf"^  {re.escape(name)}:\n(.*?)(?=^  [\w-]+:\n|\Z)",
+                workflow,
+                re.MULTILINE | re.DOTALL,
+            )
+            self.assertIsNotNone(match, f"missing CI job: {name}")
+            return match.group(1)
+
+        for producer in ("flutter", "windows"):
+            block = job_block(producer)
+            self.assertIn("uses: actions/upload-artifact@v4", block)
+            self.assertNotIn("uses: actions/download-artifact@v4", block)
+            self.assertNotIn("artifact-ids:", block)
+
+        verifier = job_block("preview-artifacts")
+        self.assertIn("needs: [repo-sanity, flutter, windows]", verifier)
+        self.assertIn("if: needs.repo-sanity.outputs.has_flutter == 'true'", verifier)
+        for expected in (
+            "name: flutter-web-preview",
+            "name: flutter-windows-preview",
+            "python scripts/package_preview.py --verify-ci --platform web",
+            "python scripts/package_preview.py --verify-ci --platform windows",
+        ):
+            self.assertIn(expected, verifier)
 
     def test_external_file_cannot_be_a_repository_test_anchor(self):
         self.matrix["cases"][0]["anchors"][0]["path"] = "../outside-test.py"

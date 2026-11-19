@@ -170,12 +170,16 @@ results do not certify the new #8 head. Current-head PR CI is still required.
 
 `verify_qa.py --evidence evidence.json --head FULL_40_CHARACTER_SHA` verifies a
 saved GitHub workflow-run object and the complete latest-attempt jobs response.
-It requires the repository/workflow/trigger, explicit head, run ID/attempt, all five
+It requires the repository/workflow/trigger, explicit head, run ID/attempt, all six
 jobs and critical steps to match and finish successfully. Missing/paginated,
 duplicate, skipped, cancelled, failed, queued or mixed-attempt data fails closed.
-Unreviewed additional jobs also require updating the inventory. It verifies
-correlation/completeness, **not authenticity**, elapsed testing or semantic test
-coverage. Retrieve the evidence freshly from the connected GitHub tools or GitHub
+Unreviewed additional jobs also require updating the inventory. Preview producers
+only upload their bundles; the separate `preview-artifacts` job depends on both
+completed producer jobs, downloads each stable artifact name, then verifies the
+source/checkout/run/attempt provenance and complete byte inventory. This avoids
+asking a still-running producer job to discover and download its own artifact.
+The verifier checks correlation/completeness, **not authenticity**, elapsed testing
+or semantic test coverage. Retrieve the evidence freshly from the connected GitHub tools or GitHub
 API, inspect the source URLs, and review diff/acceptance separately before merging.
 Do not synthesize or rewrite metadata to pass. Unit-test fixtures are TEST ONLY.
 

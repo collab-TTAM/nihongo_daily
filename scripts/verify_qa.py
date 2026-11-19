@@ -11,7 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "collab-TTAM/nihongo_daily"
-REQUIRED_JOBS = {"repo-sanity", "database", "flutter", "windows", "ai-boundary"}
+REQUIRED_JOBS = {"repo-sanity", "database", "flutter", "windows", "preview-artifacts", "ai-boundary"}
 RELEASE_CASES = {
     "auth-live", "review-rpc", "daily-plan", "study-flows", "n5-coverage",
     "n4-coverage", "kanji-real", "ai-runtime", "ai-live", "voice-live",
@@ -38,7 +38,7 @@ def validate_matrix(matrix, root=ROOT):
     require(matrix["version"] == 1, "unknown QA matrix version")
     require(matrix["repository"] == REPOSITORY, "wrong repository")
     gates = matrix["ci_gates"]
-    require(set(gates) == REQUIRED_JOBS, "all five CI jobs must be tracked")
+    require(set(gates) == REQUIRED_JOBS, "all six CI jobs must be tracked")
     workflow = (root / ".github/workflows/ci.yml").read_text()
     job_blocks = {}
     for job, steps in gates.items():
