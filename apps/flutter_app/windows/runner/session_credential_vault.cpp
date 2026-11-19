@@ -185,11 +185,18 @@ VaultStatus ClearRefreshCredential(const std::string& target) {
   }
 #endif
   const std::wstring name(target.begin(), target.end());
-  if (CredDeleteW(name.c_str(), CRED_TYPE_GENERIC, 0) ||
-      GetLastError() == ERROR_NOT_FOUND) {
-    return VaultStatus::success;
+  const bool deleted = CredDeleteW(name.c_str(), CRED_TYPE_GENERIC, 0) != FALSE;
+  const DWORD error = deleted ? ERROR_SUCCESS : GetLastError();
+  if (!deleted && error != ERROR_NOT_FOUND) return VaultStatus::unavailable;
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+  // The OS deletion committed; report one ambiguous failure to the caller.
+  if (deleted && ConsumeProbeFault(VaultProbeOperation::clear,
+                                   VaultProbeFault::commit_then_fail)) {
+    SetLastError(ERROR_WRITE_FAULT);
+    return VaultStatus::unavailable;
   }
-  return VaultStatus::unavailable;
+#endif
+  return VaultStatus::success;
 }
 
 VaultStatus AcquireCredentialOwner(const std::string& target) {

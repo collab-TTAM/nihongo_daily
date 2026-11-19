@@ -1095,3 +1095,25 @@ It proves deterministic caller-visible failure/retry ordering against actual
 OS storage, not a spontaneous Windows failure, hosted JWT/PostgREST/RLS,
 OS logoff/power loss or physical multi-device acceptance. The normal runner is
 rebuilt with native test hooks disabled before preview/staging builds.
+
+
+## Ambiguous native logout clear after the OS deletion commits
+
+The Windows native bridge now covers a `CredDeleteW` call that successfully
+deletes User A's credential but returns a TEST ONLY unavailable result to the
+caller afterward. The next native read observes no stored token, yet the
+caller-owned persistence owner remains failed: it cannot infer that the
+unacknowledged clear completed merely because the slot is now empty.
+
+A replacement User B sign-in must remain blocked until an explicit logout retry
+runs the same exact-project clear and receives a successful acknowledgement.
+Only then may B authenticate, persist its rotated refresh token, and reach
+own-profile readiness. The fixture also preserves A's pending journal isolation
+and verifies B logout plus a separate fresh process are signed out.
+
+This phase uses the production Windows MethodChannel/helper and real
+Credential Manager with a compile-time TEST ONLY post-commit fault hook. It is
+deterministic native fault injection, not a spontaneous OS failure, hosted
+signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff/power loss or physical
+multi-device acceptance. The bridge is rebuilt with test hooks disabled before
+normal preview/staging builds.

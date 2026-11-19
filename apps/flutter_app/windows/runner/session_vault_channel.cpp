@@ -84,7 +84,8 @@ RegisterSessionVaultChannel(flutter::BinaryMessenger* messenger) {
       if (*fault == "fail_before") {
         native_fault = nihongo::VaultProbeFault::fail_before;
       } else if (*fault == "commit_then_fail" &&
-                 native_operation == nihongo::VaultProbeOperation::write) {
+                 (native_operation == nihongo::VaultProbeOperation::write ||
+                  native_operation == nihongo::VaultProbeOperation::clear)) {
         native_fault = nihongo::VaultProbeFault::commit_then_fail;
       } else {
         Fail(result.get());

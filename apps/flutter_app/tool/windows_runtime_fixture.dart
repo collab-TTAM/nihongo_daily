@@ -32,6 +32,7 @@ const runtimePhases = {
   'runtime-native-rotation-write-failure',
   'runtime-native-rotation-write-fail-before',
   'runtime-native-logout-clear-failure',
+  'runtime-native-logout-clear-commit-failure',
 };
 const _owner = 'a1000000-0000-4000-8000-000000000001';
 const _ownerB = 'a1000000-0000-4000-8000-000000000002';
@@ -229,6 +230,9 @@ String _segment(Object value) =>
 
 Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   _check(Platform.isWindows && runtimePhases.contains(phase));
+  final nativeLogoutClearFailure =
+      phase == 'runtime-native-logout-clear-failure' ||
+      phase == 'runtime-native-logout-clear-commit-failure';
   final directory = runtimeFixtureDirectory(scope);
   final origin = 'https://$scope.invalid';
   final vault = createWindowsSessionCredentialVault(origin);
@@ -356,7 +360,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             _check(authCalls == 3 && userId == _ownerB && logoutCalls >= 1);
           }
         }
-        if (phase == 'runtime-native-logout-clear-failure') {
+        if (nativeLogoutClearFailure) {
           // Both password grants must begin only after A's native slot clears.
           _check(await vault.readRefreshToken() == null);
           if (authCalls == 1) {
@@ -378,7 +382,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           phase == 'runtime-native-read-failure' ||
           phase == 'runtime-native-rotation-write-failure' ||
           phase == 'runtime-native-rotation-write-fail-before' ||
-          phase == 'runtime-native-logout-clear-failure') {
+          nativeLogoutClearFailure) {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
       if (phase == 'runtime-native-rotation-write-failure' ||
@@ -389,7 +393,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           _check(profileCalls == 2 && userId == _ownerB);
         }
       }
-      if (phase == 'runtime-native-logout-clear-failure') {
+      if (nativeLogoutClearFailure) {
         if (profileCalls == 1) {
           _check(userId == _owner);
         } else {
@@ -781,7 +785,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             logoutCalls >= 2,
       );
       await pending();
-    } else if (phase == 'runtime-native-logout-clear-failure') {
+    } else if (nativeLogoutClearFailure) {
       _check(await vault.readRefreshToken() == null);
       await runtime.start();
       _check(
@@ -806,11 +810,15 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       await _injectNativeVaultFault(
         vault.target,
         operation: 'clear',
-        fault: 'fail_before',
+        fault: phase == 'runtime-native-logout-clear-commit-failure'
+            ? 'commit_then_fail'
+            : 'fail_before',
       );
+      final expectedAfterFailedClear =
+          phase == 'runtime-native-logout-clear-commit-failure' ? null : _first;
 
-      // CredDeleteW fails before touching A's saved value. Logout must fail
-      // closed and retain that exact project slot for an explicit retry.
+      // A native clear may fail before deletion or report failure after the OS
+      // has committed it. Both outcomes must keep A fenced until explicit retry.
       await runtime.account.signOut();
       _check(
         runtime.account.state.phase == AccountPhase.signOutError &&
@@ -819,7 +827,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             authCalls == 1 &&
             profileCalls == 1 &&
             profileOwners.single == _owner &&
-            await vault.readRefreshToken() == _first,
+            await vault.readRefreshToken() == expectedAfterFailedClear,
       );
 
       // A replacement B attempt cannot cross the failed-clear logout fence.
@@ -834,7 +842,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         authCalls == 1 &&
             profileCalls == 1 &&
             runtime.account.readyRuntime == null &&
-            await vault.readRefreshToken() == _first,
+            await vault.readRefreshToken() == expectedAfterFailedClear,
       );
 
       // Only an explicit logout retry can clear A before B password Auth.

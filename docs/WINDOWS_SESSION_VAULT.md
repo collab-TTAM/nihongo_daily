@@ -497,3 +497,28 @@ deployed PostgREST/RLS, OS logoff/power loss or physical multi-device sync.
 The fault hook remains absent from the normal learner executable because the
 bridge is rebuilt with `ND_SESSION_VAULT_TEST_HOOKS=OFF` before preview/staging
 builds.
+
+
+## Caller-owned runtime fences an ambiguous native logout clear
+
+The TEST ONLY Windows bridge also exercises the opposite side of a failed
+`CredDeleteW` result: the operating system deletes User A's exact credential,
+but the native helper reports an unavailable result after the API returns
+success. A subsequent native read must observe an empty slot, while the owned
+persistence state remains failed and A's study readiness remains revoked.
+
+A User B password attempt is still blocked even though the OS value is absent;
+slot absence alone is not an acknowledgement from the failed clear operation.
+A second explicit logout retries the same retained owner and idempotent clear.
+Only after that retry succeeds may B authenticate. The runner then checks that
+B's rotated refresh secret is stored before B own-profile, A's pending journal
+remains isolated, B logout clears the slot, and a separate fresh process starts
+signed out.
+
+The native hook is compile-time TEST ONLY and is accepted only by the
+`.invalid` bridge target. It is removed by rebuilding with
+`ND_SESSION_VAULT_TEST_HOOKS=OFF` before staging/preview builds. This is
+deterministic post-commit acknowledgement-loss injection against actual
+Windows Credential Manager, not a spontaneous Windows failure, hosted
+signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff/power-loss or physical
+multi-device evidence.
