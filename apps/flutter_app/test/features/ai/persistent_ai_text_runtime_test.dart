@@ -612,6 +612,44 @@ void main() {
     },
   );
 
+  // Frozen responses are standalone shape examples, not a transcript timeline.
+  Map<String, Object?> timelineTurnResponse({
+    bool duplicateId = false,
+    bool staleSequence = false,
+  }) {
+    final response =
+        jsonDecode(jsonEncode(fixtures['conversation_turn_response']))
+            as Map<String, Object?>;
+    final assistant = response['assistant_message']! as Map<String, Object?>;
+    final first =
+        (fixtures['start_conversation_response']!
+                as Map<String, Object?>)['assistant_message']!
+            as Map<String, Object?>;
+    assistant['id'] = duplicateId
+        ? first['id']
+        : '33333333-3333-4333-8333-333333333333';
+    assistant['sequence_no'] = staleSequence ? first['sequence_no'] : 2;
+    return response;
+  }
+
+  http.StreamedResponse timelineTurnAnswer({
+    bool duplicateId = false,
+    bool staleSequence = false,
+  }) => http.StreamedResponse(
+    Stream.value(
+      utf8.encode(
+        jsonEncode(
+          timelineTurnResponse(
+            duplicateId: duplicateId,
+            staleSequence: staleSequence,
+          ),
+        ),
+      ),
+    ),
+    200,
+    headers: {'content-type': 'application/json'},
+  );
+
   test('owned SDK release is explicit and sends one next turn only', () async {
     final p = await ownedCompletion();
     final pending = p.receipts.value;
@@ -643,7 +681,7 @@ void main() {
         jsonDecode((request as http.Request).body),
         fixtures['conversation_turn_request'],
       );
-      return answer('conversation_turn');
+      return timelineTurnAnswer();
     };
     await p.flow.turn(
       ConversationTurnRequest.fromJson(fixtures['conversation_turn_request']),
@@ -673,6 +711,53 @@ void main() {
     expect(p.receipts.value, originalReference('conversation_turn').encode());
     expect(await vault.readRefreshToken(), secret);
   });
+
+  for (final fault in ['duplicate-id', 'stale-sequence']) {
+    test('owned SDK next turn rejects $fault after explicit release', () async {
+      final p = await ownedCompletion();
+      expect(
+        await runtime.applyRetainedConversationCompletion(p.handle),
+        isTrue,
+      );
+      expect(
+        await runtime.releaseAppliedConversationCompletion(p.handle),
+        isTrue,
+      );
+      final before = p.flow.snapshot;
+      aiHttp.onSend = (request) async {
+        expect(request.method, 'POST');
+        expect(request.url.path, '/functions/v1/conversation_turn');
+        return timelineTurnAnswer(
+          duplicateId: fault == 'duplicate-id',
+          staleSequence: fault == 'stale-sequence',
+        );
+      };
+      await expectLater(
+        p.flow.turn(
+          ConversationTurnRequest.fromJson(
+            fixtures['conversation_turn_request'],
+          ),
+        ),
+        throwsA(
+          isA<AiTextFailure>().having(
+            (e) => e.code,
+            'transcript conflict',
+            AiTextErrorCode.syncConflict,
+          ),
+        ),
+      );
+      expect(before.messages, hasLength(1));
+      expect(p.flow.snapshot.phase, ConversationSessionPhase.revoked);
+      expect(runtime.createAiConversationSession(), isNull);
+      expect(p.receipts.value, originalReference('conversation_turn').encode());
+      expect(aiHttp.requests, hasLength(2));
+      expect(
+        await runtime.releaseAppliedConversationCompletion(p.handle),
+        isFalse,
+      );
+      expect(aiHttp.requests, hasLength(2));
+    });
+  }
 
   for (final terminal in ['close', 'logout', 'refresh']) {
     test('owned SDK explicit release rejects $terminal after apply', () async {

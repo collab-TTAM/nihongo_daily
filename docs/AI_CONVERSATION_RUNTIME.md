@@ -458,3 +458,28 @@ close/logout/refresh; these SDK tests are locally UNRUN pending new exact-head C
 The fresh33-file pure graph (only flutter_test to test1.26.2 import adaptation)
 passes all283 component tests; focused analysis includes curly-braces and doc lint.
 No component/native/unsigned JWT result is hosted learner/JWT/RLS/provider proof.
+
+
+## SDK test timeline correction — 2026-11-19
+
+Exact-head CI44548573216 passed format/analyze and2047 Flutter tests; its sole
+failure was the explicit SDK next-turn case. Frozen standalone response examples
+reuse assistant ID2222 and sequence0 for both start and turn. They validate shape,
+not multi-message chronology. The production transcript guard correctly revoked
+that attempted duplicate/non-increasing response after real TEST ONLY SDK HTTP.
+
+The SDK test now deep-copies its turn response into a local TEST ONLY timeline
+helper with distinct valid assistant UUID3333 and sequence2. Shared frozen
+fixtures/content stay byte-identical. Every positive SDK assertion (exact endpoint,
+bearer/body, one next turn, secure metadata, consumed proof/later finish fence)
+is unchanged; only the test response source changes. Two additive SDK cases
+separately repeat the assistant ID or sequence0 and require syncConflict, revoked
+session, preserved turn metadata, no new session/release and no additional HTTP.
+No production guard/timeout/interface/default was changed.
+
+Local Dart3.9.2 verification passes283 retained component tests plus4 scratch
+checks using the byte-extracted actual SDK response helper and actual captured
+session (old standalone fails, valid timeline succeeds, duplicate ID/old sequence
+fail, original fixtures unchanged). This is not execution of the SDK test file.
+Focused analysis/formatter/QA pass; new exact-head Flutter/SDK/native CI remains
+required. All14 hosted release groups remain pending.
