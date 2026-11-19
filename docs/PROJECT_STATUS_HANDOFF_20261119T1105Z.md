@@ -38,3 +38,10 @@ A TEST ONLY HTTP observer records fixed route/grant labels only. It checks the a
 ### Next action
 
 Inspect every latest-attempt job/step for the new exact HEAD. Fix only observed failures. Dispatch hosted acceptance only after the protected non-production prerequisites are approved; keep #20/#22/#15/#18 and PR #37 Draft until their complete acceptance evidence exists.
+
+
+## Exact-head test correction — 2026-11-19T11:18Z
+
+- The first new-head run [44513418991](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44513418991) reported one error in the new static test: `HostedWorkflowSafetyTests` has no `windows_driver` attribute. The other 34 tests in that invocation passed. Repo-sanity therefore failed and downstream Windows, Supabase integration and Flutter jobs were skipped; AI-boundary and database passed.
+- Corrected the regression to load the PowerShell driver from the repository path within the test itself. No test assertion or security/workflow gate was removed.
+- Corrected source parent: `2db39c2cea0e39df49cf2761c87af5b58ffb5923`; base tree: `1676e3784b90570221732f4f02964cd5a7bd2dbd`; next exact-head CI is required. No local Dart/Flutter or native Windows run is claimed.

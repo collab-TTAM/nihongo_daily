@@ -594,8 +594,9 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "events.indexOf('auth.password')",
         ):
             self.assertIn(marker, fixture)
-        self.assertIn("Invoke-HostedPhase 'prepare-revoked-a'", self.windows_driver)
-        self.assertIn("Invoke-HostedPhase 'restore-revoked-a'", self.windows_driver)
+        driver = (root / "apps" / "flutter_app" / "tool" / "verify_windows_hosted_runtime.ps1").read_text(encoding="utf-8")
+        self.assertIn("Invoke-HostedPhase 'prepare-revoked-a'", driver)
+        self.assertIn("Invoke-HostedPhase 'restore-revoked-a'", driver)
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
