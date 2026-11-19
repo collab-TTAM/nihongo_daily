@@ -28,6 +28,7 @@ final class ReceiptAiRuntimeOwner {
   }
   final ConversationReceiptStore _store;
   late final AiTextRuntimeOwner runtime;
+
   /// Trusted host action; never creates a reader or infers success from HTTP.
   /// The exact proof is applied/released only through this owner's retained lease.
   Future<bool> applyRetainedConversationCompletion(

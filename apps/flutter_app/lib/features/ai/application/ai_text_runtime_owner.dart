@@ -261,6 +261,7 @@ final class AiTextRuntimeOwner {
         transport is! AppliedConversationCompletionReleasePort) {
       return false;
     }
+    final releasePort = transport as AppliedConversationCompletionReleasePort;
     final creating = Completer<void>();
     _creating = creating; // Covers storage I/O and proof consumption.
     final epoch = _epoch;
@@ -271,7 +272,7 @@ final class AiTextRuntimeOwner {
         identical(_lease, lease) &&
         identical(lease.conversation, flow) &&
         identical(lease.receipts, reader) &&
-        identical(lease.transport, transport);
+        identical(lease.transport, releasePort);
     var appliedNow = false;
     try {
       if (completion.captureForReader(reader) == null ||
@@ -279,10 +280,7 @@ final class AiTextRuntimeOwner {
           !current()) {
         return false;
       }
-      var application = flow.captureAppliedCompletion(
-        completion,
-        store: store,
-      );
+      var application = flow.captureAppliedCompletion(completion, store: store);
       if (application == null) {
         final applied = await flow.applyRetainedCompletion(
           completion,
@@ -291,17 +289,14 @@ final class AiTextRuntimeOwner {
         check(); // A failed/retired session must also fence sibling capabilities.
         if (!current() || !applied) return false;
         appliedNow = true;
-        application = flow.captureAppliedCompletion(
-          completion,
-          store: store,
-        );
+        application = flow.captureAppliedCompletion(completion, store: store);
       }
       if (application == null) {
         invalidate(); // Transcript application without its proof is unusable.
         return false;
       }
       if (!flow.isCurrent || !current()) return false;
-      final released = transport.releaseAppliedCompletion(application);
+      final released = releasePort.releaseAppliedCompletion(application);
       check(); // Includes the final post-release Auth/reader/transport checks.
       if (!current()) return false;
       if (appliedNow || released) _notify();

@@ -196,17 +196,14 @@ void main() {
       final inner = Inner()..failNext = true;
       final owner = ReceiptAiRuntimeOwner(
         store: store,
-        createTransport: ({
-          required auth,
-          required isReady,
-          required store,
-        }) => ReceiptGuardedAiTransport(
-          inner: inner,
-          store: store,
-          auth: auth,
-          capturedSession: auth.currentSession!,
-          isReady: isReady,
-        ),
+        createTransport: ({required auth, required isReady, required store}) =>
+            ReceiptGuardedAiTransport(
+              inner: inner,
+              store: store,
+              auth: auth,
+              capturedSession: auth.currentSession!,
+              isReady: isReady,
+            ),
       );
       addTearDown(owner.close);
       final generation = AiTextGeneration();
@@ -242,8 +239,9 @@ void main() {
             'operation': pendingCommand.reference.operation.wireName,
             'client_event_id': pendingCommand.reference.clientEventId,
             'status': 'COMPLETED',
-            'response_json':
-                f.response(pendingCommand.reference.operation.wireName),
+            'response_json': f.response(
+              pendingCommand.reference.operation.wireName,
+            ),
           },
         ],
       );
@@ -260,10 +258,7 @@ void main() {
         isTrue,
       );
       expect(backend.value, isNull);
-      expect(
-        flow.captureAppliedCompletion(completion, store: store),
-        isNull,
-      );
+      expect(flow.captureAppliedCompletion(completion, store: store), isNull);
       final next = f.turn(event: f.otherEvent);
       await flow.turn(next);
       expect(inner.sends, 2);
