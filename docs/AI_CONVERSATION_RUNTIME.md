@@ -233,15 +233,16 @@ redacts nested preview calls; late readiness revoke cannot publish a candidate.
 The preview is not an accepted application state or authority to clear/retry/send.
 No default controller/UI consumes it, no optimistic success or payload persistence
 is added, and recommendation references still cause no SRS/progress writes.
-Confirmed durable conditional pending release and atomic application into the
-live lane/session remain required; hosted Auth/RLS/provider/learner gates are open.
+Production-host integration of confirmed conditional release and guarded session
+application remains required; hosted Auth/RLS/provider/learner gates are open.
 
 
 ## Explicit lane completion reconciliation — 2026-11-19
 
 `ConversationMutationLane.reconcileCompleted(completion, store: ownedStore)` is
-an explicit trusted-host operation. No session/controller/UI/default caller is
-installed. The caller owns the same project/account secure store and must first
+an explicit trusted-host operation. The captured-session method below is an
+explicit caller; no controller/UI/default binding is installed. The caller owns
+the same project/account secure store and must first
 validate its prospective conversation transcript; this lane layer does not know
 conversation phase/sequence/message history. The opaque completion must come from
 the exact same borrowed Auth object and current captured session/readiness lease.
@@ -272,10 +273,10 @@ owns its cleanup policy and actual queue drain; the lane never closes it.
 This is not atomic session/transcript application, a cross-process transaction,
 server receipt deletion/cancellation or hosted Auth/JWT/RLS/learner acceptance.
 Store exclusion remains isolate-local, so trusted host process exclusion remains
-mandatory. A future captured-session method must keep its own mutation guard
-across the await, validate the unchanged original/transcript/current generation,
-and install the previously validated immutable projection before exposing a new
-command. No optimistic save, automatic dispatch, learner URL/key configuration,
+mandatory. The captured-session method below keeps its own mutation guard
+across the await, validates the unchanged original/transcript/current generation,
+and installs the previously validated immutable projection before exposing a new
+command. Production-host/default integration is still pending. No optimistic save, automatic dispatch, learner URL/key configuration,
 payload persistence, SRS recommendation application or default activation is added.
 
 Twenty-one TEST ONLY regressions cover all three operations' confirmed cache and
@@ -287,3 +288,46 @@ pass in a fresh exact22-file Dart3.9.2 graph (only flutter_test→test1.26.2 imp
 adaptation; original fixtures), including old lane/session/reader/preview/store
 cases. Focused analysis is clean with the curly-braces rule enabled. Full Flutter/
 native/SDK host wiring and all14 hosted release groups remain separate gates.
+
+
+## Explicit retained-completion application into a session — 2026-11-19
+
+`CapturedConversationSession.applyRetainedCompletion(completion, store: ownedStore)`
+joins the read-only preview to confirmed lane reconciliation. It is an explicit
+trusted-host API, not a UI/controller/default binding. The caller borrows the
+store owned by the same configured project/account runtime and excludes competing
+processes. It never accepts learner-supplied endpoints/keys, reconstructs original
+DTOs from metadata or treats missing/unknown receipts as dispatch authority.
+
+Validate the immutable prospective transcript before any storage effect. Retain
+the exact current snapshot/original/fingerprint and reserve the session mutation
+guard across lane reconciliation and actual secure-store confirmation. While the
+clear is held, the actual snapshot is unchanged, original/preview/inspection reads
+are redacted, explicit retry does nothing and commands cannot dispatch. Nested or
+concurrent application returns false without changing the outer operation.
+
+After lane settlement, check completion and session currentness again, ensure the
+lane is idle/resolved and snapshot/original/fingerprint identities are unchanged.
+Only then update the operation's event marker, install the immutable candidate and
+clear retained retry state without any intervening callback/await. Exact cached
+start/turn/finish replay cannot append twice or roll back later progress. A
+recovered finish remains terminal; model recommendations do not mutate SRS or
+progress. Failure/retirement after confirmed deletion revokes the session instead
+of publishing a stale candidate. Storage exceptions remain fixed errors and revoke
+session state; false preconditions without lane retirement preserve prior pending.
+
+This publication is atomic within the captured session's isolate/guard, not a
+cross-process or durable payload transaction. Secure-store ownership/cleanup and
+runtime close/logout remain caller-owned. No original command/transcript is newly
+persisted; learner restart recovery is still memory-only. No UI/production-host
+activation or hosted Auth/JWT/RLS/provider/learner acceptance is claimed.
+
+Twenty-eight TEST ONLY cases cover three-operation apply/replay/next-command rules,
+changed original with identical metadata, transcript sequence/message-ID rejection,
+foreign Auth/store, missing/mismatched metadata, three storage faults, held-clear
+redaction/concurrency, refresh/account/revoke/reader retirement, signout, actual
+wire drain for late success/error, and post-lane final-readiness revoke/reentry.
+All187 component cases pass in a fresh exact23-file Dart3.9.2 graph with only
+flutter_test→test1.26.2 import adaptation and original fixtures. Focused analysis
+with the curly-braces rule is clean. Full Flutter/native/SDK host execution and
+all14 hosted release groups remain separate verification gates.

@@ -8,6 +8,7 @@ import 'captured_conversation_mutation.dart';
 import 'captured_conversation_receipt_lookup.dart';
 import '../domain/conversation_receipt_snapshot.dart';
 import 'conversation_mutation_lane.dart';
+import 'conversation_receipt_store.dart';
 
 enum ConversationSessionPhase { notStarted, active, finished, revoked }
 
@@ -188,6 +189,61 @@ final class CapturedConversationSession {
       return candidate;
     } finally {
       _checking = false;
+    }
+  }
+
+  /// Explicit trusted-host application; no default UI/controller binding.
+  /// Validate a prospective transcript before any storage effect. Keep all
+  /// session commands fenced until confirmed lane settlement and publication.
+  Future<bool> applyRetainedCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) async {
+    if (_revoked || _executing || isCheckingAvailability) return false;
+    final candidate = previewRetainedCompletion(completion);
+    if (candidate == null) return false;
+    final before = _snapshot;
+    final original = _retainedCommand;
+    final fingerprint = _retainedFingerprint;
+    if (original == null || fingerprint == null) return false;
+    _executing = true;
+    try {
+      if (!await _lane.reconcileCompleted(completion, store: store)) {
+        if (!_lane.isCurrent) revoke();
+        return false;
+      }
+      if (!completion.isCurrent || !isCurrent) {
+        revoke();
+        return false;
+      }
+      if (_revoked ||
+          _checking ||
+          _lane.isBusy ||
+          _lane.hasUnresolvedMutation ||
+          !identical(before, _snapshot) ||
+          !identical(original, _retainedCommand) ||
+          fingerprint != _retainedFingerprint) {
+        revoke();
+        return false;
+      }
+      // No external callbacks or await between event bookkeeping and snapshot
+      // publication. Replay must not append twice or reset later progress.
+      switch (original) {
+        case RetainedConversationStart(:final request):
+          _startEvent = request.clientEventId.toLowerCase();
+        case RetainedConversationTurn(:final request):
+          _turns.add(request.clientEventId.toLowerCase());
+        case RetainedConversationFinish(:final request):
+          _finishEvent = request.clientEventId.toLowerCase();
+      }
+      _snapshot = candidate;
+      _clearRetained();
+      return true;
+    } on Object {
+      revoke();
+      rethrow;
+    } finally {
+      _executing = false;
     }
   }
 
