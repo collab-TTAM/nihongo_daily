@@ -482,4 +482,3 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
   }
   return 'LOCAL_SUPABASE_SDK_RUNTIME_FAILED:$failure';
 }
-

@@ -4733,3 +4733,11 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK, so no local Flutter format/analyze/test/build was run. No hosted staging dispatch, hosted learner/JWT/RLS evidence, Auth strategy/provider, migration, default Auth activation, Pro-owned #14/#38/N4, merge, deployment or release change.
 - Next: inspect the diagnostic output and every latest-attempt job/step for the final exact HEAD; apply only the formatter-emitted Dart changes, remove the temporary diagnostic, then require a complete six-job exact-head CI. Keep PR #37 Draft and #20/#22/#15/#18 open; hosted learner and multi-device acceptance remain outstanding.
 
+## PR #37 — pinned Dart formatter correction — 2026-11-19T22:22Z
+
+- Read-only diagnostic [Actions 44627802952](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44627802952), exact source HEAD \`3ad5fd867d8f3be820426be4bcf2788472766673\`, emitted one pinned Dart 3.35.4 formatter hunk: remove the extra blank line at EOF in \`apps/flutter_app/tool/verify_supabase_sdk_runtime.dart\`. The new Flutter test wrapper was already formatted (0 changes).
+- Applied only that EOF correction and removed the temporary formatter-diagnostic workflow step. The strict repository-wide \`dart format --output=none --set-exit-if-changed .\` gate remains unchanged.
+- Run 44627802952: repo-sanity, database and AI-boundary succeeded; Flutter failed only the strict formatter gate, so analyze/full Flutter tests and downstream checks were skipped. Supabase integration and Windows were cancelled when the subsequent status-only commit superseded the run; no SDK runtime probe or full-CI pass is claimed.
+- Changed paths in this correction: \`apps/flutter_app/tool/verify_supabase_sdk_runtime.dart\`, \`.github/workflows/ci.yml\`, and this status handoff. No test assertions, Auth/RLS/provider behavior, app default activation or Pro-owned N4 content changed.
+- Next: inspect every latest-attempt job/step for the corrected exact HEAD; specifically confirm the Flutter test-runner wrapper is invoked in the disposable Supabase job, then require all six jobs and all required steps before any pass claim. Hosted learner/JWT/RLS, multi-device and Personal Alpha acceptance remain outstanding.
+
