@@ -417,18 +417,22 @@ release and invoke are fenced throughout; failure after gate release retires the
 transport instead of reopening it. Close still drains actual work and owns only
 the transferred inner transport, never the borrowed secure store.
 
-The explicit owner application action is now wired to this release primitive.
-`AiTextRuntimeOwner.applyRetainedConversationCompletion` requires the same retained
-lease's conversation, original-bound receipt reader and
-`AppliedConversationCompletionReleasePort`. It first reuses a still-current
-unconsumed proof when an earlier explicit release attempt did not finish; otherwise
-it applies the completion through that exact flow/store, captures the proof and
-passes it to the same retained transport. It rechecks the owner epoch, reader,
-session and transport after storage and after release. A missing proof retires the
-owner; a release that is still unavailable returns false without automatic retry.
-`ReceiptAiRuntimeOwner` and `AccountReceiptAiRuntime` expose this host-only action.
-No default route, learner UI, SDK/Auth strategy or successful-HTTP acknowledgement
-was enabled.
+Owner operations are now two explicit steps. `applyRetainedConversationCompletion`
+keeps its original apply-only contract on the exact retained reader/flow/store,
+including transports without an optional release capability. It confirms clear
+and publishes the transcript but never consumes the application proof or changes
+a transport claim. Successful application is not permission to dispatch.
+
+`releaseAppliedConversationCompletion` is a separate host-only action, exposed by
+AiTextRuntimeOwner, ReceiptAiRuntimeOwner, AccountReceiptAiRuntime and
+PersistentSupabaseRuntime. It requires the same retained reader/flow/transport,
+optional AppliedConversationCompletionReleasePort, exact unconsumed applied proof,
+current lease/epoch and actual drain. It never applies/reads/clears on the caller's
+behalf. Missing/foreign/stale proof, legacy port or held drain returns false; no
+metadata absence/UNKNOWN/boolean implies authority. Production host borrows only
+its existing private project/account store and uses the same readiness/generation/
+close/logout/refresh/terminal/draining barriers for both operations. No new SDK or
+store owner, learner flag, automatic retry or HTTP-success acknowledgement.
 
 The new TEST ONLY owner regression drives a failed first start through the same
 ReceiptGuardedAiTransport, reads the completed original receipt through that
@@ -438,3 +442,19 @@ one next turn. Existing direct transport tests still cover held actual HTTP,
 late success/error, A-to-B/session replacement, close and reentrant release.
 These are injected component tests, not hosted learner proof. Pinned Flutter/Windows
 CI must validate this exact head; all14 hosted release groups remain pending.
+
+
+## Explicit apply/release contract repair — 2026-11-19
+
+Exact-head CI44537668836 exposed nine failures after the earlier combined action:
+legacy owners returned false before storage/drain work, while the owned SDK test
+observed a next turn without a separate grant. The original apply method has
+been restored without removing any of those assertions. The same-transport owner
+regression now explicitly releases after apply, retaining its next-turn checks
+and adding pre-apply/foreign-release rejection. Three new legacy-owner cases
+require no release capability for apply, and no clear during attempted release.
+Four new pinned-SDK tests cover explicit one-turn grant and stale proof after
+close/logout/refresh; these SDK tests are locally UNRUN pending new exact-head CI.
+The fresh33-file pure graph (only flutter_test to test1.26.2 import adaptation)
+passes all283 component tests; focused analysis includes curly-braces and doc lint.
+No component/native/unsigned JWT result is hosted learner/JWT/RLS/provider proof.

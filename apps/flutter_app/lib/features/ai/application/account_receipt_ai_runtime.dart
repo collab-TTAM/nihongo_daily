@@ -182,6 +182,14 @@ final class AccountReceiptAiRuntime<T extends Object>
     return _owner.applyRetainedConversationCompletion(completion);
   }
 
+  /// Explicit proof consumption, separate from transcript application.
+  Future<bool> releaseAppliedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (!_prepare()) return Future.value(false);
+    return _owner.releaseAppliedConversationCompletion(completion);
+  }
+
   /// Preserve metadata, drain actual work and release this partition. Borrowed
   /// account/Auth remain owned by host. Cannot bypass a failed explicit clear.
   Future<void> close() => _stop(_owner.close);

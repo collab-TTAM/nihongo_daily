@@ -160,6 +160,40 @@ void main() {
             as Map<String, Object?>;
   });
   for (final op in h.operations) {
+    test('$op legacy transport apply remains separate from release', () async {
+      final p = await setup(op);
+      final before = List<String>.from(p.backend.calls);
+      expect(
+        await p.owner.releaseAppliedConversationCompletion(
+          p.handle,
+          store: p.storage,
+        ),
+        isFalse,
+      );
+      expect(p.backend.calls, before);
+      expect(
+        await p.owner.applyRetainedConversationCompletion(
+          p.handle,
+          store: p.storage,
+        ),
+        isTrue,
+      );
+      final cleared = List<String>.from(p.backend.calls);
+      expect(
+        await p.owner.releaseAppliedConversationCompletion(
+          p.handle,
+          store: p.storage,
+        ),
+        isFalse,
+      );
+      expect(p.backend.calls, cleared);
+      expect(
+        p.flow.captureAppliedCompletion(p.handle, store: p.storage),
+        isNotNull,
+      );
+    });
+  }
+  for (final op in h.operations) {
     test(
       'exact owned $op reader/session/store applies without creating another lease',
       () async {

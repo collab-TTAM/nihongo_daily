@@ -41,6 +41,17 @@ final class ReceiptAiRuntimeOwner {
     );
   }
 
+  /// Explicit proof consumption, separate from transcript application.
+  Future<bool> releaseAppliedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (_preserveChosen || _signOutChosen) return Future.value(false);
+    return runtime.releaseAppliedConversationCompletion(
+      completion,
+      store: _store,
+    );
+  }
+
   bool _preserveChosen = false;
   bool _signOutChosen = false;
   Future<void>? _preserving;

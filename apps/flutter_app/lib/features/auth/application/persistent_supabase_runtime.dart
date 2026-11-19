@@ -430,7 +430,17 @@ final class PersistentSupabaseRuntime
   /// No learner configuration, implicit read/dispatch or default UI activation.
   Future<bool> applyRetainedConversationCompletion(
     CapturedConversationCompletion completion,
-  ) async {
+  ) => _completeRetainedConversation(completion, release: false);
+
+  /// Explicit proof consumption on the SAME owned store/lease, after apply.
+  Future<bool> releaseAppliedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) => _completeRetainedConversation(completion, release: true);
+
+  Future<bool> _completeRetainedConversation(
+    CapturedConversationCompletion completion, {
+    required bool release,
+  }) async {
     final store = _ownedConversationReceiptStore;
     if (!_aiConversationEnabled ||
         store == null ||
@@ -452,10 +462,15 @@ final class PersistentSupabaseRuntime
         session.userId != store.scope.ownerId) {
       return false;
     }
-    final applied = await _aiOwner.applyRetainedConversationCompletion(
-      completion,
-      store: store,
-    );
+    final applied = release
+        ? await _aiOwner.releaseAppliedConversationCompletion(
+            completion,
+            store: store,
+          )
+        : await _aiOwner.applyRetainedConversationCompletion(
+            completion,
+            store: store,
+          );
     if (_closing != null ||
         _receiptLogout != null ||
         _commandRefresh != null ||

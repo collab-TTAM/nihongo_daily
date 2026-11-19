@@ -612,6 +612,92 @@ void main() {
     },
   );
 
+  test('owned SDK release is explicit and sends one next turn only', () async {
+    final p = await ownedCompletion();
+    final pending = p.receipts.value;
+    final before = List<String>.from(p.receipts.calls);
+    expect(
+      await runtime.releaseAppliedConversationCompletion(p.handle),
+      isFalse,
+    );
+    expect(p.receipts.value, pending);
+    expect(p.receipts.calls, before);
+    expect(await runtime.applyRetainedConversationCompletion(p.handle), isTrue);
+    expect(aiHttp.requests, hasLength(1));
+    final cleared = List<String>.from(p.receipts.calls);
+    expect(
+      await runtime.releaseAppliedConversationCompletion(p.handle),
+      isTrue,
+    );
+    expect(p.receipts.calls, cleared); // Release performs no new storage I/O.
+    expect(aiHttp.requests, hasLength(1));
+    aiHttp.onSend = (request) async {
+      expect(request.method, 'POST');
+      expect(request.url.origin, wire.origin);
+      expect(request.url.path, '/functions/v1/conversation_turn');
+      expect(
+        request.headers['authorization'],
+        'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+      );
+      expect(
+        jsonDecode((request as http.Request).body),
+        fixtures['conversation_turn_request'],
+      );
+      return answer('conversation_turn');
+    };
+    await p.flow.turn(
+      ConversationTurnRequest.fromJson(fixtures['conversation_turn_request']),
+    );
+    expect(p.flow.snapshot.messages, hasLength(2));
+    expect(aiHttp.requests, hasLength(2));
+    expect(p.receipts.value, originalReference('conversation_turn').encode());
+    expect(
+      await runtime.releaseAppliedConversationCompletion(p.handle),
+      isFalse,
+    );
+    await expectLater(
+      p.flow.finish(
+        FinishConversationRequest.fromJson(
+          fixtures['finish_conversation_request'],
+        ),
+      ),
+      throwsA(
+        isA<AiTextFailure>().having(
+          (error) => error.code,
+          'next mutation fenced',
+          AiTextErrorCode.syncConflict,
+        ),
+      ),
+    );
+    expect(aiHttp.requests, hasLength(2));
+    expect(p.receipts.value, originalReference('conversation_turn').encode());
+    expect(await vault.readRefreshToken(), secret);
+  });
+
+  for (final terminal in ['close', 'logout', 'refresh']) {
+    test('owned SDK explicit release rejects $terminal after apply', () async {
+      final p = await ownedCompletion();
+      expect(
+        await runtime.applyRetainedConversationCompletion(p.handle),
+        isTrue,
+      );
+      if (terminal == 'close') {
+        await runtime.close();
+      } else if (terminal == 'refresh') {
+        await runtime.refresh();
+      } else {
+        await runtime.account.signOut();
+      }
+      final calls = List<String>.from(p.receipts.calls);
+      expect(
+        await runtime.releaseAppliedConversationCompletion(p.handle),
+        isFalse,
+      );
+      expect(p.receipts.calls, calls);
+      expect(aiHttp.requests, hasLength(1));
+    });
+  }
+
   test(
     'owned host completion after close cannot clear preserved metadata',
     () async {

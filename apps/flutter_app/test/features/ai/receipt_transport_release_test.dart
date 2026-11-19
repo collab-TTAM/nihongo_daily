@@ -254,10 +254,27 @@ void main() {
       );
       expect(backend.value, pendingCommand.reference.encode());
       expect(
-        await owner.applyRetainedConversationCompletion(completion!),
+        await owner.releaseAppliedConversationCompletion(completion!),
+        isFalse,
+      );
+      expect(backend.value, pendingCommand.reference.encode());
+      expect(
+        await owner.applyRetainedConversationCompletion(completion),
         isTrue,
       );
       expect(backend.value, isNull);
+      expect(
+        flow.captureAppliedCompletion(completion, store: store),
+        isNotNull,
+      );
+      expect(
+        await owner.releaseAppliedConversationCompletion(foreign.handle),
+        isFalse,
+      );
+      expect(
+        await owner.releaseAppliedConversationCompletion(completion),
+        isTrue,
+      );
       expect(flow.captureAppliedCompletion(completion, store: store), isNull);
       final next = f.turn(event: f.otherEvent);
       await flow.turn(next);

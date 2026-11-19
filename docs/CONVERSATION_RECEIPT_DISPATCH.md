@@ -132,3 +132,12 @@ release reentry fencing and a final transport lifecycle check before resetting
 its attempt flag. The owner/SDK application action remains unwired and defaults
 unchanged; configured owner next mutation is still blocked. See the same-transport
 section in AI_CONVERSATION_RUNTIME.md for observed tests and remaining boundaries.
+
+
+The owner repair on 2026-11-19 preserves apply as transcript/storage application
+only. Hosts must call releaseAppliedConversationCompletion separately to consume
+the exact still-current proof through the SAME retained transport. The SDK host
+accepts no caller store/URL/key/session and shares its existing lifecycle barriers.
+An apply true result never grants another mutation. Legacy ports retain apply
+behavior and cannot release. See AI_CONVERSATION_RUNTIME.md for CI regression
+findings, observed component evidence and still-unrun SDK acceptance.
