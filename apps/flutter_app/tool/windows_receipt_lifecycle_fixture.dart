@@ -23,6 +23,9 @@ const receiptLifecyclePhases = {
   'receipt-life-logout',
   'receipt-life-absent',
   'receipt-life-cleanup',
+  'receipt-life-conditional-write',
+  'receipt-life-conditional-reopen',
+  'receipt-life-conditional-absent',
 };
 const _channel = MethodChannel('nihongo_daily/conversation_receipts_v1');
 const _a = 'a1000000-0000-4000-8000-000000000001';
@@ -251,6 +254,12 @@ Future<void> verifyWindowsReceiptLifecyclePhase(
     _require(!failed);
     return;
   }
+  if (phase.startsWith('receipt-life-conditional-')) {
+    _require(await auth.readRefreshToken() == _authMarker);
+    await _conditionalClearPhase(phase, scopes);
+    _require(await auth.readRefreshToken() == _authMarker);
+    return;
+  }
   switch (phase) {
     case 'receipt-life-write':
       _require(await auth.readRefreshToken() == null);
@@ -315,4 +324,111 @@ Future<void> verifyWindowsReceiptLifecyclePhase(
       throw const FormatException('Unknown receipt lifecycle phase');
   }
   _require(await auth.readRefreshToken() == _authMarker);
+}
+
+// Native storage-only acceptance. The currentness callbacks below are TEST ONLY
+// host checks, not Supabase Auth or authenticated completion/release authority.
+Future<void> _conditionalClearPhase(
+  String phase,
+  List<ConversationReceiptScope> scopes,
+) async {
+  final original = ConversationReceiptReference.decode(_encoded(scopes.first));
+  switch (phase) {
+    case 'receipt-life-conditional-write':
+      for (final scope in scopes) {
+        _require(await _read(scope) == null);
+      }
+      for (final scope in scopes.take(2)) {
+        final writer = createWindowsConversationReceiptStore(scope: scope);
+        try {
+          await writer.reserve(
+            ConversationReceiptReference.decode(_encoded(scope)),
+          );
+          _require((await writer.read())!.encode() == _encoded(scope));
+        } finally {
+          await writer.close();
+        }
+        _require(await _read(scope) == _encoded(scope));
+      }
+    case 'receipt-life-conditional-reopen':
+      _require(await _read(scopes.first) == original.encode());
+      _require(await _read(scopes[1]) == _encoded(scopes[1]));
+      final store = createWindowsConversationReceiptStore(scope: scopes.first);
+      try {
+        // Exact metadata spelling/op/event matters; these are not full DTO checks.
+        for (final different in [
+          ConversationReceiptReference.fromFinish(
+            projectUrl: scopes.first.projectOrigin,
+            ownerId: scopes.first.ownerId,
+            request: FinishConversationRequest(
+              sessionId: _a,
+              clientEventId: _event,
+            ),
+          ),
+          ConversationReceiptReference.fromStart(
+            projectUrl: scopes.first.projectOrigin,
+            ownerId: scopes.first.ownerId,
+            request: StartConversationRequest(
+              scenarioId: _a,
+              level: AiTextLevel.n5,
+              clientEventId: 'b2000000-0000-4000-8000-000000000002',
+            ),
+          ),
+        ]) {
+          _require(
+            !await store.clearMatching(different, isCurrent: () => true),
+          );
+          _require(await _read(scopes.first) == original.encode());
+        }
+        _require(!await store.clearMatching(original, isCurrent: () => false));
+        _require(
+          !await store.clearMatching(
+            original,
+            isCurrent: () => throw const FormatException('TEST ONLY guard'),
+          ),
+        );
+        var foreignRejected = false;
+        try {
+          await store.clearMatching(
+            ConversationReceiptReference.decode(_encoded(scopes[1])),
+            isCurrent: () => true,
+          );
+        } on ConversationReceiptStoreFailure catch (error) {
+          foreignRejected = error.code == ConversationReceiptStoreError.scope;
+        }
+        _require(
+          foreignRejected && await _read(scopes.first) == original.encode(),
+        );
+        _require(await _read(scopes[1]) == _encoded(scopes[1]));
+        _require(await store.clearMatching(original, isCurrent: () => true));
+        _require(
+          await store.read() == null && await _read(scopes.first) == null,
+        );
+        _require(await _read(scopes[1]) == _encoded(scopes[1]));
+      } finally {
+        await store.close();
+      }
+    case 'receipt-life-conditional-absent':
+      // A new real process verifies actual prior deletion and B preservation.
+      _require(await _read(scopes.first) == null);
+      _require(await _read(scopes[1]) == _encoded(scopes[1]));
+      for (final scope in scopes.take(2)) {
+        final reopened = createWindowsConversationReceiptStore(scope: scope);
+        try {
+          final cleared = await reopened.clearMatching(
+            ConversationReceiptReference.decode(_encoded(scope)),
+            isCurrent: () => true,
+          );
+          _require(cleared == (scope.ownerId == _b));
+          _require(await reopened.read() == null);
+        } finally {
+          await reopened.close();
+        }
+      }
+      for (final scope in scopes) {
+        _require(await _read(scope) == null);
+      }
+    default:
+      throw const FormatException('Unknown conditional receipt phase');
+  }
 }

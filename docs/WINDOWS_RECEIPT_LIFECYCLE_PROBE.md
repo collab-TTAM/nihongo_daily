@@ -113,3 +113,44 @@ verify this new preview probe. Auth/JWT/profile/HTTP remain TEST ONLY; the host,
 private SDK and native vault ownership are production composition. This is not
 hosted learner acceptance. No transcript application, conditional pending clear,
 retry/new-command authority, payload persistence or default activation is added.
+
+
+## Conditional store clear across actual processes — 2026-11-19
+
+Three additional mandatory receipt-life-conditional phases follow all original
+lifecycle phases. They reuse only the invocation's three already-cleared TEST ONLY
+partitions and synthetic refresh marker. The original finally cleanup still
+attempts all three receipt slots and that exact Auth slot on any failure. Every
+new process uses the existing60s deadline/exit checks; no old assertion is removed.
+
+- write: require all slots absent; reserve real native A/B metadata through the
+  production Windows store factory, read it back, close and confirm preservation.
+- reopen: a second actual process observes A/B. Wrong operation/event, false or
+  throwing TEST ONLY currentness guard and foreign-owner input cannot clear A.
+  The exact A reference must clear successfully through the production store,
+  including its post-clear native confirmation read; raw native observation also
+  confirms A absent while B remains exactly preserved. Close drains the store.
+- absent: a third actual process requires A absent/B preserved. Clearing missing A
+  must return false, not fabricate release evidence. Exact B clear must return true;
+  both factory and raw native reads then require all slots absent. The synthetic
+  refresh marker must remain identical before and after each phase.
+
+Only after all three actual invocations succeed, the runner emits:
+Windows conditional receipt clear exact/mismatch/guard/isolation/confirm/reopen/auth-preserve passed (TEST ONLY host guard; no completion grant)
+
+This specifically tests the actual Credential Manager/MethodChannel/store queue
+and confirmed deletion across processes. Host guards are synthetic; there is no
+Supabase SDK/session/JWT/HTTP/completed server receipt, transcript/lane release,
+provider dispatch, learner credential or default wiring in these additions.
+This is not production authenticated recovery or hosted learner acceptance. The
+reference contains no original request/session/transcript; missing metadata or
+this probe's true result grants no authority to send another command.
+
+New native Windows/Flutter/PowerShell execution is locally UNRUN and awaits the
+new exact-head CI. Parenta585edf CI44479161111 latestattempt1 all6jobs/all127steps
+SUCCESS, including retained persistent-vault and OWNED completion-preview markers;
+that parent result does not execute these new phases. No payload persistence,
+plaintext fallback, channel/native implementation, security gate or deadline
+change. Next integrate authenticated completion/full-original/current-generation
+validation and confirmed storage clear with matching drained lane/session atomic
+application; keep every hosted Personal Alpha gate pending until real evidence.
