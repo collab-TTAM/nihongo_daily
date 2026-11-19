@@ -24,3 +24,10 @@ No local Python, Flutter SDK, or Windows execution is claimed. The exact-head Gi
 ## Next action
 
 Inspect the complete latest attempt for the resulting HEAD. If the downstream verifier passes for both bundles, record the exact run/head. If it fails, inspect that job's logs and correct only the observed issue. Keep PR #41 Draft; do not change staging secrets, Auth/provider strategy, schema/RLS, default runtime, Pro N4 content, or release gates.
+
+
+## First exact-head rerun: static regression scope corrected
+
+CI [44459189417](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44459189417), attempt 1, targeted `65c6d79d2e9cc444ee434d0ee709d8d1c34642a9`. Repo-sanity failed only the new static test because it rejected every `actions/download-artifact@v4` in the Flutter job. That job must still download the two native SQL projection artifacts from the database job; those are unrelated to the preview bundles. The new downstream-job regex itself matched and found the expected dependencies and preview names. The test now rejects only legacy preview `artifact-ids` and preview `package_preview.py --verify-ci` commands in the producer jobs, while retaining the downstream checks. Flutter and Windows were skipped because repo-sanity failed, so this attempt does not verify preview downloads.
+
+The new source HEAD and its complete CI must be checked next. No local test execution is claimed.

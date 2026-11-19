@@ -397,11 +397,16 @@ class QaEvidenceTests(unittest.TestCase):
             self.assertIsNotNone(match, f"missing CI job: {name}")
             return match.group(1)
 
-        for producer in ("flutter", "windows"):
+        for producer, platform in (("flutter", "web"), ("windows", "windows")):
             block = job_block(producer)
             self.assertIn("uses: actions/upload-artifact@v4", block)
-            self.assertNotIn("uses: actions/download-artifact@v4", block)
+            # Flutter legitimately downloads native SQL projections from the
+            # database job; only preview verification must be downstream.
             self.assertNotIn("artifact-ids:", block)
+            self.assertNotIn(
+                f"python scripts/package_preview.py --verify-ci --platform {platform}",
+                block,
+            )
 
         verifier = job_block("preview-artifacts")
         self.assertIn("needs: [repo-sanity, flutter, windows]", verifier)
