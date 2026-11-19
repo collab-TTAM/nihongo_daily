@@ -209,6 +209,9 @@ final class CapturedConversationCompletion {
 
   bool get isCurrent => _reader.isCurrent;
 
+  /// Terminal local hint only; false never establishes currentness or authority.
+  bool get isRevoked => _reader._revoked;
+
   /// One synchronous currentness check before exposing the immutable pair.
   /// Previously captured data cannot be recalled; never log or persist it.
   ({

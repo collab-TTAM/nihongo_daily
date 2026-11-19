@@ -9,8 +9,9 @@ before HTTP and decode its response. Local hints are not hosted JWT authorizatio
 No default/route/session factory constructs this gate yet.
 
 submit claims its gate AND the borrowed store identity before any external getter
-or I/O. A weak isolate-local store claim is terminal, including after failure or
-close; two gates sharing one store cannot race two empty reads into two dispatches.
+or I/O. A weak isolate-local store claim is terminal unless the explicit verified
+application release below succeeds; failure/close alone never releases it. Two
+gates sharing one store cannot race two empty reads into two dispatches.
 This is not cross-process ownership/CAS. A new store/process must read storage and
 reject ANY preexisting metadata, even the same event/reference. A reference is
 neither the original command nor proof that a provider was never called.
@@ -82,3 +83,31 @@ single pending mutation blocking; trustedroot/backend/captured storage lifecycle
 durable uncertainty/authenticated conditional application-release/retentionapproval
 and all14 hosted release groups remain outstanding. No default, Pro/content,
 Auth strategy/provider/API/RLS/collection/retention/security-policy change.
+
+
+## Explicit applied-completion release primitive — 2026-11-19
+
+A gate may opt into later release by capturing an immutable `originalCommand`
+at construction, with the exact same metadata reference. Legacy gates without
+that full original remain terminal. `releaseAppliedCompletion` requires an opaque
+single-use `CapturedConversationApplication` from the captured session's confirmed
+clear AND atomic transcript publication. Receipt reads, preview, direct metadata
+clear, missing/UNKNOWN and apply-success booleans cannot construct that proof.
+
+Release checks the exact active gate/store claim, actual storage/dispatch drain,
+non-retired gate and fresh readiness. The proof checks exact Auth/store identity,
+fresh reader/session currentness, unchanged applied snapshot, idle/resolved lane,
+open store and final local reader/session retirement flags after callbacks. The
+gate compares the entire encoded original, including exact request text/session/
+scenario/event/project/owner, before synchronously retiring itself and clearing
+only its own weak claim. There is no storage effect, await or external callback
+between the final proof/identity checks and release. Nested release is excluded;
+consumed/stale/foreign proofs cannot free another claim. The old gate never sends
+again; a new explicit gate still reads/reserves storage before one dispatch.
+
+This primitive is not yet wired into ReceiptGuardedAiTransport or the owned SDK
+application action. Current production gates do not pass originalCommand and the
+transport's `_attempted` remains terminal, so next production mutation is still
+blocked. Normal successful HTTP response acknowledgement, owner/transport wiring,
+SDK/native lifecycle acceptance and hosted learner evidence remain next work.
+All14 hosted release groups remain pending; default learner AI stays off.

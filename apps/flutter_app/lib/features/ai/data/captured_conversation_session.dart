@@ -3,6 +3,7 @@ import '../../srs/data/review_repository.dart';
 import '../domain/conversation_requests.dart';
 import '../domain/conversation_responses.dart';
 import '../domain/retained_conversation_command.dart';
+import '../domain/pending_conversation_command_envelope.dart';
 import 'captured_ai_text_repository.dart';
 import 'captured_conversation_mutation.dart';
 import 'captured_conversation_receipt_lookup.dart';
@@ -57,6 +58,7 @@ final class CapturedConversationSession {
   RetainedConversationCommand? _retainedCommand;
   String? _retainedFingerprint;
   bool _retainedRetryable = false;
+  CapturedConversationApplication? _application;
 
   /// Original input for an idle, unresolved command in this ready generation.
   /// Never reconstructed from receipt metadata. Reading grants no retry/clear
@@ -237,6 +239,12 @@ final class CapturedConversationSession {
           _finishEvent = request.clientEventId.toLowerCase();
       }
       _snapshot = candidate;
+      _application = CapturedConversationApplication._(
+        this,
+        completion,
+        store,
+        candidate,
+      );
       _clearRetained();
       return true;
     } on Object {
@@ -245,6 +253,22 @@ final class CapturedConversationSession {
     } finally {
       _executing = false;
     }
+  }
+
+  /// Borrow only the proof produced by this exact confirmed application. No I/O,
+  /// new reader, or reconstruction from metadata/success booleans is possible.
+  CapturedConversationApplication? captureAppliedCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) {
+    final application = _application;
+    if (application == null ||
+        !identical(application._completion, completion) ||
+        !identical(application._store, store) ||
+        !application._matches()) {
+      return null;
+    }
+    return application;
   }
 
   /// Explicit host capability; legacy view remount policy stays unchanged.
@@ -325,6 +349,7 @@ final class CapturedConversationSession {
 
   void revoke() {
     _revoked = true;
+    _application = null;
     _lane.revoke();
     _clearRetained();
     _turns.clear();
@@ -461,4 +486,60 @@ final class CapturedConversationSession {
       _executing = false;
     }
   }
+}
+
+/// Single-use in-memory proof of confirmed clear AND atomic transcript application.
+/// No public constructor/decoder. It carries no SDK/storage ownership and never
+/// sends, clears, persists payloads or grants replay on its own.
+final class CapturedConversationApplication {
+  CapturedConversationApplication._(
+    this._session,
+    this._completion,
+    this._store,
+    this._snapshot,
+  );
+  final CapturedConversationSession _session;
+  final CapturedConversationCompletion _completion;
+  final ConversationReceiptStore _store;
+  final ConversationSessionSnapshot _snapshot;
+  bool _consumed = false;
+
+  // Local checks only, including after the last external currentness callback.
+  bool _matches() =>
+      !_consumed &&
+      !_session._revoked &&
+      !_session.isBusy &&
+      !_session.hasUnresolvedMutation &&
+      identical(_session._application, this) &&
+      identical(_session._snapshot, _snapshot) &&
+      _store.phase == ConversationReceiptStorePhase.open &&
+      !_completion.isRevoked;
+
+  /// Trusted transport step only. Exact Auth/store and fresh reader/session
+  /// currentness are mandatory. A consumed or stale proof cannot release another
+  /// gate; the transport must still match its full original and actual drain.
+  ({
+    PendingConversationCommandEnvelope command,
+    ConversationReceiptSnapshot receipt,
+  })?
+  consumeForTransport({
+    required ReviewAuth auth,
+    required ConversationReceiptStore store,
+  }) {
+    if (!identical(auth, _session._auth) ||
+        !identical(store, _store) ||
+        !_matches()) {
+      return null;
+    }
+    final pair = _completion.captureForAuth(auth);
+    if (pair == null || !_session.isCurrent || !_matches()) {
+      return null;
+    }
+    // No callback/await after final local checks and before single-use consume.
+    _consumed = true;
+    return pair;
+  }
+
+  @override
+  String toString() => 'CapturedConversationApplication';
 }

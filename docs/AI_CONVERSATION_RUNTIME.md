@@ -354,7 +354,7 @@ After application, recheck epoch/lease/session/reader and fence sibling capabili
 if the session retired. Unexpected operation failures expose only a fixed AI error.
 
 Important remaining transport barrier: transcript application does NOT reset
-ReceiptGuardedAiTransport._attempted or ConversationReceiptDispatch._usedStores.
+ReceiptGuardedAiTransport._attempted or the current production dispatch claim.
 The production transport still permits only one dispatch attempt per store. Exact
 cached replay is local, but another mutation stays sync-conflict fenced even after
 successful application/confirmed metadata deletion. A true host-action result means
@@ -374,3 +374,31 @@ synthetic Auth/HTTP/OS ports: apply plus cached replay and STILL-BLOCKED next mu
 close/preserved metadata, missing opt-in and fixed storage error. Those SDK tests,
 full Flutter/native Windows execution are locally UNRUN and require exact-head CI.
 No hosted JWT/RLS/provider/learner or physical OS failure proof is inferred.
+
+
+## Verified gate release primitive — 2026-11-19
+
+The captured session now retains an opaque single-use application proof only
+after confirmed clear and atomic publication. `captureAppliedCompletion` borrows
+that exact proof; it cannot be decoded, forged from metadata or created from a
+boolean. Exact completion/store association, original applied snapshot, current
+Auth/reader/session, actual idle/resolved state and final terminal flags fence
+consumption. Revocation or later snapshot progress invalidates it. It adds no
+payload persistence, SDK/store ownership or default action. Its toString is fixed.
+
+The optional full-original ConversationReceiptDispatch gate can consume that proof
+only after its actual I/O drains, then compare the whole immutable command and
+release only its own claim while permanently retiring itself. Legacy/current
+production gates remain terminal because they do not capture originalCommand;
+ReceiptGuardedAiTransport._attempted, owner action and default UI remain unchanged.
+See CONVERSATION_RECEIPT_DISPATCH.md for the exact boundary. The next increment
+must wire the same owned transport/gate and prove SDK/lifecycle behavior before
+allowing further production commands. Normal HTTP success also needs its own
+verified acknowledgement path; uncertain completion recovery is not that proof.
+
+Twenty-five new TEST ONLY cases exercise the three operations, full-original
+mismatch sharing metadata, single-use/foreign/legacy/wrong gates, lifecycle
+retirement, held clear/actual wire drain, reentry and final-callback retirement.
+All246 component cases pass in a fresh29-file Dart3.9.2 graph with only the
+flutter_test to test1.26.2 import adaptation/original fixtures; focused analysis
+is clean. Full Flutter/native/SDK checks require new exact-head Actions.
