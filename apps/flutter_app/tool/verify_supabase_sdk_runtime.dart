@@ -433,9 +433,10 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
       input.userB.email,
       input.userB.password,
     );
-    final readyB = await _waitReady(bundle.runtime, input.userB.id, phase);
+    final readyBWhileAProfileHeld = await _waitReady(bundle.runtime, input.userB.id, phase);
     _expect(
-      backend.secret != null && readyB.session.userId == input.userB.id,
+      backend.secret != null &&
+          readyBWhileAProfileHeld.session.userId == input.userB.id,
       phase,
     );
     _expectOrder(events, const [
