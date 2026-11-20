@@ -198,10 +198,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnose formatted same-session refresh regression
-        run: |
-          dart format --output=show test/features/srs/persistent_supabase_runtime_test.dart \
-            | python3 -c 'import sys; lines=sys.stdin.read().splitlines(); start=next(i for i,x in enumerate(lines) if "same-session refresh rotation fences a held own-profile generation" in x); end=next(i for i,x in enumerate(lines[start+1:], start+1) if "configured host offers explicit login after rejected restore" in x); print(chr(10).join(lines[max(0,start-2):end+2]))'
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
