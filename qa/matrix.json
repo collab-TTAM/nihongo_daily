@@ -4997,6 +4997,24 @@
       "ci_steps": [
         "Run flutter test"
       ]
+    },
+    {
+      "id": "progress-overview-profile-timezone-replacement",
+      "status": "automated-baseline",
+      "scope": "A pending Daily Plan read is discarded when the same owner's profile timezone changes; the overview clears the old date and accepts a fresh explicit load without allowing the late old result to overwrite it.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late plan response is discarded after same-owner profile timezone replacement"
+        }
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart. Hold the first plan response, replace the same owner's profile timezone while retaining a fixed repository identity, load a fresh plan, then release the old response and verify the fresh progress remains.",
+      "limitation": "TEST ONLY account/profile and fixed repository ports. This verifies the client view fence, not hosted profile-timezone updates, signed-JWT learner identity, deployed PostgREST/RLS or Personal Alpha acceptance.",
+      "issues": [
+        11,
+        18
+      ]
     }
   ],
   "findings": [

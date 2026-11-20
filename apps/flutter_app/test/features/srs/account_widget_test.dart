@@ -20,8 +20,12 @@ final class Harness {
       ensureProfile: () {
         profiles++;
         if (failProfile) return Future.error(StateError('PRIVATE TOKEN SQL'));
-        return delayed?.future ??
-            Future.value(fixture.ownProfile(access.currentSession!.userId));
+        final pending = delayed;
+        if (pending != null) return pending.future;
+        final userId = access.currentSession!.userId;
+        final raw = fixture.ownProfile(userId).toJson()
+          ..['timezone'] = profileTimezone;
+        return Future.value(decodeOwnProfile(raw, userId));
       },
       buildStudyRuntime: (auth, changes) => SrsStudyRuntime(
         auth: auth,
@@ -36,6 +40,7 @@ final class Harness {
   final rpc = study.FixtureStudyRpc();
   late final AccountController<SrsStudyRuntime> runtime;
   Completer<OwnProfile>? delayed;
+  String profileTimezone = 'Asia/Tokyo';
   bool failProfile = false;
   int profiles = 0;
   Future<void> close() async {

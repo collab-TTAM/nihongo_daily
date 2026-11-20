@@ -508,11 +508,14 @@ Future<ProviderContainer> _mount(
   _GrammarPorts? grammarPorts,
   _ServerHistoryReader? serverHistoryReader,
   CurriculumRepository? curriculumRepository,
+  DailyPlanRepository? dailyPlanRepository,
 }) async {
   final container = ProviderContainer(
     overrides: [
       if (configured) accountRuntimeProvider.overrideWithValue(harness.runtime),
       if (configured) dailyPlanSourceProvider.overrideWithValue(source),
+      if (configured && dailyPlanRepository != null)
+        dailyPlanRepositoryProvider.overrideWithValue(dailyPlanRepository),
       if (configured && vocabularyPorts != null)
         quizHistorySourceProvider.overrideWithValue(vocabularyPorts),
       if (configured && grammarPorts != null)
@@ -667,6 +670,66 @@ void main() {
     expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
     expect(source.planReads, 1);
   });
+
+  testWidgets(
+    'late plan response is discarded after same-owner profile timezone replacement',
+    (tester) async {
+      final harness = Harness();
+      final pending = Completer<Object?>();
+      final source = _ProgressSource(harness)
+        ..planResponse = (_) => pending.future;
+      final repository = DailyPlanRepository(
+        _ProgressGateway(source, () => true),
+      );
+      await _mount(
+        tester,
+        harness,
+        source,
+        dailyPlanRepository: repository,
+      );
+
+      await tester.enterText(
+        find.byKey(const Key('progress-date')),
+        '2026-10-20',
+      );
+      await tester.tap(find.byKey(const Key('progress-load')));
+      await tester.pump();
+      expect(source.planReads, 1);
+      expect(find.text('Đang tải tiến độ…'), findsOneWidget);
+
+      harness.profileTimezone = 'Asia/Ho_Chi_Minh';
+      harness.access.change(account.owner);
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Thời gian học theo hồ sơ · Asia/Ho_Chi_Minh'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('progress-date')))
+            .controller!
+            .text,
+        isEmpty,
+      );
+      expect(find.byKey(const Key('progress-study-minutes')), findsNothing);
+
+      source.planResponse = (_) async => studyPlan(50);
+      await tester.enterText(
+        find.byKey(const Key('progress-date')),
+        '2026-10-20',
+      );
+      await tester.tap(find.byKey(const Key('progress-load')));
+      await tester.pumpAndSettle();
+      expect(find.text('50/120 phút'), findsOneWidget);
+
+      pending.complete(studyPlan(45));
+      await tester.pumpAndSettle();
+      expect(find.text('50/120 phút'), findsOneWidget);
+      expect(find.text('45/120 phút'), findsNothing);
+      expect(source.planReads, 2);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'overview loads separate local quiz totals with N5/N4 breakdown only on explicit action',

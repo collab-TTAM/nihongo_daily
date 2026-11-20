@@ -78,3 +78,10 @@ Progress overview widget tests use TEST ONLY Auth/RPC gateways. Exact-head
 GitHub Actions must run Flutter format/analyze/tests and Web/Windows builds.
 These tests do not establish hosted JWT, RLS, learner, expiry/restart or
 multi-device acceptance. The default app runtime remains unconfigured.
+
+
+## Same-owner profile timezone replacement
+
+The overview discards a pending Daily Plan result when the ready profile's timezone changes, even if the user ID remains the same. It clears the old date and plan, then requires an explicit load under the replacement profile. A held old response cannot overwrite the newly loaded plan. The regression keeps the repository object stable so the view's captured profile/generation fence is exercised rather than relying only on repository replacement.
+
+This is TEST ONLY profile/repository evidence. It does not prove hosted profile updates, signed-JWT identity, deployed PostgREST/RLS or learner acceptance.
