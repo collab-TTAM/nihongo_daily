@@ -33,3 +33,8 @@ No migration, RLS/grant, Auth strategy/provider, default app activation, token h
 ## Next
 
 Inspect every latest-attempt job and required step on the new exact HEAD. Keep PR #37 Draft and #15/#20/#22/#18 open until hosted A/B, real device/offline recovery and complete Personal Alpha journey evidence are recorded.
+
+
+## Follow-up review correction
+
+The first source increment also changes the later same-owner review count before the existing cross-owner shared-event race. The follow-up therefore derives A's later expected count from `expected_device_count + 1` and timestamps the cross-owner event after the newer same-owner event. This preserves the existing owner-scoped race assertions without allowing an intentionally stale timestamp to turn that later case into a conflict. CI run [44754051266](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44754051266) targets the superseded pre-correction commit and is not acceptance evidence for the corrected script.

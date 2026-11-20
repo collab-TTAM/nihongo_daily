@@ -726,7 +726,13 @@ def main() -> None:
     # Distinct owners may race on one client event UUID without sharing receipts.
     # The owner-scoped advisory/unique key must allow both transactions to commit.
     shared_event_id = str(uuid.uuid4())
-    shared_occurred_at = dt.datetime.now(dt.timezone.utc).isoformat(
+    shared_time = max(
+        dt.datetime.now(dt.timezone.utc),
+        dt.datetime.fromisoformat(
+            newer_device_request["occurred_at"].replace("Z", "+00:00")
+        ),
+    ) + dt.timedelta(seconds=1)
+    shared_occurred_at = shared_time.isoformat(
         timespec="microseconds"
     ).replace("+00:00", "Z")
     concurrent_request_a = {
@@ -760,7 +766,7 @@ def main() -> None:
         concurrent_result_b = call_b.result(timeout=20)
     require(
         error_code(concurrent_result_a) is None
-        and concurrent_result_a.get("review_count") == 3,
+        and concurrent_result_a.get("review_count") == expected_device_count + 1,
         "A commits its own payload while B races on the same event UUID",
     )
     require(
@@ -842,7 +848,11 @@ def main() -> None:
     b_rows = rows(
         "user_learning_items", "id,user_id,item_id,review_count", "user_id", id_b, token_b
     )
-    require(len(a_rows) == 1 and a_rows[0]["review_count"] == 3, "A own latest review row")
+    require(
+        len(a_rows) == 1
+        and a_rows[0]["review_count"] == expected_device_count + 1,
+        "A own latest review row",
+    )
     require(
         a_device_rows == a_rows,
         "both same-owner sessions read identical authoritative server state",
