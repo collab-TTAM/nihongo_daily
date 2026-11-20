@@ -1,5 +1,6 @@
 // TEST ONLY: exercise the caller-owned Supabase SDK runtime against the
 // disposable loopback GoTrue/PostgREST stack. Never used by the app default.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -157,6 +158,42 @@ final class _LoopbackHttpClient extends http.BaseClient {
 
   final List<String> events;
   final http.Client _inner = http.Client();
+  bool _holdNextProfileResponse = false;
+  bool _profileResponseCancelled = false;
+  Completer<void>? _profileResponseHeld;
+  Completer<void>? _releaseProfileResponse;
+  Completer<void>? _profileResponseConsumed;
+
+  bool get profileResponseCancelled => _profileResponseCancelled;
+
+  void holdNextProfileResponse() {
+    if (_holdNextProfileResponse || _profileResponseHeld != null) {
+      throw StateError('Profile response gate already used');
+    }
+    _holdNextProfileResponse = true;
+    _profileResponseCancelled = false;
+    _profileResponseHeld = Completer<void>();
+    _releaseProfileResponse = Completer<void>();
+    _profileResponseConsumed = Completer<void>();
+  }
+
+  Future<void> waitForProfileResponseHeld() async {
+    await _profileResponseHeld!.future.timeout(const Duration(seconds: 15));
+  }
+
+  void releaseProfileResponse() {
+    final release = _releaseProfileResponse;
+    if (release == null || release.isCompleted) {
+      throw StateError('Profile response gate is not waiting');
+    }
+    release.complete();
+  }
+
+  Future<void> waitForProfileResponseConsumed() async {
+    await _profileResponseConsumed!.future.timeout(
+      const Duration(seconds: 15),
+    );
+  }
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
@@ -181,11 +218,55 @@ final class _LoopbackHttpClient extends http.BaseClient {
     forwarded.maxRedirects = request.maxRedirects;
     forwarded.persistentConnection = request.persistentConnection;
     forwarded.bodyBytes = body;
-    return _inner.send(forwarded);
+    final response = await _inner.send(forwarded);
+    if (uri.path != '/rest/v1/rpc/ensure_profile' ||
+        !_holdNextProfileResponse) {
+      return response;
+    }
+    _holdNextProfileResponse = false;
+    if (response.statusCode != 200) {
+      throw const _ProbeFailure('held-profile-status');
+    }
+    final responseBytes = await response.stream.toBytes();
+    final held = _profileResponseHeld!;
+    final release = _releaseProfileResponse!;
+    final consumed = _profileResponseConsumed!;
+    late final StreamController<List<int>> controller;
+    controller = StreamController<List<int>>(
+      onListen: () {
+        if (!held.isCompleted) held.complete();
+        unawaited(() async {
+          await release.future;
+          if (!_profileResponseCancelled && !controller.isClosed) {
+            controller.add(responseBytes);
+            await controller.close();
+          }
+          if (!consumed.isCompleted) consumed.complete();
+        }());
+      },
+      onCancel: () {
+        _profileResponseCancelled = true;
+        if (!consumed.isCompleted) consumed.complete();
+      },
+    );
+    return http.StreamedResponse(
+      controller.stream,
+      response.statusCode,
+      contentLength: response.contentLength,
+      request: response.request,
+      headers: response.headers,
+      isRedirect: response.isRedirect,
+      persistentConnection: response.persistentConnection,
+      reasonPhrase: response.reasonPhrase,
+    );
   }
 
   @override
-  void close() => _inner.close();
+  void close() {
+    final release = _releaseProfileResponse;
+    if (release != null && !release.isCompleted) release.complete();
+    _inner.close();
+  }
 }
 
 Future<_RuntimeBundle> _openBundle(
@@ -307,18 +388,109 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
       phase,
     );
 
+    httpClient.holdNextProfileResponse();
     events.clear();
-    phase = 'a-password-login';
+    phase = 'a-held-profile-login';
+    await bundle.runtime.account.signIn(
+      input.userA.email,
+      input.userA.password,
+    );
+    await httpClient.waitForProfileResponseHeld();
+    final oldSessionA = bundle.runtime.persistence.currentSession;
+    _expect(
+      oldSessionA != null &&
+          oldSessionA.userId == input.userA.id &&
+          bundle.runtime.account.state.phase == AccountPhase.loadingProfile &&
+          bundle.runtime.account.readyRuntime == null &&
+          backend.secret != null,
+      phase,
+    );
+    _expectOrder(events, const [
+      'http:/auth/v1/token?grant_type=password',
+      'vault.write',
+      'http:/rest/v1/rpc/ensure_profile',
+    ], 'a-held-profile-order');
+
+    phase = 'a-logout-before-profile';
+    await bundle.runtime.account.signOut();
+    _expect(
+      backend.secret == null &&
+          bundle.runtime.account.state.phase == AccountPhase.signedOut &&
+          bundle.runtime.account.readyRuntime == null,
+      phase,
+    );
+    _expectOrder(events, const [
+      'http:/auth/v1/token?grant_type=password',
+      'vault.write',
+      'http:/rest/v1/rpc/ensure_profile',
+      'http:/auth/v1/logout?scope=local',
+      'vault.clear',
+    ], phase);
+
+    events.clear();
+    phase = 'b-login-while-a-profile-held';
+    await bundle.runtime.account.signIn(
+      input.userB.email,
+      input.userB.password,
+    );
+    final readyB = await _waitReady(bundle.runtime, input.userB.id, phase);
+    _expect(
+      backend.secret != null && readyB.session.userId == input.userB.id,
+      phase,
+    );
+    _expectOrder(events, const [
+      'http:/auth/v1/token?grant_type=password',
+      'vault.write',
+      'http:/rest/v1/rpc/ensure_profile',
+    ], 'b-password-order-before-a-late-profile');
+
+    events.clear();
+    phase = 'b-logout-before-a-relogin';
+    await bundle.runtime.account.signOut();
+    _expect(
+      backend.secret == null &&
+          bundle.runtime.account.state.phase == AccountPhase.signedOut,
+      phase,
+    );
+    _expectOrder(events, const [
+      'http:/auth/v1/logout?scope=local',
+      'vault.clear',
+    ], phase);
+
+    events.clear();
+    phase = 'a-relogin-same-owner-new-session';
     await bundle.runtime.account.signIn(
       input.userA.email,
       input.userA.password,
     );
     final readyA = await _waitReady(bundle.runtime, input.userA.id, phase);
+    final refreshA = backend.secret;
+    _expect(
+      oldSessionA != null &&
+          !identical(oldSessionA, readyA.session) &&
+          readyA.session.userId == input.userA.id &&
+          refreshA != null,
+      phase,
+    );
     _expectOrder(events, const [
       'http:/auth/v1/token?grant_type=password',
       'vault.write',
       'http:/rest/v1/rpc/ensure_profile',
-    ], 'a-password-order');
+    ], 'a-relogin-order');
+
+    phase = 'a-late-old-profile-response';
+    httpClient.releaseProfileResponse();
+    await httpClient.waitForProfileResponseConsumed();
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    _expect(
+      !httpClient.profileResponseCancelled &&
+          bundle.runtime.account.state.phase == AccountPhase.ready &&
+          bundle.runtime.account.state.profile?.id == input.userA.id &&
+          identical(bundle.runtime.account.readySession, readyA.session) &&
+          identical(bundle.runtime.account.readyRuntime, readyA.study) &&
+          backend.secret == refreshA,
+      phase,
+    );
 
     phase = 'a-due-queue';
     final dueA = await readyA.study.queue.load(readyA.session, PreviewLevel.n5);

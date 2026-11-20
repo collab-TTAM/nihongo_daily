@@ -90,3 +90,26 @@ Primary sources/pinned published source checked 2026-10-14:
 - https://pub.dev/packages/supabase/versions/2.16.5
 - https://pub.dev/packages/postgrest/versions/2.9.1
 - https://pub.dev/packages/gotrue/versions/2.27.3
+
+
+## Local signed-session SDK A→B→A late-profile regression
+
+The disposable local integration already creates two real GoTrue users and invokes
+`verify_flutter_sdk_runtime` through the pinned Supabase Dart SDK. The runtime
+probe now holds the successful User A `ensure_profile` HTTP response after the
+local PostgREST server has produced it but before its body is delivered to the SDK.
+It then signs A out, authenticates B and waits for B's own-profile readiness, signs
+B out, authenticates A again with the same Auth user UUID but a new session object,
+and only then releases A's old response. The assertion requires the new A profile,
+ready session, study runtime and persisted refresh secret to remain unchanged; the
+held response must not be cancelled, so this is a real late-response case rather
+than merely abandoning the request.
+
+This runs inside `scripts/test_supabase_local.py` on the disposable loopback
+GoTrue/PostgREST stack and uses actual locally signed Auth sessions plus the pinned
+SDK, `PersistentSupabaseRuntime`, credential-vault port and `NativeReviewJournal`.
+The test input remains owner-only temporary data, child output is checked for
+credential/token leakage, and no secret or response body is printed. It is stronger
+than unsigned-JWT/MockClient fixtures but remains local component evidence: it does
+not replace the protected hosted Supabase staging workflow, physical multi-device
+offline sync, or the complete learner journey.
