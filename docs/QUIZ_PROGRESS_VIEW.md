@@ -210,3 +210,21 @@ This is a view-generation regression using TEST ONLY account/history ports.
 It does not prove hosted Auth identity, deployed Edge/PostgREST/RLS, physical
 multi-device synchronization or Personal Alpha learner acceptance. New Flutter
 execution must be observed on this exact source head in GitHub Actions.
+
+
+## A-B-A late continuation success fence — 2026-11-20
+
+A held page-two success can arrive after account A has switched to B and back to
+a new A view with the same owner UUID. The old success must not append its row
+to the replacement A page or replace that page's continuation cursor.
+
+The widget regression loads A's first page, holds its page-two request, performs
+A→B→A, loads a fresh first page for the replacement A, then releases the old
+page-two response successfully. The replacement summary must remain at 20 rows
+with its normal load-more action. A subsequent explicit load-more must use the
+replacement page-one cursor and load its own 21st row. The paired late-failure
+case also verifies that an old error cannot poison the replacement retry state.
+
+This uses TEST ONLY account/history-reader ports. It does not establish hosted
+Auth identity, deployed Edge/PostgREST/RLS, physical multi-device sync or
+Personal Alpha learner acceptance; exact-head Flutter CI is required.

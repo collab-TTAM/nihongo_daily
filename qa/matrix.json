@@ -4210,7 +4210,7 @@
       "anchors": [
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
-          "contains": "late server quiz continuation cannot publish after A-B-A account replacement"
+          "contains": "late server quiz continuation success cannot replace fresh A page or cursor after A-B-A account replacement"
         },
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
@@ -4221,7 +4221,7 @@
         13,
         18
       ],
-      "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart; explicitly load page one, hold page two, switch A→B→A, load a fresh page one for the replacement A, then release the old continuation as both success and failure. Confirm the old page/error cannot publish or change the new cursor/retry state; then run flutter analyze and the complete Flutter suite.",
+      "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart. Load page one, hold page two, switch A→B→A, load a fresh page one for replacement A, then release the old continuation as success and failure. For success, verify the replacement stays at 20 rows and the next explicit read uses its page-one cursor; for failure, verify no stale error/retry state. Then run flutter analyze and the complete Flutter suite.",
       "limitation": "TEST ONLY account and history-reader fixtures. No hosted Auth/JWT/RLS, deployed Edge history route or multi-device learner proof.",
       "ci_steps": [
         "Run flutter test"
