@@ -1223,3 +1223,22 @@ check: two sessions for the same person must not allow a delayed response from
 the earlier session to settle or overwrite the newer readiness state. This is
 TEST ONLY pinned-SDK/MockClient/in-memory-vault evidence, not hosted learner
 identity, deployed PostgREST/RLS or Personal Alpha proof.
+
+
+## Same-session refresh invalidates an in-flight profile generation
+
+The pinned-Supabase-SDK regression `same-session refresh rotation fences a held
+own-profile generation` holds User A's first `ensure_profile` response, then
+rotates the refresh token while keeping the same Auth user and `session_id`.
+The binding preserves the captured `ReviewSession` identity for this lifecycle,
+but the persistence barrier revokes readiness while the rotated secret is saved.
+A second own-profile request must use the new access token and settle before the
+account becomes ready. Releasing the first response afterward, with the same
+owner ID but a deliberately different display name, must not replace the newer
+profile, ready session or study runtime.
+
+This distinguishes session identity from profile-request generation: a same-
+session token rotation does not create a new user session, but it still makes an
+already in-flight profile request obsolete. This is TEST ONLY pinned-SDK,
+MockClient and in-memory-vault evidence, not hosted Auth/JWT/RLS or Personal
+Alpha proof.

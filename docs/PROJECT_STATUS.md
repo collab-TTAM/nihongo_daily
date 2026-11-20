@@ -4790,3 +4790,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Parent exact-head Actions [44658654250](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44658654250), attempt 1, was observed with all six jobs and every returned step SUCCESS/no skips on `0e8d0d4a0aceb0e246e2ff714383f597e8b79b83`. This is parent evidence only. New-head format/analyze/test/build and exact-head CI remain pending until Actions runs.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local Flutter format/analyze/test/build is claimed. TEST ONLY synthetic Auth HTTP/JWT and in-memory vault do not prove hosted signed-JWT A/B, deployed PostgREST/RLS, physical multi-device sync or learner acceptance.
 - Next: inspect every latest-attempt job/step for the new exact HEAD; repair only observed diagnostics. Keep PR #37 Draft and #20/#22/#15/#18 open pending protected non-production hosted A/B/expiry/restart and the separate offline multi-device evidence.
+
+
+## PR #37 — same-session refresh profile-generation fence — 2026-11-20T06:05Z
+
+- Run `core-20261120T0605Z-pr37-same-session-refresh-profile-fence`; branch `automation/issue-22-atomic-review`; parent HEAD `1e412cad563df167f0e7b0fd466ce000f7560a10`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added a TEST ONLY pinned-Supabase-SDK regression that holds an own-profile response across refresh-token rotation while preserving the same Auth user and `session_id`. It requires the post-rotation profile request to use the rotated access token, then releases the stale pre-rotation response and verifies the newer profile, captured session, ready runtime and vault secret remain unchanged.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, and this status file. No production Auth/provider/vault code, API/schema/RLS, default runtime, or Pro-owned #14/#38/N4 scope changed.
+- Exact-head Actions is pending for the new source commit. Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/test/build is not claimed. The test uses synthetic Auth HTTP/JWT and an in-memory vault, not hosted learner evidence.
+- Next: inspect all six latest-attempt jobs and required steps on the exact new HEAD; fix only observed failures. Keep #37 Draft and #20/#22/#15/#18 open pending hosted signed-JWT A/B, deployed PostgREST/RLS, expiry/restart, offline multi-device and learner-journey evidence.

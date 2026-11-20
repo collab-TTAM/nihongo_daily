@@ -1905,6 +1905,99 @@ void main() {
     },
   );
   test(
+    'same-session refresh rotation fences a held own-profile generation',
+    () async {
+      profileWait = Completer<http.Response>();
+      await runtime.start();
+
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_A_BEFORE_SAME_SESSION_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForCondition(
+        () => profileWasRequested,
+        reason: 'pre-refresh own-profile request was not held',
+      );
+
+      final lateProfile = profileWait!;
+      profileWait = null;
+      List<http.Request> profileRequests() => requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      final initialSession = runtime.persistence.currentSession;
+      expect(initialSession, isNotNull);
+      expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, 'TEST_ONLY_A_BEFORE_SAME_SESSION_REFRESH');
+      expect(profileRequests(), hasLength(1));
+      final initialAuthorization =
+          profileRequests().single.headers['authorization'];
+      expect(
+        initialAuthorization,
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+      expect(profileResponseWasReturned, isFalse);
+
+      // Keep the Auth user and session_id stable while the access/refresh
+      // credentials rotate. The binding intentionally preserves ReviewSession
+      // identity; the account profile generation must still advance.
+      now = now.add(const Duration(minutes: 1));
+      secret = 'TEST_ONLY_A_AFTER_SAME_SESSION_REFRESH';
+      final AccountSessionRefreshAction refreshAction = runtime;
+      await refreshAction.refresh().timeout(const Duration(seconds: 5));
+      await waitForReady();
+
+      final refreshedSession = runtime.persistence.currentSession;
+      final refreshedReadySession = runtime.account.readySession;
+      final refreshedRuntime = runtime.account.readyRuntime;
+      expect(identical(refreshedSession, initialSession), isTrue);
+      expect(identical(refreshedReadySession, initialSession), isTrue);
+      expect(refreshedRuntime, isNotNull);
+      expect(runtime.account.state.profile?.displayName, '学習者');
+      expect(backend.secret, 'TEST_ONLY_A_AFTER_SAME_SESSION_REFRESH');
+      expect(backend.operations, ['read', 'write', 'write']);
+      expect(profileRequests(), hasLength(2));
+      final refreshedAuthorization =
+          profileRequests().last.headers['authorization'];
+      expect(refreshedAuthorization, isNot(initialAuthorization));
+      expect(
+        refreshedAuthorization,
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+
+      // The pre-rotation request is still for the same user and session_id,
+      // but its captured profile generation is obsolete.
+      profileResponseWasReturned = false;
+      final staleProfile = profile.profile(wire.a)
+        ..['display_name'] = 'TEST_ONLY_PRE_ROTATION_PROFILE';
+      lateProfile.complete(
+        http.Response(
+          jsonEncode(staleProfile),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await waitForCondition(
+        () => profileResponseWasReturned,
+        reason: 'pre-refresh same-session profile response did not drain',
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(runtime.account.state.phase, AccountPhase.ready);
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(runtime.account.state.profile?.displayName, '学習者');
+      expect(identical(runtime.persistence.currentSession, refreshedSession), isTrue);
+      expect(identical(runtime.account.readySession, refreshedReadySession), isTrue);
+      expect(identical(runtime.account.readyRuntime, refreshedRuntime), isTrue);
+      expect(backend.secret, 'TEST_ONLY_A_AFTER_SAME_SESSION_REFRESH');
+      expect(profileRequests(), hasLength(2));
+    },
+  );
+
+  test(
     'configured host offers explicit login after rejected restore and clears before password auth',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
