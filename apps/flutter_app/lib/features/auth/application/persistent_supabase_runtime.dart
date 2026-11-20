@@ -94,7 +94,7 @@ final class PersistentSupabaseRuntime
               ? null
               : RefreshLease(session, expiry);
         },
-        refresh: persistence.refresh,
+        refresh: _refreshThroughOwner,
         now: now,
       );
       _refreshSubscription = persistence.sessionChanges.listen(
@@ -131,6 +131,7 @@ final class PersistentSupabaseRuntime
     _ => AccountSessionNotice.none,
   });
   SessionRefreshScheduler? _refreshScheduler;
+  Future<void>? _refreshOperation;
   StreamSubscription<void>? _refreshSubscription;
   SessionRefreshPhase? get refreshPhase => _refreshScheduler?.phase;
   void resume() => _refreshScheduler?.update();
@@ -145,7 +146,21 @@ final class PersistentSupabaseRuntime
   }
 
   @override
-  Future<void> refresh() => persistence.refresh();
+  Future<void> refresh() => _refreshThroughOwner();
+
+  /// Scheduled and explicit refresh share one persistence operation. Without
+  /// this owner-level coalescing, a manual UI action racing the scheduler is
+  /// rejected by PersistentAccountAccess while its operation slot is occupied.
+  Future<void> _refreshThroughOwner() {
+    final inFlight = _refreshOperation;
+    if (inFlight != null) return inFlight;
+    late final Future<void> operation;
+    operation = persistence.refresh().whenComplete(() {
+      if (identical(_refreshOperation, operation)) _refreshOperation = null;
+    });
+    _refreshOperation = operation;
+    return operation;
+  }
 
   /// Shutdown preserves confirmed credentials; failed interrupted cleanup is
   /// retryable and never releases the vault owner before its clear succeeds.

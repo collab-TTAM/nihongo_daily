@@ -712,6 +712,21 @@ failure or prove hosted learner A/B, deployed RLS/PostgREST, or physical
 multi-device behavior.
 
 
+## Manual and scheduled refresh share one owner operation
+
+The caller-owned runtime routes both the optional scheduler and the explicit
+refresh action through one in-flight future. If a learner requests a manual
+refresh after the scheduler has already reserved the persistence operation,
+the action joins that same Auth request instead of receiving a spurious
+operation-slot error. Both callers remain pending through the same rotated-token
+vault write and fail-closed readiness barrier; this does not add a second Auth
+request, retry loop, timer, or SDK auto-refresh. The pinned-SDK regression holds
+the automatic refresh response and the subsequent vault write, starts a manual
+refresh while the scheduler owns the operation, and verifies that the manual
+caller completes only after the new secret is persisted. Logout then clears the
+slot and prevents another refresh dispatch. This is TEST ONLY SDK/MockClient/
+in-memory-vault evidence, not hosted learner or native OS proof.
+
 ## Refresh completion across an account switch
 
 The scheduler allows only one refresh attempt at a time. If account A's refresh is already in flight when the caller publishes account B, an update does not start an overlapping request. When A's attempt settles, the scheduler re-reads the caller-owned current lease and schedules B using B's identity and expiry. A canceled A timer callback that was already queued may re-arm the current B timer, but its captured A lease cannot dispatch a refresh. The scheduler does not authorize or persist a session: `PersistentAccountAccess` remains responsible for SDK session/generation checks and the vault write-before-readiness barrier. This deterministic timer regression is not hosted Auth or OS-suspension evidence.
