@@ -159,19 +159,22 @@ final class _LoopbackHttpClient extends http.BaseClient {
   final List<String> events;
   final http.Client _inner = http.Client();
   bool _holdNextProfileResponse = false;
-  bool _profileResponseCancelled = false;
+  bool _profileResponseCancelledBeforeRelease = false;
+  bool _profileResponseReleased = false;
   Completer<void>? _profileResponseHeld;
   Completer<void>? _releaseProfileResponse;
   Completer<void>? _profileResponseConsumed;
 
-  bool get profileResponseCancelled => _profileResponseCancelled;
+  bool get profileResponseCancelledBeforeRelease =>
+      _profileResponseCancelledBeforeRelease;
 
   void holdNextProfileResponse() {
     if (_holdNextProfileResponse || _profileResponseHeld != null) {
       throw StateError('Profile response gate already used');
     }
     _holdNextProfileResponse = true;
-    _profileResponseCancelled = false;
+    _profileResponseCancelledBeforeRelease = false;
+    _profileResponseReleased = false;
     _profileResponseHeld = Completer<void>();
     _releaseProfileResponse = Completer<void>();
     _profileResponseConsumed = Completer<void>();
@@ -186,13 +189,12 @@ final class _LoopbackHttpClient extends http.BaseClient {
     if (release == null || release.isCompleted) {
       throw StateError('Profile response gate is not waiting');
     }
+    _profileResponseReleased = true;
     release.complete();
   }
 
   Future<void> waitForProfileResponseConsumed() async {
-    await _profileResponseConsumed!.future.timeout(
-      const Duration(seconds: 15),
-    );
+    await _profileResponseConsumed!.future.timeout(const Duration(seconds: 15));
   }
 
   @override
@@ -245,7 +247,12 @@ final class _LoopbackHttpClient extends http.BaseClient {
         }());
       },
       onCancel: () {
-        _profileResponseCancelled = true;
+        // The bounded production transport cancels its iterator after it has
+        // buffered a complete body. Only cancellation before release means the
+        // deliberately delayed response was actually discarded.
+        if (!_profileResponseReleased) {
+          _profileResponseCancelledBeforeRelease = true;
+        }
         if (!consumed.isCompleted) consumed.complete();
       },
     );
@@ -264,7 +271,10 @@ final class _LoopbackHttpClient extends http.BaseClient {
   @override
   void close() {
     final release = _releaseProfileResponse;
-    if (release != null && !release.isCompleted) release.complete();
+    if (release != null && !release.isCompleted) {
+      _profileResponseReleased = true;
+      release.complete();
+    }
     _inner.close();
   }
 }
@@ -433,7 +443,11 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
       input.userB.email,
       input.userB.password,
     );
-    final readyBWhileAProfileHeld = await _waitReady(bundle.runtime, input.userB.id, phase);
+    final readyBWhileAProfileHeld = await _waitReady(
+      bundle.runtime,
+      input.userB.id,
+      phase,
+    );
     _expect(
       backend.secret != null &&
           readyBWhileAProfileHeld.session.userId == input.userB.id,
@@ -484,7 +498,7 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
     await httpClient.waitForProfileResponseConsumed();
     await Future<void>.delayed(const Duration(milliseconds: 10));
     _expect(
-      !httpClient.profileResponseCancelled &&
+      !httpClient.profileResponseCancelledBeforeRelease &&
           bundle.runtime.account.state.phase == AccountPhase.ready &&
           bundle.runtime.account.state.profile?.id == input.userA.id &&
           identical(bundle.runtime.account.readySession, readyA.session) &&

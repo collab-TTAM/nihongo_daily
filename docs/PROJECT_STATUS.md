@@ -1,3 +1,14 @@
+## PR #37 exact-head CI diagnosis — delayed SDK response probe — 2026-11-20T18:06Z
+
+- Resumed the released core lane on `automation/issue-22-atomic-review`, source HEAD `bc1b629fb7afc38317c95d70cc430e80db7fee05`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44782094126](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44782094126), attempt 1, completed FAILURE. `repo-sanity`, `ai-boundary`, `database` and `windows` completed SUCCESS with all returned steps successful. `supabase-integration` failed only at the TEST ONLY pinned-SDK probe phase `a-late-old-profile-response`. `flutter` failed the strict Dart 3.35.4 formatter gate; analyze, full tests and downstream steps were SKIPPED.
+- The formatter diagnostic showed exactly two layout changes in `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`: collapse the timeout call to one line and wrap the long `_waitReady` call. No production or test assertions were changed by formatting.
+- Probe review found a TEST ONLY bookkeeping false positive: production `_BoundedSessionHttp` deliberately calls `StreamIterator.cancel()` after fully buffering every response. The probe's stream `onCancel` marked that normal post-release cleanup as cancellation of the held response. Track cancellation only when it happens before the explicit release; preserve the same-owner A→B→A delayed-response assertion so a genuinely early cancellation still fails the probe.
+- Paths: `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart` and this status file. No production Auth/vault/controller/provider/API/schema/RLS/default-runtime change, no Pro-owned #14/#38/N4/content scope, no staging dispatch, merge, deployment or release.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/Flutter tests/build were not run. The correction requires a fresh exact-head six-job CI run and inspection of every latest-attempt job/step. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart and physical multi-device proof remain outstanding.
+
+---
+
 ## PR #37 late own-profile response regression — formatter fix committed — 2026-11-19T14:28Z
 
 - Run `core-20261119T1412Z-pr37-late-profile-switch-proof`; branch `automation/issue-22-atomic-review`; formatter-corrected source commit [`cfc12ae5ce39eff0cde5547df0e6753ca51c8820`](https://github.com/collab-TTAM/nihongo_daily/commit/cfc12ae5ce39eff0cde5547df0e6753ca51c8820), parent `41fe828fe275a8cfae68341abeeba5043586a972`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
