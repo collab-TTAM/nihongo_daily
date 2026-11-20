@@ -1142,6 +1142,87 @@ void main() {
     },
   );
   testWidgets(
+    'late server quiz continuation cannot publish after A-B-A account replacement',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()
+        ..responses = _serverQuizContinuationPages()
+        ..readWait = Completer<void>()
+        ..readWaitOnCall = 2;
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': _serverVocabularySource(),
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-summary')),
+      );
+      expect(reader.reads, 1);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pump();
+      expect(reader.reads, 2);
+      expect(reader.queries[1].cursor, isNotNull);
+      expect(
+        reader.queries[1].cursor?.clientEventId,
+        'a3000000-0000-4000-8000-000000000020',
+      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsOneWidget);
+
+      harness.access.change(account.other);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsNothing);
+
+      // Returning to the same owner UUID is a new account/view generation.
+      harness.access.change(account.owner);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-load-server-quiz')),
+        findsOneWidget,
+      );
+      expect(reader.reads, 2);
+
+      reader.readWait!.complete();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+        findsNothing,
+      );
+      expect(reader.reads, 2);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'server receipt read failure is redacted and manually retryable',
     (tester) async {
       final harness = Harness();

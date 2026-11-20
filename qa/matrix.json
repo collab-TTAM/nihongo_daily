@@ -4203,6 +4203,27 @@
       "ci_job": "flutter"
     },
     {
+      "id": "progress-overview-account-aba-pagination",
+      "status": "automated-baseline",
+      "scope": "A held server quiz keyset continuation is discarded across A→B→A even when the same owner UUID returns under a newer progress-view generation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late server quiz continuation cannot publish after A-B-A account replacement"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart; then flutter analyze and the complete flutter test suite.",
+      "limitation": "TEST ONLY account and history-reader fixtures. No hosted Auth/JWT/RLS, deployed Edge history route or multi-device learner proof.",
+      "ci_steps": [
+        "Run flutter test"
+      ]
+    },
+    {
       "id": "quiz-report-verified-owner-host",
       "status": "automated-baseline",
       "scope": "Server-only verified Auth identity bound to one owned PostgreSQL quiz-report transaction with replay-first private receipt access and mandatory current-content validation",

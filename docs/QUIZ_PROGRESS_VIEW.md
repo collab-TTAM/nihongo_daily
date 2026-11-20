@@ -177,3 +177,17 @@ is still required to verify expansion and layout. No new layout success claim.
 QA46/inventory151/whitespace pass; local Flutter/format/analyze/widget/build remain
 UNRUN without SDK. Keep PR41 draft/#13 open/all14 hosted pending; no security,
 Auth/provider/content/retention/default/credit or CI gate change.
+
+
+## A-B-A server continuation fence — 2026-11-20
+
+A server quiz keyset page is bound to the progress view generation, not only
+the owner UUID. If page two is held while account A switches to B and then signs
+back into A, the old page must remain discarded even though the owner UUID is the
+same again. The replacement A view starts without old pages and requires an
+explicit fresh history load. This prevents an old cursor response from being
+published into a later A session/view.
+
+The widget regression uses TEST ONLY account and history-reader ports. It does
+not establish hosted Auth identity, deployed RLS, cross-device synchronization or
+Personal Alpha learner acceptance.
