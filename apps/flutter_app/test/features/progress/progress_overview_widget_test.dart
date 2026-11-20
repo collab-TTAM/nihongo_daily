@@ -681,12 +681,7 @@ void main() {
       final repository = DailyPlanRepository(
         _ProgressGateway(source, () => true),
       );
-      await _mount(
-        tester,
-        harness,
-        source,
-        dailyPlanRepository: repository,
-      );
+      await _mount(tester, harness, source, dailyPlanRepository: repository);
 
       await tester.enterText(
         find.byKey(const Key('progress-date')),
