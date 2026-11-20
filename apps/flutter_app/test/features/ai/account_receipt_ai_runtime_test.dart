@@ -21,11 +21,11 @@ import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
+import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
 import '../srs/session_lifecycle_fixtures.dart' as lifecycle;
 import '../srs/own_profile_fixtures.dart' as profiles;
 import 'receipt_guarded_ai_transport_test.dart' as ports;
 import 'captured_conversation_session_test.dart' as f;
-import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
 
 final class _Backend implements SecureConversationReceiptBackend {
   Object? value;
