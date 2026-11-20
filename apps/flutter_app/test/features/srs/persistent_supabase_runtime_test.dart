@@ -2005,6 +2005,157 @@ void main() {
   );
 
   test(
+    'failed same-session refresh write suppresses the held pre-rotation profile before B login',
+    () async {
+      profileWait = Completer<http.Response>();
+      await runtime.start();
+
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_A_BEFORE_FAILED_SAME_SESSION_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForCondition(
+        () => profileWasRequested,
+        reason: 'pre-failure own-profile request was not held',
+      );
+
+      final lateProfile = profileWait!;
+      profileWait = null;
+      List<http.Request> profileRequests() => requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      final initialAuthorization =
+          profileRequests().single.headers['authorization'];
+      expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, 'TEST_ONLY_A_BEFORE_FAILED_SAME_SESSION_REFRESH');
+      expect(profileRequests(), hasLength(1));
+      expect(
+        initialAuthorization,
+        'Bearer \${wire.token(wire.a, wire.sid1, now)}',
+      );
+
+      backend.failWrite = true;
+      backend.writeWait = Completer<void>();
+      now = now.add(const Duration(minutes: 1));
+      secret = 'TEST_ONLY_A_FAILED_SAME_SESSION_ROTATION';
+      final AccountSessionRefreshAction refreshAction = runtime;
+      final rotation = refreshAction.refresh();
+      final rotationFailure = expectLater(
+        rotation,
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await waitForCondition(
+        () =>
+            backend.writes == 2 &&
+            runtime.persistence.phase == SessionPersistencePhase.saving,
+        reason: 'same-session refresh did not reach its rotated-token write',
+      );
+
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(backend.secret, 'TEST_ONLY_A_BEFORE_FAILED_SAME_SESSION_REFRESH');
+      expect(profileRequests(), hasLength(1));
+
+      backend.writeWait!.complete();
+      await rotationFailure;
+      backend.writeWait = null;
+      backend.failWrite = false;
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.notice, AccountSessionNotice.needsLogin);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(backend.secret, isNull);
+      expect(profileRequests(), hasLength(1));
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_B_AFTER_FAILED_SAME_SESSION_REFRESH';
+      profileWait = Completer<http.Response>();
+      profileWasRequested = false;
+      final loginB = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForCondition(
+        () => profileWasRequested,
+        reason: 'User B own-profile request did not follow token persistence',
+      );
+
+      final bProfileRequests = profileRequests();
+      expect(bProfileRequests, hasLength(2));
+      expect(backend.secret, 'TEST_ONLY_B_AFTER_FAILED_SAME_SESSION_REFRESH');
+      expect(backend.writes, 3);
+      expect(runtime.persistence.phase, SessionPersistencePhase.ready);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        bProfileRequests.last.headers['authorization'],
+        'Bearer \${wire.token(wire.b, wire.sid2, now)}',
+      );
+
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(wire.b)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      profileWait = null;
+      await loginB.timeout(const Duration(seconds: 5));
+      await waitForReady();
+
+      final bSession = runtime.persistence.currentSession;
+      final bReadySession = runtime.account.readySession;
+      final bRuntime = runtime.account.readyRuntime;
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(bSession?.userId, wire.b);
+      expect(bReadySession, isNotNull);
+      expect(bRuntime, isNotNull);
+      expect(profileRequests(), hasLength(2));
+
+      profileResponseWasReturned = false;
+      final staleAProfile = profile.profile(wire.a)
+        ..['display_name'] = 'TEST_ONLY_PRE_FAILURE_PROFILE';
+      lateProfile.complete(
+        http.Response(
+          jsonEncode(staleAProfile),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await waitForCondition(
+        () => profileResponseWasReturned,
+        reason: 'pre-failure User A own-profile response did not drain',
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(runtime.account.state.phase, AccountPhase.ready);
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.account.state.profile?.displayName, '学習者');
+      expect(
+        identical(runtime.persistence.currentSession, bSession),
+        isTrue,
+      );
+      expect(identical(runtime.account.readySession, bReadySession), isTrue);
+      expect(identical(runtime.account.readyRuntime, bRuntime), isTrue);
+      expect(
+        backend.secret,
+        'TEST_ONLY_B_AFTER_FAILED_SAME_SESSION_REFRESH',
+      );
+      expect(profileRequests(), hasLength(2));
+      expect(
+        profileRequests().first.headers['authorization'],
+        initialAuthorization,
+      );
+    },
+  );
+
+  test(
     'configured host offers explicit login after rejected restore and clears before password auth',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';
