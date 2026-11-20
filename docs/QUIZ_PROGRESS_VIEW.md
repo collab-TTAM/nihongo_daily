@@ -191,3 +191,22 @@ published into a later A session/view.
 The widget regression uses TEST ONLY account and history-reader ports. It does
 not establish hosted Auth identity, deployed RLS, cross-device synchronization or
 Personal Alpha learner acceptance.
+
+
+## A-B-A late continuation failure fence — 2026-11-20
+
+A held page-two server-history request can fail after its original A view has
+been replaced by B and then by a new A view with the same owner UUID. The old
+failure must not set the replacement view's pagination error/retry state or
+clear its newly loaded page-one summary.
+
+The added widget regression keeps page two pending through A→B→A, explicitly
+loads a fresh first page for the replacement A, then releases the old request
+as a TEST ONLY private reader failure. It requires the new summary and normal
+"Tải thêm biên nhận" action to remain, with no stale retry label, error widget
+or raw diagnostic text. The request/cursor is not retried automatically.
+
+This is a view-generation regression using TEST ONLY account/history ports.
+It does not prove hosted Auth identity, deployed Edge/PostgREST/RLS, physical
+multi-device synchronization or Personal Alpha learner acceptance. New Flutter
+execution must be observed on this exact source head in GitHub Actions.

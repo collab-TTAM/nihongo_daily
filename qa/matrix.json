@@ -4205,19 +4205,23 @@
     {
       "id": "progress-overview-account-aba-pagination",
       "status": "automated-baseline",
-      "scope": "A held server quiz keyset continuation is discarded across A→B→A even when the same owner UUID returns under a newer progress-view generation.",
+      "scope": "A held server quiz keyset continuation is discarded across A→B→A even when the same owner UUID returns under a newer progress-view generation; both late success and late failure must leave the replacement view and retry state unchanged.",
       "ci_job": "flutter",
       "anchors": [
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
           "contains": "late server quiz continuation cannot publish after A-B-A account replacement"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "late server quiz continuation failure cannot publish after A-B-A account replacement"
         }
       ],
       "issues": [
         13,
         18
       ],
-      "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart; then flutter analyze and the complete flutter test suite.",
+      "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart; explicitly load page one, hold page two, switch A→B→A, load a fresh page one for the replacement A, then release the old continuation as both success and failure. Confirm the old page/error cannot publish or change the new cursor/retry state; then run flutter analyze and the complete Flutter suite.",
       "limitation": "TEST ONLY account and history-reader fixtures. No hosted Auth/JWT/RLS, deployed Edge history route or multi-device learner proof.",
       "ci_steps": [
         "Run flutter test"

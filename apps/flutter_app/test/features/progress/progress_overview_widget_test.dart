@@ -1223,6 +1223,105 @@ void main() {
   );
 
   testWidgets(
+    'late server quiz continuation failure cannot publish after A-B-A account replacement',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final pages = _serverQuizContinuationPages();
+      final reader = _ServerHistoryReader()
+        ..responses = [...pages, pages.first]
+        ..readWait = Completer<void>()
+        ..readWaitOnCall = 2
+        ..failReadOnCall = 2;
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': _serverVocabularySource(),
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-summary')),
+      );
+      expect(reader.reads, 1);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pump();
+      expect(reader.reads, 2);
+      expect(reader.queries[1].cursor, isNotNull);
+      expect(
+        reader.queries[1].cursor?.clientEventId,
+        'a3000000-0000-4000-8000-000000000020',
+      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsOneWidget);
+
+      harness.access.change(account.other);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsNothing);
+
+      // Returning to the same owner UUID creates a fresh view and cursor.
+      harness.access.change(account.owner);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-load-server-quiz')),
+        findsOneWidget,
+      );
+      expect(reader.reads, 2);
+
+      // Load a fresh page for the replacement A before releasing old A's error.
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-summary')),
+      );
+      expect(reader.reads, 3);
+      expect(reader.queries[2].cursor, isNull);
+      expect(curriculum.calls, [
+        'vocabulary_reading:N5',
+        'vocabulary_reading:N5',
+      ]);
+
+      reader.readWait!.complete();
+      await tester.pumpAndSettle();
+
+      // The retired continuation failure cannot poison the new A page or
+      // change its retry label.
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('progress-server-quiz-more-error')),
+        findsNothing,
+      );
+      expect(find.text('Thử tải trang tiếp theo'), findsNothing);
+      expect(find.text('Tải thêm biên nhận'), findsOneWidget);
+      expect(find.textContaining('PRIVATE SERVER HISTORY'), findsNothing);
+      expect(reader.reads, 3);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'server receipt read failure is redacted and manually retryable',
     (tester) async {
       final harness = Harness();
