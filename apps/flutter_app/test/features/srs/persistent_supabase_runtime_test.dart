@@ -1818,6 +1818,93 @@ void main() {
   );
 
   test(
+    'late same-owner profile response cannot replace a newer session generation',
+    () async {
+      profileWait = Completer<http.Response>();
+      await runtime.start();
+
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_A1_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForCondition(
+        () => profileWasRequested,
+        reason: 'User A1 did not reach its held own-profile request',
+      );
+
+      final lateA1Profile = profileWait!;
+      profileWait = null;
+      List<http.Request> profileRequests() => requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      expect(runtime.account.state.phase, AccountPhase.loadingProfile);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, 'TEST_ONLY_A1_REFRESH');
+      expect(profileRequests(), hasLength(1));
+      expect(
+        profileRequests().single.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
+      );
+
+      await runtime.account.signOut().timeout(const Duration(seconds: 5));
+      expect(runtime.account.state.phase, AccountPhase.signedOut);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(backend.secret, isNull);
+
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_A2_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final a2Session = runtime.persistence.currentSession;
+      final a2ReadySession = runtime.account.readySession;
+      final a2Runtime = runtime.account.readyRuntime;
+      expect(a2Session?.userId, wire.a);
+      expect(a2ReadySession, isNotNull);
+      expect(a2Runtime, isNotNull);
+      expect(runtime.account.state.profile?.displayName, '学習者');
+      expect(backend.secret, 'TEST_ONLY_A2_REFRESH');
+      expect(backend.operations, ['read', 'write', 'clear', 'write']);
+      expect(profileRequests(), hasLength(2));
+      expect(
+        profileRequests().last.headers['authorization'],
+        'Bearer ${wire.token(wire.a, wire.sid2, now)}',
+      );
+
+      profileResponseWasReturned = false;
+      final staleA1Profile = profile.profile(wire.a)
+        ..['display_name'] = 'TEST_ONLY_STALE_A1_PROFILE';
+      lateA1Profile.complete(
+        http.Response(
+          jsonEncode(staleA1Profile),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await waitForCondition(
+        () => profileResponseWasReturned,
+        reason: 'stale same-owner User A1 profile did not drain',
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(runtime.account.state.phase, AccountPhase.ready);
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(runtime.account.state.profile?.displayName, '学習者');
+      expect(identical(runtime.persistence.currentSession, a2Session), isTrue);
+      expect(identical(runtime.account.readySession, a2ReadySession), isTrue);
+      expect(identical(runtime.account.readyRuntime, a2Runtime), isTrue);
+      expect(backend.secret, 'TEST_ONLY_A2_REFRESH');
+      expect(profileRequests(), hasLength(2));
+    },
+  );
+  test(
     'configured host offers explicit login after rejected restore and clears before password auth',
     () async {
       backend.secret = 'TEST_ONLY_SAVED_SDK';

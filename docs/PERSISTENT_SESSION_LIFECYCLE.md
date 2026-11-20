@@ -1205,3 +1205,21 @@ This is a deterministic TEST ONLY Auth HTTP/JWT fixture around the production
 Windows Credential Manager bridge and native journal. It is stronger OS-boundary
 coverage than the separate in-memory late-profile test, but is not hosted learner
 identity, deployed RLS/PostgREST, physical multi-device or Personal Alpha proof.
+
+
+## Same-owner reauthentication uses a new captured session generation
+
+The pinned-Supabase-SDK regression `late same-owner profile response cannot
+replace a newer session generation` holds User A1's `ensure_profile` response,
+logs out and confirms the old refresh secret is cleared, then signs the same
+verified user in again under a different Auth `session_id`. The A2 refresh
+secret must be persisted before A2's own-profile request. The test then releases
+A1's delayed response with the same profile owner ID but a deliberately different
+display name. A2's accepted profile, captured `ReviewSession`, ready study
+runtime and vault secret must remain unchanged.
+
+This distinguishes a new Auth session generation from a mere user-ID equality
+check: two sessions for the same person must not allow a delayed response from
+the earlier session to settle or overwrite the newer readiness state. This is
+TEST ONLY pinned-SDK/MockClient/in-memory-vault evidence, not hosted learner
+identity, deployed PostgREST/RLS or Personal Alpha proof.
