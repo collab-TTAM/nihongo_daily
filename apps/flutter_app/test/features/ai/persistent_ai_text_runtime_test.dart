@@ -744,6 +744,216 @@ void main() {
     },
   );
 
+  http.StreamedResponse normalCommandReceipt(
+    PendingConversationCommandEnvelope command,
+    Object? response, {
+    bool unknown = false,
+  }) => http.StreamedResponse(
+    Stream.value(
+      utf8.encode(
+        jsonEncode(
+          unknown
+              ? []
+              : [
+                  {
+                    'user_id': wire.a,
+                    'operation': command.reference.operation.wireName,
+                    'client_event_id': command.reference.clientEventId,
+                    'request_json':
+                        command.turn?.toJson() ?? command.finish!.toJson(),
+                    'status': 'COMPLETED',
+                    'response_json': response,
+                  },
+                ],
+        ),
+      ),
+    ),
+    200,
+    headers: {'content-type': 'application/json'},
+  );
+
+  test(
+    'owned SDK normal start turn finish each require exact receipt proof consumption',
+    () async {
+      final p = await normalOwnedCompletion();
+      expect(
+        await runtime.acknowledgePublishedConversationCompletion(p.handle),
+        isTrue,
+      );
+      final reader = runtime.createConversationReceiptLookup()!;
+      final turn = ConversationTurnRequest.fromJson(
+        fixtures['conversation_turn_request'],
+      );
+      final finish = FinishConversationRequest.fromJson(
+        fixtures['finish_conversation_request'],
+      );
+      final commands = [
+        PendingConversationCommandEnvelope.fromTurn(
+          projectUrl: wire.origin,
+          ownerId: wire.a,
+          request: turn,
+        ),
+        PendingConversationCommandEnvelope.fromFinish(
+          projectUrl: wire.origin,
+          ownerId: wire.a,
+          request: finish,
+        ),
+      ];
+      for (final command in commands) {
+        final op = command.reference.operation.wireName;
+        final response = command.turn != null
+            ? timelineTurnResponse()
+            : fixtures['finish_conversation_response'];
+        aiHttp.onSend = (r) async {
+          expect(r.method, 'POST');
+          expect(r.url.origin, wire.origin);
+          expect(r.url.path, '/functions/v1/$op');
+          expect(
+            r.headers['authorization'],
+            'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+          );
+          expect(
+            jsonDecode((r as http.Request).body),
+            command.turn?.toJson() ?? command.finish!.toJson(),
+          );
+          return http.StreamedResponse(
+            Stream.value(utf8.encode(jsonEncode(response))),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        };
+        if (command.turn != null) {
+          await p.flow.turn(turn);
+        } else {
+          await p.flow.finish(finish);
+        }
+        final published = p.flow.snapshot;
+        final sends = aiHttp.requests.length;
+        expect(p.receipts.value, command.reference.encode());
+        final storage = List<String>.from(p.receipts.calls);
+        aiHttp.onSend = (r) async {
+          expect(r.method, 'GET');
+          expect(r.url.origin, wire.origin);
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          expect(
+            r.headers['authorization'],
+            'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+          );
+          return normalCommandReceipt(command, response);
+        };
+        final completed = (await reader.lookupCompletion(command))!;
+        expect(p.receipts.calls, storage); // Lookup does not clear or claim.
+        expect(p.receipts.value, command.reference.encode());
+        expect(
+          await runtime.acknowledgePublishedConversationCompletion(completed),
+          isTrue,
+        );
+        expect(p.receipts.value, isNull);
+        expect(p.flow.snapshot, same(published));
+        expect(runtime.createAiConversationSession(), same(p.flow));
+        final cleared = List<String>.from(p.receipts.calls);
+        if (command.turn != null) {
+          await p.flow.turn(turn);
+        } else {
+          await p.flow.finish(finish);
+        }
+        expect(aiHttp.requests, hasLength(sends + 1)); // Only the receipt GET.
+        expect(p.receipts.calls, cleared);
+        expect(p.flow.snapshot, same(published));
+      }
+      expect(p.flow.snapshot.phase, ConversationSessionPhase.finished);
+      expect(p.flow.snapshot.messages, hasLength(2));
+      expect(
+        p.flow.snapshot.summary!.toJson(),
+        fixtures['finish_conversation_response'],
+      );
+      expect(p.receipts.calls.where((c) => c == 'write'), hasLength(3));
+      expect(p.receipts.calls.where((c) => c == 'clear'), hasLength(3));
+      expect(aiHttp.requests, hasLength(6));
+      expect(await vault.readRefreshToken(), secret);
+    },
+  );
+
+  for (final kind in ['unknown', 'changed-result']) {
+    test(
+      'owned SDK normal turn receipt $kind preserves fence without release',
+      () async {
+        final p = await normalOwnedCompletion();
+        expect(
+          await runtime.acknowledgePublishedConversationCompletion(p.handle),
+          isTrue,
+        );
+        final request = ConversationTurnRequest.fromJson(
+          fixtures['conversation_turn_request'],
+        );
+        aiHttp.onSend = (r) async {
+          expect(r.method, 'POST');
+          expect(r.url.origin, wire.origin);
+          expect(r.url.path, '/functions/v1/conversation_turn');
+          expect(jsonDecode((r as http.Request).body), request.toJson());
+          return timelineTurnAnswer();
+        };
+        await p.flow.turn(request);
+        final published = p.flow.snapshot;
+        final command = PendingConversationCommandEnvelope.fromTurn(
+          projectUrl: wire.origin,
+          ownerId: wire.a,
+          request: request,
+        );
+        final response = timelineTurnResponse();
+        (response['assistant_message']! as Map<String, Object?>)['text_ja'] =
+            '別の応答';
+        aiHttp.onSend = (r) async {
+          expect(r.method, 'GET');
+          expect(r.url.origin, wire.origin);
+          expect(r.url.path, '/rest/v1/operation_receipts');
+          return normalCommandReceipt(
+            command,
+            response,
+            unknown: kind == 'unknown',
+          );
+        };
+        final reader = runtime.createConversationReceiptLookup()!;
+        final storage = List<String>.from(p.receipts.calls);
+        final completed = await reader.lookupCompletion(command);
+        if (kind == 'unknown') {
+          expect(completed, isNull);
+          expect(
+            await runtime.acknowledgePublishedConversationCompletion(p.handle),
+            isFalse,
+          );
+        } else {
+          expect(completed, isNotNull);
+          expect(
+            await runtime.acknowledgePublishedConversationCompletion(
+              completed!,
+            ),
+            isFalse,
+          );
+        }
+        expect(p.receipts.value, command.reference.encode());
+        expect(p.receipts.calls, storage);
+        expect(p.flow.snapshot, same(published));
+        await expectLater(
+          p.flow.finish(
+            FinishConversationRequest.fromJson(
+              fixtures['finish_conversation_request'],
+            ),
+          ),
+          throwsA(aiCode(AiTextErrorCode.syncConflict)),
+        );
+        expect(p.receipts.value, command.reference.encode());
+        expect(p.receipts.calls, storage);
+        expect(
+          aiHttp.requests,
+          hasLength(4),
+        ); // start POST/GET + turn POST/GET only.
+        expect(p.flow.snapshot, same(published));
+        expect(await vault.readRefreshToken(), secret);
+      },
+    );
+  }
+
   for (final action in ['success', 'failure', 'close', 'logout', 'refresh']) {
     test('owned SDK normal acknowledgement held clear $action', () async {
       final p = await normalOwnedCompletion();

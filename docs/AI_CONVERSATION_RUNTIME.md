@@ -591,3 +591,26 @@ All held futures drain in finally. The backend first-write entry signal is now
 idempotent; subsequent writes still execute. Local component verification excludes
 these six SDK cases; exact-head Flutter CI must execute them. Native OS/hosted
 learner/JWT/RLS/provider and all14 release groups remain separate acceptance gates.
+
+
+## Full normal conversation SDK acceptance — 2026-11-20
+
+Three additional TEST ONLY SDK/HTTP cases exercise the same persistent runtime
+through normal start, turn and finish. Each operation keeps its pending reference
+until an authenticated exact-original completed receipt is read and the explicit
+host acknowledgement confirms clear and consumes proof. Read-only receipt lookup
+must perform no store I/O. Local same-event replay preserves the identical view,
+performs no HTTP/store effects and cannot roll back later messages. The complete
+cycle requires exactly three mutation POSTs, three receipt GETs, three writes and
+three conditional clears, unchanged refresh secret, two assistant messages and the
+exact finish summary. Turn HTTP and receipt use the same fresh timeline response;
+frozen standalone examples are not substituted for valid message order/identity.
+
+UNKNOWN turn receipt returns no completion; a completed receipt with changed
+assistant text still binds to the full original but cannot acknowledge the local
+accepted result. Both cases must preserve metadata/transcript and all store calls,
+and a subsequent finish must remain fenced with no extra HTTP. The same-owner,
+fixed-origin endpoint and original-body checks remain in the SDK transport/tests.
+These authored cases require exact-head Flutter CI; local formatting/QA are not
+execution of them. No production/default/collection/provider behavior changes,
+no native secure-store or hosted learner/release proof follows.
