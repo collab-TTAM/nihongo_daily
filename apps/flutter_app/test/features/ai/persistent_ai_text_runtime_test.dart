@@ -83,7 +83,7 @@ final class _ReceiptBackend implements SecureConversationReceiptBackend {
 
   @override
   Future<void> write(String target, String encoded) async {
-    entered.complete();
+    if (!entered.isCompleted) entered.complete();
     await writeWait?.future;
     if (failBeforeWrite) throw StateError('TEST_ONLY_PRIVATE_RECEIPT_WRITE');
     value = encoded;
@@ -654,6 +654,181 @@ void main() {
     200,
     headers: {'content-type': 'application/json'},
   );
+
+  Future<
+    ({
+      CapturedConversationCompletion handle,
+      CapturedConversationSession flow,
+      _ReceiptBackend receipts,
+    })
+  >
+  normalOwnedCompletion() async {
+    final receipts = await openReceiptRuntime();
+    await runtime.start();
+    await login();
+    final flow = runtime.createAiConversationSession()!;
+    final request = StartConversationRequest.fromJson(
+      fixtures['start_conversation_request'],
+    );
+    aiHttp.onSend = (r) async {
+      expect(r.method, 'POST');
+      expect(r.url.origin, wire.origin);
+      expect(r.url.path, '/functions/v1/start_conversation');
+      expect(jsonDecode((r as http.Request).body), request.toJson());
+      return answer('start_conversation');
+    };
+    await flow.start(request);
+    expect(receipts.value, receiptReference().encode());
+    expect(aiHttp.requests, hasLength(1));
+    aiHttp.onSend = (r) async {
+      expect(r.method, 'GET');
+      expect(r.url.origin, wire.origin);
+      expect(r.url.path, '/rest/v1/operation_receipts');
+      expect(
+        r.headers['authorization'],
+        'Bearer ${wire.token(user, wire.sid1, now, generation: generation)}',
+      );
+      return originalAnswer('start_conversation', 'COMPLETED');
+    };
+    final reader = runtime.createConversationReceiptLookup()!;
+    final handle = (await reader.lookupCompletion(protectedCommand()))!;
+    return (handle: handle, flow: flow, receipts: receipts);
+  }
+
+  test(
+    'owned SDK acknowledges normal success and permits exactly next turn',
+    () async {
+      final p = await normalOwnedCompletion();
+      final published = p.flow.snapshot;
+      expect(
+        await runtime.acknowledgePublishedConversationCompletion(p.handle),
+        isTrue,
+      );
+      expect(p.receipts.value, isNull);
+      expect(p.flow.snapshot, same(published));
+      expect(runtime.createAiConversationSession(), same(p.flow));
+      expect(
+        aiHttp.requests,
+        hasLength(2),
+      ); // POST start + authenticated receipt GET.
+      final calls = List<String>.from(p.receipts.calls);
+      await p.flow.start(
+        StartConversationRequest.fromJson(
+          fixtures['start_conversation_request'],
+        ),
+      );
+      expect(p.flow.snapshot, same(published));
+      expect(aiHttp.requests, hasLength(2));
+      expect(p.receipts.calls, calls);
+      aiHttp.onSend = (r) async {
+        expect(r.method, 'POST');
+        expect(r.url.path, '/functions/v1/conversation_turn');
+        expect(
+          jsonDecode((r as http.Request).body),
+          fixtures['conversation_turn_request'],
+        );
+        return timelineTurnAnswer();
+      };
+      await p.flow.turn(
+        ConversationTurnRequest.fromJson(fixtures['conversation_turn_request']),
+      );
+      expect(p.flow.snapshot.messages, hasLength(2));
+      expect(aiHttp.requests, hasLength(3));
+      expect(p.receipts.value, originalReference('conversation_turn').encode());
+      expect(
+        await runtime.acknowledgePublishedConversationCompletion(p.handle),
+        isFalse,
+      );
+      expect(p.receipts.value, originalReference('conversation_turn').encode());
+      expect(await vault.readRefreshToken(), secret);
+    },
+  );
+
+  for (final action in ['success', 'failure', 'close', 'logout', 'refresh']) {
+    test('owned SDK normal acknowledgement held clear $action', () async {
+      final p = await normalOwnedCompletion();
+      final before = p.flow.snapshot;
+      final pending = p.receipts.value;
+      final held = Completer<void>();
+      p.receipts.clearWait = held;
+      p.receipts.failClear = action == 'failure';
+      final acknowledging = runtime.acknowledgePublishedConversationCompletion(
+        p.handle,
+      );
+      final observed = action == 'failure'
+          ? expectLater(
+              acknowledging,
+              throwsA(aiCode(AiTextErrorCode.internalError)),
+            )
+          : expectLater(acknowledging, completion(action == 'success'));
+      Future<void>? ending;
+      try {
+        await p.receipts.clearEntered.future;
+        expect(p.receipts.value, pending);
+        expect(p.flow.snapshot, same(before));
+        expect(
+          await runtime.acknowledgePublishedConversationCompletion(p.handle),
+          isFalse,
+        );
+        await expectLater(
+          p.flow.turn(
+            ConversationTurnRequest.fromJson(
+              fixtures['conversation_turn_request'],
+            ),
+          ),
+          throwsA(isA<AiTextRequestPending>()),
+        );
+        if (action == 'refresh') {
+          generation++;
+          secret = 'TEST_ONLY_NORMAL_ACK_REFRESH';
+        }
+        if (action == 'close') ending = runtime.close();
+        if (action == 'logout') ending = runtime.account.signOut();
+        if (action == 'refresh') ending = runtime.refresh();
+        if (ending != null) {
+          var settled = false;
+          unawaited(ending.then((_) => settled = true));
+          expect(runtime.createAiConversationSession(), isNull);
+          await Future<void>.delayed(Duration.zero);
+          if (action != 'refresh') expect(settled, isFalse);
+        }
+        expect(aiHttp.requests, hasLength(2));
+        held.complete();
+        await observed;
+        await ending;
+        expect(p.receipts.value, action == 'failure' ? pending : isNull);
+        if (action == 'success') {
+          expect(p.flow.snapshot, same(before));
+        } else {
+          expect(p.flow.isCurrent, isFalse);
+        }
+        expect(
+          await runtime.acknowledgePublishedConversationCompletion(p.handle),
+          isFalse,
+        );
+        expect(aiHttp.requests, hasLength(2));
+        if (action == 'logout') {
+          expect(await vault.readRefreshToken(), isNull);
+          user = wire.b;
+          generation++;
+          secret = 'TEST_ONLY_B_AFTER_NORMAL_ACK';
+          await login();
+          expect(runtime.account.readySession!.userId, wire.b);
+          expect(await vault.readRefreshToken(), secret);
+          expect(runtime.createAiConversationSession(), isNull);
+          expect(
+            await runtime.acknowledgePublishedConversationCompletion(p.handle),
+            isFalse,
+          );
+          expect(aiHttp.requests, hasLength(2));
+        }
+      } finally {
+        if (!held.isCompleted) held.complete();
+        await observed;
+        await ending;
+      }
+    });
+  }
 
   test('owned SDK release is explicit and sends one next turn only', () async {
     final p = await ownedCompletion();

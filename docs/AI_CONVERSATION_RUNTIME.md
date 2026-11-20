@@ -564,3 +564,30 @@ and the next turn through both receipt owner and account wrapper. This is not
 hosted learner/provider/voice/native durability evidence. No default UI, automatic
 HTTP acknowledgement, Auth strategy/provider, API/schema/RLS, spend or deployment
 was changed; default AI remains off and #17 remains Draft pending human/live gates.
+
+
+## Owned persistent SDK host forwarding — 2026-11-20
+
+PersistentSupabaseRuntime now exposes explicit
+acknowledgePublishedConversationCompletion(completion). It borrows the SAME
+private owned receipt store and existing AiTextRuntimeOwner; callers cannot supply
+a store, project, Auth hint or replacement lease. A private exhaustive action enum
+shares the existing apply/release pre/post guards: configured conversation owner,
+store/owner presence, ready runtime and exact Auth/generation, close/logout/refresh,
+terminal and actual-drain barriers. Existing uncertain apply/release semantics stay
+separate. The new method delegates normal-success clear AND proof consumption to
+the existing owner, then checks the same captured host generation after await.
+No automatic acknowledgement, new SDK/storage owner, learner/default binding,
+provider activation or durable payload storage is introduced.
+
+Six new TEST ONLY pinned SDK/HTTP cases require normal accepted start plus an
+authenticated original-bound receipt lookup, same snapshot/store/lease, local replay
+without redispatch and one subsequent turn only after acknowledgement. Held clear
+excludes reentry/commands and preserves the prior metadata/view; success or fixed
+clear failure is checked. Close/logout must await actual clear, refresh must fence
+replacement capabilities, and late completion cannot grant acknowledgement. Logout
+then B login must preserve B's secret and reject A's old handle without AI HTTP.
+All held futures drain in finally. The backend first-write entry signal is now
+idempotent; subsequent writes still execute. Local component verification excludes
+these six SDK cases; exact-head Flutter CI must execute them. Native OS/hosted
+learner/JWT/RLS/provider and all14 release groups remain separate acceptance gates.

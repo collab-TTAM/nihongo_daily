@@ -41,6 +41,8 @@ import 'session_refresh_scheduler.dart';
 import 'account_session_notice.dart';
 import 'account_session_refresh.dart';
 
+enum _ConversationCompletionAction { apply, release, acknowledge }
+
 /// Exclusively owns an SDK client with auto-refresh disabled and no Session JSON
 /// persistence. Caller installs [account] only after [start] settles. The default
 /// application never invokes this assembly or supplies project configuration.
@@ -430,16 +432,31 @@ final class PersistentSupabaseRuntime
   /// No learner configuration, implicit read/dispatch or default UI activation.
   Future<bool> applyRetainedConversationCompletion(
     CapturedConversationCompletion completion,
-  ) => _completeRetainedConversation(completion, release: false);
+  ) => _completeRetainedConversation(
+    completion,
+    action: _ConversationCompletionAction.apply,
+  );
 
   /// Explicit proof consumption on the SAME owned store/lease, after apply.
   Future<bool> releaseAppliedConversationCompletion(
     CapturedConversationCompletion completion,
-  ) => _completeRetainedConversation(completion, release: true);
+  ) => _completeRetainedConversation(
+    completion,
+    action: _ConversationCompletionAction.release,
+  );
+
+  /// Explicit normal-success clear/proof consumption on the existing owned lease.
+  /// No automatic HTTP acknowledgement, new store or learner/default binding.
+  Future<bool> acknowledgePublishedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) => _completeRetainedConversation(
+    completion,
+    action: _ConversationCompletionAction.acknowledge,
+  );
 
   Future<bool> _completeRetainedConversation(
     CapturedConversationCompletion completion, {
-    required bool release,
+    required _ConversationCompletionAction action,
   }) async {
     final store = _ownedConversationReceiptStore;
     if (!_aiConversationEnabled ||
@@ -462,15 +479,17 @@ final class PersistentSupabaseRuntime
         session.userId != store.scope.ownerId) {
       return false;
     }
-    final applied = release
-        ? await _aiOwner.releaseAppliedConversationCompletion(
-            completion,
-            store: store,
-          )
-        : await _aiOwner.applyRetainedConversationCompletion(
-            completion,
-            store: store,
-          );
+    final applied = await switch (action) {
+      _ConversationCompletionAction.apply =>
+        _aiOwner.applyRetainedConversationCompletion(completion, store: store),
+      _ConversationCompletionAction.release =>
+        _aiOwner.releaseAppliedConversationCompletion(completion, store: store),
+      _ConversationCompletionAction.acknowledge =>
+        _aiOwner.acknowledgePublishedConversationCompletion(
+          completion,
+          store: store,
+        ),
+    };
     if (_closing != null ||
         _receiptLogout != null ||
         _commandRefresh != null ||
