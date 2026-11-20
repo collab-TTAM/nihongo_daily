@@ -15,6 +15,7 @@ import 'package:nihongo_daily/features/ai/data/captured_ai_text_repository.dart'
 import 'package:nihongo_daily/features/ai/data/conversation_receipt_store.dart';
 import 'package:nihongo_daily/features/ai/data/receipt_guarded_ai_transport.dart';
 import 'package:nihongo_daily/features/ai/domain/conversation_receipt_reference.dart';
+import 'package:nihongo_daily/features/ai/domain/conversation_requests.dart';
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
@@ -23,6 +24,8 @@ import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import '../srs/session_lifecycle_fixtures.dart' as lifecycle;
 import '../srs/own_profile_fixtures.dart' as profiles;
 import 'receipt_guarded_ai_transport_test.dart' as ports;
+import 'captured_conversation_session_test.dart' as f;
+import 'package:nihongo_daily/features/ai/domain/pending_conversation_command_envelope.dart';
 
 final class _Backend implements SecureConversationReceiptBackend {
   Object? value;
@@ -59,6 +62,7 @@ final class _ReceiptReader
     implements
         OwnedAiTextTransport,
         ConversationReceiptReadPort,
+        ConversationOriginalReceiptReadPort,
         ConversationMutationTransport,
         ConversationScenarioReadPort {
   _ReceiptReader(this.reply);
@@ -90,6 +94,24 @@ final class _ReceiptReader
     reads++;
     return pending = reply(reference);
   }
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupStartReceipt(
+    ConversationReceiptReference reference,
+    StartConversationRequest original,
+  ) => lookupReceipt(reference);
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupTurnReceipt(
+    ConversationReceiptReference reference,
+    ConversationTurnRequest original,
+  ) => lookupReceipt(reference);
+
+  @override
+  Future<ConversationReceiptSnapshot> lookupFinishReceipt(
+    ConversationReceiptReference reference,
+    FinishConversationRequest original,
+  ) => lookupReceipt(reference);
 
   @override
   Future<Object?> invoke({
@@ -196,6 +218,7 @@ void main() {
               File('../../contracts/v0.1/fixtures.json').readAsStringSync(),
             )
             as Map<String, Object?>;
+    f.fixtures = fixtures;
   });
   setUp(() {
     sdk = lifecycle.MemorySdk();
@@ -824,4 +847,58 @@ void main() {
       },
     );
   }
+  test(
+    'account owner normal-success acknowledgement clears and releases same lease',
+    () async {
+      final command = PendingConversationCommandEnvelope.fromStart(
+        projectUrl: ports.scope.projectOrigin,
+        ownerId: ports.owner,
+        request: ports.start,
+      );
+      final response = f.response('start_conversation');
+      final receiptReader = _ReceiptReader(
+        (reference) async => ConversationReceiptSnapshot.fromRows(reference, [
+          {
+            'user_id': ports.owner,
+            'operation': command.reference.operation.wireName,
+            'client_event_id': command.reference.clientEventId,
+            'status': 'COMPLETED',
+            'response_json': response,
+          },
+        ]),
+      );
+      receiptReader.delegate.wire = Completer<Object?>()..complete(response);
+      receiptReaderFactory = () => receiptReader;
+      await login();
+      final session = host.createAiConversationSession()!;
+      final reader = host.createConversationReceiptLookup()!;
+      await session.start(ports.start);
+      expect(receiptReader.delegate.sends, 1);
+      final completion = await reader.lookupCompletion(command);
+      expect(completion, isNotNull);
+      final published = session.snapshot;
+      expect(
+        await host.acknowledgePublishedConversationCompletion(completion!),
+        isTrue,
+      );
+      expect(session.snapshot, same(published));
+      expect(backend.value, isNull);
+      receiptReader.delegate.wire = Completer<Object?>()
+        ..complete(
+          f.response(
+            'conversation_turn',
+            sequence: 2,
+            message: f.message2,
+          ),
+        );
+      await session.turn(f.turn(event: f.otherEvent));
+      expect(receiptReader.delegate.sends, 2);
+      expect(
+        ConversationReceiptReference.decode(backend.value! as String)
+            .clientEventId,
+        f.otherEvent,
+      );
+    },
+  );
+
 }

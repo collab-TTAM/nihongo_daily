@@ -190,6 +190,15 @@ final class AccountReceiptAiRuntime<T extends Object>
     return _owner.releaseAppliedConversationCompletion(completion);
   }
 
+  /// Explicit normal-success acknowledgement through the same ready account,
+  /// receipt reader, conversation, transport and owner-held store.
+  Future<bool> acknowledgePublishedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (!_prepare()) return Future.value(false);
+    return _owner.acknowledgePublishedConversationCompletion(completion);
+  }
+
   /// Preserve metadata, drain actual work and release this partition. Borrowed
   /// account/Auth remain owned by host. Cannot bypass a failed explicit clear.
   Future<void> close() => _stop(_owner.close);

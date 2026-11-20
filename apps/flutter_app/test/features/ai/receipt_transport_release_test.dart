@@ -284,6 +284,88 @@ void main() {
     },
   );
 
+  test(
+    'owner acknowledges normal-success completion on the same retained lease',
+    () async {
+      final auth = f.Auth();
+      final command = h.command(h.operations.first);
+      final backend = h.Backend(null);
+      final store = ConversationReceiptStore(
+        scope: command.reference.scope,
+        backend: backend,
+      );
+      final inner = Inner();
+      final owner = ReceiptAiRuntimeOwner(
+        store: store,
+        createTransport: ({required auth, required isReady, required store}) =>
+            ReceiptGuardedAiTransport(
+              inner: inner,
+              store: store,
+              auth: auth,
+              capturedSession: auth.currentSession!,
+              isReady: isReady,
+            ),
+      );
+      addTearDown(owner.close);
+      final generation = AiTextGeneration();
+      bool ready() => true;
+      expect(
+        owner.runtime.acquire(
+          auth: auth,
+          generation: generation,
+          isReady: ready,
+        ),
+        isNotNull,
+      );
+      final flow = owner.runtime.acquireConversation(
+        auth: auth,
+        generation: generation,
+        isReady: ready,
+      )!;
+      final reader = owner.runtime.acquireReceiptLookup(
+        auth: auth,
+        generation: generation,
+        isReady: ready,
+      )!;
+      await flow.start(command.start!);
+      final published = flow.snapshot;
+      inner.receipt = ConversationReceiptSnapshot.fromRows(
+        command.reference,
+        [
+          {
+            'user_id': f.owner,
+            'operation': command.reference.operation.wireName,
+            'client_event_id': command.reference.clientEventId,
+            'status': 'COMPLETED',
+            'response_json': f.response('start_conversation'),
+          },
+        ],
+      );
+      final completion = await reader.lookupCompletion(command);
+      expect(completion, isNotNull);
+      expect(
+        flow.inspectPublishedCompletion(completion!, store: store),
+        same(published),
+      );
+      expect(
+        await owner.acknowledgePublishedConversationCompletion(completion),
+        isTrue,
+      );
+      expect(backend.calls, ['read', 'read', 'write', 'read', 'clear', 'read']);
+      expect(backend.value, isNull);
+      expect(flow.snapshot, same(published));
+      expect(flow.captureAppliedCompletion(completion, store: store), isNull);
+      await flow.start(command.start!); // Exact replay stays local and unchanged.
+      expect(flow.snapshot, same(published));
+      expect(inner.sends, 1);
+      final next = f.turn(event: f.otherEvent);
+      await flow.turn(next);
+      expect(inner.sends, 2);
+      expect(inner.sent, next.toJson());
+      expect(backend.value, isNotNull);
+    },
+  );
+
   for (final op in h.operations) {
     for (final changed in [false, true]) {
       test(

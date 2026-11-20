@@ -106,3 +106,25 @@ confirmed conditional clear and proof mint on the same owned lease, with exact
 snapshot identity revalidated after actual storage completion; keep existing
 uncertain recovery application/release separate. Normal-success acknowledgement,
 all14 hosted release groups and live/provider/voice/human gates remain pending.
+
+
+## Normal-success acknowledgement — 2026-11-20
+
+`acknowledgePublishedCompletion(completion, store)` is a separate explicit
+host action after `inspectPublishedCompletion`. It reserves the session,
+asks the private mutation lane to revalidate the exact accepted slot/original and
+conditionally clear the matching owner receipt, then rechecks the identical
+completion pair, captured session/reader, and the exact same immutable snapshot
+identity after storage completes. A private `CapturedConversationApplication`
+proof is minted only after all post-I/O checks pass; the read-only snapshot itself
+never authorizes clear, release or another request.
+
+`AiTextRuntimeOwner.acknowledgePublishedConversationCompletion`
+keeps the same owner lease reserved through clear and proof consumption, then
+releases the exact retained dispatch gate. `ReceiptAiRuntimeOwner` and
+`AccountReceiptAiRuntime` expose the action for trusted host composition only.
+Ambiguous clear or failed proof consumption retires the generation; exact replay
+remains local and a new event is allowed only after same-lease proof consumption.
+TEST ONLY cases cover all three operations, stale snapshot, held A-B-A, clear
+failure and owner/account-wrapper progression. No learner UI/default/provider
+binding is added; hosted, live provider, voice and native persistence gates remain.

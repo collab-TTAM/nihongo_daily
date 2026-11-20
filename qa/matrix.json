@@ -4932,6 +4932,46 @@
         13
       ],
       "ci_job": "flutter"
+    },
+    {
+      "id": "ai-conversation-normal-success-acknowledgement",
+      "status": "automated-baseline",
+      "scope": "Explicit normal-success acknowledgement for the already-published conversation snapshot: the exact captured owner/reader/session/receipt-store lease conditionally clears the completed receipt, revalidates snapshot identity after storage, mints a single-use application proof and consumes it on the same retained transport before allowing one next mutation.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/conversation_mutation_lane.dart",
+          "contains": "Future<bool> acknowledgePublishedCompletion("
+        },
+        {
+          "path": "apps/flutter_app/lib/features/ai/data/captured_conversation_session.dart",
+          "contains": "Future<CapturedConversationApplication?> acknowledgePublishedCompletion("
+        },
+        {
+          "path": "apps/flutter_app/lib/features/ai/application/ai_text_runtime_owner.dart",
+          "contains": "Future<bool> acknowledgePublishedConversationCompletion("
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/published_completion_inspection_test.dart",
+          "contains": "confirmed clear mints proof only for exact published snapshot"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/receipt_transport_release_test.dart",
+          "contains": "owner acknowledges normal-success completion on the same retained lease"
+        },
+        {
+          "path": "apps/flutter_app/test/features/ai/account_receipt_ai_runtime_test.dart",
+          "contains": "account owner normal-success acknowledgement clears and releases same lease"
+        }
+      ],
+      "issues": [
+        17
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/ai/published_completion_inspection_test.dart test/features/ai/receipt_transport_release_test.dart test/features/ai/account_receipt_ai_runtime_test.dart; then flutter analyze, flutter test and inspect every exact-head CI job/step.",
+      "limitation": "TEST ONLY injected Auth/reader/HTTP/storage and owner components. No hosted learner, signed-JWT/RLS, live provider, voice, native secure-store durability or deployed SDK proof. The method is explicit host-only; default AI remains off and no automatic acknowledgement follows HTTP.",
+      "ci_steps": [
+        "Run flutter test"
+      ]
     }
   ],
   "findings": [

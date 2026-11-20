@@ -340,6 +340,68 @@ final class AiTextRuntimeOwner {
     }
   }
 
+  /// Normal-success path: clear the exact published receipt, mint the
+  /// snapshot-bound proof, then consume it on this same retained transport lease.
+  /// This is an explicit host action; it never runs automatically after HTTP.
+  Future<bool> acknowledgePublishedConversationCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) async {
+    if (_closed || _failed || isDraining) return false;
+    final lease = _lease;
+    final flow = lease?.conversation;
+    final reader = lease?.receipts;
+    final transport = lease?.transport;
+    if (lease == null ||
+        flow == null ||
+        reader == null ||
+        transport is! AppliedConversationCompletionReleasePort) {
+      return false;
+    }
+    final releasePort = transport as AppliedConversationCompletionReleasePort;
+    final creating = Completer<void>();
+    _creating = creating; // Covers conditional clear, proof mint and consume.
+    final epoch = _epoch;
+    bool current() =>
+        !_closed &&
+        !_failed &&
+        epoch == _epoch &&
+        identical(_lease, lease) &&
+        identical(lease.conversation, flow) &&
+        identical(lease.receipts, reader) &&
+        identical(lease.transport, releasePort);
+    try {
+      if (completion.captureForReader(reader) == null ||
+          !flow.isCurrent ||
+          !current()) {
+        return false;
+      }
+      final application = await flow.acknowledgePublishedCompletion(
+        completion,
+        store: store,
+      );
+      check();
+      if (application == null || !current()) return false;
+      if (!flow.isCurrent || !current()) return false;
+      final released = releasePort.releaseAppliedCompletion(application);
+      check(); // Includes post-consumption Auth/reader/transport currentness.
+      if (!current()) return false;
+      if (!released) {
+        // The receipt is already cleared; a failed proof consume cannot be retried.
+        invalidate();
+        return false;
+      }
+      _notify();
+      return true;
+    } on Object {
+      invalidate();
+      throw const AiTextFailure(AiTextErrorCode.internalError);
+    } finally {
+      _creating = null;
+      creating.complete();
+    }
+  }
+
   CapturedAiTextRepository? acquire({
     required ReviewAuth auth,
     required AiTextGeneration generation,

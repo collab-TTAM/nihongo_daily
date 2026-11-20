@@ -191,6 +191,65 @@ final class CapturedConversationSession {
     }
   }
 
+  /// Explicit normal-success acknowledgement. The read-only published view is
+  /// only a prerequisite: clear is conditional, and proof is minted only after
+  /// the same reader/session/store and exact snapshot survive storage completion.
+  Future<CapturedConversationApplication?> acknowledgePublishedCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) async {
+    if (_revoked || _executing || isCheckingAvailability) return null;
+    final before = inspectPublishedCompletion(completion, store: store);
+    if (before == null) return null;
+    _executing = true; // Fence session commands across the actual storage effect.
+    try {
+      final pair = completion.captureForAuth(_auth);
+      if (pair == null || _revoked || !identical(before, _snapshot)) {
+        return null;
+      }
+      final cleared = await _lane.acknowledgePublishedCompletion(
+        completion,
+        store: store,
+      );
+      if (!cleared) {
+        if (!_lane.isCurrent) revoke();
+        return null;
+      }
+      final after = completion.captureForAuth(_auth);
+      if (after == null ||
+          !identical(pair.command, after.command) ||
+          !identical(pair.receipt, after.receipt) ||
+          !completion.isCurrent ||
+          !isCurrent) {
+        revoke();
+        return null;
+      }
+      // No callback/await after the last external checks and before proof mint.
+      if (_revoked ||
+          _checking ||
+          _lane.isBusy ||
+          _lane.hasUnresolvedMutation ||
+          !identical(before, _snapshot) ||
+          store.phase != ConversationReceiptStorePhase.open) {
+        revoke();
+        return null;
+      }
+      final application = CapturedConversationApplication._(
+        this,
+        completion,
+        store,
+        before,
+      );
+      _application = application;
+      return application;
+    } on Object {
+      revoke();
+      rethrow;
+    } finally {
+      _executing = false;
+    }
+  }
+
   /// Validate a prospective transcript without installing it or releasing pending.
   /// A non-null preview is not authority to apply, clear, retry or send again.
   ConversationSessionSnapshot? previewRetainedCompletion(

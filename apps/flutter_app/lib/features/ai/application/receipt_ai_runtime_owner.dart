@@ -52,6 +52,17 @@ final class ReceiptAiRuntimeOwner {
     );
   }
 
+  /// Explicit normal-success acknowledgement on this owner's exact store/lease.
+  Future<bool> acknowledgePublishedConversationCompletion(
+    CapturedConversationCompletion completion,
+  ) {
+    if (_preserveChosen || _signOutChosen) return Future.value(false);
+    return runtime.acknowledgePublishedConversationCompletion(
+      completion,
+      store: _store,
+    );
+  }
+
   bool _preserveChosen = false;
   bool _signOutChosen = false;
   Future<void>? _preserving;

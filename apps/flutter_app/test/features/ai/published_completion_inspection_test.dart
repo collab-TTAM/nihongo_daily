@@ -382,4 +382,134 @@ void main() {
       expect(b.calls, isEmpty);
     });
   }
+  for (final op in h.operations) {
+    test(
+      '$op confirmed clear mints proof only for exact published snapshot',
+      () async {
+        final p = await published(op);
+        final command = h.command(op);
+        final completion = await h.completion(p.auth, command);
+        final backend = h.Backend(command.reference.encode());
+        final store = h.store(backend);
+        final before = p.flow.snapshot;
+        final sends = p.port.calls.length;
+        final application = await p.flow.acknowledgePublishedCompletion(
+          completion.handle,
+          store: store,
+        );
+        expect(application, isNotNull);
+        expect(p.flow.snapshot, same(before));
+        expect(backend.calls, ['read', 'clear', 'read']);
+        expect(backend.value, isNull);
+        expect(
+          p.flow.captureAppliedCompletion(completion.handle, store: store),
+          same(application),
+        );
+        expect(
+          application!.consumeForTransport(auth: p.auth, store: store),
+          isNotNull,
+        );
+        expect(
+          p.flow.captureAppliedCompletion(completion.handle, store: store),
+          isNull,
+        );
+        expect(p.port.calls, hasLength(sends));
+      },
+    );
+  }
+  test('stale published snapshot never clears or mints proof', () async {
+    final p = await published(h.operations.first);
+    final command = h.command(h.operations.first);
+    final completion = await h.completion(p.auth, command);
+    await p.flow.turn(f.turn());
+    final backend = h.Backend(command.reference.encode());
+    final store = h.store(backend);
+    final before = p.flow.snapshot;
+    expect(
+      await p.flow.acknowledgePublishedCompletion(
+        completion.handle,
+        store: store,
+      ),
+      isNull,
+    );
+    expect(p.flow.snapshot, same(before));
+    expect(
+      p.flow.captureAppliedCompletion(completion.handle, store: store),
+      isNull,
+    );
+    expect(backend.calls, isEmpty);
+    expect(backend.value, command.reference.encode());
+  });
+  test('A-B-A during held clear cannot mint a late proof', () async {
+    final p = await published(h.operations.first);
+    final original = p.auth.currentSession;
+    final command = h.command(h.operations.first);
+    final completion = await h.completion(p.auth, command);
+    final backend = h.Backend(command.reference.encode())
+      ..holdClear = Completer<void>();
+    final store = h.store(backend);
+    final before = p.flow.snapshot;
+    final acknowledging = p.flow.acknowledgePublishedCompletion(
+      completion.handle,
+      store: store,
+    );
+    await backend.clearEntered.future;
+    expect(p.flow.isBusy, isTrue);
+    expect(p.flow.snapshot, same(before));
+    expect(
+      p.flow.captureAppliedCompletion(completion.handle, store: store),
+      isNull,
+    );
+    p.auth.currentSession = ReviewSession(userId: f.otherEvent);
+    p.auth.currentSession = ReviewSession(userId: f.owner);
+    backend.holdClear!.complete();
+    expect(await acknowledging, isNull);
+    expect(p.flow.snapshot.phase, ConversationSessionPhase.revoked);
+    expect(p.flow.isCurrent, isFalse);
+    expect(
+      p.flow.captureAppliedCompletion(completion.handle, store: store),
+      isNull,
+    );
+    expect(backend.value, isNull);
+    expect(p.port.calls, hasLength(1));
+    p.auth.currentSession = original;
+  });
+  for (final fault in ['clear', 'silent', 'confirm-read']) {
+    test(
+      'ambiguous published $fault clear failure retires without proof',
+      () async {
+        final p = await published(h.operations.first);
+        final command = h.command(h.operations.first);
+        final completion = await h.completion(p.auth, command);
+        final backend = h.Backend(command.reference.encode())
+          ..failClear = fault == 'clear'
+          ..keepClear = fault == 'silent'
+          ..failConfirm = fault == 'confirm-read';
+        final store = h.store(backend);
+        await expectLater(
+          p.flow.acknowledgePublishedCompletion(
+            completion.handle,
+            store: store,
+          ),
+          throwsA(
+            isA<ConversationReceiptStoreFailure>().having(
+              (failure) => failure.code,
+              'fixed storage failure',
+              ConversationReceiptStoreError.unavailable,
+            ),
+          ),
+        );
+        expect(p.flow.snapshot.phase, ConversationSessionPhase.revoked);
+        expect(
+          p.flow.captureAppliedCompletion(completion.handle, store: store),
+          isNull,
+        );
+        expect(
+          backend.value,
+          fault == 'confirm-read' ? isNull : command.reference.encode(),
+        );
+        expect(p.port.calls, hasLength(1));
+      },
+    );
+  }
 }

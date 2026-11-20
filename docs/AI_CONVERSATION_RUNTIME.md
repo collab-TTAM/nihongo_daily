@@ -525,8 +525,42 @@ with the exact already-published snapshot and session event markers (see
 CAPTURED_CONVERSATION_SESSION.md). Old start/turn results after later progress,
 reconciled replay and lane success rejected by transcript validation cannot match.
 This synchronous inspection returns the same immutable view, performs no I/O and
-mints no proof. No owner/SDK/default path invokes it yet; normal-success
-acknowledgement remains incomplete. Next separately implement guarded confirmed
-clear and proof mint/consumption on the SAME owned lease, revalidating current
-snapshot identity across storage effects. Do not reuse this read result as release
-authority, infer success from metadata absence/UNKNOWN, or reimplement existing uncertain recovery.
+mints no proof. Normal-success acknowledgement is now a separate explicit host
+action: the mutation lane rechecks the exact original and typed accepted result,
+then conditionally clears and confirms the same project/owner receipt. The session
+revalidates the same immutable snapshot and captured reader/session after that
+storage effect before minting a single-use application proof. AiTextRuntimeOwner
+consumes the proof on the same retained transport; the ReceiptAiRuntimeOwner and
+AccountReceiptAiRuntime expose the action without wiring it into the default UI.
+A failed attempted clear or failed proof consumption retires the lease; metadata
+absence, raw HTTP success, replay or a read-only snapshot never grants release.
+Existing uncertain recovery application/release remains a separate path. Do not
+enable provider/default activation or infer hosted evidence from these components.
+
+
+## Normal-success receipt acknowledgement — 2026-11-20
+
+The normal-success path now has a distinct explicit host operation. It requires
+an accepted, non-reconciled lane slot; full original fingerprint and full typed
+receipt result equality; no pending/held mutation; the exact open project/owner
+store; and the already-published session event/message/summary snapshot. The
+lane conditionally clears the matching reference and confirms absence through a
+second read. A missing/mismatched reference or ambiguous attempted clear does
+not grant acknowledgement and retires the lane.
+
+The session reserves across storage I/O, captures the pre-clear immutable view,
+then rechecks the same completion command/receipt, reader, captured Auth session,
+current generation, exact snapshot identity, idle lane and open store after the
+clear. Only then does it mint the existing private single-use application proof.
+The runtime owner keeps the same lease/reader/session/transport reserved while it
+consumes that proof through the exact dispatch gate. If consumption fails after
+clear, the owner invalidates the lease rather than retrying or permitting another
+mutation. The accepted slot remains cached so exact same-event replay is local and
+does not redispatch; a new event is possible only after proof consumption.
+
+TEST ONLY coverage exercises all three operations, stale snapshots, A-B-A during
+a held clear, ambiguous clear failure, same-owner proof consumption, local replay
+and the next turn through both receipt owner and account wrapper. This is not
+hosted learner/provider/voice/native durability evidence. No default UI, automatic
+HTTP acknowledgement, Auth strategy/provider, API/schema/RLS, spend or deployment
+was changed; default AI remains off and #17 remains Draft pending human/live gates.

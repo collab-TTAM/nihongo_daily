@@ -212,6 +212,78 @@ final class ConversationMutationLane {
     _ => null,
   };
 
+  /// Acknowledge a normally accepted command only after its exact completed
+  /// receipt has been conditionally cleared from this project's owned store.
+  /// Unlike uncertain reconciliation, no pending slot is expected and the
+  /// successful result remains cached for exact local replay.
+  Future<bool> acknowledgePublishedCompletion(
+    CapturedConversationCompletion completion, {
+    required ConversationReceiptStore store,
+  }) async {
+    if (_executing || _checking) throw const AiTextRequestPending();
+    _executing = true;
+    var attemptedClear = false;
+    try {
+      _requireCurrent();
+      final pair = completion.captureForAuth(_auth);
+      if (pair == null) return false;
+      final command = pair.command;
+      final body =
+          command.start?.toJson() ??
+          command.turn?.toJson() ??
+          command.finish!.toJson();
+      final key =
+          '${command.reference.operation.wireName}:${command.reference.clientEventId.toLowerCase()}';
+      final fingerprint = jsonEncode(body);
+      final slot = _slots[key];
+      final accepted = slot?.accepted;
+      if (_pendingKey != null ||
+          slot == null ||
+          !slot.recordsMutationSuccess ||
+          slot.fingerprint != fingerprint ||
+          accepted == null ||
+          slot.isBusy() ||
+          _held?.isBusy() == true ||
+          !store.scope.contains(command.reference) ||
+          store.phase != ConversationReceiptStorePhase.open) {
+        return false;
+      }
+      final remote =
+          pair.receipt.start ?? pair.receipt.turn ?? pair.receipt.finish;
+      final encoded = _encodedResult(accepted);
+      if (encoded == null || encoded != _encodedResult(remote)) return false;
+
+      bool current() {
+        if (!completion.isCurrent || !isCurrent) return false;
+        return !_revoked &&
+            !_checking &&
+            !completion.isRevoked &&
+            _pendingKey == null &&
+            _held?.isBusy() != true &&
+            identical(_slots[key], slot) &&
+            identical(slot.accepted, accepted) &&
+            !slot.isBusy() &&
+            store.phase == ConversationReceiptStorePhase.open;
+      }
+
+      if (!current()) return false;
+      attemptedClear = true;
+      if (!await store.clearMatching(command.reference, isCurrent: current) ||
+          !current()) {
+        revoke();
+        return false;
+      }
+      // Keep the exact accepted slot for idempotent replay. A separate
+      // single-use application proof is still required to release the transport.
+      return true;
+    } on Object {
+      if (attemptedClear) revoke();
+      rethrow;
+    } finally {
+      _executing = false;
+    }
+  }
+
   /// Explicit trusted-host reconciliation, never inferred from metadata/absence.
   /// Caller supplies the same owned project's secure store and must validate its
   /// prospective transcript before invoking. No default/session/UI caller exists.
