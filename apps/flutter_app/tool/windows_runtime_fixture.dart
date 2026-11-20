@@ -24,6 +24,7 @@ const runtimePhases = {
   'runtime-signedout',
   'runtime-rejected',
   'runtime-late-refresh',
+  'runtime-late-profile',
   'runtime-close-restore',
   'runtime-owner-hold',
   'runtime-owner-contend',
@@ -262,6 +263,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       : _first;
   Completer<http.Response>? lateRefresh;
   Completer<http.Response>? heldProfile;
+  http.Response? capturedLateProfile;
   var profileResponseReleased = false;
   final profileOwners = <String>[];
 
@@ -378,6 +380,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       // The real OS write must already be observable before profile dispatch.
       _check(await vault.readRefreshToken() == secret);
       if (phase == 'runtime-late-refresh' ||
+          phase == 'runtime-late-profile' ||
           phase == 'runtime-restore-profile-held' ||
           phase == 'runtime-native-read-failure' ||
           phase == 'runtime-native-rotation-write-failure' ||
@@ -403,6 +406,15 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       if (phase == 'runtime-restore-profile-held') {
         final wait = heldProfile;
         _check(wait != null);
+        final response = await wait!.future;
+        profileResponseReleased = true;
+        return response;
+      }
+      if (phase == 'runtime-late-profile' && profileCalls == 1) {
+        final wait = heldProfile;
+        _check(wait != null);
+        // Capture A's identity-bearing response before the fixture switches to B.
+        capturedLateProfile = profileResponse();
         final response = await wait!.future;
         profileResponseReleased = true;
         return response;
@@ -566,6 +578,101 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(runtime.account.readyRuntime == null);
       _check(await vault.readRefreshToken() == null);
       _check(logoutCalls >= 1);
+      await pending();
+    } else if (phase == 'runtime-late-profile') {
+      // This phase uses the real Windows Credential Manager and native journal.
+      _check(await vault.readRefreshToken() == null);
+      await runtime.start();
+      heldProfile = Completer<http.Response>();
+
+      // A's Auth succeeds and its rotated secret is committed before its
+      // own-profile request, which remains unresolved while the account changes.
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForProfileCalls(1);
+      _check(
+        runtime.account.state.phase == AccountPhase.loadingProfile &&
+            runtime.account.readyRuntime == null &&
+            profileOwners.length == 1 &&
+            profileOwners.single == _owner &&
+            capturedLateProfile != null &&
+            !profileResponseReleased &&
+            await vault.readRefreshToken() == _first,
+      );
+      await journal.stage(_owner, _pending);
+      final aProfileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      _check(aProfileRequests.length == 1);
+      final aAuthorization = aProfileRequests.single.headers['authorization'];
+      _check(aAuthorization == 'Bearer ${accessToken()}');
+
+      // Logout must revoke A and clear its OS slot even though A's profile
+      // response is still held by the HTTP fixture.
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            profileCalls == 1 &&
+            !profileResponseReleased,
+      );
+
+      // B becomes the only current generation. Its real OS write is checked by
+      // the profile handler before ensure_profile is allowed to return.
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _second;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      final bRuntime = runtime.account.readyRuntime;
+      final bProfileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      _check(
+        authCalls == 2 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.first == _owner &&
+            profileOwners.last == _ownerB &&
+            bProfileRequests.length == 2 &&
+            bProfileRequests.last.headers['authorization'] ==
+                'Bearer ${accessToken()}' &&
+            bProfileRequests.first.headers['authorization'] == aAuthorization &&
+            runtime.account.state.profile?.id == _ownerB &&
+            runtime.account.readySession?.userId == _ownerB &&
+            await vault.readRefreshToken() == _second &&
+            (await journal.list(_ownerB)).isEmpty,
+      );
+
+      // Return the previously captured A response after B is fully ready.
+      final lateA = capturedLateProfile;
+      _check(lateA != null);
+      heldProfile!.complete(lateA);
+      for (var i = 0; i < 8; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      _check(
+        profileResponseReleased &&
+            runtime.account.state.phase == AccountPhase.ready &&
+            runtime.account.state.profile?.id == _ownerB &&
+            identical(runtime.account.readyRuntime, bRuntime) &&
+            runtime.account.readySession?.userId == _ownerB &&
+            runtime.persistence.currentSession?.userId == _ownerB &&
+            await vault.readRefreshToken() == _second,
+      );
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 2,
+      );
       await pending();
     } else if (phase == 'runtime-native-read-failure') {
       _check(await vault.readRefreshToken() == null);

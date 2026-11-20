@@ -203,6 +203,9 @@ try {
     Invoke-Bridge 'runtime-native-logout-clear-commit-failure'
     Invoke-Bridge 'runtime-signedout'
     Invoke-Bridge 'runtime-late-refresh'
+    # Hold A's real OS-backed own-profile response across logout and B readiness.
+    Invoke-Bridge 'runtime-late-profile'
+    Invoke-Bridge 'runtime-signedout'
     # Close a fresh owner during held startup restore, then prove a new process
     # observes the cleared OS credential slot.
     Invoke-Bridge 'runtime-close-restore'

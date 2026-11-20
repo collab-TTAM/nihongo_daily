@@ -1184,3 +1184,24 @@ TEST ONLY wrapper in `apps/flutter_app/tool/`. The wrapper returns only a
 fixed safe status; credentials, JWTs and request headers are never logged.
 This disposable loopback probe is not hosted learner or production evidence.
 
+
+
+## Native Windows late-profile account replacement — 2026-11-20
+
+The Windows bridge now holds User A's `ensure_profile` response after the
+pinned SDK has installed A and the real Credential Manager has persisted A's
+rotated refresh token. Explicit logout runs while that response is unresolved;
+the test requires A readiness to be revoked and the exact project slot cleared
+before User B's password grant.
+
+B's rotated refresh secret must be visible in the native vault before B's
+own-profile request. Once B is ready, the fixture returns A's captured response
+with A's original Authorization header. The account controller must retain B's
+profile, captured session, ready study runtime and stored token. A's pending
+journal record remains isolated from B; B logout and a fresh signed-out process
+complete the sequence.
+
+This is a deterministic TEST ONLY Auth HTTP/JWT fixture around the production
+Windows Credential Manager bridge and native journal. It is stronger OS-boundary
+coverage than the separate in-memory late-profile test, but is not hosted learner
+identity, deployed RLS/PostgREST, physical multi-device or Personal Alpha proof.

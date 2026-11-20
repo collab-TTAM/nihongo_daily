@@ -4759,3 +4759,15 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Repo-sanity's other steps and the database/AI jobs succeeded. The hosted-probe regression step ran 23 tests with exactly this one failure; hosted-workflow safety and all dependent Windows/Supabase/Flutter jobs were SKIPPED. No skipped check is treated as pass.
 - Correct only the static expectations to match the chained calls; retain the masking and percent/CR/LF escaping implementation. A new exact-head run must execute the regression and all six jobs.
 
+
+
+## PR #37 — native Windows late-profile account replacement — 2026-11-20T01:12Z
+
+- Run `core-20261120T0108Z-pr37-native-late-profile`; branch `automation/issue-22-atomic-review`; source parent `d459244204b6109981a2539c24ef0c59b36565c1`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added a new actual Windows runner phase `runtime-late-profile`. It signs in User A through the pinned Supabase SDK, verifies A's rotated refresh token is already in the real Credential Manager before the held own-profile request, stages an A-owned pending journal event, logs A out and verifies the OS slot is cleared, then signs in B and verifies B's rotated token before B's own-profile request.
+- After B is ready, the fixture releases A's previously captured profile response and Authorization identity. Assertions require B's profile/session/ready runtime/refresh token to remain unchanged and A's pending journal entry to remain invisible to B. B logout and a fresh signed-out runner follow.
+- Paths: `apps/flutter_app/tool/windows_runtime_fixture.dart`, `apps/flutter_app/tool/verify_windows_vault_bridge.ps1`, `docs/WINDOWS_SESSION_VAULT.md`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, and this status file. No Pro-owned #14/#38/N4/content/manifest paths changed.
+- Previous exact-head Actions [44636055283](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44636055283), attempt 1, completed all six jobs and every listed step successfully on the parent HEAD `d459244204b6109981a2539c24ef0c59b36565c1`. This is parent evidence only. The new source head requires its own complete exact-head CI, including the Windows runner phase and repo-sanity QA anchors.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/test/native build was not run. This phase uses actual Windows Credential Manager and native journal with TEST ONLY synthetic Auth HTTP/JWT. It is not hosted signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff/power-loss or physical multi-device proof.
+- No staging workflow dispatch/secrets, Auth strategy/provider, schema/RLS/migration, default Auth activation, learner-entered URL/key, plaintext fallback, token logging, merge, deployment or release changed. PR #37 remains Draft; #20/#22/#15/#18 remain open.
+- Next: inspect every latest-attempt job and required step on the new exact HEAD; fix only observed failures. Hosted acceptance still requires the protected non-production environment and approved two-user evidence.

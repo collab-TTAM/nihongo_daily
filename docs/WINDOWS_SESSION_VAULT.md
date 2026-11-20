@@ -522,3 +522,29 @@ deterministic post-commit acknowledgement-loss injection against actual
 Windows Credential Manager, not a spontaneous Windows failure, hosted
 signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff/power-loss or physical
 multi-device evidence.
+
+
+## Late User A own-profile response against the actual Windows vault
+
+The Windows runtime bridge now adds a fresh-process phase that combines the
+pinned Supabase SDK, production MethodChannel, real Credential Manager and the
+disk-backed native review journal. User A signs in; the runner confirms A's
+rotated refresh token is present in the OS vault before the captured
+`ensure_profile` request, then holds that response without publishing a ready
+study runtime.
+
+While A's response is held, explicit logout must revoke A readiness and clear
+the exact project credential. User B then signs in through the same caller-owned
+runtime; the runner verifies B's rotated secret is present before B's own-profile
+request and confirms B has no access to A's pending journal event.
+
+Only after B is ready does the fixture return A's previously captured profile
+response and Authorization identity. B's profile, session, ready runtime and
+stored refresh token must remain unchanged. B then logs out, and a separate
+fresh runner confirms the project slot is signed out.
+
+This is actual Windows Credential Manager/journal and process-runner evidence
+with TEST ONLY synthetic Auth HTTP/JWT and deterministic response ordering. It
+is not hosted GoTrue/PostgREST, signed-JWT A/B, deployed RLS, OS logoff/power
+loss or physical multi-device learner acceptance. Native test hooks remain
+compile-time-only and are disabled before the normal staging/preview build.
