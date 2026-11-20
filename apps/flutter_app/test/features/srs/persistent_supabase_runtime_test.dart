@@ -2137,16 +2137,10 @@ void main() {
       expect(runtime.account.state.phase, AccountPhase.ready);
       expect(runtime.account.state.profile?.id, wire.b);
       expect(runtime.account.state.profile?.displayName, '学習者');
-      expect(
-        identical(runtime.persistence.currentSession, bSession),
-        isTrue,
-      );
+      expect(identical(runtime.persistence.currentSession, bSession), isTrue);
       expect(identical(runtime.account.readySession, bReadySession), isTrue);
       expect(identical(runtime.account.readyRuntime, bRuntime), isTrue);
-      expect(
-        backend.secret,
-        'TEST_ONLY_B_AFTER_FAILED_SAME_SESSION_REFRESH',
-      );
+      expect(backend.secret, 'TEST_ONLY_B_AFTER_FAILED_SAME_SESSION_REFRESH');
       expect(profileRequests(), hasLength(2));
       expect(
         profileRequests().first.headers['authorization'],
