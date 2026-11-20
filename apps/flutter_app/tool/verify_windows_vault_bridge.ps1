@@ -192,6 +192,10 @@ try {
     # the pinned SDK owner; B must wait for A's exact-slot cleanup before Auth.
     Invoke-Bridge 'runtime-native-rotation-write-failure'
     Invoke-Bridge 'runtime-signedout'
+    # Combine native refresh-write/compensation failure with a held A profile;
+    # B must remain isolated when A's captured response is released after B ready.
+    Invoke-Bridge 'runtime-native-rotation-write-failure-late-profile'
+    Invoke-Bridge 'runtime-signedout'
     # Exercise a CredWriteW failure before commit; compensation must clear A
     # before B can authenticate, and a fresh process must remain signed out.
     Invoke-Bridge 'runtime-native-rotation-write-fail-before'

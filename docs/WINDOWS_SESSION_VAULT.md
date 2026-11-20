@@ -548,3 +548,31 @@ with TEST ONLY synthetic Auth HTTP/JWT and deterministic response ordering. It
 is not hosted GoTrue/PostgREST, signed-JWT A/B, deployed RLS, OS logoff/power
 loss or physical multi-device learner acceptance. Native test hooks remain
 compile-time-only and are disabled before the normal staging/preview build.
+
+
+## Native refresh-write failure while User A profile is held
+
+The TEST ONLY Windows bridge now combines the two previously separate cases:
+a held User A `ensure_profile` response and an actual native Credential Manager
+refresh-write failure. A signs in through the pinned Supabase SDK; the real
+rotated refresh secret is stored before A's own-profile request is captured and
+held. A same-session refresh then commits a new value through `CredWriteW` but
+the deterministic one-shot hook reports an unavailable result. The first
+compensating `CredDeleteW` is also forced to fail before deletion.
+
+The runtime must revoke A's readiness, issue no second A profile request, and
+retain the exact project owner while the OS slot still contains the uncertain
+rotated value. Explicit replacement login for B retries cleanup before its
+password grant. B's rotated refresh secret must be visible before B's own-profile
+request; B's profile/session/runtime and A/B journal isolation are then checked.
+Only after B is fully ready does the runner release A's captured response. It
+must not replace B's accepted profile generation, session, runtime or stored
+refresh secret. B logout clears the slot and a separate fresh process confirms
+signed-out startup.
+
+This is actual Windows Credential Manager + MethodChannel + pinned-SDK
+composition with deterministic compile-time TEST ONLY fault injection and
+synthetic Auth HTTP/JWT responses. It is not a spontaneous OS failure, hosted
+GoTrue/PostgREST, signed-JWT learner A/B, deployed RLS, OS logoff/power-loss or
+physical multi-device proof. The hook is disabled before the normal
+staging/preview rebuild; no token or native error is logged.

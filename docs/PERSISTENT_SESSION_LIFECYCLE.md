@@ -1263,3 +1263,28 @@ rotation test: profile-generation fencing must survive both successful and
 failed persistence. It is TEST ONLY pinned-SDK/MockClient/in-memory-vault
 evidence, not hosted Auth/JWT/RLS, actual Windows Credential Manager failure
 injection for this exact held-profile sequence, or Personal Alpha proof.
+
+
+## Native refresh-write failure with a held pre-rotation profile — 2026-11-20
+
+A new Windows bridge phase composes native storage failure with profile-generation
+fencing. User A signs in through the pinned SDK and reaches a held own-profile
+request only after A's first rotated refresh secret is present in the actual
+Credential Manager slot. A same-session refresh returns a new token; a
+compile-time TEST ONLY hook lets `CredWriteW` commit and then reports failure.
+The compensating exact-project `CredDeleteW` is forced to fail before deletion,
+leaving the uncertain rotated value in the OS slot while the persistence barrier
+keeps A unready.
+
+The explicit B login cannot dispatch its password grant until the retryable
+cleanup signs out A and clears that exact slot. B's rotated value must be stored
+before its own-profile request. The test then releases A's captured pre-rotation
+profile response after B is ready and requires B's profile, captured session,
+ready runtime and native refresh secret to remain unchanged. A's pending journal
+record remains invisible to B; B logout and a fresh signed-out process finish
+the sequence.
+
+This is TEST ONLY pinned-SDK/Windows MethodChannel/native Credential Manager
+evidence with synthetic Auth HTTP/JWT and deterministic fault injection. It is
+not hosted signed-JWT learner A/B, deployed PostgREST/RLS, spontaneous OS
+failure, logoff/power-loss or physical multi-device acceptance.

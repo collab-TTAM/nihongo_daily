@@ -31,6 +31,7 @@ const runtimePhases = {
   'runtime-owner-reacquire',
   'runtime-native-read-failure',
   'runtime-native-rotation-write-failure',
+  'runtime-native-rotation-write-failure-late-profile',
   'runtime-native-rotation-write-fail-before',
   'runtime-native-logout-clear-failure',
   'runtime-native-logout-clear-commit-failure',
@@ -326,6 +327,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
                 phase == 'runtime-late-refresh' ||
                 phase == 'runtime-close-restore' ||
                 phase == 'runtime-native-rotation-write-failure' ||
+                phase == 'runtime-native-rotation-write-failure-late-profile' ||
                 phase == 'runtime-native-rotation-write-fail-before'
             ? _first
             : phase == 'runtime-restore'
@@ -352,6 +354,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           _check(await vault.readRefreshToken() == null);
         }
         if (phase == 'runtime-native-rotation-write-failure' ||
+            phase == 'runtime-native-rotation-write-failure-late-profile' ||
             phase == 'runtime-native-rotation-write-fail-before') {
           // The initial A grant and replacement B grant both start from a
           // cleared slot; the refresh grant is handled separately above.
@@ -384,11 +387,13 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           phase == 'runtime-restore-profile-held' ||
           phase == 'runtime-native-read-failure' ||
           phase == 'runtime-native-rotation-write-failure' ||
+          phase == 'runtime-native-rotation-write-failure-late-profile' ||
           phase == 'runtime-native-rotation-write-fail-before' ||
           nativeLogoutClearFailure) {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
       if (phase == 'runtime-native-rotation-write-failure' ||
+          phase == 'runtime-native-rotation-write-failure-late-profile' ||
           phase == 'runtime-native-rotation-write-fail-before') {
         if (profileCalls == 1) {
           _check(userId == _owner);
@@ -410,7 +415,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         profileResponseReleased = true;
         return response;
       }
-      if (phase == 'runtime-late-profile' && profileCalls == 1) {
+      if ((phase == 'runtime-late-profile' ||
+              phase == 'runtime-native-rotation-write-failure-late-profile') &&
+          profileCalls == 1) {
         final wait = heldProfile;
         _check(wait != null);
         // Capture A's identity-bearing response before the fixture switches to B.
@@ -731,6 +738,125 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(await vault.readRefreshToken() == null);
       _check(logoutCalls >= 1);
       await pending();
+    } else if (phase == 'runtime-native-rotation-write-failure-late-profile') {
+      _check(await vault.readRefreshToken() == null);
+      await runtime.start();
+      heldProfile = Completer<http.Response>();
+
+      // A's first own-profile response remains held while the same Auth
+      // session rotates its refresh token and the native write fails.
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForProfileCalls(1);
+      _check(
+        runtime.account.state.phase == AccountPhase.loadingProfile &&
+            runtime.account.readyRuntime == null &&
+            profileOwners.length == 1 &&
+            profileOwners.single == _owner &&
+            capturedLateProfile != null &&
+            !profileResponseReleased &&
+            await vault.readRefreshToken() == _first,
+      );
+      await journal.stage(_owner, _pending);
+      final aProfileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      _check(aProfileRequests.length == 1);
+      final aAuthorization = aProfileRequests.single.headers['authorization'];
+      _check(aAuthorization == 'Bearer ${accessToken()}');
+
+      // CredWriteW commits the rotated value but reports failure; the first
+      // compensating CredDeleteW also fails before deleting the exact slot.
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'write',
+        fault: 'commit_then_fail',
+      );
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'clear',
+        fault: 'fail_before',
+      );
+      secret = _second;
+      var refreshFailed = false;
+      try {
+        await runtime.refresh().timeout(const Duration(seconds: 5));
+      } on ReviewTransportFailure catch (error) {
+        refreshFailed = error.code == ReviewErrorCode.unauthorized;
+      }
+      _check(
+        refreshFailed &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 2 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner &&
+            !profileResponseReleased &&
+            await vault.readRefreshToken() == _second,
+      );
+
+      // The replacement password grant must wait for the retryable native
+      // cleanup. Its rotated secret is then visible before B's profile call.
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      final bRuntime = runtime.account.readyRuntime;
+      final bProfileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      _check(
+        authCalls == 3 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.first == _owner &&
+            profileOwners.last == _ownerB &&
+            bProfileRequests.length == 2 &&
+            bProfileRequests.first.headers['authorization'] == aAuthorization &&
+            bProfileRequests.last.headers['authorization'] ==
+                'Bearer ${accessToken()}' &&
+            runtime.account.state.profile?.id == _ownerB &&
+            runtime.account.readySession?.userId == _ownerB &&
+            await vault.readRefreshToken() == _third &&
+            (await journal.list(_ownerB)).isEmpty,
+      );
+
+      // A's captured response arrives only after B is fully ready. It must not
+      // change B's profile generation, session, runtime, or native token.
+      final lateAProfile = capturedLateProfile;
+      if (lateAProfile == null) {
+        throw const FormatException('Late A profile was not captured');
+      }
+      heldProfile.complete(lateAProfile);
+      final responseDeadline = DateTime.now().add(const Duration(seconds: 5));
+      while (!profileResponseReleased &&
+          DateTime.now().isBefore(responseDeadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      _check(
+        profileResponseReleased &&
+            runtime.account.state.phase == AccountPhase.ready &&
+            runtime.account.state.profile?.id == _ownerB &&
+            identical(runtime.account.readyRuntime, bRuntime) &&
+            runtime.account.readySession?.userId == _ownerB &&
+            runtime.persistence.currentSession?.userId == _ownerB &&
+            await vault.readRefreshToken() == _third &&
+            profileCalls == 2,
+      );
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 2,
+      );
+      await pending();
     } else if (phase == 'runtime-native-rotation-write-failure') {
       _check(await vault.readRefreshToken() == null);
       // Explicit startup acquires the owned vault before offering password Auth.
@@ -1033,7 +1159,11 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   } finally {
     // A failed assertion must not strand a held HTTP response while close drains.
     if (heldProfile != null && !heldProfile.isCompleted) {
-      heldProfile.complete(profileResponse());
+      heldProfile.complete(
+        phase == 'runtime-native-rotation-write-failure-late-profile'
+            ? capturedLateProfile ?? profileResponse()
+            : profileResponse(),
+      );
     }
     if (lateRefresh != null && !lateRefresh.isCompleted) {
       if (phase == 'runtime-close-restore') secret = _second;
