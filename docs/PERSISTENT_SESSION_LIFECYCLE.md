@@ -1246,10 +1246,10 @@ Alpha proof.
 
 ## Failed same-session refresh cannot publish a held pre-rotation profile
 
-The pinned-Supabase-SDK regression \`failed same-session refresh write suppresses
-the held pre-rotation profile before B login\` starts an own-profile request for
+The pinned-Supabase-SDK regression `failed same-session refresh write suppresses
+the held pre-rotation profile before B login` starts an own-profile request for
 User A, then rotates A's refresh token while keeping the same Auth user and
-\`session_id\`. The vault write is held and fails. The persistence barrier must
+`session_id`. The vault write is held and fails. The persistence barrier must
 revoke A, clear the exact stored refresh secret, issue no second A own-profile
 request, and retain no study readiness. The test then performs an explicit
 replacement login for User B, holds B's own-profile response, and verifies B's

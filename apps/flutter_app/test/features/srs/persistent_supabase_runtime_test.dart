@@ -2035,7 +2035,7 @@ void main() {
       expect(profileRequests(), hasLength(1));
       expect(
         initialAuthorization,
-        'Bearer \${wire.token(wire.a, wire.sid1, now)}',
+        'Bearer ${wire.token(wire.a, wire.sid1, now)}',
       );
 
       backend.failWrite = true;
@@ -2094,7 +2094,7 @@ void main() {
       expect(runtime.account.readyRuntime, isNull);
       expect(
         bProfileRequests.last.headers['authorization'],
-        'Bearer \${wire.token(wire.b, wire.sid2, now)}',
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
       );
 
       profileWait!.complete(
