@@ -198,6 +198,8 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
+      - name: Diagnose pinned formatter output for the same-session regression
+        run: dart format --output=show test/features/srs/persistent_supabase_runtime_test.dart | sed -n '1980,2200p'
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
