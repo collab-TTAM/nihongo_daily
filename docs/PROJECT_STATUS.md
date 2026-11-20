@@ -4799,3 +4799,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, `qa/matrix.json`, and this status file. No production Auth/provider/vault code, API/schema/RLS, default runtime, or Pro-owned #14/#38/N4 scope changed.
 - Exact-head Actions is pending for the new source commit. Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/test/build is not claimed. The test uses synthetic Auth HTTP/JWT and an in-memory vault, not hosted learner evidence.
 - Next: inspect all six latest-attempt jobs and required steps on the exact new HEAD; fix only observed failures. Keep #37 Draft and #20/#22/#15/#18 open pending hosted signed-JWT A/B, deployed PostgREST/RLS, expiry/restart, offline multi-device and learner-journey evidence.
+
+
+## PR #37 — exact-head Dart formatter diagnostic — 2026-11-20T06:17Z
+
+- Exact-head Actions [44686480492](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44686480492), attempt 1, targets `cb679a805c4f4fe971329e4dcf776339ab9b0103`. repo-sanity, database and ai-boundary completed SUCCESS; Flutter failed only at `dart format --output=none --set-exit-if-changed .`, which reported the new `persistent_supabase_runtime_test.dart` as changed. Flutter analyze and the full suite were skipped. Windows and disposable Supabase jobs were still in progress at the last observation; they are not counted as pass.
+- Added a temporary diagnostic CI step to print only the formatter-produced new test section before the unchanged format gate. This does not alter tests, runtime behavior, or gate strictness. The next checkpoint will apply the exact formatter output and remove this diagnostic step.
+- Branch `automation/issue-22-atomic-review`; parent HEAD `cb679a805c4f4fe971329e4dcf776339ab9b0103`. No Pro-owned N4 scope or Auth/provider/schema/RLS changes.
