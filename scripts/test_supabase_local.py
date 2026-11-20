@@ -561,6 +561,137 @@ def main() -> None:
         "second-session stale offline event is rejected",
     )
 
+    # Two independent sessions for the same owner can race distinct offline
+    # events on one item. The newer event always commits; the older event either
+    # commits first or is rejected after the newer event advances server state.
+    previous_time = dt.datetime.fromisoformat(
+        later_request["occurred_at"].replace("Z", "+00:00")
+    )
+    race_base = max(
+        dt.datetime.now(dt.timezone.utc),
+        previous_time,
+    ) + dt.timedelta(seconds=1)
+    older_device_request = review_request(occurred_at=race_base)
+    newer_device_request = review_request(
+        occurred_at=race_base + dt.timedelta(seconds=1)
+    )
+    newer_device_request["rating"] = 1
+    newer_device_request["response_ms"] = 1750
+    device_barrier = threading.Barrier(2)
+
+    def dispatch_device_event(request_body: dict, access_token: str):
+        device_barrier.wait(timeout=10)
+        return rpc("submit_review", request_body, access_token)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as devices:
+        older_call = devices.submit(
+            dispatch_device_event, older_device_request, token_a
+        )
+        newer_call = devices.submit(
+            dispatch_device_event, newer_device_request, token_a_device
+        )
+        older_device_result = older_call.result(timeout=20)
+        newer_device_result = newer_call.result(timeout=20)
+
+    older_device_code = error_code(older_device_result)
+    require(
+        older_device_code in (None, "SYNC_CONFLICT"),
+        "older concurrent device event either commits first or is rejected as stale",
+    )
+    require(
+        error_code(newer_device_result) is None,
+        "newer concurrent device event remains authoritative",
+    )
+    older_device_accepted = older_device_code is None
+    expected_device_count = 3 + int(older_device_accepted)
+    require(
+        (older_device_result.get("review_count") == 3)
+        if older_device_accepted
+        else older_device_result.get("code") == "SYNC_CONFLICT",
+        "older device result reflects the observed lock order",
+    )
+    require(
+        newer_device_result.get("review_count") == expected_device_count,
+        "newer device receipt reports the monotonic server review count",
+    )
+
+    for device_request, accepted in (
+        (older_device_request, older_device_accepted),
+        (newer_device_request, True),
+    ):
+        event_rows = rows(
+            "review_events",
+            "client_event_id,user_id,rating,occurred_at",
+            "client_event_id",
+            device_request["client_event_id"],
+            token_a,
+        )
+        require(
+            len(event_rows) == (1 if accepted else 0),
+            "each concurrent device event has exactly its accepted receipt",
+        )
+        if accepted:
+            event_row = event_rows[0]
+            require(
+                event_row["user_id"] == id_a
+                and event_row["rating"] == device_request["rating"]
+                and dt.datetime.fromisoformat(
+                    event_row["occurred_at"].replace("Z", "+00:00")
+                )
+                == dt.datetime.fromisoformat(
+                    device_request["occurred_at"].replace("Z", "+00:00")
+                ),
+                "accepted device receipt preserves its immutable owner, rating and instant",
+            )
+        require(
+            rows(
+                "review_events",
+                "client_event_id,user_id",
+                "client_event_id",
+                device_request["client_event_id"],
+                token_b,
+            )
+            == [],
+            "other owner cannot read either concurrent device receipt",
+        )
+
+    state_after_device_race = rows(
+        "user_learning_items",
+        "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
+        "user_id",
+        id_a,
+        token_a,
+    )
+    device_item_rows = [
+        row for row in state_after_device_race if row["item_id"] == TEST_ITEM_ID
+    ]
+    require(
+        len(device_item_rows) == 1
+        and device_item_rows[0]["review_count"] == expected_device_count,
+        "concurrent devices leave one server-authoritative item projection",
+    )
+    require(
+        dt.datetime.fromisoformat(
+            device_item_rows[0]["last_review_at"].replace("Z", "+00:00")
+        )
+        == dt.datetime.fromisoformat(
+            newer_device_request["occurred_at"].replace("Z", "+00:00")
+        ),
+        "older device event never overwrites the newer authoritative timestamp",
+    )
+    second_device_state = rows(
+        "user_learning_items",
+        "id,user_id,item_id,review_count,correct_count,incorrect_count,last_review_at,next_review_at",
+        "user_id",
+        id_a,
+        token_a_device,
+    )
+    require(
+        [row for row in second_device_state if row["item_id"] == TEST_ITEM_ID]
+        == device_item_rows,
+        "both independent sessions observe the same authoritative review state",
+    )
+
     # The idempotency key is owner-scoped, not global: B may use A's UUID
     # with a different valid payload and must receive B's own receipt.
     request_b = dict(request_a, rating=3)
@@ -875,6 +1006,7 @@ def main() -> None:
         "Local GoTrue/PostgREST due-queue sync passed: two Auth users, four independent "
         "password sessions, fresh-process refresh restoration, global logout revocation, "
         "profile bootstrap, expired-JWT queue rejection, concurrent same-owner replay, "
+        "two-session concurrent distinct-event ordering and stale conflict, "
         "historical replay without state rollback, changed/stale conflicts, owner-scoped "
         "shared event IDs, same-owner cross-session due-queue projection, B isolation, "
         "level/limit filtering and read-only state. LOCAL ONLY."

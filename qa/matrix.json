@@ -1512,7 +1512,13 @@
         18
       ],
       "reproduce": "Run two clients A/B, go offline, queue immutable event IDs/times, restart, reconnect/resend, provoke stale/two-device conflict and account switch; inspect retained authoritative state.",
-      "limitation": "Native journal and browser IndexedDB ledgers plus manual recovery are implemented, and local GoTrue exercises two independent sessions for one owner. No physical two-device offline cache transfer/reconnect, hosted multi-device learner flow or integrated cross-device reconciliation is yet verified."
+      "limitation": "The disposable local GoTrue/PostgREST integration now races two independent same-owner sessions with distinct event IDs for one item. The newer event remains authoritative; the older either commits before it or is rejected as SYNC_CONFLICT, both sessions read the same final row, and the other owner sees neither receipt. This remains local two-session evidence, not physical two-device offline cache transfer/reconnect, hosted multi-device learner flow or integrated cross-device reconciliation.",
+      "anchors": [
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "two-session concurrent distinct-event ordering and stale conflict"
+        }
+      ]
     },
     {
       "id": "quiz-progress",
