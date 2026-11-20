@@ -43,7 +43,9 @@ final class _Backend implements SecureConversationReceiptBackend {
   @override
   Future<void> write(String target, String encoded) async {
     calls.add('write-begin');
-    wrote.complete();
+    if (!wrote.isCompleted) {
+      wrote.complete();
+    }
     await writeWait?.future;
     value = encoded; // Failed write may still have persisted: fail closed.
     if (failWrite) throw StateError('PRIVATE_STORAGE');
@@ -885,20 +887,16 @@ void main() {
       expect(backend.value, isNull);
       receiptReader.delegate.wire = Completer<Object?>()
         ..complete(
-          f.response(
-            'conversation_turn',
-            sequence: 2,
-            message: f.message2,
-          ),
+          f.response('conversation_turn', sequence: 2, message: f.message2),
         );
       await session.turn(f.turn(event: f.otherEvent));
       expect(receiptReader.delegate.sends, 2);
       expect(
-        ConversationReceiptReference.decode(backend.value! as String)
-            .clientEventId,
+        ConversationReceiptReference.decode(
+          backend.value! as String,
+        ).clientEventId,
         f.otherEvent,
       );
     },
   );
-
 }

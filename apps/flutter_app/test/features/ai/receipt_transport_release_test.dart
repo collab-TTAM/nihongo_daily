@@ -329,18 +329,15 @@ void main() {
       )!;
       await flow.start(command.start!);
       final published = flow.snapshot;
-      inner.receipt = ConversationReceiptSnapshot.fromRows(
-        command.reference,
-        [
-          {
-            'user_id': f.owner,
-            'operation': command.reference.operation.wireName,
-            'client_event_id': command.reference.clientEventId,
-            'status': 'COMPLETED',
-            'response_json': f.response('start_conversation'),
-          },
-        ],
-      );
+      inner.receipt = ConversationReceiptSnapshot.fromRows(command.reference, [
+        {
+          'user_id': f.owner,
+          'operation': command.reference.operation.wireName,
+          'client_event_id': command.reference.clientEventId,
+          'status': 'COMPLETED',
+          'response_json': f.response('start_conversation'),
+        },
+      ]);
       final completion = await reader.lookupCompletion(command);
       expect(completion, isNotNull);
       expect(
@@ -355,7 +352,9 @@ void main() {
       expect(backend.value, isNull);
       expect(flow.snapshot, same(published));
       expect(flow.captureAppliedCompletion(completion, store: store), isNull);
-      await flow.start(command.start!); // Exact replay stays local and unchanged.
+      await flow.start(
+        command.start!,
+      ); // Exact replay stays local and unchanged.
       expect(flow.snapshot, same(published));
       expect(inner.sends, 1);
       final next = f.turn(event: f.otherEvent);

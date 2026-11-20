@@ -201,7 +201,8 @@ final class CapturedConversationSession {
     if (_revoked || _executing || isCheckingAvailability) return null;
     final before = inspectPublishedCompletion(completion, store: store);
     if (before == null) return null;
-    _executing = true; // Fence session commands across the actual storage effect.
+    _executing =
+        true; // Fence session commands across the actual storage effect.
     try {
       final pair = completion.captureForAuth(_auth);
       if (pair == null || _revoked || !identical(before, _snapshot)) {

@@ -94,7 +94,9 @@ final class Inner
     sent = body;
     op = operation;
     session = capturedSession;
-    entered.complete();
+    if (!entered.isCompleted) {
+      entered.complete();
+    }
     if (wire != null) return wire!.future;
     return 'TEST_ONLY_RESPONSE';
   }
