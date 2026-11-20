@@ -239,7 +239,7 @@ final class _LoopbackHttpClient extends http.BaseClient {
         if (!held.isCompleted) held.complete();
         unawaited(() async {
           await release.future;
-          if (!_profileResponseCancelled && !controller.isClosed) {
+          if (!_profileResponseCancelledBeforeRelease && !controller.isClosed) {
             controller.add(responseBytes);
             await controller.close();
           }
