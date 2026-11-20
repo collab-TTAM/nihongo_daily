@@ -1904,6 +1904,7 @@ void main() {
       expect(profileRequests(), hasLength(2));
     },
   );
+
   test(
     'same-session refresh rotation fences a held own-profile generation',
     () async {
@@ -1989,9 +1990,18 @@ void main() {
       expect(runtime.account.state.phase, AccountPhase.ready);
       expect(runtime.account.state.profile?.id, wire.a);
       expect(runtime.account.state.profile?.displayName, '学習者');
-      expect(identical(runtime.persistence.currentSession, refreshedSession), isTrue);
-      expect(identical(runtime.account.readySession, refreshedReadySession), isTrue);
-      expect(identical(runtime.account.readyRuntime, refreshedRuntime), isTrue);
+      expect(
+        identical(runtime.persistence.currentSession, refreshedSession),
+        isTrue,
+      );
+      expect(
+        identical(runtime.account.readySession, refreshedReadySession),
+        isTrue,
+      );
+      expect(
+        identical(runtime.account.readyRuntime, refreshedRuntime),
+        isTrue,
+      );
       expect(backend.secret, 'TEST_ONLY_A_AFTER_SAME_SESSION_REFRESH');
       expect(profileRequests(), hasLength(2));
     },
