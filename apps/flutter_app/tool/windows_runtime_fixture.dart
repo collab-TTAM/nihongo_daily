@@ -653,7 +653,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       // Return the previously captured A response after B is fully ready.
       final lateA = capturedLateProfile;
       _check(lateA != null);
-      heldProfile!.complete(lateA);
+      heldProfile.complete(lateA);
       for (var i = 0; i < 8; i++) {
         await Future<void>.delayed(Duration.zero);
       }
