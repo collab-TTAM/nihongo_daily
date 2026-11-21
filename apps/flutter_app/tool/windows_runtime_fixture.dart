@@ -751,6 +751,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       final a2ProfileRequests = requests
           .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
           .toList();
+      final a2Authorization = a2ProfileRequests.last.headers['authorization'];
       _check(
         authCalls == 2 &&
             profileCalls == 2 &&
@@ -758,8 +759,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             profileOwners.every((owner) => owner == _owner) &&
             a2ProfileRequests.length == 2 &&
             a2ProfileRequests.first.headers['authorization'] == a1Authorization &&
-            a2ProfileRequests.last.headers['authorization'] ==
-                'Bearer ${accessToken()}' &&
+            a2Authorization != null &&
+            a2Authorization != a1Authorization &&
+            a2Authorization == 'Bearer ${accessToken()}' &&
             runtime.account.state.profile?.id == _owner &&
             runtime.account.state.profile?.displayName == '学習者' &&
             a2Session?.userId == _owner &&
