@@ -25,6 +25,10 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  session_vault_channel_ =
+      RegisterSessionVaultChannel(flutter_controller_->engine()->messenger());
+  receipt_vault_channel_ =
+      RegisterReceiptVaultChannel(flutter_controller_->engine()->messenger());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
@@ -40,6 +44,14 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  if (receipt_vault_channel_) {
+    receipt_vault_channel_->SetMethodCallHandler(nullptr);
+    receipt_vault_channel_.reset();
+  }
+  if (session_vault_channel_) {
+    session_vault_channel_->SetMethodCallHandler(nullptr);
+    session_vault_channel_.reset();
+  }
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }

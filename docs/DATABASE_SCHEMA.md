@@ -1,6 +1,10 @@
 # DATABASE SCHEMA — v0.1
 
 ## Enums
+
+Additive get_review_queue read projection/security/evidence limits are specified
+in REVIEW_QUEUE.md. It uses caller privileges/RLS and has no enrollment/state write;
+hosted Auth/profile provisioning remains #20. Frozen v0.1 storage fields are unchanged.
 jlpt_level: N5 | N4 | N3 | N2 | N1
 srs_state: NEW | LEARNING | REVIEW | MASTERED | RELEARNING
 learning_item_type: VOCABULARY | KANJI | GRAMMAR
@@ -8,10 +12,10 @@ learning_item_type: VOCABULARY | KANJI | GRAMMAR
 ## Core tables
 - profiles(id=auth.users.id, display_name, preferred_jlpt, daily_target_minutes, timezone)
 - devices(id, user_id, device_name, platform, last_seen_at)
-- vocabulary(id, jlpt_level, expression, reading, meaning_vi, part_of_speech, usage_context_vi, difficulty, audio_ref, tags, content_version, is_active)
+- vocabulary(id, jlpt_level, source_ordinal, expression, reading, meaning_vi, part_of_speech, usage_context_vi, difficulty, audio_ref, tags, content_version, is_active)
 - vocabulary_examples(id, vocabulary_id, sentence_ja, reading_ja, translation_vi, sort_order)
 - kanji(id, character, jlpt_level, meaning_vi, onyomi[], kunyomi[], stroke_count, radical, stroke_data_ref, difficulty, content_version, is_active)
-- grammar(id, jlpt_level, title, pattern, meaning_vi, explanation_vi, usage_notes_vi, common_mistakes, related_grammar_ids, difficulty, content_version, is_active)
+- grammar(id, jlpt_level, source_ordinal, title, pattern, meaning_vi, explanation_vi, usage_notes_vi, common_mistakes, related_grammar_ids, difficulty, content_version, is_active)
 - grammar_examples(id, grammar_id, sentence_ja, reading_ja, translation_vi, explanation_vi, sort_order)
 - user_learning_items(id, user_id, item_type, item_id, srs_state, last_review_at, next_review_at, interval_days, difficulty, review_count, correct_count, incorrect_count, stability, retrievability)
 - review_events(id, user_id, learning_item_id, rating, response_ms, is_correct, occurred_at, client_event_id, result_json, metadata)
@@ -74,3 +78,40 @@ Local SQL/PGlite evidence is not evidence of a deployed Supabase instance.
 Timezone alias compatibility: Asia/Saigon is accepted at provisioning/settings
 writes and stored as Asia/Ho_Chi_Minh. Both denote Vietnam UTC+7; canonical storage
 avoids backward-link omissions in native tzdata. No wire endpoint changed.
+
+## Local review transaction increment — Issue #22
+
+Migration 20261013200000_submit_review.sql adds private timestamp/request/scheduler
+helpers and the narrowly authenticated public.submit_review(jsonb) definer RPC.
+No table grants or RLS policies are weakened; owner comes only from auth.uid().
+Per-user transaction advisory lock, content FOR SHARE and learning-item FOR UPDATE
+protect original event replay plus atomic state/event persistence. nd-srs-1 and
+exact canonical event epoch/review count are recorded in immutable event metadata.
+See SRS_RPC.md; real JWT/PostgREST and typed Flutter/UI integration remain unverified.
+
+Additive caller-bound own-profile initialization is in OWN_PROFILE_BOOTSTRAP.md.
+The undeployed ensure_profile RPC has a narrow authenticated execution grant;
+existing RLS, direct client table privileges and frozen v0.1 fields are unchanged.
+
+## Private quiz report ledger foundation (undeployed)
+
+20261031090000_quiz_report_ledger.sql adds private.quiz_report_receipts keyed by
+Auth-derived user/event identity with immutable request/original-response JSON,
+owner SELECT RLS and no app/service table grants. Private closed-path invoker
+lookup/store helpers retain an owner transaction lock, original replay and atomic
+round insertion. No public quiz RPC, canonical-content or raw-wire validation,
+client upload, baseline duration fabrication or mastery/progress update is enabled.
+See QUIZ_REPORT_API.md for JSONB ingress limitations and required future boundaries.
+
+
+## Deterministic quiz source order
+
+The additive migration `20261109030000_quiz_source_order.sql` adds nullable
+`source_ordinal` integer columns to vocabulary and grammar. The ordinal is the
+zero-based position in the original canonical export for that JLPT level; it
+must never be derived from UUID sorting, insertion timing or learner input.
+Unique partial indexes enforce one non-null ordinal per level/table, nonnegative
+values are checked, and new active rows require an ordinal. Existing inactive
+or unimported rows may remain null; current-content report validation fails
+closed if any active row lacks a valid unique ordered ordinal. The migration
+does not populate content, activate rows, change grants or alter RLS.

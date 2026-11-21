@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'app/app.dart';
+import 'app/staging_bootstrap.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: NihongoDailyApp()));
+  runApp(selectBootstrapApp(StagingBuildSettings.compiled));
 }

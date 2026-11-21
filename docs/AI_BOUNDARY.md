@@ -100,6 +100,14 @@ claim tokens likewise never grant a new dispatch through these helpers.
 
 ## Outstanding integration
 
+An additive server-only standard Request adapter now enforces streamed body,
+UTF-8/header and overall deadline/client cancellation guards before invoking
+this library. See AI_HTTP_BOUNDARY.md. It binds a trusted fixed operation and
+preserves mandatory injected Auth/limiter/context/receipt/provider boundaries;
+it installs no Edge endpoint or fallback implementations. Optional parent abort
+propagation is added to execute; existing callers remain compatible. Node tests
+do not establish Deno/hosted compatibility or verified production Auth.
+
 Issue #31 tracks a scoped runtime adapter to bind real verified Auth, distributed limiter,
 context/ownership and session serialization, SQL transactions + original receipt
 replay, persisted message sequences and upstream result reconciliation. It must
@@ -132,3 +140,96 @@ nonetheless the pinned production dependency is updated to 8.20.0. CI retains
 a production-only npm audit at moderate severity. Advisory reference:
 https://github.com/advisories/GHSA-2g4f-4pwh-qvx6 . An audit snapshot is not proof
 of overall application security; integrated regression work remains #8/#18.
+
+## Opt-in fixed-project Auth port (#31)
+
+`SupabaseAuthVerifier` in `src/supabase_auth.ts` resolves the existing verified
+identity port through a fixed trusted Supabase `/auth/v1/user` lookup. The server
+validates the access token; the adapter never authorizes from decoded JWT claims
+or metadata. Public deployment configuration, redirect/resource/cancellation
+rules, safe errors, test evidence and remaining hosted gates are specified in
+[AI_SUPABASE_AUTH.md](AI_SUPABASE_AUTH.md). No endpoint/provider/Auth strategy or
+application default is configured by this component.
+
+## Private PostgreSQL quota component (#31)
+
+The additive `20261022091000_ai_rate_limits.sql` implements a row-serialized
+shared per-user burst/daily budget for all five operations. Private invoker/ACL/
+RLS boundaries, confirmed-commit-before-dispatch requirements, clock behavior,
+SQL/native concurrency verification and remaining runtime binding are specified
+in [AI_POSTGRES_QUOTA.md](AI_POSTGRES_QUOTA.md). The TypeScript RateLimiter port
+is still mandatory; the opt-in Node driver binding is documented in
+AI_POSTGRES_RUNTIME.md. No endpoint or memory fallback is installed.
+
+## Private read-only text context component (#31)
+
+`20261022111500_ai_text_context.sql` adds service-only profile/active-curriculum
+projection and fresh post-provider revalidation for tutor/correction. Fixed bounds,
+whole-entry allowlists, strict shapes and SQL-role tests are documented in
+[AI_TEXT_CONTEXT.md](AI_TEXT_CONTEXT.md). No runtime ContextRepository/endpoint or
+conversation reservation/completion adapter is bound by this SQL component.
+
+The opt-in `PostgresTextContextRepository` now implements the two text-operation
+ContextRepository methods through those helpers. Fresh owned READ ONLY phases,
+strict result/ref/error checks and real-driver verification are specified in
+[AI_TEXT_CONTEXT_RUNTIME.md](AI_TEXT_CONTEXT_RUNTIME.md). Conversation methods
+remain explicitly unavailable; no host endpoint/default/provider is installed.
+
+The undeployed private conversation reserve/context helpers now atomically bind
+server identity/sequence and a durable per-session pending guard to the original
+receipt claim. This is not wired into the separate prepare/claim runtime ports;
+validated atomic completion is a separate undeployed SQL component. Coherent
+runtime acquisition/reconciliation remain pending. See
+[AI_CONVERSATION_RESERVATIONS.md](AI_CONVERSATION_RESERVATIONS.md) and
+[AI_CONVERSATION_COMPLETION.md](AI_CONVERSATION_COMPLETION.md).
+
+
+The explicit `AiDependencies.conversations` binding now selects one coherent
+`PostgresConversationStore` for lookup/acquire/complete. Confirmed atomic reserve
+COMMIT precedes provider dispatch; atomic SQL completion/COMMIT precedes success.
+No split text prepare/claim or legacy recovery fallback occurs in this lane.
+Pending stays unavailable until correlated reconciliation is implemented. Trusted
+owned connections, bounds/cancellation/native probes and remaining hosted gates:
+[AI_CONVERSATION_RUNTIME.md](AI_CONVERSATION_RUNTIME.md). No endpoint/default or
+live provider is installed; existing text/legacy fixture interfaces remain compatible.
+
+
+The private lookup-only saved correlation/context and token-internal atomic SQL
+reconciliation component is in
+[AI_CONVERSATION_RECONCILIATION.md](AI_CONVERSATION_RECONCILIATION.md). Existing
+pending runtime behavior stays fail-closed until a trusted upstream lookup verifier
+is installed; SQL correlation/fixture identity alone does not prove a genuine result.
+
+The host-only [PostgreSQL recovery driver](AI_CONVERSATION_RECOVERY_DRIVER.md)
+implements strict original-bound saved correlation/context lookup and atomic
+reconcile with confirmed COMMIT, owned deadlines and cancellation fencing. It is
+not wired into AiDependencies/AiService/defaults; pending still fails closed. Its
+database association checks do not authenticate a provider result. Trusted
+authenticated lookup-only verification/runtime integration and all hosted evidence
+remain outstanding; never substitute learner/model/legacy recovery echo as proof.
+
+The [opt-in correlated recovery coordinator](AI_CONVERSATION_RECOVERY_RUNTIME.md)
+now supplies explicit same-store runtime wiring and strict immutable association
+checks with bounded abort/deadline/COMMIT guards. It requires an injected trusted
+AuthenticatedConversationLookup that authenticates existing upstream results; no
+real adapter or default is configured. JSON/schema/metadata equality and test
+fixtures do not authenticate a provider. Existing pending remains unavailable
+without that explicit binding; no legacy fallback, claim renewal or redispatch.
+
+The additive [standalone Deno compatibility gate](AI_DENO_COMPATIBILITY.md)
+now runs the unchanged Node fixture suite on pinned Deno2.9.6, plus real loopback
+HTTP/disconnect/deadline/permission tests and required CI pg execution on Deno.
+Standalone CLI evidence does not establish Supabase Edge bundling/deployment/runtime
+version or real Auth/provider provenance. Every existing Node/security gate remains.
+Parent691a797 passed allfive jobs/every step in CI39831337442/latest attempt1; new
+Deno gates/native42 require their own source's exact-head checks. Defaults stay
+unconfigured, #31 open/#41 draft/all14 hosted learner release groups pending.
+
+See [AI_EDGE_USER_WORKER.md](AI_EDGE_USER_WORKER.md) for the separate TEST ONLY
+Supabase Edge bundle/main-to-user-isolate probe and its exact-head CI requirement.
+Standalone Deno evidence does not substitute for that execution or hosted proof.
+
+The explicit server composition is documented in [AI_TRUSTED_RUNTIME.md](AI_TRUSTED_RUNTIME.md).
+It requires caller configuration/provider and retains verified TLS/atomic transactions;
+no default endpoint or live provider is enabled. Parent Edge fixture evidence does
+not certify the new full PostgreSQL assembly inside an Edge worker.
