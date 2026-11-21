@@ -871,15 +871,13 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         refreshFailed = true;
       }
       await loggingOut.timeout(const Duration(seconds: 5));
-      _check(
-        refreshFailed &&
-            runtime.account.state.phase == AccountPhase.signedOut &&
-            runtime.account.readyRuntime == null &&
-            runtime.persistence.currentSession == null &&
-            await vault.readRefreshToken() == null &&
-            profileCalls == 1 &&
-            logoutCalls >= 2,
-      );
+      _check(refreshFailed);
+      _check(runtime.account.state.phase == AccountPhase.signedOut);
+      _check(runtime.account.readyRuntime == null);
+      _check(runtime.persistence.currentSession == null);
+      _check(await vault.readRefreshToken() == null);
+      _check(profileCalls == 1);
+      _check(logoutCalls >= 2);
       await pending();
 
       // A2 is the same owner but a distinct SDK session. Its own rotation must
