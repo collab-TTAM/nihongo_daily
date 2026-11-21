@@ -4183,6 +4183,10 @@
         },
         {
           "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "malformed server quiz continuation preserves accepted pages and retries the same cursor"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
           "contains": "late server quiz continuation cannot publish after account replacement"
         },
         {

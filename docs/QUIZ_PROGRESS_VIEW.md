@@ -228,3 +228,18 @@ case also verifies that an old error cannot poison the replacement retry state.
 This uses TEST ONLY account/history-reader ports. It does not establish hosted
 Auth identity, deployed Edge/PostgREST/RLS, physical multi-device sync or
 Personal Alpha learner acceptance; exact-head Flutter CI is required.
+
+
+## Malformed continuation recovery — 2026-11-21
+
+The overview decodes each continuation against the exact captured keyset cursor.
+A page with no rows but a non-null continuation cursor is rejected by the strict
+history-page decoder; the overview must not append that page or replace its
+accepted cursor. The learner keeps the previous summary and can explicitly retry
+the same cursor. A successful retry then appends only the validated next page.
+
+The regression uses a TEST ONLY reader sequence: valid first page, malformed
+empty continuation, then a valid page for the same cursor. It verifies that the
+20-row summary remains visible after the malformed response and that retry uses
+the identical received-at/event-ID pair before reaching 21 rows. This is client
+boundary evidence only, not hosted Edge/PostgREST/RLS or learner acceptance.

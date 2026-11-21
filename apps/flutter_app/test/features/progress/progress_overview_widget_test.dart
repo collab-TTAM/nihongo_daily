@@ -1133,6 +1133,69 @@ void main() {
   );
 
   testWidgets(
+    'malformed server quiz continuation preserves accepted pages and retries the same cursor',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final pages = _serverQuizContinuationPages();
+      final cursor = pages.first['next_cursor'];
+      final reader = _ServerHistoryReader()
+        ..responses = [
+          pages.first,
+          {'items': <Object?>[], 'next_cursor': cursor},
+          pages.last,
+        ];
+      await _mount(tester, harness, source, serverHistoryReader: reader);
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 1);
+      expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-more-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 2);
+      expect(
+        find.byKey(const Key('progress-server-quiz-more-error')),
+        findsOneWidget,
+      );
+      expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
+      expect(reader.queries[1].cursor?.receivedAt, isNotNull);
+      expect(
+        reader.queries[1].cursor?.clientEventId,
+        'a3000000-0000-4000-8000-000000000020',
+      );
+
+      await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 3);
+      expect(
+        reader.queries[2].cursor?.receivedAt,
+        reader.queries[1].cursor?.receivedAt,
+      );
+      expect(
+        reader.queries[2].cursor?.clientEventId,
+        reader.queries[1].cursor?.clientEventId,
+      );
+      expect(find.text('21 biên nhận đã tải · 20/21 câu đúng'), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress-server-quiz-more-error')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'late server quiz continuation cannot publish after account replacement',
     (tester) async {
       final harness = Harness();
