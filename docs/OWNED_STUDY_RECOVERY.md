@@ -17,9 +17,11 @@ invalidates old services; same-owner relogin uses a new captured service.
 
 The account and plan pages expose **Buổi học chờ đồng bộ** when configured and
 ready. /study-recovery initially shows no fabricated empty result. **Kiểm tra
-buổi học trên thiết bị** explicitly reads current-owner pending events from disk;
-it performs no RPC. Each event shows its original plan date, area and explicitly
-labeled UTC interval. No date inference, editable report fields or event ID input.
+buổi học trên thiết bị** reads one current-owner snapshot of pending and terminal
+rejection events from disk; it performs no RPC. Pending events show their original
+plan date, area and explicitly labeled UTC interval. Terminal rejections show a
+fixed safe reason and the original interval as read-only history. Acknowledged
+records are not shown. No date inference, editable report fields or event ID input.
 
 **Đồng bộ buổi học** submits that exact immutable event. Controls disable during
 the operation; there is no automatic retry, background replay or timer. Storage
@@ -33,8 +35,10 @@ Only a validated backend receipt followed by durable local acknowledgment shows
 never from the possibly historical receipt. A failed refresh after acknowledgment
 shows **Buổi học đã được ghi nhận. Chưa tải được tiến độ mới.** and no invented
 progress. A failed local acknowledgment cannot claim confirmation. Definitive
-rejections remain retained terminal codes; explicit rechecking removes them from
-the pending list. Navigation/restart begins with another explicit local check.
+rejections remain retained terminal codes; after the rejection append succeeds,
+the same screen refreshes its owner-scoped snapshot and displays a read-only
+reason with no resend control. If that local refresh fails, the explicit check
+remains available. Navigation/restart begins with another explicit local check.
 
 ## Shutdown ownership
 
@@ -54,7 +58,7 @@ fixture list feeds Flutter and both existing Linux/Windows process gates. The
 native tool also flushes in a child that exits without close, recovers exact
 reports in another process and verifies active/released process leases.
 
-Nine authored widget cases cover absent configuration, delayed profile/no RPC on
+Ten authored widget cases cover absent configuration, delayed profile/no RPC on
 check, duplicate controls/fresh totals, uncertain commit/manual exact retry,
 acknowledged-but-reload-failed, safe storage failures, account replacement with
 late completion, 320px/200-percent text and actual startup/account navigation.
@@ -109,3 +113,12 @@ access; full corrected-source execution is pending new exact-head CI.
 `StudySessionOperationDrain.track` now accepts an operation callback and reserves its completion future before invoking that callback. Recovery reads and submits therefore enter the runtime drain before any store or RPC implementation can synchronously reenter account shutdown. Once revoked, the drain rejects new reservations; draining no longer relies on a deferred microtask to discover work that has already started.
 
 The `reentrantShutdown` real-disk scenario makes `StudySessionStore.stage` synchronously start owner shutdown and then hold its durable write. Close remains pending until that exact stage settles, a later submit is rejected without invoking the store, the immutable pending event remains recoverable, and no RPC is dispatched under the revoked lease. The existing held-RPC shutdown scenario remains unchanged.
+
+
+## Terminal rejection visibility — 2026-11-21
+
+The recovery API now separates pending and rejected records in one immutable
+snapshot. The UI displays only fixed local explanations for the four definitive
+codes. Rejected events are never sent again from this screen; acknowledged
+events remain excluded. A newly persisted terminal rejection refreshes the
+snapshot immediately. No history is deleted, compacted or rewritten.

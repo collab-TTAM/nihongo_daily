@@ -33,10 +33,14 @@ Auth errors/readiness getter errors fail closed without exposing raw text.
    the event is confirmed but latest dashboard loading failed; the caller must
    display these separately. An already-acknowledged repeat only reloads the
    latest plan, without another mutation. No progress total is cached locally.
-5. Fresh-session recoverPending lists only that owner's pending immutable events.
-   It performs no RPC or automatic retry. Caller must expose explicit recovery
-   before allowing new potentially overlapping sessions. Logout never deletes
-   unresolved or other-owner records. Late old-owner results cannot be published.
+5. Fresh-session recover() performs one captured-owner read and returns an
+   immutable snapshot of pending events plus terminally rejected events. It
+   performs no RPC or automatic retry. Pending events retain the explicit exact
+   replay action; rejected events remain visible with fixed safe reasons and have
+   no resend action. Acknowledged records are excluded from both lists.
+   recoverPending() remains a compatibility projection for activity gates that
+   only need to block on pending work. Logout never deletes unresolved or
+   other-owner records. Late old-owner results cannot be published.
 
 Local owner IDs are isolation keys, not credentials or RPC authorization. The
 server still owns JWT validation, overlap/deduplication, elapsed-minute credit
@@ -116,3 +120,20 @@ isolation, immutable replay/conflict, terminal transitions, 1 MiB/512-record bou
 fixed storage failure, never an in-memory fallback. See BROWSER_STUDY_SESSION_STORE.md
 for Chrome checks and limitations. The component is not wired into default Auth,
 Daily Plan, automatic save/retry or multi-device sync.
+
+
+## Terminal rejection visibility — 2026-11-21
+
+The recovery screen now reads pending and terminal rejection history in one
+owner-scoped snapshot. A durable definitive rejection is moved out of the
+resendable list after the rejection append succeeds and is shown as a read-only
+row with a fixed Vietnamese explanation. SYNC_CONFLICT explicitly states that
+server progress remains authoritative. No raw backend text, event ID, token or
+owner ID is shown. Acknowledged records remain hidden; no local event is deleted
+or retried by this view.
+
+The new widget regression covers restored terminal history, exclusion of
+acknowledged rows, absence of resend controls for rejected rows, and immediate
+refresh after a newly persisted definitive rejection. TEST ONLY memory Auth/RPC
+fixtures prove presentation and local owner scoping only; native journal and
+hosted signed-JWT/multi-device acceptance remain separate.

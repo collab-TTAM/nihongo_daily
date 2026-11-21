@@ -95,6 +95,41 @@ final class StoredStudySession {
   bool get isPending => !acknowledged && rejection == null;
 }
 
+/// A terminal server rejection remains visible for reconciliation, never resend.
+final class RejectedStudySession {
+  const RejectedStudySession._({
+    required this.event,
+    required this.code,
+  });
+
+  final CompletedStudySession event;
+  final DailyPlanErrorCode code;
+
+  String get messageVi => switch (code) {
+    DailyPlanErrorCode.validationFailure =>
+      'Buổi học không hợp lệ. Bản ghi được giữ để đối chiếu, không tự động gửi lại.',
+    DailyPlanErrorCode.notFound =>
+      'Không tìm thấy kế hoạch hoặc phần học tương ứng. Kiểm tra kế hoạch trước khi tạo buổi mới.',
+    DailyPlanErrorCode.forbidden =>
+      'Máy chủ không cho phép ghi nhận buổi học này. Bản ghi được giữ để đối chiếu.',
+    DailyPlanErrorCode.syncConflict =>
+      'Buổi học xung đột với dữ liệu đã ghi nhận. Tiến độ máy chủ vẫn là nguồn chính.',
+    _ => 'Buổi học không được chấp nhận. Không tự động gửi lại.',
+  };
+}
+
+/// One owner-scoped read separates resendable events from terminal history.
+final class StudySessionRecoverySnapshot {
+  StudySessionRecoverySnapshot._({
+    required List<CompletedStudySession> pending,
+    required List<RejectedStudySession> rejected,
+  }) : pending = List.unmodifiable(pending),
+       rejected = List.unmodifiable(rejected);
+
+  final List<CompletedStudySession> pending;
+  final List<RejectedStudySession> rejected;
+}
+
 /// stage/acknowledge/reject resolve only after durable commit. Implementations
 /// serialize writes, preserve exact event identity, and fail closed on corruption.
 abstract interface class StudySessionStore {
@@ -172,10 +207,13 @@ final class DurableStudySessionRepository {
   Future<T> _track<T>(Future<T> Function() start) =>
       operations?.track(start) ?? start();
 
-  Future<List<CompletedStudySession>> recoverPending() =>
-      _track(_recoverPending);
+  Future<StudySessionRecoverySnapshot> recover() => _track(_recover);
 
-  Future<List<CompletedStudySession>> _recoverPending() async {
+  /// Compatibility projection used by activity gates that only need pending.
+  Future<List<CompletedStudySession>> recoverPending() async =>
+      (await recover()).pending;
+
+  Future<StudySessionRecoverySnapshot> _recover() async {
     final session = _capture();
     try {
       final records = await store.list(session.userId);
@@ -183,10 +221,21 @@ final class DurableStudySessionRepository {
       if (records.any((record) => record.userId != session.userId)) {
         throw const StudySessionStorageFailure();
       }
-      return List.unmodifiable([
-        for (final record in records)
-          if (record.isPending) record.event,
-      ]);
+      final pending = <CompletedStudySession>[];
+      final rejected = <RejectedStudySession>[];
+      for (final record in records) {
+        if (record.isPending) pending.add(record.event);
+        final code = record.rejection;
+        if (code != null) {
+          rejected.add(
+            RejectedStudySession._(event: record.event, code: code),
+          );
+        }
+      }
+      return StudySessionRecoverySnapshot._(
+        pending: pending,
+        rejected: rejected,
+      );
     } on DailyPlanFailure {
       rethrow;
     } on Object {

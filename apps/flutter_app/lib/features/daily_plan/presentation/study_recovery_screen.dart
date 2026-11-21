@@ -18,6 +18,7 @@ class StudyRecoveryScreen extends ConsumerStatefulWidget {
 
 class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
   List<CompletedStudySession>? _pending;
+  List<RejectedStudySession>? _rejected;
   StudySessionAcknowledgment? _ack;
   String? _error;
   bool _busy = false;
@@ -31,13 +32,14 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
     setState(() {
       _busy = true;
       _pending = null;
+      _rejected = null;
       _ack = null;
       _error = null;
     });
-    List<CompletedStudySession>? pending;
+    StudySessionRecoverySnapshot? snapshot;
     String? error;
     try {
-      pending = await service.recoverPending();
+      snapshot = await service.recover();
     } on DailyPlanFailure catch (failure) {
       error = failure.messageVi;
     } on StudySessionStorageFailure catch (failure) {
@@ -48,7 +50,8 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
     if (!_current(service)) return;
     setState(() {
       _busy = false;
-      _pending = pending;
+      _pending = snapshot?.pending;
+      _rejected = snapshot?.rejected;
       _error = error;
     });
   }
@@ -64,6 +67,7 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
       _error = null;
     });
     StudySessionAcknowledgment? acknowledgment;
+    StudySessionRecoverySnapshot? snapshot;
     String? error;
     try {
       acknowledgment = await service.submit(event);
@@ -71,6 +75,13 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
       error = isDefinitiveStudyRejection(failure)
           ? 'Buổi học không được chấp nhận. ${failure.messageVi} Bạn có thể kiểm tra lại danh sách.'
           : 'Chưa xác nhận được kết quả đồng bộ. ${failure.messageVi}';
+      if (isDefinitiveStudyRejection(failure)) {
+        try {
+          snapshot = await service.recover();
+        } on Object {
+          // Keep the original rejection message; the explicit check can retry.
+        }
+      }
     } on StudySessionStorageFailure catch (failure) {
       error = failure.toString();
     } on Object {
@@ -81,6 +92,10 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
       _busy = false;
       _ack = acknowledgment;
       _error = error;
+      if (snapshot != null) {
+        _pending = snapshot.pending;
+        _rejected = snapshot.rejected;
+      }
       if (acknowledgment != null) {
         _pending = _pending
             ?.where((e) => e.clientEventId != event.clientEventId)
@@ -94,6 +109,7 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
     final service = ref.watch(durableStudyRepositoryProvider);
     ref.listen(durableStudyRepositoryProvider, (_, next) {
       _pending = null;
+      _rejected = null;
       _ack = null;
       _error = null;
       _busy = false;
@@ -165,6 +181,41 @@ class _StudyRecoveryScreenState extends ConsumerState<StudyRecoveryScreen> {
                 ),
               ),
             ),
+          if (_rejected?.isNotEmpty ?? false) ...[
+            const SizedBox(height: 16),
+            const PageHeading(
+              title: 'Buổi học không được chấp nhận',
+              subtitle:
+                  'Bản ghi được giữ để đối chiếu. Không tự động gửi lại; tiến độ máy chủ là nguồn chính.',
+            ),
+            for (final rejected in _rejected!)
+              Card(
+                key: Key(
+                  'study-recovery-rejected-${rejected.event.clientEventId}',
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${dailyPlanAreaLabel(rejected.event.area)} · ${rejected.event.date.value}',
+                      ),
+                      const SizedBox(height: 8),
+                      Text('Bắt đầu: ${_utc(rejected.event.startedAt)}'),
+                      Text('Kết thúc: ${_utc(rejected.event.endedAt)}'),
+                      const SizedBox(height: 8),
+                      Text(
+                        rejected.messageVi,
+                        key: Key(
+                          'study-recovery-rejected-message-${rejected.event.clientEventId}',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => context.go('/plan'),

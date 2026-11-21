@@ -336,6 +336,68 @@ void main() {
   );
 
   testWidgets(
+    'terminal rejections remain visible after recovery and never offer resend',
+    (tester) async {
+      await prepareRecovery();
+      final rejected = studyEvent(2);
+      await memory.stage(account.owner, rejected);
+      await memory.reject(
+        account.owner,
+        rejected.clientEventId,
+        DailyPlanErrorCode.syncConflict,
+      );
+      final acknowledged = studyEvent(3);
+      await memory.stage(account.owner, acknowledged);
+      await memory.acknowledge(account.owner, acknowledged.clientEventId);
+
+      await mountRecovery(tester, harness: h, source: source);
+      await checkPending(tester);
+
+      final pendingId = studyEvent().clientEventId;
+      expect(
+        find.byKey(Key('study-recovery-rejected-${rejected.clientEventId}')),
+        findsOneWidget,
+      );
+      expect(find.textContaining('xung đột'), findsOneWidget);
+      expect(
+        find.byKey(Key('study-recovery-send-${rejected.clientEventId}')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(
+          Key('study-recovery-rejected-${acknowledged.clientEventId}'),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byKey(Key('study-recovery-send-${acknowledged.clientEventId}')),
+        findsNothing,
+      );
+      expect(find.byKey(Key('study-recovery-send-$pendingId')), findsOneWidget);
+      expect(server.writes, 0);
+
+      server.writeFailure = const DailyPlanFailure(
+        DailyPlanErrorCode.syncConflict,
+      );
+      await sendPending(tester);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(Key('study-recovery-rejected-$pendingId')),
+        findsOneWidget,
+      );
+      expect(find.byKey(Key('study-recovery-send-$pendingId')), findsNothing);
+      expect(
+        find.byKey(Key('study-recovery-rejected-${rejected.clientEventId}')),
+        findsOneWidget,
+      );
+      expect(find.text('Không có buổi học chờ đồng bộ.'), findsOneWidget);
+      expect(server.writes, 1);
+      expect(find.textContaining('PRIVATE'), findsNothing);
+    },
+  );
+
+  testWidgets(
     'narrow layout and large text preserve pending and confirmation',
     (tester) async {
       await prepareRecovery();

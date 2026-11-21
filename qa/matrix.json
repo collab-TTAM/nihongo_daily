@@ -5019,6 +5019,32 @@
         11,
         18
       ]
+    },
+    {
+      "id": "completed-study-terminal-rejection-history",
+      "status": "automated-baseline",
+      "scope": "One captured-owner recovery read separates pending immutable study events from terminal rejections. The UI shows fixed safe reasons for rejected events, excludes acknowledged records and never offers rejected events for resend.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/daily_plan/data/durable_study_session_repository.dart",
+          "contains": "Future<StudySessionRecoverySnapshot> recover()"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/daily_plan/presentation/study_recovery_screen.dart",
+          "contains": "study-recovery-rejected-message-"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_recovery_widget_test.dart",
+          "contains": "terminal rejections remain visible after recovery and never offer resend"
+        }
+      ],
+      "issues": [
+        11,
+        15
+      ],
+      "reproduce": "From apps/flutter_app run flutter test test/features/daily_plan/study_recovery_widget_test.dart test/features/daily_plan/study_session_recovery_test.dart; then inspect every job and required step on the exact PR head.",
+      "limitation": "The widget uses TEST ONLY in-memory Auth/RPC/storage fixtures and proves owner-scoped presentation only. It does not prove hosted JWT/RLS, physical-device restart, cross-device sync, retention policy or Personal Alpha learner acceptance."
     }
   ],
   "findings": [
