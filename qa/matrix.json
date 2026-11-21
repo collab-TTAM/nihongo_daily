@@ -5045,6 +5045,28 @@
       ],
       "reproduce": "From apps/flutter_app run flutter test test/features/daily_plan/study_recovery_widget_test.dart test/features/daily_plan/study_session_recovery_test.dart; then inspect every job and required step on the exact PR head.",
       "limitation": "The widget uses TEST ONLY in-memory Auth/RPC/storage fixtures and proves owner-scoped presentation only. It does not prove hosted JWT/RLS, physical-device restart, cross-device sync, retention policy or Personal Alpha learner acceptance."
+    },
+    {
+      "id": "daily-plan-profile-timezone-replacement",
+      "status": "automated-baseline",
+      "scope": "A pending /plan read is discarded after the same owner's profile timezone changes even when the source returns the same repository object; a fresh explicit read remains visible and late success/failure cannot overwrite it.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/lib/features/daily_plan/presentation/daily_plan_screen.dart",
+          "contains": "account.profile?.timezone == timezone"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/daily_plan_widget_test.dart",
+          "contains": "same-owner timezone replacement fences late response when repository is reused"
+        }
+      ],
+      "issues": [
+        11,
+        18
+      ],
+      "reproduce": "From apps/flutter_app run `flutter test test/features/daily_plan/daily_plan_widget_test.dart`, then `flutter analyze`; inspect every exact-head Actions job and required step.",
+      "limitation": "TEST ONLY Auth/profile and fixed-repository ports. This verifies the /plan view-generation fence, not hosted signed-JWT profile updates, deployed PostgREST/RLS, multi-device synchronization or Personal Alpha learner acceptance."
     }
   ],
   "findings": [

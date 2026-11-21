@@ -12840,3 +12840,13 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Bounded TEST ONLY correction: the pagination test now injects an in-memory N5 vocabulary repository instead of invoking the default bundled asset loader, and clones the nested cursor map for the malformed response. It continues to assert the accepted 20-row summary, rejected empty continuation, visible error, unchanged cursor and exact successful retry to 21 rows; it additionally asserts the injected content source was used. No production behavior or CI gates changed.
 - Cloud authoring runtime has no Flutter/Dart SDK; local format/analyze/test/build were not run. The new exact-head Actions run is the verification gate. PR remains Draft; #11 remains open until valid study-session persistence/aggregation and hosted learner acceptance are complete.
 - Next: inspect every latest-attempt job and step on the new exact HEAD. Repair only observed failures; do not count skipped jobs or parent-head checks as passes. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, Windows hosted restart/expiry, physical multi-device sync and the complete learner journey remain unproven.
+
+
+## PR #41 — /plan same-owner timezone late-response fence — 2026-11-21T10:13Z
+
+- Core run `core-20261121T1013Z-daily-plan-timezone-view-fence` resumes Draft PR #41 on `automation/issue-11-plan-sdk-integration`, parent HEAD `9dfb54a543fdba96d1d564e4d42f010f0ea5a070`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Hardened `DailyPlanScreen` to capture ready owner, profile timezone, repository identity and view generation; account phase/owner/timezone or repository replacement clears the view. Late success and late failure are suppressed even when a fixed source reuses the same repository object.
+- Added two widget regression variants (late success / late failure), one QA inventory case, and documented the client-only boundary in `docs/DAILY_PLAN_UI.md`. No RPC, schema, RLS, Auth strategy, default runtime or Pro-owned N4/content files changed.
+- Flutter SDK is not available in the cloud authoring runtime; no local Flutter formatter/analyzer/widget/build result is claimed. A new exact-head Actions run is required; this checkpoint does not claim CI success.
+- PR #37 remains Draft at `6993479cc1391d1fd1f1b43be742be5387a910d0`; exact-head [Actions 44849012716](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44849012716) passed all six jobs and every returned step. This is component CI, not hosted learner A/B or deployed RLS evidence.
+- Next: inspect every job and required step on the new PR #41 HEAD. Keep #11/#13/#18 open and PR #41 Draft until hosted learner A/B, deployed PostgREST/RLS, physical multi-device sync and complete learner flows are evidenced.

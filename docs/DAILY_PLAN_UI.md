@@ -52,6 +52,18 @@ and excluded from focus during revocation/owned exit. This preserves its binding
 observer until the existing cancelable OS-exit snapshot finishes; no lifecycle
 or forced-exit bypass is added.
 
+## Same-owner profile-timezone replacement fence
+
+The /plan screen captures the ready profile owner, profile timezone, repository
+identity and view generation before an explicit read. A profile phase/owner/
+timezone change invalidates the view and clears its date/result/loading state,
+even if a test or future source returns the same repository object. The captured
+read can publish neither late success nor late failure into the replacement
+profile's calendar view. The learner must choose a date and explicitly load again.
+
+This is a client presentation fence only. It does not update the profile, change
+the server plan, infer a new local date, or establish hosted identity/RLS evidence.
+
 ## Authored evidence and limits
 
 Ten Flutter widget cases cover unconfigured routing, delayed profile publication

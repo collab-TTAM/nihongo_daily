@@ -21,21 +21,23 @@ final class PlanSource implements DailyPlanRepositorySource {
   int creations = 0;
   int requests = 0;
   Map<String, Object>? parameters;
+  DailyPlanRepository? fixedRepository;
   Future<Object?> Function() response = () async => planJson();
   @override
   DailyPlanRepository? createDailyPlanRepository() {
     creations++;
     final runtime = harness.runtime.readyRuntime;
     if (runtime == null) return null;
-    return DailyPlanRepository(
-      PlanGateway(() => identical(harness.runtime.readyRuntime, runtime), (
-        value,
-      ) {
-        requests++;
-        parameters = value;
-        return response();
-      }),
-    );
+    return fixedRepository ??
+        DailyPlanRepository(
+          PlanGateway(() => identical(harness.runtime.readyRuntime, runtime), (
+            value,
+          ) {
+            requests++;
+            parameters = value;
+            return response();
+          }),
+        );
   }
 }
 
@@ -299,6 +301,73 @@ void main() {
         await loadPlan(tester);
         await tester.pumpAndSettle();
         expect(find.text('9/120 phút'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  for (final lateError in [false, true]) {
+    testWidgets(
+      'same-owner timezone replacement fences late response when repository is reused (error=$lateError)',
+      (tester) async {
+        final h = Harness();
+        final pending = Completer<Object?>();
+        final source = PlanSource(h)..response = () => pending.future;
+        final repository = DailyPlanRepository(
+          PlanGateway(
+            () => true,
+            (parameters) {
+              source.requests++;
+              source.parameters = parameters;
+              return source.response();
+            },
+          ),
+        );
+        source.fixedRepository = repository;
+        final container = await mountPlan(tester, harness: h, source: source);
+
+        await loadPlan(tester);
+        expect(source.requests, 1);
+        expect(
+          identical(container.read(dailyPlanRepositoryProvider), repository),
+          isTrue,
+        );
+
+        h.profileTimezone = 'Asia/Ho_Chi_Minh';
+        h.access.change(fixture.owner);
+        await tester.pumpAndSettle();
+        expect(
+          identical(container.read(dailyPlanRepositoryProvider), repository),
+          isTrue,
+        );
+        expect(find.textContaining('Asia/Ho_Chi_Minh'), findsOneWidget);
+        expect(find.byKey(const Key('plan-progress')), findsNothing);
+        expect(find.byKey(const Key('plan-error')), findsNothing);
+        expect(
+          tester
+              .widget<TextField>(find.byKey(const Key('plan-date')))
+              .controller!
+              .text,
+          isEmpty,
+        );
+
+        source.response = () async => planJson()..['completed_minutes'] = 50;
+        await loadPlan(tester);
+        await tester.pumpAndSettle();
+        expect(source.requests, 2);
+        expect(find.text('50/120 phút'), findsOneWidget);
+
+        if (lateError) {
+          pending.completeError(StateError('PRIVATE OLD PLAN'));
+        } else {
+          pending.complete(planJson()..['completed_minutes'] = 45);
+        }
+        await tester.pumpAndSettle();
+        expect(find.text('50/120 phút'), findsOneWidget);
+        expect(find.text('45/120 phút'), findsNothing);
+        expect(find.byKey(const Key('plan-error')), findsNothing);
+        expect(find.textContaining('PRIVATE OLD PLAN'), findsNothing);
+        expect(source.requests, 2);
         expect(tester.takeException(), isNull);
       },
     );

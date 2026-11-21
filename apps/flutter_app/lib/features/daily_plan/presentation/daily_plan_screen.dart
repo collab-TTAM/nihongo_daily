@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/page_body.dart';
+import '../../auth/application/account_controller.dart';
 import '../../auth/application/account_provider.dart';
 import '../application/daily_plan_provider.dart';
 import '../data/daily_plan_repository.dart';
@@ -22,9 +23,44 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
   String? _message;
   bool _loading = false;
 
+  int _generation = 0;
+
+  void _clearForReplacement() {
+    _generation++;
+    _date.clear();
+    _plan = null;
+    _message = null;
+    _loading = false;
+  }
+
+  bool _isCurrent({
+    required DailyPlanRepository repository,
+    required String owner,
+    required String timezone,
+    required int generation,
+  }) {
+    if (!mounted || generation != _generation) return false;
+    final account = ref.read(accountStateProvider);
+    return account.phase == AccountPhase.ready &&
+        account.profile?.id == owner &&
+        account.profile?.timezone == timezone &&
+        identical(ref.read(dailyPlanRepositoryProvider), repository) &&
+        repository.isCurrent;
+  }
+
   Future<void> _load() async {
     if (_loading) return;
-    DailyPlanDate date;
+    final account = ref.read(accountStateProvider);
+    final profile = account.profile;
+    final repository = ref.read(dailyPlanRepositoryProvider);
+    if (account.phase != AccountPhase.ready ||
+        profile == null ||
+        repository == null ||
+        !repository.isCurrent) {
+      return;
+    }
+
+    final DailyPlanDate date;
     try {
       date = DailyPlanDate(_date.text.trim());
     } on FormatException {
@@ -34,13 +70,16 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
       });
       return;
     }
-    final repository = ref.read(dailyPlanRepositoryProvider);
-    if (repository == null) return;
+
+    final owner = profile.id;
+    final timezone = profile.timezone;
+    final generation = _generation;
     setState(() {
       _loading = true;
       _plan = null;
       _message = null;
     });
+
     DailyPlan? plan;
     String? message;
     try {
@@ -50,8 +89,13 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
     } on Object {
       message = 'Chưa thể tải kế hoạch học. Vui lòng thử lại.';
     }
-    if (!mounted ||
-        !identical(ref.read(dailyPlanRepositoryProvider), repository)) {
+
+    if (!_isCurrent(
+      repository: repository,
+      owner: owner,
+      timezone: timezone,
+      generation: generation,
+    )) {
       return;
     }
     setState(() {
@@ -60,7 +104,6 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
       _message = message;
     });
   }
-
   @override
   void dispose() {
     _date.clear();
@@ -70,15 +113,23 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final account = ref.watch(accountStateProvider);
     final repository = ref.watch(dailyPlanRepositoryProvider);
     final study = ref.watch(durableStudyRepositoryProvider);
-    final profile = ref.watch(accountStateProvider).profile;
-    final ready = repository != null && profile != null;
-    ref.listen(dailyPlanRepositoryProvider, (_, next) {
-      _date.clear();
-      _plan = null;
-      _message = null;
-      _loading = false;
+    final profile = account.profile;
+    final ready =
+        account.phase == AccountPhase.ready &&
+        repository != null &&
+        profile != null;
+    ref.listen(dailyPlanRepositoryProvider, (_, _) {
+      _clearForReplacement();
+    });
+    ref.listen(accountStateProvider, (previous, next) {
+      if (previous?.phase != next.phase ||
+          previous?.profile?.id != next.profile?.id ||
+          previous?.profile?.timezone != next.profile?.timezone) {
+        _clearForReplacement();
+      }
     });
     final plan = ready ? _plan : null;
     return PageBody(
