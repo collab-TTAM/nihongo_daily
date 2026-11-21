@@ -485,6 +485,103 @@
           "explanation_vi": "Bài đọc nói tôi mua đôi giày mới."
         }
       ]
+    },
+    {
+      "id": "n5-sunday-meal-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "日曜日の昼ごはん",
+      "title_vi": "Bữa trưa Chủ nhật",
+      "text_ja": "日曜日、私は母とスーパーへ行きました。牛乳と卵を買いました。それから、パンも買いました。家で母と昼ごはんを作りました。昼ごはんはとてもおいしかったです。",
+      "reading_ja": "にちようび、わたしはははとすーぱーへいきました。ぎゅうにゅうとたまごをかいました。それから、ぱんもかいました。いえでははとひるごはんをつくりました。ひるごはんはとてもおいしかったです。",
+      "translation_vi": "Chủ nhật, tôi đi siêu thị cùng mẹ. Tôi mua sữa và trứng. Sau đó, tôi cũng mua bánh mì. Ở nhà, tôi cùng mẹ nấu bữa trưa. Bữa trưa rất ngon.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "いつスーパーへ行きましたか。",
+          "reading_ja": "いつすーぱーへいきましたか。",
+          "prompt_vi": "Tôi đã đi siêu thị vào ngày nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "日曜日",
+              "reading_ja": "にちようび",
+              "text_vi": "Chủ nhật"
+            },
+            {
+              "id": "b",
+              "text_ja": "土曜日",
+              "reading_ja": "どようび",
+              "text_vi": "Thứ Bảy"
+            },
+            {
+              "id": "c",
+              "text_ja": "月曜日",
+              "reading_ja": "げつようび",
+              "text_vi": "Thứ Hai"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Câu đầu tiên cho biết tôi đi siêu thị vào Chủ nhật."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "だれとスーパーへ行きましたか。",
+          "reading_ja": "だれとすーぱーへいきましたか。",
+          "prompt_vi": "Tôi đã đi siêu thị cùng ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "友だち",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            },
+            {
+              "id": "c",
+              "text_ja": "先生",
+              "reading_ja": "せんせい",
+              "text_vi": "Giáo viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi siêu thị cùng mẹ."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "昼ごはんはどうでしたか。",
+          "reading_ja": "ひるごはんはどうでしたか。",
+          "prompt_vi": "Bữa trưa thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "高かったです",
+              "reading_ja": "たかかったです",
+              "text_vi": "Đắt"
+            },
+            {
+              "id": "b",
+              "text_ja": "おいしかったです",
+              "reading_ja": "おいしかったです",
+              "text_vi": "Ngon"
+            },
+            {
+              "id": "c",
+              "text_ja": "冷たかったです",
+              "reading_ja": "つめたかったです",
+              "text_vi": "Lạnh"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Câu cuối nói bữa trưa rất ngon."
+        }
+      ]
     }
   ]
 }

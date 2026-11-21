@@ -12869,3 +12869,14 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Exact parent-head [Actions 44897912171](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44897912171) completed all six jobs and all 127 returned steps SUCCESS, with no skipped/pending/failing step. That run predates this source change. Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/Flutter tests/builds were not run. A new exact-head Actions run is required before claiming this regression passed.
 - No Auth/provider strategy, API wire, SQL/schema/RLS, default activation, dependencies, CI gates, N4/Pro-owned #14/#38/content, hosted secrets, merge, deployment or release changes. Keep #11/#15/#18 open; hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical multi-device sync and full learner journey remain unproven.
 - Next: inspect every latest-attempt job and required step on the new exact HEAD; fix only observed failures. Keep PR #41 Draft until complete issue and Personal Alpha acceptance are evidenced.
+
+ 
+## N5 reading passage expansion — 2026-11-21T23:11Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`, parent `c873c62a310d5345a3cdf9260c0adfcc94e7a836`; bounded Issue #34 increment.
+- Added `n5-sunday-meal-01` to `apps/flutter_app/assets/reading/catalog.json`: one original N5 passage, three deterministic source-grounded comprehension questions, kana readings and Vietnamese explanations. Total bundled N5 reading draft is now six passages / 18 questions.
+- Extended `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart` to assert the new asset fields and include the passage in the deterministic completed-round regression. Updated `docs/READING_MATERIAL.md` and the `study-flows` QA limitation/scope. The QA case remains `pending-integration`.
+- N5 content is an unreviewed original draft, not independently linguistically reviewed, licensed corpus evidence or a claim of complete JLPT N5 coverage. No N4/Pro-owned content, manifest, README, content tests or N4 docs were changed. No audio, server LISTENING_READING availability, study-minute credit, mastery or SRS behavior is enabled.
+- Parent exact-head [Actions 44903521537](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44903521537) passed all six jobs/every step on `c873c62`; this does not verify the new content/test. The cloud authoring runtime has no Flutter/Dart SDK, so local Flutter format/analyze/test/build was not run. New exact-head CI is required.
+- Next: inspect all latest-attempt jobs and every step on the new commit; fix only actual diagnostics while retaining N5/N4 isolation and the strict content validator. Keep #34/#26/#18 open and PR #41 Draft pending independent review, reviewed N5 coverage, audio availability, hosted study-plan integration and learner evidence.
+

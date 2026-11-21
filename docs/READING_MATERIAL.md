@@ -7,6 +7,20 @@ and integrated. No audio or default study-session writer is installed. Frozen v0
 No canonical N5/N4 asset, content manifest or Pro-owned content/test is modified.
 Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
+## Current bundled N5 draft set
+
+The fixed app asset currently contains six original N5 draft passages and 18
+deterministic comprehension questions. The latest addition is
+`n5-sunday-meal-01` (日曜日の昼ごはん), a short family-shopping/lunch passage
+with three source-grounded questions. Its content version is 1 and its source
+note continues to disclose that a teacher or native speaker has not reviewed it.
+
+This is a small reading-flow content increment, not complete N5 coverage,
+official JLPT alignment, independent linguistic review or licensing approval.
+N4 remains outside this core change and must follow the separately owned Pro
+content review/integration. Audio is still unavailable; this passage cannot
+unlock LISTENING_READING, create study-minute credit, mastery or SRS progress.
+
 ## Local import format v1
 
 `decodeReadingMaterial(source, level)` accepts exactly `schema_version: 1` and

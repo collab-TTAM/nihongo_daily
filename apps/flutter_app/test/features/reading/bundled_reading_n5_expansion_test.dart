@@ -41,8 +41,24 @@ void main() {
     expect(passage.questions, hasLength(3));
   });
 
+  test('bundled N5 expansion includes the Sunday lunch passage', () {
+    final passage = passages.singleWhere(
+      (entry) => entry.id == 'n5-sunday-meal-01',
+    );
+
+    expect(passages, hasLength(6));
+    expect(passage.titleJa, '日曜日の昼ごはん');
+    expect(passage.titleVi, 'Bữa trưa Chủ nhật');
+    expect(passage.contentVersion, 1);
+    expect(passage.reading, contains('にちようび'));
+    expect(passage.reading, contains('ぎゅうにゅう'));
+    expect(passage.vietnamese, contains('Bữa trưa'));
+    expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
+    expect(passage.questions, hasLength(3));
+  });
+
   test('new N5 comprehension keys complete deterministic rounds', () {
-    for (final id in ['n5-library-study-01', 'n5-rainy-day-01']) {
+    for (final id in ['n5-library-study-01', 'n5-rainy-day-01', 'n5-sunday-meal-01']) {
       final passage = passages.singleWhere((entry) => entry.id == id);
       final round = ReadingRound(passage);
       for (final question in passage.questions) {

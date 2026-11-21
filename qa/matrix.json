@@ -957,14 +957,14 @@
     {
       "id": "study-flows",
       "status": "pending-integration",
-      "scope": "Vocabulary/grammar and listening/reading learner screens",
+      "scope": "N5 bundled reading now includes six original draft passages and 18 deterministic comprehension questions; vocabulary/grammar and listening/reading learner screens still need reviewed curriculum and end-to-end integration.",
       "issues": [
         12,
         34,
         18
       ],
       "reproduce": "Select actual N5/N4 items, display readings/examples/meaning, load/error/empty/offline, complete validated study session; verify no simulated audio/completion.",
-      "limitation": "Curriculum exports are not yet integrated; listening/reading needs its own implementation coverage."
+      "limitation": "N5 reading passages remain unreviewed drafts; N4 is separately Pro-owned; audio is unavailable and LISTENING_READING remains server-BLOCKED, so no listening completion or study-minute credit. Hosted learner and release evidence remain pending."
     },
     {
       "id": "n5-coverage",
