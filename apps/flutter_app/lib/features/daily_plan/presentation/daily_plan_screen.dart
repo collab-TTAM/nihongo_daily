@@ -104,6 +104,7 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
       _message = message;
     });
   }
+
   @override
   void dispose() {
     _date.clear();

@@ -314,14 +314,11 @@ void main() {
         final pending = Completer<Object?>();
         final source = PlanSource(h)..response = () => pending.future;
         final repository = DailyPlanRepository(
-          PlanGateway(
-            () => true,
-            (parameters) {
-              source.requests++;
-              source.parameters = parameters;
-              return source.response();
-            },
-          ),
+          PlanGateway(() => true, (parameters) {
+            source.requests++;
+            source.parameters = parameters;
+            return source.response();
+          }),
         );
         source.fixedRepository = repository;
         final container = await mountPlan(tester, harness: h, source: source);
