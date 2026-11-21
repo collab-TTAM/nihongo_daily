@@ -125,7 +125,9 @@ class PreviewPackageTest(unittest.TestCase):
                         modified = original | {key: value}
                         path.write_text(json.dumps(modified), encoding='utf-8')
                         self.assertEqual(verify(extracted), modified)
-                        with self.assertRaisesRegex(ValueError, 'provenance mismatch'):
+                        expected_error = ('future CI attempt' if key == 'run_attempt'
+                                           else 'provenance mismatch')
+                        with self.assertRaisesRegex(ValueError, expected_error):
                             verify_ci(extracted, platform, self.source,
                                       self.checkout, self.run, 2)
                         path.write_text(json.dumps(original), encoding='utf-8')
@@ -139,6 +141,17 @@ class PreviewPackageTest(unittest.TestCase):
         path.write_text(json.dumps(manifest), encoding='utf-8')
         with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
             verify(self.root)
+
+    def test_retry_accepts_artifact_from_earlier_attempt_of_same_workflow(self):
+        for platform in ['web', 'windows']:
+            with self.subTest(platform=platform), tempfile.TemporaryDirectory() as temp:
+                self.root = Path(temp)
+                self.build(platform)
+                produced = self.package(platform, attempt=1)
+                verified = verify_ci(self.root, platform, self.source,
+                                     self.checkout, self.run, 2)
+                self.assertEqual(verified, produced)
+                self.assertEqual(verified['run_attempt'], 1)
 
     def test_ci_cli_and_standalone_download_verification(self):
         self.build()
@@ -162,11 +175,15 @@ class PreviewPackageTest(unittest.TestCase):
                                    '--platform', 'web', '--verify-ci'], cwd=repo, env=env,
                                   capture_output=True)
         self.assertEqual(verified.returncode, 0, verified.stderr)
-        rejected = subprocess.run([sys.executable, str(script), '--root', str(self.root),
-                                   '--platform', 'web', '--verify-ci'], cwd=repo,
-                                  env=env | {'GITHUB_RUN_ATTEMPT': '3'}, capture_output=True)
-        self.assertNotEqual(rejected.returncode, 0)
-        self.assertIn(b'Preview provenance mismatch', rejected.stderr)
+        retried = subprocess.run([sys.executable, str(script), '--root', str(self.root),
+                                  '--platform', 'web', '--verify-ci'], cwd=repo,
+                                 env=env | {'GITHUB_RUN_ATTEMPT': '3'}, capture_output=True)
+        self.assertEqual(retried.returncode, 0, retried.stderr)
+        future = subprocess.run([sys.executable, str(script), '--root', str(self.root),
+                                 '--platform', 'web', '--verify-ci'], cwd=repo,
+                                env=env | {'GITHUB_RUN_ATTEMPT': '1'}, capture_output=True)
+        self.assertNotEqual(future.returncode, 0)
+        self.assertIn(b'future CI attempt', future.stderr)
 
 
 

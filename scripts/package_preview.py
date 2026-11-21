@@ -94,9 +94,14 @@ def verify_ci(root, platform, source, checkout, run_url, attempt):
         raise ValueError('Invalid expected platform')
     manifest = verify(root)
     expected = {'platform': platform, 'source_head_sha': source,
-                'checkout_sha': checkout, 'ci_run_url': run_url, 'run_attempt': attempt}
+                'checkout_sha': checkout, 'ci_run_url': run_url}
     if any(manifest[key] != value for key, value in expected.items()):
         raise ValueError('Preview provenance mismatch')
+    # A single-job rerun reuses artifacts from earlier attempts of this same run.
+    # The producer attempt is recorded in the manifest; it may not be newer than
+    # the verifier, while run/source/checkout/platform identity must still match.
+    if manifest['run_attempt'] > attempt:
+        raise ValueError('Preview artifact was produced by a future CI attempt')
     return manifest
 
 

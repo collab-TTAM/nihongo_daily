@@ -72,8 +72,14 @@ Checksums detect changed/missing/extra visible files; they are not a signature o
 proof that all CI jobs passed. Compare provenance with the exact GitHub run.
 CI also downloads each preview by the exact artifact ID returned by its upload,
 then checks the extracted bytes and platform/source/checkout/run/attempt against
-the current runner using `--verify-ci`. That step must pass on the chosen run;
-the mere existence of an artifact still does not imply successful CI.
+the current runner using `--verify-ci`. When only the verifier job is rerun, an
+artifact may have been produced by an earlier attempt of that same workflow run;
+verification accepts that recorded producer attempt only when it is not newer
+than the current attempt and all other provenance fields match exactly. The
+manifest continues to report the producer attempt. Future-attempt artifacts,
+other runs, source/checkout mismatches and changed bytes are rejected. That step
+must pass on the chosen run; the mere existence of an artifact still does not
+imply successful CI.
 The default preview remains unconfigured; these bundles do not establish hosted
 Auth/save/AI, Windows interactive smoke or Personal Alpha acceptance.
 
