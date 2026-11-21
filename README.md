@@ -34,3 +34,6 @@ QA/security and Personal Alpha release gates are maintained in `qa/matrix.json`
 and `docs/QA_SECURITY_MATRIX.md`. Run `python3 scripts/verify_qa.py` and
 `python3 -m unittest discover -s qa -p 'test_*.py' -v`; inventory success is not
 a release claim. Saved exact-head Actions evidence can be checked separately.
+
+The local SQL submit_review transaction, typed Dart repository and outstanding UI/Auth
+integration are documented in `docs/SRS_RPC.md`; #22 is still open.

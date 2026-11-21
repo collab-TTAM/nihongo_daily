@@ -1,0 +1,7 @@
+# PR #37 formatter re-diagnosis — 2026-11-18T10:13Z
+
+- Run `core-20261118T1013Z-pr37-investigate-repeat-dart-format-failure`; branch `automation/issue-22-atomic-review`; parent `e610288c5e23ce94b36dc457fd41a2323fdb2477`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44274083964](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44274083964), attempt 1, completed with repo-sanity, AI boundary, database/RLS, Windows and disposable Supabase integration successful. Flutter failed strict Dart 3.35.4 format on `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`; every downstream Flutter step was skipped.
+- Prior diagnostic [44265761049](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44265761049) on `5160ada` showed three formatter hunks already applied in `e610288`. Since the exact-head gate still reports one changed file, this commit adds a non-mutating `dart format --output=show | diff` diagnostic before the unchanged strict format gate.
+- No assertion, production Auth/vault behavior, SDK/provider strategy, schema/RLS, default runtime, staging dispatch/secrets or Pro-owned content changed. Diagnostic output is not test-pass evidence.
+- No pinned Flutter/Dart SDK is available in the cloud authoring runtime; no local format/analyze/test/build is claimed. Next: read the exact new diff, apply only its formatter output, remove the temporary diagnostic, then rerun full exact-head CI.

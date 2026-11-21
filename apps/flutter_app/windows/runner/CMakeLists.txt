@@ -8,6 +8,9 @@ project(runner LANGUAGES CXX)
 # Any new source files that you add to the application should be added here.
 add_executable(${BINARY_NAME} WIN32
   "flutter_window.cpp"
+  "session_credential_vault.cpp"
+  "session_vault_channel.cpp"
+  "review_data_directory.cpp"
   "main.cpp"
   "utils.cpp"
   "win32_window.cpp"
@@ -30,10 +33,18 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_BUILD=${FLUTT
 # Disable Windows macros that collide with C++ standard library functions.
 target_compile_definitions(${BINARY_NAME} PRIVATE "NOMINMAX")
 
+# Test-only native fault injection is opt-in and OFF for every normal build.
+option(ND_SESSION_VAULT_TEST_HOOKS
+  "Enable TEST ONLY Windows credential fault injection for the bridge fixture" OFF)
+if(ND_SESSION_VAULT_TEST_HOOKS)
+  target_compile_definitions(${BINARY_NAME} PRIVATE "NIHONGO_SESSION_VAULT_TEST_HOOKS")
+endif()
+
 # Add dependency libraries and include directories. Add any application-specific
 # dependencies here.
 target_link_libraries(${BINARY_NAME} PRIVATE flutter flutter_wrapper_app)
 target_link_libraries(${BINARY_NAME} PRIVATE "dwmapi.lib")
+target_link_libraries(${BINARY_NAME} PRIVATE "advapi32.lib" "shell32.lib" "ole32.lib" "bcrypt.lib" "uuid.lib")
 target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # Run the Flutter tool portions of the build. This must not be removed.
