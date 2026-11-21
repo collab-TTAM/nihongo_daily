@@ -97,10 +97,7 @@ final class StoredStudySession {
 
 /// A terminal server rejection remains visible for reconciliation, never resend.
 final class RejectedStudySession {
-  const RejectedStudySession._({
-    required this.event,
-    required this.code,
-  });
+  const RejectedStudySession._({required this.event, required this.code});
 
   final CompletedStudySession event;
   final DailyPlanErrorCode code;
@@ -227,9 +224,7 @@ final class DurableStudySessionRepository {
         if (record.isPending) pending.add(record.event);
         final code = record.rejection;
         if (code != null) {
-          rejected.add(
-            RejectedStudySession._(event: record.event, code: code),
-          );
+          rejected.add(RejectedStudySession._(event: record.event, code: code));
         }
       }
       return StudySessionRecoverySnapshot._(
