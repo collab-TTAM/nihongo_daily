@@ -269,6 +269,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   http.Response? capturedLateProfile;
   var profileResponseReleased = false;
   final profileOwners = <String>[];
+  final logoutRequests = <http.Request>[];
+  String? a1AuthorizationForLogout;
   var displayName = '学習者';
 
   String accessToken() {
@@ -368,7 +370,13 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           if (authCalls == 1) {
             _check(logoutCalls == 0);
           } else {
-            _check(authCalls == 3 && logoutCalls >= 2);
+            _check(
+              authCalls == 3 &&
+                  logoutCalls == 1 &&
+                  logoutRequests.length == 1 &&
+                  logoutRequests.single.headers['authorization'] ==
+                      a1AuthorizationForLogout,
+            );
           }
         }
         if (phase == 'runtime-native-rotation-write-failure' ||
@@ -451,6 +459,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     }
     if (request.url.path == '/auth/v1/logout') {
       logoutCalls++;
+      logoutRequests.add(request);
       return http.Response('', 204);
     }
     // Includes submit_review: recovery must not dispatch an uncertain event.
@@ -830,6 +839,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
       );
       final a1Authorization = a1ProfileRequest.headers['authorization'];
+      a1AuthorizationForLogout = a1Authorization;
       _check(a1Authorization == 'Bearer ${accessToken()}');
       await journal.stage(_owner, _pending);
       await pending();
@@ -877,7 +887,14 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(runtime.persistence.currentSession == null);
       _check(await vault.readRefreshToken() == null);
       _check(profileCalls == 1);
-      _check(logoutCalls >= 2);
+      // One remote A1 revocation is bound to A1's captured bearer. After the
+      // SDK removes A1 locally, draining the rejected refresh must not issue a
+      // second remote logout for a session that no longer exists.
+      _check(
+        logoutCalls == 1 &&
+            logoutRequests.length == 1 &&
+            logoutRequests.single.headers['authorization'] == a1Authorization,
+      );
       await pending();
 
       // A2 is the same owner but a distinct SDK session. Its own rotation must
@@ -908,7 +925,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             a2Authorization != a1Authorization &&
             a2Authorization == 'Bearer ${accessToken()}' &&
             runtime.account.state.profile?.id == _owner &&
-            runtime.account.state.profile?.displayName == 'TEST_ONLY_A2_PROFILE' &&
+            runtime.account.state.profile?.displayName ==
+                'TEST_ONLY_A2_PROFILE' &&
             a2Session?.userId == _owner &&
             a2ReadySession?.userId == _owner &&
             a2Runtime != null &&
@@ -921,7 +939,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             runtime.account.readyRuntime == null &&
             runtime.persistence.currentSession == null &&
             await vault.readRefreshToken() == null &&
-            logoutCalls >= 3,
+            logoutCalls == 2 &&
+            logoutRequests.length == 2 &&
+            logoutRequests[0].headers['authorization'] == a1Authorization &&
+            logoutRequests[1].headers['authorization'] == a2Authorization,
       );
       await pending();
     } else if (phase == 'runtime-native-read-failure') {
