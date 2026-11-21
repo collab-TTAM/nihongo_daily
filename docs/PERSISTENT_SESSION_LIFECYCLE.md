@@ -1303,3 +1303,20 @@ This is TEST ONLY pinned-SDK/Windows MethodChannel/native Credential Manager
 evidence with synthetic Auth HTTP/JWT and deterministic fault injection. It is
 not hosted signed-JWT learner A/B, deployed PostgREST/RLS, spontaneous OS
 failure, logoff/power-loss or physical multi-device acceptance.
+
+
+## Native same-owner reauthentication across session generations — 2026-11-21
+
+The Windows bridge runner now holds User A1's own-profile response after the
+real Credential Manager has stored A1's rotated refresh secret. It logs A1 out,
+verifies the project slot is cleared, then signs the same verified user in again
+with a different Auth `session_id`. A2's rotated secret must be stored before
+A2's own-profile request. The runner releases A1's stale response only after A2
+is ready; despite the identical profile owner ID, A2's profile, captured session,
+ready runtime, pending journal event and vault value must remain unchanged.
+
+This is an actual Windows Credential Manager + production MethodChannel +
+pinned-SDK runtime process fixture with synthetic Auth HTTP/JWT responses. It
+validates the native storage and session-generation composition, not hosted
+signed-JWT learner identity, deployed PostgREST/RLS, OS logoff/power-loss,
+physical multi-device sync or Personal Alpha acceptance.

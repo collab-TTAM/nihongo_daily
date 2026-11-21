@@ -25,6 +25,7 @@ const runtimePhases = {
   'runtime-rejected',
   'runtime-late-refresh',
   'runtime-late-profile',
+  'runtime-native-same-owner-profile-generation',
   'runtime-close-restore',
   'runtime-owner-hold',
   'runtime-owner-contend',
@@ -267,6 +268,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   http.Response? capturedLateProfile;
   var profileResponseReleased = false;
   final profileOwners = <String>[];
+  var displayName = '学習者';
 
   String accessToken() {
     final header = _segment({'alg': 'HS256', 'typ': 'JWT'});
@@ -304,7 +306,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
   http.Response profileResponse() => http.Response(
     jsonEncode({
       'id': userId,
-      'display_name': '学習者',
+      'display_name': displayName,
       'preferred_jlpt': 'N5',
       'daily_target_minutes': 120,
       'timezone': 'Asia/Saigon',
@@ -353,6 +355,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           // Explicit recovery must clear the unread A slot before password Auth.
           _check(await vault.readRefreshToken() == null);
         }
+        if (phase == 'runtime-native-same-owner-profile-generation') {
+          // A1 logout must clear the exact OS slot before A2 can authenticate.
+          _check(await vault.readRefreshToken() == null && userId == _owner);
+        }
         if (phase == 'runtime-native-rotation-write-failure' ||
             phase == 'runtime-native-rotation-write-failure-late-profile' ||
             phase == 'runtime-native-rotation-write-fail-before') {
@@ -384,6 +390,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(await vault.readRefreshToken() == secret);
       if (phase == 'runtime-late-refresh' ||
           phase == 'runtime-late-profile' ||
+          phase == 'runtime-native-same-owner-profile-generation' ||
           phase == 'runtime-restore-profile-held' ||
           phase == 'runtime-native-read-failure' ||
           phase == 'runtime-native-rotation-write-failure' ||
@@ -416,7 +423,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         return response;
       }
       if ((phase == 'runtime-late-profile' ||
-              phase == 'runtime-native-rotation-write-failure-late-profile') &&
+              phase == 'runtime-native-rotation-write-failure-late-profile' ||
+              phase == 'runtime-native-same-owner-profile-generation') &&
           profileCalls == 1) {
         final wait = heldProfile;
         _check(wait != null);
@@ -672,6 +680,111 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             runtime.account.readySession?.userId == _ownerB &&
             runtime.persistence.currentSession?.userId == _ownerB &&
             await vault.readRefreshToken() == _second,
+      );
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 2,
+      );
+      await pending();
+    } else if (phase == 'runtime-native-same-owner-profile-generation') {
+      // A1 and A2 are the same verified user but distinct Auth session_id
+      // generations. The first profile response stays held across logout/A2.
+      _check(await vault.readRefreshToken() == null);
+      await runtime.start();
+      heldProfile = Completer<http.Response>();
+      displayName = 'TEST_ONLY_STALE_A1_PROFILE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForProfileCalls(1);
+      _check(
+        runtime.account.state.phase == AccountPhase.loadingProfile &&
+            runtime.account.readyRuntime == null &&
+            profileOwners.length == 1 &&
+            profileOwners.single == _owner &&
+            capturedLateProfile != null &&
+            !profileResponseReleased &&
+            await vault.readRefreshToken() == _first,
+      );
+      final staleProfile =
+          jsonDecode(capturedLateProfile!.body) as Map<String, Object?>;
+      _check(
+        staleProfile['id'] == _owner &&
+            staleProfile['display_name'] == 'TEST_ONLY_STALE_A1_PROFILE',
+      );
+      await journal.stage(_owner, _pending);
+      final a1ProfileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      _check(a1ProfileRequests.length == 1);
+      final a1Authorization = a1ProfileRequests.single.headers['authorization'];
+      _check(a1Authorization == 'Bearer ${accessToken()}');
+
+      // The A1 profile request remains unresolved while logout revokes A1 and
+      // clears its Credential Manager value.
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null &&
+            profileCalls == 1 &&
+            !profileResponseReleased,
+      );
+
+      // Reauthenticate the same owner under a new Auth session_id. A2's rotated
+      // refresh value must be committed before its own-profile request.
+      sessionId = _sessionB;
+      secret = _second;
+      displayName = '学習者';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      final a2Session = runtime.persistence.currentSession;
+      final a2ReadySession = runtime.account.readySession;
+      final a2Runtime = runtime.account.readyRuntime;
+      final a2ProfileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      _check(
+        authCalls == 2 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.every((owner) => owner == _owner) &&
+            a2ProfileRequests.length == 2 &&
+            a2ProfileRequests.first.headers['authorization'] == a1Authorization &&
+            a2ProfileRequests.last.headers['authorization'] ==
+                'Bearer ${accessToken()}' &&
+            runtime.account.state.profile?.id == _owner &&
+            runtime.account.state.profile?.displayName == '学習者' &&
+            a2Session?.userId == _owner &&
+            a2ReadySession?.userId == _owner &&
+            a2Runtime != null &&
+            await vault.readRefreshToken() == _second,
+      );
+      await pending();
+
+      // A1's delayed response has the same owner ID, so only the captured
+      // session-generation guard can stop it replacing A2's accepted profile.
+      heldProfile.complete(capturedLateProfile!);
+      for (var i = 0; i < 8; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      _check(
+        profileResponseReleased &&
+            runtime.account.state.phase == AccountPhase.ready &&
+            runtime.account.state.profile?.id == _owner &&
+            runtime.account.state.profile?.displayName == '学習者' &&
+            identical(runtime.persistence.currentSession, a2Session) &&
+            identical(runtime.account.readySession, a2ReadySession) &&
+            identical(runtime.account.readyRuntime, a2Runtime) &&
+            await vault.readRefreshToken() == _second &&
+            profileCalls == 2,
       );
       await runtime.account.signOut();
       _check(

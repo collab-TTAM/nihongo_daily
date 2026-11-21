@@ -576,3 +576,19 @@ synthetic Auth HTTP/JWT responses. It is not a spontaneous OS failure, hosted
 GoTrue/PostgREST, signed-JWT learner A/B, deployed RLS, OS logoff/power-loss or
 physical multi-device proof. The hook is disabled before the normal
 staging/preview rebuild; no token or native error is logged.
+
+
+## Native same-owner session-generation fence
+
+A new Windows runner phase authenticates one verified owner as A1, holds A1's
+`ensure_profile` response after the refresh secret is committed to Credential
+Manager, then logs out and clears the exact project slot. The same owner signs
+in as A2 with a different Auth `session_id`; the new rotated secret is visible
+before A2's own-profile request. A1's captured response is released after A2 is
+ready and must not replace A2's profile, captured session, ready runtime or
+stored refresh secret. The same-owner native journal entry remains intact.
+
+The phase uses the production Windows MethodChannel and real Credential Manager
+in the TEST ONLY bridge runner, with synthetic Auth HTTP/JWT and deterministic
+response ordering. It is not hosted GoTrue/PostgREST, signed-JWT learner
+acceptance, deployed RLS, OS logoff/power-loss or physical multi-device proof.
