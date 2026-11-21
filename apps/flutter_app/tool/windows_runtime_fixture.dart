@@ -1296,4 +1296,3 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     _check(await vault.readRefreshToken() == secret);
   }
 }
-
