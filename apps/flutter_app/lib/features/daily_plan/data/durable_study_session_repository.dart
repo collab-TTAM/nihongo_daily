@@ -257,7 +257,10 @@ final class DurableStudySessionRepository {
       }
       return active.result;
     }
-    final result = _track(() => _submit(session, event));
+    // Reserve the in-flight result before invoking storage. A store callback
+    // may synchronously reenter submit with the same owner/event identity.
+    final completion = Completer<StudySessionAcknowledgment>();
+    final result = completion.future;
     final dispatch = _StudyDispatch(session, event, result);
     _active[key] = dispatch;
     void clear() {
@@ -268,6 +271,18 @@ final class DurableStudySessionRepository {
       (_) => clear(),
       onError: (Object _, StackTrace __) => clear(),
     );
+    try {
+      unawaited(
+        _track(() => _submit(session, event)).then<void>(
+          completion.complete,
+          onError: (Object error, StackTrace stackTrace) {
+            completion.completeError(error, stackTrace);
+          },
+        ),
+      );
+    } on Object catch (error, stackTrace) {
+      completion.completeError(error, stackTrace);
+    }
     return result;
   }
 

@@ -176,6 +176,7 @@ const studyRecoveryScenarios = [
   'capacity',
   'shutdown',
   'reentrantShutdown',
+  'reentrantSubmit',
 ];
 Future<void> verifyStudyRecovery(String scenario) async {
   final directory = await Directory.systemTemp.createTemp('nd-study-recovery-');
@@ -519,6 +520,38 @@ Future<void> verifyStudyRecovery(String scenario) async {
             server.writes == 0 &&
             (await journal.list(studyOwner)).single.isPending,
         'Reentrant shutdown lost the staged event or dispatched RPC',
+      );
+    } else if (scenario == 'reentrantSubmit') {
+      Future<StudySessionAcknowledgment>? nested;
+      fault.onStage = () {
+        // Model a store callback that reenters before stage returns its Future.
+        fault.onStage = null;
+        nested = repository.submit(event);
+      };
+      final first = repository.submit(event);
+      final reentered = nested;
+      checkStudy(reentered != null, 'Store callback did not reenter submit');
+      checkStudy(
+        identical(first, reentered),
+        'Reentrant identical submit was not coalesced',
+      );
+      final acknowledgment = await first;
+      checkStudy(
+        fault.stageCalls == 1 &&
+            server.writes == 1 &&
+            server.committed.length == 1,
+        'Reentrant submit staged or dispatched more than once',
+      );
+      checkStudy(
+        acknowledgment.latestPlan?.completedMinutes == 45,
+        'Reentrant submit did not return the latest authoritative plan',
+      );
+      final records = await journal.list(studyOwner);
+      checkStudy(
+        records.length == 1 &&
+            records.single.acknowledged &&
+            sameStudyEvent(records.single.event, event),
+        'Reentrant submit did not retain one acknowledged original event',
       );
     } else if (scenario == 'capacity') {
       await studyFailure(

@@ -4732,7 +4732,7 @@
     {
       "id": "owned-study-operation-drain",
       "status": "automated-baseline",
-      "scope": "Accepted completed-study recovery and submit operations are reserved before invoking store/RPC callbacks; reentrant stage-triggered shutdown drains the exact operation and rejects later work before storage",
+      "scope": "Accepted completed-study recovery and submit operations are reserved before invoking store/RPC callbacks; reentrant identical same-owner/event submissions share the exact in-flight Future before storage, while reentrant stage-triggered shutdown drains the exact operation and rejects later work before storage",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -4746,6 +4746,14 @@
         {
           "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
           "contains": "Reentrant close released before staged operation settled"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "'reentrantSubmit'"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "Reentrant identical submit was not coalesced"
         }
       ],
       "issues": [

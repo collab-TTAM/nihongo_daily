@@ -20,7 +20,10 @@ Auth errors/readiness getter errors fail closed without exposing raw text.
 1. Stage the immutable canonical completed report under the local owner key.
    The store must flush before resolving. Failed staging sends no RPC. Same
    owner/event ID with changed fields conflicts; concurrent identical calls
-   share one dispatch. Different owners remain separate, including equal IDs.
+   share one dispatch. Reserve that exact in-flight Future before invoking
+   `store.stage`, because a synchronous store callback may reenter `submit`.
+   A reentrant identical call receives the same Future and cannot stage or
+   dispatch twice. Different owners remain separate, including equal IDs.
 2. Submit the exact original five-field event using the existing authenticated
    RPC. Timeout, network/provider/internal/Auth failures or malformed responses
    retain the pending event. Nothing assumes failure means no server commit.
@@ -83,14 +86,14 @@ dart run tool/verify_study_session_recovery.dart
 flutter test test/features/daily_plan/study_session_recovery_test.dart
 ```
 
-Seven fixture scenarios execute real disposable disk for uncertain commit/replay
+Nine fixture scenarios execute real disposable disk for uncertain commit/replay
 and fresh totals, stage/ack/reload faults and duplicate dispatch, owner changes/
 late commit/irreversible readiness, all rejection policies, partial-tail repair/
 complete corruption/strict codec and512-event reserved terminal capacity. A child
 process flushes and exits without graceful close; a fresh parent recovers the
 exact report. A second process cannot acquire the active lease, then can reopen
 after close. Auth/RPC are explicit TEST ONLY fixtures, not hosted identity or OS
-vault acceptance. Seven Flutter cases reuse these scenarios; native verification
+vault acceptance. Nine Flutter cases reuse these scenarios; native verification
 is added to both existing Linux and Windows CI jobs with every former gate kept.
 
 Local pinned Dart source analysis/formatting and the complete native verifier
@@ -137,3 +140,16 @@ acknowledged rows, absence of resend controls for rejected rows, and immediate
 refresh after a newly persisted definitive rejection. TEST ONLY memory Auth/RPC
 fixtures prove presentation and local owner scoping only; native journal and
 hosted signed-JWT/multi-device acceptance remain separate.
+
+
+## Reentrant same-event submission — 2026-11-21
+
+The repository now registers the exact in-flight Future in its owner/event map
+before invoking the operation drain or storage callback. This ordering matters
+because `StudySessionStore.stage` may synchronously reenter the repository
+before returning its Future. A same-owner/same-event reentrant call now receives
+the identical Future; changed payloads still conflict, and other owners remain
+isolated. The TEST ONLY `StudyFaultStore.onStage` regression asserts one stage,
+one RPC/receipt, one acknowledged original event and the authoritative latest
+plan. This is in-process coalescing, not a substitute for server idempotency or
+cross-process/hosted learner proof.
