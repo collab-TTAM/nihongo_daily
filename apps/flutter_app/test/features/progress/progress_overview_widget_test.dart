@@ -1138,14 +1138,29 @@ void main() {
       final harness = Harness();
       final source = _ProgressSource(harness);
       final pages = _serverQuizContinuationPages();
-      final cursor = pages.first['next_cursor'];
+      // Keep nested response fixtures independent across decoder calls.
+      final cursor = Map<String, Object?>.from(
+        pages.first['next_cursor']! as Map<String, Object?>,
+      );
       final reader = _ServerHistoryReader()
         ..responses = [
           pages.first,
-          {'items': <Object?>[], 'next_cursor': cursor},
+          {
+            'items': <Object?>[],
+            'next_cursor': Map<String, Object?>.from(cursor),
+          },
           pages.last,
         ];
-      await _mount(tester, harness, source, serverHistoryReader: reader);
+      final curriculum = _ProgressCurriculumRepository({
+        'vocabulary_reading:N5': _serverVocabularySource(),
+      });
+      await _mount(
+        tester,
+        harness,
+        source,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-server-quiz')),
@@ -1159,6 +1174,7 @@ void main() {
 
       expect(reader.reads, 1);
       expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
+      expect(curriculum.calls, ['vocabulary_reading:N5']);
 
       await tester.ensureVisible(
         find.byKey(const Key('progress-load-more-server-quiz')),
