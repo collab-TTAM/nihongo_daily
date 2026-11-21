@@ -1,3 +1,14 @@
+## PR #37 formatter diagnostic extension — 2026-11-21T00:06Z
+
+- Resumed the released core lane on `automation/issue-22-atomic-review`, source HEAD `261d531c87a350996a9842abae591cebfe32bb42`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44836014884](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44836014884), attempt 1, completed FAILURE on this exact SHA. Database, repo-sanity, AI boundary, Windows and disposable Supabase integration all completed SUCCESS with every returned step successful. Flutter failed only the strict Dart 3.35.4 formatter gate: it reported `test/features/srs/persistent_supabase_runtime_test.dart` changed. Flutter analyze, complete tests and downstream checks were SKIPPED, not passes.
+- The existing temporary read-only formatter diagnostic targeted `tool/verify_supabase_sdk_runtime.dart`, not the file named by the failure. Extend that same diagnostic to print the pinned formatter diff for both files; the strict repository-wide format gate remains unchanged. No test assertion or production behavior is altered.
+- Paths in this diagnostic checkpoint: `.github/workflows/ci.yml` and this status file. Full recursive source tree was read untruncated (356 entries: 291 blobs / 65 trees); no path, mode or type changes are planned, and every untouched blob will remain based on the exact current tree.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/test/build were not run. The formatter output and any subsequent correction must come from exact-head Actions. No hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart or physical multi-device proof is claimed. No staging secrets/dispatch, Auth strategy/provider, schema/RLS/default runtime, Pro-owned #14/#38/N4, merge, deployment or release change.
+- Next: inspect the new diagnostic output on its exact head, apply only the emitted formatter layout, remove the temporary diagnostic, then require a fresh complete exact-head CI run and inspect every latest-attempt job/step.
+
+---
+
 ## PR #37 exact-head CI diagnosis — delayed SDK response probe — 2026-11-20T18:06Z
 
 - Resumed the released core lane on `automation/issue-22-atomic-review`, source HEAD `bc1b629fb7afc38317c95d70cc430e80db7fee05`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
