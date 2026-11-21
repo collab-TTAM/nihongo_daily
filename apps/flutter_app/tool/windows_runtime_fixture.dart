@@ -758,7 +758,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             profileOwners.length == 2 &&
             profileOwners.every((owner) => owner == _owner) &&
             a2ProfileRequests.length == 2 &&
-            a2ProfileRequests.first.headers['authorization'] == a1Authorization &&
+            a2ProfileRequests.first.headers['authorization'] ==
+                a1Authorization &&
             a2Authorization != null &&
             a2Authorization != a1Authorization &&
             a2Authorization == 'Bearer ${accessToken()}' &&
@@ -1295,3 +1296,4 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     _check(await vault.readRefreshToken() == secret);
   }
 }
+
