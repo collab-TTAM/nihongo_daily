@@ -1151,7 +1151,11 @@ void main() {
         find.byKey(const Key('progress-load-server-quiz')),
       );
       await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
-      await tester.pumpAndSettle();
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-summary')),
+      );
+      expect(find.text('Đang đọc biên nhận quiz trên máy chủ…'), findsNothing);
 
       expect(reader.reads, 1);
       expect(find.text('20 biên nhận đã tải · 19/20 câu đúng'), findsOneWidget);
@@ -1160,7 +1164,11 @@ void main() {
         find.byKey(const Key('progress-load-more-server-quiz')),
       );
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
-      await tester.pumpAndSettle();
+      await _pumpUntilVisible(
+        tester,
+        find.byKey(const Key('progress-server-quiz-more-error')),
+      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsNothing);
 
       expect(reader.reads, 2);
       expect(
@@ -1175,7 +1183,11 @@ void main() {
       );
 
       await tester.tap(find.byKey(const Key('progress-load-more-server-quiz')));
-      await tester.pumpAndSettle();
+      await _pumpUntilVisible(
+        tester,
+        find.text('21 biên nhận đã tải · 20/21 câu đúng'),
+      );
+      expect(find.text('Đang tải trang biên nhận tiếp theo…'), findsNothing);
 
       expect(reader.reads, 3);
       expect(
