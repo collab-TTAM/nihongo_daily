@@ -1545,96 +1545,93 @@ void main() {
     );
   });
 
-  test(
-    'manual refresh joins an in-flight opt-in automatic refresh',
-    () async {
-      await runtime.close();
-      runtime = PersistentSupabaseRuntime(
-        projectUrl: wire.origin,
-        publishableKey: wire.key,
-        vault: vault,
-        store: journal,
-        httpClient: network,
-        now: () => now,
-        automaticRefresh: true,
-      );
-      await runtime.start();
-      await runtime.account.signIn(
-        'fixture@example.invalid',
-        'TEST_ONLY_PASSWORD',
-      );
-      await waitForReady();
-      expect(runtime.refreshPhase, SessionRefreshPhase.scheduled);
+  test('manual refresh joins an in-flight opt-in automatic refresh', () async {
+    await runtime.close();
+    runtime = PersistentSupabaseRuntime(
+      projectUrl: wire.origin,
+      publishableKey: wire.key,
+      vault: vault,
+      store: journal,
+      httpClient: network,
+      now: () => now,
+      automaticRefresh: true,
+    );
+    await runtime.start();
+    await runtime.account.signIn(
+      'fixture@example.invalid',
+      'TEST_ONLY_PASSWORD',
+    );
+    await waitForReady();
+    expect(runtime.refreshPhase, SessionRefreshPhase.scheduled);
 
-      final initialRefreshes = requests
-          .where(
-            (request) =>
-                request.url.path == '/auth/v1/token' &&
-                request.url.queryParameters['grant_type'] == 'refresh_token',
-          )
-          .length;
-      secret = 'TEST_ONLY_SHARED_AUTO_MANUAL_ROTATION';
-      authWait = Completer<http.Response>();
-      backend.writeWait = Completer<void>();
-      now = now.add(const Duration(minutes: 59, seconds: 30));
-      runtime.resume();
+    final initialRefreshes = requests
+        .where(
+          (request) =>
+              request.url.path == '/auth/v1/token' &&
+              request.url.queryParameters['grant_type'] == 'refresh_token',
+        )
+        .length;
+    secret = 'TEST_ONLY_SHARED_AUTO_MANUAL_ROTATION';
+    authWait = Completer<http.Response>();
+    backend.writeWait = Completer<void>();
+    now = now.add(const Duration(minutes: 59, seconds: 30));
+    runtime.resume();
 
-      int refreshCount() => requests
-          .where(
-            (request) =>
-                request.url.path == '/auth/v1/token' &&
-                request.url.queryParameters['grant_type'] == 'refresh_token',
-          )
-          .length;
-      await waitForCondition(
-        () => refreshCount() == initialRefreshes + 1,
-        reason: 'automatic refresh did not dispatch at the lease deadline',
-      );
+    int refreshCount() => requests
+        .where(
+          (request) =>
+              request.url.path == '/auth/v1/token' &&
+              request.url.queryParameters['grant_type'] == 'refresh_token',
+        )
+        .length;
+    await waitForCondition(
+      () => refreshCount() == initialRefreshes + 1,
+      reason: 'automatic refresh did not dispatch at the lease deadline',
+    );
 
-      var manualCompleted = false;
-      final manualRefresh = runtime.refresh();
-      unawaited(
-        manualRefresh.then<void>(
-          (_) {
-            manualCompleted = true;
-          },
-          onError: (Object _) {
-            manualCompleted = true;
-          },
-        ),
-      );
-      await fixture.flush();
-      expect(manualCompleted, isFalse);
-      expect(refreshCount(), initialRefreshes + 1);
-      expect(runtime.account.readyRuntime, isNull);
+    var manualCompleted = false;
+    final manualRefresh = runtime.refresh();
+    unawaited(
+      manualRefresh.then<void>(
+        (_) {
+          manualCompleted = true;
+        },
+        onError: (Object _) {
+          manualCompleted = true;
+        },
+      ),
+    );
+    await fixture.flush();
+    expect(manualCompleted, isFalse);
+    expect(refreshCount(), initialRefreshes + 1);
+    expect(runtime.account.readyRuntime, isNull);
 
-      authWait!.complete(authResponse());
-      await waitForCondition(
-        () => backend.writes == 2,
-        reason: 'automatic refresh did not reach its vault write barrier',
-      );
-      expect(backend.secret, isNot(secret));
-      expect(runtime.account.readyRuntime, isNull);
-      expect(manualCompleted, isFalse);
+    authWait!.complete(authResponse());
+    await waitForCondition(
+      () => backend.writes == 2,
+      reason: 'automatic refresh did not reach its vault write barrier',
+    );
+    expect(backend.secret, isNot(secret));
+    expect(runtime.account.readyRuntime, isNull);
+    expect(manualCompleted, isFalse);
 
-      backend.writeWait!.complete();
-      await manualRefresh;
-      await waitForReady();
-      await waitForCondition(
-        () => runtime.refreshPhase == SessionRefreshPhase.scheduled,
-        reason: 'rotated lease was not scheduled after persistence completed',
-      );
-      expect(backend.secret, secret);
-      expect(backend.writes, 2);
-      expect(refreshCount(), initialRefreshes + 1);
+    backend.writeWait!.complete();
+    await manualRefresh;
+    await waitForReady();
+    await waitForCondition(
+      () => runtime.refreshPhase == SessionRefreshPhase.scheduled,
+      reason: 'rotated lease was not scheduled after persistence completed',
+    );
+    expect(backend.secret, secret);
+    expect(backend.writes, 2);
+    expect(refreshCount(), initialRefreshes + 1);
 
-      await runtime.account.signOut();
-      runtime.resume();
-      await fixture.flush();
-      expect(backend.secret, isNull);
-      expect(refreshCount(), initialRefreshes + 1);
-    },
-  );
+    await runtime.account.signOut();
+    runtime.resume();
+    await fixture.flush();
+    expect(backend.secret, isNull);
+    expect(refreshCount(), initialRefreshes + 1);
+  });
 
   test(
     'opt-in automatic refresh failure fences account without resume retry',

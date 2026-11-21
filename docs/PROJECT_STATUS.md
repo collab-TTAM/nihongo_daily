@@ -1,3 +1,14 @@
+## PR #37 — exact pinned formatter correction — 2026-11-21T01:12Z
+
+- Resumed the released core worker on `automation/issue-22-atomic-review`, parent HEAD `3c509e31b0253508909e9a2cf9d6ff3eee667a36`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44841762035](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44841762035), attempt 1, targets this exact parent and completed with five jobs SUCCESS (repo-sanity, AI boundary, database, disposable Supabase integration and Windows; every returned step succeeded). Flutter failed only the strict Dart 3.35.4 formatter step: the diagnostic identified a formatting-only collapse/dedent of the new manual-refresh-joins-automatic-refresh TEST ONLY case. Flutter analyze, full suite and downstream checks were SKIPPED, not passes.
+- Applied the exact formatter layout to `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`; assertions and behavior are unchanged. Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`; repository-wide strict format/analyze/test/build gates remain unchanged.
+- Updated files: the test above, `.github/workflows/ci.yml`, and this status file. No production Auth/provider/vault, API/schema/migration/RLS/default runtime, hosted secret/dispatch, Pro-owned #14/#38/N4, merge, deployment or release changes.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local formatter/analyze/test/build were not run. Fresh exact-head Actions is required for the complete Flutter suite and all six jobs.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. If green, resume the remaining caller-owned session/hosted acceptance; if failed, fix only observed failures. Keep PR #37 Draft and #20/#22/#15/#18 open until their complete acceptance is met.
+
+---
+
 ## PR #37 formatter diagnostic extension — 2026-11-21T00:06Z
 
 - Resumed the released core lane on `automation/issue-22-atomic-review`, source HEAD `261d531c87a350996a9842abae591cebfe32bb42`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
