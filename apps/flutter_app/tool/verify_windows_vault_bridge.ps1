@@ -213,6 +213,9 @@ try {
     # Same verified owner, new Auth session_id: release A1 profile only after A2 is ready.
     Invoke-Bridge 'runtime-native-same-owner-profile-generation'
     Invoke-Bridge 'runtime-signedout'
+    # Drain A1's held refresh response after logout/clear before same-owner A2 is accepted.
+    Invoke-Bridge 'runtime-native-same-owner-late-refresh-generation'
+    Invoke-Bridge 'runtime-signedout'
     # Close a fresh owner during held startup restore, then prove a new process
     # observes the cleared OS credential slot.
     Invoke-Bridge 'runtime-close-restore'

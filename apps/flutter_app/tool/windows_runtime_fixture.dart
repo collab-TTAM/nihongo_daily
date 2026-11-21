@@ -26,6 +26,7 @@ const runtimePhases = {
   'runtime-late-refresh',
   'runtime-late-profile',
   'runtime-native-same-owner-profile-generation',
+  'runtime-native-same-owner-late-refresh-generation',
   'runtime-close-restore',
   'runtime-owner-hold',
   'runtime-owner-contend',
@@ -330,7 +331,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
                 phase == 'runtime-close-restore' ||
                 phase == 'runtime-native-rotation-write-failure' ||
                 phase == 'runtime-native-rotation-write-failure-late-profile' ||
-                phase == 'runtime-native-rotation-write-fail-before'
+                phase == 'runtime-native-rotation-write-fail-before' ||
+                phase == 'runtime-native-same-owner-late-refresh-generation'
             ? _first
             : phase == 'runtime-restore'
             ? _second
@@ -342,7 +344,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           return http.Response('{"message":"fixture rejected"}', 401);
         }
         if (phase == 'runtime-late-refresh' ||
-            phase == 'runtime-close-restore') {
+            phase == 'runtime-close-restore' ||
+            phase == 'runtime-native-same-owner-late-refresh-generation') {
           final wait = lateRefresh;
           _check(wait != null);
           return wait!.future;
@@ -358,6 +361,15 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         if (phase == 'runtime-native-same-owner-profile-generation') {
           // A1 logout must clear the exact OS slot before A2 can authenticate.
           _check(await vault.readRefreshToken() == null && userId == _owner);
+        }
+        if (phase == 'runtime-native-same-owner-late-refresh-generation') {
+          // Both same-owner password grants start only after the prior slot is empty.
+          _check(await vault.readRefreshToken() == null && userId == _owner);
+          if (authCalls == 1) {
+            _check(logoutCalls == 0);
+          } else {
+            _check(authCalls == 3 && logoutCalls >= 2);
+          }
         }
         if (phase == 'runtime-native-rotation-write-failure' ||
             phase == 'runtime-native-rotation-write-failure-late-profile' ||
@@ -396,6 +408,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           phase == 'runtime-native-rotation-write-failure' ||
           phase == 'runtime-native-rotation-write-failure-late-profile' ||
           phase == 'runtime-native-rotation-write-fail-before' ||
+          phase == 'runtime-native-same-owner-late-refresh-generation' ||
           nativeLogoutClearFailure) {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
       }
@@ -795,6 +808,122 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             runtime.account.readyRuntime == null &&
             await vault.readRefreshToken() == null &&
             logoutCalls >= 2,
+      );
+      await pending();
+    } else if (phase == 'runtime-native-same-owner-late-refresh-generation') {
+      // A1 and A2 share the verified owner ID but have different Auth session_id
+      // generations. A1's refresh response is held across logout and vault clear.
+      _check(await vault.readRefreshToken() == null);
+      await runtime.start();
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      _check(
+        authCalls == 1 &&
+            profileCalls == 1 &&
+            profileOwners.single == _owner &&
+            await vault.readRefreshToken() == _first,
+      );
+      final a1ProfileRequest = requests.singleWhere(
+        (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+      );
+      final a1Authorization = a1ProfileRequest.headers['authorization'];
+      _check(a1Authorization == 'Bearer ${accessToken()}');
+      await journal.stage(_owner, _pending);
+      await pending();
+
+      secret = _second;
+      lateRefresh = Completer<http.Response>();
+      final capturedA1Refresh = authResponse();
+      final refreshing = runtime.refresh();
+      await waitForAuthCalls(2);
+      final refreshRequest = requests.lastWhere(
+        (request) =>
+            request.url.path == '/auth/v1/token' &&
+            request.url.queryParameters['grant_type'] == 'refresh_token',
+      );
+      _check(
+        jsonDecode(refreshRequest.body)['refresh_token'] == _first &&
+            runtime.account.readyRuntime == null &&
+            profileCalls == 1,
+      );
+
+      // Logout clears the OS slot immediately but remains pending until the
+      // captured A1 SDK refresh response has been drained and compensated.
+      final loggingOut = runtime.account.signOut();
+      final clearDeadline = DateTime.now().add(const Duration(seconds: 5));
+      while (await vault.readRefreshToken() != null &&
+          DateTime.now().isBefore(clearDeadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      _check(
+        await vault.readRefreshToken() == null &&
+            runtime.account.readyRuntime == null &&
+            logoutCalls >= 1,
+      );
+      lateRefresh.complete(capturedA1Refresh);
+      var refreshFailed = false;
+      try {
+        await refreshing.timeout(const Duration(seconds: 5));
+      } on ReviewTransportFailure {
+        refreshFailed = true;
+      }
+      await loggingOut.timeout(const Duration(seconds: 5));
+      _check(
+        refreshFailed &&
+            runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            runtime.persistence.currentSession == null &&
+            await vault.readRefreshToken() == null &&
+            profileCalls == 1 &&
+            logoutCalls >= 2,
+      );
+      await pending();
+
+      // A2 is the same owner but a distinct SDK session. Its own rotation must
+      // be the only credential committed after the old A1 operation drains.
+      sessionId = _sessionB;
+      secret = _third;
+      displayName = 'TEST_ONLY_A2_PROFILE';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      final a2Session = runtime.persistence.currentSession;
+      final a2ReadySession = runtime.account.readySession;
+      final a2Runtime = runtime.account.readyRuntime;
+      final profileRequests = requests
+          .where((request) => request.url.path == '/rest/v1/rpc/ensure_profile')
+          .toList();
+      final a2Authorization = profileRequests.last.headers['authorization'];
+      _check(
+        authCalls == 3 &&
+            profileCalls == 2 &&
+            profileOwners.length == 2 &&
+            profileOwners.every((owner) => owner == _owner) &&
+            profileRequests.length == 2 &&
+            profileRequests.first.headers['authorization'] == a1Authorization &&
+            a2Authorization != null &&
+            a2Authorization != a1Authorization &&
+            a2Authorization == 'Bearer ${accessToken()}' &&
+            runtime.account.state.profile?.id == _owner &&
+            runtime.account.state.profile?.displayName == 'TEST_ONLY_A2_PROFILE' &&
+            a2Session?.userId == _owner &&
+            a2ReadySession?.userId == _owner &&
+            a2Runtime != null &&
+            await vault.readRefreshToken() == _third,
+      );
+      await pending();
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            runtime.persistence.currentSession == null &&
+            await vault.readRefreshToken() == null &&
+            logoutCalls >= 3,
       );
       await pending();
     } else if (phase == 'runtime-native-read-failure') {

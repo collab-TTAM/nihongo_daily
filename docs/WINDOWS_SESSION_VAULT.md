@@ -592,3 +592,26 @@ The phase uses the production Windows MethodChannel and real Credential Manager
 in the TEST ONLY bridge runner, with synthetic Auth HTTP/JWT and deterministic
 response ordering. It is not hosted GoTrue/PostgREST, signed-JWT learner
 acceptance, deployed RLS, OS logoff/power-loss or physical multi-device proof.
+
+
+## Same-owner late refresh response after logout
+
+The Windows bridge adds a second same-owner generation regression focused on
+Auth refresh rather than profile loading. A1 first establishes a ready session
+and stores its rotated refresh secret in the real Credential Manager. The
+fixture then holds A1's refresh response after the server-side mock has produced
+a different rotated value.
+
+Logout must revoke study readiness and clear the exact project slot before
+that held response is released. It remains pending until the captured SDK
+operation drains and compensating sign-out/clear completes. The fixture then
+authenticates A2 with the same verified user ID but a different Auth
+`session_id`; only A2's refresh secret may be stored before A2 own-profile
+readiness. It checks distinct A1/A2 bearer values, the final A2 session/runtime,
+an empty slot after A2 logout, and a fresh signed-out process.
+
+This uses the production Windows MethodChannel, actual Credential Manager and
+native journal with TEST ONLY synthetic Auth HTTP/JWT responses. It is local
+Windows component evidence for late-response cleanup and same-owner session
+generation ordering, not hosted signed-JWT learner A/B, deployed PostgREST/RLS,
+OS logoff/power-loss or physical multi-device sync.
