@@ -168,8 +168,14 @@ void main() {
       );
       expect(find.text('誕生日の一日'), findsOneWidget);
       expect(find.textContaining('きのうは私の誕生日でした。'), findsOneWidget);
-      await tapReading(tester, find.byKey(const Key('reading-show-translation')));
-      expect(find.textContaining('Hôm qua là sinh nhật của tôi.'), findsOneWidget);
+      await tapReading(
+        tester,
+        find.byKey(const Key('reading-show-translation')),
+      );
+      expect(
+        find.textContaining('Hôm qua là sinh nhật của tôi.'),
+        findsOneWidget,
+      );
       await tapReading(tester, find.byKey(const Key('reading-back')));
       expect(find.byKey(const Key('reading-result')), findsNothing);
       expect(
