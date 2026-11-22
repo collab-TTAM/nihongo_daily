@@ -5027,3 +5027,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Added a temporary read-only diagnostic step before the unchanged strict formatter gate. It prints the pinned formatter diff for only the affected file; it does not modify source, suppress the strict gate, or change required checks. Remove this diagnostic after applying the exact diff.
 - Next: inspect the diagnostic diff on the new exact HEAD, apply only formatter output, remove the temporary step, then require every job/step on the final exact HEAD. Keep QA `offline-sync` pending-integration and PR #37 Draft.
 
+## Formatter diagnostic YAML correction — 2026-11-22T06:34Z
+
+- The diagnostic-only commit `30e6efb8e9fc9c48f05055b9732ea566078b002b` triggered [Actions 44994204583](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44994204583), which failed before job creation (zero jobs) because the inserted step had duplicated/missing indentation. This is a workflow syntax failure, not a test result.
+- Corrected the step indentation only. The read-only pinned Dart 3.35.4 diff command remains temporary; the strict formatter gate is still present and unchanged.
+- The previous exact-head run [44993882733](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44993882733) executed the new local two-runtime offline/reconnect probe successfully in `supabase-integration`; repo-sanity, database and AI boundary also passed. Flutter stopped at formatting; Windows had not yet completed at the last observation.
+- Next: inspect the formatter diff on the corrected workflow run, apply only the actual formatted source, remove the temporary diagnostic step and rerun all exact-head jobs. Keep PR #37 Draft and offline-sync pending-integration.
+
