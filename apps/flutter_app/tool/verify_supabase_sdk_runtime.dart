@@ -604,11 +604,10 @@ Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
       recoveryAfterRestart is ReviewRecovery,
       'device-a-recovery-capability-after-terminal-conflict-restart',
     );
-    final pendingAfterRestart =
-        await (recoveryAfterRestart as ReviewRecovery).recoverPending();
-    final terminalRecordsAfterRestart = await restoredAfterConflict.journal.list(
-      input.userA.id,
-    );
+    final pendingAfterRestart = await (recoveryAfterRestart as ReviewRecovery)
+        .recoverPending();
+    final terminalRecordsAfterRestart = await restoredAfterConflict.journal
+        .list(input.userA.id);
     _expect(
       pendingAfterRestart.isEmpty &&
           terminalRecordsAfterRestart.length == 1 &&

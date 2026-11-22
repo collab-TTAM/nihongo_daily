@@ -198,14 +198,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnostic pinned formatter diff (temporary)
-        shell: bash
-        run: |
-          target=tool/verify_supabase_sdk_runtime.dart
-          formatted="$(mktemp)"
-          trap 'rm -f "$formatted"' EXIT
-          dart format --output=show "$target" > "$formatted"
-          diff -u "$target" "$formatted" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
