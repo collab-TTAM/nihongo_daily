@@ -679,6 +679,103 @@
           "explanation_vi": "Bài đọc nói tôi bắt đầu làm việc lúc 8 giờ."
         }
       ]
+    },
+    {
+      "id": "n5-friend-house-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "友達の家で",
+      "title_vi": "Ở nhà bạn",
+      "text_ja": "日曜日、私は友達の家へ行きました。友達の家は駅の近くにあります。友達のお母さんは料理が上手です。昼ご飯にカレーを作りました。私たちは一緒に食べて、午後は日本語の宿題をしました。三時に家へ帰りました。",
+      "reading_ja": "にちようび、わたしはともだちのいえへいきました。ともだちのいえはえきのちかくにあります。ともだちのおかあさんはりょうりがじょうずです。ひるごはんにカレーをつくりました。わたしたちはいっしょにたべて、ごごはにほんごのしゅくだいをしました。さんじにいえへかえりました。",
+      "translation_vi": "Chủ nhật, tôi đến nhà bạn. Nhà bạn ở gần nhà ga. Mẹ của bạn nấu ăn rất giỏi. Mẹ bạn làm cà ri cho bữa trưa. Chúng tôi cùng ăn, rồi buổi chiều làm bài tập tiếng Nhật. Tôi về nhà lúc 3 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "友達の家はどこにありますか。",
+          "reading_ja": "ともだちのいえはどこにありますか。",
+          "prompt_vi": "Nhà bạn tôi ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "駅の近く",
+              "reading_ja": "えきのちかく",
+              "text_vi": "Gần nhà ga"
+            },
+            {
+              "id": "b",
+              "text_ja": "学校の近く",
+              "reading_ja": "がっこうのちかく",
+              "text_vi": "Gần trường học"
+            },
+            {
+              "id": "c",
+              "text_ja": "公園の近く",
+              "reading_ja": "こうえんのちかく",
+              "text_vi": "Gần công viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói nhà bạn ở gần nhà ga."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "昼ご飯に何を作りましたか。",
+          "reading_ja": "ひるごはんになにをつくりましたか。",
+          "prompt_vi": "Bữa trưa đã làm món gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "おにぎり",
+              "reading_ja": "おにぎり",
+              "text_vi": "Cơm nắm"
+            },
+            {
+              "id": "b",
+              "text_ja": "カレー",
+              "reading_ja": "カレー",
+              "text_vi": "Cà ri"
+            },
+            {
+              "id": "c",
+              "text_ja": "パン",
+              "reading_ja": "パン",
+              "text_vi": "Bánh mì"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói mẹ bạn làm cà ri cho bữa trưa."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "午後、何をしましたか。",
+          "reading_ja": "ごご、なにをしましたか。",
+          "prompt_vi": "Buổi chiều chúng tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本を読みました",
+              "reading_ja": "ほんをよみました",
+              "text_vi": "Đọc sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "テレビを見ました",
+              "reading_ja": "テレビをみました",
+              "text_vi": "Xem ti vi"
+            },
+            {
+              "id": "c",
+              "text_ja": "日本語の宿題をしました",
+              "reading_ja": "にほんごのしゅくだいをしました",
+              "text_vi": "Làm bài tập tiếng Nhật"
+            }
+          ],
+          "correct_choice_id": "c",
+          "explanation_vi": "Bài đọc nói buổi chiều chúng tôi làm bài tập tiếng Nhật."
+        }
+      ]
     }
   ]
 }
