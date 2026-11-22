@@ -1320,3 +1320,25 @@ pinned-SDK runtime process fixture with synthetic Auth HTTP/JWT responses. It
 validates the native storage and session-generation composition, not hosted
 signed-JWT learner identity, deployed PostgREST/RLS, OS logoff/power-loss,
 physical multi-device sync or Personal Alpha acceptance.
+
+
+## Caller close during an explicit refresh
+
+The pinned-Supabase-SDK Windows MethodChannel regression
+`Windows caller close drains a held explicit refresh response before releasing owner`
+starts from a ready restored User A session, dispatches an explicit refresh, and
+holds the Auth response while the caller closes the owned runtime. Close must
+revoke account readiness immediately but keep the native project lease until the
+captured SDK request drains. The held response is then released with a rotated
+refresh token; because the owner is already closed, it must not publish a session,
+write a late credential or dispatch another `ensure_profile` request. Cleanup
+signs out the late SDK session, clears the exact project-scoped vault slot, and
+only then releases the native owner lease.
+
+The test also verifies that the original stored rotation remains untouched while
+the Auth response is held, the close future cannot complete early, and the
+credential target is no longer reserved after successful cleanup. This is
+TEST ONLY pinned-SDK/MockClient/MethodChannel evidence with synthetic Auth HTTP
+and a mocked Windows vault channel. It does not prove hosted signed-JWT learner
+Auth, spontaneous Credential Manager failure, OS logoff/power-loss or physical
+multi-device sync.

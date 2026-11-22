@@ -642,6 +642,10 @@
         {
           "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
           "contains": "Invoke-Bridge 'runtime-native-same-owner-late-refresh-generation'"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows caller close drains a held explicit refresh response before releasing owner"
         }
       ],
       "issues": [

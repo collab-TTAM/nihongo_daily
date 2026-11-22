@@ -40,6 +40,7 @@ void main() {
   late String authSession;
   late String refreshSecret;
   late Completer<http.Response>? authWait;
+  late Completer<void>? authRefreshStarted;
   late Completer<void>? readWait;
   late Completer<void>? writeWait;
   late Completer<void>? writeStarted;
@@ -101,6 +102,7 @@ void main() {
     authSession = wire.sid1;
     refreshSecret = 'TEST_ONLY_ROTATED_WINDOWS_REFRESH';
     authWait = null;
+    authRefreshStarted = null;
     readWait = null;
     writeWait = null;
     writeStarted = null;
@@ -205,6 +207,11 @@ void main() {
         timeline.add(
           grant == 'refresh_token' ? 'auth.refresh' : 'auth.password',
         );
+        if (grant == 'refresh_token' &&
+            authRefreshStarted != null &&
+            !authRefreshStarted!.isCompleted) {
+          authRefreshStarted!.complete();
+        }
         if (grant == 'refresh_token' && rejectRefresh) {
           return http.Response(
             jsonEncode({
@@ -2390,4 +2397,93 @@ void main() {
       }
     },
   );
+
+  test(
+    'Windows caller close drains a held explicit refresh response before releasing owner',
+    () async {
+      storedSecret = 'TEST_ONLY_WINDOWS_EXPLICIT_CLOSE_SAVED';
+      refreshSecret = 'TEST_ONLY_WINDOWS_EXPLICIT_CLOSE_INITIAL';
+      await runtime.start();
+      await waitForReady();
+
+      expect(storedSecret, refreshSecret);
+      expect(runtime.account.state.profile?.id, wire.a);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+
+      authWait = Completer<http.Response>();
+      authRefreshStarted = Completer<void>();
+      refreshSecret = 'TEST_ONLY_WINDOWS_EXPLICIT_CLOSE_LATE_ROTATION';
+      final refreshing = runtime.refresh();
+      final refreshFailure = expectLater(
+        refreshing,
+        throwsA(
+          isA<ReviewTransportFailure>().having(
+            (error) => error.toString().contains('TEST_ONLY'),
+            'redacted refresh error',
+            false,
+          ),
+        ),
+      );
+      await authRefreshStarted!.future.timeout(const Duration(seconds: 5));
+
+      expect(timeline.last, 'auth.refresh');
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+
+      var closeCompleted = false;
+      final closing = runtime.close().whenComplete(() {
+        closeCompleted = true;
+      });
+      await fixture.flush();
+
+      expect(closeCompleted, isFalse);
+      expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+      expect(ownerLeaseCalls, ['acquireOwner']);
+      expect(closeOrder, isEmpty);
+      expect(storedSecret, 'TEST_ONLY_WINDOWS_EXPLICIT_CLOSE_INITIAL');
+      expect(timeline.where((event) => event == 'auth.logout'), isEmpty);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+
+      // The old SDK response may rotate a token after caller close. Close must
+      // drain that response, sign out, clear the exact slot, then release owner.
+      authWait!.complete(authResponse());
+      await refreshFailure.timeout(const Duration(seconds: 5));
+      await closing.timeout(const Duration(seconds: 5));
+
+      expect(closeCompleted, isTrue);
+      expect(storedSecret, isNull);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(
+        timeline.lastIndexOf('auth.logout'),
+        greaterThan(timeline.lastIndexOf('auth.refresh')),
+      );
+      expect(
+        timeline.lastIndexOf('vault.clear'),
+        greaterThan(timeline.lastIndexOf('auth.logout')),
+      );
+      expect(ownerLeaseCalls, ['acquireOwner', 'releaseOwner']);
+      expect(closeOrder, ['vault.clear', 'owner.release']);
+      expect(PersistentAccountAccess.isTargetOwned(vault.target), isFalse);
+      expect(
+        requests.where(
+          (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+        ),
+        hasLength(1),
+      );
+    },
+  );
+
 }
