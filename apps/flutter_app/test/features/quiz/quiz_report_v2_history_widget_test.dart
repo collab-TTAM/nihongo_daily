@@ -215,6 +215,80 @@ void main() {
     },
   );
 
+  testWidgets(
+    'server history keeps its page and retries the exact keyset cursor',
+    (tester) async {
+      final reader = _FakeHistoryReader([
+        for (var id = 1; id <= 22; id++) _entry(id),
+      ]);
+      await _mount(tester, reader);
+
+      await _tap(tester, 'server-quiz-history-load');
+      expect(find.text('20 kết quả trên trang 1'), findsOneWidget);
+
+      reader.fail = true;
+      await _tap(tester, 'server-quiz-history-older');
+      expect(reader.queries, hasLength(2));
+      expect(reader.queries.last.cursor?.receivedAt, _receivedAt(3));
+      expect(find.text('20 kết quả trên trang 1'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(22)}')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(2)}')),
+        findsNothing,
+      );
+      expect(
+        find.textContaining('Trang hiện tại vẫn được giữ'),
+        findsOneWidget,
+      );
+
+      reader.fail = false;
+      await _tap(tester, 'server-quiz-history-retry');
+      expect(reader.queries, hasLength(3));
+      expect(reader.queries.last.cursor?.receivedAt, _receivedAt(3));
+      expect(find.text('2 kết quả trên trang 2'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(2)}')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(22)}')),
+        findsNothing,
+      );
+
+      reader.fail = true;
+      await _tap(tester, 'server-quiz-history-newer');
+      expect(reader.queries, hasLength(4));
+      expect(reader.queries.last.cursor, isNull);
+      expect(find.text('2 kết quả trên trang 2'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(2)}')),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Trang hiện tại vẫn được giữ'),
+        findsOneWidget,
+      );
+
+      reader.fail = false;
+      await _tap(tester, 'server-quiz-history-retry');
+      expect(reader.queries, hasLength(5));
+      expect(reader.queries.last.cursor, isNull);
+      expect(find.text('20 kết quả trên trang 1'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(22)}')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(ValueKey('server-quiz-history-${_uuid(2)}')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('server history errors are redacted and empty state retries', (
     tester,
   ) async {

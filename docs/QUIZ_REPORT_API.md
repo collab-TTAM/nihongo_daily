@@ -1086,3 +1086,15 @@ leaves receipt totals visible but suppresses suggestions. Account, reader or
 content-repository replacement suppresses late results. New tests use TEST ONLY
 readers and synthetic curriculum; the Edge history function remains undeployed,
 so no hosted learner or Personal Alpha acceptance is inferred.
+
+
+## Keyset continuation failure recovery — 2026-11-22
+
+The server quiz-history screen commits its page index and opaque cursor history
+only after a requested page has been decoded successfully. While an older/newer
+continuation is pending, the currently displayed page remains visible. If that
+request fails, the page index and cursor path remain unchanged and the explicit
+retry repeats the same server-issued cursor and target page. It does not silently
+restart at page one or construct a cursor from local fields. A filter change or
+caller/reader replacement invalidates the pending request and clears its retry
+state. No automatic retry is introduced.

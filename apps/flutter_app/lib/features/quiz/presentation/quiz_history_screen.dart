@@ -322,23 +322,33 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
   bool _requested = false;
   bool _loading = false;
   bool _failed = false;
+  QuizReportV2HistoryCursor? _retryCursor;
+  int? _retryPageIndex;
 
   Future<void> _load({
     QuizReportV2HistoryCursor? cursor,
     bool reset = false,
+    int? targetPageIndex,
   }) async {
     if (!mounted || !widget.isCurrent()) return;
     if (reset) {
       _cursorHistory = [null];
       _pageIndex = 0;
+      _retryCursor = null;
+      _retryPageIndex = null;
       cursor = null;
+      targetPageIndex = null;
+    } else if (targetPageIndex != null) {
+      // Keep the current page visible until the requested page is validated.
+      _retryCursor = cursor;
+      _retryPageIndex = targetPageIndex;
     }
     final revision = ++_requestRevision;
     setState(() {
       _requested = true;
       _loading = true;
       _failed = false;
-      _page = null;
+      if (reset) _page = null;
     });
     try {
       final page = await widget.reader.readHistory(
@@ -352,7 +362,21 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
       if (!mounted || !widget.isCurrent() || revision != _requestRevision) {
         return;
       }
-      setState(() => _page = page);
+      setState(() {
+        if (targetPageIndex != null) {
+          _cursorHistory = [
+            ..._cursorHistory.take(targetPageIndex),
+            cursor,
+          ];
+          _pageIndex = targetPageIndex;
+        } else if (reset) {
+          _cursorHistory = [null];
+          _pageIndex = 0;
+        }
+        _page = page;
+        _retryCursor = null;
+        _retryPageIndex = null;
+      });
     } on Object {
       if (!mounted || !widget.isCurrent() || revision != _requestRevision) {
         return;
@@ -365,6 +389,17 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
     }
   }
 
+  void _retry() {
+    final pageIndex = _retryPageIndex;
+    if (pageIndex != null) {
+      unawaited(
+        _load(cursor: _retryCursor, targetPageIndex: pageIndex),
+      );
+      return;
+    }
+    unawaited(_load(reset: true));
+  }
+
   void _changeLevel(_ServerHistoryLevel? value) {
     if (value == null || !mounted || !widget.isCurrent()) return;
     final reload = _requested;
@@ -374,6 +409,8 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
       _page = null;
       _cursorHistory = [null];
       _pageIndex = 0;
+      _retryCursor = null;
+      _retryPageIndex = null;
       _loading = false;
       _failed = false;
     });
@@ -389,6 +426,8 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
       _page = null;
       _cursorHistory = [null];
       _pageIndex = 0;
+      _retryCursor = null;
+      _retryPageIndex = null;
       _loading = false;
       _failed = false;
     });
@@ -399,19 +438,14 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
     final cursor = _page?.nextCursor;
     if (cursor == null || _loading || !widget.isCurrent()) return;
     final nextIndex = _pageIndex + 1;
-    setState(() {
-      _cursorHistory = [..._cursorHistory.take(nextIndex), cursor];
-      _pageIndex = nextIndex;
-    });
-    unawaited(_load(cursor: cursor));
+    unawaited(_load(cursor: cursor, targetPageIndex: nextIndex));
   }
 
   void _loadNewer() {
     if (_pageIndex == 0 || _loading || !widget.isCurrent()) return;
     final previousIndex = _pageIndex - 1;
     final cursor = _cursorHistory[previousIndex];
-    setState(() => _pageIndex = previousIndex);
-    unawaited(_load(cursor: cursor));
+    unawaited(_load(cursor: cursor, targetPageIndex: previousIndex));
   }
 
   String _typeLabel(QuizReportV2HistoryEntry entry) {
@@ -470,10 +504,16 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
                 ? 'server-quiz-history-refresh'
                 : 'server-quiz-history-load',
           ),
-          onPressed: _loading ? null : () => unawaited(_load(reset: true)),
+          onPressed: _loading
+              ? null
+              : _failed
+              ? _retry
+              : () => unawaited(_load(reset: true)),
           child: Text(
             _failed
-                ? 'Thử tải lại lịch sử máy chủ'
+                ? _retryPageIndex == null
+                      ? 'Thử tải lại lịch sử máy chủ'
+                      : 'Thử tải lại trang này'
                 : _requested
                 ? 'Làm mới lịch sử máy chủ'
                 : 'Tải lịch sử máy chủ',
@@ -484,9 +524,11 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
           const Text('Đang đọc biên nhận…'),
         ],
         if (_failed)
-          const Text(
-            'Không thể đọc lịch sử máy chủ. Hãy thử lại khi kết nối ổn định.',
-            key: Key('server-quiz-history-error'),
+          Text(
+            _page == null
+                ? 'Không thể đọc lịch sử máy chủ. Hãy thử lại khi kết nối ổn định.'
+                : 'Không tải được trang lịch sử. Trang hiện tại vẫn được giữ; hãy thử lại.',
+            key: const Key('server-quiz-history-error'),
           ),
         if (page != null) ...[
           Text(
