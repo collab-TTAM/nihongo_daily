@@ -222,8 +222,7 @@ final class _LoopbackHttpClient extends http.BaseClient {
     }
     events.add('http:${uri.path}${uri.hasQuery ? '?${uri.query}' : ''}');
     final body = await request.finalize().toBytes();
-    if (uri.path == '/rest/v1/rpc/submit_review' &&
-        _failNextReviewDispatch) {
+    if (uri.path == '/rest/v1/rpc/submit_review' && _failNextReviewDispatch) {
       _failNextReviewDispatch = false;
       throw http.ClientException('TEST ONLY offline', uri);
     }
@@ -384,7 +383,6 @@ SrsReview _review(
   occurredAt: occurredAt,
 );
 
-
 /// LOCAL_TWO_DEVICE_OFFLINE_REPLAY: separate runtimes, journals and credential backends.
 Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
   var phase = 'device-a-open';
@@ -525,11 +523,7 @@ Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
     );
     deviceA = restoredA;
     await restoredA.runtime.start();
-    final readyA2 = await _waitReady(
-      restoredA.runtime,
-      input.userA.id,
-      phase,
-    );
+    final readyA2 = await _waitReady(restoredA.runtime, input.userA.id, phase);
     _expect(
       backendA.secret != null &&
           backendA.secret != savedA &&
@@ -626,7 +620,6 @@ Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
   }
   if (failure != null) throw _ProbeFailure(failure);
 }
-
 
 Future<void> main() async {
   final rawInput = await stdin.transform(utf8.decoder).join();

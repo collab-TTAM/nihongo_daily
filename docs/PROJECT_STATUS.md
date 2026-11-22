@@ -5034,3 +5034,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - The previous exact-head run [44993882733](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44993882733) executed the new local two-runtime offline/reconnect probe successfully in `supabase-integration`; repo-sanity, database and AI boundary also passed. Flutter stopped at formatting; Windows had not yet completed at the last observation.
 - Next: inspect the formatter diff on the corrected workflow run, apply only the actual formatted source, remove the temporary diagnostic step and rerun all exact-head jobs. Keep PR #37 Draft and offline-sync pending-integration.
 
+
+
+## PR #37 formatter repair — 2026-11-22T07:18Z
+
+- Exact-head Actions [44994325339](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44994325339), attempt 1, completed FAILURE on `d08a0b521983c8c5e59c9732a4f0a6a799578e95`. Latest-attempt jobs: `repo-sanity`, `database`, `ai-boundary`, `windows`, and `supabase-integration` completed SUCCESS with every returned step successful; `flutter` failed only at the strict Dart 3.35.4 format gate. Flutter analyze, the complete Flutter suite, browser/native follow-ups and Web build were SKIPPED, not passed.
+- The read-only diagnostic printed four source-format changes in `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`: collapse the `submit_review` dispatch condition, remove one extra blank line before the offline-replay phase doc comment, collapse the `_waitReady` call, and remove one extra blank line before `main`. No test behavior/assertions changed.
+- Applied only those formatter hunks and removed the temporary diagnostic step from `.github/workflows/ci.yml`; the strict repository-wide formatter/analyzer/test/build gates remain unchanged. This is a TEST ONLY local Supabase runtime verifier correction, not production Auth behavior.
+- Parent tree was complete/untruncated at 356 entries (291 blobs / 65 trees). New tree is based on the exact parent tree SHA; the three intended paths are the only changed blobs, all other blobs/path/mode/type entries are preserved. Single-parent commit and expected-head non-force ref update are required and read back before release.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local formatter/analyzer/test/native/build is claimed. New exact-head Actions is the verification gate; inspect all six latest-attempt jobs/every step before claiming pass.
+- PR #37 remains Draft. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted expiry/restart, physical multi-device sync and full Personal Alpha learner journey remain unverified. No staging secrets/dispatch, Auth/provider strategy, schema/RLS, Pro-owned N4, merge, deployment or release changes.
