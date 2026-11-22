@@ -9,6 +9,7 @@ import 'package:nihongo_daily/features/auth/application/account_controller.dart'
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/application/srs_study_runtime.dart';
+import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/native_review_journal.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
@@ -18,6 +19,8 @@ const _runtimeOrigin = 'https://127.0.0.1:54321';
 const _apiUrl = 'http://127.0.0.1:54321';
 const _dueItemId = '00000000-0000-4000-8000-000000000002';
 const _eventId = '00000000-0000-4000-8000-0000000000a1';
+const _deviceOfflineEventId = '00000000-0000-4000-8000-0000000000a2';
+const _deviceOnlineEventId = '00000000-0000-4000-8000-0000000000a3';
 const _duePrompt = '同期テスト';
 const _dueReading = 'どうきテスト';
 const _dueAnswer = 'kiểm thử đồng bộ';
@@ -161,12 +164,20 @@ final class _LoopbackHttpClient extends http.BaseClient {
   bool _holdNextProfileResponse = false;
   bool _profileResponseCancelledBeforeRelease = false;
   bool _profileResponseReleased = false;
+  bool _failNextReviewDispatch = false;
   Completer<void>? _profileResponseHeld;
   Completer<void>? _releaseProfileResponse;
   Completer<void>? _profileResponseConsumed;
 
   bool get profileResponseCancelledBeforeRelease =>
       _profileResponseCancelledBeforeRelease;
+
+  void failNextReviewDispatch() {
+    if (_failNextReviewDispatch) {
+      throw StateError('Review dispatch gate already armed');
+    }
+    _failNextReviewDispatch = true;
+  }
 
   void holdNextProfileResponse() {
     if (_holdNextProfileResponse || _profileResponseHeld != null) {
@@ -211,6 +222,11 @@ final class _LoopbackHttpClient extends http.BaseClient {
     }
     events.add('http:${uri.path}${uri.hasQuery ? '?${uri.query}' : ''}');
     final body = await request.finalize().toBytes();
+    if (uri.path == '/rest/v1/rpc/submit_review' &&
+        _failNextReviewDispatch) {
+      _failNextReviewDispatch = false;
+      throw http.ClientException('TEST ONLY offline', uri);
+    }
     final headers = Map<String, String>.from(request.headers)
       ..remove('content-length')
       ..remove('host');
@@ -354,8 +370,12 @@ Future<void> _closeBundle(_RuntimeBundle bundle) async {
   await bundle.journal.close();
 }
 
-SrsReview _review(ReviewRating rating, DateTime occurredAt) => SrsReview(
-  clientEventId: _eventId,
+SrsReview _review(
+  ReviewRating rating,
+  DateTime occurredAt, {
+  String eventId = _eventId,
+}) => SrsReview(
+  clientEventId: eventId,
   itemType: LearningItemType.vocabulary,
   itemId: _dueItemId,
   rating: rating,
@@ -363,6 +383,250 @@ SrsReview _review(ReviewRating rating, DateTime occurredAt) => SrsReview(
   responseMs: 900,
   occurredAt: occurredAt,
 );
+
+
+/// LOCAL_TWO_DEVICE_OFFLINE_REPLAY: separate runtimes, journals and credential backends.
+Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
+  var phase = 'device-a-open';
+  Directory? directoryA;
+  Directory? directoryB;
+  _RuntimeBundle? deviceA;
+  _RuntimeBundle? deviceB;
+  _LoopbackHttpClient? httpA;
+  _LoopbackHttpClient? httpB;
+  String? failure;
+  final eventsA = <String>[];
+  final eventsB = <String>[];
+  final backendA = _MemoryCredentialBackend(eventsA);
+  final backendB = _MemoryCredentialBackend(eventsB);
+
+  try {
+    final openedDirectoryA = await Directory.systemTemp.createTemp(
+      'nd-device-a-offline-',
+    );
+    directoryA = openedDirectoryA;
+    final openedHttpA = _LoopbackHttpClient(eventsA);
+    httpA = openedHttpA;
+    final openedA = await _openBundle(
+      openedDirectoryA,
+      input,
+      backendA,
+      openedHttpA,
+    );
+    deviceA = openedA;
+    await openedA.runtime.start();
+    await openedA.runtime.account.signIn(
+      input.userA.email,
+      input.userA.password,
+    );
+    final readyA = await _waitReady(
+      openedA.runtime,
+      input.userA.id,
+      'device-a-login',
+    );
+    final offlineAt = DateTime.now().toUtc().add(const Duration(seconds: 1));
+    final offlineReview = _review(
+      ReviewRating.good,
+      offlineAt,
+      eventId: _deviceOfflineEventId,
+    );
+    openedHttpA.failNextReviewDispatch();
+
+    phase = 'device-a-offline-stage';
+    final offlineOutcome = await readyA.study.reviews.submit(
+      _prepare(readyA.study, offlineReview, phase),
+    );
+    _expect(
+      offlineOutcome is ReviewFailure &&
+          offlineOutcome.code == ReviewErrorCode.networkUnavailable &&
+          offlineOutcome.retryable,
+      phase,
+    );
+    final pendingA = await openedA.journal.list(input.userA.id);
+    _expect(
+      pendingA.length == 1 &&
+          pendingA.single.isPending &&
+          pendingA.single.eventId == _deviceOfflineEventId &&
+          pendingA.single.request['occurred_at'] ==
+              offlineReview.toJson()['occurred_at'],
+      'device-a-pending-journal',
+    );
+    final savedA = backendA.secret;
+    _expect(savedA != null, 'device-a-refresh-persisted');
+
+    phase = 'device-a-close-preserves-pending';
+    await _closeBundle(openedA);
+    deviceA = null;
+    _expect(backendA.secret == savedA, phase);
+
+    final openedDirectoryB = await Directory.systemTemp.createTemp(
+      'nd-device-b-offline-',
+    );
+    directoryB = openedDirectoryB;
+    final openedHttpB = _LoopbackHttpClient(eventsB);
+    httpB = openedHttpB;
+    final openedB = await _openBundle(
+      openedDirectoryB,
+      input,
+      backendB,
+      openedHttpB,
+    );
+    deviceB = openedB;
+    await openedB.runtime.start();
+    await openedB.runtime.account.signIn(
+      input.userA.email,
+      input.userA.password,
+    );
+    final readyB = await _waitReady(
+      openedB.runtime,
+      input.userA.id,
+      'device-b-login',
+    );
+    _expect(
+      !identical(readyA.session, readyB.session),
+      'device-b-independent-auth-session',
+    );
+    eventsB.clear();
+
+    phase = 'device-b-newer-event';
+    final onlineReview = _review(
+      ReviewRating.easy,
+      offlineAt.add(const Duration(seconds: 2)),
+      eventId: _deviceOnlineEventId,
+    );
+    final receiptB = _success(
+      await readyB.study.reviews.submit(
+        _prepare(readyB.study, onlineReview, phase),
+      ),
+      phase,
+    );
+    final recordsB = await openedB.journal.list(input.userA.id);
+    _expect(
+      receiptB.reviewCount == 3 &&
+          recordsB.length == 1 &&
+          recordsB.single.eventId == _deviceOnlineEventId &&
+          recordsB.single.receipt?.reviewCount == 3 &&
+          recordsB.single.rejection == null &&
+          _count(eventsB, 'http:/rest/v1/rpc/submit_review') == 1,
+      'device-b-authoritative-receipt',
+    );
+
+    phase = 'device-b-close';
+    await _closeBundle(openedB);
+    deviceB = null;
+
+    eventsA.clear();
+    phase = 'device-a-restore';
+    final restoredA = await _openBundle(
+      openedDirectoryA,
+      input,
+      backendA,
+      openedHttpA,
+    );
+    deviceA = restoredA;
+    await restoredA.runtime.start();
+    final readyA2 = await _waitReady(
+      restoredA.runtime,
+      input.userA.id,
+      phase,
+    );
+    _expect(
+      backendA.secret != null &&
+          backendA.secret != savedA &&
+          !identical(readyA.session, readyA2.session) &&
+          !identical(readyB.session, readyA2.session),
+      'device-a-fresh-session-restored',
+    );
+    final recovery = readyA2.study.reviews;
+    _expect(recovery is ReviewRecovery, 'device-a-recovery-capability');
+    final recovered = await (recovery as ReviewRecovery).recoverPending();
+    _expect(
+      recovered.length == 1 &&
+          recovered.single.request['client_event_id'] ==
+              _deviceOfflineEventId &&
+          recovered.single.request['occurred_at'] ==
+              offlineReview.toJson()['occurred_at'] &&
+          _count(eventsA, 'http:/rest/v1/rpc/submit_review') == 0,
+      'device-a-restores-exact-event-without-auto-submit',
+    );
+
+    phase = 'device-a-replay-after-reconnect';
+    final staleOutcome = await readyA2.study.reviews.submit(recovered.single);
+    _expect(
+      staleOutcome is ReviewFailure &&
+          staleOutcome.code == ReviewErrorCode.syncConflict,
+      phase,
+    );
+    final settledA = await restoredA.journal.list(input.userA.id);
+    _expect(
+      settledA.length == 1 &&
+          settledA.single.eventId == _deviceOfflineEventId &&
+          settledA.single.receipt == null &&
+          settledA.single.rejection?.code == ReviewErrorCode.syncConflict,
+      'device-a-terminal-stale-rejection',
+    );
+    final unresolved = await (readyA2.study.reviews as ReviewRecovery)
+        .recoverPending();
+    _expect(
+      unresolved.isEmpty &&
+          _count(eventsA, 'http:/rest/v1/rpc/submit_review') == 1,
+      'device-a-manual-replay-settles-once',
+    );
+    phase = 'device-a-authoritative-queue';
+    final queueAfterConflict = await readyA2.study.queue.load(
+      readyA2.session,
+      PreviewLevel.n5,
+    );
+    _expect(queueAfterConflict.isEmpty, phase);
+
+    phase = 'device-a-final-close';
+    await _closeBundle(restoredA);
+    deviceA = null;
+  } on Object catch (error) {
+    failure = error is _ProbeFailure ? error.phase : phase;
+  } finally {
+    if (deviceA != null) {
+      try {
+        await _closeBundle(deviceA);
+      } on Object {
+        failure ??= 'cleanup-device-a';
+      }
+    }
+    if (deviceB != null) {
+      try {
+        await _closeBundle(deviceB);
+      } on Object {
+        failure ??= 'cleanup-device-b';
+      }
+    }
+    try {
+      httpA?.close();
+    } on Object {
+      failure ??= 'cleanup-device-a-http';
+    }
+    try {
+      httpB?.close();
+    } on Object {
+      failure ??= 'cleanup-device-b-http';
+    }
+    if (directoryA != null) {
+      try {
+        await directoryA.delete(recursive: true);
+      } on Object {
+        failure ??= 'cleanup-device-a-directory';
+      }
+    }
+    if (directoryB != null) {
+      try {
+        await directoryB.delete(recursive: true);
+      } on Object {
+        failure ??= 'cleanup-device-b-directory';
+      }
+    }
+  }
+  if (failure != null) throw _ProbeFailure(failure);
+}
+
 
 Future<void> main() async {
   final rawInput = await stdin.transform(utf8.decoder).join();
@@ -640,6 +904,9 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
     ], phase);
     await _closeBundle(bundle);
     bundle = null;
+
+    phase = 'two-device-offline-replay';
+    await _verifyLocalTwoDeviceOfflineReplay(input);
   } on Object catch (error) {
     failure = error is _ProbeFailure ? error.phase : phase;
   } finally {

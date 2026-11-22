@@ -216,8 +216,8 @@ def verify_flutter_sdk_runtime(
     )
     print(
         "Caller-owned Supabase SDK runtime passed: refresh-before-profile, "
-        "NativeReviewJournal reopen/local replay, logout/clear ordering and "
-        "A/B isolation. LOCAL ONLY."
+        "NativeReviewJournal reopen/local replay, logout/clear ordering, A/B isolation, "
+        "and two isolated runtime bundles for offline/reconnect stale-conflict recovery. LOCAL ONLY."
     )
 
 

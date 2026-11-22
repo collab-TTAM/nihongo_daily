@@ -1531,14 +1531,19 @@
         22,
         18
       ],
-      "reproduce": "Run two clients A/B, go offline, queue immutable event IDs/times, restart, reconnect/resend, provoke stale/two-device conflict and account switch; inspect retained authoritative state.",
-      "limitation": "The disposable local GoTrue/PostgREST integration now races two independent same-owner sessions with distinct event IDs for one item. The newer event remains authoritative; the older either commits before it or is rejected as SYNC_CONFLICT, both sessions read the same final row, and the other owner sees neither receipt. This remains local two-session evidence, not physical two-device offline cache transfer/reconnect, hosted multi-device learner flow or integrated cross-device reconciliation.",
+      "reproduce": "Run the supabase-integration job: the TEST ONLY SDK probe stages A's immutable event while offline, closes A, lets a separate B runtime commit a newer event, restores A and explicitly replays the original event; verify SYNC_CONFLICT, terminal local rejection and the unchanged authoritative queue. Retain the HTTP two-session race checks.",
+      "limitation": "The new authored probe uses two sequential isolated runtime bundles, separate native journals and credential backends against disposable local GoTrue/PostgREST. It does not run simultaneous physical devices or hosted services. Exact-head CI must execute it; live cloud sync and physical multi-device offline transfer/reconnect remain unverified.",
       "anchors": [
         {
           "path": "scripts/test_supabase_local.py",
           "contains": "two-session concurrent distinct-event ordering and stale conflict"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_supabase_sdk_runtime.dart",
+          "contains": "LOCAL_TWO_DEVICE_OFFLINE_REPLAY: separate runtimes, journals and credential backends."
         }
-      ]
+      ],
+      "ci_job": "supabase-integration"
     },
     {
       "id": "quiz-progress",

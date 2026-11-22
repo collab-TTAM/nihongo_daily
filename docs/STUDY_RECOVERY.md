@@ -49,6 +49,30 @@ cannot be archived as terminal rejections. All journal size/event/lease/corrupti
 limits remain; native lossless compaction is explicit. No encryption, terminal
 retention or hardware-power-loss proof.
 
+
+## Local two-runtime offline/reconnect integration — authored
+
+The disposable `supabase-integration` SDK probe now composes two sequential,
+independent runtime bundles for the same Auth owner. Each bundle has its own
+native journal, in-memory TEST ONLY credential backend and HTTP client. Device A
+stages an immutable review while the transport is deliberately unavailable;
+the journal retains the exact event and the owned close preserves A's refresh
+secret. Device B signs in through a separate Auth session and commits a newer
+event to the same local GoTrue/PostgREST owner. A then reopens its own journal,
+restores through its own rotated refresh token, and exposes the exact pending
+event only for explicit manual replay. The server returns `SYNC_CONFLICT` for
+the stale event; the local journal records a terminal rejection and the reloaded
+queue remains the server-authoritative empty projection.
+
+This extends the existing HTTP-level two-session/concurrent-event tests with
+the real pinned Supabase SDK, write-before-dispatch repository and two separate
+on-disk journals. The runtime bundles run sequentially in one TEST ONLY process
+because the production owner lease intentionally prevents two same-origin
+writers in one process. It is not simultaneous physical devices, hosted sync,
+a Windows Credential Manager multi-device test or a learner journey. Exact-head
+CI must execute the new phase before the QA case can be advanced.
+
+
 ## Evidence and remaining work
 
 Run the new controller/widget tests plus dart run tool/verify_study_recovery.dart.
