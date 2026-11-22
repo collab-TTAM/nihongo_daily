@@ -69,3 +69,13 @@
 - Applied only the exact formatter output from that job to the translation-tap and translation-expectation lines in the N5 reading widget test. No production code, reading content, N4/Pro-owned files, API/schema/RLS, Auth, defaults, dependencies or CI gates changed.
 - Cloud runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must execute the full Flutter suite and every required job/step before this repair can be considered verified.
 - Next: inspect all jobs and steps on the new final PR HEAD; fix only observed diagnostics. PR #41 remains Draft; reviewed N5 content, vetted audio, hosted learner A/B, deployed RLS, physical multi-device sync and Personal Alpha release evidence remain separate gates.
+
+
+## N5 supermarket reading passage — 2026-11-22T18:13Z
+
+- Run `core-20261122T1813Z-pr41-n5-supermarket-reading`; branch `automation/issue-11-plan-sdk-integration`; parent `5893136710e13ed211164a392ad060f17b0df14c`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added original draft passage `n5-supermarket-01` (スーパーで買い物), with kana reading, Vietnamese translation and three source-grounded comprehension questions. The fixed bundled N5 reading set now contains 10 passages / 30 questions. The source note explicitly says independent teacher/native-speaker review is outstanding.
+- Changed exactly seven paths: `apps/flutter_app/assets/reading/catalog.json`, the N5 expansion test, the bundled repository N5 count/ID test, the default reading widget count/card test, `docs/READING_MATERIAL.md`, `qa/matrix.json`, and this status file. Existing N4-empty assertions remain unchanged. No Pro-owned #14/#38 N4 data, manifest, README, N4 content tests/docs or derived N4 assets were edited.
+- Structural preflight: catalog JSON parsed; 10 unique IDs, all records N5/version 1, 30 questions, each question has three unique choices and exactly one valid correct choice, with non-empty Japanese/kana/Vietnamese fields. The new round includes all three questions in the deterministic answer test. This is structural evidence, not independent linguistic review.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local Dart format, Flutter analyze/tests and Web/Windows builds were not run. New exact-head GitHub Actions must execute all required jobs/steps; no new-head pass is claimed here.
+- PR #41 remains Draft; #34/#11/#18 remain open. Audio, authoritative listening availability, teacher/native-speaker review, hosted learner acceptance and Personal Alpha release evidence remain separate gates.

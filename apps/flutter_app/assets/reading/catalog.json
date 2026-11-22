@@ -873,6 +873,103 @@
           "explanation_vi": "Bài đọc nói buổi tối tôi nhận được một quyển sách từ bố."
         }
       ]
+    },
+    {
+      "id": "n5-supermarket-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "スーパーで買い物",
+      "title_vi": "Mua sắm ở siêu thị",
+      "text_ja": "土曜日、私は母とスーパーへ行きました。店で野菜と牛乳を買いました。母は魚も買いました。家に帰って、昼ご飯を作りました。昼ご飯のあと、母と一緒にテレビを見ました。",
+      "reading_ja": "どようび、わたしはははとスーパーへいきました。みせでやさいとぎゅうにゅうをかいました。はははさかなもかいました。いえにかえって、ひるごはんをつくりました。ひるごはんのあと、ははといっしょにテレビをみました。",
+      "translation_vi": "Thứ Bảy, tôi đi siêu thị cùng mẹ. Ở cửa hàng, tôi mua rau và sữa. Mẹ cũng mua cá. Về nhà, tôi nấu bữa trưa. Sau bữa trưa, tôi xem ti vi cùng mẹ.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "土曜日、だれとスーパーへ行きましたか。",
+          "reading_ja": "どようび、だれとスーパーへいきましたか。",
+          "prompt_vi": "Thứ Bảy, tôi đã đi siêu thị với ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "父",
+              "reading_ja": "ちち",
+              "text_vi": "Bố"
+            },
+            {
+              "id": "c",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi siêu thị cùng mẹ."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "店で何を買いましたか。",
+          "reading_ja": "みせでなにをかいましたか。",
+          "prompt_vi": "Ở cửa hàng, tôi đã mua gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "野菜と牛乳",
+              "reading_ja": "やさいとぎゅうにゅう",
+              "text_vi": "Rau và sữa"
+            },
+            {
+              "id": "b",
+              "text_ja": "本とペン",
+              "reading_ja": "ほんとぺん",
+              "text_vi": "Sách và bút"
+            },
+            {
+              "id": "c",
+              "text_ja": "くつと服",
+              "reading_ja": "くつとふく",
+              "text_vi": "Giày và quần áo"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi mua rau và sữa ở cửa hàng."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "昼ご飯のあと、何をしましたか。",
+          "reading_ja": "ひるごはんのあと、なにをしましたか。",
+          "prompt_vi": "Sau bữa trưa, tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本を読みました",
+              "reading_ja": "ほんをよみました",
+              "text_vi": "Đọc sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "テレビを見ました",
+              "reading_ja": "テレビをみました",
+              "text_vi": "Xem ti vi"
+            },
+            {
+              "id": "c",
+              "text_ja": "公園へ行きました",
+              "reading_ja": "こうえんへいきました",
+              "text_vi": "Đi công viên"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói buổi chiều tôi xem ti vi cùng mẹ."
+        }
+      ]
     }
   ]
 }
