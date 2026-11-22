@@ -6,7 +6,6 @@ import base64
 import json
 import os
 import re
-import sys
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
@@ -423,6 +422,28 @@ def _review_response(value: dict[str, object]) -> None:
         raise ProbeFailure("review_response_malformed")
 
 
+def _restore_profile_preferences(
+    client: SupabaseHttp,
+    a2: AuthSession,
+    b: AuthSession,
+    original_a: object,
+    original_b: object,
+) -> None:
+    restore_failed = False
+    for session, original in ((a2, original_a), (b, original_b)):
+        try:
+            patch_preferred(
+                client, session, session.user_id, str(original), expect_row=True
+            )
+            restored = read_profile(client, session, session.user_id)
+            if len(restored) != 1 or restored[0]["preferred_jlpt"] != original:
+                restore_failed = True
+        except ProbeFailure:
+            restore_failed = True
+    if restore_failed:
+        raise ProbeFailure("profile_restore_failed")
+
+
 def _profile_settings_probe(
     client: SupabaseHttp,
     a1: AuthSession,
@@ -451,17 +472,7 @@ def _profile_settings_probe(
         if read_profile(client, a1, a1.user_id)[0]["preferred_jlpt"] != "N4":
             raise ProbeFailure("cross_owner_profile_update_succeeded")
     finally:
-        try:
-            patch_preferred(client, a2, a2.user_id, str(original_a), expect_row=True)
-            patch_preferred(client, b, b.user_id, str(original_b), expect_row=True)
-            if read_profile(client, a2, a2.user_id)[0]["preferred_jlpt"] != original_a:
-                restore_failed = True
-            if read_profile(client, b, b.user_id)[0]["preferred_jlpt"] != original_b:
-                restore_failed = True
-        except ProbeFailure:
-            restore_failed = True
-        if restore_failed:
-            raise ProbeFailure("profile_restore_failed")
+        _restore_profile_preferences(client, a2, b, original_a, original_b)
 
 
 def _review_probe(client: SupabaseHttp, a: AuthSession, b: AuthSession) -> None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import json
 import unittest
+from unittest.mock import patch
 from urllib.request import Request
 
 from scripts.hosted_supabase_probe import (
@@ -15,6 +16,7 @@ from scripts.hosted_supabase_probe import (
     decode_json,
     validate_origin,
     validate_publishable_key,
+    _restore_profile_preferences,
 )
 
 
@@ -172,6 +174,22 @@ class HostedProbeHttpTests(unittest.TestCase):
             client.request("GET", "/rest/v1/profiles")
         self.assertEqual(str(caught.exception), "http_status")
         self.assertNotIn("not-for-logs", str(caught.exception))
+
+
+    def test_profile_restore_attempts_both_accounts_after_first_failure(self):
+        a2 = AuthSession("11111111-1111-4111-8111-111111111111", "a", "ar")
+        b = AuthSession("22222222-2222-4222-8222-222222222222", "b", "br")
+        with patch(
+            "scripts.hosted_supabase_probe.patch_preferred",
+            side_effect=[ProbeFailure("first_restore_failed"), None],
+        ) as patch_preferred, patch(
+            "scripts.hosted_supabase_probe.read_profile",
+            return_value=[{"preferred_jlpt": "N5"}],
+        ):
+            with self.assertRaises(ProbeFailure) as caught:
+                _restore_profile_preferences(None, a2, b, "N5", "N5")
+        self.assertEqual(caught.exception.code, "profile_restore_failed")
+        self.assertEqual(patch_preferred.call_count, 2)
 
 
 if __name__ == "__main__":
