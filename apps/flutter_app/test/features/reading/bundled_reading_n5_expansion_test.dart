@@ -27,7 +27,7 @@ void main() {
     expect(passage.questions, hasLength(3));
     expect(
       passage.questions[2].explanationVi,
-      'Bài đọc nói sau bữa trưa tôi xem ti vi cùng mẹ.',
+      'Bài đọc nói tôi ăn trưa ở cửa hàng gần đó.',
     );
   });
 
@@ -118,6 +118,10 @@ void main() {
     expect(passage.vietnamese, contains('siêu thị'));
     expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
     expect(passage.questions, hasLength(3));
+    expect(
+      passage.questions[2].explanationVi,
+      'Bài đọc nói sau bữa trưa tôi xem ti vi cùng mẹ.',
+    );
   });
 
   test('new N5 comprehension keys complete deterministic rounds', () {
