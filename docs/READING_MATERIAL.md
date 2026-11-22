@@ -9,10 +9,7 @@ Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
 ## Current bundled N5 draft set
 
-The fixed app asset currently contains six original N5 draft passages and 18
-deterministic comprehension questions. The latest addition is
-`n5-sunday-meal-01` (日曜日の昼ごはん), a short family-shopping/lunch passage
-with three source-grounded questions. Its content version is 1 and its source
+The fixed app asset currently contains seven original N5 draft passages and 21 deterministic comprehension questions. The latest addition is n5-bus-commute-01 (バスで会社へ行きます), a short public-transport commute passage with three source-grounded questions. Its content version is 1 and its source
 note continues to disclose that a teacher or native speaker has not reviewed it.
 
 This is a small reading-flow content increment, not complete N5 coverage,

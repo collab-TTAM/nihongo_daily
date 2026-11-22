@@ -8,3 +8,13 @@
 - Corrected only these two feature tests: assert the sixth stable ID, 18 total questions, the visible sixth card and the six-passage label. No reading content, production UI/domain logic, N4/Pro-owned files, manifest, Auth, API/schema/RLS or CI gate changed.
 - The cloud authoring runtime has no pinned Flutter/Dart SDK; no local Flutter format/analyze/test/build was run. The new exact-head CI must rerun the full suite and all downstream jobs.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #34/#11/#18 open pending independent content review, audio availability, trusted study-session integration, hosted learner evidence and Personal Alpha acceptance.
+
+
+## N5 reading commute passage — 2026-11-22T02:16Z
+
+- Run core-20261122T0212Z-pr41-n5-reading-commute-passage; branch automation/issue-11-plan-sdk-integration; parent 57dd2c34d5e12003727467a8df8c946352526712; base main 61604bc21da64a0dd94dbb97ba3c4b1d035430a6.
+- Added original draft passage n5-bus-commute-01 (バスで会社へ行きます) with Vietnamese translation, kana reading and three deterministic source-grounded questions. Bundled N5 reading now has 7 passages / 21 questions. The source note still says teacher/native-speaker review is outstanding; audio remains unavailable and this passage cannot grant listening availability, study credit, mastery or SRS progress.
+- Changed exactly: apps/flutter_app/assets/reading/catalog.json, apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart, docs/READING_MATERIAL.md, docs/PROJECT_STATUS.md. The regression asserts the seventh passage, updates the total and includes its three-question round in the deterministic answer test.
+- Full source tree audit before write: 1025 entries (900 blobs, 125 trees), recursive result untruncated; Pro-owned N4/shared paths were present and preserved. No data/n4, data/manifest.json, data/README.md, shared content test or N4 documentation change.
+- JSON/identity/choice-key structural preflight passed in the cloud authoring step. The authoring runtime has no pinned Flutter/Dart SDK, so Dart format/analyze/Flutter tests/Web/Windows builds were not run locally. Exact-head GitHub Actions must verify the new regression and all retained gates; no new-head CI pass is claimed.
+- PR #41 remains Draft; #34/#11/#18 remain open. Hosted learner, reviewed reading content, vetted audio and Personal Alpha release evidence remain separate gates.

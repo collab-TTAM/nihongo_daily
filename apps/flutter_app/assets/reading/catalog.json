@@ -582,6 +582,103 @@
           "explanation_vi": "Câu cuối nói bữa trưa rất ngon."
         }
       ]
+    },
+    {
+      "id": "n5-bus-commute-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "バスで会社へ行きます",
+      "title_vi": "Đi làm bằng xe buýt",
+      "text_ja": "私は毎朝、七時に家を出ます。家の近くにバス停があります。七時十五分のバスに乗って、会社へ行きます。バスの中で本を読みます。会社の前でバスを降ります。八時に仕事を始めます。",
+      "reading_ja": "わたしはまいあさ、しちじにいえをでます。いえのちかくにバスていがあります。しちじじゅうごふんのバスにのって、かいしゃへいきます。バスのなかでほんをよみます。かいしゃのまえでバスをおります。はちじにしごとをはじめます。",
+      "translation_vi": "Mỗi sáng tôi rời nhà lúc 7 giờ. Gần nhà có một trạm xe buýt. Tôi lên chuyến xe buýt lúc 7 giờ 15 để đi đến công ty. Trên xe buýt tôi đọc sách. Tôi xuống xe trước công ty. Tôi bắt đầu làm việc lúc 8 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "私は何時に家を出ますか。",
+          "reading_ja": "わたしはなんじにいえをでますか。",
+          "prompt_vi": "Tôi rời nhà lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "七時",
+              "reading_ja": "しちじ",
+              "text_vi": "7 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "七時十五分",
+              "reading_ja": "しちじじゅうごふん",
+              "text_vi": "7 giờ 15"
+            },
+            {
+              "id": "c",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi rời nhà lúc 7 giờ."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何で会社へ行きますか。",
+          "reading_ja": "なにでかいしゃへいきますか。",
+          "prompt_vi": "Tôi đến công ty bằng phương tiện gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "電車",
+              "reading_ja": "でんしゃ",
+              "text_vi": "Tàu điện"
+            },
+            {
+              "id": "b",
+              "text_ja": "バス",
+              "reading_ja": "バス",
+              "text_vi": "Xe buýt"
+            },
+            {
+              "id": "c",
+              "text_ja": "自転車",
+              "reading_ja": "じてんしゃ",
+              "text_vi": "Xe đạp"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi đi xe buýt đến công ty."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に仕事を始めますか。",
+          "reading_ja": "なんじにしごとをはじめますか。",
+          "prompt_vi": "Tôi bắt đầu làm việc lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "七時十五分",
+              "reading_ja": "しちじじゅうごふん",
+              "text_vi": "7 giờ 15"
+            },
+            {
+              "id": "b",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "九時",
+              "reading_ja": "くじ",
+              "text_vi": "9 giờ"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi bắt đầu làm việc lúc 8 giờ."
+        }
+      ]
     }
   ]
 }
