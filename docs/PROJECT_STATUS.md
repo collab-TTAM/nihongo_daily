@@ -1,4 +1,4 @@
-## PR #37 — caller close during explicit refresh — 2026-11-22T21:24Z
+## PR #37 — caller close during explicit refresh — 2026-11-22T21:10Z
 
 - Run `core-20261122T2110Z-pr37-close-during-explicit-refresh`; branch `automation/issue-22-atomic-review`; parent `80e4d8e1eb62b306e6378dcde8934cc73347dbbd`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
 - Added a TEST ONLY pinned-Supabase-SDK/Windows MethodChannel regression in `apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart`: start from a ready restored session, hold an explicit refresh response, close the caller-owned runtime, then release a late rotated token. The test requires immediate readiness revocation, close to remain pending while Auth is held, no late own-profile request or token publication, and ordered sign-out -> exact-project vault clear -> native owner release.
@@ -6,6 +6,7 @@
 - Full recursive parent tree was untruncated at 358 entries / 293 blobs / 65 trees. The first `create_tree` used exact parent `base_tree_sha=25eb9cff59f0d256c81153ed24e918f1dd80d321`; no paths were added/removed and no mode/type changed; exactly three intended file blobs changed, 348 tree/blob entries retained. The follow-up is one test-file blob only. Final tree audit and separate diff review are recorded in this checkpoint.
 - JSON QA matrix parsed successfully in the authoring script and contains the exact new test anchor. Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; the new Dart test has not run locally. Exact-head GitHub Actions is required for format/analyze/full tests and Windows bridge/build evidence.
 - This is TEST ONLY SDK/MockClient/MethodChannel evidence, not hosted signed-JWT learner A/B, deployed PostgREST/RLS, actual hosted Windows restore, OS logoff/power-loss or physical multi-device proof. #20/#22/#15 remain open; PR #37 remains Draft. No production Auth/provider strategy, API/schema/RLS, hosted secrets/dispatch, default Auth/save simulation, Pro-owned #14/#38/N4/content, merge, deployment or release changed.
+- Exact-head Actions [45071183491](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45071183491), attempt 1, targets status commit `2b4b2cc1d3d2113a817a0d3cc8560d624f0f6758`; the run was `pending` and no jobs had been published when inspected. This is parent-only evidence because the timestamp correction advances the branch; inspect the new final-head workflow before any pass claim.
 - Next: inspect every latest-attempt job and step on the final exact HEAD; repair only observed failures. Continue hosted acceptance only through the protected non-production staging workflow when its approved configuration is available.
 
 ## PR #37 — exact pinned formatter correction — 2026-11-21T01:12Z
