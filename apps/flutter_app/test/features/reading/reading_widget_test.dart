@@ -141,13 +141,17 @@ void main() {
         isA<BundledReadingRepository>(),
       );
       expect(find.byKey(const Key('reading-unavailable')), findsNothing);
-      expect(find.text('6 bài đọc · Chọn để mở'), findsOneWidget);
+      expect(find.text('7 bài đọc · Chọn để mở'), findsOneWidget);
       expect(
         find.byKey(const Key('reading-open-n5-daily-routine-01')),
         findsOneWidget,
       );
       expect(
         find.byKey(const Key('reading-open-n5-sunday-meal-01')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('reading-open-n5-bus-commute-01')),
         findsOneWidget,
       );
       expect(find.byKey(const Key('reading-result')), findsNothing);

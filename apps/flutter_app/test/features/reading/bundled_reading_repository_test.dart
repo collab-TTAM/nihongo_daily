@@ -34,7 +34,9 @@ void main() {
         'n5-library-study-01',
         'n5-rainy-day-01',
         'n5-sunday-meal-01',
+        'n5-bus-commute-01',
       ]);
+      expect(n5, hasLength(7));
       expect(n4, isEmpty);
       expect(n5.every((passage) => passage.contentVersion == 1), isTrue);
       expect(
@@ -47,7 +49,7 @@ void main() {
       );
       expect(
         n5.fold<int>(0, (total, passage) => total + passage.questions.length),
-        18,
+        21,
       );
       for (final passage in n5) {
         expect(passage.reading, isNotEmpty);
