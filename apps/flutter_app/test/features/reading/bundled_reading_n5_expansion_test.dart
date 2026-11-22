@@ -41,12 +41,26 @@ void main() {
     expect(passage.questions, hasLength(3));
   });
 
+  test('bundled N5 expansion includes the birthday passage', () {
+    final passage = passages.singleWhere(
+      (entry) => entry.id == 'n5-birthday-01',
+    );
+
+    expect(passage.titleJa, '誕生日の一日');
+    expect(passage.titleVi, 'Một ngày sinh nhật');
+    expect(passage.contentVersion, 1);
+    expect(passage.reading, contains('たんじょうび'));
+    expect(passage.vietnamese, contains('sinh nhật'));
+    expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
+    expect(passage.questions, hasLength(3));
+  });
+
   test('bundled N5 expansion includes the Sunday lunch passage', () {
     final passage = passages.singleWhere(
       (entry) => entry.id == 'n5-sunday-meal-01',
     );
 
-    expect(passages, hasLength(8));
+    expect(passages, hasLength(9));
     expect(passage.titleJa, '日曜日の昼ごはん');
     expect(passage.titleVi, 'Bữa trưa Chủ nhật');
     expect(passage.contentVersion, 1);
@@ -94,6 +108,7 @@ void main() {
       'n5-sunday-meal-01',
       'n5-bus-commute-01',
       'n5-friend-house-01',
+      'n5-birthday-01',
     ]) {
       final passage = passages.singleWhere((entry) => entry.id == id);
       final round = ReadingRound(passage);

@@ -141,7 +141,7 @@ void main() {
         isA<BundledReadingRepository>(),
       );
       expect(find.byKey(const Key('reading-unavailable')), findsNothing);
-      expect(find.text('8 bài đọc · Chọn để mở'), findsOneWidget);
+      expect(find.text('9 bài đọc · Chọn để mở'), findsOneWidget);
       expect(
         find.byKey(const Key('reading-open-n5-daily-routine-01')),
         findsOneWidget,
@@ -158,6 +158,19 @@ void main() {
         find.byKey(const Key('reading-open-n5-friend-house-01')),
         findsOneWidget,
       );
+      expect(
+        find.byKey(const Key('reading-open-n5-birthday-01')),
+        findsOneWidget,
+      );
+      await tapReading(
+        tester,
+        find.byKey(const Key('reading-open-n5-birthday-01')),
+      );
+      expect(find.text('誕生日の一日'), findsOneWidget);
+      expect(find.textContaining('きのうは私の誕生日でした。'), findsOneWidget);
+      await tapReading(tester, find.byKey(const Key('reading-show-translation')));
+      expect(find.textContaining('Hôm qua là sinh nhật của tôi.'), findsOneWidget);
+      await tapReading(tester, find.byKey(const Key('reading-back')));
       expect(find.byKey(const Key('reading-result')), findsNothing);
       expect(
         tester

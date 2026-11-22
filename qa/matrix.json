@@ -957,7 +957,7 @@
     {
       "id": "study-flows",
       "status": "pending-integration",
-      "scope": "N5 bundled reading now includes six original draft passages and 18 deterministic comprehension questions; vocabulary/grammar and listening/reading learner screens still need reviewed curriculum and end-to-end integration.",
+      "scope": "N5 bundled reading now includes nine original draft passages and 27 deterministic comprehension questions; vocabulary/grammar and listening/reading still need reviewed curriculum and hosted end-to-end integration.",
       "issues": [
         12,
         34,
@@ -1841,6 +1841,10 @@
         {
           "path": "apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart",
           "contains": "bundled N5 expansion includes the friend-house passage"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart",
+          "contains": "bundled N5 expansion includes the birthday passage"
         }
       ],
       "issues": [
@@ -1848,7 +1852,7 @@
         18
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/reading/bundled_reading_repository_test.dart test/features/reading/reading_widget_test.dart; retain full Flutter/Chrome/Web/Windows CI.",
-      "limitation": "The bundled catalog is eight original N5 draft passages with no independent teacher/native-speaker review; N4 is intentionally empty pending separate Pro PR #38 review/integration. No audio, saved answers, progress/mastery or study-minute credit; the server LISTENING_READING block remains BLOCKED. Tests/CI are component evidence, not hosted learner acceptance."
+      "limitation": "The bundled catalog is nine original N5 draft passages (27 questions) with no independent teacher/native-speaker review; N4 is intentionally empty pending separate Pro PR #38 review/integration. No audio, saved answers, progress/mastery or study-minute credit; the server LISTENING_READING block remains BLOCKED. Tests/CI are component evidence, not hosted learner acceptance."
     },
     {
       "id": "reading-study-recorder",

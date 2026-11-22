@@ -9,8 +9,7 @@ Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
 ## Current bundled N5 draft set
 
-The fixed app asset currently contains eight original N5 draft passages and 24 deterministic comprehension questions. The latest addition is n5-friend-house-01 (友達の家で), a short visit-to-a-friend passage about a home near the station, lunch and Japanese homework, with three source-grounded questions. Its content version is 1 and its source
-note continues to disclose that a teacher or native speaker has not reviewed it.
+The fixed app asset currently contains nine original N5 draft passages and 27 deterministic comprehension questions. The latest addition is n5-birthday-01 (誕生日の一日), a short birthday passage about a cake made by the learner's mother, two visiting friends and a book from the learner's father, with three source-grounded questions. Its content version is 1 and its source note continues to disclose that a teacher or native speaker has not reviewed it.
 
 This is a small reading-flow content increment, not complete N5 coverage,
 official JLPT alignment, independent linguistic review or licensing approval.

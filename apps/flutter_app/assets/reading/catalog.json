@@ -776,6 +776,103 @@
           "explanation_vi": "Bài đọc nói buổi chiều chúng tôi làm bài tập tiếng Nhật."
         }
       ]
+    },
+    {
+      "id": "n5-birthday-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "誕生日の一日",
+      "title_vi": "Một ngày sinh nhật",
+      "text_ja": "きのうは私の誕生日でした。朝、母がケーキを作りました。午後、友達が二人家に来ました。みんなで歌を歌って、ケーキを食べました。夜、父から本をもらいました。とても楽しい一日でした。",
+      "reading_ja": "きのうはわたしのたんじょうびでした。あさ、ははがけーきをつくりました。ごご、ともだちがふたりいえにきました。みんなでうたをうたって、けーきをたべました。よる、ちちからほんをもらいました。とてもたのしいいちにちでした。",
+      "translation_vi": "Hôm qua là sinh nhật của tôi. Buổi sáng, mẹ làm bánh kem. Buổi chiều, hai người bạn đến nhà. Mọi người cùng hát và ăn bánh kem. Buổi tối, tôi nhận được một quyển sách từ bố. Đó là một ngày rất vui.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "だれがケーキを作りましたか。",
+          "reading_ja": "だれがけーきをつくりましたか。",
+          "prompt_vi": "Ai đã làm bánh kem?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "父",
+              "reading_ja": "ちち",
+              "text_vi": "Bố"
+            },
+            {
+              "id": "c",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn bè"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói mẹ làm bánh kem vào buổi sáng."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "友達は何人来ましたか。",
+          "reading_ja": "ともだちはなんにんきましたか。",
+          "prompt_vi": "Có mấy người bạn đã đến?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "一人",
+              "reading_ja": "ひとり",
+              "text_vi": "Một người"
+            },
+            {
+              "id": "b",
+              "text_ja": "二人",
+              "reading_ja": "ふたり",
+              "text_vi": "Hai người"
+            },
+            {
+              "id": "c",
+              "text_ja": "三人",
+              "reading_ja": "さんにん",
+              "text_vi": "Ba người"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói có hai người bạn đến nhà vào buổi chiều."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "夜、何をもらいましたか。",
+          "reading_ja": "よる、なにをもらいましたか。",
+          "prompt_vi": "Buổi tối, tôi đã nhận được gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本",
+              "reading_ja": "ほん",
+              "text_vi": "Sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "ケーキ",
+              "reading_ja": "けーき",
+              "text_vi": "Bánh kem"
+            },
+            {
+              "id": "c",
+              "text_ja": "かばん",
+              "reading_ja": "かばん",
+              "text_vi": "Cặp sách"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi tối tôi nhận được một quyển sách từ bố."
+        }
+      ]
     }
   ]
 }
