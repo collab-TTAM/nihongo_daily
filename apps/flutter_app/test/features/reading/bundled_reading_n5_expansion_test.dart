@@ -58,7 +58,11 @@ void main() {
   });
 
   test('new N5 comprehension keys complete deterministic rounds', () {
-    for (final id in ['n5-library-study-01', 'n5-rainy-day-01', 'n5-sunday-meal-01']) {
+    for (final id in [
+      'n5-library-study-01',
+      'n5-rainy-day-01',
+      'n5-sunday-meal-01',
+    ]) {
       final passage = passages.singleWhere((entry) => entry.id == id);
       final round = ReadingRound(passage);
       for (final question in passage.questions) {

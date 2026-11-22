@@ -12880,3 +12880,11 @@ plaintext. All14 hosted groups pending. Published head/CI/next action in PR41.
 - Parent exact-head [Actions 44903521537](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44903521537) passed all six jobs/every step on `c873c62`; this does not verify the new content/test. The cloud authoring runtime has no Flutter/Dart SDK, so local Flutter format/analyze/test/build was not run. New exact-head CI is required.
 - Next: inspect all latest-attempt jobs and every step on the new commit; fix only actual diagnostics while retaining N5/N4 isolation and the strict content validator. Keep #34/#26/#18 open and PR #41 Draft pending independent review, reviewed N5 coverage, audio availability, hosted study-plan integration and learner evidence.
 
+
+## N5 reading test formatter correction — 2026-11-22T00:08Z
+
+- Run `core-20261122T0007Z-pr41-reading-test-format-fix` on branch `automation/issue-11-plan-sdk-integration`, parent `0969ca3379dc2307a7caff5637c7f87ed7bddc64`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44961372840](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44961372840), attempt 1, completed: repo-sanity, database, AI boundary and Windows SUCCESS; Flutter FAILED only at `dart format --output=none --set-exit-if-changed .`; preview-artifacts SKIPPED. Formatter's actual diff expanded the three N5 reading IDs in `bundled_reading_n5_expansion_test.dart` to a multiline list. Flutter analyze, tests, platform probes and Web build were skipped downstream and are not passes.
+- Applied only that exact formatter hunk; no test assertions, reading content, QA state, Pro-owned N4 scope or production code changed. The strict formatter gate remains unchanged.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head CI must execute the full Flutter suite and remaining jobs.
+- Next: inspect every latest-attempt job/step on the corrected HEAD. Keep PR #41 Draft and #34/#11/#18 open pending independent curriculum review, listening/audio availability, valid study-session integration, hosted learner evidence and Personal Alpha acceptance.
