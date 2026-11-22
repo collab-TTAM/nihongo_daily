@@ -86,3 +86,12 @@
 - Follow-up to `fe9717226a2d0dd181a91cfa5f85d5802bdb534f`: align the third comprehension explanation with the passage's exact “after lunch” wording rather than inferring a time of day. Added an assertion for the explanation text.
 - Paths: `apps/flutter_app/assets/reading/catalog.json`, `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart`, and this status file. N4/Pro-owned content and tests remain untouched.
 - Structural JSON check passed; new exact-head Actions are still the Flutter format/analyze/test/build gate. No local Flutter/Dart SDK result is claimed.
+
+
+## N5 reading formatter repair — 2026-11-22T20:10Z
+
+- Branch `automation/issue-11-plan-sdk-integration`; parent HEAD `7a43b275e5b37df37d06bed02bd05d4d0a5e3190`. Resumed only after the prior PR #41 worker checkpoint was RELEASED and its ACTIVE marker exceeded the 90-minute window.
+- Exact-head Actions [45054830815](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45054830815) failed solely at pinned Dart 3.35.4 formatting in `apps/flutter_app/test/features/reading/reading_widget_test.dart`. Applied the exact emitted one-line formatter hunk; no assertion or behavior changed.
+- Changed paths in this checkpoint: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and `docs/PROJECT_STATUS.md`. No N4/Pro-owned content/data/manifest/content tests/docs were changed.
+- Cloud runtime has no pinned Flutter/Dart SDK; local format/analyze/Flutter tests/builds were not run. New exact-head GitHub Actions is the verification gate; no new-head pass is claimed yet. PR #41 remains Draft and #34/#11/#18 remain open pending their separate acceptance.
+- Credential/Auth review: PR #37 remains Draft at `e5d3345fd00e31bf4c738508f2fe7171b2696ab1`; exact-head Actions [45021324281](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45021324281) completed all six jobs successfully. This is caller-owned Windows vault/SDK component evidence only; hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical multi-device acceptance remain unverified.

@@ -187,10 +187,7 @@ void main() {
         find.byKey(const Key('reading-open-n5-supermarket-01')),
       );
       expect(find.text('スーパーで買い物'), findsOneWidget);
-      expect(
-        find.textContaining('土曜日、私は母とスーパーへ行きました。'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('土曜日、私は母とスーパーへ行きました。'), findsOneWidget);
       await tapReading(tester, find.byKey(const Key('reading-back')));
       expect(
         tester
