@@ -15,8 +15,6 @@ import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/domain/srs_models.dart';
 import 'package:nihongo_daily/shared/models/preview_level.dart';
 
-const _runtimeOrigin = 'https://127.0.0.1:54321';
-const _apiUrl = 'http://127.0.0.1:54321';
 const _dueItemId = '00000000-0000-4000-8000-000000000002';
 const _eventId = '00000000-0000-4000-8000-0000000000a1';
 const _deviceOfflineEventId = '00000000-0000-4000-8000-0000000000a2';
@@ -42,10 +40,13 @@ final class _User {
 }
 
 final class _Input {
-  const _Input(this.anonKey, this.userA, this.userB);
+  const _Input(this.apiUrl, this.anonKey, this.userA, this.userB);
+  final Uri apiUrl;
   final String anonKey;
   final _User userA;
   final _User userB;
+
+  String get runtimeOrigin => apiUrl.replace(scheme: 'https').origin;
 }
 
 final class _ReadyStudy {
@@ -74,10 +75,10 @@ _Input _readInput(String rawInput) {
           'anon_key',
           'user_a',
           'user_b',
-        }.every(decoded.containsKey) ||
-        decoded['api_url'] != _apiUrl) {
+        }.every(decoded.containsKey)) {
       throw const FormatException();
     }
+    final apiUrl = parseLocalSupabaseProbeApiUrl(decoded['api_url']);
     final anonKey = decoded['anon_key'];
     if (anonKey is! String ||
         anonKey.isEmpty ||
@@ -86,6 +87,7 @@ _Input _readInput(String rawInput) {
       throw const FormatException();
     }
     return _Input(
+      apiUrl,
       anonKey,
       _readUser(decoded['user_a']),
       _readUser(decoded['user_b']),
@@ -93,6 +95,29 @@ _Input _readInput(String rawInput) {
   } on Object {
     throw const _ProbeFailure('input');
   }
+}
+
+/// TEST ONLY: accepts an explicit dynamic API port only on the local IPv4
+/// loopback. The production runtime still receives an HTTPS origin derived
+/// from this validated URI; learner-provided remote URLs are never accepted.
+Uri parseLocalSupabaseProbeApiUrl(Object? value) {
+  if (value is! String || value.length > 2048 || value != value.trim()) {
+    throw const FormatException();
+  }
+  final uri = Uri.tryParse(value);
+  if (uri == null ||
+      uri.scheme != 'http' ||
+      uri.host != '127.0.0.1' ||
+      !uri.hasPort ||
+      uri.port < 1024 ||
+      uri.port > 65535 ||
+      uri.userInfo.isNotEmpty ||
+      uri.hasQuery ||
+      uri.hasFragment ||
+      (uri.path.isNotEmpty && uri.path != '/')) {
+    throw const FormatException();
+  }
+  return uri.replace(path: '');
 }
 
 _User _readUser(Object? value) {
@@ -119,10 +144,10 @@ _User _readUser(Object? value) {
 
 /// In-memory TEST ONLY port. It records operation names, never secret values.
 final class _MemoryCredentialBackend implements SessionCredentialBackend {
-  _MemoryCredentialBackend(this.events)
+  _MemoryCredentialBackend(this.events, String runtimeOrigin)
     : _target =
           SessionCredentialVault.targetPrefix +
-          Uri.parse(_runtimeOrigin).origin.toLowerCase();
+          Uri.parse(runtimeOrigin).origin.toLowerCase();
 
   final List<String> events;
   final String _target;
@@ -157,9 +182,10 @@ final class _MemoryCredentialBackend implements SessionCredentialBackend {
 /// exact trusted HTTPS loopback origin and forwards it to local HTTP Supabase.
 /// No caller-supplied or remote origin can pass this boundary.
 final class _LoopbackHttpClient extends http.BaseClient {
-  _LoopbackHttpClient(this.events);
+  _LoopbackHttpClient(this.events, this.apiPort);
 
   final List<String> events;
+  final int apiPort;
   final http.Client _inner = http.Client();
   bool _holdNextProfileResponse = false;
   bool _profileResponseCancelledBeforeRelease = false;
@@ -213,7 +239,7 @@ final class _LoopbackHttpClient extends http.BaseClient {
     final uri = request.url;
     if (uri.scheme != 'https' ||
         uri.host != '127.0.0.1' ||
-        uri.port != 54321 ||
+        uri.port != apiPort ||
         uri.userInfo.isNotEmpty ||
         uri.hasFragment ||
         (!uri.path.startsWith('/auth/v1/') &&
@@ -303,10 +329,10 @@ Future<_RuntimeBundle> _openBundle(
   final journal = await NativeReviewJournal.open(directory);
   try {
     final runtime = PersistentSupabaseRuntime(
-      projectUrl: _runtimeOrigin,
+      projectUrl: input.runtimeOrigin,
       publishableKey: input.anonKey,
       vault: SessionCredentialVault(
-        projectUrl: _runtimeOrigin,
+        projectUrl: input.runtimeOrigin,
         backend: backend,
       ),
       store: journal,
@@ -395,15 +421,15 @@ Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
   String? failure;
   final eventsA = <String>[];
   final eventsB = <String>[];
-  final backendA = _MemoryCredentialBackend(eventsA);
-  final backendB = _MemoryCredentialBackend(eventsB);
+  final backendA = _MemoryCredentialBackend(eventsA, input.runtimeOrigin);
+  final backendB = _MemoryCredentialBackend(eventsB, input.runtimeOrigin);
 
   try {
     final openedDirectoryA = await Directory.systemTemp.createTemp(
       'nd-device-a-offline-',
     );
     directoryA = openedDirectoryA;
-    final openedHttpA = _LoopbackHttpClient(eventsA);
+    final openedHttpA = _LoopbackHttpClient(eventsA, input.apiUrl.port);
     httpA = openedHttpA;
     final openedA = await _openBundle(
       openedDirectoryA,
@@ -461,7 +487,7 @@ Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
       'nd-device-b-offline-',
     );
     directoryB = openedDirectoryB;
-    final openedHttpB = _LoopbackHttpClient(eventsB);
+    final openedHttpB = _LoopbackHttpClient(eventsB, input.apiUrl.port);
     httpB = openedHttpB;
     final openedB = await _openBundle(
       openedDirectoryB,
@@ -703,8 +729,8 @@ Future<String> runSupabaseSdkRuntimeProbe(String rawInput) async {
   try {
     final input = _readInput(rawInput);
     final events = <String>[];
-    final backend = _MemoryCredentialBackend(events);
-    httpClient = _LoopbackHttpClient(events);
+    final backend = _MemoryCredentialBackend(events, input.runtimeOrigin);
+    httpClient = _LoopbackHttpClient(events, input.apiUrl.port);
     journalDirectory = await Directory.systemTemp.createTemp(
       'nihongo-sdk-runtime-',
     );
