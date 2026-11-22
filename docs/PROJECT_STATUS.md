@@ -5018,3 +5018,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - This is disposable local GoTrue/PostgREST + TEST ONLY SDK/vault evidence, not simultaneous physical devices, hosted signed-JWT learner A/B, deployed RLS, or Personal Alpha. No Auth/provider strategy, schema/RLS, default activation, hosted secret/dispatch, N4/Pro-owned scope, merge, deployment or release change.
 - Next: inspect every latest-attempt job/step on the new exact HEAD; fix only observed diagnostics. Keep #37 Draft and #15/#20/#22/#18 open pending hosted and physical-device acceptance.
 
+
+## Exact-head CI diagnostic for local offline/reconnect probe — 2026-11-22T06:31Z
+
+- Run [44993882733](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44993882733), attempt 1, targets exact source HEAD `683992e244ed32ca5fc403b0fca510a0f9e4184c`.
+- `repo-sanity`, `database`, `ai-boundary`, and `supabase-integration` completed SUCCESS. The integration job log explicitly confirms the new two-isolated-runtime offline/reconnect stale-conflict phase and the existing local GoTrue/PostgREST suite passed. This is disposable local-stack evidence only.
+- Flutter failed only the strict Dart 3.35.4 formatter because `tool/verify_supabase_sdk_runtime.dart` needs formatting. Flutter analyze, full Flutter tests, and downstream Flutter/preview steps were SKIPPED, not passed. Windows was still IN_PROGRESS at the last poll; no Windows result is claimed.
+- Added a temporary read-only diagnostic step before the unchanged strict formatter gate. It prints the pinned formatter diff for only the affected file; it does not modify source, suppress the strict gate, or change required checks. Remove this diagnostic after applying the exact diff.
+- Next: inspect the diagnostic diff on the new exact HEAD, apply only formatter output, remove the temporary step, then require every job/step on the final exact HEAD. Keep QA `offline-sync` pending-integration and PR #37 Draft.
+
