@@ -573,8 +573,73 @@ Future<void> _verifyLocalTwoDeviceOfflineReplay(_Input input) async {
     );
     _expect(queueAfterConflict.isEmpty, phase);
 
-    phase = 'device-a-final-close';
+    phase = 'device-a-close-after-terminal-conflict';
     await _closeBundle(restoredA);
+    deviceA = null;
+
+    // The terminal rejection is part of the native journal, not process memory.
+    // Reopen A with a fresh Auth session and prove the same event cannot dispatch
+    // again or become a pending review after a second process restart.
+    eventsA.clear();
+    phase = 'device-a-restore-terminal-conflict';
+    final restoredAfterConflict = await _openBundle(
+      openedDirectoryA,
+      input,
+      backendA,
+      openedHttpA,
+    );
+    deviceA = restoredAfterConflict;
+    await restoredAfterConflict.runtime.start();
+    final readyA3 = await _waitReady(
+      restoredAfterConflict.runtime,
+      input.userA.id,
+      phase,
+    );
+    _expect(
+      !identical(readyA2.session, readyA3.session),
+      'device-a-new-session-after-terminal-conflict-restart',
+    );
+    final recoveryAfterRestart = readyA3.study.reviews;
+    _expect(
+      recoveryAfterRestart is ReviewRecovery,
+      'device-a-recovery-capability-after-terminal-conflict-restart',
+    );
+    final pendingAfterRestart =
+        await (recoveryAfterRestart as ReviewRecovery).recoverPending();
+    final terminalRecordsAfterRestart = await restoredAfterConflict.journal.list(
+      input.userA.id,
+    );
+    _expect(
+      pendingAfterRestart.isEmpty &&
+          terminalRecordsAfterRestart.length == 1 &&
+          terminalRecordsAfterRestart.single.eventId == _deviceOfflineEventId &&
+          terminalRecordsAfterRestart.single.receipt == null &&
+          terminalRecordsAfterRestart.single.rejection?.code ==
+              ReviewErrorCode.syncConflict &&
+          _count(eventsA, 'http:/rest/v1/rpc/submit_review') == 0,
+      'device-a-terminal-rejection-survives-restart',
+    );
+
+    phase = 'device-a-duplicate-terminal-replay';
+    final duplicateTerminalOutcome = await readyA3.study.reviews.submit(
+      _prepare(readyA3.study, offlineReview, phase),
+    );
+    _expect(
+      duplicateTerminalOutcome is ReviewFailure &&
+          duplicateTerminalOutcome.code == ReviewErrorCode.syncConflict &&
+          _count(eventsA, 'http:/rest/v1/rpc/submit_review') == 0,
+      phase,
+    );
+
+    phase = 'device-a-authoritative-queue-after-restart';
+    final queueAfterRestart = await readyA3.study.queue.load(
+      readyA3.session,
+      PreviewLevel.n5,
+    );
+    _expect(queueAfterRestart.isEmpty, phase);
+
+    phase = 'device-a-final-close';
+    await _closeBundle(restoredAfterConflict);
     deviceA = null;
   } on Object catch (error) {
     failure = error is _ProbeFailure ? error.phase : phase;

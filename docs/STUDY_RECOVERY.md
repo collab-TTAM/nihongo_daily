@@ -62,7 +62,11 @@ event to the same local GoTrue/PostgREST owner. A then reopens its own journal,
 restores through its own rotated refresh token, and exposes the exact pending
 event only for explicit manual replay. The server returns `SYNC_CONFLICT` for
 the stale event; the local journal records a terminal rejection and the reloaded
-queue remains the server-authoritative empty projection.
+queue remains the server-authoritative empty projection. Device A then closes and
+reopens the journal again under a fresh Auth session: the terminal rejection must
+still be present, `recoverPending()` must remain empty, and a duplicate manual
+submission of the same event must return `SYNC_CONFLICT` without another
+`submit_review` HTTP dispatch or a change to the authoritative queue.
 
 This extends the existing HTTP-level two-session/concurrent-event tests with
 the real pinned Supabase SDK, write-before-dispatch repository and two separate
@@ -77,8 +81,9 @@ CI must execute the new phase before the QA case can be advanced.
 
 Run the new controller/widget tests plus dart run tool/verify_study_recovery.dart.
 The raw verifier uses actual close/reopen files and the real controller/repository,
-checks pending-before-queue/manual exact replay, v2 rejection restoration and
-authoritative reload. It is required on Linux and Windows CI. Existing subprocess
+checks pending-before-queue/manual exact replay, v2 rejection restoration, terminal
+`SYNC_CONFLICT` persistence across a second restart, duplicate terminal replay
+without network dispatch and authoritative reload. It is required on Linux and Windows CI. Existing subprocess
 lease/restart, frozen wire/SQL/QA/AI/build gates remain.
 
 Fixtures supply Auth/RPC/queue responses, so this is not a hosted JWT or signed-in

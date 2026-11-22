@@ -1531,8 +1531,8 @@
         22,
         18
       ],
-      "reproduce": "Run the supabase-integration job: the TEST ONLY SDK probe stages A's immutable event while offline, closes A, lets a separate B runtime commit a newer event, restores A and explicitly replays the original event; verify SYNC_CONFLICT, terminal local rejection and the unchanged authoritative queue. Retain the HTTP two-session race checks.",
-      "limitation": "The new authored probe uses two sequential isolated runtime bundles, separate native journals and credential backends against disposable local GoTrue/PostgREST. It does not run simultaneous physical devices or hosted services. Exact-head CI must execute it; live cloud sync and physical multi-device offline transfer/reconnect remain unverified.",
+      "reproduce": "Run the supabase-integration job: the TEST ONLY SDK probe stages A's immutable event while offline, closes A, lets a separate B runtime commit a newer event, restores A and explicitly replays the original event; then close/reopen A again and verify the terminal SYNC_CONFLICT survives, duplicate same-event replay sends no second HTTP request, and the authoritative queue stays unchanged. Retain the HTTP two-session race checks.",
+      "limitation": "The authored probe uses two sequential isolated runtime bundles, separate native journals and credential backends against disposable local GoTrue/PostgREST; it now also reopens A after terminal conflict and verifies durable rejection/no redispatch. It does not run simultaneous physical devices or hosted services. Exact-head CI must execute it; live cloud sync and physical multi-device offline transfer/reconnect remain unverified.",
       "anchors": [
         {
           "path": "scripts/test_supabase_local.py",
@@ -1540,7 +1540,7 @@
         },
         {
           "path": "apps/flutter_app/tool/verify_supabase_sdk_runtime.dart",
-          "contains": "LOCAL_TWO_DEVICE_OFFLINE_REPLAY: separate runtimes, journals and credential backends."
+          "contains": "device-a-terminal-rejection-survives-restart"
         }
       ],
       "ci_job": "supabase-integration"
