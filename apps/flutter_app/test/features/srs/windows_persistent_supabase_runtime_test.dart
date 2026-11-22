@@ -257,6 +257,9 @@ void main() {
   });
 
   tearDown(() async {
+    if (authWait != null && !authWait!.isCompleted) {
+      authWait!.complete(authResponse());
+    }
     if (readWait != null && !readWait!.isCompleted) {
       readWait!.complete();
     }
@@ -2485,5 +2488,4 @@ void main() {
       );
     },
   );
-
 }
