@@ -168,3 +168,26 @@ replace hosted execution or the protected environment review.
 ## Refresh identity mismatch cleanup
 
 After a refresh response has been shape-validated, the probe transfers cleanup ownership to the returned session before checking that the user identity is unchanged or that the refresh token rotated. This ordering matters because the server may already have consumed the previous refresh token. If the response unexpectedly identifies another user, the primary identity failure remains fixed/redacted, while the finally path locally logs out the returned session and every other still-owned session. The offline regression forces this case and requires all refresh sessions to be revoked; it does not simulate a hosted provider incident or replace the protected staging run.
+
+
+## Probe implementation checkpoint — 2026-11-22
+
+The workflow's referenced scripts/hosted_supabase_probe.py is now present.
+It uses only the six protected environment values above, accepts an exact
+https://<project-ref>.supabase.co origin and a publishable key or legacy anon
+JWT, rejects redirects, bounds responses, and emits fixed redacted failures.
+It verifies two independent A sessions plus B, refresh-token rotation, local
+logout isolation, own/cross-owner profile reads and allowlisted preference
+updates with restoration in a finally path. It also exercises the real
+authenticated submit_review RPC with one shared event UUID across A and B,
+exact replay, changed-payload conflict, one counter increment, owner-only
+learning/review reads and unauthenticated denial. The two review events are
+intentionally retained on the disposable staging accounts.
+
+The new probe has offline protocol/safety regressions in
+scripts/test_hosted_supabase_probe.py; repo-sanity runs them without secrets.
+These tests do not call Supabase and do not establish hosted acceptance. The
+manual workflow has not been dispatched; the protected supabase-staging
+environment, six secrets, two disposable accounts, reviewed migration and
+active N5 vocabulary row remain prerequisites. Keep confirm_non_production
+false until those prerequisites and human environment controls are in place.

@@ -78,6 +78,8 @@ jobs:
           python3 -m unittest discover -s qa -p 'test_*.py' -v
       - name: Verify hosted Supabase workflow remains manual and secret-scoped
         run: python3 scripts/test_hosted_workflow.py
+      - name: Test hosted Supabase probe without secrets
+        run: python3 -m unittest scripts.test_hosted_supabase_probe -v
 
   flutter:
     needs: [repo-sanity, database]

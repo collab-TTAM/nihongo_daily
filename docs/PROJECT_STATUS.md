@@ -28,3 +28,13 @@
 - Recursive tree audit before source write: 1,025 entries, untruncated (900 blobs / 125 trees). Parent/final test commit trees have identical path/mode/type sets; exactly the two intended blob paths changed; every other blob SHA is preserved; directory SHA changes are limited to their ancestors. `create_tree` used exact `base_tree_sha=f00049b2c6edf2fc961fe3563a6d4bb28778407f`; one parent; `update_ref` used `expected_sha=e701e016d1377992a4451b55bde9536bc32e427a`, `force=false`. Branch and changed-blob readbacks verified.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. New exact-head Actions must verify all six jobs and all required steps. Keep PR #41 Draft; #34/#11/#18 and hosted learner/review/audio gates remain open.
 - Next: inspect latest-attempt jobs/steps for the final PR HEAD; fix only observed failures. Worker RELEASED.
+
+
+## Hosted Supabase probe implementation — 2026-11-22T04:14Z
+
+- Resumed draft PR #41, branch automation/issue-11-plan-sdk-integration, parent 1d588edab6e1572e7c33adeca0dcedb726a2b1d3, base main 61604bc21da64a0dd94dbb97ba3c4b1d035430a6.
+- Found a real staging blocker: .github/workflows/hosted-supabase-acceptance.yml invoked scripts/hosted_supabase_probe.py, but that path was absent from the complete recursive tree. The documented Auth/profile/A-B/review RPC probe therefore could not start.
+- Added the missing standard-library probe and offline protocol regressions. It validates the fixed Supabase origin/public key, rejects redirects and oversized responses, redacts HTTP bodies, uses two independent A sessions plus B, verifies refresh rotation/local logout isolation, own/cross-owner profile reads and preference restoration, and checks submit_review replay/conflict/counter/RLS behavior.
+- Paths: scripts/hosted_supabase_probe.py, scripts/test_hosted_supabase_probe.py, scripts/test_hosted_workflow.py, .github/workflows/ci.yml, docs/HOSTED_SUPABASE_ACCEPTANCE.md, docs/PROJECT_STATUS.md.
+- No secrets, service-role key, Auth strategy change, deployment, hosted dispatch, migration, RLS change, N4/Pro content, default Auth/save activation or release action. Local Python tests were not executed in this cloud authoring step; the new repo-sanity test step and full exact-head Actions are the verification gate.
+- Next: inspect every latest-attempt job and step on the new PR head. Hosted proof still requires the protected supabase-staging environment, six documented secrets, two disposable accounts, reviewed migrations and an active N5 vocabulary row. Do not dispatch or claim hosted evidence before those prerequisites are explicitly available.
