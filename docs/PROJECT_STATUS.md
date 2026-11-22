@@ -5054,3 +5054,16 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`, `docs/STUDY_RECOVERY.md`, `qa/matrix.json`, `docs/PROJECT_STATUS.md`. No production Auth/provider, schema/RLS, default runtime, hosted secrets/dispatch, Pro-owned N4/content, merge, deployment or release changes.
 - Separate diff review and full recursive tree audit are recorded in PR #37. Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/test/build were not run. New exact-head CI is required; no new-head pass is claimed.
 - QA `offline-sync` remains `pending-integration`: this is sequential TEST ONLY disposable local GoTrue/PostgREST evidence, not hosted signed-JWT, deployed RLS or simultaneous physical-device sync. Next: inspect every latest-attempt job/step on the new exact HEAD and fix only observed failures.
+
+
+## PR #37 pinned Dart formatter repair — 2026-11-22T10:12Z
+
+- Source fix commit: `fe5eedaf35783d4043f666663a8e951308972640`.
+
+- Parent branch `automation/issue-22-atomic-review` HEAD `4471a9379fe2588d8cdd777cfb164df35dc18485`; exact-head Actions [45006546708](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45006546708), attempt 1, completed FAILURE. `repo-sanity`, `database`, `ai-boundary`, `windows` and `supabase-integration` completed SUCCESS with every returned step successful. `flutter` failed only the strict Dart 3.35.4 formatter gate; analyzer, complete Flutter suite, browser/native follow-ups and Web build were SKIPPED, not passed.
+- Applied only the two source-format changes printed by the pinned diagnostic in `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`: collapse the `recoverPending()` assignment and the native journal `list()` call to the exact formatter layout. Assertions and runtime behavior are unchanged.
+- Removed the temporary read-only formatter diagnostic from `.github/workflows/ci.yml`. The repository-wide strict formatter, analyzer, tests and build gates remain unchanged.
+- Paths: `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`, `.github/workflows/ci.yml`, and this status handoff. This is TEST ONLY probe formatting; no production Auth/provider, API/schema/RLS, default activation, hosted secrets/dispatch or Pro-owned N4/content changes.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local format/analyze/test/native/build pass is claimed. New exact-head Actions is the verification gate.
+- QA `offline-sync` remains `pending-integration`. Disposable local GoTrue/PostgREST and Windows Credential Manager CI do not prove hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart or physical multi-device sync. Keep PR #37 Draft and #20/#22/#15/#18 open.
+- Next: inspect every latest-attempt job and step on the final exact HEAD; claim no formatter/analyzer/test/build pass until all required jobs finish successfully.
