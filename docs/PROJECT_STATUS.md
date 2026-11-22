@@ -5078,3 +5078,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Paths: `scripts/prepare_local_supabase_ports.py`, `scripts/test_local_supabase_ports.py`, `.github/workflows/ci.yml`, and this status handoff. No production Auth/provider, database migration, RLS, API contract, hosted secrets/dispatch, default Auth/save simulation or Pro-owned N4/content changes.
 - Local authoring-runtime Python unit tests are recorded in the PR checkpoint; the new exact-head GitHub Actions run must still prove Supabase startup, migration, local GoTrue/PostgREST/A-B tests and all other jobs. The cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS.
 - QA `offline-sync` remains `pending-integration`: disposable local services are component evidence, not hosted signed-JWT learner A/B, deployed RLS, physical multi-device sync or Personal Alpha. Keep PR #37 Draft and #20/#22/#15/#18 open; next action is inspect every latest-attempt job/step on the new exact HEAD.
+
+
+## PR #37 CI port-selection review correction — 2026-11-22T11:13Z
+
+- Separate diff review of commit 7ddf86ccd5647b4b137ec695da7e8e239aeea40a found that one static regression expected a direct `api.port != ...` expression, while the workflow correctly validates the full loopback URL tuple against the selected API port.
+- Corrected only the test assertion to match the tuple-based guard. No workflow/runtime behavior or acceptance assertion changed.
+- Actions [45016238757](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45016238757) was queued on the superseded parent head; it is not evidence for the corrected source. A fresh exact-head CI run is required.

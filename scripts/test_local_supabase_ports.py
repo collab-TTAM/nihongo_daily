@@ -131,7 +131,7 @@ class LocalSupabasePortTests(unittest.TestCase):
         self.assertIn('os.environ["ND_LOCAL_SUPABASE_API_PORT"]', workflow)
         self.assertIn('os.environ["ND_LOCAL_SUPABASE_DB_PORT"]', workflow)
         self.assertIn('os.environ["ND_LOCAL_SUPABASE_SHADOW_PORT"]', workflow)
-        self.assertIn('api.port != selected_ports["api"]', workflow)
+        self.assertIn('!= ("http", "127.0.0.1", selected_ports["api"])', workflow)
         self.assertIn('database.port != selected_ports["db"]', workflow)
         self.assertLess(
             workflow.index("Select collision-free local Supabase ports"),
