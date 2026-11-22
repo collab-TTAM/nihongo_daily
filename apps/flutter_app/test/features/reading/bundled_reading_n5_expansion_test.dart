@@ -25,6 +25,10 @@ void main() {
     expect(passage.vietnamese, contains('thư viện'));
     expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
     expect(passage.questions, hasLength(3));
+    expect(
+      passage.questions[2].explanationVi,
+      'Bài đọc nói sau bữa trưa tôi xem ti vi cùng mẹ.',
+    );
   });
 
   test('bundled N5 expansion includes the rainy-day passage', () {

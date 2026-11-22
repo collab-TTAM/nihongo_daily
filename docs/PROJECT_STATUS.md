@@ -79,3 +79,10 @@
 - Structural preflight: catalog JSON parsed; 10 unique IDs, all records N5/version 1, 30 questions, each question has three unique choices and exactly one valid correct choice, with non-empty Japanese/kana/Vietnamese fields. The new round includes all three questions in the deterministic answer test. This is structural evidence, not independent linguistic review.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local Dart format, Flutter analyze/tests and Web/Windows builds were not run. New exact-head GitHub Actions must execute all required jobs/steps; no new-head pass is claimed here.
 - PR #41 remains Draft; #34/#11/#18 remain open. Audio, authoritative listening availability, teacher/native-speaker review, hosted learner acceptance and Personal Alpha release evidence remain separate gates.
+
+
+## N5 supermarket explanation wording follow-up — 2026-11-22T18:26Z
+
+- Follow-up to `fe9717226a2d0dd181a91cfa5f85d5802bdb534f`: align the third comprehension explanation with the passage's exact “after lunch” wording rather than inferring a time of day. Added an assertion for the explanation text.
+- Paths: `apps/flutter_app/assets/reading/catalog.json`, `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart`, and this status file. N4/Pro-owned content and tests remain untouched.
+- Structural JSON check passed; new exact-head Actions are still the Flutter format/analyze/test/build gate. No local Flutter/Dart SDK result is claimed.
