@@ -74,6 +74,8 @@ jobs:
         run: python3 scripts/test_hosted_supabase_probe.py
       - name: Verify hosted Supabase workflow remains manual and secret-scoped
         run: python3 scripts/test_hosted_workflow.py
+      - name: Test collision-free local Supabase port selection
+        run: python3 scripts/test_local_supabase_ports.py
 
   supabase-integration:
     needs: repo-sanity
@@ -94,6 +96,8 @@ jobs:
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3
         with:
           version: 2.122.0
+      - name: Select collision-free local Supabase ports
+        run: python3 scripts/prepare_local_supabase_ports.py "$GITHUB_ENV"
       - name: Start disposable local Supabase services
         shell: bash
         run: |
@@ -114,6 +118,7 @@ jobs:
         run: |
           supabase status -o env > "$RUNNER_TEMP/supabase-local.env"
           python3 - "$RUNNER_TEMP/supabase-local.env" "$GITHUB_ENV" <<'PY'
+          import os
           import shlex
           import sys
           from pathlib import Path
@@ -140,19 +145,36 @@ jobs:
           if missing:
               raise SystemExit("Missing required local Supabase settings: " + ", ".join(sorted(missing)))
 
+          try:
+              selected_ports = {
+                  "api": int(os.environ["ND_LOCAL_SUPABASE_API_PORT"]),
+                  "db": int(os.environ["ND_LOCAL_SUPABASE_DB_PORT"]),
+                  "shadow": int(os.environ["ND_LOCAL_SUPABASE_SHADOW_PORT"]),
+              }
+          except (KeyError, ValueError):
+              raise SystemExit("Selected local Supabase ports are unavailable") from None
+          if (
+              len(set(selected_ports.values())) != 3
+              or any(not 1024 <= port <= 65535 for port in selected_ports.values())
+          ):
+              raise SystemExit("Selected local Supabase ports are invalid")
+
           api = urlsplit(values["API_URL"])
           database = urlsplit(values["DB_URL"])
-          if (api.scheme, api.hostname, api.port) != ("http", "127.0.0.1", 54321):
-              raise SystemExit("Local Supabase API URL is not loopback")
+          if (
+              (api.scheme, api.hostname, api.port)
+              != ("http", "127.0.0.1", selected_ports["api"])
+          ):
+              raise SystemExit("Local Supabase API URL is not the selected loopback endpoint")
           if (
               database.scheme not in ("postgres", "postgresql")
               or database.hostname != "127.0.0.1"
-              or database.port != 54322
+              or database.port != selected_ports["db"]
               or database.path != "/postgres"
               or database.username != "postgres"
               or not database.password
           ):
-              raise SystemExit("Local Supabase database URL is not the expected loopback database")
+              raise SystemExit("Local Supabase database URL is not the selected loopback database")
           if len(values["JWT_SECRET"]) < 32 or not values["ANON_KEY"]:
               raise SystemExit("Local Supabase Auth settings are incomplete")
 

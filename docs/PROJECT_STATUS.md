@@ -5067,3 +5067,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local format/analyze/test/native/build pass is claimed. New exact-head Actions is the verification gate.
 - QA `offline-sync` remains `pending-integration`. Disposable local GoTrue/PostgREST and Windows Credential Manager CI do not prove hosted signed-JWT learner A/B, deployed RLS, hosted expiry/restart or physical multi-device sync. Keep PR #37 Draft and #20/#22/#15/#18 open.
 - Next: inspect every latest-attempt job and step on the final exact HEAD; claim no formatter/analyzer/test/build pass until all required jobs finish successfully.
+
+
+
+## PR #37 local Supabase CI port-collision repair — 2026-11-22T11:05Z
+
+- Exact-head Actions [45011751863](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45011751863), attempt 1, targets `1daa3265a579ea7d3886ffe68b225ee8c509779e` and completed FAILURE only in `supabase-integration`. Docker could not bind `0.0.0.0:54322` because the host port was already in use. The five other jobs (`repo-sanity`, `database`, `ai-boundary`, `windows`, `flutter`) completed SUCCESS with every returned step successful; this is not an all-jobs pass.
+- Added `scripts/prepare_local_supabase_ports.py`: choose three distinct kernel-assigned host ports, rewrite only the disposable checkout's Supabase API/database/shadow port fields, TOML-validate the result, and export numeric values through `GITHUB_ENV`. The checked-in `supabase/config.toml` remains unchanged.
+- Added `scripts/test_local_supabase_ports.py` for collision/invalid candidate handling, exact config edits, duplicate/missing config rejection, atomic failure behavior, environment export and CI wiring. The integration job validates the actual `API_URL` and `DB_URL` against the selected ports instead of assuming 54321/54322.
+- Paths: `scripts/prepare_local_supabase_ports.py`, `scripts/test_local_supabase_ports.py`, `.github/workflows/ci.yml`, and this status handoff. No production Auth/provider, database migration, RLS, API contract, hosted secrets/dispatch, default Auth/save simulation or Pro-owned N4/content changes.
+- Local authoring-runtime Python unit tests are recorded in the PR checkpoint; the new exact-head GitHub Actions run must still prove Supabase startup, migration, local GoTrue/PostgREST/A-B tests and all other jobs. The cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS.
+- QA `offline-sync` remains `pending-integration`: disposable local services are component evidence, not hosted signed-JWT learner A/B, deployed RLS, physical multi-device sync or Personal Alpha. Keep PR #37 Draft and #20/#22/#15/#18 open; next action is inspect every latest-attempt job/step on the new exact HEAD.
