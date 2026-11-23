@@ -53,31 +53,54 @@ function Invoke-OwnerLeaseContention() {
     New-Item -ItemType Directory -Path $directory -Force | Out-Null
     $readyPath = Join-Path $directory 'owner-ready'
     $releasePath = Join-Path $directory 'owner-release'
+    $releaseCompletePath = Join-Path $directory 'owner-release-complete'
     $donePath = Join-Path $directory 'owner-done'
-    Remove-Item -LiteralPath @($readyPath, $releasePath, $donePath) -Force -ErrorAction SilentlyContinue
-    $diagnosticId = [Guid]::NewGuid().ToString('N')
-    $stdoutPath = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$diagnosticId.out")
-    $stderrPath = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$diagnosticId.err")
+    $contenderReadyPath = Join-Path $directory 'owner-contend-ready'
+    $contenderDonePath = Join-Path $directory 'owner-contend-done'
+    Remove-Item -LiteralPath @($readyPath, $releasePath, $releaseCompletePath, $donePath, $contenderReadyPath, $contenderDonePath) -Force -ErrorAction SilentlyContinue
+    $holderId = [Guid]::NewGuid().ToString('N')
+    $contenderId = [Guid]::NewGuid().ToString('N')
+    $holderOut = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$holderId.out")
+    $holderErr = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$holderId.err")
+    $contenderOut = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$contenderId.out")
+    $contenderErr = Join-Path ([System.IO.Path]::GetTempPath()) ("nd-owner-$contenderId.err")
     $holder = $null
+    $contender = $null
     try {
-        $holder = Start-Process -FilePath $exe -ArgumentList @('runtime-owner-hold', $scope) -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
+        $holder = Start-Process -FilePath $exe -ArgumentList @('runtime-owner-hold', $scope) -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $holderOut -RedirectStandardError $holderErr -PassThru
         Wait-BridgeMarker $holder $readyPath 'TEST_ONLY_OWNER_READY'
-        # This is a separate runner process and native mutex handle. It must fail
-        # before its one-shot read fault can be consumed by the vault read path.
-        Invoke-Bridge 'runtime-owner-contend'
+        # Keep the first native lease held while a second real runner attempts
+        # startup and proves its pre-acquire read fault remains unconsumed.
+        $contender = Start-Process -FilePath $exe -ArgumentList @('runtime-owner-contend', $scope) -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $contenderOut -RedirectStandardError $contenderErr -PassThru
+        Wait-BridgeMarker $contender $contenderReadyPath 'TEST_ONLY_OWNER_CONTENDER_READY'
         [System.IO.File]::WriteAllText($releasePath, 'TEST_ONLY_OWNER_RELEASE')
         if (-not $holder.WaitForExit(60000)) { throw 'Windows owner lease holder timed out' }
         if ($holder.ExitCode -ne 0) {
-            if (Test-Path -LiteralPath $stderrPath -PathType Leaf) {
-                foreach ($line in @(Get-Content -LiteralPath $stderrPath -Tail 12)) { Write-Output $line }
+            if (Test-Path -LiteralPath $holderErr -PathType Leaf) {
+                foreach ($line in @(Get-Content -LiteralPath $holderErr -Tail 12)) { Write-Output $line }
             }
             throw 'Windows owner lease holder failed'
         }
-        if (-not (Test-Path -LiteralPath $donePath -PathType Leaf)) { throw 'Windows owner lease release marker missing' }
-        if ([System.IO.File]::ReadAllText($donePath) -cne 'TEST_ONLY_OWNER_RELEASED') { throw 'Windows owner lease release marker invalid' }
+        if (-not (Test-Path -LiteralPath $donePath) -or [System.IO.File]::ReadAllText($donePath) -cne 'TEST_ONLY_OWNER_RELEASED') {
+            throw 'Windows owner lease release marker invalid'
+        }
+        [System.IO.File]::WriteAllText($releaseCompletePath, 'TEST_ONLY_OWNER_RELEASED')
+        if (-not $contender.WaitForExit(60000)) {
+            $contender.Kill()
+            $contender.WaitForExit()
+            throw 'Windows owner contender timed out'
+        }
+        if ($contender.ExitCode -ne 0) {
+            if (Test-Path -LiteralPath $contenderErr -PathType Leaf) {
+                foreach ($line in @(Get-Content -LiteralPath $contenderErr -Tail 12)) { Write-Output $line }
+            }
+            throw 'Windows owner contender failed'
+        }
+        if (-not (Test-Path -LiteralPath $contenderDonePath) -or [System.IO.File]::ReadAllText($contenderDonePath) -cne 'TEST_ONLY_OWNER_CONTENDER_RELEASED') {
+            throw 'Windows owner contender completion marker invalid'
+        }
         Write-Output 'Windows cross-process native owner lease contention passed'
-        # A third process proves the first lease was released, not merely that
-        # the competing process failed for an unrelated startup reason.
+        # A third process proves both prior leases were released.
         Invoke-Bridge 'runtime-owner-reacquire'
     } finally {
         if ($null -ne $holder) {
@@ -89,9 +112,20 @@ function Invoke-OwnerLeaseContention() {
                     $holder.WaitForExit()
                 }
             }
+            if ($null -ne $contender) {
+                [System.IO.File]::WriteAllText($releaseCompletePath, 'TEST_ONLY_OWNER_RELEASED')
+            }
             $holder.Dispose()
         }
-        Remove-Item -LiteralPath @($stdoutPath, $stderrPath) -Force -ErrorAction SilentlyContinue
+        if ($null -ne $contender) {
+            $contender.Refresh()
+            if (-not $contender.HasExited) {
+                $contender.Kill()
+                $contender.WaitForExit()
+            }
+            $contender.Dispose()
+        }
+        Remove-Item -LiteralPath @($holderOut, $holderErr, $contenderOut, $contenderErr) -Force -ErrorAction SilentlyContinue
     }
 }
 

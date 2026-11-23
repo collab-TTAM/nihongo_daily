@@ -77,7 +77,9 @@ Future<void> main(List<String> arguments) async {
           final isolated = await resolveWindowsReviewDirectory(
             'https://$scope-other.invalid',
           );
-          require(directory.path == same.path && directory.path != isolated.path);
+          require(
+            directory.path == same.path && directory.path != isolated.path,
+          );
           require(!await directory.exists());
           await directory.create(recursive: true);
           await File(
@@ -184,3 +186,4 @@ Future<void> main(List<String> arguments) async {
     exit(1);
   }
 }
+

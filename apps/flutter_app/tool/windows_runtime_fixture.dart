@@ -88,6 +88,19 @@ Directory runtimeFixtureDirectory(String scope) {
   );
 }
 
+Future<T> _withWindowsVaultOwner<T>(
+  String origin,
+  Future<T> Function(SessionCredentialVault vault) action,
+) async {
+  final vault = createWindowsSessionCredentialVault(origin);
+  await vault.acquireOwner();
+  try {
+    return await action(vault);
+  } finally {
+    await vault.releaseOwner();
+  }
+}
+
 final class _EmptyReviewStore implements DurableReviewStore {
   @override
   Future<List<StoredReview>> list(String userId) async =>
@@ -190,20 +203,50 @@ Future<void> _verifyNativeOwnerLeasePhase(String phase, String scope) async {
       }
       if (competingLeaseAcquired) await vault.releaseOwner();
       _check(!competingLeaseAcquired);
-      var readFaultPreserved = false;
-      try {
-        await vault.readRefreshToken();
-      } on SessionVaultFailure catch (error) {
-        readFaultPreserved = error.code == SessionVaultError.unavailable;
+      final contenderReady = File(
+        '${directory.path}${Platform.pathSeparator}owner-contend-ready',
+      );
+      await contenderReady.writeAsString(
+        'TEST_ONLY_OWNER_CONTENDER_READY',
+        flush: true,
+      );
+      final releaseComplete = File(
+        '${directory.path}${Platform.pathSeparator}owner-release-complete',
+      );
+      final releaseDeadline = DateTime.now().add(const Duration(seconds: 45));
+      while (!await releaseComplete.exists() &&
+          DateTime.now().isBefore(releaseDeadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 25));
       }
-      _check(readFaultPreserved);
-      _check(await vault.readRefreshToken() == null);
+      _check(await releaseComplete.exists());
+      _check(
+        await releaseComplete.readAsString() == 'TEST_ONLY_OWNER_RELEASED',
+      );
+
+      var ownerAcquiredAfterRelease = false;
+      try {
+        await vault.acquireOwner();
+        ownerAcquiredAfterRelease = true;
+        var readFaultPreserved = false;
+        try {
+          await vault.readRefreshToken();
+        } on SessionVaultFailure catch (error) {
+          readFaultPreserved = error.code == SessionVaultError.unavailable;
+        }
+        _check(readFaultPreserved);
+        _check(await vault.readRefreshToken() == null);
+      } finally {
+        if (ownerAcquiredAfterRelease) await vault.releaseOwner();
+      }
       await runtime.close();
       closed = true;
       _check(
         !PersistentAccountAccess.isTargetOwned(vault.target) &&
             requests.isEmpty,
       );
+      await File(
+        '${directory.path}${Platform.pathSeparator}owner-contend-done',
+      ).writeAsString('TEST_ONLY_OWNER_CONTENDER_RELEASED');
     } else {
       await runtime.start();
       _check(
@@ -509,8 +552,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     if (phase == 'runtime-close-restore') {
       // Use the actual Windows Credential Manager slot, then hold the SDK's
       // startup refresh while the caller begins closing its owned runtime.
-      _check(await vault.readRefreshToken() == null);
-      await vault.writeRefreshToken(_first);
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+        await previous.writeRefreshToken(_first);
+      });
       lateRefresh = Completer<http.Response>();
       final restoring = runtime.start();
       await waitForAuthCalls(1);
@@ -535,12 +580,16 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       await closing;
       _check(restoreFailed && profileCalls == 0);
       _check(runtime.account.readyRuntime == null);
-      _check(await vault.readRefreshToken() == null);
+      await _withWindowsVaultOwner(origin, (verifier) async {
+        _check(await verifier.readRefreshToken() == null);
+      });
       _check(logoutCalls >= 1);
       await pending();
     } else if (phase == 'runtime-restore-profile-held') {
-      // This process must restore the secret written by the preceding process.
-      _check(await vault.readRefreshToken() == _first);
+      // Inspect the previous process slot under a short-lived native owner lease.
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == _first);
+      });
       heldProfile = Completer<http.Response>();
       final restoring = runtime.start();
       await waitForAuthCalls(1);
@@ -567,8 +616,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(runtime.account.readyRuntime != null);
       await pending();
     } else if (phase == 'runtime-late-refresh') {
-      _check(await vault.readRefreshToken() == null);
-      await vault.writeRefreshToken(_first);
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+        await previous.writeRefreshToken(_first);
+      });
       lateRefresh = Completer<http.Response>();
 
       final restoring = runtime.start();
@@ -617,8 +668,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(logoutCalls >= 1);
       await pending();
     } else if (phase == 'runtime-late-profile') {
-      // This phase uses the real Windows Credential Manager and native journal.
-      _check(await vault.readRefreshToken() == null);
+      // Inspect the prior process slot before the runtime acquires its lease.
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+      });
       await runtime.start();
       heldProfile = Completer<http.Response>();
 
@@ -714,7 +767,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     } else if (phase == 'runtime-native-same-owner-profile-generation') {
       // A1 and A2 are the same verified user but distinct Auth session_id
       // generations. The first profile response stays held across logout/A2.
-      _check(await vault.readRefreshToken() == null);
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+      });
       await runtime.start();
       heldProfile = Completer<http.Response>();
       displayName = 'TEST_ONLY_STALE_A1_PROFILE';
@@ -822,7 +877,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     } else if (phase == 'runtime-native-same-owner-late-refresh-generation') {
       // A1 and A2 share the verified owner ID but have different Auth session_id
       // generations. A1's refresh response is held across logout and vault clear.
-      _check(await vault.readRefreshToken() == null);
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+      });
       await runtime.start();
       await runtime.account.signIn(
         'fixture@example.invalid',
@@ -946,8 +1003,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       );
       await pending();
     } else if (phase == 'runtime-native-read-failure') {
-      _check(await vault.readRefreshToken() == null);
-      await vault.writeRefreshToken(_first);
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+        await previous.writeRefreshToken(_first);
+      });
       await _injectNativeVaultFault(
         vault.target,
         operation: 'read',
