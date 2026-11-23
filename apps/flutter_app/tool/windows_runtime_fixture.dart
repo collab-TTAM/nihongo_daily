@@ -1430,8 +1430,10 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       );
       await pending();
     } else if (phase == 'runtime-rejected') {
-      _check(await vault.readRefreshToken() == null);
-      await vault.writeRefreshToken(_rejected);
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+        await previous.writeRefreshToken(_rejected);
+      });
       var failed = false;
       try {
         await runtime.start();
