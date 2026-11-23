@@ -35,6 +35,13 @@ final class SessionCredentialVault {
   static const maxTokenLength = 2048;
   final String target;
   final SessionCredentialBackend _backend;
+  bool _ownerAcquired = false;
+
+  void _requireOwner() {
+    if (_backend is SessionCredentialOwnerLeaseBackend && !_ownerAcquired) {
+      throw const SessionVaultFailure(SessionVaultError.unavailable);
+    }
+  }
 
   // Shared scope queue: separate facade instances cannot reorder write/clear
   // within this isolate. Finished entries are removed; failures don't poison it.
@@ -109,11 +116,12 @@ final class SessionCredentialVault {
     final ownerBackend = backend is SessionCredentialOwnerLeaseBackend
         ? backend as SessionCredentialOwnerLeaseBackend?
         : null;
-    if (ownerBackend == null) return;
+    if (ownerBackend == null || _ownerAcquired) return;
     try {
       if (!await ownerBackend.acquireOwner(target)) {
         throw const SessionVaultFailure(SessionVaultError.unavailable);
       }
+      _ownerAcquired = true;
     } on SessionVaultFailure {
       rethrow;
     } on Object {
@@ -129,10 +137,14 @@ final class SessionCredentialVault {
         ? backend as SessionCredentialOwnerLeaseBackend?
         : null;
     if (ownerBackend == null) return;
+    if (!_ownerAcquired) {
+      throw const SessionVaultFailure(SessionVaultError.unavailable);
+    }
     try {
       if (!await ownerBackend.releaseOwner(target)) {
         throw const SessionVaultFailure(SessionVaultError.unavailable);
       }
+      _ownerAcquired = false;
     } on SessionVaultFailure {
       rethrow;
     } on Object {
@@ -141,6 +153,7 @@ final class SessionCredentialVault {
   });
 
   Future<String?> readRefreshToken() => _serial(() async {
+    _requireOwner();
     final result = await _invoke('read');
     if (result == null) {
       return null;
@@ -158,6 +171,7 @@ final class SessionCredentialVault {
       );
     }
     return _serial(() async {
+      _requireOwner();
       if (await _invoke('write', token) != true) {
         throw const SessionVaultFailure(SessionVaultError.corrupt);
       }
@@ -165,6 +179,7 @@ final class SessionCredentialVault {
   }
 
   Future<void> clear() => _serial(() async {
+    _requireOwner();
     if (await _invoke('clear') != true) {
       throw const SessionVaultFailure(SessionVaultError.corrupt);
     }

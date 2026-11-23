@@ -36,16 +36,116 @@ void main() {
           value = null;
           return true;
         }
+        if (call.method == 'acquireOwner' || call.method == 'releaseOwner') {
+          return true;
+        }
         return value;
       });
       final vault = createWindowsSessionCredentialVault(
         'https://fixture.supabase.co',
       );
+      await vault.acquireOwner();
       await vault.writeRefreshToken('TEST_ONLY_REFRESH_SECRET');
       expect(await vault.readRefreshToken(), 'TEST_ONLY_REFRESH_SECRET');
       await vault.clear();
       expect(await vault.readRefreshToken(), isNull);
-      expect(calls.map((c) => c.method), ['write', 'read', 'clear', 'read']);
+      await vault.releaseOwner();
+      expect(calls.map((c) => c.method), [
+        'acquireOwner',
+        'write',
+        'read',
+        'clear',
+        'read',
+        'releaseOwner',
+      ]);
+    },
+  );
+
+  test(
+    'Windows vault rejects storage calls outside its acquired owner lease',
+    () async {
+      final calls = <String>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        if (call.method == 'acquireOwner' || call.method == 'releaseOwner') {
+          return true;
+        }
+        if (call.method == 'write' || call.method == 'clear') return true;
+        if (call.method == 'read') return null;
+        throw MissingPluginException();
+      });
+      final vault = createWindowsSessionCredentialVault(
+        'https://fixture.supabase.co',
+      );
+      Future<void> unavailable<T>(Future<T> operation) async {
+        await expectLater(
+          operation,
+          throwsA(
+            isA<SessionVaultFailure>().having(
+              (error) => error.code,
+              'owner lease required',
+              SessionVaultError.unavailable,
+            ),
+          ),
+        );
+      }
+
+      await unavailable(vault.readRefreshToken());
+      await unavailable(vault.writeRefreshToken('TEST_ONLY_REFRESH'));
+      await unavailable(vault.clear());
+      expect(calls, isEmpty);
+
+      await vault.acquireOwner();
+      await vault.writeRefreshToken('TEST_ONLY_REFRESH');
+      await vault.releaseOwner();
+
+      await unavailable(vault.readRefreshToken());
+      await unavailable(vault.writeRefreshToken('TEST_ONLY_REFRESH'));
+      await unavailable(vault.clear());
+      expect(calls, ['acquireOwner', 'write', 'releaseOwner']);
+    },
+  );
+
+  test(
+    'failed Windows owner release retains the lease for an explicit retry',
+    () async {
+      var releaseCalls = 0;
+      final calls = <String>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        if (call.method == 'acquireOwner') return true;
+        if (call.method == 'releaseOwner') return ++releaseCalls > 1;
+        if (call.method == 'read') return 'TEST_ONLY_REFRESH_SECRET';
+        return true;
+      });
+      final vault = createWindowsSessionCredentialVault(
+        'https://fixture.supabase.co',
+      );
+      await vault.acquireOwner();
+      await expectLater(
+        vault.releaseOwner(),
+        throwsA(
+          isA<SessionVaultFailure>().having(
+            (error) => error.code,
+            'failed release remains owned',
+            SessionVaultError.unavailable,
+          ),
+        ),
+      );
+      expect(await vault.readRefreshToken(), 'TEST_ONLY_REFRESH_SECRET');
+      await vault.releaseOwner();
+      await expectLater(
+        vault.readRefreshToken(),
+        throwsA(
+          isA<SessionVaultFailure>().having(
+            (error) => error.code,
+            'released facade is fenced',
+            SessionVaultError.unavailable,
+          ),
+        ),
+      );
+      expect(releaseCalls, 2);
+      expect(calls, ['acquireOwner', 'releaseOwner', 'read', 'releaseOwner']);
     },
   );
 
@@ -85,7 +185,10 @@ void main() {
   test(
     'Windows platform failures never expose raw secret exception details',
     () async {
-      messenger.setMockMethodCallHandler(channel, (_) async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'acquireOwner' || call.method == 'releaseOwner') {
+          return true;
+        }
         throw PlatformException(
           code: 'PRIVATE',
           message: 'PRIVATE_REFRESH_SECRET',
@@ -95,6 +198,7 @@ void main() {
       final vault = createWindowsSessionCredentialVault(
         'https://fixture.supabase.co',
       );
+      await vault.acquireOwner();
       await expectLater(
         vault.readRefreshToken(),
         throwsA(
@@ -105,6 +209,7 @@ void main() {
           ),
         ),
       );
+      await vault.releaseOwner();
     },
   );
   test(
@@ -118,6 +223,16 @@ void main() {
       });
       final vault = createWindowsSessionCredentialVault(
         'https://fixture.supabase.co',
+      );
+      await expectLater(
+        vault.acquireOwner(),
+        throwsA(
+          isA<SessionVaultFailure>().having(
+            (e) => e.code,
+            'unsupported owner lease',
+            SessionVaultError.unavailable,
+          ),
+        ),
       );
       for (final action in [
         () async {
@@ -145,7 +260,7 @@ void main() {
       'https://fixture.supabase.co',
     );
     await expectLater(
-      vault.clear(),
+      vault.acquireOwner(),
       throwsA(
         isA<SessionVaultFailure>().having(
           (e) => e.code,

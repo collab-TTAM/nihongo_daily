@@ -50,6 +50,16 @@ The shared review journal, browser IndexedDB, preferences and logs are never
 used as secret-storage fallbacks. Web/mobile/Linux/macOS explicitly fail
 unavailable; their protected stores require separately tested adapters.
 
+The Dart vault facade also enforces the native lease boundary: when its backend
+implements `SessionCredentialOwnerLeaseBackend`, read, write and clear are
+rejected locally until that same facade has successfully acquired the lease.
+After a confirmed release, the facade is fenced again. A failed/negative release
+does not discard the local acquired state, so the caller can explicitly retry
+release without opening another storage path. Lease-free in-memory test ports
+remain usable for isolated pure tests; the production Windows backend is
+owner-aware and cannot be used through the facade outside its caller-owned
+lease.
+
 Native temporary credential buffers are wiped before release and returned
 Credential Manager buffers are wiped before `CredFree`. Immutable Dart strings,
 Flutter codec copies and caller-owned strings are not guaranteed zeroized.
