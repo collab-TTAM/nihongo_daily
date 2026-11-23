@@ -450,6 +450,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
     def test_windows_hosted_runtime_fixture_is_live_and_redacted(self):
         root = Path(__file__).resolve().parents[1]
         fixture = (root / "apps" / "flutter_app" / "tool" / "windows_hosted_runtime_fixture.dart").read_text(encoding="utf-8")
+        proof = (root / "apps" / "flutter_app" / "tool" / "hosted_session_token_proof.dart").read_text(encoding="utf-8")
         script = (root / "apps" / "flutter_app" / "tool" / "verify_windows_hosted_runtime.ps1").read_text(encoding="utf-8")
         for marker in (
             "Platform.environment",
@@ -485,7 +486,15 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("jsonDecode(request.body)", fixture)
         self.assertIn("_readBounded(response.stream)", fixture)
         self.assertIn("if (length > 256 * 1024)", fixture)
-        self.assertIn("rotated != submittedRefreshToken", fixture)
+        self.assertIn("if (grant == 'refresh_token' || grant == 'password')", fixture)
+        self.assertIn("'auth.refresh.response'", fixture)
+        self.assertIn("'auth.password.response'", fixture)
+        self.assertIn("verifyPersistedPasswordToken(persisted)", fixture)
+        self.assertIn("submittedRefreshToken == returnedRefreshToken", proof)
+        self.assertIn("persisted == returned", proof)
+        self.assertIn("_grant == 'refresh_token'", proof)
+        self.assertNotIn("print(", proof)
+        self.assertNotIn("log(", proof)
         self.assertIn("verifyRotatedRefreshToken(persisted)", restore)
         self.assertIn("rotationPersistedBeforeProfile", restore)
         self.assertNotIn("rotatedRefreshToken", restore)
@@ -614,7 +623,11 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "httpClient.beforePasswordAuth",
             "vault.empty-before-password",
             "httpClient.beforeProfile",
-            "vault.persisted-before-profile",
+            "vault.password-persisted-before-profile",
+            "verifyPersistedPasswordToken(persisted)",
+            "auth.password.response",
+            "responseIndex > emptyIndex",
+            "persistedIndex > responseIndex",
             "events.indexOf('auth.refresh')",
             "events.indexOf('auth.password')",
         ):
