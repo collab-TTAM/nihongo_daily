@@ -1,6 +1,7 @@
 // Manual-only hosted staging fixture. Never used by the learner entrypoint.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -49,8 +50,31 @@ final class _HostedProbeHttpClient extends http.BaseClient {
   Future<void> Function()? beforeProfile;
 
   String? _rotatedRefreshToken;
+  bool _rotationPersistedBeforeProfile = false;
 
-  String? get rotatedRefreshToken => _rotatedRefreshToken;
+  bool get rotationPersistedBeforeProfile => _rotationPersistedBeforeProfile;
+
+  bool verifyRotatedRefreshToken(String? persisted) {
+    final rotated = _rotatedRefreshToken;
+    final verified =
+        rotated != null && rotated.isNotEmpty && persisted == rotated;
+    _rotatedRefreshToken = null;
+    _rotationPersistedBeforeProfile = verified;
+    return verified;
+  }
+
+  Future<List<int>> _readBounded(Stream<List<int>> stream) async {
+    final builder = BytesBuilder();
+    var length = 0;
+    await for (final chunk in stream) {
+      length += chunk.length;
+      if (length > 256 * 1024) {
+        throw const FormatException('Hosted Auth response unavailable');
+      }
+      builder.add(chunk);
+    }
+    return builder.takeBytes();
+  }
 
   String? _refreshTokenFromRequest(http.BaseRequest request) {
     if (request is! http.Request) return null;
@@ -92,10 +116,8 @@ final class _HostedProbeHttpClient extends http.BaseClient {
       // Read only this bounded Auth response so the fixture can compare the
       // returned rotation with the OS vault before the profile request. The
       // raw response is reconstructed for the SDK; neither token is logged.
-      final bytes = await response.stream.toBytes();
-      if (response.statusCode == 200 &&
-          submittedRefreshToken != null &&
-          bytes.length <= 256 * 1024) {
+      final bytes = await _readBounded(response.stream);
+      if (response.statusCode == 200 && submittedRefreshToken != null) {
         try {
           final payload = jsonDecode(utf8.decode(bytes));
           final rotated = payload is Map<String, dynamic>
@@ -286,9 +308,7 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         httpClient.beforeProfile = () async {
           final rotated = httpClient.rotatedRefreshToken;
           final persisted = await vault.readRefreshToken();
-          _check(
-            rotated != null && rotated.isNotEmpty && persisted == rotated,
-          );
+          _check(httpClient.verifyRotatedRefreshToken(persisted));
           httpClient.events.add('vault.rotated-before-profile');
         };
         await runtime.start();
@@ -307,11 +327,8 @@ Future<void> _verifyWindowsHostedRuntimePhase(
               events.where((event) => event == 'profile.ensure').length == 1,
         );
         final saved = await vault.readRefreshToken();
-        _check(
-          saved != null &&
-              saved.isNotEmpty &&
-              saved == httpClient.rotatedRefreshToken,
-        );
+        _check(saved != null && saved.isNotEmpty);
+        _check(httpClient.rotationPersistedBeforeProfile);
         await runtime.close();
         closed = true;
         _check(await vault.readRefreshToken() == saved);

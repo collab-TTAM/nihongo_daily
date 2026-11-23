@@ -5116,3 +5116,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Prior exact-head Actions [45071270067](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45071270067), attempt 1, completed SUCCESS across all six jobs/every returned step on the parent HEAD. This source change has not yet run CI. Cloud authoring has no pinned Flutter/Dart SDK or Windows Credential Manager; local Flutter format/analyze/tests/build and hosted staging execution are not claimed.
 - No application default, Auth/provider strategy, schema/RLS, production deployment, staging secret/dispatch, Pro-owned N4/content or merge changes. The protected manual workflow still requires the non-production environment, two disposable email-confirmed users and explicit confirmation.
 - Next: inspect all jobs and steps for the new exact-head Actions attempt; repair only observed failures. After CI, retain the hosted gate until the manual protected Windows process sequence passes; do not infer cryptographic JWT expiry, physical multi-device sync or Personal Alpha from this fixture.
+
+
+## Hosted refresh observer review hardening — 2026-11-23T01:37Z
+
+- Separate review of commit `304c8efc6a7d11729c39d217846349514fa18398` found that the fixture buffered the complete Auth response before checking its size and retained the rotated token after the vault comparison. Tightened the TEST ONLY observer before CI: stream collection now aborts above 256 KiB, and the raw returned token is cleared immediately after exact Credential Manager comparison; only the boolean result and fixed event labels remain.
+- Updated the static regression and hosted acceptance note to require the bounded reader and post-comparison secret release. No Auth request, session, vault, database, RLS or app-default behavior changed.
+- Next: require exact-head Actions for the resulting branch HEAD; hosted staging remains unrun and QA remains pending.
