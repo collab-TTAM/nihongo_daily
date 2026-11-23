@@ -220,7 +220,14 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - run: dart format --output=none --set-exit-if-changed .
+      - name: Strict Dart formatting
+        id: strict_dart_format
+        run: dart format --output=none --set-exit-if-changed .
+      - name: Print exact Dart formatter diff for the persistent runtime test
+        if: failure() && steps.strict_dart_format.outcome == 'failure'
+        run: |
+          dart format --output=show test/features/srs/persistent_supabase_runtime_test.dart \
+            | diff -u test/features/srs/persistent_supabase_runtime_test.dart - || true
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
         run: flutter test --concurrency=1 --reporter expanded

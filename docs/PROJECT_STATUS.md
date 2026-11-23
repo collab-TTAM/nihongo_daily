@@ -1,3 +1,14 @@
+## PR #37 — expose exact pinned Dart formatter diff — 2026-11-23T10:27Z
+
+- Resumed the RELEASED core lane at branch `automation/issue-22-atomic-review`, exact parent HEAD `1a323422ade1c7b8aaa62a357b2f430fe6066361`; base main remains `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. PR #37 remains Draft.
+- Exact-head Actions [45151529563](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45151529563), attempt 1, matches `1a323422ade1c7b8aaa62a357b2f430fe6066361` and completed FAILURE only in Flutter's strict Dart 3.35.4 format step. The formatter identified `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`; repo-sanity, AI boundary, database, Windows and disposable Supabase integration all completed SUCCESS with every returned step successful. Flutter analyze, full tests and Web build were skipped after the format failure.
+- The job log reports the changed path but not the formatted hunk. Added a failure-only diagnostic immediately after the unchanged strict gate: when that gate fails, pinned `dart format --output=show` is diffed against the identified test file. The diagnostic is non-failing and does not write files; the strict repository-wide format gate remains mandatory. This does not alter assertions, runtime behavior, Auth, storage, SDK, SQL or RLS.
+- Changed paths: `.github/workflows/ci.yml` and `docs/PROJECT_STATUS.md`. Cloud authoring has no pinned Dart/Flutter SDK; no local formatter/analyze/test/build is claimed.
+- No hosted secrets/dispatch, Auth strategy/provider, schema/RLS, default-app simulation, Pro-owned #14/#38/N4, merge, deployment or release change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted Windows restore, physical multi-device sync and full Personal Alpha journey remain unverified.
+- Next: inspect the diagnostic hunk on the new exact HEAD, apply only the formatter output to the Dart test, remove this temporary diagnostic step, then require all six exact-head CI jobs/steps.
+
+---
+
 ## PR #37 — repair pinned Dart formatter failure — 2026-11-23T09:49Z
 
 - Resumed the released core lane at parent/branch HEAD `a846fe110d744edc5b3416cf8a7088e75328b036`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Prior exact-head Actions [45143925156](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45143925156), attempt 1, failed only Flutter's strict `dart format --output=none --set-exit-if-changed .` step; the formatter identified `persistent_supabase_runtime_test.dart` as the only changed file. The other five jobs completed successfully; Flutter analyze, tests and Web build were skipped, not passed.
