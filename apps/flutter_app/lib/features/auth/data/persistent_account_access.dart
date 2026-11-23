@@ -439,6 +439,12 @@ final class PersistentAccountAccess implements AccountAccess {
     await Future<void>.value();
     try {
       await _sdk.signOut();
+      // A resolved SDK future is not proof that its local session is gone.
+      // The owned adapter reconciles the final snapshot; verify both identity
+      // and refresh secret before replacement Auth or owner release can proceed.
+      if (_sdk.currentSession != null || _sdk.currentRefreshToken != null) {
+        failed = true;
+      }
     } on Object {
       failed = true;
     }

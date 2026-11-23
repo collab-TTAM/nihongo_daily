@@ -502,6 +502,26 @@ void main() {
       await logout;
       expect(backend.secret, isNull);
       expect(runtime.account.state.phase, AccountPhase.signedOut);
+
+      // The next owner must not need a second cleanup because the prior local
+      // sign-out's final SDK snapshot was reconciled before it returned.
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_B_AFTER_CONFIRMED_LOGOUT';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(backend.secret, secret);
+      expect(backend.operations, ['read', 'write', 'write', 'clear', 'write']);
+      await runtime.account.signOut();
+      expect(backend.secret, isNull);
+      expect(
+        backend.operations,
+        ['read', 'write', 'write', 'clear', 'write', 'clear'],
+      );
     },
   );
 

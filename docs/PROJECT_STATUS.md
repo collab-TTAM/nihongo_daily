@@ -1,3 +1,14 @@
+## PR #37 — verify SDK sign-out before replacement Auth — 2026-11-23T08:53Z
+
+- Core run `core-20261123T0853Z-pr37-verify-sdk-signout`; branch `automation/issue-22-atomic-review`; parent HEAD `b96cabfc5c9e10224a2f69ed813294b5c3665d26`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Exact-head parent Actions [45131678508](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45131678508) completed SUCCESS across all six jobs and all 108 returned steps; this is parent-only evidence.
+- `SupabaseReviewBinding.signOutLocally` now synchronizes the raw final SDK session after local sign-out, rather than waiting only for the asynchronous Auth broadcast. `PersistentAccountAccess` now verifies that both SDK session and refresh-token snapshots are absent after sign-out; a resolved-but-incomplete sign-out fails closed while still attempting exact-project vault clear.
+- Added TEST ONLY regression `sdk-signout-returns-with-session`: simulate signOut resolving while User A remains in the SDK; require cleanup failure, no replacement B password Auth, then permit B only after a retry actually clears A. Extended pinned-SDK runtime regression to sign out A and establish B without a redundant cleanup.
+- Changed paths: `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`, `apps/flutter_app/lib/features/srs/data/supabase_review_binding.dart`, `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart`, `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this file.
+- New-head format/analyze/Flutter/Windows/Supabase CI is pending; cloud authoring has no pinned Flutter/Dart SDK or Windows OS, so no local Dart/Flutter result is claimed. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical multi-device sync remain separate acceptance gates. No hosted secret/dispatch, Auth strategy/provider, schema/RLS, app-default simulation, Pro-owned N4, merge, deployment or release change.
+- Next: inspect every latest-attempt job/step on the new exact HEAD; fix only observed diagnostics, otherwise hand off pending CI.
+
+---
+
 ## PR #37 — caller close during explicit refresh — 2026-11-22T21:10Z
 
 - Run `core-20261122T2110Z-pr37-close-during-explicit-refresh`; branch `automation/issue-22-atomic-review`; parent `80e4d8e1eb62b306e6378dcde8934cc73347dbbd`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.

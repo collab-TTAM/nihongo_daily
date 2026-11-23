@@ -118,6 +118,7 @@ final class MemorySdk implements RefreshableAccountAccess {
   Completer<void>? logoutWait;
   bool failAuth = false;
   bool failLogout = false;
+  bool leaveSessionOnLogout = false;
   int logouts = 0;
   int logins = 0;
   int restores = 0;
@@ -178,7 +179,7 @@ final class MemorySdk implements RefreshableAccountAccess {
     logouts++;
     await logoutWait?.future;
     if (failLogout) throw StateError('PRIVATE LOGOUT ERROR');
-    change(null, null);
+    if (!leaveSessionOnLogout) change(null, null);
   }
 }
 
@@ -223,6 +224,7 @@ const scenarios = [
   'owner-release-failure-retains-owner',
   'out-of-band-session-snapshot-failure',
   'out-of-band-refresh-token-snapshot-failure',
+  'sdk-signout-returns-with-session',
 ];
 
 Future<void> verifyLifecycle(String scenario) async {
@@ -359,6 +361,51 @@ Future<void> verifyLifecycle(String scenario) async {
       return;
     }
     await access.start();
+    if (scenario == 'sdk-signout-returns-with-session') {
+      await login();
+      sdk.leaveSessionOnLogout = true;
+      await fails(access.signOut());
+      check(
+        sdk.session?.userId == owner &&
+            sdk.secret == 'TEST_ONLY_ROTATED_1' &&
+            access.currentSession == null &&
+            access.phase == SessionPersistencePhase.failed &&
+            backend.secret == null &&
+            backend.ownerHeld,
+        'successful SDK sign-out response with a remaining session was accepted',
+      );
+      await fails(login());
+      check(
+        sdk.session?.userId == owner &&
+            sdk.logins == 1 &&
+            backend.secret == null &&
+            backend.clears == 2,
+        'replacement password Auth ran before old SDK session was cleared',
+      );
+      sdk.leaveSessionOnLogout = false;
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_AFTER_CONFIRMED_SIGNOUT';
+      await login();
+      check(
+        access.currentSession?.userId == other &&
+            access.phase == SessionPersistencePhase.ready &&
+            sdk.logins == 2 &&
+            sdk.logouts == 3 &&
+            backend.secret == 'TEST_ONLY_B_AFTER_CONFIRMED_SIGNOUT' &&
+            backend.operations.join(' -> ') ==
+                'read -> write -> clear -> clear -> clear -> write',
+        'replacement account did not wait for confirmed SDK sign-out',
+      );
+      await access.close();
+      check(
+        backend.secret == 'TEST_ONLY_B_AFTER_CONFIRMED_SIGNOUT' &&
+            backend.ownerReleases == 1 &&
+            !backend.ownerHeld &&
+            !PersistentAccountAccess.isTargetOwned(vault.target),
+        'caller close lost B or released the owner out of order',
+      );
+      return;
+    }
     if (scenario == 'out-of-band-session-snapshot-failure' ||
         scenario == 'out-of-band-refresh-token-snapshot-failure') {
       if (scenario == 'out-of-band-session-snapshot-failure') {

@@ -285,6 +285,9 @@ final class SupabaseReviewBinding implements ReviewAuth, ReviewRpcTransport {
     _pendingSignOutGeneration = _authOperationGeneration;
     try {
       await _client.auth.signOut(scope: SignOutScope.local);
+      // Auth broadcasts may still be queued when signOut resolves. Reconcile
+      // the raw SDK snapshot now so the persistence owner can verify cleanup.
+      synchronizeOwnedAuthSession();
     } on Object {
       throw const ReviewTransportFailure(ReviewErrorCode.internalError);
     }

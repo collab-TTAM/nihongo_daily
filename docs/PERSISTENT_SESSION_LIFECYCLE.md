@@ -79,10 +79,16 @@ memory-zeroization claim is added for Dart strings.
 
 Logout revokes readiness before awaiting anything. SDK sign-out and credential
 clear are both attempted even when one fails. Clear is ordered after any already
-running write. Generation/session/secret guards prevent old queued writes or
-responses from granting access. Logout/disposal during an Auth request keeps the
-gate fenced and cleans again after that request settles, including SDK logout
-failure followed by late sign-in success. Explicit retry is required after errors.
+running write. After local SDK sign-out resolves, the binding immediately
+reconciles the raw SDK snapshot because its Auth broadcast may still be queued.
+Cleanup then verifies that both the current session and refresh-token snapshot
+are absent. A resolved sign-out that leaves either value present is a cleanup
+failure: the vault clear is still attempted, the owner remains held, and
+replacement Auth is blocked until an explicit retry confirms the old session is
+gone. Generation/session/secret guards prevent old queued writes or responses
+from granting access. Logout/disposal during an Auth request keeps the gate
+fenced and cleans again after that request settles, including SDK logout failure
+followed by late sign-in success. Explicit retry is required after errors.
 
 A sign-in or explicit refresh reserves its operation slot before the deferred
 runner dispatches the SDK request. If logout arrives in that gap, the runner
