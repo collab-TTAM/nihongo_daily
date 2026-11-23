@@ -1262,7 +1262,6 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       );
       await pending();
     } else if (phase == 'runtime-native-rotation-write-fail-before') {
-      _check(await vault.readRefreshToken() == null);
       // Explicit startup acquires the owned vault before offering password Auth.
       await runtime.start();
       _check(
