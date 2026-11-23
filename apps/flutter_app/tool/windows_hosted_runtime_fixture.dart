@@ -1,4 +1,5 @@
 // Manual-only hosted staging fixture. Never used by the learner entrypoint.
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
@@ -47,10 +48,36 @@ final class _HostedProbeHttpClient extends http.BaseClient {
   Future<void> Function()? beforePasswordAuth;
   Future<void> Function()? beforeProfile;
 
+  String? _rotatedRefreshToken;
+
+  String? get rotatedRefreshToken => _rotatedRefreshToken;
+
+  String? _refreshTokenFromRequest(http.BaseRequest request) {
+    if (request is! http.Request) return null;
+    try {
+      final payload = jsonDecode(request.body);
+      if (payload is Map<String, dynamic>) {
+        final token = payload['refresh_token'];
+        if (token is String && token.isNotEmpty) return token;
+      }
+    } on Object {
+      // Keep the request secret private; restore-a fails closed if it cannot
+      // prove the exact refresh rotation.
+    }
+    return null;
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    if (request.url.path == '/auth/v1/token') {
-      final grant = request.url.queryParameters['grant_type'] ?? 'unknown';
+    final isTokenRequest = request.url.path == '/auth/v1/token';
+    final grant = isTokenRequest
+        ? request.url.queryParameters['grant_type'] ?? 'unknown'
+        : null;
+    final submittedRefreshToken = grant == 'refresh_token'
+        ? _refreshTokenFromRequest(request)
+        : null;
+
+    if (isTokenRequest) {
       events.add('auth.$grant');
       if (grant == 'password') await beforePasswordAuth?.call();
     } else if (request.url.path == '/auth/v1/logout') {
@@ -59,7 +86,43 @@ final class _HostedProbeHttpClient extends http.BaseClient {
       await beforeProfile?.call();
       events.add('profile.ensure');
     }
-    return _inner.send(request);
+
+    final response = await _inner.send(request);
+    if (grant == 'refresh_token') {
+      // Read only this bounded Auth response so the fixture can compare the
+      // returned rotation with the OS vault before the profile request. The
+      // raw response is reconstructed for the SDK; neither token is logged.
+      final bytes = await response.stream.toBytes();
+      if (response.statusCode == 200 &&
+          submittedRefreshToken != null &&
+          bytes.length <= 256 * 1024) {
+        try {
+          final payload = jsonDecode(utf8.decode(bytes));
+          final rotated = payload is Map<String, dynamic>
+              ? payload['refresh_token']
+              : null;
+          if (rotated is String &&
+              rotated.isNotEmpty &&
+              rotated != submittedRefreshToken) {
+            _rotatedRefreshToken = rotated;
+            events.add('auth.refresh.response');
+          }
+        } on Object {
+          // The startup profile barrier below fails if rotation is unverified.
+        }
+      }
+      return http.StreamedResponse(
+        Stream<List<int>>.value(bytes),
+        response.statusCode,
+        contentLength: bytes.length,
+        request: response.request,
+        headers: response.headers,
+        isRedirect: response.isRedirect,
+        persistentConnection: response.persistentConnection,
+        reasonPhrase: response.reasonPhrase,
+      );
+    }
+    return response;
   }
 
   @override
@@ -217,13 +280,38 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         _check(await vault.readRefreshToken() == saved);
         break;
       case 'restore-a':
-        // This is a fresh Windows process. start() must restore through GoTrue,
-        // persist its current refresh value, and provision A's own profile.
+        // This is a fresh Windows process. GoTrue must rotate the saved secret,
+        // and the exact returned value must be in Credential Manager before the
+        // first own-profile request is sent.
+        httpClient.beforeProfile = () async {
+          final rotated = httpClient.rotatedRefreshToken;
+          final persisted = await vault.readRefreshToken();
+          _check(
+            rotated != null && rotated.isNotEmpty && persisted == rotated,
+          );
+          httpClient.events.add('vault.rotated-before-profile');
+        };
         await runtime.start();
         await runtime.account.waitForCurrentProfile();
         _requireReady(runtime);
+        final events = httpClient.events;
+        final refreshIndex = events.indexOf('auth.refresh');
+        final responseIndex = events.indexOf('auth.refresh.response');
+        final persistedIndex = events.indexOf('vault.rotated-before-profile');
+        final profileIndex = events.indexOf('profile.ensure');
+        _check(
+          refreshIndex >= 0 &&
+              responseIndex > refreshIndex &&
+              persistedIndex > responseIndex &&
+              profileIndex > persistedIndex &&
+              events.where((event) => event == 'profile.ensure').length == 1,
+        );
         final saved = await vault.readRefreshToken();
-        _check(saved != null && saved.isNotEmpty);
+        _check(
+          saved != null &&
+              saved.isNotEmpty &&
+              saved == httpClient.rotatedRefreshToken,
+        );
         await runtime.close();
         closed = true;
         _check(await vault.readRefreshToken() == saved);

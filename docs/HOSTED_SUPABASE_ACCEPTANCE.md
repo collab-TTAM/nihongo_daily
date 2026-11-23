@@ -110,8 +110,10 @@ The PowerShell driver starts a fresh Windows process for each phase:
 
 1. login-a: empty vault, password-login User A, wait for the captured
    own-profile barrier, then cleanly close while preserving the refresh token.
-2. restore-a: a new process restores A through the saved refresh token and
-   waits for A's own profile before closing again.
+2. restore-a: a new process restores A through the saved refresh token. The
+   fixture requires GoTrue to return a different refresh token and verifies the
+   exact returned value is already in Credential Manager before the first
+   `ensure_profile` request, then waits for A's own profile before closing.
 3. logout-a: a new process restores A, performs the SDK's local logout and
    verifies the exact project credential slot is empty.
 4. login-b: a new process starts signed out, authenticates User B, verifies
@@ -193,9 +195,16 @@ logout and before B's login:
    own-profile request. It finishes with local logout and an empty slot.
 
 The fixture's HTTP observer records only fixed route/grant labels and checks the
-OS vault at the password/profile boundaries. It never records request bodies,
-email/password values, access JWTs or refresh tokens. The token is held only in
-memory while being re-seeded; it is not written to a file or printed.
+OS vault at the password/profile boundaries. During `restore-a`, it also reads
+the refresh request and successful response in memory only, requires the
+returned refresh token to differ from the submitted token, then requires the
+exact returned value to be readable from Credential Manager inside the
+`beforeProfile` hook. The observed order must be
+`auth.refresh` -> `auth.refresh.response` ->
+`vault.rotated-before-profile` -> `profile.ensure`. The observer never adds
+token values to its event list, logs, files or artifacts. It never records
+email/password values or access JWTs. The token is held only in memory while
+being re-seeded; it is not written to a file or printed.
 
 This proves fresh-process recovery from a **server-revoked** saved refresh token
 when the protected staging workflow passes. It does not force a cryptographically

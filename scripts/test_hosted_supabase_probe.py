@@ -462,6 +462,8 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             "SessionPersistencePhase.ready",
             "login-a",
             "restore-a",
+            "auth.refresh.response",
+            "vault.rotated-before-profile",
             "logout-a",
             "prepare-revoked-a",
             "restore-revoked-a",
@@ -476,6 +478,23 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
             r"(?i)(?:stdout|stderr)\.writeln\([^)]*(?:email|password|refresh|token|secret)",
         )
         self.assertNotIn("Future<void> verifyWindowsHostedRuntimePhase(", fixture)
+        restore = fixture.split("case 'restore-a':", 1)[1].split(
+            "case 'logout-a':", 1
+        )[0]
+        self.assertIn("request is! http.Request", fixture)
+        self.assertIn("jsonDecode(request.body)", fixture)
+        self.assertIn("response.stream.toBytes()", fixture)
+        self.assertIn("rotated != submittedRefreshToken", fixture)
+        self.assertIn("persisted == rotated", restore)
+        self.assertIn("final responseIndex = events.indexOf('auth.refresh.response');", restore)
+        self.assertIn("final persistedIndex = events.indexOf('vault.rotated-before-profile');", restore)
+        self.assertIn("responseIndex > refreshIndex", restore)
+        self.assertIn("persistedIndex > responseIndex", restore)
+        self.assertIn("profileIndex > persistedIndex", restore)
+        self.assertNotRegex(
+            fixture,
+            r"(?i)(?:events|print|debugPrint)\.(?:add|writeln)\([^)]*(?:email|password|refreshToken|token|secret)",
+        )
         self.assertIn("ArgumentList @($phase)", script)
         self.assertIn("WaitForExit(90000)", script)
         self.assertIn("Invoke-HostedPhase 'restore-a'", script)
