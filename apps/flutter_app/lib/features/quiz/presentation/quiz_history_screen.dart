@@ -364,10 +364,7 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
       }
       setState(() {
         if (targetPageIndex != null) {
-          _cursorHistory = [
-            ..._cursorHistory.take(targetPageIndex),
-            cursor,
-          ];
+          _cursorHistory = [..._cursorHistory.take(targetPageIndex), cursor];
           _pageIndex = targetPageIndex;
         } else if (reset) {
           _cursorHistory = [null];
@@ -392,9 +389,7 @@ class _ServerHistoryPanelState extends State<_ServerHistoryPanel> {
   void _retry() {
     final pageIndex = _retryPageIndex;
     if (pageIndex != null) {
-      unawaited(
-        _load(cursor: _retryCursor, targetPageIndex: pageIndex),
-      );
+      unawaited(_load(cursor: _retryCursor, targetPageIndex: pageIndex));
       return;
     }
     unawaited(_load(reset: true));
