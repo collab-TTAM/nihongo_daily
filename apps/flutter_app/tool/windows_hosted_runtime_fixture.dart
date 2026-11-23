@@ -230,7 +230,9 @@ void _verifyPasswordTokenOrder(_HostedProbeHttpClient httpClient) {
   final events = httpClient.events;
   final passwordIndex = events.indexOf('auth.password');
   final responseIndex = events.indexOf('auth.password.response');
-  final persistedIndex = events.indexOf('vault.password-persisted-before-profile');
+  final persistedIndex = events.indexOf(
+    'vault.password-persisted-before-profile',
+  );
   final profileIndex = events.indexOf('profile.ensure');
   _check(
     passwordIndex >= 0 &&
@@ -424,8 +426,9 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         final passwordIndex = events.indexOf('auth.password');
         final emptyIndex = events.indexOf('vault.empty-before-password');
         final responseIndex = events.indexOf('auth.password.response');
-        final persistedIndex =
-            events.indexOf('vault.password-persisted-before-profile');
+        final persistedIndex = events.indexOf(
+          'vault.password-persisted-before-profile',
+        );
         final profileIndex = events.indexOf('profile.ensure');
         _check(
           refreshIndex >= 0 &&
@@ -491,3 +494,4 @@ Future<void> main(List<String> arguments) async {
   await stderr.flush();
   exit(passed ? 0 : 1);
 }
+

@@ -220,19 +220,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnostic pinned Dart formatter diff (temporary, non-mutating)
-        shell: bash
-        run: |
-          set -euo pipefail
-          for file in \
-            tool/hosted_session_token_proof.dart \
-            tool/windows_hosted_runtime_fixture.dart \
-            test/features/srs/hosted_session_token_proof_test.dart
-          do
-            echo "=== FORMAT DIFF: $file ==="
-            dart format --output=show "$file" > "$RUNNER_TEMP/formatted.dart"
-            diff -u "$file" "$RUNNER_TEMP/formatted.dart" || true
-          done
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

@@ -49,7 +49,8 @@ final class HostedSessionTokenProof {
   bool verifyRotatedRefreshToken(String? persisted) {
     final submitted = _submittedRefreshToken;
     final returned = _returnedRefreshToken;
-    final verified = _grant == 'refresh_token' &&
+    final verified =
+        _grant == 'refresh_token' &&
         submitted != null &&
         returned != null &&
         submitted != returned &&

@@ -1,3 +1,13 @@
+## PR #37 — exact pinned formatter repair — 2026-11-23T14:36Z
+
+- Core run `core-20261123T1436Z-pr37-apply-exact-hosted-proof-format`; branch `automation/issue-22-atomic-review`; parent `5c951cfe4769dc5790d4ac571378a940b1d4116d`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head CI [45185201455](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45185201455), attempt 1, completed FAILURE only in Flutter strict Dart 3.9.2 formatting. The diagnostic log identified exact formatting-only changes in `hosted_session_token_proof.dart`, `windows_hosted_runtime_fixture.dart`, and `hosted_session_token_proof_test.dart`. Flutter analyze, full tests and downstream browser/wire/Web checks were skipped, not passed.
+- The same run completed repo-sanity, AI boundary, database and disposable local Supabase integration SUCCESS (all returned steps); Windows build, native Credential Manager cross-process checks and durable recovery checks SUCCESS (all returned steps). These are CI/component proofs, not hosted learner A/B or deployed RLS.
+- Applied only the captured formatter hunks, removed the temporary non-mutating diagnostic step from `.github/workflows/ci.yml`, and retained the strict repository-wide formatter gate unchanged. No assertions, Auth behavior, token handling, RLS or security checks changed.
+- Changed paths: the three Dart files above, `.github/workflows/ci.yml`, and this status document. Exact source commit and final-head CI are recorded in PR #37 after push.
+- Hosted signed-JWT learner A/B, protected staging Windows restore, deployed PostgREST/RLS, physical multi-device sync and full Personal Alpha journey remain unverified. Keep PR #37 Draft and #20/#22/#15/#18 open.
+- Next: inspect every latest-attempt job and step on the final exact HEAD; fix only observed failures, otherwise release the CI handoff without duplicate edits or long polling.
+
 ## PR #37 — exact password-grant vault persistence proof — 2026-11-23T13:18Z
 
 - Run `core-20261123T1318Z-pr37-exact-password-token-proof` on `automation/issue-22-atomic-review`, parent `31503618fd2379edd1eb41d073c9b3ab264e817c`, main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.

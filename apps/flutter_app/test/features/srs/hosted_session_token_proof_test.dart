@@ -52,10 +52,7 @@ void main() {
         ),
         isTrue,
       );
-      expect(
-        proof.verifyRotatedRefreshToken('TEST_ONLY_NEW_REFRESH'),
-        isTrue,
-      );
+      expect(proof.verifyRotatedRefreshToken('TEST_ONLY_NEW_REFRESH'), isTrue);
     });
 
     test('unchanged refresh token cannot prove rotation', () {
@@ -95,10 +92,7 @@ void main() {
         ),
         isFalse,
       );
-      expect(
-        proof.verifyPersistedPasswordToken('TEST_ONLY_PREVIOUS'),
-        isFalse,
-      );
+      expect(proof.verifyPersistedPasswordToken('TEST_ONLY_PREVIOUS'), isFalse);
       expect(
         proof.capture(
           grant: 'password',
@@ -131,10 +125,7 @@ void main() {
         isTrue,
       );
       expect(proof.verifyRotatedRefreshToken('TEST_ONLY_PASSWORD'), isFalse);
-      expect(
-        proof.verifyPersistedPasswordToken('TEST_ONLY_PASSWORD'),
-        isFalse,
-      );
+      expect(proof.verifyPersistedPasswordToken('TEST_ONLY_PASSWORD'), isFalse);
     });
   });
 }
