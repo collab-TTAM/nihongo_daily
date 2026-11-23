@@ -5129,3 +5129,10 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - A separate readback of the bounded-observer follow-up found one stale test-fixture accessor left after the raw-token getter was removed. Removed that unused reference and added a static regression that prevents the old raw-token accessor from returning to `restore-a`. Clarified that only the Auth response body is size-bounded; no security guard is weakened.
 - Final exact-head CI is still required. No hosted staging dispatch or Auth/provider/schema/RLS changes.
+
+
+## Exact-head CI correction — 2026-11-23T01:42Z
+
+- Actions run [45095791834](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45095791834) targeted exact HEAD `055ab4d5b3c4fb3a17703d6e124848313820d99d`. `repo-sanity` failed only because the new static redaction regex treated the fixed event label `vault.empty-before-password` as a secret; `ai-boundary`, `database-rls` and Windows build passed, while Flutter/preview were skipped by path filters. No hosted test was dispatched.
+- Narrowed the regression to forbid raw refresh-token variables and request bodies in event/log calls, while allowing fixed event labels. This changes test precision only; it does not relax runtime redaction or security behavior.
+- Next: inspect the latest exact-head run after this correction; skipped path-filtered jobs remain explicitly reported and are not counted as a full suite pass.

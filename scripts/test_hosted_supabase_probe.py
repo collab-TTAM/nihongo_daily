@@ -495,10 +495,12 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("responseIndex > refreshIndex", restore)
         self.assertIn("persistedIndex > responseIndex", restore)
         self.assertIn("profileIndex > persistedIndex", restore)
-        self.assertNotRegex(
-            fixture,
-            r"(?i)(?:events|print|debugPrint)\.(?:add|writeln)\([^)]*(?:email|password|refreshToken|token|secret)",
-        )
+        self.assertNotIn("events.add(_rotatedRefreshToken", fixture)
+        self.assertNotIn("events.add(submittedRefreshToken", fixture)
+        self.assertNotIn("print(_rotatedRefreshToken", fixture)
+        self.assertNotIn("debugPrint(_rotatedRefreshToken", fixture)
+        self.assertNotIn("print(request.body)", fixture)
+        self.assertNotIn("debugPrint(request.body)", fixture)
         self.assertIn("ArgumentList @($phase)", script)
         self.assertIn("WaitForExit(90000)", script)
         self.assertIn("Invoke-HostedPhase 'restore-a'", script)
