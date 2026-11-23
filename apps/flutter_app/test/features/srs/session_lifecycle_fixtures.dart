@@ -139,6 +139,7 @@ final class MemorySdk implements RefreshableAccountAccess {
     }
     return secret;
   }
+
   @override
   Stream<void> get sessionChanges => events.stream;
   void change(String? id, String? token, {bool sameSession = false}) {
@@ -1082,3 +1083,4 @@ Future<void> verifyLifecycle(String scenario) async {
     }
   }
 }
+
