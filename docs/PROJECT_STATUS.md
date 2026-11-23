@@ -5311,3 +5311,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Re-read the source commit `98d3909b1841306bb613a104cc2fb0e008bd192d` and normalized the nested `switch (phase)` body indentation before CI. This is formatting-only; owner acquisition, phase selection, cleanup order and all assertions are unchanged.
 - Final source candidate is `apps/flutter_app/tool/windows_vault_bridge.dart`; the exact pinned Dart 3.9.2 formatter, analyzer, complete Flutter suite and Windows process bridge still require a fresh exact-head Actions run. No local Flutter/Dart SDK or Windows OS is available in the cloud authoring runtime.
+
+
+## PR #37 Windows bridge owner-lease audit — 2026-11-23T19:12Z
+
+- Final source candidate before this status-only checkpoint: `ba8f294606c5d1130e28a068767827429f2a2266`; branch `automation/issue-22-atomic-review`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Post-write review of `apps/flutter_app/tool/windows_vault_bridge.dart` confirms only the intended owner-lease acquisition/release wrapper and corresponding nested switch indentation changed. All phase assertions and fixed synthetic values remain unchanged. The complete parent/final recursive trees are untruncated at 360 entries (295 blobs / 65 trees); no paths were added/removed, no mode/type changed, exactly the two intended blobs (`windows_vault_bridge.dart`, `docs/PROJECT_STATUS.md`) differ, and 293 unchanged blobs are preserved.
+- The source tree creation used exact parent `base_tree_sha=a420a533b7ce96eb09fc39d08041f313db636e34`; the commit is single-parent and the ref update used `expected_sha=98d3909b1841306bb613a104cc2fb0e008bd192d`, `force=false`. Changed-file readbacks and branch/PR head matched the committed tree.
+- Exact-head Actions [45246241641](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45246241641), attempt 1, matched `ba8f294606c5d1130e28a068767827429f2a2266` and was still PENDING with no jobs published at the last observation. No formatter/analyzer/test/build/Windows bridge pass is claimed for that head. This status-only successor will require its own fresh exact-head CI.
+- Cloud authoring has no pinned Dart/Flutter SDK or Windows OS; no local format/analyze/test/build was run. Hosted learner Auth A/B, deployed RLS/PostgREST, protected Windows hosted restore and physical multi-device sync remain separate unverified gates.
