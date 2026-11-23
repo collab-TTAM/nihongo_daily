@@ -1437,10 +1437,18 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
     await journal.close();
     network.close();
   }
-  // Closing the runtime preserves a fully saved session for the next process.
+  // The caller-owned runtime must release its lease on close. Reacquire with
+  // a fresh facade to verify the native credential survived that shutdown.
   if (phase == 'runtime-login' ||
       phase == 'runtime-restore-profile-held' ||
       phase == 'runtime-restore') {
-    _check(await vault.readRefreshToken() == secret);
+    _check(!runtime.persistence.hasVaultOwner);
+    final verifier = createWindowsSessionCredentialVault(origin);
+    await verifier.acquireOwner();
+    try {
+      _check(await verifier.readRefreshToken() == secret);
+    } finally {
+      await verifier.releaseOwner();
+    }
   }
 }
