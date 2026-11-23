@@ -5155,3 +5155,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Applied only the formatter output: one blank line between the refresh-token getter and the next annotation, plus the formatter's terminal blank line. Removed the temporary diagnostic workflow step. No behavior, assertion, expected value or CI gate changed.
 - Cloud authoring runtime has no pinned Dart/Flutter SDK; no local format/analyze/test/build is claimed. The corrected final-head Actions run is the verification gate. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, protected Windows hosted restore and physical multi-device sync remain unverified. No Pro-owned N4/content, Auth/provider strategy, schema/RLS, hosted secret/dispatch, merge, deployment or release change.
 - Next: inspect every latest-attempt job and step on the corrected final HEAD; fix only actual diagnostics. Pending checks are not passes.
+
+
+## PR #37 — strict lifecycle-fixture formatting follow-up — 2026-11-23T06:14Z
+
+- Exact-head Actions [45111041938](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45111041938), attempt 1, targeted `5fb6a9577f25bc909e9fe948129fb2fdfb5a1898`. `repo-sanity`, `ai-boundary`, `database`, `windows` and `supabase-integration` completed SUCCESS; Flutter failed only `dart format --output=none --set-exit-if-changed .` on `test/features/srs/session_lifecycle_fixtures.dart`. Analyze, Flutter suite, native/browser probes and Web build were skipped, not passed.
+- The pinned diagnostic had shown the required blank line between `currentRefreshToken` and `sessionChanges`, plus an EOF blank line. CI still flagged the file after both were applied. This follow-up retains the member separator and removes only the extra EOF blank line; no production code, test logic, assertion or expected value changes.
+- Changed paths: `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart` and this status handoff only. Full source tree was re-read untruncated (358 entries / 293 blobs) at parent `5fb6a9577f25bc909e9fe948129fb2fdfb5a1898`; Pro-owned N4/content paths remain untouched.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Require a fresh exact-head Actions run and inspect every latest-attempt job/step before claiming any test/build pass.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted Windows credential restore, physical multi-device sync and Personal Alpha acceptance remain unverified. No hosted secret/dispatch, Auth/provider strategy, schema/RLS, app-default activation, merge, deployment or release action.
+- Next: inspect exact-head six-job CI; repair only an observed diagnostic, otherwise release the checkpoint while hosted acceptance remains blocked.
