@@ -515,7 +515,10 @@ void main() {
       await waitForReady();
       expect(runtime.account.state.profile?.id, wire.b);
       expect(backend.secret, secret);
-      expect(backend.operations, ['read', 'write', 'write', 'clear', 'write']);
+      expect(
+        backend.operations,
+        ['read', 'write', 'write', 'clear', 'write'],
+      );
       await runtime.account.signOut();
       expect(backend.secret, isNull);
       expect(

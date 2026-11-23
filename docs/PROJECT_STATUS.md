@@ -1,3 +1,13 @@
+## PR #37 — repair pinned Dart formatter failure — 2026-11-23T09:49Z
+
+- Resumed the released core lane at parent/branch HEAD `a846fe110d744edc5b3416cf8a7088e75328b036`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Prior exact-head Actions [45143925156](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45143925156), attempt 1, failed only Flutter's strict `dart format --output=none --set-exit-if-changed .` step; the formatter identified `persistent_supabase_runtime_test.dart` as the only changed file. The other five jobs completed successfully; Flutter analyze, tests and Web build were skipped, not passed.
+- Reflowed the newly added long `expect(backend.operations, ...)` assertion in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart` into canonical multiline Dart formatting; assertions, values and runtime behavior are unchanged. No Auth, persistence, SDK, SQL, RLS, workflow, app-default or content behavior changed.
+- Changed paths: this test file and `docs/PROJECT_STATUS.md` only. Cloud authoring has no pinned Dart/Flutter SDK; no local format/analyze/test/build is claimed. The strict exact-head CI on the new commit is the verification gate.
+- No hosted secrets/dispatch, Auth strategy/provider, schema/RLS, Pro-owned N4, merge, deployment or release change. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted Windows learner restore, physical multi-device sync and full Personal Alpha journey remain unverified.
+- Next: inspect every latest-attempt job and step on the exact new HEAD; if Flutter format passes, continue analyze/full tests and fix only any observed failure.
+
+---
+
 ## PR #37 — verify SDK sign-out before replacement Auth — 2026-11-23T08:53Z
 
 - Core run `core-20261123T0853Z-pr37-verify-sdk-signout`; branch `automation/issue-22-atomic-review`; parent HEAD `b96cabfc5c9e10224a2f69ed813294b5c3665d26`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Exact-head parent Actions [45131678508](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45131678508) completed SUCCESS across all six jobs and all 108 returned steps; this is parent-only evidence.
