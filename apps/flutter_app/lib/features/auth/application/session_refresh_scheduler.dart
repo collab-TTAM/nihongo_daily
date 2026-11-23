@@ -2,11 +2,7 @@ import 'dart:async';
 
 /// Identity/expiry hints only, never credentials or server authorization.
 final class RefreshLease {
-  const RefreshLease(
-    this.identity,
-    this.expiresAt, {
-    this.generation = 0,
-  });
+  const RefreshLease(this.identity, this.expiresAt, {this.generation = 0});
   final Object identity;
   final DateTime expiresAt;
   final int generation;

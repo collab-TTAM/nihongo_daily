@@ -96,11 +96,7 @@ final class PersistentSupabaseRuntime
               generation != persistence.sessionGeneration) {
             return null;
           }
-          return RefreshLease(
-            session,
-            expiry,
-            generation: generation,
-          );
+          return RefreshLease(session, expiry, generation: generation);
         },
         refresh: _refreshThroughOwner,
         now: now,
