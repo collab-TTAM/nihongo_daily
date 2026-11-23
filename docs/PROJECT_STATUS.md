@@ -1,3 +1,13 @@
+## PR #37 — apply exact pinned Dart 3.35.4 formatter output — 2026-11-23T10:37Z
+
+- Formatter diagnostic [45157319829](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45157319829), attempt 1, targets exact parent `4f3ce1f8ddd5a50bb475a21046e68fc20265ea8c`. It showed three whitespace-only hunks in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: the first five-operation expectation is one line; the six-operation expectation is a multiline list with one item per line; remove one extra EOF blank line.
+- Applied those exact formatter changes without changing assertion values, test ordering or runtime behavior. Removed the temporary read-only diagnostic step and restored the original strict repository-wide Dart format gate unchanged.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`, `.github/workflows/ci.yml`, and `docs/PROJECT_STATUS.md`. The previous diagnostic run's Flutter analyze/full suite/Web build were skipped after format failure; no test/build pass is inferred from it.
+- No local pinned Flutter/Dart SDK in the cloud authoring runtime; exact-head Actions is the verification gate. No Auth/provider, runtime, schema/RLS, hosted secrets, Pro-owned N4, merge, deployment or release change.
+- Next: inspect all latest-attempt jobs/steps on the new exact HEAD; require format, analyze, full Flutter suite, native/browser probes, Windows build and disposable local Supabase integration before treating this PR increment as green.
+
+---
+
 ## PR #37 — expose exact pinned Dart formatter diff — 2026-11-23T10:27Z
 
 - Resumed the RELEASED core lane at branch `automation/issue-22-atomic-review`, exact parent HEAD `1a323422ade1c7b8aaa62a357b2f430fe6066361`; base main remains `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. PR #37 remains Draft.
