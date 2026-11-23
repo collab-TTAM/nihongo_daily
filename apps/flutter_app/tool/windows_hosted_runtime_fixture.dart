@@ -132,7 +132,11 @@ final class _HostedProbeHttpClient extends http.BaseClient {
             submittedRefreshToken: submittedRefreshToken,
             returnedRefreshToken: returned is String ? returned : null,
           )) {
-            events.add('auth.$grant.response');
+            events.add(
+              grant == 'refresh_token'
+                  ? 'auth.refresh.response'
+                  : 'auth.password.response',
+            );
           }
         } on Object {
           _tokenProof.clear();
