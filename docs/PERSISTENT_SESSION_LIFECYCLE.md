@@ -1342,3 +1342,23 @@ TEST ONLY pinned-SDK/MockClient/MethodChannel evidence with synthetic Auth HTTP
 and a mocked Windows vault channel. It does not prove hosted signed-JWT learner
 Auth, spontaneous Credential Manager failure, OS logoff/power-loss or physical
 multi-device sync.
+
+
+## Auth stream failure during an explicit refresh
+
+The TEST ONLY lifecycle case
+`stream-error-during-refresh-replacement-login` starts with User A fully
+persisted, then holds an explicit SDK refresh response and injects an Auth stream
+error before the response arrives. Readiness must be revoked immediately; a
+replacement password login is rejected while A's refresh is still in flight.
+When the late response returns with a rotated secret, it must remain unaccepted
+and must not overwrite the last persisted value. Only after the operation drains
+may an explicit User B login proceed, and its sequence must be A sign-out,
+exact-project vault clear, B password Auth, then B refresh-token persistence
+before readiness. Caller close preserves B's fully persisted rotation and
+releases the owner lease.
+
+This is in-memory MemorySdk/in-memory-vault regression evidence for the
+captured-generation and account-switch ordering. It is not hosted Auth/JWT/RLS,
+real Windows Credential Manager fault injection for this exact stream-error
+sequence, or Personal Alpha proof.

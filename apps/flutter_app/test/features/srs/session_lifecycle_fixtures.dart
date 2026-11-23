@@ -212,6 +212,7 @@ const scenarios = [
   'duplicate-auth',
   'closed-stream',
   'stream-error-after-ready',
+  'stream-error-during-refresh-replacement-login',
   'queued-old-rotation',
   'exclusive-owner',
   'logout-failure-late-login',
@@ -997,6 +998,71 @@ Future<void> verifyLifecycle(String scenario) async {
         'shutdown deleted saved session',
       );
       await fails(login());
+    } else if (scenario == 'stream-error-during-refresh-replacement-login') {
+      final saved = backend.secret;
+      check(
+        sdk.logins == 1 &&
+            backend.writes == 1 &&
+            saved == sdk.secret &&
+            access.currentSession?.userId == owner,
+        'refresh stream-failure fixture did not begin with persisted User A',
+      );
+      sdk.authWait = Completer<void>();
+      sdk.nextSecret = 'TEST_ONLY_LATE_REFRESH_AFTER_STREAM_ERROR';
+      final refreshError = fails(access.refresh());
+      await flush();
+      check(
+        sdk.refreshes == 1 && access.currentSession == null,
+        'explicit refresh did not remain pending behind the readiness barrier',
+      );
+
+      sdk.events.addError(StateError('PRIVATE AUTH STREAM DURING REFRESH'));
+      await flush();
+      check(
+        access.phase == SessionPersistencePhase.failed &&
+            access.currentSession == null &&
+            backend.secret == saved &&
+            sdk.session?.userId == owner,
+        'Auth stream failure exposed A or overwrote the last persisted token',
+      );
+      await fails(login());
+      check(
+        sdk.logins == 1 && backend.secret == saved,
+        'replacement password Auth crossed the held A refresh',
+      );
+
+      sdk.authWait!.complete();
+      await refreshError;
+      check(
+        access.currentSession == null &&
+            sdk.session?.userId == owner &&
+            sdk.secret == 'TEST_ONLY_LATE_REFRESH_AFTER_STREAM_ERROR' &&
+            backend.secret == saved &&
+            backend.writes == 1,
+        'late refresh response bypassed the failed-stream generation fence',
+      );
+
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_AFTER_STREAM_FAILURE';
+      await login();
+      check(
+        access.phase == SessionPersistencePhase.ready &&
+            access.currentSession?.userId == other &&
+            sdk.logouts == 1 &&
+            sdk.logins == 2 &&
+            backend.secret == 'TEST_ONLY_B_AFTER_STREAM_FAILURE' &&
+            backend.operations.join(' -> ') ==
+                'read -> write -> clear -> write',
+        'replacement User B did not wait for A sign-out/clear before Auth',
+      );
+      await access.close();
+      check(
+        backend.secret == 'TEST_ONLY_B_AFTER_STREAM_FAILURE' &&
+            backend.ownerReleases == 1 &&
+            !backend.ownerHeld &&
+            !PersistentAccountAccess.isTargetOwned(vault.target),
+        'caller close lost B rotation or released the owner out of order',
+      );
     } else if (scenario == 'closed-stream' ||
         scenario == 'stream-error-after-ready') {
       // The shared setup above already completed this scenario's only login.
