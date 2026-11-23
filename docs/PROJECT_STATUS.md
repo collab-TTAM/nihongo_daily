@@ -1,3 +1,10 @@
+## PR #37 — capture exact pinned formatter output — 2026-11-23T15:41Z
+
+- Run `core-20261123T1540Z-pr37-windows-fixture-format-repair`; branch `automation/issue-22-atomic-review`; diagnostic parent `49b4048a1c95d3a31952260abea2727cfb8db854`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head CI [45196921810](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45196921810), attempt 1, completed FAILURE only at strict Dart 3.9.2 formatting: `tool/windows_hosted_runtime_fixture.dart` (repository path `apps/flutter_app/tool/windows_hosted_runtime_fixture.dart`). The other five jobs completed SUCCESS; Flutter analyze, full suite and downstream checks were skipped, not passed.
+- Added a temporary read-only formatter-diff step for that one file immediately before the unchanged strict format gate. The step does not write source files or relax the gate; it exists only to capture exact formatter output. No application/runtime/assertion/Auth/token/RLS changes.
+- Next: apply only the captured formatting, remove this diagnostic step, rerun full exact-head CI and inspect every latest-attempt job/step. Hosted learner A/B, deployed RLS, physical multi-device sync and Personal Alpha remain unverified.
+
 ## PR #37 — exact pinned formatter repair — 2026-11-23T14:36Z
 
 - Core run `core-20261123T1436Z-pr37-apply-exact-hosted-proof-format`; branch `automation/issue-22-atomic-review`; parent `5c951cfe4769dc5790d4ac571378a940b1d4116d`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
