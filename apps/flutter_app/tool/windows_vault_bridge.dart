@@ -56,7 +56,17 @@ Future<void> main(List<String> arguments) async {
     if (runtimePhases.contains(phase)) {
       await verifyWindowsRuntimePhase(phase, scope);
     }
-    switch (phase) {
+    const storagePhases = {'write', 'reopen', 'rotated', 'clear', 'absent'};
+    var vaultOwnerAcquired = false;
+    var otherOwnerAcquired = false;
+    try {
+      if (storagePhases.contains(phase)) {
+        await vault.acquireOwner();
+        vaultOwnerAcquired = true;
+        await other.acquireOwner();
+        otherOwnerAcquired = true;
+      }
+      switch (phase) {
       case 'directory-write':
         final directory = await resolveWindowsReviewDirectory(
           'https://$scope.invalid',
@@ -149,6 +159,13 @@ Future<void> main(List<String> arguments) async {
           exposed = false;
         }
         require(!exposed);
+      }
+    } finally {
+      try {
+        if (otherOwnerAcquired) await other.releaseOwner();
+      } finally {
+        if (vaultOwnerAcquired) await vault.releaseOwner();
+      }
     }
     stdout.writeln('Windows Dart/native bridge phase passed');
     exit(0);
