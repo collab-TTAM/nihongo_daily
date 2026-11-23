@@ -133,6 +133,10 @@ final class PersistentAccountAccess implements AccountAccess {
       return identical(_sdk.currentSession, session) &&
           _sdk.currentRefreshToken == secret;
     } on Object {
+      // A failed SDK snapshot is not an ordinary stale generation. The exact
+      // session/token pair is unverifiable, so revoke access and require
+      // sign-out plus vault clear before replacement login or owner release.
+      _fail();
       return false;
     }
   }

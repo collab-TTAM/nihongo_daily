@@ -110,6 +110,10 @@ final class MemorySdk implements RefreshableAccountAccess {
   String nextOwner = owner;
   String nextSecret = 'TEST_ONLY_ROTATED_1';
   final events = StreamController<void>.broadcast(sync: true);
+  int currentSessionReads = 0;
+  int currentRefreshTokenReads = 0;
+  int? throwCurrentSessionOnRead;
+  int? throwCurrentRefreshTokenOnRead;
   Completer<void>? authWait;
   Completer<void>? logoutWait;
   bool failAuth = false;
@@ -119,9 +123,22 @@ final class MemorySdk implements RefreshableAccountAccess {
   int restores = 0;
   int refreshes = 0;
   @override
-  ReviewSession? get currentSession => session;
+  ReviewSession? get currentSession {
+    currentSessionReads++;
+    if (currentSessionReads == throwCurrentSessionOnRead) {
+      throw StateError('PRIVATE SDK SESSION SNAPSHOT');
+    }
+    return session;
+  }
+
   @override
-  String? get currentRefreshToken => secret;
+  String? get currentRefreshToken {
+    currentRefreshTokenReads++;
+    if (currentRefreshTokenReads == throwCurrentRefreshTokenOnRead) {
+      throw StateError('PRIVATE SDK REFRESH SNAPSHOT');
+    }
+    return secret;
+  }
   @override
   Stream<void> get sessionChanges => events.stream;
   void change(String? id, String? token, {bool sameSession = false}) {
@@ -202,6 +219,8 @@ const scenarios = [
   'owner-lease-order',
   'owner-lock-failure-no-storage-access',
   'owner-release-failure-retains-owner',
+  'out-of-band-session-snapshot-failure',
+  'out-of-band-refresh-token-snapshot-failure',
 ];
 
 Future<void> verifyLifecycle(String scenario) async {
@@ -338,6 +357,64 @@ Future<void> verifyLifecycle(String scenario) async {
       return;
     }
     await access.start();
+    if (scenario == 'out-of-band-session-snapshot-failure' ||
+        scenario == 'out-of-band-refresh-token-snapshot-failure') {
+      if (scenario == 'out-of-band-session-snapshot-failure') {
+        // _changed reads once; queued validation reads a second time; the
+        // post-write validation must treat a third-read failure as unsafe.
+        sdk.throwCurrentSessionOnRead = 3;
+      } else {
+        sdk.throwCurrentRefreshTokenOnRead = 3;
+      }
+      sdk.change(owner, 'TEST_ONLY_OUT_OF_BAND_REFRESH');
+      await flush();
+
+      check(
+        access.phase == SessionPersistencePhase.failed &&
+            access.currentSession == null &&
+            sdk.session?.userId == owner &&
+            backend.secret == 'TEST_ONLY_OUT_OF_BAND_REFRESH' &&
+            backend.operations.join(' -> ') == 'read -> write',
+        'unverifiable post-write SDK snapshot left a rotated token accepted',
+      );
+
+      if (scenario == 'out-of-band-session-snapshot-failure') {
+        await access.close();
+        check(
+          sdk.session == null &&
+              sdk.logouts == 1 &&
+              backend.secret == null &&
+              backend.operations.join(' -> ') == 'read -> write -> clear' &&
+              backend.ownerReleases == 1 &&
+              !backend.ownerHeld &&
+              !PersistentAccountAccess.isTargetOwned(vault.target),
+          'session snapshot failure did not clear before owner release',
+        );
+      } else {
+        sdk.nextOwner = other;
+        sdk.nextSecret = 'TEST_ONLY_B_AFTER_SNAPSHOT_FAILURE';
+        await login();
+        check(
+          access.phase == SessionPersistencePhase.ready &&
+              access.currentSession?.userId == other &&
+              sdk.logouts == 1 &&
+              sdk.logins == 1 &&
+              backend.secret == 'TEST_ONLY_B_AFTER_SNAPSHOT_FAILURE' &&
+              backend.operations.join(' -> ') ==
+                  'read -> write -> clear -> write',
+          'refresh snapshot failure did not clear A before B password Auth',
+        );
+        await access.close();
+        check(
+          backend.secret == 'TEST_ONLY_B_AFTER_SNAPSHOT_FAILURE' &&
+              backend.ownerReleases == 1 &&
+              !backend.ownerHeld &&
+              !PersistentAccountAccess.isTargetOwned(vault.target),
+          'replacement owner release lost the fully persisted B session',
+        );
+      }
+      return;
+    }
     if (scenario == 'logout-before-login-dispatch') {
       final pendingLogin = fails(login());
       final logout = access.signOut();

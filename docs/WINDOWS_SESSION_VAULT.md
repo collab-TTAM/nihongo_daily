@@ -615,3 +615,25 @@ native journal with TEST ONLY synthetic Auth HTTP/JWT responses. It is local
 Windows component evidence for late-response cleanup and same-owner session
 generation ordering, not hosted signed-JWT learner A/B, deployed PostgREST/RLS,
 OS logoff/power-loss or physical multi-device sync.
+
+
+## Unreadable SDK snapshot during a queued rotation
+
+The persistence owner validates the exact captured ReviewSession identity and
+refresh token both before and after the vault write. A normal generation/session
+mismatch means the queued write is stale and is ignored. If either SDK snapshot
+getter throws, the runtime cannot prove which identity owns the just-written
+secret: it revokes readiness, marks cleanup required and fails closed. Explicit
+replacement login must sign out and clear the exact project slot before sending
+the new password grant. Caller close must drain sign-out and clear before
+releasing the native owner lease. The raw SDK exception and token are never
+surfaced.
+
+Two TEST ONLY lifecycle regressions inject an out-of-band session event and
+make the session or refresh-token getter throw only during post-write
+validation. One verifies close clears the committed secret before owner
+release; the other verifies User A cleanup completes before User B password
+Auth and rotation persistence. These tests exercise the shared persistence
+owner with an in-memory SDK/vault, not hosted Auth or actual Windows Credential
+Manager. The existing Windows CI bridge and native process probes remain
+separate component evidence.
