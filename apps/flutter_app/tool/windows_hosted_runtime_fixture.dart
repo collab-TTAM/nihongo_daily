@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:nihongo_daily/features/auth/application/account_controller.dart';
 import 'package:nihongo_daily/features/auth/application/persistent_supabase_runtime.dart';
 import 'package:nihongo_daily/features/auth/data/persistent_account_access.dart';
+import 'package:nihongo_daily/features/auth/data/session_credential_vault.dart';
 import 'package:nihongo_daily/features/auth/data/windows_session_credential_vault.dart';
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
