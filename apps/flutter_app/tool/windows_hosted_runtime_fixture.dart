@@ -306,7 +306,6 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         // and the exact returned value must be in Credential Manager before the
         // first own-profile request is sent.
         httpClient.beforeProfile = () async {
-          final rotated = httpClient.rotatedRefreshToken;
           final persisted = await vault.readRefreshToken();
           _check(httpClient.verifyRotatedRefreshToken(persisted));
           httpClient.events.add('vault.rotated-before-profile');

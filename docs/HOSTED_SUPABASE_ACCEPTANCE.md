@@ -195,8 +195,8 @@ logout and before B's login:
    own-profile request. It finishes with local logout and an empty slot.
 
 The fixture's HTTP observer records only fixed route/grant labels and checks the
-OS vault at the password/profile boundaries. During `restore-a`, it reads a bounded refresh request and successful response
-in memory only, requires the returned refresh token to differ from the submitted
+OS vault at the password/profile boundaries. During `restore-a`, it reads the refresh request and a bounded successful
+response in memory only, requires the returned refresh token to differ from the submitted
 token, then requires the exact returned value to be readable from Credential
 Manager inside the `beforeProfile` hook. The observer clears its raw copy as
 soon as that comparison completes. The observed order must be

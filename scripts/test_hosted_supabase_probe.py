@@ -488,6 +488,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("rotated != submittedRefreshToken", fixture)
         self.assertIn("verifyRotatedRefreshToken(persisted)", restore)
         self.assertIn("rotationPersistedBeforeProfile", restore)
+        self.assertNotIn("rotatedRefreshToken", restore)
         self.assertNotIn("response.stream.toBytes()", fixture)
         self.assertIn("final responseIndex = events.indexOf('auth.refresh.response');", restore)
         self.assertIn("final persistedIndex = events.indexOf('vault.rotated-before-profile');", restore)

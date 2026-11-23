@@ -5123,3 +5123,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Separate review of commit `304c8efc6a7d11729c39d217846349514fa18398` found that the fixture buffered the complete Auth response before checking its size and retained the rotated token after the vault comparison. Tightened the TEST ONLY observer before CI: stream collection now aborts above 256 KiB, and the raw returned token is cleared immediately after exact Credential Manager comparison; only the boolean result and fixed event labels remain.
 - Updated the static regression and hosted acceptance note to require the bounded reader and post-comparison secret release. No Auth request, session, vault, database, RLS or app-default behavior changed.
 - Next: require exact-head Actions for the resulting branch HEAD; hosted staging remains unrun and QA remains pending.
+
+
+## Final pre-CI fixture review — 2026-11-23T01:39Z
+
+- A separate readback of the bounded-observer follow-up found one stale test-fixture accessor left after the raw-token getter was removed. Removed that unused reference and added a static regression that prevents the old raw-token accessor from returning to `restore-a`. Clarified that only the Auth response body is size-bounded; no security guard is weakened.
+- Final exact-head CI is still required. No hosted staging dispatch or Auth/provider/schema/RLS changes.
