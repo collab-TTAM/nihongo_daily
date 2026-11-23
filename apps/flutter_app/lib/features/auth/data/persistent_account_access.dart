@@ -77,6 +77,9 @@ final class PersistentAccountAccess implements AccountAccess {
   SessionPersistencePhase _phase = SessionPersistencePhase.idle;
   SessionPersistencePhase get phase => _phase;
 
+  /// Monotonic fence for timer/operation snapshots; never an Auth credential.
+  int get sessionGeneration => _generation;
+
   /// A restore error may expose explicit login only while this runtime still
   /// owns the exact vault target. Failed native owner acquisition stays fenced.
   bool get hasVaultOwner => _vaultOwnerAcquired && !_closed;

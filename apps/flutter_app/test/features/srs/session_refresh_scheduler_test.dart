@@ -23,7 +23,11 @@ final class TestTimer implements Timer {
 
 final class Harness {
   Harness() {
-    lease = RefreshLease(Object(), now.add(const Duration(hours: 1)));
+    lease = RefreshLease(
+      Object(),
+      now.add(const Duration(hours: 1)),
+      generation: generation,
+    );
     scheduler = SessionRefreshScheduler(
       current: () => lease,
       now: () => now,
@@ -37,9 +41,11 @@ final class Harness {
         await waiting?.future;
         if (fail) throw StateError('PRIVATE TOKEN');
         if (rotate && lease != null) {
+          generation++;
           lease = RefreshLease(
             lease!.identity,
             now.add(const Duration(hours: 1)),
+            generation: generation,
           );
         }
       },
@@ -52,6 +58,7 @@ final class Harness {
   Completer<void>? waiting;
   bool fail = false;
   bool rotate = true;
+  int generation = 0;
   int calls = 0;
   void due() {
     now = lease!.expiresAt.subtract(SessionRefreshScheduler.leadTime);
@@ -232,6 +239,38 @@ void main() {
       expect(h.scheduler.phase, SessionRefreshPhase.scheduled);
       expect(h.timers.where((timer) => timer.isActive), hasLength(1));
       expect(h.timers.last.delay, const Duration(hours: 1, minutes: 59));
+      h.scheduler.dispose();
+    },
+  );
+  test(
+    'same-session generation rotation invalidates stale timer callbacks',
+    () async {
+      final h = Harness();
+      h.scheduler.update();
+      final stale = h.timers.single;
+      final current = h.lease!;
+      h.generation++;
+      h.lease = RefreshLease(
+        current.identity,
+        current.expiresAt,
+        generation: h.generation,
+      );
+      h.scheduler.update();
+
+      expect(h.timers.where((timer) => timer.isActive), hasLength(1));
+      expect(h.timers.last.delay, const Duration(minutes: 59));
+
+      // The identity and expiry are deliberately unchanged. Only the accepted
+      // persistence generation distinguishes the replacement lease.
+      stale.fire(stale: true);
+      await flush();
+      expect(h.calls, 0);
+      expect(h.scheduler.phase, SessionRefreshPhase.scheduled);
+      expect(h.timers.where((timer) => timer.isActive), hasLength(1));
+
+      h.due();
+      await flush();
+      expect(h.calls, 1);
       h.scheduler.dispose();
     },
   );

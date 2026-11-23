@@ -2,13 +2,19 @@ import 'dart:async';
 
 /// Identity/expiry hints only, never credentials or server authorization.
 final class RefreshLease {
-  const RefreshLease(this.identity, this.expiresAt);
+  const RefreshLease(
+    this.identity,
+    this.expiresAt, {
+    this.generation = 0,
+  });
   final Object identity;
   final DateTime expiresAt;
+  final int generation;
   bool same(RefreshLease? other) =>
       other != null &&
       identical(identity, other.identity) &&
-      expiresAt.isAtSameMomentAs(other.expiresAt);
+      expiresAt.isAtSameMomentAs(other.expiresAt) &&
+      generation == other.generation;
 }
 
 enum SessionRefreshPhase { idle, scheduled, refreshing, failed, closed }

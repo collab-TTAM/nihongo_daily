@@ -88,11 +88,19 @@ final class PersistentSupabaseRuntime
     if (automaticRefresh) {
       _refreshScheduler = SessionRefreshScheduler(
         current: () {
+          final generation = persistence.sessionGeneration;
           final session = persistence.currentSession;
           final expiry = _binding.currentExpiresAt;
-          return session == null || expiry == null
-              ? null
-              : RefreshLease(session, expiry);
+          if (session == null ||
+              expiry == null ||
+              generation != persistence.sessionGeneration) {
+            return null;
+          }
+          return RefreshLease(
+            session,
+            expiry,
+            generation: generation,
+          );
         },
         refresh: _refreshThroughOwner,
         now: now,

@@ -5,10 +5,14 @@ inside its exclusively owned SDK/persistence runtime. Default is false; normal
 main remains unconfigured. SDK built-in auto-refresh remains disabled. No Auth
 provider/strategy/API/schema changes or browser persistence are enabled.
 
-Only an accepted persisted session plus the binding's validated expiry hint
-can schedule. The default target is 60 seconds before expiry; dispatch requires
-a fresh matching identity/expiry and future expiry. Long timers rearm at most
-24 hours; rollback rechecks due time. One attempt per identity/expiry and a
+Only an accepted persisted session plus the binding's validated expiry hint and
+captured persistence generation can schedule. The runtime samples generation
+before and after the session/expiry read; an inconsistent snapshot is unavailable.
+The default target is 60 seconds before expiry; dispatch requires a fresh matching
+identity/expiry/generation and future expiry. Same-object/same-expiry refreshes
+from a newer accepted generation are distinct leases, so already-queued callbacks
+cannot refresh a replacement lifecycle. Long timers rearm at most
+24 hours; rollback rechecks due time. One attempt per identity/expiry/generation and a
 30-second minimum spacing prevent unchanged/very-short-expiry loops. A fresh
 rotation/identity may schedule a new attempt. Failed attempts do not create a
 retry loop; repeated foreground resumes cannot retry the same lease. Existing
@@ -29,10 +33,10 @@ persistence/SDK operations, preventing late rescheduling. Foreground integration
 does not guarantee background execution while OS suspends the process. Factory
 and supplied journal ownership rules remain those in ACCOUNT_STARTUP.
 
-Thirteen clock/timer/lease fixtures cover normal scheduling, logout/stale callbacks,
-identity replacement and same-session expiry rotation, valid/expired resume, pending
-operations, failures, unchanged expiry/short TTL, long timers/rollback, disposal and
-invalid hints. Two actual
+Fifteen clock/timer/lease fixtures cover normal scheduling, logout/stale callbacks,
+identity replacement, same-session expiry and generation rotation, valid/expired
+resume, pending operations, failures, unchanged expiry/short TTL, long timers/
+rollback, disposal and invalid hints. Two actual
 pinned-SDK/mock-HTTP tests cover persistence/profile ordering and fenced failure
 without resume retry; one widget test covers forwarding before/after ownership.
 Verified source evidence is recorded below; no hosted rotation/device/OS suspend proof. Existing
