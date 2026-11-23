@@ -637,3 +637,21 @@ Auth and rotation persistence. These tests exercise the shared persistence
 owner with an in-memory SDK/vault, not hosted Auth or actual Windows Credential
 Manager. The existing Windows CI bridge and native process probes remain
 separate component evidence.
+
+
+## Hosted password-login token persistence proof
+
+The manual Windows hosted fixture now captures the exact refresh token returned
+by password grants as well as refresh grants. For User A, revoked-token recovery
+and User B, it reads the project-scoped Credential Manager slot immediately
+before `ensure_profile` and requires exact equality with the successful
+password response. The refresh-restore phase additionally requires the returned
+token to differ from the submitted refresh token. Only fixed phase labels are
+recorded; token values stay in the fixture's short-lived in-memory proof and are
+never logged or persisted by the probe.
+
+The isolated proof helper has TEST ONLY regressions for password mismatch,
+one-shot consumption, grant confusion, failed/malformed responses, oversized
+values and unchanged refresh tokens. These checks improve the protected manual
+probe but are not a hosted run. The `supabase-staging` environment and its
+approved non-production secrets/accounts are still required before dispatch.

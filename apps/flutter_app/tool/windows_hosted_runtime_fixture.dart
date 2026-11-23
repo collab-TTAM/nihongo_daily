@@ -12,6 +12,7 @@ import 'package:nihongo_daily/features/auth/data/windows_session_credential_vaul
 import 'package:nihongo_daily/features/srs/data/durable_review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'package:nihongo_daily/features/srs/data/supabase_review_binding.dart';
+import 'hosted_session_token_proof.dart';
 
 const _phases = {
   'login-a',
@@ -49,19 +50,19 @@ final class _HostedProbeHttpClient extends http.BaseClient {
   Future<void> Function()? beforePasswordAuth;
   Future<void> Function()? beforeProfile;
 
-  String? _rotatedRefreshToken;
+  final _tokenProof = HostedSessionTokenProof();
   bool _rotationPersistedBeforeProfile = false;
 
   bool get rotationPersistedBeforeProfile => _rotationPersistedBeforeProfile;
 
   bool verifyRotatedRefreshToken(String? persisted) {
-    final rotated = _rotatedRefreshToken;
-    final verified =
-        rotated != null && rotated.isNotEmpty && persisted == rotated;
-    _rotatedRefreshToken = null;
+    final verified = _tokenProof.verifyRotatedRefreshToken(persisted);
     _rotationPersistedBeforeProfile = verified;
     return verified;
   }
+
+  bool verifyPersistedPasswordToken(String? persisted) =>
+      _tokenProof.verifyPersistedPasswordToken(persisted);
 
   Future<List<int>> _readBounded(Stream<List<int>> stream) async {
     final builder = BytesBuilder();
@@ -100,6 +101,9 @@ final class _HostedProbeHttpClient extends http.BaseClient {
     final submittedRefreshToken = grant == 'refresh_token'
         ? _refreshTokenFromRequest(request)
         : null;
+    if (grant == 'password' || grant == 'refresh_token') {
+      _tokenProof.clear();
+    }
 
     if (isTokenRequest) {
       events.add('auth.$grant');
@@ -112,25 +116,26 @@ final class _HostedProbeHttpClient extends http.BaseClient {
     }
 
     final response = await _inner.send(request);
-    if (grant == 'refresh_token') {
-      // Read only this bounded Auth response so the fixture can compare the
-      // returned rotation with the OS vault before the profile request. The
-      // raw response is reconstructed for the SDK; neither token is logged.
+    if (grant == 'refresh_token' || grant == 'password') {
+      // Compare the exact successful Auth response with Credential Manager
+      // before the own-profile request. Only fixed phase labels are recorded.
       final bytes = await _readBounded(response.stream);
-      if (response.statusCode == 200 && submittedRefreshToken != null) {
+      if (response.statusCode == 200) {
         try {
           final payload = jsonDecode(utf8.decode(bytes));
-          final rotated = payload is Map<String, dynamic>
+          final returned = payload is Map<String, dynamic>
               ? payload['refresh_token']
               : null;
-          if (rotated is String &&
-              rotated.isNotEmpty &&
-              rotated != submittedRefreshToken) {
-            _rotatedRefreshToken = rotated;
-            events.add('auth.refresh.response');
+          if (_tokenProof.capture(
+            grant: grant!,
+            statusCode: response.statusCode,
+            submittedRefreshToken: submittedRefreshToken,
+            returnedRefreshToken: returned is String ? returned : null,
+          )) {
+            events.add('auth.$grant.response');
           }
         } on Object {
-          // The startup profile barrier below fails if rotation is unverified.
+          _tokenProof.clear();
         }
       }
       return http.StreamedResponse(
@@ -206,6 +211,32 @@ void _check(bool value) {
   }
 }
 
+void _requirePasswordTokenBeforeProfile(
+  _HostedProbeHttpClient httpClient,
+  SessionCredentialVault vault,
+) {
+  httpClient.beforeProfile = () async {
+    final persisted = await vault.readRefreshToken();
+    _check(httpClient.verifyPersistedPasswordToken(persisted));
+    httpClient.events.add('vault.password-persisted-before-profile');
+  };
+}
+
+void _verifyPasswordTokenOrder(_HostedProbeHttpClient httpClient) {
+  final events = httpClient.events;
+  final passwordIndex = events.indexOf('auth.password');
+  final responseIndex = events.indexOf('auth.password.response');
+  final persistedIndex = events.indexOf('vault.password-persisted-before-profile');
+  final profileIndex = events.indexOf('profile.ensure');
+  _check(
+    passwordIndex >= 0 &&
+        responseIndex > passwordIndex &&
+        persistedIndex > responseIndex &&
+        profileIndex > persistedIndex &&
+        events.where((event) => event == 'profile.ensure').length == 1,
+  );
+}
+
 /// Auth-only fixture store. No review event is staged or dispatched by this
 /// probe.
 final class _EmptyReviewStore implements DurableReviewStore {
@@ -274,11 +305,7 @@ Future<void> _verifyWindowsHostedRuntimePhase(
       _check(await vault.readRefreshToken() == null);
       httpClient.events.add('vault.empty-before-password');
     };
-    httpClient.beforeProfile = () async {
-      final persisted = await vault.readRefreshToken();
-      _check(persisted != null && persisted.isNotEmpty);
-      httpClient.events.add('vault.persisted-before-profile');
-    };
+    _requirePasswordTokenBeforeProfile(httpClient, vault);
   }
   final runtime = PersistentSupabaseRuntime(
     projectUrl: settings.projectUrl,
@@ -294,7 +321,9 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         await runtime.start();
         _check(runtime.persistence.phase == SessionPersistencePhase.idle);
         _check(await vault.readRefreshToken() == null);
+        _requirePasswordTokenBeforeProfile(httpClient, vault);
         await _signInAndWait(runtime, settings.emailA, settings.passwordA);
+        _verifyPasswordTokenOrder(httpClient);
         final saved = await vault.readRefreshToken();
         _check(saved != null && saved.isNotEmpty);
         await runtime.close();
@@ -347,7 +376,9 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         await runtime.start();
         _check(runtime.persistence.phase == SessionPersistencePhase.idle);
         _check(await vault.readRefreshToken() == null);
+        _requirePasswordTokenBeforeProfile(httpClient, vault);
         await _signInAndWait(runtime, settings.emailA, settings.passwordA);
+        _verifyPasswordTokenOrder(httpClient);
         final revoked = await vault.readRefreshToken();
         if (revoked == null || revoked.isEmpty) {
           throw const FormatException('Hosted refresh token unavailable');
@@ -388,13 +419,16 @@ Future<void> _verifyWindowsHostedRuntimePhase(
         final refreshIndex = events.indexOf('auth.refresh');
         final passwordIndex = events.indexOf('auth.password');
         final emptyIndex = events.indexOf('vault.empty-before-password');
-        final persistedIndex = events.indexOf('vault.persisted-before-profile');
+        final responseIndex = events.indexOf('auth.password.response');
+        final persistedIndex =
+            events.indexOf('vault.password-persisted-before-profile');
         final profileIndex = events.indexOf('profile.ensure');
         _check(
           refreshIndex >= 0 &&
               passwordIndex > refreshIndex &&
               emptyIndex > passwordIndex &&
-              persistedIndex > passwordIndex &&
+              responseIndex > emptyIndex &&
+              persistedIndex > responseIndex &&
               profileIndex > persistedIndex &&
               events.where((event) => event == 'profile.ensure').length == 1,
         );
@@ -408,7 +442,9 @@ Future<void> _verifyWindowsHostedRuntimePhase(
       case 'login-b':
         await runtime.start();
         _check(await vault.readRefreshToken() == null);
+        _requirePasswordTokenBeforeProfile(httpClient, vault);
         await _signInAndWait(runtime, settings.emailB, settings.passwordB);
+        _verifyPasswordTokenOrder(httpClient);
         final saved = await vault.readRefreshToken();
         _check(saved != null && saved.isNotEmpty);
         await runtime.account.signOut();

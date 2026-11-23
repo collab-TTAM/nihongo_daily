@@ -1,3 +1,11 @@
+## PR #37 — exact password-grant vault persistence proof — 2026-11-23T13:18Z
+
+- Run `core-20261123T1318Z-pr37-exact-password-token-proof` on `automation/issue-22-atomic-review`, parent `31503618fd2379edd1eb41d073c9b3ab264e817c`, main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- The prior exact-head CI [45173243308](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45173243308) completed SUCCESS: all six jobs and all 108 returned steps passed on exact HEAD. This remains repository/disposable-local and TEST ONLY Windows evidence, not hosted learner proof.
+- Strengthened the manual Windows hosted fixture to compare the exact successful password-grant refresh token with Credential Manager immediately before `ensure_profile` for A login, revoked-token recovery and B login. Refresh restoration still proves a changed returned token is persisted before profile. Added a grant-specific, one-shot in-memory proof helper and six unit regressions; no token is logged or included in event labels.
+- Changed paths: `apps/flutter_app/tool/windows_hosted_runtime_fixture.dart`, new `apps/flutter_app/tool/hosted_session_token_proof.dart`, new `apps/flutter_app/test/features/srs/hosted_session_token_proof_test.dart`, `docs/WINDOWS_SESSION_VAULT.md`, `docs/PROJECT_STATUS.md`.
+- No hosted workflow dispatch/secrets, Auth strategy/provider, production default activation, schema/RLS, Pro-owned N4, merge, deployment or release change. Next: inspect exact-head CI; hosted signed-JWT A/B and Windows process restart still require approved protected staging configuration.
+
 ## PR #37 — apply exact pinned Dart 3.35.4 formatter output — 2026-11-23T10:37Z
 
 - Formatter diagnostic [45157319829](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45157319829), attempt 1, targets exact parent `4f3ce1f8ddd5a50bb475a21046e68fc20265ea8c`. It showed three whitespace-only hunks in `apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart`: the first five-operation expectation is one line; the six-operation expectation is a multiline list with one item per line; remove one extra EOF blank line.
