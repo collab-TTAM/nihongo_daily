@@ -494,4 +494,3 @@ Future<void> main(List<String> arguments) async {
   await stderr.flush();
   exit(passed ? 0 : 1);
 }
-
