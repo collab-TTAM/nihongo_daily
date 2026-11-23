@@ -1062,8 +1062,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       _check(logoutCalls >= 1);
       await pending();
     } else if (phase == 'runtime-native-rotation-write-failure-late-profile') {
-      _check(await vault.readRefreshToken() == null);
       await runtime.start();
+      _check(await vault.readRefreshToken() == null);
       heldProfile = Completer<http.Response>();
 
       // A's first own-profile response remains held while the same Auth
