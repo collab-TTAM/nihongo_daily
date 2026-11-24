@@ -114,7 +114,7 @@
     {
       "id": "cancelable-window-exit",
       "status": "automated-baseline",
-      "scope": "Owned startup host awaits cancelable framework/Windows window exit cleanup; retained router/form listeners, null account publication, hidden disabled cleared fields, delayed/concurrent drain and redacted explicit same-owner retry",
+      "scope": "Owned startup host awaits cancelable framework/Windows window exit cleanup; retained router/form listeners, null account publication, hidden disabled cleared fields, delayed/concurrent drain and redacted explicit same-owner retry; every empty-vault probe acquires a temporary native owner lease before reading, including the post-close release check",
       "ci_job": "windows",
       "anchors": [
         {
@@ -128,6 +128,14 @@
         {
           "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
           "contains": "Windows actual cancelable window close and owned drain verification passed"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_exit_fixture.dart",
+          "contains": "_verifyEmptyVaultWithTemporaryOwner"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "Invoke-WindowExit"
         }
       ],
       "issues": [
@@ -544,7 +552,7 @@
     {
       "id": "windows-session-vault",
       "status": "automated-baseline",
-      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, per-project Windows runtime owner lease with independent-process contention/release/reacquire and abandoned-process recovery, plus standalone one-shot read/write/ambiguous-commit/clear fault probes; caller-owned SDK runtime integration for ambiguous native CredWriteW commit failure plus failed clear, A fencing and B recovery; native same-owner A1/logout/A2 session-generation fence with delayed A1 profile response; native same-owner late A1 refresh response is drained after logout/clear before A2 with the same user ID and a different session_id",
+      "scope": "Project-scoped refresh-secret vault with strict inputs, safe errors, ordered operations, native Credential Manager process reopen, per-project Windows runtime owner lease with independent-process contention/release/reacquire and abandoned-process recovery, plus standalone one-shot read/write/ambiguous-commit/clear fault probes; caller-owned SDK runtime integration for ambiguous native CredWriteW commit failure plus failed clear, A fencing and B recovery; native same-owner A1/logout/A2 session-generation fence with delayed A1 profile response; native same-owner late A1 refresh response is drained after logout/clear before A2 with the same user ID and a different session_id; startup restores only after rotated-secret persistence and the captured own-profile response settle; caller close preserves pre-dispatch saved credentials and drains dispatched refresh/write/clear before owner release",
       "ci_job": "windows",
       "anchors": [
         {
@@ -646,13 +654,29 @@
         {
           "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
           "contains": "Windows caller close drains a held explicit refresh response before releasing owner"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows vault restores through SDK and persists rotation before own profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+          "contains": "Windows caller close drains a pending rotation write before clearing and releasing owner"
+        },
+        {
+          "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
+          "contains": "'runtime-restore-profile-held'"
+        },
+        {
+          "path": "apps/flutter_app/tool/verify_windows_vault_bridge.ps1",
+          "contains": "runtime-restore-profile-held"
         }
       ],
       "issues": [
         20,
         22
       ],
-      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe. The native probe verifies parent/child lease contention and abandoned-mutex recovery; the Flutter bridge runner separately holds the runtime lease in one process, rejects a competing runtime before vault read/Auth in a second process, then proves reacquisition in a third. The standalone probe also injects one-shot TEST ONLY read, write-before-commit, write-after-commit/ambiguous-result and clear failures against actual PID-scoped .invalid Credential Manager entries; the hook macro is scoped to that probe target. The Windows bridge also reauthenticates the same owner under a different session_id and releases A1's delayed profile only after A2 readiness. The Windows bridge also holds A1's rotated refresh response across logout, verifies the Credential Manager slot is cleared before releasing the response, waits for the old SDK operation and compensating cleanup to drain, then accepts A2 with the same user ID and a different session_id only after A2's own rotation is stored before profile readiness.",
+      "reproduce": "In apps/flutter_app: dart run tool/verify_session_vault.dart; flutter test; on Windows configure/build tool/windows_session_vault then run session_vault_probe.exe. The native probe verifies parent/child lease contention and abandoned-mutex recovery; the Flutter bridge runner separately holds the runtime lease in one process, rejects a competing runtime before vault read/Auth in a second process, then proves reacquisition in a third. The standalone probe also injects one-shot TEST ONLY read, write-before-commit, write-after-commit/ambiguous-result and clear failures against actual PID-scoped .invalid Credential Manager entries; the hook macro is scoped to that probe target. The Windows bridge also reauthenticates the same owner under a different session_id and releases A1's delayed profile only after A2 readiness. The Windows bridge also holds A1's rotated refresh response across logout, verifies the Credential Manager slot is cleared before releasing the response, waits for the old SDK operation and compensating cleanup to drain, then accepts A2 with the same user ID and a different session_id only after A2's own rotation is stored before profile readiness.; additionally run the Windows pinned-SDK startup/close cases in windows_persistent_supabase_runtime_test.dart and the runtime-restore-profile-held bridge phase",
       "limitation": "Actual native credential APIs and production Flutter Dart/MethodChannel/runtime process probes use isolated TEST ONLY scopes/values. The named mutex coordinates cooperating Nihongo Daily runtimes in one Windows logon session; the runner regression verifies same-session process contention and reacquisition, while arbitrary same-user software can still access generic credentials and separate Windows logon sessions are not coordinated. Pinned SDK Auth HTTP/JWTs are simulated; no hosted Auth or learner UI/logoff/power-loss proof. Same-isolate queue is not cross-device CAS. The deterministic read, pre-commit write and pre-delete clear faults are injected before the corresponding OS API call; the ambiguous-write case performs actual CredWriteW then returns a synthetic unavailable result. This verifies old/new/absent state and explicit retry ordering, not spontaneous OS access-denied/partial-disk/power-loss behavior or hosted Auth. The runtime-level TEST ONLY phase also injects a real native write commit-then-fail and one failed clear while the pinned SDK is active, then verifies explicit A cleanup before B Auth and B write-before-profile; Auth HTTP/JWT remain synthetic. The new same-owner phase uses synthetic Auth HTTP/JWT responses; it is native Credential Manager/session-generation component evidence, not hosted signed-JWT learner acceptance. The same-owner late-refresh regression uses synthetic Auth HTTP/JWT and deterministic response ordering with the actual Windows Credential Manager/MethodChannel; it proves local cleanup/generation ordering, not hosted signed-JWT learner acceptance, deployed RLS or physical multi-device sync."
     },
     {
