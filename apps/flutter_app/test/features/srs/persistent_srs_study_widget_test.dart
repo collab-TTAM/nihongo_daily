@@ -101,8 +101,8 @@ void main() {
       }
       if (request.url.path == '/rest/v1/rpc/ensure_profile') {
         profileWasRequested = true;
-        final response = await (profileWait?.future ??
-            Future.value(ownProfileResponse()));
+        final response =
+            await (profileWait?.future ?? Future.value(ownProfileResponse()));
         profileResponseWasReturned = true;
         return response;
       }
@@ -317,7 +317,10 @@ void main() {
         expect(queueCalls, 2);
         expect(submitCalls, 1);
         expect(await journal.list(wire.a), isEmpty);
-        expect(find.text('Không có mục đến hạn trong danh sách đã tải.'), findsOneWidget);
+        expect(
+          find.text('Không có mục đến hạn trong danh sách đã tải.'),
+          findsOneWidget,
+        );
         expect(
           requests
               .where((request) => request.url.path.startsWith('/rest/v1/'))
