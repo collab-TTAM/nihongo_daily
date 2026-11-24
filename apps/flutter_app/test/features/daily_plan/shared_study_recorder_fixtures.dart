@@ -11,6 +11,7 @@ import 'srs_session_recorder_fixtures.dart' show RecorderFixtureClock;
 import 'study_session_recovery_fixtures.dart';
 
 const sharedRecorderScenarios = [
+  'unsupported-ai',
   'areas',
   'unstaged-frozen',
   'uncertain-frozen',
@@ -36,12 +37,7 @@ Future<void> verifySharedRecorder(String scenario) async {
   final auth = StudyAuth();
   final server = StudyServer();
   final clock = RecorderFixtureClock();
-  final ready = {
-    DailyPlanArea.srs,
-    DailyPlanArea.vocabulary,
-    DailyPlanArea.kanji,
-    DailyPlanArea.grammar,
-  };
+  final ready = StudySessionRecorder.recordableAreas;
   final recorder = StudySessionRecorder(
     service: studyRepository(auth, server, store),
     clock: clock,
@@ -49,7 +45,18 @@ Future<void> verifySharedRecorder(String scenario) async {
   );
   final date = DailyPlanDate('2026-10-20');
   try {
-    if (scenario == 'areas') {
+    if (scenario == 'unsupported-ai') {
+      await recorder.start(date, area: DailyPlanArea.aiConversation);
+      checkStudy(
+        recorder.state.phase == StudyRecorderPhase.idle &&
+            recorder.state.area == null &&
+            server.reads == 0 &&
+            server.writes == 0 &&
+            clock.ids == 0 &&
+            (await journal.list(studyOwner)).isEmpty,
+        'AI conversation incorrectly entered the study-credit path',
+      );
+    } else if (scenario == 'areas') {
       for (final area in ready) {
         final before = clock.instant;
         await recorder.start(date, area: area);
@@ -78,7 +85,9 @@ Future<void> verifySharedRecorder(String scenario) async {
         );
       }
       checkStudy(
-        clock.ids == 4 && server.writes == 4 && server.committed.length == 4,
+        clock.ids == ready.length &&
+            server.writes == ready.length &&
+            server.committed.length == ready.length,
         'Area reports duplicated or were not dispatched',
       );
     } else if (scenario == 'unstaged-frozen') {

@@ -11,6 +11,23 @@ import 'study_session_recovery_fixtures.dart';
 import 'shared_study_recorder_fixtures.dart';
 
 void main() {
+  test('recordable areas exclude AI conversation', () {
+    expect(StudySessionRecorder.recordableAreas, {
+      DailyPlanArea.srs,
+      DailyPlanArea.vocabulary,
+      DailyPlanArea.kanji,
+      DailyPlanArea.grammar,
+      DailyPlanArea.listeningReading,
+      DailyPlanArea.quizReview,
+    });
+    expect(
+      StudySessionRecorder.recordableAreas.contains(
+        DailyPlanArea.aiConversation,
+      ),
+      isFalse,
+    );
+  });
+
   for (final scenario in sharedRecorderScenarios) {
     test(
       'shared foreground recorder $scenario',

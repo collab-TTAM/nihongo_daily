@@ -45,6 +45,17 @@ Timestamps require uppercase T/Z or explicit offsets, real dates, hours00..23,
 seconds00..59 and at most six fractional digits. Naive/infinite/leap-second times
 are rejected. UUID and profile must be valid; the plan must already exist.
 
+## Client recorder area allowlist
+
+The current foreground recorder accepts SRS, vocabulary, Kanji, grammar,
+listening/reading and quiz-review intervals only when the captured profile's
+content/readiness gate and the matching server plan block are available. AI
+conversation is deliberately excluded from this study-credit path; a conversation
+or generated answer is not evidence of independent study. This client allowlist
+does not replace the server's plan snapshot, owner, interval, overlap or replay
+validation, and elapsed minutes remain authenticated self-report rather than
+independent activity proof.
+
 ## nd-study-1 policy
 
 The existing plan must be a valid nd-plan-1 snapshot. Its frozen timezone, level,

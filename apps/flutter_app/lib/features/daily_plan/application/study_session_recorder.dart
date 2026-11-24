@@ -69,6 +69,17 @@ final class StudyRecorderState {
 /// finish dispatches. Owner replacement disposes this captured controller;
 /// unfinished timing is canceled on route/background loss by the host widget.
 class StudySessionRecorder {
+  /// Areas whose foreground intervals may be submitted as study-session events.
+  /// AI conversation remains excluded pending a separately reviewed credit policy.
+  static const Set<DailyPlanArea> recordableAreas = {
+    DailyPlanArea.srs,
+    DailyPlanArea.vocabulary,
+    DailyPlanArea.kanji,
+    DailyPlanArea.grammar,
+    DailyPlanArea.listeningReading,
+    DailyPlanArea.quizReview,
+  };
+
   StudySessionRecorder({
     required this.service,
     required this.clock,
@@ -144,14 +155,7 @@ class StudySessionRecorder {
     DailyPlanArea area = DailyPlanArea.srs,
   }) async {
     if (_disposed || !_state.canStart) return;
-    if (!const {
-      DailyPlanArea.srs,
-      DailyPlanArea.vocabulary,
-      DailyPlanArea.kanji,
-      DailyPlanArea.grammar,
-      DailyPlanArea.listeningReading,
-      DailyPlanArea.quizReview,
-    }.contains(area)) {
+    if (!recordableAreas.contains(area)) {
       return;
     }
     _area = area;
