@@ -41,7 +41,8 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
     super.initState();
     _selectedId = widget.initialEntryId;
     final initialLevel = widget.initialLevel;
-    if (initialLevel != null && ref.read(previewLevelProvider) != initialLevel) {
+    if (initialLevel != null &&
+        ref.read(previewLevelProvider) != initialLevel) {
       ref.read(previewLevelProvider.notifier).state = initialLevel;
     }
   }

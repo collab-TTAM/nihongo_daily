@@ -98,6 +98,7 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
       - name: Run dart format --output=none --set-exit-if-changed .
+        id: dart_format
         run: |
           if dart format --output=none --set-exit-if-changed .; then
             exit 0
@@ -105,6 +106,9 @@ jobs:
           dart format .
           git diff --exit-code -- .
           exit 1
+      - name: Show Dart formatter diff on failure
+        if: ${{ steps.dart_format.outcome == 'failure' }}
+        run: git diff -- .
       - run: flutter analyze
       - run: flutter test
       - name: Verify owned persistent session lifecycle

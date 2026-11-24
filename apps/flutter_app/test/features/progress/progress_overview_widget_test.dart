@@ -2029,6 +2029,24 @@ void main() {
     );
     expect(curriculum.calls, isEmpty);
 
+    for (final invalidId in const [
+      '10000000-0000-4000-8000-00000000000A',
+      '10000000-0000-4000-8000-000000000099-extra',
+    ]) {
+      container.read(routerProvider).go(
+        Uri(
+          path: '/vocabulary',
+          queryParameters: {'level': 'n5', 'item': invalidId},
+        ).toString(),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Liên kết này không trỏ tới một mục học hợp lệ.'),
+        findsOneWidget,
+      );
+    }
+    expect(curriculum.calls, isEmpty);
+
     const missingId = '10000000-0000-4000-8000-000000000099';
     container.read(routerProvider).go(
       Uri(
