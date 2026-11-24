@@ -13,8 +13,16 @@ import '../domain/curriculum.dart';
 import '../domain/curriculum_search.dart';
 
 class CurriculumScreen extends ConsumerStatefulWidget {
-  const CurriculumScreen({super.key, required this.kind});
+  const CurriculumScreen({
+    super.key,
+    required this.kind,
+    this.initialLevel,
+    this.initialEntryId,
+  });
+
   final CurriculumKind kind;
+  final PreviewLevel? initialLevel;
+  final String? initialEntryId;
 
   @override
   ConsumerState<CurriculumScreen> createState() => _CurriculumScreenState();
@@ -27,6 +35,16 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
   String? _selectedId;
   double _listOffset = 0;
   int _scrollRevision = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedId = widget.initialEntryId;
+    final initialLevel = widget.initialLevel;
+    if (initialLevel != null && ref.read(previewLevelProvider) != initialLevel) {
+      ref.read(previewLevelProvider.notifier).state = initialLevel;
+    }
+  }
 
   void _navigateTo(String? id, {bool resetList = false}) {
     if (id != null) FocusScope.of(context).unfocus();
@@ -187,6 +205,11 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
               ];
             }
             return [
+              if (_selectedId != null)
+                const Text(
+                  'Mục ôn lại không còn trong nội dung hiện tại.',
+                  key: Key('curriculum-target-unavailable'),
+                ),
               Text('${entries.length} mục ${level.label} · Chọn để xem bài'),
               for (final entry in entries)
                 Card(

@@ -20,6 +20,7 @@ import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_attempt_store.d
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_history_repository.dart';
 import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
 import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_transport.dart';
+import 'package:nihongo_daily/features/quiz/domain/grammar_quiz.dart';
 import 'package:nihongo_daily/features/quiz/domain/grammar_quiz_attempt.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz.dart';
@@ -457,6 +458,73 @@ List<CurriculumEntry> _serverVocabularySource() => [
       examples: const [],
     ),
 ];
+List<CurriculumEntry> _serverGrammarSource({
+  PreviewLevel level = PreviewLevel.n5,
+}) => [
+  for (var i = 0; i < 4; i++)
+    CurriculumEntry(
+      id: '20000000-0000-4000-8000-${(i + 1).toString().padLeft(12, '0')}',
+      kind: CurriculumKind.grammar,
+      level: level,
+      contentVersion: 1,
+      heading: '文法$i',
+      caption: 'TEST ONLY',
+      reading: null,
+      meaningVi: 'Mẫu ngữ pháp $i',
+      explanationVi: 'Giải thích ngữ pháp $i',
+      hasAudioReference: false,
+      notes: const [],
+      mistakes: const [],
+      examples: const [],
+    ),
+];
+
+Map<String, Object?> _serverGrammarQuizReceiptForQuestion({
+  required int eventNumber,
+  required GrammarQuizQuestion question,
+  required bool correct,
+  required String receivedAt,
+  required String completedAt,
+  required String practiceKind,
+}) {
+  final id =
+      'a3000000-0000-4000-8000-${eventNumber.toString().padLeft(12, '0')}';
+  final choices = question.choices;
+  final selected = correct
+      ? question.target.id
+      : choices.firstWhere((entry) => entry.id != question.target.id).id;
+  final answer = <String, Object?>{
+    'item_id': question.target.id,
+    'content_version': question.target.contentVersion,
+    'selected_id': selected,
+    'choices': choices.map((entry) => entry.id).toList(),
+    'choice_content_versions': choices
+        .map((entry) => entry.contentVersion)
+        .toList(),
+  };
+  final level = question.target.level.label;
+  return {
+    'received_at': receivedAt,
+    'request': {
+      'client_event_id': id,
+      'quiz_type': 'grammar_meaning',
+      'practice_kind': practiceKind,
+      'jlpt_level': level,
+      'completed_at': completedAt,
+      'answers': [answer],
+    },
+    'response': {
+      'client_event_id': id,
+      'quiz_type': 'grammar_meaning',
+      'practice_kind': practiceKind,
+      'jlpt_level': level,
+      'completed_at': completedAt,
+      'answer_count': 1,
+      'correct_count': correct ? 1 : 0,
+    },
+  };
+}
+
 Map<String, Object?> _serverQuizReceiptForQuestion({
   required int eventNumber,
   required QuizQuestion question,
@@ -1782,6 +1850,202 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('server weak-point opens exact current vocabulary entry', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    final vocabulary = _VocabularyPorts(harness);
+    final grammar = _GrammarPorts(harness);
+    final entries = _serverVocabularySource();
+    final question = buildVocabularyQuiz(entries, PreviewLevel.n5).first;
+    final reader = _ServerHistoryReader()
+      ..response = {
+        'items': [
+          _serverQuizReceiptForQuestion(
+            eventNumber: 81,
+            question: question,
+            correct: false,
+            receivedAt: '2026-11-17T10:00:01.000000Z',
+            completedAt: '2026-11-17T09:59:01Z',
+          ),
+        ],
+        'next_cursor': null,
+      };
+    final curriculum = _ProgressCurriculumRepository({
+      'vocabulary_reading:N5': entries,
+    });
+    final container = await _mount(
+      tester,
+      harness,
+      source,
+      vocabularyPorts: vocabulary,
+      grammarPorts: grammar,
+      serverHistoryReader: reader,
+      curriculumRepository: curriculum,
+    );
+
+    await tester.ensureVisible(
+      find.byKey(const Key('progress-load-server-quiz')),
+    );
+    await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+    await _pumpUntilVisible(
+      tester,
+      find.byKey(const Key('progress-server-quiz-summary')),
+    );
+    final weakPoint = find.byKey(
+      Key(
+        'progress-server-quiz-weak-point-vocabulary_reading-none-N5-${question.target.id}',
+      ),
+    );
+    await tester.ensureVisible(weakPoint);
+    expect(weakPoint.hitTestable(), findsOneWidget);
+    await tester.tap(weakPoint);
+    await tester.pumpAndSettle();
+
+    final route = container
+        .read(routerProvider)
+        .routeInformationProvider
+        .value
+        .uri;
+    expect(route.path, '/vocabulary');
+    expect(route.queryParameters, {
+      'level': 'n5',
+      'item': question.target.id,
+    });
+    expect(find.text(question.target.meaningVi), findsOneWidget);
+    expect(find.text(question.target.explanationVi), findsOneWidget);
+    expect(curriculum.calls, [
+      'vocabulary_reading:N5',
+      'vocabulary_reading:N5',
+    ]);
+    expect(vocabulary.writes, 0);
+    expect(grammar.writes, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('server weak-point opens exact current grammar entry at N4', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    final vocabulary = _VocabularyPorts(harness);
+    final grammar = _GrammarPorts(harness);
+    final entries = _serverGrammarSource(level: PreviewLevel.n4);
+    final question = buildGrammarQuiz(entries, PreviewLevel.n4).first;
+    final reader = _ServerHistoryReader()
+      ..response = {
+        'items': [
+          _serverGrammarQuizReceiptForQuestion(
+            eventNumber: 82,
+            question: question,
+            correct: false,
+            receivedAt: '2026-11-17T10:00:02.000000Z',
+            completedAt: '2026-11-17T09:59:02Z',
+            practiceKind: 'correction',
+          ),
+        ],
+        'next_cursor': null,
+      };
+    final curriculum = _ProgressCurriculumRepository({
+      'grammar_meaning:N4': entries,
+    });
+    final container = await _mount(
+      tester,
+      harness,
+      source,
+      vocabularyPorts: vocabulary,
+      grammarPorts: grammar,
+      serverHistoryReader: reader,
+      curriculumRepository: curriculum,
+    );
+
+    await tester.ensureVisible(
+      find.byKey(const Key('progress-load-server-quiz')),
+    );
+    await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+    await _pumpUntilVisible(
+      tester,
+      find.byKey(const Key('progress-server-quiz-summary')),
+    );
+    final weakPoint = find.byKey(
+      Key(
+        'progress-server-quiz-weak-point-grammar_meaning-correction-N4-${question.target.id}',
+      ),
+    );
+    await tester.ensureVisible(weakPoint);
+    expect(weakPoint.hitTestable(), findsOneWidget);
+    await tester.tap(weakPoint);
+    await tester.pumpAndSettle();
+
+    final route = container
+        .read(routerProvider)
+        .routeInformationProvider
+        .value
+        .uri;
+    expect(route.path, '/grammar');
+    expect(route.queryParameters, {
+      'level': 'n4',
+      'item': question.target.id,
+    });
+    expect(find.text(question.target.meaningVi), findsOneWidget);
+    expect(find.text(question.target.explanationVi), findsOneWidget);
+    expect(curriculum.calls, [
+      'grammar_meaning:N4',
+      'grammar_meaning:N4',
+    ]);
+    expect(vocabulary.writes, 0);
+    expect(grammar.writes, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('invalid and stale curriculum links fail safely', (
+    tester,
+  ) async {
+    final harness = Harness();
+    final source = _ProgressSource(harness);
+    final entries = _serverVocabularySource();
+    final curriculum = _ProgressCurriculumRepository({
+      'vocabulary_reading:N5': entries,
+    });
+    final container = await _mount(
+      tester,
+      harness,
+      source,
+      curriculumRepository: curriculum,
+    );
+
+    container.read(routerProvider).go(
+      Uri(
+        path: '/vocabulary',
+        queryParameters: {'level': 'n5', 'item': 'not-a-uuid'},
+      ).toString(),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Liên kết này không trỏ tới một mục học hợp lệ.'),
+      findsOneWidget,
+    );
+    expect(curriculum.calls, isEmpty);
+
+    const missingId = '10000000-0000-4000-8000-000000000099';
+    container.read(routerProvider).go(
+      Uri(
+        path: '/vocabulary',
+        queryParameters: {'level': 'n5', 'item': missingId},
+      ).toString(),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('curriculum-target-unavailable')),
+      findsOneWidget,
+    );
+    expect(find.text(entries.first.heading), findsOneWidget);
+    expect(find.text(entries.first.meaningVi), findsNothing);
+    expect(curriculum.calls, ['vocabulary_reading:N5']);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'late weak-point content read is discarded after account replacement',

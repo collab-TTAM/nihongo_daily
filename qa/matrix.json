@@ -1049,13 +1049,28 @@
     {
       "id": "quiz-progress",
       "status": "pending-integration",
-      "scope": "Validated quiz scoring, mastery and weak points",
+      "scope": "Validated quiz scoring, mastery and weak points, including exact current-content review navigation",
       "issues": [
         13,
         18
       ],
-      "reproduce": "Submit correct/wrong/repeated/duplicate attempts; verify owner history/counters, empty state and recommendations referencing curriculum; inspect dashboard.",
-      "limitation": "Configured local quiz save/history is component-tested; current-source practice/needs-review dashboard is authored and needs new-head CI. Hosted attempts/sync, reviewed mastery and learner acceptance remain unverified; reserved MASTERED cannot substitute for evidence."
+      "reproduce": "cd apps/flutter_app && flutter test test/features/progress/progress_overview_widget_test.dart; retain full exact-head Flutter/Chrome/Web/Windows CI.",
+      "limitation": "Client-side current-content navigation is covered by TEST ONLY history/content ports. Hosted attempts/sync, reviewed mastery and learner acceptance remain unverified; the default runtime history reader remains null.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "server weak-point opens exact current vocabulary entry"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "server weak-point opens exact current grammar entry at N4"
+        },
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "invalid and stale curriculum links fail safely"
+        }
+      ]
     },
     {
       "id": "browser-windows-smoke",

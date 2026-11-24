@@ -72,6 +72,21 @@ suggestion is shown. This is not mastery, SRS state, study credit or an all-time
 model. Reader, content-repository or account replacement suppresses late results. Widget fixtures do not prove
 that the Edge Function is deployed or that hosted JWT/PostgREST/RLS works.
 
+## Weak-point navigation
+
+After an explicit server-receipt load, each current-source weak-point row opens
+its exact vocabulary or grammar entry at the receipt's N5/N4 level. The route
+contains only the public curriculum level and item UUID; the curriculum screen
+re-reads the fixed current repository and resolves that ID again. A malformed
+link is rejected, and an ID no longer present in current content shows a safe
+message alongside the current list rather than displaying stale receipt text.
+
+This is navigation to public curriculum only. It does not read quiz history
+again, submit an attempt, start a study timer, write progress, grant study
+minutes, change SRS or assert mastery. The preview/default history reader
+remains null; only an explicitly installed ready-session reader can produce
+the suggestions.
+
 ## Verification boundary
 
 Progress overview widget tests use TEST ONLY Auth/RPC gateways. Exact-head

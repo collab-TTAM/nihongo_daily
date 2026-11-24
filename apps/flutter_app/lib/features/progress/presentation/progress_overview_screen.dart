@@ -241,6 +241,19 @@ String _serverWeakPointSubtitle(QuizReportV2WeakPoint point) {
   return '$detail · Sai ${point.incorrectCount} lần trong các trang đã tải';
 }
 
+String _serverWeakPointRoute(QuizReportV2WeakPoint point) {
+  final path = point.entry.kind == CurriculumKind.vocabulary
+      ? '/vocabulary'
+      : '/grammar';
+  return Uri(
+    path: path,
+    queryParameters: {
+      'level': point.jlptLevel.toLowerCase(),
+      'item': point.entry.id,
+    },
+  ).toString();
+}
+
 class ProgressOverviewScreen extends ConsumerStatefulWidget {
   const ProgressOverviewScreen({super.key});
 
@@ -1172,6 +1185,8 @@ class _ProgressOverviewScreenState
                   ),
                   title: Text(_serverWeakPointTitle(point)),
                   subtitle: Text(_serverWeakPointSubtitle(point)),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.go(_serverWeakPointRoute(point)),
                 ),
               const Text(
                 'Đây là gợi ý ôn lại từ biên nhận tự báo cáo, không phải xác nhận thành thạo, trạng thái SRS hay thời gian học.',
