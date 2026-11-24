@@ -1340,8 +1340,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
       );
       await pending();
     } else if (nativeLogoutClearFailure) {
-      _check(await vault.readRefreshToken() == null);
       await runtime.start();
+      _check(await vault.readRefreshToken() == null);
       _check(
         runtime.persistence.phase == SessionPersistencePhase.idle &&
             runtime.persistence.hasVaultOwner &&
