@@ -22,6 +22,19 @@ CompletedStudySession studyEvent([int number = 1]) => CompletedStudySession(
   startedAt: DateTime.utc(2026, 10, 20, 1),
   endedAt: DateTime.utc(2026, 10, 20, 1, 15),
 );
+CompletedStudySession replicaStudyEvent(
+  int number,
+  int startMinute,
+  int endMinute,
+) => CompletedStudySession(
+  clientEventId:
+      'f2100000-0000-4000-8000-${number.toString().padLeft(12, '0')}',
+  date: DailyPlanDate('2026-10-20'),
+  area: DailyPlanArea.vocabulary,
+  startedAt: DateTime.utc(2026, 10, 20, 1, startMinute),
+  endedAt: DateTime.utc(2026, 10, 20, 1, endMinute),
+);
+
 Map<String, Object?> studyPlan(int minutes) => {
   'plan_date': '2026-10-20',
   'target_minutes': 120,
@@ -95,6 +108,63 @@ final class StudyGateway implements DailyPlanStudySessionGateway {
   }
 }
 
+final class StudyReplicaReceipt {
+  const StudyReplicaReceipt(this.event, this.response);
+
+  final CompletedStudySession event;
+  final Map<String, Object?> response;
+}
+
+final class StudyReplicaServer {
+  int completedMinutes = 45;
+  int dispatches = 0;
+  final Map<String, StudyReplicaReceipt> receipts = {};
+}
+
+/// Separate device repositories/journals share only this TEST ONLY server.
+final class StudyReplicaGateway implements DailyPlanStudySessionGateway {
+  StudyReplicaGateway(this.auth, this.server, this.store)
+    : session = auth.currentSession!;
+
+  final ReviewAuth auth;
+  final StudyReplicaServer server;
+  final StudySessionStore store;
+  final ReviewSession session;
+
+  @override
+  bool get isCurrent => identical(auth.currentSession, session);
+
+  @override
+  Future<Object?> getDailyPlan(Map<String, Object> parameters) async =>
+      studyPlan(server.completedMinutes);
+
+  @override
+  Future<Object?> submitStudySession(Map<String, Object> parameters) async {
+    final event = CompletedStudySession.fromJson(parameters['p_request']);
+    final staged = await store.list(session.userId);
+    checkStudy(
+      staged.any(
+        (record) => record.isPending && sameStudyEvent(record.event, event),
+      ),
+      'Two-client RPC dispatched before durable stage',
+    );
+    server.dispatches++;
+    final key = '${session.userId}/${event.clientEventId}';
+    final previous = server.receipts[key];
+    if (previous != null) {
+      if (!sameStudyEvent(previous.event, event)) {
+        throw const DailyPlanFailure(DailyPlanErrorCode.syncConflict);
+      }
+      return previous.response;
+    }
+    final minutes = event.endedAt.difference(event.startedAt).inMinutes;
+    final response = studyPlan(server.completedMinutes + minutes);
+    server.receipts[key] = StudyReplicaReceipt(event, response);
+    server.completedMinutes += minutes;
+    return response;
+  }
+}
+
 final class StudyFaultStore implements StudySessionStore {
   StudyFaultStore(this.base);
   final StudySessionStore base;
@@ -147,6 +217,16 @@ DurableStudySessionRepository studyRepository(
   store: store,
   delegate: DailyPlanRepository(StudyGateway(auth, server, store)),
 );
+DurableStudySessionRepository replicaStudyRepository(
+  StudyAuth auth,
+  StudyReplicaServer server,
+  StudySessionStore store,
+) => DurableStudySessionRepository(
+  auth: auth,
+  store: store,
+  delegate: DailyPlanRepository(StudyReplicaGateway(auth, server, store)),
+);
+
 Future<void> studyFailure(
   Future<Object?> pending, {
   DailyPlanErrorCode? code,
@@ -177,6 +257,7 @@ const studyRecoveryScenarios = [
   'shutdown',
   'reentrantShutdown',
   'reentrantSubmit',
+  'twoClients',
 ];
 Future<void> verifyStudyRecovery(String scenario) async {
   final directory = await Directory.systemTemp.createTemp('nd-study-recovery-');
@@ -553,6 +634,97 @@ Future<void> verifyStudyRecovery(String scenario) async {
             sameStudyEvent(records.single.event, event),
         'Reentrant submit did not retain one acknowledged original event',
       );
+    } else if (scenario == 'twoClients') {
+      final deviceBDirectory = Directory(
+        '${directory.path}${Platform.pathSeparator}device-b',
+      );
+      final deviceCDirectory = Directory(
+        '${directory.path}${Platform.pathSeparator}device-c',
+      );
+      await deviceBDirectory.create(recursive: true);
+      await deviceCDirectory.create(recursive: true);
+      final journalB = await NativeStudySessionJournal.open(deviceBDirectory);
+      NativeStudySessionJournal? journalC;
+      try {
+        journalC = await NativeStudySessionJournal.open(deviceCDirectory);
+        final authA = StudyAuth();
+        final authB = StudyAuth();
+        final authC = StudyAuth();
+        final sharedServer = StudyReplicaServer();
+        final clientA = replicaStudyRepository(authA, sharedServer, journal);
+        final clientB = replicaStudyRepository(authB, sharedServer, journalB);
+        final clientC = replicaStudyRepository(authC, sharedServer, journalC);
+
+        final firstEvent = replicaStudyEvent(30, 0, 15);
+        final firstAcks = await Future.wait([
+          clientA.submit(firstEvent),
+          clientB.submit(firstEvent),
+        ]);
+        checkStudy(
+          firstAcks.every((ack) => ack.latestPlan?.completedMinutes == 60) &&
+              sharedServer.dispatches == 2 &&
+              sharedServer.receipts.length == 1 &&
+              sharedServer.completedMinutes == 60,
+          'Two independent clients credited one immutable event twice',
+        );
+
+        final adjacentEvent = replicaStudyEvent(31, 15, 30);
+        final adjacentAcks = await Future.wait([
+          clientA.submit(adjacentEvent),
+          clientB.submit(adjacentEvent),
+        ]);
+        checkStudy(
+          adjacentAcks.every((ack) => ack.latestPlan?.completedMinutes == 75) &&
+              sharedServer.dispatches == 4 &&
+              sharedServer.receipts.length == 2 &&
+              sharedServer.completedMinutes == 75,
+          'Two clients did not preserve one adjacent event receipt',
+        );
+
+        final changedEvent = CompletedStudySession.fromJson({
+          ...firstEvent.toJson(),
+          'ended_at': '2026-10-20T01:30:00.000Z',
+        });
+        await studyFailure(
+          clientC.submit(changedEvent),
+          code: DailyPlanErrorCode.syncConflict,
+        );
+        final recordsA = await journal.list(studyOwner);
+        final recordsB = await journalB.list(studyOwner);
+        final recordsC = await journalC.list(studyOwner);
+        checkStudy(
+          recordsA.length == 2 &&
+              recordsA.every((record) => record.acknowledged) &&
+              recordsB.length == 2 &&
+              recordsB.every((record) => record.acknowledged),
+          'Each device did not durably acknowledge both original receipts',
+        );
+        checkStudy(
+          recordsC.length == 1 &&
+              recordsC.single.rejection == DailyPlanErrorCode.syncConflict &&
+              !recordsC.single.isPending &&
+              sharedServer.dispatches == 5 &&
+              sharedServer.receipts.length == 2 &&
+              sharedServer.completedMinutes == 75,
+          'Changed payload under a shared event ID was not rejected',
+        );
+        final recoveryA = await clientA.recover();
+        final recoveryB = await clientB.recover();
+        final recoveryC = await clientC.recover();
+        checkStudy(
+          recoveryA.pending.isEmpty &&
+              recoveryA.rejected.isEmpty &&
+              recoveryB.pending.isEmpty &&
+              recoveryB.rejected.isEmpty &&
+              recoveryC.pending.isEmpty &&
+              recoveryC.rejected.length == 1 &&
+              recoveryC.rejected.single.code == DailyPlanErrorCode.syncConflict,
+          'Independent device recovery did not preserve authoritative receipt state',
+        );
+      } finally {
+        await journalC?.close();
+        await journalB.close();
+      }
     } else if (scenario == 'capacity') {
       await studyFailure(
         NativeStudySessionJournal.open(directory),

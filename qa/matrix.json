@@ -1036,15 +1036,15 @@
     {
       "id": "offline-sync",
       "status": "pending-integration",
-      "scope": "Durable restart/reconnect/two-device/account-isolated events",
+      "scope": "Durable native/browser local journals, exact immutable replay and process restart, owner-isolated pending events, local two-client idempotency/conflict checks, and disposable PostgreSQL duplicate/adjacent-event races.",
       "issues": [
         15,
         20,
         22,
         18
       ],
-      "reproduce": "Run two clients A/B, go offline, queue immutable event IDs/times, restart, reconnect/resend, provoke stale/two-device conflict and account switch; inspect retained authoritative state.",
-      "limitation": "No durable local queue/cache, multi-device integration or restart tests."
+      "reproduce": "Run flutter test test/features/daily_plan/study_session_recovery_test.dart and dart run tool/verify_study_session_recovery.dart; scripts/test_study_sessions.py exercises native PostgreSQL duplicate and adjacent-event races. Hosted two-device acceptance remains separate.",
+      "limitation": "Separate native journals/repositories and a shared TEST ONLY in-process server fixture plus disposable PostgreSQL connections are component evidence. No networked Flutter clients, real signed JWT/PostgREST/RLS, hosted sync, backup, physical device pair or complete learner journey is proven."
     },
     {
       "id": "quiz-progress",
@@ -5111,6 +5111,36 @@
       ],
       "reproduce": "From apps/flutter_app run `flutter test test/features/daily_plan/daily_plan_widget_test.dart`, then `flutter analyze`; inspect every exact-head Actions job and required step.",
       "limitation": "TEST ONLY Auth/profile and fixed-repository ports. This verifies the /plan view-generation fence, not hosted signed-JWT profile updates, deployed PostgREST/RLS, multi-device synchronization or Personal Alpha learner acceptance."
+    },
+    {
+      "id": "two-client-study-replay",
+      "status": "automated-baseline",
+      "scope": "Two independent client repositories with separate real native journals submit identical immutable event IDs/times to a shared TEST ONLY idempotent server; both devices durably acknowledge the same receipt while server minutes advance once. A second adjacent event also replays once; a third client's changed payload under the same event ID becomes a terminal SYNC_CONFLICT without changing progress.",
+      "issues": [
+        11,
+        15
+      ],
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_test.dart",
+          "contains": "two independent native clients replay immutable study events exactly once"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "'twoClients'"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "Two independent clients credited one immutable event twice"
+        },
+        {
+          "path": "apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart",
+          "contains": "Changed payload under a shared event ID was not rejected"
+        }
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/daily_plan/study_session_recovery_test.dart; CI also runs dart run tool/verify_study_session_recovery.dart and scripts/test_study_sessions.py.",
+      "limitation": "Separate real local journals/repositories and a shared TEST ONLY in-process server fixture, not networked app processes or hosted Supabase. Complementary disposable PostgreSQL concurrency tests use synthetic identities. No signed-JWT/PostgREST/RLS, physical multi-device or Personal Alpha learner acceptance."
     }
   ],
   "findings": [

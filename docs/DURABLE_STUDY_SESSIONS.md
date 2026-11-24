@@ -153,3 +153,23 @@ isolated. The TEST ONLY `StudyFaultStore.onStage` regression asserts one stage,
 one RPC/receipt, one acknowledged original event and the authoritative latest
 plan. This is in-process coalescing, not a substitute for server idempotency or
 cross-process/hosted learner proof.
+
+## Two independent local clients — 2026-11-24
+
+The new `twoClients` recovery scenario opens separate real native journals for
+three independent client repositories while sharing only a TEST ONLY idempotent
+server fixture. Clients A and B concurrently submit the same immutable event
+ID/time; both receive the same receipt, both journals durably acknowledge it,
+and the shared server advances the completed minutes once. They repeat this for
+a second adjacent event. Client C then submits a changed payload under the first
+event ID; the server returns `SYNC_CONFLICT`, the third journal retains a
+terminal rejection, and authoritative minutes/receipts remain unchanged.
+
+This is a local multi-client contract regression, not networked app processes,
+real Auth or hosted synchronization. The complementary
+`scripts/test_study_sessions.py` suite runs separate PostgreSQL connections
+against disposable CI data to verify concurrent duplicate receipt creation,
+adjacent distinct intervals without lost updates, overlap conflicts and fresh
+connection replay. Those SQL identities are synthetic TEST ONLY fixtures, not
+signed JWTs or deployed PostgREST/RLS. Physical-device, offline/reconnect,
+hosted A/B and backup acceptance remain open.
