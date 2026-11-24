@@ -72,12 +72,18 @@ void main() {
     bool Function() condition, {
     required String reason,
   }) async {
-    final elapsed = Stopwatch()..start();
-    while (!condition() && elapsed.elapsed < const Duration(seconds: 5)) {
-      await tester.pump(const Duration(milliseconds: 10));
+    // Keep asynchronous UI polling bounded without rendering 500 progress
+    // indicator frames for the same five-second logical wait window.
+    const maxFrames = 50;
+    for (var frame = 0; frame < maxFrames && !condition(); frame++) {
+      await tester.pump(const Duration(milliseconds: 100));
       await Future<void>.delayed(Duration.zero);
     }
-    expect(condition(), isTrue, reason: reason);
+    expect(
+      condition(),
+      isTrue,
+      reason: '$reason (after $maxFrames bounded 100 ms frames)',
+    );
   }
 
   Future<void> pumpUi(WidgetTester tester) async {
