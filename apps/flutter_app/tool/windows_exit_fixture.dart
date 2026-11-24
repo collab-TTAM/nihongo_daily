@@ -19,15 +19,24 @@ void _check(bool value) {
   if (!value) throw const FormatException('Exit fixture verification failed');
 }
 
+/// A new vault facade must acquire its own native lease before reading.
+/// The short lease also proves the staging runtime released the OS slot on close.
+Future<void> _verifyEmptyVaultWithTemporaryOwner(String origin) async {
+  final vault = createWindowsSessionCredentialVault(origin);
+  await vault.acquireOwner();
+  try {
+    _check(await vault.readRefreshToken() == null);
+  } finally {
+    await vault.releaseOwner();
+  }
+}
+
 Future<void> startWindowsExitFixture(String phase, String scope) async {
   _check(Platform.isWindows && exitPhases.contains(phase));
   final directory = runtimeFixtureDirectory(scope);
   await directory.create(recursive: true);
   final origin = 'https://$scope-exit.invalid';
-  _check(
-    await createWindowsSessionCredentialVault(origin).readRefreshToken() ==
-        null,
-  );
+  await _verifyEmptyVaultWithTemporaryOwner(origin);
   final owner = await openWindowsStagingOwner(
     StagingConfiguration(origin, 'sb_publishable_TEST_ONLY_1234567890', false),
   );
@@ -79,10 +88,7 @@ final class _ExitProbeOwner implements StagingOwner {
     final appData = await resolveWindowsReviewDirectory(origin);
     final reopened = await NativeReviewJournal.open(appData);
     await reopened.close();
-    _check(
-      await createWindowsSessionCredentialVault(origin).readRefreshToken() ==
-          null,
-    );
+    await _verifyEmptyVaultWithTemporaryOwner(origin);
     await mark('done');
   }
 }
