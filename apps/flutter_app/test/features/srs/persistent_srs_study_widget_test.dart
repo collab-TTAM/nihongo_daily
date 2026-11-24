@@ -77,7 +77,8 @@ void main() {
     const maxFrames = 50;
     for (var frame = 0; frame < maxFrames && !condition(); frame++) {
       await tester.pump(const Duration(milliseconds: 100));
-      await Future<void>.delayed(Duration.zero);
+      // tester.pump advances fake time and flushes microtasks. Do not await a
+      // zero-delay Timer here: it cannot fire until another pump is requested.
     }
     expect(
       condition(),
