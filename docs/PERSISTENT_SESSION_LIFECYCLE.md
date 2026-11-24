@@ -99,6 +99,18 @@ and `logout-before-refresh-dispatch` lifecycle cases assert zero Auth dispatch
 and successful vault cleanup. They are deterministic coordinator fixtures, not
 hosted Auth proof.
 
+An explicit refresh also fences the SDK event observer synchronously when its
+captured session/secret/generation reservation is published, before the deferred
+runner can call Auth. A queued event that still describes the captured old
+session cannot advance the generation and cancel the refresh. If the SDK snapshot
+has genuinely changed to another account before dispatch, the captured guard
+rejects the old refresh, then immediately reopens event reconciliation so the
+new account's own refresh secret is persisted before readiness. The
+`rotation-barrier` fixture asserts exactly one SDK refresh reaches the held
+Auth call despite a queued old event; `session-switch-before-refresh-dispatch`
+asserts that a real B replacement is persisted without dispatching A's refresh.
+These are deterministic TEST ONLY lifecycle regressions, not hosted Auth proof.
+
 Every session rotation/account change revokes the old persistence gate until the
 new secret is saved. No profile or study request is issued through the account
 runtime before that barrier. Getter checks also reject a changed SDK identity or

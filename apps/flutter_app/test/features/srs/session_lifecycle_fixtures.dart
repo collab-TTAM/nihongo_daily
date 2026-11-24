@@ -924,8 +924,8 @@ Future<void> verifyLifecycle(String scenario) async {
       sdk.events.add(null); // A queued old SDK event cannot bypass refresh.
       await flush();
       check(
-        access.currentSession == null,
-        'old event reopened refreshing session',
+        sdk.refreshes == 1 && access.currentSession == null,
+        'queued old SDK event invalidated the reserved refresh or reopened session',
       );
       sdk.authWait!.complete();
       await flush();

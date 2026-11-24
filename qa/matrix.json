@@ -543,6 +543,10 @@
         {
           "path": "apps/flutter_app/tool/windows_runtime_fixture.dart",
           "contains": "runtime-native-rotation-write-failure-late-profile"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "'rotation-barrier'"
         }
       ],
       "issues": [

@@ -316,7 +316,10 @@ final class PersistentAccountAccess implements AccountAccess {
       await action();
     } on _StaleRefreshReservation {
       // A replacement session won before the reserved refresh reached Auth.
-      // Preserve that session's independent vault write; never refresh B for A.
+      // Re-open event reconciliation so the replacement's own token is saved;
+      // never run the old account's refresh against the new SDK session.
+      _authInFlight = false;
+      _changed();
       throw _failure();
     } on ReviewTransportFailure {
       if (_allowed && !_closed) _fail();
@@ -418,6 +421,9 @@ final class PersistentAccountAccess implements AccountAccess {
         _logout != null) {
       return Future.error(_failure());
     }
+    // Fence queued SDK snapshots synchronously with the refresh reservation.
+    // The deferred runner must not let an old event invalidate this captured lease.
+    _authInFlight = true;
     _revoke(SessionPersistencePhase.saving);
     final generation = _generation;
     return _runTracked(() async {
