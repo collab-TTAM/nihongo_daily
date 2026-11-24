@@ -4811,7 +4811,7 @@
     {
       "id": "quiz-report-v2-explicit-action",
       "status": "automated-baseline",
-      "scope": "Completed vocabulary and grammar rounds expose a separate explicit nd-quiz-report-2 server action when a caller-owned ready transport is present; local device history remains a separate operation. An uncertain submit is reconciled only by replay-only lookup of the exact immutable request.",
+      "scope": "Completed rounds expose an explicit nd-quiz-report-2 action; saved local vocabulary/grammar history can manually replay the exact immutable format-v2 attempt/event ID through the same caller-owned ready transport. Legacy v1 remains read-only; uncertain submits use replay-only lookup.",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -4833,6 +4833,22 @@
         {
           "path": "apps/flutter_app/lib/features/quiz/presentation/grammar_quiz_save_action.dart",
           "contains": "QuizReportV2Action"
+        },
+        {
+          "path": "apps/flutter_app/lib/features/quiz/presentation/saved_quiz_report_replay_action.dart",
+          "contains": "SavedQuizReportReplayAction"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart",
+          "contains": "saved v2 history explicitly replays the original immutable report"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/grammar_quiz_history_widget_test.dart",
+          "contains": "grammar history replays primary and correction with original event IDs"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart",
+          "contains": "saved v2 history remains local-only without a ready report transport"
         }
       ],
       "issues": [

@@ -5,8 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../../../shared/models/preview_level.dart';
 import '../../../shared/widgets/page_body.dart';
 import '../application/grammar_quiz_history_provider.dart';
+import '../application/quiz_report_v2_provider.dart';
 import '../data/grammar_quiz_history_repository.dart';
+import '../data/quiz_report_v2_adapter.dart';
+import '../data/quiz_report_v2_transport.dart';
 import '../domain/grammar_quiz_attempt.dart';
+import 'saved_quiz_report_replay_action.dart';
 
 class GrammarQuizHistoryScreen extends ConsumerStatefulWidget {
   const GrammarQuizHistoryScreen({super.key});
@@ -31,6 +35,7 @@ class _GrammarQuizHistoryScreenState
   @override
   Widget build(BuildContext context) {
     final repository = ref.watch(grammarQuizHistoryRepositoryProvider);
+    final submitter = ref.watch(quizReportV2TransportProvider);
     final generation = _generation;
     return PageBody(
       children: [
@@ -48,15 +53,17 @@ class _GrammarQuizHistoryScreenState
           ),
         ] else
           _HistoryPanel(
-            key: ValueKey((repository, generation)),
+            key: ValueKey((repository, generation, submitter)),
             repository: repository,
+            submitter: submitter,
             isCurrent: () =>
                 mounted &&
                 generation == _generation &&
                 identical(
                   ref.read(grammarQuizHistoryRepositoryProvider),
                   repository,
-                ),
+                ) &&
+                identical(ref.read(quizReportV2TransportProvider), submitter),
           ),
         TextButton(
           onPressed: () => context.go('/quiz/grammar'),
@@ -71,9 +78,11 @@ class _HistoryPanel extends StatefulWidget {
   const _HistoryPanel({
     super.key,
     required this.repository,
+    required this.submitter,
     required this.isCurrent,
   });
   final GrammarQuizHistoryRepository repository;
+  final QuizReportV2Submitter? submitter;
   final bool Function() isCurrent;
 
   @override
@@ -322,16 +331,35 @@ class _HistoryPanelState extends State<_HistoryPanel> {
             ),
           ],
           for (final record in visible)
-            ListTile(
-              key: ValueKey('grammar-history-${record.attempt.eventId}'),
-              title: Text(
-                '$kindLabel · ${record.attempt.level.label} · ${record.attempt.score} / '
-                '${record.attempt.answers.length}',
-              ),
-              subtitle: Text(
-                'Hoàn thành (UTC): '
-                '${record.attempt.completedAt.toIso8601String()}',
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ListTile(
+                  key: ValueKey('grammar-history-${record.attempt.eventId}'),
+                  title: Text(
+                    '$kindLabel · ${record.attempt.level.label} · ${record.attempt.score} / '
+                    '${record.attempt.answers.length}',
+                  ),
+                  subtitle: Text(
+                    'Hoàn thành (UTC): '
+                    '${record.attempt.completedAt.toIso8601String()}',
+                  ),
+                ),
+                if (widget.submitter != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SavedQuizReportReplayAction(
+                      key: ValueKey((record.attempt, widget.submitter)),
+                      buildRequest: () =>
+                          QuizReportV2Request.fromGrammarAttempt(
+                            record.attempt,
+                          ),
+                      submitter: widget.submitter!,
+                      isCurrent: widget.isCurrent,
+                    ),
+                  ),
+                const SizedBox(height: 8),
+              ],
             ),
         ],
       ],

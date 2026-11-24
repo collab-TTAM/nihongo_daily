@@ -6,11 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
 import 'package:nihongo_daily/features/quiz/application/grammar_quiz_history_provider.dart';
+import 'package:nihongo_daily/features/quiz/application/quiz_report_v2_provider.dart';
 import 'package:nihongo_daily/features/quiz/data/grammar_quiz_attempt_store.dart';
 import 'package:nihongo_daily/features/quiz/data/grammar_quiz_history_repository.dart';
 import 'package:nihongo_daily/features/quiz/domain/grammar_quiz_attempt.dart';
 import 'package:nihongo_daily/features/srs/data/review_repository.dart';
 import 'native_grammar_quiz_journal_test.dart' as fixture;
+import 'quiz_report_v2_test_support.dart';
 
 final class _Auth implements ReviewAuth {
   ReviewSession? session = ReviewSession(userId: fixture.ownerA);
@@ -49,6 +51,18 @@ OwnedGrammarQuizAttempt row(int n, {String? kind, String? level}) {
   );
 }
 
+OwnedGrammarQuizAttempt rowV2(int n) {
+  final json = fixture.attempt(n).toJson();
+  json['format_version'] = 2;
+  for (final value in json['answers'] as List<Object?>) {
+    (value as Map<String, Object?>)['choice_content_versions'] = [1, 1, 1, 1];
+  }
+  return OwnedGrammarQuizAttempt(
+    fixture.ownerA,
+    GrammarQuizAttempt.fromJson(json),
+  );
+}
+
 void main() {
   late _Auth auth;
   late _Store store;
@@ -70,11 +84,14 @@ void main() {
     WidgetTester tester, {
     bool configured = true,
     bool quiz = false,
+    TestQuizReportSubmitter? reportSubmitter,
   }) async {
     container = ProviderContainer(
       overrides: [
         if (configured)
           grammarQuizHistoryRepositoryProvider.overrideWithValue(repository),
+        if (reportSubmitter != null)
+          quizReportV2TransportProvider.overrideWithValue(reportSubmitter),
       ],
     );
     addTearDown(() async {
@@ -343,6 +360,47 @@ void main() {
       expect(shown(tester), hasLength(3));
       expect(store.reads, 1);
       expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'grammar history replays primary and correction with original event IDs',
+    (tester) async {
+      store.rows.addAll([rowV2(2), rowV2(3)]);
+      final submitter = TestQuizReportSubmitter();
+      await mount(tester, reportSubmitter: submitter);
+      await tap(tester, 'grammar-history-load');
+
+      expect(submitter.submissions, isEmpty);
+      expect(submitter.lookups, isEmpty);
+      await tap(tester, 'quiz-report-submit');
+      expect(submitter.submissions, hasLength(1));
+      expect(submitter.submissions.single.clientEventId, fixture.event(2));
+      expect(submitter.submissions.single.quizType, 'grammar_meaning');
+      expect(submitter.submissions.single.practiceKind, 'primary');
+
+      await select(tester, 'grammar-history-kind', 'Vòng luyện sai');
+      await tap(tester, 'quiz-report-submit');
+      expect(submitter.submissions, hasLength(2));
+      expect(submitter.submissions.last.clientEventId, fixture.event(3));
+      expect(submitter.submissions.last.practiceKind, 'correction');
+      expect(find.byKey(const Key('quiz-report-confirmed')), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'legacy grammar history stays local-only without displayed choice versions',
+    (tester) async {
+      store.rows.add(row(4));
+      final submitter = TestQuizReportSubmitter();
+      await mount(tester, reportSubmitter: submitter);
+      await tap(tester, 'grammar-history-load');
+
+      expect(
+        find.byKey(const Key('quiz-report-legacy-unavailable')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+      expect(submitter.submissions, isEmpty);
     },
   );
 }

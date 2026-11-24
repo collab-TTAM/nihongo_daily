@@ -10,12 +10,15 @@ import 'package:nihongo_daily/features/auth/application/account_provider.dart';
 import 'package:nihongo_daily/features/auth/application/account_startup_controller.dart';
 import 'package:nihongo_daily/features/auth/presentation/account_startup_app.dart';
 import 'package:nihongo_daily/features/quiz/application/quiz_history_provider.dart';
+import 'package:nihongo_daily/features/quiz/application/quiz_report_v2_provider.dart';
+import 'package:nihongo_daily/features/quiz/data/quiz_report_v2_adapter.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_attempt_store.dart';
 import 'package:nihongo_daily/features/quiz/data/vocabulary_quiz_history_repository.dart';
 import 'package:nihongo_daily/features/quiz/domain/vocabulary_quiz_attempt.dart';
 import '../srs/account_fixtures.dart' as fixture;
 import '../srs/account_widget_test.dart' show Harness;
-import 'quiz_journal_fixtures.dart' show quizReport;
+import 'quiz_journal_fixtures.dart' show quizReport, quizReportV2;
+import 'quiz_report_v2_test_support.dart';
 
 final class _ReadStore implements VocabularyQuizAttemptStore {
   _ReadStore(this.read);
@@ -79,12 +82,15 @@ Future<ProviderContainer> _mount(
   WidgetTester tester, {
   Harness? harness,
   _Source? source,
+  TestQuizReportSubmitter? reportSubmitter,
 }) async {
   final container = ProviderContainer(
     overrides: [
       if (harness != null)
         accountRuntimeProvider.overrideWithValue(harness.runtime),
       if (source != null) quizHistorySourceProvider.overrideWithValue(source),
+      if (reportSubmitter != null)
+        quizReportV2TransportProvider.overrideWithValue(reportSubmitter),
     ],
   );
   addTearDown(() async {
@@ -917,4 +923,89 @@ void main() {
     expect(find.text('N5 · 0 / 1'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'saved v2 history remains local-only without a ready report transport',
+    (tester) async {
+      final h = Harness();
+      final attempt = quizReportV2(73);
+      final source = _Source(h)
+        ..response = (owner) async => [
+          OwnedVocabularyQuizAttempt(owner, attempt),
+        ];
+      await _mount(tester, harness: h, source: source);
+      await _load(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('quiz-history-summary')), findsOneWidget);
+      expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+      expect(find.byKey(const Key('quiz-report-legacy-unavailable')), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'saved v2 history explicitly replays the original immutable report',
+    (tester) async {
+      final h = Harness();
+      final attempt = quizReportV2(71, correct: true);
+      final source = _Source(h)
+        ..response = (owner) async => [
+          OwnedVocabularyQuizAttempt(owner, attempt),
+        ];
+      final submitter = TestQuizReportSubmitter();
+      await _mount(
+        tester,
+        harness: h,
+        source: source,
+        reportSubmitter: submitter,
+      );
+      await _load(tester);
+      await tester.pumpAndSettle();
+
+      expect(submitter.submissions, isEmpty);
+      expect(submitter.lookups, isEmpty);
+      final send = find.byKey(const Key('quiz-report-submit'));
+      await tester.ensureVisible(send);
+      await tester.tap(send);
+      await tester.pumpAndSettle();
+
+      expect(submitter.submissions, hasLength(1));
+      final sent = submitter.submissions.single;
+      expect(sent.clientEventId, attempt.eventId);
+      expect(
+        sent.toJson(),
+        QuizReportV2Request.fromVocabularyAttempt(attempt).toJson(),
+      );
+      expect(find.byKey(const Key('quiz-report-confirmed')), findsOneWidget);
+      expect(source.reads, 1);
+    },
+  );
+
+  testWidgets(
+    'legacy v1 history stays local-only when a server transport is ready',
+    (tester) async {
+      final h = Harness();
+      final attempt = quizReport(72);
+      final source = _Source(h)
+        ..response = (owner) async => [
+          OwnedVocabularyQuizAttempt(owner, attempt),
+        ];
+      final submitter = TestQuizReportSubmitter();
+      await _mount(
+        tester,
+        harness: h,
+        source: source,
+        reportSubmitter: submitter,
+      );
+      await _load(tester);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('quiz-report-legacy-unavailable')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+      expect(submitter.submissions, isEmpty);
+    },
+  );
 }

@@ -10,6 +10,7 @@ import '../data/quiz_report_v2_adapter.dart';
 import '../data/quiz_report_v2_transport.dart';
 import '../data/vocabulary_quiz_history_repository.dart';
 import '../domain/vocabulary_quiz_attempt.dart';
+import 'saved_quiz_report_replay_action.dart';
 
 class QuizHistoryScreen extends ConsumerWidget {
   const QuizHistoryScreen({super.key});
@@ -18,6 +19,7 @@ class QuizHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.watch(quizHistoryRepositoryProvider);
     final serverReader = ref.watch(quizReportV2HistoryReaderProvider);
+    final submitter = ref.watch(quizReportV2TransportProvider);
     return PageBody(
       children: [
         const PageHeading(
@@ -45,10 +47,12 @@ class QuizHistoryScreen extends ConsumerWidget {
           ),
         ] else
           _HistoryPanel(
-            key: ObjectKey(repository),
+            key: ValueKey((repository, submitter)),
             repository: repository,
+            submitter: submitter,
             isCurrent: () =>
-                identical(ref.read(quizHistoryRepositoryProvider), repository),
+                identical(ref.read(quizHistoryRepositoryProvider), repository) &&
+                identical(ref.read(quizReportV2TransportProvider), submitter),
           ),
         TextButton(
           onPressed: () => context.go('/quiz'),
@@ -63,9 +67,11 @@ class _HistoryPanel extends StatefulWidget {
   const _HistoryPanel({
     super.key,
     required this.repository,
+    required this.submitter,
     required this.isCurrent,
   });
   final VocabularyQuizHistoryRepository repository;
+  final QuizReportV2Submitter? submitter;
   final bool Function() isCurrent;
 
   @override
@@ -259,16 +265,35 @@ class _HistoryPanelState extends State<_HistoryPanel> {
             ),
           ],
           for (final record in visible)
-            ListTile(
-              key: ValueKey('quiz-history-${record.attempt.eventId}'),
-              title: Text(
-                '${record.attempt.level.label} · ${record.attempt.score} / '
-                '${record.attempt.answers.length}',
-              ),
-              subtitle: Text(
-                'Hoàn thành (UTC): '
-                '${record.attempt.completedAt.toIso8601String()}',
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ListTile(
+                  key: ValueKey('quiz-history-${record.attempt.eventId}'),
+                  title: Text(
+                    '${record.attempt.level.label} · ${record.attempt.score} / '
+                    '${record.attempt.answers.length}',
+                  ),
+                  subtitle: Text(
+                    'Hoàn thành (UTC): '
+                    '${record.attempt.completedAt.toIso8601String()}',
+                  ),
+                ),
+                if (widget.submitter != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SavedQuizReportReplayAction(
+                      key: ValueKey((record.attempt, widget.submitter)),
+                      buildRequest: () =>
+                          QuizReportV2Request.fromVocabularyAttempt(
+                            record.attempt,
+                          ),
+                      submitter: widget.submitter!,
+                      isCurrent: widget.isCurrent,
+                    ),
+                  ),
+                const SizedBox(height: 8),
+              ],
             ),
         ],
       ],

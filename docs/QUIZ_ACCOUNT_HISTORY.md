@@ -501,3 +501,31 @@ require own exact-head/latestattempt all5/EVERYstep/new8 and retained native/SDK
 markers. Parent Windows123276582571 required persistent SDK/profile/receipt marker
 passed, but this is TEST ONLY component proof, not hosted learner acceptance.
 PR41 draft/13open/defaultAIoff/memory-only/all14 hosted release groups pending.
+
+
+## Manual replay from saved local quiz history — 2026-11-24
+
+When an explicitly configured, caller-owned Supabase runtime has a ready own
+profile, vocabulary and grammar device-history rows can expose a manual server
+report action. It reconstructs the nd-quiz-report-2 request from the immutable
+saved format-v2 attempt: the original event ID, completion instant, item/content
+versions, selected answer, ordered choices and displayed choice versions. The
+action does no network work when history is loaded or rendered; the learner must
+tap it. The server's existing idempotent receipt contract handles an exact replay
+under the same event ID and rejects a changed payload. Local device history and
+server receipts remain separate views.
+
+A timeout in the same action remains uncertain and offers only replay-only
+receipt lookup; it never automatically resubmits. After a process restart, the
+learner can explicitly replay the exact saved attempt from device history, using
+the same event ID and payload, so a receipt committed before a lost response can
+be reconciled without inventing a new attempt. Legacy format-v1 records remain
+readable locally but cannot be sent because they do not retain displayed choice
+versions; the UI states this rather than fabricating provenance.
+
+The action is absent in default preview/unconfigured runtime and is published
+only through the existing ready-session transport. It does not merge local and
+server history, change attempt scores, award study time, change SRS or declare
+mastery. TEST ONLY widget coverage checks vocabulary and grammar (primary and
+correction) event identity, explicit tap-only dispatch, and legacy read-only
+behavior. Hosted learner receipt/RLS acceptance remains a separate release gate.
