@@ -37,7 +37,19 @@ Future<void> verifySharedRecorder(String scenario) async {
   final auth = StudyAuth();
   final server = StudyServer();
   final clock = RecorderFixtureClock();
-  final ready = StudySessionRecorder.recordableAreas;
+  final ready = {
+    DailyPlanArea.srs,
+    DailyPlanArea.vocabulary,
+    DailyPlanArea.kanji,
+    DailyPlanArea.grammar,
+    DailyPlanArea.listeningReading,
+    DailyPlanArea.quizReview,
+  };
+  checkStudy(
+    ready.length == StudySessionRecorder.recordableAreas.length &&
+        ready.containsAll(StudySessionRecorder.recordableAreas),
+    'TEST ONLY readiness diverged from the production recorder allowlist',
+  );
   final recorder = StudySessionRecorder(
     service: studyRepository(auth, server, store),
     clock: clock,
