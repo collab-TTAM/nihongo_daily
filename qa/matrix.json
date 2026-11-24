@@ -1413,6 +1413,10 @@
           "contains": "def test_windows_cleanup_driver_requires_ephemeral_github_hosted_runner_before_side_effects("
         },
         {
+          "path": "scripts/test_hosted_workflow.py",
+          "contains": "def test_confirmation_and_candidate_ref_gate_the_protected_staging_job(self):"
+        },
+        {
           "path": "apps/flutter_app/tool/windows_hosted_runtime_fixture.dart",
           "contains": "case 'prepare-revoked-a':"
         },

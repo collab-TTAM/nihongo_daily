@@ -5406,3 +5406,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - The cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; local format/analyze/Flutter/native execution was not run. The next exact-head Actions run must execute the QA inventory regression and all retained Windows bridge/release/native checks. The parent CI pass is not carried forward to the new commit.
 - Remaining #20/#22/#15 acceptance: hosted signed-JWT learner A/B, deployed PostgREST/RLS, protected configured Windows learner restore/expiry and physical multi-device offline sync. Synthetic JWTs, local GoTrue, TEST ONLY MethodChannel/native fault injection and successful builds are component evidence, not hosted learner proof. Keep PR #37 Draft and the issues open.
 
+
+## Protected hosted staging candidate-ref guard — 2026-11-24T09:11Z
+
+- PR #37 branch `automation/issue-22-atomic-review`; parent HEAD `1e28ae3f29d40ca3eb3fda254de7b80569156a0d`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Tightened the manual-only hosted Supabase job condition: the existing explicit `confirm_non_production=true` is now ANDed with the exact candidate ref `refs/heads/automation/issue-22-atomic-review`. Selecting main or another ref skips the secret-bearing job before the protected `supabase-staging` environment is entered. This prevents accidentally testing main while believing the still-draft PR #37 candidate was tested.
+- Added a static regression for the combined confirmation/ref condition, registered it in the `auth-live` QA anchors, and documented that a skipped wrong-ref job is not acceptance evidence.
+- Changed paths: `.github/workflows/hosted-supabase-acceptance.yml`, `scripts/test_hosted_workflow.py`, `qa/matrix.json`, `docs/HOSTED_SUPABASE_ACCEPTANCE.md`, and this status document. Existing six-secret allowlist, protected environment, read-only permissions, manual-only trigger, concurrency and probe commands are unchanged.
+- Static source assertions and JSON parsing were checked before commit; the pinned Python QA suite and all workflow jobs require a fresh exact-head Actions run. Cloud authoring has no repository checkout or pinned Flutter/Dart SDK; no local Flutter/native test/build is claimed.
+- No workflow dispatch, staging secret access, Auth/provider/schema/RLS, default app activation, production configuration, N4/Pro-owned content, merge, deployment or release changed. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and Windows hosted learner restore remain pending until the protected environment and two disposable test accounts are configured by the owner.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open.

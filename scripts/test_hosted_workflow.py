@@ -44,10 +44,10 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertNotIn("pull_request:", trigger)
         self.assertNotIn("schedule:", trigger)
 
-    def test_confirmation_gates_the_protected_staging_job(self):
+    def test_confirmation_and_candidate_ref_gate_the_protected_staging_job(self):
         self.assertIn(
             "  auth-a-b:\n"
-            "    if: ${{ inputs.confirm_non_production }}\n"
+            "    if: ${{ inputs.confirm_non_production && github.ref == 'refs/heads/automation/issue-22-atomic-review' }}\n"
             "    environment: supabase-staging\n"
             "    runs-on: windows-2022\n",
             self.workflow,
