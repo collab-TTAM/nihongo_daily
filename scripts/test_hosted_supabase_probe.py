@@ -403,7 +403,7 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertIn("default: false", match.group("body"))
         self.assertRegex(
             workflow,
-            r"(?m)^    if: \$\{\{ inputs\.confirm_non_production \}\}$",
+            r"(?m)^    if: \$\{\{ inputs\.confirm_non_production && github\.ref == 'refs/heads/automation/issue-22-atomic-review' \}\}$",
         )
 
     def test_staging_workflow_uses_only_protected_staging_secrets(self):
