@@ -222,7 +222,7 @@ void main() {
         expect(controller.account, isNull);
         expect(runtime.account.readyRuntime, isNull);
         expect(find.byKey(const Key('account-email')), findsNothing);
-        expect(find.text('Ôn tập'), findsNothing);
+        expect(find.widgetWithText(FilledButton, 'Ôn tập'), findsNothing);
         expect(backend.secret, secret);
         expect(profileRequests, hasLength(1));
         expect(
@@ -244,10 +244,11 @@ void main() {
         expect(runtime.account.state.phase, AccountPhase.ready);
         expect(runtime.account.readyRuntime, isNotNull);
         expect(find.byKey(const Key('account-profile-name')), findsOneWidget);
-        expect(find.text('Ôn tập'), findsOneWidget);
+        final openSrs = find.widgetWithText(FilledButton, 'Ôn tập');
+        expect(openSrs, findsOneWidget);
 
-        await tester.ensureVisible(find.text('Ôn tập'));
-        await tester.tap(find.text('Ôn tập'));
+        await tester.ensureVisible(openSrs);
+        await tester.tap(openSrs);
         await waitFor(
           () => queueCalls == 1,
           reason: 'configured SRS route did not load the authenticated queue',
