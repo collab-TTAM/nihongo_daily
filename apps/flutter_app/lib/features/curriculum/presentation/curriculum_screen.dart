@@ -36,14 +36,25 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
   double _listOffset = 0;
   int _scrollRevision = 0;
 
+  bool _initialLevelPending = false;
+
   @override
   void initState() {
     super.initState();
     _selectedId = widget.initialEntryId;
     final initialLevel = widget.initialLevel;
-    if (initialLevel != null &&
-        ref.read(previewLevelProvider) != initialLevel) {
-      ref.read(previewLevelProvider.notifier).state = initialLevel;
+    _initialLevelPending =
+        initialLevel != null &&
+        ref.read(previewLevelProvider) != initialLevel;
+    if (_initialLevelPending) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (initialLevel != null &&
+            ref.read(previewLevelProvider) != initialLevel) {
+          ref.read(previewLevelProvider.notifier).state = initialLevel;
+        }
+        setState(() => _initialLevelPending = false);
+      });
     }
   }
 
@@ -81,6 +92,18 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_initialLevelPending) {
+      return PageBody(
+        scrollController: _scrollController,
+        children: [
+          PageHeading(
+            title: widget.kind.label,
+            subtitle: 'Đang mở mục học…',
+          ),
+          const Center(child: CircularProgressIndicator()),
+        ],
+      );
+    }
     final level = ref.watch(previewLevelProvider);
     final content = ref.watch(curriculumProvider(widget.kind));
     final area = widget.kind == CurriculumKind.vocabulary
