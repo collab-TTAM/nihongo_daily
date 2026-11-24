@@ -87,6 +87,22 @@ void main() {
     );
   }
 
+  Future<T> traceStage<T>(
+    String label,
+    Future<T> Function() operation,
+  ) async {
+    // Fixed labels only: never print Auth, profile or credential values.
+    print('ND_SRS_WIDGET_STAGE_START:$label');
+    try {
+      final value = await operation();
+      print('ND_SRS_WIDGET_STAGE_DONE:$label');
+      return value;
+    } on Object catch (error) {
+      print('ND_SRS_WIDGET_STAGE_ERROR:$label:${error.runtimeType}');
+      rethrow;
+    }
+  }
+
   Future<void> pumpUi(WidgetTester tester) async {
     // The app may intentionally retain an indeterminate progress indicator
     // while an asynchronous operation is pending. Advance the UI without
@@ -195,15 +211,16 @@ void main() {
           );
 
       try {
-        await tester.pumpWidget(AccountStartupApp(controller: controller));
-        await waitFor(
+        await traceStage('mount-startup-app', () =>
+            tester.pumpWidget(AccountStartupApp(controller: controller)));
+        await traceStage('vault-rotation-barrier', () => waitFor(
           tester,
           () =>
               backend.writes == 1 &&
               runtime.persistence.phase == SessionPersistencePhase.saving,
           reason: 'startup did not reach the rotated-secret vault barrier',
-        );
-        await tester.pump();
+        ));
+        await traceStage('pump-vault-pending', () => tester.pump());
 
         expect(controller.phase, AccountStartupPhase.loading);
         expect(controller.account, isNull);
@@ -225,12 +242,12 @@ void main() {
         expect(backend.secret, 'TEST_ONLY_SAVED_SRS_REFRESH');
 
         backend.writeWait!.complete();
-        await waitFor(
+        await traceStage('own-profile-request', () => waitFor(
           tester,
           () => profileWasRequested,
           reason: 'own-profile request did not follow the saved rotation',
-        );
-        await tester.pump();
+        ));
+        await traceStage('pump-profile-pending', () => tester.pump());
 
         final profileRequests = requests
             .where(
@@ -251,14 +268,14 @@ void main() {
         expect(backend.operations, ['read', 'write']);
 
         profileWait!.complete(ownProfileResponse());
-        await waitFor(
+        await traceStage('profile-readiness', () => waitFor(
           tester,
           () =>
               profileResponseWasReturned &&
               controller.phase == AccountStartupPhase.active,
           reason: 'startup did not wait for the captured own profile',
-        );
-        await pumpUi(tester);
+        ));
+        await traceStage('pump-active-app', () => pumpUi(tester));
 
         expect(controller.account, same(runtime.account));
         expect(runtime.account.state.phase, AccountPhase.ready);
@@ -267,19 +284,19 @@ void main() {
         final openSrs = find.widgetWithText(FilledButton, 'Ôn tập');
         expect(openSrs, findsOneWidget);
 
-        await tester.ensureVisible(openSrs);
-        await tester.tap(openSrs);
-        await waitFor(
+        await traceStage('ensure-visible-open-srs', () => tester.ensureVisible(openSrs));
+        await traceStage('tap-open-srs', () => tester.tap(openSrs));
+        await traceStage('authenticated-queue-dispatch', () => waitFor(
           tester,
           () => queueCalls == 1,
           reason: 'configured SRS route did not load the authenticated queue',
-        );
-        await waitFor(
+        ));
+        await traceStage('queue-item-render', () => waitFor(
           tester,
           () => find.text('猫').evaluate().isNotEmpty,
           reason: 'the authenticated queue response did not render its item',
-        );
-        await pumpUi(tester);
+        ));
+        await traceStage('pump-srs-queue', () => pumpUi(tester));
 
         final queueRequest = requests.singleWhere(
           (request) => request.url.path == '/rest/v1/rpc/get_review_queue',
@@ -295,28 +312,28 @@ void main() {
         expect(find.text('Danh sách N5 • Từ vựng'), findsOneWidget);
         expect(find.text('猫'), findsOneWidget);
 
-        await tester.ensureVisible(find.text('Xem đáp án'));
-        await tester.tap(find.text('Xem đáp án'));
-        await pumpUi(tester);
+        await traceStage('ensure-visible-answer', () => tester.ensureVisible(find.text('Xem đáp án')));
+        await traceStage('tap-reveal-answer', () => tester.tap(find.text('Xem đáp án')));
+        await traceStage('pump-answer-visible', () => pumpUi(tester));
         expect(find.text('ねこ'), findsOneWidget);
         expect(find.text('con mèo'), findsOneWidget);
 
-        await tester.ensureVisible(find.text('Tốt'));
-        await tester.tap(find.text('Tốt'));
-        await waitFor(
+        await traceStage('ensure-visible-rating', () => tester.ensureVisible(find.text('Tốt')));
+        await traceStage('tap-good-rating', () => tester.tap(find.text('Tốt')));
+        await traceStage('submit-review-dispatch', () => waitFor(
           tester,
           () => submitCalls == 1,
           reason: 'one explicit rating did not dispatch submit_review',
-        );
-        await waitFor(
+        ));
+        await traceStage('review-reload-empty-queue', () => waitFor(
           tester,
           () => find
               .text('Không có mục đến hạn trong danh sách đã tải.')
               .evaluate()
               .isNotEmpty,
           reason: 'the confirmed review did not reload the empty server queue',
-        );
-        await pumpUi(tester);
+        ));
+        await traceStage('pump-review-reload', () => pumpUi(tester));
 
         final submitRequest = requests.singleWhere(
           (request) => request.url.path == '/rest/v1/rpc/submit_review',
@@ -363,14 +380,14 @@ void main() {
           isTrue,
         );
 
-        await runtime.account.signOut().timeout(const Duration(seconds: 10));
-        await waitFor(
+        await traceStage('logout-drain', () => runtime.account.signOut().timeout(const Duration(seconds: 10)));
+        await traceStage('logout-revocation-and-vault-clear', () => waitFor(
           tester,
           () => runtime.account.readyRuntime == null && backend.secret == null,
           reason:
               'logout did not revoke study access and clear the saved secret',
-        );
-        await pumpUi(tester);
+        ));
+        await traceStage('pump-after-logout', () => pumpUi(tester));
         expect(runtime.account.readyRuntime, isNull);
         expect(backend.secret, isNull);
         expect(find.text('猫'), findsNothing);
@@ -383,8 +400,8 @@ void main() {
         if (profileWait != null && !profileWait!.isCompleted) {
           profileWait!.complete(ownProfileResponse());
         }
-        await controller.close().timeout(const Duration(seconds: 5));
-        await tester.pumpWidget(const SizedBox.shrink());
+        await traceStage('controller-close', () => controller.close().timeout(const Duration(seconds: 5)));
+        await traceStage('unmount-app', () => tester.pumpWidget(const SizedBox.shrink()));
       }
     },
     timeout: const Timeout(Duration(seconds: 60)),

@@ -5530,3 +5530,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Fresh exact-head Actions must prove formatter, analyzer, the full Flutter suite, downstream browser/native/Windows checks and Web release build without skipped required steps.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical multi-device sync and the complete learner journey remain separate Personal Alpha gates. Keep PR #37 Draft and #20/#22/#15 open.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures. Do not count skipped steps or TEST ONLY fixtures as hosted acceptance.
+
+
+## PR #37 — pinpoint persistent SRS widget timeout — 2026-11-24T23:08Z
+
+- Run `core-20261124T2308Z-pr37-widget-stage-diagnostics`; branch `automation/issue-22-atomic-review`; parent HEAD `1e0a8f90d1776686085b32f30c68a88d669b19ca`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45498901936](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45498901936), attempt 1, completed CANCELLED. Flutter formatter/analyzer passed and 171 preceding tests passed; the configured-startup SRS widget test then timed out at 60 seconds. Its remaining downstream checks were skipped. The job log does not identify which awaited widget operation stalled.
+- Added TEST ONLY fixed stage breadcrumbs around app mount, vault rotation barrier, own-profile request/readiness, SRS navigation/queue, answer/rating/reload, logout and cleanup. The labels are constants and error output includes only the exception runtime type; no Auth, profile or credential values are logged. All existing assertions, deadlines, frame bounds, setup and teardown behavior remain unchanged.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_srs_study_widget_test.dart` and `docs/PROJECT_STATUS.md`. No production Auth/session/vault/SRS, API/schema/RLS, workflow gate, QA acceptance, default runtime or Pro-owned N4/content changes.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head Actions must show the last completed stage and prove the complete Flutter suite plus downstream browser/native/SRS/Kanji and Web build without skipped required checks.
+- Hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical multi-device sync and the complete learner journey remain separate Personal Alpha gates. Keep PR #37 Draft and #20/#22/#15 open.
+- Next: inspect every latest-attempt job/step and the fixed stage log lines on the new exact HEAD. Fix only the concrete awaited boundary revealed by the run; do not increase timeouts or remove assertions.
