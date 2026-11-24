@@ -177,7 +177,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 });
 
 final _curriculumEntryIdPattern = RegExp(
-  r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
+  "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+);
 
 Widget _curriculumRoute(GoRouterState state, CurriculumKind kind) {
   final levelValue = state.uri.queryParameters['level'];
@@ -185,7 +186,9 @@ Widget _curriculumRoute(GoRouterState state, CurriculumKind kind) {
   final level = _curriculumLevel(levelValue);
   if ((levelValue != null && level == null) ||
       (entryId != null &&
-          (level == null || !_curriculumEntryIdPattern.hasMatch(entryId)))) {
+          (level == null ||
+              entryId.length != 36 ||
+              !_curriculumEntryIdPattern.hasMatch(entryId)))) {
     return const FeaturePreviewScreen(
       title: 'Mục ôn lại chưa khả dụng',
       description: 'Liên kết này không trỏ tới một mục học hợp lệ.',
