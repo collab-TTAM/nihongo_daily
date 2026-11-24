@@ -1739,6 +1739,26 @@
       ],
       "reproduce": "Run `python3 scripts/test_hosted_supabase_probe.py` for the CI export-boundary regression; with a fresh disposable local Supabase stack and Flutter 3.35.4, run `python3 scripts/test_supabase_local.py` for the full caller-owned SDK probe.",
       "limitation": "LOCAL ONLY. Uses a TEST ONLY in-memory credential backend and an exact-loopback HTTPS-to-HTTP bridge to the disposable local API; NativeReviewJournal is the real disk-backed journal. It does not exercise Windows Credential Manager in the same runtime, hosted signed-JWT/staging, the learner UI, physical multi-device offline sync, or release acceptance."
+    },
+    {
+      "id": "srs-owned-startup-vertical-slice",
+      "status": "automated-baseline",
+      "scope": "Configured AccountStartupApp to caller-owned PersistentSupabaseRuntime: startup stays unpublished until the exact rotated refresh token is stored and the captured own-profile response settles; authenticated SRS queue and submit_review UI use the same captured bearer; successful receipt clears the local pending journal; logout clears the vault and revokes visible card data.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_srs_study_widget_test.dart",
+          "contains": "configured startup gates SRS UI until vault rotation and own profile settle"
+        }
+      ],
+      "issues": [
+        20,
+        22,
+        15,
+        18
+      ],
+      "reproduce": "flutter test test/features/srs/persistent_srs_study_widget_test.dart; flutter analyze; full retained CI",
+      "limitation": "Pinned Supabase SDK with TEST ONLY MockClient/Auth/JWT, in-memory credential backend and real disk-backed NativeReviewJournal. This verifies configured startup/widget/queue/submit composition, persist-before-profile UI gating, captured bearer and logout clearing at component level; it is not hosted signed-JWT learner A/B, deployed PostgREST/RLS, actual Windows Credential Manager in this widget test, physical multi-device sync or Personal Alpha. Separate Windows native and protected hosted acceptance gates remain pending."
     }
   ],
   "findings": [
