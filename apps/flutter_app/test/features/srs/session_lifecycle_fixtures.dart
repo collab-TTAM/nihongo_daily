@@ -505,8 +505,14 @@ Future<void> verifyLifecycle(String scenario) async {
       return;
     }
     if (scenario == 'session-switch-before-refresh-dispatch') {
-      // Reserve a refresh while A is accepted, then synchronously replace the
-      // SDK owner before the deferred Auth operation gets its first turn.
+      // Begin with a fully accepted A session, then synchronously replace the
+      // SDK owner after reserving refresh but before the deferred Auth turn.
+      await login();
+      check(
+        access.currentSession?.userId == owner &&
+            backend.secret == 'TEST_ONLY_ROTATED_1',
+        'A was not accepted before reserving its refresh',
+      );
       sdk.nextOwner = other;
       sdk.nextSecret = 'TEST_ONLY_B_AFTER_RESERVED_A_REFRESH';
       final pendingRefresh = fails(access.refresh());

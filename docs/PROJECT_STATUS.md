@@ -5436,3 +5436,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring has no pinned Flutter/Dart SDK or Windows OS; local Dart format/analyze/Flutter test/build were not run. Exact-head GitHub Actions must verify the full six-job suite and native probes; no CI pass is claimed before that run completes.
 - No hosted staging workflow dispatch, secrets, Auth strategy/provider, schema/RLS, default preview activation, Pro-owned #14/#38 N4/content, merge, deployment or release changed. Hosted signed-JWT A/B and physical multi-device acceptance remain pending.
 - Next: inspect every job and step on the new exact PR head; fix only observed diagnostics while retaining the race assertion and all security gates.
+
+
+## Separate diff-review correction — 2026-11-24T10:50Z
+
+- Parent PR #37 HEAD `9946bf79d5750e657a42d16984d2e9e5efd2ddd2`. Review of commit `9946bf79d5750e657a42d16984d2e9e5efd2ddd2` caught that the new A-to-B race fixture had not first established an accepted A session. The test now signs in A, asserts A's persisted token/readiness, and only then reserves refresh and publishes B.
+- The earlier queued CI run [45378311117](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45378311117) targets the superseded parent and is not evidence for the corrected fixture. A fresh exact-head run is required. No production behavior or security gate changed in this correction.
