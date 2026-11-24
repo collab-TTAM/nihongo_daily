@@ -1368,3 +1368,10 @@ This is in-memory MemorySdk/in-memory-vault regression evidence for the
 captured-generation and account-switch ordering. It is not hosted Auth/JWT/RLS,
 real Windows Credential Manager fault injection for this exact stream-error
 sequence, or Personal Alpha proof.
+
+
+## Abort a reserved refresh after session replacement — 2026-11-24
+
+An explicit refresh now captures the accepted `ReviewSession`, its exact already-persisted refresh secret, and the monotonic persistence generation before it revokes study readiness. Immediately before the deferred SDK call, all three must still match. If User A is replaced by User B in that gap, the old refresh returns the fixed redacted failure without invoking Auth against B and without invalidating B's independent credential write. The normal vault barrier still determines when B becomes ready.
+
+The TEST ONLY `session-switch-before-refresh-dispatch` lifecycle scenario signs in A, reserves refresh, synchronously publishes B before the deferred runner starts, and asserts zero SDK refresh/logout calls, B's exact token persisted, B accepted, and the expected read/write/write order. This closes a race not covered by the existing logout-before-dispatch case. It is deterministic in-memory lifecycle evidence, not hosted Auth/JWT or a physical multi-device test; the protected staging learner A/B gate remains separate.

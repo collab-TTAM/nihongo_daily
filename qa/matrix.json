@@ -237,6 +237,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "manual refresh joins an in-flight opt-in automatic refresh"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart",
+          "contains": "'session-switch-before-refresh-dispatch'"
         }
       ],
       "issues": [

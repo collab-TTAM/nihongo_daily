@@ -187,6 +187,7 @@ const scenarios = [
   'empty-start',
   'logout-before-login-dispatch',
   'logout-before-refresh-dispatch',
+  'session-switch-before-refresh-dispatch',
   'empty-start-login',
   'restore-barrier',
   'login-barrier',
@@ -500,6 +501,28 @@ Future<void> verifyLifecycle(String scenario) async {
             access.phase == SessionPersistencePhase.idle &&
             backend.operations.join(' -> ') == 'read -> write -> clear',
         'logout dispatched a reserved refresh after cancellation',
+      );
+      return;
+    }
+    if (scenario == 'session-switch-before-refresh-dispatch') {
+      // Reserve a refresh while A is accepted, then synchronously replace the
+      // SDK owner before the deferred Auth operation gets its first turn.
+      sdk.nextOwner = other;
+      sdk.nextSecret = 'TEST_ONLY_B_AFTER_RESERVED_A_REFRESH';
+      final pendingRefresh = fails(access.refresh());
+      sdk.change(other, 'TEST_ONLY_B_OUT_OF_BAND_REFRESH');
+      await pendingRefresh;
+      await flush();
+      check(
+        sdk.refreshes == 0 &&
+            sdk.logouts == 0 &&
+            sdk.session?.userId == other &&
+            sdk.secret == 'TEST_ONLY_B_OUT_OF_BAND_REFRESH' &&
+            backend.secret == 'TEST_ONLY_B_OUT_OF_BAND_REFRESH' &&
+            access.currentSession?.userId == other &&
+            access.phase == SessionPersistencePhase.ready &&
+            backend.operations.join(' -> ') == 'read -> write -> write',
+        'reserved User A refresh dispatched after the SDK switched to B',
       );
       return;
     }

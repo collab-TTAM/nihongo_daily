@@ -13,6 +13,10 @@ abstract interface class RefreshableAccountAccess implements AccountAccess {
 
 enum SessionPersistencePhase { idle, restoring, saving, ready, failed, closed }
 
+final class _StaleRefreshReservation implements Exception {
+  const _StaleRefreshReservation();
+}
+
 /// Explicit opt-in barrier: SDK identity is visible only after its exact current
 /// refresh secret is persisted. A stored secret alone never grants study access.
 final class PersistentAccountAccess implements AccountAccess {
@@ -310,6 +314,10 @@ final class PersistentAccountAccess implements AccountAccess {
     _authInFlight = true;
     try {
       await action();
+    } on _StaleRefreshReservation {
+      // A replacement session won before the reserved refresh reached Auth.
+      // Preserve that session's independent vault write; never refresh B for A.
+      throw _failure();
     } on ReviewTransportFailure {
       if (_allowed && !_closed) _fail();
       rethrow;
@@ -399,15 +407,28 @@ final class PersistentAccountAccess implements AccountAccess {
   /// Explicit refresh, with the same persistence barrier as sign-in/restore.
   /// SDK automatic refresh is disabled by the owned assembly; no retry loop.
   Future<void> refresh() {
-    if (currentSession == null || _operation != null || _logout != null) {
+    // Capture the accepted SDK identity and exact persisted refresh secret
+    // before revoking study readiness. The deferred operation must not migrate
+    // an A-initiated refresh onto a replacement B session.
+    final capturedSession = currentSession;
+    final capturedSecret = _acceptedSecret;
+    if (capturedSession == null ||
+        capturedSecret == null ||
+        _operation != null ||
+        _logout != null) {
       return Future.error(_failure());
     }
     _revoke(SessionPersistencePhase.saving);
+    final generation = _generation;
     return _runTracked(() async {
-      // The same pre-dispatch fence applies to an explicit refresh cancelled
-      // by logout after this operation reserved its slot.
+      // Logout can cancel the reserved operation before Auth dispatch.
       if (_closed || _logout != null || _cancelledOperation) {
         throw _failure();
+      }
+      if (generation != _generation ||
+          !identical(_sdk.currentSession, capturedSession) ||
+          _sdk.currentRefreshToken != capturedSecret) {
+        throw const _StaleRefreshReservation();
       }
       _authMutationDispatched = true;
       _operationAuthDispatched = true;

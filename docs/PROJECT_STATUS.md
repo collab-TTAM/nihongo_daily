@@ -5425,3 +5425,14 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Changed paths: `scripts/test_hosted_supabase_probe.py` and this status document. The exact-head CI after this correction must rerun repo-sanity, database, disposable Supabase integration, Windows, Flutter and all downstream steps.
 - No staging secrets, hosted Auth, production configuration, Auth/provider/schema/RLS, default activation, Pro-owned N4 content, merge, deployment or release changed. Hosted learner A/B and protected Windows restore remain blocked on owner-configured staging environment and two disposable test accounts.
 - Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics. Keep PR #37 Draft and #20/#22/#15 open.
+
+
+## Refresh dispatch generation fence — 2026-11-24T10:45Z
+
+- PR #37 branch `automation/issue-22-atomic-review`; parent HEAD `5fe7cf38d4d221ca7914abd8c9c18551ac501955`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Found a pre-dispatch race in `PersistentAccountAccess.refresh()`: the public readiness check occurred before a deferred microtask, but the operation did not retain the accepted SDK session/refresh-secret/generation snapshot. A session replacement in that gap could cause an A-triggered refresh to execute against B.
+- Changed paths: `apps/flutter_app/lib/features/auth/data/persistent_account_access.dart`, `apps/flutter_app/test/features/srs/session_lifecycle_fixtures.dart`, `qa/matrix.json`, `docs/PERSISTENT_SESSION_LIFECYCLE.md`, and this status document.
+- The refresh now checks captured session identity, exact persisted secret and generation immediately before SDK dispatch. A stale reservation returns the existing safe authorization failure without failing or overwriting B. Added a deterministic A-to-B-before-dispatch lifecycle regression and a required QA anchor.
+- Cloud authoring has no pinned Flutter/Dart SDK or Windows OS; local Dart format/analyze/Flutter test/build were not run. Exact-head GitHub Actions must verify the full six-job suite and native probes; no CI pass is claimed before that run completes.
+- No hosted staging workflow dispatch, secrets, Auth strategy/provider, schema/RLS, default preview activation, Pro-owned #14/#38 N4/content, merge, deployment or release changed. Hosted signed-JWT A/B and physical multi-device acceptance remain pending.
+- Next: inspect every job and step on the new exact PR head; fix only observed diagnostics while retaining the race assertion and all security gates.
