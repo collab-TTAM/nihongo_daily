@@ -4811,7 +4811,7 @@
     {
       "id": "quiz-report-v2-explicit-action",
       "status": "automated-baseline",
-      "scope": "Completed rounds expose an explicit nd-quiz-report-2 action; saved local vocabulary/grammar history can manually replay the exact immutable format-v2 attempt/event ID through the same caller-owned ready transport. Legacy v1 remains read-only; uncertain submits use replay-only lookup.",
+      "scope": "Completed rounds expose an explicit nd-quiz-report-2 action; saved local vocabulary/grammar history first performs a manual receipt lookup, then permits an exact format-v2 replay only when unresolved. Lookup failure keeps submit hidden; legacy v1 remains read-only.",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -4849,6 +4849,14 @@
         {
           "path": "apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart",
           "contains": "saved v2 history remains local-only without a ready report transport"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart",
+          "contains": "saved v2 history lookup failure keeps submit hidden"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart",
+          "contains": "saved v2 history confirms an existing receipt before allowing replay"
         }
       ],
       "issues": [

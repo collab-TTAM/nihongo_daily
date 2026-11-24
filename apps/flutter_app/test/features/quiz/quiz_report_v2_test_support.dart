@@ -28,7 +28,9 @@ final class TestQuizReportSubmitter implements QuizReportV2Submitter {
   }
 
   @override
-  Future<QuizReportV2LookupResult> lookupReceipt(QuizReportV2Request request) {
+  Future<QuizReportV2LookupResult> lookupReceipt(
+    QuizReportV2Request request,
+  ) {
     lookups.add(request);
     final handler = onLookup;
     if (handler != null) return handler(request);

@@ -39,7 +39,6 @@ VocabularyQuizAttempt quizReport(
   });
 }
 
-
 VocabularyQuizAttempt quizReportV2(
   int number, {
   bool correct = false,
@@ -48,7 +47,12 @@ VocabularyQuizAttempt quizReportV2(
   final json = quizReport(number, correct: correct, level: level).toJson();
   json['format_version'] = 2;
   for (final value in json['answers'] as List<Object?>) {
-    (value as Map<String, Object?>)['choice_content_versions'] = [1, 1, 1, 1];
+    (value as Map<String, Object?>)['choice_content_versions'] = [
+      1,
+      1,
+      1,
+      1,
+    ];
   }
   return VocabularyQuizAttempt.fromJson(json);
 }

@@ -55,7 +55,12 @@ OwnedGrammarQuizAttempt rowV2(int n) {
   final json = fixture.attempt(n).toJson();
   json['format_version'] = 2;
   for (final value in json['answers'] as List<Object?>) {
-    (value as Map<String, Object?>)['choice_content_versions'] = [1, 1, 1, 1];
+    (value as Map<String, Object?>)['choice_content_versions'] = [
+      1,
+      1,
+      1,
+      1,
+    ];
   }
   return OwnedGrammarQuizAttempt(
     fixture.ownerA,
@@ -372,6 +377,9 @@ void main() {
 
       expect(submitter.submissions, isEmpty);
       expect(submitter.lookups, isEmpty);
+      await tap(tester, 'quiz-report-history-lookup');
+      expect(submitter.lookups, hasLength(1));
+      expect(submitter.lookups.single.clientEventId, fixture.event(2));
       await tap(tester, 'quiz-report-submit');
       expect(submitter.submissions, hasLength(1));
       expect(submitter.submissions.single.clientEventId, fixture.event(2));
@@ -379,6 +387,9 @@ void main() {
       expect(submitter.submissions.single.practiceKind, 'primary');
 
       await select(tester, 'grammar-history-kind', 'Vòng luyện sai');
+      await tap(tester, 'quiz-report-history-lookup');
+      expect(submitter.lookups, hasLength(2));
+      expect(submitter.lookups.last.clientEventId, fixture.event(3));
       await tap(tester, 'quiz-report-submit');
       expect(submitter.submissions, hasLength(2));
       expect(submitter.submissions.last.clientEventId, fixture.event(3));
@@ -400,6 +411,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+      expect(find.byKey(const Key('quiz-report-history-lookup')), findsNothing);
       expect(submitter.submissions, isEmpty);
     },
   );

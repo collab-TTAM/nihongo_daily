@@ -939,6 +939,7 @@ void main() {
 
       expect(find.byKey(const Key('quiz-history-summary')), findsOneWidget);
       expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+      expect(find.byKey(const Key('quiz-report-history-lookup')), findsNothing);
       expect(find.byKey(const Key('quiz-report-legacy-unavailable')), findsNothing);
     },
   );
@@ -964,6 +965,14 @@ void main() {
 
       expect(submitter.submissions, isEmpty);
       expect(submitter.lookups, isEmpty);
+      final lookup = find.byKey(const Key('quiz-report-history-lookup'));
+      await tester.ensureVisible(lookup);
+      await tester.tap(lookup);
+      await tester.pumpAndSettle();
+      expect(submitter.lookups, hasLength(1));
+      expect(submitter.lookups.single.clientEventId, attempt.eventId);
+      expect(submitter.submissions, isEmpty);
+
       final send = find.byKey(const Key('quiz-report-submit'));
       await tester.ensureVisible(send);
       await tester.tap(send);
@@ -1002,6 +1011,82 @@ void main() {
 
       expect(
         find.byKey(const Key('quiz-report-legacy-unavailable')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+      expect(find.byKey(const Key('quiz-report-history-lookup')), findsNothing);
+      expect(submitter.submissions, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'saved v2 history confirms an existing receipt before allowing replay',
+    (tester) async {
+      final h = Harness();
+      final attempt = quizReportV2(74, correct: true);
+      final source = _Source(h)
+        ..response = (owner) async => [
+          OwnedVocabularyQuizAttempt(owner, attempt),
+        ];
+      final submitter = TestQuizReportSubmitter()
+        ..onLookup = (request) async => request.decodeLookupResponse({
+          'status': 'found',
+          'response': {
+            'client_event_id': request.clientEventId,
+            'quiz_type': request.quizType,
+            'practice_kind': request.practiceKind,
+            'jlpt_level': request.jlptLevel,
+            'completed_at': request.completedAt,
+            'answer_count': request.answers.length,
+            'correct_count': request.answers
+                .where((answer) => answer.isCorrect)
+                .length,
+          },
+        });
+      await _mount(
+        tester,
+        harness: h,
+        source: source,
+        reportSubmitter: submitter,
+      );
+      await _load(tester);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quiz-report-history-lookup')));
+      await tester.pumpAndSettle();
+
+      expect(submitter.lookups, hasLength(1));
+      expect(submitter.submissions, isEmpty);
+      expect(find.byKey(const Key('quiz-report-confirmed')), findsOneWidget);
+      expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'saved v2 history lookup failure keeps submit hidden',
+    (tester) async {
+      final h = Harness();
+      final attempt = quizReportV2(75);
+      final source = _Source(h)
+        ..response = (owner) async => [
+          OwnedVocabularyQuizAttempt(owner, attempt),
+        ];
+      final submitter = TestQuizReportSubmitter()
+        ..onLookup = (_) async => throw StateError('offline');
+      await _mount(
+        tester,
+        harness: h,
+        source: source,
+        reportSubmitter: submitter,
+      );
+      await _load(tester);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quiz-report-history-lookup')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('quiz-report-history-lookup-error')),
         findsOneWidget,
       );
       expect(find.byKey(const Key('quiz-report-submit')), findsNothing);
