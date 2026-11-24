@@ -205,3 +205,13 @@
 - Verification boundary: cloud authoring has no Dart/Flutter SDK, so no local format/analyze/widget/build is claimed. A fresh exact-head Actions run must verify the route build, strict formatter, Flutter tests, Web/Windows builds and preview artifacts. The diagnostic step does not weaken or bypass any gate.
 - No N4 curriculum/content, Pro-owned manifests/README/content tests/docs, Auth/provider, API/schema/RLS, hosted secrets, staging dispatch, merge, deployment or release changed. Hosted quiz receipts, deployed Edge/PostgREST/RLS, reviewed mastery and full Personal Alpha remain outstanding.
 - Next: inspect every latest-attempt job/step on the final exact PR #41 HEAD. If formatter still fails, use the new failure diff output to apply only the emitted Dart formatter hunks; otherwise continue the #13 acceptance without enabling study credit or mastery.
+
+
+## Router tail source correction — 2026-11-24T12:22Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `34fad12b9ddc1eeef51b6a23831fbb39837413e9`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Separate post-write review of `34fad12b` found the router tail was still malformed: the UUID regex string lacked its closing quote/anchor, and the duplicated route/level helpers remained. The prior commit is not considered a passing correction.
+- Replaced the router tail with exactly one complete anchored lowercase UUID pattern, one `_curriculumRoute`, one `_curriculumLevel` and one `_kanjiLevel`. The 36-character check and safe invalid/stale destination behavior remain.
+- Superseded exact-head Actions [45392597005](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45392597005) targets `34fad12b` and was IN_PROGRESS at the last observation; it is not evidence for this correction. Cloud runtime has no pinned Dart/Flutter SDK, so local format/analyze/test/build were not run. A fresh exact-head CI is required.
+- Changed paths: `apps/flutter_app/lib/app/router.dart` and this status document. No Pro-owned N4/content, Auth/provider, API/schema/RLS, staging secrets, deployment, merge or release changed.
+- Next: inspect the new exact-head workflow, especially Dart format, Windows bridge compilation and the two vocabulary/grammar navigation tests; use the formatter-diff diagnostic if any format check still fails.
