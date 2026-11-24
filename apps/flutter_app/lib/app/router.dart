@@ -178,6 +178,38 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 final _curriculumEntryIdPattern = RegExp(
   r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
+
+Widget _curriculumRoute(GoRouterState state, CurriculumKind kind) {
+  final levelValue = state.uri.queryParameters['level'];
+  final entryId = state.uri.queryParameters['item'];
+  final level = _curriculumLevel(levelValue);
+  if ((levelValue != null && level == null) ||
+      (entryId != null &&
+          (level == null || !_curriculumEntryIdPattern.hasMatch(entryId)))) {
+    return const FeaturePreviewScreen(
+      title: 'Mục ôn lại chưa khả dụng',
+      description: 'Liên kết này không trỏ tới một mục học hợp lệ.',
+    );
+  }
+  return CurriculumScreen(
+    key: ValueKey('${kind.name}:${level?.name ?? 'current'}:${entryId ?? ''}'),
+    kind: kind,
+    initialLevel: level,
+    initialEntryId: entryId,
+  );
+}
+
+PreviewLevel? _curriculumLevel(String? value) => switch (value?.toLowerCase()) {
+  'n5' => PreviewLevel.n5,
+  'n4' => PreviewLevel.n4,
+  _ => null,
+};
+
+PreviewLevel? _kanjiLevel(String? value) => switch (value) {
+  'n5' => PreviewLevel.n5,
+  'n4' => PreviewLevel.n4,
+  _ => null,
+};
 ,
 );
 
