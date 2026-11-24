@@ -1910,10 +1910,7 @@ void main() {
         .value
         .uri;
     expect(route.path, '/vocabulary');
-    expect(route.queryParameters, {
-      'level': 'n5',
-      'item': question.target.id,
-    });
+    expect(route.queryParameters, {'level': 'n5', 'item': question.target.id});
     expect(find.text(question.target.meaningVi), findsOneWidget);
     expect(find.text(question.target.explanationVi), findsOneWidget);
     expect(curriculum.calls, [
@@ -1985,24 +1982,16 @@ void main() {
         .value
         .uri;
     expect(route.path, '/grammar');
-    expect(route.queryParameters, {
-      'level': 'n4',
-      'item': question.target.id,
-    });
+    expect(route.queryParameters, {'level': 'n4', 'item': question.target.id});
     expect(find.text(question.target.meaningVi), findsOneWidget);
     expect(find.text(question.target.explanationVi), findsOneWidget);
-    expect(curriculum.calls, [
-      'grammar_meaning:N4',
-      'grammar_meaning:N4',
-    ]);
+    expect(curriculum.calls, ['grammar_meaning:N4', 'grammar_meaning:N4']);
     expect(vocabulary.writes, 0);
     expect(grammar.writes, 0);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('invalid and stale curriculum links fail safely', (
-    tester,
-  ) async {
+  testWidgets('invalid and stale curriculum links fail safely', (tester) async {
     final harness = Harness();
     final source = _ProgressSource(harness);
     final entries = _serverVocabularySource();
@@ -2016,12 +2005,14 @@ void main() {
       curriculumRepository: curriculum,
     );
 
-    container.read(routerProvider).go(
-      Uri(
-        path: '/vocabulary',
-        queryParameters: {'level': 'n5', 'item': 'not-a-uuid'},
-      ).toString(),
-    );
+    container
+        .read(routerProvider)
+        .go(
+          Uri(
+            path: '/vocabulary',
+            queryParameters: {'level': 'n5', 'item': 'not-a-uuid'},
+          ).toString(),
+        );
     await tester.pumpAndSettle();
     expect(
       find.text('Liên kết này không trỏ tới một mục học hợp lệ.'),
@@ -2033,12 +2024,14 @@ void main() {
       '10000000-0000-4000-8000-00000000000A',
       '10000000-0000-4000-8000-000000000099-extra',
     ]) {
-      container.read(routerProvider).go(
-        Uri(
-          path: '/vocabulary',
-          queryParameters: {'level': 'n5', 'item': invalidId},
-        ).toString(),
-      );
+      container
+          .read(routerProvider)
+          .go(
+            Uri(
+              path: '/vocabulary',
+              queryParameters: {'level': 'n5', 'item': invalidId},
+            ).toString(),
+          );
       await tester.pumpAndSettle();
       expect(
         find.text('Liên kết này không trỏ tới một mục học hợp lệ.'),
@@ -2048,12 +2041,14 @@ void main() {
     expect(curriculum.calls, isEmpty);
 
     const missingId = '10000000-0000-4000-8000-000000000099';
-    container.read(routerProvider).go(
-      Uri(
-        path: '/vocabulary',
-        queryParameters: {'level': 'n5', 'item': missingId},
-      ).toString(),
-    );
+    container
+        .read(routerProvider)
+        .go(
+          Uri(
+            path: '/vocabulary',
+            queryParameters: {'level': 'n5', 'item': missingId},
+          ).toString(),
+        );
     await tester.pumpAndSettle();
     expect(
       find.byKey(const Key('curriculum-target-unavailable')),

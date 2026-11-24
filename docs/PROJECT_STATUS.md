@@ -215,3 +215,13 @@
 - Superseded exact-head Actions [45392597005](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45392597005) targets `34fad12b` and was IN_PROGRESS at the last observation; it is not evidence for this correction. Cloud runtime has no pinned Dart/Flutter SDK, so local format/analyze/test/build were not run. A fresh exact-head CI is required.
 - Changed paths: `apps/flutter_app/lib/app/router.dart` and this status document. No Pro-owned N4/content, Auth/provider, API/schema/RLS, staging secrets, deployment, merge or release changed.
 - Next: inspect the new exact-head workflow, especially Dart format, Windows bridge compilation and the two vocabulary/grammar navigation tests; use the formatter-diff diagnostic if any format check still fails.
+
+
+## Exact Dart formatter repair — 2026-11-24T12:26Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `dc02169296f06a853845cc2883a828bc17873190`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45393063861](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45393063861) attempt 1: repo-sanity, AI boundary and database SUCCESS; Flutter FAILED strict Dart 3.35.4 formatting in `test/features/progress/progress_overview_widget_test.dart`; Windows was IN_PROGRESS at last observation. The Flutter log emitted the exact formatter diff: two compact route query expectations, one compact grammar call expectation, a single-line invalid/stale test declaration and three wrapped GoRouter call chains. No Flutter analyze/widget tests or Web build ran because the formatter gate stopped the job. The formatter diagnostic step itself was skipped because its condition omitted the `failure()` status function.
+- Applied only those emitted formatter hunks; no assertions, fixtures, content, or runtime behavior changed. Corrected the diagnostic condition to run after a formatter failure; it only prints `git diff` and leaves the strict blocking format gate unchanged.
+- Paths: `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `.github/workflows/ci.yml`, and this status document. No N4/Pro-owned content, Auth/provider, API/schema/RLS, hosted secrets, staging dispatch, merge, deployment or release changed.
+- Verification boundary: no local pinned Dart/Flutter SDK in the cloud authoring runtime. A new exact-head CI run is required for format/analyze/full tests, Windows bridge/native checks, Web/Windows builds and preview artifact verification. The superseded run is not a pass.
+- Next: inspect every latest-attempt job/step on the new HEAD. If formatter passes, continue to analyze/tests; if it fails, use the now-correct failure diagnostic and apply only the emitted diff.

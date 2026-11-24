@@ -107,7 +107,7 @@ jobs:
           git diff --exit-code -- .
           exit 1
       - name: Show Dart formatter diff on failure
-        if: ${{ steps.dart_format.outcome == 'failure' }}
+        if: ${{ failure() && steps.dart_format.outcome == 'failure' }}
         run: git diff -- .
       - run: flutter analyze
       - run: flutter test
