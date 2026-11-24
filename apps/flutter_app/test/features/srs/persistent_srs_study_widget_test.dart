@@ -303,11 +303,10 @@ void main() {
         );
         await waitFor(
           tester,
-          () =>
-              find
-                  .text('Không có mục đến hạn trong danh sách đã tải.')
-                  .evaluate()
-                  .isNotEmpty,
+          () => find
+              .text('Không có mục đến hạn trong danh sách đã tải.')
+              .evaluate()
+              .isNotEmpty,
           reason: 'the confirmed review did not reload the empty server queue',
         );
         await pumpUi(tester);
@@ -361,7 +360,8 @@ void main() {
         await waitFor(
           tester,
           () => runtime.account.readyRuntime == null && backend.secret == null,
-          reason: 'logout did not revoke study access and clear the saved secret',
+          reason:
+              'logout did not revoke study access and clear the saved secret',
         );
         await pumpUi(tester);
         expect(runtime.account.readyRuntime, isNull);
