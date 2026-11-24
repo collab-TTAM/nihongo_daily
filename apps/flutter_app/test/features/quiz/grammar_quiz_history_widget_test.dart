@@ -55,12 +55,7 @@ OwnedGrammarQuizAttempt rowV2(int n) {
   final json = fixture.attempt(n).toJson();
   json['format_version'] = 2;
   for (final value in json['answers'] as List<Object?>) {
-    (value as Map<String, Object?>)['choice_content_versions'] = [
-      1,
-      1,
-      1,
-      1,
-    ];
+    (value as Map<String, Object?>)['choice_content_versions'] = [1, 1, 1, 1];
   }
   return OwnedGrammarQuizAttempt(
     fixture.ownerA,

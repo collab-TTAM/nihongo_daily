@@ -154,3 +154,12 @@
 - Tests added: no transport means no report action; manual lookup then exact vocabulary replay; existing receipt confirms without submit; lookup failure keeps submit hidden; grammar primary/correction preserve their event IDs; legacy v1 remains read-only. Existing uncertain-submit and late-session tests remain in place.
 - CI: parent HEAD `9d802b280ce16434467d55ef792091aaab81a8e7` had Actions run `45312113948` pass all six jobs/steps. The final implementation HEAD has not yet been observed with a completed latest-attempt CI; no pass is claimed. Flutter/Dart SDK is unavailable in this cloud authoring runtime, so no local format/analyze/test/build claim is made.
 - Limitation/next action: exact-head CI must pass every latest-attempt job/step. Hosted learner receipt/RLS proof remains separate and is not inferred from test submitters. Keep PR #41 Draft; next review the final diff and CI, then continue only an unblocked #13/#15 dependency after the #11 study-session integration is accepted.
+
+
+## PR #41 — pinned Dart 3.35.4 formatter repair — 2026-11-24T04:42Z
+
+- Branch `automation/issue-11-plan-sdk-integration`; parent HEAD `e205476d63fe5be344285617833a256849ab7ac1`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45327357965](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45327357965), attempt 1, targets the parent HEAD. `repo-sanity`, `ai-boundary` and `database` completed SUCCESS; Flutter failed only the pinned Dart 3.35.4 formatter gate and Windows was still running at observation. Flutter analyze/tests and downstream verifiers/build were skipped after format failure, not passes.
+- Applied only the exact five-file formatter output emitted by that CI job: quiz history screen, grammar/vocabulary history widget tests, quiz journal fixtures and quiz report test support. No assertion, test case, behavior or retry policy changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must verify every required job/step. No new-head pass is claimed. Pro-owned N4/content paths, Auth/provider, API/schema/RLS, hosted settings and default preview remain untouched.
+- Next: inspect the complete latest-attempt CI for the repaired HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11 open pending study-session, hosted learner and integrated Personal Alpha evidence.

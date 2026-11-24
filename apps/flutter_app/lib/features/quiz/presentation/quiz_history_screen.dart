@@ -51,7 +51,10 @@ class QuizHistoryScreen extends ConsumerWidget {
             repository: repository,
             submitter: submitter,
             isCurrent: () =>
-                identical(ref.read(quizHistoryRepositoryProvider), repository) &&
+                identical(
+                  ref.read(quizHistoryRepositoryProvider),
+                  repository,
+                ) &&
                 identical(ref.read(quizReportV2TransportProvider), submitter),
           ),
         TextButton(
