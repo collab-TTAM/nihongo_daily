@@ -1055,7 +1055,11 @@ void main() {
       await _load(tester);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('quiz-report-history-lookup')));
+      final lookup = find.byKey(const Key('quiz-report-history-lookup'));
+      await tester.ensureVisible(lookup);
+      await tester.pumpAndSettle();
+      expect(lookup.hitTestable(), findsOneWidget);
+      await tester.tap(lookup);
       await tester.pumpAndSettle();
 
       expect(submitter.lookups, hasLength(1));
@@ -1084,7 +1088,11 @@ void main() {
     await _load(tester);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('quiz-report-history-lookup')));
+    final lookup = find.byKey(const Key('quiz-report-history-lookup'));
+    await tester.ensureVisible(lookup);
+    await tester.pumpAndSettle();
+    expect(lookup.hitTestable(), findsOneWidget);
+    await tester.tap(lookup);
     await tester.pumpAndSettle();
 
     expect(
