@@ -491,15 +491,46 @@ void main() {
         if (profileWait != null && !profileWait!.isCompleted) {
           profileWait!.complete(ownProfileResponse());
         }
-        await traceStage('controller-close', () async {
-          await tester.runAsync<void>(
-            () => controller.close().timeout(const Duration(seconds: 5)),
+        try {
+          var closeSettled = false;
+          Object? closeError;
+          StackTrace? closeStack;
+          final close = controller.close().then<void>(
+            (_) {
+              closeSettled = true;
+            },
+            onError: (Object error, StackTrace stackTrace) {
+              closeError = error;
+              closeStack = stackTrace;
+              closeSettled = true;
+            },
           );
-        });
-        await traceStage(
-          'unmount-app',
-          () => tester.pumpWidget(const SizedBox.shrink()),
-        );
+          await traceStage(
+            'controller-close',
+            () => waitFor(
+              tester,
+              () => closeSettled,
+              reason: 'owned startup runtime did not close after logout',
+              diagnostics: () => [
+                'startup=${controller.phase.name}',
+                'account=${runtime.account.state.phase.name}',
+                'persistence=${runtime.persistence.phase.name}',
+                'vaultOwner=${runtime.persistence.hasVaultOwner}',
+                'vaultOperations=${backend.operations.join(',')}',
+              ].join(', '),
+            ),
+          );
+          if (closeError != null) {
+            Error.throwWithStackTrace(closeError!, closeStack!);
+          }
+          await close;
+          expect(runtime.persistence.phase, SessionPersistencePhase.closed);
+        } finally {
+          await traceStage(
+            'unmount-app',
+            () => tester.pumpWidget(const SizedBox.shrink()),
+          );
+        }
       }
     },
     timeout: const Timeout(Duration(seconds: 60)),
