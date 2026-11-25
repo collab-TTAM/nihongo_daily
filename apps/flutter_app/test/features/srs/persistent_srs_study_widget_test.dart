@@ -43,6 +43,8 @@ void main() {
   var submitCalls = 0;
   // The startup controller owns and closes the runtime after construction.
   var runtimeTransferredToStartupController = false;
+  var journalClosed = false;
+  var directoryDeleted = false;
 
   http.Response authResponse() => http.Response(
     jsonEncode({
@@ -118,6 +120,8 @@ void main() {
     queueCalls = 0;
     submitCalls = 0;
     runtimeTransferredToStartupController = false;
+    journalClosed = false;
+    directoryDeleted = false;
     backend = fixture.MemoryVault();
     directory = await Directory.systemTemp.createTemp('nd-srs-owned-ui-');
     journal = await NativeReviewJournal.open(directory);
@@ -205,13 +209,19 @@ void main() {
       debugPrint('ND_SRS_WIDGET_TEARDOWN_SKIP:controller-owns-runtime');
     }
 
-    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:journal-close');
-    await journal.close();
-    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:journal-close');
+    if (!journalClosed) {
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_START:journal-close-fallback');
+      await journal.close();
+      journalClosed = true;
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:journal-close-fallback');
+    }
 
-    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:directory-delete');
-    await directory.delete(recursive: true);
-    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:directory-delete');
+    if (!directoryDeleted) {
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_START:directory-delete-fallback');
+      await directory.delete(recursive: true);
+      directoryDeleted = true;
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:directory-delete-fallback');
+    }
 
     debugPrint('ND_SRS_WIDGET_TEARDOWN_START:http-close');
     network.close();
@@ -553,13 +563,37 @@ void main() {
           await close;
           expect(runtime.persistence.phase, SessionPersistencePhase.closed);
         } finally {
-          await traceStage(
-            'unmount-app',
-            () => tester.pumpWidget(const SizedBox.shrink()),
-          );
+          try {
+            await traceStage(
+              'unmount-app',
+              () => tester.pumpWidget(const SizedBox.shrink()),
+            );
+          } finally {
+            try {
+              if (!journalClosed) {
+                await traceStage('journal-close', () async {
+                  await tester.runAsync<void>(
+                    () => journal.close().timeout(const Duration(seconds: 5)),
+                  );
+                });
+                journalClosed = true;
+              }
+            } finally {
+              if (!directoryDeleted) {
+                await traceStage('directory-delete', () async {
+                  await tester.runAsync<void>(
+                    () => directory
+                        .delete(recursive: true)
+                        .timeout(const Duration(seconds: 5)),
+                  );
+                });
+                directoryDeleted = true;
+              }
+            }
+          }
         }
       }
-    },
+    }
     timeout: const Timeout(Duration(seconds: 60)),
   );
 }
