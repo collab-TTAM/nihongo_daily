@@ -234,3 +234,13 @@
 - Changed paths: `apps/flutter_app/lib/features/curriculum/presentation/curriculum_screen.dart` and `docs/PROJECT_STATUS.md`. No content, N4/Pro-owned data, quiz scoring, study credit, mastery, Auth/provider strategy, API/schema/RLS, CI gate, secret, deployment, merge or release changed.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget/build was not run. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter tests, Windows and Web builds/artifacts. The parent run is not a pass for this fix.
 - Next: inspect every latest-attempt job and step for the new exact HEAD. Keep PR #41 Draft and #13 open until the corrected navigation test and full acceptance pass; hosted learner receipt, deployed Edge/PostgREST/RLS and reviewed mastery remain separate gates.
+
+
+## Curriculum deep-link pinned formatter correction — 2026-11-25T18:13Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `305c2f959de9b6515cc6a554f03dace706ddd4f6`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45400721974](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45400721974), attempt 1, targets this parent and completed FAILURE only at the strict Dart 3.35.4 formatter. `repo-sanity`, `ai-boundary`, `database` and `windows` completed SUCCESS with all returned steps; Flutter analyze/full tests and all downstream browser/native/wire/Web checks were SKIPPED after formatting failure; `preview-artifacts` was SKIPPED. These skipped checks are not passes.
+- The read-only formatter diagnostic emitted exactly two whitespace-only hunks in `apps/flutter_app/lib/features/curriculum/presentation/curriculum_screen.dart`: compact the pending-level boolean expression and the pending-state `PageHeading` constructor. Applied only those two exact hunks; no state, provider timing, route, content, assertion or UI behavior changed.
+- Changed paths: this curriculum screen and `docs/PROJECT_STATUS.md`. Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/widget/build is claimed. The corrected exact HEAD requires fresh GitHub Actions verification.
+- No Pro-owned N4/data/manifest/README/content paths, Auth/provider, API/schema/RLS, CI gate, default-save, hosted secrets/dispatch, deployment, merge or release change.
+- Next: inspect every latest-attempt job and step on the corrected exact HEAD; require strict format, analyzer, full Flutter suite, Windows and Web/preview checks to complete successfully before continuing the remaining #13/#11 acceptance.

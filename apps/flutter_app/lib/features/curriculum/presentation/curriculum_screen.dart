@@ -44,8 +44,7 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
     _selectedId = widget.initialEntryId;
     final initialLevel = widget.initialLevel;
     _initialLevelPending =
-        initialLevel != null &&
-        ref.read(previewLevelProvider) != initialLevel;
+        initialLevel != null && ref.read(previewLevelProvider) != initialLevel;
     if (_initialLevelPending) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -96,10 +95,7 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
       return PageBody(
         scrollController: _scrollController,
         children: [
-          PageHeading(
-            title: widget.kind.label,
-            subtitle: 'Đang mở mục học…',
-          ),
+          PageHeading(title: widget.kind.label, subtitle: 'Đang mở mục học…'),
           const Center(child: CircularProgressIndicator()),
         ],
       );
