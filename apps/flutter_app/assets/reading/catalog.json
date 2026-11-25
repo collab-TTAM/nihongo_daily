@@ -970,6 +970,103 @@
           "explanation_vi": "Bài đọc nói sau bữa trưa tôi xem ti vi cùng mẹ."
         }
       ]
+    },
+    {
+      "id": "n5-winter-morning-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "冬の朝",
+      "title_vi": "Buổi sáng mùa đông",
+      "text_ja": "冬の朝は寒いです。私は六時半に起きて、温かいお茶を飲みます。七時に母と朝ご飯を食べます。それから、コートを着て学校へ行きます。",
+      "reading_ja": "ふゆのあさはさむいです。わたしはろくじはんにおきて、あたたかいおちゃをのみます。しちじにははとあさごはんをたべます。それから、コートをきてがっこうへいきます。",
+      "translation_vi": "Buổi sáng mùa đông trời lạnh. Tôi thức dậy lúc 6 giờ rưỡi và uống trà nóng. Lúc 7 giờ, tôi ăn sáng với mẹ. Sau đó, tôi mặc áo khoác và đi đến trường.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "冬の朝はどうですか。",
+          "reading_ja": "ふゆのあさはどうですか。",
+          "prompt_vi": "Buổi sáng mùa đông thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "寒いです",
+              "reading_ja": "さむいです",
+              "text_vi": "Lạnh"
+            },
+            {
+              "id": "b",
+              "text_ja": "暑いです",
+              "reading_ja": "あついです",
+              "text_vi": "Nóng"
+            },
+            {
+              "id": "c",
+              "text_ja": "いい天気です",
+              "reading_ja": "いいてんきです",
+              "text_vi": "Trời đẹp"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi sáng mùa đông lạnh."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何時に起きますか。",
+          "reading_ja": "なんじにおきますか。",
+          "prompt_vi": "Tôi thức dậy lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "六時半",
+              "reading_ja": "ろくじはん",
+              "text_vi": "6 giờ rưỡi"
+            },
+            {
+              "id": "b",
+              "text_ja": "七時",
+              "reading_ja": "しちじ",
+              "text_vi": "7 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi thức dậy lúc 6 giờ rưỡi."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "だれと朝ご飯を食べますか。",
+          "reading_ja": "だれとあさごはんをたべますか。",
+          "prompt_vi": "Tôi ăn sáng với ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            },
+            {
+              "id": "c",
+              "text_ja": "先生",
+              "reading_ja": "せんせい",
+              "text_vi": "Giáo viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi ăn sáng với mẹ."
+        }
+      ]
     }
   ]
 }

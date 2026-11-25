@@ -64,7 +64,7 @@ void main() {
       (entry) => entry.id == 'n5-sunday-meal-01',
     );
 
-    expect(passages, hasLength(10));
+    expect(passages, hasLength(11));
     expect(passage.titleJa, '日曜日の昼ごはん');
     expect(passage.titleVi, 'Bữa trưa Chủ nhật');
     expect(passage.contentVersion, 1);
@@ -124,6 +124,26 @@ void main() {
     );
   });
 
+  test('bundled N5 expansion includes the winter morning passage', () {
+    final passage = passages.singleWhere(
+      (entry) => entry.id == 'n5-winter-morning-01',
+    );
+
+    expect(passages, hasLength(11));
+    expect(passage.titleJa, '冬の朝');
+    expect(passage.titleVi, 'Buổi sáng mùa đông');
+    expect(passage.contentVersion, 1);
+    expect(passage.japanese, contains('六時半'));
+    expect(passage.reading, contains('ろくじはん'));
+    expect(passage.vietnamese, contains('trà nóng'));
+    expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
+    expect(passage.questions, hasLength(3));
+    expect(
+      passage.questions.map((question) => question.correctChoiceId),
+      ['a', 'a', 'a'],
+    );
+  });
+
   test('new N5 comprehension keys complete deterministic rounds', () {
     for (final id in [
       'n5-library-study-01',
@@ -133,6 +153,7 @@ void main() {
       'n5-friend-house-01',
       'n5-birthday-01',
       'n5-supermarket-01',
+      'n5-winter-morning-01',
     ]) {
       final passage = passages.singleWhere((entry) => entry.id == id);
       final round = ReadingRound(passage);

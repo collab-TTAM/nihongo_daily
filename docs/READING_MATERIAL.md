@@ -9,7 +9,7 @@ Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
 ## Current bundled N5 draft set
 
-The fixed app asset currently contains ten original N5 draft passages and 30 deterministic comprehension questions. The latest addition is n5-supermarket-01 (スーパーで買い物), a short Saturday shopping passage with the learner and their mother, vegetables, milk, fish and a shared television break, with three source-grounded questions. Its content version is 1 and its source note continues to disclose that a teacher or native speaker has not reviewed it.
+The fixed app asset currently contains eleven original N5 draft passages and 33 deterministic comprehension questions. The latest addition is n5-winter-morning-01 (冬の朝), a short winter-morning passage about waking at 6:30, drinking warm tea, eating breakfast with the learner's mother and going to school in a coat. Its three questions are grounded in those details. The content version is 1 and the source note continues to disclose that a teacher or native speaker has not reviewed it; the earlier n5-supermarket-01 passage remains unchanged.
 
 This is a small reading-flow content increment, not complete N5 coverage,
 official JLPT alignment, independent linguistic review or licensing approval.
