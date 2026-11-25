@@ -188,13 +188,27 @@ void main() {
   });
 
   tearDown(() async {
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:begin');
     if (profileWait != null && !profileWait!.isCompleted) {
       profileWait!.complete(ownProfileResponse());
     }
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:release-profile-barrier');
+
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:runtime-close');
     await runtime.close();
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:runtime-close');
+
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:journal-close');
     await journal.close();
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:journal-close');
+
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:directory-delete');
     await directory.delete(recursive: true);
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:directory-delete');
+
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:http-close');
     network.close();
+    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:http-close');
   });
 
   testWidgets(
