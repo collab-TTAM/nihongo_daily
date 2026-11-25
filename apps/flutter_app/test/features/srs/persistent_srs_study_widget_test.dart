@@ -593,7 +593,7 @@ void main() {
           }
         }
       }
-    }
+    },
     timeout: const Timeout(Duration(seconds: 60)),
   );
 }
