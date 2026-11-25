@@ -5541,3 +5541,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head Actions must show the last completed stage and prove the complete Flutter suite plus downstream browser/native/SRS/Kanji and Web build without skipped required checks.
 - Hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical multi-device sync and the complete learner journey remain separate Personal Alpha gates. Keep PR #37 Draft and #20/#22/#15 open.
 - Next: inspect every latest-attempt job/step and the fixed stage log lines on the new exact HEAD. Fix only the concrete awaited boundary revealed by the run; do not increase timeouts or remove assertions.
+
+
+## PR #37 pinned formatter diagnostic — 2026-11-25T00:14Z
+
+- Core run `core-20261125T0014Z-pr37-pinned-format-diagnostic`; branch `automation/issue-22-atomic-review`; parent HEAD `17599048fe4877638fae29cf2b657fb72ca7f7af`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45507871366](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45507871366), attempt 1, completed failure. Repo sanity, database/RLS, AI boundary, disposable local Supabase integration and Windows each completed SUCCESS with all listed steps. Flutter failed only at strict Dart 3.35.4 format: `persistent_srs_study_widget_test.dart` was the one changed file among 123; analyze, full Flutter suite and all downstream checks/builds were skipped.
+- Added a temporary CI-only diagnostic immediately before the unchanged strict formatter gate. It prints a unified diff between the committed SRS widget test and the formatter output from the pinned SDK. The diagnostic does not write to the checkout, change assertions or bypass the strict gate. It exists only to obtain the exact formatting hunk and will be removed in the source-fix checkpoint.
+- Cloud authoring runtime has no pinned Dart/Flutter SDK; local format/analyze/test/build were not run. No production Auth/session, vault, SRS, schema/RLS, hosted secrets, Pro-owned N4/content, merge or deployment changed.
+- Next: inspect the diagnostic log, apply only the exact formatter hunk to the test file, remove the temporary workflow step, and require a fresh exact-head CI to complete every job/step. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical multi-device sync remain separate Personal Alpha gates.
