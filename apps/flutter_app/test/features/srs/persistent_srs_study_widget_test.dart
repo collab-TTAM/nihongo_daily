@@ -436,7 +436,8 @@ void main() {
         await traceStage(
           'logout-drain',
           () => tester.runAsync<void>(
-            () => runtime.account.signOut().timeout(const Duration(seconds: 10)),
+            () =>
+                runtime.account.signOut().timeout(const Duration(seconds: 10)),
           ),
         );
         await traceStage(
@@ -476,3 +477,4 @@ void main() {
     timeout: const Timeout(Duration(seconds: 60)),
   );
 }
+
