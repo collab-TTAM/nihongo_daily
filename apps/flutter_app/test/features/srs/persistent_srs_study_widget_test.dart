@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -88,14 +89,14 @@ void main() {
   }
 
   Future<T> traceStage<T>(String label, Future<T> Function() operation) async {
-    // Fixed labels only: never print Auth, profile or credential values.
-    print('ND_SRS_WIDGET_STAGE_START:$label');
+    // Fixed labels only: never log Auth, profile or credential values.
+    debugPrint('ND_SRS_WIDGET_STAGE_START:$label');
     try {
       final value = await operation();
-      print('ND_SRS_WIDGET_STAGE_DONE:$label');
+      debugPrint('ND_SRS_WIDGET_STAGE_DONE:$label');
       return value;
     } on Object catch (error) {
-      print('ND_SRS_WIDGET_STAGE_ERROR:$label:${error.runtimeType}');
+      debugPrint('ND_SRS_WIDGET_STAGE_ERROR:$label:${error.runtimeType}');
       rethrow;
     }
   }
