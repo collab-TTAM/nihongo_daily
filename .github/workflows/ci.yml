@@ -222,7 +222,7 @@ jobs:
       - run: flutter pub get --enforce-lockfile
 
 
-            - run: dart format --output=none --set-exit-if-changed .
+      - run: dart format --output=none --set-exit-if-changed .
       - name: Diagnose pinned Dart formatter output for SRS widget test
         if: failure()
         run: |
