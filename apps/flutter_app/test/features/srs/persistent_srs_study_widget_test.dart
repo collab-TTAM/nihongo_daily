@@ -41,6 +41,8 @@ void main() {
   var profileResponseWasReturned = false;
   var queueCalls = 0;
   var submitCalls = 0;
+  // The startup controller owns and closes the runtime after construction.
+  var runtimeTransferredToStartupController = false;
 
   http.Response authResponse() => http.Response(
     jsonEncode({
@@ -115,6 +117,7 @@ void main() {
     profileResponseWasReturned = false;
     queueCalls = 0;
     submitCalls = 0;
+    runtimeTransferredToStartupController = false;
     backend = fixture.MemoryVault();
     directory = await Directory.systemTemp.createTemp('nd-srs-owned-ui-');
     journal = await NativeReviewJournal.open(directory);
@@ -194,9 +197,13 @@ void main() {
     }
     debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:release-profile-barrier');
 
-    debugPrint('ND_SRS_WIDGET_TEARDOWN_START:runtime-close');
-    await runtime.close();
-    debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:runtime-close');
+    if (!runtimeTransferredToStartupController) {
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_START:unowned-runtime-close');
+      await runtime.close();
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_DONE:unowned-runtime-close');
+    } else {
+      debugPrint('ND_SRS_WIDGET_TEARDOWN_SKIP:controller-owns-runtime');
+    }
 
     debugPrint('ND_SRS_WIDGET_TEARDOWN_START:journal-close');
     await journal.close();
@@ -221,6 +228,7 @@ void main() {
           AccountStartupController<AccountController<SrsStudyRuntime>>(
             () async => PersistentAccountStartup(runtime),
           );
+      runtimeTransferredToStartupController = true;
 
       try {
         await traceStage(
@@ -535,8 +543,13 @@ void main() {
             ),
           );
           if (closeError != null) {
+            // Expose only the exception type; raw SDK/storage details may contain secrets.
+            debugPrint(
+              'ND_SRS_WIDGET_CONTROLLER_CLOSE_ERROR:${closeError.runtimeType}',
+            );
             Error.throwWithStackTrace(closeError!, closeStack!);
           }
+          debugPrint('ND_SRS_WIDGET_CONTROLLER_CLOSE_DONE');
           await close;
           expect(runtime.persistence.phase, SessionPersistencePhase.closed);
         } finally {
