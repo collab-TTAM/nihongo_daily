@@ -431,9 +431,13 @@ void main() {
           isTrue,
         );
 
+        // Supabase SDK teardown uses real async work; keep it outside the
+        // widget test's fake-async zone so the logout drain can complete.
         await traceStage(
           'logout-drain',
-          () => runtime.account.signOut().timeout(const Duration(seconds: 10)),
+          () => tester.runAsync<void>(
+            () => runtime.account.signOut().timeout(const Duration(seconds: 10)),
+          ),
         );
         await traceStage(
           'logout-revocation-and-vault-clear',
