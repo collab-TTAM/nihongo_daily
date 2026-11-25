@@ -431,15 +431,41 @@ void main() {
           isTrue,
         );
 
-        // Supabase SDK teardown uses real async work; keep it outside the
-        // widget test's fake-async zone so the logout drain can complete.
+        // Pump fake UI time and real async continuations together. Capture the
+        // result so an SDK failure is asserted here instead of becoming an
+        // unhandled runAsync-zone error.
+        var logoutSettled = false;
+        Object? logoutError;
+        StackTrace? logoutStack;
+        final logout = runtime.account.signOut().then<void>(
+          (_) {
+            logoutSettled = true;
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            logoutError = error;
+            logoutStack = stackTrace;
+            logoutSettled = true;
+          },
+        );
         await traceStage(
           'logout-drain',
-          () => tester.runAsync<void>(
-            () =>
-                runtime.account.signOut().timeout(const Duration(seconds: 10)),
+          () => waitFor(
+            tester,
+            () => logoutSettled,
+            reason: 'logout did not settle after revoking study access',
+            diagnostics: () => [
+              'account=${runtime.account.state.phase.name}',
+              'persistence=${runtime.persistence.phase.name}',
+              'vaultOwner=${runtime.persistence.hasVaultOwner}',
+              'vaultSecret=${backend.secret == null ? 'empty' : 'present'}',
+              'vaultOperations=${backend.operations.join(',')}',
+            ].join(', '),
           ),
         );
+        if (logoutError != null) {
+          Error.throwWithStackTrace(logoutError!, logoutStack!);
+        }
+        await logout;
         await traceStage(
           'logout-revocation-and-vault-clear',
           () => waitFor(
@@ -451,8 +477,10 @@ void main() {
           ),
         );
         await traceStage('pump-after-logout', () => pumpUi(tester));
+        expect(runtime.account.state.phase, AccountPhase.signedOut);
         expect(runtime.account.readyRuntime, isNull);
         expect(backend.secret, isNull);
+        expect(backend.operations, ['read', 'write', 'clear']);
         expect(find.text('猫'), findsNothing);
         expect(find.text('ねこ'), findsNothing);
         expect(find.text('con mèo'), findsNothing);
