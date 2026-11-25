@@ -5636,3 +5636,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Bounded TEST ONLY correction: execute the widget test's explicit `runtime.account.signOut()` through `tester.runAsync` with the existing ten-second bound, because the widget test otherwise awaits the owned Supabase SDK/credential cleanup directly from the fake-async zone. No production Auth/session/vault behavior, assertions, timeout budgets, RPC/schema/RLS or default app runtime changed.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Require fresh exact-head CI for the test, full Flutter suite, Windows/local Supabase checks and Web build. Hosted learner A/B, deployed PostgREST/RLS and physical two-device sync remain unverified Personal Alpha gates.
 - Next: inspect every latest-attempt job/step on the new exact HEAD; fix only observed failures. Keep PR #37 Draft and #20/#22/#15 open until their complete acceptance is demonstrated. Pro-owned #14/PR #38/N4 scope remains untouched.
+
+
+## PR #37 — pinned Dart formatter diagnostic — 2026-11-25T09:11Z
+
+- Exact-head Actions [45573922459](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45573922459), attempt 1, targets `10bb6b11af4daa69691d8a267c2b7affd9a173fe` and completed FAILURE. Repo-sanity (14/14), AI boundary (12/12), database (12/12), Windows (18/18) and disposable local Supabase integration (17/17) completed SUCCESS with every step successful.
+- Flutter dependency resolution succeeded. The strict Dart 3.35.4 formatter reported exactly one changed file: `test/features/srs/persistent_srs_study_widget_test.dart`; analyzer, full Flutter suite, browser/native/SRS/Kanji verifiers and Web build were skipped, not passed.
+- Added a temporary read-only CI step that prints a unified diff from the pinned formatter for that exact test file. It writes only under `$RUNNER_TEMP`; the strict repository-wide formatter gate remains unchanged and still fails on unformatted source.
+- No production Auth/session/vault, RPC/schema/RLS, default runtime, hosted configuration, Pro-owned N4/content, merge, deployment or release changes. Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run.
+- Next: apply only the observed formatter hunk, remove this diagnostic step, and require a fresh complete exact-head CI. Keep PR #37 Draft and #20/#22/#15 open; hosted learner A/B, deployed PostgREST/RLS, physical multi-device sync and the complete Personal Alpha learner journey remain unverified.
