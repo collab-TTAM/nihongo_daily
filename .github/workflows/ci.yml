@@ -221,6 +221,19 @@ jobs:
           cache: true
       - run: flutter pub get --enforce-lockfile
 
+      - name: Diagnose pinned Dart format for startup widget test (read-only)
+        shell: bash
+        run: |
+          formatted="$RUNNER_TEMP/persistent_srs_study_widget_test.dart"
+          dart format --output=show test/features/srs/persistent_srs_study_widget_test.dart > "$formatted"
+          set +e
+          diff -u test/features/srs/persistent_srs_study_widget_test.dart "$formatted"
+          diff_status=$?
+          set -e
+          if [ "$diff_status" -gt 1 ]; then
+            exit "$diff_status"
+          fi
+
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
