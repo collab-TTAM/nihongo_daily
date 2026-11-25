@@ -1,3 +1,15 @@
+## PR #37 — assert durable review receipt retention — 2026-11-25T07:12Z
+
+- Resumed the RELEASED core lane on `automation/issue-22-atomic-review`, parent HEAD `006391a7fdb0fec2394958f4ab424771f14c96fa`; base main remains `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45558707885](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45558707885), attempt 1, targets `006391a7fdb0fec2394958f4ab424771f14c96fa`. `repo-sanity`, `ai-boundary`, `database`, `windows` and disposable local `supabase-integration` completed successfully with every returned step successful. Flutter dependency resolution, strict Dart format and analyze succeeded; the full suite failed in `persistent_srs_study_widget_test.dart`: the test expected `journal.list(wire.a)` to be empty after a confirmed durable review, but the journal correctly retained one settled immutable receipt. The assertion aborted the explicit logout path; the finally cleanup then reached its bounded five-second controller-close timeout. Flutter downstream verifiers/Web build were skipped, not passed.
+- Corrected only the TEST ONLY vertical widget assertion: it now requires exactly the submitted event's retained record, `isPending == false`, a non-null success receipt and no rejection. This matches `NativeReviewJournal.acknowledge` and preserves original-event replay across restart; production code and all existing Auth/session/vault/SRS/logout assertions are unchanged.
+- Changed paths: `apps/flutter_app/test/features/srs/persistent_srs_study_widget_test.dart` and `docs/PROJECT_STATUS.md`. No Pro-owned N4/content, RPC/schema/RLS, Auth strategy, workflow gates, hosted secrets/dispatch, default app activation, merge, deployment or release changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build was run. Fresh exact-head CI must prove formatter, analyzer, complete Flutter suite, downstream browser/native/wire checks and Web release build; a skipped check is not a pass.
+- Component CI for Windows Credential Manager and disposable local Supabase is not hosted learner evidence. Hosted signed-JWT A/B, deployed PostgREST/RLS, real Windows learner restore, physical multi-device sync and the complete learner journey remain Personal Alpha gates. Keep PR #37 Draft and #20/#22/#15 open.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed failures, otherwise release a pending-only CI handoff.
+
+---
+
 ## PR #37 — apply exact pinned Dart 3.35.4 formatter hunk — 2026-11-25T06:13Z
 
 - Resumed the RELEASED core lane on branch automation/issue-22-atomic-review, parent HEAD 8e4e22916e811b51c18124bf9316c1a301ba3743; base main remains 61604bc21da64a0dd94dbb97ba3c4b1d035430a6.

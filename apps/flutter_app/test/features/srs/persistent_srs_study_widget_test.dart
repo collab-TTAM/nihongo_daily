@@ -412,7 +412,14 @@ void main() {
         );
         expect(queueCalls, 2);
         expect(submitCalls, 1);
-        expect(await journal.list(wire.a), isEmpty);
+        // Successful durable reviews retain their immutable receipt for
+        // original-event replay after restart; only pending events are recovered.
+        final journalRecords = await journal.list(wire.a);
+        expect(journalRecords, hasLength(1));
+        expect(journalRecords.single.eventId, payload['client_event_id']);
+        expect(journalRecords.single.isPending, isFalse);
+        expect(journalRecords.single.receipt, isNotNull);
+        expect(journalRecords.single.rejection, isNull);
         expect(
           find.text('Không có mục đến hạn trong danh sách đã tải.'),
           findsOneWidget,
