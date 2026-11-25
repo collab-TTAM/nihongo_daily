@@ -203,10 +203,7 @@ void main() {
         find.byKey(const Key('reading-show-reading')),
       );
       if (readingToggle.value != true) {
-        await tapReading(
-          tester,
-          find.byKey(const Key('reading-show-reading')),
-        );
+        await tapReading(tester, find.byKey(const Key('reading-show-reading')));
       }
       final translationToggle = tester.widget<CheckboxListTile>(
         find.byKey(const Key('reading-show-translation')),
