@@ -220,18 +220,7 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Diagnose pinned Dart formatter output (temporary)
-        run: |
-          set -euo pipefail
-          target=test/features/srs/persistent_srs_study_widget_test.dart
-          test -f "$target"
-          formatted="$RUNNER_TEMP/persistent_srs_study_widget_test.dart"
-          dart format --output=show "$target" > "$formatted"
-          set +e
-          diff -u "$target" "$formatted"
-          diff_status=$?
-          set -e
-          if [[ "$diff_status" -gt 1 ]]; then exit "$diff_status"; fi
+
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics

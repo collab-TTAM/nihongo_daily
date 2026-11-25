@@ -87,10 +87,7 @@ void main() {
     );
   }
 
-  Future<T> traceStage<T>(
-    String label,
-    Future<T> Function() operation,
-  ) async {
+  Future<T> traceStage<T>(String label, Future<T> Function() operation) async {
     // Fixed labels only: never print Auth, profile or credential values.
     print('ND_SRS_WIDGET_STAGE_START:$label');
     try {
@@ -211,15 +208,20 @@ void main() {
           );
 
       try {
-        await traceStage('mount-startup-app', () =>
-            tester.pumpWidget(AccountStartupApp(controller: controller)));
-        await traceStage('vault-rotation-barrier', () => waitFor(
-          tester,
-          () =>
-              backend.writes == 1 &&
-              runtime.persistence.phase == SessionPersistencePhase.saving,
-          reason: 'startup did not reach the rotated-secret vault barrier',
-        ));
+        await traceStage(
+          'mount-startup-app',
+          () => tester.pumpWidget(AccountStartupApp(controller: controller)),
+        );
+        await traceStage(
+          'vault-rotation-barrier',
+          () => waitFor(
+            tester,
+            () =>
+                backend.writes == 1 &&
+                runtime.persistence.phase == SessionPersistencePhase.saving,
+            reason: 'startup did not reach the rotated-secret vault barrier',
+          ),
+        );
         await traceStage('pump-vault-pending', () => tester.pump());
 
         expect(controller.phase, AccountStartupPhase.loading);
@@ -242,11 +244,14 @@ void main() {
         expect(backend.secret, 'TEST_ONLY_SAVED_SRS_REFRESH');
 
         backend.writeWait!.complete();
-        await traceStage('own-profile-request', () => waitFor(
-          tester,
-          () => profileWasRequested,
-          reason: 'own-profile request did not follow the saved rotation',
-        ));
+        await traceStage(
+          'own-profile-request',
+          () => waitFor(
+            tester,
+            () => profileWasRequested,
+            reason: 'own-profile request did not follow the saved rotation',
+          ),
+        );
         await traceStage('pump-profile-pending', () => tester.pump());
 
         final profileRequests = requests
@@ -268,13 +273,16 @@ void main() {
         expect(backend.operations, ['read', 'write']);
 
         profileWait!.complete(ownProfileResponse());
-        await traceStage('profile-readiness', () => waitFor(
-          tester,
-          () =>
-              profileResponseWasReturned &&
-              controller.phase == AccountStartupPhase.active,
-          reason: 'startup did not wait for the captured own profile',
-        ));
+        await traceStage(
+          'profile-readiness',
+          () => waitFor(
+            tester,
+            () =>
+                profileResponseWasReturned &&
+                controller.phase == AccountStartupPhase.active,
+            reason: 'startup did not wait for the captured own profile',
+          ),
+        );
         await traceStage('pump-active-app', () => pumpUi(tester));
 
         expect(controller.account, same(runtime.account));
@@ -284,18 +292,27 @@ void main() {
         final openSrs = find.widgetWithText(FilledButton, 'Ôn tập');
         expect(openSrs, findsOneWidget);
 
-        await traceStage('ensure-visible-open-srs', () => tester.ensureVisible(openSrs));
+        await traceStage(
+          'ensure-visible-open-srs',
+          () => tester.ensureVisible(openSrs),
+        );
         await traceStage('tap-open-srs', () => tester.tap(openSrs));
-        await traceStage('authenticated-queue-dispatch', () => waitFor(
-          tester,
-          () => queueCalls == 1,
-          reason: 'configured SRS route did not load the authenticated queue',
-        ));
-        await traceStage('queue-item-render', () => waitFor(
-          tester,
-          () => find.text('猫').evaluate().isNotEmpty,
-          reason: 'the authenticated queue response did not render its item',
-        ));
+        await traceStage(
+          'authenticated-queue-dispatch',
+          () => waitFor(
+            tester,
+            () => queueCalls == 1,
+            reason: 'configured SRS route did not load the authenticated queue',
+          ),
+        );
+        await traceStage(
+          'queue-item-render',
+          () => waitFor(
+            tester,
+            () => find.text('猫').evaluate().isNotEmpty,
+            reason: 'the authenticated queue response did not render its item',
+          ),
+        );
         await traceStage('pump-srs-queue', () => pumpUi(tester));
 
         final queueRequest = requests.singleWhere(
@@ -312,27 +329,43 @@ void main() {
         expect(find.text('Danh sách N5 • Từ vựng'), findsOneWidget);
         expect(find.text('猫'), findsOneWidget);
 
-        await traceStage('ensure-visible-answer', () => tester.ensureVisible(find.text('Xem đáp án')));
-        await traceStage('tap-reveal-answer', () => tester.tap(find.text('Xem đáp án')));
+        await traceStage(
+          'ensure-visible-answer',
+          () => tester.ensureVisible(find.text('Xem đáp án')),
+        );
+        await traceStage(
+          'tap-reveal-answer',
+          () => tester.tap(find.text('Xem đáp án')),
+        );
         await traceStage('pump-answer-visible', () => pumpUi(tester));
         expect(find.text('ねこ'), findsOneWidget);
         expect(find.text('con mèo'), findsOneWidget);
 
-        await traceStage('ensure-visible-rating', () => tester.ensureVisible(find.text('Tốt')));
+        await traceStage(
+          'ensure-visible-rating',
+          () => tester.ensureVisible(find.text('Tốt')),
+        );
         await traceStage('tap-good-rating', () => tester.tap(find.text('Tốt')));
-        await traceStage('submit-review-dispatch', () => waitFor(
-          tester,
-          () => submitCalls == 1,
-          reason: 'one explicit rating did not dispatch submit_review',
-        ));
-        await traceStage('review-reload-empty-queue', () => waitFor(
-          tester,
-          () => find
-              .text('Không có mục đến hạn trong danh sách đã tải.')
-              .evaluate()
-              .isNotEmpty,
-          reason: 'the confirmed review did not reload the empty server queue',
-        ));
+        await traceStage(
+          'submit-review-dispatch',
+          () => waitFor(
+            tester,
+            () => submitCalls == 1,
+            reason: 'one explicit rating did not dispatch submit_review',
+          ),
+        );
+        await traceStage(
+          'review-reload-empty-queue',
+          () => waitFor(
+            tester,
+            () => find
+                .text('Không có mục đến hạn trong danh sách đã tải.')
+                .evaluate()
+                .isNotEmpty,
+            reason:
+                'the confirmed review did not reload the empty server queue',
+          ),
+        );
         await traceStage('pump-review-reload', () => pumpUi(tester));
 
         final submitRequest = requests.singleWhere(
@@ -380,13 +413,20 @@ void main() {
           isTrue,
         );
 
-        await traceStage('logout-drain', () => runtime.account.signOut().timeout(const Duration(seconds: 10)));
-        await traceStage('logout-revocation-and-vault-clear', () => waitFor(
-          tester,
-          () => runtime.account.readyRuntime == null && backend.secret == null,
-          reason:
-              'logout did not revoke study access and clear the saved secret',
-        ));
+        await traceStage(
+          'logout-drain',
+          () => runtime.account.signOut().timeout(const Duration(seconds: 10)),
+        );
+        await traceStage(
+          'logout-revocation-and-vault-clear',
+          () => waitFor(
+            tester,
+            () =>
+                runtime.account.readyRuntime == null && backend.secret == null,
+            reason:
+                'logout did not revoke study access and clear the saved secret',
+          ),
+        );
         await traceStage('pump-after-logout', () => pumpUi(tester));
         expect(runtime.account.readyRuntime, isNull);
         expect(backend.secret, isNull);
@@ -400,8 +440,14 @@ void main() {
         if (profileWait != null && !profileWait!.isCompleted) {
           profileWait!.complete(ownProfileResponse());
         }
-        await traceStage('controller-close', () => controller.close().timeout(const Duration(seconds: 5)));
-        await traceStage('unmount-app', () => tester.pumpWidget(const SizedBox.shrink()));
+        await traceStage(
+          'controller-close',
+          () => controller.close().timeout(const Duration(seconds: 5)),
+        );
+        await traceStage(
+          'unmount-app',
+          () => tester.pumpWidget(const SizedBox.shrink()),
+        );
       }
     },
     timeout: const Timeout(Duration(seconds: 60)),
