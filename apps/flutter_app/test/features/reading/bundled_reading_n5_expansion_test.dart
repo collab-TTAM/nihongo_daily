@@ -138,10 +138,11 @@ void main() {
     expect(passage.vietnamese, contains('trà nóng'));
     expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
     expect(passage.questions, hasLength(3));
-    expect(
-      passage.questions.map((question) => question.correctChoiceId),
-      ['a', 'a', 'a'],
-    );
+    expect(passage.questions.map((question) => question.correctChoiceId), [
+      'a',
+      'a',
+      'a',
+    ]);
   });
 
   test('new N5 comprehension keys complete deterministic rounds', () {

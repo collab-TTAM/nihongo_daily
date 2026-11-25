@@ -200,7 +200,10 @@ void main() {
       expect(find.text('冬の朝'), findsOneWidget);
       expect(find.textContaining('冬の朝は寒いです。'), findsOneWidget);
       await tapReading(tester, find.byKey(const Key('reading-show-reading')));
-      await tapReading(tester, find.byKey(const Key('reading-show-translation')));
+      await tapReading(
+        tester,
+        find.byKey(const Key('reading-show-translation')),
+      );
       expect(find.textContaining('ろくじはんにおきて'), findsOneWidget);
       expect(find.textContaining('uống trà nóng'), findsOneWidget);
       for (final question in ['q1', 'q2', 'q3']) {
