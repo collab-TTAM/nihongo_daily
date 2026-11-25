@@ -222,7 +222,12 @@ jobs:
       - run: flutter pub get --enforce-lockfile
 
 
-      - run: dart format --output=none --set-exit-if-changed .
+            - run: dart format --output=none --set-exit-if-changed .
+      - name: Diagnose pinned Dart formatter output for SRS widget test
+        if: failure()
+        run: |
+          dart format --output=show test/features/srs/persistent_srs_study_widget_test.dart > "$RUNNER_TEMP/persistent_srs_study_widget_test.formatted.dart"
+          diff -u --label original/test/features/srs/persistent_srs_study_widget_test.dart --label dart-3.35.4/test/features/srs/persistent_srs_study_widget_test.dart test/features/srs/persistent_srs_study_widget_test.dart "$RUNNER_TEMP/persistent_srs_study_widget_test.formatted.dart" || true
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
         run: flutter test --concurrency=1 --reporter expanded
