@@ -71,19 +71,22 @@ void main() {
     WidgetTester tester,
     bool Function() condition, {
     required String reason,
+    String Function()? diagnostics,
   }) async {
-    // Keep asynchronous UI polling bounded without rendering 500 progress
-    // indicator frames for the same five-second logical wait window.
+    // Keep UI polling bounded while allowing real HTTP/mock-client continuations
+    // to run outside the widget test's fake-async clock.
     const maxFrames = 50;
     for (var frame = 0; frame < maxFrames && !condition(); frame++) {
       await tester.pump(const Duration(milliseconds: 100));
-      // tester.pump advances fake time and flushes microtasks. Do not await a
-      // zero-delay Timer here: it cannot fire until another pump is requested.
+      await tester.runAsync<void>(
+        () => Future<void>.delayed(Duration.zero),
+      );
     }
+    final detail = diagnostics == null ? '' : '; ${diagnostics()}';
     expect(
       condition(),
       isTrue,
-      reason: '$reason (after $maxFrames bounded 100 ms frames)',
+      reason: '$reason (after $maxFrames bounded 100 ms frames$detail)',
     );
   }
 
@@ -220,6 +223,16 @@ void main() {
                 backend.writes == 1 &&
                 runtime.persistence.phase == SessionPersistencePhase.saving,
             reason: 'startup did not reach the rotated-secret vault barrier',
+            diagnostics: () => [
+              'startup=${controller.phase.name}',
+              'account=${runtime.account.state.phase.name}',
+              'persistence=${runtime.persistence.phase.name}',
+              'vaultOwner=${runtime.persistence.hasVaultOwner}',
+              'vaultOperations=${backend.operations.join(',')}',
+              'vaultWrites=${backend.writes}',
+              'authRequests=${requests.where((request) => request.url.path.startsWith('/auth/v1/')).length}',
+              'profileRequests=${requests.where((request) => request.url.path == '/rest/v1/rpc/ensure_profile').length}',
+            ].join(', '),
           ),
         );
         await traceStage('pump-vault-pending', () => tester.pump());
@@ -440,10 +453,11 @@ void main() {
         if (profileWait != null && !profileWait!.isCompleted) {
           profileWait!.complete(ownProfileResponse());
         }
-        await traceStage(
-          'controller-close',
-          () => controller.close().timeout(const Duration(seconds: 5)),
-        );
+        await traceStage('controller-close', () async {
+          await tester.runAsync<void>(
+            () => controller.close().timeout(const Duration(seconds: 5)),
+          );
+        });
         await traceStage(
           'unmount-app',
           () => tester.pumpWidget(const SizedBox.shrink()),
