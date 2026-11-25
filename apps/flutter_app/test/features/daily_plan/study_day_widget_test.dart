@@ -27,6 +27,8 @@ final class DayGateway implements DailyPlanStudyDayGateway {
   @override
   Future<Object?> getDailyPlan(Map<String, Object> params) async {
     source.plans++;
+    source.planEnvelope = params;
+    if (source.failPlan) throw StateError('PRIVATE PLAN SQL');
     return studyPlan(45);
   }
 
@@ -45,6 +47,8 @@ final class DaySource
   final store = RecoveryMemoryStore();
   int days = 0;
   int plans = 0;
+  bool failPlan = false;
+  Map<String, Object>? planEnvelope;
   Map<String, Object>? envelope;
   Future<Object?> Function() response = () async => {
     'date': '2026-10-20',
@@ -132,11 +136,11 @@ void main() {
     expect(source.days, 0);
   });
   testWidgets(
-    'plan today fills server date with empty request and no plan write/read',
+    'plan today loads the authoritative plan for the server-selected date',
     (tester) async {
       final h = Harness();
       final source = DaySource(h);
-      await mountDay(tester, h, source);
+      final c = await mountDay(tester, h, source);
       await chooseToday(tester);
       await tester.pumpAndSettle();
       expect(
@@ -148,12 +152,48 @@ void main() {
       );
       expect(source.envelope, {'p_request': <String, Object>{}});
       expect(source.days, 1);
-      expect(source.plans, 0);
+      expect(source.plans, 1);
+      expect(source.planEnvelope, {
+        'p_request': {'date': '2026-10-20'},
+      });
+      expect(find.text('45/120 phút'), findsOneWidget);
+      expect(c.read(srsSessionRecorderProvider).phase, StudyRecorderPhase.idle);
+      expect(source.store.records, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'today plan read failure keeps the selected date and retries only on tap',
+    (tester) async {
+      final h = Harness();
+      final source = DaySource(h)..failPlan = true;
+      await mountDay(tester, h, source);
+      await chooseToday(tester);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('plan-date')))
+            .controller!
+            .text,
+        '2026-10-20',
+      );
+      expect(
+        find.text('Chưa thể tải kế hoạch học. Vui lòng thử lại.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('PRIVATE'), findsNothing);
+      expect(source.days, 1);
+      expect(source.plans, 1);
+      expect(find.byKey(const Key('plan-progress')), findsNothing);
+      expect(source.store.records, isEmpty);
+
+      source.failPlan = false;
       await tester.ensureVisible(find.byKey(const Key('plan-load')));
       await tester.tap(find.byKey(const Key('plan-load')));
       await tester.pumpAndSettle();
-      expect(source.plans, 1);
+      expect(source.plans, 2);
       expect(find.text('45/120 phút'), findsOneWidget);
+      expect(source.store.records, isEmpty);
     },
   );
   testWidgets('manual edit while day lookup waits is never overwritten', (

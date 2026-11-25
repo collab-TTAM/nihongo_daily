@@ -19,11 +19,13 @@ account changes. The UI owns no SDK, credentials, storage, token writer or timer
 Existing Auth persistence/refresh/logout/close and all transport limits remain.
 
 After configured startup and sign-in/profile readiness, the account page exposes
-**Kế hoạch học**, opening /plan. The learner explicitly enters YYYY-MM-DD according
-to the displayed profile timezone and presses **Tải kế hoạch**. No device date or
-UTC-offset approximation selects a profile day; no timezone dependency or wire
-change is introduced. Configured users can explicitly fill today from the
-server/profile clock using PROFILE_STUDY_DAY.md; no automatic plan read/write.
+**Kế hoạch học**, opening /plan. The learner may enter YYYY-MM-DD according to the displayed profile timezone
+and press **Tải kế hoạch**. On /plan, choosing today from the server/profile
+clock fills that date and immediately performs one authoritative plan read for
+the same date. The read never starts a timer or submits a study session. On /srs,
+the same today action still fills the timer date only; starting the timer remains
+a separate explicit action. No device date or UTC-offset approximation selects
+a profile day, and no timezone dependency or wire change is introduced.
 Unconfigured/unsupported/signed-out/profile-pending states show an account link
 and dispatch no plan request. The ordinary home remains clearly marked preview.
 

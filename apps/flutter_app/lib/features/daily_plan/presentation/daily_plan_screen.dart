@@ -180,7 +180,9 @@ class _DailyPlanScreenState extends ConsumerState<DailyPlanScreen> {
                   timezone: profile?.timezone,
                   enabled: ready && !_loading,
                   onDate: (date) {
-                    if (ready && !_loading) _date.text = date.value;
+                    if (!ready || _loading) return;
+                    _date.text = date.value;
+                    unawaited(_load());
                   },
                 ),
                 const SizedBox(height: 12),

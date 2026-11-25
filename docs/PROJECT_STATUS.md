@@ -288,3 +288,13 @@
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/Flutter tests/Web build were not run. A fresh exact-head Actions run must finish every required job and critical step.
 - Next: inspect every latest-attempt job/step for the final PR #41 head; fix only observed failures. Keep PR #41 Draft and preserve the separate PR #37 / Pro N4 lanes.
 
+
+
+## Profile-local today now loads the Daily Plan — 2026-11-25T23:10Z
+
+- PR #41, branch `automation/issue-11-plan-sdk-integration`; parent HEAD `87110ac52a9071e4b4bb251f125577cf0ce2647c`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- On configured `/plan`, a successful server `get_study_day` selection now fills the canonical date and immediately calls the existing captured `get_daily_plan` read once. The same button on `/srs` remains date-only; timer start/finish and study-session submission remain explicit. Manual edits during the held day lookup are preserved.
+- Updated `study_day_widget_test.dart` to assert the exact `get_daily_plan` date envelope, displayed server progress, idle recorder/no stored session, and a safe failed-plan read followed only by an explicit retry. Existing logout, timezone, manual-edit and SRS date-only cases remain.
+- Changed paths: `daily_plan_screen.dart`, `study_day_widget_test.dart`, `DAILY_PLAN_UI.md`, `PROFILE_STUDY_DAY.md`, `PROJECT_STATUS.md`. No N4/Pro content, Auth/provider, API/schema/RLS, timer policy, default preview, hosted secret/dispatch, migration, deployment or release change.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget/build were not run. Fresh exact-head Actions must verify strict format, analyzer, full Flutter suite, native/browser gates and Web/Windows artifacts. Pending/skipped steps are not passes.
+- Next: inspect every latest-attempt job/step for the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and PR #37 separate; hosted signed-JWT A/B, deployed RLS, physical multi-device sync, content review and full learner-journey release evidence remain open.

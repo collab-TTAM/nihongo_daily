@@ -1,9 +1,11 @@
 # Server profile-local study day — Issue #11 / PR #41
 
 This additive profile-study-day-v1 read enables **Chọn hôm nay theo hồ sơ** on
-configured /plan and /srs. It fills a date only; load/start/finish remain separate
-explicit actions. Manual dates remain available. Default preview, signed-out and
-profile-pending states cannot issue a lookup. No client timezone database,
+configured /plan and /srs. On /plan, a successful lookup fills the server date and
+immediately loads that date's authoritative plan; the read never starts a timer
+or submits a study session. On /srs, it fills the timer date only and the learner
+must still start explicitly. Manual dates remain available. Default preview,
+signed-out and profile-pending states cannot issue a lookup. No client timezone database,
 fixed UTC offset or device-local/UTC date approximates the profile calendar.
 
 ## Compatibility and security review
@@ -40,14 +42,16 @@ learner to refresh their account session; it never silently selects an old or
 new zone. Raw server/SDK errors cannot reach the UI. Account/readiness loss,
 including same-owner relogin, fences late success and failure.
 
-The explicit button disables duplicate lookup. The returned date fills the
-existing keyed text field and does not fetch plans, start a timer, submit or
-retry a report. A manual text edit while lookup waits is preserved rather than
-overwritten. Starting another operation, disabling the action, profile/source
-replacement, logout or navigation invalidates its result. Existing date fields
-remain mounted/cleared/disabled/hidden and excluded from focus on revocation,
-preserving awaited OS-exit observer ownership. A running/frozen uncertain SRS
-interval cannot be retargeted by today's button.
+The explicit button disables duplicate lookup. On /plan, the returned date fills
+the existing keyed text field and triggers exactly one plan read; an error remains
+visible and requires an explicit tap on **Tải kế hoạch** to retry. On /srs, the
+returned date only fills the timer field; it never starts the timer or submits.
+A manual text edit while lookup waits is preserved rather than overwritten.
+Starting another operation, disabling the action, profile/source replacement,
+logout or navigation invalidates its result. Existing date fields remain
+mounted/cleared/disabled/hidden and excluded from focus on revocation, preserving
+awaited OS-exit observer ownership. A running/frozen uncertain SRS interval
+cannot be retargeted by today's button.
 
 The date is current at the server lookup, not an automatic midnight subscription.
 Select it again after a day change. A completed report keeps its original date
