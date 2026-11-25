@@ -1,3 +1,13 @@
+## PR #37 — apply exact pinned Dart 3.35.4 formatter hunk — 2026-11-25T06:13Z
+
+- Resumed the RELEASED core lane on branch automation/issue-22-atomic-review, parent HEAD 8e4e22916e811b51c18124bf9316c1a301ba3743; base main remains 61604bc21da64a0dd94dbb97ba3c4b1d035430a6.
+- Exact-head Actions [45551718716](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45551718716), attempt 1, targets 8e4e22916e811b51c18124bf9316c1a301ba3743. Latest-attempt inspection: repo-sanity, database/RLS, AI boundary, disposable local Supabase integration and Windows all COMPLETED/SUCCESS with every returned step successful. Windows included the TEST ONLY Dart-to-native vault bridge, cross-process Credential Manager checks, native receipt/journal/durable-study restart probes and Windows release build. Disposable Supabase integration included GoTrue/PostgREST refresh rotation, replay and A/B RLS checks on the local ephemeral stack. Flutter failed only the strict Dart formatter gate; the exact Dart 3.35.4 diagnostic showed one formatting-only hunk in this test file. Flutter analyze, full test suite and downstream browser/wire/Web checks were SKIPPED, not passed.
+- Applied only the captured formatter change: collapse the tester.runAsync<void> call to the single line emitted by the pinned formatter. Removed the temporary read-only diagnostic step from .github/workflows/ci.yml; the repository-wide strict formatter gate remains unchanged. No assertion, test behavior, timeout, production Auth/session/vault/SRS, RPC/schema/RLS, hosted secret/dispatch, Pro-owned N4/content or release setting changed.
+- Changed paths: apps/flutter_app/test/features/srs/persistent_srs_study_widget_test.dart, .github/workflows/ci.yml, docs/PROJECT_STATUS.md.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Fresh exact-head GitHub Actions is required for format, analyze, full serial Flutter suite, native/browser/wire checks and Web build. Component/TEST ONLY Windows and local-Supabase CI do not prove hosted learner A/B, deployed PostgREST/RLS or physical multi-device sync.
+- Next: inspect every latest-attempt job and step on the new exact HEAD. If the Flutter suite exposes a failure, fix only the observed cause while preserving assertions/security. Keep PR #37 Draft and #20/#22/#15 open pending hosted learner evidence.
+
+---
 ## PR #37 — capture exact pinned formatter output — 2026-11-23T15:41Z
 
 - Run `core-20261123T1540Z-pr37-windows-fixture-format-repair`; branch `automation/issue-22-atomic-review`; diagnostic parent `49b4048a1c95d3a31952260abea2727cfb8db854`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.

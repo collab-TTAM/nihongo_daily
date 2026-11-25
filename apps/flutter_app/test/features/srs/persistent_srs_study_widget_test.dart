@@ -78,9 +78,7 @@ void main() {
     const maxFrames = 50;
     for (var frame = 0; frame < maxFrames && !condition(); frame++) {
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.runAsync<void>(
-        () => Future<void>.delayed(Duration.zero),
-      );
+      await tester.runAsync<void>(() => Future<void>.delayed(Duration.zero));
     }
     final detail = diagnostics == null ? '' : '; ${diagnostics()}';
     expect(
