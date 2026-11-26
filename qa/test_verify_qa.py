@@ -199,6 +199,40 @@ class QaEvidenceTests(unittest.TestCase):
         self.evidence["jobs"]["total_count"] -= 1
         self.rejected()
 
+    def test_local_supabase_auth_session_gate_cannot_be_missing_or_skipped(self):
+        job_name = "supabase-integration"
+        self.assertIn(job_name, self.matrix["ci_gates"])
+        case = next(
+            c for c in self.matrix["cases"]
+            if c["id"] == "local-supabase-auth-session"
+        )
+        self.assertEqual(case["ci_job"], job_name)
+        original = deepcopy(self.evidence)
+        for status, conclusion in (
+            ("queued", None),
+            ("in_progress", None),
+            ("completed", "failure"),
+            ("completed", "skipped"),
+            ("completed", "cancelled"),
+        ):
+            with self.subTest(status=status, conclusion=conclusion):
+                evidence = deepcopy(original)
+                job = next(
+                    j for j in evidence["jobs"]["jobs"] if j["name"] == job_name
+                )
+                job.update(status=status, conclusion=conclusion)
+                with self.assertRaises(ValueError):
+                    qa.validate_ci(self.matrix, evidence, HEAD)
+
+        evidence = deepcopy(original)
+        job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == job_name)
+        gate = "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS"
+        step = next(s for s in job["steps"] if s["name"] == gate)
+        step["conclusion"] = "skipped"
+        with self.assertRaises(ValueError):
+            qa.validate_ci(self.matrix, evidence, HEAD)
+
+
     def test_skipped_or_missing_critical_step_cannot_hide_behind_green_job(self):
         step = self.evidence["jobs"]["jobs"][0]["steps"][0]
         step["conclusion"] = "skipped"

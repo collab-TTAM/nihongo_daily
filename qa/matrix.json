@@ -7,7 +7,21 @@
       "Validate project manifest and content JSON",
       "Validate authored curriculum exports",
       "Validate frozen contracts and regression cases",
-      "Validate QA inventory and evidence regressions"
+      "Validate QA inventory and evidence regressions",
+      "Test collision-free local Supabase port selection"
+    ],
+    "supabase-integration": [
+      "Install pinned Flutter SDK for local Supabase runtime probe",
+      "Resolve pinned Flutter dependencies for local SDK integration",
+      "Install pinned Supabase CLI",
+      "Select collision-free local Supabase ports",
+      "Start disposable local Supabase services",
+      "Apply repository migrations to the local stack",
+      "Export only validated local integration settings",
+      "Install PostgreSQL client",
+      "Seed one TEST ONLY active vocabulary item",
+      "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS",
+      "Stop disposable local Supabase services"
     ],
     "database": [
       "Install review parity validator",
@@ -5156,6 +5170,24 @@
       ],
       "reproduce": "cd apps/flutter_app && flutter test test/features/daily_plan/study_session_recovery_test.dart; CI also runs dart run tool/verify_study_session_recovery.dart and scripts/test_study_sessions.py.",
       "limitation": "Separate real local journals/repositories and a shared TEST ONLY in-process server fixture, not networked app processes or hosted Supabase. Complementary disposable PostgreSQL concurrency tests use synthetic identities. No signed-JWT/PostgREST/RLS, physical multi-device or Personal Alpha learner acceptance."
+    },
+    {
+      "id": "local-supabase-auth-session",
+      "status": "automated-baseline",
+      "scope": "Disposable local GoTrue/PostgREST password sessions, refresh rotation, fresh-process Flutter SDK restore fixture, caller-owned profile bootstrap, expired-JWT rejection, immutable submit_review replay and owner-isolated due-queue reads.",
+      "ci_job": "supabase-integration",
+      "anchors": [
+        {
+          "path": "scripts/test_supabase_local.py",
+          "contains": "GoTrue refresh-token rotation"
+        }
+      ],
+      "issues": [
+        20,
+        22
+      ],
+      "reproduce": "GitHub Actions CI job supabase-integration starts a pinned disposable local Supabase stack and runs the TEST ONLY API/SDK probe; see .github/workflows/ci.yml.",
+      "limitation": "Local disposable stack and fixture evidence only; not protected hosted staging, deployed staging RLS, hosted Windows Credential Manager restore or learner A/B proof."
     }
   ],
   "findings": [
