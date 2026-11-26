@@ -178,7 +178,7 @@ void main() {
         '2026-10-20',
       );
       expect(
-        find.text('Chưa thể tải kế hoạch học. Vui lòng thử lại.'),
+        find.text('Chưa thể xử lý dữ liệu học tập. Vui lòng thử lại.'),
         findsOneWidget,
       );
       expect(find.textContaining('PRIVATE'), findsNothing);
