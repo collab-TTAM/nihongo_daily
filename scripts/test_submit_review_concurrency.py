@@ -15,7 +15,7 @@ def responses(output):
     return [json.loads(line) for line in output.splitlines() if line.startswith('{')]
 
 
-for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different_item', 'rollback'], 1):
+for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different_item', 'rollback', 'changed_rollback'], 1):
     owner = f'c1000000-0000-4000-8000-{index:012d}'
     item = f'c3000000-0000-4000-8000-{index:012d}'
     other = f'c4000000-0000-4000-8000-{index:012d}'
@@ -27,7 +27,7 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
     request = dict(client_event_id=event, item_type='VOCABULARY', item_id=item,
                    rating=2, is_correct=True, response_ms=100, occurred_at=instant)
     changed = dict(request)
-    if scenario == 'changed':
+    if scenario in ['changed', 'changed_rollback']:
         changed['rating'] = 3
     if scenario == 'different_item':
         changed['item_id'] = other
@@ -39,7 +39,7 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
     first = subprocess.Popen(COMMAND, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     second = None
     try:
-        end = 'rollback' if scenario == 'rollback' else 'commit'
+        end = 'rollback' if scenario in ['rollback', 'changed_rollback'] else 'commit'
         first.stdin.write('begin;' + auth + first_call + "select 'RPC_LOCK_HELD';\n")
         first.stdin.flush()
         seen = []
@@ -85,6 +85,15 @@ for index, scenario in enumerate(['identical', 'changed', 'distinct', 'different
             assert stored == dict(events=1, items=1, reviews=1), stored
         elif scenario in ['changed', 'different_item']:
             assert second_response['code'] == 'SYNC_CONFLICT', second_response
+            assert stored == dict(events=1, items=1, reviews=1), stored
+        elif scenario == 'changed_rollback':
+            # The first response was never committed. The waiting, changed request
+            # must become the sole original receipt instead of conflicting with it.
+            assert 'code' not in second_response, second_response
+            assert second_response['review_count'] == 1, second_response
+            assert second_response['srs_state'] == 'REVIEW', second_response
+            assert second_response['interval_days'] == 4.0, second_response
+            assert first_response != second_response, (first_response, second_response)
             assert stored == dict(events=1, items=1, reviews=1), stored
         else:
             assert second_response['review_count'] == 2, second_response

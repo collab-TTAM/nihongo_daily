@@ -1007,7 +1007,7 @@
     {
       "id": "review-transaction",
       "status": "automated-baseline",
-      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; five native race scenarios",
+      "scope": "Authenticated SQL RPC validation, owner isolation, original replay, rollback and 26 SQL/Dart policy pairs; six native race scenarios including changed payload after winner rollback",
       "ci_job": "database",
       "anchors": [
         {
@@ -1021,6 +1021,10 @@
         {
           "path": "scripts/test_submit_review_concurrency.py",
           "contains": "different_item"
+        },
+        {
+          "path": "scripts/test_submit_review_concurrency.py",
+          "contains": "changed_rollback"
         }
       ],
       "issues": [
