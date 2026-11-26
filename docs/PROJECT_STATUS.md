@@ -363,3 +363,10 @@
 - Cloud authoring runtime has no pinned Flutter/Dart SDK, Docker or Supabase CLI; no local Flutter format/analyze/test/build or local Supabase execution is claimed. A fresh exact-head Actions run must verify the seed, disposable GoTrue/PostgREST refresh rotation/replay/A-B RLS, Flutter format/analyze/full suite, native/browser probes and Web/Windows artifacts.
 - No N4/Pro-owned data/manifest/README/content tests/editorial paths, Auth/provider strategy, migration/RLS, CI gate weakening, hosted secret/dispatch, default Auth/save behavior, merge, deployment or release changed. PR #37 remains separate/open/Draft; its exact-head component CI passed six jobs, but hosted learner A/B, deployed RLS and hosted Windows restore remain unverified.
 - Next: inspect every latest-attempt job and step on the new exact PR #41 HEAD; fix only observed failures. Keep PR #41 Draft and preserve PR #37 and the Pro-owned N4 lane.
+
+## PR #41 — second TEST ONLY seed insert column-list follow-up — 2026-11-26T08:21Z
+
+- Separate post-write diff review of `4aeb0b055ce19d4ca666f61f6786165d83532d81` caught that the second local vocabulary INSERT had the `source_ordinal` value but its column list had not been updated. That first repair commit is superseded for verification; its exact-head Actions [45782313374](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45782313374) was still in progress when this follow-up began. No pass is claimed for that source.
+- Added `source_ordinal` to the second TEST ONLY INSERT column list. Both deterministic rows now have matching 12-column/12-value lists and distinct reserved ordinals. No application or production SQL changed.
+- Changed paths: `supabase/tests/local_integration_seed.sql` and this status document. The cloud runtime still lacks pinned Flutter/Dart SDK, Docker and Supabase CLI; only exact-head GitHub Actions can verify this correction.
+- Next: inspect every job/step on the final exact PR #41 head, including the disposable GoTrue/PostgREST probe and complete Flutter/Web/Windows checks. Keep PR #41 Draft.

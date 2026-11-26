@@ -12,7 +12,7 @@ insert into public.vocabulary (
   array['test-only']
 );
 insert into public.vocabulary (
-  id, jlpt_level, difficulty, content_version, is_active,
+  id, jlpt_level, difficulty, content_version, is_active, source_ordinal,
   expression, reading, meaning_vi, part_of_speech, usage_context_vi, tags
 ) values (
   '00000000-0000-4000-8000-000000000002',
