@@ -100,10 +100,7 @@ class _JapaneseSpeechButtonState extends State<JapaneseSpeechButton> {
           ),
         if (_speaking) const Text('Đang đọc bằng giọng máy…'),
         if (_message != null)
-          Text(
-            _message!,
-            key: const Key('japanese-speech-message'),
-          ),
+          Text(_message!, key: const Key('japanese-speech-message')),
       ],
     );
   }
