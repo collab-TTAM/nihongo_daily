@@ -469,3 +469,12 @@
 - Changed paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and `docs/PROJECT_STATUS.md`. The 13-passage source remains explicitly draft/unreviewed. No N4/Pro-owned content, manifest, README, N4 content tests/docs, Pro branch/PR #38, Auth/provider, API/schema/RLS, hosted secrets/dispatch, or CI gate changed.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; no local Flutter format/analyze/test/build is claimed. New exact-head GitHub Actions must execute the full Flutter suite, downstream browser/native checks and Web/Windows builds before any pass claim.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #34/#11/#18 open pending independent linguistic review, vetted audio, server LISTENING_READING availability, hosted learner evidence and Personal Alpha acceptance.
+
+
+## PR #41 — exact-head Dart formatter correction — 2026-11-26T20:08Z
+
+- Re-read exact PR/branch HEAD `0a74fd272311a267474c066a20b02fad558fcb91`; exact-head Actions [45881923338](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45881923338) failed only `dart format --output=none --set-exit-if-changed .` on `apps/flutter_app/test/features/reading/reading_widget_test.dart`. The formatter's own diagnostic emitted exactly two line-wrap changes for the long `find.textContaining` expectations (tennis invitation and family breakfast).
+- Applied only those two formatter hunks; assertions, strings and test behavior are unchanged. The same run completed repo-sanity, AI boundary, database, disposable Supabase integration and Windows successfully; Flutter analyze/tests and downstream checks were skipped after the format failure, and preview-artifacts was skipped. These skipped steps are not passes.
+- Changed paths in this increment: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and this status file. No N4/Pro-owned content, Auth/provider, API/schema/RLS, workflow gates, hosted secrets, deployment or release changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must verify the formatter, full Flutter suite, downstream checks, Web/Windows builds and all other jobs before any pass claim.
+- Next: inspect every latest-attempt job and step for the new exact commit; fix only observed failures and keep PR #41 Draft pending the remaining issue/release acceptance.

@@ -238,10 +238,7 @@ void main() {
         find.byKey(const Key('reading-open-n5-tennis-invitation-01')),
       );
       expect(find.text('土曜日にテニスをします'), findsOneWidget);
-      expect(
-        find.textContaining('土曜日の午後、私は友達の田中さんと公園へ行きます。'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('土曜日の午後、私は友達の田中さんと公園へ行きます。'), findsOneWidget);
       expect(find.text('田中さんは何が好きですか。'), findsOneWidget);
       expect(find.text('何時に公園で会いますか。'), findsOneWidget);
       await tapReading(tester, find.byKey(const Key('reading-back')));
@@ -251,10 +248,7 @@ void main() {
         find.byKey(const Key('reading-open-n5-family-breakfast-01')),
       );
       expect(find.text('日曜日の朝ごはん'), findsOneWidget);
-      expect(
-        find.textContaining('日曜日の朝、私は六時半に起きました。'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('日曜日の朝、私は六時半に起きました。'), findsOneWidget);
       expect(find.text('父は何を飲みましたか。'), findsOneWidget);
       expect(find.text('朝ごはんのあとで、私は何をしましたか。'), findsOneWidget);
       await tapReading(tester, find.byKey(const Key('reading-back')));
