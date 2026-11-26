@@ -143,7 +143,7 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
 
   void _finish(int generation, bool completed) {
     if (generation != _generation) return;
-    if (_activeProcess != null) _activeProcess = null;
+    _activeProcess = null;
     final callback = _completion;
     _completion = null;
     _notify(callback, completed);
@@ -225,7 +225,7 @@ final class _PowerShellJapaneseSpeechProcess
   }
 
   @override
-  bool kill() => __kill(process);
+  bool kill() => _process.kill();
 }
 
 const _windowsSpeechScript = r'''
@@ -273,7 +273,11 @@ try {
   $exitCode = 4
 } finally {
   if ($null -ne $synth) {
-    $synth.Dispose()
+    try {
+      $synth.Dispose()
+    } catch {
+      # Cleanup errors are intentionally not surfaced.
+    }
   }
 }
 exit $exitCode
