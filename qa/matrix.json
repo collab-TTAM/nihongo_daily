@@ -40,6 +40,7 @@
     "flutter": [
       "Run flutter pub get --enforce-lockfile",
       "Run dart format --output=none --set-exit-if-changed .",
+      "Show Dart formatter diff on failure",
       "Run flutter analyze",
       "Run flutter test",
       "Verify owned persistent session lifecycle",
@@ -5200,6 +5201,30 @@
       ],
       "reproduce": "GitHub Actions CI job supabase-integration starts a pinned disposable local Supabase stack and runs the TEST ONLY API/SDK probe; see .github/workflows/ci.yml.",
       "limitation": "Local disposable stack and fixture evidence only; not protected hosted staging, deployed staging RLS, hosted Windows Credential Manager restore or learner A/B proof."
+    },
+    {
+      "id": "formatter-diagnostic-no-skip",
+      "status": "automated-baseline",
+      "scope": "The Flutter job keeps the strict Dart format gate blocking while its diagnostic always executes; it prints the formatter diff only after a failed format, so a successful run has no skipped diagnostic step.",
+      "ci_job": "repo-sanity",
+      "anchors": [
+        {
+          "path": "qa/test_ci_formatter_diagnostic.py",
+          "contains": "test_formatter_diagnostic_always_runs_without_weakening_gate"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "contains": "        if: always()"
+        }
+      ],
+      "issues": [
+        18
+      ],
+      "reproduce": "Run python3 -m unittest discover -s qa -p 'test_*.py' -v; then inspect every latest-attempt Actions job and step for the exact head and require the Flutter formatter diagnostic to be COMPLETED/SUCCESS.",
+      "limitation": "This static workflow regression and CI step execution do not authenticate Actions metadata or establish interactive browser/Windows smoke, hosted learner flows or Personal Alpha release evidence.",
+      "ci_steps": [
+        "Validate QA inventory and evidence regressions"
+      ]
     }
   ],
   "findings": [

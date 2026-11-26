@@ -570,3 +570,20 @@ The server-quiz-current-content-weak-points automated-baseline case adds pure
 and widget regression anchors. TEST ONLY readers/content snapshots do not
 complete quiz-progress/progress-overview release groups or prove hosted
 Auth/JWT/RLS, deployment, mastery or sync.
+
+
+## Flutter formatter diagnostic and fail-closed CI evidence
+
+The Flutter job keeps `dart format --output=none --set-exit-if-changed .` as a
+blocking gate. Its diff diagnostic now uses `if: always()` and checks the
+formatter step outcome: it prints `git diff -- .` only when formatting fails,
+and otherwise prints a fixed no-diff message. This prevents a clean format run
+from containing an expected `skipped` step, which the fail-closed
+`scripts/verify_qa.py` evidence verifier intentionally rejects. A formatter
+failure still fails the job; the diagnostic does not use `continue-on-error`,
+and analyzer/tests remain downstream of successful formatting.
+
+`qa/test_ci_formatter_diagnostic.py` protects the workflow condition and the
+strict formatter/analyzer/test gates. The `formatter-diagnostic-no-skip`
+automated baseline is tracked in `qa/matrix.json`; it is not a hosted learner
+or interactive browser/Windows release proof.

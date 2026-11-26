@@ -237,8 +237,13 @@ jobs:
           git diff --exit-code -- .
           exit 1
       - name: Show Dart formatter diff on failure
-        if: ${{ failure() && steps.dart_format.outcome == 'failure' }}
-        run: git diff -- .
+        if: always()
+        run: |
+          if [[ "${{ steps.dart_format.outcome }}" == "failure" ]]; then
+            git diff -- .
+          else
+            echo "No formatter diff to show."
+          fi
       - run: flutter analyze
       - run: flutter test
       - name: Verify owned persistent session lifecycle
