@@ -99,6 +99,20 @@ void EraseSecretString(std::string& secret) noexcept {
   if (!secret.empty()) SecureZeroMemory(secret.data(), secret.size());
 }
 
+// Copy into the destination, then wipe the source while its original size and
+// storage are still valid. Moving std::string first can reset an SSO source to
+// size zero while leaving its inline bytes outside EraseSecretString's range.
+void CopyThenEraseSecret(std::string& destination, std::string& source) {
+  try {
+    destination.assign(source);
+  } catch (...) {
+    EraseSecretString(source);
+    EraseSecretString(destination);
+    throw;
+  }
+  EraseSecretString(source);
+}
+
 struct CredentialRelease {
   void operator()(CREDENTIALW* credential) const {
     if (credential) {
@@ -110,23 +124,19 @@ struct CredentialRelease {
 }  // namespace
 
 VaultRead::VaultRead(VaultStatus value, std::string&& secret)
-    : status(value), token(std::move(secret)) {
-  // The rvalue reference still names the caller's moved-from source; wipe any
-  // implementation-specific residual bytes before that source is destroyed.
-  EraseSecretString(secret);
+    : status(value) {
+  CopyThenEraseSecret(token, secret);
 }
 
-VaultRead::VaultRead(VaultRead&& other) noexcept
-    : status(other.status), token(std::move(other.token)) {
-  other.wipe();
+VaultRead::VaultRead(VaultRead&& other) : status(other.status) {
+  CopyThenEraseSecret(token, other.token);
 }
 
-VaultRead& VaultRead::operator=(VaultRead&& other) noexcept {
+VaultRead& VaultRead::operator=(VaultRead&& other) {
   if (this != &other) {
     wipe();
     status = other.status;
-    token = std::move(other.token);
-    other.wipe();
+    CopyThenEraseSecret(token, other.token);
   }
   return *this;
 }
@@ -147,13 +157,45 @@ bool VerifySensitiveBufferWipeForTest() {
       std::all_of(oversized_blob.begin(), oversized_blob.end(),
                   [](BYTE value) { return value == 0; });
 
-  VaultRead read{VaultStatus::success,
-                 std::string("TEST_ONLY_TEMPORARY_REFRESH")};
-  read.wipe();
-  const bool read_buffer_wiped =
-      std::all_of(read.token.begin(), read.token.end(),
-                  [](char value) { return value == '\0'; });
-  return blob_wiped && read_buffer_wiped;
+  const auto verify_transfer = [](std::string source) {
+    std::string expected(source);
+    char* const source_buffer = source.data();
+    const auto source_size = source.size();
+    VaultRead initial{VaultStatus::success, std::move(source)};
+    const bool input_wiped = std::all_of(
+        source_buffer, source_buffer + source_size,
+        [](char value) { return value == '\0'; });
+    const bool input_preserved = initial.token == expected;
+
+    char* const move_buffer = initial.token.data();
+    const auto move_size = initial.token.size();
+    VaultRead moved{std::move(initial)};
+    const bool move_source_wiped = std::all_of(
+        move_buffer, move_buffer + move_size,
+        [](char value) { return value == '\0'; });
+    const bool move_preserved = moved.token == expected;
+
+    VaultRead assigned{VaultStatus::success,
+                       std::string("TEST_ONLY_REPLACED_REFRESH")};
+    char* const assignment_buffer = moved.token.data();
+    const auto assignment_size = moved.token.size();
+    assigned = std::move(moved);
+    const bool assignment_source_wiped = std::all_of(
+        assignment_buffer, assignment_buffer + assignment_size,
+        [](char value) { return value == '\0'; });
+    const bool assignment_preserved = assigned.token == expected;
+    assigned.wipe();
+    const bool destination_wiped = std::all_of(
+        assigned.token.begin(), assigned.token.end(),
+        [](char value) { return value == '\0'; });
+    EraseSecretString(expected);
+    return input_wiped && input_preserved && move_source_wiped &&
+           move_preserved && assignment_source_wiped && assignment_preserved &&
+           destination_wiped;
+  };
+
+  return blob_wiped && verify_transfer("short-secret") &&
+         verify_transfer("TEST_ONLY_TEMPORARY_REFRESH_SECRET_BUFFER");
 }
 #endif
 

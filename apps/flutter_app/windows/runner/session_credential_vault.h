@@ -9,8 +9,8 @@ struct VaultRead {
   VaultRead(VaultStatus status, std::string&& token);
   VaultRead(const VaultRead&) = delete;
   VaultRead& operator=(const VaultRead&) = delete;
-  VaultRead(VaultRead&& other) noexcept;
-  VaultRead& operator=(VaultRead&& other) noexcept;
+  VaultRead(VaultRead&& other);
+  VaultRead& operator=(VaultRead&& other);
   ~VaultRead();
 
   // Zero the temporary native copy without changing its length, allowing a

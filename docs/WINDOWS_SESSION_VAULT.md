@@ -674,13 +674,17 @@ The Windows Credential Manager release path now zeroes every non-null
 `CredFree`. The maximum accepted token size still rejects malformed values;
 it no longer suppresses wiping when a corrupt blob exceeds that accepted size.
 
-The native read result is move-only and zeroes its own temporary `std::string`
-buffer on destruction. The MethodChannel must create a transport value for
-Dart; the `VaultRead` object's buffer is wiped after that result is handled.
-The Flutter codec/engine, Dart SDK and HTTP stack may retain separate copies
-outside this native wrapper's wipe boundary. A TEST ONLY Windows native probe
-verifies both the oversized synthetic credential blob and the temporary
-read-result buffer are zeroed.
+The native read result is move-only. Construction, move construction
+and move assignment copy the bounded value into the destination and zero the
+source while its original length is still available. This explicitly covers
+both short-string-optimized and heap-backed `std::string` storage instead of
+relying on an implementation's moved-from size. The owned `VaultRead` buffer
+is also zeroed on destruction. The MethodChannel must create a transport value
+for Dart; the Flutter codec/engine, Dart SDK and HTTP stack may retain separate
+copies outside this native wrapper's wipe boundary. A TEST ONLY Windows native
+probe verifies the oversized synthetic Credential Manager blob, short and
+heap-backed source buffers, move-construction/assignment sources and the owned
+read-result buffer.
 
 This reduces native temporary copies; it does not claim that every copy inside
 the Flutter/Dart SDK, platform-channel codec, HTTP stack or process memory can
