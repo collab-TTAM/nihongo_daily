@@ -394,3 +394,12 @@
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyze/test/build are not claimed. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter suite, local Supabase integration, Windows/Web and preview artifact checks.
 - PR #37 was re-read first and remains open/Draft at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; its exact-head CI [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) passed all six jobs / 108 returned steps. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and protected Windows restore remain separate unverified gates. Pro-owned #14/PR #38/N4 paths remain untouched.
 - Next: inspect all latest-attempt jobs and steps for the corrected PR #41 HEAD; fix only observed failures and keep the PR Draft.
+
+## Browser Japanese system speech increment — 2026-11-26T12:12Z
+
+- Run \`core-20261126T1212Z-pr41-browser-japanese-speech\`; PR #41 branch \`automation/issue-11-plan-sdk-integration\`; parent \`7b7c75772a90700008fdbb271e0c66cd9eac63ba\`; base main \`61604bc21da64a0dd94dbb97ba3c4b1d035430a6\`.
+- Added an explicit-tap Web Speech synthesis adapter for vocabulary/grammar entries and reading passages. It uses only a browser-installed Japanese voice, bounds text to 8,192 characters, distinguishes unsupported/no-voice/invalid/failure states, cancels on stop/detail disposal, and shows fixed Vietnamese messages. No autoplay, network/audio download, microphone, speech recognition, paid AI, learner data, study event, mastery or progress write.
+- Native Windows/non-web uses an explicit unsupported adapter; original reviewed audio remains unavailable. This is a system TTS aid, not a recording or a listening assessment. iOS browser behavior and native Windows speech are unverified.
+- Added widget tests for start/stop, completion, missing voice and unsupported platform; added a Chrome capability/bounds probe and a required CI step. No content/N4/Pro-owned paths, auth/vault/API/schema/RLS, dependency manifest, default service or production behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or browser/Windows runtime; no local formatter/analyze/test/build is claimed. Exact-head Actions is required for all new Dart/Chrome/Windows paths.
+- Next: inspect every latest-attempt job/step for the new PR head. Keep PR #41 Draft and issue #12/#34 open; hosted study/A/B, reviewed original audio, iOS browser and native Windows speech remain separate gates. No merge/deployment/release/Personal Alpha claim.

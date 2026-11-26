@@ -253,6 +253,8 @@ jobs:
         run: flutter test --platform chrome test/features/quiz/browser_quiz_history_check.dart
       - name: Verify browser completed-study transactions in Chrome
         run: flutter test --platform chrome test/features/daily_plan/browser_study_session_store_check.dart
+      - name: Verify browser Japanese speech synthesis in Chrome
+        run: flutter test --platform chrome test/features/audio/japanese_speech_web_check.dart
       - name: Verify browser review page reload
         run: |
           mkdir -p build/browser-restart

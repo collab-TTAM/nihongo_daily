@@ -7,6 +7,7 @@ import '../../daily_plan/application/daily_plan_provider.dart';
 import '../../daily_plan/application/srs_session_recorder_provider.dart';
 import '../../daily_plan/domain/daily_plan.dart';
 import '../../daily_plan/presentation/study_session_timer_panel.dart';
+import '../../audio/presentation/japanese_speech_button.dart';
 import '../application/reading_provider.dart';
 import '../domain/reading_material.dart';
 import '../domain/reading_repository.dart';
@@ -263,6 +264,14 @@ class _ReadingPanelState extends State<_ReadingPanel> {
           ),
         ),
         Text(passage.titleVi),
+        JapaneseSpeechButton(
+          key: ValueKey('reading-speech-${passage.snapshotKey}'),
+          text: passage.japanese,
+          label: 'Đọc bài bằng giọng máy',
+        ),
+        const Text(
+          'Giọng máy phụ thuộc trình duyệt và giọng Nhật đã cài; không phải âm thanh gốc.',
+        ),
         CheckboxListTile(
           key: const Key('reading-show-reading'),
           title: const Text('Hiện cách đọc'),

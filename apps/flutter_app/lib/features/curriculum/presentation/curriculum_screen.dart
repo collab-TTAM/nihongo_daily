@@ -7,6 +7,7 @@ import '../../daily_plan/application/daily_plan_provider.dart';
 import '../../daily_plan/application/srs_session_recorder_provider.dart';
 import '../../daily_plan/domain/daily_plan.dart';
 import '../../daily_plan/presentation/study_session_timer_panel.dart';
+import '../../audio/presentation/japanese_speech_button.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/curriculum_provider.dart';
 import '../domain/curriculum.dart';
@@ -276,8 +277,26 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
     _navigateTo(null, resetList: true);
   }
 
+  String _speechText(CurriculumEntry entry) {
+    if (widget.kind == CurriculumKind.vocabulary) {
+      final reading = entry.reading?.trim();
+      return reading == null || reading.isEmpty ? entry.heading : reading;
+    }
+    return <String>[
+      entry.heading,
+      ...entry.examples.map((example) => example.japanese),
+    ].where((value) => value.trim().isNotEmpty).join('。');
+  }
+
   List<Widget> _details(CurriculumEntry entry) => [
     Text(entry.heading, style: Theme.of(context).textTheme.headlineMedium),
+    JapaneseSpeechButton(
+      key: ValueKey('curriculum-speech-${entry.id}-${entry.contentVersion}'),
+      text: _speechText(entry),
+      label: widget.kind == CurriculumKind.vocabulary
+          ? 'Nghe cách đọc (giọng máy)'
+          : 'Nghe mẫu câu (giọng máy)',
+    ),
     if (entry.reading != null)
       Text(entry.reading!, style: Theme.of(context).textTheme.titleLarge),
     Text(entry.caption),
@@ -296,6 +315,9 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
       entry.hasAudioReference
           ? 'Phát âm thanh chưa được tích hợp.'
           : 'Chưa có âm thanh cho mục này.',
+    ),
+    const Text(
+      'Giọng máy dùng tiếng Nhật do trình duyệt cung cấp, không phải bản thu gốc.',
     ),
     const SizedBox(height: 16),
     const Text('Ví dụ'),
