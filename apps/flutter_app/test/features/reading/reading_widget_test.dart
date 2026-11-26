@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
@@ -79,6 +81,22 @@ class TestReadingRepository implements ReadingRepository {
   }
 }
 
+/// Holds the exact packaged asset bytes after a bounded real-async preflight.
+/// The widget/provider then parses the same source without a fake-clock I/O wait.
+final class _LoadedReadingAssetBundle extends CachingAssetBundle {
+  _LoadedReadingAssetBundle(this.source);
+
+  final String source;
+
+  @override
+  Future<ByteData> load(String key) async {
+    if (key != BundledReadingRepository.assetPath) {
+      throw FlutterError('Unexpected reading test asset request');
+    }
+    return ByteData.sublistView(Uint8List.fromList(utf8.encode(source)));
+  }
+}
+
 Future<
   ({ProviderContainer container, StateProvider<ReadingRepository?> source})
 >
@@ -126,18 +144,25 @@ Future<void> tapReading(
   if (settle) await tester.pumpAndSettle();
 }
 
-Future<void> waitForBundledN5ReadingList(
+Future<BundledReadingRepository> loadBundledN5ReadingRepository(
   WidgetTester tester,
-  ProviderContainer container,
 ) async {
-  // rootBundle.loadString performs real asset I/O. Await the watched provider
-  // in the real async zone instead of advancing only WidgetTest's fake clock.
-  final passages = await tester.runAsync(
-    () => container.read(readingCatalogProvider(PreviewLevel.n5).future),
+  // Read the actual package asset before mounting widgets. Keeping the platform
+  // asset I/O outside the provider's FakeAsync lifetime avoids a pending
+  // Future.timeout that cannot fire until a pump, while runAsync is awaiting it.
+  final source = await tester.runAsync(
+    () => rootBundle
+        .loadString(BundledReadingRepository.assetPath)
+        .timeout(const Duration(seconds: 5)),
   );
-  expect(passages, isNotNull);
-  expect(passages, hasLength(13));
-  await tester.pump();
+  if (source == null) {
+    throw StateError('Bundled reading asset did not load');
+  }
+  final repository = BundledReadingRepository(
+    bundle: _LoadedReadingAssetBundle(source),
+  );
+  expect(await repository.load(PreviewLevel.n5), hasLength(13));
+  return repository;
 }
 
 Future<void> openReading(WidgetTester tester, {String id = 'fixture-a'}) async {
@@ -148,8 +173,8 @@ void main() {
   testWidgets(
     'default route uses bundled N5 reading; audio and saved result stay unavailable',
     (tester) async {
-      final h = await mountReading(tester);
-      await waitForBundledN5ReadingList(tester, h.container);
+      final repository = await loadBundledN5ReadingRepository(tester);
+      final h = await mountReading(tester, repository: repository);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('reading-loading')), findsNothing);
       expect(find.byKey(const Key('reading-error')), findsNothing);
