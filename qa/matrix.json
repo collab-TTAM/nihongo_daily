@@ -1891,6 +1891,14 @@
         {
           "path": "apps/flutter_app/test/features/audio/japanese_speech_windows_test.dart",
           "contains": "completed speech reports its terminal callback once"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart",
+          "contains": "bundled N5 expansion includes the tennis invitation passage"
+        },
+        {
+          "path": "apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart",
+          "contains": "bundled N5 expansion includes the family breakfast passage"
         }
       ],
       "issues": [

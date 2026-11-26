@@ -64,7 +64,7 @@ void main() {
       (entry) => entry.id == 'n5-sunday-meal-01',
     );
 
-    expect(passages, hasLength(11));
+    expect(passages, hasLength(13));
     expect(passage.titleJa, '日曜日の昼ごはん');
     expect(passage.titleVi, 'Bữa trưa Chủ nhật');
     expect(passage.contentVersion, 1);
@@ -129,7 +129,7 @@ void main() {
       (entry) => entry.id == 'n5-winter-morning-01',
     );
 
-    expect(passages, hasLength(11));
+    expect(passages, hasLength(13));
     expect(passage.titleJa, '冬の朝');
     expect(passage.titleVi, 'Buổi sáng mùa đông');
     expect(passage.contentVersion, 1);
@@ -145,6 +145,45 @@ void main() {
     ]);
   });
 
+  test('bundled N5 expansion includes the tennis invitation passage', () {
+    final passage = passages.singleWhere(
+      (entry) => entry.id == 'n5-tennis-invitation-01',
+    );
+
+    expect(passage.titleJa, '土曜日にテニスをします');
+    expect(passage.titleVi, 'Chơi tennis vào thứ Bảy');
+    expect(passage.contentVersion, 1);
+    expect(passage.reading, contains('しませんか'));
+    expect(passage.vietnamese, contains('Tanaka'));
+    expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
+    expect(passage.questions, hasLength(3));
+    expect(passage.questions.map((question) => question.correctChoiceId), [
+      'a',
+      'b',
+      'b',
+    ]);
+  });
+
+  test('bundled N5 expansion includes the family breakfast passage', () {
+    final passage = passages.singleWhere(
+      (entry) => entry.id == 'n5-family-breakfast-01',
+    );
+
+    expect(passage.titleJa, '日曜日の朝ごはん');
+    expect(passage.titleVi, 'Bữa sáng Chủ nhật');
+    expect(passage.contentVersion, 1);
+    expect(passage.reading, contains('だいどころ'));
+    expect(passage.reading, contains('ぎゅうにゅう'));
+    expect(passage.vietnamese, contains('rửa bát'));
+    expect(passage.sourceNoteVi, contains('chưa được giáo viên'));
+    expect(passage.questions, hasLength(3));
+    expect(passage.questions.map((question) => question.correctChoiceId), [
+      'a',
+      'b',
+      'a',
+    ]);
+  });
+
   test('new N5 comprehension keys complete deterministic rounds', () {
     for (final id in [
       'n5-library-study-01',
@@ -155,6 +194,8 @@ void main() {
       'n5-birthday-01',
       'n5-supermarket-01',
       'n5-winter-morning-01',
+      'n5-tennis-invitation-01',
+      'n5-family-breakfast-01',
     ]) {
       final passage = passages.singleWhere((entry) => entry.id == id);
       final round = ReadingRound(passage);

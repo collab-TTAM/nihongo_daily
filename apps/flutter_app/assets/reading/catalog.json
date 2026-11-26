@@ -1067,6 +1067,200 @@
           "explanation_vi": "Bài đọc nói tôi ăn sáng với mẹ."
         }
       ]
+    },
+    {
+      "id": "n5-tennis-invitation-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "土曜日にテニスをします",
+      "title_vi": "Chơi tennis vào thứ Bảy",
+      "text_ja": "土曜日の午後、私は友達の田中さんと公園へ行きます。田中さんはテニスが好きです。私はまだ上手ではありません。でも、田中さんは「いっしょにテニスをしませんか」と言いました。私は「はい、しましょう」と答えました。午後二時に公園で会います。",
+      "reading_ja": "どようびのごご、わたしはともだちのたなかさんとこうえんへいきます。たなかさんはテニスがすきです。わたしはまだじょうずではありません。でも、たなかさんは「いっしょにテニスをしませんか」といいました。わたしは「はい、しましょう」とこたえました。ごごにじにこうえんであいます。",
+      "translation_vi": "Chiều thứ Bảy, tôi đi công viên cùng bạn Tanaka. Tanaka thích tennis. Tôi vẫn chưa chơi giỏi. Nhưng Tanaka đã nói: “Chúng ta cùng chơi tennis nhé?” Tôi trả lời: “Vâng, cùng chơi nhé.” Chúng tôi gặp nhau ở công viên lúc 2 giờ chiều.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "土曜日の午後、どこへ行きますか。",
+          "reading_ja": "どようびのごご、どこへいきますか。",
+          "prompt_vi": "Chiều thứ Bảy, tôi đi đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "公園",
+              "reading_ja": "こうえん",
+              "text_vi": "Công viên"
+            },
+            {
+              "id": "b",
+              "text_ja": "図書館",
+              "reading_ja": "としょかん",
+              "text_vi": "Thư viện"
+            },
+            {
+              "id": "c",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi công viên cùng bạn Tanaka."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "田中さんは何が好きですか。",
+          "reading_ja": "たなかさんはなにがすきですか。",
+          "prompt_vi": "Bạn Tanaka thích gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "サッカー",
+              "reading_ja": "サッカー",
+              "text_vi": "Bóng đá"
+            },
+            {
+              "id": "b",
+              "text_ja": "テニス",
+              "reading_ja": "テニス",
+              "text_vi": "Tennis"
+            },
+            {
+              "id": "c",
+              "text_ja": "水泳",
+              "reading_ja": "すいえい",
+              "text_vi": "Bơi lội"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói Tanaka thích tennis."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に公園で会いますか。",
+          "reading_ja": "なんじにこうえんであいますか。",
+          "prompt_vi": "Chúng tôi gặp nhau ở công viên lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "午後一時",
+              "reading_ja": "ごごいちじ",
+              "text_vi": "1 giờ chiều"
+            },
+            {
+              "id": "b",
+              "text_ja": "午後二時",
+              "reading_ja": "ごごにじ",
+              "text_vi": "2 giờ chiều"
+            },
+            {
+              "id": "c",
+              "text_ja": "午後三時",
+              "reading_ja": "ごごさんじ",
+              "text_vi": "3 giờ chiều"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói chúng tôi gặp nhau lúc 2 giờ chiều."
+        }
+      ]
+    },
+    {
+      "id": "n5-family-breakfast-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "日曜日の朝ごはん",
+      "title_vi": "Bữa sáng Chủ nhật",
+      "text_ja": "日曜日の朝、私は六時半に起きました。母は台所でパンと卵を出しました。私はテーブルに水を置きました。父は牛乳を飲みました。弟はりんごを食べました。みんなで朝ごはんを食べてから、私は皿を洗いました。",
+      "reading_ja": "にちようびのあさ、わたしはろくじはんにおきました。はははだいどころでパンとたまごをだしました。わたしはテーブルにみずをおきました。ちちはぎゅうにゅうをのみました。おとうとはりんごをたべました。みんなであさごはんをたべてから、わたしはさらをあらいました。",
+      "translation_vi": "Sáng Chủ nhật, tôi thức dậy lúc 6 giờ rưỡi. Mẹ bày bánh mì và trứng trong bếp. Tôi đặt nước lên bàn. Bố uống sữa. Em trai ăn táo. Sau khi cả nhà ăn sáng, tôi rửa bát.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "母はどこでパンと卵を出しましたか。",
+          "reading_ja": "はははどこでパンとたまごをだしましたか。",
+          "prompt_vi": "Mẹ bày bánh mì và trứng ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "台所",
+              "reading_ja": "だいどころ",
+              "text_vi": "Nhà bếp"
+            },
+            {
+              "id": "b",
+              "text_ja": "へや",
+              "reading_ja": "へや",
+              "text_vi": "Phòng"
+            },
+            {
+              "id": "c",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói mẹ bày bánh mì và trứng trong bếp."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "父は何を飲みましたか。",
+          "reading_ja": "ちちはなにをのみましたか。",
+          "prompt_vi": "Bố đã uống gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "水",
+              "reading_ja": "みず",
+              "text_vi": "Nước"
+            },
+            {
+              "id": "b",
+              "text_ja": "牛乳",
+              "reading_ja": "ぎゅうにゅう",
+              "text_vi": "Sữa"
+            },
+            {
+              "id": "c",
+              "text_ja": "コーヒー",
+              "reading_ja": "コーヒー",
+              "text_vi": "Cà phê"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói bố uống sữa."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "朝ごはんのあとで、私は何をしましたか。",
+          "reading_ja": "あさごはんのあとで、わたしはなにをしましたか。",
+          "prompt_vi": "Sau bữa sáng, tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "皿を洗いました",
+              "reading_ja": "さらをあらいました",
+              "text_vi": "Rửa bát"
+            },
+            {
+              "id": "b",
+              "text_ja": "テレビを見ました",
+              "reading_ja": "テレビをみました",
+              "text_vi": "Xem ti vi"
+            },
+            {
+              "id": "c",
+              "text_ja": "公園へ行きました",
+              "reading_ja": "こうえんへいきました",
+              "text_vi": "Đi công viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói sau bữa sáng tôi rửa bát."
+        }
+      ]
     }
   ]
 }

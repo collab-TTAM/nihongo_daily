@@ -451,3 +451,11 @@
 - Separate post-write review of `d292190caee273103ab608dd1c5a68bbbfdcd7e0` found that the new Python test had double-escaped the raw-regex newline/end anchors and the line-join delimiter. The test would match literal backslash sequences rather than workflow lines.
 - Corrected `qa/test_ci_formatter_diagnostic.py` to use the intended single `\n` / `\Z` regex escapes and `"\n".join(...)`; no workflow or application behavior changed. The strict formatter gate and always-run diagnostic remain unchanged.
 - This is a review correction, not a test pass. No local Python/Flutter test result is claimed; a fresh exact-head Actions run must execute the QA discovery suite and all downstream jobs.
+
+## PR #41 — N5 reading draft expansion — 2026-11-26T17:15Z
+
+- Run `core-20261126T1715Z-pr41-n5-reading-expansion`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `9b69f4980fce00eabaa5499862f122f2fcab7ac8`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added two original N5-only draft passages: `n5-tennis-invitation-01` (simple invitation / meeting time) and `n5-family-breakfast-01` (family breakfast / household task), each with Japanese text, hiragana reading, Vietnamese translation, three deterministic comprehension questions and an explicit unreviewed source note. Bundled N5 totals are now 13 passages / 39 questions; N4 remains empty in this bundle.
+- Updated the exact N5 expansion and repository tests, reading-material documentation and the `reading-widget-flow` QA anchors. No canonical `data/n4`, `data/manifest`, `data/README`, N4 content tests/docs or Pro PR #38 paths were touched. No audio, study-minute credit, mastery, server availability or hosted learner acceptance is claimed.
+- Static authoring checks: catalog JSON parses; all 13 IDs are unique; all 13 entries remain N5/version 1 with three questions each; every answer key references one of three distinct choices; catalog remains below the 262144-byte parser limit. Flutter format/analyze/tests/build were not run in the cloud authoring runtime (pinned Flutter/Dart SDK unavailable); exact-head GitHub Actions is required.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. Keep PR #41 Draft and issue #34 open pending independent linguistic review, reviewed/licensed audio, server LISTENING_READING availability and hosted learner evidence.
