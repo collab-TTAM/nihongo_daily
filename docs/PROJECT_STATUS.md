@@ -319,3 +319,13 @@
 - Exact-head Actions [45741302914](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45741302914), attempt 1, targets `e1e98d612ca2fa782d1aca4838ef19a6c1974a4c` and is IN_PROGRESS. No format/analyze/full-test/Web/Windows pass is claimed yet. The cloud authoring runtime has no pinned Flutter/Dart SDK, so no local Flutter execution is claimed. This status successor also requires fresh exact-head CI.
 - PR #37 remains separate/open/Draft at `3c79a9cb37539247a113670b93e69f19cb9be673`; exact-head Actions [45735145987](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45735145987) now has all six jobs and every returned step SUCCESS. That is component/local-stack evidence only; protected hosted A/B/RLS and Windows fresh-process acceptance still require owner-configured non-production staging.
 - Next: inspect every latest-attempt job/step on the final status HEAD; fix only actual diagnostics. Keep PR #41 Draft and preserve PR #37 and the Pro-owned N4 lane.
+
+## PR #41 — exact pinned Dart formatter repair — 2026-11-26T05:11Z
+
+- Run `core-20261126T0511Z-pr41-apply-observed-dart-format`; branch `automation/issue-11-plan-sdk-integration`; parent `ab686c644c6f97e3f16054d3a879e5b3dcb8697e`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45741454241](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45741454241) failed only strict Dart 3.35.4 formatting. Repo-sanity, database, AI boundary and Windows jobs succeeded. Flutter stopped at format; analyzer, full Flutter suite, downstream probes and preview artifacts were skipped, not passed.
+- Applied only the two exact formatter hunks emitted by that run: one-line `AccountPhase.signingOut` switch arm in `apps/flutter_app/lib/app/app_shell.dart`, and compact callback layout for the configured signed-out test in `apps/flutter_app/test/app_test.dart`. No assertion, behavior, timeout or runtime changed.
+- Cloud authoring has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head CI is required.
+- PR #37 was re-read first at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; exact-head Actions [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) completed six jobs / 108 returned steps successfully. This remains component/local-stack evidence, not protected hosted learner A/B, deployed RLS or hosted Windows restore.
+- PR #41 remains Draft. No Pro-owned N4/content, Auth/provider strategy, API/schema/RLS, workflow gate, hosted secret/dispatch, fake Auth/save, merge, deployment or release changed.
+- Next: inspect every latest-attempt job and step for the new exact PR #41 HEAD; fix only observed diagnostics.

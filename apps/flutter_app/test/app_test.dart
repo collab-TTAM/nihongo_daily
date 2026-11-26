@@ -88,21 +88,20 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets(
-    'configured signed-out account is not mislabeled as preview',
-    (tester) async {
-      final h = Harness();
-      await mountApp(tester, accountHarness: h);
-      await tester.pumpAndSettle();
-      expect(
-        find.text(
-          'TÀI KHOẢN ĐÃ CẤU HÌNH · Chưa đăng nhập. Tiến độ học đang bị khóa.',
-        ),
-        findsOneWidget,
-      );
-      expect(find.textContaining('BẢN XEM TRƯỚC'), findsNothing);
-    },
-  );
+  testWidgets('configured signed-out account is not mislabeled as preview', (
+    tester,
+  ) async {
+    final h = Harness();
+    await mountApp(tester, accountHarness: h);
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'TÀI KHOẢN ĐÃ CẤU HÌNH · Chưa đăng nhập. Tiến độ học đang bị khóa.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('BẢN XEM TRƯỚC'), findsNothing);
+  });
 
   testWidgets(
     'profile loading becomes ready with only level and timezone context',

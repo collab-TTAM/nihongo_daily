@@ -120,8 +120,7 @@ String _connectionStatus({
       'ĐĂNG NHẬP CHƯA THÀNH CÔNG · Kiểm tra thông tin và thử lại.',
     AccountPhase.profileError =>
       'HỒ SƠ CHƯA SẴN SÀNG · Tải lại hồ sơ trước khi học.',
-    AccountPhase.signingOut =>
-      'ĐANG ĐĂNG XUẤT · Tiến độ học đang bị khóa.',
+    AccountPhase.signingOut => 'ĐANG ĐĂNG XUẤT · Tiến độ học đang bị khóa.',
     AccountPhase.signOutError =>
       'CHƯA XÁC NHẬN ĐĂNG XUẤT · Tiến độ học đang bị khóa.',
     AccountPhase.unavailable =>
