@@ -370,3 +370,15 @@
 - Added `source_ordinal` to the second TEST ONLY INSERT column list. Both deterministic rows now have matching 12-column/12-value lists and distinct reserved ordinals. No application or production SQL changed.
 - Changed paths: `supabase/tests/local_integration_seed.sql` and this status document. The cloud runtime still lacks pinned Flutter/Dart SDK, Docker and Supabase CLI; only exact-head GitHub Actions can verify this correction.
 - Next: inspect every job/step on the final exact PR #41 head, including the disposable GoTrue/PostgREST probe and complete Flutter/Web/Windows checks. Keep PR #41 Draft.
+
+
+## PR #41 — retryable bounded transport classification — 2026-11-26T09:14Z
+
+- Run `core-20261126T0914Z-pr41-retryable-offline-transport`; branch `automation/issue-11-plan-sdk-integration`; parent `608f2e1d37400f9da85f1316035c7ee8b0a0f8b0`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45782738344](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45782738344), attempt 1, completed seven jobs: six SUCCESS and only `supabase-integration` failed at the TEST ONLY two-device offline stage. The Flutter suite, Web build, Windows release/native probes, database/RLS, AI boundary, repo sanity and preview artifact verification succeeded on that exact parent; the disposable local GoTrue/PostgREST job did not.
+- Root cause from source review: `BoundedSessionHttp` converted every thrown object into non-retryable NETWORK_UNAVAILABLE. This swallowed typed transport errors and made an injected `http.ClientException` fail the durable review's retryable-offline contract. It now preserves `ReviewTransportFailure`, marks known timeout/client transport failures NETWORK_UNAVAILABLE + retryable, and maps unknown failures to fixed non-retryable INTERNAL_ERROR. Oversized responses remain INTERNAL_ERROR, not a blind retry.
+- Focused regressions cover timeout/client exceptions, preserved typed authorization failures, unknown errors and oversized-response classification. No assertion was removed from the two-device replay probe; no credential, exception detail or token is logged.
+- Changed paths: `apps/flutter_app/lib/features/auth/data/bounded_session_http.dart`, `apps/flutter_app/test/features/srs/bounded_session_http_test.dart`, and this status file. No N4/Pro-owned content, API/schema/RLS, Auth/provider strategy, CI gates, hosted secrets/dispatch or default app behavior changed.
+- Parent recursive tree: 1,036 entries (911 blobs / 125 trees), complete and untruncated. Fresh exact-head CI is required; cloud authoring has no pinned Flutter/Dart SDK or disposable Docker/Supabase runtime, so no local Dart/Flutter/Supabase test or build is claimed.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. Keep PR #41 Draft and PR #37 separate/open/Draft pending protected hosted A/B, deployed RLS and hosted Windows restore.
+

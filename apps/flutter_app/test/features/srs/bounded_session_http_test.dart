@@ -21,11 +21,20 @@ final class TestClient extends http.BaseClient {
 
 final origin = Uri.parse('https://fixture.supabase.co');
 http.Request request() => http.Request('GET', origin.resolve('/auth/v1/user'));
-final safeFailure = isA<ReviewTransportFailure>().having(
-  (error) => error.code,
-  'safe code',
-  ReviewErrorCode.networkUnavailable,
-);
+final safeFailure = isA<ReviewTransportFailure>()
+    .having(
+      (error) => error.code,
+      'safe code',
+      ReviewErrorCode.networkUnavailable,
+    )
+    .having((error) => error.retryable, 'retryable', true);
+final internalFailure = isA<ReviewTransportFailure>()
+    .having(
+      (error) => error.code,
+      'safe code',
+      ReviewErrorCode.internalError,
+    )
+    .having((error) => error.retryable, 'retryable', false);
 
 void main() {
   for (final mode in ['stalled', 'header oversize', 'chunk oversize']) {
@@ -59,7 +68,7 @@ void main() {
         try {
           await expectLater(
             client.send(request()).timeout(const Duration(seconds: 1)),
-            throwsA(safeFailure),
+            throwsA(mode == 'stalled' ? safeFailure : internalFailure),
           );
           expect(cancelCalls, 1);
           expect(cancelled.isCompleted, isFalse);
@@ -176,4 +185,69 @@ void main() {
       client.close();
     },
   );
+
+  test('client and timeout failures are safe and retryable', () async {
+    for (final failure in <Object>[
+      http.ClientException('TEST ONLY offline'),
+      TimeoutException('TEST ONLY deadline'),
+    ]) {
+      final inner = TestClient((_) async => throw failure);
+      final client = BoundedSessionHttp(
+        inner,
+        false,
+        origin,
+        const Duration(seconds: 1),
+      );
+      try {
+        await expectLater(client.send(request()), throwsA(safeFailure));
+        expect(inner.calls, 1);
+      } finally {
+        client.close();
+      }
+    }
+  });
+
+  test('explicit transport failures retain their safe classification', () async {
+    final inner = TestClient(
+      (_) async => throw const ReviewTransportFailure(
+        ReviewErrorCode.unauthorized,
+      ),
+    );
+    final client = BoundedSessionHttp(
+      inner,
+      false,
+      origin,
+      const Duration(seconds: 1),
+    );
+    try {
+      await expectLater(
+        client.send(request()),
+        throwsA(
+          isA<ReviewTransportFailure>()
+              .having((error) => error.code, 'safe code', ReviewErrorCode.unauthorized)
+              .having((error) => error.retryable, 'retryable', false),
+        ),
+      );
+    } finally {
+      client.close();
+    }
+  });
+
+  test('unknown transport failures are not retried', () async {
+    final inner = TestClient(
+      (_) async => throw StateError('TEST ONLY internal'),
+    );
+    final client = BoundedSessionHttp(
+      inner,
+      false,
+      origin,
+      const Duration(seconds: 1),
+    );
+    try {
+      await expectLater(client.send(request()), throwsA(internalFailure));
+    } finally {
+      client.close();
+    }
+  });
+
 }

@@ -58,8 +58,21 @@ final class BoundedSessionHttp extends http.BaseClient {
         headers: response.headers,
         request: request,
       );
+    } on ReviewTransportFailure {
+      rethrow;
+    } on TimeoutException {
+      throw const ReviewTransportFailure(
+        ReviewErrorCode.networkUnavailable,
+        retryable: true,
+      );
+    } on http.ClientException {
+      throw const ReviewTransportFailure(
+        ReviewErrorCode.networkUnavailable,
+        retryable: true,
+      );
     } on Object {
-      throw const ReviewTransportFailure(ReviewErrorCode.networkUnavailable);
+      // Unknown transport/programming failures are not safe to retry blindly.
+      throw const ReviewTransportFailure(ReviewErrorCode.internalError);
     }
   }
 
