@@ -329,3 +329,14 @@
 - PR #37 was re-read first at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; exact-head Actions [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) completed six jobs / 108 returned steps successfully. This remains component/local-stack evidence, not protected hosted learner A/B, deployed RLS or hosted Windows restore.
 - PR #41 remains Draft. No Pro-owned N4/content, Auth/provider strategy, API/schema/RLS, workflow gate, hosted secret/dispatch, fake Auth/save, merge, deployment or release changed.
 - Next: inspect every latest-attempt job and step for the new exact PR #41 HEAD; fix only observed diagnostics.
+
+
+## PR #41 — timezone label test scope — 2026-11-26T06:10Z
+
+- Run `core-20261126T0610Z-pr41-fix-timezone-finders`; branch `automation/issue-11-plan-sdk-integration`; parent `f4c19f4a0fa121e8dd50f668fc83894ace362cbb`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45760945518](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45760945518) targets this parent and failed only the complete Flutter test step: 2,154 tests passed and four existing timezone finder assertions failed because the app shell now also displays the ready profile timezone. Flutter formatting and analysis passed; repo-sanity, database, AI boundary and Windows jobs passed. Flutter downstream lifecycle/wire/Web checks and preview artifacts were skipped after the suite failure.
+- Updated only TEST ONLY finders: the SRS timer now targets its exact “Ngày học theo múi giờ hồ sơ” sentence; Daily Plan tests target the exact “Chọn ngày theo múi giờ hồ sơ” sentence for Tokyo and Ho Chi Minh. This keeps the assertions on the feature under test instead of matching both the app-shell banner and page/panel. No production UI, state, timing or assertions were weakened.
+- Changed paths: `apps/flutter_app/test/features/daily_plan/srs_session_timer_widget_test.dart`, `apps/flutter_app/test/features/daily_plan/daily_plan_widget_test.dart`, and `docs/PROJECT_STATUS.md`. No Pro-owned N4 data/manifest/README/content-test/editorial files, Auth/provider, API/schema/RLS or CI gates changed.
+- Cloud authoring has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Fresh exact-head Actions is the required verification.
+- PR #37 remains open/Draft at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; exact-head Actions [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) passed all six jobs / 108 returned steps. Hosted signed-JWT learner A/B, deployed RLS and hosted Windows restore remain unverified.
+- Next: inspect every latest-attempt job and step on the new PR #41 head; fix only observed failures and keep the PR Draft until independent acceptance is met.

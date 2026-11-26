@@ -102,7 +102,10 @@ void main() {
     (tester) async {
       final f = await mountTimer(tester);
       expect(find.text('猫'), findsOneWidget);
-      expect(find.textContaining('Asia/Tokyo'), findsOneWidget);
+      expect(
+        find.text('Ngày học theo múi giờ hồ sơ: Asia/Tokyo.'),
+        findsOneWidget,
+      );
       await tester.enterText(
         find.byKey(const Key('srs-timer-date')),
         '2026-02-29',

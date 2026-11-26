@@ -131,7 +131,10 @@ void main() {
     expect(find.byKey(const Key('plan-date')), findsNothing);
     h.delayed!.complete(fixture.ownProfile());
     await tester.pumpAndSettle();
-    expect(find.textContaining('Asia/Tokyo'), findsOneWidget);
+    expect(
+      find.text('Chọn ngày theo múi giờ hồ sơ: Asia/Tokyo.'),
+      findsOneWidget,
+    );
     expect(
       tester
           .widget<TextField>(find.byKey(const Key('plan-date')))
@@ -337,7 +340,10 @@ void main() {
           identical(container.read(dailyPlanRepositoryProvider), repository),
           isTrue,
         );
-        expect(find.textContaining('Asia/Ho_Chi_Minh'), findsOneWidget);
+        expect(
+          find.text('Chọn ngày theo múi giờ hồ sơ: Asia/Ho_Chi_Minh.'),
+          findsOneWidget,
+        );
         expect(find.byKey(const Key('plan-progress')), findsNothing);
         expect(find.byKey(const Key('plan-error')), findsNothing);
         expect(
