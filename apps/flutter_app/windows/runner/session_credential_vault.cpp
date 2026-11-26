@@ -109,8 +109,12 @@ struct CredentialRelease {
 };
 }  // namespace
 
-VaultRead::VaultRead(VaultStatus value, std::string secret)
-    : status(value), token(std::move(secret)) {}
+VaultRead::VaultRead(VaultStatus value, std::string&& secret)
+    : status(value), token(std::move(secret)) {
+  // The rvalue reference still names the caller's moved-from source; wipe any
+  // implementation-specific residual bytes before that source is destroyed.
+  EraseSecretString(secret);
+}
 
 VaultRead::VaultRead(VaultRead&& other) noexcept
     : status(other.status), token(std::move(other.token)) {

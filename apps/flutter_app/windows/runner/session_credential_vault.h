@@ -6,7 +6,7 @@
 namespace nihongo {
 enum class VaultStatus { success, not_found, unavailable, invalid_input, corrupt };
 struct VaultRead {
-  VaultRead(VaultStatus status, std::string token = {});
+  VaultRead(VaultStatus status, std::string&& token);
   VaultRead(const VaultRead&) = delete;
   VaultRead& operator=(const VaultRead&) = delete;
   VaultRead(VaultRead&& other) noexcept;
