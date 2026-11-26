@@ -1,7 +1,5 @@
 #include "session_vault_channel.h"
 
-#include <utility>
-
 #include <flutter/standard_method_codec.h>
 #include "session_credential_vault.h"
 #include "review_data_directory.h"
@@ -120,11 +118,11 @@ RegisterSessionVaultChannel(flutter::BinaryMessenger* messenger) {
         Fail(result.get());
       }
     } else if (method == "read") {
-      auto read = nihongo::ReadRefreshCredential(*target);
+      const auto read = nihongo::ReadRefreshCredential(*target);
       if (read.status == nihongo::VaultStatus::not_found) {
         result->Success(flutter::EncodableValue());
       } else if (read.status == nihongo::VaultStatus::success) {
-        result->Success(flutter::EncodableValue(std::move(read.token)));
+        result->Success(flutter::EncodableValue(read.token));
       } else {
         Fail(result.get());
       }
