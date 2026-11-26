@@ -29,11 +29,7 @@ final safeFailure = isA<ReviewTransportFailure>()
     )
     .having((error) => error.retryable, 'retryable', true);
 final internalFailure = isA<ReviewTransportFailure>()
-    .having(
-      (error) => error.code,
-      'safe code',
-      ReviewErrorCode.internalError,
-    )
+    .having((error) => error.code, 'safe code', ReviewErrorCode.internalError)
     .having((error) => error.retryable, 'retryable', false);
 
 void main() {
@@ -207,39 +203,37 @@ void main() {
     }
   });
 
-  test('explicit transport failures retain their safe classification', () async {
-    final inner = TestClient(
-      (_) async => throw const ReviewTransportFailure(
-        ReviewErrorCode.unauthorized,
-      ),
-    );
-    final client = BoundedSessionHttp(
-      inner,
-      false,
-      origin,
-      const Duration(seconds: 1),
-    );
-    try {
-      await expectLater(
-        client.send(request()),
-        throwsA(
-          isA<ReviewTransportFailure>()
-              .having(
-                (error) => error.code,
-                'safe code',
-                ReviewErrorCode.unauthorized,
-              )
-              .having(
-                (error) => error.retryable,
-                'retryable',
-                false,
-              ),
-        ),
+  test(
+    'explicit transport failures retain their safe classification',
+    () async {
+      final inner = TestClient(
+        (_) async =>
+            throw const ReviewTransportFailure(ReviewErrorCode.unauthorized),
       );
-    } finally {
-      client.close();
-    }
-  });
+      final client = BoundedSessionHttp(
+        inner,
+        false,
+        origin,
+        const Duration(seconds: 1),
+      );
+      try {
+        await expectLater(
+          client.send(request()),
+          throwsA(
+            isA<ReviewTransportFailure>()
+                .having(
+                  (error) => error.code,
+                  'safe code',
+                  ReviewErrorCode.unauthorized,
+                )
+                .having((error) => error.retryable, 'retryable', false),
+          ),
+        );
+      } finally {
+        client.close();
+      }
+    },
+  );
 
   test('unknown transport failures are not retried', () async {
     final inner = TestClient(
@@ -257,5 +251,4 @@ void main() {
       client.close();
     }
   });
-
 }

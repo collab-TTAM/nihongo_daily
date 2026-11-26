@@ -384,3 +384,13 @@
 
 - Post-write review of `fef36f043d5ca7fa48855c09a726903416e58f82` found only a Dart-formatting adjustment in the new focused matcher chain; wrapped it to the repository formatter's multiline style. No assertion or runtime behavior changed. This formatting follow-up is included in the final exact-head CI request.
 
+
+
+## PR #41 — exact Dart formatter correction — 2026-11-26T10:06Z
+
+- Run `core-20261126T1006Z-pr41-dart-format-fix`; branch `automation/issue-11-plan-sdk-integration`; parent `d5c4bc68936781aa3f9838bc6c3159fd92bf44e2`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45791522074](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45791522074), attempt 1, targets that parent. Repo sanity, AI boundary, database, Windows and disposable local Supabase integration succeeded. Flutter failed strict Dart formatting in `apps/flutter_app/test/features/srs/bounded_session_http_test.dart`; Flutter analyze/full tests and dependent checks were skipped, not passed.
+- Applied only the pinned Dart 3.35.4 formatter's observed matcher-chain, explicit-transport-test layout and final blank-line changes. No assertion, behavior, runtime or fixture changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyze/test/build are not claimed. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter suite, local Supabase integration, Windows/Web and preview artifact checks.
+- PR #37 was re-read first and remains open/Draft at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; its exact-head CI [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) passed all six jobs / 108 returned steps. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and protected Windows restore remain separate unverified gates. Pro-owned #14/PR #38/N4 paths remain untouched.
+- Next: inspect all latest-attempt jobs and steps for the corrected PR #41 HEAD; fix only observed failures and keep the PR Draft.
