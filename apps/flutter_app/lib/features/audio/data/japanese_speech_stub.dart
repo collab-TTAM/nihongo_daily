@@ -1,6 +1,9 @@
 import 'japanese_speech_api.dart';
 
-JapaneseSpeechPort createJapaneseSpeech() => _UnsupportedJapaneseSpeech();
+JapaneseSpeechPort createJapaneseSpeech() => createUnsupportedJapaneseSpeech();
+
+JapaneseSpeechPort createUnsupportedJapaneseSpeech() =>
+    _UnsupportedJapaneseSpeech();
 
 final class _UnsupportedJapaneseSpeech implements JapaneseSpeechPort {
   @override

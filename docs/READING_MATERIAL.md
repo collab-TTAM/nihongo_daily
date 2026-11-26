@@ -3,7 +3,10 @@
 The core is a pure local model/importer and deterministic comprehension round.
 A fixed bundled N5 draft source is described below; READING_SCREEN.md documents
 the read-only UI. N4 remains empty until its separate content source is reviewed
-and integrated. No audio or default study-session writer is installed. Frozen v0.1 APIs/database models and seven Daily Plan blocks are unchanged.
+and integrated. No reviewed original audio or default study-session writer is
+installed. Explicit-tap system TTS is only a pronunciation aid; see
+JAPANESE_SPEECH.md. Frozen v0.1 APIs/database models and seven Daily Plan blocks
+are unchanged.
 No canonical N5/N4 asset, content manifest or Pro-owned content/test is modified.
 Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
@@ -14,8 +17,9 @@ The fixed app asset currently contains eleven original N5 draft passages and 33 
 This is a small reading-flow content increment, not complete N5 coverage,
 official JLPT alignment, independent linguistic review or licensing approval.
 N4 remains outside this core change and must follow the separately owned Pro
-content review/integration. Audio is still unavailable; this passage cannot
-unlock LISTENING_READING, create study-minute credit, mastery or SRS progress.
+content review/integration. Reviewed original audio and listening assessment
+remain unavailable; optional system TTS can read text but cannot unlock
+LISTENING_READING, create study-minute credit, mastery or SRS progress.
 
 ## Local import format v1
 
@@ -152,7 +156,8 @@ flutter analyze
 flutter test test/features/reading
 ```
 
-The repository enables no reviewed content/audio by default. The read-only
-/listening route and injected providers are documented in READING_SCREEN.md.
+The repository enables no reviewed content or original audio by default. The
+read-only/listening route and injected providers are documented in
+READING_SCREEN.md; optional system TTS is documented in JAPANESE_SPEECH.md.
 Captured-session study reports with durable retry/restart deduplication remain next. Listening remains unavailable
 until a separately vetted playable source/license/availability adapter exists.

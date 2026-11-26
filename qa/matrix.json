@@ -971,14 +971,14 @@
     {
       "id": "study-flows",
       "status": "pending-integration",
-      "scope": "N5 bundled reading now includes nine original draft passages and 27 deterministic comprehension questions; vocabulary/grammar and listening/reading still need reviewed curriculum and hosted end-to-end integration.",
+      "scope": "N5 vocabulary/grammar/reading study flows include explicit-tap browser/Windows system TTS as a pronunciation aid; listening/reading still need reviewed curriculum, original audio and hosted end-to-end integration.",
       "issues": [
         12,
         34,
         18
       ],
       "reproduce": "Select actual N5/N4 items, display readings/examples/meaning, load/error/empty/offline, complete validated study session; verify no simulated audio/completion.",
-      "limitation": "N5 reading passages remain unreviewed drafts; N4 is separately Pro-owned; audio is unavailable and LISTENING_READING remains server-BLOCKED, so no listening completion or study-minute credit. Hosted learner and release evidence remain pending."
+      "limitation": "N5 content remains unreviewed draft material and N4 is separately Pro-owned. System TTS is not reviewed original audio or a listening assessment and cannot unlock LISTENING_READING or grant study minutes. Hosted learner and release evidence remain pending."
     },
     {
       "id": "n5-coverage",
@@ -1832,7 +1832,7 @@
     {
       "id": "reading-widget-flow",
       "status": "automated-baseline",
-      "scope": "Fixed bundled original N5 draft plus trusted local overrides, explicit empty N4, read-only comprehension UI, disabled audio and loading/error/empty/reload/round identity barriers",
+      "scope": "Fixed bundled original N5 draft plus trusted local overrides, explicit empty N4, read-only comprehension UI, explicit-tap browser/Windows system TTS and loading/error/empty/reload/round identity barriers; no reviewed audio or saved result",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -1878,6 +1878,18 @@
         {
           "path": "apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart",
           "contains": "bundled N5 expansion includes the supermarket passage"
+        },
+        {
+          "path": "apps/flutter_app/test/features/audio/japanese_speech_windows_test.dart",
+          "contains": "reports no installed Japanese voice without claiming playback"
+        },
+        {
+          "path": "apps/flutter_app/test/features/audio/japanese_speech_windows_test.dart",
+          "contains": "cancelling kills the process and fences late completion"
+        },
+        {
+          "path": "apps/flutter_app/test/features/audio/japanese_speech_windows_test.dart",
+          "contains": "completed speech reports its terminal callback once"
         }
       ],
       "issues": [
@@ -1885,7 +1897,7 @@
         18
       ],
       "reproduce": "In apps/flutter_app: flutter test test/features/reading/bundled_reading_repository_test.dart test/features/reading/reading_widget_test.dart; retain full Flutter/Chrome/Web/Windows CI.",
-      "limitation": "The bundled catalog is ten original N5 draft passages (30 questions) with no independent teacher/native-speaker review; N4 is intentionally empty pending separate Pro PR #38 review/integration. No audio, saved answers, progress/mastery or study-minute credit; the server LISTENING_READING block remains BLOCKED. Tests/CI are component evidence, not hosted learner acceptance."
+      "limitation": "The bundled catalog remains unreviewed N5 draft content; N4 is separately Pro-owned. Optional system TTS is only a pronunciation aid and does not supply reviewed audio, listening assessment, saved answers, progress/mastery or study-minute credit. Windows tests use a fake process plus compile coverage; installed Japanese voice/audio hardware and physical playback are not CI proof. Server LISTENING_READING remains BLOCKED; all hosted release groups remain pending."
     },
     {
       "id": "reading-study-recorder",

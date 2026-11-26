@@ -1,20 +1,37 @@
 # Japanese system speech
 
-Nihongo Daily can optionally read the currently displayed Japanese text using the browser's built-in Web Speech synthesis.
+The speech button is explicit-tap only. It never starts automatically when a
+lesson opens, and speech does not create a saved recording or learner study
+credit.
 
-## Scope and behavior
+## Platform behavior
 
-- Playback starts only after an explicit learner tap. The app never autoplays.
-- The Web adapter selects a voice whose language is \`ja\` or begins with \`ja-\`, sets the utterance language to \`ja-JP\`, and uses a slightly reduced speaking rate.
-- Vocabulary reads its kana reading when present; grammar reads the pattern and current Japanese examples; a reading passage reads only its Japanese passage text.
-- Each request is bounded to 8,192 characters. Empty/invalid text, an unsupported browser and a missing Japanese voice return separate fixed outcomes. Raw browser exceptions are never shown.
-- A new request replaces the previous utterance. Stopping or leaving the detail/passage disposes the button and cancels playback.
-- Native Windows and other non-web targets use an explicit unsupported adapter in this increment. No native voice package or platform SDK was added.
+- Web uses the browser Speech Synthesis API and an installed Japanese voice.
+- Windows launches the built-in Windows PowerShell host and .NET
+  `System.Speech.Synthesis.SpeechSynthesizer`, selecting an enabled `ja` or
+  `ja-*` voice installed for the current Windows user. The fixed script is
+  UTF-16LE encoded; learner text is sent through redirected standard input,
+  never interpolated into the command line or a script path.
+- Other native platforms report speech as unsupported until a reviewed native
+  adapter is added.
 
-## Important limitations
+Windows speech is local system synthesis, not an original recording. A Windows
+installation without an enabled Japanese voice returns the explicit
+`noJapaneseVoice` state; install a Japanese speech voice through Windows
+language settings and retry. PowerShell/.NET or audio-device failures remain
+safe fixed UI errors. Stop/dispose terminates the owned PowerShell process.
+No audio is uploaded, recorded, stored, or sent to a paid provider.
 
-This is **system-generated speech**, not a reviewed recording or an audio asset from the curriculum. The browser/OS must already provide a Japanese voice; voice availability and pronunciation quality vary by device. If the voice list is still loading, retry after the browser has populated it.
+## Bounds and learning semantics
 
-Original curriculum audio is still not integrated, no audio is downloaded or stored, and this is not a listening assessment. Speech playback does not create study events, quiz attempts, mastery, progress, or sync. No microphone, speech recognition, network request, paid AI provider, account token, or learner data is involved.
+Text whitespace is normalized and input is limited to 8192 UTF-16 code units;
+empty text and remaining control characters are rejected. Windows repeats the
+same bounds before synthesis. The native process receives only the bounded text
+on stdin and emits fixed status markers; stdout/stderr never contain learner
+text or platform exception details.
 
-The browser capability check runs in Chrome CI. iOS browser voice behavior and native Windows speech remain unverified and require separate platform work before claiming cross-platform audio support.
+System TTS is a pronunciation aid only. It is not reviewed JLPT listening
+material, a listening-comprehension assessment, an attendance signal, or proof
+that a learner listened. It cannot unblock `LISTENING_READING`, create study
+minutes, mark a plan block complete, update mastery, or change SRS state.
+Reviewed/licensed recordings and hosted availability require a separate gate.

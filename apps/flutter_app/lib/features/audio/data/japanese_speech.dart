@@ -1,5 +1,6 @@
 import 'japanese_speech_api.dart';
 import 'japanese_speech_stub.dart'
+    if (dart.library.io) 'japanese_speech_io.dart'
     if (dart.library.js_interop) 'japanese_speech_web.dart'
     as platform;
 
