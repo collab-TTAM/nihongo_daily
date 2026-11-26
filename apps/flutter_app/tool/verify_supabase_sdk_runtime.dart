@@ -351,7 +351,7 @@ Future<_ReadyStudy> _waitReady(
   String phase,
 ) async {
   try {
-    await runtime.account.waitForCurrentProfile();
+    await _waitForAccountSettlement(runtime);
   } on Object {
     throw _ProbeFailure(phase);
   }
@@ -365,6 +365,56 @@ Future<_ReadyStudy> _waitReady(
     throw _ProbeFailure(phase);
   }
   return _ReadyStudy(session!, study);
+}
+
+Future<void> _waitForAccountSettlement(
+  PersistentSupabaseRuntime runtime,
+) async {
+  final account = runtime.account;
+  // The Auth owner may have persisted a restored session just before the
+  // AccountController receives its broadcast. Do not mistake that brief
+  // signed-out snapshot for a settled profile state.
+  if (runtime.persistence.currentSession == null) return;
+
+  bool settled(AccountPhase phase) => const {
+    AccountPhase.ready,
+    AccountPhase.profileError,
+    AccountPhase.signInError,
+    AccountPhase.signOutError,
+    AccountPhase.unavailable,
+  }.contains(phase);
+
+  if (settled(account.state.phase)) return;
+  final completion = Completer<void>();
+  late final StreamSubscription<AccountState> subscription;
+  subscription = account.changes.listen(
+    (state) {
+      if (settled(state.phase) && !completion.isCompleted) {
+        completion.complete();
+      }
+    },
+    onError: (Object error, StackTrace stackTrace) {
+      if (!completion.isCompleted) {
+        completion.completeError(error, stackTrace);
+      }
+    },
+    onDone: () {
+      if (!completion.isCompleted) {
+        completion.completeError(StateError('Account state stream closed'));
+      }
+    },
+  );
+
+  // Subscribe before re-reading state to close the broadcast-stream race.
+  final afterListen = account.state;
+  if (settled(afterListen.phase) && !completion.isCompleted) {
+    completion.complete();
+  }
+  try {
+    await completion.future.timeout(const Duration(seconds: 15));
+  } finally {
+    await subscription.cancel();
+  }
 }
 
 PreparedReview _prepare(SrsStudyRuntime study, SrsReview review, String phase) {
