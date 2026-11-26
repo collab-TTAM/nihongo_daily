@@ -85,19 +85,73 @@ bool ValidSecret(const std::string& token) {
          });
 }
 
+void EraseCredentialBlob(CREDENTIALW* credential) noexcept {
+  // Credential Manager supplies the allocation and its exact byte length.
+  // Wipe malformed/oversized blobs too; the validity limit is not a wipe limit.
+  if (credential && credential->CredentialBlob &&
+      credential->CredentialBlobSize > 0) {
+    SecureZeroMemory(credential->CredentialBlob,
+                     credential->CredentialBlobSize);
+  }
+}
+
+void EraseSecretString(std::string& secret) noexcept {
+  if (!secret.empty()) SecureZeroMemory(secret.data(), secret.size());
+}
+
 struct CredentialRelease {
   void operator()(CREDENTIALW* credential) const {
     if (credential) {
-      if (credential->CredentialBlob &&
-          credential->CredentialBlobSize <= CRED_MAX_CREDENTIAL_BLOB_SIZE) {
-        SecureZeroMemory(credential->CredentialBlob,
-                         credential->CredentialBlobSize);
-      }
+      EraseCredentialBlob(credential);
       CredFree(credential);
     }
   }
 };
 }  // namespace
+
+VaultRead::VaultRead(VaultStatus value, std::string secret)
+    : status(value), token(std::move(secret)) {}
+
+VaultRead::VaultRead(VaultRead&& other) noexcept
+    : status(other.status), token(std::move(other.token)) {
+  other.wipe();
+}
+
+VaultRead& VaultRead::operator=(VaultRead&& other) noexcept {
+  if (this != &other) {
+    wipe();
+    status = other.status;
+    token = std::move(other.token);
+    other.wipe();
+  }
+  return *this;
+}
+
+VaultRead::~VaultRead() { wipe(); }
+
+void VaultRead::wipe() noexcept { EraseSecretString(token); }
+
+#if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
+bool VerifySensitiveBufferWipeForTest() {
+  std::vector<BYTE> oversized_blob(CRED_MAX_CREDENTIAL_BLOB_SIZE + 1, 0x5a);
+  CREDENTIALW credential{};
+  credential.CredentialBlob = oversized_blob.data();
+  credential.CredentialBlobSize =
+      static_cast<DWORD>(oversized_blob.size());
+  EraseCredentialBlob(&credential);
+  const bool blob_wiped =
+      std::all_of(oversized_blob.begin(), oversized_blob.end(),
+                  [](BYTE value) { return value == 0; });
+
+  VaultRead read{VaultStatus::success,
+                 std::string("TEST_ONLY_TEMPORARY_REFRESH")};
+  read.wipe();
+  const bool read_buffer_wiped =
+      std::all_of(read.token.begin(), read.token.end(),
+                  [](char value) { return value == '\0'; });
+  return blob_wiped && read_buffer_wiped;
+}
+#endif
 
 #if defined(NIHONGO_SESSION_VAULT_TEST_HOOKS)
 void SetVaultProbeFaultOnce(VaultProbeOperation operation,

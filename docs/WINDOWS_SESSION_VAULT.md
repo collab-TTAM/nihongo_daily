@@ -665,3 +665,23 @@ one-shot consumption, grant confusion, failed/malformed responses, oversized
 values and unchanged refresh tokens. These checks improve the protected manual
 probe but are not a hosted run. The `supabase-staging` environment and its
 approved non-production secrets/accounts are still required before dispatch.
+
+
+## Native refresh-secret temporary-buffer cleanup
+
+The Windows Credential Manager release path now zeroes every non-null
+`CredentialBlob` using the exact byte length returned by the OS before
+`CredFree`. The maximum accepted token size still rejects malformed values;
+it no longer suppresses wiping when a corrupt blob exceeds that accepted size.
+
+The native read result is move-only and zeroes its temporary `std::string`
+buffer on destruction. The MethodChannel bridge moves that value into the
+codec rather than creating another native string copy. A TEST ONLY Windows
+native probe verifies both the oversized synthetic credential blob and the
+temporary read-result buffer are zeroed.
+
+This reduces native temporary copies; it does not claim that every copy inside
+the Flutter/Dart SDK, platform-channel codec, HTTP stack or process memory can
+be erased. The refresh token still necessarily crosses the in-process
+MethodChannel into the caller-owned Dart Auth runtime. No token, raw OS error
+or credential content is logged, and no plaintext file fallback is introduced.

@@ -6,6 +6,17 @@
 namespace nihongo {
 enum class VaultStatus { success, not_found, unavailable, invalid_input, corrupt };
 struct VaultRead {
+  VaultRead(VaultStatus status, std::string token = {});
+  VaultRead(const VaultRead&) = delete;
+  VaultRead& operator=(const VaultRead&) = delete;
+  VaultRead(VaultRead&& other) noexcept;
+  VaultRead& operator=(VaultRead&& other) noexcept;
+  ~VaultRead();
+
+  // Zero the temporary native copy without changing its length, allowing a
+  // TEST ONLY probe to inspect the wiped bytes before destruction.
+  void wipe() noexcept;
+
   VaultStatus status;
   std::string token;
 };
@@ -26,6 +37,7 @@ enum class VaultProbeOperation { read, write, clear };
 enum class VaultProbeFault { none, fail_before, commit_then_fail };
 void SetVaultProbeFaultOnce(VaultProbeOperation operation,
                             VaultProbeFault fault);
+bool VerifySensitiveBufferWipeForTest();
 #endif
 }  // namespace nihongo
 #endif

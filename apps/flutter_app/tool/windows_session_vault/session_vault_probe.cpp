@@ -229,6 +229,7 @@ int wmain(int argc, wchar_t* argv[]) {
   const std::string b = "NihongoDaily.Refresh.v1|https://ci-vault-b-" + suffix;
   bool passed = false;
   try {
+    Check(nihongo::VerifySensitiveBufferWipeForTest());
     Check(nihongo::ClearRefreshCredential(a) == VaultStatus::success);
     Check(nihongo::ClearRefreshCredential(b) == VaultStatus::success);
     VerifyOneShotNativeFaultInjection(a);

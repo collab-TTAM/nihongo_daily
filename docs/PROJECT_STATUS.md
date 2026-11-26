@@ -5730,3 +5730,13 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Next: inspect every latest-attempt job and step for the new exact HEAD, especially the complete Flutter suite and all downstream lifecycle/vault/browser/native/SRS/Kanji/Web checks. Do not claim full CI while any job is pending, failed or skipped. Keep PR #37 Draft and #20/#22/#15 open; hosted signed-JWT learner A/B, deployed PostgREST/RLS, physical multi-device sync and complete learner journey remain Personal Alpha gates.
 
 - Separate diff review caught a missing trailing comma at the `testWidgets` callback boundary before CI dispatch; corrected it in the follow-up commit. The final callback terminator is `},`; test timeout and assertions are unchanged.
+
+
+## PR #37 — zeroize native temporary refresh-secret buffers — 2026-11-26T01:12Z
+
+- Run `core-20261126T0112Z-pr37-native-secret-buffer-wipe` on branch `automation/issue-22-atomic-review`; parent HEAD `81a42821c9b79660b8daceaaa9037f792217abfc`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Hardened the Windows native vault: `CredentialRelease` now zeroes every non-null Credential Manager blob using the OS-reported byte length, including malformed blobs above the accepted token limit. `VaultRead` is move-only and wipes its temporary token buffer on destruction; the MethodChannel bridge moves the value into the codec to avoid an extra native string copy.
+- Added TEST ONLY native probe coverage for an oversized synthetic Credential Manager blob and the temporary `VaultRead` buffer. Paths: `apps/flutter_app/windows/runner/session_credential_vault.cpp`, `session_credential_vault.h`, `session_vault_channel.cpp`, `apps/flutter_app/tool/windows_session_vault/session_vault_probe.cpp`, `docs/WINDOWS_SESSION_VAULT.md`.
+- The authoring runtime has no Windows/Flutter SDK; local native compile, Dart format/analyze/Flutter tests and Windows build were not run. Exact-head GitHub Actions is required; no CI pass is claimed before its jobs complete. The test-only helper is compiled only in the standalone probe target; normal Flutter runner builds omit the test hooks.
+- No Auth strategy/provider, session ordering, vault format/target, API/schema/RLS, default runtime activation, hosted secrets/dispatch, Pro-owned N4 paths, merge, deployment or release behavior changed. Memory-buffer wiping is best-effort for native temporary copies, not a claim of total process/SDK memory erasure.
+- Next: inspect all latest-attempt jobs/steps on the final PR #37 head; fix only observed diagnostics. Keep #37 Draft and #20/#22/#15 open pending protected hosted signed-JWT A/B, deployed PostgREST/RLS, and physical multi-device sync evidence.
