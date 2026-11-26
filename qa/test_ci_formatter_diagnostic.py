@@ -7,7 +7,7 @@ WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
 
 
 def job_block(source: str, name: str) -> str:
-    pattern = rf"^  {re.escape(name)}:\\n(?P<body>.*?)(?=^  [A-Za-z0-9_-]+:\\n|\\Z)"
+    pattern = rf"^  {re.escape(name)}:\n(?P<body>.*?)(?=^  [A-Za-z0-9_-]+:\n|\Z)"
     match = re.search(pattern, source, re.MULTILINE | re.DOTALL)
     if match is None:
         raise AssertionError(f"Missing workflow job: {name}")
@@ -25,7 +25,7 @@ def step_block(job: str, name: str) -> str:
         (index for index in range(start + 1, len(lines)) if lines[index].startswith("      - ")),
         len(lines),
     )
-    return "\\n".join(lines[start:end])
+    return "\n".join(lines[start:end])
 
 
 class FormatterDiagnosticWorkflowTest(unittest.TestCase):

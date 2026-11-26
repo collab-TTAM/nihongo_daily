@@ -444,3 +444,10 @@
 - Added `qa/test_ci_formatter_diagnostic.py` and the `formatter-diagnostic-no-skip` QA baseline. `qa/matrix.json` now tracks the diagnostic as a required Flutter step and contains 191 cases; `docs/QA_SECURITY_MATRIX.md` explains why no skipped diagnostic is required for evidence verification.
 - Cloud authoring has no pinned Flutter/Dart SDK. The new standard-library regression is wired into the existing repo-sanity QA discovery command; no local test execution is claimed. A fresh exact-head GitHub Actions run must verify the regression, QA inventory, formatter/analyzer/full Flutter suite, database, disposable Supabase, Windows, Web and preview artifacts.
 - No application behavior, Auth/provider strategy, API/schema/RLS, hosted secrets/dispatch, Pro-owned #14/#38/N4/content paths, default Auth/save behavior, merge, deployment or release changed. PR #41 remains Draft. Next: inspect every latest-attempt job/step on the new exact HEAD and keep the PR Draft until acceptance and release gates are separately complete.
+
+
+## PR #41 — formatter diagnostic regression test escape correction — 2026-11-26T16:30Z
+
+- Separate post-write review of `d292190caee273103ab608dd1c5a68bbbfdcd7e0` found that the new Python test had double-escaped the raw-regex newline/end anchors and the line-join delimiter. The test would match literal backslash sequences rather than workflow lines.
+- Corrected `qa/test_ci_formatter_diagnostic.py` to use the intended single `\n` / `\Z` regex escapes and `"\n".join(...)`; no workflow or application behavior changed. The strict formatter gate and always-run diagnostic remain unchanged.
+- This is a review correction, not a test pass. No local Python/Flutter test result is claimed; a fresh exact-head Actions run must execute the QA discovery suite and all downstream jobs.
