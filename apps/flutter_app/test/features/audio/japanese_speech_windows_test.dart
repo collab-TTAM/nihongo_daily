@@ -34,10 +34,7 @@ void main() {
       final completions = <bool>[];
       final speech = WindowsJapaneseSpeech(launcher: launcher.call);
 
-      final result = speech.speak(
-        '日本語を勉強します。',
-        onComplete: completions.add,
-      );
+      final result = speech.speak('日本語を勉強します。', onComplete: completions.add);
       await process.inputWritten.future;
       process.emit('NO_VOICE');
       process.finish(3);
@@ -49,55 +46,43 @@ void main() {
     },
   );
 
-  test(
-    'completed speech reports its terminal callback once',
-    () async {
-      final process = _FakeSpeechProcess();
-      final speech = WindowsJapaneseSpeech(
-        launcher: _FakeLauncher([process]).call,
-      );
-      final completion = Completer<bool>();
+  test('completed speech reports its terminal callback once', () async {
+    final process = _FakeSpeechProcess();
+    final speech = WindowsJapaneseSpeech(
+      launcher: _FakeLauncher([process]).call,
+    );
+    final completion = Completer<bool>();
 
-      final result = speech.speak(
-        'ひらがなを読みます。',
-        onComplete: completion.complete,
-      );
-      await process.inputWritten.future;
-      process.emit('STARTED');
+    final result = speech.speak('ひらがなを読みます。', onComplete: completion.complete);
+    await process.inputWritten.future;
+    process.emit('STARTED');
 
-      expect(await result, JapaneseSpeechResult.started);
-      expect(completion.isCompleted, isFalse);
-      process.finish(0);
+    expect(await result, JapaneseSpeechResult.started);
+    expect(completion.isCompleted, isFalse);
+    process.finish(0);
 
-      expect(await completion.future, isTrue);
-    },
-  );
+    expect(await completion.future, isTrue);
+  });
 
-  test(
-    'cancelling kills the process and fences late completion',
-    () async {
-      final process = _FakeSpeechProcess();
-      final speech = WindowsJapaneseSpeech(
-        launcher: _FakeLauncher([process]).call,
-      );
-      final completions = <bool>[];
+  test('cancelling kills the process and fences late completion', () async {
+    final process = _FakeSpeechProcess();
+    final speech = WindowsJapaneseSpeech(
+      launcher: _FakeLauncher([process]).call,
+    );
+    final completions = <bool>[];
 
-      final result = speech.speak(
-        '日本語を練習します。',
-        onComplete: completions.add,
-      );
-      await process.inputWritten.future;
-      process.emit('STARTED');
-      expect(await result, JapaneseSpeechResult.started);
+    final result = speech.speak('日本語を練習します。', onComplete: completions.add);
+    await process.inputWritten.future;
+    process.emit('STARTED');
+    expect(await result, JapaneseSpeechResult.started);
 
-      speech.cancel();
-      expect(process.killed, isTrue);
-      expect(completions, [false]);
-      process.finish(0);
-      await Future<void>.delayed(Duration.zero);
-      expect(completions, [false]);
-    },
-  );
+    speech.cancel();
+    expect(process.killed, isTrue);
+    expect(completions, [false]);
+    process.finish(0);
+    await Future<void>.delayed(Duration.zero);
+    expect(completions, [false]);
+  });
 
   test(
     'late completion from an older utterance cannot complete a newer one',
@@ -135,17 +120,14 @@ void main() {
     },
   );
 
-  test(
-    'PowerShell launch failure is reported as unsupported',
-    () async {
-      final speech = WindowsJapaneseSpeech(
-        launcher: () async =>
-            throw ProcessException('powershell.exe', const <String>[]),
-      );
+  test('PowerShell launch failure is reported as unsupported', () async {
+    final speech = WindowsJapaneseSpeech(
+      launcher: () async =>
+          throw ProcessException('powershell.exe', const <String>[]),
+    );
 
-      expect(await speech.speak('日本語'), JapaneseSpeechResult.unsupported);
-    },
-  );
+    expect(await speech.speak('日本語'), JapaneseSpeechResult.unsupported);
+  });
 
   test(
     'unexpected process exit before the start marker fails closed',

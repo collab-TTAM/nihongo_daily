@@ -178,17 +178,13 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
 }
 
 Future<JapaneseSpeechProcess> _launchPowerShell() async {
-  final process = await Process.start(
-    'powershell.exe',
-    [
-      '-NoLogo',
-      '-NoProfile',
-      '-NonInteractive',
-      '-EncodedCommand',
-      _encodeUtf16LeBase64(_windowsSpeechScript),
-    ],
-    runInShell: false,
-  );
+  final process = await Process.start('powershell.exe', [
+    '-NoLogo',
+    '-NoProfile',
+    '-NonInteractive',
+    '-EncodedCommand',
+    _encodeUtf16LeBase64(_windowsSpeechScript),
+  ], runInShell: false);
   return _PowerShellJapaneseSpeechProcess(process);
 }
 
@@ -202,8 +198,7 @@ String _encodeUtf16LeBase64(String value) {
   return base64Encode(bytes);
 }
 
-final class _PowerShellJapaneseSpeechProcess
-    implements JapaneseSpeechProcess {
+final class _PowerShellJapaneseSpeechProcess implements JapaneseSpeechProcess {
   _PowerShellJapaneseSpeechProcess(this._process) {
     _process.stderr.listen((_) {});
   }
