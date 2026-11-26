@@ -5759,7 +5759,7 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Retained the existing identical, changed-payload conflict, distinct-event, different-item conflict and identical rollback races. Updated the `review-transaction` QA inventory scope and added an exact `changed_rollback` source anchor. No production SQL/migration, grants/RLS, Auth/vault, learner default, Pro-owned N4 content or hosted workflow changed.
 - The authoring runtime has no disposable PostgreSQL/Docker service; the native race has not been run locally. The database job in fresh exact-head GitHub Actions is the execution gate; no CI pass is claimed until every latest-attempt job and step completes.
 - Next: inspect the exact-head run and all latest-attempt jobs/steps; fix only observed diagnostics. Hosted signed-JWT A/B, deployed PostgREST/RLS and physical two-device acceptance remain separate Personal Alpha gates.
- 
+
 ## PR #37 — exact-head CI verified after changed-payload rollback race — 2026-11-26T12:20Z
 
 - Run `core-20261126T1212Z-pr37-exact-head-ci-closeout`; branch `automation/issue-22-atomic-review`; parent HEAD `486bcfd1d910825f318ad783b5bf342fde7d142a`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Source increment already present at this HEAD adds the native PostgreSQL `changed_rollback` concurrency race; this checkpoint records the completed exact-head verification, not a new behavior claim.
