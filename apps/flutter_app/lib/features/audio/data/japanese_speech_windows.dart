@@ -52,7 +52,7 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
     }
 
     if (generation != _generation) {
-      process.kill();
+      _kill(process);
       return JapaneseSpeechResult.started;
     }
 
@@ -67,26 +67,34 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
           case 'STARTED':
             speechStarted = true;
             handshake.complete(JapaneseSpeechResult.started);
+            break;
           case 'NO_VOICE':
             handshake.complete(JapaneseSpeechResult.noJapaneseVoice);
+            break;
           case 'INVALID':
             handshake.complete(JapaneseSpeechResult.invalidText);
+            break;
           case 'FAILED':
             handshake.complete(JapaneseSpeechResult.failed);
+            break;
         }
       },
       onError: (Object _) {
         if (!handshake.isCompleted) {
           handshake.complete(JapaneseSpeechResult.failed);
         }
-        process.kill();
+        _kill(process);
       },
     );
 
     unawaited(
       process.exitCode.then(
         (code) async {
-          await outputSubscription.cancel();
+          try {
+            await outputSubscription.cancel();
+          } on Object {
+            // A closed process stream must not leak a platform error.
+          }
           if (generation != _generation) return;
           if (!handshake.isCompleted) {
             handshake.complete(_resultForExit(code));
@@ -109,7 +117,7 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
     try {
       await process.writeText(normalized);
     } on Object {
-      process.kill();
+      _kill(process);
       _finish(generation, false);
       return JapaneseSpeechResult.failed;
     }
@@ -122,7 +130,7 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
     if (result != JapaneseSpeechResult.started) {
       if (identical(_activeProcess, process)) _activeProcess = null;
       _completion = null;
-      process.kill();
+      _kill(process);
     }
     return result;
   }
@@ -141,6 +149,14 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
     _notify(callback, completed);
   }
 
+  void _kill(JapaneseSpeechProcess? process) {
+    try {
+      process?.kill();
+    } on Object {
+      // Process termination is best-effort; the generation guard remains final.
+    }
+  }
+
   void _notify(JapaneseSpeechCompletion? callback, bool completed) {
     try {
       callback?.call(completed);
@@ -156,7 +172,7 @@ final class WindowsJapaneseSpeech implements JapaneseSpeechPort {
     _activeProcess = null;
     final callback = _completion;
     _completion = null;
-    process?.kill();
+    _kill(process);
     _notify(callback, false);
   }
 }
@@ -209,7 +225,7 @@ final class _PowerShellJapaneseSpeechProcess
   }
 
   @override
-  bool kill() => _process.kill();
+  bool kill() => __kill(process);
 }
 
 const _windowsSpeechScript = r'''
