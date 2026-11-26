@@ -224,8 +224,16 @@ void main() {
         client.send(request()),
         throwsA(
           isA<ReviewTransportFailure>()
-              .having((error) => error.code, 'safe code', ReviewErrorCode.unauthorized)
-              .having((error) => error.retryable, 'retryable', false),
+              .having(
+                (error) => error.code,
+                'safe code',
+                ReviewErrorCode.unauthorized,
+              )
+              .having(
+                (error) => error.retryable,
+                'retryable',
+                false,
+              ),
         ),
       );
     } finally {

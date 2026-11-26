@@ -382,3 +382,5 @@
 - Parent recursive tree: 1,036 entries (911 blobs / 125 trees), complete and untruncated. Fresh exact-head CI is required; cloud authoring has no pinned Flutter/Dart SDK or disposable Docker/Supabase runtime, so no local Dart/Flutter/Supabase test or build is claimed.
 - Next: inspect every latest-attempt job/step on the new exact HEAD. Keep PR #41 Draft and PR #37 separate/open/Draft pending protected hosted A/B, deployed RLS and hosted Windows restore.
 
+- Post-write review of `fef36f043d5ca7fa48855c09a726903416e58f82` found only a Dart-formatting adjustment in the new focused matcher chain; wrapped it to the repository formatter's multiline style. No assertion or runtime behavior changed. This formatting follow-up is included in the final exact-head CI request.
+
