@@ -126,6 +126,23 @@ Future<void> tapReading(
   if (settle) await tester.pumpAndSettle();
 }
 
+Future<void> waitForBundledN5ReadingList(WidgetTester tester) async {
+  final firstPassage = find.byKey(
+    const Key('reading-open-n5-daily-routine-01'),
+  );
+  final error = find.byKey(const Key('reading-error'));
+  final empty = find.byKey(const Key('reading-empty'));
+  for (var attempt = 0; attempt < 100; attempt++) {
+    if (firstPassage.evaluate().isNotEmpty ||
+        error.evaluate().isNotEmpty ||
+        empty.evaluate().isNotEmpty) {
+      return;
+    }
+    await tester.pump(const Duration(milliseconds: 50));
+  }
+  fail('Bundled N5 reading catalog did not reach a terminal UI state.');
+}
+
 Future<void> openReading(WidgetTester tester, {String id = 'fixture-a'}) async {
   await tapReading(tester, find.byKey(ValueKey('reading-open-$id')));
 }
@@ -135,7 +152,11 @@ void main() {
     'default route uses bundled N5 reading; audio and saved result stay unavailable',
     (tester) async {
       final h = await mountReading(tester);
+      await waitForBundledN5ReadingList(tester);
       await tester.pumpAndSettle();
+      expect(find.byKey(const Key('reading-loading')), findsNothing);
+      expect(find.byKey(const Key('reading-error')), findsNothing);
+      expect(find.byKey(const Key('reading-empty')), findsNothing);
       expect(
         h.container.read(readingRepositoryProvider),
         isA<BundledReadingRepository>(),
