@@ -251,9 +251,7 @@ void main() {
         final h = Harness();
         final pending = Completer<Object?>();
         final source = DaySource(h)..response = () => pending.future;
-        final repository = DailyPlanRepository(
-          DayGateway(() => true, source),
-        );
+        final repository = DailyPlanRepository(DayGateway(() => true, source));
         source.fixedRepository = repository;
         final c = await mountDay(tester, h, source);
 
@@ -304,10 +302,7 @@ void main() {
         if (lateError) {
           pending.completeError(StateError('PRIVATE OLD DAY'));
         } else {
-          pending.complete({
-            'date': '2026-10-20',
-            'timezone': 'Asia/Tokyo',
-          });
+          pending.complete({'date': '2026-10-20', 'timezone': 'Asia/Tokyo'});
         }
         await tester.pumpAndSettle();
         expect(

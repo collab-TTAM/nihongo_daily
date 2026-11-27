@@ -563,3 +563,12 @@
 - Changed exactly `apps/flutter_app/test/features/daily_plan/study_day_widget_test.dart`, `docs/DAILY_PLAN_UI.md`, and this file. No production behavior, curriculum/N4/Pro-owned content, Auth/provider, API/schema/RLS, CI gates, hosted secrets/dispatch or deployment changed.
 - Recursive parent tree was complete/untruncated: 1,052 entries (923 blobs / 129 trees), root `89da6d2c556ae812615423cf69d6a34c0e9e9719`. Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must run the full Flutter suite and all platform/database jobs; no new-head pass is claimed.
 - Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending hosted learner and content/audio acceptance.
+
+
+## PR #41 — exact Dart formatter correction — 2026-11-27T07:08Z
+
+- Core run `core-20261127T0708Z-pr41-dart-format-correction`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `74778a369631fda49ead57786d5bc7bd20601e75`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45951421618](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45951421618) matched the parent HEAD. Repo-sanity, AI boundary, database, disposable Supabase integration and Windows jobs completed SUCCESS; Flutter strict format failed on two line wraps in `apps/flutter_app/test/features/daily_plan/study_day_widget_test.dart`. Flutter analyze/tests and downstream jobs were skipped, not passes.
+- Applied only the two formatter-emitted line wraps in that TEST ONLY file. Assertions, test inputs, behavior and production source are unchanged. No N4/Pro-owned path, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch or default Auth/save behavior changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/test/build were not run. New exact-head Actions is required for verification.
+- Next: inspect every latest-attempt job and step for the new exact HEAD. Keep PR #41 Draft and #11/#12/#13/#34/#18 open; hosted learner study and independent linguistic/audio acceptance remain outstanding.
