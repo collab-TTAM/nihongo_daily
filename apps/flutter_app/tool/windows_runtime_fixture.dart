@@ -378,7 +378,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
                 phase == 'runtime-native-rotation-write-failure' ||
                 phase == 'runtime-native-rotation-write-failure-late-profile' ||
                 phase == 'runtime-native-rotation-write-fail-before' ||
-                phase == 'runtime-native-startup-rotation-write-commit-failure' ||
+                phase ==
+                    'runtime-native-startup-rotation-write-commit-failure' ||
                 phase == 'runtime-native-same-owner-late-refresh-generation'
             ? _first
             : phase == 'runtime-restore'
@@ -1276,7 +1277,8 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             logoutCalls >= 2,
       );
       await pending();
-    } else if (phase == 'runtime-native-startup-rotation-write-commit-failure') {
+    } else if (phase ==
+        'runtime-native-startup-rotation-write-commit-failure') {
       // Seed A's saved refresh secret under a separate real native owner lease.
       await _withWindowsVaultOwner(origin, (previous) async {
         _check(await previous.readRefreshToken() == null);
