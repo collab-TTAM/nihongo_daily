@@ -143,36 +143,31 @@ Future<void> tapReading(
   if (settle) await tester.pumpAndSettle();
 }
 
-Future<BundledReadingRepository> loadBundledN5ReadingRepository(
-  WidgetTester tester,
-) async {
-  // Read the actual package asset before mounting widgets. Keeping the platform
-  // asset I/O outside the provider's FakeAsync lifetime avoids a pending
-  // Future.timeout that cannot fire until a pump, while runAsync is awaiting it.
-  final source = await tester.runAsync(
-    () => rootBundle
-        .loadString(BundledReadingRepository.assetPath)
-        .timeout(const Duration(seconds: 5)),
-  );
-  if (source == null) {
-    throw StateError('Bundled reading asset did not load');
-  }
-  final repository = BundledReadingRepository(
-    bundle: _LoadedReadingAssetBundle(source),
-  );
-  expect(await repository.load(PreviewLevel.n5), hasLength(13));
-  return repository;
-}
-
 Future<void> openReading(WidgetTester tester, {String id = 'fixture-a'}) async {
   await tapReading(tester, find.byKey(ValueKey('reading-open-$id')));
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  late BundledReadingRepository bundledN5Repository;
+  setUpAll(() async {
+    // Suite setup runs outside each widget test's FakeAsync clock. Load and
+    // validate the real package asset once, then reuse the exact bytes in tests.
+    final source = await rootBundle
+        .loadString(BundledReadingRepository.assetPath)
+        .timeout(const Duration(seconds: 5));
+    final repository = BundledReadingRepository(
+      bundle: _LoadedReadingAssetBundle(source),
+    );
+    expect(await repository.load(PreviewLevel.n5), hasLength(13));
+    bundledN5Repository = repository;
+  });
+
   testWidgets(
     'default route uses bundled N5 reading; audio and saved result stay unavailable',
     (tester) async {
-      final repository = await loadBundledN5ReadingRepository(tester);
+      final repository = bundledN5Repository;
       final h = await mountReading(tester, repository: repository);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('reading-loading')), findsNothing);
