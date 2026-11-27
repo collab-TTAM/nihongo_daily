@@ -743,7 +743,9 @@ void main() {
       findsNothing,
     );
     expect(
-      find.text('Lịch sử buổi học trên thiết bị chưa được cấu hình cho phiên này.'),
+      find.text(
+        'Lịch sử buổi học trên thiết bị chưa được cấu hình cho phiên này.',
+      ),
       findsOneWidget,
     );
     expect(source.planReads, 0);
@@ -822,23 +824,35 @@ void main() {
 
       expect(store.reads, 1);
       expect(
-        find.text('2 buổi đã xác nhận · 23 phút trong nhật ký còn lưu trên thiết bị'),
+        find.text(
+          '2 buổi đã xác nhận · 23 phút trong nhật ký còn lưu trên thiết bị',
+        ),
         findsOneWidget,
       );
       expect(find.text('Từ vựng · 1 buổi · 15 phút'), findsOneWidget);
       expect(find.text('Ngữ pháp · 1 buổi · 8 phút'), findsOneWidget);
       expect(
-        find.byKey(const Key('progress-confirmed-study-f3100000-0000-4000-8000-000000000001')),
+        find.byKey(
+          const Key(
+            'progress-confirmed-study-f3100000-0000-4000-8000-000000000001',
+          ),
+        ),
         findsOneWidget,
       );
       expect(
-        find.byKey(const Key('progress-confirmed-study-f3100000-0000-4000-8000-000000000002')),
+        find.byKey(
+          const Key(
+            'progress-confirmed-study-f3100000-0000-4000-8000-000000000002',
+          ),
+        ),
         findsOneWidget,
       );
       for (final hidden in [3, 4, 5]) {
         expect(
           find.byKey(
-            Key('progress-confirmed-study-f3100000-0000-4000-8000-${hidden.toString().padLeft(12, '0')}'),
+            Key(
+              'progress-confirmed-study-f3100000-0000-4000-8000-${hidden.toString().padLeft(12, '0')}',
+            ),
           ),
           findsNothing,
         );

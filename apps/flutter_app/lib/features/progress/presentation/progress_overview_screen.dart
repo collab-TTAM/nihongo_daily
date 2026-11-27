@@ -959,8 +959,7 @@ class _ProgressOverviewScreenState
     final confirmedStudySessions = studySessionsCurrent
         ? _confirmedStudySessions
         : null;
-    final studySessionsLoading =
-        studySessionsCurrent && _studySessionsLoading;
+    final studySessionsLoading = studySessionsCurrent && _studySessionsLoading;
     final studySessionsFailed = studySessionsCurrent && _studySessionsFailed;
     final ready =
         account.phase == AccountPhase.ready &&
@@ -1111,7 +1110,9 @@ class _ProgressOverviewScreenState
           'mức thành thạo hoặc trạng thái SRS.',
         ),
         if (studySessionRepository == null)
-          const Text('Lịch sử buổi học trên thiết bị chưa được cấu hình cho phiên này.')
+          const Text(
+            'Lịch sử buổi học trên thiết bị chưa được cấu hình cho phiên này.',
+          )
         else
           FilledButton.icon(
             key: const Key('progress-load-confirmed-study-sessions'),
@@ -1156,9 +1157,15 @@ class _ProgressOverviewScreenState
                 ),
             for (final event in confirmedStudySessions.take(10))
               ListTile(
-                key: ValueKey('progress-confirmed-study-${event.clientEventId}'),
-                title: Text('${dailyPlanAreaLabel(event.area)} · ${event.date.value}'),
-                subtitle: Text('${_creditedStudyMinutes(event)} phút được máy chủ ghi nhận'),
+                key: ValueKey(
+                  'progress-confirmed-study-${event.clientEventId}',
+                ),
+                title: Text(
+                  '${dailyPlanAreaLabel(event.area)} · ${event.date.value}',
+                ),
+                subtitle: Text(
+                  '${_creditedStudyMinutes(event)} phút được máy chủ ghi nhận',
+                ),
               ),
             if (confirmedStudySessions.length > 10)
               const Text('Chỉ hiển thị 10 buổi đã xác nhận gần nhất.'),
