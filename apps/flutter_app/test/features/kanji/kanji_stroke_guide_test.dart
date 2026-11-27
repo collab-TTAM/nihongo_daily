@@ -516,9 +516,13 @@ void main() {
       await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
       final playback = find.byKey(const Key('kanji-guide-playback'));
 
-      await tapCatalog(tester, playback);
+      // Avoid pumpAndSettle after starting: it can advance fake time while the timer is active.
+      await tester.ensureVisible(playback);
+      await tester.pumpAndSettle();
+      await tester.tap(playback);
+      await tester.pump();
       expect(find.text('Tạm dừng'), findsOneWidget);
-      await tester.pump(const Duration(milliseconds: 650));
+      await tester.pump(const Duration(milliseconds: 700));
       expect(find.text('Nét 2 / 4'), findsOneWidget);
 
       await tester.tap(playback);
@@ -529,7 +533,7 @@ void main() {
 
       await tester.tap(playback);
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 1300));
+      await tester.pump(const Duration(milliseconds: 1400));
       expect(find.text('Nét 4 / 4'), findsOneWidget);
       expect(find.text('Phát nét'), findsOneWidget);
       expect(
@@ -558,8 +562,12 @@ void main() {
       final container = await mount(tester, fixture);
       await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
       final playback = find.byKey(const Key('kanji-guide-playback'));
-      await tapCatalog(tester, playback);
-      await tester.pump(const Duration(milliseconds: 650));
+      // Avoid pumpAndSettle after starting: it can advance fake time while the timer is active.
+      await tester.ensureVisible(playback);
+      await tester.pumpAndSettle();
+      await tester.tap(playback);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 700));
       expect(find.text('Nét 2 / 4'), findsOneWidget);
 
       await tapCatalog(tester, find.byKey(const Key('kanji-guide-next')));
