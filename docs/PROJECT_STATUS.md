@@ -507,3 +507,13 @@
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must complete every required job/step; no pass is claimed for the new head.
 - PR #37 remains open/Draft at `b76df4a0db87181b473fb6655e0564470a0d9155`; exact-head Actions [45827106285](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45827106285) passed all six jobs / every returned step. Hosted signed-JWT A/B, deployed PostgREST/RLS, protected Windows learner restore and physical two-device sync remain external gates; no hosted workflow was dispatched.
 - Next: inspect the new exact-head Actions run and all latest-attempt jobs/steps, especially the Flutter suite and downstream Web/Windows checks. Keep PR #41 Draft and #11 open until acceptance and Personal Alpha evidence are complete.
+
+
+## PR #41 — remove analyzer-reported redundant test import — 2026-11-27T00:05Z
+
+- Run `core-20261127T0005Z-pr41-remove-unused-test-import`; branch `automation/issue-11-plan-sdk-integration`; parent `03a8d622d3f0769676eff30f3f06404c8659492b`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45909870290](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45909870290), attempt 1, targets the parent. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration completed SUCCESS. Flutter format passed; `flutter analyze` failed only because `dart:typed_data` was unnecessary in `test/features/reading/reading_widget_test.dart:3`. Flutter tests and all downstream native/browser/Web/preview steps were skipped, not passes.
+- Removed only that redundant import. `ByteData` and `Uint8List` remain available through the already-required `package:flutter/services.dart` import; test behavior, package asset preflight, repository parsing and assertions are unchanged.
+- Paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `docs/PROJECT_STATUS.md`. No production code, curriculum, N4/Pro-owned files, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch, or default Auth/save behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must run the full Flutter suite and all downstream checks.
+- Next: inspect every latest-attempt job and step on the final commit; fix only observed diagnostics. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending their independent acceptance and hosted learner evidence.
