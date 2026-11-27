@@ -1362,10 +1362,7 @@ void main() {
       final harness = Harness();
       final source = _ProgressSource(harness);
       final reader = _ServerHistoryReader()
-        ..response = {
-          'items': <Object?>[],
-          'next_cursor': null,
-        };
+        ..response = {'items': <Object?>[], 'next_cursor': null};
       final curriculum = _ProgressCurriculumRepository(const {});
       final vocabulary = _VocabularyPorts(harness);
       final grammar = _GrammarPorts(harness);
