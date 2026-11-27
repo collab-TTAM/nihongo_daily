@@ -5789,3 +5789,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Cloud authoring runtime has no pinned Flutter/Dart SDK or Windows OS; no local format/analyze/test/build is claimed. No protected hosted workflow dispatch, secret read, deployed learner A/B, physical two-device sync or complete learner journey is claimed. PR #37 remains Draft and #20/#22/#15/#18 remain open. Pro-owned #14/PR #38/N4 scope is unchanged.
 - Next: inspect every latest-attempt job and step on the new exact PR head. Keep the PR Draft until the protected hosted and physical acceptance gates are observed; meanwhile proceed only on dependency-satisfied independent work. No merge, deployment, Auth/provider strategy change or release.
 
+
+
+## PR #37 — staging README command review correction — 2026-11-27T05:15Z
+
+- Separate post-write review of commit `6191b371d7f115d9463f4ceb70442f1399d7e262` caught a documentation-only PowerShell parsing issue: unquoted angle-bracket placeholders can be interpreted as redirection. Quoted both complete `--dart-define=...` arguments; no runtime source or test assertions changed.
+- Follow-up changes only `apps/flutter_app/README.md` and this status note. Parent CI [45944791385](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45944791385) was queued on the pre-correction commit and is not final-head evidence. Fresh exact-head CI is required.

@@ -69,8 +69,8 @@ project's public values):
 ```powershell
 flutter run -d windows `
   --dart-define=ND_MODE=staging `
-  --dart-define=ND_SUPABASE_URL=https://<project-ref>.supabase.co `
-  --dart-define=ND_SUPABASE_PUBLIC_KEY=<sb_publishable_or_anon_key>
+  "--dart-define=ND_SUPABASE_URL=https://<project-ref>.supabase.co" `
+  "--dart-define=ND_SUPABASE_PUBLIC_KEY=<sb_publishable_or_anon_key>"
 ```
 
 Release build uses the same defines:
