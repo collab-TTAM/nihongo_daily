@@ -96,13 +96,14 @@ final class _LoadedReadingAssetBundle extends CachingAssetBundle {
   }
 
   @override
-  Future<String> loadString(String key, {bool cache = true}) {
+  Future<String> loadString(String key, {bool cache = true}) async {
     if (key != BundledReadingRepository.assetPath) {
       throw FlutterError('Unexpected reading test asset request');
     }
-    // Avoid AssetBundle byte decoding/compute after the real package asset has
-    // already been loaded in suite setup; the widget still parses the same JSON.
-    return Future<String>.value(source);
+    // Match AssetBundle's asynchronous contract: invalid paths complete with a
+    // failed Future so callers can observe the error through Future matchers.
+    // Avoid byte decoding after the real package asset was loaded in suite setup.
+    return source;
   }
 }
 
