@@ -547,7 +547,9 @@ void main() {
       await tester.pump();
       expect(find.text('Nét 1 / 4'), findsOneWidget);
       expect(find.text('Tạm dừng'), findsOneWidget);
-      await tester.tap(find.byKey(const Key('kanji-guide-toggle')));
+      final guideToggle = find.byKey(const Key('kanji-guide-toggle'));
+      await tester.ensureVisible(guideToggle);
+      await tester.tap(guideToggle);
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
       expect(find.byKey(const Key('kanji-guide-picture')), findsNothing);
