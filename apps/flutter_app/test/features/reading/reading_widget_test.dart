@@ -177,10 +177,7 @@ void main() {
   test('preloaded bundle serves only the fixed catalog string', () async {
     const source = '{"schema_version":1,"passages":[]}';
     final bundle = _LoadedReadingAssetBundle(source);
-    expect(
-      await bundle.loadString(BundledReadingRepository.assetPath),
-      source,
-    );
+    expect(await bundle.loadString(BundledReadingRepository.assetPath), source);
     await expectLater(
       bundle.loadString('assets/other.json'),
       throwsA(isA<FlutterError>()),
