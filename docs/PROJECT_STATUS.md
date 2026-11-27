@@ -552,3 +552,14 @@
 - Paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `docs/PROJECT_STATUS.md`. Full recursive parent tree was re-read untruncated: 1,052 entries (923 blobs / 129 trees). The cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run; fresh exact-head GitHub Actions is required.
 - No Auth/provider, vault, API/schema/RLS, CI gate, hosted secret/dispatch, default Auth/save behavior, merge, deployment or release changed. PR #41 remains Draft; hosted learner study proof and independent reading/audio review remain outstanding.
 - Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics. Keep #11/#34 and the Personal Alpha release gates open.
+
+
+## Server-day lookup timezone race — 2026-11-27T06:07Z
+
+- Core run `core-20261127T0607Z-pr41-study-day-timezone-race`, branch `automation/issue-11-plan-sdk-integration`, parent `9cb7a56d56a7ecd007187bb2c200e7c435b25ba4`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Re-verified PR #37 at `ec8ed3f9e3192b72b407e6d0bf7c83ab947e3703`: exact-head Actions [45944924395](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45944924395) completed all six jobs / 108 returned steps successfully. This remains component/disposable-local-stack evidence; hosted signed-JWT A/B, deployed PostgREST/RLS, hosted Windows restore/expiry and physical two-device sync are still missing.
+- Re-verified PR #41 parent `9cb7a56d56a7ecd007187bb2c200e7c435b25ba4`: exact-head Actions [45938426915](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45938426915) completed all seven jobs successfully.
+- Added two TEST ONLY `StudyDayButton` race cases: while the same learner's profile timezone changes, the old `get_study_day` request is held and the same repository instance is deliberately reused; a fresh request under `Asia/Ho_Chi_Minh` loads the new date, then the old success or raw failure is released. Both cases assert the new date is retained, no stale Daily Plan read occurs, and raw errors remain hidden.
+- Changed exactly `apps/flutter_app/test/features/daily_plan/study_day_widget_test.dart`, `docs/DAILY_PLAN_UI.md`, and this file. No production behavior, curriculum/N4/Pro-owned content, Auth/provider, API/schema/RLS, CI gates, hosted secrets/dispatch or deployment changed.
+- Recursive parent tree was complete/untruncated: 1,052 entries (923 blobs / 129 trees), root `89da6d2c556ae812615423cf69d6a34c0e9e9719`. Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must run the full Flutter suite and all platform/database jobs; no new-head pass is claimed.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending hosted learner and content/audio acceptance.

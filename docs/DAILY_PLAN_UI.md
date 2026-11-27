@@ -121,3 +121,17 @@ A selected Kanji practice entry now exposes the shared durable foreground timer 
 The timer uses the same captured owner, immutable five-field `submit_study_session` event, write-before-dispatch journal, manual exact-event recovery and authoritative plan reload as vocabulary/grammar/reader/quiz/SRS. Changing the selected character, catalog readiness, profile level, route or app foreground cancels unfinished timing. The event reports self-reported elapsed foreground time only. It does not save stroke input, grade handwriting, award mastery or create a Kanji attempt. The freehand strokes remain local and ungraded; no default Auth or demo save-success path is enabled.
 
 The Kanji session widget suite covers unconfigured preview, a profile-matched acknowledged report, empty catalog, profile-level mismatch and character-change interruption. The shared recorder's real-disk fixture now includes KANJI while keeping AI_CONVERSATION unsupported until its separate live feature exists. These are component/fixture checks; hosted learner, grading, multi-device and full curriculum acceptance remain separate gates.
+
+
+## In-flight server-day lookup after same-owner timezone replacement
+
+The server-day button captures the profile timezone and a local generation. If the same
+learner's profile timezone changes while `get_study_day` is pending, the old success
+or failure must be discarded even when the repository object is reused. The new date
+is loaded only by an explicit action under the replacement timezone; a stale response
+must not trigger a Daily Plan read or surface an old raw error.
+
+Two TEST ONLY widget cases hold the old server-day response across a same-owner timezone
+replacement, perform a fresh lookup, then release the old success/error. They assert the
+new date and plan-read count remain unchanged. This is client race coverage, not hosted
+profile, JWT, server-clock or RLS evidence.

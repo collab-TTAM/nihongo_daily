@@ -45,6 +45,7 @@ final class DaySource
   DaySource(this.h);
   final Harness h;
   final store = RecoveryMemoryStore();
+  DailyPlanRepository? fixedRepository;
   int days = 0;
   int plans = 0;
   bool failPlan = false;
@@ -57,11 +58,11 @@ final class DaySource
   @override
   DailyPlanRepository? createDailyPlanRepository() {
     final ready = h.runtime.readyRuntime;
-    return ready == null
-        ? null
-        : DailyPlanRepository(
-            DayGateway(() => identical(h.runtime.readyRuntime, ready), this),
-          );
+    if (ready == null) return null;
+    return fixedRepository ??
+        DailyPlanRepository(
+          DayGateway(() => identical(h.runtime.readyRuntime, ready), this),
+        );
   }
 
   @override
@@ -243,6 +244,87 @@ void main() {
     expect(find.text('Chọn hôm nay theo hồ sơ'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+  for (final lateError in [false, true]) {
+    testWidgets(
+      'same-owner timezone replacement fences late server-day response (error=$lateError)',
+      (tester) async {
+        final h = Harness();
+        final pending = Completer<Object?>();
+        final source = DaySource(h)..response = () => pending.future;
+        final repository = DailyPlanRepository(
+          DayGateway(() => true, source),
+        );
+        source.fixedRepository = repository;
+        final c = await mountDay(tester, h, source);
+
+        expect(
+          identical(c.read(dailyPlanRepositoryProvider), repository),
+          isTrue,
+        );
+        await chooseToday(tester);
+        expect(source.days, 1);
+        expect(source.plans, 0);
+
+        h.profileTimezone = 'Asia/Ho_Chi_Minh';
+        h.access.change(account.owner);
+        await tester.pumpAndSettle();
+
+        expect(
+          identical(c.read(dailyPlanRepositoryProvider), repository),
+          isTrue,
+        );
+        expect(
+          find.text('Chọn ngày theo múi giờ hồ sơ: Asia/Ho_Chi_Minh.'),
+          findsOneWidget,
+        );
+        expect(
+          tester
+              .widget<TextField>(find.byKey(const Key('plan-date')))
+              .controller!
+              .text,
+          isEmpty,
+        );
+
+        source.response = () async => {
+          'date': '2026-10-21',
+          'timezone': 'Asia/Ho_Chi_Minh',
+        };
+        await chooseToday(tester);
+        await tester.pumpAndSettle();
+        expect(source.days, 2);
+        expect(source.plans, 1);
+        expect(
+          tester
+              .widget<TextField>(find.byKey(const Key('plan-date')))
+              .controller!
+              .text,
+          '2026-10-21',
+        );
+
+        if (lateError) {
+          pending.completeError(StateError('PRIVATE OLD DAY'));
+        } else {
+          pending.complete({
+            'date': '2026-10-20',
+            'timezone': 'Asia/Tokyo',
+          });
+        }
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<TextField>(find.byKey(const Key('plan-date')))
+              .controller!
+              .text,
+          '2026-10-21',
+        );
+        expect(source.days, 2);
+        expect(source.plans, 1);
+        expect(find.textContaining('PRIVATE'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'changed timezone and raw errors stay safe with explicit retry only',
     (tester) async {
