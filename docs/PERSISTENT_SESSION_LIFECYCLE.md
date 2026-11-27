@@ -1387,3 +1387,27 @@ sequence, or Personal Alpha proof.
 An explicit refresh now captures the accepted `ReviewSession`, its exact already-persisted refresh secret, and the monotonic persistence generation before it revokes study readiness. Immediately before the deferred SDK call, all three must still match. If User A is replaced by User B in that gap, the old refresh returns the fixed redacted failure without invoking Auth against B and without invalidating B's independent credential write. The normal vault barrier still determines when B becomes ready.
 
 The TEST ONLY `session-switch-before-refresh-dispatch` lifecycle scenario signs in A, reserves refresh, synchronously publishes B before the deferred runner starts, and asserts zero SDK refresh/logout calls, B's exact token persisted, B accepted, and the expected read/write/write order. This closes a race not covered by the existing logout-before-dispatch case. It is deterministic in-memory lifecycle evidence, not hosted Auth/JWT or a physical multi-device test; the protected staging learner A/B gate remains separate.
+
+
+## Replacement login while a refresh rotation write is pending — 2026-11-27
+
+The pinned-SDK regression `SDK blocks account B login while account A rotation write is unresolved`
+starts with User A ready, dispatches an explicit refresh, and holds the
+rotated-secret vault write while forcing that write to fail. During the hold,
+an attempted User B password login must be rejected locally: no second Auth
+token request, no B own-profile request, no accepted session and no learner
+runtime may appear; the previous A vault value remains unchanged until the
+write outcome is known.
+
+After the failed write settles, the runtime must clear the exact project slot
+and remain fenced. Only a subsequent explicit B login may dispatch password
+Auth. B's rotated refresh secret must be saved before the captured B
+own-profile request, and readiness is published only after that profile
+response settles. This protects the interval between an uncertain A rotation
+and the compensating clear, not only the already-failed state.
+
+This is a TEST ONLY pinned-Supabase-SDK/MockClient/in-memory-vault regression.
+It does not establish hosted signed-JWT learner A/B, deployed PostgREST/RLS,
+actual Windows Credential Manager execution for this exact held-write sequence,
+or physical multi-device sync. The existing Windows native fail-before and
+commit-then-fail probes remain separate required checks.

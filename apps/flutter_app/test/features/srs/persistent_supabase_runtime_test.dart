@@ -659,6 +659,116 @@ void main() {
   );
 
   test(
+    'SDK blocks account B login while account A rotation write is unresolved',
+    () async {
+      await runtime.start();
+      authUser = wire.a;
+      authSession = wire.sid1;
+      secret = 'TEST_ONLY_INITIAL_A_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await waitForReady();
+
+      final initialSecret = backend.secret;
+      expect(initialSecret, secret);
+      List<http.Request> profileRequests() => requests
+          .where((request) => request.url.path.contains('ensure_profile'))
+          .toList();
+      int authCalls() => requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .length;
+      final initialProfileCount = profileRequests().length;
+      final initialAuthCalls = authCalls();
+      expect(initialProfileCount, 1);
+
+      backend.failWrite = true;
+      backend.writeWait = Completer<void>();
+      secret = 'TEST_ONLY_A_ROTATED_PENDING';
+      final AccountSessionRefreshAction refreshAction = runtime;
+      final rotationFailure = expectLater(
+        refreshAction.refresh(),
+        throwsA(isA<ReviewTransportFailure>()),
+      );
+      await waitForCondition(
+        () =>
+            backend.writes == 2 &&
+            runtime.persistence.phase == SessionPersistencePhase.saving,
+        reason: 'A rotation did not reach the held vault write',
+      );
+
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, initialSecret);
+      expect(profileRequests(), hasLength(initialProfileCount));
+
+      authUser = wire.b;
+      authSession = wire.sid2;
+      secret = 'TEST_ONLY_B_REFRESH';
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(runtime.account.state.phase, AccountPhase.signInError);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(backend.secret, initialSecret);
+      expect(authCalls(), initialAuthCalls + 1);
+      expect(profileRequests(), hasLength(initialProfileCount));
+
+      backend.writeWait!.complete();
+      await rotationFailure;
+      await fixture.flush();
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.failed);
+      expect(runtime.persistence.currentSession, isNull);
+      expect(runtime.account.readyRuntime, isNull);
+      expect(runtime.notice, AccountSessionNotice.needsLogin);
+      expect(backend.secret, isNull);
+      expect(authCalls(), initialAuthCalls + 1);
+      expect(profileRequests(), hasLength(initialProfileCount));
+
+      backend.failWrite = false;
+      backend.writeWait = null;
+      profileWait = Completer<http.Response>();
+      final recovery = runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await fixture.flush();
+
+      expect(backend.secret, 'TEST_ONLY_B_REFRESH');
+      expect(runtime.account.readyRuntime, isNull);
+      expect(profileRequests(), hasLength(initialProfileCount + 1));
+      expect(
+        profileRequests().last.headers['authorization'],
+        'Bearer ${wire.token(wire.b, wire.sid2, now)}',
+      );
+
+      profileWait!.complete(
+        http.Response(
+          jsonEncode(profile.profile(wire.b)),
+          200,
+          headers: {'content-type': 'application/json'},
+        ),
+      );
+      await recovery;
+      await waitForReady();
+
+      expect(runtime.persistence.phase, SessionPersistencePhase.ready);
+      expect(runtime.persistence.currentSession?.userId, wire.b);
+      expect(runtime.account.state.profile?.id, wire.b);
+      expect(runtime.account.readyRuntime, isNotNull);
+      expect(backend.secret, 'TEST_ONLY_B_REFRESH');
+      expect(authCalls(), initialAuthCalls + 2);
+      expect(profileRequests(), hasLength(initialProfileCount + 1));
+    },
+  );
+
+  test(
     'SDK failed refresh rotation and failed vault clear stay fenced until explicit cleanup recovers',
     () async {
       await runtime.start();

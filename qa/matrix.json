@@ -228,6 +228,10 @@
         },
         {
           "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
+          "contains": "SDK blocks account B login while account A rotation write is unresolved"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/persistent_supabase_runtime_test.dart",
           "contains": "SDK failed refresh rotation and failed vault clear stay fenced until explicit cleanup recovers"
         },
         {
