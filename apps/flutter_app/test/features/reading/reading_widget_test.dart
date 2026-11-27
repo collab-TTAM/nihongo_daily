@@ -92,7 +92,17 @@ final class _LoadedReadingAssetBundle extends CachingAssetBundle {
     if (key != BundledReadingRepository.assetPath) {
       throw FlutterError('Unexpected reading test asset request');
     }
-    return ByteData.sublistView(Uint8List.fromList(utf8.encode(source)));
+    throw FlutterError('Reading test bundle exposes only its preloaded string');
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) {
+    if (key != BundledReadingRepository.assetPath) {
+      throw FlutterError('Unexpected reading test asset request');
+    }
+    // Avoid AssetBundle byte decoding/compute after the real package asset has
+    // already been loaded in suite setup; the widget still parses the same JSON.
+    return Future<String>.value(source);
   }
 }
 
@@ -162,6 +172,27 @@ void main() {
     );
     expect(await repository.load(PreviewLevel.n5), hasLength(13));
     bundledN5Repository = repository;
+  });
+
+  test('preloaded bundle serves only the fixed catalog string', () async {
+    const source = '{"schema_version":1,"passages":[]}';
+    final bundle = _LoadedReadingAssetBundle(source);
+    expect(
+      await bundle.loadString(BundledReadingRepository.assetPath),
+      source,
+    );
+    await expectLater(
+      bundle.loadString('assets/other.json'),
+      throwsA(isA<FlutterError>()),
+    );
+    await expectLater(
+      bundle.load(BundledReadingRepository.assetPath),
+      throwsA(isA<FlutterError>()),
+    );
+    await expectLater(
+      bundle.load('assets/other.json'),
+      throwsA(isA<FlutterError>()),
+    );
   });
 
   testWidgets(
