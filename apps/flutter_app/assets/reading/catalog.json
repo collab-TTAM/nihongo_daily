@@ -1261,6 +1261,103 @@
           "explanation_vi": "Bài đọc nói sau bữa sáng tôi rửa bát."
         }
       ]
+    },
+    {
+      "id": "n5-summer-seaside-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "夏休みの海",
+      "title_vi": "Kỳ nghỉ hè ở biển",
+      "text_ja": "夏休み、私は家族と海へ行きました。朝六時に家を出ました。車で二時間ぐらいかかりました。海は青くて、とてもきれいでした。弟は泳ぎました。私は母とすなの上を歩いて、写真を撮りました。昼ご飯におにぎりを食べました。午後三時に家へ帰りました。",
+      "reading_ja": "なつやすみ、わたしはかぞくとうみへいきました。あさろくじにいえをでました。くるまでにじかんぐらいかかりました。うみはあおくて、とてもきれいでした。おとうとはおよぎました。わたしはははとすなのうえをあるいて、しゃしんをとりました。ひるごはんにおにぎりをたべました。ごごさんじにいえへかえりました。",
+      "translation_vi": "Trong kỳ nghỉ hè, tôi đã đi biển cùng gia đình. Tôi rời nhà lúc 6 giờ sáng. Đi ô tô mất khoảng hai giờ. Biển xanh và rất đẹp. Em trai tôi đã bơi. Tôi đi bộ trên cát cùng mẹ và chụp ảnh. Chúng tôi ăn cơm nắm vào bữa trưa. Tôi về nhà lúc 3 giờ chiều.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "だれと海へ行きましたか。",
+          "reading_ja": "だれとうみへいきましたか。",
+          "prompt_vi": "Tôi đi biển cùng ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "家族",
+              "reading_ja": "かぞく",
+              "text_vi": "Gia đình"
+            },
+            {
+              "id": "b",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            },
+            {
+              "id": "c",
+              "text_ja": "一人",
+              "reading_ja": "ひとり",
+              "text_vi": "Một mình"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi biển cùng gia đình."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "弟は何をしましたか。",
+          "reading_ja": "おとうとはなにをしましたか。",
+          "prompt_vi": "Em trai tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "泳ぎました",
+              "reading_ja": "およぎました",
+              "text_vi": "Đã bơi"
+            },
+            {
+              "id": "b",
+              "text_ja": "写真を撮りました",
+              "reading_ja": "しゃしんをとりました",
+              "text_vi": "Đã chụp ảnh"
+            },
+            {
+              "id": "c",
+              "text_ja": "本を読みました",
+              "reading_ja": "ほんをよみました",
+              "text_vi": "Đã đọc sách"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói em trai tôi đã bơi."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に家へ帰りましたか。",
+          "reading_ja": "なんじにいえへかえりましたか。",
+          "prompt_vi": "Mấy giờ tôi về nhà?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "午後二時",
+              "reading_ja": "ごごにじ",
+              "text_vi": "2 giờ chiều"
+            },
+            {
+              "id": "b",
+              "text_ja": "午後三時",
+              "reading_ja": "ごごさんじ",
+              "text_vi": "3 giờ chiều"
+            },
+            {
+              "id": "c",
+              "text_ja": "午後四時",
+              "reading_ja": "ごごよじ",
+              "text_vi": "4 giờ chiều"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi về nhà lúc 3 giờ chiều."
+        }
+      ]
     }
   ]
 }

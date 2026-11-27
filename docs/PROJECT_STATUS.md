@@ -623,3 +623,13 @@
 - Corrected only the TEST ONLY playback case: resolve the guide-toggle finder, call `tester.ensureVisible` before tapping, then retain the existing pump, collapse, timer-disposal and `findsNothing` assertions. This addresses the observed hit-target failure; no playback production code, timing, assertions, canonical geometry, curriculum or N4/Pro-owned files changed.
 - Changed paths: `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart` and `docs/PROJECT_STATUS.md`. Cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run. Fresh exact-head Actions must verify format/analyze/full Flutter suite and downstream Web/Windows/Chrome/native jobs; no new-head pass is claimed.
 - Next: inspect every latest-attempt job and step on the new exact HEAD. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending full learner, independent linguistic/audio and Personal Alpha acceptance.
+
+
+## N5 reading content increment — 2026-11-27T15:10Z
+
+- Resumed Draft PR #41 on `automation/issue-11-plan-sdk-integration`, parent HEAD `ace6d330a25e22592a0be5af231e7a55db54a3e5`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added one original N5 draft passage `n5-summer-seaside-01` (夏休みの海) with Japanese text, kana reading, Vietnamese translation, source note and three deterministic comprehension questions. The source note explicitly states that a teacher/native speaker has not reviewed it. This increases the bundled N5 draft set from 13 to 14 passages and from 39 to 42 questions; it is not a claim of complete N5 coverage, official JLPT alignment or linguistic approval.
+- Added bundled repository count/ID checks, a domain expansion assertion and a real reading-widget round that answers all three questions. Updated the QA anchor and reading-material inventory.
+- Changed paths: `apps/flutter_app/assets/reading/catalog.json`, three reading tests, `docs/READING_MATERIAL.md`, `qa/matrix.json`, and this status file. No `data/n4`, `data/manifest`, `data/README`, Pro-owned N4 content/tests/docs, production Auth/provider, API/schema/RLS, audio availability, study-credit/mastery behavior or default save behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget test/build are not claimed. Fresh exact-head CI must verify formatting, analysis, the full Flutter suite and downstream Chrome/Web/Windows jobs. No hosted staging workflow, secrets, production deployment, merge or release occurred.
+- Next: inspect every latest-attempt job and step on the new exact PR head. Keep #34/#26/#41 open/Draft; independent linguistic review, broader N5 coverage, separate Pro N4 integration, vetted playable audio and hosted learner/release evidence remain outstanding.

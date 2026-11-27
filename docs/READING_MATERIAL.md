@@ -12,7 +12,7 @@ Fixtures in the new domain test are TEST ONLY and are not reviewed curriculum.
 
 ## Current bundled N5 draft set
 
-The fixed app asset currently contains thirteen original N5 draft passages and 39 deterministic comprehension questions. This increment adds n5-tennis-invitation-01 (土曜日にテニスをします), which practices a simple invitation and meeting time, and n5-family-breakfast-01 (日曜日の朝ごはん), which describes a family breakfast and a household task. Each passage has three deterministic questions, content version 1 and a source note that clearly says a teacher or native speaker has not reviewed it.
+The fixed app asset currently contains fourteen original N5 draft passages and 42 deterministic comprehension questions. This increment adds n5-tennis-invitation-01 (土曜日にテニスをします), which practices a simple invitation and meeting time, and n5-family-breakfast-01 (日曜日の朝ごはん), which describes a family breakfast and a household task. The new n5-summer-seaside-01 (夏休みの海) adds a short family trip to the seaside, travel duration, swimming and a return time. Each passage has three deterministic questions, content version 1 and a source note that clearly says a teacher or native speaker has not reviewed it.
 
 This is a small reading-flow content increment, not complete N5 coverage,
 official JLPT alignment, independent linguistic review or licensing approval.

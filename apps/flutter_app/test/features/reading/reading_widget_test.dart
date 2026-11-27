@@ -171,7 +171,7 @@ void main() {
     final repository = BundledReadingRepository(
       bundle: _LoadedReadingAssetBundle(source),
     );
-    expect(await repository.load(PreviewLevel.n5), hasLength(13));
+    expect(await repository.load(PreviewLevel.n5), hasLength(14));
     bundledN5Repository = repository;
   });
 
@@ -207,7 +207,7 @@ void main() {
         isA<BundledReadingRepository>(),
       );
       expect(find.byKey(const Key('reading-unavailable')), findsNothing);
-      expect(find.text('13 bài đọc · Chọn để mở'), findsOneWidget);
+      expect(find.text('14 bài đọc · Chọn để mở'), findsOneWidget);
       expect(
         find.byKey(const Key('reading-open-n5-daily-routine-01')),
         findsOneWidget,
@@ -337,6 +337,40 @@ void main() {
         findsOneWidget,
       );
       expect(find.byKey(const Key('reading-result')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'bundled N5 summer seaside passage supports deterministic comprehension',
+    (tester) async {
+      await mountReading(tester, repository: bundledN5Repository);
+      await tester.pumpAndSettle();
+      await tapReading(
+        tester,
+        find.byKey(const Key('reading-open-n5-summer-seaside-01')),
+      );
+      expect(find.text('夏休みの海'), findsOneWidget);
+      expect(
+        find.textContaining('夏休み、私は家族と海へ行きました。'),
+        findsOneWidget,
+      );
+      for (final choice in ['q1-a', 'q2-a', 'q3-b']) {
+        await tapReading(
+          tester,
+          find.byKey(ValueKey('reading-choice-$choice')),
+        );
+      }
+      expect(find.text('Kết quả: 3 / 3'), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const Key('reading-audio-unavailable')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(find.textContaining('chưa lưu tiến độ'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
