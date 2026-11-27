@@ -608,3 +608,10 @@
 - Changed paths: `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart` and this status file. No production source, guide geometry/license, curriculum/N4/Pro-owned data, Auth/provider, API/schema/RLS or CI gates changed.
 - The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must execute the full Flutter suite and all downstream jobs. PR #41 remains Draft; no merge, hosted dispatch, deployment or release.
 - Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics.
+
+## Kanji playback widget-test formatter correction — 2026-11-27T13:09Z
+
+- Exact-head Actions [45981100687](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45981100687), attempt 1, targets `98b2ec3f7f00f13fca63a4fbed4a0454e93e9fe7`. Repo-sanity, AI boundary, database/RLS, Windows and disposable Supabase integration all completed SUCCESS; Flutter failed only strict Dart 3.35.4 formatting in `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart`. Flutter analyze, full tests and downstream browser/native/Web checks were skipped, not passes.
+- Applied only the formatter-emitted hunk to the N5 manual-stroke/playback widget test. Playback timing, assertions and route behavior are unchanged; the following N4 guide test and all N4 content/data/manifest/content tests/docs remain byte-for-byte untouched.
+- Changed paths: this test and `docs/PROJECT_STATUS.md`. Cloud authoring has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. Fresh exact-head CI is required.
+- PR #41 remains Draft. No production behavior, Auth/provider, API/schema/RLS, hosted secrets/dispatch, merge, deployment or release changed. Next: inspect every latest-attempt job/step on the new exact HEAD, then continue dependency-satisfied study-flow work.

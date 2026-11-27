@@ -555,40 +555,36 @@ void main() {
     },
   );
 
-  testWidgets(
-    'manual stroke selection and character navigation stop playback',
-    (tester) async {
-      final fixture = GuideFixture((_) async => guides.first);
-      final container = await mount(tester, fixture);
-      await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
-      final playback = find.byKey(const Key('kanji-guide-playback'));
-      // Avoid pumpAndSettle after starting: it can advance fake time while the timer is active.
-      await tester.ensureVisible(playback);
-      await tester.pumpAndSettle();
-      await tester.tap(playback);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 700));
-      expect(find.text('Nét 2 / 4'), findsOneWidget);
+  testWidgets('manual stroke selection and character navigation stop playback', (
+    tester,
+  ) async {
+    final fixture = GuideFixture((_) async => guides.first);
+    final container = await mount(tester, fixture);
+    await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+    final playback = find.byKey(const Key('kanji-guide-playback'));
+    // Avoid pumpAndSettle after starting: it can advance fake time while the timer is active.
+    await tester.ensureVisible(playback);
+    await tester.pumpAndSettle();
+    await tester.tap(playback);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.text('Nét 2 / 4'), findsOneWidget);
 
-      await tapCatalog(tester, find.byKey(const Key('kanji-guide-next')));
-      expect(find.text('Nét 3 / 4'), findsOneWidget);
-      expect(find.text('Phát nét'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 2));
-      expect(find.text('Nét 3 / 4'), findsOneWidget);
+    await tapCatalog(tester, find.byKey(const Key('kanji-guide-next')));
+    expect(find.text('Nét 3 / 4'), findsOneWidget);
+    expect(find.text('Phát nét'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.text('Nét 3 / 4'), findsOneWidget);
 
-      await tester.tap(playback);
-      await tester.pump();
-      container.read(routerProvider).go('/kanji/practice/n5/${n5[1].id}');
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 2));
-      expect(
-        find.byKey(ValueKey('kanji-selected-${n5[1].id}')),
-        findsOneWidget,
-      );
-      expect(find.byKey(const Key('kanji-guide-picture')), findsNothing);
-      expect(tester.takeException(), isNull);
-    },
-  );
+    await tester.tap(playback);
+    await tester.pump();
+    container.read(routerProvider).go('/kanji/practice/n5/${n5[1].id}');
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.byKey(ValueKey('kanji-selected-${n5[1].id}')), findsOneWidget);
+    expect(find.byKey(const Key('kanji-guide-picture')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('N4 guide dispatch is explicit and keeps drawing independent', (
     tester,
