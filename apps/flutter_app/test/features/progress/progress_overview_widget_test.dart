@@ -1011,7 +1011,7 @@ void main() {
     });
     expect(find.text('45/120 phút'), findsOneWidget);
     expect(find.byKey(const Key('progress-study-minutes')), findsOneWidget);
-    expect(find.textContaining('SRS'), findsOneWidget);
+    expect(find.text('Ôn tập SRS'), findsOneWidget);
     expect(destinationIndex('/overview'), 4);
     expect(destinationIndex('/progress'), 4);
   });
