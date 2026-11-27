@@ -572,3 +572,14 @@
 - Applied only the two formatter-emitted line wraps in that TEST ONLY file. Assertions, test inputs, behavior and production source are unchanged. No N4/Pro-owned path, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch or default Auth/save behavior changed.
 - The cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/test/build were not run. New exact-head Actions is required for verification.
 - Next: inspect every latest-attempt job and step for the new exact HEAD. Keep PR #41 Draft and #11/#12/#13/#34/#18 open; hosted learner study and independent linguistic/audio acceptance remain outstanding.
+
+
+## Kanji stroke-guide playback — 2026-11-27T08:22Z
+
+- Core run `core-20261127T0822Z-kanji-guide-autoplay`; PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `c30ca396decc10c2099b91821d06bfbe533ea718`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added explicit timed playback to the existing KanjiVG display-only guide: one ordered stroke step approximately every 650 ms, pause/resume from the current step, restart from step one after the final step, and manual previous/next/all controls that cancel playback. Collapse, character identity/version replacement and widget disposal cancel the timer. Learner ink, optional faint tracing, source geometry and no-grade/no-mastery boundary remain independent.
+- Added two widget regressions for playback progression/pause/resume/terminal stop/restart and manual override/character-route disposal. QA inventory grows from 191 to 192 automated assurance cases; this is inventory, not 192 executed tests. The QA documentation header was reconciled from a stale 183 count to the actual prior matrix count plus this case.
+- Paths: `apps/flutter_app/lib/features/kanji/presentation/kanji_stroke_guide_panel.dart`, `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart`, `docs/KANJI_CATALOG.md`, `docs/QA_SECURITY_MATRIX.md`, `qa/matrix.json`, this file.
+- Parent exact-head Actions [45957165393](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45957165393) completed all seven jobs / 148 returned steps successfully. This new source head requires its own format/analyze/full Flutter and downstream CI; cloud authoring has no pinned Flutter/Dart SDK, so no local Flutter command is claimed.
+- No Kanji reference geometry/license or canonical curriculum export changed. No N4/Pro-owned data, Auth/provider, API/schema/RLS, default runtime, score/mastery/study-credit behavior, hosted secret/dispatch, merge, deployment or release changed. Eight N5 and95 N4 guide mappings remain a limited subset; teacher validation and real grading remain blocked.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #16/#18 open.

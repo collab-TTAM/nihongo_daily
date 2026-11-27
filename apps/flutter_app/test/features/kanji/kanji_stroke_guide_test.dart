@@ -508,6 +508,79 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'stroke guide playback advances, pauses, resumes and stops at the final stroke',
+    (tester) async {
+      final fixture = GuideFixture((_) async => guides.first);
+      await mount(tester, fixture);
+      await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+      final playback = find.byKey(const Key('kanji-guide-playback'));
+
+      await tapCatalog(tester, playback);
+      expect(find.text('Tạm dừng'), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 650));
+      expect(find.text('Nét 2 / 4'), findsOneWidget);
+
+      await tester.tap(playback);
+      await tester.pump();
+      expect(find.text('Phát nét'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.text('Nét 2 / 4'), findsOneWidget);
+
+      await tester.tap(playback);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1300));
+      expect(find.text('Nét 4 / 4'), findsOneWidget);
+      expect(find.text('Phát nét'), findsOneWidget);
+      expect(
+        tester
+            .widget<TextButton>(find.byKey(const Key('kanji-guide-next')))
+            .onPressed,
+        isNull,
+      );
+
+      await tester.tap(playback);
+      await tester.pump();
+      expect(find.text('Nét 1 / 4'), findsOneWidget);
+      expect(find.text('Tạm dừng'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('kanji-guide-toggle')));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.byKey(const Key('kanji-guide-picture')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'manual stroke selection and character navigation stop playback',
+    (tester) async {
+      final fixture = GuideFixture((_) async => guides.first);
+      final container = await mount(tester, fixture);
+      await tapCatalog(tester, find.byKey(const Key('kanji-guide-toggle')));
+      final playback = find.byKey(const Key('kanji-guide-playback'));
+      await tapCatalog(tester, playback);
+      await tester.pump(const Duration(milliseconds: 650));
+      expect(find.text('Nét 2 / 4'), findsOneWidget);
+
+      await tapCatalog(tester, find.byKey(const Key('kanji-guide-next')));
+      expect(find.text('Nét 3 / 4'), findsOneWidget);
+      expect(find.text('Phát nét'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.text('Nét 3 / 4'), findsOneWidget);
+
+      await tester.tap(playback);
+      await tester.pump();
+      container
+          .read(routerProvider)
+          .go('/kanji/practice/n5/${n5[1].id}');
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.byKey(ValueKey('kanji-selected-${n5[1].id}')), findsOneWidget);
+      expect(find.byKey(const Key('kanji-guide-picture')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('N4 guide dispatch is explicit and keeps drawing independent', (
     tester,
   ) async {

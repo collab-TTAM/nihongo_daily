@@ -1,6 +1,6 @@
 # QA/security regression matrix — Issue #8
 
-Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 183 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 192 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No
@@ -587,3 +587,18 @@ and analyzer/tests remain downstream of successful formatting.
 strict formatter/analyzer/test gates. The `formatter-diagnostic-no-skip`
 automated baseline is tracked in `qa/matrix.json`; it is not a hosted learner
 or interactive browser/Windows release proof.
+
+
+## Kanji guide timed playback — 2026-11-27
+
+The existing attributed KanjiVG guide now has explicit sequential step playback
+(approximately 650 ms per stroke), pause/resume, restart from the first stroke
+when started at the end, and manual-step override. Collapse and character
+replacement/disposal cancel the timer. Two widget tests anchor progression,
+pause/resume, terminal stop, manual override and route disposal in
+`kanji_stroke_guide_test.dart`. This is display-only guidance over the existing
+8 N5 / 95 N4 subset; it is not stroke recognition, a real score, mastery or
+study credit. The prior documentation header was stale (183 versus 191 actual
+matrix cases); this checkpoint reconciles it to 192 after adding the new case.
+Exact-head Flutter CI is required; no hosted learner/teacher or real-grading
+acceptance is inferred.

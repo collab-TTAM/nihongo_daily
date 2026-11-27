@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../application/kanji_stroke_guide_provider.dart';
 import '../domain/kanji_catalog.dart';
 import '../domain/kanji_stroke_guide.dart';
+
+const _kanjiGuidePlaybackInterval = Duration(milliseconds: 650);
 
 class KanjiStrokeGuidePanel extends ConsumerStatefulWidget {
   const KanjiStrokeGuidePanel({
@@ -23,6 +26,29 @@ class KanjiStrokeGuidePanel extends ConsumerStatefulWidget {
 class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
   bool _expanded = false;
   int _stroke = 0;
+  bool _playing = false;
+  Timer? _playback;
+
+  @override
+  void didUpdateWidget(covariant KanjiStrokeGuidePanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entry.id != widget.entry.id ||
+        oldWidget.entry.level != widget.entry.level ||
+        oldWidget.entry.contentVersion != widget.entry.contentVersion) {
+      _playback?.cancel();
+      _playback = null;
+      _playing = false;
+      _expanded = false;
+      _stroke = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _playback?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,8 +57,11 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
         OutlinedButton(
           key: const Key('kanji-guide-toggle'),
           onPressed: () {
+            _playback?.cancel();
+            _playback = null;
             widget.onTraceChanged?.call(null);
             setState(() {
+              _playing = false;
               _expanded = !_expanded;
               _stroke = 0;
             });
@@ -45,10 +74,61 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
   }
 
   void _selectStroke(KanjiStrokeGuide guide, int index) {
-    setState(() => _stroke = index);
+    _playback?.cancel();
+    _playback = null;
+    setState(() {
+      _playing = false;
+      _stroke = index;
+    });
     if (widget.trace != null) {
       widget.onTraceChanged?.call(KanjiGuideTrace(guide, index));
     }
+  }
+
+  void _togglePlayback(KanjiStrokeGuide guide) {
+    if (_playing) {
+      _playback?.cancel();
+      _playback = null;
+      setState(() => _playing = false);
+      return;
+    }
+    if (guide.strokes.length < 2) return;
+
+    _playback?.cancel();
+    final restart = _stroke >= guide.strokes.length - 1;
+    setState(() {
+      if (restart) _stroke = 0;
+      _playing = true;
+    });
+    if (widget.trace != null) {
+      widget.onTraceChanged?.call(KanjiGuideTrace(guide, _stroke));
+    }
+
+    _playback = Timer.periodic(_kanjiGuidePlaybackInterval, (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      final next = _stroke + 1;
+      if (next >= guide.strokes.length) {
+        timer.cancel();
+        _playback = null;
+        if (_playing) setState(() => _playing = false);
+        return;
+      }
+      final finished = next == guide.strokes.length - 1;
+      setState(() {
+        _stroke = next;
+        if (finished) _playing = false;
+      });
+      if (widget.trace != null) {
+        widget.onTraceChanged?.call(KanjiGuideTrace(guide, next));
+      }
+      if (finished) {
+        timer.cancel();
+        _playback = null;
+      }
+    });
   }
 
   Widget _content() {
@@ -129,9 +209,22 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
                       ),
                       const Text('Tô theo mẫu mờ; chưa chấm điểm chữ viết.'),
                     ],
+                    const Text(
+                      'Tự động chuyển từng nét; có thể tạm dừng hoặc chọn nét thủ công.',
+                    ),
                     Wrap(
                       spacing: 8,
                       children: [
+                        TextButton.icon(
+                          key: const Key('kanji-guide-playback'),
+                          onPressed: guide.strokes.length > 1 || _playing
+                              ? () => _togglePlayback(guide)
+                              : null,
+                          icon: Icon(
+                            _playing ? Icons.pause : Icons.play_arrow,
+                          ),
+                          label: Text(_playing ? 'Tạm dừng' : 'Phát nét'),
+                        ),
                         TextButton(
                           key: const Key('kanji-guide-previous'),
                           onPressed: stroke > 0
