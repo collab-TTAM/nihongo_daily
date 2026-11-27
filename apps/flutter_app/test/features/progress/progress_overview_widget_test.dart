@@ -1356,6 +1356,61 @@ void main() {
     },
   );
 
+  testWidgets(
+    'empty server quiz history suppresses weak-point suggestions and content reads',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final reader = _ServerHistoryReader()
+        ..response = {
+          'items': <Object?>[],
+          'next_cursor': null,
+        };
+      final curriculum = _ProgressCurriculumRepository(const {});
+      final vocabulary = _VocabularyPorts(harness);
+      final grammar = _GrammarPorts(harness);
+      await _mount(
+        tester,
+        harness,
+        source,
+        vocabularyPorts: vocabulary,
+        grammarPorts: grammar,
+        serverHistoryReader: reader,
+        curriculumRepository: curriculum,
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-server-quiz')),
+      );
+      await tester.tap(find.byKey(const Key('progress-load-server-quiz')));
+      await tester.pumpAndSettle();
+
+      expect(reader.reads, 1);
+      expect(
+        find.byKey(const Key('progress-server-quiz-empty')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('progress-server-quiz-summary')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-server-quiz-weak-points-heading')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('progress-server-quiz-weak-points-empty')),
+        findsNothing,
+      );
+      expect(curriculum.calls, isEmpty);
+      expect(vocabulary.reads, 0);
+      expect(grammar.reads, 0);
+      expect(vocabulary.writes, 0);
+      expect(grammar.writes, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('server receipt page summary separates N5/N4 and quiz kinds', (
     tester,
   ) async {

@@ -669,3 +669,13 @@
 - Changed only the TEST ONLY finder to `find.text('Ôn tập SRS')`, preserving the existing one-widget assertion and all production UI/logic. No Auth/provider, schema/RLS, QA inventory, N4/Pro-owned content, default save behavior, hosted secrets/dispatch, deployment or release changed.
 - The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Run 46040250431 is failure evidence for the parent, not a pass for this correction. A fresh exact-head Actions run must verify format, analyze, the complete Flutter suite and every downstream job.
 - Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#18 open pending hosted learner acceptance, independent linguistic/audio review and complete Personal Alpha evidence.
+
+
+## Progress Overview empty server quiz state — 2026-11-27T21:14Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `bf5b2233f2bf3146145e605d67aeaa4a39b0c14b`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Changed the Progress Overview weak-point section to render only when at least one server receipt is loaded. An empty receipt page now remains an explicit empty-history state instead of also showing a misleading “no weak points in loaded pages” recommendation section.
+- Added a widget regression for an empty server page: verifies the explicit empty key, absence of receipt summary/weak-point UI, zero curriculum reads, and no local vocabulary/grammar history reads or writes. Added QA case `progress-empty-server-quiz-state` for Issue #13.
+- Paths: `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `qa/matrix.json`, and this status file. No N4/Pro-owned content, Auth/provider, API/schema/RLS, default save behavior, dependencies, hosted configuration or production behavior changed.
+- Cloud authoring has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head Actions must verify formatting, analysis, the complete Flutter suite and all downstream jobs; no new-source pass is claimed.
+- Next: inspect every latest-attempt job and step for the new exact PR HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#13/#18 open pending hosted learner, independent content/audio review and Personal Alpha evidence.

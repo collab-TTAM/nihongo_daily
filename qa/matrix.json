@@ -5282,7 +5282,28 @@
       ],
       "reproduce": "From apps/flutter_app: flutter test test/features/progress/progress_overview_widget_test.dart; flutter analyze; inspect the exact-head Flutter CI job.",
       "limitation": "TEST ONLY Auth/RPC/local-journal fixtures. The view is bounded to acknowledged records retained on the current device; it is not complete server history, hosted signed-JWT learner proof, mastery/SRS evidence or multi-device sync."
-    }
+    },
+  {
+    "id": "progress-empty-server-quiz-state",
+    "status": "automated-baseline",
+    "scope": "An empty server quiz receipt page remains an explicit empty state; weak-point suggestions and curriculum reads are suppressed.",
+    "ci_job": "flutter",
+    "anchors": [
+      {
+        "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+        "contains": "empty server quiz history suppresses weak-point suggestions and content reads"
+      },
+      {
+        "path": "apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart",
+        "contains": "serverQuizWeakPoints != null && serverQuizEntries.isNotEmpty"
+      }
+    ],
+    "issues": [
+      13
+    ],
+    "reproduce": "From apps/flutter_app run flutter test test/features/progress/progress_overview_widget_test.dart; inspect every exact-head CI job and step.",
+    "limitation": "The widget uses TEST ONLY receipt and curriculum ports. This verifies empty-state presentation and avoids unnecessary content lookup; it does not prove hosted learner history, complete quiz history, mastery, SRS or Personal Alpha."
+  }
   ],
   "findings": [
     {

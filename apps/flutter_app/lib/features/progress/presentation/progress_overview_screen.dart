@@ -1348,7 +1348,7 @@ class _ProgressOverviewScreenState
                 'Chưa thể đối chiếu nội dung hiện tại nên không hiển thị gợi ý ôn lại.',
                 key: Key('progress-server-quiz-weak-points-unavailable'),
               )
-            else if (serverQuizWeakPoints != null) ...[
+            else if (serverQuizWeakPoints != null && serverQuizEntries.isNotEmpty) ...[
               const Text(
                 'Gợi ý ôn lại từ câu sai còn khớp nội dung hiện tại trong các trang đã tải:',
                 key: Key('progress-server-quiz-weak-points-heading'),
