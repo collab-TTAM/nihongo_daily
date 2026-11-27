@@ -570,12 +570,13 @@ void main() {
 
       await tester.tap(playback);
       await tester.pump();
-      container
-          .read(routerProvider)
-          .go('/kanji/practice/n5/${n5[1].id}');
+      container.read(routerProvider).go('/kanji/practice/n5/${n5[1].id}');
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 2));
-      expect(find.byKey(ValueKey('kanji-selected-${n5[1].id}')), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('kanji-selected-${n5[1].id}')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('kanji-guide-picture')), findsNothing);
       expect(tester.takeException(), isNull);
     },

@@ -591,3 +591,11 @@
 - Corrected only the case-specific `ci_steps` in `qa/matrix.json` to the actual workflow step names: `Run dart format --output=none --set-exit-if-changed .`, `Run flutter analyze`, and `Run flutter test`. The workflow and all required gates are unchanged. This is an inventory-anchor correction, not a test pass.
 - Reproduce with `python3 scripts/verify_qa.py`; then require fresh exact-head Actions to run the Flutter suite and downstream platform checks. Cloud authoring has no pinned Flutter/Dart SDK, so no local Flutter command is claimed.
 - No application behavior, reference geometry, canonical content, N4/Pro-owned files, Auth/provider, API/schema/RLS, secret/hosted dispatch, merge, deployment or release changed.
+
+
+## Kanji guide playback — strict Dart formatting correction — 2026-11-27T09:30Z
+
+- Branch `automation/issue-11-plan-sdk-integration`; parent exact HEAD `e4790ffabd298d3e6684f898f78ca94102b69aa3`. Exact-head Actions [45967846745](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45967846745), attempt 1, matched the parent and completed FAILURE only in Flutter strict formatting. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration all completed SUCCESS; Flutter analyze/tests and downstream Flutter/Web checks were SKIPPED, not passes.
+- The formatter log emitted exactly three formatting hunks in two Dart files: collapse the playback icon constructor in `kanji_stroke_guide_panel.dart`; collapse the test router call and wrap the selected-character expectation in `kanji_stroke_guide_test.dart`. Only those emitted formatting changes are applied; playback behavior and test assertions are unchanged.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run. A fresh exact-head Actions run is required; no full CI pass is claimed.
+- No N4/Pro-owned content, curriculum/reference geometry, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch, merge, deployment or release changed. PR #41 remains Draft. Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics, then continue the next dependency-satisfied study-flow increment.

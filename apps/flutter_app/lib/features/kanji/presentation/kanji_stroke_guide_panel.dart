@@ -220,9 +220,7 @@ class _KanjiStrokeGuidePanelState extends ConsumerState<KanjiStrokeGuidePanel> {
                           onPressed: guide.strokes.length > 1 || _playing
                               ? () => _togglePlayback(guide)
                               : null,
-                          icon: Icon(
-                            _playing ? Icons.pause : Icons.play_arrow,
-                          ),
+                          icon: Icon(_playing ? Icons.pause : Icons.play_arrow),
                           label: Text(_playing ? 'Tạm dừng' : 'Phát nét'),
                         ),
                         TextButton(
