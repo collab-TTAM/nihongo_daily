@@ -234,6 +234,10 @@ try {
     # before B can authenticate, and a fresh process must remain signed out.
     Invoke-Bridge 'runtime-native-rotation-write-fail-before'
     Invoke-Bridge 'runtime-signedout'
+    # Startup A rotation commits in Credential Manager but loses its acknowledgement;
+    # B password Auth must wait for a successful exact-project cleanup retry.
+    Invoke-Bridge 'runtime-native-startup-rotation-write-commit-failure'
+    Invoke-Bridge 'runtime-signedout'
     # A failed native CredDeleteW must retain A and fence B until explicit logout retry.
     Invoke-Bridge 'runtime-native-logout-clear-failure'
     Invoke-Bridge 'runtime-signedout'

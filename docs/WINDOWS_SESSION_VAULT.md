@@ -691,3 +691,33 @@ the Flutter/Dart SDK, platform-channel codec, HTTP stack or process memory can
 be erased. The refresh token still necessarily crosses the in-process
 MethodChannel into the caller-owned Dart Auth runtime. No token, raw OS error
 or credential content is logged, and no plaintext file fallback is introduced.
+
+
+## Startup restore rotation write acknowledgement loss — 2026-11-27
+
+The actual Windows runner now covers the failure during **startup restore**, not
+only an explicit refresh after an already-ready A session. A separate short-lived
+native owner seeds A's synthetic saved refresh token in the real project-scoped
+Credential Manager slot. The caller-owned runtime acquires its process lease and
+the pinned Supabase SDK performs the refresh-only startup request. The fixture
+returns a rotated A token; the compile-time TEST ONLY native hook allows
+`CredWriteW` to commit that value and then reports an unavailable result. The
+first compensating `CredDeleteW` is injected to fail before the OS call.
+
+The startup operation must fail closed: A never reaches `ensure_profile`, no
+study runtime/session is published, and a direct read confirms the uncertain
+rotated value remains in the exact OS slot after the failed compensation. An
+explicit B password login then retries the retained cleanup obligation. The
+password-grant handler reads the real slot and requires it to be empty **before**
+returning B's Auth response. B's rotated token must be readable before B's
+captured own-profile request. The fixture also verifies A's pending journal
+event remains invisible to B, B logout clears the slot, and the following fresh
+runner starts signed out.
+
+This is actual Windows Credential Manager + production MethodChannel + pinned
+SDK owner composition with deterministic compile-time TEST ONLY native fault
+injection and synthetic Auth HTTP/JWT responses. It is not hosted GoTrue/
+PostgREST, signed-JWT learner A/B, deployed RLS, spontaneous Windows failure,
+OS logoff/power-loss or physical multi-device proof. The bridge rebuilds with
+`ND_SESSION_VAULT_TEST_HOOKS=OFF` before staging/preview builds; no token or
+native error is logged and no plaintext fallback is introduced.

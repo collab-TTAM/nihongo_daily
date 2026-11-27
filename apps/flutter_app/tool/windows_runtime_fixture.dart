@@ -35,6 +35,7 @@ const runtimePhases = {
   'runtime-native-rotation-write-failure',
   'runtime-native-rotation-write-failure-late-profile',
   'runtime-native-rotation-write-fail-before',
+  'runtime-native-startup-rotation-write-commit-failure',
   'runtime-native-logout-clear-failure',
   'runtime-native-logout-clear-commit-failure',
 };
@@ -377,6 +378,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
                 phase == 'runtime-native-rotation-write-failure' ||
                 phase == 'runtime-native-rotation-write-failure-late-profile' ||
                 phase == 'runtime-native-rotation-write-fail-before' ||
+                phase == 'runtime-native-startup-rotation-write-commit-failure' ||
                 phase == 'runtime-native-same-owner-late-refresh-generation'
             ? _first
             : phase == 'runtime-restore'
@@ -434,6 +436,15 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
             _check(authCalls == 3 && userId == _ownerB && logoutCalls >= 1);
           }
         }
+        if (phase == 'runtime-native-startup-rotation-write-commit-failure') {
+          // B's explicit password grant is not dispatched until the failed
+          // startup rotation's exact-project credential has been cleared.
+          _check(
+            authCalls == 2 &&
+                userId == _ownerB &&
+                await vault.readRefreshToken() == null,
+          );
+        }
         if (nativeLogoutClearFailure) {
           // Both password grants must begin only after A's native slot clears.
           _check(await vault.readRefreshToken() == null);
@@ -459,6 +470,7 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
           phase == 'runtime-native-rotation-write-failure' ||
           phase == 'runtime-native-rotation-write-failure-late-profile' ||
           phase == 'runtime-native-rotation-write-fail-before' ||
+          phase == 'runtime-native-startup-rotation-write-commit-failure' ||
           phase == 'runtime-native-same-owner-late-refresh-generation' ||
           nativeLogoutClearFailure) {
         _check(request.headers['authorization'] == 'Bearer ${accessToken()}');
@@ -471,6 +483,9 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         } else {
           _check(profileCalls == 2 && userId == _ownerB);
         }
+      }
+      if (phase == 'runtime-native-startup-rotation-write-commit-failure') {
+        _check(profileCalls == 1 && userId == _ownerB);
       }
       if (nativeLogoutClearFailure) {
         if (profileCalls == 1) {
@@ -1259,6 +1274,85 @@ Future<void> verifyWindowsRuntimePhase(String phase, String scope) async {
         runtime.account.readyRuntime == null &&
             await vault.readRefreshToken() == null &&
             logoutCalls >= 2,
+      );
+      await pending();
+    } else if (phase == 'runtime-native-startup-rotation-write-commit-failure') {
+      // Seed A's saved refresh secret under a separate real native owner lease.
+      await _withWindowsVaultOwner(origin, (previous) async {
+        _check(await previous.readRefreshToken() == null);
+        await previous.writeRefreshToken(_first);
+      });
+      // Startup refresh returns a new token. The actual CredWriteW commits it,
+      // but the native TEST ONLY hook loses the acknowledgement; the first
+      // compensating CredDeleteW is also rejected before deleting the slot.
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'write',
+        fault: 'commit_then_fail',
+      );
+      await _injectNativeVaultFault(
+        vault.target,
+        operation: 'clear',
+        fault: 'fail_before',
+      );
+      secret = _second;
+      var restoreFailed = false;
+      try {
+        await runtime.start();
+      } on ReviewTransportFailure catch (error) {
+        restoreFailed = error.code == ReviewErrorCode.unauthorized;
+      }
+      _check(
+        restoreFailed &&
+            runtime.persistence.phase == SessionPersistencePhase.failed &&
+            runtime.persistence.hasVaultOwner &&
+            runtime.persistence.currentSession == null &&
+            runtime.account.readyRuntime == null &&
+            authCalls == 1 &&
+            profileCalls == 0 &&
+            profileOwners.isEmpty &&
+            await vault.readRefreshToken() == _second,
+      );
+      await journal.stage(_owner, _pending);
+
+      // The first clear failed and the uncertain committed value remains.
+      // Explicit B login must retry cleanup before its password grant.
+      userId = _ownerB;
+      sessionId = _sessionB;
+      secret = _third;
+      await runtime.account.signIn(
+        'fixture@example.invalid',
+        'TEST_ONLY_PASSWORD',
+      );
+      await ready();
+      final authRequests = requests
+          .where((request) => request.url.path == '/auth/v1/token')
+          .toList();
+      final profileRequest = requests.singleWhere(
+        (request) => request.url.path == '/rest/v1/rpc/ensure_profile',
+      );
+      _check(
+        authCalls == 2 &&
+            authRequests.length == 2 &&
+            authRequests.first.url.queryParameters['grant_type'] ==
+                'refresh_token' &&
+            jsonDecode(authRequests.first.body)['refresh_token'] == _first &&
+            authRequests.last.url.queryParameters['grant_type'] == 'password' &&
+            profileCalls == 1 &&
+            profileOwners.length == 1 &&
+            profileOwners.single == _ownerB &&
+            profileRequest.headers['authorization'] ==
+                'Bearer ${accessToken()}' &&
+            runtime.account.state.profile?.id == _ownerB &&
+            runtime.account.readySession?.userId == _ownerB &&
+            await vault.readRefreshToken() == _third,
+      );
+      _check((await journal.list(_ownerB)).isEmpty);
+      await runtime.account.signOut();
+      _check(
+        runtime.account.state.phase == AccountPhase.signedOut &&
+            runtime.account.readyRuntime == null &&
+            await vault.readRefreshToken() == null,
       );
       await pending();
     } else if (phase == 'runtime-native-rotation-write-fail-before') {
