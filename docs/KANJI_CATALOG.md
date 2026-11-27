@@ -44,7 +44,11 @@ SDK/store owner or close path is introduced.
 
 The eight N5 seed characters and95 original N4 characters offer optional
 attributed KanjiVG step guides (N5_STROKE_GUIDE.md). Separate level/version/
-coverage checks prevent a foreign guide from being displayed. The guide also supports explicit timed step playback (approximately 650 ms per stroke), pause/resume, restart from the first stroke after reaching the end, and manual step selection that stops playback. Collapsing the panel or replacing the character cancels the timer. This is sequential display-only guidance, not a pedagogical certification or real grade. An explicit
+coverage checks prevent a foreign guide from being displayed. The guide supports
+explicit timed step playback (approximately 650 ms per stroke), pause/resume and
+restart from the first stroke after reaching the end. Manual step selection,
+collapsing the panel and replacing the character cancel playback. This remains
+sequential display-only guidance, not a pedagogical certification or real grade. An explicit
 **Hiện nét mẫu trong ô viết** control adds the selected faint stroke prefix below
 learner ink in the same original canvas coordinates. It is optional tracing, not
 recognized handwriting, real grading or mastery. #16 remains open for broader

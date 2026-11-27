@@ -583,3 +583,11 @@
 - Parent exact-head Actions [45957165393](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45957165393) completed all seven jobs / 148 returned steps successfully. This new source head requires its own format/analyze/full Flutter and downstream CI; cloud authoring has no pinned Flutter/Dart SDK, so no local Flutter command is claimed.
 - No Kanji reference geometry/license or canonical curriculum export changed. No N4/Pro-owned data, Auth/provider, API/schema/RLS, default runtime, score/mastery/study-credit behavior, hosted secret/dispatch, merge, deployment or release changed. Eight N5 and95 N4 guide mappings remain a limited subset; teacher validation and real grading remain blocked.
 - Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #16/#18 open.
+
+
+## Kanji playback — QA inventory anchor correction — 2026-11-27T08:42Z
+
+- Exact-head Actions [45967192813](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45967192813) targets `49d526f116d42ee03b7b81b07f0007b9e36531cc` and completed FAILURE in repo-sanity's `Validate QA inventory and evidence regressions`. The log identifies the sole diagnostic: case `kanji-guide-playback` listed `Run the complete Flutter suite serially with expanded diagnostics`, which is not a named step in the actual `flutter` job. AI boundary (20 steps) and database (25 steps) succeeded; Supabase integration, Windows, Flutter and preview artifacts were skipped after the required repo-sanity failure. No new-head Flutter format/analyze/test/build result exists.
+- Corrected only the case-specific `ci_steps` in `qa/matrix.json` to the actual workflow step names: `Run dart format --output=none --set-exit-if-changed .`, `Run flutter analyze`, and `Run flutter test`. The workflow and all required gates are unchanged. This is an inventory-anchor correction, not a test pass.
+- Reproduce with `python3 scripts/verify_qa.py`; then require fresh exact-head Actions to run the Flutter suite and downstream platform checks. Cloud authoring has no pinned Flutter/Dart SDK, so no local Flutter command is claimed.
+- No application behavior, reference geometry, canonical content, N4/Pro-owned files, Auth/provider, API/schema/RLS, secret/hosted dispatch, merge, deployment or release changed.

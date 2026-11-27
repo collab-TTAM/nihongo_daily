@@ -600,5 +600,6 @@ pause/resume, terminal stop, manual override and route disposal in
 8 N5 / 95 N4 subset; it is not stroke recognition, a real score, mastery or
 study credit. The prior documentation header was stale (183 versus 191 actual
 matrix cases); this checkpoint reconciles it to 192 after adding the new case.
+The first exact-head run [45967192813](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45967192813) exposed a stale case-specific step label; it was corrected to the actual formatter/analyzer/test steps in `.github/workflows/ci.yml`. Repo-sanity failed before Flutter ran, so no playback widget pass is claimed.
 Exact-head Flutter CI is required; no hosted learner/teacher or real-grading
 acceptance is inferred.
