@@ -12,6 +12,8 @@ import '../../curriculum/application/curriculum_provider.dart';
 import '../../curriculum/domain/curriculum.dart';
 import '../../daily_plan/application/daily_plan_provider.dart';
 import '../../daily_plan/data/daily_plan_repository.dart';
+import '../../daily_plan/data/durable_study_session_repository.dart';
+import '../../daily_plan/domain/completed_study_session.dart';
 import '../../daily_plan/domain/daily_plan.dart';
 import '../../daily_plan/presentation/daily_plan_labels.dart';
 import '../../daily_plan/presentation/study_day_button.dart';
@@ -225,6 +227,12 @@ String _quizLevelTotalsLabel(_QuizHistoryTotals totals) =>
     'N5 · ${totals.n5.attempts} lượt · ${totals.n5.correct}/${totals.n5.answers} câu đúng; '
     'N4 · ${totals.n4.attempts} lượt · ${totals.n4.correct}/${totals.n4.answers} câu đúng';
 
+int _creditedStudyMinutes(CompletedStudySession event) =>
+    event.endedAt.difference(event.startedAt).inSeconds ~/ 60;
+
+int _totalCreditedStudyMinutes(Iterable<CompletedStudySession> events) =>
+    events.fold(0, (total, event) => total + _creditedStudyMinutes(event));
+
 String _serverWeakPointTitle(QuizReportV2WeakPoint point) {
   final type = point.quizType == 'vocabulary_reading'
       ? 'Từ vựng'
@@ -269,6 +277,11 @@ class _ProgressOverviewScreenState
   DailyPlanRepository? _planRepository;
   String? _planOwner;
   String? _planTimezone;
+  DurableStudySessionRepository? _studySessionRepository;
+  String? _studySessionOwner;
+  List<CompletedStudySession>? _confirmedStudySessions;
+  bool _studySessionsLoading = false;
+  bool _studySessionsFailed = false;
   String? _message;
   bool _loading = false;
   _QuizHistorySummary? _quizSummary;
@@ -294,6 +307,11 @@ class _ProgressOverviewScreenState
     _planRepository = null;
     _planOwner = null;
     _planTimezone = null;
+    _studySessionRepository = null;
+    _studySessionOwner = null;
+    _confirmedStudySessions = null;
+    _studySessionsLoading = false;
+    _studySessionsFailed = false;
     _message = null;
     _loading = false;
     _quizSummary = null;
@@ -325,6 +343,85 @@ class _ProgressOverviewScreenState
         account.profile?.timezone == timezone &&
         identical(ref.read(dailyPlanRepositoryProvider), repository) &&
         repository.isCurrent;
+  }
+
+  bool _isStudySessionsCurrent({
+    required DurableStudySessionRepository repository,
+    required String owner,
+    required int generation,
+  }) {
+    if (!mounted || generation != _generation) return false;
+    final account = ref.read(accountStateProvider);
+    return account.phase == AccountPhase.ready &&
+        account.profile?.id == owner &&
+        identical(ref.read(durableStudyRepositoryProvider), repository);
+  }
+
+  Future<void> _loadConfirmedStudySessions() async {
+    if (_studySessionsLoading) return;
+    final account = ref.read(accountStateProvider);
+    final owner = account.profile?.id;
+    final repository = ref.read(durableStudyRepositoryProvider);
+    if (account.phase != AccountPhase.ready ||
+        owner == null ||
+        repository == null) {
+      return;
+    }
+
+    final generation = _generation;
+    setState(() {
+      _studySessionRepository = repository;
+      _studySessionOwner = owner;
+      _studySessionsLoading = true;
+      _studySessionsFailed = false;
+      _confirmedStudySessions = null;
+    });
+
+    try {
+      final snapshot = await repository.recover();
+      if (!_isStudySessionsCurrent(
+        repository: repository,
+        owner: owner,
+        generation: generation,
+      )) {
+        return;
+      }
+      final confirmed = List<CompletedStudySession>.of(snapshot.confirmed)
+        ..sort((left, right) => right.endedAt.compareTo(left.endedAt));
+      setState(() => _confirmedStudySessions = List.unmodifiable(confirmed));
+    } on DailyPlanFailure {
+      if (_isStudySessionsCurrent(
+        repository: repository,
+        owner: owner,
+        generation: generation,
+      )) {
+        setState(() => _studySessionsFailed = true);
+      }
+    } on StudySessionStorageFailure {
+      if (_isStudySessionsCurrent(
+        repository: repository,
+        owner: owner,
+        generation: generation,
+      )) {
+        setState(() => _studySessionsFailed = true);
+      }
+    } on Object {
+      if (_isStudySessionsCurrent(
+        repository: repository,
+        owner: owner,
+        generation: generation,
+      )) {
+        setState(() => _studySessionsFailed = true);
+      }
+    } finally {
+      if (_isStudySessionsCurrent(
+        repository: repository,
+        owner: owner,
+        generation: generation,
+      )) {
+        setState(() => _studySessionsLoading = false);
+      }
+    }
   }
 
   Future<void> _load() async {
@@ -793,6 +890,9 @@ class _ProgressOverviewScreenState
     ref.listen(dailyPlanRepositoryProvider, (_, _) {
       _clearForReplacement();
     });
+    ref.listen(durableStudyRepositoryProvider, (_, _) {
+      _clearForReplacement();
+    });
     ref.listen(quizHistoryRepositoryProvider, (_, _) {
       _clearForReplacement();
     });
@@ -815,6 +915,7 @@ class _ProgressOverviewScreenState
 
     final account = ref.watch(accountStateProvider);
     final repository = ref.watch(dailyPlanRepositoryProvider);
+    final studySessionRepository = ref.watch(durableStudyRepositoryProvider);
     final vocabularyHistory = ref.watch(quizHistoryRepositoryProvider);
     final grammarHistory = ref.watch(grammarQuizHistoryRepositoryProvider);
     final serverHistoryReader = ref.watch(quizReportV2HistoryReaderProvider);
@@ -852,6 +953,15 @@ class _ProgressOverviewScreenState
         ? null
         : _serverQuizPageSummary(serverQuizEntries);
     final profile = account.profile;
+    final studySessionsCurrent =
+        identical(_studySessionRepository, studySessionRepository) &&
+        _studySessionOwner == profile?.id;
+    final confirmedStudySessions = studySessionsCurrent
+        ? _confirmedStudySessions
+        : null;
+    final studySessionsLoading =
+        studySessionsCurrent && _studySessionsLoading;
+    final studySessionsFailed = studySessionsCurrent && _studySessionsFailed;
     final ready =
         account.phase == AccountPhase.ready &&
         profile != null &&
@@ -991,6 +1101,69 @@ class _ProgressOverviewScreenState
           'Lịch sử cục bộ và biên nhận máy chủ được hiển thị riêng. '
           'Không cộng điểm quiz thành thời gian học hoặc trạng thái MASTERED.',
         ),
+        Text(
+          'Buổi học đã xác nhận trên thiết bị',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const Text(
+          'Chỉ đọc buổi học đã được máy chủ xác nhận và còn lưu trong nhật ký '
+          'của thiết bị này. Không phải lịch sử đầy đủ trên nhiều thiết bị, '
+          'mức thành thạo hoặc trạng thái SRS.',
+        ),
+        if (studySessionRepository == null)
+          const Text('Lịch sử buổi học trên thiết bị chưa được cấu hình cho phiên này.')
+        else
+          FilledButton.icon(
+            key: const Key('progress-load-confirmed-study-sessions'),
+            onPressed: studySessionsLoading
+                ? null
+                : () => unawaited(_loadConfirmedStudySessions()),
+            icon: const Icon(Icons.history),
+            label: Text(
+              studySessionsLoading
+                  ? 'Đang đọc buổi học…'
+                  : 'Tải buổi học đã xác nhận',
+            ),
+          ),
+        if (studySessionsLoading) ...[
+          const LinearProgressIndicator(),
+          const Text('Đang đọc nhật ký buổi học trên thiết bị…'),
+        ],
+        if (studySessionsFailed)
+          const Text(
+            'Không thể đọc nhật ký buổi học trên thiết bị. Bạn có thể thử lại.',
+            key: Key('progress-confirmed-study-error'),
+          ),
+        if (confirmedStudySessions != null) ...[
+          if (confirmedStudySessions.isEmpty)
+            const Text(
+              'Chưa có buổi học đã xác nhận còn lưu trên thiết bị.',
+              key: Key('progress-confirmed-study-empty'),
+            )
+          else ...[
+            Text(
+              '${confirmedStudySessions.length} buổi đã xác nhận · '
+              '${_totalCreditedStudyMinutes(confirmedStudySessions)} phút '
+              'trong nhật ký còn lưu trên thiết bị',
+              key: const Key('progress-confirmed-study-summary'),
+            ),
+            for (final area in DailyPlanArea.values)
+              if (confirmedStudySessions.any((event) => event.area == area))
+                Text(
+                  '${dailyPlanAreaLabel(area)} · '
+                  '${confirmedStudySessions.where((event) => event.area == area).length} buổi · '
+                  '${_totalCreditedStudyMinutes(confirmedStudySessions.where((event) => event.area == area))} phút',
+                ),
+            for (final event in confirmedStudySessions.take(10))
+              ListTile(
+                key: ValueKey('progress-confirmed-study-${event.clientEventId}'),
+                title: Text('${dailyPlanAreaLabel(event.area)} · ${event.date.value}'),
+                subtitle: Text('${_creditedStudyMinutes(event)} phút được máy chủ ghi nhận'),
+              ),
+            if (confirmedStudySessions.length > 10)
+              const Text('Chỉ hiển thị 10 buổi đã xác nhận gần nhất.'),
+          ],
+        ],
         if (vocabularyHistory == null && grammarHistory == null)
           const Text('Lịch sử quiz trên thiết bị chưa được cấu hình.'),
         if (vocabularyHistory != null || grammarHistory != null)

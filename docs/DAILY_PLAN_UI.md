@@ -135,3 +135,22 @@ Two TEST ONLY widget cases hold the old server-day response across a same-owner 
 replacement, perform a fresh lookup, then release the old success/error. They assert the
 new date and plan-read count remain unchanged. This is client race coverage, not hosted
 profile, JWT, server-clock or RLS evidence.
+
+
+## Confirmed study-session history on Progress Overview
+
+The Progress Overview has a separate explicit read for completed study sessions
+still retained in the current owner's local journal. It displays only records
+whose immutable event received a server acknowledgment. Pending events and
+terminally rejected events are excluded; this action never retries, submits or
+changes a journal record.
+
+The summary counts each accepted event's credited minutes independently using
+floor(elapsed seconds / 60), matching the server's per-session credit rule. It
+shows the ten most recent retained events and area totals for the full retained
+snapshot. The native/browser journal is bounded, so this is **not** a complete
+server history, an all-time total, cross-device synchronization evidence,
+mastery, SRS state or proof of attention. The default preview still publishes no
+study-session repository and shows no fabricated history. Account, session or
+repository replacement suppresses late reads; storage errors are redacted and
+require an explicit retry.

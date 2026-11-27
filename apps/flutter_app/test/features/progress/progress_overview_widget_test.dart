@@ -11,6 +11,9 @@ import 'package:nihongo_daily/features/curriculum/application/curriculum_provide
 import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/features/daily_plan/application/daily_plan_provider.dart';
 import 'package:nihongo_daily/features/daily_plan/data/daily_plan_repository.dart';
+import 'package:nihongo_daily/features/daily_plan/data/durable_study_session_repository.dart';
+import 'package:nihongo_daily/features/daily_plan/domain/completed_study_session.dart';
+import 'package:nihongo_daily/features/daily_plan/domain/daily_plan.dart';
 import 'package:nihongo_daily/features/quiz/application/grammar_quiz_history_provider.dart';
 import 'package:nihongo_daily/features/quiz/application/quiz_history_provider.dart';
 import 'package:nihongo_daily/features/quiz/application/quiz_report_v2_provider.dart';
@@ -38,6 +41,7 @@ final class _ProgressSource implements DailyPlanRepositorySource {
   final Harness harness;
   int planReads = 0;
   int dayReads = 0;
+  int studyWrites = 0;
   Map<String, Object>? lastPlanParameters;
   Map<String, Object>? lastDayParameters;
   Future<Object?> Function(Map<String, Object>) planResponse = (_) async =>
@@ -60,7 +64,8 @@ final class _ProgressSource implements DailyPlanRepositorySource {
   }
 }
 
-final class _ProgressGateway implements DailyPlanStudyDayGateway {
+final class _ProgressGateway
+    implements DailyPlanStudyDayGateway, DailyPlanStudySessionGateway {
   _ProgressGateway(this.source, this.current);
 
   final _ProgressSource source;
@@ -82,6 +87,93 @@ final class _ProgressGateway implements DailyPlanStudyDayGateway {
     source.lastDayParameters = parameters;
     return source.dayResponse();
   }
+
+  @override
+  Future<Object?> submitStudySession(Map<String, Object> parameters) async {
+    source.studyWrites++;
+    return studyPlan(45);
+  }
+}
+
+final class _ProgressStudyStore implements StudySessionStore {
+  final records = <StoredStudySession>[];
+  Completer<void>? listWait;
+  bool failList = false;
+  int reads = 0;
+  int writes = 0;
+
+  @override
+  Future<List<StoredStudySession>> list(String userId) async {
+    reads++;
+    await listWait?.future;
+    if (failList) throw StateError('PRIVATE JOURNAL PATH');
+    return records
+        .where((record) => record.userId == userId)
+        .toList(growable: false);
+  }
+
+  @override
+  Future<StoredStudySession> stage(
+    String userId,
+    CompletedStudySession event,
+  ) async {
+    writes++;
+    throw StateError('PROGRESS OVERVIEW MUST NOT WRITE');
+  }
+
+  @override
+  Future<void> acknowledge(String userId, String eventId) async {
+    writes++;
+    throw StateError('PROGRESS OVERVIEW MUST NOT WRITE');
+  }
+
+  @override
+  Future<void> reject(
+    String userId,
+    String eventId,
+    DailyPlanErrorCode code,
+  ) async {
+    writes++;
+    throw StateError('PROGRESS OVERVIEW MUST NOT WRITE');
+  }
+}
+
+final class _ProgressStudySource implements DurableStudySessionSource {
+  _ProgressStudySource(this.harness, this.dailyPlanSource, this.store);
+
+  final Harness harness;
+  final _ProgressSource dailyPlanSource;
+  final StudySessionStore store;
+
+  @override
+  DurableStudySessionRepository? createDurableStudySessionRepository() {
+    final ready = harness.runtime.readyRuntime;
+    if (ready == null) return null;
+    final delegate = dailyPlanSource.createDailyPlanRepository();
+    if (delegate == null) return null;
+    return DurableStudySessionRepository(
+      auth: harness.access,
+      delegate: delegate,
+      store: store,
+    );
+  }
+}
+
+CompletedStudySession _progressStudyEvent(
+  int number, {
+  required int startMinute,
+  required int durationSeconds,
+  required DailyPlanArea area,
+}) {
+  final startedAt = DateTime.utc(2026, 10, 20, 1, startMinute);
+  return CompletedStudySession(
+    clientEventId:
+        'f3100000-0000-4000-8000-${number.toString().padLeft(12, '0')}',
+    date: DailyPlanDate('2026-10-20'),
+    area: area,
+    startedAt: startedAt,
+    endedAt: startedAt.add(Duration(seconds: durationSeconds)),
+  );
 }
 
 final class _VocabularyPorts
@@ -577,6 +669,7 @@ Future<ProviderContainer> _mount(
   _ServerHistoryReader? serverHistoryReader,
   CurriculumRepository? curriculumRepository,
   DailyPlanRepository? dailyPlanRepository,
+  _ProgressStudySource? studySource,
 }) async {
   final container = ProviderContainer(
     overrides: [
@@ -584,6 +677,8 @@ Future<ProviderContainer> _mount(
       if (configured) dailyPlanSourceProvider.overrideWithValue(source),
       if (configured && dailyPlanRepository != null)
         dailyPlanRepositoryProvider.overrideWithValue(dailyPlanRepository),
+      if (configured && studySource != null)
+        durableStudySourceProvider.overrideWithValue(studySource),
       if (configured && vocabularyPorts != null)
         quizHistorySourceProvider.overrideWithValue(vocabularyPorts),
       if (configured && grammarPorts != null)
@@ -643,10 +738,231 @@ void main() {
     expect(find.text('Mở tài khoản'), findsOneWidget);
     expect(find.byKey(const Key('progress-date')), findsNothing);
     expect(find.byKey(const Key('progress-load-server-quiz')), findsNothing);
+    expect(
+      find.byKey(const Key('progress-load-confirmed-study-sessions')),
+      findsNothing,
+    );
+    expect(
+      find.text('Lịch sử buổi học trên thiết bị chưa được cấu hình cho phiên này.'),
+      findsOneWidget,
+    );
     expect(source.planReads, 0);
     expect(source.dayReads, 0);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'progress overview shows only server-acknowledged study sessions retained on this device',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final store = _ProgressStudyStore()
+        ..records.addAll([
+          StoredStudySession(
+            userId: account.owner,
+            event: _progressStudyEvent(
+              1,
+              startMinute: 0,
+              durationSeconds: 15 * 60 + 59,
+              area: DailyPlanArea.vocabulary,
+            ),
+            acknowledged: true,
+          ),
+          StoredStudySession(
+            userId: account.owner,
+            event: _progressStudyEvent(
+              2,
+              startMinute: 20,
+              durationSeconds: 8 * 60 + 59,
+              area: DailyPlanArea.grammar,
+            ),
+            acknowledged: true,
+          ),
+          StoredStudySession(
+            userId: account.owner,
+            event: _progressStudyEvent(
+              3,
+              startMinute: 30,
+              durationSeconds: 10 * 60,
+              area: DailyPlanArea.kanji,
+            ),
+          ),
+          StoredStudySession(
+            userId: account.owner,
+            event: _progressStudyEvent(
+              4,
+              startMinute: 45,
+              durationSeconds: 5 * 60,
+              area: DailyPlanArea.quizReview,
+            ),
+            rejection: DailyPlanErrorCode.validationFailure,
+          ),
+          StoredStudySession(
+            userId: account.other,
+            event: _progressStudyEvent(
+              5,
+              startMinute: 60,
+              durationSeconds: 30 * 60,
+              area: DailyPlanArea.vocabulary,
+            ),
+            acknowledged: true,
+          ),
+        ]);
+      final studySource = _ProgressStudySource(harness, source, store);
+      await _mount(tester, harness, source, studySource: studySource);
+
+      expect(store.reads, 0);
+      await tester.ensureVisible(
+        find.byKey(const Key('progress-load-confirmed-study-sessions')),
+      );
+      await tester.tap(
+        find.byKey(const Key('progress-load-confirmed-study-sessions')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(store.reads, 1);
+      expect(
+        find.text('2 buổi đã xác nhận · 23 phút trong nhật ký còn lưu trên thiết bị'),
+        findsOneWidget,
+      );
+      expect(find.text('Từ vựng · 1 buổi · 15 phút'), findsOneWidget);
+      expect(find.text('Ngữ pháp · 1 buổi · 8 phút'), findsOneWidget);
+      expect(
+        find.byKey(const Key('progress-confirmed-study-f3100000-0000-4000-8000-000000000001')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('progress-confirmed-study-f3100000-0000-4000-8000-000000000002')),
+        findsOneWidget,
+      );
+      for (final hidden in [3, 4, 5]) {
+        expect(
+          find.byKey(
+            Key('progress-confirmed-study-f3100000-0000-4000-8000-${hidden.toString().padLeft(12, '0')}'),
+          ),
+          findsNothing,
+        );
+      }
+      expect(store.writes, 0);
+      expect(source.studyWrites, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'study-session storage failure is redacted and can be retried explicitly',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final store = _ProgressStudyStore()
+        ..failList = true
+        ..records.add(
+          StoredStudySession(
+            userId: account.owner,
+            event: _progressStudyEvent(
+              6,
+              startMinute: 0,
+              durationSeconds: 5 * 60,
+              area: DailyPlanArea.vocabulary,
+            ),
+            acknowledged: true,
+          ),
+        );
+      await _mount(
+        tester,
+        harness,
+        source,
+        studySource: _ProgressStudySource(harness, source, store),
+      );
+
+      final load = find.byKey(
+        const Key('progress-load-confirmed-study-sessions'),
+      );
+      await tester.ensureVisible(load);
+      await tester.tap(load);
+      await tester.pumpAndSettle();
+      expect(store.reads, 1);
+      expect(
+        find.byKey(const Key('progress-confirmed-study-error')),
+        findsOneWidget,
+      );
+      expect(find.textContaining('PRIVATE JOURNAL PATH'), findsNothing);
+      expect(
+        find.byKey(const Key('progress-confirmed-study-summary')),
+        findsNothing,
+      );
+
+      store.failList = false;
+      await tester.tap(load);
+      await tester.pumpAndSettle();
+      expect(store.reads, 2);
+      expect(
+        find.textContaining('1 buổi đã xác nhận · 5 phút'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('progress-confirmed-study-error')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets(
+    'late study-session history cannot publish after A-B-A account replacement',
+    (tester) async {
+      final harness = Harness();
+      final source = _ProgressSource(harness);
+      final store = _ProgressStudyStore()
+        ..listWait = Completer<void>()
+        ..records.add(
+          StoredStudySession(
+            userId: account.owner,
+            event: _progressStudyEvent(
+              7,
+              startMinute: 0,
+              durationSeconds: 7 * 60,
+              area: DailyPlanArea.grammar,
+            ),
+            acknowledged: true,
+          ),
+        );
+      await _mount(
+        tester,
+        harness,
+        source,
+        studySource: _ProgressStudySource(harness, source, store),
+      );
+
+      final load = find.byKey(
+        const Key('progress-load-confirmed-study-sessions'),
+      );
+      await tester.ensureVisible(load);
+      await tester.tap(load);
+      await tester.pump();
+      expect(store.reads, 1);
+
+      harness.access.change(account.other);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-confirmed-study-summary')),
+        findsNothing,
+      );
+      harness.access.change(account.owner);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-load-confirmed-study-sessions')),
+        findsOneWidget,
+      );
+
+      store.listWait!.complete();
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('progress-confirmed-study-summary')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('profile-local today and plan progress require explicit loads', (
     tester,

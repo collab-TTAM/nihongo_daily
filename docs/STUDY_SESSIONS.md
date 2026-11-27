@@ -112,3 +112,14 @@ Earlier911eb7 passed allfive jobs/16 client cases/Web/Windows before this change
 No hosted migration, real JWT verification, genuine learner activity, end-user
 save action, offline crash recovery or multi-device acceptance is established.
 Keep #11/#40 and all14 live Personal Alpha gates open pending actual integration.
+
+
+## Local projection of acknowledged sessions
+
+The owner-scoped recovery snapshot also exposes records marked acknowledged in
+the current device journal. Progress Overview may read this list explicitly to
+show a bounded device-local history. It must exclude pending and rejected
+records, calculate credit by flooring each event separately, and clearly state
+that retained local records are not the full server history or cross-device
+progress. Reading this projection never dispatches a pending event, retries an
+RPC, updates a plan or grants mastery/SRS state.

@@ -118,11 +118,16 @@ final class RejectedStudySession {
 /// One owner-scoped read separates resendable events from terminal history.
 final class StudySessionRecoverySnapshot {
   StudySessionRecoverySnapshot._({
+    required List<CompletedStudySession> confirmed,
     required List<CompletedStudySession> pending,
     required List<RejectedStudySession> rejected,
-  }) : pending = List.unmodifiable(pending),
+  }) : confirmed = List.unmodifiable(confirmed),
+       pending = List.unmodifiable(pending),
        rejected = List.unmodifiable(rejected);
 
+  /// Server-acknowledged events still retained in this owner's local journal.
+  /// This is not a complete server history or cross-device total.
+  final List<CompletedStudySession> confirmed;
   final List<CompletedStudySession> pending;
   final List<RejectedStudySession> rejected;
 }
@@ -218,16 +223,22 @@ final class DurableStudySessionRepository {
       if (records.any((record) => record.userId != session.userId)) {
         throw const StudySessionStorageFailure();
       }
+      final confirmed = <CompletedStudySession>[];
       final pending = <CompletedStudySession>[];
       final rejected = <RejectedStudySession>[];
       for (final record in records) {
-        if (record.isPending) pending.add(record.event);
+        if (record.acknowledged) {
+          confirmed.add(record.event);
+        } else if (record.isPending) {
+          pending.add(record.event);
+        }
         final code = record.rejection;
         if (code != null) {
           rejected.add(RejectedStudySession._(event: record.event, code: code));
         }
       }
       return StudySessionRecoverySnapshot._(
+        confirmed: confirmed,
         pending: pending,
         rejected: rejected,
       );

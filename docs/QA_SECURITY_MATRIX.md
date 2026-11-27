@@ -1,6 +1,6 @@
 # QA/security regression matrix — Issue #8
 
-Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 192 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
+Personal Alpha is **IN_PROGRESS**. `qa/matrix.json` is the maintained source for 193 assurance cases, their exact test-file anchors, reproduction steps, issue owners,
 scope limits and ranked findings. `automated-baseline` means an executable test
 exists; it does **not** mean it passed on the current head or proves live integration.
 `pending-integration` means the specified scenario has not been observed. No

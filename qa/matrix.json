@@ -5264,6 +5264,24 @@
       ],
       "reproduce": "From apps/flutter_app: flutter test test/features/kanji/kanji_stroke_guide_test.dart; flutter analyze; then inspect all seven exact-head CI jobs.",
       "limitation": "Playback sequences existing attributed reference geometry only. It does not validate stroke pedagogy, recognize learner handwriting, produce a real score/mastery result, persist strokes or grant study minutes. The guide subset remains eight N5 and 95 N4 characters; teacher/learner and hosted release acceptance remain pending."
+    },
+    {
+      "id": "progress-confirmed-study-history",
+      "status": "automated-baseline",
+      "scope": "Progress Overview reads only current-owner server-acknowledged study events retained in the local journal; pending/rejected/other-owner records are excluded, credited minutes are floored per event, and late A-B-A results are suppressed.",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/progress/progress_overview_widget_test.dart",
+          "contains": "progress overview shows only server-acknowledged study sessions retained on this device"
+        }
+      ],
+      "issues": [
+        11,
+        18
+      ],
+      "reproduce": "From apps/flutter_app: flutter test test/features/progress/progress_overview_widget_test.dart; flutter analyze; inspect the exact-head Flutter CI job.",
+      "limitation": "TEST ONLY Auth/RPC/local-journal fixtures. The view is bounded to acknowledged records retained on the current device; it is not complete server history, hosted signed-JWT learner proof, mastery/SRS evidence or multi-device sync."
     }
   ],
   "findings": [
