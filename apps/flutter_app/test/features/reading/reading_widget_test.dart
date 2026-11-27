@@ -351,10 +351,7 @@ void main() {
         find.byKey(const Key('reading-open-n5-summer-seaside-01')),
       );
       expect(find.text('夏休みの海'), findsOneWidget);
-      expect(
-        find.textContaining('夏休み、私は家族と海へ行きました。'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('夏休み、私は家族と海へ行きました。'), findsOneWidget);
       for (final choice in ['q1-a', 'q2-a', 'q3-b']) {
         await tapReading(
           tester,

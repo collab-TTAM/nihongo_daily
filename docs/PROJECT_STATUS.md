@@ -633,3 +633,12 @@
 - Changed paths: `apps/flutter_app/assets/reading/catalog.json`, three reading tests, `docs/READING_MATERIAL.md`, `qa/matrix.json`, and this status file. No `data/n4`, `data/manifest`, `data/README`, Pro-owned N4 content/tests/docs, production Auth/provider, API/schema/RLS, audio availability, study-credit/mastery behavior or default save behavior changed.
 - Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget test/build are not claimed. Fresh exact-head CI must verify formatting, analysis, the full Flutter suite and downstream Chrome/Web/Windows jobs. No hosted staging workflow, secrets, production deployment, merge or release occurred.
 - Next: inspect every latest-attempt job and step on the new exact PR head. Keep #34/#26/#41 open/Draft; independent linguistic review, broader N5 coverage, separate Pro N4 integration, vetted playable audio and hosted learner/release evidence remain outstanding.
+
+
+## Reading widget strict formatter correction — 2026-11-27T15:29Z
+
+- Exact-head Actions [46024896158](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46024896158), attempt 1, matched parent HEAD `df0d6763421c38defa3bc516a3756dd4882beaa0`. Repo-sanity, AI boundary and database completed SUCCESS (17/17, 20/20 and 25/25 steps). Flutter failed only the strict Dart 3.35.4 formatter in the newly added N5 seaside widget test; the log emitted one formatting hunk collapsing a three-line `expect(find.textContaining(...), findsOneWidget)` to one line. Flutter analyze/tests and downstream checks were skipped, not passes. Supabase integration and Windows were still in progress.
+- Applied only that exact SDK-emitted formatting hunk in `apps/flutter_app/test/features/reading/reading_widget_test.dart`; no assertion, source content, route behavior or runtime logic changed.
+- Changed paths: the reading widget test and this status file. Cloud authoring has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. A fresh exact-head Actions run must verify formatting, analyzer, full Flutter suite and downstream platform jobs.
+- The N5 passage remains explicitly unreviewed draft material. No N4/Pro-owned files, manifest/README, Auth/provider, API/schema/RLS, audio availability, study credit/mastery, hosted secrets/dispatch, merge, deployment or release changed.
+- Next: inspect every latest-attempt job/step on the new exact HEAD; keep #41 Draft and #26/#34 open pending independent language review, vetted audio, hosted learner proof and release evidence.
