@@ -46,6 +46,35 @@ class QaEvidenceTests(unittest.TestCase):
         self.assertTrue(qa.RELEASE_CASES <= {c["id"] for c in cases
                                             if c["status"] == "pending-integration"})
 
+    def test_all_six_ci_jobs_include_local_supabase_integration(self):
+        self.assertEqual(
+            qa.REQUIRED_JOBS,
+            {"repo-sanity", "database", "supabase-integration", "flutter", "windows", "ai-boundary"},
+        )
+        self.assertIn("supabase-integration", self.matrix["ci_gates"])
+        self.assertIn(
+            "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS",
+            self.matrix["ci_gates"]["supabase-integration"],
+        )
+        case = next(c for c in self.matrix["cases"] if c["id"] == "local-two-session-sync")
+        self.assertEqual(case["ci_job"], "supabase-integration")
+
+    def test_cross_owner_concurrent_event_identity_is_in_local_sync_gate(self):
+        cases = qa.validate_matrix(self.matrix)
+        case = next(c for c in cases if c["id"] == "local-two-session-sync")
+        self.assertEqual(case["ci_job"], "supabase-integration")
+        self.assertIn("barrier-synchronized", case["scope"])
+        expected_anchor = (
+            "both owners commit the shared event UUID concurrently "
+            "without receipt collision"
+        )
+        self.assertTrue(
+            any(
+                anchor["contains"] == expected_anchor
+                for anchor in case["anchors"]
+            )
+        )
+
     def test_complete_same_head_latest_attempt_is_accepted_as_baseline_only(self):
         self.assertEqual(qa.validate_ci(self.matrix, self.evidence, HEAD),
                          f"https://github.com/{qa.REPOSITORY}/actions/runs/123")
@@ -168,6 +197,28 @@ class QaEvidenceTests(unittest.TestCase):
             path.write_text('{"head_sha":"old", "head_sha":"new"}')
             with self.assertRaises(ValueError):
                 qa.read_json(path)
+
+    def test_windows_vault_runtime_and_exit_owner_order_are_tracked(self):
+        cases = {case["id"]: case for case in qa.validate_matrix(self.matrix)}
+        vault = cases["windows-session-vault"]
+        self.assertEqual(vault["status"], "automated-baseline")
+        self.assertEqual(vault["ci_job"], "windows")
+        vault_anchors = {(item["path"], item["contains"]) for item in vault["anchors"]}
+        self.assertTrue({
+            ("apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+             "Windows vault restores through SDK and persists rotation before own profile"),
+            ("apps/flutter_app/test/features/srs/windows_persistent_supabase_runtime_test.dart",
+             "Windows caller close drains a pending rotation write before clearing and releasing owner"),
+            ("apps/flutter_app/tool/windows_runtime_fixture.dart", "'runtime-restore-profile-held'"),
+            ("apps/flutter_app/tool/verify_windows_vault_bridge.ps1", "runtime-restore-profile-held"),
+        } <= vault_anchors)
+        exit_case = cases["cancelable-window-exit"]
+        exit_anchors = {(item["path"], item["contains"]) for item in exit_case["anchors"]}
+        self.assertTrue({
+            ("apps/flutter_app/tool/windows_exit_fixture.dart", "_verifyEmptyVaultWithTemporaryOwner"),
+            ("apps/flutter_app/tool/verify_windows_vault_bridge.ps1", "Invoke-WindowExit"),
+        } <= exit_anchors)
+        self.assertIn("hosted", vault["limitation"])
 
     def test_release_cli_fails_even_when_all_baseline_ci_is_green(self):
         with tempfile.TemporaryDirectory() as directory:

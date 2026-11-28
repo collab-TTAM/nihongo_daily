@@ -28,14 +28,16 @@ confirm_non_production=true. A false confirmation starts no job. The workflow
 uses only the supabase-staging environment secrets and never uses a service-role
 key or JWT signing secret.
 
-
 When using **Actions → Hosted Supabase Acceptance → Run workflow**, select
 `automation/issue-22-atomic-review` in the branch/ref selector. The workflow file
 must first exist on the default branch, but the job explicitly checks out the
 selected `github.ref`; selecting `main` would test main's source, not the still-draft
-PR #37 candidate. Keep `confirm_non_production` false until the protected staging
-environment, two disposable accounts and reviewed migration/content prerequisites
-are ready.
+PR #37 candidate. The secret-bearing job also has a job-level ref guard and starts
+only for `refs/heads/automation/issue-22-atomic-review`. Dispatching from `main`
+or any other ref skips the protected job before the `supabase-staging` environment
+is entered; a skipped job is not acceptance evidence. Keep
+`confirm_non_production` false until the protected staging environment, two
+disposable accounts and reviewed migration/content prerequisites are ready.
 
 ## Assertions
 
@@ -111,8 +113,10 @@ The PowerShell driver starts a fresh Windows process for each phase:
 
 1. login-a: empty vault, password-login User A, wait for the captured
    own-profile barrier, then cleanly close while preserving the refresh token.
-2. restore-a: a new process restores A through the saved refresh token and
-   waits for A's own profile before closing again.
+2. restore-a: a new process restores A through the saved refresh token. The
+   fixture requires GoTrue to return a different refresh token and verifies the
+   exact returned value is already in Credential Manager before the first
+   `ensure_profile` request, then waits for A's own profile before closing.
 3. logout-a: a new process restores A, performs the SDK's local logout and
    verifies the exact project credential slot is empty.
 4. login-b: a new process starts signed out, authenticates User B, verifies
@@ -134,6 +138,12 @@ target for the current Windows OS user. It must run only on the ephemeral
 GitHub-hosted windows-2022 runner, never on a self-hosted/shared machine. The
 workflow pins that runner and requires the protected supabase-staging
 environment plus confirm_non_production=true.
+Before resolving the executable or starting either pre-test or final cleanup, the
+PowerShell driver also requires `GITHUB_ACTIONS=true` and
+`RUNNER_ENVIRONMENT=github-hosted`. A self-hosted runner cannot pass this guard
+merely by carrying the `windows-2022` label. The offline workflow-safety suite
+checks that the guard appears before every cleanup side effect. This is a
+fail-closed runner-trust check, not evidence that a hosted workflow was dispatched.
 
 This adds hosted Windows process-restart and account-switch evidence when the
 manual workflow actually passes. It does not force access-token expiry, test
@@ -168,3 +178,39 @@ replace hosted execution or the protected environment review.
 ## Refresh identity mismatch cleanup
 
 After a refresh response has been shape-validated, the probe transfers cleanup ownership to the returned session before checking that the user identity is unchanged or that the refresh token rotated. This ordering matters because the server may already have consumed the previous refresh token. If the response unexpectedly identifies another user, the primary identity failure remains fixed/redacted, while the finally path locally logs out the returned session and every other still-owned session. The offline regression forces this case and requires all refresh sessions to be revoked; it does not simulate a hosted provider incident or replace the protected staging run.
+
+
+## Server-revoked refresh restoration and explicit recovery
+
+The Windows process sequence now adds two manual-only phases after A's normal
+logout and before B's login:
+
+1. `prepare-revoked-a` signs A in with the caller-owned runtime, reads the
+   persisted refresh token from the exact project Credential Manager slot,
+   performs `scope=local` logout (which revokes that token), confirms the slot
+   is empty, then re-seeds the same revoked value directly into that slot for
+   this TEST ONLY scenario and exits cleanly.
+2. `restore-revoked-a` runs in a separate fresh process. GoTrue must reject
+   the revoked refresh token; the runtime remains failed/unready, retains the
+   rejected value for explicit recovery, and sends no `ensure_profile` request.
+   The explicit password login must observe an empty vault before its Auth
+   request, then observe the newly persisted rotated refresh secret before the
+   own-profile request. It finishes with local logout and an empty slot.
+
+The fixture's HTTP observer records only fixed route/grant labels and checks the
+OS vault at the password/profile boundaries. During `restore-a`, it reads the refresh request and a bounded successful
+response in memory only, requires the returned refresh token to differ from the submitted
+token, then requires the exact returned value to be readable from Credential
+Manager inside the `beforeProfile` hook. The observer clears its raw copy as
+soon as that comparison completes. The observed order must be
+`auth.refresh` -> `auth.refresh.response` ->
+`vault.rotated-before-profile` -> `profile.ensure`. The observer never adds
+token values to its event list, logs, files or artifacts. It never records
+email/password values or access JWTs. The token is held only in memory while
+being re-seeded; it is not written to a file or printed.
+
+This proves fresh-process recovery from a **server-revoked** saved refresh token
+when the protected staging workflow passes. It does not force a cryptographically
+expired JWT or prove provider-side expiry windows; those remain separate release
+evidence. The workflow stays manual-only and requires the protected
+`supabase-staging` environment and two disposable, email-confirmed accounts.

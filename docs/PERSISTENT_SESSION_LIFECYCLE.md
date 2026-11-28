@@ -1,0 +1,1413 @@
+# Owned persistent session lifecycle
+
+`PersistentSupabaseRuntime` explicitly creates and exclusively owns a new pinned
+Supabase SDK client, review binding, persistence access and account controller.
+The caller supplies the trusted project URL/public key and matching credential
+vault and an explicitly supplied DurableReviewStore, then awaits `start()` before installing `runtime.account` into the existing
+account provider. A failed start returns a fixed safe error; caller must show a
+restore failure and offer explicit login, which first cleans failed storage/SDK
+state. Never put secrets in Riverpod state, journals, profile fields or logging.
+No application startup configuration or default runtime activation is added.
+
+The assembly validates endpoint, public-key shape and canonical vault target
+before creating the client. Web is rejected because the pinned SDK broadcasts
+Session objects across tabs; this component does not authorize browser token
+storage/restore. The existing Windows vault is the implemented OS backend.
+Other platforms still fail unavailable through that backend. Mock backends in
+tests are not alternate production stores. No dependency/provider/Auth strategy,
+production deployment, RLS, migration or frozen API contract changes occur.
+
+## Readiness and ownership
+
+`PersistentAccountAccess` is the account Auth port. `start()` reads only the
+refresh secret and invokes SDK `setSession(secret)` without an access token,
+requiring a server refresh. No session JSON/local access JWT is reconstructed.
+The exact current rotated refresh secret must be successfully written before a
+ReviewSession is exposed. The existing own-profile barrier then grants study
+access. Secret strings remain private internal operational data; public phases
+and account state contain no credentials. SDK logs are disabled before client
+creation. Auth HTTP accepts only same-origin Auth/REST paths, disables redirects,
+limits responses to 1MiB and bounds each full headers/body HTTP attempt to 15 seconds. The pinned SDK internally retries refresh transport/5xx failures under its existing retry policy, even with auto-refresh disabled; a full Auth operation can exceed 15 seconds. The persistence/controller layer adds no retry loop or timer.
+Timeout/oversize/transport failures are fixed safe errors. A late timed-out
+response cannot reach the SDK; the late response stream is cancelled. Response-body consumption uses the original request deadline. When reading ends or times out, stream cancellation starts immediately; its acknowledgement is detached with a terminal error handler and is never awaited by the Auth call. A stalled `onCancel` callback therefore cannot extend the request. The SDK receives only a fully buffered response, never a partial or late body. The declared Content-Length oversize path also starts cancellation without awaiting its acknowledgement and remains a fixed INTERNAL_ERROR even if onCancel stalls.
+The TEST ONLY transport regression exercises the bounded client directly: one Auth HTTP attempt must map its body deadline to retryable `NETWORK_UNAVAILABLE` while the `onCancel` acknowledgement is still pending, and a later cancellation error must be handled. The separate pinned-SDK runtime regression verifies that a timed-out late Auth response cannot dispatch own-profile provisioning. The pinned SDK may retry transport failures, so a complete `start()` can outlast one request deadline; this transport test does not claim otherwise.
+
+The SDK and its mutation methods stay private. SDK automatic refresh is disabled;
+`refresh()` is explicit and applies the same persistence barrier. No automatic
+refresh timer is installed by default. The optional owned scheduler is described
+in SESSION_REFRESH.md; it adds no failure retry loop. Without that opt-in, caller
+must refresh before expiry;
+expiry itself revokes review access and clears the persisted secret via the
+binding event. Opt-in scheduling has fixture/source CI evidence; hosted expiry/rotation and
+OS suspension acceptance remain separate. SDK rotation signals are observed independently of review lifecycle
+signals because the review binding preserves identity on same-session refresh.
+The owned adapter also reconciles the final SDK session synchronously after every
+successful caller-owned sign-in, restore or refresh operation, before
+`PersistentAccountAccess` settles its persistence barrier. This avoids
+making startup readiness depend solely on when the SDK's asynchronous Auth
+broadcast is delivered. The raw Auth stream remains necessary for out-of-band
+refresh/logout events; queued events are still checked against the current
+SDK lifecycle and cannot override a newer account.
+
+The owned adapter therefore observes the raw Auth stream as a second listener,
+but forwards an event only when it still matches the SDK's current user/session
+lifecycle. A session-bearing SIGNED_OUT event is accepted only when its stable
+user/session identity matches the SDK's current session; a delayed event for A
+cannot revoke replacement B. A null-session SIGNED_OUT event has no identity,
+so it is accepted only while the explicit local sign-out generation is still
+current and the SDK itself has no current session. A newer sign-in, restore or
+refresh invalidates an older pending null sign-out. This preserves a genuine
+current-session sign-out while preventing delayed cleanup from deleting a
+replacement refresh token. The pinned-SDK A-to-B regression covers the
+predicate and the complete vault write/cleanup order.
+
+One active persistence owner is allowed per canonical project target in
+this Dart isolate. On Windows, startup also acquires a native named-mutex lease
+for the canonical target before reading the saved secret or dispatching Auth.
+The mutex name contains only a stable non-secret hash, is scoped to the current
+Windows logon session, and rejects a competing Nihongo Daily runtime with a
+fixed unavailable error. An abandoned mutex is recoverable after the prior
+process exits unexpectedly. Caller close drains Auth/vault work and any required
+cleanup before releasing the native lease and local owner slot. This coordinates
+cooperating app instances in one Windows session; it is not cross-device CAS,
+does not restrict arbitrary same-user software from accessing Credential Manager,
+and does not coordinate separate Windows logon sessions. Server verification is
+authoritative; decoded JWT hints are only fail-closed client checks. No
+memory-zeroization claim is added for Dart strings.
+
+## Logout, failure and shutdown
+
+Logout revokes readiness before awaiting anything. SDK sign-out and credential
+clear are both attempted even when one fails. Clear is ordered after any already
+running write. After local SDK sign-out resolves, the binding immediately
+reconciles the raw SDK snapshot because its Auth broadcast may still be queued.
+Cleanup then verifies that both the current session and refresh-token snapshot
+are absent. A resolved sign-out that leaves either value present is a cleanup
+failure: the vault clear is still attempted, the owner remains held, and
+replacement Auth is blocked until an explicit retry confirms the old session is
+gone. Generation/session/secret guards prevent old queued writes or responses
+from granting access. Logout/disposal during an Auth request keeps the gate
+fenced and cleans again after that request settles, including SDK logout failure
+followed by late sign-in success. Explicit retry is required after errors.
+
+A sign-in or explicit refresh reserves its operation slot before the deferred
+runner dispatches the SDK request. If logout arrives in that gap, the runner
+rechecks the captured cancellation/logout fence immediately before Auth dispatch
+and sends no request. This prevents a post-logout password grant or refresh from
+creating a server session after local logout. The `logout-before-login-dispatch`
+and `logout-before-refresh-dispatch` lifecycle cases assert zero Auth dispatch
+and successful vault cleanup. They are deterministic coordinator fixtures, not
+hosted Auth proof.
+
+An explicit refresh also fences the SDK event observer synchronously when its
+captured session/secret/generation reservation is published, before the deferred
+runner can call Auth. A queued event that still describes the captured old
+session cannot advance the generation and cancel the refresh. If the SDK snapshot
+has genuinely changed to another account before dispatch, the captured guard
+rejects the old refresh, then immediately reopens event reconciliation so the
+new account's own refresh secret is persisted before readiness. The
+`rotation-barrier` fixture asserts exactly one SDK refresh reaches the held
+Auth call despite a queued old event; `session-switch-before-refresh-dispatch`
+asserts that a real B replacement is persisted without dispatching A's refresh.
+These are deterministic TEST ONLY lifecycle regressions, not hosted Auth proof.
+
+Every session rotation/account change revokes the old persistence gate until the
+new secret is saved. No profile or study request is issued through the account
+runtime before that barrier. Getter checks also reject a changed SDK identity or
+secret before queued notifications are delivered. Failed writes fence access and
+attempt credential clear. Clear failures remain visible as failed persistence;
+later explicit login/logout must clean successfully before accepting a session.
+If the owned SDK Auth event stream errors or closes after an Auth mutation may
+have been dispatched, failure also retains a cleanup obligation. Caller close or
+explicit recovery must sign out and clear the exact project vault before releasing
+its owner; a failed clear keeps ownership and can be retried after storage recovers.
+A stream failure before any Auth mutation remains non-destructive and preserves
+an unread saved refresh secret. Storage read errors preserve the existing entry
+until an explicit cleanup/login. After a transient Windows read-unavailable error, the caller-owned runtime stays fail-closed: it does not send the saved secret to Auth or provision a profile. An explicit password login on that same owner performs SDK sign-out and serialized exact-project clear before the password grant, then persists the new rotated secret before own-profile readiness. The pinned-SDK/Windows-MethodChannel regression verifies this order with a TEST ONLY fault; it is not native CredRead failure injection or hosted learner A/B proof. The account controller also retains its fixed sign-in error across queued no-session notifications; only an explicit retry or logout changes that error state.
+
+If explicit logout arrives while startup is still awaiting the vault read, the generation is revoked immediately. Credential clear remains serialized behind that read; the saved value is never sent to Auth after it returns, and a replacement login remains blocked until the cancelled startup and clear have drained. The pinned-SDK/Windows-MethodChannel regression holds the read, attempts User B, then verifies clear -> B password grant -> B rotation write -> B own-profile. The held MethodChannel response is TEST ONLY; native Credential Manager behavior remains covered by the separate Windows process probe.
+
+Await `runtime.close()` before replacing the assembly. It revokes access, disposes
+the account controller, drains interrupted Auth/credential operations, cancels
+subscriptions and disposes only owned SDK/network resources. A fully saved
+session is preserved for the next startup; interrupted Auth is cleaned. Supplied
+HTTP clients and the supplied review store remain caller-owned. The required review store preserves uncertain events while rotation temporarily removes the old study runtime; this assembly never falls back to process-only review storage. The controller/provider's disposal alone does
+not close this assembly. Neither close nor local logout promises all-device
+revocation, OS-logoff/power-loss recovery or protection from same-OS-user processes.
+
+## Reproduction and separate review
+
+In `apps/flutter_app`, run `dart run tool/verify_session_lifecycle.dart` and
+`flutter test`. Thirty-seven pure cases cover empty/refresh startup, persistence
+barriers, same-session rotation, account switches, older in-flight writes,
+logout during write/restore/login, storage/read/clear/SDK errors and explicit
+retry, revocation, owner exclusivity, stream closure and disposal. Pinned-SDK HTTP cases cover refresh-only startup/profile ordering, explicit rotation/logout,
+late restore, rejected stored token recovery, log/scope checks, timeout and original pending-review retention across rotation/logout/relogin using actual disposable native disk.
+Both SDK HTTP and OS storage here are TEST ONLY ports, not hosted login proof. The Windows MethodChannel suite also covers the native owner-lease acquire/release mapping and logout during a held vault read and blocks B until the stale read/clear drain; that held read is a mock channel response, not a native Credential Manager fault injection.
+
+The new TEST ONLY `windows_persistent_supabase_runtime_test.dart` composes
+the actual Dart Windows MethodChannel vault adapter with the pinned Supabase SDK.
+It asserts saved-secret read, server refresh, rotated-secret write before
+`ensure_profile`, logout before credential clear, fail-closed read/write errors,
+and a late User A login followed by User B. The MethodChannel is mocked here:
+this verifies assembly wiring, not the native Windows Credential Manager call.
+The separate Windows child-process probe verifies the actual OS store and per-project process-lease contention/abandoned-mutex recovery.
+Current-source CI must pass; historical previous-source success is insufficient.
+All 14 live Personal Alpha release groups remain pending. Keep PR #37 draft and
+#20/#22/#15 open. Next: interactive Windows bridge/restart, hosted Auth learner
+acceptance, caller startup/error UI and refresh scheduling.
+
+Separate review checked persist-before-profile, no old credential fallback,
+SDK ownership and log timing, exact project scope, callback-safe logout, clear
+ordering, asynchronous late-result cleanup, failed-state retry and close draining.
+Pinned SDK source inspected locally: supabase 2.16.5/gotrue 2.27.3 setSession,
+refreshSession/session-version guards, signOut and callback/logging behavior.
+Tests do not prove hosted JWT signatures, account/device isolation, real token
+expiry/rotation windows, native interactive launch or production safety.
+
+
+## Verified source evidence
+
+Source `021c36bf7a5572dcc0111161d093a0fc7b3377f8` passed all five jobs in
+[CI38575156585](https://github.com/collab-TTAM/nihongo_daily/actions/runs/38575156585).
+Observed Flutter format/analyze without issues, 312 tests including 22 pure
+lifecycle/seven pinned-SDK HTTP cases, five real Chrome cases, the mandatory
+lifecycle verifier, retained wire/native/same-run SQL gates and web/Windows builds.
+The Windows credential API/process probe and all four file/process verifiers
+passed. Exact-head/all-critical-step QA accepted unmodified run/latest-attempt
+metadata. All 233 local source blobs matched GitHub; N4 PR #38 stayed separate.
+
+Review corrections preserved every gate/assertion: inherited-stream @override,
+operation ownership through late cleanup, cancellation during failed-state retry,
+private SDK mutation port, Japanese JSON fixture encoding and required review
+store to preserve uncertain events when rotation replaces the study runtime.
+The SDK timeout test's observed ~12-second completion led to checking its refresh
+retry implementation: bounds apply per HTTP attempt, not a 15-second whole-Auth
+promise. No retry-policy/provider/security change or claim of no SDK retries.
+
+Local evidence: 22 pure lifecycle and ten retained account cases, source analysis/
+format, 49 Python contract and 17 QA tests. Full SDK/Flutter/Chrome/build/native SQL
+and Windows evidence came from CI, not local execution. Auth/OS lifecycle ports
+are still TEST ONLY; the seventh SDK case uses actual disposable review files.
+No hosted login/JWT signatures or interactive Dart-to-Credential-Manager startup
+restoration evidence. Default runtime remains null and explicit refresh scheduling
+is still caller work. All 14 live release groups remain pending; keep #37 draft.
+Source evidence is historical for subsequent documentation/source commits.
+
+## Actual Windows runtime restart probe
+
+The separate TEST ONLY Flutter runner now invokes `PersistentSupabaseRuntime`
+with the real production Windows vault/MethodChannel/Credential Manager and
+NativeReviewJournal. Six additional fresh-process phases cover explicit login,
+refresh-only restore of the previous secret with rotation, restore/logout with
+synchronous fencing, signed-out restart without any Auth/profile dispatch, and
+401 stored-token rejection followed by explicit login/logout recovery.
+The fixture profile handler reads the actual OS vault before returning: profile
+dispatch must follow saving the exact rotated secret. Runtime close must preserve
+a fully saved secret. Each phase retains the same original uncertain review in
+the real journal; unexpected endpoints (including submit_review) fail the probe.
+
+`tool/windows_runtime_fixture.dart` contains fixed synthetic credentials, unsigned
+JWTs and actual pinned SDK with mock HTTP; no hosted request or live credential
+is accepted. GUID-qualified `.invalid` scope and per-run temp journal are cleaned
+by the bounded PowerShell finally phase. The normal learner entrypoint is rebuilt
+before artifact upload. These checks narrow SDK-to-OS process-restart evidence
+only when observed passing. They do not establish hosted JWT/Auth, two-client
+identity isolation, OS-logoff/power-loss, concurrent process writers or actual
+learner UI. No default activation, provider, dependency or contract changes.
+
+Verified source `e39d6fee1ac554f8e9802294b09ef54d5ed17b63` passed all five jobs
+in https://github.com/collab-TTAM/nihongo_daily/actions/runs/38590916038 .
+Observed 312 Flutter tests, five actual Chrome tests, analysis/format, all ten
+Dart vault/runtime process phases with real Credential Manager/journal, native
+credential/process probe, retained SQL/native/wire/security gates and normal
+web/Windows preview builds/uploads. Windows logs explicitly confirm both bridge
+and persistent SDK runtime cross-process success. Raw run/latest-attempt metadata
+passed exact-source-head/every-required-step QA. Auth HTTP and JWT signatures
+remain simulated; this is sequential OS-backed process restoration, not hosted
+identity/device/logoff/power-loss proof. One fixture lint block and one retained
+SDK test's fixed event-turn readiness heuristic were corrected without changing
+production logic or original ready/non-null expectations. Source evidence is
+historical for later documentation commits; next startup/error UI and explicit
+refresh scheduling, then configured hosted learner acceptance.
+
+
+## Caller-owned Supabase vault integration regressions — 2026-10-31
+
+Two additional TEST ONLY cases are authored to exercise the actual pinned Supabase SDK and the
+owned runtime's HTTP dispatch against the isolated in-memory OS-vault port:
+
+- A credential-store write failure after Auth sign-in must keep the account
+  unavailable, clear the uncertain secret, and issue no own-profile request.
+  After the storage port recovers, only an explicit second login may persist
+  the refresh token and proceed to the profile barrier.
+- A delayed User A sign-in response delivered after explicit logout must not
+  restore A, write A's refresh token, or dispatch A's profile. A subsequent
+  explicit User B login must persist B's rotated refresh token and send B's
+  captured bearer to the own-profile RPC.
+
+These tests complement the existing pure lifecycle A/B and same-session
+rotation fixtures, SDK timeout/late-startup response, and persist-before-profile
+tests. They do not verify hosted JWT signatures, deployed RLS, actual Supabase
+credentials, or a live learner. Default app startup remains the preview path;
+no Auth strategy, provider, database, RLS, deployment or secret fallback changed.
+Exact-head CI for this source increment is pending and is recorded in PR #37.
+
+
+## Late refresh response after logout — 2026-10-31
+
+A third pinned-SDK/owned-runtime HTTP regression now holds User A's refresh-token
+rotation response, performs explicit local logout and vault clear, then releases
+the old response. The test requires the refresh operation to fail safely, keeps
+A's runtime unavailable, verifies no additional `ensure_profile` request or
+stored A secret, and only then signs in User B. B must persist its own rotated
+refresh secret and the profile request must carry B's captured bearer.
+
+This closes a source-level gap between the earlier late-sign-in and late-startup
+tests: a refresh response already in flight at logout must not resurrect the
+same account's old session or race a subsequent account switch. The test uses
+the pinned Supabase SDK with a TEST ONLY MockClient and in-memory vault backend;
+it does not prove hosted JWT signatures, deployed RLS or live account isolation.
+The existing storage-failure, write/clear ordering, generation guards and all
+prior assertions remain unchanged. Fresh exact-head CI is required for this new
+case; the preceding source head's successful CI is not carried forward.
+
+
+## Credential clear failure blocks account replacement — 2026-10-31
+
+A new pinned-Supabase-SDK/owned-runtime regression injects a failure while the
+caller-owned credential backend clears User A's refresh token during logout.
+The account must remain fenced, the old secret may remain physically present but
+cannot authorize a runtime, and a User B sign-in attempt must not dispatch Auth
+or profile requests while cleanup is still failing. After an explicit logout
+retry successfully clears the credential, B can sign in, persist B's own rotated
+secret and provision only B's profile with B's captured bearer.
+
+This covers the full SDK/controller boundary for clear failure and retry; the
+existing pure vault/lifecycle cases already cover clear ordering and retry at the
+port level. The new case uses a TEST ONLY in-memory OS backend and pinned SDK
+MockClient, not Windows Credential Manager failure injection or hosted Auth.
+No plaintext fallback, auto-retry, default Auth activation or cross-account
+cache exception is introduced. Exact-head CI must run the new test before it is
+counted as verified.
+
+
+## Windows OS-backed late refresh and account switch — 2026-11-01
+
+The Windows runner's runtime-late-refresh phase extends the existing SDK/OS
+bridge probe rather than relying only on the in-memory vault tests. It uses the
+real production MethodChannel/Credential Manager and PersistentSupabaseRuntime
+with a TEST ONLY HTTP handler:
+
+1. Persist User A's synthetic refresh secret in the real OS vault and hold the
+   startup refresh response before the SDK can complete restoration.
+2. Explicitly log out, require the credential slot to be empty and keep profile
+   readiness unavailable.
+3. Release A's late rotated response; the restore must fail closed, leave no
+   secret and issue no own-profile request.
+4. Sign in User B on the same owned runtime; require exactly one profile request,
+   B's captured bearer, B's rotated secret already persisted before profile
+   readiness, and no A-owned pending review visible through B's journal scope.
+5. Log out B and require the OS credential slot to be empty.
+
+This proves the Windows OS storage bridge participates in the caller-owned SDK
+generation/session guards for this deterministic fixture sequence. The HTTP
+server, Auth identities and unsigned JWT are TEST ONLY; it does not prove hosted
+JWT signatures, deployed PostgREST/RLS, real learner accounts, OS logoff or
+hardware power-loss behavior. Storage write/clear failure injection remains in
+the isolated backend tests, not a fabricated Credential Manager failure.
+
+
+## Startup vault read failure and explicit recovery — 2026-11-01
+
+A new pinned-SDK/owned-runtime regression starts with an existing stored refresh
+secret while the credential backend reports a read failure. Startup must fail
+closed without calling the Auth token endpoint or `ensure_profile`; the existing
+stored value is not treated as a usable session. After the backend recovers, only
+an explicit login may proceed. The test records method names only and requires
+the order `read -> clear -> write`: failed-state cleanup clears the old slot
+before authentication, and the new rotated refresh secret is written before the
+own-profile barrier can publish study readiness.
+
+This is a TEST ONLY in-memory credential backend with the pinned Supabase SDK and
+MockClient HTTP, not a Windows Credential Manager failure injection or hosted
+Auth test. It adds no plaintext fallback, automatic retry, default Auth
+activation, Auth strategy/provider, schema/RLS or deployment change. The Windows
+OS-backed bridge still verifies successful read/write/clear and late refresh
+account switching; live hosted identity remains a separate #20 gate.
+
+
+## Corrupt stored refresh value and explicit recovery — 2026-11-01
+
+A pinned-Supabase-SDK/owned-runtime regression now supplies a malformed stored
+refresh value from the TEST ONLY credential backend. Startup must fail closed at
+the vault decoder, preserve the corrupt entry for explicit cleanup, and issue no
+Auth token refresh or own-profile request. Only an explicit login may clean the
+entry and proceed; the method sequence is `read -> clear -> write`, and the new
+rotated refresh secret must be persisted before the own-profile barrier opens.
+
+The fixture uses an invalid control-character value, the actual pinned SDK,
+MockClient HTTP and an in-memory vault port. It is not a Windows Credential
+Manager failure injection or hosted Auth/JWT/RLS evidence. It adds no plaintext
+fallback, automatic retry, default Auth activation, Auth strategy/provider,
+schema/RLS or deployment change.
+
+
+## Corrupt-vault cleanup failure remains fenced — 2026-11-01
+
+The pinned-Supabase-SDK regression now combines malformed startup storage with
+an explicit cleanup failure. Startup rejects the corrupt refresh value before
+Auth/profile dispatch. A subsequent explicit sign-in attempts cleanup first;
+when the vault clear fails, the account stays unavailable, the corrupt value
+remains untrusted, and no Auth token or own-profile request is sent. After an
+explicit logout retry clears the slot, a new explicit sign-in is allowed and
+must persist its rotated refresh secret before profile readiness.
+
+This is TEST ONLY MockClient/in-memory-backend coverage. It does not simulate a
+Windows Credential Manager failure or establish hosted Auth/JWT/RLS evidence.
+No production fallback, automatic retry, default Auth activation, Auth
+strategy/provider, migration, schema or RLS behavior is changed.
+
+
+## Bounded Auth response failures — 2026-11-01
+
+The caller-owned Auth HTTP boundary preserves typed, sanitized transport failures.
+A response that exceeds the 1 MiB cap remains a non-retryable internal error;
+request/body timeouts and HTTP client transport failures remain retryable network
+unavailability. The pinned Supabase Auth SDK can wrap exceptions from its injected
+HTTP client in an SDK `AuthException`, so the owned adapter cannot rely on a
+direct `ReviewTransportFailure` catch alone.
+
+The bounded client now keeps only the last typed Auth transport failure in a
+private, ephemeral operation channel. `_OwnedSdkAccess` clears that channel at
+the start of each serialized Auth operation and consumes it after the SDK call;
+each new Auth request also clears an earlier attempt before recording its own
+failure. If the SDK wraps a transport exception, the adapter returns the saved
+safe category; unknown SDK errors still map to the fixed unauthorized result.
+The channel stores no URL, response body, credential or raw exception and is
+never logged. It does not change the SDK retry policy or add an application retry.
+
+The pinned-SDK regressions exercise an oversized response and a timed-out refresh
+whose late response is discarded. Both must fail startup before own-profile
+dispatch while preserving the expected safe error classification. This remains
+TEST ONLY MockClient/in-memory-vault coverage, not hosted Auth evidence; Auth
+strategy/provider, default activation, credential storage, schema and RLS are
+unchanged.
+
+
+## Runtime close during startup refresh — 2026-11-02
+
+A pinned-Supabase-SDK regression now closes the caller-owned runtime while its
+startup refresh response is held. The close future must remain pending until the
+late SDK operation settles and cleanup clears the uncertain refresh credential.
+The test requires no own-profile dispatch, retains the same-project owner slot
+until the drain finishes, then proves a replacement owner can start from an empty
+vault. It also probes the injected HTTP client after close to verify that the
+runtime disposes only its wrapper and never closes a caller-owned client.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does not
+prove hosted Auth/JWT/RLS, OS Credential Manager failure injection, OS logoff or
+power-loss behavior. No default Auth activation, URL/key input, Auth strategy,
+provider, schema, RLS or production configuration changes.
+
+## Refresh rotation vault-write failure — 2026-11-02
+
+A pinned-Supabase-SDK/owned-runtime regression now holds the credential-vault
+write after an explicit refresh returns a rotated token, then injects a storage
+failure. While the write is pending, the prior persisted secret remains but the
+study/profile gate is closed. After failure, the uncertain secret is cleared,
+the account remains fenced, the fixed needs-login notice is published, and no
+second own-profile request is dispatched.
+
+After the storage port recovers, only an explicit login can persist a fresh
+rotated secret. The test holds the own-profile response and verifies that the
+secret is already saved while readiness remains closed; readiness opens only
+after the matching profile response arrives.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does
+not prove Windows Credential Manager failure injection, hosted signed-JWT
+learner A/B, deployed RLS, OS logoff or power-loss behavior. No default Auth
+activation, plaintext fallback, Auth strategy/provider, schema, RLS or
+production configuration changes.
+
+
+## Failed refresh rotation and failed vault cleanup — 2026-11-02
+
+A pinned-Supabase-SDK/owned-runtime regression now combines two consecutive
+credential-storage failures. User A's explicit refresh returns a rotated secret,
+but the vault write fails; the compensating clear also fails, leaving the prior
+secret physically present. The runtime must revoke its accepted session, keep
+profile/study readiness closed, publish only the fixed needs-login notice, and
+send no additional own-profile request.
+
+An explicit User B login is then attempted while cleanup still fails. It must
+retry the clear before dispatching another Auth token request; B cannot inherit
+A's retained secret or open a profile. After the vault becomes available, a
+second explicit login clears the uncertain A slot, persists B's rotated secret,
+and only then waits for B's own-profile response before readiness opens.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence. It does not
+inject failures into Windows Credential Manager or prove hosted signed-JWT
+learner A/B, deployed RLS, OS logoff or power-loss behavior. No plaintext
+fallback, automatic retry, default Auth activation, Auth strategy/provider,
+schema, RLS or production configuration changes.
+
+
+## Coalesced SDK sign-out cleanup — 2026-11-02
+
+The owned binding and raw Supabase Auth observer can both report the same
+signed-out transition. A delayed duplicate null-session notification must not
+enqueue another credential clear after an explicit cleanup has already begun.
+PersistentAccountAccess now marks that cleanup before calling SDK sign-out
+and coalesces further null-session events until a new non-null session is
+observed. This preserves the required serialized order: failed rotation
+compensation, failed cross-account cleanup, successful explicit cleanup, then
+User B's rotated-secret write. The final stored secret and own-profile bearer
+remain bound to B.
+
+The regression remains TEST ONLY pinned SDK + MockClient + in-memory vault
+evidence; it is not hosted signed-JWT learner A/B or Windows Credential Manager
+failure injection. No automatic retry, plaintext fallback, default Auth
+activation, Auth strategy/provider, schema, RLS or production configuration
+changes.
+
+
+## Ignore stale sign-out events after account replacement — 2026-11-02
+
+The prior persistence-level clear coalescing fence was insufficient by itself:
+the pinned Supabase SDK can deliver a queued `SIGNED_OUT`/null-session event
+for User A after a replacement User B session is already current. The binding
+previously revoked its session unconditionally for every such event. The
+persistence observer then saw no current session and could enqueue a fourth
+vault clear over B's newly rotated refresh token.
+
+`SupabaseReviewBinding` now checks the current SDK session before applying a
+signed-out/null event. A current session must pass the full existing session
+hint validation. If the event has no session or its stable user + JWT
+`session_id` differs from that current lifecycle, the event is stale and is
+ignored. An event matching the current lifecycle, or any signed-out event when
+the SDK has no current session, still revokes normally. The event comparison
+uses only lifecycle identity; it does not persist, expose or log tokens.
+
+The pinned-SDK/MockClient/in-memory-vault regression continues to require the
+exact three cleanup attempts, B's rotated refresh secret, B's captured profile
+bearer and B-only readiness. This is TEST ONLY SDK evidence, not hosted
+signed-JWT learner A/B or native Windows Credential Manager failure injection.
+No Auth strategy/provider, default activation, plaintext fallback, schema,
+RLS, production configuration or Pro-owned N4 content changed.
+
+
+## Fence transient registry invalidation during an SDK lifecycle transition — 2026-11-02
+
+The review registry can emit a lifecycle notification when its previous
+captured connection is revoked. During a user switch or refresh, the SDK may
+already hold a valid replacement session while the corresponding Auth event is
+still queued for the binding. That temporary mismatch is not a signed-out
+credential state. Forwarding it unconditionally to persistence can schedule an
+extra vault clear before the new session's own Auth event is processed.
+
+The owned SDK adapter now forwards a registry notification to the persistence
+barrier only when the SDK has no current session, the current SDK session is
+invalid/expired, or its exact user/session lifecycle, access token and expiry
+match the binding's current hint. A valid-but-not-yet-bound SDK session
+suppresses the transient notification; the raw Auth observer still processes
+the matching queued event and persists its refresh-token rotation before
+own-profile readiness. A genuine logout or expired/invalid SDK session still
+reaches the persistence barrier and clears the credential in the existing
+serialized order.
+
+The existing pinned-SDK regression retains the exact three cleanup attempts,
+operation order, B refresh secret, B profile bearer and B-only readiness. No
+test expectation was weakened. This remains TEST ONLY SDK/MockClient/in-memory
+vault evidence, not hosted signed-JWT learner A/B or Windows Credential Manager
+failure injection.
+
+
+## Deliver owned lifecycle notifications synchronously — 2026-11-02
+
+The owned SDK adapter delivers its private Auth/registry change stream
+synchronously. These notifications describe SDK state at emission time; an
+asynchronous second queue could replay a transient null from User A after User
+B's sign-in has settled and clear B's newly persisted refresh token.
+
+During an owned restore, sign-in or refresh, the persistence barrier ignores
+reentrant lifecycle callbacks while its Auth operation is in flight. The
+operation's settle phase then samples the SDK's final current session and drains
+serialized credential writes before publishing readiness. Outside an owned
+Auth operation, a real signed-out or invalid/expired lifecycle notification is
+still handled immediately and its clear remains serialized behind any write.
+The synchronous callback performs no SDK mutation or network request.
+
+The A-to-B pinned-SDK regression now checks the exact three cleanup attempts,
+the complete vault operation order, B's rotated refresh secret, B's captured
+profile bearer, B-only readiness and the absence of a late fourth clear after
+profile readiness. This remains TEST ONLY SDK/MockClient/in-memory-vault
+evidence, not hosted signed-JWT learner A/B or Windows Credential Manager
+failure injection.
+
+
+## Owned Auth operation generation fence
+
+Supabase Auth may deliver a queued `SIGNED_OUT` event with a null session after
+its originating sign-out call has returned. A null event carries no user or
+session identity, so sampling only the SDK's state at callback time is not enough
+to prove that the event still belongs to the current account lifecycle.
+
+The owned binding advances an operation generation before password
+sign-in, refresh-token restore and explicit refresh. An explicit local sign-out
+records its generation. A null-session SIGNED_OUT event is accepted only while
+that pending sign-out generation still matches and the SDK has no current
+session; beginning a newer Auth operation invalidates the older null event.
+A session-bearing SIGNED_OUT event is checked separately against the SDK's
+current stable user/session identity, so a current-session sign-out is accepted
+while a previous-session A event cannot revoke replacement B. Explicit logout
+remains accepted in its own generation, while registry expiry/invalid-session
+handling and failed Auth operations remain fail-closed through their existing
+paths.
+
+This is a local event-ordering guard, not JWT signature verification, hosted Auth
+proof, or permission for another caller to mutate the exclusively owned SDK.
+
+
+## Caller close while startup vault read is pending — 2026-11-04
+
+The caller-owned runtime can be closed while its initial OS credential read is
+still pending. Closing revokes the accepted-session generation immediately and
+waits for the owned persistence operation to settle. If the vault read returns
+after close began, the captured generation/closed guard must reject the saved
+secret before any Supabase Auth refresh or own-profile RPC. The cancelled
+startup then clears the exact project vault slot before the caller-owned close
+completes.
+
+The pinned-Supabase-SDK regression holds the TEST ONLY in-memory vault read,
+starts caller close, confirms the saved secret is not cleared before the read
+settles, then releases the late read. It requires no Auth token request, no
+profile RPC, a single ordered read-then-clear, and a closed persistence phase.
+
+This is a TEST ONLY SDK/MockClient/in-memory-vault lifecycle check. It does not
+inject a stalled native Windows Credential Manager call or prove hosted
+signed-JWT learner restoration, deployed RLS, OS logoff, or power-loss behavior.
+No production Auth/session/vault implementation, default activation, plaintext
+fallback, strategy/provider, schema/RLS, or Pro-owned N4 content changes.
+
+
+## Late credential write and account replacement
+
+The pinned-Supabase-SDK + Windows MethodChannel suite also holds User A's
+refresh-secret write after the SDK has returned a session. Logout is issued
+while that write is pending. The test verifies that the persistence generation
+is revoked immediately, no own-profile request is made for A, and the queued
+vault clear cannot overtake the unresolved write. After the write is released,
+cleanup clears A's late value before a new B login is accepted. B's rotated
+secret must be stored before B's own-profile request, whose bearer and returned
+profile must both belong to B.
+
+This is TEST ONLY SDK/HTTP/MethodChannel evidence; the channel is mocked in this
+test. The separate Windows Credential Manager/process and runner probes remain
+the evidence for native storage/bridge behavior. This does not establish hosted
+signed-JWT learner A/B acceptance or deployed RLS.
+
+
+## Caller close while logout vault clear is pending — 2026-11-06
+
+The caller-owned runtime may be closed while an explicit logout has already
+revoked study readiness but its serialized credential-vault clear is still
+pending. Close must remain pending until that logout cleanup settles; it must
+not dispose the exclusively owned Supabase SDK while the vault operation is
+unresolved. The test also verifies that the caller-supplied HTTP client remains
+usable after the owned runtime closes.
+
+The pinned-Supabase-SDK regression first establishes a TEST ONLY User A session
+and persists its rotated refresh secret. It then holds the in-memory vault
+clear, starts logout, and calls runtime close. The expected state is immediately
+closed/fenced with no own-profile readiness, while the old secret remains
+present only until the held clear is released. Close must not complete early.
+After release, logout and close settle, the vault is empty, no extra profile
+request occurred, and the borrowed HTTP client still serves its caller-owned
+probe.
+
+This is TEST ONLY MockClient/in-memory-vault lifecycle evidence. It does not
+inject a delayed native Windows Credential Manager operation and does not prove
+hosted signed-JWT learner Auth, deployed RLS, OS logoff, power-loss or physical
+multi-device behavior. No production Auth/provider/schema/RLS/default activation
+or Pro-owned N4 content changes.
+
+
+## Late User A write followed by a failed logout clear — 2026-11-06
+
+The pinned-SDK Windows MethodChannel regression holds User A's refresh-secret
+write after password Auth has returned a session, then starts explicit logout.
+The vault clear must remain queued behind the unresolved write. After the write
+is released, the first clear is deliberately failed: study/profile readiness
+must remain revoked, the uncertain User A value may remain in the test vault,
+and a User B sign-in must produce no Auth or profile request.
+
+Only an explicit successful cleanup retry may clear the old value and reopen
+login. The test then signs in User B and requires B's rotated refresh secret to
+be persisted before ensure_profile; the only profile/bearer observed belongs
+to B. This covers the combined late-write + failed-clear ordering, not merely
+the two failure cases in isolation.
+
+This is TEST ONLY pinned-SDK/MockClient/MethodChannel evidence with in-memory
+storage. The separate Windows Credential Manager/process probes remain the
+native component evidence; neither establishes a hosted learner A/B flow,
+deployed RLS/PostgREST, or delayed native Credential Manager failure injection.
+
+
+## Caller close after a failed logout clear — 2026-11-07
+
+A failed credential clear is not a successful shutdown. The persistence owner
+now records when sign-out, a rotation-write compensation, or an unsolicited
+null-session clear leaves cleanup uncertain. `close()` retries SDK sign-out
+and vault clear before releasing the project owner. If the retry also fails,
+close returns a fixed safe storage error, keeps the owner slot, and can be
+called again after storage recovers. A fully saved session with no interrupted
+or failed cleanup is still preserved for the next startup.
+
+The pure lifecycle regression holds the cleanup failure through the first close,
+asserts that a competing owner cannot be constructed, then restores storage and
+requires a second close to clear the secret before releasing ownership. The
+pinned-SDK Windows MethodChannel regression exercises the same behavior through
+the production Windows vault adapter and caller-owned runtime, including a
+failed close, rejected replacement owner and successful close retry.
+
+These are TEST ONLY in-memory/MethodChannel failure injections. They do not
+simulate a native Credential Manager failure or establish hosted Auth. The
+native Windows process probes and hosted staging acceptance remain separate.
+
+
+## Empty-vault first-login ordering
+
+An owned account access start with an empty credential vault must settle to an
+idle, signed-out state and immediately allow one explicit password sign-in. The
+operation slot is reserved before asynchronous Auth/vault work is scheduled, so
+an immediately completing read cannot leave a completed operation marked busy.
+The first authenticated session is still hidden until its rotated refresh token
+has been durably written and the verified user's own profile is ready. This does
+not enable automatic login, plaintext fallback, token logging or a default Auth
+assembly.
+
+
+## Cancellation latch across deferred Auth dispatch — 2026-11-07
+
+`_runTracked` reserves the caller-owned operation slot synchronously and resets the cancellation latch before publishing that slot. A concurrent logout/close can then set the latch even if the runner is still queued as a microtask. `_run` must never clear that latch on entry: the original Auth operation remains cancelled, and its finalizer drains SDK sign-out plus credential clear after any late SDK response. This is a one-shot cancellation/cleanup path, not an automatic Auth retry. The deterministic lifecycle fixtures retain late-login, failed-logout and login-during-late-cleanup coverage; the failed-close retry fixture performs only one initial login.
+
+
+## Caller-owned runtime close and restore — 2026-11-07
+
+A pinned-Supabase-SDK regression closes a fully authenticated caller-owned
+runtime, verifies that its confirmed refresh secret is preserved, then constructs
+a fresh SDK/runtime against the same trusted project vault. Startup must send
+only the saved refresh secret to the server, accept the server's rotated secret,
+and persist that rotation before dispatching the new own-profile request. The
+profile response is held to prove that the recreated runtime remains unavailable
+to study until its matching own profile completes.
+
+This is TEST ONLY pinned SDK + MockClient + in-memory vault evidence with the
+caller-owned disposable journal retained across runtime reconstruction. It
+verifies a new SDK/runtime owner in one test process; it is not a forced process
+restart, native Credential Manager restoration, hosted signed-JWT learner A/B,
+deployed RLS/PostgREST, OS logoff, power-loss or physical multi-device proof.
+No default Auth activation, plaintext fallback, token logging, Auth strategy,
+provider, schema/RLS, production configuration or Pro-owned N4 content changes.
+
+
+## Windows refresh rotation write failure
+
+The pinned Supabase SDK + Windows MethodChannel regression first establishes
+User A through password Auth and persists A's refresh secret. An explicit
+refresh then receives a rotated secret while the Windows vault write is
+deliberately failed. The runtime must revoke A's session/profile readiness,
+attempt to clear the uncertain credential, and issue no additional own-profile
+request. A subsequent explicit User B login must run SDK sign-out and vault
+cleanup before the password grant, persist B's rotated secret, and only then
+request B's own profile.
+
+This combines a post-login rotation failure with the account-switch boundary.
+It is TEST ONLY MockClient/MethodChannel failure injection using the production
+Dart Windows vault adapter; it does not inject a native Credential Manager
+failure or prove hosted learner A/B, deployed RLS/PostgREST, or physical
+multi-device behavior.
+
+
+## Manual and scheduled refresh share one owner operation
+
+The caller-owned runtime routes both the optional scheduler and the explicit
+refresh action through one in-flight future. If a learner requests a manual
+refresh after the scheduler has already reserved the persistence operation,
+the action joins that same Auth request instead of receiving a spurious
+operation-slot error. Both callers remain pending through the same rotated-token
+vault write and fail-closed readiness barrier; this does not add a second Auth
+request, retry loop, timer, or SDK auto-refresh. The pinned-SDK regression holds
+the automatic refresh response and the subsequent vault write, starts a manual
+refresh while the scheduler owns the operation, and verifies that the manual
+caller completes only after the new secret is persisted. Logout then clears the
+slot and prevents another refresh dispatch. This is TEST ONLY SDK/MockClient/
+in-memory-vault evidence, not hosted learner or native OS proof.
+
+## Refresh completion across an account switch
+
+The scheduler allows only one refresh attempt at a time. If account A's refresh is already in flight when the caller publishes account B, an update does not start an overlapping request. When A's attempt settles, the scheduler re-reads the caller-owned current lease and schedules B using B's identity and expiry. A canceled A timer callback that was already queued may re-arm the current B timer, but its captured A lease cannot dispatch a refresh. The scheduler does not authorize or persist a session: `PersistentAccountAccess` remains responsible for SDK session/generation checks and the vault write-before-readiness barrier. This deterministic timer regression is not hosted Auth or OS-suspension evidence.
+
+
+## Caller close after a corrupt stored refresh value — 2026-11-08
+
+A successful credential read whose value fails the vault's bounded token
+validation is a known corrupt slot, not a transient storage outage. Startup
+still fails closed and never sends that value to Supabase. It now marks cleanup
+as required so a caller that closes before an explicit login cannot release the
+exclusive project owner while the unusable value remains in Credential Manager.
+Close performs the existing ordered SDK sign-out and exact-project vault clear;
+if clear fails, close returns the fixed safe storage error and retains ownership
+for a later close retry. A transient read-unavailable error is deliberately
+different: it does not mark the saved value for deletion, so a temporary OS
+outage does not destroy a potentially valid session.
+
+The pinned-SDK/MockClient regression starts with a corrupt in-memory vault
+value, verifies no Auth refresh or own-profile request, fails the first close
+clear, checks that the secret and exclusive owner remain, then restores storage
+and requires a second close to clear the slot before releasing ownership.
+
+This is TEST ONLY in-memory vault/MockClient evidence. It does not inject a
+native Windows Credential Manager failure or prove hosted signed-JWT learner
+A/B, deployed RLS/PostgREST, OS logoff, power-loss, or physical multi-device
+behavior. No Auth strategy/provider, default activation, plaintext fallback,
+token logging, schema/RLS, production configuration, or Pro-owned N4 content
+changes.
+
+
+## Failed Windows native owner-lease release — 2026-11-08
+
+A failed native `releaseOwner` is not a successful shutdown. The caller-owned
+runtime must return the fixed redacted storage error, retain both the Dart
+project-owner slot and the native lease, and reject construction of a competing
+runtime for the same trusted project. It must remain possible to call the same
+runtime's `close()` again after the platform channel recovers. Only a successful
+release removes the Dart owner; a subsequent runtime may then acquire the same
+project target.
+
+The pinned-SDK Windows MethodChannel regression injects a platform failure
+containing synthetic private details, verifies the public error does not expose
+those details, confirms no Auth/profile request was dispatched, and retries the
+caller-owned close. It then constructs a replacement runtime to prove that the
+lease can be acquired and released after recovery.
+
+This is TEST ONLY MethodChannel failure injection. It does not force
+`ReleaseMutex` itself to fail in the Windows kernel or prove hosted learner
+Auth, OS logoff/power-loss, deployed RLS, or physical multi-device behavior.
+The separate native process probe verifies normal mutex contention and
+abandoned-process recovery. No production Auth/provider, credential format,
+schema/RLS, default activation, or Pro-owned N4 content changes.
+
+
+## Ambiguous credential-write completion — 2026-11-09
+
+A credential backend can return an error after the underlying write may already have committed. The persistence layer must treat that result as uncertain: revoke the captured session immediately, attempt an exact-project clear, and retain the exclusive owner if the compensating clear fails. Caller close must retry SDK sign-out and vault clear; the native/Dart owner is released only after a later clear succeeds. A subsequent account cannot inherit the uncertain refresh token.
+
+The deterministic lifecycle fixture simulates a rotation write that stores the new synthetic value and then throws, followed by a failed clear. It verifies no accepted session remains, the first caller close fails while retaining ownership, and a second close clears the uncertain value before releasing both owner slots. The pinned-SDK Windows MethodChannel regression now composes the same uncertain outcome through the production Dart Windows vault adapter: the mocked channel stores A's rotated secret and then loses the write acknowledgement; a failed compensating clear keeps persistence failed, blocks B's password grant and profile, and requires an explicit cleanup retry before B can rotate and reach own-profile readiness. This is TEST ONLY channel fault injection, not a native CredWrite failure. The separate Windows process probe injects a post-CredWrite unavailable result against actual PID-qualified .invalid Credential Manager entries and verifies that the value really committed. Hosted signed-JWT learner acceptance remains outstanding.
+
+
+## Replacement login drains an out-of-band refresh rotation — 2026-11-12
+
+A same-session SDK refresh event can arrive outside the caller's explicit
+refresh operation. While its rotated secret is waiting for the credential vault,
+the accepted-session gate is revoked. If the learner starts a replacement
+account's password login during that window, the old captured generation must
+be invalidated synchronously. The old SDK session is signed out and the exact
+project credential slot is cleared behind the pending write before the new
+password grant is dispatched. This prevents a late A write from publishing A
+again or allowing A's own-profile request while B is being authenticated.
+
+The TEST ONLY replacement-login-drains-pending-rotation lifecycle case holds
+A's vault rotation write, starts B login, proves B Auth has not yet been
+dispatched, then releases the write and verifies clear -> B password grant ->
+B rotated-secret write. Only B is accepted. The fixture uses an in-memory SDK
+and vault; it is not hosted learner A/B, native Credential Manager fault
+injection, or deployed PostgREST/RLS evidence.
+
+
+## Replacement login waits for an out-of-band logout clear — 2026-11-12
+
+An SDK null-session event may arrive outside an explicit caller-owned logout.
+The event immediately revokes the accepted session and queues an exact-project
+credential clear. A replacement password login must not dispatch while that clear
+is still pending, including when the SDK broadcast was queued before the login's
+tracked operation microtask but delivered after its synchronous preflight. The pending-clear count is separate from the null-event
+coalescing flag: the latter remains set after cleanup to suppress duplicate SDK
+notifications, while the count reaches zero only when every queued clear settles.
+
+The TEST ONLY lifecycle regression holds the first out-of-band clear, starts
+User B login and verifies that no B password grant is dispatched. The held clear
+then fails, as does the compensating clear; A's stored test secret remains and B
+is still fenced. After storage recovers, an explicit B login retries SDK sign-out
+and exact-project clear, then persists only B's rotated refresh secret. This is
+in-memory SDK/vault evidence, not hosted learner A/B or native Credential Manager
+fault injection. No token values are logged, no plaintext fallback is added, and
+no Auth provider/strategy or RLS change is made.
+
+
+## Explicit replacement sign-in while an accepted session is visible — 2026-11-12
+
+An explicit caller-initiated sign-in is also the account-switch operation. It is
+not rejected merely because the currently accepted SDK session is still visible
+at synchronous preflight. The persistence owner captures that session as
+requiring cleanup, revokes the old generation, and performs SDK sign-out plus
+the exact-project credential clear before dispatching the replacement password
+grant. If an out-of-band null-session event was already queued, its pending-clear
+counter keeps the replacement operation behind that clear as well.
+
+A failed out-of-band clear and failed compensating clear leave the persistence
+owner failed and keep the old credential unaccepted. No replacement Auth or
+own-profile request is dispatched. A later explicit retry after storage recovers
+must clear the old slot before the new account can be authenticated and its
+rotated refresh secret persisted.
+
+The TEST ONLY regression
+`replacement-login-waits-for-out-of-band-session-clear` holds the queued clear,
+starts replacement sign-in while the old session is still visible, verifies
+that Auth is not dispatched, fails both cleanup attempts, then recovers storage
+and verifies clear -> replacement Auth -> replacement rotation write. Its
+in-memory SDK/vault are not hosted learner A/B or native Credential Manager
+failure evidence. No Auth provider/strategy, plaintext fallback, token logging,
+schema/RLS, default activation, or Pro-owned N4 content is changed.
+
+
+## Explicit logout waits for late Auth operations — 2026-11-12
+
+A successful caller-owned logout now remains pending after its immediate SDK
+sign-out and project-scoped credential clear if a restore, password grant, or
+refresh request was already in flight. The cancelled operation is allowed to
+settle, its final SDK sign-out and serialized vault clear are drained, and any
+uncertain cleanup is retried before the logout future resolves. The accepted
+session gate stays revoked throughout this interval, and replacement login is
+rejected until the logout owner releases its operation slot.
+
+The TEST ONLY lifecycle cases hold restore, login, and refresh responses and
+assert that logout has not completed after the first clear. They release the
+late response, verify the final cleanup, then permit a replacement login. A
+separate account-controller fixture verifies the learner remains in the
+signing-out state, with no ready study runtime and no replacement login, until
+the access owner's logout future settles. These are deterministic in-memory
+SDK/vault and controller tests, not hosted learner A/B or native delayed
+Credential Manager fault injection. No token values are logged, no plaintext
+fallback is added, and no Auth provider/strategy or RLS change is made.
+
+
+## Caller close after an ambiguous Windows refresh rotation write — 2026-11-12
+
+A caller-owned SDK refresh can rotate the refresh secret while the Windows
+credential backend commits the new value but loses its acknowledgement. If the
+compensating exact-project clear also fails, persistence remains failed and the
+caller must not release either the Dart project owner or native process lease.
+A subsequent close retries SDK sign-out and the serialized vault clear. Only a
+successful clear may release the owner; the uncertain value must never restore
+a session or authorize an own-profile request.
+
+The pinned-Supabase-SDK/Windows-MethodChannel regression establishes User A,
+commits A's synthetic rotated value at the credential write boundary, then
+returns a redacted platform failure. The compensating clear and first
+caller-close clear both fail. The test requires the owner lease to remain held
+and rejects a competing runtime. After storage recovers, a second explicit
+close clears the value before releasing the owner. The existing native process
+probe separately covers a real post-CredWrite unavailable result against a
+PID-qualified .invalid Credential Manager entry.
+
+The caller-close test injects the failure through a TEST ONLY MethodChannel
+handler; it does not simulate a delayed/native Credential Manager failure or
+hosted signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff, power loss or
+physical multi-device recovery. No production Auth/provider strategy, plaintext
+fallback, token logging, schema/RLS, default activation or Pro-owned N4 content
+is changed.
+
+
+## Native Windows read failure through the caller-owned runtime — 2026-11-12
+
+The Windows bridge fixture now injects a one-shot `read/fail_before` fault at
+the native Credential Manager helper boundary, before `CredReadW`. The fault
+travels through the real registered MethodChannel and
+`WindowsSessionCredentialVault` into the caller-owned
+`PersistentSupabaseRuntime`.
+
+The phase first writes a synthetic User A refresh secret to a GUID-scoped
+`.invalid` Credential Manager target. The next native read returns the fixed
+unavailable result. Startup must fail closed: no refresh/password Auth request,
+no own-profile request and no ready study runtime. A subsequent read confirms
+the original A value was not deleted by the transient failure. Explicit
+same-runtime User B login then requires the exact project slot to be cleared
+before the password grant; B's rotated refresh value must be readable before
+the captured B own-profile request. The phase verifies no A profile/journal
+visibility, then logs out and confirms the slot is empty.
+
+The CMake option `ND_SESSION_VAULT_TEST_HOOKS` defaults OFF. CI enables it
+only after building the isolated `tool/windows_vault_bridge.dart` runner.
+After the fixture and cleanup, the PowerShell harness reconfigures and rebuilds
+that runner with the option OFF, invokes `native-test-hook-absent`, and requires
+the test method to be unavailable before the staging and ordinary preview
+builds. The packaged runner never includes the fault-injection method.
+
+This is deterministic TEST ONLY injection before the native API call, not a
+claim that Windows spontaneously failed, not hosted Auth/JWT/PostgREST/RLS,
+and not physical multi-device acceptance. Auth HTTP and JWT remain synthetic
+MockClient fixtures; no token or raw native error is logged, no plaintext
+fallback is introduced, and the normal app/Auth strategy is unchanged.
+
+## Startup login gate requires the native owner lease — 2026-11-13
+
+The configured startup screen may expose its explicit password-login form after
+a restore/read failure only while the same caller-owned runtime still holds the
+project-scoped credential-vault owner lease. If Windows Credential Manager
+ownership cannot be acquired, the saved value is left untouched, no Auth or
+own-profile request is dispatched, and the login form remains unavailable;
+the user may retry startup after the competing owner releases the slot.
+
+Once the owner lease has been acquired, a transient read or rejected refresh
+can expose the existing explicit recovery path. That path still drains the
+owned SDK sign-out and exact-project vault clear before a replacement password
+grant, then persists the new refresh token before own-profile readiness. The
+gate does not infer identity from a stored token and does not bypass the
+session-generation or storage barriers.
+
+
+## Caller close before the first Auth dispatch preserves the saved session
+
+Closing an owned runtime while Windows native owner acquisition or the subsequent
+vault read is still pending is cancellation of local startup, not logout. No
+refresh token has been sent to Supabase and no SDK session can be installed by
+that startup. The caller waits for the pending operation, releases the native
+owner lease, and preserves the previously confirmed Credential Manager value.
+A fresh caller can then acquire the same project lease, send the saved refresh
+token to Supabase, persist the server-rotated value, and wait for its own profile
+before exposing study readiness.
+
+The boundary changes once an SDK restore, password grant, or refresh request is
+dispatched. A close during that in-flight mutation must still drain the late SDK
+response, sign out the owned client, and clear the exact project slot before
+releasing its owner; a failed cleanup retains ownership for explicit retry.
+Explicit logout remains destructive and continues to clear before replacement
+password authentication.
+
+The pinned-SDK/MockClient test now closes during a held vault read and proves
+that the token remains available to a replacement runtime. The Windows
+MethodChannel regression holds native owner acquisition itself, closes the
+caller, verifies no read/Auth/profile/clear occurred and the native lease was
+released, then restores the saved token through a fresh caller and checks
+rotation-write-before-profile ordering. These are TEST ONLY lifecycle/bridge
+fixtures, not hosted signed-JWT learner A/B or physical restart proof.
+
+
+## Logout while a caller-owned Auth mutation is in flight
+
+Explicit logout revokes the visible account immediately and clears the exact
+project credential slot. If restore, password sign-in or refresh has already
+been dispatched, that first clear is provisional: the SDK request may still
+complete late and install a session or rotate its refresh token. The runtime
+therefore retains a cleanup obligation while the operation drains, serializes
+the follow-up SDK sign-out and vault clear after that response, and keeps the
+logout future pending until the second cleanup finishes. Replacement password
+authentication remains blocked for the whole drain.
+
+The cleanup queue prevents the immediate logout and late-response cleanup from
+running concurrent SDK sign-outs or racing vault writes. If either cleanup
+fails, readiness remains revoked, the native project owner is retained and the
+existing explicit cleanup retry path is required before another account can be
+accepted. This does not add automatic Auth retries, a new provider, plaintext
+fallback or default runtime activation.
+
+The TEST ONLY lifecycle matrix asserts two SDK sign-outs and two exact-slot
+clears for logout during restore, logout during password login, and login
+attempts while the late cleanup is held. The final clear is observed only after
+the held Auth response drains. These fixture assertions are not hosted
+signed-JWT learner or physical Windows restart evidence.
+
+
+## Startup restore with failed logout cleanup — 2026-11-13
+
+A saved User A refresh token may be in flight when the learner explicitly logs
+out. This Windows pinned-SDK/MethodChannel regression holds the startup refresh
+response and makes both the immediate logout clear and the post-response
+compensating clear fail. A remains unready, the uncertain saved value is not
+accepted, and User B's password grant/profile request stays blocked both before
+and after the late A response drains.
+
+Only an explicit cleanup retry after storage recovers may clear the exact
+project-scoped slot and return the account to signed-out. User B can then sign
+in; the new rotated refresh value must be persisted before B's own-profile
+request. This covers the combined startup-restore + failed-storage + late-auth
+ordering, not just a normal ready-session logout or a pending password-login
+write.
+
+The failure is injected through a TEST ONLY MethodChannel handler and the
+Supabase HTTP response is synthetic. It does not prove hosted signed-JWT learner
+A/B, deployed PostgREST/RLS, spontaneous Credential Manager failure, physical
+restart or multi-device sync. No token is logged and no plaintext fallback or
+default Auth activation is introduced.
+
+
+## Foreground resume after access-token expiry
+
+The opt-in Windows staging owner rechecks its captured refresh lease when the
+application returns to the foreground. If the process was suspended beyond the
+accepted access-token expiry, the expired review connection is revoked before
+study access can resume. The scheduler does not replay the expired lease; the
+persistence observer clears the exact project-scoped Credential Manager slot.
+A replacement password grant is accepted only after that clear has drained,
+and its newly rotated refresh secret is persisted before the replacement
+own-profile request.
+
+The pinned-SDK/Windows-MethodChannel regression advances a TEST ONLY clock past
+the accepted JWT expiry, invokes the same foreground-resume entrypoint used by
+the configured host, and verifies no expired-session refresh/profile dispatch,
+no ready study runtime, clear-before-User-B-auth ordering and
+write-before-User-B-profile ordering. HTTP/JWT remain MockClient fixtures; this
+is not hosted signed-JWT or physical suspended-device evidence. No token is
+logged, no plaintext fallback is added, and the default preview remains
+unconfigured.
+
+
+## Per-operation Auth dispatch and cancellation — 2026-11-15
+
+A reserved caller-owned operation is not proof that a Supabase Auth request was
+sent. The persistence owner now resets a per-operation dispatch marker when it
+reserves each slot and sets it immediately before `restore`, `signIn` or
+`refresh`. If logout cancels a slot before that boundary, the first logout
+cleanup is sufficient even when an earlier successful session had set the
+lifetime mutation marker; it must not trigger a duplicate sign-out/clear. If the
+current operation was actually dispatched, logout keeps the first credential
+clear provisional, waits for the held SDK response, then performs the
+compensating sign-out/clear before resolving or permitting another account.
+
+The `logout-before-refresh-dispatch` case deliberately cancels without yielding
+to the deferred runner and requires exactly one refresh-free cleanup. The
+`logout-during-login` and `login-during-late-cleanup` cases now flush and
+assert that the password grant entered the held SDK call before testing
+in-flight cancellation. This makes the distinction explicit without removing
+or weakening either pre-dispatch or late-response assertions. These are
+TEST ONLY in-memory lifecycle cases; hosted signed-JWT learner acceptance is
+still separate.
+
+
+## Retry own-profile provisioning after a successful session restore
+
+A stored refresh token can be accepted by Supabase and its rotated value can be
+acknowledged by the caller-owned vault while the subsequent `ensure_profile`
+request temporarily fails. This is not an Auth restore failure: the outer startup
+owner remains active, but the account stays in `profileError` and the study runtime
+remains unavailable. The existing explicit profile retry reuses the exact accepted
+session and captured Authorization identity. It must not issue another refresh,
+rewrite the already-persisted secret, or publish study access until the own-profile
+response is validated.
+
+The pinned-SDK/MockClient regression holds the initial own-profile request, proves
+the startup owner is still loading and study-fenced, then returns a TEST ONLY 503.
+After startup settles in the profile-error state, it retries the profile request
+with a successful response and asserts the same user/session, exactly one Auth
+refresh, and exactly one vault rotation write across both requests. This is a
+caller-owned lifecycle regression, not hosted learner Auth/RLS or actual Windows
+Credential Manager proof.
+
+
+
+## Explicit logout retries a native Credential Manager delete failure — 2026-11-19
+
+The Windows runner now exercises the caller-owned runtime when the native
+`CredDeleteW` helper returns unavailable before deleting User A's saved refresh
+secret. The first logout immediately revokes account/study readiness, but the
+old exact-project credential remains in Credential Manager. The account stays
+in a sign-out error state and a replacement User B password attempt cannot
+reach Auth or own-profile provisioning.
+
+A second explicit logout retries the same retained owner and exact-target
+clear. Only after that clear succeeds may the account return to signed-out and
+accept User B. The test then requires B's rotated refresh token to be present
+before B's captured own-profile request, preserves A's pending journal isolation,
+and confirms B logout plus a fresh process leave the slot absent.
+
+The phase is executed through the production Windows MethodChannel and
+Credential Manager helper using a one-shot compile-time TEST ONLY fault hook.
+It proves deterministic caller-visible failure/retry ordering against actual
+OS storage, not a spontaneous Windows failure, hosted JWT/PostgREST/RLS,
+OS logoff/power loss or physical multi-device acceptance. The normal runner is
+rebuilt with native test hooks disabled before preview/staging builds.
+
+
+## Ambiguous native logout clear after the OS deletion commits
+
+The Windows native bridge now covers a `CredDeleteW` call that successfully
+deletes User A's credential but returns a TEST ONLY unavailable result to the
+caller afterward. The next native read observes no stored token, yet the
+caller-owned persistence owner remains failed: it cannot infer that the
+unacknowledged clear completed merely because the slot is now empty.
+
+A replacement User B sign-in must remain blocked until an explicit logout retry
+runs the same exact-project clear and receives a successful acknowledgement.
+Only then may B authenticate, persist its rotated refresh token, and reach
+own-profile readiness. The fixture also preserves A's pending journal isolation
+and verifies B logout plus a separate fresh process are signed out.
+
+This phase uses the production Windows MethodChannel/helper and real
+Credential Manager with a compile-time TEST ONLY post-commit fault hook. It is
+deterministic native fault injection, not a spontaneous OS failure, hosted
+signed-JWT learner A/B, deployed PostgREST/RLS, OS logoff/power loss or physical
+multi-device acceptance. The bridge is rebuilt with test hooks disabled before
+normal preview/staging builds.
+
+## Late User A own-profile response after User B replacement — 2026-11-19
+
+The caller-owned runtime now has an integrated pinned-Supabase-SDK regression
+for a delayed own-profile response across an account replacement. User A signs
+in and reaches a held `ensure_profile` response. Explicit logout synchronously
+revokes A's profile/study readiness and clears the exact project refresh-secret
+slot. User B then signs in while its rotated refresh-secret write is held; no B
+own-profile request or study runtime may appear before that write is acknowledged.
+
+After B's own profile is accepted and B is ready, the test releases A's old
+profile response with A's captured Authorization identity. The stale response
+must not replace B's profile, persistence session, refresh secret or ready
+runtime. The test also checks the two captured profile Authorization headers
+and the read/write/clear/write storage operation order.
+
+This uses the pinned SDK with TEST ONLY MockClient and in-memory vault ports.
+It verifies the Dart caller/session-generation boundary, not hosted signed-JWT
+A/B, deployed PostgREST/RLS, native Credential Manager, or physical multi-device
+acceptance. No token is logged, no default Auth/save-success path is enabled,
+and no plaintext fallback is introduced.
+
+
+## Local GoTrue/PostgREST through the caller-owned SDK runtime — 2026-11-19
+
+The disposable supabase-integration job now installs Flutter 3.35.4 and invokes
+apps/flutter_app/tool/verify_supabase_sdk_runtime.dart from
+scripts/test_supabase_local.py. The Python parent creates two ephemeral users
+on the fresh local GoTrue service and passes only their test credentials to the
+Dart child over stdin. The child accepts only the exact local API
+http://127.0.0.1:54321; its TEST ONLY HTTP bridge maps the runtime's trusted
+HTTPS origin to that one loopback service and rejects every other host/path.
+
+The probe constructs the production PersistentSupabaseRuntime with its caller-
+owned account lifecycle, a TEST ONLY in-memory credential backend, and the real
+disk-backed NativeReviewJournal. It verifies an empty vault stays signed out
+without Auth/profile requests; A's password session is persisted before
+ensure_profile; the real SDK loads the seeded due queue and submits
+submit_review; closing/reopening the runtime and journal restores A through
+GoTrue refresh before profile readiness; a settled receipt replays locally
+without another RPC; local logout precedes vault clear; and B cannot see A's
+queue/journal records while reusing the same event UUID in B's own owner scope.
+
+Only fixed phase identifiers are printed. The parent rejects child output that
+contains either ephemeral email/password or the local anon key. No refresh
+token, access token, Authorization header or request body is logged.
+
+Evidence boundary: this is a disposable local SDK/Auth/PostgREST integration
+using an in-memory TEST ONLY credential backend. NativeReviewJournal is real
+disk-backed storage, but the test does not run Windows Credential Manager in
+the same process, hosted signed-JWT/staging, the learner UI, physical multi-device
+offline sync, or a complete learner journey. The separate Windows runner remains
+the native Credential Manager process-boundary proof; the protected hosted
+workflow remains a human-gated release requirement. No default Auth/save-success
+path is enabled and no learner-supplied URL/key is accepted.
+
+## Disposable local Supabase SDK probe
+
+The `supabase-integration` job runs the caller-owned runtime probe through
+`flutter test --no-pub`, not plain `dart run`: the runtime imports Flutter
+package code and must be compiled with the pinned Flutter SDK. Python creates a
+short-lived owner-only JSON input in a private temporary directory, removes
+local Supabase connection secrets from the child environment, and invokes the
+TEST ONLY wrapper in `apps/flutter_app/tool/`. The wrapper returns only a
+fixed safe status; credentials, JWTs and request headers are never logged.
+This disposable loopback probe is not hosted learner or production evidence.
+
+
+
+## Native Windows late-profile account replacement — 2026-11-20
+
+The Windows bridge now holds User A's `ensure_profile` response after the
+pinned SDK has installed A and the real Credential Manager has persisted A's
+rotated refresh token. Explicit logout runs while that response is unresolved;
+the test requires A readiness to be revoked and the exact project slot cleared
+before User B's password grant.
+
+B's rotated refresh secret must be visible in the native vault before B's
+own-profile request. Once B is ready, the fixture returns A's captured response
+with A's original Authorization header. The account controller must retain B's
+profile, captured session, ready study runtime and stored token. A's pending
+journal record remains isolated from B; B logout and a fresh signed-out process
+complete the sequence.
+
+This is a deterministic TEST ONLY Auth HTTP/JWT fixture around the production
+Windows Credential Manager bridge and native journal. It is stronger OS-boundary
+coverage than the separate in-memory late-profile test, but is not hosted learner
+identity, deployed RLS/PostgREST, physical multi-device or Personal Alpha proof.
+
+
+## Same-owner reauthentication uses a new captured session generation
+
+The pinned-Supabase-SDK regression `late same-owner profile response cannot
+replace a newer session generation` holds User A1's `ensure_profile` response,
+logs out and confirms the old refresh secret is cleared, then signs the same
+verified user in again under a different Auth `session_id`. The A2 refresh
+secret must be persisted before A2's own-profile request. The test then releases
+A1's delayed response with the same profile owner ID but a deliberately different
+display name. A2's accepted profile, captured `ReviewSession`, ready study
+runtime and vault secret must remain unchanged.
+
+This distinguishes a new Auth session generation from a mere user-ID equality
+check: two sessions for the same person must not allow a delayed response from
+the earlier session to settle or overwrite the newer readiness state. This is
+TEST ONLY pinned-SDK/MockClient/in-memory-vault evidence, not hosted learner
+identity, deployed PostgREST/RLS or Personal Alpha proof.
+
+
+## Same-session refresh invalidates an in-flight profile generation
+
+The pinned-Supabase-SDK regression `same-session refresh rotation fences a held
+own-profile generation` holds User A's first `ensure_profile` response, then
+rotates the refresh token while keeping the same Auth user and `session_id`.
+The binding preserves the captured `ReviewSession` identity for this lifecycle,
+but the persistence barrier revokes readiness while the rotated secret is saved.
+A second own-profile request must use the new access token and settle before the
+account becomes ready. Releasing the first response afterward, with the same
+owner ID but a deliberately different display name, must not replace the newer
+profile, ready session or study runtime.
+
+This distinguishes session identity from profile-request generation: a same-
+session token rotation does not create a new user session, but it still makes an
+already in-flight profile request obsolete. This is TEST ONLY pinned-SDK,
+MockClient and in-memory-vault evidence, not hosted Auth/JWT/RLS or Personal
+Alpha proof.
+
+
+## Failed same-session refresh cannot publish a held pre-rotation profile
+
+The pinned-Supabase-SDK regression `failed same-session refresh write suppresses
+the held pre-rotation profile before B login` starts an own-profile request for
+User A, then rotates A's refresh token while keeping the same Auth user and
+`session_id`. The vault write is held and fails. The persistence barrier must
+revoke A, clear the exact stored refresh secret, issue no second A own-profile
+request, and retain no study readiness. The test then performs an explicit
+replacement login for User B, holds B's own-profile response, and verifies B's
+rotated secret is already stored before that request. Only after B is ready does
+the test release A's old profile response with a deliberately different display
+name; B's profile, captured session, ready runtime and stored token must remain
+unchanged.
+
+This closes the failure-side counterpart to the successful same-session
+rotation test: profile-generation fencing must survive both successful and
+failed persistence. It is TEST ONLY pinned-SDK/MockClient/in-memory-vault
+evidence, not hosted Auth/JWT/RLS, actual Windows Credential Manager failure
+injection for this exact held-profile sequence, or Personal Alpha proof.
+
+
+## Native refresh-write failure with a held pre-rotation profile — 2026-11-20
+
+A new Windows bridge phase composes native storage failure with profile-generation
+fencing. User A signs in through the pinned SDK and reaches a held own-profile
+request only after A's first rotated refresh secret is present in the actual
+Credential Manager slot. A same-session refresh returns a new token; a
+compile-time TEST ONLY hook lets `CredWriteW` commit and then reports failure.
+The compensating exact-project `CredDeleteW` is forced to fail before deletion,
+leaving the uncertain rotated value in the OS slot while the persistence barrier
+keeps A unready.
+
+The explicit B login cannot dispatch its password grant until the retryable
+cleanup signs out A and clears that exact slot. B's rotated value must be stored
+before its own-profile request. The test then releases A's captured pre-rotation
+profile response after B is ready and requires B's profile, captured session,
+ready runtime and native refresh secret to remain unchanged. A's pending journal
+record remains invisible to B; B logout and a fresh signed-out process finish
+the sequence.
+
+This is TEST ONLY pinned-SDK/Windows MethodChannel/native Credential Manager
+evidence with synthetic Auth HTTP/JWT and deterministic fault injection. It is
+not hosted signed-JWT learner A/B, deployed PostgREST/RLS, spontaneous OS
+failure, logoff/power-loss or physical multi-device acceptance.
+
+
+## Native same-owner reauthentication across session generations — 2026-11-21
+
+The Windows bridge runner now holds User A1's own-profile response after the
+real Credential Manager has stored A1's rotated refresh secret. It logs A1 out,
+verifies the project slot is cleared, then signs the same verified user in again
+with a different Auth `session_id`. A2's rotated secret must be stored before
+A2's own-profile request. The runner releases A1's stale response only after A2
+is ready; despite the identical profile owner ID, A2's profile, captured session,
+ready runtime, pending journal event and vault value must remain unchanged.
+
+This is an actual Windows Credential Manager + production MethodChannel +
+pinned-SDK runtime process fixture with synthetic Auth HTTP/JWT responses. It
+validates the native storage and session-generation composition, not hosted
+signed-JWT learner identity, deployed PostgREST/RLS, OS logoff/power-loss,
+physical multi-device sync or Personal Alpha acceptance.
+
+
+## Caller close during an explicit refresh
+
+The pinned-Supabase-SDK Windows MethodChannel regression
+`Windows caller close drains a held explicit refresh response before releasing owner`
+starts from a ready restored User A session, dispatches an explicit refresh, and
+holds the Auth response while the caller closes the owned runtime. Close must
+revoke account readiness immediately but keep the native project lease until the
+captured SDK request drains. The held response is then released with a rotated
+refresh token; because the owner is already closed, it must not publish a session,
+write a late credential or dispatch another `ensure_profile` request. Cleanup
+signs out the late SDK session, clears the exact project-scoped vault slot, and
+only then releases the native owner lease.
+
+The test also verifies that the original stored rotation remains untouched while
+the Auth response is held, the close future cannot complete early, and the
+credential target is no longer reserved after successful cleanup. This is
+TEST ONLY pinned-SDK/MockClient/MethodChannel evidence with synthetic Auth HTTP
+and a mocked Windows vault channel. It does not prove hosted signed-JWT learner
+Auth, spontaneous Credential Manager failure, OS logoff/power-loss or physical
+multi-device sync.
+
+
+## Auth stream failure during an explicit refresh
+
+The TEST ONLY lifecycle case
+`stream-error-during-refresh-replacement-login` starts with User A fully
+persisted, then holds an explicit SDK refresh response and injects an Auth stream
+error before the response arrives. Readiness must be revoked immediately; a
+replacement password login is rejected while A's refresh is still in flight.
+When the late response returns with a rotated secret, it must remain unaccepted
+and must not overwrite the last persisted value. Only after the operation drains
+may an explicit User B login proceed, and its sequence must be A sign-out,
+exact-project vault clear, B password Auth, then B refresh-token persistence
+before readiness. Caller close preserves B's fully persisted rotation and
+releases the owner lease.
+
+This is in-memory MemorySdk/in-memory-vault regression evidence for the
+captured-generation and account-switch ordering. It is not hosted Auth/JWT/RLS,
+real Windows Credential Manager fault injection for this exact stream-error
+sequence, or Personal Alpha proof.
+
+
+## Abort a reserved refresh after session replacement — 2026-11-24
+
+An explicit refresh now captures the accepted `ReviewSession`, its exact already-persisted refresh secret, and the monotonic persistence generation before it revokes study readiness. Immediately before the deferred SDK call, all three must still match. If User A is replaced by User B in that gap, the old refresh returns the fixed redacted failure without invoking Auth against B and without invalidating B's independent credential write. The normal vault barrier still determines when B becomes ready.
+
+The TEST ONLY `session-switch-before-refresh-dispatch` lifecycle scenario signs in A, reserves refresh, synchronously publishes B before the deferred runner starts, and asserts zero SDK refresh/logout calls, B's exact token persisted, B accepted, and the expected read/write/write order. This closes a race not covered by the existing logout-before-dispatch case. It is deterministic in-memory lifecycle evidence, not hosted Auth/JWT or a physical multi-device test; the protected staging learner A/B gate remains separate.
+
+
+## Replacement login while a refresh rotation write is pending — 2026-11-27
+
+The pinned-SDK regression `SDK blocks account B login while account A rotation write is unresolved`
+starts with User A ready, dispatches an explicit refresh, and holds the
+rotated-secret vault write while forcing that write to fail. During the hold,
+an attempted User B password login must be rejected locally: no second Auth
+token request, no B own-profile request, no accepted session and no learner
+runtime may appear; the previous A vault value remains unchanged until the
+write outcome is known.
+
+After the failed write settles, the runtime must clear the exact project slot
+and remain fenced. Only a subsequent explicit B login may dispatch password
+Auth. B's rotated refresh secret must be saved before the captured B
+own-profile request, and readiness is published only after that profile
+response settles. This protects the interval between an uncertain A rotation
+and the compensating clear, not only the already-failed state.
+
+This is a TEST ONLY pinned-Supabase-SDK/MockClient/in-memory-vault regression.
+It does not establish hosted signed-JWT learner A/B, deployed PostgREST/RLS,
+actual Windows Credential Manager execution for this exact held-write sequence,
+or physical multi-device sync. The existing Windows native fail-before and
+commit-then-fail probes remain separate required checks.

@@ -11,7 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "collab-TTAM/nihongo_daily"
-REQUIRED_JOBS = {"repo-sanity", "database", "flutter", "windows", "ai-boundary"}
+REQUIRED_JOBS = {"repo-sanity", "database", "supabase-integration", "flutter", "windows", "ai-boundary"}
 RELEASE_CASES = {
     "auth-live", "review-rpc", "daily-plan", "study-flows", "n5-coverage",
     "n4-coverage", "kanji-real", "ai-runtime", "ai-live", "voice-live",

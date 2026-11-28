@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/home/presentation/home_screen.dart';
+import '../features/auth/presentation/account_screen.dart';
 import '../features/kanji/presentation/kanji_capture_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
+import '../features/srs/presentation/srs_study_screen.dart';
 import '../features/study/presentation/study_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
 import 'app_shell.dart';
@@ -16,10 +18,6 @@ const previewRoutes = <String, ({String title, String description})>{
   '/grammar': (
     title: 'Ngữ pháp',
     description: 'Mẫu câu, cách dùng và ví dụ tiếng Nhật.',
-  ),
-  '/srs': (
-    title: 'Ôn tập SRS',
-    description: 'Ôn đúng thời điểm để ghi nhớ lâu hơn.',
   ),
   '/quiz': (
     title: 'Kiểm tra nhanh',
@@ -41,10 +39,6 @@ const previewRoutes = <String, ({String title, String description})>{
     title: 'Tiến độ học tập',
     description: 'Theo dõi thói quen và điểm cần ôn lại.',
   ),
-  '/auth': (
-    title: 'Tài khoản',
-    description: 'Đăng nhập và đồng bộ sẽ có khi tích hợp Supabase.',
-  ),
 };
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -57,6 +51,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
           GoRoute(
+            path: '/auth',
+            builder: (context, state) => const AccountScreen(),
+          ),
+          GoRoute(
             path: '/study',
             builder: (context, state) => const StudyScreen(),
           ),
@@ -67,6 +65,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/kanji',
             builder: (context, state) => const KanjiCaptureScreen(),
+          ),
+          GoRoute(
+            path: '/srs',
+            builder: (context, state) => const SrsStudyScreen(),
           ),
           for (final entry in previewRoutes.entries)
             GoRoute(

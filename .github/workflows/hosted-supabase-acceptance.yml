@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   auth-a-b:
-    if: ${{ inputs.confirm_non_production }}
+    if: ${{ inputs.confirm_non_production && github.ref == 'refs/heads/automation/issue-22-atomic-review' }}
     environment: supabase-staging
     runs-on: windows-2022
     timeout-minutes: 30
