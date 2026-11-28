@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/models/preview_level.dart';
 import '../../../shared/widgets/page_body.dart';
 import '../../settings/application/preview_preferences.dart';
 import '../application/vocabulary_quiz_provider.dart';
@@ -71,7 +70,7 @@ class _VocabularyQuizRoundState extends ConsumerState<_VocabularyQuizRound> {
   Widget build(BuildContext context) {
     final request = (level: widget.level, batchIndex: _batchIndex);
     final provider = vocabularyQuizRoundProvider(request);
-    ref.listen(provider, (previous, next) {
+    ref.listen(provider, (_, next) {
       next.whenData((round) {
         if (mounted && !identical(_session?.round, round)) {
           setState(() => _session = VocabularyQuizSession(round));
@@ -109,8 +108,8 @@ class _VocabularyQuizRoundState extends ConsumerState<_VocabularyQuizRound> {
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            'N4 chưa được tích hợp. Không thay thế bằng N5; '
-            'nội dung cần được rà soát và tích hợp từ nhánh Pro.',
+            '${error.level} chưa được tích hợp. Không thay thế bằng N5; '
+            'nội dung đang chờ được rà soát.',
           ),
         ),
       );

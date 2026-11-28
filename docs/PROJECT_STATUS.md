@@ -421,3 +421,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Tests authored for canonical N5 asset decoding/determinism, N4 no-fallback, duplicate/mismatched rows, Vietnamese answer feedback, first-answer-only scoring/review, loading/error/retry, empty/insufficient source and 320px/200% text. Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build are not claimed. Fresh exact-head Actions is pending.
 - No Pro-owned N4/content files, Auth/provider, API/schema/RLS, default Auth/save activation, SRS/mastery/study credit, production deployment, merge or release changed. Quiz attempts remain local/in-memory; durable user-owned attempts, repeated-error history, reviewed mastery/weak-point derivation and Progress integration remain open. Personal Alpha stays IN_PROGRESS.
 - Next: inspect every latest-attempt job/step on the new exact HEAD. Fix only observed diagnostics; if all checks pass, continue with durable quiz-attempt/progress integration without fabricating saved success.
+
+
+## Quiz route code review follow-up — 2026-11-28T13:29:04.989Z
+
+- Separate source review removed a redundant `PreviewLevel` import (the setting library already exports the enum), marked the unused listener parameter explicitly, and made the unavailable-level message use the typed error's level without mentioning internal branch ownership to learners.
+- This is a compile/lint hygiene correction only; quiz rules, N5 source bytes, N4 no-fallback behavior, persistence boundaries and tests are unchanged. New exact-head CI is required; no local Flutter/Dart SDK is available in the authoring runtime.
