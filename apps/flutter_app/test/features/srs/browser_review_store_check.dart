@@ -604,10 +604,7 @@ void main() {
       // request callback must fence the mutation before it can queue a put.
       final pendingWrite = store.stage(fixture.owner, request);
       await store.close();
-      await expectLater(
-        pendingWrite,
-        throwsA(isA<ReviewStorageFailure>()),
-      );
+      await expectLater(pendingWrite, throwsA(isA<ReviewStorageFailure>()));
 
       store = await openBrowserReviewStore(databaseName: database);
       try {
