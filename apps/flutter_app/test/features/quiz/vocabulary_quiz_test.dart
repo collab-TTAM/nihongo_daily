@@ -42,9 +42,11 @@ List<VocabularyQuizEntry> _entries({
       id: 'source-$index',
       jlptLevel: level,
       contentVersion: 1,
-      expression: expressions?[index] ??
+      expression:
+          expressions?[index] ??
           (index < _expressions.length ? _expressions[index] : '漢字$index'),
-      reading: readings?[index] ??
+      reading:
+          readings?[index] ??
           (index < _readings.length ? _readings[index] : 'よみ$index'),
       meaningVi: 'nghĩa $index',
       isActive: active?[index] ?? true,
@@ -70,7 +72,10 @@ void main() {
       for (var index = 0; index < first.questions.length; index++) {
         final question = first.questions[index];
         final sameQuestion = repeated.questions[index];
-        expect(question.options.map((option) => option.label).toSet(), hasLength(4));
+        expect(
+          question.options.map((option) => option.label).toSet(),
+          hasLength(4),
+        );
         expect(
           question.options[question.correctOptionIndex].id,
           question.correctOptionId,
@@ -87,16 +92,8 @@ void main() {
     test('keeps each explicit batch at ten questions in source order', () {
       final source = _entries(count: 12);
       final first = builder.build(level: 'N5', entries: source);
-      final second = builder.build(
-        level: 'N5',
-        entries: source,
-        batchIndex: 1,
-      );
-      final third = builder.build(
-        level: 'N5',
-        entries: source,
-        batchIndex: 2,
-      );
+      final second = builder.build(level: 'N5', entries: source, batchIndex: 1);
+      final third = builder.build(level: 'N5', entries: source, batchIndex: 2);
 
       expect(first.questions, hasLength(10));
       expect(first.hasNextBatch, isTrue);
@@ -105,88 +102,90 @@ void main() {
       expect(third.status, VocabularyQuizBuildStatus.empty);
       expect(third.questions, isEmpty);
       expect(
-        first.questions.map((question) => question.sourceId).toSet().intersection(
-          second.questions.map((question) => question.sourceId).toSet(),
-        ),
+        first.questions
+            .map((question) => question.sourceId)
+            .toSet()
+            .intersection(
+              second.questions.map((question) => question.sourceId).toSet(),
+            ),
         isEmpty,
       );
-      expect(
-        second.questions.map((question) => question.sourceId),
-        ['source-10', 'source-11'],
-      );
-    });
-
-    test('skips inactive and non-Kanji entries without fabricating prompts', () {
-      final round = builder.build(
-        level: 'N5',
-        entries: _entries(
-          count: 4,
-          expressions: ['私', 'かな', '学生', '先生'],
-          active: [true, true, false, true],
-        ),
-      );
-
-      expect(round.status, VocabularyQuizBuildStatus.insufficientContent);
-      expect(round.eligibleCount, 2);
-      expect(round.questions, isEmpty);
-    });
-
-    test('skips duplicate expression headings and deduplicates reading labels', () {
-      final round = builder.build(
-        level: 'N5',
-        entries: _entries(
-          count: 6,
-          expressions: ['私', '学生', '学生', '先生', '友達', '人'],
-          readings: [
-            'わたし',
-            'がくせい',
-            'せいと',
-            'せんせい',
-            'ともだち',
-            'ともだち',
-          ],
-        ),
-      );
-
-      expect(round.status, VocabularyQuizBuildStatus.ready);
-      expect(round.eligibleCount, 5);
-      expect(round.questions.map((question) => question.expression), [
-        '私',
-        '学生',
-        '先生',
-        '友達',
-        '人',
+      expect(second.questions.map((question) => question.sourceId), [
+        'source-10',
+        'source-11',
       ]);
-      expect(
-        round.questions.first.options.map((option) => option.label).toSet(),
-        hasLength(4),
-      );
-      expect(
-        round.questions.first.options.map((option) => option.label),
-        isNot(contains('せいと')),
-      );
     });
 
-    test('returns an explicit insufficient-content state for fewer than four readings', () {
-      final round = builder.build(
-        level: 'N5',
-        entries: _entries(
-          count: 4,
-          readings: ['わたし', 'がくせい', 'がくせい', 'せんせい'],
-        ),
-      );
+    test(
+      'skips inactive and non-Kanji entries without fabricating prompts',
+      () {
+        final round = builder.build(
+          level: 'N5',
+          entries: _entries(
+            count: 4,
+            expressions: ['私', 'かな', '学生', '先生'],
+            active: [true, true, false, true],
+          ),
+        );
 
-      expect(round.status, VocabularyQuizBuildStatus.insufficientContent);
-      expect(round.questions, isEmpty);
-    });
+        expect(round.status, VocabularyQuizBuildStatus.insufficientContent);
+        expect(round.eligibleCount, 2);
+        expect(round.questions, isEmpty);
+      },
+    );
+
+    test(
+      'skips duplicate expression headings and deduplicates reading labels',
+      () {
+        final round = builder.build(
+          level: 'N5',
+          entries: _entries(
+            count: 6,
+            expressions: ['私', '学生', '学生', '先生', '友達', '人'],
+            readings: ['わたし', 'がくせい', 'せいと', 'せんせい', 'ともだち', 'ともだち'],
+          ),
+        );
+
+        expect(round.status, VocabularyQuizBuildStatus.ready);
+        expect(round.eligibleCount, 5);
+        expect(round.questions.map((question) => question.expression), [
+          '私',
+          '学生',
+          '先生',
+          '友達',
+          '人',
+        ]);
+        expect(
+          round.questions.first.options.map((option) => option.label).toSet(),
+          hasLength(4),
+        );
+        expect(
+          round.questions.first.options.map((option) => option.label),
+          isNot(contains('せいと')),
+        );
+      },
+    );
+
+    test(
+      'returns an explicit insufficient-content state for fewer than four readings',
+      () {
+        final round = builder.build(
+          level: 'N5',
+          entries: _entries(
+            count: 4,
+            readings: ['わたし', 'がくせい', 'がくせい', 'せんせい'],
+          ),
+        );
+
+        expect(round.status, VocabularyQuizBuildStatus.insufficientContent);
+        expect(round.questions, isEmpty);
+      },
+    );
 
     test('returns an empty state when no active Kanji prompt exists', () {
       final round = builder.build(
         level: 'N5',
-        entries: _entries(
-          count: 3,
-          expressions: ['かな', 'あめ', 'みみ'],
-        ),
+        entries: _entries(count: 3, expressions: ['かな', 'あめ', 'みみ']),
       );
 
       expect(round.status, VocabularyQuizBuildStatus.empty);
@@ -295,74 +294,80 @@ void main() {
       expect(
         session.answer(
           questionId: first.questionId,
-          optionId: first.options.firstWhere(
-            (option) => option.id != first.correctOptionId,
-          ).id,
+          optionId: first.options
+              .firstWhere((option) => option.id != first.correctOptionId)
+              .id,
         ),
         same(session),
       );
       expect(session.answers, hasLength(1));
     });
 
-    test('cannot advance unanswered questions or apply a stale next action', () {
-      final round = builder.build(level: 'N5', entries: _entries(count: 4));
-      final first = round.questions[0];
-      final second = round.questions[1];
-      var session = VocabularyQuizSession(round);
+    test(
+      'cannot advance unanswered questions or apply a stale next action',
+      () {
+        final round = builder.build(level: 'N5', entries: _entries(count: 4));
+        final first = round.questions[0];
+        final second = round.questions[1];
+        var session = VocabularyQuizSession(round);
 
-      expect(session.next(first.questionId), same(session));
-      session = session.answer(
-        questionId: first.questionId,
-        optionId: first.correctOptionId,
-      );
-      session = session.next(first.questionId);
-      expect(session.currentQuestion?.questionId, second.questionId);
-      expect(session.next(first.questionId), same(session));
-      expect(session.currentQuestion?.questionId, second.questionId);
-      expect(
-        session.answer(
-          questionId: first.questionId,
-          optionId: second.correctOptionId,
-        ),
-        same(session),
-      );
-    });
-
-    test('scores only accepted choices and retains original incorrect prompts', () {
-      final round = builder.build(level: 'N5', entries: _entries(count: 4));
-      final first = round.questions[0];
-      final second = round.questions[1];
-      var session = VocabularyQuizSession(round);
-
-      session = session.answer(
-        questionId: first.questionId,
-        optionId: first.correctOptionId,
-      );
-      session = session.next(first.questionId);
-      final wrong = second.options.firstWhere(
-        (option) => option.id != second.correctOptionId,
-      );
-      session = session.answer(
-        questionId: second.questionId,
-        optionId: wrong.id,
-      );
-      session = session.next(second.questionId);
-      for (final question in round.questions.skip(2)) {
+        expect(session.next(first.questionId), same(session));
         session = session.answer(
-          questionId: question.questionId,
-          optionId: question.correctOptionId,
+          questionId: first.questionId,
+          optionId: first.correctOptionId,
         );
-        session = session.next(question.questionId);
-      }
+        session = session.next(first.questionId);
+        expect(session.currentQuestion?.questionId, second.questionId);
+        expect(session.next(first.questionId), same(session));
+        expect(session.currentQuestion?.questionId, second.questionId);
+        expect(
+          session.answer(
+            questionId: first.questionId,
+            optionId: second.correctOptionId,
+          ),
+          same(session),
+        );
+      },
+    );
 
-      expect(session.isComplete, isTrue);
-      expect(session.scoreLabel, '3/4');
-      expect(session.correctCount, 3);
-      expect(session.incorrectQuestions, hasLength(1));
-      expect(session.incorrectQuestions.single.sourceId, second.sourceId);
-      expect(session.incorrectQuestions.single.expression, second.expression);
-      expect(session.incorrectQuestions.single.reading, second.reading);
-    });
+    test(
+      'scores only accepted choices and retains original incorrect prompts',
+      () {
+        final round = builder.build(level: 'N5', entries: _entries(count: 4));
+        final first = round.questions[0];
+        final second = round.questions[1];
+        var session = VocabularyQuizSession(round);
+
+        session = session.answer(
+          questionId: first.questionId,
+          optionId: first.correctOptionId,
+        );
+        session = session.next(first.questionId);
+        final wrong = second.options.firstWhere(
+          (option) => option.id != second.correctOptionId,
+        );
+        session = session.answer(
+          questionId: second.questionId,
+          optionId: wrong.id,
+        );
+        session = session.next(second.questionId);
+        for (final question in round.questions.skip(2)) {
+          session = session.answer(
+            questionId: question.questionId,
+            optionId: question.correctOptionId,
+          );
+          session = session.next(question.questionId);
+        }
+
+        expect(session.isComplete, isTrue);
+        expect(session.scoreLabel, '3/4');
+        expect(session.correctCount, 3);
+        expect(session.incorrectQuestions, hasLength(1));
+        expect(session.incorrectQuestions.single.sourceId, second.sourceId);
+        expect(session.incorrectQuestions.single.expression, second.expression);
+        expect(session.incorrectQuestions.single.reading, second.reading);
+      },
+    );
 
     test('restart resets only this in-memory round', () {
       final round = builder.build(level: 'N5', entries: _entries(count: 4));
@@ -382,10 +387,7 @@ void main() {
     test('empty round has a zero-over-zero score without a percentage', () {
       final round = builder.build(
         level: 'N5',
-        entries: _entries(
-          count: 3,
-          expressions: ['かな', 'あめ', 'みみ'],
-        ),
+        entries: _entries(count: 3, expressions: ['かな', 'あめ', 'みみ']),
       );
       final session = VocabularyQuizSession(round);
 

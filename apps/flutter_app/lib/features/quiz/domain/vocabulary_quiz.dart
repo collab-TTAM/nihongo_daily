@@ -186,11 +186,12 @@ final class VocabularyQuizBuilder {
     for (var absoluteIndex = start; absoluteIndex < end; absoluteIndex++) {
       final entry = eligible[absoluteIndex];
       final distractors = <String>[];
-      for (var offset = 1;
-          offset < readings.length + 1 && distractors.length < optionCount - 1;
-          offset++) {
-        final candidate =
-            readings[(absoluteIndex + offset) % readings.length];
+      for (
+        var offset = 1;
+        offset < readings.length + 1 && distractors.length < optionCount - 1;
+        offset++
+      ) {
+        final candidate = readings[(absoluteIndex + offset) % readings.length];
         if (candidate != entry.reading && !distractors.contains(candidate)) {
           distractors.add(candidate);
         }
@@ -273,8 +274,7 @@ final class VocabularyQuizAnswer {
 /// Immutable in-memory round state. It deliberately has no storage or service
 /// dependency; leaving/reloading the route discards this local result.
 final class VocabularyQuizSession {
-  VocabularyQuizSession(VocabularyQuizRound round)
-    : this._(round, 0, const {});
+  VocabularyQuizSession(VocabularyQuizRound round) : this._(round, 0, const {});
 
   VocabularyQuizSession._(
     this.round,
