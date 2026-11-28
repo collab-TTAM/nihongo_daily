@@ -104,5 +104,19 @@ class HostedWorkflowSafetyTests(unittest.TestCase):
         self.assertNotIn("JWT_SECRET", self.workflow)
 
 
+    def test_referenced_probe_exists_and_uses_only_documented_staging_secrets(self):
+        probe_path = ROOT / "scripts" / "hosted_supabase_probe.py"
+        self.assertTrue(probe_path.is_file())
+        source = probe_path.read_text(encoding="utf-8")
+        self.assertIn("REQUIRED_ENV = (", source)
+        for name in EXPECTED_SECRETS:
+            self.assertIn(f'"{name}"', source)
+        self.assertNotIn("SUPABASE_SERVICE_ROLE_KEY", source)
+        self.assertNotIn("JWT_SECRET", source)
+        self.assertIn('"/auth/v1/logout"', source)
+        self.assertIn('{"scope": "local"}', source)
+        self.assertIn('"/rest/v1/rpc/submit_review"', source)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

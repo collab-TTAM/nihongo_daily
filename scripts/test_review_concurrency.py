@@ -15,8 +15,9 @@ event = '94000000-0000-4000-8000-000000000001'
 setup = f"""
 insert into auth.users values ('{user}');
 insert into public.vocabulary(id,jlpt_level,difficulty,content_version,is_active,
- expression,reading,meaning_vi,part_of_speech,usage_context_vi)
-values ('{content}','N5',0,1,true,'試験','しけん','kiểm thử','noun','SQL fixture');
+ expression,reading,meaning_vi,part_of_speech,usage_context_vi,source_ordinal)
+values ('{content}','N5',0,1,true,'試験','しけん','kiểm thử','noun','SQL fixture',
+ (select coalesce(max(source_ordinal), -1) + 1 from public.vocabulary where jlpt_level='N5'));
 insert into public.user_learning_items(id,user_id,item_type,item_id)
 values ('{item}','{user}','VOCABULARY','{content}');
 """

@@ -1,0 +1,1363 @@
+{
+  "schema_version": 1,
+  "passages": [
+    {
+      "id": "n5-daily-routine-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "私の一日",
+      "title_vi": "Một ngày của tôi",
+      "text_ja": "私は毎朝七時に起きます。朝ご飯を食べてから、八時に学校へ行きます。学校で日本語を勉強します。午後四時に家へ帰ります。夜は本を読んで、十一時に寝ます。",
+      "reading_ja": "わたしはまいあさしちじにおきます。あさごはんをたべてから、はちじにがっこうへいきます。がっこうでにほんごをべんきょうします。ごごよじにいえへかえります。よるはほんをよんで、じゅういちじにねます。",
+      "translation_vi": "Mỗi sáng tôi thức dậy lúc 7 giờ. Sau khi ăn sáng, tôi đến trường lúc 8 giờ. Tôi học tiếng Nhật ở trường. Tôi về nhà lúc 4 giờ chiều. Buổi tối tôi đọc sách và đi ngủ lúc 11 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "私は何時に起きますか。",
+          "reading_ja": "わたしはなんじにおきますか。",
+          "prompt_vi": "Tôi thức dậy lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "七時",
+              "reading_ja": "しちじ",
+              "text_vi": "7 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "九時",
+              "reading_ja": "くじ",
+              "text_vi": "9 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi thức dậy lúc 7 giờ."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "学校で何を勉強しますか。",
+          "reading_ja": "がっこうでなにをべんきょうしますか。",
+          "prompt_vi": "Tôi học gì ở trường?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "英語",
+              "reading_ja": "えいご",
+              "text_vi": "Tiếng Anh"
+            },
+            {
+              "id": "b",
+              "text_ja": "日本語",
+              "reading_ja": "にほんご",
+              "text_vi": "Tiếng Nhật"
+            },
+            {
+              "id": "c",
+              "text_ja": "数学",
+              "reading_ja": "すうがく",
+              "text_vi": "Toán"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi học tiếng Nhật ở trường."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "夜、何をしますか。",
+          "reading_ja": "よる、なにをしますか。",
+          "prompt_vi": "Buổi tối tôi làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本を読みます",
+              "reading_ja": "ほんをよみます",
+              "text_vi": "Đọc sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "映画を見ます",
+              "reading_ja": "えいがをみます",
+              "text_vi": "Xem phim"
+            },
+            {
+              "id": "c",
+              "text_ja": "料理をします",
+              "reading_ja": "りょうりをします",
+              "text_vi": "Nấu ăn"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi tối tôi đọc sách."
+        }
+      ]
+    },
+    {
+      "id": "n5-saturday-park-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "土曜日の公園",
+      "title_vi": "Thứ Bảy ở công viên",
+      "text_ja": "土曜日、私は友達と公園へ行きます。公園には大きい木があります。私たちは少し歩いて、ベンチでお弁当を食べます。午後、写真を撮って、五時に家へ帰ります。",
+      "reading_ja": "どようび、わたしはともだちとこうえんへいきます。こうえんにはおおきいきがあります。わたしたちはすこしあるいて、ベンチでおべんとうをたべます。ごご、しゃしんをとって、ごじにいえへかえります。",
+      "translation_vi": "Thứ Bảy, tôi đi công viên với bạn. Trong công viên có một cái cây lớn. Chúng tôi đi bộ một lúc rồi ăn cơm hộp trên ghế băng. Buổi chiều, chúng tôi chụp ảnh và về nhà lúc 5 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "土曜日、どこへ行きますか。",
+          "reading_ja": "どようび、どこへいきますか。",
+          "prompt_vi": "Thứ Bảy tôi đi đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "公園",
+              "reading_ja": "こうえん",
+              "text_vi": "Công viên"
+            },
+            {
+              "id": "b",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            },
+            {
+              "id": "c",
+              "text_ja": "駅",
+              "reading_ja": "えき",
+              "text_vi": "Nhà ga"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi công viên với bạn."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何を食べますか。",
+          "reading_ja": "なにをたべますか。",
+          "prompt_vi": "Chúng tôi ăn gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "パン",
+              "reading_ja": "パン",
+              "text_vi": "Bánh mì"
+            },
+            {
+              "id": "b",
+              "text_ja": "お弁当",
+              "reading_ja": "おべんとう",
+              "text_vi": "Cơm hộp"
+            },
+            {
+              "id": "c",
+              "text_ja": "りんご",
+              "reading_ja": "りんご",
+              "text_vi": "Táo"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói chúng tôi ăn cơm hộp trên ghế băng."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に家へ帰りますか。",
+          "reading_ja": "なんじにいえへかえりますか。",
+          "prompt_vi": "Mấy giờ chúng tôi về nhà?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "四時",
+              "reading_ja": "よじ",
+              "text_vi": "4 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "五時",
+              "reading_ja": "ごじ",
+              "text_vi": "5 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "六時",
+              "reading_ja": "ろくじ",
+              "text_vi": "6 giờ"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói chúng tôi về nhà lúc 5 giờ."
+        }
+      ]
+    },
+    {
+      "id": "n5-station-shop-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "駅の近くの店",
+      "title_vi": "Cửa hàng gần nhà ga",
+      "text_ja": "駅の近くに小さい店があります。店は朝九時から夜八時までです。私は学校のあとで店へ行きます。りんごを二つ買います。店の人はやさしいです。",
+      "reading_ja": "えきのちかくにちいさいみせがあります。みせはあさくじからよるはちじまでです。わたしはがっこうのあとでみせへいきます。りんごをふたつかいます。みせのひとはやさしいです。",
+      "translation_vi": "Gần nhà ga có một cửa hàng nhỏ. Cửa hàng mở từ 9 giờ sáng đến 8 giờ tối. Sau giờ học, tôi đến cửa hàng. Tôi mua hai quả táo. Người bán hàng rất tốt bụng.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "店は何時からですか。",
+          "reading_ja": "みせはなんじからですか。",
+          "prompt_vi": "Cửa hàng bắt đầu mở lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "九時",
+              "reading_ja": "くじ",
+              "text_vi": "9 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "十時",
+              "reading_ja": "じゅうじ",
+              "text_vi": "10 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói cửa hàng mở từ 9 giờ sáng."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何を二つ買いますか。",
+          "reading_ja": "なにをふたつかいますか。",
+          "prompt_vi": "Tôi mua hai thứ gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "パン",
+              "reading_ja": "パン",
+              "text_vi": "Bánh mì"
+            },
+            {
+              "id": "b",
+              "text_ja": "バナナ",
+              "reading_ja": "バナナ",
+              "text_vi": "Chuối"
+            },
+            {
+              "id": "c",
+              "text_ja": "りんご",
+              "reading_ja": "りんご",
+              "text_vi": "Táo"
+            }
+          ],
+          "correct_choice_id": "c",
+          "explanation_vi": "Bài đọc nói tôi mua hai quả táo."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "店の人はどうですか。",
+          "reading_ja": "みせのひとはどうですか。",
+          "prompt_vi": "Người bán hàng thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "いそがしいです",
+              "reading_ja": "いそがしいです",
+              "text_vi": "Bận rộn"
+            },
+            {
+              "id": "b",
+              "text_ja": "やさしいです",
+              "reading_ja": "やさしいです",
+              "text_vi": "Tốt bụng"
+            },
+            {
+              "id": "c",
+              "text_ja": "しずかです",
+              "reading_ja": "しずかです",
+              "text_vi": "Yên lặng"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói người bán hàng tốt bụng."
+        }
+      ]
+    },
+    {
+      "id": "n5-library-study-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "図書館で勉強",
+      "title_vi": "Học ở thư viện",
+      "text_ja": "日曜日、私は友達と図書館へ行きました。午前十時に図書館に入りました。日本語の本を二冊読みました。昼ご飯は近くの店で食べました。午後二時に家へ帰りました。",
+      "reading_ja": "にちようび、わたしはともだちととしょかんへいきました。ごぜんじゅうじにとしょかんにはいりました。にほんごのほんをにさつよみました。ひるごはんはちかくのみせでたべました。ごごにじにいえへかえりました。",
+      "translation_vi": "Chủ nhật, tôi đã đi thư viện với bạn. Tôi vào thư viện lúc 10 giờ sáng. Tôi đọc hai quyển sách tiếng Nhật. Tôi ăn trưa ở cửa hàng gần đó. Tôi về nhà lúc 2 giờ chiều.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "いつ図書館へ行きましたか。",
+          "reading_ja": "いつとしょかんへいきましたか。",
+          "prompt_vi": "Tôi đã đi thư viện vào ngày nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "日曜日",
+              "reading_ja": "にちようび",
+              "text_vi": "Chủ nhật"
+            },
+            {
+              "id": "b",
+              "text_ja": "土曜日",
+              "reading_ja": "どようび",
+              "text_vi": "Thứ Bảy"
+            },
+            {
+              "id": "c",
+              "text_ja": "月曜日",
+              "reading_ja": "げつようび",
+              "text_vi": "Thứ Hai"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi thư viện vào Chủ nhật."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "本を何冊読みましたか。",
+          "reading_ja": "ほんをなんさつよみましたか。",
+          "prompt_vi": "Tôi đã đọc bao nhiêu quyển sách?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "一冊",
+              "reading_ja": "いっさつ",
+              "text_vi": "Một quyển"
+            },
+            {
+              "id": "b",
+              "text_ja": "二冊",
+              "reading_ja": "にさつ",
+              "text_vi": "Hai quyển"
+            },
+            {
+              "id": "c",
+              "text_ja": "三冊",
+              "reading_ja": "さんさつ",
+              "text_vi": "Ba quyển"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi đọc hai quyển sách tiếng Nhật."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "昼ご飯はどこで食べましたか。",
+          "reading_ja": "ひるごはんはどこでたべましたか。",
+          "prompt_vi": "Tôi đã ăn trưa ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "図書館",
+              "reading_ja": "としょかん",
+              "text_vi": "Thư viện"
+            },
+            {
+              "id": "b",
+              "text_ja": "近くの店",
+              "reading_ja": "ちかくのみせ",
+              "text_vi": "Cửa hàng gần đó"
+            },
+            {
+              "id": "c",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi ăn trưa ở cửa hàng gần đó."
+        }
+      ]
+    },
+    {
+      "id": "n5-rainy-day-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "雨の日",
+      "title_vi": "Ngày mưa",
+      "text_ja": "朝は雨でした。私はかさを持って駅まで歩きました。駅で友達に会いました。私たちは電車に乗って、町の店へ行きました。店で新しいくつを買いました。午後、家へ帰りました。",
+      "reading_ja": "あさはあめでした。わたしはかさをもってえきまであるきました。えきでともだちにあいました。わたしたちはでんしゃにのって、まちのみせへいきました。みせであたらしいくつをかいました。ごご、いえへかえりました。",
+      "translation_vi": "Buổi sáng trời mưa. Tôi mang ô và đi bộ đến ga. Tôi gặp bạn ở ga. Chúng tôi đi tàu điện đến cửa hàng trong thị trấn. Tôi mua đôi giày mới ở cửa hàng. Buổi chiều, tôi về nhà.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "朝、天気はどうでしたか。",
+          "reading_ja": "あさ、てんきはどうでしたか。",
+          "prompt_vi": "Buổi sáng thời tiết thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "雨でした",
+              "reading_ja": "あめでした",
+              "text_vi": "Trời mưa"
+            },
+            {
+              "id": "b",
+              "text_ja": "晴れでした",
+              "reading_ja": "はれでした",
+              "text_vi": "Trời nắng"
+            },
+            {
+              "id": "c",
+              "text_ja": "雪でした",
+              "reading_ja": "ゆきでした",
+              "text_vi": "Trời tuyết"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi sáng trời mưa."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "どこで友達に会いましたか。",
+          "reading_ja": "どこでともだちにあいましたか。",
+          "prompt_vi": "Tôi gặp bạn ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "駅",
+              "reading_ja": "えき",
+              "text_vi": "Nhà ga"
+            },
+            {
+              "id": "b",
+              "text_ja": "店",
+              "reading_ja": "みせ",
+              "text_vi": "Cửa hàng"
+            },
+            {
+              "id": "c",
+              "text_ja": "家",
+              "reading_ja": "いえ",
+              "text_vi": "Nhà"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi gặp bạn ở nhà ga."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何を買いましたか。",
+          "reading_ja": "なにをかいましたか。",
+          "prompt_vi": "Tôi đã mua gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本",
+              "reading_ja": "ほん",
+              "text_vi": "Sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "新しいくつ",
+              "reading_ja": "あたらしいくつ",
+              "text_vi": "Đôi giày mới"
+            },
+            {
+              "id": "c",
+              "text_ja": "かさ",
+              "reading_ja": "かさ",
+              "text_vi": "Cái ô"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi mua đôi giày mới."
+        }
+      ]
+    },
+    {
+      "id": "n5-sunday-meal-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "日曜日の昼ごはん",
+      "title_vi": "Bữa trưa Chủ nhật",
+      "text_ja": "日曜日、私は母とスーパーへ行きました。牛乳と卵を買いました。それから、パンも買いました。家で母と昼ごはんを作りました。昼ごはんはとてもおいしかったです。",
+      "reading_ja": "にちようび、わたしはははとすーぱーへいきました。ぎゅうにゅうとたまごをかいました。それから、ぱんもかいました。いえでははとひるごはんをつくりました。ひるごはんはとてもおいしかったです。",
+      "translation_vi": "Chủ nhật, tôi đi siêu thị cùng mẹ. Tôi mua sữa và trứng. Sau đó, tôi cũng mua bánh mì. Ở nhà, tôi cùng mẹ nấu bữa trưa. Bữa trưa rất ngon.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "いつスーパーへ行きましたか。",
+          "reading_ja": "いつすーぱーへいきましたか。",
+          "prompt_vi": "Tôi đã đi siêu thị vào ngày nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "日曜日",
+              "reading_ja": "にちようび",
+              "text_vi": "Chủ nhật"
+            },
+            {
+              "id": "b",
+              "text_ja": "土曜日",
+              "reading_ja": "どようび",
+              "text_vi": "Thứ Bảy"
+            },
+            {
+              "id": "c",
+              "text_ja": "月曜日",
+              "reading_ja": "げつようび",
+              "text_vi": "Thứ Hai"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Câu đầu tiên cho biết tôi đi siêu thị vào Chủ nhật."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "だれとスーパーへ行きましたか。",
+          "reading_ja": "だれとすーぱーへいきましたか。",
+          "prompt_vi": "Tôi đã đi siêu thị cùng ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "友だち",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            },
+            {
+              "id": "c",
+              "text_ja": "先生",
+              "reading_ja": "せんせい",
+              "text_vi": "Giáo viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi siêu thị cùng mẹ."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "昼ごはんはどうでしたか。",
+          "reading_ja": "ひるごはんはどうでしたか。",
+          "prompt_vi": "Bữa trưa thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "高かったです",
+              "reading_ja": "たかかったです",
+              "text_vi": "Đắt"
+            },
+            {
+              "id": "b",
+              "text_ja": "おいしかったです",
+              "reading_ja": "おいしかったです",
+              "text_vi": "Ngon"
+            },
+            {
+              "id": "c",
+              "text_ja": "冷たかったです",
+              "reading_ja": "つめたかったです",
+              "text_vi": "Lạnh"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Câu cuối nói bữa trưa rất ngon."
+        }
+      ]
+    },
+    {
+      "id": "n5-bus-commute-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "バスで会社へ行きます",
+      "title_vi": "Đi làm bằng xe buýt",
+      "text_ja": "私は毎朝、七時に家を出ます。家の近くにバス停があります。七時十五分のバスに乗って、会社へ行きます。バスの中で本を読みます。会社の前でバスを降ります。八時に仕事を始めます。",
+      "reading_ja": "わたしはまいあさ、しちじにいえをでます。いえのちかくにバスていがあります。しちじじゅうごふんのバスにのって、かいしゃへいきます。バスのなかでほんをよみます。かいしゃのまえでバスをおります。はちじにしごとをはじめます。",
+      "translation_vi": "Mỗi sáng tôi rời nhà lúc 7 giờ. Gần nhà có một trạm xe buýt. Tôi lên chuyến xe buýt lúc 7 giờ 15 để đi đến công ty. Trên xe buýt tôi đọc sách. Tôi xuống xe trước công ty. Tôi bắt đầu làm việc lúc 8 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "私は何時に家を出ますか。",
+          "reading_ja": "わたしはなんじにいえをでますか。",
+          "prompt_vi": "Tôi rời nhà lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "七時",
+              "reading_ja": "しちじ",
+              "text_vi": "7 giờ"
+            },
+            {
+              "id": "b",
+              "text_ja": "七時十五分",
+              "reading_ja": "しちじじゅうごふん",
+              "text_vi": "7 giờ 15"
+            },
+            {
+              "id": "c",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi rời nhà lúc 7 giờ."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何で会社へ行きますか。",
+          "reading_ja": "なにでかいしゃへいきますか。",
+          "prompt_vi": "Tôi đến công ty bằng phương tiện gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "電車",
+              "reading_ja": "でんしゃ",
+              "text_vi": "Tàu điện"
+            },
+            {
+              "id": "b",
+              "text_ja": "バス",
+              "reading_ja": "バス",
+              "text_vi": "Xe buýt"
+            },
+            {
+              "id": "c",
+              "text_ja": "自転車",
+              "reading_ja": "じてんしゃ",
+              "text_vi": "Xe đạp"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi đi xe buýt đến công ty."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に仕事を始めますか。",
+          "reading_ja": "なんじにしごとをはじめますか。",
+          "prompt_vi": "Tôi bắt đầu làm việc lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "七時十五分",
+              "reading_ja": "しちじじゅうごふん",
+              "text_vi": "7 giờ 15"
+            },
+            {
+              "id": "b",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "九時",
+              "reading_ja": "くじ",
+              "text_vi": "9 giờ"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi bắt đầu làm việc lúc 8 giờ."
+        }
+      ]
+    },
+    {
+      "id": "n5-friend-house-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "友達の家で",
+      "title_vi": "Ở nhà bạn",
+      "text_ja": "日曜日、私は友達の家へ行きました。友達の家は駅の近くにあります。友達のお母さんは料理が上手です。昼ご飯にカレーを作りました。私たちは一緒に食べて、午後は日本語の宿題をしました。三時に家へ帰りました。",
+      "reading_ja": "にちようび、わたしはともだちのいえへいきました。ともだちのいえはえきのちかくにあります。ともだちのおかあさんはりょうりがじょうずです。ひるごはんにカレーをつくりました。わたしたちはいっしょにたべて、ごごはにほんごのしゅくだいをしました。さんじにいえへかえりました。",
+      "translation_vi": "Chủ nhật, tôi đến nhà bạn. Nhà bạn ở gần nhà ga. Mẹ của bạn nấu ăn rất giỏi. Mẹ bạn làm cà ri cho bữa trưa. Chúng tôi cùng ăn, rồi buổi chiều làm bài tập tiếng Nhật. Tôi về nhà lúc 3 giờ.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "友達の家はどこにありますか。",
+          "reading_ja": "ともだちのいえはどこにありますか。",
+          "prompt_vi": "Nhà bạn tôi ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "駅の近く",
+              "reading_ja": "えきのちかく",
+              "text_vi": "Gần nhà ga"
+            },
+            {
+              "id": "b",
+              "text_ja": "学校の近く",
+              "reading_ja": "がっこうのちかく",
+              "text_vi": "Gần trường học"
+            },
+            {
+              "id": "c",
+              "text_ja": "公園の近く",
+              "reading_ja": "こうえんのちかく",
+              "text_vi": "Gần công viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói nhà bạn ở gần nhà ga."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "昼ご飯に何を作りましたか。",
+          "reading_ja": "ひるごはんになにをつくりましたか。",
+          "prompt_vi": "Bữa trưa đã làm món gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "おにぎり",
+              "reading_ja": "おにぎり",
+              "text_vi": "Cơm nắm"
+            },
+            {
+              "id": "b",
+              "text_ja": "カレー",
+              "reading_ja": "カレー",
+              "text_vi": "Cà ri"
+            },
+            {
+              "id": "c",
+              "text_ja": "パン",
+              "reading_ja": "パン",
+              "text_vi": "Bánh mì"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói mẹ bạn làm cà ri cho bữa trưa."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "午後、何をしましたか。",
+          "reading_ja": "ごご、なにをしましたか。",
+          "prompt_vi": "Buổi chiều chúng tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本を読みました",
+              "reading_ja": "ほんをよみました",
+              "text_vi": "Đọc sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "テレビを見ました",
+              "reading_ja": "テレビをみました",
+              "text_vi": "Xem ti vi"
+            },
+            {
+              "id": "c",
+              "text_ja": "日本語の宿題をしました",
+              "reading_ja": "にほんごのしゅくだいをしました",
+              "text_vi": "Làm bài tập tiếng Nhật"
+            }
+          ],
+          "correct_choice_id": "c",
+          "explanation_vi": "Bài đọc nói buổi chiều chúng tôi làm bài tập tiếng Nhật."
+        }
+      ]
+    },
+    {
+      "id": "n5-birthday-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "誕生日の一日",
+      "title_vi": "Một ngày sinh nhật",
+      "text_ja": "きのうは私の誕生日でした。朝、母がケーキを作りました。午後、友達が二人家に来ました。みんなで歌を歌って、ケーキを食べました。夜、父から本をもらいました。とても楽しい一日でした。",
+      "reading_ja": "きのうはわたしのたんじょうびでした。あさ、ははがけーきをつくりました。ごご、ともだちがふたりいえにきました。みんなでうたをうたって、けーきをたべました。よる、ちちからほんをもらいました。とてもたのしいいちにちでした。",
+      "translation_vi": "Hôm qua là sinh nhật của tôi. Buổi sáng, mẹ làm bánh kem. Buổi chiều, hai người bạn đến nhà. Mọi người cùng hát và ăn bánh kem. Buổi tối, tôi nhận được một quyển sách từ bố. Đó là một ngày rất vui.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "だれがケーキを作りましたか。",
+          "reading_ja": "だれがけーきをつくりましたか。",
+          "prompt_vi": "Ai đã làm bánh kem?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "父",
+              "reading_ja": "ちち",
+              "text_vi": "Bố"
+            },
+            {
+              "id": "c",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn bè"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói mẹ làm bánh kem vào buổi sáng."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "友達は何人来ましたか。",
+          "reading_ja": "ともだちはなんにんきましたか。",
+          "prompt_vi": "Có mấy người bạn đã đến?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "一人",
+              "reading_ja": "ひとり",
+              "text_vi": "Một người"
+            },
+            {
+              "id": "b",
+              "text_ja": "二人",
+              "reading_ja": "ふたり",
+              "text_vi": "Hai người"
+            },
+            {
+              "id": "c",
+              "text_ja": "三人",
+              "reading_ja": "さんにん",
+              "text_vi": "Ba người"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói có hai người bạn đến nhà vào buổi chiều."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "夜、何をもらいましたか。",
+          "reading_ja": "よる、なにをもらいましたか。",
+          "prompt_vi": "Buổi tối, tôi đã nhận được gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本",
+              "reading_ja": "ほん",
+              "text_vi": "Sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "ケーキ",
+              "reading_ja": "けーき",
+              "text_vi": "Bánh kem"
+            },
+            {
+              "id": "c",
+              "text_ja": "かばん",
+              "reading_ja": "かばん",
+              "text_vi": "Cặp sách"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi tối tôi nhận được một quyển sách từ bố."
+        }
+      ]
+    },
+    {
+      "id": "n5-supermarket-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "スーパーで買い物",
+      "title_vi": "Mua sắm ở siêu thị",
+      "text_ja": "土曜日、私は母とスーパーへ行きました。店で野菜と牛乳を買いました。母は魚も買いました。家に帰って、昼ご飯を作りました。昼ご飯のあと、母と一緒にテレビを見ました。",
+      "reading_ja": "どようび、わたしはははとスーパーへいきました。みせでやさいとぎゅうにゅうをかいました。はははさかなもかいました。いえにかえって、ひるごはんをつくりました。ひるごはんのあと、ははといっしょにテレビをみました。",
+      "translation_vi": "Thứ Bảy, tôi đi siêu thị cùng mẹ. Ở cửa hàng, tôi mua rau và sữa. Mẹ cũng mua cá. Về nhà, tôi nấu bữa trưa. Sau bữa trưa, tôi xem ti vi cùng mẹ.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "土曜日、だれとスーパーへ行きましたか。",
+          "reading_ja": "どようび、だれとスーパーへいきましたか。",
+          "prompt_vi": "Thứ Bảy, tôi đã đi siêu thị với ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "父",
+              "reading_ja": "ちち",
+              "text_vi": "Bố"
+            },
+            {
+              "id": "c",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi siêu thị cùng mẹ."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "店で何を買いましたか。",
+          "reading_ja": "みせでなにをかいましたか。",
+          "prompt_vi": "Ở cửa hàng, tôi đã mua gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "野菜と牛乳",
+              "reading_ja": "やさいとぎゅうにゅう",
+              "text_vi": "Rau và sữa"
+            },
+            {
+              "id": "b",
+              "text_ja": "本とペン",
+              "reading_ja": "ほんとぺん",
+              "text_vi": "Sách và bút"
+            },
+            {
+              "id": "c",
+              "text_ja": "くつと服",
+              "reading_ja": "くつとふく",
+              "text_vi": "Giày và quần áo"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi mua rau và sữa ở cửa hàng."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "昼ご飯のあと、何をしましたか。",
+          "reading_ja": "ひるごはんのあと、なにをしましたか。",
+          "prompt_vi": "Sau bữa trưa, tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "本を読みました",
+              "reading_ja": "ほんをよみました",
+              "text_vi": "Đọc sách"
+            },
+            {
+              "id": "b",
+              "text_ja": "テレビを見ました",
+              "reading_ja": "テレビをみました",
+              "text_vi": "Xem ti vi"
+            },
+            {
+              "id": "c",
+              "text_ja": "公園へ行きました",
+              "reading_ja": "こうえんへいきました",
+              "text_vi": "Đi công viên"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói sau bữa trưa tôi xem ti vi cùng mẹ."
+        }
+      ]
+    },
+    {
+      "id": "n5-winter-morning-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "冬の朝",
+      "title_vi": "Buổi sáng mùa đông",
+      "text_ja": "冬の朝は寒いです。私は六時半に起きて、温かいお茶を飲みます。七時に母と朝ご飯を食べます。それから、コートを着て学校へ行きます。",
+      "reading_ja": "ふゆのあさはさむいです。わたしはろくじはんにおきて、あたたかいおちゃをのみます。しちじにははとあさごはんをたべます。それから、コートをきてがっこうへいきます。",
+      "translation_vi": "Buổi sáng mùa đông trời lạnh. Tôi thức dậy lúc 6 giờ rưỡi và uống trà nóng. Lúc 7 giờ, tôi ăn sáng với mẹ. Sau đó, tôi mặc áo khoác và đi đến trường.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "冬の朝はどうですか。",
+          "reading_ja": "ふゆのあさはどうですか。",
+          "prompt_vi": "Buổi sáng mùa đông thế nào?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "寒いです",
+              "reading_ja": "さむいです",
+              "text_vi": "Lạnh"
+            },
+            {
+              "id": "b",
+              "text_ja": "暑いです",
+              "reading_ja": "あついです",
+              "text_vi": "Nóng"
+            },
+            {
+              "id": "c",
+              "text_ja": "いい天気です",
+              "reading_ja": "いいてんきです",
+              "text_vi": "Trời đẹp"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói buổi sáng mùa đông lạnh."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "何時に起きますか。",
+          "reading_ja": "なんじにおきますか。",
+          "prompt_vi": "Tôi thức dậy lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "六時半",
+              "reading_ja": "ろくじはん",
+              "text_vi": "6 giờ rưỡi"
+            },
+            {
+              "id": "b",
+              "text_ja": "七時",
+              "reading_ja": "しちじ",
+              "text_vi": "7 giờ"
+            },
+            {
+              "id": "c",
+              "text_ja": "八時",
+              "reading_ja": "はちじ",
+              "text_vi": "8 giờ"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi thức dậy lúc 6 giờ rưỡi."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "だれと朝ご飯を食べますか。",
+          "reading_ja": "だれとあさごはんをたべますか。",
+          "prompt_vi": "Tôi ăn sáng với ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "母",
+              "reading_ja": "はは",
+              "text_vi": "Mẹ"
+            },
+            {
+              "id": "b",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            },
+            {
+              "id": "c",
+              "text_ja": "先生",
+              "reading_ja": "せんせい",
+              "text_vi": "Giáo viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi ăn sáng với mẹ."
+        }
+      ]
+    },
+    {
+      "id": "n5-tennis-invitation-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "土曜日にテニスをします",
+      "title_vi": "Chơi tennis vào thứ Bảy",
+      "text_ja": "土曜日の午後、私は友達の田中さんと公園へ行きます。田中さんはテニスが好きです。私はまだ上手ではありません。でも、田中さんは「いっしょにテニスをしませんか」と言いました。私は「はい、しましょう」と答えました。午後二時に公園で会います。",
+      "reading_ja": "どようびのごご、わたしはともだちのたなかさんとこうえんへいきます。たなかさんはテニスがすきです。わたしはまだじょうずではありません。でも、たなかさんは「いっしょにテニスをしませんか」といいました。わたしは「はい、しましょう」とこたえました。ごごにじにこうえんであいます。",
+      "translation_vi": "Chiều thứ Bảy, tôi đi công viên cùng bạn Tanaka. Tanaka thích tennis. Tôi vẫn chưa chơi giỏi. Nhưng Tanaka đã nói: “Chúng ta cùng chơi tennis nhé?” Tôi trả lời: “Vâng, cùng chơi nhé.” Chúng tôi gặp nhau ở công viên lúc 2 giờ chiều.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "土曜日の午後、どこへ行きますか。",
+          "reading_ja": "どようびのごご、どこへいきますか。",
+          "prompt_vi": "Chiều thứ Bảy, tôi đi đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "公園",
+              "reading_ja": "こうえん",
+              "text_vi": "Công viên"
+            },
+            {
+              "id": "b",
+              "text_ja": "図書館",
+              "reading_ja": "としょかん",
+              "text_vi": "Thư viện"
+            },
+            {
+              "id": "c",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi công viên cùng bạn Tanaka."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "田中さんは何が好きですか。",
+          "reading_ja": "たなかさんはなにがすきですか。",
+          "prompt_vi": "Bạn Tanaka thích gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "サッカー",
+              "reading_ja": "サッカー",
+              "text_vi": "Bóng đá"
+            },
+            {
+              "id": "b",
+              "text_ja": "テニス",
+              "reading_ja": "テニス",
+              "text_vi": "Tennis"
+            },
+            {
+              "id": "c",
+              "text_ja": "水泳",
+              "reading_ja": "すいえい",
+              "text_vi": "Bơi lội"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói Tanaka thích tennis."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に公園で会いますか。",
+          "reading_ja": "なんじにこうえんであいますか。",
+          "prompt_vi": "Chúng tôi gặp nhau ở công viên lúc mấy giờ?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "午後一時",
+              "reading_ja": "ごごいちじ",
+              "text_vi": "1 giờ chiều"
+            },
+            {
+              "id": "b",
+              "text_ja": "午後二時",
+              "reading_ja": "ごごにじ",
+              "text_vi": "2 giờ chiều"
+            },
+            {
+              "id": "c",
+              "text_ja": "午後三時",
+              "reading_ja": "ごごさんじ",
+              "text_vi": "3 giờ chiều"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói chúng tôi gặp nhau lúc 2 giờ chiều."
+        }
+      ]
+    },
+    {
+      "id": "n5-family-breakfast-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "日曜日の朝ごはん",
+      "title_vi": "Bữa sáng Chủ nhật",
+      "text_ja": "日曜日の朝、私は六時半に起きました。母は台所でパンと卵を出しました。私はテーブルに水を置きました。父は牛乳を飲みました。弟はりんごを食べました。みんなで朝ごはんを食べてから、私は皿を洗いました。",
+      "reading_ja": "にちようびのあさ、わたしはろくじはんにおきました。はははだいどころでパンとたまごをだしました。わたしはテーブルにみずをおきました。ちちはぎゅうにゅうをのみました。おとうとはりんごをたべました。みんなであさごはんをたべてから、わたしはさらをあらいました。",
+      "translation_vi": "Sáng Chủ nhật, tôi thức dậy lúc 6 giờ rưỡi. Mẹ bày bánh mì và trứng trong bếp. Tôi đặt nước lên bàn. Bố uống sữa. Em trai ăn táo. Sau khi cả nhà ăn sáng, tôi rửa bát.",
+      "source_note_vi": "Bài đọc N5 do dự án biên soạn; chưa được giáo viên hoặc người bản ngữ thẩm định. Không đại diện nội dung JLPT chính thức.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "母はどこでパンと卵を出しましたか。",
+          "reading_ja": "はははどこでパンとたまごをだしましたか。",
+          "prompt_vi": "Mẹ bày bánh mì và trứng ở đâu?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "台所",
+              "reading_ja": "だいどころ",
+              "text_vi": "Nhà bếp"
+            },
+            {
+              "id": "b",
+              "text_ja": "へや",
+              "reading_ja": "へや",
+              "text_vi": "Phòng"
+            },
+            {
+              "id": "c",
+              "text_ja": "学校",
+              "reading_ja": "がっこう",
+              "text_vi": "Trường học"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói mẹ bày bánh mì và trứng trong bếp."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "父は何を飲みましたか。",
+          "reading_ja": "ちちはなにをのみましたか。",
+          "prompt_vi": "Bố đã uống gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "水",
+              "reading_ja": "みず",
+              "text_vi": "Nước"
+            },
+            {
+              "id": "b",
+              "text_ja": "牛乳",
+              "reading_ja": "ぎゅうにゅう",
+              "text_vi": "Sữa"
+            },
+            {
+              "id": "c",
+              "text_ja": "コーヒー",
+              "reading_ja": "コーヒー",
+              "text_vi": "Cà phê"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói bố uống sữa."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "朝ごはんのあとで、私は何をしましたか。",
+          "reading_ja": "あさごはんのあとで、わたしはなにをしましたか。",
+          "prompt_vi": "Sau bữa sáng, tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "皿を洗いました",
+              "reading_ja": "さらをあらいました",
+              "text_vi": "Rửa bát"
+            },
+            {
+              "id": "b",
+              "text_ja": "テレビを見ました",
+              "reading_ja": "テレビをみました",
+              "text_vi": "Xem ti vi"
+            },
+            {
+              "id": "c",
+              "text_ja": "公園へ行きました",
+              "reading_ja": "こうえんへいきました",
+              "text_vi": "Đi công viên"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói sau bữa sáng tôi rửa bát."
+        }
+      ]
+    },
+    {
+      "id": "n5-summer-seaside-01",
+      "jlpt_level": "N5",
+      "content_version": 1,
+      "title_ja": "夏休みの海",
+      "title_vi": "Kỳ nghỉ hè ở biển",
+      "text_ja": "夏休み、私は家族と海へ行きました。朝六時に家を出ました。車で二時間ぐらいかかりました。海は青くて、とてもきれいでした。弟は泳ぎました。私は母とすなの上を歩いて、写真を撮りました。昼ご飯におにぎりを食べました。午後三時に家へ帰りました。",
+      "reading_ja": "なつやすみ、わたしはかぞくとうみへいきました。あさろくじにいえをでました。くるまでにじかんぐらいかかりました。うみはあおくて、とてもきれいでした。おとうとはおよぎました。わたしはははとすなのうえをあるいて、しゃしんをとりました。ひるごはんにおにぎりをたべました。ごごさんじにいえへかえりました。",
+      "translation_vi": "Trong kỳ nghỉ hè, tôi đã đi biển cùng gia đình. Tôi rời nhà lúc 6 giờ sáng. Đi ô tô mất khoảng hai giờ. Biển xanh và rất đẹp. Em trai tôi đã bơi. Tôi đi bộ trên cát cùng mẹ và chụp ảnh. Chúng tôi ăn cơm nắm vào bữa trưa. Tôi về nhà lúc 3 giờ chiều.",
+      "source_note_vi": "Nội dung gốc Nihongo Daily (bản nháp N5, phiên bản 1); chưa được giáo viên hoặc người bản ngữ thẩm định.",
+      "questions": [
+        {
+          "id": "q1",
+          "prompt_ja": "だれと海へ行きましたか。",
+          "reading_ja": "だれとうみへいきましたか。",
+          "prompt_vi": "Tôi đi biển cùng ai?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "家族",
+              "reading_ja": "かぞく",
+              "text_vi": "Gia đình"
+            },
+            {
+              "id": "b",
+              "text_ja": "友達",
+              "reading_ja": "ともだち",
+              "text_vi": "Bạn"
+            },
+            {
+              "id": "c",
+              "text_ja": "一人",
+              "reading_ja": "ひとり",
+              "text_vi": "Một mình"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói tôi đi biển cùng gia đình."
+        },
+        {
+          "id": "q2",
+          "prompt_ja": "弟は何をしましたか。",
+          "reading_ja": "おとうとはなにをしましたか。",
+          "prompt_vi": "Em trai tôi đã làm gì?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "泳ぎました",
+              "reading_ja": "およぎました",
+              "text_vi": "Đã bơi"
+            },
+            {
+              "id": "b",
+              "text_ja": "写真を撮りました",
+              "reading_ja": "しゃしんをとりました",
+              "text_vi": "Đã chụp ảnh"
+            },
+            {
+              "id": "c",
+              "text_ja": "本を読みました",
+              "reading_ja": "ほんをよみました",
+              "text_vi": "Đã đọc sách"
+            }
+          ],
+          "correct_choice_id": "a",
+          "explanation_vi": "Bài đọc nói em trai tôi đã bơi."
+        },
+        {
+          "id": "q3",
+          "prompt_ja": "何時に家へ帰りましたか。",
+          "reading_ja": "なんじにいえへかえりましたか。",
+          "prompt_vi": "Mấy giờ tôi về nhà?",
+          "choices": [
+            {
+              "id": "a",
+              "text_ja": "午後二時",
+              "reading_ja": "ごごにじ",
+              "text_vi": "2 giờ chiều"
+            },
+            {
+              "id": "b",
+              "text_ja": "午後三時",
+              "reading_ja": "ごごさんじ",
+              "text_vi": "3 giờ chiều"
+            },
+            {
+              "id": "c",
+              "text_ja": "午後四時",
+              "reading_ja": "ごごよじ",
+              "text_vi": "4 giờ chiều"
+            }
+          ],
+          "correct_choice_id": "b",
+          "explanation_vi": "Bài đọc nói tôi về nhà lúc 3 giờ chiều."
+        }
+      ]
+    }
+  ]
+}

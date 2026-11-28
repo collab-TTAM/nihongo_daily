@@ -1,10 +1,40 @@
 # Nihongo Daily Flutter shell
 
-This is an explicitly labeled UI preview, not Personal Alpha. No login, real
-curriculum study flow, integrated SRS review, real grading, progress persistence, network adapter or live
-AI/voice is implemented. N5/N4 selections and theme preferences last only for the
-current process. The seven-block allocation previews the frozen 120-minute
-default; every block is shown as unavailable and cannot record study completion.
+Opt-in native write-before-dispatch/restart library:
+../../docs/DURABLE_REVIEW_JOURNAL.md. It does not activate offline mode or wire
+recovery automatically; default runtime remains unconfigured. Explicit runtime
+storage enables controller recovery as described in ../../docs/STUDY_RECOVERY.md.
+
+Default startup is an explicitly labeled, unconfigured preview, not Personal Alpha.
+The vocabulary/grammar routes read and search packaged original exports: N5 (24 words/10 patterns) and N4 (366 words/139
+patterns), with readings, Vietnamese explanations/examples and adjacent
+navigation. Public browsing is read-only; it adds no completion or account progress.
+Configured Windows also offers explicit elapsed-study controls, described below.
+Kanji now offers an original N5/N4 catalog (8/95 characters), On/Kun readings,
+Vietnamese meanings, metadata stroke counts and an isolated local writing canvas
+per selected character. Open **Chọn chữ N5/N4** from `/kanji`; see
+../../docs/KANJI_CATALOG.md. The eight N5 seed characters and95 original N4 characters offer an optional
+KanjiVG step guide with attribution/license (../../docs/N5_STROKE_GUIDE.md). Real grading
+and saved Kanji progress remain unavailable. After showing a guide, enable
+**Hiện nét mẫu trong ô viết** to trace its faint prefix below your own ink.
+Changing guide steps never adds learner strokes; hiding the guide removes tracing.
+Audio/full JLPT coverage and independent linguistic review are not included. Preview level/theme choices
+last only for this process and do not alter the authenticated profile.
+
+Explicit Windows staging can install the owned Auth/profile/SRS runtime, Daily
+Plan, completed-study recovery and SRS/vocabulary/grammar elapsed reports. See
+../../docs/STAGING_BOOTSTRAP.md and ../../docs/OWNED_STUDY_RECOVERY.md. Default
+startup does not activate a network service or login. Hosted learner acceptance,
+full multi-device sync, real Kanji grading and live AI/voice remain outstanding.
+The home still shows the clearly labeled seven-block 120-minute sample plan.
+
+
+Public **/quiz** now offers deterministic N5/N4 vocabulary reading questions
+from the unchanged original exports. Each round has up to10 questions, one first
+answer per question, Vietnamese feedback and a local list of wrong items to review.
+Restart/next batch are explicit. Results disappear on exit/reload/level change;
+no attempt is saved, mastery inferred or study credit granted. See
+../../docs/VOCABULARY_QUIZ.md. New full-suite verification requires exact-head CI.
 
 ## Run and verify
 
@@ -33,6 +63,26 @@ launch `nihongo_daily.exe` alongside the accompanying DLLs and data folder. For
 web, serve the folder with `python -m http.server 8080` and open localhost:8080;
 do not open index.html directly. These artifacts are previews, not deployments.
 
+New CI bundles include `PREVIEW_README.md` (Vietnamese instructions) and
+`preview-manifest.json`: source PR head, actual checkout commit (which may be a
+synthetic PR merge), CI URL/attempt and SHA256 inventory of uploaded visible files.
+Keep the complete extracted bundle. To check its files from a source checkout:
+`python scripts/package_preview.py --verify --root /path/to/extracted/bundle`.
+Checksums detect changed/missing/extra visible files; they are not a signature or
+proof that all CI jobs passed. Compare provenance with the exact GitHub run.
+CI also downloads each preview by the exact artifact ID returned by its upload,
+then checks the extracted bytes and platform/source/checkout/run/attempt against
+the current runner using `--verify-ci`. When only the verifier job is rerun, an
+artifact may have been produced by an earlier attempt of that same workflow run;
+verification accepts that recorded producer attempt only when it is not newer
+than the current attempt and all other provenance fields match exactly. The
+manifest continues to report the producer attempt. Future-attempt artifacts,
+other runs, source/checkout mismatches and changed bytes are rejected. That step
+must pass on the chosen run; the mere existence of an artifact still does not
+imply successful CI.
+The default preview remains unconfigured; these bundles do not establish hosted
+Auth/save/AI, Windows interactive smoke or Personal Alpha acceptance.
+
 Web uses Flutter's default hash routes, for example `/#/kanji`, so refreshing a
 deep link does not require custom server rewrites. Missing paths show a recovery
 page. Native app routes use the same GoRouter configuration. An iOS platform
@@ -47,7 +97,12 @@ claimed by this shell.
   preview repository does not implement or change the get_daily_plan contract.
 - `features/settings/`: process-local preview preferences; no Supabase writes.
 - `features/study/`: discovery of planned modules.
-- `features/srs/`: pure versioned scheduler; not integrated into review UI.
+- `features/curriculum/`: public bundled N5/N4 reader/search, typed original IDs/
+  versions/examples; no learner write capability. See ../../docs/CURRICULUM_BROWSER.md.
+- `features/srs/`: scheduler, captured SDK/RPC adapters, owned recovery and review
+  controller/UI. Default unconfigured; explicit staging assembly and limitations
+  are documented in ../../docs/SUPABASE_REVIEW_BINDING.md and
+  ../../docs/STAGING_BOOTSTRAP.md.
 - `features/kanji/`: local capture/application/UI and synthetic-only primitives.
 - `shared/`: pure preview level model, layout and reusable unavailable pages.
 
@@ -57,13 +112,57 @@ backend. Domain/transport adapters added later must preserve `contracts/v0.1`.
 Screens call application providers, never raw database tables. Placeholder
 routes are replaced by feature modules as their dependency issues are merged.
 
-Routes: `/`, `/study`, `/settings`, `/auth`, `/vocabulary`, `/grammar`, `/srs`,
+Routes: `/`, `/plan`, `/study`, `/settings`, `/auth`, `/vocabulary`, `/grammar`, `/srs`,
 `/quiz`, `/listening`, `/kanji`, `/ai`, `/conversation`, `/progress`.
 
-Tests cover preview/contract allocation parity, route recovery, all placeholders,
+Tests cover preview/contract allocation parity, route recovery, remaining placeholders, original reader/assets/search,
 study navigation, N4/theme state, injected loading/error/retry/empty results, and
 320/375-pixel layouts at 200% text size. Builds do not establish live auth/RLS,
 multi-device sync, AI availability or curriculum coverage.
 
 Kanji capture prototype: `/kanji` supports local square drawing/undo/clear. It is
 explicitly not real grading or persisted study; see `../../docs/KANJI_CAPTURE.md`.
+
+SRS `/srs` has reveal/rating/save/retry/conflict/load/error/empty controls behind
+injected runtime ports. There is no default demo success or fake due queue.
+The default page states missing Supabase integration and cannot record progress.
+An in-memory pending event survives route navigation, not process restart;
+server-authenticated queue/Auth transport and durable recovery remain #20/#22/#15.
+
+Opt-in web review persistence uses IndexedDB transactions and is documented in
+[Browser review store](../../docs/BROWSER_REVIEW_STORE.md). Both explicit SRS
+runtime factories accept it as their supplied store. Real Chrome connection,
+page-refresh and second-tab tests are mandatory in CI; default runtime remains
+null until Auth/profile/session configuration is supplied.
+
+
+Owned Daily Plan read UI: configured staging startup publishes an account-gated
+`/plan` route via **Kế hoạch học** after login/profile readiness. Enter an explicit
+YYYY-MM-DD under the displayed profile timezone and load the authoritative plan;
+loading, safe errors/offline retry, blocked areas and over-target time are shown.
+Default preview has no plan source or fabricated progress. This read-only route
+does not yet time/save study sessions or install the opt-in durable study-event
+library described in [Completed-study durability](../../docs/DURABLE_STUDY_SESSIONS.md).
+See [Daily Plan UI](../../docs/DAILY_PLAN_UI.md) and
+[Staging bootstrap](../../docs/STAGING_BOOTSTRAP.md) for configuration/limits.
+
+Configured Windows now installs completed-study storage and explicit
+/study-recovery from account/plan pages. See docs/OWNED_STUDY_RECOVERY.md for
+manual reconciliation and lifecycle ownership. Configured /srs now has a
+foreground elapsed timer and explicit durable finish; see docs/SRS_STUDY_TIMER.md.
+Configured vocabulary/grammar now share that recorder with real settled content/
+profile-level guards; see ../../docs/CURRICULUM_STUDY_TIMER.md. Remaining activity
+timers and hosted acceptance are pending; default stays preview.
+
+Configured plan/SRS date fields offer **Chọn hôm nay theo hồ sơ** using the
+server statement clock and own profile timezone. This fills the date only;
+loading/starting/saving remain explicit. See docs/PROFILE_STUDY_DAY.md.
+
+
+The shared completed-study recorder core is documented in
+../../docs/SHARED_STUDY_RECORDER.md. The legacy SRS provider aliases one shared
+current-owner slot, preserving even not-yet-staged immutable reports. Existing
+SRS and configured reader controls use one area-aware panel. Pending reports show
+the original area/date/interval across routes; retry preserves the frozen event.
+Reading/search does not record progress. Reader dates also offer the explicit
+server/profile today-fill action, which never starts or saves a session.

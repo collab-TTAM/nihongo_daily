@@ -1,0 +1,11 @@
+{
+  "version": "profile-study-day-v1",
+  "operation": "get_study_day",
+  "transport": "Supabase RPC",
+  "parameter": "p_request",
+  "request_schema": "request.schema.json",
+  "response_schema": "response.schema.json",
+  "error_definition": "contracts/v0.1/models.schema.json#/$defs/error",
+  "authority": "Gateway-verified learner JWT via auth.uid; server statement clock and current own profile timezone",
+  "meaning": "Current profile-local date at lookup; no plan/session/progress write"
+}

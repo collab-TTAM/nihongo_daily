@@ -1,361 +1,700 @@
-# PROJECT STATUS
-
-Current release target: Personal Alpha
-Overall status: IN_PROGRESS — starter baselines #1–#8 merged; real learner flows, N5/N4 expansion and live integrations remain outstanding.
-
-| Milestone | Status | Owner / prerequisite |
-| --- | --- | --- |
-| Architecture baseline | MERGED via PR #10; #1 completed | Lead |
-| Flutter skeleton | MERGED via PR #19; #2 completed | #2 Flutter |
-| Supabase schema/auth | MERGED via PR #21; live Auth tracked in #20 | #3 Backend |
-| SRS engine | MERGED via PR #24; pure nd-srs-1; live RPC #22 | #4 Learning |
-| Kanji writing engine | MERGED via PR #29; capture/synthetic core; real assets #16 | #6 Kanji |
-| AI tutor | MERGED via PR #32; runtime bridge #31 / live providers #17 | #7 AI |
-| N5/N4 content pipeline | N5 seed MERGED via PR #27; expansion #26 / N4 #14 | #5 completed |
-| QA/security baseline | MERGED via PR #35; #8 inventory completed | #18 integrated release still pending |
-
-## Historical handoff — Issue #1, 2026-10-13
-
-- Completed: resolved rating/units/date/retry/ownership ambiguities; 37 named schema definitions, eight endpoint bindings, 20 fixtures, validator and 15 regression tests; dependency and merge order documented.
-- Remaining: Flutter #2, database/RLS #3, SRS #4, curriculum #5 and remaining Personal Alpha modules.
-- Changed files: contracts/v0.1/*, contracts/validate.py, contracts/test_contracts.py, contracts/requirements.txt, API_CONTRACTS, DATABASE_SCHEMA, ARCHITECTURE, CONTRACT_BASELINE, this status, README, CI workflow.
-- API changes: typed definitions for eight already-planned operations; RPC/Edge boundaries, safe errors, bounded outputs and scoped retries.
-- Database changes: specification only; user-scoped review uniqueness/original-result receipts, conversation receipts, parent-message ownership, integrity and validated write requirements. No migration applied.
-- Known issues: no Flutter app or live service; fixture validation does not test deployed RLS/providers. Audio streaming/upload contract remains later work.
-- Tests: local validator passed all 20 fixtures and all 15 regression tests passed. PR/current-head CI is the integration gate; see #1/its PR for evidence.
-- Next task: #2 Flutter shell after #1 integration, without external credentials.
-- Blockers/decisions: none for #2; live Supabase/AI/voice configuration is addressed when integration is implemented.
-
-Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. Issue #16 provides real Kanji reference assets, while #6 can start synthetic primitives after #2.
-
-## Latest handoff — Issue #2 / PR #19, 2026-10-13
-
-- Branch: automation/issue-2-flutter-shell; base main 33f31a8 (PR #10).
-- Implemented: Vietnamese Material 3 adaptive shell, GoRouter module discovery and
-  unavailable pages, Riverpod-injected typed demo repository, session-only N5/N4
-  and theme settings, loading/error/retry/empty handling, regression tests.
-- Changed files: apps/flutter_app, README, CI workflow, .gitignore, this status.
-- API/database changes: none; demo allocation does not implement get_daily_plan.
-- Checks: contract validator passed 20 fixtures; 15 contract regression tests passed.
-  Flutter format and analyze passed (no issues); 22 Flutter tests passed, including
-  200% text on 320/375px layouts after fixing the theme dropdown overflow. Web
-  release build succeeded locally again with the final dependency lock, including
-  the optional Cupertino icon font. Local source matches the uploaded tree
-  2554e82a1b6e5c8f787fba350bbfe8e734022bfa (code head 20e3088 before this status update).
-  Exact-head CI and Windows build evidence are tracked in
-  https://github.com/collab-TTAM/nihongo_daily/pull/19/checks; repo-sanity, flutter
-  (format/analyze/22 tests/web build), and windows (release build) must all pass
-  before integration. Artifacts: flutter-web-preview and flutter-windows-preview.
-  CI run 38407859810 passed repo-sanity and all Flutter checks, but Windows failed
-  because windows-latest supplied VS 2026 and Flutter 3.35 selected the fallback
-  VS 2019 CMake generator. The Windows job is now pinned to windows-2022 / VS 2022;
-  no checks were removed. Current-head rerun remains the integration gate.
-  Direct browser smoke was not observed:
-  the local headless Chrome process crashed before the app could load.
-- Known limitations: real content, auth, storage, sync, SRS, scoring, progress,
-  providers and voice remain unimplemented; preview routes state this explicitly.
-- Next: integrate #2 only after separate review and current-head CI; then #3
-  Supabase schema/RLS. #4 can use the Dart package after #2 merge.
-- Blockers: none requiring user input. Native Windows launch, iOS runner,
-  signing and device validation remain later work.
-
-## Integrated handoff — Issue #3 / PR #21, 2026-10-13
-
-- Merged: PR #21 (https://github.com/collab-TTAM/nihongo_daily/pull/21) as
-  4dd5e134ec2bfdc93bac97ed796ba882c9e98af6; #3 completed. Shared contracts #1 and
-  Flutter preview #2 are also integrated; earlier handoffs above are historical.
-- Delivered: additive 22-table migration; owner/parent-message RLS; explicit
-  table/column grants; allowlisted own-profile settings; backend-only scenario
-  context; immutable review requests/original responses; typed curriculum FKs;
-  normalized relationship FKs, indexes and checked receipt state.
-- Evidence: separately reviewed head 240ef15190dbaa3ffc191cf212dba7a8c262e686.
-  CI https://github.com/collab-TTAM/nihongo_daily/actions/runs/38421789675 succeeded:
-  repo-sanity (20 contract fixtures, 15 tests), database (250 SQL assertions plus
-  two native concurrent sessions committing exactly one event), flutter
-  (format/analyze/22 tests/web release build), windows (release build).
-- Local checks: the migration/SQL suite passed on PostgreSQL 18.6 via PGlite 0.5.9;
-  contract fixtures/tests, bash syntax, Python compilation and whitespace passed.
-  Native PostgreSQL 17 evidence comes from CI, not this local environment.
-- Review fixes: canonicalize Asia/Saigon to Asia/Ho_Chi_Minh with UTC+7 conversion
-  checks; use FOR SHARE for active-content validation; revoke inherited service-role
-  TRUNCATE; verify restrictive FK rejection and unchanged curriculum/history across
-  observed native PG17/local PG18 error codes. No security/test gates removed.
-- Not delivered: hosted Supabase/PostgREST/Auth, public submit_review, account
-  lifecycle, real providers, offline sync or production deployment. Storage replay
-  is not a functioning review endpoint, and the UI remains a labeled demo.
-- Follow-ups: #20 real Auth/session lifecycle; #22 authenticated atomic review RPC
-  after #4 pure scheduler; #7 provider-neutral validated interfaces; #17 live
-  AI/voice. Read supabase/README.md for storage/export mapping and safe test setup.
-- Next task: #4 deterministic pure Dart SRS on automation/issue-4-srs-core, then
-  #5 original N5 content according to dependency order. #4 needs no live secrets.
-  Main stays IN_PROGRESS toward Personal Alpha; no release completion claimed.
-
-## Integrated handoff — Issue #4 / PR #24, 2026-10-13
-
-- Merged: https://github.com/collab-TTAM/nihongo_daily/pull/24 as
-  d4ed337dc8a5bcce46bc830e0e10528b8bd04e56; #4 completed as a pure scheduler.
-- Delivered: immutable Dart card/request projections, nd-srs-1 rating/transition
-  rules, bounded learning/relearning/early/overdue intervals, capped review growth,
-  validated counters/difficulty and deterministic UTC duration arithmetic.
-- Evidence: reviewed head 7e656d445bbca00216f601fc203f14f923068b03; all jobs succeeded at
-  https://github.com/collab-TTAM/nihongo_daily/actions/runs/38426443750:
-  repo-sanity (20 baseline fixtures/17 regression tests), database (retained SQL/RLS
-  and native race), Flutter (format/analyze without issues, full unit suite,
-  26 policy cases and actual Dart output/schema validation, web release build),
-  Windows (release build). Separate source and verifier lint-fix reviews recorded.
-- Local evidence: raw pure-Dart execution and actual-output validation of all 26
-  cases, domain/tool analysis, formatting, 17 Python tests and whitespace/syntax.
-  Full Flutter package resolution was unavailable locally; full unit/build evidence
-  comes from CI. No browser/native interactive smoke or hosted integration claim.
-- Shared fields/enums are unchanged. docs/SRS_ALGORITHM.md specifies the heuristic,
-  rounding and #22 backend parity/auth/locking/replay requirements. Versioned
-  golden cases are contracts/srs/v1/golden.json. No calibrated memory prediction.
-- Not integrated: SRS UI study flow, public submit_review, stored receipt replay,
-  auth or durable offline persistence. #22/#15/#20 retain these responsibilities.
-  MASTERED remains reserved; memory stability/retrievability are not estimated.
-- Next task: #5 original schema-valid N5 seed content. #22 can now port the pure
-  scheduler with authoritative transaction tests; #11's #2/#3/#4 dependencies are
-  satisfied. Live configuration does not block original content work.
-- Personal Alpha remains IN_PROGRESS with curriculum, study screens, real auth,
-  sync, Kanji, AI/voice and integrated release evidence still outstanding.
-
-## Development handoff — Issue #5, 2026-10-13 UTC
-
-- Branch automation/issue-5-n5-seed, base main 73c1dc8. Original editorial N5
-  seed: 24 vocabulary, 8 Kanji, 10 grammar and 44 embedded example entries.
-  Stable IDs, version/count/scope manifest, Vietnamese explanations and readings.
-- Added strict offline export gate and 17 mutation/regression tests; CI runs the
-  gate and all existing tests. Wire models, Flutter source and database unchanged.
-- Local: content/schema/count/reference validation passed; 20 baseline fixtures
-  and all 34 Python tests passed; Python compile/whitespace passed. Eight stroke
-  counts cross-checked against pinned KanjiVG metadata; assets not redistributed.
-- Flutter SDK/native PostgreSQL are absent locally. Existing full Flutter format,
-  analyze/tests/SRS output validation, web/Windows builds and SQL/race checks must
-  pass in CI for the PR's exact head before integration; no such result claimed yet.
-- Not full N5/N4 curriculum; no audio, reference strokes, importer, hosted service
-  or UI integration. Linguistic correspondence manually reviewed by the worker;
-  independent teacher review is not observed. Details/provenance in data/README.md.
-- Resume this PR first, then #6 Kanji capture/synthetic primitives. #26 tracks N5 expansion; #14 can extend
-  the content gate with N4; #12 consumes original exports; #16 provides real assets.
-  Personal Alpha remains IN_PROGRESS; no new user action is needed for #6.
-
-- Separate review fix: reject duplicate JSON object members and fullwidth romaji
-  readings; two mutation regressions added. No validation/security gate weakened.
-
-## Integrated handoff — Issue #5 / PR #27, 2026-10-13 UTC
-
-- Merged PR #27 as d5afac06f129f1c9ae899bd3827b24dfc89ae8d6; #5 completed.
-  Separately reviewed exact head d1756a389895e7910d0fe6ff20b8d684006558fb.
-- Original seed: 24 vocabulary, 8 Kanji, 10 grammar and 44 embedded examples with
-  kana readings/Vietnamese text; stable IDs and honest scope/count/asset manifest.
-  Pinned metadata provenance and linguistic notes are in data/README.md.
-- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38443120630
-  completed successfully; repo-sanity, database, flutter and windows all passed.
-  repo-sanity validates the exports, 20 baseline fixtures and 34 Python regressions.
-  Flutter retained format/analyze/full tests, 26 SRS policy cases and actual-wire
-  schema checks/web release build; Windows release and SQL/RLS/native race passed.
-- Local checks: 34 Python tests, content/contracts, Python compile, manifest schema,
-  forbidden-file and whitespace checks. Local Flutter/native PostgreSQL unavailable;
-  their evidence is CI, not local execution. Remote uploaded tree matched reviewed
-  local files. No interactive browser/native or hosted service validation claimed.
-- Review fixes: duplicate JSON object members and fullwidth romaji are rejected.
-  No frozen wire schema, RLS, migration, Flutter or provider change.
-- Limits: small editorial seed, not complete N5/N4 support. No audio/stroke geometry,
-  importer or content UI integration; independent teacher review not observed.
-  #26 tracks N5 scope/expansion, #14 N4, #12 study and #16 real reference assets.
-- Next: #6 Kanji capture/normalization and synthetic scoring primitives, with #2
-  and #1 already merged. No external credential blocks this work. Resume any open
-  evidence PR first. Personal Alpha remains IN_PROGRESS with live integration,
-  broader curriculum, offline/sync and release acceptance still outstanding.
 
 
-## Development handoff — Issue #6, 2026-10-13 UTC
+## N5 reading catalog count regression — 2026-11-22T01:12Z
 
-- Fresh main 8559956 includes merged #5 evidence PR #28; no open PR on claim.
-  Branch automation/issue-6-kanji-capture, one sequential worker.
-- Added pure immutable normalized models, bounded single-pointer capture, undo/
-  clear, square mouse/touch/stylus prototype and synthetic-only geometric scores.
-  Real grading is explicitly unavailable; no canonical assets or persisted progress.
-- Local SDK exists but Flutter dependency bootstrap cannot complete in this
-  environment. Raw Dart capture/scorer verifier passed and emitted two actual
-  schema-valid requests; full Flutter analyze/tests/build and database/Windows
-  checks require observed exact-head CI before integration.
-- Added domain/widget regressions and actual-wire CI gate; no dependencies or
-  frozen contracts/auth/RLS changed. docs/KANJI_CAPTURE.md records heuristic/limits.
-- Resume this PR and CI first; after integration next worker task is #7 validated
-  AI interfaces. #16 still gates real stroke assets/grading. Personal Alpha remains
-  IN_PROGRESS; no hosted/backend/recognition/real-grade claim.
-
-- Separate review fix: enforce event-time monotonicity even for coalesced stationary
-  samples; added targeted regression. Added spacing for readable canvas guidance.
+- Run `core-20261122T0110Z-pr41-reading-catalog-count-tests`; branch `automation/issue-11-plan-sdk-integration`; parent `0222e9d0f17ffe50471c9e46a18e051ae88e9559`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [44965187142](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44965187142), attempt 1, completed with repo-sanity, database, AI boundary and Windows SUCCESS; Flutter FAILED after format and analyze passed. The full Flutter suite reported 2,132 passed / 2 failed; preview-artifacts and downstream Flutter steps were skipped, not passed.
+- Failure 1: `bundled_reading_repository_test.dart` still expected five N5 IDs and 15 questions, while the fixed bundled catalog contains six passages including `n5-sunday-meal-01` and 18 questions. Failure 2: `reading_widget_test.dart` expected the stale label “5 bài đọc · Chọn để mở”, while the screen correctly derives the count from the six loaded passages.
+- Corrected only these two feature tests: assert the sixth stable ID, 18 total questions, the visible sixth card and the six-passage label. No reading content, production UI/domain logic, N4/Pro-owned files, manifest, Auth, API/schema/RLS or CI gate changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; no local Flutter format/analyze/test/build was run. The new exact-head CI must rerun the full suite and all downstream jobs.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #34/#11/#18 open pending independent content review, audio availability, trusted study-session integration, hosted learner evidence and Personal Alpha acceptance.
 
 
-## Integrated handoff — Issue #6 / PR #29, 2026-10-13 UTC
+## N5 reading commute passage — 2026-11-22T02:16Z
 
-- Merged PR #29 as 9d66f36123e5a2a958cf4a1c1b2177bbf5a46494; #6 completed.
-  Separately reviewed/tested head 2743ed2e0388d2aaa69f2bf4282c6931a00c58f9.
-- Delivered immutable finite/bounded square-coordinate models; single-pointer
-  capture with relative monotonic time, boundary clamp, cancel/tap/limit handling,
-  undo/clear; local Riverpod prototype on /kanji for mouse/touch/stylus.
-  Pure nd-kanji-synthetic-1 primitives compare shape/order/direction/balance.
-- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38446275479
-  succeeded with all four jobs. Flutter format/analyze (no issues), 91 tests
-  (21 new domain/6 widget tests), 26 SRS wire cases, 2 actual Kanji capture encodings
-  validated against frozen schema, web release build; Windows release and retained
-  database/RLS/native concurrent uniqueness passed. No required job skipped.
-- Local evidence: raw Dart identity/reversal verifier, actual request schema,
-  authored content/20 baseline fixtures/34 Python regressions, formatting/Python
-  compilation/whitespace. Flutter dependency bootstrap unavailable locally; full
-  Flutter/native PostgreSQL evidence comes from CI. All 15 uploaded files matched
-  reviewed local hashes. No interactive browser/native device launch observed.
-- Review fix: decreasing time after stationary/coalesced input cancels the stroke,
-  with regression. Documentation distinguishes pure engines from integrated flows.
-  No auth/RLS/dependency/provider/frozen-schema changes or weakened gates.
-- Limits: no persisted Kanji attempts, curriculum selection, tracing/animation,
-  canonical reference assets or real grade. evaluateReal explicitly reports
-  reference absence; synthetic scores never appear as learner grades. #16 retains
-  vetted assets/real grading work; docs/KANJI_CAPTURE.md records heuristic limits.
-- Next sequential worker task: #7 provider-neutral validated AI interfaces after
-  any open evidence PR. No secret/configuration needed for pure adapter tests;
-  #17 still owns live services/voice. Personal Alpha remains IN_PROGRESS.
+- Run core-20261122T0212Z-pr41-n5-reading-commute-passage; branch automation/issue-11-plan-sdk-integration; parent 57dd2c34d5e12003727467a8df8c946352526712; base main 61604bc21da64a0dd94dbb97ba3c4b1d035430a6.
+- Added original draft passage n5-bus-commute-01 (バスで会社へ行きます) with Vietnamese translation, kana reading and three deterministic source-grounded questions. Bundled N5 reading now has 7 passages / 21 questions. The source note still says teacher/native-speaker review is outstanding; audio remains unavailable and this passage cannot grant listening availability, study credit, mastery or SRS progress.
+- Changed exactly: apps/flutter_app/assets/reading/catalog.json, apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart, docs/READING_MATERIAL.md, docs/PROJECT_STATUS.md. The regression asserts the seventh passage, updates the total and includes its three-question round in the deterministic answer test.
+- Full source tree audit before write: 1025 entries (900 blobs, 125 trees), recursive result untruncated; Pro-owned N4/shared paths were present and preserved. No data/n4, data/manifest.json, data/README.md, shared content test or N4 documentation change.
+- JSON/identity/choice-key structural preflight passed in the cloud authoring step. The authoring runtime has no pinned Flutter/Dart SDK, so Dart format/analyze/Flutter tests/Web/Windows builds were not run locally. Exact-head GitHub Actions must verify the new regression and all retained gates; no new-head CI pass is claimed.
+- PR #41 remains Draft; #34/#11/#18 remain open. Hosted learner, reviewed reading content, vetted audio and Personal Alpha release evidence remain separate gates.
 
 
-## Development handoff — Issue #7, 2026-10-13 UTC
+## N5 seven-passage regression repair — 2026-11-22T03:15Z
 
-- Branch automation/issue-7-ai-boundary; fresh main 59506e2, no open PR on claim.
-- Added server-only provider-neutral TypeScript contracts/ports, strict original
-  JSON Schema validation, immutable bounded requests/context, auth/rate guard,
-  safe Vietnamese errors and deadline/abort handling. No live provider configured.
-- Added private durable SQL receipt lookup/claim/token-completion, permission tests
-  and native two-session claim race. Pending uncertainty never renews dispatch;
-  lookup-only recovery must validate/correlate an existing result.
-- Local: TypeScript check/format and 38 Node tests passed, original 34 Python tests,
-  20 contract fixtures/content checks, Python compile/bash syntax/whitespace passed.
-  Native PostgreSQL/full Flutter/web/Windows checks require exact-head CI; no such
-  result claimed until observed. Existing CI gates retained; ai-boundary job added.
-- Limits: injected test Auth/limiter/context/provider/memory store only; no deployed
-  Edge/Deno compatibility, distributed runtime limiter, complete conversation
-  transaction adapter, live provider, Flutter AI UI or voice. Follow-up runtime
-  binding #31 must prove ownership/sequence/restart/reconciliation; #17 live/voice.
-- Resume PR/CI/review first. After #7 merge next sequential task #8 QA matrix.
-  Personal Alpha remains IN_PROGRESS; no external configuration needed for #8.
-
-- Local additive migration, retained SQL/RLS suite and new AI receipt/security
-  assertions passed on PGlite 0.5.9; native multi-session concurrency still needs CI.
-
-- Separate review fixes: reject empty/oversized dispatch tokens before provider
-  calls, freeze validated outputs/recovered context before asynchronous persistence,
-  with two targeted regressions. No security/test gate weakened.
-
-- Dependency audit found moderate Ajv advisory GHSA-2g4f-4pwh-qvx6; $data is
-  disabled, and Ajv was upgraded from 8.17.1 to pinned 8.20.0 before integration.
-  Added production dependency audit gate; current-head CI must rerun.
-
-- UUID compatibility review: prepared-session binding compares logical UUIDs
-  case-insensitively, while receipt comparison keeps immutable request fields.
-  Added an uppercase client UUID regression; no auth/ownership check weakened.
+- Run `core-20261122T0312Z-pr41-n5-seven-passage-regression`; branch `automation/issue-11-plan-sdk-integration`; source parent `e701e016d1377992a4451b55bde9536bc32e427a`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Test-fix commit: [`9f61ca612a92c84461382be99864c04c156546e4`](https://github.com/collab-TTAM/nihongo_daily/commit/9f61ca612a92c84461382be99864c04c156546e4).
+- Exact-parent GitHub Actions [44975943994](https://github.com/collab-TTAM/nihongo_daily/actions/runs/44975943994), attempt 1, targets `e701e016d1377992a4451b55bde9536bc32e427a` and completed with `database`, `repo-sanity`, `ai-boundary`, and `windows` SUCCESS; `flutter` FAILED; `preview-artifacts` SKIPPED. In Flutter, pinned Dart 3.35.4 format and `flutter analyze` passed; `flutter test` found two stale expectations after the catalog grew to seven passages: repository test omitted `n5-bus-commute-01` and expected 18 instead of 21 questions; default reading widget expected the six-passage label and did not assert the seventh card. Downstream Flutter probes/build and preview artifact were skipped, not passed.
+- Fixed only TEST ONLY assertions in `apps/flutter_app/test/features/reading/bundled_reading_repository_test.dart` and `apps/flutter_app/test/features/reading/reading_widget_test.dart`: exact seven passage IDs/count, 21 questions, seven-passage label and visible bus-commute card. No content or production UI changed; no N4/Pro-owned paths, manifest, Auth, API/schema/RLS, CI gates, dependencies, default save behavior or release settings changed.
+- Recursive tree audit before source write: 1,025 entries, untruncated (900 blobs / 125 trees). Parent/final test commit trees have identical path/mode/type sets; exactly the two intended blob paths changed; every other blob SHA is preserved; directory SHA changes are limited to their ancestors. `create_tree` used exact `base_tree_sha=f00049b2c6edf2fc961fe3563a6d4bb28778407f`; one parent; `update_ref` used `expected_sha=e701e016d1377992a4451b55bde9536bc32e427a`, `force=false`. Branch and changed-blob readbacks verified.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. New exact-head Actions must verify all six jobs and all required steps. Keep PR #41 Draft; #34/#11/#18 and hosted learner/review/audio gates remain open.
+- Next: inspect latest-attempt jobs/steps for the final PR HEAD; fix only observed failures. Worker RELEASED.
 
 
-## Integrated handoff — Issue #7 / PR #32, 2026-10-13 UTC
+## Hosted Supabase probe implementation — 2026-11-22T04:14Z
 
-- Merged PR #32 as edb6465ed07af54ee2495be706afc2712382efb1; #7 completed.
-  Separately reviewed/tested head e3200bc60c58e175d3d0414621f06c6d0b887467.
-- Delivered provider-neutral server TypeScript interfaces for five frozen AI
-  operations, original-schema validation/generated types, bounded immutable
-  request/context/result, required verified-auth/rate/context ports, server identity
-  and curriculum-ref checks, safe Vietnamese errors and deadline/abort handling.
-  Private invoker receipt lookup/claim/token-completion helpers preserve ownership,
-  original replay and pending uncertainty; recovery never dispatches a new call.
-- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38452125458
-  succeeded with all five jobs: repo-sanity, ai-boundary, database, flutter, windows.
-  AI format/strict TypeScript/generated-type checks and all 38 Node tests passed;
-  production dependency audit reported zero findings. Native PostgreSQL passed
-  28 added AI SQL/security assertions and two-session dispatch claim race, retaining
-  existing SQL/RLS/review uniqueness tests. Flutter retained 91 tests, analyze with
-  no issues, SRS/Kanji actual-wire gates and web release; Windows release passed.
-- Local: Node checks/tests, 34 Python regressions, 20 baseline fixtures/content,
-  PGlite 0.5.9 migrations/SQL/RLS/AI assertions, Python compilation/bash syntax and
-  whitespace. Native concurrency/full Flutter build evidence is CI, not local.
-  Uploaded initial/patched trees matched 21 reviewed local files; no secrets.
-- Review fixes: frozen output/recovery context, invalid dispatch token, equivalent
-  UUID capitalization; Ajv moderate GHSA-2g4f-4pwh-qvx6 audited/patched to 8.20.0
-  ($data disabled), production audit gate added. No test/security gate weakened.
-- Limits: no deployed Edge/Deno proof, real Supabase Auth verification, distributed
-  runtime limiter, actual conversation session/message transaction adapter,
-  real provider, Flutter AI UI or voice. Test ports are explicit fixtures and do
-  not count as integrations. #31 tracks trusted runtime/transaction/reconciliation
-  binding; #17 live provider/voice, #20 account lifecycle, #18 integrated evidence.
-  docs/AI_BOUNDARY.md details scope and safe pending recovery requirements.
-- Next sequential worker task: #8 reproducible QA/security regression matrix after
-  any open evidence PR. No external configuration needed for that inventory.
-  #31's library dependency is resolved; real hosted/provider evidence remains
-  pending configuration. Personal Alpha stays IN_PROGRESS beyond starter tasks.
+- Resumed draft PR #41, branch automation/issue-11-plan-sdk-integration, parent 1d588edab6e1572e7c33adeca0dcedb726a2b1d3, base main 61604bc21da64a0dd94dbb97ba3c4b1d035430a6.
+- Found a real staging blocker: .github/workflows/hosted-supabase-acceptance.yml invoked scripts/hosted_supabase_probe.py, but that path was absent from the complete recursive tree. The documented Auth/profile/A-B/review RPC probe therefore could not start.
+- Added the missing standard-library probe and offline protocol regressions. It validates the fixed Supabase origin/public key, rejects redirects and oversized responses, redacts HTTP bodies, uses two independent A sessions plus B, verifies refresh rotation/local logout isolation, own/cross-owner profile reads and preference restoration, and checks submit_review replay/conflict/counter/RLS behavior.
+- Paths: scripts/hosted_supabase_probe.py, scripts/test_hosted_supabase_probe.py, scripts/test_hosted_workflow.py, .github/workflows/ci.yml, docs/HOSTED_SUPABASE_ACCEPTANCE.md, docs/PROJECT_STATUS.md.
+- No secrets, service-role key, Auth strategy change, deployment, hosted dispatch, migration, RLS change, N4/Pro content, default Auth/save activation or release action. Local Python tests were not executed in this cloud authoring step; the new repo-sanity test step and full exact-head Actions are the verification gate.
+- Next: inspect every latest-attempt job and step on the new PR head. Hosted proof still requires the protected supabase-staging environment, six documented secrets, two disposable accounts, reviewed migrations and an active N5 vocabulary row. Do not dispatch or claim hosted evidence before those prerequisites are explicitly available.
 
 
-## Development handoff — Issue #8, 2026-10-13 UTC
+## N5 friend-house reading passage — 2026-11-22T13:15Z
 
-- Fresh main 98397e72; no open PR on claim. Single sequential worker on
-  automation/issue-8-qa-matrix. #1–#7 implementation/evidence already merged.
-- Added 27-case machine-readable QA matrix: 13 executable baseline groups with
-  concrete test anchors, reproduction/scope limits; 14 pending integrated release
-  cases. Six ranked findings distinguish missing assurance from a proven exploit
-  and the remediated Ajv advisory. Created #34 for unassigned Listening/Reading.
-- Added standard-library inventory and exact-head Actions evidence verifier:
-  explicit repository/workflow/head/run/attempt, all five jobs/critical steps,
-  complete pagination, no missing/skipped/pending/mixed results. CLI never executes
-  matrix commands or certifies metadata authenticity. Synthetic test data is TEST ONLY.
-- Local: 17 QA negative regressions, original 34 Python tests, 20 frozen fixtures
-  and content export checks passed. Prior-main CI 38453557158 passed all five jobs;
-  this is historical, not the #8 head. Full current-head Node/SQL/Flutter/web/Windows
-  CI must be observed before integration. No new runtime/provider/migration change.
-- QA_SECURITY_MATRIX documents reproduction, evidence retrieval, ranked findings
-  and the unchecked release checklist. Baseline green cannot pass --release while
-  live Auth/RPC/plan/study/content/assets/Edge/AI/voice/sync/progress/smoke/journey
-  evidence remains pending; no Personal Alpha completion claim.
-- Resume #8 PR/CI and separate review first; next priority #22 authenticated atomic
-  review transaction, then #31 runtime bridge and #11 plan/session work by dependency.
-  Local implementation can proceed without secrets; hosted evidence remains pending.
+- Run `core-20261122T1305Z-pr41-n5-reading-friend-house`; branch `automation/issue-11-plan-sdk-integration`; source parent `6259a79a3b65240a849d62ffeb2af812ff7539ed`; source commit [`a3715b1`](https://github.com/collab-TTAM/nihongo_daily/commit/a3715b1f11a59067c608298895a49516cddff55b).
+- Added original draft passage `n5-friend-house-01` (友達の家で), with kana reading, Vietnamese translation and three deterministic source-grounded questions. The fixed N5 bundle now contains 8 passages / 24 questions. Its source note explicitly says teacher/native-speaker review is outstanding.
+- Updated only: `apps/flutter_app/assets/reading/catalog.json`, the N5 expansion test, the bundled repository N5 count/ID test, the default reading widget count/card test, `docs/READING_MATERIAL.md`, and the `reading-widget-flow` QA anchor/limitation. The existing N4-empty assertions remain unchanged. No Pro-owned #14/#38 N4 data, manifest, README, content tests/docs or derived N4 assets were edited.
+- Before the source write, the complete recursive parent tree had 1,027 entries (902 blobs / 125 trees), untruncated. The source `create_tree` used exact `base_tree_sha=6fb6ebda6f154970354ec973e7136407dcea54e1`; its commit is single-parent. `update_ref` used `expected_sha=6259a79a3b65240a849d62ffeb2af812ff7539ed`, `force=false`. Separate final-tree review found 1,027 entries, identical path/mode/type sets, exactly the six intended blob changes, 896 untouched blobs preserved, and all six changed-file blob readbacks matching the final tree.
+- Cloud structural preflight parsed the catalog and verified 8 unique passage IDs, 24 questions, N5/version-1 identity, three choices per question and exactly one correct choice per question. The cloud authoring runtime has no pinned Flutter/Dart SDK; local Dart format/analyze/Flutter tests/Web/Windows build were not run. Exact-head GitHub Actions is the required executable verification and must be inspected on the final PR HEAD; no CI pass is claimed here.
+- Keep PR #41 Draft and #34/#11 open. The passage remains an unreviewed draft; no audio, listening availability, study-minute credit, mastery or SRS progress is enabled. Independent teacher/native-speaker review, vetted audio, authoritative server availability, hosted learner acceptance and all Personal Alpha gates remain outstanding.
 
-- Separate review hardening: verify command/step anchors within their actual CI
-  job, so moving an audit elsewhere cannot preserve coverage; reject removed
-  ranked findings and out-of-repository test anchors. Three regressions added.
 
-## Integrated handoff — Issue #8 / PR #35, 2026-10-13 UTC
 
-- Merged https://github.com/collab-TTAM/nihongo_daily/pull/35 as
-  250cc1ff2c21da876ce7a8e9004b77c0bb6145ef; #8 completed as QA inventory/evidence tooling.
-  Separately reviewed/tested head 7ee60f0f54297231147e1dd7ac1e1fe4662ea6fd.
-- Delivered qa/matrix.json: 27 assurance cases (13 executable baseline groups,
-  14 pending integrations), exact file/statement anchors, reproduction commands,
-  issue owners and limits; six severity-ranked findings distinguish five missing
-  assurance gaps from the already patched dependency advisory. docs/QA_SECURITY_MATRIX.md
-  maintains the reproduction/evidence instructions and unchecked release checklist.
-- Standard-library verifier rejects stale head/repo/workflow, mixed run/attempt,
-  incomplete pagination, missing/duplicate/unreviewed jobs or steps and non-success
-  states. It never executes matrix commands or authenticates saved metadata.
-  CI now validates inventory and all 17 QA regressions, retaining every prior gate.
-- Evidence: https://github.com/collab-TTAM/nihongo_daily/actions/runs/38455196645
-  succeeded with all five jobs: repo-sanity (17 QA, 34 existing Python tests,
-  20 frozen fixtures/content), ai-boundary (38 Node tests/format/type/generated
-  checks, zero production audit findings), database (retained SQL/RLS and both
-  native concurrency races), flutter (analyze without issues/tests/SRS/Kanji
-  actual-wire checks/web release), windows (release build/artifact).
-- Fetched unmodified workflow run and complete latest-attempt jobs via connected
-  GitHub; verifier accepted exact-head evidence. Prior-main CI was rejected for
-  missing the new QA step. With the real successful CI snapshot, --release
-  intentionally returned nonzero because 14 integration cases remain pending.
-  No release completion, interactive device/browser or hosted-service claim.
-- Local: 17 QA regressions, 34 Python tests, contract/content checks, compilation
-  and whitespace passed. Remote uploaded tree c462f344 matched reviewed local
-  files. Full Node/native SQL/Flutter/Windows results came from current-head CI.
-- Review hardening: scope step anchors to their actual job, reject test paths
-  outside the repository and removal of ranked findings. No wire/auth/RLS,
-  runtime/provider/migration changes or weakened checks.
-- Follow-up #34 covers the previously unassigned Listening/Reading module with
-  honest audio availability and valid-session/retry requirements. Existing issues
-  retain all auth, RPC, plan/study, N5/N4, real Kanji, AI/voice, sync and progress gaps.
-- Next sequential task: #22 authenticated atomic submit_review, whose schema/SRS
-  dependencies are merged. Implement local SQL/typed adapter/transaction evidence
-  without waiting for live secrets; do not close #22 without its full acceptance.
-  Then #31 runtime binding and #11 plan/session work by dependency. #18 remains
-  blocked by integrated Personal Alpha evidence; independent development continues.
+## N5 birthday reading passage — 2026-11-22T15:05Z
+
+- Run `core-20261122T1505Z-pr41-n5-birthday-reading`; branch `automation/issue-11-plan-sdk-integration`; parent `674ea935f6d3ca558b08bc23182c2b7b2511d614`; source commit `70fae44d202a9173e7de903c547f187d813e0a9d`; base `main` `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added original draft passage `n5-birthday-01` (誕生日の一日), with kana reading, Vietnamese translation and three deterministic source-grounded questions. The fixed bundled N5 reading set now contains 9 passages / 27 questions. The source note still states that independent teacher/native-speaker review is outstanding.
+- Updated only N5 reading paths: `apps/flutter_app/assets/reading/catalog.json`, `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart`, `apps/flutter_app/test/features/reading/bundled_reading_repository_test.dart`, `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `docs/READING_MATERIAL.md`, `qa/matrix.json`, and this status file. The N4-empty assertions and all N4 content remain unchanged.
+- Cloud structural preflight parses the full catalog and verifies unique N5 IDs, version 1, nonempty Japanese/kana/Vietnamese fields, three unique choices and exactly one correct choice per question. It also checks the new passage's answer keys and that the N5 catalog totals 9/27. This is structural validation, not linguistic review.
+- Exact-head CI observation at 2026-11-22T15:20Z: GitHub Actions has not published a workflow run or check suite for source commit `70fae44d202a9173e7de903c547f187d813e0a9d`. Parent run [45026819966](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45026819966) is green on `674ea935f6d3ca558b08bc23182c2b7b2511d614` only and is not evidence for this increment.
+- This authoring runtime has no pinned Flutter/Dart SDK; Dart format, Flutter analyze/tests and Web/Windows builds were not run locally. Exact-head GitHub Actions must verify the new asset/widget regressions and every retained job/step. No CI pass is claimed here.
+- PR #41 remains Draft; #34/#11/#18 remain open. No Pro-owned N4 data/manifest/README/content tests/docs/derived assets, audio, server availability, study-minute credit, mastery, Auth/API/schema/RLS, dependencies, defaults, deployment or release settings changed. Next: inspect the latest-attempt workflow on the final commit, fix only observed diagnostics, then obtain independent N5 linguistic review and separately reviewed audio/server availability before activation.
+
+
+## PR #41 exact-head Flutter formatter repair — 2026-11-22T16:10Z
+
+- Run `core-20261122T1610Z-pr41-flutter-format-fix` resumed after the prior ACTIVE marker was older than 90 minutes; branch `automation/issue-11-plan-sdk-integration`; parent PR head `fc05a1b1115aeb781b368a0930ee44390a727222`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Inspected latest-attempt Actions [45037974582](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45037974582), attempt 1, whose `head_sha` is exactly `fc05a1b1115aeb781b368a0930ee44390a727222`. `repo-sanity`, `ai-boundary`, `database`, and `windows` completed SUCCESS. Flutter failed only at pinned Dart 3.35.4 `dart format --output=none --set-exit-if-changed .`; the formatter log identified one file, `apps/flutter_app/test/features/reading/reading_widget_test.dart`. Flutter analyze/tests/build and preview-artifacts were SKIPPED and are not passes.
+- Applied only the exact formatter output from that job to the translation-tap and translation-expectation lines in the N5 reading widget test. No production code, reading content, N4/Pro-owned files, API/schema/RLS, Auth, defaults, dependencies or CI gates changed.
+- Cloud runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must execute the full Flutter suite and every required job/step before this repair can be considered verified.
+- Next: inspect all jobs and steps on the new final PR HEAD; fix only observed diagnostics. PR #41 remains Draft; reviewed N5 content, vetted audio, hosted learner A/B, deployed RLS, physical multi-device sync and Personal Alpha release evidence remain separate gates.
+
+
+## N5 supermarket reading passage — 2026-11-22T18:13Z
+
+- Run `core-20261122T1813Z-pr41-n5-supermarket-reading`; branch `automation/issue-11-plan-sdk-integration`; parent `5893136710e13ed211164a392ad060f17b0df14c`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added original draft passage `n5-supermarket-01` (スーパーで買い物), with kana reading, Vietnamese translation and three source-grounded comprehension questions. The fixed bundled N5 reading set now contains 10 passages / 30 questions. The source note explicitly says independent teacher/native-speaker review is outstanding.
+- Changed exactly seven paths: `apps/flutter_app/assets/reading/catalog.json`, the N5 expansion test, the bundled repository N5 count/ID test, the default reading widget count/card test, `docs/READING_MATERIAL.md`, `qa/matrix.json`, and this status file. Existing N4-empty assertions remain unchanged. No Pro-owned #14/#38 N4 data, manifest, README, N4 content tests/docs or derived N4 assets were edited.
+- Structural preflight: catalog JSON parsed; 10 unique IDs, all records N5/version 1, 30 questions, each question has three unique choices and exactly one valid correct choice, with non-empty Japanese/kana/Vietnamese fields. The new round includes all three questions in the deterministic answer test. This is structural evidence, not independent linguistic review.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local Dart format, Flutter analyze/tests and Web/Windows builds were not run. New exact-head GitHub Actions must execute all required jobs/steps; no new-head pass is claimed here.
+- PR #41 remains Draft; #34/#11/#18 remain open. Audio, authoritative listening availability, teacher/native-speaker review, hosted learner acceptance and Personal Alpha release evidence remain separate gates.
+
+
+## N5 supermarket explanation wording follow-up — 2026-11-22T18:26Z
+
+- Follow-up to `fe9717226a2d0dd181a91cfa5f85d5802bdb534f`: align the third comprehension explanation with the passage's exact “after lunch” wording rather than inferring a time of day. Added an assertion for the explanation text.
+- Paths: `apps/flutter_app/assets/reading/catalog.json`, `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart`, and this status file. N4/Pro-owned content and tests remain untouched.
+- Structural JSON check passed; new exact-head Actions are still the Flutter format/analyze/test/build gate. No local Flutter/Dart SDK result is claimed.
+
+
+## N5 reading formatter repair — 2026-11-22T20:10Z
+
+- Branch `automation/issue-11-plan-sdk-integration`; parent HEAD `7a43b275e5b37df37d06bed02bd05d4d0a5e3190`. Resumed only after the prior PR #41 worker checkpoint was RELEASED and its ACTIVE marker exceeded the 90-minute window.
+- Exact-head Actions [45054830815](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45054830815) failed solely at pinned Dart 3.35.4 formatting in `apps/flutter_app/test/features/reading/reading_widget_test.dart`. Applied the exact emitted one-line formatter hunk; no assertion or behavior changed.
+- Changed paths in this checkpoint: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and `docs/PROJECT_STATUS.md`. No N4/Pro-owned content/data/manifest/content tests/docs were changed.
+- Cloud runtime has no pinned Flutter/Dart SDK; local format/analyze/Flutter tests/builds were not run. New exact-head GitHub Actions is the verification gate; no new-head pass is claimed yet. PR #41 remains Draft and #34/#11/#18 remain open pending their separate acceptance.
+- Credential/Auth review: PR #37 remains Draft at `e5d3345fd00e31bf4c738508f2fe7171b2696ab1`; exact-head Actions [45021324281](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45021324281) completed all six jobs successfully. This is caller-owned Windows vault/SDK component evidence only; hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical multi-device acceptance remain unverified.
+
+
+## PR #41 — N5 reading explanation regression repair — 2026-11-22T22:12Z
+
+- Core branch: `automation/issue-11-plan-sdk-integration`; parent HEAD `5c2657b811681d286867cb9f8d26c2b463dd6a5f`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45065133352](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45065133352), attempt 1, targeted the parent SHA and completed FAILURE: repo-sanity, ai-boundary, database and Windows were SUCCESS; Flutter had 2,137 passing tests and one failed assertion in `bundled_reading_n5_expansion_test.dart`; dependent Flutter verifiers/Web build and preview-artifacts were SKIPPED.
+- The failed library-study test had copied the supermarket passage's television explanation. The canonical bundled catalog confirms library question 3 asks where lunch was eaten, while supermarket question 3 asks what happened after lunch. The test now asserts the matching library explanation and separately asserts the television explanation on the supermarket passage. Reading assets and production code are unchanged.
+- Structural preflight against the fetched catalog confirms both exact question explanations and their passage IDs. Cloud authoring runtime has no pinned Flutter/Dart SDK, so local Flutter format/analyze/test/build were not run; this preflight is not a Flutter test pass.
+- New exact-head CI is required for the corrected test and the complete PR. Keep PR #41 Draft. Next: inspect every latest-attempt job/step on the new branch HEAD; require repo-sanity, ai-boundary, database, Windows, Flutter and preview-artifacts with no skipped/pending/failing step. Hosted Supabase learner A/B, deployed RLS, reviewed reading content/audio and full Personal Alpha journey remain separate gates.
+- PR #37 was re-read at `07faa5025864e08c01fe4696cbe213339b15e727`; exact-head Actions [45071270067](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45071270067) completed SUCCESS across all six jobs/every returned step. Its hosted learner gates remain open. Pro-owned #14/#38/N4 paths were not changed.
+
+
+## PR #41 — server quiz-history continuation retry — 2026-11-22T23:13Z
+
+- Run `core-20261122T2313Z-pr41-quiz-history-page-retry`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `ef9a1a331ade5b4df698e8c0bf70672d7b8328fc`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Fixed a keyset-history UI defect: the server-history loader previously cleared the displayed page and advanced page/cursor state before awaiting an older/newer response. A failed continuation therefore lost the visible page, and the retry action restarted at page one instead of repeating the failed opaque cursor.
+- The screen now retains the current page during continuation, commits page index/cursor history only after a decoded page succeeds, and retries the exact failed cursor/target page. Filter and caller replacement still invalidate old requests; initial-load retry remains a first-page retry. No automatic retries or locally synthesized cursors.
+- Added a widget regression that fails both older and newer requests, checks the current page/index remain visible, and verifies explicit retry sends the exact same cursor (including the null first-page cursor for a newer-page retry).
+- Changed paths: `apps/flutter_app/lib/features/quiz/presentation/quiz_history_screen.dart`, `apps/flutter_app/test/features/quiz/quiz_report_v2_history_widget_test.dart`, `docs/QUIZ_REPORT_API.md`, `docs/PROJECT_STATUS.md`.
+- Parent PR #41 exact-head CI [45076909707](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45076909707) passed all six jobs/every returned step on `ef9a1a331ade5b4df698e8c0bf70672d7b8328fc`. The new source commit requires a fresh exact-head run. Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget test/build were not run.
+- PR #41 remains Draft and Issue #13 remains open. PR #37 remains Draft; its current Windows vault/Auth component evidence does not replace hosted signed-JWT A/B, deployed RLS, or physical multi-device acceptance. No N4/Pro-owned files, Auth strategy, API/schema/RLS, hosted secrets/dispatch, default preview activation, merge, deployment or release changed.
+- Next: inspect every job and step on the new exact HEAD. Fix only observed diagnostics; if CI is pending, preserve this released handoff. Hosted learner A/B, Edge deployment, reviewed mastery rules, audio/content review and complete Personal Alpha journey remain separate gates.
+
+
+## PR #41 — pinned Dart formatter repair for quiz-history retry — 2026-11-23T00:15Z
+
+- Run `core-20261123T0015Z-pr41-quiz-history-pinned-format-repair`; branch `automation/issue-11-plan-sdk-integration`; parent `928d4bfc63bb8fb1e29c6c9e7b723a816688b914`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45082746761](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45082746761), attempt 1, completed FAILURE on this parent. `repo-sanity`, `ai-boundary`, `database` and `windows` completed SUCCESS; Flutter failed only at `dart format --output=none --set-exit-if-changed .`. Pinned Dart 3.35.4 emitted exactly two line-wrapping hunks in `apps/flutter_app/lib/features/quiz/presentation/quiz_history_screen.dart`: collapse the successful-page cursor-history list and the explicit retry `unawaited(_load(...))` call. Flutter analyze, tests, browser/native verification, Web build and preview-artifact verification were skipped after the formatter failure; they are not passes.
+- Applied only those two emitted formatting changes. No runtime logic, assertions, retry semantics, dependencies, workflow gates, Auth/provider, API/schema/RLS, hosted configuration, or Pro-owned #14/#38/N4 content changed.
+- Cloud authoring runtime has no pinned Dart/Flutter SDK, so local format/analyze/test/build were not run. A fresh exact-head Actions run is required; inspect every latest-attempt job and step before claiming success.
+- PR #41 remains Draft. PR #37 remains Draft with exact-head component CI green; hosted signed-JWT learner A/B, deployed PostgREST/RLS and physical multi-device acceptance remain unproven. Next: verify the new exact-head CI, then resume the highest-priority unblocked study/progress acceptance without duplicating pending work.
+
+## Shared study recorder area allowlist — 2026-11-24T02:25Z
+
+- PR #41 / branch `automation/issue-11-plan-sdk-integration`; source commit [`d81e489a321bb3153233160407d76e4a12edc033`](https://github.com/collab-TTAM/nihongo_daily/commit/d81e489a321bb3153233160407d76e4a12edc033), parent `d548cf1c3b46879cb5e6a2ce81f7adbfce117fd9`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Made the foreground study-session recorder's supported-area set explicit: SRS, vocabulary, Kanji, grammar, listening/reading and quiz review. AI conversation is excluded from study credit. The shared TEST ONLY recorder scenario now exercises all six supported areas and verifies AI conversation produces no plan read, local event or server submit.
+- Paths in the source commit: `apps/flutter_app/lib/features/daily_plan/application/study_session_recorder.dart`, `apps/flutter_app/test/features/daily_plan/shared_study_recorder_fixtures.dart`, `apps/flutter_app/test/features/daily_plan/shared_study_recorder_test.dart`, `docs/STUDY_SESSIONS.md`. The code commit also preserves all prior SRS/reading/Kanji/quiz recorder and recovery behavior; no N4/Pro-owned paths, Auth strategy, API/schema/RLS or default activation changed.
+- Separate full-tree review: parent/final recursive trees were complete and untruncated at 1,027 entries (902 blobs); identical path/mode/type sets; all 898 untouched blobs preserved, exactly four intended blobs changed. Git tree creation used exact parent base_tree_sha `afdbcaa13fb32e2160519eecdbf5b701c90c77b1`; single-parent commit; update_ref used expected_sha `d548cf1c3b46879cb5e6a2ce81f7adbfce117fd9`, force=false; branch and PR readbacks matched source commit.
+- Tests were authored but not run in the cloud authoring runtime: pinned Flutter/Dart SDK is unavailable here. The pushed exact-head CI is the executable format/analyze/full-Flutter/native/Web/Windows verification gate; no local test/build pass is claimed. Next: inspect the latest Actions attempt on the final PR head and every job/step; fix only observed diagnostics. PR #41/#11 remain Draft/open; hosted learner A/B, reviewed content, study-credit and full Personal Alpha evidence remain outstanding.
+
+## Shared recorder QA anchor correction — 2026-11-24T02:32Z
+
+- PR #41 / branch `automation/issue-11-plan-sdk-integration`; source fix commit [`e2346e973d563d9054bb5ef7c6984e2899f2e23c`](https://github.com/collab-TTAM/nihongo_daily/commit/e2346e973d563d9054bb5ef7c6984e2899f2e23c), parent `593ba12164651b011e2cab70ce6dc01ae05dc43e`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head CI on parent `593ba121` — [run 45311715752](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45311715752), attempt 1 — failed repo-sanity at `Verify QA inventory and evidence regressions`: the `kanji-study-recorder` matrix case requires the literal `DailyPlanArea.kanji,` in `shared_study_recorder_fixtures.dart`. Earlier repo-sanity steps and 80 contract tests succeeded; later hosted probe steps were skipped and Windows was skipped. AI/database were still running at observation; no full pass was claimed.
+- Corrected only the TEST ONLY shared-recorder fixture: restored the explicit six-area readiness set (including the required Kanji anchor) and added a check that its set equals the production `StudySessionRecorder.recordableAreas`. The six-area execution and AI-exclusion assertions remain intact; no production behavior, QA inventory, CI gate, N4/Pro content or security boundary changed.
+- Changed path: `apps/flutter_app/test/features/daily_plan/shared_study_recorder_fixtures.dart`. Full recursive tree review: 1,027 entries, untruncated; identical path/mode/type set; all other 901 blobs preserved. Exact base_tree_sha `c3876eacb37521bb8c0a9ae1fdf5518125b8c283`; one-parent commit; update_ref expected_sha `593ba12164651b011e2cab70ce6dc01ae05dc43e`, force=false; branch read back at the source fix commit.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build was run. A new exact-head Actions run is required for the corrected source; no new CI pass is claimed. Next: inspect all jobs/steps on the final PR head and fix only observed diagnostics. PR #41/#11 remain Draft/open; hosted learner and full Personal Alpha gates remain pending.
+
+
+## 2026-11-24 — Saved quiz report replay from device history
+
+- Branch: `automation/issue-11-plan-sdk-integration`
+- Implementation commit: `ba278d25e5283add1b95e67e45c02252f53badb1`
+- Scope: vocabulary and grammar device-history rows now begin with an explicit manual lookup of the existing nd-quiz-report-2 receipt. A found receipt is confirmed without resubmission. Only an explicit unresolved lookup reveals the submit action, which reuses the exact immutable format-v2 payload and original event ID.
+- Paths: saved report replay widget; vocabulary and grammar history screens/tests; quiz v2 test fixture/support; `docs/QUIZ_ACCOUNT_HISTORY.md`; `qa/matrix.json`; this status checkpoint. No Pro-owned N4 paths or content files changed.
+- Safety: no request on page load; caller-owned ready-session transport only; lookup failure keeps submit hidden; legacy v1 remains local-only; local/server history remain separate; no automatic retry, score mutation, study-minute credit, SRS change or mastery claim.
+- Tests added: no transport means no report action; manual lookup then exact vocabulary replay; existing receipt confirms without submit; lookup failure keeps submit hidden; grammar primary/correction preserve their event IDs; legacy v1 remains read-only. Existing uncertain-submit and late-session tests remain in place.
+- CI: parent HEAD `9d802b280ce16434467d55ef792091aaab81a8e7` had Actions run `45312113948` pass all six jobs/steps. The final implementation HEAD has not yet been observed with a completed latest-attempt CI; no pass is claimed. Flutter/Dart SDK is unavailable in this cloud authoring runtime, so no local format/analyze/test/build claim is made.
+- Limitation/next action: exact-head CI must pass every latest-attempt job/step. Hosted learner receipt/RLS proof remains separate and is not inferred from test submitters. Keep PR #41 Draft; next review the final diff and CI, then continue only an unblocked #13/#15 dependency after the #11 study-session integration is accepted.
+
+
+## PR #41 — pinned Dart 3.35.4 formatter repair — 2026-11-24T04:42Z
+
+- Branch `automation/issue-11-plan-sdk-integration`; parent HEAD `e205476d63fe5be344285617833a256849ab7ac1`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45327357965](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45327357965), attempt 1, targets the parent HEAD. `repo-sanity`, `ai-boundary` and `database` completed SUCCESS; Flutter failed only the pinned Dart 3.35.4 formatter gate and Windows was still running at observation. Flutter analyze/tests and downstream verifiers/build were skipped after format failure, not passes.
+- Applied only the exact five-file formatter output emitted by that CI job: quiz history screen, grammar/vocabulary history widget tests, quiz journal fixtures and quiz report test support. No assertion, test case, behavior or retry policy changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must verify every required job/step. No new-head pass is claimed. Pro-owned N4/content paths, Auth/provider, API/schema/RLS, hosted settings and default preview remain untouched.
+- Next: inspect the complete latest-attempt CI for the repaired HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11 open pending study-session, hosted learner and integrated Personal Alpha evidence.
+
+## PR #41 — quiz-history lookup viewport regression — 2026-11-24T05:12Z
+
+- Run `core-20261124T0512Z-pr41-quiz-history-scroll-regression`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `38937a834802916bc320f9e3bf29e193d7ae8636`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45328403404](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45328403404), attempt 1, completed FAILURE. `repo-sanity`, `ai-boundary`, `database` and `windows` succeeded; Flutter format/analyze succeeded, then `flutter test` reported 2,146 passed / 2 failed. Both failures were the new saved-v2 receipt lookup widget cases: the lookup button was at y=644 in the 800x600 test viewport, so taps missed it; subsequent lookup/lookup-error assertions failed. Dependent Flutter native/browser/Web/preview steps were skipped and are not passes.
+- Corrected only the two TEST ONLY interactions in `apps/flutter_app/test/features/quiz/quiz_history_widget_test.dart`: scroll the lookup action into view, settle, assert it is hit-testable, then tap. Existing lookup result/error assertions, hidden-submit assertions and no-submit-on-open behavior are unchanged. No production runtime behavior changed.
+- Paths changed in this increment: this test and `docs/PROJECT_STATUS.md`. Full parent tree was complete/untruncated (1,029 entries: 904 blobs / 125 trees); no file removal or unrelated path change is intended. Pro-owned N4/content, Auth/provider, API/schema/RLS, CI gates, defaults and deployment remain untouched.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/Flutter tests/build were not run. New exact-head GitHub Actions must verify the correction and every latest-attempt job/step. Keep PR #41 Draft and #11 open; hosted learner receipt/RLS, study-session and Personal Alpha gates remain separate. Next: inspect exact-head CI; fix only observed diagnostics.
+
+## PR #41 — local two-client study-session replay — 2026-11-24T13:12Z
+
+- Run `core-20261124T1312Z-pr15-two-client-study-replay`; branch `automation/issue-11-plan-sdk-integration`; parent `0389f9961f75dbcfbe1aa793e9bed55c7d00d39c`; implementation commit [`0389f9961f75dbcfbe1aa793e9bed55c7d00d39c`](https://github.com/collab-TTAM/nihongo_daily/commit/0389f9961f75dbcfbe1aa793e9bed55c7d00d39c); base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added a TEST ONLY two-client replay scenario with independent real native journals and separate captured Auth-session objects. Clients A/B concurrently submit the same immutable event and a second adjacent event; each device persists both acknowledgments while the shared idempotent server advances minutes once per event. Client C submits a changed payload under the first event ID and retains a terminal `SYNC_CONFLICT` without changing authoritative minutes.
+- Paths: `apps/flutter_app/test/features/daily_plan/study_session_recovery_fixtures.dart`, `apps/flutter_app/test/features/daily_plan/study_session_recovery_test.dart`, `qa/matrix.json`, `docs/DURABLE_STUDY_SESSIONS.md`. QA `offline-sync` remains `pending-integration`; the new `two-client-study-replay` case is only an automated component baseline.
+- Structural preflight: QA JSON parses, case IDs are unique and all new source/test anchors exist. Full recursive parent/final trees were complete/untruncated at 1,029 entries / 904 blobs; identical path/mode/type sets, zero missing/extra entries, exactly four intended blob changes and 900 untouched blobs preserved. `create_tree` used parent base_tree_sha `c9e4fff257c5995e764b3064e4abc6c8ed020d24`; source commit is single-parent; `update_ref` used expected_sha `e800d637640ac92ef3989e504d8eb6f09f42fc4e`, `force=false`; readback matched implementation commit.
+- Parent exact-head Actions [45332272931](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45332272931) completed SUCCESS across all six jobs/every returned step on `e800d637640ac92ef3989e504d8eb6f09f42fc4e`. This does not verify the new scenario. Cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run; fresh exact-head CI is required.
+- Limitation: separate local journals/repositories and an in-process TEST ONLY server fixture are not networked app processes, hosted signed-JWT/PostgREST/RLS, physical multi-device sync, backup or Personal Alpha learner proof. No production code, Auth/provider, schema/RLS, CI gates, default activation, Pro-owned N4/content, deployment or release changed.
+- Next: inspect every latest-attempt job/step on the final PR head; fix only observed diagnostics. Keep PR #41 Draft and #11/#15 open pending hosted learner acceptance.
+
+
+## 2026-11-24 — PR #41 actionable server weak-point navigation
+
+- Branch: `automation/issue-11-plan-sdk-integration`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Feature source commit: `bb0bf11bbc9a2813edd12d495a27dd2327242b45`; focused route-validation corrections: `48c1455914f3edc172059333236707d8670cfb2b`, then final code head `097dbce39987bce6b7a7ce891388ae7baffdd7cf`. This status-only checkpoint is parented on that corrected head.
+- Scope: explicitly loaded current-source server weak-point rows now navigate to the exact existing vocabulary/grammar entry using only its N5/N4 level and public curriculum item UUID. The fixed curriculum repository is read again by the destination screen; stale IDs show a safe message and current list. Invalid route IDs are rejected.
+- Paths: `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart`, `apps/flutter_app/lib/features/curriculum/presentation/curriculum_screen.dart`, `apps/flutter_app/lib/app/router.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `docs/PROGRESS_OVERVIEW.md`, `qa/matrix.json`, and this status file.
+- Widget regressions authored: exact N5 vocabulary navigation; exact N4 grammar-correction navigation; malformed and stale UUID links fail safely. QA case `quiz-progress` remains `pending-integration`, adds the Flutter test anchors, and does not claim hosted mastery or learner acceptance.
+- Safety: no event/receipt IDs are exposed in the route; no automatic history read, quiz submit, study-timer start, study-minute credit, SRS mutation or mastery claim. Preview/default history reader remains null. No Pro-owned N4 data, manifest, README, content tests or N4 content docs changed.
+- Structural publication: the feature commit used the exact parent tree SHA and non-force expected-head update. Recursive source tree was complete/untruncated at 1,029 entries; no missing/extra path or mode/type change; six intended file blobs changed and 1,009 entries remained identical. Two follow-up router-only commits corrected the UUID regex/length guard; current code head was read back as `097dbce39987bce6b7a7ce891388ae7baffdd7cf`.
+- Verification: cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/widget tests/build were not run. Exact-head run `45374854517` targeted the superseded `bb0bf11` head and is not final evidence. The corrected final head needs its own latest-attempt Actions inspection; no new-head pass is claimed.
+- Next: inspect every latest-attempt job/step on the final post-checkpoint head and fix only observed diagnostics. Keep PR #41 Draft and #13 open; hosted signed-JWT learner receipt, deployed Edge/PostgREST/RLS, reviewed mastery and Personal Alpha evidence remain outstanding.
+
+
+## Weak-point route CI repair — 2026-11-24T12:07Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `71f27e7bbf631de3e7298881d7bb9118573ee000`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. The previous #41 worker marker was older than 90 minutes with no later active heartbeat; the new sole-writer marker is recorded in the PR conversation because the PR body exceeds GitHub's body-size limit.
+- Latest exact-head Actions [45375844176](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45375844176), attempt 1, failed on the current parent. Repo-sanity, AI boundary and database completed successfully. Windows failed compiling the TEST ONLY vault bridge because `router.dart` contained an orphan `, );` and duplicate curriculum route/level declarations. Flutter failed strict formatting because the parser could not process that router and identified two additional formatter-touched Dart files. Downstream Windows/native, Flutter/analyze/tests and preview jobs were skipped; they are not passes.
+- Bounded implementation: retain one exact curriculum route helper, anchor the lowercase UUID pattern at both ends, keep the 36-character check and reject malformed/uppercase/suffixed item IDs before curriculum reads. Add focused invalid-ID route regressions. Apply the observed formatter change to the curriculum screen and add a CI diagnostic step that prints the formatter diff after a format failure; the formatter gate itself remains unchanged and blocking.
+- Changed paths: `apps/flutter_app/lib/app/router.dart`, `apps/flutter_app/lib/features/curriculum/presentation/curriculum_screen.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `.github/workflows/ci.yml`, and this status document.
+- Verification boundary: cloud authoring has no Dart/Flutter SDK, so no local format/analyze/widget/build is claimed. A fresh exact-head Actions run must verify the route build, strict formatter, Flutter tests, Web/Windows builds and preview artifacts. The diagnostic step does not weaken or bypass any gate.
+- No N4 curriculum/content, Pro-owned manifests/README/content tests/docs, Auth/provider, API/schema/RLS, hosted secrets, staging dispatch, merge, deployment or release changed. Hosted quiz receipts, deployed Edge/PostgREST/RLS, reviewed mastery and full Personal Alpha remain outstanding.
+- Next: inspect every latest-attempt job/step on the final exact PR #41 HEAD. If formatter still fails, use the new failure diff output to apply only the emitted Dart formatter hunks; otherwise continue the #13 acceptance without enabling study credit or mastery.
+
+
+## Router tail source correction — 2026-11-24T12:22Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `34fad12b9ddc1eeef51b6a23831fbb39837413e9`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Separate post-write review of `34fad12b` found the router tail was still malformed: the UUID regex string lacked its closing quote/anchor, and the duplicated route/level helpers remained. The prior commit is not considered a passing correction.
+- Replaced the router tail with exactly one complete anchored lowercase UUID pattern, one `_curriculumRoute`, one `_curriculumLevel` and one `_kanjiLevel`. The 36-character check and safe invalid/stale destination behavior remain.
+- Superseded exact-head Actions [45392597005](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45392597005) targets `34fad12b` and was IN_PROGRESS at the last observation; it is not evidence for this correction. Cloud runtime has no pinned Dart/Flutter SDK, so local format/analyze/test/build were not run. A fresh exact-head CI is required.
+- Changed paths: `apps/flutter_app/lib/app/router.dart` and this status document. No Pro-owned N4/content, Auth/provider, API/schema/RLS, staging secrets, deployment, merge or release changed.
+- Next: inspect the new exact-head workflow, especially Dart format, Windows bridge compilation and the two vocabulary/grammar navigation tests; use the formatter-diff diagnostic if any format check still fails.
+
+
+## Exact Dart formatter repair — 2026-11-24T12:26Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `dc02169296f06a853845cc2883a828bc17873190`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45393063861](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45393063861) attempt 1: repo-sanity, AI boundary and database SUCCESS; Flutter FAILED strict Dart 3.35.4 formatting in `test/features/progress/progress_overview_widget_test.dart`; Windows was IN_PROGRESS at last observation. The Flutter log emitted the exact formatter diff: two compact route query expectations, one compact grammar call expectation, a single-line invalid/stale test declaration and three wrapped GoRouter call chains. No Flutter analyze/widget tests or Web build ran because the formatter gate stopped the job. The formatter diagnostic step itself was skipped because its condition omitted the `failure()` status function.
+- Applied only those emitted formatter hunks; no assertions, fixtures, content, or runtime behavior changed. Corrected the diagnostic condition to run after a formatter failure; it only prints `git diff` and leaves the strict blocking format gate unchanged.
+- Paths: `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `.github/workflows/ci.yml`, and this status document. No N4/Pro-owned content, Auth/provider, API/schema/RLS, hosted secrets, staging dispatch, merge, deployment or release changed.
+- Verification boundary: no local pinned Dart/Flutter SDK in the cloud authoring runtime. A new exact-head CI run is required for format/analyze/full tests, Windows bridge/native checks, Web/Windows builds and preview artifact verification. The superseded run is not a pass.
+- Next: inspect every latest-attempt job/step on the new HEAD. If formatter passes, continue to analyze/tests; if it fails, use the now-correct failure diagnostic and apply only the emitted diff.
+
+## Curriculum deep-link level lifecycle repair — 2026-11-24T13:15Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `4d06fc9f243a00792ce22ee30c675220130d94d3`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45393722065](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45393722065), attempt 1, completed FAILURE on this parent. Repo-sanity, AI boundary, database and Windows passed all returned steps; Flutter failed the existing `server weak-point opens exact current grammar entry at N4` widget regression. The log identifies Riverpod's `Tried to modify a provider while the widget tree was building` at `CurriculumScreen.initState`, caused by writing the route's initial level during initState. The later missing-entry assertion was consequential, not a content mismatch.
+- Fix: defer the route initial-level write until after the first frame, check `mounted`, and hold a small pending/loading state so the old level's curriculum is never briefly displayed. The existing N4 weak-point navigation test remains the regression: it verifies exact route, current entry text, N4 content reads and zero quiz-history writes.
+- Changed paths: `apps/flutter_app/lib/features/curriculum/presentation/curriculum_screen.dart` and `docs/PROJECT_STATUS.md`. No content, N4/Pro-owned data, quiz scoring, study credit, mastery, Auth/provider strategy, API/schema/RLS, CI gate, secret, deployment, merge or release changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget/build was not run. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter tests, Windows and Web builds/artifacts. The parent run is not a pass for this fix.
+- Next: inspect every latest-attempt job and step for the new exact HEAD. Keep PR #41 Draft and #13 open until the corrected navigation test and full acceptance pass; hosted learner receipt, deployed Edge/PostgREST/RLS and reviewed mastery remain separate gates.
+
+
+## Curriculum deep-link pinned formatter correction — 2026-11-25T18:13Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `305c2f959de9b6515cc6a554f03dace706ddd4f6`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45400721974](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45400721974), attempt 1, targets this parent and completed FAILURE only at the strict Dart 3.35.4 formatter. `repo-sanity`, `ai-boundary`, `database` and `windows` completed SUCCESS with all returned steps; Flutter analyze/full tests and all downstream browser/native/wire/Web checks were SKIPPED after formatting failure; `preview-artifacts` was SKIPPED. These skipped checks are not passes.
+- The read-only formatter diagnostic emitted exactly two whitespace-only hunks in `apps/flutter_app/lib/features/curriculum/presentation/curriculum_screen.dart`: compact the pending-level boolean expression and the pending-state `PageHeading` constructor. Applied only those two exact hunks; no state, provider timing, route, content, assertion or UI behavior changed.
+- Changed paths: this curriculum screen and `docs/PROJECT_STATUS.md`. Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/widget/build is claimed. The corrected exact HEAD requires fresh GitHub Actions verification.
+- No Pro-owned N4/data/manifest/README/content paths, Auth/provider, API/schema/RLS, CI gate, default-save, hosted secrets/dispatch, deployment, merge or release change.
+- Next: inspect every latest-attempt job and step on the corrected exact HEAD; require strict format, analyzer, full Flutter suite, Windows and Web/preview checks to complete successfully before continuing the remaining #13/#11 acceptance.
+
+
+## Original N5 winter-morning reading passage — 2026-11-25T19:05Z
+
+- Draft PR [#41](https://github.com/collab-TTAM/nihongo_daily/pull/41), branch `automation/issue-11-plan-sdk-integration`; implementation commit [`bd978d91d3a21846216baf8ace88cf0f499d99b5`](https://github.com/collab-TTAM/nihongo_daily/commit/bd978d91d3a21846216baf8ace88cf0f499d99b5), parent `702d6e0bca4feb0db126bd6491934521c90a997f`.
+- Added only the original N5 draft passage `n5-winter-morning-01` (冬の朝) with Japanese text, kana reading, Vietnamese translation and three source-grounded comprehension questions. Existing ten passages and all content versions remain unchanged; the catalog now has 11 unique N5 passages / 33 questions and zero N4 entries. The source note explicitly says this draft has not been reviewed by a teacher or native speaker.
+- Added exact bundled-content assertions and a real bundled-route widget journey: passage discovery, kana/translation reveal, all three correct answers and 3/3 completion. Updated `docs/READING_MATERIAL.md`. Paths: `apps/flutter_app/assets/reading/catalog.json`, `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart`, `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `docs/READING_MATERIAL.md`.
+- Separate diff review confirms 97 JSON lines added, 22 expansion-test lines added plus the count correction, 23 widget-test lines added plus the count correction, and one documentation paragraph replaced. A pure-JS structural check parsed the catalog, checked 11 unique IDs, 33 questions, no N4 entries and every answer key resolving to a choice. This is not Flutter execution or linguistic review.
+- Exact implementation-head Actions [45683041718](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45683041718) was **QUEUED** when recorded; it is not a pass. The cloud authoring runtime has no pinned Flutter/Dart SDK, so no local format/analyze/widget/build result is claimed. This status-only successor commit requires its own exact-head full CI.
+- PR #37 component verification was re-read: exact-head Actions [45662503966](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45662503966) passed all six jobs / 108 returned steps. Its hosted signed-JWT learner A/B, deployed PostgREST/RLS and Windows hosted restore gates remain unobserved; PR #37 stays Draft.
+- No N4/Pro-owned data, manifest, README, content tests or N4 docs; no canonical vocabulary/grammar/Kanji data; no audio/player, reading-plan availability, study credit, timer policy, Auth/provider, API/schema/RLS, hosted secrets/dispatch, deployment, merge or release changed. Issue #34 remains open for reviewed content, N4 coordination, vetted audio and authoritative availability/session acceptance. #11/#13 and all Personal Alpha hosted release groups remain open.
+- Next: inspect every latest-attempt job/step on the final status commit's exact HEAD. Fix only observed diagnostics, preserving all assertions and gates; keep PR #41 Draft. Hosted learner A/B, deployed RLS, physical multi-device sync and teacher-reviewed content remain separate acceptance requirements.
+
+
+## Exact Dart formatter repair — PR #41 — 2026-11-25T20:05Z
+
+- PR #41 remains Draft on `automation/issue-11-plan-sdk-integration`; parent HEAD `4c200c3f4f7dcb903a7e5161f8048323f2c3cecc`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45683205146](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45683205146), attempt 1, targets `4c200c3f4f7dcb903a7e5161f8048323f2c3cecc` and completed FAILURE only at the strict Dart 3.35.4 formatter. Repo-sanity 15/15, AI boundary 19/19, database 24/24 and Windows 20/20 returned steps succeeded. Flutter formatter diagnostic succeeded; analyzer, Flutter suite and downstream lifecycle/browser/native/SRS/Kanji/Web/preview checks were skipped, not passes.
+- The pinned formatter emitted exactly two whitespace/layout hunks: compact the three-item expected-ID list in `apps/flutter_app/test/features/reading/bundled_reading_n5_expansion_test.dart`, and wrap the translation-toggle `tapReading` call in `apps/flutter_app/test/features/reading/reading_widget_test.dart`. Applied only those emitted hunks; assertions, test data, runtime behavior and timeout policy are unchanged.
+- Changed paths: those two TEST ONLY files and `docs/PROJECT_STATUS.md`. The complete parent tree was re-read untruncated at 1,029 entries (904 blobs / 125 trees); the new tree audit and exact blob readbacks are recorded in PR #41's checkpoint comment.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. A fresh exact-head Actions run must complete every required job/step before further work. PR #37 component CI [45662503966](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45662503966) passed all six jobs / 108 returned steps, but hosted signed-JWT learner A/B, deployed PostgREST/RLS and hosted Windows restore remain unverified.
+- No Pro-owned N4/data/manifest/README/content tests/docs, canonical content, Auth/provider, API/schema/RLS, CI gates, hosted secrets/dispatch, default save behavior, merge, deployment or release changed. Issue #34/#11/#13 and Personal Alpha hosted gates remain open.
+- Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics and keep PR #41 Draft until the remaining study/content/security acceptance is met.
+
+
+## PR #41 — repair bundled N5 Reading regressions — 2026-11-25T21:13Z
+
+- Resumed the RELEASED PR #41 lane on branch automation/issue-11-plan-sdk-integration; parent HEAD 6eba14d253aa1d8272a9d509a3a7013a5ec8d552; base main 61604bc21da64a0dd94dbb97ba3c4b1d035430a6. PR #37 was re-read at 81a42821c9b79660b8daceaaa9037f792217abfc; exact-head CI 45662503966 passed all six jobs / 108 returned steps. Its remaining hosted learner A/B, deployed PostgREST/RLS and hosted Windows restore gates require the protected supabase-staging environment and two provisioned non-production accounts; no source change was made to #37.
+- Exact-head PR #41 Actions 45692576847, attempt 1, targets 6eba14d253aa1d8272a9d509a3a7013a5ec8d552. Repo-sanity, AI boundary, database and Windows succeeded; Flutter failed only two assertions. The bundled repository test still expected 10 N5 passages / 30 questions and omitted n5-winter-morning-01. The widget test toggled reading/translation checkboxes unconditionally after navigating between passages; the translation preference is intentionally retained by the mounted panel, so the second tap turned it off before checking the winter passage translation. Flutter downstream checks and preview-artifacts were skipped, not passed.
+- Corrected only TEST ONLY expectations: include the eleventh N5 passage and 33 questions; inspect each checkbox's current value and enable it only when false, preserving the existing preference behavior while verifying the winter passage's Vietnamese translation. No curriculum content, UI behavior, audio availability or study-credit behavior changed.
+- Changed paths: apps/flutter_app/test/features/reading/bundled_reading_repository_test.dart, apps/flutter_app/test/features/reading/reading_widget_test.dart and docs/PROJECT_STATUS.md. Pro-owned N4/data/manifest/README/content-test paths, Auth/provider/API/schema/RLS, workflow gates and default runtime remain untouched. Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/Flutter tests/Web build were not run. A new exact-head Actions run must complete every required job/step.
+- Next: inspect the fresh exact-head latest attempt, including Flutter format/analyze/full suite and downstream Web/Windows preview checks. Keep PR #41 Draft; PR #37 remains Draft pending protected hosted Supabase and Windows learner evidence. No merge, deployment or release.
+
+
+## PR #41 — apply exact Dart formatter correction — 2026-11-25T22:11Z
+
+- Branch: `automation/issue-11-plan-sdk-integration`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`; code commit `a307ca22adbc057e218cf17358d254bdfba75040` (parent `10da58b400d10ae86950fcc22eb64d3244c962f0`). The final PR head is the status checkpoint commit immediately following this code commit.
+- Exact-head CI [run 45703669546](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45703669546), attempt 1, targets `10da58b400d10ae86950fcc22eb64d3244c962f0`. Repo-sanity, database, AI-boundary and Windows jobs succeeded. Flutter failed only at strict `dart format --output=none --set-exit-if-changed .`; the formatter emitted one exact layout hunk in `apps/flutter_app/test/features/reading/reading_widget_test.dart`. Flutter analyze, tests, browser/native lifecycle checks, Web build and preview artifact steps were skipped after that failure and are not counted as passes.
+- Applied only the formatter-emitted single-line compaction of the existing `tapReading` call. Assertions, test flow, test data and runtime behavior are unchanged.
+- Changed source path: `apps/flutter_app/test/features/reading/reading_widget_test.dart` (TEST ONLY); this status entry is documentation. No Pro-owned N4/data/manifest/README/content paths, Auth/provider, API/schema/RLS, workflow gates, hosted secrets, default behavior, merge, deployment or release changed.
+- Full parent recursive tree audit was untruncated: 1,029 entries (904 blobs / 125 trees). The code overlay preserved all paths/modes/types and every unchanged blob; no additions or removals. The exact parent tree SHA was `552e6a30a81a148ac6de9669f442c4f71819bb18`.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/Flutter tests/Web build were not run. A fresh exact-head Actions run must finish every required job and critical step.
+- Next: inspect every latest-attempt job/step for the final PR #41 head; fix only observed failures. Keep PR #41 Draft and preserve the separate PR #37 / Pro N4 lanes.
+
+
+
+## Profile-local today now loads the Daily Plan — 2026-11-25T23:10Z
+
+- PR #41, branch `automation/issue-11-plan-sdk-integration`; parent HEAD `87110ac52a9071e4b4bb251f125577cf0ce2647c`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- On configured `/plan`, a successful server `get_study_day` selection now fills the canonical date and immediately calls the existing captured `get_daily_plan` read once. The same button on `/srs` remains date-only; timer start/finish and study-session submission remain explicit. Manual edits during the held day lookup are preserved.
+- Updated `study_day_widget_test.dart` to assert the exact `get_daily_plan` date envelope, displayed server progress, idle recorder/no stored session, and a safe failed-plan read followed only by an explicit retry. Existing logout, timezone, manual-edit and SRS date-only cases remain.
+- Changed paths: `daily_plan_screen.dart`, `study_day_widget_test.dart`, `DAILY_PLAN_UI.md`, `PROFILE_STUDY_DAY.md`, `PROJECT_STATUS.md`. No N4/Pro content, Auth/provider, API/schema/RLS, timer policy, default preview, hosted secret/dispatch, migration, deployment or release change.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget/build were not run. Fresh exact-head Actions must verify strict format, analyzer, full Flutter suite, native/browser gates and Web/Windows artifacts. Pending/skipped steps are not passes.
+- Next: inspect every latest-attempt job/step for the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and PR #37 separate; hosted signed-JWT A/B, deployed RLS, physical multi-device sync, content review and full learner-journey release evidence remain open.
+
+## Daily Plan typed-error assertion correction — 2026-11-26T00:12Z
+
+- PR #41 / branch `automation/issue-11-plan-sdk-integration`; parent `d640ee149df36b7d1da7d1dc432743f3a891053a`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45720127386](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45720127386), attempt 1, targets this SHA. Repo-sanity 16/16, AI boundary 19/19, database 24/24 and Windows 20/20 succeeded. Flutter format and analyze succeeded; full Flutter suite reported 2,153 passed / 1 failed. The only failure was the TEST ONLY Daily Plan error assertion at `study_day_widget_test.dart:180`: the repository maps the injected raw gateway exception to typed `DailyPlanFailure(INTERNAL_ERROR)`, whose fixed Vietnamese `messageVi` is “Chưa thể xử lý dữ liệu học tập. Vui lòng thử lại.” The old test expected the pre-typed generic fallback.
+- Corrected only that expected string. The selected-date assertion, redacted-error assertion, one failed plan request, explicit tap-only retry, no-progress/no-credit assertions and all production behavior remain unchanged.
+- Changed paths: `apps/flutter_app/test/features/daily_plan/study_day_widget_test.dart` (TEST ONLY) and `docs/PROJECT_STATUS.md` (handoff). No N4/Pro-owned content, Auth/provider, API/schema/RLS, workflow gates, hosted secrets/dispatch, default save behavior, merge, deployment or release changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions is required before claiming the corrected full suite or Web/Windows artifact checks. PR #37 remains separate/open/Draft at `81a42821c9b79660b8daceaaa9037f792217abfc`; its exact-head component CI [45662503966](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45662503966) passed six jobs / 108 returned steps, while hosted learner A/B, deployed PostgREST/RLS and hosted Windows restore remain blocked on protected staging configuration.
+- Next: inspect every latest-attempt job/step on the corrected exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and preserve PR #37 and Pro-owned N4 lanes.
+
+
+## Configured account status banner — 2026-11-26T02:17Z
+
+- PR #41 / branch `automation/issue-11-plan-sdk-integration`; UI/test commit [`e1e98d612ca2fa782d1aca4838ef19a6c1974a4c`](https://github.com/collab-TTAM/nihongo_daily/commit/e1e98d612ca2fa782d1aca4838ef19a6c1974a4c), parent `348666fb3e1e33439aca8ed44f3e4aca0e99cf46`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- The app shell now watches the caller-owned account runtime and AccountPhase instead of always claiming the app is disconnected. Only a null/unconfigured runtime is labeled preview. Configured signed-out, sign-in, profile-loading, ready, profile/sign-in error, sign-out/error and unavailable states are distinct. The ready label exposes only JLPT level and timezone; it does not expose user ID, email, raw errors or tokens, and it does not claim every service or hosted study write is ready.
+- Added four widget regressions: configured signed-out is not preview; profile loading transitions to a ready level/timezone-only label; profile failure remains blocked/redacted; failed logout never claims a ready session. Existing unconfigured preview test remains.
+- Changed paths: `apps/flutter_app/lib/app/app_shell.dart`, `apps/flutter_app/test/app_test.dart`, and this status record. No N4/Pro-owned data, manifest, README, content tests/docs, Auth strategy/provider, API/schema/RLS, CI gate, hosted secret/dispatch, fake save success, merge, deployment or release changed.
+- Full recursive tree audit for the code commit: 1,029 entries (904 blobs / 125 trees), untruncated; no additions/removals or mode/type changes; exactly the two intended blobs changed and 902 unchanged blobs preserved. The five changed tree objects are only ancestors of those two paths. `create_tree` used exact parent base tree `bc561aa8fd43e78b690a8852ba69d17dad8ef6ca`; commit has one parent; branch update used `expected_sha=348666fb3e1e33439aca8ed44f3e4aca0e99cf46`, `force=false`; branch and PR read back to the code commit.
+- Exact-head Actions [45741302914](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45741302914), attempt 1, targets `e1e98d612ca2fa782d1aca4838ef19a6c1974a4c` and is IN_PROGRESS. No format/analyze/full-test/Web/Windows pass is claimed yet. The cloud authoring runtime has no pinned Flutter/Dart SDK, so no local Flutter execution is claimed. This status successor also requires fresh exact-head CI.
+- PR #37 remains separate/open/Draft at `3c79a9cb37539247a113670b93e69f19cb9be673`; exact-head Actions [45735145987](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45735145987) now has all six jobs and every returned step SUCCESS. That is component/local-stack evidence only; protected hosted A/B/RLS and Windows fresh-process acceptance still require owner-configured non-production staging.
+- Next: inspect every latest-attempt job/step on the final status HEAD; fix only actual diagnostics. Keep PR #41 Draft and preserve PR #37 and the Pro-owned N4 lane.
+
+## PR #41 — exact pinned Dart formatter repair — 2026-11-26T05:11Z
+
+- Run `core-20261126T0511Z-pr41-apply-observed-dart-format`; branch `automation/issue-11-plan-sdk-integration`; parent `ab686c644c6f97e3f16054d3a879e5b3dcb8697e`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45741454241](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45741454241) failed only strict Dart 3.35.4 formatting. Repo-sanity, database, AI boundary and Windows jobs succeeded. Flutter stopped at format; analyzer, full Flutter suite, downstream probes and preview artifacts were skipped, not passed.
+- Applied only the two exact formatter hunks emitted by that run: one-line `AccountPhase.signingOut` switch arm in `apps/flutter_app/lib/app/app_shell.dart`, and compact callback layout for the configured signed-out test in `apps/flutter_app/test/app_test.dart`. No assertion, behavior, timeout or runtime changed.
+- Cloud authoring has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head CI is required.
+- PR #37 was re-read first at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; exact-head Actions [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) completed six jobs / 108 returned steps successfully. This remains component/local-stack evidence, not protected hosted learner A/B, deployed RLS or hosted Windows restore.
+- PR #41 remains Draft. No Pro-owned N4/content, Auth/provider strategy, API/schema/RLS, workflow gate, hosted secret/dispatch, fake Auth/save, merge, deployment or release changed.
+- Next: inspect every latest-attempt job and step for the new exact PR #41 HEAD; fix only observed diagnostics.
+
+
+## PR #41 — timezone label test scope — 2026-11-26T06:10Z
+
+- Run `core-20261126T0610Z-pr41-fix-timezone-finders`; branch `automation/issue-11-plan-sdk-integration`; parent `f4c19f4a0fa121e8dd50f668fc83894ace362cbb`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45760945518](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45760945518) targets this parent and failed only the complete Flutter test step: 2,154 tests passed and four existing timezone finder assertions failed because the app shell now also displays the ready profile timezone. Flutter formatting and analysis passed; repo-sanity, database, AI boundary and Windows jobs passed. Flutter downstream lifecycle/wire/Web checks and preview artifacts were skipped after the suite failure.
+- Updated only TEST ONLY finders: the SRS timer now targets its exact “Ngày học theo múi giờ hồ sơ” sentence; Daily Plan tests target the exact “Chọn ngày theo múi giờ hồ sơ” sentence for Tokyo and Ho Chi Minh. This keeps the assertions on the feature under test instead of matching both the app-shell banner and page/panel. No production UI, state, timing or assertions were weakened.
+- Changed paths: `apps/flutter_app/test/features/daily_plan/srs_session_timer_widget_test.dart`, `apps/flutter_app/test/features/daily_plan/daily_plan_widget_test.dart`, and `docs/PROJECT_STATUS.md`. No Pro-owned N4 data/manifest/README/content-test/editorial files, Auth/provider, API/schema/RLS or CI gates changed.
+- Cloud authoring has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Fresh exact-head Actions is the required verification.
+- PR #37 remains open/Draft at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; exact-head Actions [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) passed all six jobs / 108 returned steps. Hosted signed-JWT learner A/B, deployed RLS and hosted Windows restore remain unverified.
+- Next: inspect every latest-attempt job and step on the new PR #41 head; fix only observed failures and keep the PR Draft until independent acceptance is met.
+
+## PR #41 — restore disposable local Supabase integration CI — 2026-11-26T07:08Z
+
+- Run `core-20261126T0708Z-pr41-restore-local-supabase-ci`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `0fefd3cc39a4033fc98bf584b433da682d98dab9`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Review found the combined PR #41 workflow had dropped PR #37's disposable local GoTrue/PostgREST job while retaining native PostgreSQL, Flutter and Windows jobs. Restored that independent `supabase-integration` job and its TEST ONLY local API/SDK probe, including collision-free loopback port selection and bounded/redacted startup diagnostics. Preserved PR #41's `preview-artifacts` job and all existing jobs.
+- Added local-only CI inputs: `scripts/prepare_local_supabase_ports.py`, `scripts/redact_supabase_start_log.py`, `scripts/test_local_supabase_ports.py`, `scripts/test_supabase_local.py`, `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`, `apps/flutter_app/tool/verify_supabase_sdk_runtime_test.dart`, and `supabase/tests/local_integration_seed.sql`. Restored the local Supabase API/DB/Auth config while retaining PR #41's JWT-verified Edge Function declarations in `supabase/config.toml`.
+- Updated `qa/matrix.json`, `scripts/verify_qa.py`, and `qa/test_verify_qa.py` to require/inventory the seventh CI job and reject skipped/failed/pending local-integration evidence; the new `local-supabase-auth-session` baseline remains separate from pending hosted Auth/learner release evidence.
+- Baseline observation before this change: PR #37 exact-head Actions [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) passed all six jobs / 108 returned steps. PR #41 parent exact-head Actions [45767720045](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45767720045) passed all six jobs; 128 steps succeeded and one failure-only diagnostic step was skipped. Neither parent run exercises the restored job on this branch.
+- The new exact-head Actions run is the required verification. The cloud authoring runtime has no pinned Flutter/Dart SDK or Docker/Supabase CLI; no local Flutter, native Windows, Docker, GoTrue or PostgREST execution is claimed. Do not treat the local disposable stack as hosted learner proof.
+- No hosted secrets, protected staging dispatch, Auth provider/strategy, production configuration, database schema/RLS, N4/Pro-owned paths, default app activation, merge, deployment or release changed. PR #37 remains open/Draft pending its separate protected hosted acceptance.
+
+
+
+## PR #41 — local Supabase seed and SDK probe repair — 2026-11-26T08:07Z
+
+- Run `core-20261126T0807Z-pr41-fix-local-supabase-seed-and-probe-wait`; branch `automation/issue-11-plan-sdk-integration`; parent `ee095fa81a301ca899a56c5c32abeed9c531097c`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45775366424](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45775366424), attempt 1, targets this SHA. `repo-sanity` passed 17/17 steps, `ai-boundary` 20/20, `database` 25/25 and `windows` 20/20. Two failures were observed: the disposable local Supabase seed omitted the required `vocabulary.source_ordinal` and failed `vocabulary_active_requires_source_ordinal`; Flutter analysis found the TEST ONLY SDK probe calling `waitForCurrentProfile`, which is not part of this branch's `AccountController`. The local GoTrue/PostgREST rotation/replay/A-B test was skipped after seed failure; Flutter tests, downstream probes/build and preview artifacts were skipped after analysis failure. These are not passes.
+- Bounded correction: add two distinct reserved high `source_ordinal` values to the two TEST ONLY vocabulary rows in the disposable database seed. Replace the stale probe helper call with a TEST ONLY bounded wait on the public account-state stream; subscribe before the second state read to avoid missing a broadcast transition, and distinguish a pending restored session from a genuinely signed-out state. No production Auth/account API or behavior changed.
+- Changed paths: `supabase/tests/local_integration_seed.sql`, `apps/flutter_app/tool/verify_supabase_sdk_runtime.dart`, and this status document. The seed ordinals are local fixture data only; no content export, migration, API contract, schema, grants or RLS changed.
+- Full recursive parent tree was untruncated at 1,036 entries (911 blobs / 125 trees). This increment preserves the complete path/mode/type set and every unrelated blob; `create_tree` uses exact parent `base_tree_sha=4a135c97c726b9288aeeb1abc9a246374595c3d6`. The commit is single-parent; branch update uses `expected_sha=ee095fa81a301ca899a56c5c32abeed9c531097c` and `force=false`.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK, Docker or Supabase CLI; no local Flutter format/analyze/test/build or local Supabase execution is claimed. A fresh exact-head Actions run must verify the seed, disposable GoTrue/PostgREST refresh rotation/replay/A-B RLS, Flutter format/analyze/full suite, native/browser probes and Web/Windows artifacts.
+- No N4/Pro-owned data/manifest/README/content tests/editorial paths, Auth/provider strategy, migration/RLS, CI gate weakening, hosted secret/dispatch, default Auth/save behavior, merge, deployment or release changed. PR #37 remains separate/open/Draft; its exact-head component CI passed six jobs, but hosted learner A/B, deployed RLS and hosted Windows restore remain unverified.
+- Next: inspect every latest-attempt job and step on the new exact PR #41 HEAD; fix only observed failures. Keep PR #41 Draft and preserve PR #37 and the Pro-owned N4 lane.
+
+## PR #41 — second TEST ONLY seed insert column-list follow-up — 2026-11-26T08:21Z
+
+- Separate post-write diff review of `4aeb0b055ce19d4ca666f61f6786165d83532d81` caught that the second local vocabulary INSERT had the `source_ordinal` value but its column list had not been updated. That first repair commit is superseded for verification; its exact-head Actions [45782313374](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45782313374) was still in progress when this follow-up began. No pass is claimed for that source.
+- Added `source_ordinal` to the second TEST ONLY INSERT column list. Both deterministic rows now have matching 12-column/12-value lists and distinct reserved ordinals. No application or production SQL changed.
+- Changed paths: `supabase/tests/local_integration_seed.sql` and this status document. The cloud runtime still lacks pinned Flutter/Dart SDK, Docker and Supabase CLI; only exact-head GitHub Actions can verify this correction.
+- Next: inspect every job/step on the final exact PR #41 head, including the disposable GoTrue/PostgREST probe and complete Flutter/Web/Windows checks. Keep PR #41 Draft.
+
+
+## PR #41 — retryable bounded transport classification — 2026-11-26T09:14Z
+
+- Run `core-20261126T0914Z-pr41-retryable-offline-transport`; branch `automation/issue-11-plan-sdk-integration`; parent `608f2e1d37400f9da85f1316035c7ee8b0a0f8b0`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-parent Actions [45782738344](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45782738344), attempt 1, completed seven jobs: six SUCCESS and only `supabase-integration` failed at the TEST ONLY two-device offline stage. The Flutter suite, Web build, Windows release/native probes, database/RLS, AI boundary, repo sanity and preview artifact verification succeeded on that exact parent; the disposable local GoTrue/PostgREST job did not.
+- Root cause from source review: `BoundedSessionHttp` converted every thrown object into non-retryable NETWORK_UNAVAILABLE. This swallowed typed transport errors and made an injected `http.ClientException` fail the durable review's retryable-offline contract. It now preserves `ReviewTransportFailure`, marks known timeout/client transport failures NETWORK_UNAVAILABLE + retryable, and maps unknown failures to fixed non-retryable INTERNAL_ERROR. Oversized responses remain INTERNAL_ERROR, not a blind retry.
+- Focused regressions cover timeout/client exceptions, preserved typed authorization failures, unknown errors and oversized-response classification. No assertion was removed from the two-device replay probe; no credential, exception detail or token is logged.
+- Changed paths: `apps/flutter_app/lib/features/auth/data/bounded_session_http.dart`, `apps/flutter_app/test/features/srs/bounded_session_http_test.dart`, and this status file. No N4/Pro-owned content, API/schema/RLS, Auth/provider strategy, CI gates, hosted secrets/dispatch or default app behavior changed.
+- Parent recursive tree: 1,036 entries (911 blobs / 125 trees), complete and untruncated. Fresh exact-head CI is required; cloud authoring has no pinned Flutter/Dart SDK or disposable Docker/Supabase runtime, so no local Dart/Flutter/Supabase test or build is claimed.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. Keep PR #41 Draft and PR #37 separate/open/Draft pending protected hosted A/B, deployed RLS and hosted Windows restore.
+
+- Post-write review of `fef36f043d5ca7fa48855c09a726903416e58f82` found only a Dart-formatting adjustment in the new focused matcher chain; wrapped it to the repository formatter's multiline style. No assertion or runtime behavior changed. This formatting follow-up is included in the final exact-head CI request.
+
+
+
+## PR #41 — exact Dart formatter correction — 2026-11-26T10:06Z
+
+- Run `core-20261126T1006Z-pr41-dart-format-fix`; branch `automation/issue-11-plan-sdk-integration`; parent `d5c4bc68936781aa3f9838bc6c3159fd92bf44e2`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45791522074](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45791522074), attempt 1, targets that parent. Repo sanity, AI boundary, database, Windows and disposable local Supabase integration succeeded. Flutter failed strict Dart formatting in `apps/flutter_app/test/features/srs/bounded_session_http_test.dart`; Flutter analyze/full tests and dependent checks were skipped, not passed.
+- Applied only the pinned Dart 3.35.4 formatter's observed matcher-chain, explicit-transport-test layout and final blank-line changes. No assertion, behavior, runtime or fixture changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyze/test/build are not claimed. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter suite, local Supabase integration, Windows/Web and preview artifact checks.
+- PR #37 was re-read first and remains open/Draft at `9239a34c33009c7bcc71e319ca0ceba6512cf5d8`; its exact-head CI [45754553990](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45754553990) passed all six jobs / 108 returned steps. Hosted signed-JWT learner A/B, deployed PostgREST/RLS and protected Windows restore remain separate unverified gates. Pro-owned #14/PR #38/N4 paths remain untouched.
+- Next: inspect all latest-attempt jobs and steps for the corrected PR #41 HEAD; fix only observed failures and keep the PR Draft.
+
+## Browser Japanese system speech increment — 2026-11-26T12:12Z
+
+- Run \`core-20261126T1212Z-pr41-browser-japanese-speech\`; PR #41 branch \`automation/issue-11-plan-sdk-integration\`; parent \`7b7c75772a90700008fdbb271e0c66cd9eac63ba\`; base main \`61604bc21da64a0dd94dbb97ba3c4b1d035430a6\`.
+- Added an explicit-tap Web Speech synthesis adapter for vocabulary/grammar entries and reading passages. It uses only a browser-installed Japanese voice, bounds text to 8,192 characters, distinguishes unsupported/no-voice/invalid/failure states, cancels on stop/detail disposal, and shows fixed Vietnamese messages. No autoplay, network/audio download, microphone, speech recognition, paid AI, learner data, study event, mastery or progress write.
+- Native Windows/non-web uses an explicit unsupported adapter; original reviewed audio remains unavailable. This is a system TTS aid, not a recording or a listening assessment. iOS browser behavior and native Windows speech are unverified.
+- Added widget tests for start/stop, completion, missing voice and unsupported platform; added a Chrome capability/bounds probe and a required CI step. No content/N4/Pro-owned paths, auth/vault/API/schema/RLS, dependency manifest, default service or production behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK or browser/Windows runtime; no local formatter/analyze/test/build is claimed. Exact-head Actions is required for all new Dart/Chrome/Windows paths.
+- Next: inspect every latest-attempt job/step for the new PR head. Keep PR #41 Draft and issue #12/#34 open; hosted study/A/B, reviewed original audio, iOS browser and native Windows speech remain separate gates. No merge/deployment/release/Personal Alpha claim.
+
+
+## PR #41 — pinned browser speech formatter repair — 2026-11-26T14:15Z
+
+- Run `core-20261126T1415Z-pr41-pinned-speech-format`; branch `automation/issue-11-plan-sdk-integration`; source parent `b9cde87d5bb01343bea0ccb28d62cd7e997a7f6c`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45821236666](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45821236666), attempt 1, targets parent `b9cde87d5bb01343bea0ccb28d62cd7e997a7f6c`. `repo-sanity`, `ai-boundary`, `database`, `supabase-integration`, and `windows` completed SUCCESS with all returned steps successful. Flutter failed only at strict Dart 3.35.4 formatting: exactly three files were reported changed. `preview-artifacts` was skipped downstream; Flutter analyzer, full suite, Chrome speech probe and Web build were not run on that attempt and are not passes.
+- Applied only the formatter's exact output to `japanese_speech.dart`, `japanese_speech_button.dart`, and `japanese_speech_web_check.dart`. The conditional-import alias is moved to the formatter-selected continuation line; the message widget and test expression are reflowed. No speech behavior, capability mapping, bounds, test assertion or runtime path is changed.
+- PR #37 was re-read first at `b76df4a0db87181b473fb6655e0564470a0d9155`; exact-head Actions [45827106285](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45827106285) completed all six jobs and every returned step successfully. These remain component/local-stack results, not hosted signed-JWT A/B, deployed PostgREST/RLS or physical two-device acceptance.
+- Cloud authoring has no pinned Flutter/Dart SDK or browser runtime; local format/analyze/test/build was not run. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter suite, Chrome speech probe, Web/Windows builds, disposable local Supabase integration and preview artifacts.
+- No Pro-owned N4/content paths, API/schema/RLS, Auth/provider strategy, workflow gates, hosted secrets/dispatch, default fake Auth/save, merge, deployment or release changed. PR #41 remains Draft; next action is inspect every latest-attempt job/step for the new exact HEAD and fix only observed diagnostics.
+
+
+## PR #41 — Windows local Japanese system speech — 2026-11-26T15:13Z
+
+- Run `core-20261126T1513Z-pr41-windows-japanese-speech`; branch `automation/issue-11-plan-sdk-integration`; code head `d7864de2e441ccf73d22564010bbc21cc8b9cd49`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added an explicit-tap Windows adapter using the installed local `System.Speech` Japanese voice through a fixed UTF-16LE PowerShell command. Bounded normalized text is sent only through redirected stdin; it is not interpolated into command arguments or a script path. Missing voice, unavailable PowerShell, failure, completion and cancellation have separate safe outcomes. Process cancellation and captured generation guards fence late completion.
+- Changed paths: `apps/flutter_app/lib/features/audio/data/japanese_speech.dart`, `japanese_speech_stub.dart`, new `japanese_speech_io.dart`, new `japanese_speech_windows.dart`, new `apps/flutter_app/test/features/audio/japanese_speech_windows_test.dart`, `docs/JAPANESE_SPEECH.md`, `docs/READING_MATERIAL.md`, and `qa/matrix.json`. No N4/Pro-owned content, Auth/vault, API/schema/RLS, dependency lock, default Auth/save success, AI spend or recording path changed.
+- Added seven fake-process tests for empty/control/oversized input, missing Japanese voice, successful completion, cancellation, late completion/account-generation replacement, PowerShell launch failure and unexpected exit. QA matrix anchors the new lifecycle tests. System TTS remains a pronunciation aid only; it does not supply reviewed audio, listening assessment, study minutes, plan completion, mastery or SRS progress.
+- Separate post-write review: recursive parent/final trees were complete and untruncated (1,051 entries at code head); no path removals; three new paths and five modified paths. Follow-up cleanup commit corrected the native process kill delegate and made cleanup errors non-fatal. PR remains Draft.
+- Local Flutter/Dart SDK, PowerShell, Windows voice pack and audio device are unavailable in this cloud authoring runtime; no local format/analyze/test/build or physical playback is claimed. Exact-head Actions run [45850603218](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45850603218) was PENDING for code head at observation and is not a pass; the status-only checkpoint will trigger a newer exact-head run.
+- Next: inspect every latest-attempt job/step for the final PR head; fix only observed formatter/analyzer/test/build failures. Keep PR #41 Draft and issues #12/#34 open. Actual Windows Japanese voice availability, physical audio, reviewed/licensed recordings, hosted study/learner evidence and all Personal Alpha release gates remain unverified.
+
+
+## PR #41 — pinned Windows speech formatter correction — 2026-11-26T15:40Z
+
+- Resumed the released core lane after re-reading PR #37 first. PR #37 remains Draft at `b76df4a0db87181b473fb6655e0564470a0d9155`; exact-head Actions [45827106285](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45827106285) completed all six jobs and 108 returned steps successfully. Hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted Windows restore and physical two-device sync remain unverified.
+- PR #41 exact-head Actions [45850763286](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45850763286), attempt 1, targets `14083b3b8a4997e755b9d447f3d27403efc7e222`. Repo-sanity, AI boundary, database, Windows and disposable local Supabase integration completed SUCCESS with every returned step. Flutter failed only strict Dart 3.35.4 formatting; analyze, the full suite, Chrome probes, Web build and preview artifact steps were skipped and are not passes.
+- Applied only the exact formatter output emitted by that failed Flutter job to `apps/flutter_app/lib/features/audio/data/japanese_speech_windows.dart` and `apps/flutter_app/test/features/audio/japanese_speech_windows_test.dart`. Process arguments, stdin transport, bounds, voice detection, cancellation/generation behavior and all seven test assertions are unchanged.
+- Cloud authoring has no pinned Flutter/Dart SDK, PowerShell, Windows voice pack or audio device; local format/analyze/test/build and physical playback were not run. A new exact-head Actions run must verify format, analyze, all Flutter tests, Chrome/Web/Windows probes and all other jobs before this correction is considered green.
+- No Pro-owned N4/content path, Auth/provider, API/schema/RLS, workflow gate, hosted secret/dispatch, default Auth/save behavior, merge, deployment or release changed. PR #41 remains Draft; hosted learner evidence and original reviewed/licensed listening audio remain separate gates.
+
+
+## PR #41 — fail-closed QA evidence and Flutter formatter diagnostic — 2026-11-26T16:15Z
+
+- Re-read PR #37 first: it remains open/Draft at `b76df4a0db87181b473fb6655e0564470a0d9155`; exact-head Actions [45827106285](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45827106285) completed all six jobs / 108 returned steps. This is component/local-stack evidence only; hosted signed-JWT learner A/B, deployed PostgREST/RLS, hosted Windows restore and physical two-device sync remain unverified.
+- PR #41 branch `automation/issue-11-plan-sdk-integration`, parent HEAD `bcf9a3206a314534821dfcbacae559997bb6503c`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`. Exact-head Actions [45852239462](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45852239462), attempt 1, matched that HEAD and completed all seven jobs. The 148 returned steps included 147 SUCCESS and one expected conditional SKIPPED step: `Show Dart formatter diff on failure`.
+- `scripts/verify_qa.py` deliberately rejects every skipped step, including this diagnostic. Therefore the workflow's successful conclusion alone was not accepted as complete QA evidence. No format/analyze/test/build failure was observed on this head; the issue is evidence completeness, not a formatter regression.
+- Updated `.github/workflows/ci.yml`: the formatter diagnostic now runs with `if: always()`, prints the diff only when `steps.dart_format.outcome == 'failure'`, and otherwise prints a fixed no-diff message. The blocking `dart format --output=none --set-exit-if-changed .` plus `git diff --exit-code -- .` and downstream analyze/test steps remain unchanged; no `continue-on-error` or gate bypass.
+- Added `qa/test_ci_formatter_diagnostic.py` and the `formatter-diagnostic-no-skip` QA baseline. `qa/matrix.json` now tracks the diagnostic as a required Flutter step and contains 191 cases; `docs/QA_SECURITY_MATRIX.md` explains why no skipped diagnostic is required for evidence verification.
+- Cloud authoring has no pinned Flutter/Dart SDK. The new standard-library regression is wired into the existing repo-sanity QA discovery command; no local test execution is claimed. A fresh exact-head GitHub Actions run must verify the regression, QA inventory, formatter/analyzer/full Flutter suite, database, disposable Supabase, Windows, Web and preview artifacts.
+- No application behavior, Auth/provider strategy, API/schema/RLS, hosted secrets/dispatch, Pro-owned #14/#38/N4/content paths, default Auth/save behavior, merge, deployment or release changed. PR #41 remains Draft. Next: inspect every latest-attempt job/step on the new exact HEAD and keep the PR Draft until acceptance and release gates are separately complete.
+
+
+## PR #41 — formatter diagnostic regression test escape correction — 2026-11-26T16:30Z
+
+- Separate post-write review of `d292190caee273103ab608dd1c5a68bbbfdcd7e0` found that the new Python test had double-escaped the raw-regex newline/end anchors and the line-join delimiter. The test would match literal backslash sequences rather than workflow lines.
+- Corrected `qa/test_ci_formatter_diagnostic.py` to use the intended single `\n` / `\Z` regex escapes and `"\n".join(...)`; no workflow or application behavior changed. The strict formatter gate and always-run diagnostic remain unchanged.
+- This is a review correction, not a test pass. No local Python/Flutter test result is claimed; a fresh exact-head Actions run must execute the QA discovery suite and all downstream jobs.
+
+## PR #41 — N5 reading draft expansion — 2026-11-26T17:15Z
+
+- Run `core-20261126T1715Z-pr41-n5-reading-expansion`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `9b69f4980fce00eabaa5499862f122f2fcab7ac8`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added two original N5-only draft passages: `n5-tennis-invitation-01` (simple invitation / meeting time) and `n5-family-breakfast-01` (family breakfast / household task), each with Japanese text, hiragana reading, Vietnamese translation, three deterministic comprehension questions and an explicit unreviewed source note. Bundled N5 totals are now 13 passages / 39 questions; N4 remains empty in this bundle.
+- Updated the exact N5 expansion and repository tests, reading-material documentation and the `reading-widget-flow` QA anchors. No canonical `data/n4`, `data/manifest`, `data/README`, N4 content tests/docs or Pro PR #38 paths were touched. No audio, study-minute credit, mastery, server availability or hosted learner acceptance is claimed.
+- Static authoring checks: catalog JSON parses; all 13 IDs are unique; all 13 entries remain N5/version 1 with three questions each; every answer key references one of three distinct choices; catalog remains below the 262144-byte parser limit. Flutter format/analyze/tests/build were not run in the cloud authoring runtime (pinned Flutter/Dart SDK unavailable); exact-head GitHub Actions is required.
+- Next: inspect every latest-attempt job/step on the new exact HEAD. Keep PR #41 Draft and issue #34 open pending independent linguistic review, reviewed/licensed audio, server LISTENING_READING availability and hosted learner evidence.
+
+
+## N5 reading widget regression after draft expansion — 2026-11-26T19:07Z
+
+- Run `core-20261126T1907Z-pr41-n5-reading-widget-regression`; branch `automation/issue-11-plan-sdk-integration`, parent HEAD `b9a191abb169436799e9c4a7516a2a2810768eea`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45868284584](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45868284584) targets this parent. Repo-sanity, AI boundary, database, disposable Supabase integration and Windows completed SUCCESS. Flutter format/analyze completed SUCCESS; the full suite reported 2,173 passed / 1 failed because `reading_widget_test.dart` expected the old 11-passage label after the bundled N5 catalog expanded to 13. All downstream Flutter lifecycle/Chrome/Web and preview-artifact steps were SKIPPED, not passes.
+- Updated only the default reading-route widget regression: the visible catalog count is now 13, both new stable N5 cards are required, and each new passage is opened to assert its Japanese title/text and deterministic comprehension prompts. Existing winter-reading translation/reading-toggle and 3/3 answer checks remain unchanged. No audio availability, saved result, study-minute credit or mastery is introduced.
+- Changed paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and `docs/PROJECT_STATUS.md`. The 13-passage source remains explicitly draft/unreviewed. No N4/Pro-owned content, manifest, README, N4 content tests/docs, Pro branch/PR #38, Auth/provider, API/schema/RLS, hosted secrets/dispatch, or CI gate changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; no local Flutter format/analyze/test/build is claimed. New exact-head GitHub Actions must execute the full Flutter suite, downstream browser/native checks and Web/Windows builds before any pass claim.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #34/#11/#18 open pending independent linguistic review, vetted audio, server LISTENING_READING availability, hosted learner evidence and Personal Alpha acceptance.
+
+
+## PR #41 — exact-head Dart formatter correction — 2026-11-26T20:08Z
+
+- Re-read exact PR/branch HEAD `0a74fd272311a267474c066a20b02fad558fcb91`; exact-head Actions [45881923338](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45881923338) failed only `dart format --output=none --set-exit-if-changed .` on `apps/flutter_app/test/features/reading/reading_widget_test.dart`. The formatter's own diagnostic emitted exactly two line-wrap changes for the long `find.textContaining` expectations (tennis invitation and family breakfast).
+- Applied only those two formatter hunks; assertions, strings and test behavior are unchanged. The same run completed repo-sanity, AI boundary, database, disposable Supabase integration and Windows successfully; Flutter analyze/tests and downstream checks were skipped after the format failure, and preview-artifacts was skipped. These skipped steps are not passes.
+- Changed paths in this increment: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and this status file. No N4/Pro-owned content, Auth/provider, API/schema/RLS, workflow gates, hosted secrets, deployment or release changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must verify the formatter, full Flutter suite, downstream checks, Web/Windows builds and all other jobs before any pass claim.
+- Next: inspect every latest-attempt job and step for the new exact commit; fix only observed failures and keep PR #41 Draft pending the remaining issue/release acceptance.
+
+## PR #41 — wait for the bundled N5 reading catalog before asserting the list — 2026-11-26T21:06Z
+
+- Run `core-20261126T2106Z-pr41-reading-catalog-widget-race` resumes PR #41 on `automation/issue-11-plan-sdk-integration`; source parent `aaafa9cd32e54028654463570366daebc8243c5f`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45889631078](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45889631078) targets the parent SHA. Repo-sanity, database, AI boundary, Windows and disposable Supabase integration completed SUCCESS; Flutter format/analyze passed, then the Flutter suite failed only at `reading_widget_test.dart:144`: the test expected the 13-passage label before the bundled list had appeared. Flutter downstream browser/native/build steps and preview artifacts were skipped, not passed.
+- Added a bounded test-only wait for the first canonical N5 card or a terminal error/empty state before checking the exact 13-passage label. The test now also rejects lingering loading/error/empty states. Catalog content, production UI, quiz/study behavior, and the 13-passage/39-question repository assertions are unchanged.
+- Changed paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and `docs/PROJECT_STATUS.md`. The complete parent tree was re-read from GitHub: 1,052 entries (923 blobs / 129 trees), untruncated. N4/Pro-owned paths remain outside the edit set.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; no local formatter/analyze/Flutter test/Web/Windows build is claimed. New exact-head Actions must complete all jobs/steps on the final SHA before verification can be reported.
+- PR #37 was re-read first and remains open/Draft at `b76df4a0db87181b473fb6655e0564470a0d9155`; exact-head Actions [45827106285](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45827106285) completed all six jobs. Its remaining hosted signed-JWT learner A/B, deployed PostgREST/RLS, and physical two-device gates are still external prerequisites; no hosted workflow was dispatched.
+- Next: inspect every latest-attempt job and step for the new PR #41 SHA; fix only observed failures. Keep PR #41 Draft and #34/#11/#18 open pending reviewed content, vetted audio, authoritative study integration, hosted learner evidence and Personal Alpha acceptance. Worker RELEASED after the exact-head checkpoint is saved.
+
+## PR #41 — await bundled reading catalog in real asset async zone — 2026-11-26T22:14Z
+
+- Run `core-20261126T2214Z-pr41-reading-catalog-asset-load` resumes Draft PR #41 on `automation/issue-11-plan-sdk-integration`; parent HEAD `6abf410082de09b073d1adb1fef485471ed7bcf7`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45896457413](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45896457413) failed only the default bundled-reading widget test: its bounded `pump` loop advanced widget fake time while the fixed package `rootBundle.loadString` future did not settle. Repo-sanity, AI boundary, database, disposable Supabase integration, Windows, Flutter format and analyze succeeded. Flutter downstream lifecycle/Chrome/Web checks and preview artifacts were skipped, not passes.
+- Replaced polling with a deterministic await of the already-watched `readingCatalogProvider(PreviewLevel.n5).future` inside `tester.runAsync`, asserted the 13-item catalog and pumped the UI. Existing exact label/card/source/translation/audio/study-credit assertions remain unchanged. Test-only change; no content or production behavior changed.
+- Changed paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and `docs/PROJECT_STATUS.md`. Cloud authoring has no pinned Flutter/Dart SDK; local Flutter format/analyze/test/build were not run. Fresh exact-head Actions is required; no new-head pass is claimed.
+- Keep PR #41 Draft and #11 open. Next: inspect every latest-attempt job/step for the new exact head; fix only observed failures. No Pro N4 paths, Auth/provider, API/schema/RLS, hosted secrets/dispatch, merge, deployment or release changed.
+
+
+## PR #41 — preload bundled reading asset before widget mount — 2026-11-26T23:10Z
+
+- Run `core-20261126T2310Z-pr41-reading-asset-load-fixture`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `652ccc56c9a89399248985b80836fd31c5d5bbf7`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Parent exact-head Actions [45904140654](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45904140654), attempt 1, targets `652ccc56c9a89399248985b80836fd31c5d5bbf7`. Repo-sanity (17/17 steps), AI boundary (20/20), database (25/25), disposable Supabase integration (17/17) and Windows (20/20) succeeded. Flutter format/analyze succeeded; `flutter test` failed with 2,173 passed / 1 failed: the default bundled N5 reading test waited on a provider future whose rootBundle I/O was started under WidgetTest FakeAsync. After the ten-minute test timeout, teardown `pumpWidget` overlapped the late assertion and produced a guarded-function conflict. Flutter downstream/native/browser/Web/preview checks were skipped, not passes.
+- Test-only correction: preload the exact `assets/reading/catalog.json` package asset through a bounded five-second `tester.runAsync` before mounting the widget tree, then feed those same bytes through `BundledReadingRepository` using a narrow in-memory `AssetBundle`. The repository parser, real packaged source, 13-passage assertion and all existing UI/source/translation/audio/no-saved-progress checks remain. No production code or curriculum data changed.
+- Changed paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and this status file. The complete parent recursive tree was untruncated at 1,052 entries (923 blobs / 129 trees); the edit set is restricted to these two paths. Pro-owned N4/content files are excluded.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must complete every required job/step; no pass is claimed for the new head.
+- PR #37 remains open/Draft at `b76df4a0db87181b473fb6655e0564470a0d9155`; exact-head Actions [45827106285](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45827106285) passed all six jobs / every returned step. Hosted signed-JWT A/B, deployed PostgREST/RLS, protected Windows learner restore and physical two-device sync remain external gates; no hosted workflow was dispatched.
+- Next: inspect the new exact-head Actions run and all latest-attempt jobs/steps, especially the Flutter suite and downstream Web/Windows checks. Keep PR #41 Draft and #11 open until acceptance and Personal Alpha evidence are complete.
+
+
+## PR #41 — remove analyzer-reported redundant test import — 2026-11-27T00:05Z
+
+- Run `core-20261127T0005Z-pr41-remove-unused-test-import`; branch `automation/issue-11-plan-sdk-integration`; parent `03a8d622d3f0769676eff30f3f06404c8659492b`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45909870290](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45909870290), attempt 1, targets the parent. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration completed SUCCESS. Flutter format passed; `flutter analyze` failed only because `dart:typed_data` was unnecessary in `test/features/reading/reading_widget_test.dart:3`. Flutter tests and all downstream native/browser/Web/preview steps were skipped, not passes.
+- Removed only that redundant import. `ByteData` and `Uint8List` remain available through the already-required `package:flutter/services.dart` import; test behavior, package asset preflight, repository parsing and assertions are unchanged.
+- Paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `docs/PROJECT_STATUS.md`. No production code, curriculum, N4/Pro-owned files, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch, or default Auth/save behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must run the full Flutter suite and all downstream checks.
+- Next: inspect every latest-attempt job and step on the final commit; fix only observed diagnostics. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending their independent acceptance and hosted learner evidence.
+
+
+## PR #41 — move bundled reading preflight to suite setup — 2026-11-27T01:14Z
+
+- Run `core-20261127T0114Z-pr41-reading-asset-preload`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `77824f5eb5f4fe4e357e95e025485c3b00c6a83b`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45914967178](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45914967178), attempt 1, targets the parent. Repo-sanity (17 steps), AI boundary (20), database (25), disposable Supabase integration (17) and Windows (20) completed SUCCESS. Flutter format/analyze succeeded; `flutter test` failed after 2,173 passed / 1 timed-out test: the default bundled N5 reading widget test did not complete its pre-mount `tester.runAsync(rootBundle.loadString)` within the ten-minute test limit. All subsequent Flutter browser/native/wire/Web steps and preview artifacts were SKIPPED, not passes.
+- Test-only correction: load and parse the exact packaged `assets/reading/catalog.json` once in suite-level `setUpAll`, outside per-test WidgetTester FakeAsync; inject the same bytes through the existing narrow in-memory AssetBundle and reuse the same BundledReadingRepository in the default-route widget test. The 13-passage check and all passage/source/translation/audio/no-saved-progress assertions remain. No production code or curriculum bytes changed.
+- Paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and this status file. Full recursive parent tree was fetched untruncated at 1,052 entries (923 blobs / 129 trees); no file additions/removals or mode/type changes are intended. Cloud authoring runtime has no pinned Flutter/Dart SDK, so local Flutter format/analyze/test/build were not run.
+- Next: inspect every latest-attempt job/step for the new exact-head Actions run, especially full Flutter tests and all downstream Web/Windows checks. Keep PR #41 Draft and Issue #11 open; hosted learner Auth/A-B, deployed PostgREST/RLS, and physical two-device acceptance remain separate release gates.
+
+## Reading widget asset-bundle correction — 2026-11-27T02:06Z
+
+- Run `core-20261127T0206Z-pr41-reading-assetbundle-fakeasync`; PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `d9f1a941fc2c432419020dcd6a405a3705663881`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45921952288](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45921952288), attempt 1, targets the parent. Repo-sanity, AI boundary, database, disposable Supabase integration and Windows completed SUCCESS with every returned step successful. Flutter format/analyze passed; Flutter tests reported 2,173 passed / 1 failed in the default bundled-reading widget: the expected list was replaced by the safe unavailable error. All downstream Flutter/native/browser/Web/preview checks were skipped, not passes.
+- The prior preflight loaded the real package JSON but its in-memory `CachingAssetBundle` still used the inherited byte-to-string decoding path on the subsequent provider read. The test fixture now returns the already-loaded exact source string directly from `loadString`, rejects all other keys, and refuses binary loads. Added a regression for this fixed-key/string-only boundary. The production repository/parser, 13-passage assertions, content, UI and save/audio limitations are unchanged.
+- Changed paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart` and this status file. Cloud authoring runtime has no pinned Flutter/Dart SDK; no local formatter/analyzer/Flutter test/build is claimed. Full parent recursive tree was re-read untruncated at 1,052 entries (923 blobs / 129 trees); next exact-head Actions must verify all affected jobs.
+- Next: run a new exact-head Actions workflow and inspect every latest-attempt job/step. Keep PR #41 Draft and #11/#34 open; reading/listening content still lacks independent linguistic review, approved audio, and hosted learner study proof.
+
+
+## PR #41 — apply exact Dart formatter output — 2026-11-27T03:13Z
+
+- Run `core-20261127T0313Z-pr41-format-assertion`; branch `automation/issue-11-plan-sdk-integration`; parent `454307d511c98cb1b29f9745b0bdffe7cd96ae76`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45927340656](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45927340656), attempt 1, reports `head_sha=454307d511c98cb1b29f9745b0bdffe7cd96ae76` and FAILURE. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration completed SUCCESS with all returned steps successful. Flutter strict Dart format failed because Dart 3.35.4 reformatted one three-line `expect` call in `test/features/reading/reading_widget_test.dart` to a single line; the formatter diff contains no other change. Flutter analyze, Flutter tests and downstream Flutter/Web/Windows verification were skipped, not passes; preview artifacts were skipped.
+- Applied exactly the formatter-emitted one-line assertion; test semantics and every assertion are unchanged. No production source, N4/Pro-owned content/tests, Auth/provider, API/schema/RLS, CI workflow, hosted secrets/dispatch or default Auth/save behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/test/build were not run. The new exact-head Actions run is the required verification.
+- Next: inspect every job and step of the new exact-head run. Keep PR #41 Draft; do not treat formatter-only correction as learner-flow acceptance.
+
+## PR #41 — return unsupported test asset failures asynchronously — 2026-11-27T04:07Z
+
+- Run `core-20261127T0407Z-pr41-async-asset-fixture`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `770d164c56b2983a9f21b5c8a91a78097cd7193a`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45933310203](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45933310203) targets the parent and completed FAILURE only in Flutter tests. Repo-sanity, AI boundary, database/RLS, Windows and disposable local Supabase integration completed SUCCESS with every returned step successful; Flutter format/analyze also succeeded. The Flutter suite reported 2,174 passed / 1 failed in the TEST ONLY `preloaded bundle serves only the fixed catalog string` case. Its `loadString('assets/other.json')` override threw synchronously before `expectLater` received a Future; all downstream Flutter lifecycle/browser/native/Web checks and preview artifacts were skipped, not passes.
+- Changed the TEST ONLY `_LoadedReadingAssetBundle.loadString` override to `async`, preserving the fixed catalog key and returning the preloaded exact source for the valid key. Unsupported keys now complete as a failed Future, matching the asynchronous AssetBundle contract. Existing assertions for invalid string keys, binary load rejection, 13-passage source and learner UI remain unchanged. No production code, curriculum or N4/Pro-owned path changed.
+- Paths: `apps/flutter_app/test/features/reading/reading_widget_test.dart`, `docs/PROJECT_STATUS.md`. Full recursive parent tree was re-read untruncated: 1,052 entries (923 blobs / 129 trees). The cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run; fresh exact-head GitHub Actions is required.
+- No Auth/provider, vault, API/schema/RLS, CI gate, hosted secret/dispatch, default Auth/save behavior, merge, deployment or release changed. PR #41 remains Draft; hosted learner study proof and independent reading/audio review remain outstanding.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics. Keep #11/#34 and the Personal Alpha release gates open.
+
+
+## Server-day lookup timezone race — 2026-11-27T06:07Z
+
+- Core run `core-20261127T0607Z-pr41-study-day-timezone-race`, branch `automation/issue-11-plan-sdk-integration`, parent `9cb7a56d56a7ecd007187bb2c200e7c435b25ba4`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Re-verified PR #37 at `ec8ed3f9e3192b72b407e6d0bf7c83ab947e3703`: exact-head Actions [45944924395](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45944924395) completed all six jobs / 108 returned steps successfully. This remains component/disposable-local-stack evidence; hosted signed-JWT A/B, deployed PostgREST/RLS, hosted Windows restore/expiry and physical two-device sync are still missing.
+- Re-verified PR #41 parent `9cb7a56d56a7ecd007187bb2c200e7c435b25ba4`: exact-head Actions [45938426915](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45938426915) completed all seven jobs successfully.
+- Added two TEST ONLY `StudyDayButton` race cases: while the same learner's profile timezone changes, the old `get_study_day` request is held and the same repository instance is deliberately reused; a fresh request under `Asia/Ho_Chi_Minh` loads the new date, then the old success or raw failure is released. Both cases assert the new date is retained, no stale Daily Plan read occurs, and raw errors remain hidden.
+- Changed exactly `apps/flutter_app/test/features/daily_plan/study_day_widget_test.dart`, `docs/DAILY_PLAN_UI.md`, and this file. No production behavior, curriculum/N4/Pro-owned content, Auth/provider, API/schema/RLS, CI gates, hosted secrets/dispatch or deployment changed.
+- Recursive parent tree was complete/untruncated: 1,052 entries (923 blobs / 129 trees), root `89da6d2c556ae812615423cf69d6a34c0e9e9719`. Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. New exact-head Actions must run the full Flutter suite and all platform/database jobs; no new-head pass is claimed.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending hosted learner and content/audio acceptance.
+
+
+## PR #41 — exact Dart formatter correction — 2026-11-27T07:08Z
+
+- Core run `core-20261127T0708Z-pr41-dart-format-correction`; branch `automation/issue-11-plan-sdk-integration`; parent HEAD `74778a369631fda49ead57786d5bc7bd20601e75`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [45951421618](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45951421618) matched the parent HEAD. Repo-sanity, AI boundary, database, disposable Supabase integration and Windows jobs completed SUCCESS; Flutter strict format failed on two line wraps in `apps/flutter_app/test/features/daily_plan/study_day_widget_test.dart`. Flutter analyze/tests and downstream jobs were skipped, not passes.
+- Applied only the two formatter-emitted line wraps in that TEST ONLY file. Assertions, test inputs, behavior and production source are unchanged. No N4/Pro-owned path, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch or default Auth/save behavior changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local formatter/analyzer/test/build were not run. New exact-head Actions is required for verification.
+- Next: inspect every latest-attempt job and step for the new exact HEAD. Keep PR #41 Draft and #11/#12/#13/#34/#18 open; hosted learner study and independent linguistic/audio acceptance remain outstanding.
+
+
+## Kanji stroke-guide playback — 2026-11-27T08:22Z
+
+- Core run `core-20261127T0822Z-kanji-guide-autoplay`; PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `c30ca396decc10c2099b91821d06bfbe533ea718`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added explicit timed playback to the existing KanjiVG display-only guide: one ordered stroke step approximately every 650 ms, pause/resume from the current step, restart from step one after the final step, and manual previous/next/all controls that cancel playback. Collapse, character identity/version replacement and widget disposal cancel the timer. Learner ink, optional faint tracing, source geometry and no-grade/no-mastery boundary remain independent.
+- Added two widget regressions for playback progression/pause/resume/terminal stop/restart and manual override/character-route disposal. QA inventory grows from 191 to 192 automated assurance cases; this is inventory, not 192 executed tests. The QA documentation header was reconciled from a stale 183 count to the actual prior matrix count plus this case.
+- Paths: `apps/flutter_app/lib/features/kanji/presentation/kanji_stroke_guide_panel.dart`, `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart`, `docs/KANJI_CATALOG.md`, `docs/QA_SECURITY_MATRIX.md`, `qa/matrix.json`, this file.
+- Parent exact-head Actions [45957165393](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45957165393) completed all seven jobs / 148 returned steps successfully. This new source head requires its own format/analyze/full Flutter and downstream CI; cloud authoring has no pinned Flutter/Dart SDK, so no local Flutter command is claimed.
+- No Kanji reference geometry/license or canonical curriculum export changed. No N4/Pro-owned data, Auth/provider, API/schema/RLS, default runtime, score/mastery/study-credit behavior, hosted secret/dispatch, merge, deployment or release changed. Eight N5 and95 N4 guide mappings remain a limited subset; teacher validation and real grading remain blocked.
+- Next: inspect every latest-attempt job and step on the new exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #16/#18 open.
+
+
+## Kanji playback — QA inventory anchor correction — 2026-11-27T08:42Z
+
+- Exact-head Actions [45967192813](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45967192813) targets `49d526f116d42ee03b7b81b07f0007b9e36531cc` and completed FAILURE in repo-sanity's `Validate QA inventory and evidence regressions`. The log identifies the sole diagnostic: case `kanji-guide-playback` listed `Run the complete Flutter suite serially with expanded diagnostics`, which is not a named step in the actual `flutter` job. AI boundary (20 steps) and database (25 steps) succeeded; Supabase integration, Windows, Flutter and preview artifacts were skipped after the required repo-sanity failure. No new-head Flutter format/analyze/test/build result exists.
+- Corrected only the case-specific `ci_steps` in `qa/matrix.json` to the actual workflow step names: `Run dart format --output=none --set-exit-if-changed .`, `Run flutter analyze`, and `Run flutter test`. The workflow and all required gates are unchanged. This is an inventory-anchor correction, not a test pass.
+- Reproduce with `python3 scripts/verify_qa.py`; then require fresh exact-head Actions to run the Flutter suite and downstream platform checks. Cloud authoring has no pinned Flutter/Dart SDK, so no local Flutter command is claimed.
+- No application behavior, reference geometry, canonical content, N4/Pro-owned files, Auth/provider, API/schema/RLS, secret/hosted dispatch, merge, deployment or release changed.
+
+
+## Kanji guide playback — strict Dart formatting correction — 2026-11-27T09:30Z
+
+- Branch `automation/issue-11-plan-sdk-integration`; parent exact HEAD `e4790ffabd298d3e6684f898f78ca94102b69aa3`. Exact-head Actions [45967846745](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45967846745), attempt 1, matched the parent and completed FAILURE only in Flutter strict formatting. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration all completed SUCCESS; Flutter analyze/tests and downstream Flutter/Web checks were SKIPPED, not passes.
+- The formatter log emitted exactly three formatting hunks in two Dart files: collapse the playback icon constructor in `kanji_stroke_guide_panel.dart`; collapse the test router call and wrap the selected-character expectation in `kanji_stroke_guide_test.dart`. Only those emitted formatting changes are applied; playback behavior and test assertions are unchanged.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run. A fresh exact-head Actions run is required; no full CI pass is claimed.
+- No N4/Pro-owned content, curriculum/reference geometry, Auth/provider, API/schema/RLS, CI gate, hosted secret/dispatch, merge, deployment or release changed. PR #41 remains Draft. Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics, then continue the next dependency-satisfied study-flow increment.
+
+
+## Kanji playback fake-time regression — 2026-11-27T10:09Z
+
+- Exact-head Actions [45974515896](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45974515896), attempt 1, targets `e9dd97824bdefb2135b003aae560b24d9bfc7392`. Repo-sanity, AI boundary, database, Windows and disposable Supabase integration completed SUCCESS; Flutter format/analyze succeeded but `flutter test` failed two cases in `kanji_stroke_guide_test.dart` because the playback assertions did not observe the expected second stroke. All downstream Flutter lifecycle, browser/Web and preview-artifact steps were skipped, not passes.
+- The two playback tests used the shared `tapCatalog` helper after starting the periodic timer. That helper calls `pumpAndSettle`, which can advance WidgetTest fake time while playback is active and make a later exact-650ms assertion nondeterministic. The tests now settle/ensure visibility before tapping, pump only one frame after starting, and advance 700ms/1400ms across the 650ms tick boundaries. The playback interval and production widget behavior are unchanged; assertions for progression, pause, resume, final stop, restart, manual override and route disposal remain.
+- Changed paths: `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart` and this status file. No production source, guide geometry/license, curriculum/N4/Pro-owned data, Auth/provider, API/schema/RLS or CI gates changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. A fresh exact-head Actions run must execute the full Flutter suite and all downstream jobs. PR #41 remains Draft; no merge, hosted dispatch, deployment or release.
+- Next: inspect every latest-attempt job and step for the new exact HEAD; fix only observed diagnostics.
+
+## Kanji playback widget-test formatter correction — 2026-11-27T13:09Z
+
+- Exact-head Actions [45981100687](https://github.com/collab-TTAM/nihongo_daily/actions/runs/45981100687), attempt 1, targets `98b2ec3f7f00f13fca63a4fbed4a0454e93e9fe7`. Repo-sanity, AI boundary, database/RLS, Windows and disposable Supabase integration all completed SUCCESS; Flutter failed only strict Dart 3.35.4 formatting in `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart`. Flutter analyze, full tests and downstream browser/native/Web checks were skipped, not passes.
+- Applied only the formatter-emitted hunk to the N5 manual-stroke/playback widget test. Playback timing, assertions and route behavior are unchanged; the following N4 guide test and all N4 content/data/manifest/content tests/docs remain byte-for-byte untouched.
+- Changed paths: this test and `docs/PROJECT_STATUS.md`. Cloud authoring has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. Fresh exact-head CI is required.
+- PR #41 remains Draft. No production behavior, Auth/provider, API/schema/RLS, hosted secrets/dispatch, merge, deployment or release changed. Next: inspect every latest-attempt job/step on the new exact HEAD, then continue dependency-satisfied study-flow work.
+
+
+## Kanji guide playback widget-test hit-target correction — 2026-11-27T14:28Z
+
+- Exact-head Actions [46005622308](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46005622308), attempt 1, matched PR #41 HEAD `eada251e53419674f42ce27ccaa1401c82e2deea`. Repo-sanity, AI boundary, database/RLS, Windows and disposable Supabase integration completed SUCCESS. Flutter format/analyze passed; `flutter test` failed one playback widget test (2,178 passed / 1 failed). The test log identifies the final `kanji-guide-toggle` tap at line 550 as off-screen (calculated y=-436), so the hide action never ran and the following guide-picture assertion failed. All downstream Flutter/browser/native/Web and preview steps were skipped, not passes.
+- Corrected only the TEST ONLY playback case: resolve the guide-toggle finder, call `tester.ensureVisible` before tapping, then retain the existing pump, collapse, timer-disposal and `findsNothing` assertions. This addresses the observed hit-target failure; no playback production code, timing, assertions, canonical geometry, curriculum or N4/Pro-owned files changed.
+- Changed paths: `apps/flutter_app/test/features/kanji/kanji_stroke_guide_test.dart` and `docs/PROJECT_STATUS.md`. Cloud authoring runtime has no pinned Flutter/Dart SDK, so local format/analyze/test/build were not run. Fresh exact-head Actions must verify format/analyze/full Flutter suite and downstream Web/Windows/Chrome/native jobs; no new-head pass is claimed.
+- Next: inspect every latest-attempt job and step on the new exact HEAD. Keep PR #41 Draft and #11/#12/#13/#34/#18 open pending full learner, independent linguistic/audio and Personal Alpha acceptance.
+
+
+## N5 reading content increment — 2026-11-27T15:10Z
+
+- Resumed Draft PR #41 on `automation/issue-11-plan-sdk-integration`, parent HEAD `ace6d330a25e22592a0be5af231e7a55db54a3e5`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added one original N5 draft passage `n5-summer-seaside-01` (夏休みの海) with Japanese text, kana reading, Vietnamese translation, source note and three deterministic comprehension questions. The source note explicitly states that a teacher/native speaker has not reviewed it. This increases the bundled N5 draft set from 13 to 14 passages and from 39 to 42 questions; it is not a claim of complete N5 coverage, official JLPT alignment or linguistic approval.
+- Added bundled repository count/ID checks, a domain expansion assertion and a real reading-widget round that answers all three questions. Updated the QA anchor and reading-material inventory.
+- Changed paths: `apps/flutter_app/assets/reading/catalog.json`, three reading tests, `docs/READING_MATERIAL.md`, `qa/matrix.json`, and this status file. No `data/n4`, `data/manifest`, `data/README`, Pro-owned N4 content/tests/docs, production Auth/provider, API/schema/RLS, audio availability, study-credit/mastery behavior or default save behavior changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/widget test/build are not claimed. Fresh exact-head CI must verify formatting, analysis, the full Flutter suite and downstream Chrome/Web/Windows jobs. No hosted staging workflow, secrets, production deployment, merge or release occurred.
+- Next: inspect every latest-attempt job and step on the new exact PR head. Keep #34/#26/#41 open/Draft; independent linguistic review, broader N5 coverage, separate Pro N4 integration, vetted playable audio and hosted learner/release evidence remain outstanding.
+
+
+## Reading widget strict formatter correction — 2026-11-27T15:29Z
+
+- Exact-head Actions [46024896158](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46024896158), attempt 1, matched parent HEAD `df0d6763421c38defa3bc516a3756dd4882beaa0`. Repo-sanity, AI boundary and database completed SUCCESS (17/17, 20/20 and 25/25 steps). Flutter failed only the strict Dart 3.35.4 formatter in the newly added N5 seaside widget test; the log emitted one formatting hunk collapsing a three-line `expect(find.textContaining(...), findsOneWidget)` to one line. Flutter analyze/tests and downstream checks were skipped, not passes. Supabase integration and Windows were still in progress.
+- Applied only that exact SDK-emitted formatting hunk in `apps/flutter_app/test/features/reading/reading_widget_test.dart`; no assertion, source content, route behavior or runtime logic changed.
+- Changed paths: the reading widget test and this status file. Cloud authoring has no pinned Flutter/Dart SDK; no local format/analyze/test/build is claimed. A fresh exact-head Actions run must verify formatting, analyzer, full Flutter suite and downstream platform jobs.
+- The N5 passage remains explicitly unreviewed draft material. No N4/Pro-owned files, manifest/README, Auth/provider, API/schema/RLS, audio availability, study credit/mastery, hosted secrets/dispatch, merge, deployment or release changed.
+- Next: inspect every latest-attempt job/step on the new exact HEAD; keep #41 Draft and #26/#34 open pending independent language review, vetted audio, hosted learner proof and release evidence.
+
+
+## Progress Overview — confirmed study-session history — 2026-11-27T16:07Z
+
+- Resumed Draft PR [#41](https://github.com/collab-TTAM/nihongo_daily/pull/41), branch `automation/issue-11-plan-sdk-integration`, parent `ba5c8e51a3c1e0262d0ba77174046a69fb58cfa5`, base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Added a read-only `confirmed` projection to the current owner's study-session recovery snapshot. Progress Overview now explicitly loads only server-acknowledged events still retained in that device's journal; pending/rejected and other-owner records are excluded. Credit totals floor each accepted event separately, match the per-session server policy, and show ten recent records plus area totals. The UI explicitly disclaims complete server history, cross-device totals, mastery and SRS; no dispatch, retry, save or plan mutation is performed by this view.
+- Added widget regressions for acknowledged-only classification, pending/rejected/other-owner exclusion, per-event floor-minute totals, read-only behavior, redacted storage failure/explicit retry, and late A-B-A account replacement. Added QA inventory case `progress-confirmed-study-history` and documented the bounded device-local projection in `DAILY_PLAN_UI.md` and `STUDY_SESSIONS.md`.
+- Paths: `apps/flutter_app/lib/features/daily_plan/data/durable_study_session_repository.dart`, `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `docs/DAILY_PLAN_UI.md`, `docs/STUDY_SESSIONS.md`, `qa/matrix.json`, `docs/QA_SECURITY_MATRIX.md`, `docs/PROJECT_STATUS.md`. No SQL/RLS/Auth/provider/default preview, Pro-owned N4/data/manifest/README/content tests/docs, dependencies, hosted secrets/dispatch, merge, deployment or release changed.
+- Cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/Flutter test/build were not run. JavaScript edit-anchor/JSON checks passed before blob creation. Exact-head GitHub Actions is required for Dart formatting, analysis, full Flutter/widget suite, Windows/Web/native and retained database/AI checks. Hosted learner A/B, complete multi-device history and Personal Alpha release gates remain separate and unproven.
+- Next: inspect exact-head Actions/latest attempt and every required job/step; fix only observed diagnostics. Keep #11/#18 and PR #41 Draft pending hosted learner, independent content/audio review and full Personal Alpha acceptance.
+
+
+## Progress Overview formatter correction — 2026-11-27T17:11Z
+
+- Exact-head Actions [46033517475](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46033517475), attempt 1, matches parent HEAD `948791ecbba195153a6b5eba1519f53445f7d2bc`. Repository sanity, AI boundary, database/RLS, disposable Supabase integration and Windows completed successfully with all returned steps successful. Flutter failed only the pinned Dart 3.35.4 strict formatter in `progress_overview_screen.dart` and `progress_overview_widget_test.dart`; the formatter emitted the exact line-wrap changes now applied. Flutter analyze, Flutter tests, Chrome/native/Web and preview-artifact steps were skipped after the formatter failure, not passed.
+- Applied only the SDK-emitted formatting changes to those two files. No expression, assertion, test case, UI behavior, timer, study-session classification/credit, owner guard, storage handling, QA inventory or production logic changed.
+- Changed paths: `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, and this status file. No N4/Pro-owned content, `data/manifest`, content tests/docs, Auth/provider, API/schema/RLS, dependency, hosted secret/dispatch, default save behavior, merge, deployment or release changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. The exact formatter output is taken from the failed pinned CI log. A fresh exact-head Actions run must verify formatter, analyzer, full Flutter suite, browser/native checks, Web/Windows builds and preview integrity before any integration decision.
+- Next: inspect every latest-attempt job and step for the new exact PR head; fix only observed diagnostics. Keep #11/#18 and PR #41 open/Draft pending hosted learner acceptance, server-backed multi-device history, independent content/audio review and all Personal Alpha release gates.
+
+
+## Progress Overview exact-title finder correction — 2026-11-27T18:12Z
+
+- Exact-head Actions [46040250431](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46040250431), attempt 1, targets `66f7eb69ff13ce0b583b8d2e07beab7a959f769d`. Repo-sanity (17/17), AI boundary (16/16), database/RLS (22/22), Windows (18/18) and disposable local Supabase integration (13/13) completed SUCCESS with every returned step successful. Flutter strict Dart formatting and analyze succeeded; the full suite failed only `profile_overview_widget_test.dart:1014` after 2,183 passed / 1 failed. The exception shows `find.textContaining('SRS')` matched both the visible `Ôn tập SRS` heading and its explanatory paragraph. All downstream Flutter lifecycle, browser, native, wire, Web-build and preview-artifact steps were SKIPPED, not passed.
+- Changed only the TEST ONLY finder to `find.text('Ôn tập SRS')`, preserving the existing one-widget assertion and all production UI/logic. No Auth/provider, schema/RLS, QA inventory, N4/Pro-owned content, default save behavior, hosted secrets/dispatch, deployment or release changed.
+- The cloud authoring runtime has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Run 46040250431 is failure evidence for the parent, not a pass for this correction. A fresh exact-head Actions run must verify format, analyze, the complete Flutter suite and every downstream job.
+- Next: inspect every latest-attempt job and step on the corrected exact HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#18 open pending hosted learner acceptance, independent linguistic/audio review and complete Personal Alpha evidence.
+
+
+## Progress Overview empty server quiz state — 2026-11-27T21:14Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; parent HEAD `bf5b2233f2bf3146145e605d67aeaa4a39b0c14b`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Changed the Progress Overview weak-point section to render only when at least one server receipt is loaded. An empty receipt page now remains an explicit empty-history state instead of also showing a misleading “no weak points in loaded pages” recommendation section.
+- Added a widget regression for an empty server page: verifies the explicit empty key, absence of receipt summary/weak-point UI, zero curriculum reads, and no local vocabulary/grammar history reads or writes. Added QA case `progress-empty-server-quiz-state` for Issue #13.
+- Paths: `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart`, `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`, `qa/matrix.json`, and this status file. No N4/Pro-owned content, Auth/provider, API/schema/RLS, default save behavior, dependencies, hosted configuration or production behavior changed.
+- Cloud authoring has no pinned Flutter/Dart SDK; local format/analyze/test/build were not run. Exact-head Actions must verify formatting, analysis, the complete Flutter suite and all downstream jobs; no new-source pass is claimed.
+- Next: inspect every latest-attempt job and step for the new exact PR HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#13/#18 open pending hosted learner, independent content/audio review and Personal Alpha evidence.
+
+
+## Progress Overview empty-server-quiz formatter correction — 2026-11-27T22:13Z
+
+- Resumed the RELEASED core lane after checking PR #37 first: it remains Draft at `ec8bc9fa6c2f152e6fe0b0fa561c9e3de92063bd`; exact-head Actions [46061924078](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46061924078) completed all six jobs and all 108 returned steps successfully. This is CI/component evidence only; protected hosted signed-JWT A/B, deployed PostgREST/RLS, Windows learner restore/expiry and physical two-device sync remain outstanding.
+- PR #41 parent `f3a27ddcac821aa8b088642c0650efb93722783c` exact-head Actions [46069469289](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46069469289) matched the parent and failed only the strict Dart 3.35.4 formatter. Repo-sanity, AI boundary, database/RLS, Windows and disposable Supabase integration succeeded; Flutter analyze/tests and downstream browser/native/Web/preview checks were skipped after the formatter failure. The formatter emitted exactly two changes: wrap the `serverQuizWeakPoints != null && serverQuizEntries.isNotEmpty` condition in the Progress Overview screen, and collapse the empty server-history fixture map to one line in its widget test.
+- Applied only those two formatter hunks in `apps/flutter_app/lib/features/progress/presentation/progress_overview_screen.dart` and `apps/flutter_app/test/features/progress/progress_overview_widget_test.dart`; no logic, assertions, test inventory, copy or behavior changed. Updated this handoff only. No N4/Pro-owned content, Auth/provider, API/schema/RLS, dependencies, hosted secrets/dispatch, default save behavior, merge, deployment or release changed.
+- Full recursive parent/source trees were fetched untruncated at 1,052 entries each (923 blobs / 129 trees) with identical path/mode/type sets. Cloud authoring has no pinned Flutter/Dart SDK, so local format/analyze/test/build was not run. Fresh exact-head Actions must verify formatter, analyzer, full Flutter suite and all downstream jobs before this correction is accepted.
+- Next: inspect every latest-attempt job and required step on the final exact PR #41 HEAD; fix only observed diagnostics. Keep PR #41 Draft and PR #37 Draft; hosted learner acceptance, independent linguistic/audio review, physical multi-device sync and Personal Alpha release evidence remain outstanding.
+
+
+## QA source-anchor whitespace normalization — 2026-11-28T15:06Z
+
+- PR #41 branch `automation/issue-11-plan-sdk-integration`; starting head `a0ad52695a366ae33004654442443fcc8a110408`; source implementation commit `ac0c51ca1121b206ed972453d09e88ed385dd109`. The first commit changes only `scripts/verify_qa.py` and `qa/test_verify_qa.py`; this checkpoint adds the regression-literal correction and this status record.
+- Exact parent Actions [46075648681](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46075648681) failed `repo-sanity` because `progress-empty-server-quiz-state` expected a single-line source expression while Dart 3.35.4 had wrapped the same expression over two lines. The widget test-name anchor exists; no application behavior or test assertion failed in that run. Downstream Flutter/Windows/Supabase/preview jobs were skipped, not passed.
+- `scripts/verify_qa.py` now collapses whitespace in both expected source anchors and source text before matching. Token order and punctuation remain exact; this does not parse Dart or weaken CI job/evidence requirements. `qa/test_verify_qa.py` adds a regression that accepts the formatter-wrapped expression and rejects a token-spacing mutation.
+- Separate diff review caught and corrected an over-escaped newline assertion before the final checkpoint. No production feature, N4/Pro-owned path, `data/manifest`, content tests, Auth/provider, API/schema/RLS, CI gate, default save, hosted secret/dispatch, merge, deployment or release changed.
+- Cloud authoring used GitHub source/tree APIs; local Python QA/Flutter execution was not run against a checkout. The new exact-head Actions run must execute repo-sanity/QA and every required downstream job before this correction is accepted.
+- Next: inspect the latest attempt and every job/step for the final PR #41 HEAD; fix only observed diagnostics. Keep PR #41 Draft and #11/#13/#18 open pending hosted learner acceptance, content/audio review and Personal Alpha evidence.

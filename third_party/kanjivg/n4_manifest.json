@@ -1,0 +1,775 @@
+{
+  "format_version": 1,
+  "reference_version": "kanjivg-70a0b7ae-n4-1",
+  "source_commit": "70a0b7ae0c18ceb5cb358274b029cce0234a43bc",
+  "source_url": "https://github.com/KanjiVG/kanjivg",
+  "author": "Ulrich Apel and KanjiVG contributors",
+  "license": "CC-BY-SA-3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "copyright": "Copyright (C) 2009/2010/2011 Ulrich Apel. Original SVG notices retained.",
+  "changes": "Cubic curves flattened with 0.15 source-pixel tolerance; coordinates divided by 109 and rounded to 8 decimals. No glyph fitting or stroke reordering.",
+  "metadata_sha256": "e2f0217dc5182af1320066ebb638fee3df3a88e881b8fcc83389f1aab9e59ed2",
+  "sources": [
+    {
+      "kanji_id": "b81afcad-a882-574c-80b5-8d1556278833",
+      "character": "会",
+      "content_version": 1,
+      "stroke_count": 6,
+      "source_file": "04f1a.svg",
+      "sha256": "9736942c2647fa9d4f926d56a82eab813165a2e64c32820f566513a00a70e2fc"
+    },
+    {
+      "kanji_id": "c506426b-3b19-5c18-83be-d9c7b422e359",
+      "character": "社",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "0793e.svg",
+      "sha256": "6546de28b743a423685292e19810a3de7df1dfef40f4161a6c2647e9befb3cf9"
+    },
+    {
+      "kanji_id": "a734736c-e168-5f23-b630-873ba36b742d",
+      "character": "店",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "05e97.svg",
+      "sha256": "86de6ccfd4c835a9840cfd5816cf4ba318266bce0a064a24bb8b9d310909d6a1"
+    },
+    {
+      "kanji_id": "46348dec-b894-5bb3-9ecb-0964de350389",
+      "character": "駅",
+      "content_version": 1,
+      "stroke_count": 14,
+      "source_file": "099c5.svg",
+      "sha256": "a3eec84d7f07d22db7b6f81725ddb52d1a1395b8fb25d5a93d910ed83731e559"
+    },
+    {
+      "kanji_id": "46c55f3e-4d5a-580a-b94c-7427d69acc1a",
+      "character": "旅",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "065c5.svg",
+      "sha256": "7ffb39a1836c331148e0801330bfbe069596563c71cc8b93ad547731be8721ee"
+    },
+    {
+      "kanji_id": "b928e8c6-e475-574e-a257-0106bf3643cb",
+      "character": "料",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "06599.svg",
+      "sha256": "8bd0b188515b38bc084659c35da0de63a17dd525dc837497cc66015139390a3c"
+    },
+    {
+      "kanji_id": "230eee8a-4b32-574c-97bd-a689122b12f8",
+      "character": "理",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "07406.svg",
+      "sha256": "f804679ed50089ddfafadfbca654a6b194253ef17db8e827cdd275039a984cef"
+    },
+    {
+      "kanji_id": "4503e830-2d98-5ad4-bb17-c7a92e11566e",
+      "character": "勉",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "052c9.svg",
+      "sha256": "9dc827e3415a3145c4205836b2ae2dd8d44c3e116ae67a02172365726a2e7de5"
+    },
+    {
+      "kanji_id": "7270dab4-f127-5a1f-8474-c3a913bf7820",
+      "character": "度",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "05ea6.svg",
+      "sha256": "f761e1aaa2c48d25d0ad399bf6775cd7348a1a79953ef21391655b9cf3939375"
+    },
+    {
+      "kanji_id": "43e35f96-cc4e-56ee-bdbb-153a9db2b00c",
+      "character": "活",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "06d3b.svg",
+      "sha256": "5c17bb829acd62eedcd2f62b41deea3d3773753e112857dab341e5e1c0c20716"
+    },
+    {
+      "kanji_id": "10119cdf-7bef-54b9-aa92-3b955269cd6a",
+      "character": "送",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "09001.svg",
+      "sha256": "35a793164043c5461b43aeb0c0a026b37b314b759e59d8449ae8b82f5c37ebfd"
+    },
+    {
+      "kanji_id": "cb6a8902-578b-5ec4-8df8-dbc745f691bd",
+      "character": "始",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "059cb.svg",
+      "sha256": "c31cbcf53c5f1130e55f621879c752e93122989ceb27af64d960f0c4f6b621a1"
+    },
+    {
+      "kanji_id": "bb3424ab-a1ac-54b4-802b-54dc0fd5884e",
+      "character": "動",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "052d5.svg",
+      "sha256": "79b850d575a751c4d81dbafcbe817959bf4e60954697ac6b78ac21cb293c8264"
+    },
+    {
+      "kanji_id": "4c860ef3-3a44-5478-899b-9f6be868cddb",
+      "character": "健",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "05065.svg",
+      "sha256": "bf742629e0702bebf64d28e2c36b520da8656672ffe0772a68dc55fe747a5db6"
+    },
+    {
+      "kanji_id": "d817e345-e025-5dfc-80a0-fac04fc24f1b",
+      "character": "直",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "076f4.svg",
+      "sha256": "09e971e60354f9157a4563f705e593c428ce5c152c180af9009b025c7103f4fe"
+    },
+    {
+      "kanji_id": "46b27c85-714c-5596-8d30-d5fe270ff493",
+      "character": "選",
+      "content_version": 1,
+      "stroke_count": 15,
+      "source_file": "09078.svg",
+      "sha256": "06dad3b1e7d02882b9d58be7859788b8684f17699e0b24d5af21abb5fd863c1f"
+    },
+    {
+      "kanji_id": "3676ec55-2b6e-54ab-98dc-69d95fd24d0d",
+      "character": "決",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "06c7a.svg",
+      "sha256": "506bcab08d2fd44281239a216bad3c834b6785fa32242cd0df802f1cb53aafdc"
+    },
+    {
+      "kanji_id": "81e462fe-ca73-5794-abd4-1a2905b3f60c",
+      "character": "伝",
+      "content_version": 1,
+      "stroke_count": 6,
+      "source_file": "04f1d.svg",
+      "sha256": "8ccd5799cf09e41005a7f96af8115112a86702ca172c31d80a5fec1ec3dd5028"
+    },
+    {
+      "kanji_id": "1b44d346-b2bd-55f2-8919-43cc0d6a15af",
+      "character": "返",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "08fd4.svg",
+      "sha256": "7aafab730e56fe56d3401b92930f2fec4cee088a4b5d2df5f73720c9a7f54737"
+    },
+    {
+      "kanji_id": "c151c9b1-90f2-5e5c-947c-97ee3f20b109",
+      "character": "薬",
+      "content_version": 1,
+      "stroke_count": 16,
+      "source_file": "085ac.svg",
+      "sha256": "69adb1a236be403e2b74b42f0bbb5ec123f66f2c1b2671e4ed3d59392b126121"
+    },
+    {
+      "kanji_id": "f5ae0d6c-1a88-5c19-8a0e-b6e3087102b0",
+      "character": "知",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "077e5.svg",
+      "sha256": "6bf0fac36e4ac08fbf03bb1a341792d1a4600e4dd05434e078212b811d6d76af"
+    },
+    {
+      "kanji_id": "cb9f2b28-8243-5dfb-b9e7-162e3110d2ab",
+      "character": "払",
+      "content_version": 1,
+      "stroke_count": 5,
+      "source_file": "06255.svg",
+      "sha256": "3dd362b06e9af798535f97958ec8cfef2c07a50ee481e2ab9a0572c4ce278d59"
+    },
+    {
+      "kanji_id": "b9f17e12-b81e-57ae-bcd6-c75ca397be53",
+      "character": "増",
+      "content_version": 1,
+      "stroke_count": 14,
+      "source_file": "05897.svg",
+      "sha256": "e9deaa42d6b29e5d2d9b23030140697211655a02e59919c76a12577aeb5d7690"
+    },
+    {
+      "kanji_id": "e591fc1b-0498-532c-a263-4eb59ae30312",
+      "character": "乗",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "04e57.svg",
+      "sha256": "eff5726ba032c05fcdb90a9dada5a7408ee5f6f39a87abab8d66c660bbfc1828"
+    },
+    {
+      "kanji_id": "bd90fa65-0f7b-51c3-8983-30dfc909b758",
+      "character": "残",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "06b8b.svg",
+      "sha256": "dcd5d68649f8ab6df614bd9977645aa30913016072ef8ca142afb586b3e0883b"
+    },
+    {
+      "kanji_id": "c37c21f3-c187-5be5-837f-6ff69373d4e6",
+      "character": "急",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "06025.svg",
+      "sha256": "9aa0d0498fdbb592be8c632b5ca4afe5356a2011e6090ab492f73c3abd118e4e"
+    },
+    {
+      "kanji_id": "08c38bf1-83d5-590b-998f-7186cdf7f288",
+      "character": "壊",
+      "content_version": 1,
+      "stroke_count": 16,
+      "source_file": "058ca.svg",
+      "sha256": "b8e689bde579ca16c607bead81f889788b58c4031ca1eb05e60af2122910547e"
+    },
+    {
+      "kanji_id": "de52ea74-c8c5-5a86-945c-3969e6a6dae7",
+      "character": "到",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "05230.svg",
+      "sha256": "4960acc3f4d3ce555d39aa6054a2651496dbaf4713a0008f181b585e41152ddb"
+    },
+    {
+      "kanji_id": "ec25de2b-677b-55d3-9dc1-4bedc4e57aa7",
+      "character": "泊",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "06cca.svg",
+      "sha256": "c56ad44930905f7992a49fff7f3500090185b4219978a5beca62d01af6b88534"
+    },
+    {
+      "kanji_id": "d8c40d46-9e72-5afe-91b2-bc15e8fdb9fc",
+      "character": "焼",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "0713c.svg",
+      "sha256": "6fcefcd36f919234952f91c74171cbaced61be060df8d38f2571cce74cc4cdb3"
+    },
+    {
+      "kanji_id": "c8a4ca6a-2cc9-5d4d-9bfc-199682c23315",
+      "character": "洗",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "06d17.svg",
+      "sha256": "d190f3efed34da1ad8e5879665777bbe72b0468ec1d74a528f2ae56d5d3d6312"
+    },
+    {
+      "kanji_id": "11f5beb3-146c-5a65-a563-bab619962799",
+      "character": "晴",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "06674.svg",
+      "sha256": "8d92bcc62a8ef381873e409d76a463092db196e94526bad763f7e9e1fdfd78e1"
+    },
+    {
+      "kanji_id": "b5cd2150-12be-5aca-9a9c-18bd5bd3277d",
+      "character": "曇",
+      "content_version": 1,
+      "stroke_count": 16,
+      "source_file": "066c7.svg",
+      "sha256": "7013904454b87ca2d59c11602e1abdb6da6cc7a64a7a1419eeef665369234183"
+    },
+    {
+      "kanji_id": "8092f5e0-ecd0-5acb-bcfa-a36b3733623c",
+      "character": "疲",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "075b2.svg",
+      "sha256": "1dd924e2d1e6ea3cc5f34335fd2d3e2889b22fee116aba272f8cac73731f056d"
+    },
+    {
+      "kanji_id": "a90fdf40-0394-5741-a7e6-c762a1240e65",
+      "character": "痛",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "075db.svg",
+      "sha256": "b340f3ff3301bd03f708010a67a68e2af8436cf1863af4285bb4594e452c8bca"
+    },
+    {
+      "kanji_id": "869c0343-5ed2-5d25-9816-0e690b01df8e",
+      "character": "招",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "062db.svg",
+      "sha256": "deba046c7d3984f6f3ffa29b15f9f5989be68ed7b426f8bbfcfec3cd4145cf9c"
+    },
+    {
+      "kanji_id": "87aa3c14-70cf-599d-8ad5-507ec26d2e4c",
+      "character": "断",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "065ad.svg",
+      "sha256": "ea2ff9b6791e738941d2e07e1d1b932d7ec2c9a184a6c82b3a07f44e6d8ce834"
+    },
+    {
+      "kanji_id": "9f17e6a8-c086-510c-9753-73a714e4907d",
+      "character": "滑",
+      "content_version": 1,
+      "stroke_count": 13,
+      "source_file": "06ed1.svg",
+      "sha256": "46886e5818ab83331a1d88ae9eb10833632ccccfbec0543f64cf72fe29b4693e"
+    },
+    {
+      "kanji_id": "f82ab07a-fea9-5235-95e4-d9934980dbca",
+      "character": "磨",
+      "content_version": 1,
+      "stroke_count": 16,
+      "source_file": "078e8.svg",
+      "sha256": "c4e90a4b1f6223efadbb42b5826da7d1939052daf8725d428384a955bb9baf73"
+    },
+    {
+      "kanji_id": "5dea7c2a-a07e-5cbf-9d68-c0262ef7c33c",
+      "character": "都",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "090fd.svg",
+      "sha256": "c98ac6f5f2f331ac4fdb894c900b6e1058703b68e3e5ed7a231061d7c22acf08"
+    },
+    {
+      "kanji_id": "0cd97fc9-a2b7-5a6a-b6e2-b4cc4fbc6f2c",
+      "character": "合",
+      "content_version": 1,
+      "stroke_count": 6,
+      "source_file": "05408.svg",
+      "sha256": "711a5a1b6780ad7b5d37b9864adf94a65742a172b550650948e24241c4d7e109"
+    },
+    {
+      "kanji_id": "eaff1f25-bd49-53d9-bedb-264a384bbf58",
+      "character": "所",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "06240.svg",
+      "sha256": "e3d418e892e5995241809e48357567fe2be97cddd5dec99da4892a4f40e071b7"
+    },
+    {
+      "kanji_id": "89e12425-3a1c-553a-a730-917da4ece1db",
+      "character": "設",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "08a2d.svg",
+      "sha256": "ca689fda1eecaa20ac58fa5d9aa3a986c8677ebdce99957b65519b81c5ab04e6"
+    },
+    {
+      "kanji_id": "2e542082-9669-5d20-b16f-42f7242cf3f3",
+      "character": "環",
+      "content_version": 1,
+      "stroke_count": 17,
+      "source_file": "074b0.svg",
+      "sha256": "0f2490a45f8316fd847a7da2d02168cc0e73ac2203e4963674adf176a6e553ba"
+    },
+    {
+      "kanji_id": "d6dcff8a-3157-5ef5-9069-3ae9a6d802f3",
+      "character": "境",
+      "content_version": 1,
+      "stroke_count": 14,
+      "source_file": "05883.svg",
+      "sha256": "4c6b9f80a541d4411285fb01463a661588cb9c7bc5255a32096ab34a17daa25c"
+    },
+    {
+      "kanji_id": "efd53111-2892-5837-8066-c54d49bcf14f",
+      "character": "役",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "05f79.svg",
+      "sha256": "265e17a330db3205818a16e7253d226f04c9626a3dba31712cbbd76a9359ea72"
+    },
+    {
+      "kanji_id": "856048cd-5815-52d1-bddb-79fa31711939",
+      "character": "類",
+      "content_version": 1,
+      "stroke_count": 18,
+      "source_file": "0985e.svg",
+      "sha256": "83f3b281f6441f319e3aef3f01dc0ea83659da8de1d75a9f1225a4db8a384d69"
+    },
+    {
+      "kanji_id": "2a34a88d-4d78-528a-b6cd-a8a8f2055db7",
+      "character": "意",
+      "content_version": 1,
+      "stroke_count": 13,
+      "source_file": "0610f.svg",
+      "sha256": "4e7375cfe52348e2a990d509c78f3365bc6ca0c757e0aa01b82c129a7f769412"
+    },
+    {
+      "kanji_id": "b4131ac1-ea38-5875-aff1-d5da99b995f3",
+      "character": "見",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "0898b.svg",
+      "sha256": "eecab39e4cb65d1711d3e1e431dcc427e9fee9cafea8af259defe1568ea3c3a9"
+    },
+    {
+      "kanji_id": "a3ecb5a6-840b-5ea7-821f-d28e7fd5f71e",
+      "character": "空",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "07a7a.svg",
+      "sha256": "c2613d7b8db35b9ad053b9708dd6888af9abe2bbe3ce09dd5ceca322fd6d8b21"
+    },
+    {
+      "kanji_id": "057cf9b5-74a5-5902-9d95-b04fb51fdb53",
+      "character": "港",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "06e2f.svg",
+      "sha256": "262ee5c24fc2281053e3b87816b295f100d988028eb40965dd496a618f87f295"
+    },
+    {
+      "kanji_id": "0882a658-6832-5584-a387-418493149d28",
+      "character": "卒",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "05352.svg",
+      "sha256": "a36a5dd50e00981bf70007e441bd979f37cb2e61395ecbfdf03e04c2d1c82c0d"
+    },
+    {
+      "kanji_id": "25dd5745-4d0a-508e-b684-c0bd3f3bf3dd",
+      "character": "業",
+      "content_version": 1,
+      "stroke_count": 13,
+      "source_file": "0696d.svg",
+      "sha256": "a3fac89c9e878e9c4c26ff710f10480157ed7c320b65d5fe9940c07211a23581"
+    },
+    {
+      "kanji_id": "722c8fe6-3df6-5cfc-bed7-90fff018b4b0",
+      "character": "医",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "0533b.svg",
+      "sha256": "63d666d8020ffae4224763658bb2bc3bce978618381df812d75970b0fcb4e04f"
+    },
+    {
+      "kanji_id": "9cada711-db84-50a0-a1c2-be2bc8c611ec",
+      "character": "病",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "075c5.svg",
+      "sha256": "1d556e128e02dc8940dc3aa7550405dba23ea2e3412ae7ead3b07a31cb857519"
+    },
+    {
+      "kanji_id": "9514fb8a-bb2c-5263-a3ef-e6332b8d857a",
+      "character": "地",
+      "content_version": 1,
+      "stroke_count": 6,
+      "source_file": "05730.svg",
+      "sha256": "6be3bf63f420c707564bab1899c9435ce80df10b7bb51062829a45fdb8aa744e"
+    },
+    {
+      "kanji_id": "8c7841af-3aeb-52ce-9a82-82fdb9283af7",
+      "character": "震",
+      "content_version": 1,
+      "stroke_count": 15,
+      "source_file": "09707.svg",
+      "sha256": "c23ea2d6f9831b0d0a995739c64ff4a147cfe87c1c420143ead97469be0dc9e4"
+    },
+    {
+      "kanji_id": "ed621e06-911b-572d-a46c-4b02ec16d0e1",
+      "character": "品",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "054c1.svg",
+      "sha256": "cff55162576da9e9c76cf9abd2eaba5b5313421d7a27c99a421dfb6e7b182f15"
+    },
+    {
+      "kanji_id": "1b05f187-4b89-5d07-bcd6-15bebf9c1485",
+      "character": "割",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "05272.svg",
+      "sha256": "bca6ead68dfe2a54e29b3bdc87a7e2552d1d6d07d6067caf68abf6e585c46853"
+    },
+    {
+      "kanji_id": "d0f3b995-2ba1-518e-b441-9c3fb1472d4f",
+      "character": "機",
+      "content_version": 1,
+      "stroke_count": 16,
+      "source_file": "06a5f.svg",
+      "sha256": "8288eb3a8bf02dbd85a14258b54890aa94f0165d20fa5cdfff1661feca7fd3b7"
+    },
+    {
+      "kanji_id": "61f5ba19-af82-532f-9e40-7024f2652e10",
+      "character": "械",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "068b0.svg",
+      "sha256": "861d90e4b8ed4e875728f73aae8a4ef92207e41eb5fb54e2b50c9d0368967bee"
+    },
+    {
+      "kanji_id": "e9bd85a6-69dd-512a-b6a5-3fea1e5caa47",
+      "character": "味",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "05473.svg",
+      "sha256": "dd630c954ba6f8f980cd234b4d81fe6c919ceff28b2088e09f6d1d3106170ca8"
+    },
+    {
+      "kanji_id": "03e037f7-fabc-598e-ba36-f5bbb7c35c2f",
+      "character": "塩",
+      "content_version": 1,
+      "stroke_count": 13,
+      "source_file": "05869.svg",
+      "sha256": "c3cb78bcf9c80004d0ba5174befd0a889ff16d30ec12c0b504cbc48d22a066ef"
+    },
+    {
+      "kanji_id": "a2403a0f-122f-5c7b-abd3-7588e5951655",
+      "character": "道",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "09053.svg",
+      "sha256": "826fd1adbf301491c5c726fedb4d3dec4089760dd40a6824c83403f0c4b86418"
+    },
+    {
+      "kanji_id": "7514736a-2ad3-566e-aaf8-3717fffbf32d",
+      "character": "信",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "04fe1.svg",
+      "sha256": "e9fb1566c4beb716b88ac8da317d9a6e2684eee7b1a00bff5941a46a595f71b4"
+    },
+    {
+      "kanji_id": "d1def842-54eb-545c-a80b-b04c06732a8f",
+      "character": "開",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "0958b.svg",
+      "sha256": "d6629be86e03fd326004d1a07f316c7db1a346bf6a0689816039cd91ddfa1f12"
+    },
+    {
+      "kanji_id": "aa7fcf23-8f2d-55f6-8638-7c0157ff5e72",
+      "character": "着",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "07740.svg",
+      "sha256": "be83b46eada56c8ae9aa9253a510c1f24da241c5d3309f7880de4cb43a820a62"
+    },
+    {
+      "kanji_id": "110acd3f-a670-54c0-8b97-3f070720461a",
+      "character": "配",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "0914d.svg",
+      "sha256": "f929faba8f81eb50a467a98cb6bec24e9e1fb3c362921912f2bb15b97bd42d72"
+    },
+    {
+      "kanji_id": "dc6bcbe9-f91d-5b80-a7d1-2e228d9865d9",
+      "character": "集",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "096c6.svg",
+      "sha256": "6a8bdff0ff079f5873767aff7a7512ac13f097d53e69f7d3e13ec7f67fafeee0"
+    },
+    {
+      "kanji_id": "f5978433-484f-57bd-b8fc-7e32685d573a",
+      "character": "客",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "05ba2.svg",
+      "sha256": "2df05691c4e9c23a184cf985d5d761ea12903363da77ba954d1787f518c52e98"
+    },
+    {
+      "kanji_id": "47774582-5a39-5719-80fd-ea82c5a5001c",
+      "character": "売",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "058f2.svg",
+      "sha256": "69874b80d9e6211394ed923e74f89d49d0df74272d8d07b86765cf4b83766175"
+    },
+    {
+      "kanji_id": "97cc58ba-dd4a-5917-8e5e-2d2513ccc226",
+      "character": "体",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "04f53.svg",
+      "sha256": "4cc244e39dbf1e87b26a41c95123f91123146b15fdba5006e2945216e79c902a"
+    },
+    {
+      "kanji_id": "f69fcfbc-5360-534c-aa27-4f102b964305",
+      "character": "改",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "06539.svg",
+      "sha256": "7eccdd7da0f27b165c7ba4a40087e39663fae91846363ef36cb0df755e88fed8"
+    },
+    {
+      "kanji_id": "2b93bc42-b4fd-5d6a-9380-35916ee217a4",
+      "character": "許",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "08a31.svg",
+      "sha256": "b612d87a4954de6f7e2de06fdf8ded195b9a0c3478e051a95d019f028e8896d9"
+    },
+    {
+      "kanji_id": "b43e78d4-74e7-5ba1-a8cc-15bf6efbcaf2",
+      "character": "場",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "05834.svg",
+      "sha256": "a962b951a431e3090aa6a216b3fbee41eb7e0e75b059256ff77b6e970c96aea1"
+    },
+    {
+      "kanji_id": "8712c199-0394-5d94-89a7-83200deea927",
+      "character": "成",
+      "content_version": 1,
+      "stroke_count": 6,
+      "source_file": "06210.svg",
+      "sha256": "97b7f72054162b015fd3440af65a5f64bb1e443d94688c0cf757f9d75d2f1789"
+    },
+    {
+      "kanji_id": "182665cb-6d99-5764-a003-be01ff6b91da",
+      "character": "洪",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "06d2a.svg",
+      "sha256": "b1405cffdea575348a6367c48da6893d81e5fe17cb000b3b813d118c94314a1c"
+    },
+    {
+      "kanji_id": "846bf4f6-209a-5cae-9237-7531c0cbae9b",
+      "character": "祭",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "0796d.svg",
+      "sha256": "a4220f65db920f8778cff2b2d1f18d2c2ca927a25c7579e081546e6bcb7540d5"
+    },
+    {
+      "kanji_id": "09760fd5-28e5-5ae1-b320-b8fc8a1c0b01",
+      "character": "森",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "068ee.svg",
+      "sha256": "a6a066aa5824d08f01a00f86c996fe22cc499abcb41ba6fc32628b3785ea8e51"
+    },
+    {
+      "kanji_id": "3fcad661-3105-5fd1-a921-4074c4828b5e",
+      "character": "画",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "0753b.svg",
+      "sha256": "98cde14d87526eb240debd2eee89796a9dcb7f56be107cc917463dfa7fbf9342"
+    },
+    {
+      "kanji_id": "07268c33-f052-5cd9-8e55-77d9adfa4499",
+      "character": "源",
+      "content_version": 1,
+      "stroke_count": 13,
+      "source_file": "06e90.svg",
+      "sha256": "122a4846a957b810cf01c5bafae5cbf1640cc4689d63f4235c3e75112496e968"
+    },
+    {
+      "kanji_id": "ca45dfbd-9e52-5345-b27d-fa0aa5f0ce3f",
+      "character": "玄",
+      "content_version": 1,
+      "stroke_count": 5,
+      "source_file": "07384.svg",
+      "sha256": "82c2b87a45b7d31f40dba7a9f586c6f3d1a0f1107ef40ec9adc518da9a1bcd83"
+    },
+    {
+      "kanji_id": "dff41e49-b6c0-530a-a13f-269eb52914b8",
+      "character": "階",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "0968e.svg",
+      "sha256": "654873b55a328c739ad7201b2ab95cb2f0711656ae7868caeec31d17f57cac66"
+    },
+    {
+      "kanji_id": "122bb352-af5d-43f4-9ef5-cfdd12668973",
+      "character": "窓",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "07a93.svg",
+      "sha256": "0d869f34f615a8826901aef1151485a2c13723b19c291f2f4a55ab3998160b71"
+    },
+    {
+      "kanji_id": "9737e089-0ab3-4531-9e8a-ad7de6fcb879",
+      "character": "庭",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "05ead.svg",
+      "sha256": "8f6b81a7d4da57498146b7abc888ba5876cee29155de654f7373ea641771f201"
+    },
+    {
+      "kanji_id": "c2e5d3a1-7f4b-4e91-9c22-1a6b8d5e7001",
+      "character": "防",
+      "content_version": 1,
+      "stroke_count": 7,
+      "source_file": "09632.svg",
+      "sha256": "b6ac969452e61a4ef0e26e2827da900c8cacbfae4596e7df6538b1191cc87788"
+    },
+    {
+      "kanji_id": "c2e5d3a1-7f4b-4e91-9c22-1a6b8d5e7002",
+      "character": "訓",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "08a13.svg",
+      "sha256": "1408d80e93ad09b4a814a8f180aa45ae378dd4337ff5694ac00b4420b2ab4a8c"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0021",
+      "character": "消",
+      "content_version": 1,
+      "stroke_count": 10,
+      "source_file": "06d88.svg",
+      "sha256": "1fe9b22bee52affd0c7b7a156ef5e5bef572a6451510239f856628c522fdd8b6"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0022",
+      "character": "非",
+      "content_version": 1,
+      "stroke_count": 8,
+      "source_file": "0975e.svg",
+      "sha256": "5075eae769edda914521e909140f5cd8769db5a4d9405341ead602e90bccf358"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0023",
+      "character": "指",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "06307.svg",
+      "sha256": "916452a4c8bc27880645ea02871342e008703482b6fbfd231c799ca158b2874f"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0024",
+      "character": "順",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "09806.svg",
+      "sha256": "86168fd329ba175f0f7e7cb30a09fd0273cb817f8daa4c59516543985d3333c4"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0051",
+      "character": "習",
+      "content_version": 1,
+      "stroke_count": 11,
+      "source_file": "07fd2.svg",
+      "sha256": "9a3c1ab0cd36afd7330f7363e8cee1ee14015d9097bd1caf798039833408d131"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0052",
+      "character": "練",
+      "content_version": 1,
+      "stroke_count": 14,
+      "source_file": "07df4.svg",
+      "sha256": "71393ff8e511dc1ed1ecf6a7954b234cd09629fa4e5056351b277d99d162c9ae"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0061",
+      "character": "朝",
+      "content_version": 1,
+      "stroke_count": 12,
+      "source_file": "0671d.svg",
+      "sha256": "d689b0a41246dd43af760b1040c1a1c12169a89c7b5dae341c86e0c3e9351b53"
+    },
+    {
+      "kanji_id": "f5b8d3e2-0c6a-4f94-a732-4e8d1a6b0062",
+      "character": "昼",
+      "content_version": 1,
+      "stroke_count": 9,
+      "source_file": "0663c.svg",
+      "sha256": "677d7fe1b78148c6ee177254e41ac602b5f938f864262055d88af2b278fc0ddd"
+    }
+  ],
+  "license_sha256": "d255e07978fd16ddfec38bc59dc9d857b885dd44ddbf4e79baf207d30746bdcc"
+}

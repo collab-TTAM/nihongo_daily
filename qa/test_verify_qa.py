@@ -2,6 +2,7 @@
 from copy import deepcopy
 import importlib.util
 import json
+import re
 from pathlib import Path
 import subprocess
 import shutil
@@ -14,6 +15,7 @@ spec = importlib.util.spec_from_file_location("verify_qa", ROOT / "scripts/verif
 qa = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(qa)
 HEAD = "a" * 40
+HISTORICAL_JOBS = {"repo-sanity", "database", "flutter", "windows", "ai-boundary"}
 
 
 def fixture(matrix):
@@ -25,11 +27,13 @@ def fixture(matrix):
         "html_url": f"https://github.com/{qa.REPOSITORY}/actions/runs/123",
         "status": "completed", "conclusion": "success",
     }, "jobs": {"total_count": len(matrix["ci_gates"]), "jobs": [
-        {"name": name, "run_id": 123, "run_attempt": 2, "head_sha": HEAD,
+        {"id": index, "name": name, "run_id": 123, "run_attempt": 2, "head_sha": HEAD,
+         "run_url": f"https://api.github.com/repos/{qa.REPOSITORY}/actions/runs/123",
+         "html_url": f"https://github.com/{qa.REPOSITORY}/actions/runs/123/job/{index}",
          "status": "completed", "conclusion": "success", "steps": [
-             {"name": step, "status": "completed", "conclusion": "success"}
-             for step in steps]}
-        for name, steps in matrix["ci_gates"].items()]}}
+             {"number": number, "name": step, "status": "completed", "conclusion": "success"}
+             for number, step in enumerate(steps, start=1)]}
+        for index, (name, steps) in enumerate(matrix["ci_gates"].items(), start=1)]}}
 
 
 class QaEvidenceTests(unittest.TestCase):
@@ -49,6 +53,129 @@ class QaEvidenceTests(unittest.TestCase):
     def test_complete_same_head_latest_attempt_is_accepted_as_baseline_only(self):
         self.assertEqual(qa.validate_ci(self.matrix, self.evidence, HEAD),
                          f"https://github.com/{qa.REPOSITORY}/actions/runs/123")
+
+    def _saved_native_snapshot(self):
+        evidence = qa.read_json(
+            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2.json")
+        gates = qa.read_json(
+            ROOT / "qa/evidence/20261029-native-receipts-9c986e0-attempt2-ci-gates.json")
+        self.assertEqual(evidence["run"]["head_sha"], gates["source_commit"])
+        self.assertEqual(evidence["run"]["id"], gates["source_run_id"])
+        self.assertEqual(evidence["run"]["run_attempt"], gates["source_run_attempt"])
+        self.assertEqual(gates["source_matrix_blob_sha"],
+                         "8874b6bb1ddc331248397f7a3d9704aa8cd6ddb6")
+        self.assertEqual(gates["source_workflow_blob_sha"],
+                         "1781354f064cabd4b53fc87aff69013ebc9a4b6b")
+        self.assertEqual(set(gates["ci_gates"]), HISTORICAL_JOBS)
+        self.assertNotIn(
+            "Verify browser completed-study transactions in Chrome",
+            gates["ci_gates"]["flutter"])
+        return evidence, {"ci_gates": gates["ci_gates"]}
+
+    def test_saved_native_rerun_snapshot_has_one_complete_latest_attempt(self):
+        # Captured Actions metadata, not generated success or hosted acceptance.
+        evidence, historical_matrix = self._saved_native_snapshot()
+        head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
+        self.assertEqual(evidence["run"]["run_attempt"], 2)
+        self.assertEqual(qa.validate_ci(historical_matrix, evidence, head),
+                         "https://github.com/collab-TTAM/nihongo_daily/actions/runs/40840683867")
+        for job in evidence["jobs"]["jobs"]:
+            with self.subTest(job=job["name"]):
+                mixed = deepcopy(evidence)
+                next(j for j in mixed["jobs"]["jobs"]
+                     if j["name"] == job["name"])["run_attempt"] = 1
+                with self.assertRaisesRegex(ValueError, "mixed run/head/attempt"):
+                    qa.validate_ci(historical_matrix, mixed, head)
+
+    def test_job_resource_ids_are_positive_integers_and_unique(self):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
+            for value in (None, False, 0, -1, 1.0, "1"):
+                with self.subTest(slot=slot, value=value):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot]["id"] = value
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+        self.evidence["jobs"]["jobs"][1]["id"] = self.evidence["jobs"]["jobs"][0]["id"]
+        self.rejected()
+
+    def test_job_resource_links_bind_repository_run_and_job(self):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
+            for key, value in (
+                ("run_url", "https://api.github.com/repos/foreign/repo/actions/runs/123"),
+                ("run_url", f"https://api.github.com/repos/{qa.REPOSITORY}/actions/runs/124"),
+                ("html_url", f"https://github.com/{qa.REPOSITORY}/actions/runs/123/job/999"),
+                ("html_url", f"https://github.com/{qa.REPOSITORY}/actions/runs/124/job/{slot + 1}"),
+                ("html_url", "https://github.com/foreign/repo/actions/runs/123/job/1"),
+            ):
+                with self.subTest(slot=slot, field=key, value=value):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot][key] = value
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_job_run_identity_rejects_numeric_aliases(self):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
+            for key, value in (("run_id", 123.0), ("run_attempt", 2.0)):
+                with self.subTest(slot=slot, field=key):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot][key] = value
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_saved_native_snapshot_rejects_mixed_job_resource_links(self):
+        evidence, historical_matrix = self._saved_native_snapshot()
+        head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
+        qa.validate_ci(historical_matrix, evidence, head)
+        for slot in range(5):
+            with self.subTest(slot=slot):
+                mixed = deepcopy(evidence)
+                mixed["jobs"]["jobs"][slot]["html_url"] = (
+                    evidence["jobs"]["jobs"][(slot + 1) % 5]["html_url"])
+                with self.assertRaisesRegex(ValueError, "wrong job evidence URL"):
+                    qa.validate_ci(historical_matrix, mixed, head)
+
+    def test_step_resource_numbers_are_positive_integers(self):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
+            for value in (None, False, True, 0, -1, 1.0, "1"):
+                with self.subTest(slot=slot, value=value):
+                    evidence = deepcopy(self.evidence)
+                    evidence["jobs"]["jobs"][slot]["steps"][0]["number"] = value
+                    with self.assertRaisesRegex(ValueError, "invalid step resource identity"):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_step_resource_numbers_reject_duplicates_and_reversed_order(self):
+        for slot in range(len(self.evidence["jobs"]["jobs"])):
+            for mode in ("duplicate", "reversed"):
+                with self.subTest(slot=slot, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    steps = evidence["jobs"]["jobs"][slot]["steps"]
+                    if mode == "duplicate":
+                        steps[1]["number"] = steps[0]["number"]
+                    else:
+                        steps.reverse()
+                    with self.assertRaisesRegex(ValueError, "unordered or duplicate step resources"):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_step_resource_number_gaps_and_independent_job_sequences_are_valid(self):
+        # Post-action numbering can have gaps. Do not require contiguous numbers
+        # or globally unique step numbers across independently numbered jobs.
+        for job in self.evidence["jobs"]["jobs"]:
+            for index, step in enumerate(job["steps"], start=1):
+                step["number"] = index * 3
+        qa.validate_ci(self.matrix, self.evidence, HEAD)
+
+    def test_saved_native_snapshot_rejects_relabelled_step_resources(self):
+        evidence, historical_matrix = self._saved_native_snapshot()
+        head = "9c986e0401d37ee13cee139280ecd23b33ce077d"
+        qa.validate_ci(historical_matrix, evidence, head)
+        for slot in range(5):
+            with self.subTest(slot=slot):
+                mixed = deepcopy(evidence)
+                steps = mixed["jobs"]["jobs"][slot]["steps"]
+                # Keep every successful name/status; duplicate one resource number.
+                steps[1]["number"] = steps[0]["number"]
+                with self.assertRaisesRegex(ValueError, "unordered or duplicate step resources"):
+                    qa.validate_ci(historical_matrix, mixed, head)
 
     def test_rejects_stale_head(self):
         self.evidence["run"]["head_sha"] = "b" * 40
@@ -72,6 +199,40 @@ class QaEvidenceTests(unittest.TestCase):
         self.evidence["jobs"]["total_count"] -= 1
         self.rejected()
 
+    def test_local_supabase_auth_session_gate_cannot_be_missing_or_skipped(self):
+        job_name = "supabase-integration"
+        self.assertIn(job_name, self.matrix["ci_gates"])
+        case = next(
+            c for c in self.matrix["cases"]
+            if c["id"] == "local-supabase-auth-session"
+        )
+        self.assertEqual(case["ci_job"], job_name)
+        original = deepcopy(self.evidence)
+        for status, conclusion in (
+            ("queued", None),
+            ("in_progress", None),
+            ("completed", "failure"),
+            ("completed", "skipped"),
+            ("completed", "cancelled"),
+        ):
+            with self.subTest(status=status, conclusion=conclusion):
+                evidence = deepcopy(original)
+                job = next(
+                    j for j in evidence["jobs"]["jobs"] if j["name"] == job_name
+                )
+                job.update(status=status, conclusion=conclusion)
+                with self.assertRaises(ValueError):
+                    qa.validate_ci(self.matrix, evidence, HEAD)
+
+        evidence = deepcopy(original)
+        job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == job_name)
+        gate = "Verify local GoTrue, PostgREST, rotation, replay and A/B RLS"
+        step = next(s for s in job["steps"] if s["name"] == gate)
+        step["conclusion"] = "skipped"
+        with self.assertRaises(ValueError):
+            qa.validate_ci(self.matrix, evidence, HEAD)
+
+
     def test_skipped_or_missing_critical_step_cannot_hide_behind_green_job(self):
         step = self.evidence["jobs"]["jobs"][0]["steps"][0]
         step["conclusion"] = "skipped"
@@ -79,6 +240,79 @@ class QaEvidenceTests(unittest.TestCase):
         step["conclusion"] = "success"
         self.evidence["jobs"]["jobs"][0]["steps"].pop(0)
         self.rejected()
+
+    def test_each_missing_skipped_failed_or_pending_deno_gate_rejects_green_job(self):
+        # Synthetic metadata only: new runtime gates cannot disappear behind a green job.
+        for name, gate in (
+            ("database", "Verify AI PostgreSQL adapters with pinned Deno"),
+            ("ai-boundary", "Check AI modules with pinned Deno"),
+            ("ai-boundary", "Verify AI boundary with pinned Deno"),
+            ("ai-boundary", "Verify Deno native HTTP and permission boundaries"),
+        ):
+            self.assertIn(gate, self.matrix["ci_gates"][name])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(job=name, gate=gate, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == name)
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_missing_skipped_failed_or_pending_edge_user_worker_gate_rejects_green_job(self):
+        for gate in ("Verify bundled Supabase Edge user worker",
+                     "Publish Edge user-worker compatibility evidence"):
+            self.assertIn(gate, self.matrix["ci_gates"]["ai-boundary"])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "ai-boundary")
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
+
+
+    def test_missing_skipped_failed_or_pending_native_assembly_gate_rejects_green_job(self):
+        gate = "Verify trusted AI assembly with native PostgreSQL"
+        self.assertIn(gate, self.matrix["ci_gates"]["database"])
+        for mode in ("missing", "skipped", "failure", "pending"):
+            with self.subTest(mode=mode):
+                evidence = deepcopy(self.evidence)
+                job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "database")
+                step = next(s for s in job["steps"] if s["name"] == gate)
+                if mode == "missing":
+                    job["steps"].remove(step)
+                else:
+                    step.update(status="pending" if mode == "pending" else "completed",
+                                conclusion=None if mode == "pending" else mode)
+                with self.assertRaises(ValueError):
+                    qa.validate_ci(self.matrix, evidence, HEAD)
+
+    def test_missing_skipped_failed_or_pending_edge_postgres_gate_rejects_green_job(self):
+        for gate in ("Verify bundled Edge PostgreSQL assembly",
+                     "Publish Edge PostgreSQL assembly evidence"):
+            self.assertIn(gate, self.matrix["ci_gates"]["database"])
+            for mode in ("missing", "skipped", "failure", "pending"):
+                with self.subTest(gate=gate, mode=mode):
+                    evidence = deepcopy(self.evidence)
+                    job = next(j for j in evidence["jobs"]["jobs"] if j["name"] == "database")
+                    step = next(s for s in job["steps"] if s["name"] == gate)
+                    if mode == "missing":
+                        job["steps"].remove(step)
+                    else:
+                        step.update(status="pending" if mode == "pending" else "completed",
+                                    conclusion=None if mode == "pending" else mode)
+                    with self.assertRaises(ValueError):
+                        qa.validate_ci(self.matrix, evidence, HEAD)
 
     def test_mixed_run_attempt_head_or_repository_is_rejected(self):
         for key, value in (("run_id", 124), ("run_attempt", 1), ("head_sha", "b" * 40)):
@@ -134,6 +368,37 @@ class QaEvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             qa.validate_matrix(self.matrix)
 
+    def test_source_anchor_matches_formatter_wrapped_expression(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for case in self.matrix["cases"]:
+                for anchor in case.get("anchors", []):
+                    path = root / anchor["path"]
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / anchor["path"], path)
+            workflow = root / ".github/workflows/ci.yml"
+            workflow.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / ".github/workflows/ci.yml", workflow)
+
+            screen = root / (
+                "apps/flutter_app/lib/features/progress/"
+                "presentation/progress_overview_screen.dart"
+            )
+            source = screen.read_text(encoding="utf-8")
+            self.assertIn("serverQuizWeakPoints != null &&\n", source)
+            qa.validate_matrix(self.matrix, root)
+
+            broken = deepcopy(self.matrix)
+            anchor = next(
+                case for case in broken["cases"]
+                if case["id"] == "progress-empty-server-quiz-state"
+            )["anchors"][1]
+            anchor["contains"] = (
+                "serverQuizWeakPoints != null&& serverQuizEntries.isNotEmpty"
+            )
+            with self.assertRaisesRegex(ValueError, "missing test anchor"):
+                qa.validate_matrix(broken, root)
+
     def test_command_in_wrong_job_does_not_count_as_coverage(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -143,7 +408,7 @@ class QaEvidenceTests(unittest.TestCase):
                     path.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(ROOT / anchor["path"], path)
             workflow = root / ".github/workflows/ci.yml"
-            workflow.parent.mkdir(parents=True)
+            workflow.parent.mkdir(parents=True, exist_ok=True)
             source = (ROOT / ".github/workflows/ci.yml").read_text()
             command = "      - run: npm audit --omit=dev --audit-level=moderate\n"
             self.assertIn(command, source)
@@ -151,6 +416,73 @@ class QaEvidenceTests(unittest.TestCase):
             workflow.write_text(source)
             with self.assertRaisesRegex(ValueError, "step missing from job ai-boundary"):
                 qa.validate_matrix(self.matrix, root)
+
+    def test_case_specific_ci_steps_are_scoped_to_declared_job(self):
+        case = next(c for c in self.matrix["cases"]
+                    if c["id"] == "quiz-source-order-export")
+        self.assertEqual(case["ci_steps"], [
+            "Export canonical N5 quiz source order",
+            "Run quiz source-order export regressions",
+        ])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for item in self.matrix["cases"]:
+                for anchor in item.get("anchors", []):
+                    path = root / anchor["path"]
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / anchor["path"], path)
+            workflow = root / ".github/workflows/ci.yml"
+            workflow.parent.mkdir(parents=True, exist_ok=True)
+            source = (ROOT / ".github/workflows/ci.yml").read_text()
+            step = (
+                "      - name: Export canonical N5 quiz source order\n"
+                "        run: python3 scripts/export_quiz_source_order.py --level N5 > "
+                "\"$RUNNER_TEMP/quiz-source-order-n5.json\"\n"
+            )
+            self.assertIn(step, source)
+            source = source.replace(step, "", 1)
+            flutter_start = source.index("  flutter:\n")
+            flutter_steps = source.index("    steps:\n", flutter_start) + len("    steps:\n")
+            source = source[:flutter_steps] + step + source[flutter_steps:]
+            workflow.write_text(source)
+            with self.assertRaisesRegex(
+                ValueError, "case CI step missing from job repo-sanity"
+            ):
+                qa.validate_matrix(self.matrix, root)
+
+    def test_preview_artifact_verification_waits_for_both_producers(self):
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text()
+
+        def job_block(name):
+            match = re.search(
+                rf"^  {re.escape(name)}:\n(.*?)(?=^  [\w-]+:\n|\Z)",
+                workflow,
+                re.MULTILINE | re.DOTALL,
+            )
+            self.assertIsNotNone(match, f"missing CI job: {name}")
+            return match.group(1)
+
+        for producer, platform in (("flutter", "web"), ("windows", "windows")):
+            block = job_block(producer)
+            self.assertIn("uses: actions/upload-artifact@v4", block)
+            # Flutter legitimately downloads native SQL projections from the
+            # database job; only preview verification must be downstream.
+            self.assertNotIn("artifact-ids:", block)
+            self.assertNotIn(
+                f"python scripts/package_preview.py --verify-ci --platform {platform}",
+                block,
+            )
+
+        verifier = job_block("preview-artifacts")
+        self.assertIn("needs: [repo-sanity, flutter, windows]", verifier)
+        self.assertIn("if: needs.repo-sanity.outputs.has_flutter == 'true'", verifier)
+        for expected in (
+            "name: flutter-web-preview",
+            "name: flutter-windows-preview",
+            "python scripts/package_preview.py --verify-ci --platform web",
+            "python scripts/package_preview.py --verify-ci --platform windows",
+        ):
+            self.assertIn(expected, verifier)
 
     def test_external_file_cannot_be_a_repository_test_anchor(self):
         self.matrix["cases"][0]["anchors"][0]["path"] = "../outside-test.py"

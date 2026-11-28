@@ -5,10 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nihongo_daily/app/app.dart';
 import 'package:nihongo_daily/app/router.dart';
+import 'package:nihongo_daily/features/auth/application/account_provider.dart';
+import 'package:nihongo_daily/features/auth/data/own_profile_repository.dart'
+    show OwnProfile;
+import 'package:nihongo_daily/features/curriculum/application/curriculum_provider.dart';
+import 'package:nihongo_daily/features/curriculum/domain/curriculum.dart';
 import 'package:nihongo_daily/features/home/application/study_preview_provider.dart';
 import 'package:nihongo_daily/features/home/data/demo_study_preview_repository.dart';
 import 'package:nihongo_daily/features/home/domain/study_preview.dart';
 import 'package:nihongo_daily/features/settings/application/preview_preferences.dart';
+
+import 'features/srs/account_fixtures.dart' as account;
+import 'features/srs/account_widget_test.dart' show Harness;
 
 class TestPreviewRepository implements StudyPreviewRepository {
   TestPreviewRepository(this.loader);
@@ -22,6 +30,7 @@ class TestPreviewRepository implements StudyPreviewRepository {
 Future<ProviderContainer> mountApp(
   WidgetTester tester, {
   StudyPreviewRepository? repository,
+  Harness? accountHarness,
   Size size = const Size(1200, 900),
 }) async {
   tester.view.physicalSize = size;
@@ -32,11 +41,14 @@ Future<ProviderContainer> mountApp(
     overrides: [
       if (repository != null)
         studyPreviewRepositoryProvider.overrideWithValue(repository),
+      if (accountHarness != null)
+        accountRuntimeProvider.overrideWithValue(accountHarness.runtime),
     ],
   );
   addTearDown(() async {
     await tester.pumpWidget(const SizedBox.shrink());
     container.dispose();
+    await accountHarness?.close();
   });
   await tester.pumpWidget(
     UncontrolledProviderScope(
@@ -76,17 +88,108 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('home CTA and study card open the vocabulary placeholder', (
+  testWidgets('configured signed-out account is not mislabeled as preview', (
     tester,
   ) async {
-    await mountApp(tester);
+    final h = Harness();
+    await mountApp(tester, accountHarness: h);
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'TÀI KHOẢN ĐÃ CẤU HÌNH · Chưa đăng nhập. Tiến độ học đang bị khóa.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('BẢN XEM TRƯỚC'), findsNothing);
+  });
+
+  testWidgets(
+    'profile loading becomes ready with only level and timezone context',
+    (tester) async {
+      final h = Harness()..delayed = Completer<OwnProfile>();
+      await mountApp(tester, accountHarness: h);
+      h.access.change(account.owner);
+      await tester.pump();
+      expect(
+        find.text('ĐANG TẢI HỒ SƠ · Tiến độ học chưa sẵn sàng.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('PHIÊN SẴN SÀNG'), findsNothing);
+      h.delayed!.complete(account.ownProfile());
+      await tester.pumpAndSettle();
+      expect(
+        find.text('PHIÊN SẴN SÀNG · Hồ sơ N4 · Múi giờ Asia/Tokyo.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining(account.owner), findsNothing);
+      expect(find.textContaining('BẢN XEM TRƯỚC'), findsNothing);
+    },
+  );
+
+  testWidgets('profile failure remains blocked and hides raw details', (
+    tester,
+  ) async {
+    final h = Harness()..failProfile = true;
+    await mountApp(tester, accountHarness: h);
+    h.access.change(account.owner);
+    await tester.pumpAndSettle();
+    expect(
+      find.text('HỒ SƠ CHƯA SẴN SÀNG · Tải lại hồ sơ trước khi học.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('PRIVATE'), findsNothing);
+    expect(find.textContaining('BẢN XEM TRƯỚC'), findsNothing);
+  });
+
+  testWidgets('failed logout banner never claims a ready session', (
+    tester,
+  ) async {
+    final h = Harness();
+    await mountApp(tester, accountHarness: h);
+    h.access.change(account.owner);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('PHIÊN SẴN SÀNG'), findsOneWidget);
+    h.access.failSignOut = true;
+    await h.runtime.signOut();
+    await tester.pumpAndSettle();
+    expect(
+      find.text('CHƯA XÁC NHẬN ĐĂNG XUẤT · Tiến độ học đang bị khóa.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('PHIÊN SẴN SÀNG'), findsNothing);
+  });
+
+  testWidgets('home CTA opens original vocabulary and returns to study', (
+    tester,
+  ) async {
+    final container = await mountApp(tester);
+    // Run the actual asset-backed provider in the real async zone. A cached
+    // rootBundle future alone does not drain its provider's async work under
+    // the widget test's fake clock. Keep it observed until route navigation.
+    final content = curriculumProvider(CurriculumKind.vocabulary);
+    final subscription = await tester.runAsync(() async {
+      final listener = container.listen(content, (_, _) {});
+      try {
+        await container.read(content.future);
+        return listener;
+      } catch (_) {
+        listener.close();
+        rethrow;
+      }
+    });
+    addTearDown(() => subscription?.close());
     await tester.pumpAndSettle();
     await tester.tap(find.text('Khám phá các phần học'));
     await tester.pumpAndSettle();
     expect(find.text('Không gian học tập'), findsOneWidget);
     await tester.tap(find.text('Từ vựng'));
     await tester.pumpAndSettle();
-    expect(find.text('Đang xây dựng'), findsOneWidget);
+    expect(find.text('私'), findsOneWidget);
+    await tester.tap(find.text('私'));
+    await tester.pumpAndSettle();
+    expect(find.text('わたし'), findsOneWidget);
+    expect(find.text('Chưa có âm thanh cho mục này.'), findsOneWidget);
+    await tester.ensureVisible(find.text('Về các phần học'));
     await tester.tap(find.text('Về các phần học'));
     await tester.pumpAndSettle();
     expect(find.text('Không gian học tập'), findsOneWidget);
