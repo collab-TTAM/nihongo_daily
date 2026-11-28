@@ -128,7 +128,9 @@ void main() {
     final repository = _MemoryQuizRepository((_) => completer.future);
     await _mount(tester, repository);
     await tester.pump();
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(find.text('Đang tải câu hỏi…'), findsOneWidget);
+    expect(find.byKey(const Key('quiz-question-expression')), findsNothing);
 
     completer.complete(_entries);
     await tester.pumpAndSettle();
