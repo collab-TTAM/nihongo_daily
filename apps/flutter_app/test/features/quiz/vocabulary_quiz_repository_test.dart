@@ -33,31 +33,28 @@ void main() {
     );
   });
 
-  test(
-    'rejects duplicate IDs and mismatched source levels',
-    () {
-      const row = {
-        'id': '17745f5e-9f28-59ac-8e19-6935ae77363b',
-        'jlpt_level': 'N5',
-        'content_version': 1,
-        'is_active': true,
-        'expression': '私',
-        'reading': 'わたし',
-        'meaning_vi': 'tôi',
-      };
-      final duplicate = jsonEncode([row, row]);
-      expect(
-        () => decodeVocabularyQuizEntries(duplicate, expectedLevel: 'N5'),
-        throwsA(isA<FormatException>()),
-      );
+  test('rejects duplicate IDs and mismatched source levels', () {
+    const row = {
+      'id': '17745f5e-9f28-59ac-8e19-6935ae77363b',
+      'jlpt_level': 'N5',
+      'content_version': 1,
+      'is_active': true,
+      'expression': '私',
+      'reading': 'わたし',
+      'meaning_vi': 'tôi',
+    };
+    final duplicate = jsonEncode([row, row]);
+    expect(
+      () => decodeVocabularyQuizEntries(duplicate, expectedLevel: 'N5'),
+      throwsA(isA<FormatException>()),
+    );
 
-      final wrongLevel = jsonEncode([
-        {...row, 'jlpt_level': 'N4'},
-      ]);
-      expect(
-        () => decodeVocabularyQuizEntries(wrongLevel, expectedLevel: 'N5'),
-        throwsA(isA<FormatException>()),
-      );
-    },
-  );
+    final wrongLevel = jsonEncode([
+      {...row, 'jlpt_level': 'N4'},
+    ]);
+    expect(
+      () => decodeVocabularyQuizEntries(wrongLevel, expectedLevel: 'N5'),
+      throwsA(isA<FormatException>()),
+    );
+  });
 }

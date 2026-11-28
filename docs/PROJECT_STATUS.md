@@ -460,3 +460,12 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 - Applied only the exact pinned Dart 3.35.4 output: collapsed long expressions/constructor lists where requested, corrected callback indentation, removed one blank line and ensured EOF newline. Removed the temporary diagnostic step; the strict whole-project formatter gate and all downstream checks are unchanged. Quiz logic, content, tests/assertions and UI behavior are not altered.
 - Changed paths: `apps/flutter_app/lib/features/quiz/presentation/vocabulary_quiz_screen.dart`, `apps/flutter_app/test/app_test.dart`, `apps/flutter_app/test/features/quiz/vocabulary_quiz_repository_test.dart`, `apps/flutter_app/test/features/quiz/vocabulary_quiz_screen_test.dart`, `.github/workflows/ci.yml`, `docs/PROJECT_STATUS.md`.
 - No N4/Pro-owned content, Auth/provider, API/schema/RLS, dependency, hosted secrets, deployment or release changed. Cloud authoring has no pinned Flutter/Dart SDK; no local formatter/analyze/test/build is claimed. Next: require fresh complete exact-head CI and inspect every latest-attempt job/step.
+
+
+## Core worker checkpoint — PR #43 remaining formatter correction — 2026-11-28T17:36Z
+
+- Run `core-20261128T1715Z-pr43-fix-diagnostic-loop`; branch `automation/issue-13-n5-vocabulary-quiz`; parent `fc68bb1b7267cb2c61dc2ed5531696fcc8e9bfe1`; base main `61604bc21da64a0dd94dbb97ba3c4b1d035430a6`.
+- Exact-head Actions [46171146253](https://github.com/collab-TTAM/nihongo_daily/actions/runs/46171146253), attempt 1, matched the parent. Repo-sanity, AI boundary and database SUCCESS; Flutter strict formatter failed only on `test/features/quiz/vocabulary_quiz_repository_test.dart`; analyzer, full tests, wire checks and Web build were skipped. Windows remained in progress at last observation. No overall pass is claimed.
+- Applied the remaining part of the original pinned Dart 3.35.4 diff to the third test wrapper and body indentation. Test inputs/assertions and behavior are unchanged; no formatter suppression or diagnostic workflow step was reintroduced.
+- Changed paths: `apps/flutter_app/test/features/quiz/vocabulary_quiz_repository_test.dart` and `docs/PROJECT_STATUS.md`. No N4/Pro content, Auth/provider, API/schema/RLS, dependency, hosted secrets, merge, deployment or release changed.
+- Cloud authoring lacks the pinned Flutter/Dart SDK; no local formatter/analyze/test/build is claimed. Next: fresh exact-head CI must run the strict formatter, analyzer, complete tests, wire checks and release builds; inspect every latest-attempt job/step.
