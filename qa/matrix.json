@@ -430,6 +430,28 @@
       ],
       "reproduce": "Exact tested commit: login -> plan -> study -> review -> quiz -> Kanji -> conversation/voice -> progress; restart/two-device sync, no critical defects; preserve rollback/recovery and evidence.",
       "limitation": "Eight starter issues closing is not a release. Production/App Store gates remain separate."
+    },
+    {
+      "id": "quiz-domain",
+      "status": "automated-baseline",
+      "scope": "Deterministic local vocabulary-reading quiz selection, bounded batches and first-answer session state; no attempt persistence or mastery/progress credit",
+      "ci_job": "flutter",
+      "anchors": [
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_test.dart",
+          "contains": "builds four distinct original reading choices deterministically"
+        },
+        {
+          "path": "apps/flutter_app/test/features/quiz/vocabulary_quiz_test.dart",
+          "contains": "accepts only the first valid answer for the current question"
+        }
+      ],
+      "issues": [
+        13,
+        18
+      ],
+      "reproduce": "cd apps/flutter_app && flutter test test/features/quiz/vocabulary_quiz_test.dart",
+      "limitation": "Pure domain only; no quiz UI, saved attempts, user-owned history, mastery, weak-point recommendations or progress writes. N5 seed remains subject to independent linguistic review; N4 is not substituted and remains in the separate Pro content lane."
     }
   ],
   "findings": [
