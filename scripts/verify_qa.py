@@ -91,7 +91,9 @@ def validate_matrix(matrix, root=ROOT):
                 path = (root / anchor["path"]).resolve()
                 require(path.is_relative_to(root.resolve()), f"path escapes repository: {label}")
                 require(path.is_file(), f"missing test file: {anchor['path']}")
-                require(anchor["contains"] and anchor["contains"] in path.read_text(),
+                expected_anchor = " ".join(anchor["contains"].split())
+                source = " ".join(path.read_text(encoding="utf-8").split())
+                require(expected_anchor and expected_anchor in source,
                         f"missing test anchor: {label}")
     findings = matrix["findings"]
     require(findings, "ranked security findings/assurance gaps required")

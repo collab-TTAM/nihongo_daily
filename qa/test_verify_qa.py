@@ -368,6 +368,37 @@ class QaEvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             qa.validate_matrix(self.matrix)
 
+    def test_source_anchor_matches_formatter_wrapped_expression(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for case in self.matrix["cases"]:
+                for anchor in case.get("anchors", []):
+                    path = root / anchor["path"]
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / anchor["path"], path)
+            workflow = root / ".github/workflows/ci.yml"
+            workflow.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / ".github/workflows/ci.yml", workflow)
+
+            screen = root / (
+                "apps/flutter_app/lib/features/progress/"
+                "presentation/progress_overview_screen.dart"
+            )
+            source = screen.read_text(encoding="utf-8")
+            self.assertIn("serverQuizWeakPoints != null &&\\n", source)
+            qa.validate_matrix(self.matrix, root)
+
+            broken = deepcopy(self.matrix)
+            anchor = next(
+                case for case in broken["cases"]
+                if case["id"] == "progress-empty-server-quiz-state"
+            )["anchors"][1]
+            anchor["contains"] = (
+                "serverQuizWeakPoints != null&& serverQuizEntries.isNotEmpty"
+            )
+            with self.assertRaisesRegex(ValueError, "missing test anchor"):
+                qa.validate_matrix(broken, root)
+
     def test_command_in_wrong_job_does_not_count_as_coverage(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
