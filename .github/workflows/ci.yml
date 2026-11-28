@@ -103,12 +103,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in \\
-            lib/features/quiz/presentation/vocabulary_quiz_screen.dart \\
-            test/app_test.dart \\
-            test/features/quiz/vocabulary_quiz_repository_test.dart \\
-            test/features/quiz/vocabulary_quiz_screen_test.dart
-          do
+          files=(
+            "lib/features/quiz/presentation/vocabulary_quiz_screen.dart"
+            "test/app_test.dart"
+            "test/features/quiz/vocabulary_quiz_repository_test.dart"
+            "test/features/quiz/vocabulary_quiz_screen_test.dart"
+          )
+          for file in "${files[@]}"; do
             echo "::group::Dart 3.35.4 formatter diff: $file"
             dart format --output=show "$file" > "$RUNNER_TEMP/quiz-formatted.dart"
             diff -u "$file" "$RUNNER_TEMP/quiz-formatted.dart" || true
