@@ -41,7 +41,7 @@ final class VocabularyQuizQuestion {
     required this.expression,
     required this.reading,
     required this.meaningVi,
-    required this.options,
+    required List<VocabularyQuizOption> options,
     required this.correctOptionId,
     required this.correctOptionIndex,
   }) : options = List.unmodifiable(options);
@@ -64,7 +64,7 @@ final class VocabularyQuizRound {
     required this.batchIndex,
     required this.status,
     required this.eligibleCount,
-    required this.questions,
+    required List<VocabularyQuizQuestion> questions,
   }) : questions = List.unmodifiable(questions);
 
   final String level;
@@ -216,7 +216,7 @@ final class VocabularyQuizBuilder {
       final questionId = [
         level,
         entry.id,
-        'v' + entry.contentVersion.toString(),
+        'v${entry.contentVersion}',
       ].join(':');
       questions.add(
         VocabularyQuizQuestion(
@@ -298,8 +298,7 @@ final class VocabularyQuizSession {
       answers.values.where((answer) => answer.isCorrect).length;
 
   /// An integer-only local result. Empty rounds remain 0/0, never a percentage.
-  String get scoreLabel =>
-      correctCount.toString() + '/' + round.questions.length.toString();
+  String get scoreLabel => '$correctCount/${round.questions.length}';
 
   List<VocabularyQuizQuestion> get incorrectQuestions => List.unmodifiable(
     round.questions.where(

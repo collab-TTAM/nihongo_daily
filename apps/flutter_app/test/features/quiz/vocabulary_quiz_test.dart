@@ -272,6 +272,21 @@ void main() {
     });
   });
 
+  test('keeps round questions and option lists immutable', () {
+    final round = builder.build(level: 'N5', entries: _entries(count: 4));
+
+    expect(
+      () => round.questions.add(round.questions.first),
+      throwsA(isA<UnsupportedError>()),
+    );
+    expect(
+      () => round.questions.first.options.add(
+        const VocabularyQuizOption(id: 'other', label: 'other'),
+      ),
+      throwsA(isA<UnsupportedError>()),
+    );
+  });
+
   group('VocabularyQuizSession', () {
     test('accepts only the first valid answer for the current question', () {
       final round = builder.build(level: 'N5', entries: _entries(count: 4));
