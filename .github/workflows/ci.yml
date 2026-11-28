@@ -222,6 +222,8 @@ jobs:
       - run: flutter pub get --enforce-lockfile
 
 
+      - name: TEMP show pinned formatter output for IndexedDB close regression
+        run: dart format --output=show test/features/srs/browser_review_store_check.dart
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - name: Run the complete Flutter suite serially with expanded diagnostics
