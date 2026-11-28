@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/home/presentation/home_screen.dart';
 import '../features/kanji/presentation/kanji_capture_screen.dart';
+import '../features/quiz/presentation/vocabulary_quiz_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/study/presentation/study_screen.dart';
 import '../shared/widgets/feature_preview_screen.dart';
@@ -20,10 +21,6 @@ const previewRoutes = <String, ({String title, String description})>{
   '/srs': (
     title: 'Ôn tập SRS',
     description: 'Ôn đúng thời điểm để ghi nhớ lâu hơn.',
-  ),
-  '/quiz': (
-    title: 'Kiểm tra nhanh',
-    description: 'Củng cố kiến thức qua các câu hỏi ngắn.',
   ),
   '/listening': (
     title: 'Nghe và đọc',
@@ -59,6 +56,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/study',
             builder: (context, state) => const StudyScreen(),
+          ),
+          GoRoute(
+            path: '/quiz',
+            builder: (context, state) => const VocabularyQuizScreen(),
           ),
           GoRoute(
             path: '/settings',

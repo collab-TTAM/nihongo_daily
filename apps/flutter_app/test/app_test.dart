@@ -224,4 +224,15 @@ void main() {
       }
     });
   }
+  testWidgets('quiz route opens the bundled N5 reading quiz', (tester) async {
+    final container = await mountApp(tester);
+    await tester.pumpAndSettle();
+    container.read(routerProvider).go('/quiz');
+    await tester.pumpAndSettle();
+    expect(find.text('Kiểm tra nhanh'), findsOneWidget);
+    expect(find.byKey(const Key('quiz-level')), findsOneWidget);
+    expect(find.byKey(const Key('quiz-question-expression')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
 }

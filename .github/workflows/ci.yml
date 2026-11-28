@@ -61,6 +61,16 @@ jobs:
         run: python3 -m pip install -r contracts/requirements.txt
       - name: Validate authored curriculum exports
         run: python3 -m contracts.validate_content
+      - name: Verify bundled Flutter curriculum matches canonical N5 export
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          canonical = Path('data/n5/vocabulary.json').read_bytes()
+          bundled = Path('apps/flutter_app/assets/curriculum/n5/vocabulary.json').read_bytes()
+          if canonical != bundled:
+              raise SystemExit('Bundled N5 vocabulary asset differs from canonical export')
+          print('Bundled N5 vocabulary asset matches canonical export byte-for-byte')
+          PY
       - name: Validate frozen contracts and regression cases
         run: |
           python3 contracts/validate.py
