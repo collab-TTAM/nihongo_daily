@@ -592,4 +592,38 @@ void main() {
       }
     },
   );
+  test(
+    'real IndexedDB close during pending write fails closed and permits same-event retry',
+    () async {
+      final database = name();
+      final request = fixture.request(901);
+      final eventId = request['client_event_id']! as String;
+      var store = await openBrowserReviewStore(databaseName: database);
+
+      // stage() queues its read transaction synchronously. Closing before the
+      // request callback must fence the mutation before it can queue a put.
+      final pendingWrite = store.stage(fixture.owner, request);
+      await store.close();
+      await expectLater(
+        pendingWrite,
+        throwsA(isA<ReviewStorageFailure>()),
+      );
+
+      store = await openBrowserReviewStore(databaseName: database);
+      try {
+        expect(await store.list(fixture.owner), isEmpty);
+        final retried = await store.stage(fixture.owner, request);
+        expect(retried.eventId, eventId);
+        expect(retried.isPending, isTrue);
+
+        final records = await store.list(fixture.owner);
+        expect(records, hasLength(1));
+        expect(records.single.eventId, eventId);
+        expect(records.single.request, request);
+      } finally {
+        await store.close();
+      }
+    },
+  );
+
 }

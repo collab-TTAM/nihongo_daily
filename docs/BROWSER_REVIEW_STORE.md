@@ -106,3 +106,24 @@ hosted learner acceptance; later commits require their own relevant checks.
 Optional owner-scoped confirmed-success cache retention is now documented in
 RECEIPT_CACHE_RETENTION.md. It is disabled by default and never removes pending,
 rejected or other-owner records; server history and all resource limits remain.
+
+
+## Close racing an in-flight transaction
+
+The browser store's `close()` is an immediate fence, not a drain. It marks the
+handle closed and asks IndexedDB to close the connection; it does not wait for
+already-created transactions to settle. A transaction whose mutation callback
+has not yet run cannot queue a write after that fence. Its Dart operation reports
+a fixed storage failure rather than acknowledging a result after close. A write
+that was already queued may still settle at the browser level, so callers must
+treat any close-racing result as uncertain, reopen the same database and retry
+the exact same event ID and payload. The ledger's identical-replay rule then
+returns the existing event or creates it once; changed payloads remain conflicts.
+When a caller needs a definitive result, it should stop dispatching work and
+await outstanding operation futures before closing the owner.
+
+The real-Chrome regression starts a stage transaction, closes the handle before
+the IndexedDB request callback can queue its put, verifies the operation fails
+closed and the reopened journal remains empty, then retries the same event ID
+and verifies exactly one pending record. This covers close-time fencing and
+same-event recovery; it is not a browser power-loss or hosted multi-device proof.

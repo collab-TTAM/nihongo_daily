@@ -786,7 +786,7 @@
     {
       "id": "browser-transactional-review",
       "status": "automated-baseline",
-      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID rows under distinct explicit owner keys; both handles return the same filtered projection for a supplied key (not per-connection Auth isolation), captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state; external IndexedDB versionchange closes stale v1 handles without rewriting the committed pending journal",
+      "scope": "Bounded canonical owner-isolated ledger, real IndexedDB commit/reopen, two-connection write serialization with concurrent changed-payload conflict and same-event-ID rows under distinct explicit owner keys; both handles return the same filtered projection for a supplied key (not per-connection Auth isolation), captured-session recovery fencing after A-to-B switch, immutable original outcomes and page reload/second-tab persistence; actual IndexedDB duplicate-key corruption fails closed without rewriting persisted state; external IndexedDB versionchange closes stale v1 handles without rewriting the committed pending journal; close during a pending IndexedDB write fences the not-yet-queued mutation, reports uncertain storage failure and allows exact same-event retry after reopen",
       "ci_job": "flutter",
       "anchors": [
         {
@@ -816,6 +816,10 @@
         {
           "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
           "contains": "real IndexedDB versionchange closes stale handle and preserves committed journal"
+        },
+        {
+          "path": "apps/flutter_app/test/features/srs/browser_review_store_check.dart",
+          "contains": "real IndexedDB close during pending write fails closed and permits same-event retry"
         }
       ],
       "issues": [
