@@ -385,7 +385,7 @@ class QaEvidenceTests(unittest.TestCase):
                 "presentation/progress_overview_screen.dart"
             )
             source = screen.read_text(encoding="utf-8")
-            self.assertIn("serverQuizWeakPoints != null &&\\n", source)
+            self.assertIn("serverQuizWeakPoints != null &&\n", source)
             qa.validate_matrix(self.matrix, root)
 
             broken = deepcopy(self.matrix)
