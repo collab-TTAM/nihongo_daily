@@ -64,8 +64,8 @@ void main() {
       expect(first.status, VocabularyQuizBuildStatus.ready);
       expect(first.questions, hasLength(6));
       expect(
-        first.questions.map((question) => question.questionId),
-        repeated.questions.map((question) => question.questionId),
+        first.questions.map((question) => question.questionId).toList(),
+        repeated.questions.map((question) => question.questionId).toList(),
       );
       for (var index = 0; index < first.questions.length; index++) {
         final question = first.questions[index];
@@ -209,7 +209,7 @@ void main() {
       ];
       expect(
         () => builder.build(level: 'N5', entries: mixed),
-        throwsFormatException,
+        throwsA(isA<FormatException>()),
       );
 
       final source = _entries(count: 4);
@@ -227,7 +227,7 @@ void main() {
       ];
       expect(
         () => builder.build(level: 'N5', entries: duplicate),
-        throwsFormatException,
+        throwsA(isA<FormatException>()),
       );
 
       expect(
@@ -245,22 +245,30 @@ void main() {
             ),
           ],
         ),
-        throwsFormatException,
+        throwsA(isA<FormatException>()),
       );
     });
 
     test('bounds the source size and rejects invalid level or batch', () {
       expect(
         () => builder.build(level: 'N3', entries: const []),
-        throwsFormatException,
+        throwsA(isA<FormatException>()),
       );
       expect(
         () => builder.build(level: 'N5', entries: _entries(count: 5001)),
-        throwsFormatException,
+        throwsA(isA<FormatException>()),
       );
       expect(
         () => builder.build(level: 'N5', entries: _entries(), batchIndex: -1),
-        throwsFormatException,
+        throwsA(isA<FormatException>()),
+      );
+      expect(
+        () => builder.build(
+          level: 'N5',
+          entries: _entries(),
+          batchIndex: 1 << 62,
+        ),
+        throwsA(isA<FormatException>()),
       );
     });
   });

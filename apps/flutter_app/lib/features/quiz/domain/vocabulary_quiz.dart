@@ -99,7 +99,8 @@ final class VocabularyQuizBuilder {
     if (entries.length > maxSourceEntries) {
       throw const FormatException('Vocabulary source is too large');
     }
-    if (batchIndex < 0) {
+    if (batchIndex < 0 ||
+        batchIndex > maxSourceEntries ~/ maxQuestionsPerRound) {
       throw const FormatException('Invalid quiz batch');
     }
 
@@ -211,9 +212,14 @@ final class VocabularyQuizBuilder {
         options.add(VocabularyQuizOption(id: reading, label: reading));
       }
 
+      final questionId = [
+        level,
+        entry.id,
+        'v' + entry.contentVersion.toString(),
+      ].join(':');
       questions.add(
         VocabularyQuizQuestion(
-          questionId: level + ':' + entry.id + ':v' + entry.contentVersion.toString(),
+          questionId: questionId,
           sourceId: entry.id,
           contentVersion: entry.contentVersion,
           expression: entry.expression,
