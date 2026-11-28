@@ -26,15 +26,12 @@ void main() {
     },
   );
 
-  test(
-    'does not substitute N5 when N4 content is unavailable',
-    () async {
-      await expectLater(
-        BundledVocabularyQuizRepository().load('N4'),
-        throwsA(isA<QuizContentUnavailable>()),
-      );
-    },
-  );
+  test('does not substitute N5 when N4 content is unavailable', () async {
+    await expectLater(
+      BundledVocabularyQuizRepository().load('N4'),
+      throwsA(isA<QuizContentUnavailable>()),
+    );
+  });
 
   test(
     'rejects duplicate IDs and mismatched source levels',

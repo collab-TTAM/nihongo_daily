@@ -234,5 +234,4 @@ void main() {
     expect(find.byKey(const Key('quiz-question-expression')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-
 }

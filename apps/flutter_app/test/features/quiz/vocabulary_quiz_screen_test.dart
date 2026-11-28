@@ -73,9 +73,7 @@ Future<ProviderContainer> _mount(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   final container = ProviderContainer(
-    overrides: [
-      vocabularyQuizRepositoryProvider.overrideWithValue(repository),
-    ],
+    overrides: [vocabularyQuizRepositoryProvider.overrideWithValue(repository)],
   );
   container.read(previewLevelProvider.notifier).state = level;
   addTearDown(() async {
@@ -85,9 +83,7 @@ Future<ProviderContainer> _mount(
   await tester.pumpWidget(
     UncontrolledProviderScope(
       container: container,
-      child: const MaterialApp(
-        home: Scaffold(body: VocabularyQuizScreen()),
-      ),
+      child: const MaterialApp(home: Scaffold(body: VocabularyQuizScreen())),
     ),
   );
   return container;
@@ -180,17 +176,19 @@ void main() {
   testWidgets('shows an empty state when no Kanji prompt is eligible', (
     tester,
   ) async {
-    final repository = _MemoryQuizRepository((_) async => [
-      const VocabularyQuizEntry(
-        id: '17745f5e-9f28-59ac-8e19-6935ae77363b',
-        jlptLevel: 'N5',
-        contentVersion: 1,
-        expression: 'かな',
-        reading: 'かな',
-        meaningVi: 'kana',
-        isActive: true,
-      ),
-    ]);
+    final repository = _MemoryQuizRepository(
+      (_) async => [
+        const VocabularyQuizEntry(
+          id: '17745f5e-9f28-59ac-8e19-6935ae77363b',
+          jlptLevel: 'N5',
+          contentVersion: 1,
+          expression: 'かな',
+          reading: 'かな',
+          meaningVi: 'kana',
+          isActive: true,
+        ),
+      ],
+    );
     await _mount(tester, repository);
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('quiz-empty')), findsOneWidget);
@@ -199,22 +197,24 @@ void main() {
   testWidgets(
     'shows insufficient content when fewer than four readings exist',
     (tester) async {
-    final repository = _MemoryQuizRepository((_) async => [
-      _entries[0],
-      _entries[1],
-      _entries[2],
-      const VocabularyQuizEntry(
-        id: 'b1f64e62-8d5b-4b4a-a4d4-77f7e16d3d61',
-        jlptLevel: 'N5',
-        contentVersion: 1,
-        expression: '友達',
-        reading: 'がくせい',
-        meaningVi: 'bạn bè',
-        isActive: true,
-      ),
-    ]);
-    await _mount(tester, repository);
-    await tester.pumpAndSettle();
+      final repository = _MemoryQuizRepository(
+        (_) async => [
+          _entries[0],
+          _entries[1],
+          _entries[2],
+          const VocabularyQuizEntry(
+            id: 'b1f64e62-8d5b-4b4a-a4d4-77f7e16d3d61',
+            jlptLevel: 'N5',
+            contentVersion: 1,
+            expression: '友達',
+            reading: 'がくせい',
+            meaningVi: 'bạn bè',
+            isActive: true,
+          ),
+        ],
+      );
+      await _mount(tester, repository);
+      await tester.pumpAndSettle();
       expect(find.byKey(const Key('quiz-insufficient')), findsOneWidget);
     },
   );

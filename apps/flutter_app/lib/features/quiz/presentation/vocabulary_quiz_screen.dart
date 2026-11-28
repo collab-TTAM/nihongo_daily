@@ -264,9 +264,7 @@ class _VocabularyQuizRoundState extends ConsumerState<_VocabularyQuizRound> {
             Card(
               child: ListTile(
                 title: Text(question.expression),
-                subtitle: Text(
-                  '${question.reading} · ${question.meaningVi}',
-                ),
+                subtitle: Text('${question.reading} · ${question.meaningVi}'),
               ),
             ),
         ],
