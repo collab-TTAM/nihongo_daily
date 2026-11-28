@@ -279,11 +279,17 @@ void main() {
       var session = VocabularyQuizSession(round);
 
       expect(
-        session.answer(questionId: 'stale-question', optionId: first.correctOptionId),
+        session.answer(
+          questionId: 'stale-question',
+          optionId: first.correctOptionId,
+        ),
         same(session),
       );
       expect(
-        session.answer(questionId: first.questionId, optionId: 'unknown-reading'),
+        session.answer(
+          questionId: first.questionId,
+          optionId: 'unknown-reading',
+        ),
         same(session),
       );
       session = session.answer(

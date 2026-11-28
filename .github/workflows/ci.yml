@@ -89,11 +89,6 @@ jobs:
           flutter-version: '3.35.4'
           cache: true
       - run: flutter pub get --enforce-lockfile
-      - name: Capture pinned Dart formatter diff for quiz test (temporary)
-        run: |
-          formatted="$RUNNER_TEMP/vocabulary_quiz_test.dart"
-          dart format --output=show test/features/quiz/vocabulary_quiz_test.dart > "$formatted"
-          diff -u test/features/quiz/vocabulary_quiz_test.dart "$formatted" || true
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
