@@ -104,9 +104,9 @@ class _VocabularyQuizRoundState extends ConsumerState<_VocabularyQuizRound> {
 
   Widget _error(Object error, VoidCallback retry) {
     if (error is QuizContentUnavailable) {
-      return const Card(
+      return Card(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Text(
             '${error.level} chưa được tích hợp. Không thay thế bằng N5; '
             'nội dung đang chờ được rà soát.',

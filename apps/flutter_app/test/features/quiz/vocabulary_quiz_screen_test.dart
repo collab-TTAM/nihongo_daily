@@ -196,9 +196,9 @@ void main() {
     expect(find.byKey(const Key('quiz-empty')), findsOneWidget);
   });
 
-  testWidgets('shows insufficient content when fewer than four readings exist', (
-    tester,
-  ) async {
+  testWidgets(
+    'shows insufficient content when fewer than four readings exist',
+    (tester) async {
     final repository = _MemoryQuizRepository((_) async => [
       _entries[0],
       _entries[1],
@@ -215,8 +215,9 @@ void main() {
     ]);
     await _mount(tester, repository);
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('quiz-insufficient')), findsOneWidget);
-  });
+      expect(find.byKey(const Key('quiz-insufficient')), findsOneWidget);
+    },
+  );
 
   testWidgets('keeps the quiz usable at 320px and 200 percent text', (
     tester,

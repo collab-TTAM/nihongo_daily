@@ -427,3 +427,9 @@ Personal Alpha gaps are queued as #11–#18; see CONTRACT_BASELINE for the map. 
 
 - Separate source review removed a redundant `PreviewLevel` import (the setting library already exports the enum), marked the unused listener parameter explicitly, and made the unavailable-level message use the typed error's level without mentioning internal branch ownership to learners.
 - This is a compile/lint hygiene correction only; quiz rules, N5 source bytes, N4 no-fallback behavior, persistence boundaries and tests are unchanged. New exact-head CI is required; no local Flutter/Dart SDK is available in the authoring runtime.
+
+
+## Quiz N5 pre-CI source review — 2026-11-28T13:30:57.913Z
+
+- A separate post-write review caught a compile-time issue before the queued workflow ran: the N4-unavailable card was marked `const` while interpolating the typed error's level. Removed the invalid const context and aligned long test declarations with the pinned Dart formatter's multiline form.
+- The queued run on the preceding source head is superseded by this follow-up. No quiz scoring, source selection, N4 no-fallback, persistence boundary, Auth, RLS or Pro-owned content changed. Fresh exact-head CI remains required; no local Flutter/Dart SDK is available.
